@@ -47,7 +47,7 @@ export default function CRMAdvanced() {
                         <div className="grid grid-cols-3 gap-4 text-sm">
                           <div>Probability: {score.probability}%</div>
                           <div>Next: {score.nextAction || "Review"}</div>
-                          <div>Updated: {new Date(score.updatedDate).toLocaleDateString()}</div>
+                          <div>Updated: {score.updatedDate ? new Date(score.updatedDate).toLocaleDateString() : "N/A"}</div>
                         </div>
                       </div>
                     </CardContent>

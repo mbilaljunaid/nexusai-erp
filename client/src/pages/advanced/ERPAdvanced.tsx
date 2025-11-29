@@ -110,7 +110,7 @@ export default function ERPAdvanced() {
                         <div>${trans.transactionAmount}<div className="text-xs text-muted-foreground">Amount</div></div>
                         <div>{trans.exchangeRate}<div className="text-xs text-muted-foreground">Rate</div></div>
                         <div>${trans.translatedAmount}<div className="text-xs text-muted-foreground">Translated</div></div>
-                        <div className={trans.realizedGainLoss > 0 ? "text-green-600" : "text-red-600"}>
+                        <div className={(trans.realizedGainLoss ? Number(trans.realizedGainLoss) : 0) > 0 ? "text-green-600" : "text-red-600"}>
                           ${trans.realizedGainLoss || 0}<div className="text-xs text-muted-foreground">Gain/Loss</div>
                         </div>
                       </div>
