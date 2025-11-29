@@ -1,220 +1,265 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageSquare, Heart, Plus, Users, Activity, Clock } from "lucide-react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Switch, Route } from "wouter";
+import { lazy, Suspense } from "react";
+import { queryClient } from "./lib/queryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { ThemeToggle } from "@/components/theme-toggle";
+import NotFound from "@/pages/not-found";
 
-interface Comment {
-  id: string;
-  author: string;
-  content: string;
-  likes: number;
-  mentions: string[];
-  createdAt: string;
+// Core pages
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const CRM = lazy(() => import("@/pages/CRM"));
+const ERP = lazy(() => import("@/pages/ERP"));
+const HR = lazy(() => import("@/pages/HR"));
+const Projects = lazy(() => import("@/pages/Projects"));
+
+// Phase 1: Payments & CRM (4 pages)
+const InvoiceGenerator = lazy(() => import("@/pages/InvoiceGenerator"));
+const QuoteBuilder = lazy(() => import("@/pages/QuoteBuilder"));
+const ApprovalWorkflow = lazy(() => import("@/pages/ApprovalWorkflow"));
+const PaymentFlow = lazy(() => import("@/pages/PaymentFlow"));
+
+// Phase 2: ERP Workflows (4 pages)
+const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
+const BankReconciliation = lazy(() => import("@/pages/BankReconciliation"));
+const PaymentScheduling = lazy(() => import("@/pages/PaymentScheduling"));
+const AgingReport = lazy(() => import("@/pages/AgingReport"));
+
+// Phase 3: Projects & Automation (4 pages)
+const AgileBoard = lazy(() => import("@/pages/AgileBoard"));
+const TaskManagement = lazy(() => import("@/pages/TaskManagement"));
+const WorkflowDesigner = lazy(() => import("@/pages/WorkflowDesigner"));
+const TeamCollaboration = lazy(() => import("@/pages/TeamCollaboration"));
+
+// All existing pages (keep imports for all 191 pages)
+const LeadDetail = lazy(() => import("@/pages/LeadDetail"));
+const LeadConversion = lazy(() => import("@/pages/LeadConversion"));
+const InvoiceList = lazy(() => import("@/pages/InvoiceList"));
+const InvoiceDetail = lazy(() => import("@/pages/InvoiceDetail"));
+const PurchaseOrder = lazy(() => import("@/pages/PurchaseOrder"));
+const VendorManagement = lazy(() => import("@/pages/VendorManagement"));
+const GeneralLedger = lazy(() => import("@/pages/GeneralLedger"));
+const FinancialReports = lazy(() => import("@/pages/FinancialReports"));
+const WorkOrder = lazy(() => import("@/pages/WorkOrder"));
+const MRPDashboard = lazy(() => import("@/pages/MRPDashboard"));
+const ShopFloor = lazy(() => import("@/pages/ShopFloor"));
+const QualityControl = lazy(() => import("@/pages/QualityControl"));
+const EmployeeDirectory = lazy(() => import("@/pages/EmployeeDirectory"));
+const OrgChart = lazy(() => import("@/pages/OrgChart"));
+const LeaveRequest = lazy(() => import("@/pages/LeaveRequest"));
+const LeaveApproval = lazy(() => import("@/pages/LeaveApproval"));
+const AttendanceDashboard = lazy(() => import("@/pages/AttendanceDashboard"));
+const PayrollProcessing = lazy(() => import("@/pages/PayrollProcessing"));
+const CompensationManagement = lazy(() => import("@/pages/CompensationManagement"));
+const PerformanceReviews = lazy(() => import("@/pages/PerformanceReviews"));
+const TalentPool = lazy(() => import("@/pages/TalentPool"));
+const HRAnalyticsDashboard = lazy(() => import("@/pages/HRAnalyticsDashboard"));
+const ServiceTicket = lazy(() => import("@/pages/ServiceTicket"));
+const TicketDashboard = lazy(() => import("@/pages/TicketDashboard"));
+const SLATracking = lazy(() => import("@/pages/SLATracking"));
+const KnowledgeBase = lazy(() => import("@/pages/KnowledgeBase"));
+const CustomerPortal = lazy(() => import("@/pages/CustomerPortal"));
+const ServiceAnalytics = lazy(() => import("@/pages/ServiceAnalytics"));
+const TeamUtilization = lazy(() => import("@/pages/TeamUtilization"));
+const ResponseAnalytics = lazy(() => import("@/pages/ResponseAnalytics"));
+const InventoryManagement = lazy(() => import("@/pages/InventoryManagement"));
+const OpportunityList = lazy(() => import("@/pages/OpportunityList"));
+const OpportunityDetail = lazy(() => import("@/pages/OpportunityDetail"));
+const SalesPipeline = lazy(() => import("@/pages/SalesPipeline"));
+const ForecastDashboard = lazy(() => import("@/pages/ForecastDashboard"));
+const AccountDirectory = lazy(() => import("@/pages/AccountDirectory"));
+const AccountHierarchy = lazy(() => import("@/pages/AccountHierarchy"));
+const ContactDirectory = lazy(() => import("@/pages/ContactDirectory"));
+const ActivityTimeline = lazy(() => import("@/pages/ActivityTimeline"));
+const LeadScoringDashboard = lazy(() => import("@/pages/LeadScoringDashboard"));
+const Manufacturing = lazy(() => import("@/pages/Manufacturing"));
+const Service = lazy(() => import("@/pages/Service"));
+const Marketing = lazy(() => import("@/pages/Marketing"));
+const ComplianceDashboard = lazy(() => import("@/pages/ComplianceDashboard"));
+const BPM = lazy(() => import("@/pages/BPM"));
+const IntegrationHub = lazy(() => import("@/pages/IntegrationHub"));
+const WebsiteBuilder = lazy(() => import("@/pages/WebsiteBuilder"));
+const EmailManagement = lazy(() => import("@/pages/EmailManagement"));
+const Ecommerce = lazy(() => import("@/pages/Ecommerce"));
+const FormShowcase = lazy(() => import("@/pages/FormShowcase"));
+const UATAutomation = lazy(() => import("@/pages/UATAutomation"));
+const AdvancedFeatures = lazy(() => import("@/pages/AdvancedFeatures"));
+const SystemHealth = lazy(() => import("@/pages/SystemHealth"));
+const Copilot = lazy(() => import("@/pages/Copilot"));
+const FieldService = lazy(() => import("@/pages/FieldService"));
+const Planning = lazy(() => import("@/pages/Planning"));
+const Marketplace = lazy(() => import("@/pages/Marketplace"));
+const MobileSync = lazy(() => import("@/pages/MobileSync"));
+const AIChat = lazy(() => import("@/pages/AIChat"));
+const Analytics = lazy(() => import("@/pages/Analytics"));
+const Billing = lazy(() => import("@/pages/Billing"));
+const ERPAdvanced = lazy(() => import("@/pages/ERPAdvanced"));
+const BackendIntegration = lazy(() => import("@/pages/BackendIntegration"));
+const CRMAdvanced = lazy(() => import("@/pages/CRMAdvanced"));
+const HRAdvanced = lazy(() => import("@/pages/HRAdvanced"));
+const Analytics2 = lazy(() => import("@/pages/Analytics"));
+const Health = lazy(() => import("@/pages/Health"));
+const Settings = lazy(() => import("@/pages/Settings"));
+const Industries = lazy(() => import("@/pages/Industries"));
+const IndustryConfiguration = lazy(() => import("@/pages/IndustryConfiguration"));
+const PlatformAdmin = lazy(() => import("@/pages/PlatformAdmin"));
+const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
+const DashboardBuilder = lazy(() => import("@/pages/DashboardBuilder"));
+const ReportBuilder = lazy(() => import("@/pages/ReportBuilder"));
+const DataExplorer = lazy(() => import("@/pages/DataExplorer"));
+const SalesAnalytics = lazy(() => import("@/pages/SalesAnalytics"));
+const FinancialAnalytics = lazy(() => import("@/pages/FinancialAnalytics"));
+const OperationalAnalytics = lazy(() => import("@/pages/OperationalAnalytics"));
+const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
+const LeadScoringAnalytics = lazy(() => import("@/pages/LeadScoringAnalytics"));
+const RevenueForecasting = lazy(() => import("@/pages/RevenueForecasting"));
+const ChurnRiskAnalysis = lazy(() => import("@/pages/ChurnRiskAnalysis"));
+const ExportManager = lazy(() => import("@/pages/ExportManager"));
+const ScheduledReports = lazy(() => import("@/pages/ScheduledReports"));
+const WorkflowBuilder = lazy(() => import("@/pages/WorkflowBuilder"));
+const WorkflowTemplates = lazy(() => import("@/pages/WorkflowTemplates"));
+const WorkflowExecution = lazy(() => import("@/pages/WorkflowExecution"));
+const APIManagement = lazy(() => import("@/pages/APIManagement"));
+const WebhookManagement = lazy(() => import("@/pages/WebhookManagement"));
+const APILogs = lazy(() => import("@/pages/APILogs"));
+const RateLimiting = lazy(() => import("@/pages/RateLimiting"));
+const AppStore = lazy(() => import("@/pages/AppStore"));
+const InstalledApps = lazy(() => import("@/pages/InstalledApps"));
+const SystemSettings = lazy(() => import("@/pages/SystemSettings"));
+const UserManagement = lazy(() => import("@/pages/UserManagement"));
+const RoleManagement = lazy(() => import("@/pages/RoleManagement"));
+const PermissionMatrix = lazy(() => import("@/pages/PermissionMatrix"));
+const CustomFields = lazy(() => import("@/pages/CustomFields"));
+const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
+const DataImport = lazy(() => import("@/pages/DataImport"));
+const DataExport = lazy(() => import("@/pages/DataExport"));
+const DataCleanup = lazy(() => import("@/pages/DataCleanup"));
+const AuditLogs = lazy(() => import("@/pages/AuditLogs"));
+const ComplianceReports = lazy(() => import("@/pages/ComplianceReports"));
+const DataGovernance = lazy(() => import("@/pages/DataGovernance"));
+const BackupRestore = lazy(() => import("@/pages/BackupRestore"));
+const PerformanceMonitoring = lazy(() => import("@/pages/PerformanceMonitoring"));
+const IntegrationManagement = lazy(() => import("@/pages/IntegrationManagement"));
+const OAuthManagement = lazy(() => import("@/pages/OAuthManagement"));
+const SSO = lazy(() => import("@/pages/SSO"));
+const TwoFactorAuth = lazy(() => import("@/pages/TwoFactorAuth"));
+const AccessControl = lazy(() => import("@/pages/AccessControl"));
+const FeatureFlags = lazy(() => import("@/pages/FeatureFlags"));
+const Localization = lazy(() => import("@/pages/Localization"));
+const EmailConfiguration = lazy(() => import("@/pages/EmailConfiguration"));
+const NotificationSettings = lazy(() => import("@/pages/NotificationSettings"));
+const ScheduledTasks = lazy(() => import("@/pages/ScheduledTasks"));
+const SystemLogs = lazy(() => import("@/pages/SystemLogs"));
+const DatabaseMaintenance = lazy(() => import("@/pages/DatabaseMaintenance"));
+const BrandingCustomization = lazy(() => import("@/pages/BrandingCustomization"));
+const LicenseManagement = lazy(() => import("@/pages/LicenseManagement"));
+const APIDocumentation = lazy(() => import("@/pages/APIDocumentation"));
+const WebhookEvents = lazy(() => import("@/pages/WebhookEvents"));
+const Migrations = lazy(() => import("@/pages/Migrations"));
+const DeploymentSettings = lazy(() => import("@/pages/DeploymentSettings"));
+const SecurityAudit = lazy(() => import("@/pages/SecurityAudit"));
+const CacheManagement = lazy(() => import("@/pages/CacheManagement"));
+const ModuleSettings = lazy(() => import("@/pages/ModuleSettings"));
+const Webhooks = lazy(() => import("@/pages/Webhooks"));
+const DeveloperTools = lazy(() => import("@/pages/DeveloperTools"));
+const ThirdPartyApps = lazy(() => import("@/pages/ThirdPartyApps"));
+const ReportingConfiguration = lazy(() => import("@/pages/ReportingConfiguration"));
+const ArchiveManagement = lazy(() => import("@/pages/ArchiveManagement"));
+const MetricsAndMonitoring = lazy(() => import("@/pages/MetricsAndMonitoring"));
+const ResourceAllocation = lazy(() => import("@/pages/ResourceAllocation"));
+const APIRateLimitPolicy = lazy(() => import("@/pages/APIRateLimitPolicy"));
+const AuthenticationMethods = lazy(() => import("@/pages/AuthenticationMethods"));
+const AlertsAndNotifications = lazy(() => import("@/pages/AlertsAndNotifications"));
+const HealthCheckDashboard = lazy(() => import("@/pages/HealthCheckDashboard"));
+const BatchOperations = lazy(() => import("@/pages/BatchOperations"));
+const VirtualAssistant = lazy(() => import("@/pages/VirtualAssistant"));
+const PlatformStatus = lazy(() => import("@/pages/PlatformStatus"));
+const MobileOptimization = lazy(() => import("@/pages/MobileOptimization"));
+const AccessibilityAudit = lazy(() => import("@/pages/AccessibilityAudit"));
+const PerformanceOptimization = lazy(() => import("@/pages/PerformanceOptimization"));
+const InternationalizationConfig = lazy(() => import("@/pages/InternationalizationConfig"));
+const AdvancedSearch = lazy(() => import("@/pages/AdvancedSearch"));
+const BulkOperations = lazy(() => import("@/pages/BulkOperations"));
+const Website = lazy(() => import("@/pages/Website"));
+const TimeTracking = lazy(() => import("@/pages/TimeTracking"));
+const TrainingAcademy = lazy(() => import("@/pages/TrainingAcademy"));
+const EPMPage = lazy(() => import("@/pages/EPMPage"));
+
+function Router() {
+  return (
+    <Switch>
+      <Route path="/" component={Dashboard} />
+      <Route path="/crm" component={CRM} />
+      <Route path="/projects" component={Projects} />
+      <Route path="/erp" component={ERP} />
+      <Route path="/hr" component={HR} />
+      <Route path="/manufacturing" component={Manufacturing} />
+      <Route path="/service" component={Service} />
+      <Route path="/invoice-generator" component={InvoiceGenerator} />
+      <Route path="/quote-builder" component={QuoteBuilder} />
+      <Route path="/approval-workflow" component={ApprovalWorkflow} />
+      <Route path="/payment-flow" component={PaymentFlow} />
+      <Route path="/vendor-invoice-entry" component={VendorInvoiceEntry} />
+      <Route path="/bank-reconciliation" component={BankReconciliation} />
+      <Route path="/payment-scheduling" component={PaymentScheduling} />
+      <Route path="/aging-report" component={AgingReport} />
+      <Route path="/agile-board" component={AgileBoard} />
+      <Route path="/task-management" component={TaskManagement} />
+      <Route path="/workflow-designer" component={WorkflowDesigner} />
+      <Route path="/team-collaboration" component={TeamCollaboration} />
+      <Route path="/opportunities" component={OpportunityList} />
+      <Route path="/opportunity/:id" component={OpportunityDetail} />
+      <Route path="/leads/:id" component={LeadDetail} />
+      <Route path="/invoices" component={InvoiceList} />
+      <Route path="/invoice/:id" component={InvoiceDetail} />
+      <Route path="/vendors" component={VendorManagement} />
+      <Route path="/purchase-orders" component={PurchaseOrder} />
+      <Route path="/general-ledger" component={GeneralLedger} />
+      <Route path="/financial-reports" component={FinancialReports} />
+      <Route path="/inventory" component={InventoryManagement} />
+      <Route path="/employees" component={EmployeeDirectory} />
+      <Route path="/payroll" component={PayrollProcessing} />
+      <Route path="/leave-request" component={LeaveRequest} />
+      <Route path="/service-tickets" component={ServiceTicket} />
+      <Route path="/knowledge-base" component={KnowledgeBase} />
+      <Route path="/analytics" component={Analytics} />
+      <Route path="/copilot" component={Copilot} />
+      <Route path="/ai-chat" component={AIChat} />
+      <Route path="/marketplace" component={Marketplace} />
+      <Route path="/integrations" component={IntegrationHub} />
+      <Route path="/admin/platform" component={PlatformAdmin} />
+      <Route component={NotFound} />
+    </Switch>
+  );
 }
 
-interface ActivityEntry {
-  id: string;
-  actor: string;
-  action: string;
-  target: string;
-  createdAt: string;
-}
-
-interface Collaboration {
-  id: string;
-  taskId: string;
-  comments: Comment[];
-  activity: ActivityEntry[];
-  participants: string[];
-}
-
-export default function TeamCollaboration() {
-  const [newComment, setNewComment] = useState("");
-  const [selectedTask, setSelectedTask] = useState<string | null>(null);
-
-  const { data: collaborations = [] } = useQuery<Collaboration[]>({
-    queryKey: ["/api/collaborations"],
-    retry: false,
-  });
-
-  const addCommentMutation = useMutation({
-    mutationFn: (data: { taskId: string; content: string }) =>
-      apiRequest("POST", "/api/collaborations/comments", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/collaborations"] });
-      setNewComment("");
-    },
-  });
-
-  const likeCommentMutation = useMutation({
-    mutationFn: (commentId: string) =>
-      apiRequest("POST", `/api/collaborations/comments/${commentId}/like`, {}),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/collaborations"] }),
-  });
-
-  const currentCollab = selectedTask ? collaborations.find(c => c.taskId === selectedTask) : collaborations[0];
-  const teamMembers = ["Alice", "Bob", "Carol", "David", "Eve"];
+export default function App() {
+  const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-semibold">Team Collaboration</h1>
-          <p className="text-muted-foreground text-sm">Comments, mentions, and activity tracking</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="hover-elevate">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <MessageSquare className="h-5 w-5 text-blue-500" />
-              <div>
-                <p className="text-2xl font-semibold">
-                  {collaborations.reduce((sum, c) => sum + c.comments.length, 0)}
-                </p>
-                <p className="text-xs text-muted-foreground">Total Comments</p>
-              </div>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <SidebarProvider style={style}>
+          <div className="flex h-screen w-full">
+            <AppSidebar />
+            <div className="flex flex-col flex-1">
+              <header className="flex items-center justify-between p-2 border-b">
+                <SidebarTrigger data-testid="button-sidebar-toggle" />
+                <ThemeToggle />
+              </header>
+              <main className="flex-1 overflow-auto">
+                <Suspense fallback={<div className="p-4">Loading...</div>}>
+                  <Router />
+                </Suspense>
+              </main>
             </div>
-          </CardContent>
-        </Card>
-        <Card className="hover-elevate">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Users className="h-5 w-5 text-green-500" />
-              <div>
-                <p className="text-2xl font-semibold">{teamMembers.length}</p>
-                <p className="text-xs text-muted-foreground">Team Members</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="hover-elevate">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Activity className="h-5 w-5 text-orange-500" />
-              <div>
-                <p className="text-2xl font-semibold">
-                  {collaborations.reduce((sum, c) => sum + c.activity.length, 0)}
-                </p>
-                <p className="text-xs text-muted-foreground">Activities</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Tabs defaultValue="comments" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="comments">Comments</TabsTrigger>
-          <TabsTrigger value="activity">Activity Feed</TabsTrigger>
-          <TabsTrigger value="mentions">Mentions</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="comments" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Add Comment</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Textarea
-                placeholder="Type @ to mention someone..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className="min-h-24"
-              />
-              <div className="flex gap-2">
-                <Button onClick={() => {
-                  if (newComment.trim() && currentCollab) {
-                    addCommentMutation.mutate({ taskId: currentCollab.taskId, content: newComment });
-                  }
-                }}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Post Comment
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-3">
-            {currentCollab?.comments.map((comment) => (
-              <Card key={comment.id}>
-                <CardContent className="p-4">
-                  <div className="flex gap-3">
-                    <Avatar className="w-8 h-8">
-                      <AvatarFallback>{comment.author.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-sm">{comment.author}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(comment.createdAt).toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-sm">{comment.content}</p>
-                      {comment.mentions.length > 0 && (
-                        <div className="flex gap-1 mt-2 flex-wrap">
-                          {comment.mentions.map((mention) => (
-                            <Badge key={mention} variant="secondary" className="text-xs">@{mention}</Badge>
-                          ))}
-                        </div>
-                      )}
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="mt-2"
-                        onClick={() => likeCommentMutation.mutate(comment.id)}
-                      >
-                        <Heart className="w-3 h-3 mr-1" />
-                        {comment.likes}
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
-        </TabsContent>
-
-        <TabsContent value="activity" className="space-y-3">
-          {currentCollab?.activity.map((entry) => (
-            <Card key={entry.id}>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-muted-foreground" />
-                  <div className="flex-1">
-                    <p className="text-sm">
-                      <span className="font-semibold">{entry.actor}</span>
-                      {" " + entry.action + " "}
-                      <span className="font-semibold">{entry.target}</span>
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(entry.createdAt).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="mentions" className="space-y-3">
-          <div className="space-y-2">
-            {teamMembers.map((member) => (
-              <Badge key={member} variant="outline" className="cursor-pointer hover-elevate">
-                @{member}
-              </Badge>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+        </SidebarProvider>
+        <Toaster />
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }

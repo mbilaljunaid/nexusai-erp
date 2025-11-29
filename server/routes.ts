@@ -36,6 +36,10 @@ const apInvoicesStore: any[] = [];
 const bankTransactionsStore: any[] = [];
 const paymentSchedulesStore: any[] = [];
 const agingDataStore: any[] = [];
+const sprintsStore: any[] = [];
+const tasksStore: any[] = [];
+const workflowsStore: any[] = [];
+const collaborationsStore: any[] = [];
 
 export async function registerRoutes(
   httpServer: Server,
@@ -289,6 +293,141 @@ export async function registerRoutes(
       createdAt: new Date().toISOString(),
     };
     res.json([report]);
+  });
+
+  // PHASE 3: Sprints
+  app.get("/api/sprints", async (req, res) => {
+    if (sprintsStore.length === 0) {
+      sprintsStore.push(
+        {
+          id: "sprint-1",
+          name: "Sprint 1",
+          status: "active",
+          startDate: new Date().toISOString(),
+          endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+          tasks: [
+            { id: "t1", title: "Setup project", status: "in_progress", sprint: "sprint-1", assignee: "Alice", points: 5 },
+            { id: "t2", title: "Create API", status: "todo", sprint: "sprint-1", assignee: "Bob", points: 8 },
+            { id: "t3", title: "Fix bugs", status: "done", sprint: "sprint-1", assignee: "Carol", points: 3 },
+          ],
+          velocity: 16,
+        }
+      );
+    }
+    res.json(sprintsStore);
+  });
+
+  // PHASE 3: Tasks
+  app.get("/api/tasks", async (req, res) => {
+    if (tasksStore.length === 0) {
+      tasksStore.push(
+        { id: "t1", title: "Setup project", status: "in_progress", priority: "high", assignee: "Alice", dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), subTasks: [{ id: "st1", title: "Install deps", completed: true }], dependencies: [], createdAt: new Date().toISOString() },
+        { id: "t2", title: "Create API", status: "open", priority: "high", assignee: "Bob", dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), subTasks: [], dependencies: ["t1"], createdAt: new Date().toISOString() },
+      );
+    }
+    res.json(tasksStore);
+  });
+
+  app.post("/api/tasks", async (req, res) => {
+    const task = {
+      id: `task-${Date.now()}`,
+      title: req.body.title || "New Task",
+      status: "open",
+      priority: req.body.priority || "medium",
+      assignee: req.body.assignee || "Unassigned",
+      dueDate: req.body.dueDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      subTasks: [],
+      dependencies: [],
+      createdAt: new Date().toISOString(),
+    };
+    tasksStore.push(task);
+    res.status(201).json(task);
+  });
+
+  // PHASE 3: Workflows
+  app.get("/api/workflows", async (req, res) => {
+    if (workflowsStore.length === 0) {
+      workflowsStore.push(
+        {
+          id: "wf1",
+          name: "Bug Triage",
+          description: "Process for triaging and resolving bugs",
+          states: [
+            { id: "new", name: "New", color: "#ef4444", order: 1 },
+            { id: "assigned", name: "Assigned", color: "#f97316", order: 2 },
+            { id: "in-progress", name: "In Progress", color: "#3b82f6", order: 3 },
+            { id: "resolved", name: "Resolved", color: "#22c55e", order: 4 },
+          ],
+          automationRules: [
+            { trigger: "status_changed_to_assigned", action: "notify_assignee" },
+            { trigger: "status_changed_to_resolved", action: "create_release_note" },
+          ],
+          active: true,
+        }
+      );
+    }
+    res.json(workflowsStore);
+  });
+
+  app.post("/api/workflows", async (req, res) => {
+    const workflow = {
+      id: `wf-${Date.now()}`,
+      name: req.body.name || "New Workflow",
+      description: req.body.description || "",
+      states: req.body.states || [],
+      automationRules: [],
+      active: true,
+    };
+    workflowsStore.push(workflow);
+    res.status(201).json(workflow);
+  });
+
+  // PHASE 3: Collaborations
+  app.get("/api/collaborations", async (req, res) => {
+    if (collaborationsStore.length === 0) {
+      collaborationsStore.push(
+        {
+          id: "collab1",
+          taskId: "t1",
+          comments: [
+            { id: "c1", author: "Alice", content: "Let me work on this first", likes: 2, mentions: ["Bob"], createdAt: new Date().toISOString() },
+            { id: "c2", author: "Bob", content: "@Alice sounds good to me", likes: 1, mentions: ["Alice"], createdAt: new Date().toISOString() },
+          ],
+          activity: [
+            { id: "a1", actor: "Alice", action: "assigned task to", target: "Alice", createdAt: new Date().toISOString() },
+            { id: "a2", actor: "Bob", action: "commented on", target: "task", createdAt: new Date().toISOString() },
+          ],
+          participants: ["Alice", "Bob", "Carol"],
+        }
+      );
+    }
+    res.json(collaborationsStore);
+  });
+
+  app.post("/api/collaborations/comments", async (req, res) => {
+    const collab = collaborationsStore.find(c => c.taskId === req.body.taskId);
+    if (!collab) return res.status(404).json({ error: "Collaboration not found" });
+    const comment = {
+      id: `c-${Date.now()}`,
+      author: "Current User",
+      content: req.body.content,
+      likes: 0,
+      mentions: [],
+      createdAt: new Date().toISOString(),
+    };
+    collab.comments.push(comment);
+    res.status(201).json(comment);
+  });
+
+  app.post("/api/collaborations/comments/:id/like", async (req, res) => {
+    for (const collab of collaborationsStore) {
+      const comment = collab.comments.find(c => c.id === req.params.id);
+      if (comment) {
+        comment.likes++;
+        return res.json(comment);
+      }
+    }
+    res.status(404).json({ error: "Comment not found" });
   });
 
   // PHASE 1: AI Copilot
