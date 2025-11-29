@@ -17,6 +17,7 @@ import PerformanceRatingForm from "@/components/forms/PerformanceRatingForm";
 import CustomerEntryForm from "@/components/forms/CustomerEntryForm";
 import AdjustmentEntryForm from "@/components/forms/AdjustmentEntryForm";
 import RequisitionForm from "@/components/forms/RequisitionForm";
+import OpportunityForm from "@/components/forms/OpportunityForm";
 import { Sparkles } from "lucide-react";
 
 export default function FormShowcase() {
@@ -107,27 +108,22 @@ export default function FormShowcase() {
             </div>
 
             <Tabs defaultValue="lead" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="lead">Lead Entry</TabsTrigger>
-                <TabsTrigger value="opp">Opportunity (Coming)</TabsTrigger>
+                <TabsTrigger value="customer">Customer</TabsTrigger>
+                <TabsTrigger value="opp">Opportunity</TabsTrigger>
               </TabsList>
 
               <TabsContent value="lead">
                 <LeadEntryForm />
               </TabsContent>
 
+              <TabsContent value="customer">
+                <CustomerEntryForm />
+              </TabsContent>
+
               <TabsContent value="opp">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-muted-foreground text-sm">Opportunity entry form coming soon. Features will include:</p>
-                    <ul className="text-sm text-muted-foreground mt-3 space-y-1 list-disc list-inside">
-                      <li>Stage-based pipeline management</li>
-                      <li>Probability and amount tracking</li>
-                      <li>Competition analysis and risk scoring</li>
-                      <li>AI-powered deal recommendations</li>
-                    </ul>
-                  </CardContent>
-                </Card>
+                <OpportunityForm />
               </TabsContent>
             </Tabs>
           </div>
@@ -142,42 +138,27 @@ export default function FormShowcase() {
             </div>
 
             <Tabs defaultValue="employee" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="employee">Employee Entry</TabsTrigger>
-                <TabsTrigger value="timesheet">Timesheet (Coming)</TabsTrigger>
-                <TabsTrigger value="perf">Performance (Coming)</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="employee">Employee</TabsTrigger>
+                <TabsTrigger value="payroll">Payroll</TabsTrigger>
+                <TabsTrigger value="perf">Performance</TabsTrigger>
+                <TabsTrigger value="req">Requisition</TabsTrigger>
               </TabsList>
 
               <TabsContent value="employee">
                 <EmployeeEntryForm />
               </TabsContent>
 
-              <TabsContent value="timesheet">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-muted-foreground text-sm">Timesheet entry form coming soon with:</p>
-                    <ul className="text-sm text-muted-foreground mt-3 space-y-1 list-disc list-inside">
-                      <li>Weekly grid entry for hours</li>
-                      <li>Project and task allocation</li>
-                      <li>Leave and absence tracking</li>
-                      <li>Auto-calculation of totals</li>
-                    </ul>
-                  </CardContent>
-                </Card>
+              <TabsContent value="payroll">
+                <PayrollForm />
               </TabsContent>
 
               <TabsContent value="perf">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-muted-foreground text-sm">Performance rating form coming soon with:</p>
-                    <ul className="text-sm text-muted-foreground mt-3 space-y-1 list-disc list-inside">
-                      <li>Multi-dimensional performance assessment</li>
-                      <li>Goal achievement tracking</li>
-                      <li>360-degree feedback integration</li>
-                      <li>Development plan recommendations</li>
-                    </ul>
-                  </CardContent>
-                </Card>
+                <PerformanceRatingForm />
+              </TabsContent>
+
+              <TabsContent value="req">
+                <RequisitionForm />
               </TabsContent>
             </Tabs>
           </div>
@@ -192,24 +173,54 @@ export default function FormShowcase() {
             </div>
 
             <Tabs defaultValue="glentry" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="glentry">GL Entry</TabsTrigger>
-                <TabsTrigger value="invoice">Invoice (Coming)</TabsTrigger>
+                <TabsTrigger value="vendor">Vendor</TabsTrigger>
+                <TabsTrigger value="invoice">Invoice</TabsTrigger>
               </TabsList>
 
               <TabsContent value="glentry">
                 <GLEntryForm />
               </TabsContent>
 
+              <TabsContent value="vendor">
+                <VendorEntryForm />
+              </TabsContent>
+
               <TabsContent value="invoice">
+                <InvoiceEntryForm />
+              </TabsContent>
+            </Tabs>
+          </div>
+        </TabsContent>
+
+        {/* Finance Forms */}
+        <TabsContent value="finance" className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold mb-1">Finance & Closing Forms</h2>
+              <p className="text-sm text-muted-foreground">Period closing, adjustments, and reconciliation workflows</p>
+            </div>
+
+            <Tabs defaultValue="adjustment" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="adjustment">Adjustment Entry</TabsTrigger>
+                <TabsTrigger value="reconcile">Reconciliation (Coming)</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="adjustment">
+                <AdjustmentEntryForm />
+              </TabsContent>
+
+              <TabsContent value="reconcile">
                 <Card>
                   <CardContent className="p-6">
-                    <p className="text-muted-foreground text-sm">Invoice entry form coming soon with:</p>
+                    <p className="text-muted-foreground text-sm">Reconciliation form coming soon with:</p>
                     <ul className="text-sm text-muted-foreground mt-3 space-y-1 list-disc list-inside">
-                      <li>Vendor invoice management</li>
-                      <li>GL account mapping</li>
-                      <li>Tax calculation</li>
-                      <li>Approval workflows</li>
+                      <li>Bank-to-GL reconciliation</li>
+                      <li>AI-assisted matching of transactions</li>
+                      <li>Exception handling and review</li>
+                      <li>Historical variance tracking</li>
                     </ul>
                   </CardContent>
                 </Card>
