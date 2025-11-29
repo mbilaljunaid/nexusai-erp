@@ -22,13 +22,18 @@ export default function RFQs() {
   });
 
   const navigationItems = [
-    { id: "list", label: "RFQ List", icon: FileText, badge: rfqs.length },
-    { id: "create", label: "Create RFQ", icon: Plus },
-    { id: "analytics", label: "Analytics", icon: FileText },
-    { id: "templates", label: "Templates", icon: FileText },
+    { id: "list", label: "RFQ List", icon: FileText, badge: rfqs.length, color: "blue" as const },
+    { id: "create", label: "Create RFQ", icon: Plus, color: "green" as const },
+    { id: "analytics", label: "Analytics", icon: FileText, color: "purple" as const },
+    { id: "templates", label: "Templates", icon: FileText, color: "orange" as const },
   ];
 
-  const statusColors: Record<string, string> = { draft: "default", sent: "secondary", quoted: "destructive", closed: "outline" };
+  const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = { 
+    draft: "default", 
+    sent: "secondary", 
+    quoted: "destructive", 
+    closed: "outline" 
+  };
 
   return (
     <div className="space-y-4">

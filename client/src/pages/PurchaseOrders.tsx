@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, ShoppingCart, FileText } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 
@@ -17,17 +18,17 @@ export default function PurchaseOrders() {
   });
 
   const navigationItems = [
-    { id: "list", label: "POs", icon: ShoppingCart, badge: pos.length },
-    { id: "create", label: "Create PO", icon: Plus },
-    { id: "approvals", label: "For Approval", icon: FileText, badge: pos.filter((p: any) => p.status === "draft").length },
-    { id: "analytics", label: "Analytics", icon: FileText },
+    { id: "list", label: "POs", icon: ShoppingCart, badge: pos.length, color: "blue" as const },
+    { id: "create", label: "Create PO", icon: Plus, color: "green" as const },
+    { id: "approvals", label: "For Approval", icon: FileText, badge: pos.filter((p: any) => p.status === "draft").length, color: "orange" as const },
+    { id: "analytics", label: "Analytics", icon: FileText, color: "purple" as const },
   ];
 
-  const statusColors: Record<string, string> = {
+  const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
     draft: "default",
     approved: "secondary",
-    sent: "info",
-    received: "success",
+    sent: "secondary",
+    received: "default",
     closed: "outline",
   };
 

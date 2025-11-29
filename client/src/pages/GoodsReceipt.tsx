@@ -12,18 +12,18 @@ export default function GoodsReceipt() {
   const { data: grns = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/goods-receipts"] });
 
   const navigationItems = [
-    { id: "list", label: "GRNs", icon: Package, badge: grns.length },
-    { id: "create", label: "Create GRN", icon: Plus },
-    { id: "inspection", label: "For Inspection", icon: FileCheck, badge: grns.filter((g: any) => g.status === "received").length },
-    { id: "analytics", label: "Analytics", icon: Package },
+    { id: "list", label: "GRNs", icon: Package, badge: grns.length, color: "blue" as const },
+    { id: "create", label: "Create GRN", icon: Plus, color: "green" as const },
+    { id: "inspection", label: "For Inspection", icon: FileCheck, badge: grns.filter((g: any) => g.status === "received").length, color: "orange" as const },
+    { id: "analytics", label: "Analytics", icon: Package, color: "purple" as const },
   ];
 
-  const statusColors: Record<string, string> = {
+  const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
     received: "secondary",
-    inspected: "info",
-    accepted: "success",
+    inspected: "default",
+    accepted: "default",
     rejected: "destructive",
-    partial: "warning",
+    partial: "secondary",
   };
 
   return (
@@ -60,7 +60,7 @@ export default function GoodsReceipt() {
                   </div>
                   <div>
                     <p className="text-muted-foreground">Quality</p>
-                    <Badge variant={grn.qualityStatus === "accepted" ? "default" : grn.qualityStatus === "rejected" ? "destructive" : "warning"}>
+                    <Badge variant={grn.qualityStatus === "accepted" ? "default" : grn.qualityStatus === "rejected" ? "destructive" : "secondary"}>
                       {grn.qualityStatus}
                     </Badge>
                   </div>
