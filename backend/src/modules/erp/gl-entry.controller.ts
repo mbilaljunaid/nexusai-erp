@@ -18,7 +18,7 @@ export class GLEntryController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<GLEntry> {
+  findOne(@Param('id') id: string): Promise<GLEntry | null> {
     return this.glEntryService.findOne(id);
   }
 
@@ -26,7 +26,7 @@ export class GLEntryController {
   update(
     @Param('id') id: string,
     @Body() updateGLEntryDto: Partial<CreateGLEntryDto>,
-  ): Promise<GLEntry> {
+  ): Promise<GLEntry | null> {
     return this.glEntryService.update(id, updateGLEntryDto);
   }
 
