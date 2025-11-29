@@ -33,7 +33,7 @@ export default function Dashboard() {
     name: lead.name || "Unknown",
     email: lead.email || "",
     company: lead.company || "",
-    status: lead.status || "new",
+    status: (lead.status || "new") as Lead["status"],
     score: lead.score || 75,
     value: lead.value || 45000
   }));
