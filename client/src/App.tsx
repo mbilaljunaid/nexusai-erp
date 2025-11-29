@@ -249,6 +249,13 @@ const Stories = lazy(() => import("@/pages/Stories"));
 const Sprints = lazy(() => import("@/pages/Sprints"));
 const KanbanBoard = lazy(() => import("@/pages/KanbanBoard"));
 
+// Phase 4: Finance & Accounting Module
+const ChartOfAccounts = lazy(() => import("@/pages/ChartOfAccounts"));
+const GeneralLedger = lazy(() => import("@/pages/GeneralLedger"));
+const APInvoices = lazy(() => import("@/pages/APInvoices"));
+const ARInvoices = lazy(() => import("@/pages/ARInvoices"));
+const BankReconciliation = lazy(() => import("@/pages/BankReconciliation"));
+
 function Router() {
   return (
     <Switch>
@@ -466,6 +473,11 @@ function Router() {
       <Route path="/stories" component={Stories} />
       <Route path="/sprints" component={Sprints} />
       <Route path="/kanban-board" component={KanbanBoard} />
+      <Route path="/chart-of-accounts" component={ChartOfAccounts} />
+      <Route path="/general-ledger" component={GeneralLedger} />
+      <Route path="/ap-invoices" component={APInvoices} />
+      <Route path="/ar-invoices" component={ARInvoices} />
+      <Route path="/bank-reconciliation" component={BankReconciliation} />
       <Route component={NotFound} />
     </Switch>
   );

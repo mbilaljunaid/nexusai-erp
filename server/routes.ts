@@ -812,6 +812,113 @@ export async function registerRoutes(
     }
   });
 
+  // ========== PHASE 4: FINANCE & ACCOUNTING APIs ==========
+
+  // Chart of Accounts
+  const coaStore: any[] = [];
+  app.get("/api/finance/chart-of-accounts", (req, res) => {
+    if (coaStore.length === 0) {
+      coaStore.push(
+        { id: "1", accountCode: "1000", accountName: "Cash", accountType: "Asset", normalBalance: "Debit", isActive: true, description: "Company cash and equivalents" },
+        { id: "2", accountCode: "1100", accountName: "Accounts Receivable", accountType: "Asset", normalBalance: "Debit", isActive: true, description: "Customer receivables" },
+        { id: "3", accountCode: "2000", accountName: "Accounts Payable", accountType: "Liability", normalBalance: "Credit", isActive: true, description: "Vendor payables" },
+        { id: "4", accountCode: "4000", accountName: "Sales Revenue", accountType: "Revenue", normalBalance: "Credit", isActive: true, description: "Operating revenue" },
+        { id: "5", accountCode: "5000", accountName: "Operating Expenses", accountType: "Expense", normalBalance: "Debit", isActive: true, description: "Day-to-day expenses" }
+      );
+    }
+    res.json(coaStore);
+  });
+  app.post("/api/finance/chart-of-accounts", (req, res) => {
+    const account = { id: `coa-${Date.now()}`, ...req.body };
+    coaStore.push(account);
+    res.status(201).json(account);
+  });
+
+  // General Ledger
+  const gleStore: any[] = [];
+  app.get("/api/finance/general-ledger", (req, res) => {
+    if (gleStore.length === 0) {
+      gleStore.push(
+        { id: "gle1", journalEntryId: "JE001", accountId: "1000", debitAmount: "5000", creditAmount: "0", description: "Cash deposit", isPosted: true },
+        { id: "gle2", journalEntryId: "JE001", accountId: "2000", debitAmount: "0", creditAmount: "5000", description: "Vendor payment", isPosted: true }
+      );
+    }
+    res.json(gleStore);
+  });
+  app.post("/api/finance/general-ledger", (req, res) => {
+    const entry = { id: `gle-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    gleStore.push(entry);
+    res.status(201).json(entry);
+  });
+
+  // AP Invoices
+  const apStore: any[] = [];
+  app.get("/api/finance/ap-invoices", (req, res) => {
+    if (apStore.length === 0) {
+      apStore.push(
+        { id: "ap1", invoiceNumber: "INV-2024-001", vendorId: "V001", invoiceDate: new Date().toISOString(), dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), invoiceAmount: "5000", paidAmount: "0", status: "approved" },
+        { id: "ap2", invoiceNumber: "INV-2024-002", vendorId: "V002", invoiceDate: new Date().toISOString(), invoiceAmount: "3500", paidAmount: "3500", status: "paid" }
+      );
+    }
+    res.json(apStore);
+  });
+  app.post("/api/finance/ap-invoices", (req, res) => {
+    const invoice = { id: `ap-${Date.now()}`, ...req.body };
+    apStore.push(invoice);
+    res.status(201).json(invoice);
+  });
+
+  // AR Invoices
+  const arStore: any[] = [];
+  app.get("/api/finance/ar-invoices", (req, res) => {
+    if (arStore.length === 0) {
+      arStore.push(
+        { id: "ar1", invoiceNumber: "AR-2024-001", customerId: "C001", invoiceDate: new Date().toISOString(), dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), invoiceAmount: "8000", receivedAmount: "4000", status: "issued" },
+        { id: "ar2", invoiceNumber: "AR-2024-002", customerId: "C002", invoiceDate: new Date().toISOString(), invoiceAmount: "5500", receivedAmount: "5500", status: "paid" }
+      );
+    }
+    res.json(arStore);
+  });
+  app.post("/api/finance/ar-invoices", (req, res) => {
+    const invoice = { id: `ar-${Date.now()}`, ...req.body };
+    arStore.push(invoice);
+    res.status(201).json(invoice);
+  });
+
+  // Bank Accounts
+  const bankStore: any[] = [];
+  app.get("/api/finance/bank-accounts", (req, res) => {
+    if (bankStore.length === 0) {
+      bankStore.push(
+        { id: "b1", accountNumber: "123456789", bankName: "Primary Bank", currency: "USD", accountBalance: "50000", isActive: true },
+        { id: "b2", accountNumber: "987654321", bankName: "Secondary Bank", currency: "USD", accountBalance: "25000", isActive: true }
+      );
+    }
+    res.json(bankStore);
+  });
+  app.post("/api/finance/bank-accounts", (req, res) => {
+    const account = { id: `bank-${Date.now()}`, ...req.body };
+    bankStore.push(account);
+    res.status(201).json(account);
+  });
+
+  // Bank Reconciliations
+  const bankRecStore: any[] = [];
+  app.get("/api/finance/bank-reconciliations", (req, res) => {
+    if (bankRecStore.length === 0) {
+      bankRecStore.push(
+        { id: "rec1", bankAccountId: "b1", statementDate: new Date().toISOString(), statementBalance: "50000", bookBalance: "50000", difference: "0", status: "reconciled" },
+        { id: "rec2", bankAccountId: "b2", statementDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), statementBalance: "25000", bookBalance: "25000", difference: "0", status: "reconciled" }
+      );
+    }
+    res.json(bankRecStore);
+  });
+  app.post("/api/finance/bank-reconciliations", (req, res) => {
+    const rec = { id: `rec-${Date.now()}`, ...req.body };
+    bankRecStore.push(rec);
+    res.status(201).json(rec);
+  });
+
   // ========== PHASE 3B: PROJECTS & AGILE APIs ==========
 
   // Epics
