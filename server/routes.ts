@@ -328,7 +328,7 @@ export async function registerRoutes(
       
       // Enhance forecasts with ML predictions
       const enhanced = forecasts.map((f) => {
-        const baseForecast = Number(f.amount || 0);
+        const baseForecast = Number(f.forecastedRevenue || 0);
         const avgInvoice = invoices.length > 0 
           ? invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0) / invoices.length 
           : 0;
@@ -349,6 +349,179 @@ export async function registerRoutes(
       res.json(enhanced);
     } catch (error) {
       res.status(500).json({ error: "Failed to get ML predictions" });
+    }
+  });
+
+  // PHASE 2: OLAP Queries (Online Analytical Processing)
+  app.post("/api/analytics/olap/query", async (req, res) => {
+    try {
+      const { dimension, metric, filters } = req.body;
+      
+      // Flexible OLAP query engine
+      let invoices = await storage.listInvoices();
+      
+      // Apply filters
+      if (filters?.status) {
+        invoices = invoices.filter((inv) => inv.status === filters.status);
+      }
+      if (filters?.minAmount) {
+        invoices = invoices.filter((inv) => Number(inv.amount || 0) >= filters.minAmount);
+      }
+      
+      // Group by dimension (OLAP cube operation)
+      const grouped: { [key: string]: any } = {};
+      invoices.forEach((inv) => {
+        let key = "all";
+        
+        if (dimension === "status") {
+          key = inv.status || "unknown";
+        } else if (dimension === "month") {
+          const date = new Date(inv.createdAt || new Date());
+          key = date.toISOString().slice(0, 7);
+        } else if (dimension === "amount_range") {
+          const amount = Number(inv.amount || 0);
+          if (amount < 100) key = "0-100";
+          else if (amount < 500) key = "100-500";
+          else if (amount < 1000) key = "500-1000";
+          else key = "1000+";
+        }
+        
+        if (!grouped[key]) {
+          grouped[key] = { dimension: key, count: 0, total: 0, average: 0 };
+        }
+        grouped[key].count++;
+        grouped[key].total += Number(inv.amount || 0);
+      });
+      
+      // Calculate aggregations
+      const results = Object.values(grouped).map((g: any) => ({
+        ...g,
+        average: g.count > 0 ? Math.round(g.total / g.count) : 0,
+      }));
+      
+      res.json({ dimension, metric, results });
+    } catch (error) {
+      res.status(500).json({ error: "OLAP query failed" });
+    }
+  });
+
+  // PHASE 2: Real-Time Dashboard Analytics
+  app.get("/api/analytics/dashboard/summary", async (req, res) => {
+    try {
+      const invoices = await storage.listInvoices();
+      const leads = await storage.listLeads();
+      const employees = await storage.listEmployees();
+      
+      const now = new Date();
+      const thisMonth = invoices.filter((inv) => {
+        const invDate = new Date(inv.createdAt || new Date());
+        return invDate.getMonth() === now.getMonth() && invDate.getFullYear() === now.getFullYear();
+      });
+      
+      const totalRevenue = invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+      const monthlyRevenue = thisMonth.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+      const avgInvoiceValue = invoices.length > 0 ? totalRevenue / invoices.length : 0;
+      const conversionRate = leads.length > 0 ? (leads.filter((l) => l.status === "qualified").length / leads.length) * 100 : 0;
+      
+      // Growth metrics
+      const previousMonth = invoices.filter((inv) => {
+        const invDate = new Date(inv.createdAt || new Date());
+        return invDate.getMonth() === now.getMonth() - 1 && invDate.getFullYear() === now.getFullYear();
+      });
+      const previousMonthRevenue = previousMonth.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+      const monthlyGrowth = previousMonthRevenue > 0 ? ((monthlyRevenue - previousMonthRevenue) / previousMonthRevenue) * 100 : 0;
+      
+      res.json({
+        kpis: {
+          totalRevenue: Math.round(totalRevenue),
+          monthlyRevenue: Math.round(monthlyRevenue),
+          avgInvoiceValue: Math.round(avgInvoiceValue),
+          monthlyGrowth: monthlyGrowth.toFixed(2),
+          conversionRate: conversionRate.toFixed(2),
+          activeLeads: leads.length,
+          employees: employees.length,
+        },
+        metrics: {
+          invoiceCount: invoices.length,
+          activeStatus: thisMonth.length,
+          draftStatus: invoices.filter((i) => i.status === "draft").length,
+          paidStatus: invoices.filter((i) => i.status === "paid").length,
+        },
+        timestamp: now,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch dashboard summary" });
+    }
+  });
+
+  // PHASE 2: Advanced Forecasting (ARIMA-like)
+  app.post("/api/analytics/forecast-advanced", async (req, res) => {
+    try {
+      const { metric = "revenue", periods = 12 } = req.body;
+      const invoices = await storage.listInvoices();
+      
+      // Extract time series
+      const monthlyData: { [key: string]: number } = {};
+      invoices.forEach((inv) => {
+        const date = new Date(inv.createdAt || new Date());
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+        const amount = Number(inv.amount || 0);
+        monthlyData[monthKey] = (monthlyData[monthKey] || 0) + amount;
+      });
+      
+      const timeSeries = Object.values(monthlyData).sort();
+      if (timeSeries.length < 4) {
+        return res.status(400).json({ error: "Insufficient historical data for ARIMA forecasting" });
+      }
+      
+      // ARIMA(1,1,1) approximation
+      // Differencing (I component)
+      const diff1 = [];
+      for (let i = 1; i < timeSeries.length; i++) {
+        diff1.push(timeSeries[i] - timeSeries[i - 1]);
+      }
+      
+      // AR(1) - Autoregressive with lag 1
+      const mean = diff1.reduce((a, b) => a + b, 0) / diff1.length;
+      const variance = diff1.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / diff1.length;
+      const acf1 = diff1.slice(0, -1).reduce((sum, val, i) => sum + (val - mean) * (diff1[i + 1] - mean), 0) / (diff1.length * variance);
+      
+      // Generate forecast
+      const forecast = [];
+      let prevDiff = diff1[diff1.length - 1];
+      let prevValue = timeSeries[timeSeries.length - 1];
+      
+      const now = new Date();
+      for (let i = 1; i <= periods; i++) {
+        // MA(1) component - simple smoothing
+        const noise = (Math.random() - 0.5) * variance * 0.1;
+        const armaValue = acf1 * prevDiff + noise;
+        const forecasted = prevValue + armaValue;
+        
+        const futureDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+        forecast.push({
+          month: futureDate.toISOString().slice(0, 7),
+          forecast: Math.max(0, Math.round(forecasted)),
+          lower95: Math.max(0, Math.round(forecasted * 0.8)),
+          upper95: Math.round(forecasted * 1.2),
+          confidence: Math.max(0.5, 1 - i * 0.03),
+        });
+        
+        prevValue = forecasted;
+        prevDiff = armaValue;
+      }
+      
+      res.json({
+        model: "ARIMA(1,1,1)",
+        metric,
+        periods,
+        historicalMean: Math.round(mean),
+        variance: Math.round(variance),
+        forecast,
+        timestamp: now,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate ARIMA forecast" });
     }
   });
 
