@@ -45,6 +45,11 @@ import {
   type Connector, type InsertConnector,
   type ConnectorInstance, type InsertConnectorInstance,
   type WebhookEvent, type InsertWebhookEvent,
+  type AbacRule, type InsertAbacRule,
+  type EncryptedField, type InsertEncryptedField,
+  type ComplianceConfig, type InsertComplianceConfig,
+  type Sprint, type InsertSprint,
+  type Issue, type InsertIssue,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -230,6 +235,26 @@ export interface IStorage {
   getWebhookEvent(id: string): Promise<WebhookEvent | undefined>;
   listWebhookEvents(appId: string): Promise<WebhookEvent[]>;
   createWebhookEvent(event: InsertWebhookEvent): Promise<WebhookEvent>;
+
+  getAbacRule(id: string): Promise<AbacRule | undefined>;
+  listAbacRules(resource?: string): Promise<AbacRule[]>;
+  createAbacRule(rule: InsertAbacRule): Promise<AbacRule>;
+
+  getEncryptedField(id: string): Promise<EncryptedField | undefined>;
+  listEncryptedFields(entityType?: string): Promise<EncryptedField[]>;
+  createEncryptedField(field: InsertEncryptedField): Promise<EncryptedField>;
+
+  getComplianceConfig(id: string): Promise<ComplianceConfig | undefined>;
+  listComplianceConfigs(tenantId?: string): Promise<ComplianceConfig[]>;
+  createComplianceConfig(config: InsertComplianceConfig): Promise<ComplianceConfig>;
+
+  getSprint(id: string): Promise<Sprint | undefined>;
+  listSprints(projectId?: string): Promise<Sprint[]>;
+  createSprint(sprint: InsertSprint): Promise<Sprint>;
+
+  getIssue(id: string): Promise<Issue | undefined>;
+  listIssues(sprintId?: string): Promise<Issue[]>;
+  createIssue(issue: InsertIssue): Promise<Issue>;
 }
 
 export class MemStorage implements IStorage {
@@ -464,6 +489,32 @@ export class MemStorage implements IStorage {
   async getWebhookEvent(id: string) { return this.webhookEvents.get(id); }
   async listWebhookEvents(appId: string) { return Array.from(this.webhookEvents.values()).filter(w => w.appId === appId); }
   async createWebhookEvent(w: InsertWebhookEvent) { const id = randomUUID(); const event: WebhookEvent = { id, ...w, createdAt: new Date() }; this.webhookEvents.set(id, event); return event; }
+
+  private abacRules = new Map<string, AbacRule>();
+  private encryptedFields = new Map<string, EncryptedField>();
+  private complianceConfigs = new Map<string, ComplianceConfig>();
+  private sprints = new Map<string, Sprint>();
+  private issues = new Map<string, Issue>();
+
+  async getAbacRule(id: string) { return this.abacRules.get(id); }
+  async listAbacRules(resource?: string) { const list = Array.from(this.abacRules.values()); return resource ? list.filter(r => r.resource === resource) : list; }
+  async createAbacRule(r: InsertAbacRule) { const id = randomUUID(); const rule: AbacRule = { id, ...r, createdAt: new Date() }; this.abacRules.set(id, rule); return rule; }
+
+  async getEncryptedField(id: string) { return this.encryptedFields.get(id); }
+  async listEncryptedFields(entityType?: string) { const list = Array.from(this.encryptedFields.values()); return entityType ? list.filter(f => f.entityType === entityType) : list; }
+  async createEncryptedField(f: InsertEncryptedField) { const id = randomUUID(); const field: EncryptedField = { id, ...f, createdAt: new Date() }; this.encryptedFields.set(id, field); return field; }
+
+  async getComplianceConfig(id: string) { return this.complianceConfigs.get(id); }
+  async listComplianceConfigs(tenantId?: string) { const list = Array.from(this.complianceConfigs.values()); return tenantId ? list.filter(c => c.tenantId === tenantId) : list; }
+  async createComplianceConfig(c: InsertComplianceConfig) { const id = randomUUID(); const cfg: ComplianceConfig = { id, ...c, createdAt: new Date() }; this.complianceConfigs.set(id, cfg); return cfg; }
+
+  async getSprint(id: string) { return this.sprints.get(id); }
+  async listSprints(projectId?: string) { const list = Array.from(this.sprints.values()); return projectId ? list.filter(s => s.projectId === projectId) : list; }
+  async createSprint(s: InsertSprint) { const id = randomUUID(); const sprint: Sprint = { id, ...s, createdAt: new Date() }; this.sprints.set(id, sprint); return sprint; }
+
+  async getIssue(id: string) { return this.issues.get(id); }
+  async listIssues(sprintId?: string) { const list = Array.from(this.issues.values()); return sprintId ? list.filter(i => i.sprintId === sprintId) : list; }
+  async createIssue(i: InsertIssue) { const id = randomUUID(); const issue: Issue = { id, ...i, createdAt: new Date() }; this.issues.set(id, issue); return issue; }
 }
 
 export const storage = new MemStorage();

@@ -1144,3 +1144,129 @@ export const insertWebhookEventSchema = createInsertSchema(webhookEvents).omit({
 
 export type InsertWebhookEvent = z.infer<typeof insertWebhookEventSchema>;
 export type WebhookEvent = typeof webhookEvents.$inferSelect;
+
+// ========== PHASE 4: ENTERPRISE SECURITY & COMPLIANCE ==========
+
+// Security: ABAC Rules (Attribute-Based Access Control)
+export const abacRules = pgTable("abac_rules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  resource: varchar("resource").notNull(), // users, orders, leads, etc
+  action: varchar("action").notNull(), // read, write, delete
+  condition: jsonb("condition"), // attribute conditions
+  effect: varchar("effect").notNull(), // allow, deny
+  priority: integer("priority").default(100),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAbacRuleSchema = createInsertSchema(abacRules).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  resource: z.string().min(1),
+  action: z.string().min(1),
+  effect: z.enum(["allow", "deny"]),
+  priority: z.number().optional(),
+  condition: z.object({}).passthrough().optional(),
+});
+
+export type InsertAbacRule = z.infer<typeof insertAbacRuleSchema>;
+export type AbacRule = typeof abacRules.$inferSelect;
+
+// Security: Encrypted Fields
+export const encryptedFields = pgTable("encrypted_fields", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  entityType: varchar("entity_type").notNull(), // users, orders, etc
+  fieldName: varchar("field_name").notNull(),
+  encryptionAlgorithm: varchar("encryption_algorithm").default("AES-256"),
+  keyRotationPolicy: varchar("key_rotation_policy"),
+  isEncrypted: boolean("is_encrypted").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertEncryptedFieldSchema = createInsertSchema(encryptedFields).omit({ id: true, createdAt: true }).extend({
+  entityType: z.string().min(1),
+  fieldName: z.string().min(1),
+  encryptionAlgorithm: z.string().optional(),
+  keyRotationPolicy: z.string().optional(),
+  isEncrypted: z.boolean().optional(),
+});
+
+export type InsertEncryptedField = z.infer<typeof insertEncryptedFieldSchema>;
+export type EncryptedField = typeof encryptedFields.$inferSelect;
+
+// Compliance: SOC 2 / HIPAA Configuration
+export const complianceConfigs = pgTable("compliance_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  framework: varchar("framework").notNull(), // soc2, hipaa, gdpr, pci-dss
+  status: varchar("status").default("in-progress"), // in-progress, compliant, non-compliant
+  requirements: jsonb("requirements"),
+  lastAuditDate: timestamp("last_audit_date"),
+  nextAuditDate: timestamp("next_audit_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertComplianceConfigSchema = createInsertSchema(complianceConfigs).omit({ id: true, createdAt: true }).extend({
+  tenantId: z.string().min(1),
+  framework: z.enum(["soc2", "hipaa", "gdpr", "pci-dss"]),
+  status: z.string().optional(),
+  requirements: z.object({}).passthrough().optional(),
+  lastAuditDate: z.date().optional().nullable(),
+  nextAuditDate: z.date().optional().nullable(),
+});
+
+export type InsertComplianceConfig = z.infer<typeof insertComplianceConfigSchema>;
+export type ComplianceConfig = typeof complianceConfigs.$inferSelect;
+
+// Advanced Agile: Sprints
+export const sprints = pgTable("sprints", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  projectId: varchar("project_id").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  status: varchar("status").default("planning"), // planning, active, completed
+  goal: text("goal"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertSprintSchema = createInsertSchema(sprints).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  projectId: z.string().min(1),
+  startDate: z.date(),
+  endDate: z.date(),
+  status: z.string().optional(),
+  goal: z.string().optional().nullable(),
+});
+
+export type InsertSprint = z.infer<typeof insertSprintSchema>;
+export type Sprint = typeof sprints.$inferSelect;
+
+// Advanced Agile: Issues / Tasks
+export const issues = pgTable("issues", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sprintId: varchar("sprint_id"),
+  projectId: varchar("project_id").notNull(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  type: varchar("type").notNull(), // story, task, bug, epic
+  status: varchar("status").default("open"), // open, in-progress, done
+  priority: varchar("priority").default("medium"), // low, medium, high, critical
+  assignee: varchar("assignee"),
+  storyPoints: integer("story_points"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertIssueSchema = createInsertSchema(issues).omit({ id: true, createdAt: true }).extend({
+  projectId: z.string().min(1),
+  sprintId: z.string().optional().nullable(),
+  title: z.string().min(1),
+  description: z.string().optional().nullable(),
+  type: z.enum(["story", "task", "bug", "epic"]),
+  status: z.string().optional(),
+  priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+  assignee: z.string().optional().nullable(),
+  storyPoints: z.number().optional().nullable(),
+});
+
+export type InsertIssue = z.infer<typeof insertIssueSchema>;
+export type Issue = typeof issues.$inferSelect;

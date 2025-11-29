@@ -14,6 +14,7 @@ import {
   insertRevenueForecastSchema, insertBudgetAllocationSchema, insertTimeSeriesDataSchema, insertForecastModelSchema,
   insertScenarioSchema, insertScenarioVariableSchema, insertDashboardWidgetSchema, insertReportSchema, insertAuditLogSchema,
   insertAppSchema, insertAppReviewSchema, insertAppInstallationSchema, insertConnectorSchema, insertConnectorInstanceSchema, insertWebhookEventSchema,
+  insertAbacRuleSchema, insertEncryptedFieldSchema, insertComplianceConfigSchema, insertSprintSchema, insertIssueSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -671,6 +672,106 @@ export async function registerRoutes(
     const appId = req.query.appId as string;
     const events = await storage.listWebhookEvents(appId);
     res.json(events);
+  });
+
+  // PHASE 4: Security - ABAC Rules
+  app.get("/api/security/abac-rules", async (req, res) => {
+    const resource = req.query.resource as string;
+    const rules = await storage.listAbacRules(resource);
+    res.json(rules);
+  });
+
+  app.post("/api/security/abac-rules", async (req, res) => {
+    try {
+      const data = insertAbacRuleSchema.parse(req.body);
+      const rule = await storage.createAbacRule(data);
+      res.status(201).json(rule);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create ABAC rule" });
+    }
+  });
+
+  // PHASE 4: Security - Encrypted Fields
+  app.get("/api/security/encrypted-fields", async (req, res) => {
+    const entityType = req.query.entityType as string;
+    const fields = await storage.listEncryptedFields(entityType);
+    res.json(fields);
+  });
+
+  app.post("/api/security/encrypted-fields", async (req, res) => {
+    try {
+      const data = insertEncryptedFieldSchema.parse(req.body);
+      const field = await storage.createEncryptedField(data);
+      res.status(201).json(field);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create encrypted field" });
+    }
+  });
+
+  // PHASE 4: Compliance - Configuration
+  app.get("/api/compliance/configs", async (req, res) => {
+    const tenantId = req.query.tenantId as string;
+    const configs = await storage.listComplianceConfigs(tenantId);
+    res.json(configs);
+  });
+
+  app.post("/api/compliance/configs", async (req, res) => {
+    try {
+      const data = insertComplianceConfigSchema.parse(req.body);
+      const config = await storage.createComplianceConfig(data);
+      res.status(201).json(config);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create compliance config" });
+    }
+  });
+
+  // PHASE 4: Agile - Sprints
+  app.get("/api/agile/sprints", async (req, res) => {
+    const projectId = req.query.projectId as string;
+    const sprints = await storage.listSprints(projectId);
+    res.json(sprints);
+  });
+
+  app.post("/api/agile/sprints", async (req, res) => {
+    try {
+      const data = insertSprintSchema.parse(req.body);
+      const sprint = await storage.createSprint(data);
+      res.status(201).json(sprint);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create sprint" });
+    }
+  });
+
+  // PHASE 4: Agile - Issues
+  app.get("/api/agile/issues", async (req, res) => {
+    const sprintId = req.query.sprintId as string;
+    const issues = await storage.listIssues(sprintId);
+    res.json(issues);
+  });
+
+  app.post("/api/agile/issues", async (req, res) => {
+    try {
+      const data = insertIssueSchema.parse(req.body);
+      const issue = await storage.createIssue(data);
+      res.status(201).json(issue);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create issue" });
+    }
   });
 
   return httpServer;
