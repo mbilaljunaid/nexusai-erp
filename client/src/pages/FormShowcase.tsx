@@ -7,6 +7,8 @@ import { ForecastSubmissionForm } from "@/components/forms/ForecastSubmissionFor
 import { ScenarioBuilderForm } from "@/components/forms/ScenarioBuilderForm";
 import { LeadEntryForm } from "@/components/forms/LeadEntryForm";
 import { EmployeeEntryForm } from "@/components/forms/EmployeeEntryForm";
+import { GLEntryForm } from "@/components/forms/GLEntryForm";
+import { ServiceTicketForm } from "@/components/forms/ServiceTicketForm";
 import { Sparkles } from "lucide-react";
 
 export default function FormShowcase() {
@@ -31,8 +33,8 @@ export default function FormShowcase() {
           { title: "EPM", count: 3, color: "bg-blue-100 dark:bg-blue-950" },
           { title: "CRM", count: 2, color: "bg-purple-100 dark:bg-purple-950" },
           { title: "HR", count: 1, color: "bg-green-100 dark:bg-green-950" },
-          { title: "ERP", count: "Coming", color: "bg-orange-100 dark:bg-orange-950" },
-          { title: "More", count: "Soon", color: "bg-slate-100 dark:bg-slate-900" }
+          { title: "ERP", count: 2, color: "bg-orange-100 dark:bg-orange-950" },
+          { title: "Service", count: 1, color: "bg-red-100 dark:bg-red-950" }
         ].map((module) => (
           <Card key={module.title}>
             <CardContent className={`p-4 ${module.color}`}>
@@ -47,11 +49,12 @@ export default function FormShowcase() {
 
       {/* Forms Showcase */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-5">
+        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-6">
           <TabsTrigger value="epm">EPM</TabsTrigger>
           <TabsTrigger value="crm">CRM</TabsTrigger>
           <TabsTrigger value="hr">HR</TabsTrigger>
-          <TabsTrigger value="guide">Design</TabsTrigger>
+          <TabsTrigger value="erp">ERP</TabsTrigger>
+          <TabsTrigger value="service">Service</TabsTrigger>
           <TabsTrigger value="forms">All Forms</TabsTrigger>
         </TabsList>
 
@@ -162,6 +165,76 @@ export default function FormShowcase() {
                       <li>Goal achievement tracking</li>
                       <li>360-degree feedback integration</li>
                       <li>Development plan recommendations</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </TabsContent>
+
+        {/* ERP Forms */}
+        <TabsContent value="erp" className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold mb-1">ERP & Finance Forms</h2>
+              <p className="text-sm text-muted-foreground">General ledger, invoicing, and accounting transactions</p>
+            </div>
+
+            <Tabs defaultValue="glentry" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="glentry">GL Entry</TabsTrigger>
+                <TabsTrigger value="invoice">Invoice (Coming)</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="glentry">
+                <GLEntryForm />
+              </TabsContent>
+
+              <TabsContent value="invoice">
+                <Card>
+                  <CardContent className="p-6">
+                    <p className="text-muted-foreground text-sm">Invoice entry form coming soon with:</p>
+                    <ul className="text-sm text-muted-foreground mt-3 space-y-1 list-disc list-inside">
+                      <li>Vendor invoice management</li>
+                      <li>GL account mapping</li>
+                      <li>Tax calculation</li>
+                      <li>Approval workflows</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </TabsContent>
+
+        {/* Service Forms */}
+        <TabsContent value="service" className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold mb-1">Service & Support Forms</h2>
+              <p className="text-sm text-muted-foreground">Customer support ticketing with AI triage and SLA management</p>
+            </div>
+
+            <Tabs defaultValue="ticket" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="ticket">Service Ticket</TabsTrigger>
+                <TabsTrigger value="kb">KB Article (Coming)</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="ticket">
+                <ServiceTicketForm />
+              </TabsContent>
+
+              <TabsContent value="kb">
+                <Card>
+                  <CardContent className="p-6">
+                    <p className="text-muted-foreground text-sm">Knowledge base article form coming soon with:</p>
+                    <ul className="text-sm text-muted-foreground mt-3 space-y-1 list-disc list-inside">
+                      <li>Article content editor</li>
+                      <li>Category and tagging</li>
+                      <li>Search optimization</li>
+                      <li>Version control</li>
                     </ul>
                   </CardContent>
                 </Card>

@@ -249,13 +249,13 @@ export function ScenarioBuilderForm() {
                   { label: "EBITDA", base: baseCase.ebitda, scenario: scenario.ebitda },
                   { label: "Net Income", base: baseCase.netIncome, scenario: scenario.netIncome }
                 ].map((item) => {
-                  const change = ((scenario[item.label.toLowerCase().replace(" ", "") as keyof typeof scenario] - item.base) / item.base * 100);
+                  const change = ((item.scenario - item.base) / item.base * 100);
                   return (
                     <div key={item.label} className="p-3 border rounded-lg space-y-2">
                       <p className="text-xs text-muted-foreground">{item.label}</p>
                       <div className="space-y-1">
                         <p className="text-xs"><span className="text-muted-foreground">Base:</span> <span className="font-mono font-semibold">${item.base.toFixed(0)}K</span></p>
-                        <p className="text-xs"><span className="text-muted-foreground">Scenario:</span> <span className="font-mono font-semibold">${scenario[item.label.toLowerCase().replace(" ", "") as keyof typeof scenario].toFixed(0)}K</span></p>
+                        <p className="text-xs"><span className="text-muted-foreground">Scenario:</span> <span className="font-mono font-semibold">${item.scenario.toFixed(0)}K</span></p>
                       </div>
                       <div className={`text-xs font-semibold ${change < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
                         {change > 0 ? '+' : ''}{change.toFixed(1)}%
