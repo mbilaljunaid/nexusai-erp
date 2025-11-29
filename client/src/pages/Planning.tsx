@@ -14,16 +14,16 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 const revenueForecastSchema = z.object({
   name: z.string().min(1),
   forecastPeriod: z.string().min(1),
-  baselineRevenue: z.string().transform(v => Number(v)),
-  forecastRevenue: z.string().transform(v => Number(v)),
+  baselineRevenue: z.coerce.number().min(0),
+  forecastRevenue: z.coerce.number().min(0),
   product: z.string().optional(),
   region: z.string().optional(),
 });
 
 const budgetSchema = z.object({
   department: z.string().min(1),
-  year: z.string().transform(v => Number(v)),
-  budgetAmount: z.string().transform(v => Number(v)),
+  year: z.coerce.number().int(),
+  budgetAmount: z.coerce.number().min(0),
 });
 
 type RevenueForecastForm = z.infer<typeof revenueForecastSchema>;
@@ -34,24 +34,24 @@ export default function Planning() {
 
   const { data: forecasts = [] } = useQuery({
     queryKey: ["/api/planning/revenue-forecasts"],
-  });
+  }) as { data: any[] };
 
   const { data: budgets = [] } = useQuery({
     queryKey: ["/api/planning/budgets"],
-  });
+  }) as { data: any[] };
 
   const { data: scenarios = [] } = useQuery({
     queryKey: ["/api/planning/scenarios"],
-  });
+  }) as { data: any[] };
 
   const forecastForm = useForm<RevenueForecastForm>({
     resolver: zodResolver(revenueForecastSchema),
-    defaultValues: { name: "", forecastPeriod: "", baselineRevenue: "", forecastRevenue: "", product: "", region: "" },
+    defaultValues: { name: "", forecastPeriod: "", baselineRevenue: 0, forecastRevenue: 0, product: "", region: "" },
   });
 
   const budgetForm = useForm<BudgetForm>({
     resolver: zodResolver(budgetSchema),
-    defaultValues: { department: "", year: new Date().getFullYear().toString(), budgetAmount: "" },
+    defaultValues: { department: "", year: new Date().getFullYear(), budgetAmount: 0 },
   });
 
   const createForecastMutation = useMutation({
