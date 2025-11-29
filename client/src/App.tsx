@@ -54,6 +54,7 @@ import Planning from "@/pages/Planning";
 import Marketplace from "@/pages/Marketplace";
 import MobileSync from "@/pages/MobileSync";
 import AIChat from "@/pages/AIChat";
+import BackendIntegration from "@/pages/BackendIntegration";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -94,6 +95,7 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/billing" component={Billing} />
       <Route path="/erp-advanced" component={ERPAdvanced} />
+      <Route path="/backend-integration" component={BackendIntegration} />
       <Route path="/crm-advanced" component={CRMAdvanced} />
       <Route path="/hr-advanced" component={HRAdvanced} />
       <Route component={NotFound} />

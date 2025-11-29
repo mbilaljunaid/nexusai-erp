@@ -4,8 +4,16 @@ import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Cart
 import { Button } from "@/components/ui/button";
 import { Plus, Download } from "lucide-react";
 
+import { useQuery } from "@tanstack/react-query";
+
 export default function Analytics() {
-  const dashboardData = [
+  // Fetch ARIMA forecasting data from backend
+  const { data: forecastData } = useQuery({ queryKey: ["/api/analytics/forecast-advanced"] });
+  const { data: dashboardSummary } = useQuery({ queryKey: ["/api/analytics/dashboard/summary"] });
+  const { data: olapResults } = useQuery({ queryKey: ["/api/analytics/olap/query"] });
+
+  // Use backend forecast data or mock as fallback
+  const dashboardData = forecastData?.timeSeries || [
     { month: "Jan", revenue: 65000, expenses: 42000 },
     { month: "Feb", revenue: 72000, expenses: 45000 },
     { month: "Mar", revenue: 68000, expenses: 43000 },

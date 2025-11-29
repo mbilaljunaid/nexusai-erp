@@ -84,25 +84,26 @@ export default function CRM() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
-  // todo: remove mock functionality
-  const leads: Lead[] = [
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      email: "sarah@techcorp.com",
-      phone: "+1-555-0101",
-      company: "TechCorp Inc.",
-      status: "qualified",
-      score: 87,
-      value: 45000,
-      source: "LinkedIn",
-      owner: "John Smith",
-      nextAction: "Schedule demo",
-      nextActionDate: "2024-12-10",
-      lastActivity: "Email sent - 2 days ago",
-    },
-    {
-      id: "2",
+  // Fetch leads from backend API
+  const { data: backendLeads = [] } = useQuery<any[]>({ queryKey: ["/api/leads"] });
+  const { data: scoreData } = useQuery({ queryKey: ["/api/ai/score-leads"] });
+
+  // Transform backend leads to UI format
+  const leads: Lead[] = backendLeads.map((lead: any, idx: number) => ({
+    id: lead.id || `${idx}`,
+    name: lead.name || "Unknown",
+    email: lead.email || "",
+    phone: lead.phone || "+1-555-0000",
+    company: lead.company || "",
+    status: lead.status || "new",
+    score: lead.score || 75,
+    value: lead.value || 45000,
+    source: lead.source || "Unknown",
+    owner: lead.owner || "Unassigned",
+    nextAction: lead.nextAction || "Schedule follow-up",
+    nextActionDate: lead.nextActionDate || new Date().toISOString().split('T')[0],
+    lastActivity: lead.lastActivity || "Recently added",
+  })).slice(0, 10);
       name: "Mark Chen",
       email: "mark@acme.com",
       phone: "+1-555-0102",
