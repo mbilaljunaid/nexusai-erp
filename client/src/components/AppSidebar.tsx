@@ -51,13 +51,40 @@ const platformNavItems = [
   { title: "EPM", icon: BarChart3, href: "/epm", badge: "New" },
   { title: "CRM & Sales", icon: Users, href: "/crm" },
   { title: "CRM Advanced", icon: Users, href: "/crm-advanced", badge: "Premium" },
-  { title: "Lead Details", icon: Users, href: "/lead-detail", badge: "NEW" },
   { title: "Projects", icon: FolderKanban, href: "/projects" },
   { title: "HR & Talent", icon: Briefcase, href: "/hr" },
   { title: "HR Advanced", icon: Briefcase, href: "/hr-advanced", badge: "Premium" },
   { title: "Service & Support", icon: Package, href: "/service" },
   { title: "Field Service", icon: Truck, href: "/field-service", badge: "New" },
   { title: "Marketing", icon: Sparkles, href: "/marketing" },
+];
+
+const crmDetailItems = [
+  { title: "Lead Details", icon: Users, href: "/lead-detail", badge: "PHASE1" },
+  { title: "Opportunities", icon: TrendingUp, href: "/opportunities", badge: "PHASE1" },
+  { title: "Sales Pipeline", icon: BarChart3, href: "/sales-pipeline", badge: "PHASE1" },
+  { title: "Revenue Forecast", icon: TrendingUp, href: "/forecast", badge: "PHASE1" },
+  { title: "Accounts", icon: Users, href: "/accounts", badge: "PHASE1" },
+  { title: "Account Hierarchy", icon: Users, href: "/account-hierarchy", badge: "PHASE1" },
+  { title: "Contacts", icon: Users, href: "/contacts", badge: "PHASE1" },
+  { title: "Activity Timeline", icon: Activity, href: "/activity-timeline", badge: "PHASE1" },
+  { title: "Lead Scoring", icon: Sparkles, href: "/lead-scoring", badge: "PHASE1" },
+  { title: "Convert Lead", icon: TrendingUp, href: "/lead-conversion", badge: "PHASE1" },
+];
+
+const erpDetailItems = [
+  { title: "Invoices", icon: DollarSign, href: "/invoices", badge: "PHASE1" },
+  { title: "Purchase Orders", icon: Package, href: "/purchase-orders", badge: "PHASE1" },
+  { title: "Vendors", icon: Users, href: "/vendors", badge: "PHASE1" },
+  { title: "General Ledger", icon: BarChart3, href: "/general-ledger", badge: "PHASE1" },
+  { title: "Financial Reports", icon: BarChart3, href: "/financial-reports", badge: "PHASE1" },
+];
+
+const manufacturingDetailItems = [
+  { title: "Work Orders", icon: Package, href: "/work-orders", badge: "PHASE1" },
+  { title: "MRP Planning", icon: Factory, href: "/mrp", badge: "PHASE1" },
+  { title: "Shop Floor", icon: Factory, href: "/shop-floor", badge: "PHASE1" },
+  { title: "Quality Control", icon: CheckSquare, href: "/quality-control", badge: "PHASE1" },
 ];
 
 const digitialNavItems = [

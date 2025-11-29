@@ -57,6 +57,26 @@ import AIChat from "@/pages/AIChat";
 import BackendIntegration from "@/pages/BackendIntegration";
 import LeadDetail from "@/pages/LeadDetail";
 import InventoryManagement from "@/pages/InventoryManagement";
+import AccountDirectory from "@/pages/AccountDirectory";
+import AccountHierarchy from "@/pages/AccountHierarchy";
+import ActivityTimeline from "@/pages/ActivityTimeline";
+import ContactDirectory from "@/pages/ContactDirectory";
+import FinancialReports from "@/pages/FinancialReports";
+import ForecastDashboard from "@/pages/ForecastDashboard";
+import GeneralLedger from "@/pages/GeneralLedger";
+import InvoiceDetail from "@/pages/InvoiceDetail";
+import InvoiceList from "@/pages/InvoiceList";
+import LeadConversion from "@/pages/LeadConversion";
+import LeadScoringDashboard from "@/pages/LeadScoringDashboard";
+import MRPDashboard from "@/pages/MRPDashboard";
+import OpportunityDetail from "@/pages/OpportunityDetail";
+import OpportunityList from "@/pages/OpportunityList";
+import PurchaseOrder from "@/pages/PurchaseOrder";
+import QualityControl from "@/pages/QualityControl";
+import SalesPipeline from "@/pages/SalesPipeline";
+import ShopFloor from "@/pages/ShopFloor";
+import VendorManagement from "@/pages/VendorManagement";
+import WorkOrder from "@/pages/WorkOrder";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -103,6 +123,26 @@ function Router() {
       <Route path="/leads/:id" component={LeadDetail} />
       <Route path="/lead-detail" component={LeadDetail} />
       <Route path="/inventory" component={InventoryManagement} />
+      <Route path="/opportunities" component={OpportunityList} />
+      <Route path="/opportunity/:id" component={OpportunityDetail} />
+      <Route path="/sales-pipeline" component={SalesPipeline} />
+      <Route path="/forecast" component={ForecastDashboard} />
+      <Route path="/accounts" component={AccountDirectory} />
+      <Route path="/account-hierarchy" component={AccountHierarchy} />
+      <Route path="/contacts" component={ContactDirectory} />
+      <Route path="/activity-timeline" component={ActivityTimeline} />
+      <Route path="/lead-scoring" component={LeadScoringDashboard} />
+      <Route path="/lead-conversion" component={LeadConversion} />
+      <Route path="/invoices" component={InvoiceList} />
+      <Route path="/invoice/:id" component={InvoiceDetail} />
+      <Route path="/purchase-orders" component={PurchaseOrder} />
+      <Route path="/vendors" component={VendorManagement} />
+      <Route path="/general-ledger" component={GeneralLedger} />
+      <Route path="/financial-reports" component={FinancialReports} />
+      <Route path="/work-orders" component={WorkOrder} />
+      <Route path="/mrp" component={MRPDashboard} />
+      <Route path="/shop-floor" component={ShopFloor} />
+      <Route path="/quality-control" component={QualityControl} />
       <Route component={NotFound} />
     </Switch>
   );
