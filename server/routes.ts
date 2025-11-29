@@ -919,6 +919,63 @@ export async function registerRoutes(
     res.status(201).json(rec);
   });
 
+  // ========== PHASE 5: HRMS & PAYROLL APIs ==========
+
+  // Employees
+  const employeesStore: any[] = [];
+  app.get("/api/hr/employees", (req, res) => {
+    if (employeesStore.length === 0) {
+      employeesStore.push(
+        { id: "e1", firstName: "John", lastName: "Smith", department: "Engineering", designation: "Senior Developer", status: "active" },
+        { id: "e2", firstName: "Sarah", lastName: "Johnson", department: "Sales", designation: "Account Executive", status: "active" },
+        { id: "e3", firstName: "Mike", lastName: "Williams", department: "Finance", designation: "CFO", status: "active" }
+      );
+    }
+    res.json(employeesStore);
+  });
+  app.post("/api/hr/employees", (req, res) => {
+    const emp = { id: `emp-${Date.now()}`, ...req.body };
+    employeesStore.push(emp);
+    res.status(201).json(emp);
+  });
+
+  // Payroll Runs
+  const payrollRunsStore: any[] = [];
+  app.get("/api/hr/payroll-runs", (req, res) => {
+    if (payrollRunsStore.length === 0) {
+      payrollRunsStore.push(
+        { id: "pr1", periodStart: "2024-01-01", periodEnd: "2024-01-31", totalAmount: "150000", employeeCount: 25, status: "processed" },
+        { id: "pr2", periodStart: "2024-02-01", periodEnd: "2024-02-29", totalAmount: "155000", employeeCount: 26, status: "draft" }
+      );
+    }
+    res.json(payrollRunsStore);
+  });
+  app.post("/api/hr/payroll-runs", (req, res) => {
+    const run = { id: `pr-${Date.now()}`, ...req.body };
+    payrollRunsStore.push(run);
+    res.status(201).json(run);
+  });
+
+  // ========== PHASE 6: CRM & SALES APIs ==========
+
+  // Opportunities
+  const opportunitiesStore: any[] = [];
+  app.get("/api/crm/opportunities", (req, res) => {
+    if (opportunitiesStore.length === 0) {
+      opportunitiesStore.push(
+        { id: "o1", name: "Enterprise SaaS Deal", account: "Acme Corp", value: "500000", status: "proposal" },
+        { id: "o2", name: "Mid-Market Expansion", account: "TechFlow Inc", value: "250000", status: "negotiation" },
+        { id: "o3", name: "Startup Integration", account: "StartupXYZ", value: "75000", status: "qualified" }
+      );
+    }
+    res.json(opportunitiesStore);
+  });
+  app.post("/api/crm/opportunities", (req, res) => {
+    const opp = { id: `opp-${Date.now()}`, ...req.body };
+    opportunitiesStore.push(opp);
+    res.status(201).json(opp);
+  });
+
   // ========== PHASE 3B: PROJECTS & AGILE APIs ==========
 
   // Epics

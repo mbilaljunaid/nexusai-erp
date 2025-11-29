@@ -251,10 +251,16 @@ const KanbanBoard = lazy(() => import("@/pages/KanbanBoard"));
 
 // Phase 4: Finance & Accounting Module
 const ChartOfAccounts = lazy(() => import("@/pages/ChartOfAccounts"));
-const GeneralLedger = lazy(() => import("@/pages/GeneralLedger"));
 const APInvoices = lazy(() => import("@/pages/APInvoices"));
 const ARInvoices = lazy(() => import("@/pages/ARInvoices"));
-const BankReconciliation = lazy(() => import("@/pages/BankReconciliation"));
+const BankReconciliationPage = lazy(() => import("@/pages/BankReconciliation"));
+
+// Phase 5: HRMS & Payroll Module
+const EmployeesList = lazy(() => import("@/pages/EmployeesList"));
+const PayrollRuns = lazy(() => import("@/pages/PayrollRuns"));
+
+// Phase 6: CRM & Sales Module
+const OpportunitiesNew = lazy(() => import("@/pages/OpportunitiesNew"));
 
 function Router() {
   return (
@@ -477,7 +483,10 @@ function Router() {
       <Route path="/general-ledger" component={GeneralLedger} />
       <Route path="/ap-invoices" component={APInvoices} />
       <Route path="/ar-invoices" component={ARInvoices} />
-      <Route path="/bank-reconciliation" component={BankReconciliation} />
+      <Route path="/finance-bank-reconciliation" component={BankReconciliationPage} />
+      <Route path="/employees-list" component={EmployeesList} />
+      <Route path="/payroll-runs" component={PayrollRuns} />
+      <Route path="/opportunities-sales" component={OpportunitiesNew} />
       <Route component={NotFound} />
     </Switch>
   );
