@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -24,38 +25,46 @@ export default function ERP() {
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold font-mono">$2.4M</p>
-                  <p className="text-xs text-muted-foreground">Total Assets</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold font-mono">$856K</p>
-                  <p className="text-xs text-muted-foreground">Monthly Revenue</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold font-mono">$342K</p>
-                  <p className="text-xs text-muted-foreground">Outstanding AP</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold font-mono">$125K</p>
-                  <p className="text-xs text-muted-foreground">Inventory Value</p>
-                </div>
-              </CardContent>
-            </Card>
+            <Link href="/general-ledger">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold font-mono">$2.4M</p>
+                    <p className="text-xs text-muted-foreground">Total Assets</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/financial-reports">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold font-mono">$856K</p>
+                    <p className="text-xs text-muted-foreground">Monthly Revenue</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/purchase-orders">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold font-mono">$342K</p>
+                    <p className="text-xs text-muted-foreground">Outstanding AP</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/inventory">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold font-mono">$125K</p>
+                    <p className="text-xs text-muted-foreground">Inventory Value</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
 
           <Card>

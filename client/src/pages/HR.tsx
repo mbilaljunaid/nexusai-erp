@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -23,38 +24,46 @@ export default function HR() {
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">245</p>
-                  <p className="text-xs text-muted-foreground">Total Employees</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">12</p>
-                  <p className="text-xs text-muted-foreground">Open Positions</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">3.2%</p>
-                  <p className="text-xs text-muted-foreground">Turnover (YTD)</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">94%</p>
-                  <p className="text-xs text-muted-foreground">Engagement Score</p>
-                </div>
-              </CardContent>
-            </Card>
+            <Link href="/employees">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold">245</p>
+                    <p className="text-xs text-muted-foreground">Total Employees</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/talent-pool">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold">12</p>
+                    <p className="text-xs text-muted-foreground">Open Positions</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/performance-reviews">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold">3.2%</p>
+                    <p className="text-xs text-muted-foreground">Turnover (YTD)</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/hr-analytics">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold">94%</p>
+                    <p className="text-xs text-muted-foreground">Engagement Score</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
 
           <Card>

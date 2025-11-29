@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -22,38 +23,46 @@ export default function Service() {
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">342</p>
-                  <p className="text-xs text-muted-foreground">Open Tickets</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">2.4h</p>
-                  <p className="text-xs text-muted-foreground">Avg Response Time</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">94%</p>
-                  <p className="text-xs text-muted-foreground">Satisfaction Score</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">28</p>
-                  <p className="text-xs text-muted-foreground">Field Engineers</p>
-                </div>
-              </CardContent>
-            </Card>
+            <Link href="/service-tickets">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold">342</p>
+                    <p className="text-xs text-muted-foreground">Open Tickets</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/sla-tracking">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold">2.4h</p>
+                    <p className="text-xs text-muted-foreground">Avg Response Time</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/service-analytics">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold">94%</p>
+                    <p className="text-xs text-muted-foreground">Satisfaction Score</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/field-service">
+              <Card className="cursor-pointer hover-elevate">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-2xl font-semibold">28</p>
+                    <p className="text-xs text-muted-foreground">Field Engineers</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
 
           <Card>

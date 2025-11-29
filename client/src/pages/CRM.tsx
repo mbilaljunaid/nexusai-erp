@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -213,50 +214,58 @@ export default function CRM() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Users className="h-5 w-5 text-blue-500" />
-              <div>
-                <p className="text-2xl font-semibold">{metrics.totalLeads}</p>
-                <p className="text-xs text-muted-foreground">Total Leads</p>
+        <Link href="/lead-detail">
+          <Card className="cursor-pointer hover-elevate">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5 text-blue-500" />
+                <div>
+                  <p className="text-2xl font-semibold">{metrics.totalLeads}</p>
+                  <p className="text-xs text-muted-foreground">Total Leads</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Target className="h-5 w-5 text-green-500" />
-              <div>
-                <p className="text-2xl font-semibold">{metrics.qualifiedLeads}</p>
-                <p className="text-xs text-muted-foreground">Qualified Leads</p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/opportunities">
+          <Card className="cursor-pointer hover-elevate">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Target className="h-5 w-5 text-green-500" />
+                <div>
+                  <p className="text-2xl font-semibold">{metrics.qualifiedLeads}</p>
+                  <p className="text-xs text-muted-foreground">Qualified Leads</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-2xl font-semibold">{metrics.avgScore}</p>
-                <p className="text-xs text-muted-foreground">Avg AI Score</p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/lead-scoring">
+          <Card className="cursor-pointer hover-elevate">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-2xl font-semibold">{metrics.avgScore}</p>
+                  <p className="text-xs text-muted-foreground">Avg AI Score</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <DollarSign className="h-5 w-5 text-orange-500" />
-              <div>
-                <p className="text-2xl font-semibold font-mono">${(metrics.pipelineValue / 1000).toFixed(0)}K</p>
-                <p className="text-xs text-muted-foreground">Pipeline Value</p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/sales-pipeline">
+          <Card className="cursor-pointer hover-elevate">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <DollarSign className="h-5 w-5 text-orange-500" />
+                <div>
+                  <p className="text-2xl font-semibold font-mono">${(metrics.pipelineValue / 1000).toFixed(0)}K</p>
+                  <p className="text-xs text-muted-foreground">Pipeline Value</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <ModuleNav
