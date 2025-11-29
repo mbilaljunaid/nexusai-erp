@@ -16,6 +16,8 @@ import { ProcurementModule } from './modules/procurement/procurement.module';
 import { AIModule } from './modules/ai/ai.module';
 import { HealthModule } from './modules/health/health.module';
 import { IndustriesModule } from './modules/industries/industries.module';
+import { ComplianceModule } from './modules/compliance/compliance.module';
+import { UATModule } from './modules/uat/uat.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { IndustriesModule } from './modules/industries/industries.module';
     AIModule,
     HealthModule,
     IndustriesModule,
+    ComplianceModule,
+    UATModule,
   ],
 })
 export class AppModule {}

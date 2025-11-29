@@ -35,6 +35,8 @@ import Email from "@/pages/Email";
 import Ecommerce from "@/pages/Ecommerce";
 import FormShowcase from "@/pages/FormShowcase";
 import IndustryConfiguration from "@/pages/IndustryConfiguration";
+import ComplianceDashboard from "@/pages/ComplianceDashboard";
+import UATAutomation from "@/pages/UATAutomation";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -62,6 +64,8 @@ function Router() {
       <Route path="/email" component={Email} />
       <Route path="/ecommerce" component={Ecommerce} />
       <Route path="/forms" component={FormShowcase} />
+      <Route path="/compliance" component={ComplianceDashboard} />
+      <Route path="/uat" component={UATAutomation} />
       <Route component={NotFound} />
     </Switch>
   );
