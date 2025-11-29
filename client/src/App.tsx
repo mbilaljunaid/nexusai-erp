@@ -42,6 +42,9 @@ import IntegrationHub from "@/pages/IntegrationHub";
 import WebsiteBuilder from "@/pages/WebsiteBuilder";
 import EmailManagement from "@/pages/EmailManagement";
 import SystemHealth from "@/pages/SystemHealth";
+import EPMPage from "@/pages/EPMPage";
+import AIAssistantPage from "@/pages/AIAssistant";
+import FieldService from "@/pages/FieldService";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -50,7 +53,7 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/crm" component={CRM} />
       <Route path="/projects" component={Projects} />
-      <Route path="/analytics" component={Analytics} />
+      <Route path="/analytics-legacy" component={Analytics} />
       <Route path="/health" component={Health} />
       <Route path="/settings" component={Settings} />
       <Route path="/industries" component={Industries} />
@@ -58,24 +61,23 @@ function Router() {
       <Route path="/admin/platform" component={PlatformAdmin} />
       <Route path="/admin/tenant" component={TenantAdmin} />
       <Route path="/erp" component={ERP} />
-      <Route path="/epm" component={EPMModule} />
+      <Route path="/epm" component={EPMPage} />
       <Route path="/hr" component={HR} />
       <Route path="/service" component={Service} />
       <Route path="/marketing" component={Marketing} />
-      <Route path="/compliance" component={Compliance} />
-      <Route path="/bpm" component={BPM} />
-      <Route path="/integrations" component={Integrations} />
-      <Route path="/website" component={Website} />
-      <Route path="/email" component={Email} />
-      <Route path="/ecommerce" component={Ecommerce} />
-      <Route path="/forms" component={FormShowcase} />
       <Route path="/compliance" component={ComplianceDashboard} />
-      <Route path="/uat" component={UATAutomation} />
-      <Route path="/advanced" component={AdvancedFeatures} />
+      <Route path="/bpm" component={BPM} />
       <Route path="/integrations" component={IntegrationHub} />
       <Route path="/website" component={WebsiteBuilder} />
       <Route path="/email" component={EmailManagement} />
+      <Route path="/ecommerce" component={Ecommerce} />
+      <Route path="/forms" component={FormShowcase} />
+      <Route path="/uat" component={UATAutomation} />
+      <Route path="/advanced" component={AdvancedFeatures} />
       <Route path="/system-health" component={SystemHealth} />
+      <Route path="/copilot" component={AIAssistantPage} />
+      <Route path="/field-service" component={FieldService} />
+      <Route path="/analytics" component={Analytics} />
       <Route component={NotFound} />
     </Switch>
   );

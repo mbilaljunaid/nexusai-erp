@@ -27,6 +27,8 @@ import { MarketingAdvancedModule } from './modules/marketing/marketing-advanced.
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { IntegrationModule } from './modules/integration/integration.module';
 import { BPMAdvancedModule } from './modules/bpm/bpm-advanced.module';
+import { CopilotModule } from './modules/copilot/copilot.module';
+import { FieldServiceModule } from './modules/field-service/field-service.module';
 
 @Module({
   imports: [
@@ -75,6 +77,8 @@ import { BPMAdvancedModule } from './modules/bpm/bpm-advanced.module';
     AnalyticsModule,
     IntegrationModule,
     BPMAdvancedModule,
+    CopilotModule,
+    FieldServiceModule,
   ],
 })
 export class AppModule {}
