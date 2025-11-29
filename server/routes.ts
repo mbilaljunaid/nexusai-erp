@@ -11,6 +11,8 @@ import {
   insertBenefitsPlanSchema, insertPayrollConfigSchema, insertSuccessionPlanSchema,
   insertLearningPathSchema, insertCompensationPlanSchema,
   insertCopilotConversationSchema, insertCopilotMessageSchema, insertMobileDeviceSchema, insertOfflineSyncSchema,
+  insertRevenueForecastSchema, insertBudgetAllocationSchema, insertTimeSeriesDataSchema, insertForecastModelSchema,
+  insertScenarioSchema, insertScenarioVariableSchema, insertDashboardWidgetSchema, insertReportSchema, insertAuditLogSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -379,6 +381,178 @@ export async function registerRoutes(
         return res.status(400).json({ error: error.errors });
       }
       res.status(500).json({ error: "Failed to queue sync" });
+    }
+  });
+
+  // PHASE 2: Revenue Forecasting
+  app.get("/api/planning/revenue-forecasts", async (req, res) => {
+    const forecasts = await storage.listRevenueForecasts();
+    res.json(forecasts);
+  });
+
+  app.post("/api/planning/revenue-forecasts", async (req, res) => {
+    try {
+      const data = insertRevenueForecastSchema.parse(req.body);
+      const forecast = await storage.createRevenueForecast(data);
+      res.status(201).json(forecast);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create forecast" });
+    }
+  });
+
+  // PHASE 2: Budget Allocations
+  app.get("/api/planning/budgets", async (req, res) => {
+    const year = req.query.year ? Number(req.query.year) : undefined;
+    const budgets = await storage.listBudgetAllocations(year);
+    res.json(budgets);
+  });
+
+  app.post("/api/planning/budgets", async (req, res) => {
+    try {
+      const data = insertBudgetAllocationSchema.parse(req.body);
+      const budget = await storage.createBudgetAllocation(data);
+      res.status(201).json(budget);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create budget" });
+    }
+  });
+
+  // PHASE 2: Time Series Data
+  app.get("/api/analytics/time-series/:metric", async (req, res) => {
+    const data = await storage.getTimeSeriesData(req.params.metric);
+    res.json(data);
+  });
+
+  app.post("/api/analytics/time-series", async (req, res) => {
+    try {
+      const data = insertTimeSeriesDataSchema.parse(req.body);
+      const result = await storage.createTimeSeriesData(data);
+      res.status(201).json(result);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create time series data" });
+    }
+  });
+
+  // PHASE 2: Forecast Models
+  app.get("/api/analytics/forecast-models", async (req, res) => {
+    const models = await storage.listForecastModels();
+    res.json(models);
+  });
+
+  app.post("/api/analytics/forecast-models", async (req, res) => {
+    try {
+      const data = insertForecastModelSchema.parse(req.body);
+      const model = await storage.createForecastModel(data);
+      res.status(201).json(model);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create forecast model" });
+    }
+  });
+
+  // PHASE 2: Scenarios (What-If Analysis)
+  app.get("/api/planning/scenarios", async (req, res) => {
+    const scenarios = await storage.listScenarios();
+    res.json(scenarios);
+  });
+
+  app.post("/api/planning/scenarios", async (req, res) => {
+    try {
+      const data = insertScenarioSchema.parse(req.body);
+      const scenario = await storage.createScenario(data);
+      res.status(201).json(scenario);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create scenario" });
+    }
+  });
+
+  app.get("/api/planning/scenarios/:scenarioId/variables", async (req, res) => {
+    const variables = await storage.getScenarioVariables(req.params.scenarioId);
+    res.json(variables);
+  });
+
+  app.post("/api/planning/scenarios/variables", async (req, res) => {
+    try {
+      const data = insertScenarioVariableSchema.parse(req.body);
+      const variable = await storage.addScenarioVariable(data);
+      res.status(201).json(variable);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to add scenario variable" });
+    }
+  });
+
+  // PHASE 2: Dashboard Widgets
+  app.get("/api/analytics/dashboards/:dashboardId/widgets", async (req, res) => {
+    const widgets = await storage.listDashboardWidgets(req.params.dashboardId);
+    res.json(widgets);
+  });
+
+  app.post("/api/analytics/widgets", async (req, res) => {
+    try {
+      const data = insertDashboardWidgetSchema.parse(req.body);
+      const widget = await storage.createDashboardWidget(data);
+      res.status(201).json(widget);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create widget" });
+    }
+  });
+
+  // PHASE 2: Reports
+  app.get("/api/analytics/reports", async (req, res) => {
+    const reports = await storage.listReports();
+    res.json(reports);
+  });
+
+  app.post("/api/analytics/reports", async (req, res) => {
+    try {
+      const data = insertReportSchema.parse(req.body);
+      const report = await storage.createReport(data);
+      res.status(201).json(report);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create report" });
+    }
+  });
+
+  // PHASE 2: Audit Logs
+  app.get("/api/governance/audit-logs", async (req, res) => {
+    const userId = req.query.userId as string;
+    const logs = await storage.listAuditLogs(userId);
+    res.json(logs);
+  });
+
+  app.post("/api/governance/audit-logs", async (req, res) => {
+    try {
+      const data = insertAuditLogSchema.parse(req.body);
+      const log = await storage.createAuditLog(data);
+      res.status(201).json(log);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create audit log" });
     }
   });
 
