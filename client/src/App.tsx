@@ -100,6 +100,10 @@ const PayrollEngine = lazy(() => import("@/pages/PayrollEngine"));
 const LeaveWorkflows = lazy(() => import("@/pages/LeaveWorkflows"));
 const PerformanceManagement = lazy(() => import("@/pages/PerformanceManagement"));
 const OnboardingAutomation = lazy(() => import("@/pages/OnboardingAutomation"));
+const BudgetPlanning = lazy(() => import("@/pages/BudgetPlanning"));
+const ConsolidationEngine = lazy(() => import("@/pages/ConsolidationEngine"));
+const VarianceAnalysis = lazy(() => import("@/pages/VarianceAnalysis"));
+const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
 const Health = lazy(() => import("@/pages/Health"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Industries = lazy(() => import("@/pages/Industries"));
@@ -211,6 +215,10 @@ function Router() {
       <Route path="/leave-workflows" component={LeaveWorkflows} />
       <Route path="/performance-management" component={PerformanceManagement} />
       <Route path="/onboarding-automation" component={OnboardingAutomation} />
+      <Route path="/budget-planning" component={BudgetPlanning} />
+      <Route path="/consolidation-engine" component={ConsolidationEngine} />
+      <Route path="/variance-analysis" component={VarianceAnalysis} />
+      <Route path="/predictive-analytics" component={PredictiveAnalytics} />
       <Route path="/opportunities" component={OpportunityList} />
       <Route path="/opportunity/:id" component={OpportunityDetail} />
       <Route path="/leads/:id" component={LeadDetail} />

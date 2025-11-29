@@ -44,6 +44,10 @@ const payrollRunsStore: any[] = [];
 const leaveRequestsStore: any[] = [];
 const performanceReviewsStore: any[] = [];
 const onboardingWorkflowsStore: any[] = [];
+const budgetsStore: any[] = [];
+const consolidationsStore: any[] = [];
+const variancesStore: any[] = [];
+const predictionsStore: any[] = [];
 
 export async function registerRoutes(
   httpServer: Server,
@@ -475,6 +479,52 @@ export async function registerRoutes(
       );
     }
     res.json(onboardingWorkflowsStore);
+  });
+
+  // PHASE 5: Budget Planning
+  app.get("/api/budgets", async (req, res) => {
+    if (budgetsStore.length === 0) {
+      budgetsStore.push(
+        { id: "b1", name: "FY2025 Operating", amount: 15000000, status: "active", department: "Operations", variance: 2.5, createdAt: new Date().toISOString() },
+        { id: "b2", name: "FY2025 Capital", amount: 8000000, status: "active", department: "IT", variance: -1.2, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(budgetsStore);
+  });
+
+  // PHASE 5: Consolidations
+  app.get("/api/consolidations", async (req, res) => {
+    if (consolidationsStore.length === 0) {
+      consolidationsStore.push(
+        { id: "con1", name: "Q4 FY2024", status: "completed", entityCount: 5, period: "Oct-Dec 2024", createdAt: new Date().toISOString() },
+        { id: "con2", name: "Q1 FY2025", status: "in_progress", entityCount: 5, period: "Jan-Mar 2025", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(consolidationsStore);
+  });
+
+  // PHASE 5: Variance Analysis
+  app.get("/api/variance-analysis", async (req, res) => {
+    if (variancesStore.length === 0) {
+      variancesStore.push(
+        { id: "var1", accountName: "Revenue", actual: 50000000, forecast: 48000000, variance: 4.17, createdAt: new Date().toISOString() },
+        { id: "var2", accountName: "COGS", actual: 30000000, forecast: 32000000, variance: -6.25, createdAt: new Date().toISOString() },
+        { id: "var3", accountName: "OpEx", actual: 12000000, forecast: 11500000, variance: 4.35, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(variancesStore);
+  });
+
+  // PHASE 5: Predictive Analytics
+  app.get("/api/predictions", async (req, res) => {
+    if (predictionsStore.length === 0) {
+      predictionsStore.push(
+        { id: "pred1", name: "Q2 Revenue Forecast", forecast: 52000000, confidence: 0.92, accuracy: 0.89, hasAnomaly: false, createdAt: new Date().toISOString() },
+        { id: "pred2", name: "Churn Risk Model", forecast: 1200, confidence: 0.78, accuracy: 0.85, hasAnomaly: true, createdAt: new Date().toISOString() },
+        { id: "pred3", name: "Cost Trend", forecast: 11800000, confidence: 0.88, accuracy: 0.91, hasAnomaly: false, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(predictionsStore);
   });
 
   // PHASE 1: AI Copilot
