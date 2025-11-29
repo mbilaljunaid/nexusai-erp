@@ -255,7 +255,6 @@ function Router() {
       <Route path="/ai-chat" component={AIChat} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/integrations" component={IntegrationHub} />
-      <Route path="/admin/platform" component={PlatformAdmin} />
       <Route component={NotFound} />
     </Switch>
   );
