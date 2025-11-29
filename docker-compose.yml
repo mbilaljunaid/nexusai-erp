@@ -1,0 +1,158 @@
+version: '3.9'
+
+services:
+  # PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nexusai
+      POSTGRES_PASSWORD: nexusai_dev
+      POSTGRES_DB: nexusai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nexusai_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nexusai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - nexusai_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Milvus (Vector DB)
+  milvus:
+    image: milvusdb/milvus:latest
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    environment:
+      COMMON_STORAGETYPE: local
+    volumes:
+      - milvus_data:/var/lib/milvus
+    networks:
+      - nexusai_network
+    depends_on:
+      - minio
+
+  # MinIO (S3-compatible)
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    networks:
+      - nexusai_network
+    command: server /data --console-address ":9001"
+
+  # MongoDB
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: nexusai
+      MONGO_INITDB_ROOT_PASSWORD: nexusai_dev
+      MONGO_INITDB_DATABASE: nexusai
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - nexusai_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Neo4j
+  neo4j:
+    image: neo4j:5-community
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    environment:
+      NEO4J_AUTH: neo4j/nexusai_dev
+      NEO4J_PLUGINS: '["graph-data-science"]'
+    volumes:
+      - neo4j_data:/var/lib/neo4j/data
+    networks:
+      - nexusai_network
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "nexusai_dev", "RETURN 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Ollama (LLaMA inference)
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - nexusai_network
+    environment:
+      OLLAMA_HOST: 0.0.0.0:11434
+
+  # Prometheus (Monitoring)
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - nexusai_network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  # Grafana (Dashboards)
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - nexusai_network
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
+  redis_data:
+  milvus_data:
+  minio_data:
+  mongodb_data:
+  neo4j_data:
+  ollama_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  nexusai_network:
+    driver: bridge
