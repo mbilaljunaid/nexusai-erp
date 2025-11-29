@@ -4,6 +4,7 @@ import { TopBar } from './TopBar';
 import { PrimarySidebar } from './PrimarySidebar';
 import { SecondarySidebar } from './SecondarySidebar';
 import { Footer } from './Footer';
+import { CommandPalette } from './CommandPalette';
 import { useUIStore } from '@/store/uiStore';
 import { useEffect } from 'react';
 
@@ -33,6 +34,14 @@ export function BaseLayout({ children }: BaseLayoutProps) {
         <SecondarySidebar />
       </div>
       <Footer />
+      
+      {/* Global Command Palette */}
+      <CommandPalette
+        onNavigate={(href) => {
+          // Navigate using window.location or router in real app
+          window.location.href = href;
+        }}
+      />
     </div>
   );
 }

@@ -1,10 +1,10 @@
 'use client';
 
 import { useUIStore } from '@/store/uiStore';
-import { Bars3Icon, MoonIcon, SunIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, MoonIcon, SunIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export function TopBar() {
-  const { togglePrimarySidebar, darkMode, toggleDarkMode } = useUIStore();
+  const { togglePrimarySidebar, darkMode, toggleDarkMode, openCommandPalette } = useUIStore();
 
   return (
     <header className="topbar-height bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 shadow-sm">
@@ -21,6 +21,20 @@ export function TopBar() {
       </div>
 
       <div className="flex items-center gap-4">
+        {/* Command Palette Search */}
+        <button
+          onClick={openCommandPalette}
+          className="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-700 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-slate-600 dark:text-slate-400 text-sm"
+          data-testid="command-palette-trigger"
+          aria-label="Open command palette (Cmd+K)"
+        >
+          <MagnifyingGlassIcon className="w-4 h-4" />
+          <span>Search...</span>
+          <kbd className="ml-2 px-2 py-1 bg-slate-200 dark:bg-slate-800 rounded text-xs font-mono">
+            ⌘K
+          </kbd>
+        </button>
+
         <button
           onClick={toggleDarkMode}
           className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"
