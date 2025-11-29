@@ -30,6 +30,16 @@ import {
   Briefcase,
   ShoppingCart,
   Factory,
+  BookOpen,
+  CheckSquare,
+  Cpu,
+  MessageCircle,
+  Truck,
+  Calendar,
+  Store,
+  Smartphone,
+  CreditCard,
+  Database,
 } from "lucide-react";
 
 const platformNavItems = [
@@ -44,6 +54,7 @@ const platformNavItems = [
   { title: "HR & Talent", icon: Briefcase, href: "/hr" },
   { title: "HR Advanced", icon: Briefcase, href: "/hr-advanced", badge: "Premium" },
   { title: "Service & Support", icon: Package, href: "/service" },
+  { title: "Field Service", icon: Truck, href: "/field-service", badge: "New" },
   { title: "Marketing", icon: Sparkles, href: "/marketing" },
 ];
 
@@ -55,7 +66,27 @@ const digitialNavItems = [
 
 const analyticsNavItems = [
   { title: "Analytics & BI", icon: BarChart3, href: "/analytics" },
+  { title: "Backend Integration", icon: Database, href: "/backend-integration", badge: "Live" },
   { title: "Compliance & Audit", icon: Shield, href: "/compliance" },
+];
+
+const aiNavItems = [
+  { title: "AI Copilot", icon: Sparkles, href: "/copilot", badge: "AI" },
+  { title: "AI Chat", icon: MessageCircle, href: "/ai-chat", badge: "AI" },
+  { title: "Planning & Forecasting", icon: Calendar, href: "/planning", badge: "AI" },
+];
+
+const marketplaceNavItems = [
+  { title: "Marketplace", icon: Store, href: "/marketplace", badge: "New" },
+  { title: "Mobile Sync", icon: Smartphone, href: "/mobile-sync", badge: "Sync" },
+  { title: "Billing & Payments", icon: CreditCard, href: "/billing" },
+];
+
+const advancedNavItems = [
+  { title: "Form Builder", icon: BookOpen, href: "/forms" },
+  { title: "UAT Automation", icon: CheckSquare, href: "/uat" },
+  { title: "Advanced Features", icon: Cpu, href: "/advanced", badge: "Beta" },
+  { title: "Industry Config", icon: Factory, href: "/industry-config" },
 ];
 
 const systemNavItems = [
@@ -147,6 +178,72 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {analyticsNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={location === item.href}
+                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">AI & Intelligence</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {aiNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={location === item.href}
+                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Marketplace & Mobile</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {marketplaceNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={location === item.href}
+                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Advanced & Configuration</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {advancedNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild 
