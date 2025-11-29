@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Heart, DollarSign, Users, BookOpen, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import type { BenefitsPlan, PayrollConfig, SuccessionPlan, LearningPath, CompensationPlan } from "@shared/schema";
 
 export default function HRAdvanced() {
-  const { data: benefits = [] } = useQuery({ queryKey: ["/api/hr/benefits-plans"] });
-  const { data: payroll = [] } = useQuery({ queryKey: ["/api/hr/payroll-configs"] });
-  const { data: succession = [] } = useQuery({ queryKey: ["/api/hr/succession-plans"] });
-  const { data: learning = [] } = useQuery({ queryKey: ["/api/hr/learning-paths"] });
-  const { data: compensation = [] } = useQuery({ queryKey: ["/api/hr/compensation-plans"] });
+  const { data: benefits = [] } = useQuery<BenefitsPlan[]>({ queryKey: ["/api/hr/benefits-plans"] });
+  const { data: payroll = [] } = useQuery<PayrollConfig[]>({ queryKey: ["/api/hr/payroll-configs"] });
+  const { data: succession = [] } = useQuery<SuccessionPlan[]>({ queryKey: ["/api/hr/succession-plans"] });
+  const { data: learning = [] } = useQuery<LearningPath[]>({ queryKey: ["/api/hr/learning-paths"] });
+  const { data: compensation = [] } = useQuery<CompensationPlan[]>({ queryKey: ["/api/hr/compensation-plans"] });
 
   return (
     <div className="space-y-6 p-6">
@@ -40,7 +41,7 @@ export default function HRAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Add Plan</Button>
               <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-                {benefits.map((plan: any) => (
+                {benefits.map((plan) => (
                   <Card key={plan.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="space-y-2">
@@ -71,7 +72,7 @@ export default function HRAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Add Config</Button>
               <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                {payroll.map((config: any) => (
+                {payroll.map((config) => (
                   <Card key={config.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="space-y-2">
@@ -106,7 +107,7 @@ export default function HRAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Create Plan</Button>
               <div className="space-y-2">
-                {succession.map((plan: any) => (
+                {succession.map((plan) => (
                   <Card key={plan.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="space-y-2">
@@ -141,7 +142,7 @@ export default function HRAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Create Path</Button>
               <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-                {learning.map((path: any) => (
+                {learning.map((path) => (
                   <Card key={path.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="space-y-2">
@@ -175,7 +176,7 @@ export default function HRAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Create Plan</Button>
               <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-                {compensation.map((plan: any) => (
+                {compensation.map((plan) => (
                   <Card key={plan.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="space-y-2">

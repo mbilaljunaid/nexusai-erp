@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Target, DollarSign, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import type { LeadScore, CpqPricingRule, Territory } from "@shared/schema";
 
 export default function CRMAdvanced() {
-  const { data: leadScores = [] } = useQuery({ queryKey: ["/api/crm/lead-scores"] });
-  const { data: cpqRules = [] } = useQuery({ queryKey: ["/api/crm/cpq-pricing-rules"] });
-  const { data: territories = [] } = useQuery({ queryKey: ["/api/crm/territories"] });
+  const { data: leadScores = [] } = useQuery<LeadScore[]>({ queryKey: ["/api/crm/lead-scores"] });
+  const { data: cpqRules = [] } = useQuery<CpqPricingRule[]>({ queryKey: ["/api/crm/cpq-pricing-rules"] });
+  const { data: territories = [] } = useQuery<Territory[]>({ queryKey: ["/api/crm/territories"] });
 
   return (
     <div className="space-y-6 p-6">
@@ -35,7 +36,7 @@ export default function CRMAdvanced() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {leadScores.map((score: any) => (
+                {leadScores.map((score) => (
                   <Card key={score.id} className="border">
                     <CardContent className="pt-4">
                       <div className="space-y-2">
@@ -70,7 +71,7 @@ export default function CRMAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Add Rule</Button>
               <div className="space-y-2">
-                {cpqRules.map((rule: any) => (
+                {cpqRules.map((rule) => (
                   <Card key={rule.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="space-y-2">
@@ -103,7 +104,7 @@ export default function CRMAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Create Territory</Button>
               <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                {territories.map((territory: any) => (
+                {territories.map((territory) => (
                   <Card key={territory.id} className="border">
                     <CardContent className="pt-4">
                       <div className="space-y-2 text-sm">

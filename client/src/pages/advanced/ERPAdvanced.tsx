@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, TrendingUp, Users, ArrowRightLeft } from "lucide-react";
+import type { TaxRule, ConsolidationRule, FxTranslation } from "@shared/schema";
 
 export default function ERPAdvanced() {
-  const { data: taxRules = [] } = useQuery({ queryKey: ["/api/erp/tax-rules"] });
-  const { data: consolidations = [] } = useQuery({ queryKey: ["/api/erp/consolidation-rules"] });
-  const { data: fxTranslations = [] } = useQuery({ queryKey: ["/api/erp/fx-translations"] });
+  const { data: taxRules = [] } = useQuery<TaxRule[]>({ queryKey: ["/api/erp/tax-rules"] });
+  const { data: consolidations = [] } = useQuery<ConsolidationRule[]>({ queryKey: ["/api/erp/consolidation-rules"] });
+  const { data: fxTranslations = [] } = useQuery<FxTranslation[]>({ queryKey: ["/api/erp/fx-translations"] });
 
   return (
     <div className="space-y-6 p-6">
@@ -35,7 +36,7 @@ export default function ERPAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Add Rule</Button>
               <div className="space-y-2">
-                {taxRules.map((rule: any) => (
+                {taxRules.map((rule) => (
                   <Card key={rule.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="grid grid-cols-4 gap-4">
@@ -65,7 +66,7 @@ export default function ERPAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Add Rule</Button>
               <div className="space-y-2">
-                {consolidations.map((rule: any) => (
+                {consolidations.map((rule) => (
                   <Card key={rule.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="space-y-2">
@@ -101,7 +102,7 @@ export default function ERPAdvanced() {
             <CardContent>
               <Button size="sm" className="mb-4"><Plus className="w-4 h-4 mr-2" />Record Translation</Button>
               <div className="space-y-2">
-                {fxTranslations.map((trans: any) => (
+                {fxTranslations.map((trans) => (
                   <Card key={trans.id} className="border">
                     <CardContent className="pt-4 text-sm">
                       <div className="grid grid-cols-5 gap-4">
