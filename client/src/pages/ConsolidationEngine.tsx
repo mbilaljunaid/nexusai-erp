@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GitMerge, Database, LinkIcon, AlertCircle } from "lucide-react";
+import { GitMerge, Database, LinkIcon, AlertCircle, Settings, Link2 as MappingIcon, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
 
 interface Consolidation {
   id: string;
@@ -14,6 +14,7 @@ interface Consolidation {
 }
 
 export default function ConsolidationEngine() {
+  const [activeNav, setActiveNav] = useState("consolidations");
   const { data: consolidations = [] } = useQuery<Consolidation[]>({
     queryKey: ["/api/consolidations"],
     retry: false,
@@ -25,6 +26,12 @@ export default function ConsolidationEngine() {
     completed: consolidations.filter((c: any) => c.status === "completed").length,
     entities: consolidations.reduce((sum: number, c: any) => sum + (c.entityCount || 0), 0),
   };
+
+  const navItems = [
+    { id: "consolidations", label: "Consolidations", icon: GitMerge, color: "text-blue-500" },
+    { id: "eliminations", label: "Eliminations", icon: Trash2, color: "text-red-500" },
+    { id: "mappings", label: "Mappings", icon: MappingIcon, color: "text-purple-500" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -63,15 +70,12 @@ export default function ConsolidationEngine() {
         </CardContent></Card>
       </div>
 
-      <Tabs defaultValue="consolidations" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="consolidations">Consolidations</TabsTrigger>
-          <TabsTrigger value="eliminations">Eliminations</TabsTrigger>
-          <TabsTrigger value="mappings">Mappings</TabsTrigger>
-        </TabsList>
-        <TabsContent value="consolidations">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {activeNav === "consolidations" && (
+        <div className="space-y-3">
           {consolidations.map((con: any) => (
-            <Card key={con.id}><CardContent className="p-4">
+            <Card key={con.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{con.name}</p>
                   <p className="text-sm text-muted-foreground">{con.entityCount} entities • Period: {con.period}</p></div>

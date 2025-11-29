@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Zap, TrendingUp, AlertTriangle, BarChart3 } from "lucide-react";
+import { Zap, TrendingUp, AlertTriangle, BarChart3, Brain, AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
 
 interface Prediction {
   id: string;
@@ -15,6 +15,7 @@ interface Prediction {
 }
 
 export default function PredictiveAnalytics() {
+  const [activeNav, setActiveNav] = useState("forecasts");
   const { data: predictions = [] } = useQuery<Prediction[]>({
     queryKey: ["/api/predictions"],
     retry: false,
@@ -26,6 +27,12 @@ export default function PredictiveAnalytics() {
     anomalies: predictions.filter((p: any) => p.hasAnomaly).length,
     accuracy: ((predictions.reduce((sum: number, p: any) => sum + (p.accuracy || 0), 0) / (predictions.length || 1)) * 100).toFixed(0),
   };
+
+  const navItems = [
+    { id: "forecasts", label: "Forecasts", icon: TrendingUp, color: "text-green-500" },
+    { id: "anomalies", label: "Anomalies", icon: AlertCircle, color: "text-red-500" },
+    { id: "models", label: "Models", icon: Brain, color: "text-purple-500" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -64,15 +71,12 @@ export default function PredictiveAnalytics() {
         </CardContent></Card>
       </div>
 
-      <Tabs defaultValue="forecasts" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="forecasts">Forecasts</TabsTrigger>
-          <TabsTrigger value="anomalies">Anomalies</TabsTrigger>
-          <TabsTrigger value="models">Models</TabsTrigger>
-        </TabsList>
-        <TabsContent value="forecasts">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {activeNav === "forecasts" && (
+        <div className="space-y-3">
           {predictions.map((pred: any) => (
-            <Card key={pred.id}><CardContent className="p-4">
+            <Card key={pred.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{pred.name}</p>
                   <p className="text-sm text-muted-foreground">Forecast: ${(pred.forecast / 1000000).toFixed(1)}M • Confidence: {(pred.confidence * 100).toFixed(0)}%</p></div>
@@ -80,10 +84,10 @@ export default function PredictiveAnalytics() {
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="anomalies"><p className="text-muted-foreground">Detected anomalies and outliers</p></TabsContent>
-        <TabsContent value="models"><p className="text-muted-foreground">ML model configuration and training</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "anomalies" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Detected anomalies and outliers</p></CardContent></Card>}
+      {activeNav === "models" && <Card><CardContent className="p-6"><p className="text-muted-foreground">ML model configuration and training</p></CardContent></Card>}
     </div>
   );
 }

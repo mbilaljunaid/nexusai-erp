@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, TrendingDown, Target, LineChart } from "lucide-react";
+import { TrendingUp, TrendingDown, Target, LineChart, TrendingUpIcon, Lightbulb } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
 
 interface Variance {
   id: string;
@@ -14,6 +14,7 @@ interface Variance {
 }
 
 export default function VarianceAnalysis() {
+  const [activeNav, setActiveNav] = useState("analysis");
   const { data: variances = [] } = useQuery<Variance[]>({
     queryKey: ["/api/variance-analysis"],
     retry: false,
@@ -25,6 +26,12 @@ export default function VarianceAnalysis() {
     unfavorable: variances.filter((v: any) => v.variance < 0).length,
     avgVariance: ((variances.reduce((sum: number, v: any) => sum + (v.variance || 0), 0) / (variances.length || 1))).toFixed(2),
   };
+
+  const navItems = [
+    { id: "analysis", label: "Analysis", icon: LineChart, color: "text-blue-500" },
+    { id: "trending", label: "Trending", icon: TrendingUpIcon, color: "text-green-500" },
+    { id: "root-cause", label: "Root Cause", icon: Lightbulb, color: "text-orange-500" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -63,15 +70,12 @@ export default function VarianceAnalysis() {
         </CardContent></Card>
       </div>
 
-      <Tabs defaultValue="analysis" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="analysis">Analysis</TabsTrigger>
-          <TabsTrigger value="trending">Trending</TabsTrigger>
-          <TabsTrigger value="root-cause">Root Cause</TabsTrigger>
-        </TabsList>
-        <TabsContent value="analysis">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {activeNav === "analysis" && (
+        <div className="space-y-3">
           {variances.map((variance: any) => (
-            <Card key={variance.id}><CardContent className="p-4">
+            <Card key={variance.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{variance.accountName}</p>
                   <p className="text-sm text-muted-foreground">Actual: ${(variance.actual / 1000).toFixed(0)}K • Forecast: ${(variance.forecast / 1000).toFixed(0)}K</p></div>
@@ -79,10 +83,10 @@ export default function VarianceAnalysis() {
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="trending"><p className="text-muted-foreground">Historical variance trends and patterns</p></TabsContent>
-        <TabsContent value="root-cause"><p className="text-muted-foreground">Root cause analysis and drill-down</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "trending" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Historical variance trends and patterns</p></CardContent></Card>}
+      {activeNav === "root-cause" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Root cause analysis and drill-down</p></CardContent></Card>}
     </div>
   );
 }

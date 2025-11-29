@@ -1,9 +1,9 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, Zap, BarChart3, Activity } from "lucide-react";
+import { Database, Zap, BarChart3, Activity, Settings, Grid3x3 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
 
 interface EmbeddingJob {
   id: string;
@@ -14,6 +14,7 @@ interface EmbeddingJob {
 }
 
 export default function RAGEmbeddingsPipeline() {
+  const [activeNav, setActiveNav] = useState("jobs");
   const { data: jobs = [] } = useQuery<EmbeddingJob[]>({
     queryKey: ["/api/rag/embeddings"],
     retry: false,
@@ -25,6 +26,12 @@ export default function RAGEmbeddingsPipeline() {
     completed: jobs.filter((j: any) => j.status === "completed").length,
     vectors: jobs.reduce((sum: number, j: any) => sum + (j.vectors || 0), 0),
   };
+
+  const navItems = [
+    { id: "jobs", label: "Jobs", icon: Database, color: "text-blue-500" },
+    { id: "vectors", label: "Vector Index", icon: Grid3x3, color: "text-purple-500" },
+    { id: "config", label: "Config", icon: Settings, color: "text-gray-500" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -61,15 +68,12 @@ export default function RAGEmbeddingsPipeline() {
           </div>
         </CardContent></Card>
       </div>
-      <Tabs defaultValue="jobs" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="jobs">Jobs</TabsTrigger>
-          <TabsTrigger value="vectors">Vector Index</TabsTrigger>
-          <TabsTrigger value="config">Config</TabsTrigger>
-        </TabsList>
-        <TabsContent value="jobs">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {activeNav === "jobs" && (
+        <div className="space-y-3">
           {jobs.map((job: any) => (
-            <Card key={job.id}><CardContent className="p-4">
+            <Card key={job.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{job.name}</p>
                   <p className="text-sm text-muted-foreground">{job.vectors.toLocaleString()} vectors • {job.documents} docs</p></div>
@@ -77,10 +81,10 @@ export default function RAGEmbeddingsPipeline() {
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="vectors"><p className="text-muted-foreground">Vector index management and optimization</p></TabsContent>
-        <TabsContent value="config"><p className="text-muted-foreground">Embedding model and pipeline configuration</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "vectors" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Vector index management and optimization</p></CardContent></Card>}
+      {activeNav === "config" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Embedding model and pipeline configuration</p></CardContent></Card>}
     </div>
   );
 }
