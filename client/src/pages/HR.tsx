@@ -1,11 +1,22 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ModuleNav } from "@/components/ModuleNav";
-import { Users, Calendar, DollarSign, BarChart3 } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { Users, Calendar, DollarSign, BarChart3, Briefcase, TrendingUp } from "lucide-react";
 
 export default function HR() {
+  const [activeNav, setActiveNav] = useState("overview");
+  
+  const navItems = [
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "employees", label: "Employees", icon: Users, color: "text-green-500" },
+    { id: "recruitment", label: "Recruitment", icon: Briefcase, color: "text-purple-500" },
+    { id: "payroll", label: "Payroll", icon: DollarSign, color: "text-orange-500" },
+    { id: "performance", label: "Performance", icon: TrendingUp, color: "text-red-500" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
@@ -13,16 +24,10 @@ export default function HR() {
         <p className="text-muted-foreground text-sm">Manage employees, recruitment, payroll, and performance</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-          <TabsTrigger value="employees" data-testid="tab-employees">Employees</TabsTrigger>
-          <TabsTrigger value="recruitment" data-testid="tab-recruitment">Recruitment</TabsTrigger>
-          <TabsTrigger value="payroll" data-testid="tab-payroll">Payroll</TabsTrigger>
-          <TabsTrigger value="performance" data-testid="tab-performance">Performance</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="overview" className="space-y-4">
+      {activeNav === "overview" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Link href="/employees">
               <Card className="cursor-pointer hover-elevate">

@@ -83,64 +83,52 @@ export default function ERP() {
               { title: "Inventory", icon: Package, href: "/inventory" },
             ]}
           />
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="gl">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">General Ledger</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">GL module coming soon. Manage chart of accounts, create and post journals, and run financial reports.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "gl" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">General Ledger</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">GL module coming soon. Manage chart of accounts, create and post journals, and run financial reports.</p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="ap">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Accounts Payable</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">AP module coming soon. Manage vendor invoices, schedule payments, and reconcile with POs.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "ap" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Accounts Payable</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">AP module coming soon. Manage vendor invoices, schedule payments, and reconcile with POs.</p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="ar">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Accounts Receivable</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">AR module coming soon. Manage customer invoices, track collections, and analyze aging reports.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "ar" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Accounts Receivable</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">AR module coming soon. Manage customer invoices, track collections, and analyze aging reports.</p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="inventory">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Inventory Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Inventory module coming soon. Track stock levels, manage valuation methods, and optimize reorder points.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      <ModuleNav
-        title="ERP Modules"
-        items={[
-          { title: "Invoices", icon: DollarSign, href: "/invoices" },
-          { title: "Purchase Orders", icon: Package, href: "/purchase-orders" },
-          { title: "Inventory", icon: Package, href: "/inventory" },
-          { title: "Vendors", icon: Users, href: "/vendors" },
-          { title: "General Ledger", icon: BarChart3, href: "/general-ledger" },
-          { title: "Financial Reports", icon: BarChart3, href: "/financial-reports" },
-        ]}
-      />
+      {activeNav === "inventory" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Inventory Management</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Inventory module coming soon. Track stock levels, manage valuation methods, and optimize reorder points.</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
