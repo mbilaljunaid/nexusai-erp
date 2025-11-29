@@ -18,6 +18,10 @@ import { HealthModule } from './modules/health/health.module';
 import { IndustriesModule } from './modules/industries/industries.module';
 import { ComplianceModule } from './modules/compliance/compliance.module';
 import { UATModule } from './modules/uat/uat.module';
+import { ERPAdvancedModule } from './modules/erp/erp-advanced.module';
+import { FinanceAdvancedModule } from './modules/finance/finance-advanced.module';
+import { CRMAdvancedModule } from './modules/crm/crm-advanced.module';
+import { HRAdvancedModule } from './modules/hr/hr-advanced.module';
 
 @Module({
   imports: [
@@ -57,6 +61,10 @@ import { UATModule } from './modules/uat/uat.module';
     IndustriesModule,
     ComplianceModule,
     UATModule,
+    ERPAdvancedModule,
+    FinanceAdvancedModule,
+    CRMAdvancedModule,
+    HRAdvancedModule,
   ],
 })
 export class AppModule {}

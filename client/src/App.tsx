@@ -37,6 +37,7 @@ import FormShowcase from "@/pages/FormShowcase";
 import IndustryConfiguration from "@/pages/IndustryConfiguration";
 import ComplianceDashboard from "@/pages/ComplianceDashboard";
 import UATAutomation from "@/pages/UATAutomation";
+import AdvancedFeatures from "@/pages/AdvancedFeatures";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -66,6 +67,7 @@ function Router() {
       <Route path="/forms" component={FormShowcase} />
       <Route path="/compliance" component={ComplianceDashboard} />
       <Route path="/uat" component={UATAutomation} />
+      <Route path="/advanced" component={AdvancedFeatures} />
       <Route component={NotFound} />
     </Switch>
   );
