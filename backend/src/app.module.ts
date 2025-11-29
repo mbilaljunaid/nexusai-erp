@@ -26,6 +26,7 @@ import { ServiceAdvancedModule } from './modules/service/service-advanced.module
 import { MarketingAdvancedModule } from './modules/marketing/marketing-advanced.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { IntegrationModule } from './modules/integration/integration.module';
+import { BPMAdvancedModule } from './modules/bpm/bpm-advanced.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { IntegrationModule } from './modules/integration/integration.module';
     MarketingAdvancedModule,
     AnalyticsModule,
     IntegrationModule,
+    BPMAdvancedModule,
   ],
 })
 export class AppModule {}

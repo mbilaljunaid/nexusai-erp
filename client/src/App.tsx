@@ -39,6 +39,9 @@ import ComplianceDashboard from "@/pages/ComplianceDashboard";
 import UATAutomation from "@/pages/UATAutomation";
 import AdvancedFeatures from "@/pages/AdvancedFeatures";
 import IntegrationHub from "@/pages/IntegrationHub";
+import WebsiteBuilder from "@/pages/WebsiteBuilder";
+import EmailManagement from "@/pages/EmailManagement";
+import SystemHealth from "@/pages/SystemHealth";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -70,6 +73,9 @@ function Router() {
       <Route path="/uat" component={UATAutomation} />
       <Route path="/advanced" component={AdvancedFeatures} />
       <Route path="/integrations" component={IntegrationHub} />
+      <Route path="/website" component={WebsiteBuilder} />
+      <Route path="/email" component={EmailManagement} />
+      <Route path="/system-health" component={SystemHealth} />
       <Route component={NotFound} />
     </Switch>
   );
