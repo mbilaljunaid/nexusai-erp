@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, TrendingUp, AlertCircle } from "lucide-react";
+import { DollarSign, TrendingUp, AlertCircle, CreditCard, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
 
 interface AgingBucket {
   days: string;
@@ -24,6 +25,7 @@ interface AgingData {
 }
 
 export default function AgingReport() {
+  const [activeNav, setActiveNav] = useState("ap");
   const { data: apData = [] } = useQuery<AgingData[]>({
     queryKey: ["/api/aging-report?type=ap"],
     retry: false,
@@ -36,6 +38,11 @@ export default function AgingReport() {
 
   const apLatest = apData[0];
   const arLatest = arData[0];
+  
+  const navItems = [
+    { id: "ap", label: "Accounts Payable", icon: CreditCard, color: "text-blue-500" },
+    { id: "ar", label: "Accounts Receivable", icon: Clock, color: "text-green-500" },
+  ];
 
   const renderAgingChart = (data: AgingData | undefined) => {
     if (!data) return <p className="text-muted-foreground">No data available</p>;
@@ -81,13 +88,10 @@ export default function AgingReport() {
         <p className="text-muted-foreground text-sm">View aging analysis for Accounts Payable and Receivable</p>
       </div>
 
-      <Tabs defaultValue="ap" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="ap">Accounts Payable</TabsTrigger>
-          <TabsTrigger value="ar">Accounts Receivable</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="ap" className="space-y-4">
+      {activeNav === "ap" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
               <CardContent className="p-4">
@@ -137,9 +141,11 @@ export default function AgingReport() {
               {renderAgingChart(apLatest)}
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="ar" className="space-y-4">
+      {activeNav === "ar" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
               <CardContent className="p-4">
@@ -189,8 +195,8 @@ export default function AgingReport() {
               {renderAgingChart(arLatest)}
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }

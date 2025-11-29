@@ -1,12 +1,23 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ModuleNav } from "@/components/ModuleNav";
-import { DollarSign, Plus, Package, Users, BarChart3, FileText, Percent, Calendar } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { DollarSign, Plus, Package, Users, BarChart3, FileText, Percent, Calendar, LayoutList, TrendingUp, Warehouse } from "lucide-react";
 
 export default function ERP() {
+  const [activeNav, setActiveNav] = useState("overview");
+  
+  const navItems = [
+    { id: "overview", label: "Overview", icon: LayoutList, color: "text-blue-500" },
+    { id: "gl", label: "General Ledger", icon: BarChart3, color: "text-green-500" },
+    { id: "ap", label: "Payable", icon: FileText, color: "text-orange-500" },
+    { id: "ar", label: "Receivable", icon: TrendingUp, color: "text-purple-500" },
+    { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
@@ -14,16 +25,10 @@ export default function ERP() {
         <p className="text-muted-foreground text-sm">Manage financials, procurement, inventory, and assets</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-          <TabsTrigger value="gl" data-testid="tab-gl">General Ledger</TabsTrigger>
-          <TabsTrigger value="ap" data-testid="tab-ap">Accounts Payable</TabsTrigger>
-          <TabsTrigger value="ar" data-testid="tab-ar">Accounts Receivable</TabsTrigger>
-          <TabsTrigger value="inventory" data-testid="tab-inventory">Inventory</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="overview" className="space-y-4">
+      {activeNav === "overview" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Link href="/general-ledger">
               <Card className="cursor-pointer hover-elevate">
