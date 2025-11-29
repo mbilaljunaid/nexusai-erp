@@ -31,7 +31,7 @@ export class LeaveController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id') id: string): Promise<void> {
     return this.leaveService.remove(id);
   }
 }

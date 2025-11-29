@@ -31,7 +31,7 @@ export class TimesheetController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id') id: string): Promise<void> {
     return this.timesheetService.remove(id);
   }
 }

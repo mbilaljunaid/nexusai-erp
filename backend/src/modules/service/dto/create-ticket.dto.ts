@@ -1,7 +1,18 @@
+import { IsString, IsEmail } from 'class-validator';
+
 export class CreateTicketDto {
-  subject: string;
-  description: string;
-  priority: string;
-  category: string;
-  customerEmail: string;
+  @IsString()
+  subject!: string;
+
+  @IsString()
+  description!: string;
+
+  @IsString()
+  priority!: string;
+
+  @IsString()
+  category!: string;
+
+  @IsEmail()
+  customerEmail!: string;
 }

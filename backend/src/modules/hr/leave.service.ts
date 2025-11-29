@@ -22,14 +22,14 @@ export class LeaveService {
   }
 
   async findOne(id: string): Promise<Leave | null> {
-    return this.leaves.find(l => l.id === parseInt(id)) || null;
+    return this.leaves.find(l => l.id === parseInt(id)) ?? null;
   }
 
   async update(id: string, updateLeaveDto: Partial<CreateLeaveDto>): Promise<Leave | null> {
     const leave = this.leaves.find(l => l.id === parseInt(id));
     if (!leave) return null;
     Object.assign(leave, updateLeaveDto);
-    return leave;
+    return leave ?? null;
   }
 
   async remove(id: string): Promise<void> {

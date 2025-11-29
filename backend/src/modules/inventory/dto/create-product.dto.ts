@@ -1,12 +1,36 @@
+import { IsString, IsOptional } from 'class-validator';
+
 export class CreateProductDto {
-  sku: string;
-  name: string;
-  category: string;
+  @IsString()
+  sku!: string;
+
+  @IsString()
+  name!: string;
+
+  @IsString()
+  category!: string;
+
+  @IsOptional()
+  @IsString()
   description?: string;
-  price: string;
-  cost: string;
-  stock: string;
-  status: string;
+
+  @IsString()
+  price!: string;
+
+  @IsString()
+  cost!: string;
+
+  @IsString()
+  stock!: string;
+
+  @IsString()
+  status!: string;
+
+  @IsOptional()
+  @IsString()
   supplier?: string;
+
+  @IsOptional()
+  @IsString()
   tags?: string;
 }

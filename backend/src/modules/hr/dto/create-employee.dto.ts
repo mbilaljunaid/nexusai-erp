@@ -1,10 +1,27 @@
+import { IsString, IsEmail } from 'class-validator';
+
 export class CreateEmployeeDto {
-  firstName: string;
-  lastName: string;
-  email: string;
-  department: string;
-  jobTitle: string;
-  hireDate: string;
-  salary: string;
-  status: string;
+  @IsString()
+  firstName!: string;
+
+  @IsString()
+  lastName!: string;
+
+  @IsEmail()
+  email!: string;
+
+  @IsString()
+  department!: string;
+
+  @IsString()
+  jobTitle!: string;
+
+  @IsString()
+  hireDate!: string;
+
+  @IsString()
+  salary!: string;
+
+  @IsString()
+  status!: string;
 }

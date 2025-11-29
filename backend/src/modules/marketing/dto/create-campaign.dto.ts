@@ -1,8 +1,23 @@
+import { IsString, IsOptional } from 'class-validator';
+
 export class CreateCampaignDto {
-  campaignName: string;
-  campaignType: string;
-  startDate: string;
-  endDate: string;
+  @IsString()
+  campaignName!: string;
+
+  @IsString()
+  campaignType!: string;
+
+  @IsString()
+  startDate!: string;
+
+  @IsString()
+  endDate!: string;
+
+  @IsOptional()
+  @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsString()
   audienceSegment?: string;
 }
