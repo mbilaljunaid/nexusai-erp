@@ -9,9 +9,11 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AppSidebar } from "@/components/AppSidebar";
 import { GlobalSearch } from "@/components/GlobalSearch";
+import { TenantSwitcher } from "@/components/TenantSwitcher";
 import { AIAssistant, AIAssistantTrigger } from "@/components/AIAssistant";
 import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
+import { useState } from "react";
 import Dashboard from "@/pages/Dashboard";
 import CRM from "@/pages/CRM";
 import Projects from "@/pages/Projects";
@@ -19,6 +21,8 @@ import Analytics from "@/pages/Analytics";
 import Health from "@/pages/Health";
 import Settings from "@/pages/Settings";
 import Industries from "@/pages/Industries";
+import PlatformAdmin from "@/pages/admin/PlatformAdmin";
+import TenantAdmin from "@/pages/admin/TenantAdmin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -31,6 +35,8 @@ function Router() {
       <Route path="/health" component={Health} />
       <Route path="/settings" component={Settings} />
       <Route path="/industries" component={Industries} />
+      <Route path="/admin/platform" component={PlatformAdmin} />
+      <Route path="/admin/tenant" component={TenantAdmin} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -38,6 +44,7 @@ function Router() {
 
 function AppLayout() {
   const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
+  const [currentTenant, setCurrentTenant] = useState("acme");
 
   const style = {
     "--sidebar-width": "16rem",
@@ -52,8 +59,9 @@ function AppLayout() {
           <header className="flex items-center justify-between gap-4 h-14 px-4 border-b bg-background shrink-0">
             <div className="flex items-center gap-2">
               <SidebarTrigger data-testid="button-sidebar-toggle" />
+              <TenantSwitcher currentTenant={currentTenant} onTenantChange={setCurrentTenant} />
               <div className="text-xs text-muted-foreground font-medium px-2 py-1 rounded bg-muted hidden md:block">
-                Acme Corp • US • English
+                US • English
               </div>
               <GlobalSearch />
             </div>

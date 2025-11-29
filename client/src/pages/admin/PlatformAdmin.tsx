@@ -1,0 +1,391 @@
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Building2,
+  Users,
+  Settings,
+  Shield,
+  Database,
+  Zap,
+  AlertTriangle,
+  TrendingUp,
+  Plus,
+  MoreVertical,
+} from "lucide-react";
+
+interface Tenant {
+  id: string;
+  name: string;
+  company: string;
+  status: "active" | "trial" | "inactive";
+  users: number;
+  storage: number;
+  plan: "starter" | "professional" | "enterprise";
+  createdAt: string;
+  aiCreditsUsed: number;
+}
+
+export default function PlatformAdmin() {
+  const [selectedTenant, setSelectedTenant] = useState<string | null>(null);
+
+  // todo: remove mock functionality
+  const tenants: Tenant[] = [
+    {
+      id: "tenant-1",
+      name: "Acme Corp",
+      company: "Acme Corporation",
+      status: "active",
+      users: 245,
+      storage: 450,
+      plan: "enterprise",
+      createdAt: "2024-01-15",
+      aiCreditsUsed: 12500,
+    },
+    {
+      id: "tenant-2",
+      name: "TechStart Inc",
+      company: "TechStart Industries",
+      status: "active",
+      users: 78,
+      storage: 120,
+      plan: "professional",
+      createdAt: "2024-03-20",
+      aiCreditsUsed: 2300,
+    },
+    {
+      id: "tenant-3",
+      name: "Global Solutions",
+      company: "Global Solutions Ltd",
+      status: "trial",
+      users: 15,
+      storage: 25,
+      plan: "starter",
+      createdAt: "2024-11-20",
+      aiCreditsUsed: 450,
+    },
+  ];
+
+  const systemStats = {
+    totalTenants: 247,
+    activeUsers: 5234,
+    totalStorage: 12480,
+    systemUptime: 99.98,
+    aiRequestsToday: 45230,
+    avgResponseTime: 142,
+  };
+
+  const statusConfig = {
+    active: { bg: "bg-green-500/10", text: "text-green-600", label: "Active" },
+    trial: { bg: "bg-blue-500/10", text: "text-blue-600", label: "Trial" },
+    inactive: { bg: "bg-red-500/10", text: "text-red-600", label: "Inactive" },
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold">Platform Admin</h1>
+        <p className="text-muted-foreground text-sm">Manage all tenants, system configuration, and platform health</p>
+      </div>
+
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
+          <TabsTrigger value="tenants" data-testid="tab-tenants">Tenants</TabsTrigger>
+          <TabsTrigger value="features" data-testid="tab-features">Features & Licensing</TabsTrigger>
+          <TabsTrigger value="system" data-testid="tab-system">System Config</TabsTrigger>
+          <TabsTrigger value="security" data-testid="tab-security">Security & Compliance</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md bg-blue-500/10">
+                    <Building2 className="h-4 w-4 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold">{systemStats.totalTenants}</p>
+                    <p className="text-xs text-muted-foreground">Total Tenants</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md bg-green-500/10">
+                    <Users className="h-4 w-4 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold">{systemStats.activeUsers}K</p>
+                    <p className="text-xs text-muted-foreground">Active Users</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md bg-purple-500/10">
+                    <Zap className="h-4 w-4 text-purple-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold">{systemStats.aiRequestsToday}K</p>
+                    <p className="text-xs text-muted-foreground">AI Requests Today</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">System Health</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Platform Uptime</span>
+                  <span className="font-mono">{systemStats.systemUptime}%</span>
+                </div>
+                <Progress value={systemStats.systemUptime} className="h-2" />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Avg Response Time</span>
+                  <span className="font-mono">{systemStats.avgResponseTime}ms</span>
+                </div>
+                <Progress value={Math.min((1000 - systemStats.avgResponseTime) / 10, 100)} className="h-2" />
+              </div>
+              <div className="pt-2 border-t text-xs text-muted-foreground">
+                All systems operational. Last checked: 2 minutes ago
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Resource Utilization</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Total Storage Used</span>
+                  <span className="font-mono">{systemStats.totalStorage}GB</span>
+                </div>
+                <Progress value={65} className="h-2" />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Database Capacity</span>
+                  <span className="font-mono">8.2TB / 10TB</span>
+                </div>
+                <Progress value={82} className="h-2" />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="tenants" className="space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <Input placeholder="Search tenants..." className="max-w-sm" data-testid="input-search-tenants" />
+            <Button data-testid="button-add-tenant">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Tenant
+            </Button>
+          </div>
+
+          <div className="border rounded-lg overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b bg-muted/50">
+                  <th className="px-4 py-2 text-left font-medium">Tenant</th>
+                  <th className="px-4 py-2 text-left font-medium">Status</th>
+                  <th className="px-4 py-2 text-left font-medium">Plan</th>
+                  <th className="px-4 py-2 text-left font-medium">Users</th>
+                  <th className="px-4 py-2 text-left font-medium">AI Credits</th>
+                  <th className="px-4 py-2 text-left font-medium">Created</th>
+                  <th className="px-4 py-2 text-right font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tenants.map((tenant) => {
+                  const statusCfg = statusConfig[tenant.status];
+                  return (
+                    <tr key={tenant.id} className="border-b hover:bg-muted/50" data-testid={`row-tenant-${tenant.id}`}>
+                      <td className="px-4 py-3">
+                        <div>
+                          <p className="font-medium">{tenant.name}</p>
+                          <p className="text-xs text-muted-foreground">{tenant.company}</p>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant="secondary" className={`${statusCfg.bg} ${statusCfg.text}`}>
+                          {statusCfg.label}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-xs capitalize">{tenant.plan}</td>
+                      <td className="px-4 py-3 font-mono">{tenant.users}</td>
+                      <td className="px-4 py-3 font-mono">{tenant.aiCreditsUsed.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-xs">{tenant.createdAt}</td>
+                      <td className="px-4 py-3 text-right">
+                        <Button variant="ghost" size="icon" data-testid={`button-tenant-actions-${tenant.id}`}>
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="features" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Available Features</CardTitle>
+              <CardDescription>Enable/disable features available to all tenants</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { name: "ERP & Finance Module", enabled: true },
+                { name: "CRM & Sales", enabled: true },
+                { name: "Project Management", enabled: true },
+                { name: "HR & Talent", enabled: true },
+                { name: "Service & Support", enabled: true },
+                { name: "Marketing Automation", enabled: false },
+                { name: "Analytics & BI", enabled: true },
+                { name: "BPM & Workflow", enabled: true },
+                { name: "AI Copilot", enabled: true },
+                { name: "Integration Hub", enabled: true },
+              ].map((feature) => (
+                <div key={feature.name} className="flex items-center justify-between p-3 rounded-md border">
+                  <span className="text-sm font-medium">{feature.name}</span>
+                  <Switch checked={feature.enabled} data-testid={`switch-feature-${feature.name.toLowerCase()}`} />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Plan Tiers</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { name: "Starter", tenants: 42, monthlyARR: "$51,200" },
+                { name: "Professional", tenants: 156, monthlyARR: "$234,500" },
+                { name: "Enterprise", tenants: 49, monthlyARR: "$892,300" },
+              ].map((plan) => (
+                <div key={plan.name} className="p-4 rounded-md border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{plan.name}</p>
+                      <p className="text-xs text-muted-foreground">{plan.tenants} tenants</p>
+                    </div>
+                    <p className="font-mono font-semibold">{plan.monthlyARR}</p>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="system" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Global Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label>System Name</Label>
+                <Input defaultValue="NexusAI" data-testid="input-system-name" />
+              </div>
+              <div className="space-y-2">
+                <Label>Default Timezone</Label>
+                <Select defaultValue="utc">
+                  <SelectTrigger data-testid="select-timezone">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="utc">UTC</SelectItem>
+                    <SelectItem value="est">Eastern Time</SelectItem>
+                    <SelectItem value="cst">Central Time</SelectItem>
+                    <SelectItem value="pst">Pacific Time</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Default Language</Label>
+                <Select defaultValue="en">
+                  <SelectTrigger data-testid="select-language">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="es">Spanish</SelectItem>
+                    <SelectItem value="fr">French</SelectItem>
+                    <SelectItem value="de">German</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Allow Tenant SSO</p>
+                  <p className="text-xs text-muted-foreground">Enable Single Sign-On for all tenants</p>
+                </div>
+                <Switch defaultChecked data-testid="switch-sso" />
+              </div>
+              <Button data-testid="button-save-settings">Save Settings</Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Compliance Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {[
+                { standard: "SOC 2 Type II", status: "compliant", lastAudit: "2024-10-15" },
+                { standard: "GDPR", status: "compliant", lastAudit: "2024-11-01" },
+                { standard: "HIPAA", status: "compliant", lastAudit: "2024-09-20" },
+                { standard: "ISO 27001", status: "in_progress", lastAudit: "2024-08-10" },
+              ].map((compliance) => (
+                <div key={compliance.standard} className="flex items-center justify-between p-3 rounded-md border">
+                  <div>
+                    <p className="font-medium text-sm">{compliance.standard}</p>
+                    <p className="text-xs text-muted-foreground">Last audit: {compliance.lastAudit}</p>
+                  </div>
+                  <Badge variant="secondary" className={compliance.status === "compliant" ? "bg-green-500/10 text-green-600" : "bg-yellow-500/10 text-yellow-600"}>
+                    {compliance.status === "compliant" ? "Compliant" : "In Progress"}
+                  </Badge>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

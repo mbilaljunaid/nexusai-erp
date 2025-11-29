@@ -52,6 +52,11 @@ const systemNavItems = [
   { title: "Settings", icon: SettingsIcon, href: "/settings" },
 ];
 
+const adminNavItems = [
+  { title: "Platform Admin", icon: Shield, href: "/admin/platform", badge: "Platform" },
+  { title: "Tenant Admin", icon: Building2, href: "/admin/tenant", badge: "Tenant" },
+];
+
 const industryNavItems = [
   { title: "Manufacturing", href: "/industry/manufacturing" },
   { title: "Retail & E-Commerce", href: "/industry/retail" },
@@ -155,6 +160,28 @@ export function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
           )}
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Admin</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {adminNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={location === item.href}
+                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
