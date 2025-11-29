@@ -68,12 +68,12 @@ export function BomForm() {
         productId: formData.productId,
         description: formData.description,
         uom: formData.uom,
-        quantity: parseFloat(formData.quantity),
+        quantity: formData.quantity,
         status: formData.status,
         revision: parseInt(formData.revision),
       };
 
-      const response = await apiRequest("POST", "/api/manufacturing/boms", bomData);
+      const response: any = await apiRequest("POST", "/api/manufacturing/boms", bomData);
       
       // Add BOM lines
       for (const line of bomLines) {
@@ -82,9 +82,9 @@ export function BomForm() {
             bomId: response.id,
             lineNumber: bomLines.indexOf(line) + 1,
             componentId: line.componentId,
-            quantity: parseFloat(line.quantity),
+            quantity: line.quantity,
             uom: line.uom,
-            scrapPercentage: parseFloat(line.scrapPercentage),
+            scrapPercentage: line.scrapPercentage,
           });
         }
       }

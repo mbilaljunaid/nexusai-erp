@@ -95,8 +95,17 @@ export class MemStorage implements IStorage {
   async createBom(insertBom: InsertBom): Promise<Bom> {
     const id = randomUUID();
     const bom: Bom = {
-      ...insertBom,
       id,
+      name: insertBom.name,
+      productId: insertBom.productId,
+      description: insertBom.description ?? null,
+      status: insertBom.status ?? "active",
+      uom: insertBom.uom,
+      quantity: String(insertBom.quantity),
+      yield: insertBom.yield ?? "100",
+      revision: insertBom.revision ?? 1,
+      effectiveDate: insertBom.effectiveDate ?? null,
+      endDate: insertBom.endDate ?? null,
       createdAt: new Date(),
     };
     this.boms.set(id, bom);
@@ -106,7 +115,19 @@ export class MemStorage implements IStorage {
   async updateBom(id: string, insertBom: Partial<InsertBom>): Promise<Bom | undefined> {
     const existing = this.boms.get(id);
     if (!existing) return undefined;
-    const updated = { ...existing, ...insertBom };
+    const updated: Bom = {
+      ...existing,
+      ...(insertBom.name !== undefined && { name: insertBom.name }),
+      ...(insertBom.productId !== undefined && { productId: insertBom.productId }),
+      ...(insertBom.description !== undefined && { description: insertBom.description ?? null }),
+      ...(insertBom.status !== undefined && { status: insertBom.status ?? "active" }),
+      ...(insertBom.uom !== undefined && { uom: insertBom.uom }),
+      ...(insertBom.quantity !== undefined && { quantity: String(insertBom.quantity) }),
+      ...(insertBom.yield !== undefined && { yield: insertBom.yield ?? "100" }),
+      ...(insertBom.revision !== undefined && { revision: insertBom.revision ?? 1 }),
+      ...(insertBom.effectiveDate !== undefined && { effectiveDate: insertBom.effectiveDate ?? null }),
+      ...(insertBom.endDate !== undefined && { endDate: insertBom.endDate ?? null }),
+    };
     this.boms.set(id, updated);
     return updated;
   }
@@ -124,7 +145,16 @@ export class MemStorage implements IStorage {
 
   async addBomLine(insertLine: InsertBomLine): Promise<BomLine> {
     const id = randomUUID();
-    const line: BomLine = { ...insertLine, id };
+    const line: BomLine = {
+      id,
+      bomId: insertLine.bomId,
+      lineNumber: insertLine.lineNumber,
+      componentId: insertLine.componentId,
+      quantity: String(insertLine.quantity),
+      uom: insertLine.uom,
+      scrapPercentage: insertLine.scrapPercentage ?? "0",
+      notes: insertLine.notes ?? null,
+    };
     this.bomLines.set(id, line);
     return line;
   }
@@ -132,7 +162,14 @@ export class MemStorage implements IStorage {
   async updateBomLine(id: string, insertLine: Partial<InsertBomLine>): Promise<BomLine | undefined> {
     const existing = this.bomLines.get(id);
     if (!existing) return undefined;
-    const updated = { ...existing, ...insertLine };
+    const updated: BomLine = {
+      ...existing,
+      ...(insertLine.quantity !== undefined && { quantity: String(insertLine.quantity) }),
+      ...(insertLine.scrapPercentage !== undefined && { scrapPercentage: insertLine.scrapPercentage ?? "0" }),
+      ...(insertLine.notes !== undefined && { notes: insertLine.notes ?? null }),
+      ...(insertLine.componentId !== undefined && { componentId: insertLine.componentId }),
+      ...(insertLine.uom !== undefined && { uom: insertLine.uom }),
+    };
     this.bomLines.set(id, updated);
     return updated;
   }
@@ -154,9 +191,19 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const woNumber = `WO-${Date.now()}`;
     const wo: WorkOrder = {
-      ...insertWo,
       id,
       woNumber,
+      bomId: insertWo.bomId,
+      quantity: String(insertWo.quantity),
+      status: insertWo.status ?? "pending",
+      priorityLevel: insertWo.priorityLevel ?? "normal",
+      plannedStartDate: insertWo.plannedStartDate ?? null,
+      plannedEndDate: insertWo.plannedEndDate ?? null,
+      actualStartDate: insertWo.actualStartDate ?? null,
+      actualEndDate: insertWo.actualEndDate ?? null,
+      assignedTo: insertWo.assignedTo ?? null,
+      location: insertWo.location ?? null,
+      notes: insertWo.notes ?? null,
       createdAt: new Date(),
     };
     this.workOrders.set(id, wo);
@@ -166,7 +213,19 @@ export class MemStorage implements IStorage {
   async updateWorkOrder(id: string, insertWo: Partial<InsertWorkOrder>): Promise<WorkOrder | undefined> {
     const existing = this.workOrders.get(id);
     if (!existing) return undefined;
-    const updated = { ...existing, ...insertWo };
+    const updated: WorkOrder = {
+      ...existing,
+      ...(insertWo.quantity !== undefined && { quantity: String(insertWo.quantity) }),
+      ...(insertWo.status !== undefined && { status: insertWo.status ?? "pending" }),
+      ...(insertWo.priorityLevel !== undefined && { priorityLevel: insertWo.priorityLevel ?? "normal" }),
+      ...(insertWo.plannedStartDate !== undefined && { plannedStartDate: insertWo.plannedStartDate ?? null }),
+      ...(insertWo.plannedEndDate !== undefined && { plannedEndDate: insertWo.plannedEndDate ?? null }),
+      ...(insertWo.actualStartDate !== undefined && { actualStartDate: insertWo.actualStartDate ?? null }),
+      ...(insertWo.actualEndDate !== undefined && { actualEndDate: insertWo.actualEndDate ?? null }),
+      ...(insertWo.assignedTo !== undefined && { assignedTo: insertWo.assignedTo ?? null }),
+      ...(insertWo.location !== undefined && { location: insertWo.location ?? null }),
+      ...(insertWo.notes !== undefined && { notes: insertWo.notes ?? null }),
+    };
     this.workOrders.set(id, updated);
     return updated;
   }
@@ -188,9 +247,17 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const poNumber = `PO-${Date.now()}`;
     const po: ProductionOrder = {
-      ...insertPo,
       id,
       poNumber,
+      productId: insertPo.productId,
+      quantity: String(insertPo.quantity),
+      dueDate: insertPo.dueDate,
+      status: insertPo.status ?? "draft",
+      releaseDate: insertPo.releaseDate ?? null,
+      completionDate: insertPo.completionDate ?? null,
+      bomId: insertPo.bomId ?? null,
+      warehouse: insertPo.warehouse ?? null,
+      notes: insertPo.notes ?? null,
       createdAt: new Date(),
     };
     this.productionOrders.set(id, po);
@@ -200,7 +267,17 @@ export class MemStorage implements IStorage {
   async updateProductionOrder(id: string, insertPo: Partial<InsertProductionOrder>): Promise<ProductionOrder | undefined> {
     const existing = this.productionOrders.get(id);
     if (!existing) return undefined;
-    const updated = { ...existing, ...insertPo };
+    const updated: ProductionOrder = {
+      ...existing,
+      ...(insertPo.quantity !== undefined && { quantity: String(insertPo.quantity) }),
+      ...(insertPo.status !== undefined && { status: insertPo.status ?? "draft" }),
+      ...(insertPo.releaseDate !== undefined && { releaseDate: insertPo.releaseDate ?? null }),
+      ...(insertPo.completionDate !== undefined && { completionDate: insertPo.completionDate ?? null }),
+      ...(insertPo.bomId !== undefined && { bomId: insertPo.bomId ?? null }),
+      ...(insertPo.warehouse !== undefined && { warehouse: insertPo.warehouse ?? null }),
+      ...(insertPo.notes !== undefined && { notes: insertPo.notes ?? null }),
+      ...(insertPo.dueDate !== undefined && { dueDate: insertPo.dueDate }),
+    };
     this.productionOrders.set(id, updated);
     return updated;
   }
@@ -225,8 +302,15 @@ export class MemStorage implements IStorage {
   async createQualityCheck(insertQc: InsertQualityCheck): Promise<QualityCheck> {
     const id = randomUUID();
     const qc: QualityCheck = {
-      ...insertQc,
       id,
+      workOrderId: insertQc.workOrderId,
+      checkType: insertQc.checkType,
+      quantity: String(insertQc.quantity),
+      quantityPassed: String(insertQc.quantityPassed),
+      quantityFailed: insertQc.quantityFailed ?? "0",
+      defects: insertQc.defects ?? null,
+      notes: insertQc.notes ?? null,
+      checkedBy: insertQc.checkedBy ?? null,
       checkDate: new Date(),
     };
     this.qualityChecks.set(id, qc);
@@ -236,7 +320,16 @@ export class MemStorage implements IStorage {
   async updateQualityCheck(id: string, insertQc: Partial<InsertQualityCheck>): Promise<QualityCheck | undefined> {
     const existing = this.qualityChecks.get(id);
     if (!existing) return undefined;
-    const updated = { ...existing, ...insertQc };
+    const updated: QualityCheck = {
+      ...existing,
+      ...(insertQc.quantity !== undefined && { quantity: String(insertQc.quantity) }),
+      ...(insertQc.quantityPassed !== undefined && { quantityPassed: String(insertQc.quantityPassed) }),
+      ...(insertQc.quantityFailed !== undefined && { quantityFailed: insertQc.quantityFailed ?? "0" }),
+      ...(insertQc.defects !== undefined && { defects: insertQc.defects ?? null }),
+      ...(insertQc.notes !== undefined && { notes: insertQc.notes ?? null }),
+      ...(insertQc.checkedBy !== undefined && { checkedBy: insertQc.checkedBy ?? null }),
+      ...(insertQc.checkType !== undefined && { checkType: insertQc.checkType }),
+    };
     this.qualityChecks.set(id, updated);
     return updated;
   }

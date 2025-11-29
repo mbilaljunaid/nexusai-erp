@@ -46,6 +46,7 @@ import EPMPage from "@/pages/EPMPage";
 import AIAssistantPage from "@/pages/AIAssistant";
 import FieldService from "@/pages/FieldService";
 import Billing from "@/pages/Billing";
+import Manufacturing from "@/pages/Manufacturing";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -62,6 +63,7 @@ function Router() {
       <Route path="/admin/platform" component={PlatformAdmin} />
       <Route path="/admin/tenant" component={TenantAdmin} />
       <Route path="/erp" component={ERP} />
+      <Route path="/manufacturing" component={Manufacturing} />
       <Route path="/epm" component={EPMPage} />
       <Route path="/hr" component={HR} />
       <Route path="/service" component={Service} />
