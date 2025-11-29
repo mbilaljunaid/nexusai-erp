@@ -199,7 +199,6 @@ import ProcurementManagement from "@/pages/ProcurementManagement";
 import ContractManagement from "@/pages/ContractManagement";
 import SupplyChainOptimization from "@/pages/SupplyChainOptimization";
 import AssetManagement from "@/pages/AssetManagement";
-import KnowledgeBase from "@/pages/KnowledgeBase";
 import CommunityForum from "@/pages/CommunityForum";
 import TrainingAcademy from "@/pages/TrainingAcademy";
 import NotFound from "@/pages/not-found";
