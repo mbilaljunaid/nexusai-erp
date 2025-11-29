@@ -1145,3 +1145,205 @@ export const insertThreeWayMatchSchema = createInsertSchema(threeWayMatches).omi
 
 export type InsertThreeWayMatch = z.infer<typeof insertThreeWayMatchSchema>;
 export type ThreeWayMatch = typeof threeWayMatches.$inferSelect;
+
+// ========== PHASE 4: FINANCE & ACCOUNTING MODULE ==========
+
+// Chart of Accounts
+export const chartOfAccounts = pgTable("chart_of_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  accountCode: varchar("account_code").notNull().unique(),
+  accountName: varchar("account_name").notNull(),
+  accountType: varchar("account_type").notNull(), // Asset, Liability, Equity, Revenue, Expense
+  normalBalance: varchar("normal_balance"), // Debit, Credit
+  isActive: boolean("is_active").default(true),
+  parentAccountId: varchar("parent_account_id"),
+  taxCode: varchar("tax_code"),
+  description: text("description"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCoaSchema = createInsertSchema(chartOfAccounts).omit({ id: true, createdAt: true }).extend({
+  accountCode: z.string().min(1),
+  accountName: z.string().min(1),
+  accountType: z.enum(["Asset", "Liability", "Equity", "Revenue", "Expense"]),
+  normalBalance: z.enum(["Debit", "Credit"]).optional(),
+  isActive: z.boolean().optional(),
+  parentAccountId: z.string().optional().nullable(),
+  taxCode: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+});
+
+export type InsertCoa = z.infer<typeof insertCoaSchema>;
+export type ChartOfAccount = typeof chartOfAccounts.$inferSelect;
+
+// General Ledger Entries
+export const generalLedgerEntries = pgTable("general_ledger_entries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  journalEntryId: varchar("journal_entry_id").notNull(),
+  accountId: varchar("account_id").notNull(),
+  debitAmount: numeric("debit_amount", { precision: 18, scale: 2 }).default("0"),
+  creditAmount: numeric("credit_amount", { precision: 18, scale: 2 }).default("0"),
+  description: text("description"),
+  referenceDocType: varchar("reference_doc_type"), // PO, Invoice, etc
+  referenceDocId: varchar("reference_doc_id"),
+  transactionDate: timestamp("transaction_date"),
+  postedDate: timestamp("posted_date"),
+  isPosted: boolean("is_posted").default(false),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGleSchema = createInsertSchema(generalLedgerEntries).omit({ id: true, createdAt: true, postedDate: true }).extend({
+  journalEntryId: z.string().min(1),
+  accountId: z.string().min(1),
+  debitAmount: z.string().optional(),
+  creditAmount: z.string().optional(),
+  description: z.string().optional(),
+  referenceDocType: z.string().optional(),
+  referenceDocId: z.string().optional(),
+  transactionDate: z.date().optional(),
+  isPosted: z.boolean().optional(),
+});
+
+export type InsertGle = z.infer<typeof insertGleSchema>;
+export type GeneralLedgerEntry = typeof generalLedgerEntries.$inferSelect;
+
+// AP Invoices (Accounts Payable)
+export const apInvoices = pgTable("ap_invoices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  invoiceNumber: varchar("invoice_number").notNull().unique(),
+  vendorId: varchar("vendor_id").notNull(),
+  invoiceDate: timestamp("invoice_date").notNull(),
+  dueDate: timestamp("due_date"),
+  invoiceAmount: numeric("invoice_amount", { precision: 18, scale: 2 }).notNull(),
+  paidAmount: numeric("paid_amount", { precision: 18, scale: 2 }).default("0"),
+  status: varchar("status").default("draft"), // draft, submitted, approved, paid, rejected
+  approvalStatus: varchar("approval_status"), // pending, approved, rejected
+  description: text("description"),
+  glPosted: boolean("gl_posted").default(false),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertApInvoiceSchema = createInsertSchema(apInvoices).omit({ id: true, createdAt: true, glPosted: true }).extend({
+  invoiceNumber: z.string().min(1),
+  vendorId: z.string().min(1),
+  invoiceDate: z.date(),
+  dueDate: z.date().optional(),
+  invoiceAmount: z.string().min(1),
+  paidAmount: z.string().optional(),
+  status: z.enum(["draft", "submitted", "approved", "paid", "rejected"]).optional(),
+  approvalStatus: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export type InsertApInvoice = z.infer<typeof insertApInvoiceSchema>;
+export type ApInvoice = typeof apInvoices.$inferSelect;
+
+// AR Invoices (Accounts Receivable)
+export const arInvoices = pgTable("ar_invoices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  invoiceNumber: varchar("invoice_number").notNull().unique(),
+  customerId: varchar("customer_id").notNull(),
+  invoiceDate: timestamp("invoice_date").notNull(),
+  dueDate: timestamp("due_date"),
+  invoiceAmount: numeric("invoice_amount", { precision: 18, scale: 2 }).notNull(),
+  receivedAmount: numeric("received_amount", { precision: 18, scale: 2 }).default("0"),
+  status: varchar("status").default("draft"), // draft, issued, overdue, paid, cancelled
+  description: text("description"),
+  glPosted: boolean("gl_posted").default(false),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArInvoiceSchema = createInsertSchema(arInvoices).omit({ id: true, createdAt: true, glPosted: true }).extend({
+  invoiceNumber: z.string().min(1),
+  customerId: z.string().min(1),
+  invoiceDate: z.date(),
+  dueDate: z.date().optional(),
+  invoiceAmount: z.string().min(1),
+  receivedAmount: z.string().optional(),
+  status: z.enum(["draft", "issued", "overdue", "paid", "cancelled"]).optional(),
+  description: z.string().optional(),
+});
+
+export type InsertArInvoice = z.infer<typeof insertArInvoiceSchema>;
+export type ArInvoice = typeof arInvoices.$inferSelect;
+
+// Bank Accounts
+export const bankAccounts = pgTable("bank_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  accountNumber: varchar("account_number").notNull().unique(),
+  bankName: varchar("bank_name").notNull(),
+  currency: varchar("currency").default("USD"),
+  accountBalance: numeric("account_balance", { precision: 18, scale: 2 }).default("0"),
+  glAccountId: varchar("gl_account_id"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertBankAccountSchema = createInsertSchema(bankAccounts).omit({ id: true, createdAt: true }).extend({
+  accountNumber: z.string().min(1),
+  bankName: z.string().min(1),
+  currency: z.string().optional(),
+  accountBalance: z.string().optional(),
+  glAccountId: z.string().optional(),
+  isActive: z.boolean().optional(),
+});
+
+export type InsertBankAccount = z.infer<typeof insertBankAccountSchema>;
+export type BankAccount = typeof bankAccounts.$inferSelect;
+
+// Bank Reconciliations
+export const bankReconciliations = pgTable("bank_reconciliations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  bankAccountId: varchar("bank_account_id").notNull(),
+  statementDate: timestamp("statement_date").notNull(),
+  statementBalance: numeric("statement_balance", { precision: 18, scale: 2 }).notNull(),
+  bookBalance: numeric("book_balance", { precision: 18, scale: 2 }).notNull(),
+  difference: numeric("difference", { precision: 18, scale: 2 }).default("0"),
+  status: varchar("status").default("pending"), // pending, reconciled, error
+  notes: text("notes"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertBankRecSchema = createInsertSchema(bankReconciliations).omit({ id: true, createdAt: true, difference: true }).extend({
+  bankAccountId: z.string().min(1),
+  statementDate: z.date(),
+  statementBalance: z.string().min(1),
+  bookBalance: z.string().min(1),
+  status: z.enum(["pending", "reconciled", "error"]).optional(),
+  notes: z.string().optional(),
+});
+
+export type InsertBankRec = z.infer<typeof insertBankRecSchema>;
+export type BankReconciliation = typeof bankReconciliations.$inferSelect;
+
+// Financial Statements (P&L, Balance Sheet)
+export const financialStatements = pgTable("financial_statements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  statementType: varchar("statement_type").notNull(), // P&L, BalanceSheet, CashFlow
+  periodStartDate: timestamp("period_start_date").notNull(),
+  periodEndDate: timestamp("period_end_date").notNull(),
+  company: varchar("company"),
+  revenue: numeric("revenue", { precision: 18, scale: 2 }).default("0"),
+  expenses: numeric("expenses", { precision: 18, scale: 2 }).default("0"),
+  netIncome: numeric("net_income", { precision: 18, scale: 2 }).default("0"),
+  totalAssets: numeric("total_assets", { precision: 18, scale: 2 }).default("0"),
+  totalLiabilities: numeric("total_liabilities", { precision: 18, scale: 2 }).default("0"),
+  totalEquity: numeric("total_equity", { precision: 18, scale: 2 }).default("0"),
+  generatedAt: timestamp("generated_at").default(sql`now()`),
+});
+
+export const insertFinStmtSchema = createInsertSchema(financialStatements).omit({ id: true, generatedAt: true }).extend({
+  statementType: z.enum(["P&L", "BalanceSheet", "CashFlow"]),
+  periodStartDate: z.date(),
+  periodEndDate: z.date(),
+  company: z.string().optional(),
+  revenue: z.string().optional(),
+  expenses: z.string().optional(),
+  netIncome: z.string().optional(),
+  totalAssets: z.string().optional(),
+  totalLiabilities: z.string().optional(),
+  totalEquity: z.string().optional(),
+});
+
+export type InsertFinStmt = z.infer<typeof insertFinStmtSchema>;
+export type FinancialStatement = typeof financialStatements.$inferSelect;

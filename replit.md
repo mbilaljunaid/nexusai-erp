@@ -1,49 +1,46 @@
-# NexusAI - Enterprise AI-First Platform v4.0
+# NexusAI - Enterprise AI-First Platform
 
 ## Overview
-NexusAI is an ambitious project aiming to build a production-grade, AI-first enterprise SaaS platform. This platform is designed to achieve feature parity with leading enterprise solutions like Salesforce, Odoo Enterprise, Oracle Cloud, Jira, PowerBI, and Zoho One, consolidating their core functionalities into a single, comprehensive system. The vision is to deliver a 100% functional, production-ready, enterprise-grade solution without placeholders or incomplete features. The platform covers a vast array of business functions including Finance, CRM, Procurement, Inventory, Manufacturing, HR, Payroll, Project Management, EPM, Analytics, Customer Support, Marketing, Integrations, Admin, and advanced AI capabilities.
+NexusAI is an ambitious project to build a comprehensive, production-grade enterprise SaaS platform. It aims to integrate functionalities found in major business software like Oracle Cloud, Odoo, Salesforce, Jira, PowerBI, and Zoho One into a single, AI-first solution. The platform is designed to cover over 40 business modules with a target of 251 pages, 180+ backend APIs, 60+ database entities, 100+ validation rules, 12 major workflows, and 8 AI copilots, ultimately providing a complete, fully functional suite for enterprise operations. The business vision is to offer a unified, AI-powered solution that eliminates the need for disparate systems, enhancing efficiency and decision-making across various business functions.
 
 ## User Preferences
-Not specified. The user has not provided any preferences regarding communication style, coding style, workflow, or interaction.
+Not specified. Continuing with enterprise best practices.
 
 ## System Architecture
 
 ### UI/UX Decisions
-The frontend is built using Next.js 14 (or React 18 + Vite) with Shadcn/UI and TailwindCSS for a modern, responsive design. React Hook Form with Zod validation ensures robust form handling, while Zustand or Redux Toolkit manages application state. Visualizations are handled by Recharts and D3, and React Query v5 is used for efficient data fetching. The platform emphasizes a consistent design language with a focus on intuitive user interfaces, including drag-and-drop dashboard builders and custom layouts.
+The platform will feature comprehensive UI for all 40+ business modules, including dashboards, forms, tables, and workflow interfaces. Key design considerations include intuitive navigation, consistent layouts, and responsive design to ensure usability across devices. The goal is to provide a user experience akin to leading enterprise software, with rich interactive elements and data visualization for analytics and forecasting.
 
 ### Technical Implementations
-The system is designed as a full-stack application.
-- **Frontend**: Next.js 14 (or React 18 + Vite), Shadcn/UI, TailwindCSS, React Hook Form, Zod, Zustand/Redux Toolkit, Recharts, D3, React Query v5.
-- **Backend**: Node.js with Express (or NestJS) for robust API development. PostgreSQL is the primary database, managed with Drizzle ORM. Redis is used for caching and sessions. Kafka/RabbitMQ handle asynchronous jobs for scalability.
-- **AI/ML**: Integration with OpenAI API (GPT-4o-mini) powers module-specific copilots and natural language queries. LangChain is used for RAG (Retrieval Augmented Generation) pipelines, and Milvus/Weaviate serve as vector databases for semantic search.
-- **DevOps**: Docker and Docker Compose for containerization, GitHub Actions for CI/CD, Sentry/DataDog for error tracking and monitoring, and Winston/Pino for logging. Testing frameworks include Jest and Cypress.
+The system is being developed as a full-stack application.
+-   **Modules:** The platform is structured around 40 core business modules, including Finance & Accounting, HRMS, Payroll, CRM & Sales, Inventory & Warehouse, Manufacturing, EPM, Customer Support, Marketing, Document Management, Compliance & BPM, Website & CMS, and an AI Assistants Layer.
+-   **API-First Approach:** Over 180 APIs will facilitate communication between the frontend and backend, supporting CRUD operations and complex business logic.
+-   **Database Design:** A comprehensive database schema with 60+ entities will underpin the platform, ensuring data integrity and scalability.
+-   **Validation & Business Logic:** Over 100 validation rules and 12 major workflows will enforce business logic, including double-entry bookkeeping, three-way matching, multi-level approvals, and tax compliance.
+-   **Enterprise Features:** Mandatory features include multi-company/multi-currency support, multi-language, RBAC with granular permissions, audit trails, custom fields, configurable approval workflows, real-time updates, SSO, and GDPR compliance.
+-   **AI Integration:** AI features are embedded across modules, offering capabilities like anomaly detection, auto-categorization, predictive analytics, auto-response, sentiment analysis, demand forecasting, and module-specific copilots.
 
 ### Feature Specifications
-The platform is structured into several tiers of modules, covering extensive enterprise functionalities:
-- **Core Modules**: Finance & Accounting (GL, AP/AR, Statements, Bank Reconciliation), CRM & Sales (Lead/Opportunity Management, Quote Builder, Sales Analytics), Procurement & Vendors (RFQ, PO, 3-way matching), Inventory & Warehouse (Stock Movements, BOM, Valuation), Manufacturing (Work Orders, Routing, QC, MRP).
-- **Human Capital**: HRMS & Employee Management (Employee Directory, Leave, Performance, Onboarding), Payroll & Compensation (Payroll Runs, Payslips, Tax Calculation).
-- **Project Management**: Epics, Stories, Tasks, Agile Boards (Kanban, Scrum), Time Tracking, Roadmaps.
-- **Business Analytics & EPM**: Enterprise Performance Management (Budgeting, Forecasting, Consolidation), Analytics, BI & Dashboards (Customizable Dashboards, Report Builder, KPIs).
-- **Customer Support & Marketing**: Ticket Management, Live Chat, Knowledge Base, Campaign Management, Marketing Automation.
-- **Integrations & Admin**: Integration Hub, API Gateway, Admin Console (User/Role Management, RBAC, Multi-tenancy, Customizations, Audit Trail).
-- **AI & Automation**: AI Assistants/Copilots (Sales, Finance, HR, etc.), Natural Language Queries, Anomaly Detection, Predictive Analytics, Business Process Management (BPMN designer, Workflow automation).
-
-### System Design Choices
-- **Multi-tenancy and RBAC**: Core administrative features include robust Role-Based Access Control and multi-tenant architecture to support diverse organizational structures and user permissions.
-- **Workflow-driven**: Extensive use of defined workflows for critical business processes (e.g., Period Close, Lead-to-Order, Hiring, Sprint Cycle, PO Cycle) ensures process adherence and automation.
-- **Data Integrity**: Emphasis on strong validation rules for financial transactions (double-entry), CRM data, HR operations, and procurement to maintain data accuracy.
-- **Scalability**: Asynchronous job processing via Kafka/RabbitMQ, caching with Redis, and a microservices-oriented approach (implied by extensive API endpoints) support high-volume operations.
-- **AI-First**: AI capabilities are deeply integrated across modules, offering intelligent assistance, predictions, and automation rather than being an add-on.
+-   **Finance & Accounting:** Chart of Accounts, GL, AP/AR, Bank Reconciliation, Asset Management, Tax Engine, Financial Statements, Period Close.
+-   **HRMS & Payroll:** Employee Management, Leave, Attendance, Payroll Processing, Payslip Generation, Benefits, Gratuity.
+-   **CRM & Sales:** Lead Management, Opportunity Management, Quote Builder, Sales Pipeline, Contract Management, Email Templates.
+-   **Inventory & Warehouse:** Warehouse Management, Stock Movements, BOM, Cycle Count, Reorder Management, Valuation.
+-   **Manufacturing:** Work Orders, Routing & Operations, Production Scheduling, Quality Control, MRP Planning.
+-   **EPM & Analytics:** Budget Planning, Forecasting, Consolidation, Scenario Modeling, KPI Dashboards, Variance Analysis.
+-   **Customer Support:** Ticket Management, Email-to-Ticket, Chat/Messaging, Knowledge Base, SLA & Escalation.
+-   **Marketing & Communication:** Campaign Management, Email Marketing, Landing Page Builder, Lead Capture Forms, SMS/Push Notifications.
+-   **Document & Content:** Document Management & Versioning, Website Builder & CMS, Blog & Content Publishing.
+-   **Compliance, Risk & Audit:** Compliance Framework, Risk Management, Audit Trail, Process Mapping.
+-   **Admin & System:** User & Role Management, Subscription & Billing, Multi-Tenancy, Integration Hub & API Gateway.
+-   **AI & Automation:** AI Assistants/Copilots, Natural Language Queries (RAG), Auto-UAT & Testing, Predictive Analytics & Anomaly Detection.
 
 ## External Dependencies
-- **PostgreSQL**: Primary relational database.
-- **Redis**: Caching and session management.
-- **Kafka/RabbitMQ**: Message brokers for asynchronous processing.
-- **OpenAI API**: For AI model integration (GPT-4o-mini) powering copilots and natural language understanding.
-- **LangChain**: AI framework for building RAG pipelines.
-- **Milvus/Weaviate**: Vector databases for efficient semantic search and embeddings management.
-- **Sentry/DataDog**: Error tracking and monitoring services.
-- **GitHub Actions**: CI/CD pipeline automation.
-- **Zod**: Schema validation library.
-- **Drizzle ORM**: Object-relational mapping for database interaction.
-- **Recharts/D3**: JavaScript libraries for data visualization.
+The replit.md does not explicitly list external dependencies like specific third-party services, APIs, databases, or integrations by name (e.g., AWS, Stripe, PostgreSQL). However, the architecture implies the use of:
+-   **Database System:** A robust relational or NoSQL database to manage the 60+ entities and 75+ tables.
+-   **Payment Gateway:** For subscription and billing management.
+-   **Email Service Provider:** For marketing campaigns and email integrations (e.g., Email to Ticket).
+-   **Messaging/Chat Platform:** For customer support functionalities.
+-   **AI/ML Frameworks/APIs:** To power the 8 AI copilots, predictive analytics, RAG capabilities, and anomaly detection.
+-   **OAuth 2.0 Provider:** For Single Sign-On (SSO) capabilities.
+-   **API Gateway:** For managing API rate limiting, throttling, and security.
+-   **Webhook System:** For external system integrations and notifications.

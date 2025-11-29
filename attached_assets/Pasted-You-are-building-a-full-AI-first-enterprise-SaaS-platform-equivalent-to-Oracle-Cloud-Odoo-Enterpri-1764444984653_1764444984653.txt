@@ -1,0 +1,478 @@
+You are building a full AI-first enterprise SaaS platform, equivalent to Oracle Cloud, Odoo Enterprise, Zoho One, Salesforce, Jira, PowerBI, and an EPM system, combined.
+
+This is NOT a basic app.
+This is NOT a collection of simple forms.
+This is a fully functional, production-grade system with ALL modules, ALL advanced features, ALL backend logic, ALL AI automation, and NO placeholders.
+
+You MUST build complete functionality end to end.
+You MUST connect all frontend forms to real backend logic + database tables.
+You MUST produce backend services, API endpoints, validation, business rules, workflows, jobs, AI pipelines, test cases, and error-handling.
+You MUST include ALL advanced features from the ERP, CRM, HRMS, Project Management, EPM, Analytics, Integrations, and AI modules.
+
+NO “coming soon”.
+NO placeholders.
+NO missing pages.
+NO incomplete APIs.
+NO undefined components.
+NO broken routes.
+
+⸻
+
+███████████████████
+
+1. PLATFORM SCOPE
+
+███████████████████
+
+You are building an AI-first, full-suite enterprise platform including:
+
+✔ ERP
+
+✔ Finance & Accounting
+
+✔ Procurement
+
+✔ Inventory & Warehouse
+
+✔ Manufacturing
+
+✔ Supply Chain
+
+✔ Projects & Tasks
+
+✔ EPM (Budgeting, Forecasting, Consolidation, Scenario Planning)
+
+✔ HRMS + Payroll
+
+✔ CRM + Sales
+
+✔ Marketing
+
+✔ Customer Support Helpdesk
+
+✔ Website Builder + CMS
+
+✔ Email/Communication Suite
+
+✔ Document Management
+
+✔ Compliance, Risk, Audit
+
+✔ Business Process Management (BPM & Mapping)
+
+✔ Integration Hub + API Gateway
+
+✔ Role Management + Subscription Management
+
+✔ Admin Console
+
+✔ AI Automation & AI Assistants
+
+✔ Reporting, Dashboards, Analytics + Embedded Excel + PowerBI-like visuals
+
+✔ Industry Templates & Localizations
+
+You must implement ALL of these modules, fully.
+
+⸻
+
+███████████████████
+
+2. HIGH-LEVEL TECH REQUIREMENTS
+
+███████████████████
+
+Frontend
+	•	Next.js
+	•	Tailwind + Shadcn
+	•	React Hook Form
+	•	State: Zustand or Redux Toolkit
+	•	Charts: Recharts / D3
+	•	File handling: MinIO or local
+
+Backend
+	•	Node.js + NestJS OR Express (choose one, but build full architecture)
+	•	PostgreSQL
+	•	Redis
+	•	Kafka or RabbitMQ
+	•	REST + GraphQL
+	•	WebSockets for real-time features
+	•	Background jobs
+
+AI Layer
+	•	Open-source LLM (Llama, Mistral, Falcon, etc.)
+	•	RAG engine (using LangChain or LlamaIndex)
+	•	Vector DB: Milvus or Weaviate
+	•	AI Copilots for each module
+	•	AI-driven workflows, validations, analysis, error handling
+
+DevOps
+	•	Docker
+	•	CI/CD
+	•	Logging
+	•	Monitoring
+	•	Error tracking
+
+Build all code in full, ready to run.
+
+⸻
+
+███████████████████
+
+3. GLOBAL BUILD RULES
+
+███████████████████
+
+Rule 1 — FULL IMPLEMENTATION
+
+Every module must include:
+	1.	Database schema
+	2.	Backend services
+	3.	API controllers
+	4.	Frontend pages + forms
+	5.	State management
+	6.	Validation rules
+	7.	Business logic
+	8.	Approval workflows
+	9.	Notifications
+	10.	Audit logs
+	11.	Attachments
+	12.	Subtabs & related objects
+	13.	List views with filters
+	14.	Search
+	15.	Import/Export
+	16.	Activity log
+	17.	AI assistant panel
+	18.	Admin controls
+	19.	Formula fields
+	20.	Versioning
+	21.	Change logs
+	22.	Seed data
+	23.	Automated tests
+
+You cannot skip any of these.
+
+⸻
+
+Rule 2 — FRONTEND & BACKEND MUST BE CONNECTED
+
+All forms must:
+
+✔ Submit to backend API
+✔ Load data from backend
+✔ Show validation errors
+✔ Support attachments
+✔ Include lookup fields
+✔ Support pagination, filters, sorting
+
+⸻
+
+Rule 3 — NO PLACEHOLDERS
+
+No:
+	•	“Coming soon”
+	•	“To be added”
+	•	Empty pages
+	•	Missing routes
+	•	Missing APIs
+	•	Dummy buttons
+	•	Static forms
+
+Everything must be real and functional.
+
+⸻
+
+Rule 4 — ADVANCED ENTERPRISE FEATURES ARE MANDATORY
+
+Every module must include enterprise-grade capabilities identical to:
+	•	Oracle Cloud
+	•	Salesforce
+	•	Zoho One
+	•	Odoo Enterprise
+	•	Jira
+	•	PowerBI
+
+This includes (but is NOT limited to):
+
+✔ Multi-company
+
+✔ Multi-currency
+
+✔ Localization & tax logic
+
+✔ Approval workflows
+
+✔ Configurable business rules
+
+✔ Audit trail
+
+✔ Custom fields
+
+✔ Custom forms
+
+✔ Multi-step form wizard
+
+✔ Dashboards
+
+✔ Kanban views
+
+✔ Gantt charts
+
+✔ Time tracking
+
+✔ SLA policies (Jira-style)
+
+✔ AI-driven recommendations
+
+✔ Predictive analytics
+
+✔ Scenario forecasting
+
+✔ Consolidation & eliminations
+
+✔ Process mapping engine
+
+✔ Compliance analytics
+
+✔ Integration builder
+
+✔ Formula engine
+
+✔ Process automation
+
+✔ End-to-end lifecycle flows
+
+⸻
+
+███████████████████
+
+4. BUILD ALL MODULES & FORMS
+
+███████████████████
+
+You must generate every module with full detail, including:
+
+⸻
+
+⭐ ERP MODULES
+
+Finance
+	•	Chart of Accounts
+	•	Journals
+	•	Ledgers
+	•	Subledgers
+	•	AP/AR
+	•	Bank reconciliation
+	•	Asset management
+	•	Depreciation
+	•	Tax engine
+	•	Financial statements
+	•	Period close
+	•	Intercompany & consolidation
+
+Procurement
+	•	RFQs
+	•	POs
+	•	Goods receipt
+	•	Supplier invoices
+	•	Payments
+	•	Three-way matching
+	•	Vendor portal
+
+Inventory
+	•	Warehouses
+	•	Bins & racks
+	•	Stock movements
+	•	GRN
+	•	Cycle count
+	•	Reordering rules
+	•	BOM
+
+Manufacturing
+	•	Work orders
+	•	Routings
+	•	Scheduling
+	•	Costing
+
+⸻
+
+⭐ CRM + SALES (Salesforce level)
+	•	Leads
+	•	Opportunities
+	•	Pipelines
+	•	Quotes
+	•	Contracts
+	•	Email templates
+	•	Auto lead scoring
+	•	Assignment rules
+	•	Dashboards
+
+⸻
+
+⭐ HRMS + PAYROLL
+	•	Hiring
+	•	Onboarding
+	•	Leaves
+	•	Attendance
+	•	Payroll
+	•	Payslips
+	•	Gratuity
+	•	Performance
+	•	Training
+	•	Surveys
+
+⸻
+
+⭐ PROJECT MANAGEMENT (Jira level)
+	•	Epics
+	•	Stories
+	•	Tasks
+	•	Bugs
+	•	Subtasks
+	•	Sprints
+	•	Boards
+	•	Roadmaps
+	•	SLAs
+	•	Time logging
+	•	Releases
+
+⸻
+
+⭐ EPM (Oracle level)
+	•	Budgeting
+	•	Forecasting
+	•	Rolling forecasts
+	•	Scenario modeling
+	•	Driver-based planning
+	•	Allocations
+	•	Consolidations
+	•	Eliminations
+	•	Financial close
+	•	Commentary
+
+⸻
+
+⭐ CUSTOMER SUPPORT (Zoho Desk level)
+	•	Tickets
+	•	Email to ticket
+	•	Chat
+	•	Knowledge base
+	•	SLAs
+	•	Automations
+	•	Escalations
+
+⸻
+
+⭐ MARKETING
+	•	Campaigns
+	•	Landing pages
+	•	Social integration
+	•	Email marketing
+	•	Drip sequences
+	•	Lead capture forms
+
+⸻
+
+⭐ WEBSITE + CMS
+	•	Drag-drop builder
+	•	Pages
+	•	Blogs
+	•	Navigation
+	•	Forms
+
+⸻
+
+⭐ DOCUMENT MANAGEMENT
+	•	File storage
+	•	Folders
+	•	Tags
+	•	Versions
+	•	Permissions
+
+⸻
+
+⭐ COMPLIANCE + AUDIT + BPM
+	•	Process mapping
+	•	Policies
+	•	Audit plans
+	•	Risks
+	•	Controls
+	•	Compliance dashboards
+
+⸻
+
+⭐ ADMIN & SUBSCRIPTION
+	•	User management
+	•	Roles & permissions
+	•	Tenants
+	•	Plans & subscriptions
+	•	Billing
+	•	Usage tracking
+	•	Environments (Dev, Test, Prod)
+
+⸻
+
+⭐ AI-FIRST AUTOMATION (MANDATORY)
+
+Every module must include:
+
+✔ AI Assistant panel
+✔ Natural-language actions
+✔ Natural-language queries
+✔ Auto-fill forms
+✔ Auto-UAT scripts
+✔ Auto-test generation
+✔ Auto-environment setup
+✔ Auto-documentation
+✔ AI-based issue resolution
+✔ RAG search for all documentation
+✔ Predictive analytics
+✔ Auto anomaly detection
+✔ Auto workflow generation
+
+⸻
+
+███████████████████
+
+5. BUILD VALIDATION, TESTS & ERROR HANDLING
+
+███████████████████
+
+You must generate:
+	•	Unit tests
+	•	Integration tests
+	•	API contract tests
+	•	UI tests
+	•	Load tests
+	•	UAT scripts
+	•	Regression suite
+
+Errors must produce:
+	•	Meaningful error messages
+	•	Logged stack traces
+	•	Frontend error boundaries
+	•	No blank screens
+
+⸻
+
+███████████████████
+
+6. FINAL RULE
+
+███████████████████
+
+Before generating code:
+	1.	List every page
+	2.	List every entity
+	3.	List every API endpoint
+	4.	List every validation rule
+	5.	List every workflow
+	6.	List every background job
+	7.	List every AI feature
+	8.	List every admin configuration
+	9.	List every dashboard
+	10.	List every test case
+
+Ask: “Should I begin generating the full system now?”
+
+DO NOT generate code until the complete list is displayed.
