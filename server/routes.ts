@@ -812,6 +812,94 @@ export async function registerRoutes(
     }
   });
 
+  // ========== PHASE 3B: PROJECTS & AGILE APIs ==========
+
+  // Epics
+  const epicsStore: any[] = [];
+  app.get("/api/projects/epics", (req, res) => {
+    if (epicsStore.length === 0) {
+      epicsStore.push(
+        { id: "epic1", epicKey: "EPIC-001", name: "Mobile App Redesign", description: "Modernize mobile UI", status: "active", priority: "high", owner: "Sarah Chen", startDate: new Date().toISOString(), targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString() },
+        { id: "epic2", epicKey: "EPIC-002", name: "API Performance", description: "Optimize backend", status: "backlog", priority: "medium", owner: "John Dev", startDate: null, targetDate: null }
+      );
+    }
+    res.json(epicsStore);
+  });
+  app.post("/api/projects/epics", (req, res) => {
+    const epic = { id: `epic-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    epicsStore.push(epic);
+    res.status(201).json(epic);
+  });
+
+  // Stories
+  const storiesStore: any[] = [];
+  app.get("/api/projects/stories", (req, res) => {
+    if (storiesStore.length === 0) {
+      storiesStore.push(
+        { id: "story1", storyKey: "STORY-001", epicId: "epic1", title: "Add dark mode toggle", description: "Implement dark/light theme", acceptanceCriteria: "Theme persists on refresh", status: "in_progress", priority: "high", storyPoints: 5, assignee: "Alice Dev", sprintId: "sprint1", dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() },
+        { id: "story2", storyKey: "STORY-002", epicId: "epic1", title: "Redesign dashboard", description: "New dashboard layout", status: "todo", priority: "medium", storyPoints: 8, assignee: "Bob Designer", sprintId: "sprint1", dueDate: null }
+      );
+    }
+    res.json(storiesStore);
+  });
+  app.post("/api/projects/stories", (req, res) => {
+    const story = { id: `story-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    storiesStore.push(story);
+    res.status(201).json(story);
+  });
+
+  // Sprints
+  const sprintsStore: any[] = [];
+  app.get("/api/projects/sprints", (req, res) => {
+    if (sprintsStore.length === 0) {
+      sprintsStore.push(
+        { id: "sprint1", sprintKey: "SPRINT-1", name: "Sprint 1 - UI Refresh", status: "active", startDate: new Date().toISOString(), endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), goal: "Complete dashboard redesign", teamId: "team1" },
+        { id: "sprint2", sprintKey: "SPRINT-2", name: "Sprint 2 - API Optimization", status: "planning", startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), endDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(), goal: "50% latency reduction", teamId: "team2" }
+      );
+    }
+    res.json(sprintsStore);
+  });
+  app.post("/api/projects/sprints/:id/start", (req, res) => {
+    const sprint = sprintsStore.find((s: any) => s.id === req.params.id);
+    if (sprint) {
+      sprint.status = "active";
+      sprint.startDate = new Date().toISOString();
+    }
+    res.json(sprint);
+  });
+  app.post("/api/projects/sprints/:id/complete", (req, res) => {
+    const sprint = sprintsStore.find((s: any) => s.id === req.params.id);
+    if (sprint) {
+      sprint.status = "completed";
+    }
+    res.json(sprint);
+  });
+
+  // Kanban Board
+  const boardStore = { id: "board1", name: "Main Board", columns: ["Todo", "In Progress", "Review", "Done"] };
+  app.get("/api/projects/kanban-board", (req, res) => {
+    res.json(boardStore);
+  });
+
+  // Tasks (for Kanban)
+  const tasksStore: any[] = [];
+  app.get("/api/projects/kanban-tasks", (req, res) => {
+    if (tasksStore.length === 0) {
+      tasksStore.push(
+        { id: "task1", taskKey: "TASK-001", storyId: "story1", title: "Implement theme provider", description: "Add React Context for theme", status: "in_progress", assignee: "Alice Dev", estimatedHours: "3", actualHours: "1.5" },
+        { id: "task2", taskKey: "TASK-002", storyId: "story1", title: "Add theme toggle button", description: "UI component for theme switch", status: "todo", assignee: "Alice Dev", estimatedHours: "2", actualHours: "0" },
+        { id: "task3", taskKey: "TASK-003", storyId: "story2", title: "Create wireframe", description: "Design new dashboard layout", status: "review", assignee: "Bob Designer", estimatedHours: "5", actualHours: "5" },
+        { id: "task4", taskKey: "TASK-004", storyId: "story2", title: "Dashboard component", description: "Build React component", status: "done", assignee: "Alice Dev", estimatedHours: "8", actualHours: "8.5" }
+      );
+    }
+    res.json(tasksStore);
+  });
+  app.post("/api/projects/kanban-tasks", (req, res) => {
+    const task = { id: `task-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    tasksStore.push(task);
+    res.status(201).json(task);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

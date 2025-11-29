@@ -243,6 +243,12 @@ const GoodsReceipt = lazy(() => import("@/pages/GoodsReceipt"));
 const SupplierInvoices = lazy(() => import("@/pages/SupplierInvoices"));
 const ThreeWayMatch = lazy(() => import("@/pages/ThreeWayMatch"));
 
+// Phase 3B: Projects & Agile Module
+const Epics = lazy(() => import("@/pages/Epics"));
+const Stories = lazy(() => import("@/pages/Stories"));
+const Sprints = lazy(() => import("@/pages/Sprints"));
+const KanbanBoard = lazy(() => import("@/pages/KanbanBoard"));
+
 function Router() {
   return (
     <Switch>
@@ -456,6 +462,10 @@ function Router() {
       <Route path="/goods-receipt" component={GoodsReceipt} />
       <Route path="/supplier-invoices" component={SupplierInvoices} />
       <Route path="/three-way-match" component={ThreeWayMatch} />
+      <Route path="/epics" component={Epics} />
+      <Route path="/stories" component={Stories} />
+      <Route path="/sprints" component={Sprints} />
+      <Route path="/kanban-board" component={KanbanBoard} />
       <Route component={NotFound} />
     </Switch>
   );
