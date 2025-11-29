@@ -33,17 +33,17 @@ export function PageHeader({
           <nav className="flex items-center gap-2 mb-3" aria-label="Breadcrumb">
             {breadcrumbs.map((crumb, idx) => (
               <div key={idx} className="flex items-center gap-2">
-                {idx > 0 && <ChevronRightIcon className="w-4 h-4 text-slate-400" />}
+                {idx > 0 && <ChevronRightIcon className="w-4 h-4 text-slate-400" aria-hidden="true" />}
                 {crumb.href ? (
                   <a
                     href={crumb.href}
-                    className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                    className="text-sm text-blue-600 dark:text-blue-400 hover:underline focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 rounded"
                     data-testid={`breadcrumb-${idx}`}
                   >
                     {crumb.label}
                   </a>
                 ) : (
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-slate-400" aria-current={idx === breadcrumbs.length - 1 ? 'page' : undefined}>
                     {crumb.label}
                   </span>
                 )}

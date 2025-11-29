@@ -157,50 +157,57 @@ export function CommandPalette({ items = [], onExecute, onNavigate }: CommandPal
         className="fixed inset-0 bg-black/40 z-40"
         onClick={closeCommandPalette}
         data-testid="command-palette-backdrop"
+        aria-hidden="true"
+        role="presentation"
       />
 
       {/* Palette */}
       <div
         className="fixed top-0 left-0 right-0 z-50 pt-20 px-4 pointer-events-none"
         data-testid="command-palette"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="command-palette-title"
       >
         <div className="max-w-2xl mx-auto pointer-events-auto">
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
             {/* Search Input */}
             <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-              <MagnifyingGlassIcon className="w-5 h-5 text-slate-400" />
+              <MagnifyingGlassIcon className="w-5 h-5 text-slate-400" aria-hidden="true" />
               <input
                 ref={inputRef}
+                id="command-palette-title"
                 type="text"
                 placeholder="Search actions, pages, records..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 outline-none"
+                className="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500"
                 data-testid="command-input"
+                aria-label="Command palette search input"
               />
               <button
                 onClick={closeCommandPalette}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-2 focus:outline-offset-2 focus:outline-blue-500"
                 aria-label="Close command palette"
               >
-                <XMarkIcon className="w-5 h-5" />
+                <XMarkIcon className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
 
             {/* Results */}
-            <div className="max-h-96 overflow-y-auto">
+            <div className="max-h-96 overflow-y-auto" role="listbox" aria-label="Command results">
               {totalItems === 0 ? (
                 <div className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
                   No results found
                 </div>
               ) : (
                 displayGroups.map((category) => (
-                  <div key={category}>
-                    <div className="px-3 pt-2 pb-1 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                  <div key={category} role="group" aria-labelledby={`group-${category}`}>
+                    <div id={`group-${category}`} className="px-3 pt-2 pb-1 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide" role="heading" aria-level={3}>
                       {category}
                     </div>
-                    {groupedItems[category]?.map((item, idx) => {
+                    {groupedItems[category]?.map((item) => {
                       const globalIndex = filteredItems.indexOf(item);
                       const isSelected = globalIndex === selectedIndex;
 
@@ -209,15 +216,17 @@ export function CommandPalette({ items = [], onExecute, onNavigate }: CommandPal
                           key={item.id}
                           onClick={() => handleExecute(item)}
                           onMouseEnter={() => setSelectedIndex(globalIndex)}
-                          className={`w-full px-4 py-3 text-left transition-colors flex items-center justify-between ${
+                          className={`w-full px-4 py-3 text-left transition-colors flex items-center justify-between focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 ${
                             isSelected
                               ? 'bg-blue-500 dark:bg-blue-600 text-white'
                               : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100'
                           }`}
                           data-testid={`command-item-${item.id}`}
+                          role="option"
+                          aria-selected={isSelected}
                         >
                           <div className="flex items-center gap-3 flex-1 min-w-0">
-                            {item.icon && <span className="text-lg flex-shrink-0">{item.icon}</span>}
+                            {item.icon && <span className="text-lg flex-shrink-0" aria-hidden="true">{item.icon}</span>}
                             <div className="min-w-0 flex-1">
                               <div className="font-medium truncate flex items-center gap-2">
                                 {item.title}
@@ -249,6 +258,7 @@ export function CommandPalette({ items = [], onExecute, onNavigate }: CommandPal
                               className={`text-xs ml-2 flex-shrink-0 ${
                                 isSelected ? 'text-blue-100' : 'text-slate-500 dark:text-slate-500'
                               }`}
+                              aria-hidden="true"
                             >
                               {item.keystroke}
                             </span>
@@ -263,9 +273,9 @@ export function CommandPalette({ items = [], onExecute, onNavigate }: CommandPal
 
             {/* Footer */}
             {totalItems > 0 && (
-              <div className="px-4 py-2 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex justify-between">
+              <div className="px-4 py-2 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex justify-between" aria-live="polite">
                 <span>{selectedIndex + 1} of {totalItems}</span>
-                <span>↑↓ navigate • ⏎ select • esc close</span>
+                <span aria-hidden="true">↑↓ navigate • ⏎ select • esc close</span>
               </div>
             )}
           </div>

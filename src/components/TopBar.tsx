@@ -99,19 +99,22 @@ export function TopBar({ currentOrg = 'Acme Corp', onOrgChange }: TopBarProps) {
         <div className="relative" ref={quickActionsRef}>
           <button
             onClick={() => setQuickActionsOpen(!quickActionsOpen)}
-            className="hidden sm:flex items-center gap-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors text-sm font-medium"
+            className="hidden sm:flex items-center gap-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors text-sm font-medium focus:outline-2 focus:outline-offset-2 focus:outline-blue-500"
             data-testid="quick-actions-btn"
             aria-label="Quick actions menu"
+            aria-expanded={quickActionsOpen}
+            aria-haspopup="true"
           >
-            <PlusIcon className="w-4 h-4" />
+            <PlusIcon className="w-4 h-4" aria-hidden="true" />
             <span>Create</span>
-            <ChevronDownIcon className="w-3 h-3" />
+            <ChevronDownIcon className="w-3 h-3" aria-hidden="true" />
           </button>
 
           {quickActionsOpen && (
             <div
               className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 z-40 py-1"
               data-testid="quick-actions-menu"
+              role="menu"
             >
               <button
                 className="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 text-sm"
@@ -162,19 +165,22 @@ export function TopBar({ currentOrg = 'Acme Corp', onOrgChange }: TopBarProps) {
         <div className="relative" ref={orgRef}>
           <button
             onClick={() => setOrgOpen(!orgOpen)}
-            className="hidden md:flex items-center gap-2 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors text-sm"
+            className="hidden md:flex items-center gap-2 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors text-sm focus:outline-2 focus:outline-offset-2 focus:outline-blue-500"
             data-testid="org-selector-btn"
             aria-label="Organization selector"
+            aria-expanded={orgOpen}
+            aria-haspopup="true"
           >
-            <BuildingIcon className="w-4 h-4" />
+            <BuildingIcon className="w-4 h-4" aria-hidden="true" />
             <span>{currentOrg}</span>
-            <ChevronDownIcon className="w-3 h-3" />
+            <ChevronDownIcon className="w-3 h-3" aria-hidden="true" />
           </button>
 
           {orgOpen && (
             <div
               className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 z-40 py-1"
               data-testid="org-selector-menu"
+              role="menu"
             >
               {['Acme Corp', 'Tech Industries', 'Global Solutions'].map((org) => (
                 <button
@@ -202,15 +208,18 @@ export function TopBar({ currentOrg = 'Acme Corp', onOrgChange }: TopBarProps) {
         <div className="relative" ref={notificationRef}>
           <button
             onClick={() => setNotificationOpen(!notificationOpen)}
-            className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"
+            className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-blue-500"
             data-testid="notifications-btn"
-            aria-label="Notifications"
+            aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+            aria-expanded={notificationOpen}
+            aria-haspopup="true"
           >
-            <BellIcon className="w-6 h-6" />
+            <BellIcon className="w-6 h-6" aria-hidden="true" />
             {unreadCount > 0 && (
               <span
                 className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
                 data-testid="notification-badge"
+                aria-label={`${unreadCount} unread notifications`}
               />
             )}
           </button>
