@@ -28,6 +28,7 @@ import {
   Shield,
   Package,
   Briefcase,
+  Building2,
 } from "lucide-react";
 
 const platformNavItems = [
