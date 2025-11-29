@@ -251,49 +251,51 @@ export default function Projects() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="kanban">
-          <KanbanBoard />
-        </TabsContent>
+      {activeNav === "kanban" && (
+        <KanbanBoard />
+      )}
 
-        <TabsContent value="tasks" className="space-y-4">
+      {activeNav === "tasks" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {tasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="resources">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <ResourceAllocation />
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  AI Resource Recommendations
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="p-3 rounded-md bg-blue-500/10 border border-blue-500/20">
-                  <p className="text-sm font-medium">Optimal task reassignment available</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Moving "Implement user authentication" from James Wilson to Alex Chen would improve overall team velocity by 12%.
-                  </p>
-                  <Button variant="outline" size="sm" className="mt-2">Apply Suggestion</Button>
-                </div>
-                <div className="p-3 rounded-md bg-green-500/10 border border-green-500/20">
-                  <p className="text-sm font-medium">Team capacity improving</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    With current task completion rate, team capacity will normalize by end of week.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+      {activeNav === "resources" && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ResourceAllocation />
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                AI Resource Recommendations
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="p-3 rounded-md bg-blue-500/10 border border-blue-500/20">
+                <p className="text-sm font-medium">Optimal task reassignment available</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Moving "Implement user authentication" from James Wilson to Alex Chen would improve overall team velocity by 12%.
+                </p>
+                <Button variant="outline" size="sm" className="mt-2">Apply Suggestion</Button>
+              </div>
+              <div className="p-3 rounded-md bg-green-500/10 border border-green-500/20">
+                <p className="text-sm font-medium">Team capacity improving</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  With current task completion rate, team capacity will normalize by end of week.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

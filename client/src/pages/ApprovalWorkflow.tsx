@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle2, Clock, XCircle, ArrowRight, Users, FileText, DollarSign } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { CheckCircle2, Clock, XCircle, ArrowRight, Users, FileText, DollarSign, Filter } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
@@ -20,10 +20,17 @@ interface ApprovalRequest {
 }
 
 export default function ApprovalWorkflow() {
+  const [activeNav, setActiveNav] = useState("pending");
   const { data: requests = [] } = useQuery<ApprovalRequest[]>({
     queryKey: ["/api/approvals"],
     retry: false,
   });
+
+  const navItems = [
+    { id: "pending", label: `Pending (${stats.pending})`, icon: Clock, color: "text-yellow-500" },
+    { id: "approved", label: `Approved (${stats.approved})`, icon: CheckCircle2, color: "text-green-500" },
+    { id: "rejected", label: `Rejected (${stats.rejected})`, icon: XCircle, color: "text-red-500" },
+  ];
 
   const approveMutation = useMutation({
     mutationFn: (id: string) => apiRequest("POST", `/api/approvals/${id}/approve`, {}),
@@ -106,19 +113,13 @@ export default function ApprovalWorkflow() {
         </Card>
       </div>
 
-      <Tabs defaultValue="pending" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="pending">Pending ({stats.pending})</TabsTrigger>
-          <TabsTrigger value="approved">Approved ({stats.approved})</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected ({stats.rejected})</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        {["pending", "approved", "rejected"].map((status) => (
-          <TabsContent key={status} value={status} className="space-y-4">
-            {requests
-              .filter((r) => r.status === status)
-              .map((request) => (
-                <Card key={request.id}>
+      <div className="space-y-4">
+        {requests
+          .filter((r) => r.status === activeNav)
+          .map((request) => (
+            <Card key={request.id}>
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
