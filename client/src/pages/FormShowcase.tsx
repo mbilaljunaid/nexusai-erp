@@ -9,6 +9,8 @@ import { LeadEntryForm } from "@/components/forms/LeadEntryForm";
 import { EmployeeEntryForm } from "@/components/forms/EmployeeEntryForm";
 import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { ServiceTicketForm } from "@/components/forms/ServiceTicketForm";
+import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
+import { CampaignEntryForm } from "@/components/forms/CampaignEntryForm";
 import { Sparkles } from "lucide-react";
 
 export default function FormShowcase() {
