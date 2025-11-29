@@ -1,10 +1,20 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, AlertCircle, Download } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { Check, AlertCircle, Download, CreditCard, BarChart3, FileText, Settings } from "lucide-react";
 
 export default function Billing() {
+  const [activeNav, setActiveNav] = useState("plans");
+  
+  const navItems = [
+    { id: "plans", label: "Plans", icon: CreditCard, color: "text-blue-500" },
+    { id: "usage", label: "Usage", icon: BarChart3, color: "text-green-500" },
+    { id: "invoices", label: "Invoices", icon: FileText, color: "text-purple-500" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-orange-500" },
+  ];
+
   const plans = [
     {
       id: "freemium",
@@ -76,16 +86,10 @@ export default function Billing() {
         <p className="text-muted-foreground mt-2">Manage your plan, invoices, and usage</p>
       </div>
 
-      <Tabs defaultValue="plans" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="plans">Plans</TabsTrigger>
-          <TabsTrigger value="usage">Usage</TabsTrigger>
-          <TabsTrigger value="invoices">Invoices</TabsTrigger>
-          <TabsTrigger value="settings">Billing Settings</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        {/* Plans Tab */}
-        <TabsContent value="plans" className="space-y-6 mt-6">
+      {activeNav === "plans" && (
+        <div className="space-y-6 mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {plans.map((plan) => (
               <Card

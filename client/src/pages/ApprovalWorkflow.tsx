@@ -138,7 +138,7 @@ export default function ApprovalWorkflow() {
                           <p className="text-2xl font-semibold font-mono">${parseFloat(request.amount).toLocaleString()}</p>
                           <Badge>{request.status.toUpperCase()}</Badge>
                         </div>
-                        {status === "pending" && (
+                        {activeNav === "pending" && (
                           <div className="flex gap-2">
                             <Button size="sm" onClick={() => approveMutation.mutate(request.id)}>
                               <CheckCircle2 className="w-4 h-4 mr-1" />
@@ -154,17 +154,15 @@ export default function ApprovalWorkflow() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            {requests.filter((r) => r.status === status).length === 0 && (
-              <Card>
-                <CardContent className="p-4 text-center text-muted-foreground">
-                  No {status} approval requests
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-        ))}
-      </Tabs>
+            ))}
+        {requests.filter((r) => r.status === activeNav).length === 0 && (
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              No {activeNav} approval requests
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
