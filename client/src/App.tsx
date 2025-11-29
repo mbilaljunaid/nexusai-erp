@@ -5,8 +5,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { AppSidebar } from "@/components/AppSidebar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import NotFound from "@/pages/not-found";
 
 // Core pages
@@ -96,17 +96,14 @@ const MobileSync = lazy(() => import("@/pages/MobileSync"));
 const AIChat = lazy(() => import("@/pages/AIChat"));
 const Analytics = lazy(() => import("@/pages/Analytics"));
 const Billing = lazy(() => import("@/pages/Billing"));
-const ERPAdvanced = lazy(() => import("@/pages/ERPAdvanced"));
-const BackendIntegration = lazy(() => import("@/pages/BackendIntegration"));
-const CRMAdvanced = lazy(() => import("@/pages/CRMAdvanced"));
-const HRAdvanced = lazy(() => import("@/pages/HRAdvanced"));
-const Analytics2 = lazy(() => import("@/pages/Analytics"));
+const PayrollEngine = lazy(() => import("@/pages/PayrollEngine"));
+const LeaveWorkflows = lazy(() => import("@/pages/LeaveWorkflows"));
+const PerformanceManagement = lazy(() => import("@/pages/PerformanceManagement"));
+const OnboardingAutomation = lazy(() => import("@/pages/OnboardingAutomation"));
 const Health = lazy(() => import("@/pages/Health"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Industries = lazy(() => import("@/pages/Industries"));
 const IndustryConfiguration = lazy(() => import("@/pages/IndustryConfiguration"));
-const PlatformAdmin = lazy(() => import("@/pages/PlatformAdmin"));
-const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
 const DashboardBuilder = lazy(() => import("@/pages/DashboardBuilder"));
 const ReportBuilder = lazy(() => import("@/pages/ReportBuilder"));
 const DataExplorer = lazy(() => import("@/pages/DataExplorer"));
@@ -210,6 +207,10 @@ function Router() {
       <Route path="/task-management" component={TaskManagement} />
       <Route path="/workflow-designer" component={WorkflowDesigner} />
       <Route path="/team-collaboration" component={TeamCollaboration} />
+      <Route path="/payroll-engine" component={PayrollEngine} />
+      <Route path="/leave-workflows" component={LeaveWorkflows} />
+      <Route path="/performance-management" component={PerformanceManagement} />
+      <Route path="/onboarding-automation" component={OnboardingAutomation} />
       <Route path="/opportunities" component={OpportunityList} />
       <Route path="/opportunity/:id" component={OpportunityDetail} />
       <Route path="/leads/:id" component={LeadDetail} />

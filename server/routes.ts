@@ -40,6 +40,10 @@ const sprintsStore: any[] = [];
 const tasksStore: any[] = [];
 const workflowsStore: any[] = [];
 const collaborationsStore: any[] = [];
+const payrollRunsStore: any[] = [];
+const leaveRequestsStore: any[] = [];
+const performanceReviewsStore: any[] = [];
+const onboardingWorkflowsStore: any[] = [];
 
 export async function registerRoutes(
   httpServer: Server,
@@ -428,6 +432,49 @@ export async function registerRoutes(
       }
     }
     res.status(404).json({ error: "Comment not found" });
+  });
+
+  // PHASE 4: Payroll
+  app.get("/api/payroll/runs", async (req, res) => {
+    if (payrollRunsStore.length === 0) {
+      payrollRunsStore.push(
+        { id: "pr1", name: "November 2024", period: "Nov 1-30", status: "processed", totalAmount: "125000", employeeCount: 45, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(payrollRunsStore);
+  });
+
+  // PHASE 4: Leave Requests
+  app.get("/api/leave-requests", async (req, res) => {
+    if (leaveRequestsStore.length === 0) {
+      leaveRequestsStore.push(
+        { id: "lr1", employeeName: "Alice", type: "vacation", days: 5, status: "pending", createdAt: new Date().toISOString() },
+        { id: "lr2", employeeName: "Bob", type: "sick", days: 2, status: "approved", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(leaveRequestsStore);
+  });
+
+  // PHASE 4: Performance Reviews
+  app.get("/api/performance-reviews", async (req, res) => {
+    if (performanceReviewsStore.length === 0) {
+      performanceReviewsStore.push(
+        { id: "perf1", employeeName: "Alice", status: "completed", score: 0.85, createdAt: new Date().toISOString() },
+        { id: "perf2", employeeName: "Bob", status: "in_progress", score: 0, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(performanceReviewsStore);
+  });
+
+  // PHASE 4: Onboarding Workflows
+  app.get("/api/onboarding/workflows", async (req, res) => {
+    if (onboardingWorkflowsStore.length === 0) {
+      onboardingWorkflowsStore.push(
+        { id: "ob1", employeeName: "Carol", status: "in_progress", startDate: new Date().toISOString(), documentsCount: 3, createdAt: new Date().toISOString() },
+        { id: "ob2", employeeName: "David", status: "completed", startDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), documentsCount: 5, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(onboardingWorkflowsStore);
   });
 
   // PHASE 1: AI Copilot
