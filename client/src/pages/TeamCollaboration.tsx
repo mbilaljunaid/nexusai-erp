@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -37,7 +36,6 @@ interface Collaboration {
 
 export default function TeamCollaboration() {
   const [newComment, setNewComment] = useState("");
-  const [selectedTask, setSelectedTask] = useState<string | null>(null);
 
   const { data: collaborations = [] } = useQuery<Collaboration[]>({
     queryKey: ["/api/collaborations"],
@@ -59,8 +57,14 @@ export default function TeamCollaboration() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/collaborations"] }),
   });
 
-  const currentCollab = selectedTask ? collaborations.find(c => c.taskId === selectedTask) : collaborations[0];
+  const currentCollab = collaborations[0];
   const teamMembers = ["Alice", "Bob", "Carol", "David", "Eve"];
+
+  const stats = {
+    comments: collaborations.reduce((sum, c) => sum + c.comments.length, 0),
+    members: teamMembers.length,
+    activities: collaborations.reduce((sum, c) => sum + c.activity.length, 0),
+  };
 
   return (
     <div className="space-y-6">
@@ -77,9 +81,7 @@ export default function TeamCollaboration() {
             <div className="flex items-center gap-3">
               <MessageSquare className="h-5 w-5 text-blue-500" />
               <div>
-                <p className="text-2xl font-semibold">
-                  {collaborations.reduce((sum, c) => sum + c.comments.length, 0)}
-                </p>
+                <p className="text-2xl font-semibold">{stats.comments}</p>
                 <p className="text-xs text-muted-foreground">Total Comments</p>
               </div>
             </div>
@@ -90,7 +92,7 @@ export default function TeamCollaboration() {
             <div className="flex items-center gap-3">
               <Users className="h-5 w-5 text-green-500" />
               <div>
-                <p className="text-2xl font-semibold">{teamMembers.length}</p>
+                <p className="text-2xl font-semibold">{stats.members}</p>
                 <p className="text-xs text-muted-foreground">Team Members</p>
               </div>
             </div>
@@ -101,9 +103,7 @@ export default function TeamCollaboration() {
             <div className="flex items-center gap-3">
               <Activity className="h-5 w-5 text-orange-500" />
               <div>
-                <p className="text-2xl font-semibold">
-                  {collaborations.reduce((sum, c) => sum + c.activity.length, 0)}
-                </p>
+                <p className="text-2xl font-semibold">{stats.activities}</p>
                 <p className="text-xs text-muted-foreground">Activities</p>
               </div>
             </div>
