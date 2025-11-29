@@ -20,11 +20,11 @@ export class InvoiceService {
     return this.invoiceRepository.find();
   }
 
-  async findOne(id: string): Promise<Invoice> {
+  async findOne(id: string): Promise<Invoice | null> {
     return this.invoiceRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateData: Partial<CreateInvoiceDto>): Promise<Invoice> {
+  async update(id: string, updateData: Partial<CreateInvoiceDto>): Promise<Invoice | null> {
     await this.invoiceRepository.update(id, updateData);
     return this.findOne(id);
   }

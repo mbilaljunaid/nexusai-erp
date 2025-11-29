@@ -20,11 +20,11 @@ export class GLEntryService {
     return this.glEntryRepository.find();
   }
 
-  async findOne(id: string): Promise<GLEntry> {
+  async findOne(id: string): Promise<GLEntry | null> {
     return this.glEntryRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateGLEntryDto: Partial<CreateGLEntryDto>): Promise<GLEntry> {
+  async update(id: string, updateGLEntryDto: Partial<CreateGLEntryDto>): Promise<GLEntry | null> {
     await this.glEntryRepository.update(id, updateGLEntryDto);
     return this.findOne(id);
   }

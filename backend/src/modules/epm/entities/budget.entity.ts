@@ -3,32 +3,32 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 @Entity('budgets')
 export class Budget {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  departmentId: string;
+  departmentId!: string;
 
   @Column()
-  year: number;
+  year!: number;
 
   @Column()
-  quarter: number;
+  quarter!: number;
 
   @Column('decimal', { precision: 18, scale: 2 })
-  allocatedAmount: number;
+  allocatedAmount!: number;
 
   @Column('decimal', { precision: 18, scale: 2, default: 0 })
-  spentAmount: number;
+  spentAmount!: number;
 
   @Column({ default: 'draft' })
-  status: string;
+  status!: string;
 
   @Column({ nullable: true })
-  notes: string;
+  notes?: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

@@ -20,11 +20,11 @@ export class BudgetService {
     return this.budgetRepository.find();
   }
 
-  async findOne(id: string): Promise<Budget> {
+  async findOne(id: string): Promise<Budget | null> {
     return this.budgetRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateData: Partial<CreateBudgetDto>): Promise<Budget> {
+  async update(id: string, updateData: Partial<CreateBudgetDto>): Promise<Budget | null> {
     await this.budgetRepository.update(id, updateData);
     return this.findOne(id);
   }

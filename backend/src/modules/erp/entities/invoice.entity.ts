@@ -3,35 +3,35 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 @Entity('invoices')
 export class Invoice {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ unique: true })
-  invoiceNumber: string;
+  invoiceNumber!: string;
 
   @Column()
-  customerId: string;
+  customerId!: string;
 
   @Column()
-  invoiceDate: Date;
+  invoiceDate!: Date;
 
   @Column()
-  dueDate: Date;
+  dueDate!: Date;
 
   @Column('decimal', { precision: 18, scale: 2 })
-  totalAmount: number;
+  totalAmount!: number;
 
   @Column('decimal', { precision: 18, scale: 2, default: 0 })
-  paidAmount: number;
+  paidAmount!: number;
 
   @Column({ default: 'draft' })
-  status: string;
+  status!: string;
 
   @Column({ nullable: true })
-  description: string;
+  description?: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

@@ -20,11 +20,11 @@ export class LeadService {
     return this.leadRepository.find();
   }
 
-  async findOne(id: string): Promise<Lead> {
+  async findOne(id: string): Promise<Lead | null> {
     return this.leadRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateData: Partial<CreateLeadDto>): Promise<Lead> {
+  async update(id: string, updateData: Partial<CreateLeadDto>): Promise<Lead | null> {
     await this.leadRepository.update(id, updateData);
     return this.findOne(id);
   }

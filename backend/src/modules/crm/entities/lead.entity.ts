@@ -3,38 +3,38 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 @Entity('leads')
 export class Lead {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  firstName: string;
+  firstName!: string;
 
   @Column()
-  lastName: string;
+  lastName!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column()
-  phone: string;
+  phone!: string;
 
   @Column()
-  companyName: string;
+  companyName!: string;
 
   @Column()
-  industry: string;
+  industry!: string;
 
   @Column({ nullable: true })
-  source: string;
+  source?: string;
 
   @Column({ default: 'new' })
-  status: string;
+  status!: string;
 
   @Column('decimal', { precision: 18, scale: 2, nullable: true })
-  estimatedValue: number;
+  estimatedValue?: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

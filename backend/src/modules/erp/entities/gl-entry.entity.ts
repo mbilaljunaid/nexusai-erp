@@ -3,32 +3,32 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 @Entity('gl_entries')
 export class GLEntry {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  journalDate: Date;
+  journalDate!: Date;
 
   @Column()
-  description: string;
+  description!: string;
 
   @Column()
-  debitAccount: string;
+  debitAccount!: string;
 
   @Column('decimal', { precision: 18, scale: 2 })
-  debitAmount: number;
+  debitAmount!: number;
 
   @Column()
-  creditAccount: string;
+  creditAccount!: string;
 
   @Column('decimal', { precision: 18, scale: 2 })
-  creditAmount: number;
+  creditAmount!: number;
 
   @Column({ default: 'draft' })
-  status: string;
+  status!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }
