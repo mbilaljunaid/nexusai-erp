@@ -11,6 +11,12 @@ import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { ServiceTicketForm } from "@/components/forms/ServiceTicketForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { CampaignEntryForm } from "@/components/forms/CampaignEntryForm";
+import VendorEntryForm from "@/components/forms/VendorEntryForm";
+import PayrollForm from "@/components/forms/PayrollForm";
+import PerformanceRatingForm from "@/components/forms/PerformanceRatingForm";
+import CustomerEntryForm from "@/components/forms/CustomerEntryForm";
+import AdjustmentEntryForm from "@/components/forms/AdjustmentEntryForm";
+import RequisitionForm from "@/components/forms/RequisitionForm";
 import { Sparkles } from "lucide-react";
 
 export default function FormShowcase() {
@@ -30,12 +36,13 @@ export default function FormShowcase() {
       </div>
 
       {/* Module Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
         {[
           { title: "EPM", count: 3, color: "bg-blue-100 dark:bg-blue-950" },
-          { title: "CRM", count: 2, color: "bg-purple-100 dark:bg-purple-950" },
-          { title: "HR", count: 1, color: "bg-green-100 dark:bg-green-950" },
-          { title: "ERP", count: 2, color: "bg-orange-100 dark:bg-orange-950" },
+          { title: "CRM", count: 3, color: "bg-purple-100 dark:bg-purple-950" },
+          { title: "HR", count: 3, color: "bg-green-100 dark:bg-green-950" },
+          { title: "ERP", count: 4, color: "bg-orange-100 dark:bg-orange-950" },
+          { title: "Finance", count: 2, color: "bg-yellow-100 dark:bg-yellow-950" },
           { title: "Service", count: 1, color: "bg-red-100 dark:bg-red-950" }
         ].map((module) => (
           <Card key={module.title}>
@@ -51,11 +58,12 @@ export default function FormShowcase() {
 
       {/* Forms Showcase */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-6">
+        <TabsList className="grid w-full grid-cols-6 lg:grid-cols-7">
           <TabsTrigger value="epm">EPM</TabsTrigger>
           <TabsTrigger value="crm">CRM</TabsTrigger>
           <TabsTrigger value="hr">HR</TabsTrigger>
           <TabsTrigger value="erp">ERP</TabsTrigger>
+          <TabsTrigger value="finance">Finance</TabsTrigger>
           <TabsTrigger value="service">Service</TabsTrigger>
           <TabsTrigger value="forms">All Forms</TabsTrigger>
         </TabsList>
