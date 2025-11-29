@@ -94,7 +94,9 @@ export default function Ecommerce() {
     shipped: "bg-purple-500/10 text-purple-600",
     delivered: "bg-green-500/10 text-green-600",
     cancelled: "bg-red-500/10 text-red-600",
-  };
+    completed: "bg-green-500/10 text-green-600",
+    failed: "bg-red-500/10 text-red-600",
+  } as const;
 
   return (
     <div className="space-y-6">
@@ -194,7 +196,7 @@ export default function Ecommerce() {
                       </div>
                       <div className="text-right">
                         <p className="font-mono font-semibold">${order.total}</p>
-                        <Badge className={`text-xs capitalize ${statusConfig[order.status as keyof typeof statusConfig]}`}>
+                        <Badge className={`text-xs capitalize ${statusConfig[order.status as "pending" | "processing" | "shipped" | "delivered" | "cancelled"]}`}>
                           {order.status}
                         </Badge>
                       </div>
@@ -275,7 +277,7 @@ export default function Ecommerce() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <Badge className={statusConfig[product.status]}>
+                          <Badge className={statusConfig[product.status as keyof typeof statusConfig]}>
                             {product.status}
                           </Badge>
                         </td>
@@ -311,12 +313,12 @@ export default function Ecommerce() {
                         <td className="px-4 py-3 font-mono">${order.total}</td>
                         <td className="px-4 py-3 text-xs">{order.date}</td>
                         <td className="px-4 py-3">
-                          <Badge className={statusConfig[order.paymentStatus]} variant="secondary">
+                          <Badge className={statusConfig[order.paymentStatus as keyof typeof statusConfig]} variant="secondary">
                             {order.paymentStatus}
                           </Badge>
                         </td>
                         <td className="px-4 py-3">
-                          <Badge className={statusConfig[order.shippingStatus]} variant="secondary">
+                          <Badge className={statusConfig[order.shippingStatus as keyof typeof statusConfig]} variant="secondary">
                             {order.shippingStatus}
                           </Badge>
                         </td>
