@@ -1270,3 +1270,121 @@ export const insertIssueSchema = createInsertSchema(issues).omit({ id: true, cre
 
 export type InsertIssue = z.infer<typeof insertIssueSchema>;
 export type Issue = typeof issues.$inferSelect;
+
+// ========== PHASE 5: DATA WAREHOUSE & ADVANCED BI ==========
+
+// Data Warehouse: Data Lakes
+export const dataLakes = pgTable("data_lakes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  provider: varchar("provider").notNull(), // bigquery, snowflake, redshift
+  connectionString: varchar("connection_string").notNull(),
+  status: varchar("status").default("connected"),
+  lastSync: timestamp("last_sync"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertDataLakeSchema = createInsertSchema(dataLakes).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  provider: z.enum(["bigquery", "snowflake", "redshift"]),
+  connectionString: z.string().min(1),
+  status: z.string().optional(),
+  lastSync: z.date().optional().nullable(),
+});
+
+export type InsertDataLake = z.infer<typeof insertDataLakeSchema>;
+export type DataLake = typeof dataLakes.$inferSelect;
+
+// ETL: Pipeline Jobs
+export const etlPipelines = pgTable("etl_pipelines", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  source: varchar("source").notNull(),
+  destination: varchar("destination").notNull(),
+  schedule: varchar("schedule"), // cron expression
+  status: varchar("status").default("active"),
+  lastRun: timestamp("last_run"),
+  nextRun: timestamp("next_run"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertEtlPipelineSchema = createInsertSchema(etlPipelines).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  source: z.string().min(1),
+  destination: z.string().min(1),
+  schedule: z.string().optional().nullable(),
+  status: z.string().optional(),
+  lastRun: z.date().optional().nullable(),
+  nextRun: z.date().optional().nullable(),
+});
+
+export type InsertEtlPipeline = z.infer<typeof insertEtlPipelineSchema>;
+export type EtlPipeline = typeof etlPipelines.$inferSelect;
+
+// BI: Advanced Dashboards
+export const biDashboards = pgTable("bi_dashboards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  datasource: varchar("datasource").notNull(),
+  visualizations: jsonb("visualizations"),
+  filters: jsonb("filters"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertBiDashboardSchema = createInsertSchema(biDashboards).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  datasource: z.string().min(1),
+  description: z.string().optional().nullable(),
+  visualizations: z.object({}).passthrough().optional(),
+  filters: z.object({}).passthrough().optional(),
+});
+
+export type InsertBiDashboard = z.infer<typeof insertBiDashboardSchema>;
+export type BiDashboard = typeof biDashboards.$inferSelect;
+
+// Field Service: Jobs
+export const fieldServiceJobs = pgTable("field_service_jobs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  location: varchar("location").notNull(),
+  assignee: varchar("assignee"),
+  status: varchar("status").default("unassigned"), // unassigned, assigned, completed
+  scheduledDate: timestamp("scheduled_date"),
+  completedDate: timestamp("completed_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertFieldServiceJobSchema = createInsertSchema(fieldServiceJobs).omit({ id: true, createdAt: true }).extend({
+  title: z.string().min(1),
+  location: z.string().min(1),
+  assignee: z.string().optional().nullable(),
+  status: z.string().optional(),
+  scheduledDate: z.date().optional().nullable(),
+  completedDate: z.date().optional().nullable(),
+});
+
+export type InsertFieldServiceJob = z.infer<typeof insertFieldServiceJobSchema>;
+export type FieldServiceJob = typeof fieldServiceJobs.$inferSelect;
+
+// Payroll: Global Configuration
+export const payrollConfigs = pgTable("payroll_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  country: varchar("country").notNull(),
+  taxBrackets: jsonb("tax_brackets"),
+  deductions: jsonb("deductions"),
+  minimumWage: numeric("minimum_wage", { precision: 12, scale: 2 }),
+  payFrequency: varchar("pay_frequency"), // weekly, biweekly, monthly
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPayrollConfigSchema = createInsertSchema(payrollConfigs).omit({ id: true, createdAt: true }).extend({
+  country: z.string().min(1),
+  taxBrackets: z.object({}).passthrough().optional(),
+  deductions: z.object({}).passthrough().optional(),
+  minimumWage: z.string().optional().nullable(),
+  payFrequency: z.string().optional().nullable(),
+});
+
+export type InsertPayrollConfig = z.infer<typeof insertPayrollConfigSchema>;
+export type PayrollConfig = typeof payrollConfigs.$inferSelect;

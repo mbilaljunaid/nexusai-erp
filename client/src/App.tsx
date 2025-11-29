@@ -27,7 +27,6 @@ import EPMModule from "@/pages/EPMModule";
 import HR from "@/pages/HR";
 import Service from "@/pages/Service";
 import Marketing from "@/pages/Marketing";
-import Compliance from "@/pages/Compliance";
 import BPM from "@/pages/BPM";
 import Integrations from "@/pages/Integrations";
 import Website from "@/pages/Website";
@@ -53,7 +52,7 @@ import HRAdvanced from "@/pages/advanced/HRAdvanced";
 import Copilot from "@/pages/Copilot";
 import Planning from "@/pages/Planning";
 import Marketplace from "@/pages/Marketplace";
-import Compliance from "@/pages/Compliance";
+import DataWarehouse from "@/pages/DataWarehouse";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -89,7 +88,7 @@ function Router() {
       <Route path="/field-service" component={FieldService} />
       <Route path="/planning" component={Planning} />
       <Route path="/marketplace" component={Marketplace} />
-      <Route path="/compliance" component={Compliance} />
+      <Route path="/data-warehouse" component={DataWarehouse} />
       <Route path="/analytics" component={Analytics} />
       <Route path="/billing" component={Billing} />
       <Route path="/erp-advanced" component={ERPAdvanced} />

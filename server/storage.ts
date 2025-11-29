@@ -50,6 +50,11 @@ import {
   type ComplianceConfig, type InsertComplianceConfig,
   type Sprint, type InsertSprint,
   type Issue, type InsertIssue,
+  type DataLake, type InsertDataLake,
+  type EtlPipeline, type InsertEtlPipeline,
+  type BiDashboard, type InsertBiDashboard,
+  type FieldServiceJob, type InsertFieldServiceJob,
+  type PayrollConfig, type InsertPayrollConfig,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -255,6 +260,26 @@ export interface IStorage {
   getIssue(id: string): Promise<Issue | undefined>;
   listIssues(sprintId?: string): Promise<Issue[]>;
   createIssue(issue: InsertIssue): Promise<Issue>;
+
+  getDataLake(id: string): Promise<DataLake | undefined>;
+  listDataLakes(): Promise<DataLake[]>;
+  createDataLake(lake: InsertDataLake): Promise<DataLake>;
+
+  getEtlPipeline(id: string): Promise<EtlPipeline | undefined>;
+  listEtlPipelines(): Promise<EtlPipeline[]>;
+  createEtlPipeline(pipeline: InsertEtlPipeline): Promise<EtlPipeline>;
+
+  getBiDashboard(id: string): Promise<BiDashboard | undefined>;
+  listBiDashboards(): Promise<BiDashboard[]>;
+  createBiDashboard(dashboard: InsertBiDashboard): Promise<BiDashboard>;
+
+  getFieldServiceJob(id: string): Promise<FieldServiceJob | undefined>;
+  listFieldServiceJobs(status?: string): Promise<FieldServiceJob[]>;
+  createFieldServiceJob(job: InsertFieldServiceJob): Promise<FieldServiceJob>;
+
+  getPayrollConfig(id: string): Promise<PayrollConfig | undefined>;
+  listPayrollConfigs(): Promise<PayrollConfig[]>;
+  createPayrollConfig(config: InsertPayrollConfig): Promise<PayrollConfig>;
 }
 
 export class MemStorage implements IStorage {
@@ -515,6 +540,32 @@ export class MemStorage implements IStorage {
   async getIssue(id: string) { return this.issues.get(id); }
   async listIssues(sprintId?: string) { const list = Array.from(this.issues.values()); return sprintId ? list.filter(i => i.sprintId === sprintId) : list; }
   async createIssue(i: InsertIssue) { const id = randomUUID(); const issue: Issue = { id, ...i, createdAt: new Date() }; this.issues.set(id, issue); return issue; }
+
+  private dataLakes = new Map<string, DataLake>();
+  private etlPipelines = new Map<string, EtlPipeline>();
+  private biDashboards = new Map<string, BiDashboard>();
+  private fieldServiceJobs = new Map<string, FieldServiceJob>();
+  private payrollConfigs = new Map<string, PayrollConfig>();
+
+  async getDataLake(id: string) { return this.dataLakes.get(id); }
+  async listDataLakes() { return Array.from(this.dataLakes.values()); }
+  async createDataLake(l: InsertDataLake) { const id = randomUUID(); const lake: DataLake = { id, ...l, createdAt: new Date() }; this.dataLakes.set(id, lake); return lake; }
+
+  async getEtlPipeline(id: string) { return this.etlPipelines.get(id); }
+  async listEtlPipelines() { return Array.from(this.etlPipelines.values()); }
+  async createEtlPipeline(p: InsertEtlPipeline) { const id = randomUUID(); const pipeline: EtlPipeline = { id, ...p, createdAt: new Date() }; this.etlPipelines.set(id, pipeline); return pipeline; }
+
+  async getBiDashboard(id: string) { return this.biDashboards.get(id); }
+  async listBiDashboards() { return Array.from(this.biDashboards.values()); }
+  async createBiDashboard(d: InsertBiDashboard) { const id = randomUUID(); const dash: BiDashboard = { id, ...d, createdAt: new Date() }; this.biDashboards.set(id, dash); return dash; }
+
+  async getFieldServiceJob(id: string) { return this.fieldServiceJobs.get(id); }
+  async listFieldServiceJobs(status?: string) { const list = Array.from(this.fieldServiceJobs.values()); return status ? list.filter(j => j.status === status) : list; }
+  async createFieldServiceJob(j: InsertFieldServiceJob) { const id = randomUUID(); const job: FieldServiceJob = { id, ...j, createdAt: new Date() }; this.fieldServiceJobs.set(id, job); return job; }
+
+  async getPayrollConfig(id: string) { return this.payrollConfigs.get(id); }
+  async listPayrollConfigs() { return Array.from(this.payrollConfigs.values()); }
+  async createPayrollConfig(c: InsertPayrollConfig) { const id = randomUUID(); const cfg: PayrollConfig = { id, ...c, createdAt: new Date() }; this.payrollConfigs.set(id, cfg); return cfg; }
 }
 
 export const storage = new MemStorage();

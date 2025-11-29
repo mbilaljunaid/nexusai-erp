@@ -15,6 +15,7 @@ import {
   insertScenarioSchema, insertScenarioVariableSchema, insertDashboardWidgetSchema, insertReportSchema, insertAuditLogSchema,
   insertAppSchema, insertAppReviewSchema, insertAppInstallationSchema, insertConnectorSchema, insertConnectorInstanceSchema, insertWebhookEventSchema,
   insertAbacRuleSchema, insertEncryptedFieldSchema, insertComplianceConfigSchema, insertSprintSchema, insertIssueSchema,
+  insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -771,6 +772,102 @@ export async function registerRoutes(
         return res.status(400).json({ error: error.errors });
       }
       res.status(500).json({ error: "Failed to create issue" });
+    }
+  });
+
+  // PHASE 5: Data Warehouse
+  app.get("/api/data-warehouse/lakes", async (req, res) => {
+    const lakes = await storage.listDataLakes();
+    res.json(lakes);
+  });
+
+  app.post("/api/data-warehouse/lakes", async (req, res) => {
+    try {
+      const data = insertDataLakeSchema.parse(req.body);
+      const lake = await storage.createDataLake(data);
+      res.status(201).json(lake);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create data lake" });
+    }
+  });
+
+  // PHASE 5: ETL Pipelines
+  app.get("/api/etl/pipelines", async (req, res) => {
+    const pipelines = await storage.listEtlPipelines();
+    res.json(pipelines);
+  });
+
+  app.post("/api/etl/pipelines", async (req, res) => {
+    try {
+      const data = insertEtlPipelineSchema.parse(req.body);
+      const pipeline = await storage.createEtlPipeline(data);
+      res.status(201).json(pipeline);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create ETL pipeline" });
+    }
+  });
+
+  // PHASE 5: BI Dashboards
+  app.get("/api/bi/dashboards", async (req, res) => {
+    const dashboards = await storage.listBiDashboards();
+    res.json(dashboards);
+  });
+
+  app.post("/api/bi/dashboards", async (req, res) => {
+    try {
+      const data = insertBiDashboardSchema.parse(req.body);
+      const dashboard = await storage.createBiDashboard(data);
+      res.status(201).json(dashboard);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create BI dashboard" });
+    }
+  });
+
+  // PHASE 5: Field Service
+  app.get("/api/field-service/jobs", async (req, res) => {
+    const status = req.query.status as string;
+    const jobs = await storage.listFieldServiceJobs(status);
+    res.json(jobs);
+  });
+
+  app.post("/api/field-service/jobs", async (req, res) => {
+    try {
+      const data = insertFieldServiceJobSchema.parse(req.body);
+      const job = await storage.createFieldServiceJob(data);
+      res.status(201).json(job);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create field service job" });
+    }
+  });
+
+  // PHASE 5: Payroll Configuration
+  app.get("/api/payroll/configs", async (req, res) => {
+    const configs = await storage.listPayrollConfigs();
+    res.json(configs);
+  });
+
+  app.post("/api/payroll/configs", async (req, res) => {
+    try {
+      const data = insertPayrollConfigSchema.parse(req.body);
+      const config = await storage.createPayrollConfig(data);
+      res.status(201).json(config);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create payroll config" });
     }
   });
 
