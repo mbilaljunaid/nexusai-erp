@@ -21,28 +21,19 @@ export function IconNavigation({ items, activeId, onSelect }: IconNavigationProp
         const Icon = item.icon;
         const isActive = activeId === item.id;
         return (
-          <Card
+          <button
             key={item.id}
-            className={`cursor-pointer transition-all ${
-              isActive
-                ? "ring-2 ring-primary bg-primary/5"
-                : "hover-elevate"
-            }`}
             onClick={() => onSelect(item.id)}
-            role="button"
-            tabIndex={0}
+            className={`p-4 rounded-lg border transition-all flex flex-col items-center gap-2 text-center cursor-pointer ${
+              isActive
+                ? "ring-2 ring-primary bg-primary/5 border-primary"
+                : "border-border hover:bg-muted hover:border-primary/50"
+            }`}
             data-testid={`nav-${item.id}`}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                onSelect(item.id);
-              }
-            }}
           >
-            <CardContent className="p-4 flex flex-col items-center gap-2 text-center">
-              <Icon className={`h-6 w-6 ${item.color}`} />
-              <p className="text-sm font-medium">{item.label}</p>
-            </CardContent>
-          </Card>
+            <Icon className={`h-6 w-6 ${item.color}`} />
+            <p className="text-sm font-medium">{item.label}</p>
+          </button>
         );
       })}
     </div>
