@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BomForm } from "@/components/forms/BomForm";
-import { ModuleNav } from "@/components/ModuleNav";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Factory, Package, CheckSquare, Zap, QrCode } from "lucide-react";
 
@@ -91,16 +90,6 @@ export default function Manufacturing() {
           </Card>
         </div>
       )}
-
-      <ModuleNav
-        title="Manufacturing Modules"
-        items={[
-          { title: "Work Orders", icon: Package, href: "/work-orders" },
-          { title: "MRP Planning", icon: Factory, href: "/mrp" },
-          { title: "Shop Floor", icon: Factory, href: "/shop-floor" },
-          { title: "Quality Control", icon: CheckSquare, href: "/quality-control" },
-        ]}
-      />
     </div>
   );
 }
