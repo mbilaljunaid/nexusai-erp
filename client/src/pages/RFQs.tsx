@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, FileText, Send } from "lucide-react";
+import { Plus, FileText } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 

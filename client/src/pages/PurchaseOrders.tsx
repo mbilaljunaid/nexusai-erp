@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, ShoppingCart, FileText } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Input } from "@/components/ui/input";
 
 export default function PurchaseOrders() {
   const [activeNav, setActiveNav] = useState("list");
