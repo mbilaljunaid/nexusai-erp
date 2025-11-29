@@ -29,6 +29,11 @@ import { IntegrationModule } from './modules/integration/integration.module';
 import { BPMAdvancedModule } from './modules/bpm/bpm-advanced.module';
 import { CopilotModule } from './modules/copilot/copilot.module';
 import { FieldServiceModule } from './modules/field-service/field-service.module';
+import { BillingModule } from './modules/billing/billing.module';
+import { EventsModule } from './modules/events/events.module';
+import { TenantsModule } from './modules/tenants/tenants.module';
+import { TestingModule } from './modules/testing/testing.module';
+import { AuditModule } from './modules/audit/audit.module';
 
 @Module({
   imports: [
@@ -79,6 +84,11 @@ import { FieldServiceModule } from './modules/field-service/field-service.module
     BPMAdvancedModule,
     CopilotModule,
     FieldServiceModule,
+    BillingModule,
+    EventsModule,
+    TenantsModule,
+    TestingModule,
+    AuditModule,
   ],
 })
 export class AppModule {}

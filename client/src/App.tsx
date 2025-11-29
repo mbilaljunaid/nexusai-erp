@@ -45,6 +45,7 @@ import SystemHealth from "@/pages/SystemHealth";
 import EPMPage from "@/pages/EPMPage";
 import AIAssistantPage from "@/pages/AIAssistant";
 import FieldService from "@/pages/FieldService";
+import Billing from "@/pages/Billing";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -78,6 +79,7 @@ function Router() {
       <Route path="/copilot" component={AIAssistantPage} />
       <Route path="/field-service" component={FieldService} />
       <Route path="/analytics" component={Analytics} />
+      <Route path="/billing" component={Billing} />
       <Route component={NotFound} />
     </Switch>
   );
