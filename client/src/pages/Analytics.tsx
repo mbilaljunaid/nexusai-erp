@@ -1,12 +1,18 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
-import { Plus, Download } from "lucide-react";
-
+import { Plus, Download, LayoutDashboard, FileText, Table2 } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Analytics() {
+  const [activeNav, setActiveNav] = useState("dashboard");
+  const navItems = [
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, color: "text-blue-500" },
+    { id: "reports", label: "Reports", icon: FileText, color: "text-green-500" },
+    { id: "excel", label: "Data", icon: Table2, color: "text-purple-500" },
+  ];
   // Fetch ARIMA forecasting data from backend
   const { data: forecastData } = useQuery({ queryKey: ["/api/analytics/forecast-advanced"] });
   const { data: dashboardSummary } = useQuery({ queryKey: ["/api/analytics/dashboard/summary"] });
@@ -73,15 +79,10 @@ export default function Analytics() {
         ))}
       </div>
 
-      <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
-          <TabsTrigger value="excel">Embedded Data</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        {/* Dashboard Tab */}
-        <TabsContent value="dashboard" className="space-y-4 mt-6">
+      {activeNav === "dashboard" && (
+        <div className="space-y-4 mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Revenue & Expenses Trend</CardTitle>

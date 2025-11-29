@@ -1,11 +1,21 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ModuleNav } from "@/components/ModuleNav";
-import { Package, Truck, BookOpen, Users, BarChart3 } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { Package, Truck, BookOpen, Users, BarChart3, Headset, MapPin } from "lucide-react";
 
 export default function Service() {
+  const [activeNav, setActiveNav] = useState("overview");
+  
+  const navItems = [
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "tickets", label: "Tickets", icon: Headset, color: "text-green-500" },
+    { id: "field", label: "Field Service", icon: MapPin, color: "text-orange-500" },
+    { id: "kb", label: "Knowledge Base", icon: BookOpen, color: "text-purple-500" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
@@ -13,15 +23,10 @@ export default function Service() {
         <p className="text-muted-foreground text-sm">Manage customer support, tickets, and field service</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-          <TabsTrigger value="tickets" data-testid="tab-tickets">Tickets</TabsTrigger>
-          <TabsTrigger value="field" data-testid="tab-field">Field Service</TabsTrigger>
-          <TabsTrigger value="kb" data-testid="tab-kb">Knowledge Base</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="overview" className="space-y-4">
+      {activeNav === "overview" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Link href="/service-tickets">
               <Card className="cursor-pointer hover-elevate">
