@@ -639,6 +639,21 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Advanced Enterprise (Phase 5)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {phase5Items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
           <div className="flex items-center justify-between px-2">
             <SidebarGroupLabel className="text-xs uppercase tracking-wide">Industries</SidebarGroupLabel>
             <Button 

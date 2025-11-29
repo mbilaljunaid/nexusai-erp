@@ -136,7 +136,6 @@ import SSO from "@/pages/SSO";
 import TwoFactorAuth from "@/pages/TwoFactorAuth";
 import AccessControl from "@/pages/AccessControl";
 import FeatureFlags from "@/pages/FeatureFlags";
-import Marketplace from "@/pages/Marketplace";
 import Localization from "@/pages/Localization";
 import EmailConfiguration from "@/pages/EmailConfiguration";
 import NotificationSettings from "@/pages/NotificationSettings";
