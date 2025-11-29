@@ -65,10 +65,14 @@ export interface IStorage {
   getMobileDevice(id: string): Promise<MobileDevice | undefined>;
   listMobileDevices(userId?: string): Promise<MobileDevice[]>;
   createMobileDevice(device: InsertMobileDevice): Promise<MobileDevice>;
+  registerMobileDevice(device: InsertMobileDevice): Promise<MobileDevice>;
+  updateMobileDeviceSync(deviceId: string): Promise<MobileDevice | undefined>;
 
   getOfflineSync(id: string): Promise<OfflineSync | undefined>;
   listOfflineSync(deviceId?: string): Promise<OfflineSync[]>;
   createOfflineSync(sync: InsertOfflineSync): Promise<OfflineSync>;
+  getOfflineSyncQueue(deviceId: string): Promise<OfflineSync[]>;
+  addToOfflineQueue(sync: InsertOfflineSync): Promise<OfflineSync>;
 
   getCopilotConversation(id: string): Promise<CopilotConversation | undefined>;
   listCopilotConversations(userId?: string): Promise<CopilotConversation[]>;
@@ -83,7 +87,7 @@ export interface IStorage {
   createRevenueForecast(forecast: InsertRevenueForecast): Promise<RevenueForecast>;
 
   getBudgetAllocation(id: string): Promise<BudgetAllocation | undefined>;
-  listBudgetAllocations(): Promise<BudgetAllocation[]>;
+  listBudgetAllocations(year?: number): Promise<BudgetAllocation[]>;
   createBudgetAllocation(budget: InsertBudgetAllocation): Promise<BudgetAllocation>;
 
   getTimeSeriesData(id: string): Promise<TimeSeriesData | undefined>;
@@ -101,9 +105,11 @@ export interface IStorage {
   getScenarioVariable(id: string): Promise<ScenarioVariable | undefined>;
   listScenarioVariables(scenarioId?: string): Promise<ScenarioVariable[]>;
   createScenarioVariable(variable: InsertScenarioVariable): Promise<ScenarioVariable>;
+  getScenarioVariables(scenarioId: string): Promise<ScenarioVariable[]>;
+  addScenarioVariable(variable: InsertScenarioVariable): Promise<ScenarioVariable>;
 
   getDashboardWidget(id: string): Promise<DashboardWidget | undefined>;
-  listDashboardWidgets(): Promise<DashboardWidget[]>;
+  listDashboardWidgets(dashboardId?: string): Promise<DashboardWidget[]>;
   createDashboardWidget(widget: InsertDashboardWidget): Promise<DashboardWidget>;
 
   getReport(id: string): Promise<Report | undefined>;
@@ -243,10 +249,14 @@ export class MemStorage implements IStorage {
   async getMobileDevice(id: string) { return this.mobileDevices.get(id); }
   async listMobileDevices(userId?: string) { const list = Array.from(this.mobileDevices.values()); return userId ? list.filter(d => d.userId === userId) : list; }
   async createMobileDevice(d: InsertMobileDevice) { const id = randomUUID(); const dev: MobileDevice = { id, ...d as any, createdAt: new Date() }; this.mobileDevices.set(id, dev); return dev; }
+  async registerMobileDevice(d: InsertMobileDevice) { return this.createMobileDevice(d); }
+  async updateMobileDeviceSync(deviceId: string) { return this.mobileDevices.get(deviceId); }
 
   async getOfflineSync(id: string) { return this.offlineSyncQueue.get(id); }
   async listOfflineSync(deviceId?: string) { const list = Array.from(this.offlineSyncQueue.values()); return deviceId ? list.filter(s => s.deviceId === deviceId) : list; }
   async createOfflineSync(s: InsertOfflineSync) { const id = randomUUID(); const sync: OfflineSync = { id, ...s, createdAt: new Date() }; this.offlineSyncQueue.set(id, sync); return sync; }
+  async getOfflineSyncQueue(deviceId: string) { return this.listOfflineSync(deviceId); }
+  async addToOfflineQueue(s: InsertOfflineSync) { return this.createOfflineSync(s); }
 
   async getCopilotConversation(id: string) { return this.copilotConversations.get(id); }
   async listCopilotConversations(userId?: string) { const list = Array.from(this.copilotConversations.values()); return userId ? list.filter(c => c.userId === userId) : list; }
@@ -261,10 +271,10 @@ export class MemStorage implements IStorage {
   async createRevenueForecast(f: InsertRevenueForecast) { const id = randomUUID(); const forecast: RevenueForecast = { id, ...f as any, createdAt: new Date() }; this.revenueForecasts.set(id, forecast); return forecast; }
 
   async getBudgetAllocation(id: string) { return this.budgetAllocations.get(id); }
-  async listBudgetAllocations() { return Array.from(this.budgetAllocations.values()); }
+  async listBudgetAllocations(year?: number) { const list = Array.from(this.budgetAllocations.values()); return year ? list.filter(b => (b as any).year === year) : list; }
   async createBudgetAllocation(b: InsertBudgetAllocation) { const id = randomUUID(); const budget: BudgetAllocation = { id, ...b as any, createdAt: new Date() }; this.budgetAllocations.set(id, budget); return budget; }
 
-  async getTimeSeriesData(id: string) { return this.timeSeriesData.get(id); }
+  async getTimeSeriesData(id: string) { return Array.from(this.timeSeriesData.values()).filter(t => (t as any).metric === id)[0]; }
   async listTimeSeriesData() { return Array.from(this.timeSeriesData.values()); }
   async createTimeSeriesData(d: InsertTimeSeriesData) { const id = randomUUID(); const data: TimeSeriesData = { id, ...d as any, createdAt: new Date() }; this.timeSeriesData.set(id, data); return data; }
 
@@ -279,9 +289,11 @@ export class MemStorage implements IStorage {
   async getScenarioVariable(id: string) { return this.scenarioVariables.get(id); }
   async listScenarioVariables(scenarioId?: string) { const list = Array.from(this.scenarioVariables.values()); return scenarioId ? list.filter(v => v.scenarioId === scenarioId) : list; }
   async createScenarioVariable(v: InsertScenarioVariable) { const id = randomUUID(); const variable: ScenarioVariable = { id, ...v as any, createdAt: new Date() }; this.scenarioVariables.set(id, variable); return variable; }
+  async getScenarioVariables(scenarioId: string) { return this.listScenarioVariables(scenarioId); }
+  async addScenarioVariable(v: InsertScenarioVariable) { return this.createScenarioVariable(v); }
 
   async getDashboardWidget(id: string) { return this.dashboardWidgets.get(id); }
-  async listDashboardWidgets() { return Array.from(this.dashboardWidgets.values()); }
+  async listDashboardWidgets(dashboardId?: string) { const list = Array.from(this.dashboardWidgets.values()); return dashboardId ? list.filter(w => (w as any).dashboardId === dashboardId) : list; }
   async createDashboardWidget(w: InsertDashboardWidget) { const id = randomUUID(); const widget: DashboardWidget = { id, ...w, createdAt: new Date() }; this.dashboardWidgets.set(id, widget); return widget; }
 
   async getReport(id: string) { return this.reports.get(id); }
