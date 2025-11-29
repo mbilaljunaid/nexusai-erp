@@ -5,8 +5,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Zap, TrendingUp, AlertTriangle, BarChart3 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
+interface Prediction {
+  id: string;
+  name: string;
+  forecast: number;
+  confidence: number;
+  accuracy: number;
+  hasAnomaly: boolean;
+}
+
 export default function PredictiveAnalytics() {
-  const { data: predictions = [] } = useQuery({
+  const { data: predictions = [] } = useQuery<Prediction[]>({
     queryKey: ["/api/predictions"],
     retry: false,
   });

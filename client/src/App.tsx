@@ -114,7 +114,6 @@ const DataExplorer = lazy(() => import("@/pages/DataExplorer"));
 const SalesAnalytics = lazy(() => import("@/pages/SalesAnalytics"));
 const FinancialAnalytics = lazy(() => import("@/pages/FinancialAnalytics"));
 const OperationalAnalytics = lazy(() => import("@/pages/OperationalAnalytics"));
-const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
 const LeadScoringAnalytics = lazy(() => import("@/pages/LeadScoringAnalytics"));
 const RevenueForecasting = lazy(() => import("@/pages/RevenueForecasting"));
 const ChurnRiskAnalysis = lazy(() => import("@/pages/ChurnRiskAnalysis"));

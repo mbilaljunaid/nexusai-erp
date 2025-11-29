@@ -5,8 +5,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart3, TrendingUp, Zap, PieChart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
+interface Budget {
+  id: string;
+  name: string;
+  amount: number;
+  status: string;
+  department: string;
+  variance: number;
+}
+
 export default function BudgetPlanning() {
-  const { data: budgets = [] } = useQuery({
+  const { data: budgets = [] } = useQuery<Budget[]>({
     queryKey: ["/api/budgets"],
     retry: false,
   });

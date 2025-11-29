@@ -5,8 +5,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GitMerge, Database, LinkIcon, AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
+interface Consolidation {
+  id: string;
+  name: string;
+  status: string;
+  entityCount: number;
+  period: string;
+}
+
 export default function ConsolidationEngine() {
-  const { data: consolidations = [] } = useQuery({
+  const { data: consolidations = [] } = useQuery<Consolidation[]>({
     queryKey: ["/api/consolidations"],
     retry: false,
   });

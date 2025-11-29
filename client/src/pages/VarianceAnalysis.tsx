@@ -5,8 +5,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, TrendingDown, Target, LineChart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
+interface Variance {
+  id: string;
+  accountName: string;
+  actual: number;
+  forecast: number;
+  variance: number;
+}
+
 export default function VarianceAnalysis() {
-  const { data: variances = [] } = useQuery({
+  const { data: variances = [] } = useQuery<Variance[]>({
     queryKey: ["/api/variance-analysis"],
     retry: false,
   });
