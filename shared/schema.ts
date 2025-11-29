@@ -791,3 +791,214 @@ export const insertOfflineSyncSchema = createInsertSchema(offlineSyncQueue).omit
 
 export type InsertOfflineSync = z.infer<typeof insertOfflineSyncSchema>;
 export type OfflineSync = typeof offlineSyncQueue.$inferSelect;
+
+// ========== PHASE 2: ADVANCED PLANNING & ANALYTICS ==========
+
+// Planning: Revenue Forecasts
+export const revenueForecasts = pgTable("revenue_forecasts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  forecastPeriod: varchar("forecast_period").notNull(), // Q1 2025, etc
+  product: varchar("product"),
+  region: varchar("region"),
+  baselineRevenue: numeric("baseline_revenue", { precision: 15, scale: 2 }).notNull(),
+  forecastRevenue: numeric("forecast_revenue", { precision: 15, scale: 2 }).notNull(),
+  confidence: integer("confidence").default(80), // 0-100
+  assumptions: text("assumptions"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertRevenueForecastSchema = createInsertSchema(revenueForecasts).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  forecastPeriod: z.string().min(1),
+  baselineRevenue: z.string().pipe(z.coerce.number().min(0)),
+  forecastRevenue: z.string().pipe(z.coerce.number().min(0)),
+  confidence: z.number().optional(),
+  product: z.string().optional().nullable(),
+  region: z.string().optional().nullable(),
+  assumptions: z.string().optional().nullable(),
+});
+
+export type InsertRevenueForecast = z.infer<typeof insertRevenueForecastSchema>;
+export type RevenueForecast = typeof revenueForecasts.$inferSelect;
+
+// Planning: Budget Allocations
+export const budgetAllocations = pgTable("budget_allocations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  department: varchar("department").notNull(),
+  year: integer("year").notNull(),
+  budgetAmount: numeric("budget_amount", { precision: 15, scale: 2 }).notNull(),
+  allocated: numeric("allocated", { precision: 15, scale: 2 }).default("0"),
+  spent: numeric("spent", { precision: 15, scale: 2 }).default("0"),
+  variance: numeric("variance", { precision: 15, scale: 2 }).default("0"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertBudgetAllocationSchema = createInsertSchema(budgetAllocations).omit({ id: true, createdAt: true }).extend({
+  department: z.string().min(1),
+  year: z.number(),
+  budgetAmount: z.string().pipe(z.coerce.number().min(0)),
+  allocated: z.string().optional(),
+  spent: z.string().optional(),
+  variance: z.string().optional(),
+});
+
+export type InsertBudgetAllocation = z.infer<typeof insertBudgetAllocationSchema>;
+export type BudgetAllocation = typeof budgetAllocations.$inferSelect;
+
+// Forecasting: Time Series Data
+export const timeSeriesData = pgTable("time_series_data", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  metric: varchar("metric").notNull(), // revenue, cost, headcount, etc
+  period: varchar("period").notNull(), // YYYY-MM-DD
+  value: numeric("value", { precision: 15, scale: 2 }).notNull(),
+  category: varchar("category"), // product, region, department
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertTimeSeriesDataSchema = createInsertSchema(timeSeriesData).omit({ id: true, createdAt: true }).extend({
+  metric: z.string().min(1),
+  period: z.string().min(1),
+  value: z.string().pipe(z.coerce.number()),
+  category: z.string().optional().nullable(),
+});
+
+export type InsertTimeSeriesData = z.infer<typeof insertTimeSeriesDataSchema>;
+export type TimeSeriesData = typeof timeSeriesData.$inferSelect;
+
+// Forecasting: Models
+export const forecastModels = pgTable("forecast_models", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  modelType: varchar("model_type").notNull(), // arima, exponential_smoothing, linear_regression
+  metric: varchar("metric").notNull(),
+  accuracy: numeric("accuracy", { precision: 5, scale: 2 }),
+  mape: numeric("mape", { precision: 5, scale: 2 }), // Mean Absolute Percentage Error
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertForecastModelSchema = createInsertSchema(forecastModels).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  modelType: z.enum(["arima", "exponential_smoothing", "linear_regression"]),
+  metric: z.string().min(1),
+  accuracy: z.string().optional(),
+  mape: z.string().optional(),
+  status: z.string().optional(),
+});
+
+export type InsertForecastModel = z.infer<typeof insertForecastModelSchema>;
+export type ForecastModel = typeof forecastModels.$inferSelect;
+
+// What-If Analysis: Scenarios
+export const scenarios = pgTable("scenarios", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  baselineId: varchar("baseline_id"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertScenarioSchema = createInsertSchema(scenarios).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  description: z.string().optional().nullable(),
+  baselineId: z.string().optional().nullable(),
+  status: z.string().optional(),
+});
+
+export type InsertScenario = z.infer<typeof insertScenarioSchema>;
+export type Scenario = typeof scenarios.$inferSelect;
+
+// What-If Analysis: Scenario Variables
+export const scenarioVariables = pgTable("scenario_variables", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  scenarioId: varchar("scenario_id").notNull(),
+  variableName: varchar("variable_name").notNull(),
+  baselineValue: numeric("baseline_value", { precision: 15, scale: 2 }).notNull(),
+  modifiedValue: numeric("modified_value", { precision: 15, scale: 2 }).notNull(),
+  impactType: varchar("impact_type"), // revenue, cost, headcount
+});
+
+export const insertScenarioVariableSchema = createInsertSchema(scenarioVariables).omit({ id: true }).extend({
+  scenarioId: z.string().min(1),
+  variableName: z.string().min(1),
+  baselineValue: z.string().pipe(z.coerce.number()),
+  modifiedValue: z.string().pipe(z.coerce.number()),
+  impactType: z.string().optional().nullable(),
+});
+
+export type InsertScenarioVariable = z.infer<typeof insertScenarioVariableSchema>;
+export type ScenarioVariable = typeof scenarioVariables.$inferSelect;
+
+// Analytics: Dashboard Widgets
+export const dashboardWidgets = pgTable("dashboard_widgets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  dashboardId: varchar("dashboard_id").notNull(),
+  name: varchar("name").notNull(),
+  widgetType: varchar("widget_type").notNull(), // kpi, chart, table, gauge
+  dataSource: varchar("data_source"),
+  position: integer("position"),
+  config: jsonb("config"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertDashboardWidgetSchema = createInsertSchema(dashboardWidgets).omit({ id: true, createdAt: true }).extend({
+  dashboardId: z.string().min(1),
+  name: z.string().min(1),
+  widgetType: z.enum(["kpi", "chart", "table", "gauge"]),
+  dataSource: z.string().optional().nullable(),
+  position: z.number().optional(),
+  config: z.object({}).passthrough().optional(),
+});
+
+export type InsertDashboardWidget = z.infer<typeof insertDashboardWidgetSchema>;
+export type DashboardWidget = typeof dashboardWidgets.$inferSelect;
+
+// Analytics: Reports
+export const reports = pgTable("reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  reportType: varchar("report_type").notNull(), // financial, operational, sales
+  description: text("description"),
+  widgets: text("widgets").array(),
+  schedule: varchar("schedule"), // once, daily, weekly, monthly
+  recipients: text("recipients").array(),
+  lastGeneratedAt: timestamp("last_generated_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertReportSchema = createInsertSchema(reports).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  reportType: z.enum(["financial", "operational", "sales"]),
+  description: z.string().optional().nullable(),
+  widgets: z.array(z.string()).optional(),
+  schedule: z.string().optional().nullable(),
+  recipients: z.array(z.string()).optional(),
+  lastGeneratedAt: z.date().optional().nullable(),
+});
+
+export type InsertReport = z.infer<typeof insertReportSchema>;
+export type Report = typeof reports.$inferSelect;
+
+// Data Governance: Audit Log
+export const auditLogs = pgTable("audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  action: varchar("action").notNull(), // create, read, update, delete
+  entity: varchar("entity").notNull(),
+  entityId: varchar("entity_id").notNull(),
+  changes: jsonb("changes"),
+  timestamp: timestamp("timestamp").default(sql`now()`),
+});
+
+export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({ id: true, timestamp: true }).extend({
+  userId: z.string().min(1),
+  action: z.enum(["create", "read", "update", "delete"]),
+  entity: z.string().min(1),
+  entityId: z.string().min(1),
+  changes: z.object({}).passthrough().optional(),
+});
+
+export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
+export type AuditLog = typeof auditLogs.$inferSelect;

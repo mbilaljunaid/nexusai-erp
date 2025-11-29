@@ -30,6 +30,15 @@ import {
   type CopilotMessage, type InsertCopilotMessage,
   type MobileDevice, type InsertMobileDevice,
   type OfflineSync, type InsertOfflineSync,
+  type RevenueForecast, type InsertRevenueForecast,
+  type BudgetAllocation, type InsertBudgetAllocation,
+  type TimeSeriesData, type InsertTimeSeriesData,
+  type ForecastModel, type InsertForecastModel,
+  type Scenario, type InsertScenario,
+  type ScenarioVariable, type InsertScenarioVariable,
+  type DashboardWidget, type InsertDashboardWidget,
+  type Report, type InsertReport,
+  type AuditLog, type InsertAuditLog,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -157,6 +166,40 @@ export interface IStorage {
   getOfflineSyncQueue(deviceId: string): Promise<OfflineSync[]>;
   addToOfflineQueue(sync: InsertOfflineSync): Promise<OfflineSync>;
   markSyncAsComplete(syncId: string): Promise<OfflineSync | undefined>;
+
+  getRevenueForecast(id: string): Promise<RevenueForecast | undefined>;
+  listRevenueForecasts(): Promise<RevenueForecast[]>;
+  createRevenueForecast(forecast: InsertRevenueForecast): Promise<RevenueForecast>;
+
+  getBudgetAllocation(id: string): Promise<BudgetAllocation | undefined>;
+  listBudgetAllocations(year?: number): Promise<BudgetAllocation[]>;
+  createBudgetAllocation(budget: InsertBudgetAllocation): Promise<BudgetAllocation>;
+
+  getTimeSeriesData(metric: string): Promise<TimeSeriesData[]>;
+  createTimeSeriesData(data: InsertTimeSeriesData): Promise<TimeSeriesData>;
+
+  getForecastModel(id: string): Promise<ForecastModel | undefined>;
+  listForecastModels(): Promise<ForecastModel[]>;
+  createForecastModel(model: InsertForecastModel): Promise<ForecastModel>;
+
+  getScenario(id: string): Promise<Scenario | undefined>;
+  listScenarios(): Promise<Scenario[]>;
+  createScenario(scenario: InsertScenario): Promise<Scenario>;
+
+  getScenarioVariables(scenarioId: string): Promise<ScenarioVariable[]>;
+  addScenarioVariable(variable: InsertScenarioVariable): Promise<ScenarioVariable>;
+
+  getDashboardWidget(id: string): Promise<DashboardWidget | undefined>;
+  listDashboardWidgets(dashboardId: string): Promise<DashboardWidget[]>;
+  createDashboardWidget(widget: InsertDashboardWidget): Promise<DashboardWidget>;
+
+  getReport(id: string): Promise<Report | undefined>;
+  listReports(): Promise<Report[]>;
+  createReport(report: InsertReport): Promise<Report>;
+
+  getAuditLog(id: string): Promise<AuditLog | undefined>;
+  listAuditLogs(userId?: string): Promise<AuditLog[]>;
+  createAuditLog(log: InsertAuditLog): Promise<AuditLog>;
 }
 
 export class MemStorage implements IStorage {
@@ -316,6 +359,50 @@ export class MemStorage implements IStorage {
   async getOfflineSyncQueue(deviceId: string) { return Array.from(this.offlineSyncQueue.values()).filter(s => s.deviceId === deviceId && s.status === "pending"); }
   async addToOfflineQueue(s: InsertOfflineSync) { const id = randomUUID(); const sync: OfflineSync = { id, ...s, createdAt: new Date() }; this.offlineSyncQueue.set(id, sync); return sync; }
   async markSyncAsComplete(syncId: string) { const sync = this.offlineSyncQueue.get(syncId); if (sync) { sync.status = "synced"; sync.syncedAt = new Date(); } return sync; }
+
+  private revenueForecasts = new Map<string, RevenueForecast>();
+  private budgetAllocations = new Map<string, BudgetAllocation>();
+  private timeSeriesDataMap = new Map<string, TimeSeriesData[]>();
+  private forecastModels = new Map<string, ForecastModel>();
+  private scenarios = new Map<string, Scenario>();
+  private scenarioVariables = new Map<string, ScenarioVariable>();
+  private dashboardWidgets = new Map<string, DashboardWidget>();
+  private reports = new Map<string, Report>();
+  private auditLogs = new Map<string, AuditLog>();
+
+  async getRevenueForecast(id: string) { return this.revenueForecasts.get(id); }
+  async listRevenueForecasts() { return Array.from(this.revenueForecasts.values()); }
+  async createRevenueForecast(f: InsertRevenueForecast) { const id = randomUUID(); const forecast: RevenueForecast = { id, ...f, baselineRevenue: String(f.baselineRevenue), forecastRevenue: String(f.forecastRevenue), createdAt: new Date() }; this.revenueForecasts.set(id, forecast); return forecast; }
+
+  async getBudgetAllocation(id: string) { return this.budgetAllocations.get(id); }
+  async listBudgetAllocations(year?: number) { const budgets = Array.from(this.budgetAllocations.values()); return year ? budgets.filter(b => b.year === year) : budgets; }
+  async createBudgetAllocation(b: InsertBudgetAllocation) { const id = randomUUID(); const budget: BudgetAllocation = { id, ...b, budgetAmount: String(b.budgetAmount), allocated: String(b.allocated ?? "0"), spent: String(b.spent ?? "0"), variance: String((Number(b.budgetAmount) - Number(b.spent ?? "0"))), createdAt: new Date() }; this.budgetAllocations.set(id, budget); return budget; }
+
+  async getTimeSeriesData(metric: string) { return this.timeSeriesDataMap.get(metric) || []; }
+  async createTimeSeriesData(d: InsertTimeSeriesData) { const id = randomUUID(); const data: TimeSeriesData = { id, ...d, value: String(d.value), createdAt: new Date() }; const key = d.metric; if (!this.timeSeriesDataMap.has(key)) this.timeSeriesDataMap.set(key, []); this.timeSeriesDataMap.get(key)?.push(data); return data; }
+
+  async getForecastModel(id: string) { return this.forecastModels.get(id); }
+  async listForecastModels() { return Array.from(this.forecastModels.values()); }
+  async createForecastModel(m: InsertForecastModel) { const id = randomUUID(); const model: ForecastModel = { id, ...m, accuracy: String(m.accuracy ?? "0"), mape: String(m.mape ?? "0"), createdAt: new Date() }; this.forecastModels.set(id, model); return model; }
+
+  async getScenario(id: string) { return this.scenarios.get(id); }
+  async listScenarios() { return Array.from(this.scenarios.values()); }
+  async createScenario(s: InsertScenario) { const id = randomUUID(); const scenario: Scenario = { id, ...s, createdAt: new Date() }; this.scenarios.set(id, scenario); return scenario; }
+
+  async getScenarioVariables(scenarioId: string) { return Array.from(this.scenarioVariables.values()).filter(v => v.scenarioId === scenarioId); }
+  async addScenarioVariable(v: InsertScenarioVariable) { const id = randomUUID(); const variable: ScenarioVariable = { id, ...v, baselineValue: String(v.baselineValue), modifiedValue: String(v.modifiedValue) }; this.scenarioVariables.set(id, variable); return variable; }
+
+  async getDashboardWidget(id: string) { return this.dashboardWidgets.get(id); }
+  async listDashboardWidgets(dashboardId: string) { return Array.from(this.dashboardWidgets.values()).filter(w => w.dashboardId === dashboardId); }
+  async createDashboardWidget(w: InsertDashboardWidget) { const id = randomUUID(); const widget: DashboardWidget = { id, ...w, createdAt: new Date() }; this.dashboardWidgets.set(id, widget); return widget; }
+
+  async getReport(id: string) { return this.reports.get(id); }
+  async listReports() { return Array.from(this.reports.values()); }
+  async createReport(r: InsertReport) { const id = randomUUID(); const report: Report = { id, ...r, createdAt: new Date() }; this.reports.set(id, report); return report; }
+
+  async getAuditLog(id: string) { return this.auditLogs.get(id); }
+  async listAuditLogs(userId?: string) { const logs = Array.from(this.auditLogs.values()); return userId ? logs.filter(l => l.userId === userId) : logs; }
+  async createAuditLog(l: InsertAuditLog) { const id = randomUUID(); const log: AuditLog = { id, ...l, timestamp: new Date() }; this.auditLogs.set(id, log); return log; }
 }
 
 export const storage = new MemStorage();
