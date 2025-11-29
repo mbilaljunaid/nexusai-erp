@@ -692,3 +692,102 @@ export const insertCompensationPlanSchema = createInsertSchema(compensationPlans
 
 export type InsertCompensationPlan = z.infer<typeof insertCompensationPlanSchema>;
 export type CompensationPlan = typeof compensationPlans.$inferSelect;
+
+// ========== PHASE 1: AI COPILOT & MOBILE ==========
+
+// AI Copilot Conversations
+export const copilotConversations = pgTable("copilot_conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  title: text("title").notNull(),
+  context: varchar("context").notNull(), // crm, erp, hr, manufacturing, etc
+  summary: text("summary"),
+  messageCount: integer("message_count").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertCopilotConversationSchema = createInsertSchema(copilotConversations).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  userId: z.string().min(1),
+  title: z.string().min(1),
+  context: z.string().min(1),
+  summary: z.string().optional().nullable(),
+  messageCount: z.number().optional(),
+});
+
+export type InsertCopilotConversation = z.infer<typeof insertCopilotConversationSchema>;
+export type CopilotConversation = typeof copilotConversations.$inferSelect;
+
+// AI Copilot Messages
+export const copilotMessages = pgTable("copilot_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationId: varchar("conversation_id").notNull(),
+  role: varchar("role").notNull(), // user, assistant
+  content: text("content").notNull(),
+  tokens: integer("tokens"),
+  insights: text("insights"), // JSON array of AI insights
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCopilotMessageSchema = createInsertSchema(copilotMessages).omit({ id: true, createdAt: true }).extend({
+  conversationId: z.string().min(1),
+  role: z.enum(["user", "assistant"]),
+  content: z.string().min(1),
+  tokens: z.number().optional(),
+  insights: z.string().optional().nullable(),
+});
+
+export type InsertCopilotMessage = z.infer<typeof insertCopilotMessageSchema>;
+export type CopilotMessage = typeof copilotMessages.$inferSelect;
+
+// Mobile Devices for app tracking
+export const mobileDevices = pgTable("mobile_devices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  deviceId: varchar("device_id").notNull().unique(),
+  deviceType: varchar("device_type").notNull(), // ios, android
+  osVersion: varchar("os_version"),
+  appVersion: varchar("app_version"),
+  lastSyncDate: timestamp("last_sync_date"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertMobileDeviceSchema = createInsertSchema(mobileDevices).omit({ id: true, createdAt: true }).extend({
+  userId: z.string().min(1),
+  deviceId: z.string().min(1),
+  deviceType: z.enum(["ios", "android"]),
+  osVersion: z.string().optional().nullable(),
+  appVersion: z.string().optional().nullable(),
+  lastSyncDate: z.date().optional().nullable(),
+  status: z.string().optional(),
+});
+
+export type InsertMobileDevice = z.infer<typeof insertMobileDeviceSchema>;
+export type MobileDevice = typeof mobileDevices.$inferSelect;
+
+// Offline sync queue for mobile
+export const offlineSyncQueue = pgTable("offline_sync_queue", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  deviceId: varchar("device_id").notNull(),
+  operation: varchar("operation").notNull(), // create, update, delete
+  entity: varchar("entity").notNull(), // users, leads, orders, etc
+  entityId: varchar("entity_id").notNull(),
+  payload: jsonb("payload").notNull(),
+  status: varchar("status").default("pending"), // pending, synced, failed
+  syncedAt: timestamp("synced_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertOfflineSyncSchema = createInsertSchema(offlineSyncQueue).omit({ id: true, createdAt: true }).extend({
+  deviceId: z.string().min(1),
+  operation: z.enum(["create", "update", "delete"]),
+  entity: z.string().min(1),
+  entityId: z.string().min(1),
+  payload: z.object({}).passthrough(),
+  status: z.string().optional(),
+  syncedAt: z.date().optional().nullable(),
+});
+
+export type InsertOfflineSync = z.infer<typeof insertOfflineSyncSchema>;
+export type OfflineSync = typeof offlineSyncQueue.$inferSelect;

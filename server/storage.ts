@@ -26,6 +26,10 @@ import {
   type SuccessionPlan, type InsertSuccessionPlan,
   type LearningPath, type InsertLearningPath,
   type CompensationPlan, type InsertCompensationPlan,
+  type CopilotConversation, type InsertCopilotConversation,
+  type CopilotMessage, type InsertCopilotMessage,
+  type MobileDevice, type InsertMobileDevice,
+  type OfflineSync, type InsertOfflineSync,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -136,6 +140,23 @@ export interface IStorage {
   getCompensationPlan(id: string): Promise<CompensationPlan | undefined>;
   listCompensationPlans(): Promise<CompensationPlan[]>;
   createCompensationPlan(plan: InsertCompensationPlan): Promise<CompensationPlan>;
+
+  getCopilotConversation(id: string): Promise<CopilotConversation | undefined>;
+  listCopilotConversations(userId?: string): Promise<CopilotConversation[]>;
+  createCopilotConversation(conv: InsertCopilotConversation): Promise<CopilotConversation>;
+
+  getCopilotMessage(id: string): Promise<CopilotMessage | undefined>;
+  listCopilotMessages(conversationId: string): Promise<CopilotMessage[]>;
+  createCopilotMessage(msg: InsertCopilotMessage): Promise<CopilotMessage>;
+
+  getMobileDevice(id: string): Promise<MobileDevice | undefined>;
+  listMobileDevices(userId?: string): Promise<MobileDevice[]>;
+  registerMobileDevice(device: InsertMobileDevice): Promise<MobileDevice>;
+  updateMobileDeviceSync(deviceId: string): Promise<MobileDevice | undefined>;
+
+  getOfflineSyncQueue(deviceId: string): Promise<OfflineSync[]>;
+  addToOfflineQueue(sync: InsertOfflineSync): Promise<OfflineSync>;
+  markSyncAsComplete(syncId: string): Promise<OfflineSync | undefined>;
 }
 
 export class MemStorage implements IStorage {
