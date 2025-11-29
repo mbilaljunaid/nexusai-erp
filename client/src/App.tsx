@@ -55,6 +55,8 @@ import Marketplace from "@/pages/Marketplace";
 import MobileSync from "@/pages/MobileSync";
 import AIChat from "@/pages/AIChat";
 import BackendIntegration from "@/pages/BackendIntegration";
+import LeadDetail from "@/pages/LeadDetail";
+import InventoryManagement from "@/pages/InventoryManagement";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -98,6 +100,9 @@ function Router() {
       <Route path="/backend-integration" component={BackendIntegration} />
       <Route path="/crm-advanced" component={CRMAdvanced} />
       <Route path="/hr-advanced" component={HRAdvanced} />
+      <Route path="/leads/:id" component={LeadDetail} />
+      <Route path="/lead-detail" component={LeadDetail} />
+      <Route path="/inventory" component={InventoryManagement} />
       <Route component={NotFound} />
     </Switch>
   );
