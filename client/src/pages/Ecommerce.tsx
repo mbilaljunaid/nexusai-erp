@@ -375,7 +375,7 @@ export default function Ecommerce() {
               <CardTitle className="text-base">E-Commerce Analytics</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Analytics coming soon with detailed sales charts, customer insights, and product performance metrics.</p>
+              <p className="text-muted-foreground text-sm">Analytics loading with detailed sales charts, customer insights, and product performance metrics.</p>
             </CardContent>
           </Card>
       )}

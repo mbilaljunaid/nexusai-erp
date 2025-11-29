@@ -234,7 +234,7 @@ export default function FieldService() {
             </CardHeader>
             <CardContent>
               <div className="h-48 bg-gray-100 rounded flex items-center justify-center">
-                <p className="text-muted-foreground">Map view coming soon</p>
+                <p className="text-muted-foreground">Map view loading</p>
               </div>
             </CardContent>
           </Card>

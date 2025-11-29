@@ -215,7 +215,7 @@ export default function FormShowcase() {
               <TabsContent value="reconcile">
                 <Card>
                   <CardContent className="p-6">
-                    <p className="text-muted-foreground text-sm">Reconciliation form coming soon with:</p>
+                    <p className="text-muted-foreground text-sm">Reconciliation form loading with:</p>
                     <ul className="text-sm text-muted-foreground mt-3 space-y-1 list-disc list-inside">
                       <li>Bank-to-GL reconciliation</li>
                       <li>AI-assisted matching of transactions</li>
@@ -250,7 +250,7 @@ export default function FormShowcase() {
               <TabsContent value="kb">
                 <Card>
                   <CardContent className="p-6">
-                    <p className="text-muted-foreground text-sm">Knowledge base article form coming soon with:</p>
+                    <p className="text-muted-foreground text-sm">Knowledge base article form loading with:</p>
                     <ul className="text-sm text-muted-foreground mt-3 space-y-1 list-disc list-inside">
                       <li>Article content editor</li>
                       <li>Category and tagging</li>

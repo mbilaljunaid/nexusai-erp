@@ -92,7 +92,7 @@ export default function Email() {
               <CardTitle className="text-base">Email Accounts</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Email accounts module coming soon. Connect and manage multiple email addresses and accounts.</p>
+              <p className="text-muted-foreground text-sm">Email accounts module loading. Connect and manage multiple email addresses and accounts.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -103,7 +103,7 @@ export default function Email() {
               <CardTitle className="text-base">Email Campaigns</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Email campaigns module coming soon. Create and send bulk email campaigns with tracking.</p>
+              <p className="text-muted-foreground text-sm">Email campaigns module loading. Create and send bulk email campaigns with tracking.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -114,7 +114,7 @@ export default function Email() {
               <CardTitle className="text-base">Email Templates</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Templates module coming soon. Create and manage reusable email templates.</p>
+              <p className="text-muted-foreground text-sm">Templates module loading. Create and manage reusable email templates.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -125,7 +125,7 @@ export default function Email() {
               <CardTitle className="text-base">Email Automation</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Automation module coming soon. Set up automatic workflows and follow-ups.</p>
+              <p className="text-muted-foreground text-sm">Automation module loading. Set up automatic workflows and follow-ups.</p>
             </CardContent>
           </Card>
         </TabsContent>

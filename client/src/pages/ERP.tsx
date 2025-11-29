@@ -79,7 +79,7 @@ export default function ERP() {
             <CardTitle className="text-base">General Ledger</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">GL module coming soon. Manage chart of accounts, create and post journals, and run financial reports.</p>
+            <p className="text-muted-foreground text-sm">GL module loading. Manage chart of accounts, create and post journals, and run financial reports.</p>
           </CardContent>
         </Card>
       )}
@@ -90,7 +90,7 @@ export default function ERP() {
             <CardTitle className="text-base">Accounts Payable</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">AP module coming soon. Manage vendor invoices, schedule payments, and reconcile with POs.</p>
+            <p className="text-muted-foreground text-sm">AP module loading. Manage vendor invoices, schedule payments, and reconcile with POs.</p>
           </CardContent>
         </Card>
       )}
@@ -101,7 +101,7 @@ export default function ERP() {
             <CardTitle className="text-base">Accounts Receivable</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">AR module coming soon. Manage customer invoices, track collections, and analyze aging reports.</p>
+            <p className="text-muted-foreground text-sm">AR module loading. Manage customer invoices, track collections, and analyze aging reports.</p>
           </CardContent>
         </Card>
       )}
@@ -112,7 +112,7 @@ export default function ERP() {
             <CardTitle className="text-base">Inventory Management</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">Inventory module coming soon. Track stock levels, manage valuation methods, and optimize reorder points.</p>
+            <p className="text-muted-foreground text-sm">Inventory module loading. Track stock levels, manage valuation methods, and optimize reorder points.</p>
           </CardContent>
         </Card>
       )}

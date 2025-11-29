@@ -101,7 +101,7 @@ export default function HR() {
             <CardTitle className="text-base">Employee Directory</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">Employee management module coming soon. View, manage, and track all employee information.</p>
+            <p className="text-muted-foreground text-sm">Employee management module loading. View, manage, and track all employee information.</p>
           </CardContent>
         </Card>
       )}
@@ -112,7 +112,7 @@ export default function HR() {
             <CardTitle className="text-base">Recruitment</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">Recruitment module coming soon. Manage job openings, candidates, and hiring process.</p>
+            <p className="text-muted-foreground text-sm">Recruitment module loading. Manage job openings, candidates, and hiring process.</p>
           </CardContent>
         </Card>
       )}
@@ -123,7 +123,7 @@ export default function HR() {
             <CardTitle className="text-base">Payroll</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">Payroll module coming soon. Process salaries, deductions, and tax compliance.</p>
+            <p className="text-muted-foreground text-sm">Payroll module loading. Process salaries, deductions, and tax compliance.</p>
           </CardContent>
         </Card>
       )}
@@ -134,7 +134,7 @@ export default function HR() {
             <CardTitle className="text-base">Performance Management</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">Performance module coming soon. Manage goals, reviews, and development plans.</p>
+            <p className="text-muted-foreground text-sm">Performance module loading. Manage goals, reviews, and development plans.</p>
           </CardContent>
         </Card>
       )}

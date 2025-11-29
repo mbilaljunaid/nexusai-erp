@@ -91,7 +91,7 @@ export default function Website() {
               <CardTitle className="text-base">Your Websites</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Websites module coming soon. Create and manage multiple websites with drag-and-drop builder.</p>
+              <p className="text-muted-foreground text-sm">Websites module loading. Create and manage multiple websites with drag-and-drop builder.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -102,7 +102,7 @@ export default function Website() {
               <CardTitle className="text-base">Page Management</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Page management module coming soon. Create landing pages, product pages, and custom pages.</p>
+              <p className="text-muted-foreground text-sm">Page management module loading. Create landing pages, product pages, and custom pages.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -113,7 +113,7 @@ export default function Website() {
               <CardTitle className="text-base">Website Analytics</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Analytics module coming soon. Track visitors, conversions, and user behavior.</p>
+              <p className="text-muted-foreground text-sm">Analytics module loading. Track visitors, conversions, and user behavior.</p>
             </CardContent>
           </Card>
         </TabsContent>

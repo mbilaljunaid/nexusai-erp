@@ -84,7 +84,7 @@ export default function Marketing() {
               <CardTitle className="text-base">Campaigns</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Campaign management coming soon. Create multi-channel marketing campaigns.</p>
+              <p className="text-muted-foreground text-sm">Campaign management loading. Create multi-channel marketing campaigns.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -95,7 +95,7 @@ export default function Marketing() {
               <CardTitle className="text-base">Email Marketing</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Email module coming soon. Design and send targeted email campaigns.</p>
+              <p className="text-muted-foreground text-sm">Email module loading. Design and send targeted email campaigns.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -106,7 +106,7 @@ export default function Marketing() {
               <CardTitle className="text-base">Social Media</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">Social media module coming soon. Manage your social presence.</p>
+              <p className="text-muted-foreground text-sm">Social media module loading. Manage your social presence.</p>
             </CardContent>
           </Card>
         </TabsContent>

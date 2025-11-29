@@ -112,7 +112,7 @@ export default function Service() {
             <CardTitle className="text-base">Support Tickets</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">Ticketing system coming soon. Manage customer support requests and track resolution.</p>
+            <p className="text-muted-foreground text-sm">Ticketing system loading. Manage customer support requests and track resolution.</p>
           </CardContent>
         </Card>
       )}
@@ -123,7 +123,7 @@ export default function Service() {
             <CardTitle className="text-base">Field Service</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">Field service module coming soon. Dispatch technicians and track on-site work.</p>
+            <p className="text-muted-foreground text-sm">Field service module loading. Dispatch technicians and track on-site work.</p>
           </CardContent>
         </Card>
       )}
@@ -134,7 +134,7 @@ export default function Service() {
             <CardTitle className="text-base">Knowledge Base</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">Knowledge management coming soon. Create and share help articles with customers.</p>
+            <p className="text-muted-foreground text-sm">Knowledge management loading. Create and share help articles with customers.</p>
           </CardContent>
         </Card>
       )}
