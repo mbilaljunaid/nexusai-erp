@@ -169,6 +169,47 @@ const systemItems = [
   { title: "Backup/Restore", icon: Download, href: "/backup-restore", badge: "PHASE3" },
 ];
 
+const phase4Items = [
+  { title: "Mobile Optimization", icon: Smartphone, href: "/mobile-optimization", badge: "PHASE4" },
+  { title: "Accessibility", icon: Activity, href: "/accessibility-audit", badge: "PHASE4" },
+  { title: "Performance", icon: BarChart3, href: "/performance-optimization", badge: "PHASE4" },
+  { title: "Internationalization", icon: Zap, href: "/i18n-config", badge: "PHASE4" },
+  { title: "Advanced Search", icon: Zap, href: "/advanced-search", badge: "PHASE4" },
+  { title: "Bulk Operations", icon: Zap, href: "/bulk-ops", badge: "PHASE4" },
+  { title: "Duplicate Detection", icon: Database, href: "/duplicate-detection", badge: "PHASE4" },
+  { title: "Data Validation", icon: Database, href: "/data-validation", badge: "PHASE4" },
+  { title: "AI Recommendations", icon: Sparkles, href: "/recommendation-engine", badge: "PHASE4" },
+  { title: "Advanced Reports", icon: BarChart3, href: "/advanced-reporting", badge: "PHASE4" },
+  { title: "Geolocation", icon: Activity, href: "/geolocation", badge: "PHASE4" },
+  { title: "Collaboration", icon: Users, href: "/collaboration", badge: "PHASE4" },
+  { title: "Notifications", icon: Activity, href: "/notifications", badge: "PHASE4" },
+  { title: "Lead Scoring ML", icon: Sparkles, href: "/lead-scoring-ml", badge: "PHASE4" },
+  { title: "Customer Journey", icon: TrendingUp, href: "/customer-journey", badge: "PHASE4" },
+  { title: "Competitor Analysis", icon: BarChart3, href: "/competitor-analysis", badge: "PHASE4" },
+  { title: "Real-Time Alerts", icon: Activity, href: "/realtime-notifications", badge: "PHASE4" },
+  { title: "Templates", icon: BookOpen, href: "/templates", badge: "PHASE4" },
+  { title: "QA Dashboard", icon: BarChart3, href: "/qa-dashboard", badge: "PHASE4" },
+  { title: "Growth Metrics", icon: TrendingUp, href: "/growth-metrics", badge: "PHASE4" },
+  { title: "Customer Success", icon: Users, href: "/customer-success", badge: "PHASE4" },
+];
+
+const phase5Items = [
+  { title: "Advanced Permissions", icon: Shield, href: "/advanced-permissions", badge: "PHASE5" },
+  { title: "Encryption", icon: Shield, href: "/advanced-encryption", badge: "PHASE5" },
+  { title: "Multi-Tenancy", icon: Zap, href: "/multi-tenancy", badge: "PHASE5" },
+  { title: "API Versioning", icon: Cpu, href: "/api-versioning", badge: "PHASE5" },
+  { title: "Custom Workflows", icon: Zap, href: "/custom-workflows", badge: "PHASE5" },
+  { title: "Time Tracking", icon: Clock, href: "/time-tracking", badge: "PHASE5" },
+  { title: "Expense Tracking", icon: DollarSign, href: "/expense-tracking", badge: "PHASE5" },
+  { title: "Procurement", icon: Package, href: "/procurement", badge: "PHASE5" },
+  { title: "Contracts", icon: FileText, href: "/contracts", badge: "PHASE5" },
+  { title: "Supply Chain", icon: TrendingUp, href: "/supply-chain", badge: "PHASE5" },
+  { title: "Asset Management", icon: Package, href: "/assets", badge: "PHASE5" },
+  { title: "Knowledge Base", icon: BookOpen, href: "/knowledge-base", badge: "PHASE5" },
+  { title: "Community Forum", icon: Users, href: "/community-forum", badge: "PHASE5" },
+  { title: "Training Academy", icon: BookOpen, href: "/training-academy", badge: "PHASE5" },
+];
+
 const digitialNavItems = [
   { title: "Website Builder", icon: Zap, href: "/website" },
   { title: "Email Management", icon: Package, href: "/email" },
@@ -572,6 +613,21 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {systemItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Final Polish (Phase 4)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {phase4Items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
                     <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>

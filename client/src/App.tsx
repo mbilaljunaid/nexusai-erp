@@ -168,6 +168,41 @@ import ServiceLevelConfig from "@/pages/ServiceLevelConfig";
 import MobileAppSettings from "@/pages/MobileAppSettings";
 import VirtualAssistant from "@/pages/VirtualAssistant";
 import PlatformStatus from "@/pages/PlatformStatus";
+import MobileOptimization from "@/pages/MobileOptimization";
+import AccessibilityAudit from "@/pages/AccessibilityAudit";
+import PerformanceOptimization from "@/pages/PerformanceOptimization";
+import InternationalizationConfig from "@/pages/InternationalizationConfig";
+import AdvancedSearch from "@/pages/AdvancedSearch";
+import BulkOperations from "@/pages/BulkOperations";
+import DuplicateDetection from "@/pages/DuplicateDetection";
+import DataValidation from "@/pages/DataValidation";
+import RecommendationEngine from "@/pages/RecommendationEngine";
+import AdvancedReporting from "@/pages/AdvancedReporting";
+import GeolocationServices from "@/pages/GeolocationServices";
+import CollaborationTools from "@/pages/CollaborationTools";
+import NotificationCenter from "@/pages/NotificationCenter";
+import PredictiveLeadScoring from "@/pages/PredictiveLeadScoring";
+import CustomerJourneyMap from "@/pages/CustomerJourneyMap";
+import CompetitorAnalysis from "@/pages/CompetitorAnalysis";
+import RealTimeNotifications from "@/pages/RealTimeNotifications";
+import TemplateLibrary from "@/pages/TemplateLibrary";
+import QualityAssurance from "@/pages/QualityAssurance";
+import GrowthMetrics from "@/pages/GrowthMetrics";
+import CustomerSuccessPanel from "@/pages/CustomerSuccessPanel";
+import AdvancedPermissions from "@/pages/AdvancedPermissions";
+import AdvancedEncryption from "@/pages/AdvancedEncryption";
+import MultiTenancy from "@/pages/MultiTenancy";
+import APIVersioning from "@/pages/APIVersioning";
+import CustomWorkflows from "@/pages/CustomWorkflows";
+import TimeTracking from "@/pages/TimeTracking";
+import ExpenseTracking from "@/pages/ExpenseTracking";
+import ProcurementManagement from "@/pages/ProcurementManagement";
+import ContractManagement from "@/pages/ContractManagement";
+import SupplyChainOptimization from "@/pages/SupplyChainOptimization";
+import AssetManagement from "@/pages/AssetManagement";
+import KnowledgeBase from "@/pages/KnowledgeBase";
+import CommunityForum from "@/pages/CommunityForum";
+import TrainingAcademy from "@/pages/TrainingAcademy";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -326,6 +361,41 @@ function Router() {
       <Route path="/mobile-app-settings" component={MobileAppSettings} />
       <Route path="/virtual-assistant" component={VirtualAssistant} />
       <Route path="/platform-status" component={PlatformStatus} />
+      <Route path="/mobile-optimization" component={MobileOptimization} />
+      <Route path="/accessibility-audit" component={AccessibilityAudit} />
+      <Route path="/performance-optimization" component={PerformanceOptimization} />
+      <Route path="/i18n-config" component={InternationalizationConfig} />
+      <Route path="/advanced-search" component={AdvancedSearch} />
+      <Route path="/bulk-ops" component={BulkOperations} />
+      <Route path="/duplicate-detection" component={DuplicateDetection} />
+      <Route path="/data-validation" component={DataValidation} />
+      <Route path="/recommendation-engine" component={RecommendationEngine} />
+      <Route path="/advanced-reporting" component={AdvancedReporting} />
+      <Route path="/geolocation" component={GeolocationServices} />
+      <Route path="/collaboration" component={CollaborationTools} />
+      <Route path="/notifications" component={NotificationCenter} />
+      <Route path="/lead-scoring-ml" component={PredictiveLeadScoring} />
+      <Route path="/customer-journey" component={CustomerJourneyMap} />
+      <Route path="/competitor-analysis" component={CompetitorAnalysis} />
+      <Route path="/realtime-notifications" component={RealTimeNotifications} />
+      <Route path="/templates" component={TemplateLibrary} />
+      <Route path="/qa-dashboard" component={QualityAssurance} />
+      <Route path="/growth-metrics" component={GrowthMetrics} />
+      <Route path="/customer-success" component={CustomerSuccessPanel} />
+      <Route path="/advanced-permissions" component={AdvancedPermissions} />
+      <Route path="/advanced-encryption" component={AdvancedEncryption} />
+      <Route path="/multi-tenancy" component={MultiTenancy} />
+      <Route path="/api-versioning" component={APIVersioning} />
+      <Route path="/custom-workflows" component={CustomWorkflows} />
+      <Route path="/time-tracking" component={TimeTracking} />
+      <Route path="/expense-tracking" component={ExpenseTracking} />
+      <Route path="/procurement" component={ProcurementManagement} />
+      <Route path="/contracts" component={ContractManagement} />
+      <Route path="/supply-chain" component={SupplyChainOptimization} />
+      <Route path="/assets" component={AssetManagement} />
+      <Route path="/knowledge-base" component={KnowledgeBase} />
+      <Route path="/community-forum" component={CommunityForum} />
+      <Route path="/training-academy" component={TrainingAcademy} />
       <Route component={NotFound} />
     </Switch>
   );
