@@ -1,10 +1,18 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Navigation, Clock, CheckCircle, AlertCircle, Plus } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { MapPin, Navigation, Clock, CheckCircle, AlertCircle, Plus, Wrench, Map } from "lucide-react";
 
 export default function FieldService() {
+  const [activeNav, setActiveNav] = useState("jobs");
+
+  const navItems = [
+    { id: "jobs", label: "Service Jobs", icon: Wrench, color: "text-blue-500" },
+    { id: "technicians", label: "Technicians", icon: CheckCircle, color: "text-green-500" },
+    { id: "routes", label: "Routes", icon: Map, color: "text-purple-500" },
+  ];
   const technicians = [
     { id: "1", name: "John Smith", status: "in_progress", currentJob: "JOB-101", location: "Downtown", jobs: 4 },
     { id: "2", name: "Sarah Johnson", status: "available", currentJob: null, location: "West Side", jobs: 0 },
@@ -50,15 +58,10 @@ export default function FieldService() {
         </Button>
       </div>
 
-      <Tabs defaultValue="jobs" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="jobs">Service Jobs</TabsTrigger>
-          <TabsTrigger value="technicians">Technicians</TabsTrigger>
-          <TabsTrigger value="routes">Routes</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        {/* Service Jobs Tab */}
-        <TabsContent value="jobs" className="space-y-4 mt-6">
+      {activeNav === "jobs" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-4 gap-4 text-center">
             <Card>
               <CardContent className="pt-6">
@@ -128,10 +131,11 @@ export default function FieldService() {
               ))}
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        {/* Technicians Tab */}
-        <TabsContent value="technicians" className="space-y-4 mt-6">
+      {activeNav === "technicians" && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Field Technicians</CardTitle>
@@ -183,10 +187,11 @@ export default function FieldService() {
               <Button className="w-full">Dispatch Job</Button>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        {/* Routes Tab */}
-        <TabsContent value="routes" className="space-y-4 mt-6">
+      {activeNav === "routes" && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Optimized Routes</CardTitle>
@@ -233,8 +238,8 @@ export default function FieldService() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }

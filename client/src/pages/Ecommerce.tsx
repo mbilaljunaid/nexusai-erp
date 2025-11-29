@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { IconNavigation } from "@/components/IconNavigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, ShoppingCart, Package, Truck, CreditCard, Users, TrendingUp, Star } from "lucide-react";
+import { Plus, Search, ShoppingCart, Package, Truck, CreditCard, Users, TrendingUp, Star, BarChart3 } from "lucide-react";
 
 interface Product {
   id: string;
@@ -46,6 +46,14 @@ interface Customer {
 export default function Ecommerce() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState("overview");
+
+  const navItems = [
+    { id: "overview", label: "Overview", icon: ShoppingCart, color: "text-blue-500" },
+    { id: "products", label: "Products", icon: Package, color: "text-purple-500" },
+    { id: "orders", label: "Orders", icon: Truck, color: "text-green-500" },
+    { id: "customers", label: "Customers", icon: Users, color: "text-orange-500" },
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-pink-500" },
+  ];
 
   // todo: remove mock functionality
   const products: Product[] = [
@@ -171,16 +179,9 @@ export default function Ecommerce() {
         </Card>
       </div>
 
-      <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="products">Products</TabsTrigger>
-          <TabsTrigger value="orders">Orders</TabsTrigger>
-          <TabsTrigger value="customers">Customers</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={selectedTab} onSelect={setSelectedTab} />
 
-        <TabsContent value="overview" className="space-y-4">
+      {selectedTab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
@@ -231,9 +232,9 @@ export default function Ecommerce() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+      )}
 
-        <TabsContent value="products" className="space-y-4">
+      {selectedTab === "products" && (
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -288,9 +289,9 @@ export default function Ecommerce() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+      )}
 
-        <TabsContent value="orders" className="space-y-4">
+      {selectedTab === "orders" && (
           <Card>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -329,9 +330,9 @@ export default function Ecommerce() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+      )}
 
-        <TabsContent value="customers" className="space-y-4">
+      {selectedTab === "customers" && (
           <Card>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -366,9 +367,9 @@ export default function Ecommerce() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+      )}
 
-        <TabsContent value="analytics">
+      {selectedTab === "analytics" && (
           <Card>
             <CardHeader>
               <CardTitle className="text-base">E-Commerce Analytics</CardTitle>
@@ -377,8 +378,7 @@ export default function Ecommerce() {
               <p className="text-muted-foreground text-sm">Analytics coming soon with detailed sales charts, customer insights, and product performance metrics.</p>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+      )}
     </div>
   );
 }

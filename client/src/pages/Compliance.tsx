@@ -1,9 +1,20 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { IconNavigation } from "@/components/IconNavigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Shield, CheckCircle, AlertTriangle, TrendingUp } from "lucide-react";
 
 export default function Compliance() {
+  const [activeNav, setActiveNav] = useState("overview");
+
+  const navItems = [
+    { id: "overview", label: "Overview", icon: Shield, color: "text-blue-500" },
+    { id: "standards", label: "Standards", icon: CheckCircle, color: "text-green-500" },
+    { id: "audits", label: "Audits", icon: AlertTriangle, color: "text-yellow-500" },
+    { id: "risks", label: "Risk Assessment", icon: TrendingUp, color: "text-red-500" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
@@ -11,15 +22,9 @@ export default function Compliance() {
         <p className="text-muted-foreground text-sm">Monitor regulatory compliance and audit activities</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-          <TabsTrigger value="standards" data-testid="tab-standards">Standards</TabsTrigger>
-          <TabsTrigger value="audits" data-testid="tab-audits">Audits</TabsTrigger>
-          <TabsTrigger value="risks" data-testid="tab-risks">Risk Assessment</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="overview" className="space-y-4">
+      {activeNav === "overview" && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
@@ -75,9 +80,9 @@ export default function Compliance() {
               ))}
             </CardContent>
           </Card>
-        </TabsContent>
+      )}
 
-        <TabsContent value="standards" className="space-y-4">
+      {activeNav === "standards" && (
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Compliance Standards</CardTitle>
@@ -108,9 +113,9 @@ export default function Compliance() {
               ))}
             </CardContent>
           </Card>
-        </TabsContent>
+      )}
 
-        <TabsContent value="audits" className="space-y-4">
+      {activeNav === "audits" && (
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Audit Schedule</CardTitle>
@@ -137,9 +142,9 @@ export default function Compliance() {
               ))}
             </CardContent>
           </Card>
-        </TabsContent>
+      )}
 
-        <TabsContent value="risks" className="space-y-4">
+      {activeNav === "risks" && (
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Risk Assessment</CardTitle>
@@ -166,8 +171,7 @@ export default function Compliance() {
               ))}
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+      )}
     </div>
   );
 }

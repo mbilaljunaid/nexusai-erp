@@ -145,10 +145,10 @@ export default function Billing() {
               </Card>
             ))}
           </div>
-        </TabsContent>
+      )}
 
-        {/* Usage Tab */}
-        <TabsContent value="usage" className="space-y-6 mt-6">
+      {activeNav === "usage" && (
+        <div className="space-y-6 mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Current Usage (January 2025)</CardTitle>
@@ -191,10 +191,11 @@ export default function Billing() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        {/* Invoices Tab */}
-        <TabsContent value="invoices" className="space-y-4 mt-6">
+      {activeNav === "invoices" && (
+        <div className="space-y-4 mt-6">
           {invoices.map((invoice) => (
             <Card key={invoice.id} data-testid={`invoice-${invoice.id}`}>
               <CardContent className="pt-6">
@@ -217,10 +218,11 @@ export default function Billing() {
               </CardContent>
             </Card>
           ))}
-        </TabsContent>
+        </div>
+      )}
 
-        {/* Billing Settings Tab */}
-        <TabsContent value="settings" className="space-y-4 mt-6">
+      {activeNav === "settings" && (
+        <div className="space-y-4 mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Payment Method</CardTitle>
@@ -280,8 +282,8 @@ export default function Billing() {
               </label>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }
