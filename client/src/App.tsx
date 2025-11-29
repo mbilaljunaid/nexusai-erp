@@ -34,6 +34,7 @@ import Website from "@/pages/Website";
 import Email from "@/pages/Email";
 import Ecommerce from "@/pages/Ecommerce";
 import FormShowcase from "@/pages/FormShowcase";
+import IndustryConfiguration from "@/pages/IndustryConfiguration";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -46,6 +47,7 @@ function Router() {
       <Route path="/health" component={Health} />
       <Route path="/settings" component={Settings} />
       <Route path="/industries" component={Industries} />
+      <Route path="/industry-config" component={IndustryConfiguration} />
       <Route path="/admin/platform" component={PlatformAdmin} />
       <Route path="/admin/tenant" component={TenantAdmin} />
       <Route path="/erp" component={ERP} />

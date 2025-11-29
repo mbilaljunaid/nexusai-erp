@@ -119,6 +119,23 @@ export const api = {
     },
   },
 
+  // Industries
+  industries: {
+    list: () => fetch(`${API_BASE}/api/industries`, { credentials: "include" }).then(r => r.json()),
+    get: (id: string) => fetch(`${API_BASE}/api/industries/${id}`, { credentials: "include" }).then(r => r.json()),
+    getModules: (id: string) => fetch(`${API_BASE}/api/industries/${id}/modules`, { credentials: "include" }).then(r => r.json()),
+    getCapabilities: (id: string) => fetch(`${API_BASE}/api/industries/${id}/capabilities`, { credentials: "include" }).then(r => r.json()),
+  },
+
+  // Configuration
+  configuration: {
+    save: (data: any) => apiRequest("POST", `${API_BASE}/api/configuration`, data).then(r => r.json()),
+    getByTenantAndIndustry: (tenantId: string, industryId: string) => 
+      fetch(`${API_BASE}/api/configuration/tenant/${tenantId}/industry/${industryId}`, { credentials: "include" }).then(r => r.json()),
+    getByTenant: (tenantId: string) => 
+      fetch(`${API_BASE}/api/configuration/tenant/${tenantId}`, { credentials: "include" }).then(r => r.json()),
+  },
+
   // Health
   health: {
     status: () => fetch(`${API_BASE}/api/health`, { credentials: "include" }).then(r => r.json()),
