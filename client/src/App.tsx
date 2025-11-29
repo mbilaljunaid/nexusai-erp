@@ -13,7 +13,6 @@ import { TenantSwitcher } from "@/components/TenantSwitcher";
 import { AIAssistant, AIAssistantTrigger } from "@/components/AIAssistant";
 import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
-import { useState } from "react";
 import Dashboard from "@/pages/Dashboard";
 import CRM from "@/pages/CRM";
 import Projects from "@/pages/Projects";
