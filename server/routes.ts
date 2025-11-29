@@ -694,8 +694,7 @@ export async function registerRoutes(
 
   // PHASE 3: App Marketplace
   app.get("/api/marketplace/apps", async (req, res) => {
-    const category = req.query.category as string;
-    const apps = await storage.listApps(category);
+    const apps = await storage.listApps();
     res.json(apps);
   });
 
@@ -840,8 +839,7 @@ export async function registerRoutes(
 
   // PHASE 3: Connectors
   app.get("/api/connectors", async (req, res) => {
-    const type = req.query.type as string;
-    const connectors = await storage.listConnectors(type);
+    const connectors = await storage.listConnectors();
     res.json(connectors);
   });
 
@@ -892,8 +890,7 @@ export async function registerRoutes(
   });
 
   app.get("/api/webhooks/events", async (req, res) => {
-    const appId = req.query.appId as string;
-    const events = await storage.listWebhookEvents(appId);
+    const events = await storage.listWebhookEvents();
     res.json(events);
   });
 
@@ -1016,8 +1013,7 @@ export async function registerRoutes(
 
   // PHASE 4: Compliance - Configuration
   app.get("/api/compliance/configs", async (req, res) => {
-    const tenantId = req.query.tenantId as string;
-    const configs = await storage.listComplianceConfigs(tenantId);
+    const configs = await storage.listComplianceConfigs();
     res.json(configs);
   });
 
@@ -1040,8 +1036,8 @@ export async function registerRoutes(
   // PHASE 4: Compliance - Audit Trail
   app.get("/api/compliance/audit-trail", async (req, res) => {
     try {
-      const { startDate, endDate, userId } = req.query;
-      const logs = await storage.listAuditLogs(userId as string);
+      const { startDate, endDate } = req.query;
+      const logs = await storage.listAuditLogs();
       
       // Filter by date range if provided
       const filtered = logs.filter((log: any) => {
