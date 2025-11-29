@@ -795,3 +795,353 @@ export const insertPayrollConfigSchema = createInsertSchema(payrollConfigs).omit
 
 export type InsertPayrollConfig = z.infer<typeof insertPayrollConfigSchema>;
 export type PayrollConfig = typeof payrollConfigs.$inferSelect;
+
+// ========== PHASE 3: PROCUREMENT MODULE ==========
+
+// RFQs (Request for Quotation)
+export const rfqs = pgTable("rfqs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  rfqNumber: varchar("rfq_number").notNull().unique(),
+  vendorId: varchar("vendor_id"),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  status: varchar("status").default("draft"), // draft, sent, quoted, closed
+  dueDate: timestamp("due_date"),
+  createdBy: varchar("created_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertRfqSchema = createInsertSchema(rfqs).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  rfqNumber: z.string().min(1),
+  vendorId: z.string().optional().nullable(),
+  title: z.string().min(1),
+  description: z.string().optional().nullable(),
+  status: z.enum(["draft", "sent", "quoted", "closed"]).optional(),
+  dueDate: z.date().optional().nullable(),
+  createdBy: z.string().optional().nullable(),
+});
+
+export type InsertRfq = z.infer<typeof insertRfqSchema>;
+export type Rfq = typeof rfqs.$inferSelect;
+
+// RFQ Line Items
+export const rfqItems = pgTable("rfq_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  rfqId: varchar("rfq_id").notNull(),
+  productId: varchar("product_id"),
+  productName: varchar("product_name").notNull(),
+  quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
+  unit: varchar("unit"),
+  estimatedCost: numeric("estimated_cost", { precision: 18, scale: 2 }),
+  specifications: text("specifications"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertRfqItemSchema = createInsertSchema(rfqItems).omit({ id: true, createdAt: true }).extend({
+  rfqId: z.string().min(1),
+  productId: z.string().optional().nullable(),
+  productName: z.string().min(1),
+  quantity: z.string().min(1),
+  unit: z.string().optional().nullable(),
+  estimatedCost: z.string().optional().nullable(),
+  specifications: z.string().optional().nullable(),
+});
+
+export type InsertRfqItem = z.infer<typeof insertRfqItemSchema>;
+export type RfqItem = typeof rfqItems.$inferSelect;
+
+// Purchase Orders (POs)
+export const purchaseOrders = pgTable("purchase_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  poNumber: varchar("po_number").notNull().unique(),
+  vendorId: varchar("vendor_id").notNull(),
+  rfqId: varchar("rfq_id"),
+  status: varchar("status").default("draft"), // draft, approved, sent, acknowledged, partial_received, received, closed
+  totalAmount: numeric("total_amount", { precision: 18, scale: 2 }),
+  paymentTerms: varchar("payment_terms"),
+  deliveryDate: timestamp("delivery_date"),
+  shippingAddress: text("shipping_address"),
+  approvedBy: varchar("approved_by"),
+  approvedAt: timestamp("approved_at"),
+  createdBy: varchar("created_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertPurchaseOrderSchema = createInsertSchema(purchaseOrders).omit({ id: true, createdAt: true, updatedAt: true, approvedAt: true }).extend({
+  poNumber: z.string().min(1),
+  vendorId: z.string().min(1),
+  rfqId: z.string().optional().nullable(),
+  status: z.enum(["draft", "approved", "sent", "acknowledged", "partial_received", "received", "closed"]).optional(),
+  totalAmount: z.string().optional().nullable(),
+  paymentTerms: z.string().optional().nullable(),
+  deliveryDate: z.date().optional().nullable(),
+  shippingAddress: z.string().optional().nullable(),
+  approvedBy: z.string().optional().nullable(),
+  createdBy: z.string().optional().nullable(),
+});
+
+export type InsertPurchaseOrder = z.infer<typeof insertPurchaseOrderSchema>;
+export type PurchaseOrder = typeof purchaseOrders.$inferSelect;
+
+// PO Line Items
+export const poItems = pgTable("po_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  poId: varchar("po_id").notNull(),
+  lineNumber: integer("line_number"),
+  productId: varchar("product_id"),
+  productName: varchar("product_name").notNull(),
+  quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
+  unit: varchar("unit"),
+  unitPrice: numeric("unit_price", { precision: 18, scale: 2 }).notNull(),
+  lineAmount: numeric("line_amount", { precision: 18, scale: 2 }),
+  receivedQuantity: numeric("received_quantity", { precision: 12, scale: 4 }).default("0"),
+  invoicedQuantity: numeric("invoiced_quantity", { precision: 12, scale: 4 }).default("0"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPoItemSchema = createInsertSchema(poItems).omit({ id: true, createdAt: true }).extend({
+  poId: z.string().min(1),
+  lineNumber: z.number().optional(),
+  productId: z.string().optional().nullable(),
+  productName: z.string().min(1),
+  quantity: z.string().min(1),
+  unit: z.string().optional().nullable(),
+  unitPrice: z.string().min(1),
+  lineAmount: z.string().optional().nullable(),
+  receivedQuantity: z.string().optional(),
+  invoicedQuantity: z.string().optional(),
+});
+
+export type InsertPoItem = z.infer<typeof insertPoItemSchema>;
+export type PoItem = typeof poItems.$inferSelect;
+
+// Goods Receipt Notes (GRN)
+export const goodsReceipts = pgTable("goods_receipts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  grnNumber: varchar("grn_number").notNull().unique(),
+  poId: varchar("po_id").notNull(),
+  vendorId: varchar("vendor_id").notNull(),
+  status: varchar("status").default("received"), // received, inspected, accepted, rejected, partial
+  totalQuantity: numeric("total_quantity", { precision: 12, scale: 4 }),
+  receivedDate: timestamp("received_date").default(sql`now()`),
+  inspectedBy: varchar("inspected_by"),
+  inspectedAt: timestamp("inspected_at"),
+  qualityStatus: varchar("quality_status"), // accepted, rejected, hold
+  notes: text("notes"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGoodsReceiptSchema = createInsertSchema(goodsReceipts).omit({ id: true, createdAt: true, receivedDate: true, inspectedAt: true }).extend({
+  grnNumber: z.string().min(1),
+  poId: z.string().min(1),
+  vendorId: z.string().min(1),
+  status: z.enum(["received", "inspected", "accepted", "rejected", "partial"]).optional(),
+  totalQuantity: z.string().optional().nullable(),
+  inspectedBy: z.string().optional().nullable(),
+  qualityStatus: z.enum(["accepted", "rejected", "hold"]).optional(),
+  notes: z.string().optional().nullable(),
+});
+
+export type InsertGoodsReceipt = z.infer<typeof insertGoodsReceiptSchema>;
+export type GoodsReceipt = typeof goodsReceipts.$inferSelect;
+
+// GRN Line Items
+export const grnItems = pgTable("grn_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  grnId: varchar("grn_id").notNull(),
+  poItemId: varchar("po_item_id").notNull(),
+  productId: varchar("product_id"),
+  productName: varchar("product_name").notNull(),
+  receivedQuantity: numeric("received_quantity", { precision: 12, scale: 4 }).notNull(),
+  unit: varchar("unit"),
+  lotNumber: varchar("lot_number"),
+  serialNumbers: text("serial_numbers"),
+  qualityStatus: varchar("quality_status"), // accepted, rejected, hold
+  remarks: text("remarks"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGrnItemSchema = createInsertSchema(grnItems).omit({ id: true, createdAt: true }).extend({
+  grnId: z.string().min(1),
+  poItemId: z.string().min(1),
+  productId: z.string().optional().nullable(),
+  productName: z.string().min(1),
+  receivedQuantity: z.string().min(1),
+  unit: z.string().optional().nullable(),
+  lotNumber: z.string().optional().nullable(),
+  serialNumbers: z.string().optional().nullable(),
+  qualityStatus: z.enum(["accepted", "rejected", "hold"]).optional(),
+  remarks: z.string().optional().nullable(),
+});
+
+export type InsertGrnItem = z.infer<typeof insertGrnItemSchema>;
+export type GrnItem = typeof grnItems.$inferSelect;
+
+// Supplier Invoices (AP)
+export const supplierInvoices = pgTable("supplier_invoices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  invoiceNumber: varchar("invoice_number").notNull(),
+  vendorId: varchar("vendor_id").notNull(),
+  poId: varchar("po_id"),
+  invoiceDate: timestamp("invoice_date"),
+  dueDate: timestamp("due_date"),
+  totalAmount: numeric("total_amount", { precision: 18, scale: 2 }).notNull(),
+  status: varchar("status").default("received"), // received, validated, matched_po_grn, partial_match, exception, approved, paid
+  matchingStatus: varchar("matching_status"), // not_matched, 2_way, 3_way, exception
+  matchExceptions: jsonb("match_exceptions"), // variance details
+  approvedBy: varchar("approved_by"),
+  approvedAt: timestamp("approved_at"),
+  paidDate: timestamp("paid_date"),
+  currency: varchar("currency"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertSupplierInvoiceSchema = createInsertSchema(supplierInvoices).omit({ id: true, createdAt: true, updatedAt: true, approvedAt: true, paidDate: true }).extend({
+  invoiceNumber: z.string().min(1),
+  vendorId: z.string().min(1),
+  poId: z.string().optional().nullable(),
+  invoiceDate: z.date().optional().nullable(),
+  dueDate: z.date().optional().nullable(),
+  totalAmount: z.string().min(1),
+  status: z.enum(["received", "validated", "matched_po_grn", "partial_match", "exception", "approved", "paid"]).optional(),
+  matchingStatus: z.enum(["not_matched", "2_way", "3_way", "exception"]).optional(),
+  matchExceptions: z.object({}).passthrough().optional(),
+  approvedBy: z.string().optional().nullable(),
+  currency: z.string().optional(),
+  notes: z.string().optional().nullable(),
+});
+
+export type InsertSupplierInvoice = z.infer<typeof insertSupplierInvoiceSchema>;
+export type SupplierInvoice = typeof supplierInvoices.$inferSelect;
+
+// Supplier Invoice Lines
+export const supplierInvoiceItems = pgTable("supplier_invoice_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  invoiceId: varchar("invoice_id").notNull(),
+  poItemId: varchar("po_item_id"),
+  grnItemId: varchar("grn_item_id"),
+  lineNumber: integer("line_number"),
+  productName: varchar("product_name").notNull(),
+  invoicedQuantity: numeric("invoiced_quantity", { precision: 12, scale: 4 }),
+  unitPrice: numeric("unit_price", { precision: 18, scale: 2 }),
+  lineAmount: numeric("line_amount", { precision: 18, scale: 2 }),
+  poQuantity: numeric("po_quantity", { precision: 12, scale: 4 }),
+  grnQuantity: numeric("grn_quantity", { precision: 12, scale: 4 }),
+  variance: numeric("variance", { precision: 12, scale: 4 }),
+  varianceReason: varchar("variance_reason"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertSupplierInvoiceItemSchema = createInsertSchema(supplierInvoiceItems).omit({ id: true, createdAt: true }).extend({
+  invoiceId: z.string().min(1),
+  poItemId: z.string().optional().nullable(),
+  grnItemId: z.string().optional().nullable(),
+  lineNumber: z.number().optional(),
+  productName: z.string().min(1),
+  invoicedQuantity: z.string().optional().nullable(),
+  unitPrice: z.string().optional().nullable(),
+  lineAmount: z.string().optional().nullable(),
+  poQuantity: z.string().optional().nullable(),
+  grnQuantity: z.string().optional().nullable(),
+  variance: z.string().optional().nullable(),
+  varianceReason: z.string().optional().nullable(),
+});
+
+export type InsertSupplierInvoiceItem = z.infer<typeof insertSupplierInvoiceItemSchema>;
+export type SupplierInvoiceItem = typeof supplierInvoiceItems.$inferSelect;
+
+// Vendors (Supplier Master)
+export const vendors = pgTable("vendors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  vendorCode: varchar("vendor_code").notNull().unique(),
+  vendorName: varchar("vendor_name").notNull(),
+  vendorType: varchar("vendor_type"), // supplier, service_provider, manufacturer
+  email: varchar("email"),
+  phone: varchar("phone"),
+  website: varchar("website"),
+  address: text("address"),
+  city: varchar("city"),
+  state: varchar("state"),
+  country: varchar("country"),
+  postalCode: varchar("postal_code"),
+  taxId: varchar("tax_id"),
+  status: varchar("status").default("active"), // active, inactive, blocked, under_review
+  approvalStatus: varchar("approval_status"), // pending, approved, rejected
+  riskLevel: varchar("risk_level"), // low, medium, high
+  paymentTerms: varchar("payment_terms"),
+  currency: varchar("currency"),
+  creditLimit: numeric("credit_limit", { precision: 18, scale: 2 }),
+  onTimeDeliveryRate: numeric("on_time_delivery_rate", { precision: 5, scale: 2 }),
+  qualityScore: numeric("quality_score", { precision: 5, scale: 2 }),
+  overallRating: numeric("overall_rating", { precision: 3, scale: 2 }),
+  lastReviewDate: timestamp("last_review_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertVendorSchema = createInsertSchema(vendors).omit({ id: true, createdAt: true, updatedAt: true, lastReviewDate: true }).extend({
+  vendorCode: z.string().min(1),
+  vendorName: z.string().min(1),
+  vendorType: z.enum(["supplier", "service_provider", "manufacturer"]).optional(),
+  email: z.string().email().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  website: z.string().optional().nullable(),
+  address: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  state: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
+  postalCode: z.string().optional().nullable(),
+  taxId: z.string().optional().nullable(),
+  status: z.enum(["active", "inactive", "blocked", "under_review"]).optional(),
+  approvalStatus: z.enum(["pending", "approved", "rejected"]).optional(),
+  riskLevel: z.enum(["low", "medium", "high"]).optional(),
+  paymentTerms: z.string().optional().nullable(),
+  currency: z.string().optional(),
+  creditLimit: z.string().optional().nullable(),
+  onTimeDeliveryRate: z.string().optional(),
+  qualityScore: z.string().optional(),
+  overallRating: z.string().optional(),
+});
+
+export type InsertVendor = z.infer<typeof insertVendorSchema>;
+export type Vendor = typeof vendors.$inferSelect;
+
+// 3-Way Match Records
+export const threeWayMatches = pgTable("three_way_matches", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  poId: varchar("po_id").notNull(),
+  grnId: varchar("grn_id").notNull(),
+  invoiceId: varchar("invoice_id").notNull(),
+  matchStatus: varchar("match_status"), // matched, variance_qty, variance_price, variance_both, exception
+  quantityVariance: numeric("quantity_variance", { precision: 12, scale: 4 }),
+  priceVariance: numeric("price_variance", { precision: 18, scale: 2 }),
+  priceVariancePercent: numeric("price_variance_percent", { precision: 5, scale: 2 }),
+  toleranceExceeded: boolean("tolerance_exceeded").default(false),
+  exceptionReason: text("exception_reason"),
+  approvalRequired: boolean("approval_required").default(false),
+  approvedBy: varchar("approved_by"),
+  approvedAt: timestamp("approved_at"),
+  matchedAt: timestamp("matched_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertThreeWayMatchSchema = createInsertSchema(threeWayMatches).omit({ id: true, createdAt: true, matchedAt: true, approvedAt: true }).extend({
+  poId: z.string().min(1),
+  grnId: z.string().min(1),
+  invoiceId: z.string().min(1),
+  matchStatus: z.enum(["matched", "variance_qty", "variance_price", "variance_both", "exception"]).optional(),
+  quantityVariance: z.string().optional(),
+  priceVariance: z.string().optional(),
+  priceVariancePercent: z.string().optional(),
+  toleranceExceeded: z.boolean().optional(),
+  exceptionReason: z.string().optional().nullable(),
+  approvalRequired: z.boolean().optional(),
+  approvedBy: z.string().optional().nullable(),
+});
+
+export type InsertThreeWayMatch = z.infer<typeof insertThreeWayMatchSchema>;
+export type ThreeWayMatch = typeof threeWayMatches.$inferSelect;

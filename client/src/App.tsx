@@ -236,6 +236,13 @@ const SupplyChainOptimization = lazy(() => import("@/pages/SupplyChainOptimizati
 const TemplateLibrary = lazy(() => import("@/pages/TemplateLibrary"));
 const TenantAdmin = lazy(() => import("@/pages/admin/TenantAdmin"));
 
+// Phase 3: Procurement Module
+const RFQs = lazy(() => import("@/pages/RFQs"));
+const PurchaseOrders = lazy(() => import("@/pages/PurchaseOrders"));
+const GoodsReceipt = lazy(() => import("@/pages/GoodsReceipt"));
+const SupplierInvoices = lazy(() => import("@/pages/SupplierInvoices"));
+const ThreeWayMatch = lazy(() => import("@/pages/ThreeWayMatch"));
+
 function Router() {
   return (
     <Switch>
@@ -444,6 +451,11 @@ function Router() {
       <Route path="/hranalytics-dashboard" component={HRAnalyticsDashboard} />
       <Route path="/forecast-dashboard" component={ForecastDashboard} />
       <Route path="/mobile-sync" component={MobileSync} />
+      <Route path="/rfqs" component={RFQs} />
+      <Route path="/purchase-orders" component={PurchaseOrders} />
+      <Route path="/goods-receipt" component={GoodsReceipt} />
+      <Route path="/supplier-invoices" component={SupplierInvoices} />
+      <Route path="/three-way-match" component={ThreeWayMatch} />
       <Route component={NotFound} />
     </Switch>
   );

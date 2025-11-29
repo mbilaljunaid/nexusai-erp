@@ -683,6 +683,135 @@ export async function registerRoutes(
     }
   });
 
+  // ========== PHASE 3: PROCUREMENT APIs ==========
+  
+  // RFQs
+  const rfqsStore: any[] = [];
+  app.get("/api/procurement/rfqs", (req, res) => {
+    if (rfqsStore.length === 0) {
+      rfqsStore.push({ id: "rfq1", rfqNumber: "RFQ-2024-001", title: "Office Equipment", description: "Supplies needed", status: "draft", dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), createdAt: new Date().toISOString() });
+    }
+    res.json(rfqsStore);
+  });
+  app.post("/api/procurement/rfqs", (req, res) => {
+    try {
+      const rfq = {
+        id: `rfq-${Date.now()}`,
+        ...req.body,
+        createdAt: new Date().toISOString(),
+        status: req.body.status || "draft",
+      };
+      rfqsStore.push(rfq);
+      res.status(201).json(rfq);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create RFQ" });
+    }
+  });
+
+  // Purchase Orders
+  const posStore: any[] = [];
+  app.get("/api/procurement/purchase-orders", (req, res) => {
+    if (posStore.length === 0) {
+      posStore.push(
+        { id: "po1", poNumber: "PO-2024-001", vendorId: "VEN-001", status: "draft", totalAmount: "5000", paymentTerms: "Net 30", deliveryDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), createdAt: new Date().toISOString() },
+        { id: "po2", poNumber: "PO-2024-002", vendorId: "VEN-002", status: "approved", totalAmount: "8500", paymentTerms: "Net 60", deliveryDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(), createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(posStore);
+  });
+  app.post("/api/procurement/purchase-orders", (req, res) => {
+    try {
+      const po = {
+        id: `po-${Date.now()}`,
+        ...req.body,
+        createdAt: new Date().toISOString(),
+        status: req.body.status || "draft",
+      };
+      posStore.push(po);
+      res.status(201).json(po);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create PO" });
+    }
+  });
+
+  // Goods Receipts
+  const grnsStore: any[] = [];
+  app.get("/api/procurement/goods-receipts", (req, res) => {
+    if (grnsStore.length === 0) {
+      grnsStore.push(
+        { id: "grn1", grnNumber: "GRN-2024-001", poId: "po1", vendorId: "VEN-001", status: "received", totalQuantity: "100", receivedDate: new Date().toISOString(), qualityStatus: "hold", createdAt: new Date().toISOString() },
+        { id: "grn2", grnNumber: "GRN-2024-002", poId: "po2", vendorId: "VEN-002", status: "accepted", totalQuantity: "250", receivedDate: new Date().toISOString(), qualityStatus: "accepted", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(grnsStore);
+  });
+  app.post("/api/procurement/goods-receipts", (req, res) => {
+    try {
+      const grn = {
+        id: `grn-${Date.now()}`,
+        ...req.body,
+        createdAt: new Date().toISOString(),
+        receivedDate: new Date().toISOString(),
+        status: req.body.status || "received",
+      };
+      grnsStore.push(grn);
+      res.status(201).json(grn);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create GRN" });
+    }
+  });
+
+  // Supplier Invoices
+  const supplierInvoicesStore: any[] = [];
+  app.get("/api/procurement/supplier-invoices", (req, res) => {
+    if (supplierInvoicesStore.length === 0) {
+      supplierInvoicesStore.push(
+        { id: "inv1", invoiceNumber: "INV-VEN-001-2024", vendorId: "VEN-001", poId: "po1", totalAmount: "5000", status: "exception", matchingStatus: "variance_qty", invoiceDate: new Date().toISOString(), dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), createdAt: new Date().toISOString() },
+        { id: "inv2", invoiceNumber: "INV-VEN-002-2024", vendorId: "VEN-002", poId: "po2", totalAmount: "8500", status: "matched_po_grn", matchingStatus: "3_way", invoiceDate: new Date().toISOString(), dueDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(), createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(supplierInvoicesStore);
+  });
+  app.post("/api/procurement/supplier-invoices", (req, res) => {
+    try {
+      const invoice = {
+        id: `inv-${Date.now()}`,
+        ...req.body,
+        createdAt: new Date().toISOString(),
+        status: req.body.status || "received",
+      };
+      supplierInvoicesStore.push(invoice);
+      res.status(201).json(invoice);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create supplier invoice" });
+    }
+  });
+
+  // Three-Way Matches
+  const threeWayMatchesStore: any[] = [];
+  app.get("/api/procurement/three-way-matches", (req, res) => {
+    if (threeWayMatchesStore.length === 0) {
+      threeWayMatchesStore.push(
+        { id: "match1", poId: "po1", grnId: "grn1", invoiceId: "inv1", matchStatus: "variance_qty", quantityVariance: "10", toleranceExceeded: true, approvalRequired: true, createdAt: new Date().toISOString() },
+        { id: "match2", poId: "po2", grnId: "grn2", invoiceId: "inv2", matchStatus: "matched", quantityVariance: null, priceVariance: null, toleranceExceeded: false, approvalRequired: false, matchedAt: new Date().toISOString(), createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(threeWayMatchesStore);
+  });
+  app.post("/api/procurement/three-way-matches", (req, res) => {
+    try {
+      const match = {
+        id: `match-${Date.now()}`,
+        ...req.body,
+        createdAt: new Date().toISOString(),
+      };
+      threeWayMatchesStore.push(match);
+      res.status(201).json(match);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create three-way match" });
+    }
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
