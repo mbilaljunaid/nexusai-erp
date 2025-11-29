@@ -7,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Plus, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface ExpenseLine {
   id: number;
@@ -18,11 +21,37 @@ interface ExpenseLine {
 }
 
 export function ExpenseEntryForm() {
+  const { toast } = useToast();
   const [project, setProject] = useState("");
   const [employee, setEmployee] = useState("");
   const [lines, setLines] = useState<ExpenseLine[]>([
     { id: 1, date: "", category: "", description: "", amount: "", receipt: "" }
   ]);
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/finance/expenses", {
+        projectId: project,
+        employeeId: employee,
+        items: lines.map(l => ({
+          date: l.date,
+          category: l.category,
+          description: l.description,
+          amount: parseFloat(l.amount),
+          receipt: l.receipt
+        }))
+      });
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Expense report submitted successfully" });
+      setProject("");
+      setEmployee("");
+      setLines([{ id: 1, date: "", category: "", description: "", amount: "", receipt: "" }]);
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to submit expense report", variant: "destructive" });
+    }
+  });
 
   const addLine = () => {
     setLines(prev => [...prev, {
@@ -146,7 +175,9 @@ export function ExpenseEntryForm() {
           <div className="flex justify-end gap-2">
             <Button variant="outline">Cancel</Button>
             <Button variant="outline">Save Draft</Button>
-            <Button>Submit for Approval</Button>
+            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
+              {submitMutation.isPending ? "Submitting..." : "Submit for Approval"}
+            </Button>
           </div>
         </CardContent>
       </Card>

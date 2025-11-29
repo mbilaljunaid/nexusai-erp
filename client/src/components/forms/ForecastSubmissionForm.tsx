@@ -15,8 +15,12 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertTriangle, TrendingDown } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export function ForecastSubmissionForm() {
+  const { toast } = useToast();
   const [scenarioType, setScenarioType] = useState("base");
   const [confidenceLevel, setConfidenceLevel] = useState("medium");
   const [forecastData, setForecastData] = useState({
@@ -24,6 +28,28 @@ export function ForecastSubmissionForm() {
     q2: "135000",
     q3: "140000",
     q4: "155000"
+  });
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/epm/forecasts", {
+        scenarioType,
+        confidenceLevel,
+        q1: parseFloat(forecastData.q1),
+        q2: parseFloat(forecastData.q2),
+        q3: parseFloat(forecastData.q3),
+        q4: parseFloat(forecastData.q4)
+      });
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Forecast submitted successfully" });
+      setScenarioType("base");
+      setConfidenceLevel("medium");
+      setForecastData({ q1: "125000", q2: "135000", q3: "140000", q4: "155000" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to submit forecast", variant: "destructive" });
+    }
   });
 
   const prevForecast = { q1: 120000, q2: 130000, q3: 138000, q4: 152000 };
@@ -273,7 +299,9 @@ export function ForecastSubmissionForm() {
       {/* Actions */}
       <div className="flex gap-3 pt-4">
         <Button className="gap-2">Save Draft</Button>
-        <Button>Submit</Button>
+        <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
+          {submitMutation.isPending ? "Submitting..." : "Submit"}
+        </Button>
         <Button variant="outline">Submit & Lock</Button>
         <Button variant="ghost">Cancel</Button>
       </div>
