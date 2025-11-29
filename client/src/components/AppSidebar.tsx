@@ -42,6 +42,8 @@ import {
   Database,
   TrendingUp,
   Download,
+  Clock,
+  FileText,
 } from "lucide-react";
 
 const platformNavItems = [
