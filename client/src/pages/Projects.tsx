@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +9,7 @@ import { KanbanBoard } from "@/components/KanbanBoard";
 import { TaskCard, type Task } from "@/components/TaskCard";
 import { ResourceAllocation } from "@/components/ResourceAllocation";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
+import { IconNavigation } from "@/components/IconNavigation";
 import { 
   Search, 
   Filter, 
@@ -17,7 +17,10 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
-  Sparkles
+  Sparkles,
+  LayoutGrid,
+  ListTodo,
+  Users3
 } from "lucide-react";
 import {
   Select,
@@ -41,6 +44,14 @@ interface Project {
 export default function Projects() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [activeNav, setActiveNav] = useState("overview");
+
+  const navItems = [
+    { id: "overview", label: "Overview", icon: LayoutGrid, color: "text-blue-500" },
+    { id: "kanban", label: "Kanban", icon: FolderKanban, color: "text-purple-500" },
+    { id: "tasks", label: "All Tasks", icon: ListTodo, color: "text-green-500" },
+    { id: "resources", label: "Resources", icon: Users3, color: "text-orange-500" },
+  ];
 
   // todo: remove mock functionality
   const projects: Project[] = [
@@ -129,16 +140,9 @@ export default function Projects() {
         <AddTaskDialog />
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <TabsList>
-            <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-            <TabsTrigger value="kanban" data-testid="tab-kanban">Kanban</TabsTrigger>
-            <TabsTrigger value="tasks" data-testid="tab-tasks">All Tasks</TabsTrigger>
-            <TabsTrigger value="resources" data-testid="tab-resources">Resources</TabsTrigger>
-          </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-          <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -162,9 +166,10 @@ export default function Projects() {
               </SelectContent>
             </Select>
           </div>
-        </div>
+      </div>
 
-        <TabsContent value="overview" className="space-y-6">
+      {activeNav === "overview" && (
+        <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredProjects.map((project) => {
               const config = statusConfig[project.status];
