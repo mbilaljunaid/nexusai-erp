@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ModuleNav } from "@/components/ModuleNav";
 import { IconNavigation } from "@/components/IconNavigation";
-import { Package, Truck, BookOpen, Users, BarChart3, Headset, MapPin } from "lucide-react";
+import { Package, Truck, BookOpen, Users, BarChart3, Headset, MapPin, AlertCircle, Clock, SmilePlus, Users2 } from "lucide-react";
 
 export default function Service() {
   const [activeNav, setActiveNav] = useState("overview");
@@ -31,9 +31,12 @@ export default function Service() {
             <Link href="/service-tickets">
               <Card className="cursor-pointer hover-elevate">
                 <CardContent className="p-4">
-                  <div className="space-y-1">
-                    <p className="text-2xl font-semibold">342</p>
-                    <p className="text-xs text-muted-foreground">Open Tickets</p>
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                    <div>
+                      <p className="text-2xl font-semibold">342</p>
+                      <p className="text-xs text-muted-foreground">Open Tickets</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -41,9 +44,12 @@ export default function Service() {
             <Link href="/sla-tracking">
               <Card className="cursor-pointer hover-elevate">
                 <CardContent className="p-4">
-                  <div className="space-y-1">
-                    <p className="text-2xl font-semibold">2.4h</p>
-                    <p className="text-xs text-muted-foreground">Avg Response Time</p>
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-5 w-5 text-orange-500" />
+                    <div>
+                      <p className="text-2xl font-semibold">2.4h</p>
+                      <p className="text-xs text-muted-foreground">Avg Response Time</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -51,9 +57,12 @@ export default function Service() {
             <Link href="/service-analytics">
               <Card className="cursor-pointer hover-elevate">
                 <CardContent className="p-4">
-                  <div className="space-y-1">
-                    <p className="text-2xl font-semibold">94%</p>
-                    <p className="text-xs text-muted-foreground">Satisfaction Score</p>
+                  <div className="flex items-center gap-3">
+                    <SmilePlus className="h-5 w-5 text-green-500" />
+                    <div>
+                      <p className="text-2xl font-semibold">94%</p>
+                      <p className="text-xs text-muted-foreground">Satisfaction</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -61,9 +70,12 @@ export default function Service() {
             <Link href="/field-service">
               <Card className="cursor-pointer hover-elevate">
                 <CardContent className="p-4">
-                  <div className="space-y-1">
-                    <p className="text-2xl font-semibold">28</p>
-                    <p className="text-xs text-muted-foreground">Field Engineers</p>
+                  <div className="flex items-center gap-3">
+                    <Users2 className="h-5 w-5 text-blue-500" />
+                    <div>
+                      <p className="text-2xl font-semibold">28</p>
+                      <p className="text-xs text-muted-foreground">Engineers</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -92,41 +104,41 @@ export default function Service() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="tickets">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Support Tickets</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Ticketing system coming soon. Manage customer support requests and track resolution.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "tickets" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Support Tickets</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Ticketing system coming soon. Manage customer support requests and track resolution.</p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="field">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Field Service</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Field service module coming soon. Dispatch technicians and track on-site work.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "field" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Field Service</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Field service module coming soon. Dispatch technicians and track on-site work.</p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="kb">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Knowledge Base</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Knowledge management coming soon. Create and share help articles with customers.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {activeNav === "kb" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Knowledge Base</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Knowledge management coming soon. Create and share help articles with customers.</p>
+          </CardContent>
+        </Card>
+      )}
 
       <ModuleNav
         title="Service Modules"

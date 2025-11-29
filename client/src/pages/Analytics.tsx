@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
-import { Plus, Download, LayoutDashboard, FileText, Table2 } from "lucide-react";
+import { Plus, Download, LayoutDashboard, FileText, Table2, TrendingUp, Percent, Users, ShoppingCart } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useQuery } from "@tanstack/react-query";
 
@@ -12,6 +12,13 @@ export default function Analytics() {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, color: "text-blue-500" },
     { id: "reports", label: "Reports", icon: FileText, color: "text-green-500" },
     { id: "excel", label: "Data", icon: Table2, color: "text-purple-500" },
+  ];
+  
+  const kpiIcons = [
+    { name: "Revenue", icon: TrendingUp, color: "text-blue-500" },
+    { name: "Profit Margin", icon: Percent, color: "text-green-500" },
+    { name: "Customer Count", icon: Users, color: "text-purple-500" },
+    { name: "Avg Order Value", icon: ShoppingCart, color: "text-orange-500" },
   ];
   // Fetch ARIMA forecasting data from backend
   const { data: forecastData } = useQuery({ queryKey: ["/api/analytics/forecast-advanced"] });
@@ -66,17 +73,25 @@ export default function Analytics() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {kpis.map((kpi, idx) => (
-          <Card key={idx} data-testid={`kpi-${kpi.name.replace(/\s/g, "-").toLowerCase()}`}>
-            <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">{kpi.name}</p>
-              <p className="text-2xl font-bold mt-2">{kpi.value}</p>
-              <p className={`text-xs mt-2 ${kpi.trend.startsWith("+") ? "text-green-600" : "text-red-600"}`}>
-                {kpi.trend}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+        {kpis.map((kpi, idx) => {
+          const KPIIcon = kpiIcons[idx].icon;
+          return (
+            <Card key={idx} data-testid={`kpi-${kpi.name.replace(/\s/g, "-").toLowerCase()}`}>
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <KPIIcon className={`h-5 w-5 ${kpiIcons[idx].color}`} />
+                  <div>
+                    <p className="text-sm text-muted-foreground">{kpi.name}</p>
+                    <p className="text-2xl font-bold mt-1">{kpi.value}</p>
+                    <p className={`text-xs mt-1 ${kpi.trend.startsWith("+") ? "text-green-600" : "text-red-600"}`}>
+                      {kpi.trend}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
@@ -149,10 +164,11 @@ export default function Analytics() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        {/* Reports Tab */}
-        <TabsContent value="reports" className="space-y-4 mt-6">
+      {activeNav === "reports" && (
+        <div className="space-y-4 mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Generated Reports</CardTitle>
@@ -207,10 +223,11 @@ export default function Analytics() {
               <Button className="w-full">Generate Report</Button>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        {/* Embedded Data Tab */}
-        <TabsContent value="excel" className="space-y-4 mt-6">
+      {activeNav === "excel" && (
+        <div className="space-y-4 mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Embedded Data Analysis</CardTitle>
@@ -268,8 +285,8 @@ export default function Analytics() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }

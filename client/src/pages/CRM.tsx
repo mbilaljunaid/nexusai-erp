@@ -215,7 +215,7 @@ export default function CRM() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Link href="/lead-detail">
-          <Card className="cursor-pointer hover-elevate">
+          <Card className="cursor-pointer hover-elevate active:scale-95 transition-transform">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <Users className="h-5 w-5 text-blue-500" />
@@ -228,7 +228,7 @@ export default function CRM() {
           </Card>
         </Link>
         <Link href="/opportunities">
-          <Card className="cursor-pointer hover-elevate">
+          <Card className="cursor-pointer hover-elevate active:scale-95 transition-transform">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <Target className="h-5 w-5 text-green-500" />
@@ -241,7 +241,7 @@ export default function CRM() {
           </Card>
         </Link>
         <Link href="/lead-scoring">
-          <Card className="cursor-pointer hover-elevate">
+          <Card className="cursor-pointer hover-elevate active:scale-95 transition-transform">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <Sparkles className="h-5 w-5 text-primary" />
@@ -254,7 +254,7 @@ export default function CRM() {
           </Card>
         </Link>
         <Link href="/sales-pipeline">
-          <Card className="cursor-pointer hover-elevate">
+          <Card className="cursor-pointer hover-elevate active:scale-95 transition-transform">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <DollarSign className="h-5 w-5 text-orange-500" />
