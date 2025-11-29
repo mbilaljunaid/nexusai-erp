@@ -18,7 +18,7 @@ export class InvoiceController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Invoice> {
+  findOne(@Param('id') id: string): Promise<Invoice | null> {
     return this.invoiceService.findOne(id);
   }
 
@@ -26,7 +26,7 @@ export class InvoiceController {
   update(
     @Param('id') id: string,
     @Body() updateData: Partial<CreateInvoiceDto>,
-  ): Promise<Invoice> {
+  ): Promise<Invoice | null> {
     return this.invoiceService.update(id, updateData);
   }
 
