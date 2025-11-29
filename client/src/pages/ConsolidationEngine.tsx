@@ -83,10 +83,10 @@ export default function ConsolidationEngine() {
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="eliminations"><p className="text-muted-foreground">Inter-company eliminations and adjustments</p></TabsContent>
-        <TabsContent value="mappings"><p className="text-muted-foreground">Entity and account mappings</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "eliminations" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Inter-company eliminations and adjustments</p></CardContent></Card>}
+      {activeNav === "mappings" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Entity and account mappings</p></CardContent></Card>}
     </div>
   );
 }
