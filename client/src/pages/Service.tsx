@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ModuleNav } from "@/components/ModuleNav";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Package, Truck, BookOpen, Users, BarChart3, Headset, MapPin, AlertCircle, Clock, SmilePlus, Users2 } from "lucide-react";
 
@@ -139,18 +138,6 @@ export default function Service() {
           </CardContent>
         </Card>
       )}
-
-      <ModuleNav
-        title="Service Modules"
-        items={[
-          { title: "Service Tickets", icon: Package, href: "/service-tickets" },
-          { title: "Ticket Dashboard", icon: BarChart3, href: "/ticket-dashboard" },
-          { title: "SLA Tracking", icon: Package, href: "/sla-tracking" },
-          { title: "Knowledge Base", icon: BookOpen, href: "/knowledge-base" },
-          { title: "Customer Portal", icon: Users, href: "/customer-portal" },
-          { title: "Field Service", icon: Truck, href: "/field-service" },
-        ]}
-      />
     </div>
   );
 }

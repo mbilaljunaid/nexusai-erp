@@ -3,7 +3,6 @@ import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ModuleNav } from "@/components/ModuleNav";
 import { IconNavigation } from "@/components/IconNavigation";
 import { DollarSign, Plus, Package, Users, BarChart3, FileText, Percent, Calendar, LayoutList, TrendingUp, Warehouse } from "lucide-react";
 
@@ -71,18 +70,6 @@ export default function ERP() {
               </Card>
             </Link>
           </div>
-
-          <ModuleNav
-            title="ERP Modules"
-            items={[
-              { title: "Vendor Invoices", icon: FileText, href: "/vendor-invoice-entry" },
-              { title: "Bank Reconciliation", icon: DollarSign, href: "/bank-reconciliation" },
-              { title: "Payment Scheduling", icon: Calendar, href: "/payment-scheduling" },
-              { title: "Aging Report", icon: Percent, href: "/aging-report" },
-              { title: "General Ledger", icon: DollarSign, href: "/general-ledger" },
-              { title: "Inventory", icon: Package, href: "/inventory" },
-            ]}
-          />
         </div>
       )}
 

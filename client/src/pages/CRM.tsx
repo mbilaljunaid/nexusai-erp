@@ -10,7 +10,6 @@ import { LeadTable } from "@/components/LeadTable";
 import { LeadCard } from "@/components/LeadCard";
 import { AddLeadDialog } from "@/components/AddLeadDialog";
 import { AnalyticsChart } from "@/components/AnalyticsChart";
-import { ModuleNav } from "@/components/ModuleNav";
 import { 
   Search, 
   Filter, 
@@ -267,18 +266,6 @@ export default function CRM() {
           </Card>
         </Link>
       </div>
-
-      <ModuleNav
-        title="CRM Modules"
-        items={[
-          { title: "Lead Details", icon: Users, href: "/lead-detail" },
-          { title: "Opportunities", icon: Target, href: "/opportunities" },
-          { title: "Sales Pipeline", icon: TrendingUp, href: "/sales-pipeline" },
-          { title: "Revenue Forecast", icon: DollarSign, href: "/forecast" },
-          { title: "Accounts", icon: Users, href: "/accounts" },
-          { title: "Contacts", icon: Phone, href: "/contacts" },
-        ]}
-      />
 
       <Tabs defaultValue="leads" className="space-y-4">
         <div className="flex items-center justify-between gap-4 flex-wrap">

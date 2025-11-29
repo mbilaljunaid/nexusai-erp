@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ModuleNav } from "@/components/ModuleNav";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Users, Calendar, DollarSign, BarChart3, Briefcase, TrendingUp } from "lucide-react";
 
