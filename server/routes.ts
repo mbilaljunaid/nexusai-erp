@@ -13,6 +13,20 @@ import {
   insertCopilotConversationSchema, insertCopilotMessageSchema, insertMobileDeviceSchema, insertOfflineSyncSchema,
 } from "@shared/schema";
 import { z } from "zod";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || "",
+});
+
+// Domain-specific AI prompts
+const systemPrompts: Record<string, string> = {
+  crm: "You are an expert CRM assistant. Help users with sales strategies, lead scoring, pipeline management, and customer insights.",
+  erp: "You are an expert ERP assistant. Help users with inventory management, procurement, financial planning, and supply chain optimization.",
+  hr: "You are an expert HR assistant. Help users with recruitment, compensation planning, performance management, and employee development.",
+  manufacturing: "You are an expert manufacturing assistant. Help users with production planning, quality control, supply chain, and cost optimization.",
+  general: "You are an enterprise AI assistant. Help users with business insights, analytics, and operational optimization.",
+};
 
 export async function registerRoutes(
   httpServer: Server,
@@ -276,6 +290,45 @@ export async function registerRoutes(
       const data = insertCopilotMessageSchema.parse(req.body);
       const msg = await storage.createCopilotMessage(data);
       res.status(201).json(msg);
+      
+      // Get conversation context
+      const conv = await storage.getCopilotConversation(data.conversationId);
+      const context = conv?.context || "general";
+      const systemPrompt = systemPrompts[context] || systemPrompts.general;
+      
+      // Fetch recent messages for context
+      const recentMessages = await storage.listCopilotMessages(data.conversationId);
+      const messages = recentMessages.slice(-10).map((m) => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
+      
+      // Add current user message if not already there
+      if (messages[messages.length - 1]?.content !== data.content) {
+        messages.push({ role: "user", content: data.content });
+      }
+      
+      try {
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...messages,
+          ],
+          max_tokens: 500,
+        });
+        
+        const aiResponse = completion.choices[0]?.message?.content || "I couldn't generate a response.";
+        
+        await storage.createCopilotMessage({
+          conversationId: data.conversationId,
+          role: "assistant",
+          content: aiResponse,
+        });
+      } catch (aiError) {
+        console.error("OpenAI API error:", aiError);
+        // Still allow user message to be saved even if AI fails
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: error.errors });
