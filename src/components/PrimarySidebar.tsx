@@ -21,17 +21,20 @@ export function PrimarySidebar() {
         !primarySidebarOpen ? '-translate-x-full absolute' : ''
       }`}
       data-testid="primary-sidebar"
+      aria-label="Main navigation"
     >
-      <nav className="p-4 space-y-2">
+      <nav className="p-4 space-y-2" role="navigation">
         {menuItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className="sidebar-item block text-sm font-medium"
+            className="sidebar-item block text-sm font-medium px-3 py-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-blue-500"
             data-testid={`nav-${item.label.toLowerCase()}`}
+            aria-label={item.label}
+            title={item.label}
           >
-            <span className="mr-2">{item.icon}</span>
-            {item.label}
+            <span className="mr-2 text-lg" aria-hidden="true">{item.icon}</span>
+            <span>{item.label}</span>
           </Link>
         ))}
       </nav>

@@ -121,6 +121,8 @@ export function SecondarySidebar({
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={onClose}
           data-testid="sidebar-overlay"
+          aria-hidden="true"
+          role="presentation"
         />
 
         {/* Drawer */}
