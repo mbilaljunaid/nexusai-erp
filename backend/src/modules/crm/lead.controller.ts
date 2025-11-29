@@ -18,7 +18,7 @@ export class LeadController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Lead> {
+  findOne(@Param('id') id: string): Promise<Lead | null> {
     return this.leadService.findOne(id);
   }
 
@@ -26,7 +26,7 @@ export class LeadController {
   update(
     @Param('id') id: string,
     @Body() updateData: Partial<CreateLeadDto>,
-  ): Promise<Lead> {
+  ): Promise<Lead | null> {
     return this.leadService.update(id, updateData);
   }
 
