@@ -50,6 +50,7 @@ import Manufacturing from "@/pages/Manufacturing";
 import ERPAdvanced from "@/pages/advanced/ERPAdvanced";
 import CRMAdvanced from "@/pages/advanced/CRMAdvanced";
 import HRAdvanced from "@/pages/advanced/HRAdvanced";
+import Copilot from "@/pages/Copilot";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -81,7 +82,7 @@ function Router() {
       <Route path="/uat" component={UATAutomation} />
       <Route path="/advanced" component={AdvancedFeatures} />
       <Route path="/system-health" component={SystemHealth} />
-      <Route path="/copilot" component={AIAssistantPage} />
+      <Route path="/copilot" component={Copilot} />
       <Route path="/field-service" component={FieldService} />
       <Route path="/analytics" component={Analytics} />
       <Route path="/billing" component={Billing} />

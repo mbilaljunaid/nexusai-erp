@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "wouter";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
@@ -34,36 +34,41 @@ export default function Copilot() {
   // Fetch conversations
   const { data: conversations, isLoading: isLoadingConvs } = useQuery({
     queryKey: ["/api/copilot/conversations", userId],
-    queryFn: () =>
-      apiRequest("/api/copilot/conversations?userId=" + userId).then((r) =>
-        r.json()
-      ),
+    queryFn: async () => {
+      const res = await fetch(`/api/copilot/conversations?userId=${userId}`);
+      if (!res.ok) throw new Error("Failed to fetch conversations");
+      return res.json();
+    },
   });
 
   // Fetch messages for selected conversation
   const { data: messages = [] } = useQuery({
     queryKey: ["/api/copilot/messages", selectedConvId],
-    queryFn: () =>
-      selectedConvId
-        ? apiRequest(`/api/copilot/messages/${selectedConvId}`).then((r) =>
-            r.json()
-          )
-        : Promise.resolve([]),
+    queryFn: async () => {
+      if (!selectedConvId) return [];
+      const res = await fetch(`/api/copilot/messages/${selectedConvId}`);
+      if (!res.ok) throw new Error("Failed to fetch messages");
+      return res.json();
+    },
     enabled: !!selectedConvId,
   });
 
   // Create conversation mutation
   const createConvMutation = useMutation({
-    mutationFn: (title: string) =>
-      apiRequest("/api/copilot/conversations", {
+    mutationFn: async (title: string) => {
+      const res = await fetch("/api/copilot/conversations", {
         method: "POST",
-        body: {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           userId,
           title,
           context: "general",
           messageCount: 0,
-        },
-      }).then((r) => r.json()),
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to create conversation");
+      return res.json();
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ["/api/copilot/conversations", userId],
@@ -75,15 +80,19 @@ export default function Copilot() {
 
   // Send message mutation
   const sendMutation = useMutation({
-    mutationFn: (content: string) =>
-      apiRequest("/api/copilot/messages", {
+    mutationFn: async (content: string) => {
+      const res = await fetch("/api/copilot/messages", {
         method: "POST",
-        body: {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           conversationId: selectedConvId,
           role: "user",
           content,
-        },
-      }).then((r) => r.json()),
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to send message");
+      return res.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["/api/copilot/messages", selectedConvId],
