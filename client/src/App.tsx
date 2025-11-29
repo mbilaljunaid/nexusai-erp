@@ -274,6 +274,10 @@ function Router() {
         <Route path="/activity-timeline" component={ActivityTimeline} />
         <Route path="/lead-scoring" component={LeadScoringDashboard} />
         <Route path="/lead-conversion" component={LeadConversion} />
+        <Route path="/invoice-generator" component={InvoiceGenerator} />
+        <Route path="/quote-builder" component={QuoteBuilder} />
+        <Route path="/approval-workflow" component={ApprovalWorkflow} />
+        <Route path="/payment-flow" component={PaymentFlow} />
         <Route path="/invoices" component={InvoiceList} />
         <Route path="/invoice/:id" component={InvoiceDetail} />
         <Route path="/purchase-orders" component={PurchaseOrder} />

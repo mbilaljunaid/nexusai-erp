@@ -34,7 +34,7 @@ import {
 // MAIN MODULES - Clean sidebar navigation
 const mainModules = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/" },
-  { title: "CRM & Sales", icon: Users, href: "/crm", badge: "5 pages" },
+  { title: "CRM & Sales", icon: Users, href: "/crm", badge: "9 pages" },
   { title: "ERP & Finance", icon: DollarSign, href: "/erp", badge: "5 pages" },
   { title: "HR & Talent", icon: Briefcase, href: "/hr", badge: "10 pages" },
   { title: "Manufacturing", icon: Factory, href: "/manufacturing", badge: "4 pages" },
