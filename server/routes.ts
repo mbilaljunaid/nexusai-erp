@@ -2,15 +2,9 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
-  insertBomSchema, insertBomLineSchema, insertWorkOrderSchema, insertProductionOrderSchema, insertQualityCheckSchema,
-  insertRoutingSchema, insertRoutingOperationSchema, insertWorkCenterSchema, insertMrpForecastSchema,
-  insertReplenishmentRuleSchema, insertWarehouseSchema, insertStockLocationSchema, insertStockMoveSchema,
-  insertMaintenanceSchema, insertProductionCostSchema,
-  insertTaxRuleSchema, insertConsolidationRuleSchema, insertFxTranslationSchema,
-  insertLeadScoreSchema, insertCpqPricingRuleSchema, insertTerritorySchema,
-  insertBenefitsPlanSchema, insertPayrollConfigSchema, insertSuccessionPlanSchema,
-  insertLearningPathSchema, insertCompensationPlanSchema,
-  insertCopilotConversationSchema, insertCopilotMessageSchema, insertMobileDeviceSchema, insertOfflineSyncSchema,
+  insertProjectSchema, insertInvoiceSchema, insertLeadSchema, insertWorkOrderSchema, insertEmployeeSchema,
+  insertMobileDeviceSchema, insertOfflineSyncSchema,
+  insertCopilotConversationSchema, insertCopilotMessageSchema,
   insertRevenueForecastSchema, insertBudgetAllocationSchema, insertTimeSeriesDataSchema, insertForecastModelSchema,
   insertScenarioSchema, insertScenarioVariableSchema, insertDashboardWidgetSchema, insertReportSchema, insertAuditLogSchema,
   insertAppSchema, insertAppReviewSchema, insertAppInstallationSchema, insertConnectorSchema, insertConnectorInstanceSchema, insertWebhookEventSchema,
