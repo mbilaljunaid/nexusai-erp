@@ -29,11 +29,13 @@ import {
   Package,
   Briefcase,
   ShoppingCart,
+  Factory,
 } from "lucide-react";
 
 const platformNavItems = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/" },
   { title: "ERP & Finance", icon: DollarSign, href: "/erp" },
+  { title: "Manufacturing", icon: Factory, href: "/manufacturing", badge: "New" },
   { title: "EPM", icon: BarChart3, href: "/epm", badge: "New" },
   { title: "CRM & Sales", icon: Users, href: "/crm" },
   { title: "Projects", icon: FolderKanban, href: "/projects" },
