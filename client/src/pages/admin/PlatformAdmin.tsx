@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
+import { IconNavigation } from "@/components/IconNavigation";
 import {
   Select,
   SelectContent,
@@ -40,7 +40,16 @@ interface Tenant {
 }
 
 export default function PlatformAdmin() {
+  const [activeNav, setActiveNav] = useState("overview");
   const [selectedTenant, setSelectedTenant] = useState<string | null>(null);
+  
+  const navItems = [
+    { id: "overview", label: "Overview", icon: Building2, color: "text-blue-500" },
+    { id: "tenants", label: "Tenants", icon: Users, color: "text-green-500" },
+    { id: "features", label: "Features & Licensing", icon: Zap, color: "text-yellow-500" },
+    { id: "system", label: "System Config", icon: Settings, color: "text-purple-500" },
+    { id: "security", label: "Security & Compliance", icon: Shield, color: "text-red-500" },
+  ];
 
   // todo: remove mock functionality
   const tenants: Tenant[] = [
@@ -101,16 +110,10 @@ export default function PlatformAdmin() {
         <p className="text-muted-foreground text-sm">Manage all tenants, system configuration, and platform health</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-          <TabsTrigger value="tenants" data-testid="tab-tenants">Tenants</TabsTrigger>
-          <TabsTrigger value="features" data-testid="tab-features">Features & Licensing</TabsTrigger>
-          <TabsTrigger value="system" data-testid="tab-system">System Config</TabsTrigger>
-          <TabsTrigger value="security" data-testid="tab-security">Security & Compliance</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="overview" className="space-y-6">
+      {activeNav === "overview" && (
+        <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
               <CardContent className="p-4">
@@ -199,9 +202,11 @@ export default function PlatformAdmin() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="tenants" className="space-y-4">
+      {activeNav === "tenants" && (
+        <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
             <Input placeholder="Search tenants..." className="max-w-sm" data-testid="input-search-tenants" />
             <Button data-testid="button-add-tenant">
@@ -254,9 +259,11 @@ export default function PlatformAdmin() {
               </tbody>
             </table>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="features" className="space-y-4">
+      {activeNav === "features" && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Available Features</CardTitle>
@@ -305,9 +312,11 @@ export default function PlatformAdmin() {
               ))}
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="system" className="space-y-4">
+      {activeNav === "system" && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Global Settings</CardTitle>
@@ -355,9 +364,11 @@ export default function PlatformAdmin() {
               <Button data-testid="button-save-settings">Save Settings</Button>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="security" className="space-y-4">
+      {activeNav === "security" && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
@@ -384,8 +395,8 @@ export default function PlatformAdmin() {
               ))}
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }

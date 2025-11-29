@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { IconNavigation } from "@/components/IconNavigation";
 import {
   Select,
   SelectContent,
@@ -27,6 +27,7 @@ import { useTheme } from "@/components/ThemeProvider";
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
+  const [activeNav, setActiveNav] = useState("profile");
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -42,6 +43,13 @@ export default function Settings() {
     analyticsInsights: true,
   });
 
+  const navItems = [
+    { id: "profile", label: "Profile", icon: User, color: "text-blue-500" },
+    { id: "notifications", label: "Notifications", icon: Bell, color: "text-green-500" },
+    { id: "ai", label: "AI Settings", icon: Sparkles, color: "text-yellow-500" },
+    { id: "appearance", label: "Appearance", icon: Palette, color: "text-purple-500" },
+  ];
+
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
@@ -49,27 +57,10 @@ export default function Settings() {
         <p className="text-muted-foreground text-sm">Manage your account and preferences</p>
       </div>
 
-      <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="profile" data-testid="tab-profile">
-            <User className="h-4 w-4 mr-2" />
-            Profile
-          </TabsTrigger>
-          <TabsTrigger value="notifications" data-testid="tab-notifications">
-            <Bell className="h-4 w-4 mr-2" />
-            Notifications
-          </TabsTrigger>
-          <TabsTrigger value="ai" data-testid="tab-ai">
-            <Sparkles className="h-4 w-4 mr-2" />
-            AI Settings
-          </TabsTrigger>
-          <TabsTrigger value="appearance" data-testid="tab-appearance">
-            <Palette className="h-4 w-4 mr-2" />
-            Appearance
-          </TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="profile" className="space-y-6">
+      {activeNav === "profile" && (
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Profile Information</CardTitle>
@@ -145,9 +136,11 @@ export default function Settings() {
               <Button variant="outline" data-testid="button-change-password">Change Password</Button>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="notifications" className="space-y-6">
+      {activeNav === "notifications" && (
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Notification Preferences</CardTitle>
@@ -220,9 +213,11 @@ export default function Settings() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="ai" className="space-y-6">
+      {activeNav === "ai" && (
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
@@ -299,9 +294,11 @@ export default function Settings() {
               </p>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="appearance" className="space-y-6">
+      {activeNav === "appearance" && (
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Theme</CardTitle>
@@ -336,8 +333,8 @@ export default function Settings() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }

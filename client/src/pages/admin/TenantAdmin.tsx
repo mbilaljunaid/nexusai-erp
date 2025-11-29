@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
+import { IconNavigation } from "@/components/IconNavigation";
 import {
   Select,
   SelectContent,
@@ -24,6 +24,8 @@ import {
   MoreVertical,
   AlertTriangle,
   CheckCircle2,
+  BarChart3,
+  CreditCard,
 } from "lucide-react";
 
 interface TenantUser {
@@ -36,8 +38,17 @@ interface TenantUser {
 }
 
 export default function TenantAdmin() {
+  const [activeNav, setActiveNav] = useState("overview");
   const [tenantName] = useState("Acme Corp");
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  
+  const navItems = [
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "users", label: "Users & Roles", icon: Users, color: "text-green-500" },
+    { id: "modules", label: "Modules", icon: Building2, color: "text-purple-500" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-yellow-500" },
+    { id: "billing", label: "Billing & Usage", icon: CreditCard, color: "text-red-500" },
+  ];
 
   // todo: remove mock functionality
   const users: TenantUser[] = [
@@ -90,16 +101,10 @@ export default function TenantAdmin() {
         <p className="text-muted-foreground text-sm">Manage users, settings, and configuration for your organization</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-          <TabsTrigger value="users" data-testid="tab-users">Users & Roles</TabsTrigger>
-          <TabsTrigger value="modules" data-testid="tab-modules">Modules</TabsTrigger>
-          <TabsTrigger value="settings" data-testid="tab-settings">Settings</TabsTrigger>
-          <TabsTrigger value="billing" data-testid="tab-billing">Billing & Usage</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="overview" className="space-y-6">
+      {activeNav === "overview" && (
+        <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Card>
               <CardContent className="p-4">
@@ -193,9 +198,11 @@ export default function TenantAdmin() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="users" className="space-y-4">
+      {activeNav === "users" && (
+        <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
             <Input placeholder="Search users..." className="max-w-sm" data-testid="input-search-users" />
             <Button data-testid="button-add-user">
@@ -241,9 +248,11 @@ export default function TenantAdmin() {
               </tbody>
             </table>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="modules" className="space-y-4">
+      {activeNav === "modules" && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Enabled Modules</CardTitle>
@@ -269,9 +278,11 @@ export default function TenantAdmin() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="settings" className="space-y-4">
+      {activeNav === "settings" && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Organization Settings</CardTitle>
@@ -332,9 +343,11 @@ export default function TenantAdmin() {
               <Button data-testid="button-save-settings">Save Settings</Button>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="billing" className="space-y-4">
+      {activeNav === "billing" && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Current Plan</CardTitle>
@@ -401,8 +414,8 @@ export default function TenantAdmin() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }
