@@ -35,7 +35,7 @@ import {
 const mainModules = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/" },
   { title: "CRM & Sales", icon: Users, href: "/crm", badge: "9 pages" },
-  { title: "ERP & Finance", icon: DollarSign, href: "/erp", badge: "5 pages" },
+  { title: "ERP & Finance", icon: DollarSign, href: "/erp", badge: "9 pages" },
   { title: "HR & Talent", icon: Briefcase, href: "/hr", badge: "10 pages" },
   { title: "Manufacturing", icon: Factory, href: "/manufacturing", badge: "4 pages" },
   { title: "Service & Support", icon: Package, href: "/service", badge: "8 pages" },

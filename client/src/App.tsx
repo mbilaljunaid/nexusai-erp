@@ -177,6 +177,10 @@ const InvoiceGenerator = lazy(() => import("@/pages/InvoiceGenerator"));
 const QuoteBuilder = lazy(() => import("@/pages/QuoteBuilder"));
 const ApprovalWorkflow = lazy(() => import("@/pages/ApprovalWorkflow"));
 const PaymentFlow = lazy(() => import("@/pages/PaymentFlow"));
+const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
+const BankReconciliation = lazy(() => import("@/pages/BankReconciliation"));
+const PaymentScheduling = lazy(() => import("@/pages/PaymentScheduling"));
+const AgingReport = lazy(() => import("@/pages/AgingReport"));
 const PerformanceOptimization = lazy(() => import("@/pages/PerformanceOptimization"));
 const InternationalizationConfig = lazy(() => import("@/pages/InternationalizationConfig"));
 const AdvancedSearch = lazy(() => import("@/pages/AdvancedSearch"));
@@ -278,6 +282,10 @@ function Router() {
         <Route path="/quote-builder" component={QuoteBuilder} />
         <Route path="/approval-workflow" component={ApprovalWorkflow} />
         <Route path="/payment-flow" component={PaymentFlow} />
+        <Route path="/vendor-invoice-entry" component={VendorInvoiceEntry} />
+        <Route path="/bank-reconciliation" component={BankReconciliation} />
+        <Route path="/payment-scheduling" component={PaymentScheduling} />
+        <Route path="/aging-report" component={AgingReport} />
         <Route path="/invoices" component={InvoiceList} />
         <Route path="/invoice/:id" component={InvoiceDetail} />
         <Route path="/purchase-orders" component={PurchaseOrder} />

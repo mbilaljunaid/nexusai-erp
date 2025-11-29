@@ -32,6 +32,10 @@ const invoicesStore: any[] = [];
 const quotesStore: any[] = [];
 const paymentsStore: any[] = [];
 const approvalsStore: any[] = [];
+const apInvoicesStore: any[] = [];
+const bankTransactionsStore: any[] = [];
+const paymentSchedulesStore: any[] = [];
+const agingDataStore: any[] = [];
 
 export async function registerRoutes(
   httpServer: Server,
@@ -164,6 +168,128 @@ export async function registerRoutes(
 
   // EXISTING ROUTES FROM ORIGINAL FILE - Start here
   // ... (rest of the original routes.ts content continues below)
+
+  // PHASE 2: AP Invoices
+  app.get("/api/ap-invoices", async (req, res) => {
+    res.json(apInvoicesStore);
+  });
+
+  app.post("/api/ap-invoices", async (req, res) => {
+    const invoice = {
+      id: `api-${Date.now()}`,
+      invoiceNumber: req.body.invoiceNumber,
+      vendorId: req.body.vendorId,
+      poId: req.body.poId,
+      amount: req.body.amount || "0",
+      matchStatus: "unmatched",
+      status: "submitted",
+      createdAt: new Date().toISOString(),
+    };
+    apInvoicesStore.push(invoice);
+    res.status(201).json(invoice);
+  });
+
+  app.post("/api/ap-invoices/:id/match", async (req, res) => {
+    const invoice = apInvoicesStore.find(i => i.id === req.params.id);
+    if (!invoice) return res.status(404).json({ error: "Invoice not found" });
+    invoice.matchStatus = "3way";
+    invoice.status = "matched";
+    res.json(invoice);
+  });
+
+  // PHASE 2: Bank Reconciliation
+  app.get("/api/bank-reconciliation", async (req, res) => {
+    res.json(agingDataStore.length > 0 ? [agingDataStore[0]] : [{
+      id: "recon-1",
+      bankBalance: "150000",
+      glBalance: "149975",
+      difference: "25",
+      matchedCount: 145,
+      status: "complete",
+      createdAt: new Date().toISOString(),
+    }]);
+  });
+
+  app.post("/api/bank-reconciliation/run", async (req, res) => {
+    const run = {
+      id: `recon-${Date.now()}`,
+      bankBalance: (Math.random() * 100000 + 50000).toString(),
+      glBalance: (Math.random() * 100000 + 50000).toString(),
+      difference: (Math.random() * 100 - 50).toString(),
+      matchedCount: Math.floor(Math.random() * 50 + 100),
+      status: "complete",
+      createdAt: new Date().toISOString(),
+    };
+    agingDataStore.push(run);
+    res.status(201).json(run);
+  });
+
+  app.get("/api/bank-transactions", async (req, res) => {
+    if (bankTransactionsStore.length === 0) {
+      bankTransactionsStore.push(
+        { id: "bt1", date: new Date().toISOString(), description: "Deposit", amount: "5000", status: "matched", glEntry: "1010" },
+        { id: "bt2", date: new Date().toISOString(), description: "Check", amount: "2500", status: "unmatched", glEntry: null },
+      );
+    }
+    res.json(bankTransactionsStore);
+  });
+
+  app.post("/api/bank-transactions/:id/match", async (req, res) => {
+    const txn = bankTransactionsStore.find(t => t.id === req.params.id);
+    if (!txn) return res.status(404).json({ error: "Transaction not found" });
+    txn.status = "matched";
+    res.json(txn);
+  });
+
+  // PHASE 2: Payment Schedules
+  app.get("/api/payment-schedules", async (req, res) => {
+    if (paymentSchedulesStore.length === 0) {
+      paymentSchedulesStore.push(
+        { id: "ps1", vendorId: "V001", invoiceId: "i1", amount: "5000", dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), scheduledDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), status: "pending", createdAt: new Date().toISOString() },
+        { id: "ps2", vendorId: "V002", invoiceId: "i2", amount: "3000", dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), scheduledDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), status: "scheduled", createdAt: new Date().toISOString() },
+      );
+    }
+    res.json(paymentSchedulesStore);
+  });
+
+  app.post("/api/payment-schedules", async (req, res) => {
+    const schedule = {
+      id: `ps-${Date.now()}`,
+      vendorId: req.body.vendorId,
+      invoiceId: req.body.invoiceId,
+      amount: req.body.amount,
+      dueDate: req.body.dueDate,
+      scheduledDate: req.body.scheduledDate || new Date().toISOString(),
+      status: "pending",
+      createdAt: new Date().toISOString(),
+    };
+    paymentSchedulesStore.push(schedule);
+    res.status(201).json(schedule);
+  });
+
+  app.post("/api/payment-schedules/:id/process", async (req, res) => {
+    const schedule = paymentSchedulesStore.find(s => s.id === req.params.id);
+    if (!schedule) return res.status(404).json({ error: "Schedule not found" });
+    schedule.status = "processed";
+    res.json(schedule);
+  });
+
+  // PHASE 2: Aging Report
+  app.get("/api/aging-report", async (req, res) => {
+    const type = req.query.type || "ap";
+    const report = {
+      id: `aging-${type}-1`,
+      type,
+      current: { days: "0-30", count: 45, amount: "67500", percentage: 45 },
+      days30: { days: "30-60", count: 20, amount: "30000", percentage: 20 },
+      days60: { days: "60-90", count: 15, amount: "22500", percentage: 15 },
+      days90: { days: "90-120", count: 12, amount: "18000", percentage: 12 },
+      over90: { days: "120+", count: 8, amount: "12000", percentage: 8 },
+      totalAmount: "150000",
+      createdAt: new Date().toISOString(),
+    };
+    res.json([report]);
+  });
 
   // PHASE 1: AI Copilot
   app.get("/api/copilot/conversations", async (req, res) => {

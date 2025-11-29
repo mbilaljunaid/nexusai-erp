@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ModuleNav } from "@/components/ModuleNav";
-import { DollarSign, Plus, Package, Users, BarChart3 } from "lucide-react";
+import { DollarSign, Plus, Package, Users, BarChart3, FileText, Percent, Calendar } from "lucide-react";
 
 export default function ERP() {
   return (
@@ -67,28 +67,17 @@ export default function ERP() {
             </Link>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Financial Modules</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { name: "General Ledger", description: "Chart of accounts, journals, and consolidated reporting" },
-                  { name: "Accounts Payable", description: "Vendor invoices, payments, and reconciliation" },
-                  { name: "Accounts Receivable", description: "Customer invoices, collections, and aging" },
-                  { name: "Fixed Assets", description: "Asset tracking, depreciation, and maintenance" },
-                  { name: "Inventory Management", description: "Stock tracking, valuation, and movements" },
-                  { name: "Multi-Entity", description: "Cross-company consolidation and eliminations" },
-                ].map((module) => (
-                  <Button key={module.name} variant="outline" className="h-auto flex flex-col items-start justify-start p-4">
-                    <span className="font-medium">{module.name}</span>
-                    <span className="text-xs text-muted-foreground mt-1">{module.description}</span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <ModuleNav
+            title="ERP Modules"
+            items={[
+              { title: "Vendor Invoices", icon: FileText, href: "/vendor-invoice-entry" },
+              { title: "Bank Reconciliation", icon: DollarSign, href: "/bank-reconciliation" },
+              { title: "Payment Scheduling", icon: Calendar, href: "/payment-scheduling" },
+              { title: "Aging Report", icon: Percent, href: "/aging-report" },
+              { title: "General Ledger", icon: DollarSign, href: "/general-ledger" },
+              { title: "Inventory", icon: Package, href: "/inventory" },
+            ]}
+          />
         </TabsContent>
 
         <TabsContent value="gl">
