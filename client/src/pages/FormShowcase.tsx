@@ -17,7 +17,7 @@ import PerformanceRatingForm from "@/components/forms/PerformanceRatingForm";
 import CustomerEntryForm from "@/components/forms/CustomerEntryForm";
 import AdjustmentEntryForm from "@/components/forms/AdjustmentEntryForm";
 import RequisitionForm from "@/components/forms/RequisitionForm";
-import OpportunityForm from "@/components/forms/OpportunityForm";
+import { OpportunityForm } from "@/components/forms/OpportunityForm";
 import { Sparkles } from "lucide-react";
 
 export default function FormShowcase() {
