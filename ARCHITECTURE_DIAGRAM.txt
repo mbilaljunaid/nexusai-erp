@@ -1,0 +1,170 @@
+# NexusAI Internal Techstack Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          USER INTERFACE LAYER (Next.js)                     │
+├──────────────────────┬──────────────────┬──────────────────┬────────────────┤
+│  Dashboard           │  Forms & Data    │  Analytics       │  Real-time     │
+│  (Recharts)          │  Entry           │  (Superset)      │  (WebSocket)   │
+│                      │  (AG Grid)       │  (Dashboards)    │  (Notifications)
+└──────────┬───────────┴────────┬─────────┴────────┬─────────┴────────┬───────┘
+           │                    │                  │                  │
+           └────────────────────┼──────────────────┴──────────────────┘
+                                │
+        ┌───────────────────────▼────────────────────────────────────┐
+        │           API GATEWAY & AUTHENTICATION LAYER               │
+        ├───────────────────────┬────────────────────────────────────┤
+        │  Kong API Gateway     │  Keycloak                          │
+        │  ├─ Rate Limiting     │  ├─ OAuth2/OpenID Connect         │
+        │  ├─ Load Balancing    │  ├─ RBAC / ABAC                   │
+        │  └─ Routing           │  ├─ Multi-tenancy                 │
+        │                       │  └─ MFA                           │
+        └─────────┬─────────────┴────────────────┬────────────────────┘
+                  │                              │
+    ┌─────────────▼───────────────┐  ┌──────────▼──────────────────────┐
+    │   BACKEND SERVICES LAYER    │  │   AI/ML SERVICES LAYER         │
+    │   (NestJS Microservices)    │  │   (Self-Hosted LLMs)           │
+    ├─────────────────────────────┤  ├────────────────────────────────┤
+    │ ├─ ERP Service              │  │ ├─ LLaMA 2/3 (Inference)       │
+    │ ├─ EPM Service              │  │ ├─ LangChain (Orchestration)   │
+    │ ├─ CRM Service              │  │ ├─ Milvus (Vector DB)          │
+    │ ├─ HR Service               │  │ ├─ Haystack (RAG)              │
+    │ ├─ Service Module           │  │ ├─ Embedding Generation        │
+    │ ├─ Analytics Service        │  │ ├─ Fine-tuning Pipeline        │
+    │ └─ Integration Service      │  │ └─ ML Model Management         │
+    │                             │  │                                │
+    │ BullMQ Job Queue            │  │ Prefect (ML Orchestration)     │
+    │ ├─ Approvals                │  │ ├─ Training Pipelines          │
+    │ ├─ Notifications            │  │ ├─ Data Processing             │
+    │ ├─ Data Exports             │  │ └─ Model Deployment            │
+    │ └─ Report Generation        │  │                                │
+    │                             │  │ PyTorch / TensorFlow           │
+    │ Kafka Event Streaming       │  │ ├─ Time-series Forecasting     │
+    │ ├─ Event Publishing         │  │ ├─ Classification              │
+    │ ├─ Event Consumption        │  │ └─ Anomaly Detection           │
+    │ └─ Data Replication         │  │                                │
+    └──────────┬────────┬──────────┘  └──────────┬─────────────────────┘
+               │        │                       │
+    ┌──────────▼────────▼───────────────────────▼───────────────────────┐
+    │                      DATABASE LAYER (Multi-DB)                     │
+    ├────────────────┬──────────────────┬──────────────┬────────────────┤
+    │ PostgreSQL     │  TimescaleDB     │  MongoDB     │  Neo4j         │
+    │ ├─ Transact.   │  ├─ EPM Data     │  ├─ Content │  ├─ Hierarchies
+    │ ├─ ERP Data    │  ├─ Analytics    │  ├─ Docs    │  ├─ Relationships
+    │ ├─ CRM Data    │  ├─ KPIs         │  ├─ Templates│ └─ Knowledge Graph
+    │ ├─ HR Data     │  └─ Metrics      │  └─ Configs │
+    │ └─ Audit Logs  │                  │             │
+    │                │  Redis           │             │
+    │                │  ├─ Cache Layer  │  MinIO      │
+    │                │  ├─ Sessions     │  ├─ Files   │
+    │                │  └─ Real-time    │  ├─ Images  │
+    │                │                  │  └─ Backups │
+    └────────────────┴──────────────────┴──────────────┴────────────────┘
+               │                │                │
+    ┌──────────▼────────┐  ┌────▼──────┐  ┌─────▼──────────┐
+    │  OBSERVABILITY    │  │ INTEGRATION│  │   INFRASTRUCTURE
+    │  LAYER            │  │  LAYER     │  │   & DEVOPS
+    ├───────────────────┤  ├────────────┤  ├────────────────┤
+    │ Prometheus        │  │ n8n        │  │ Kubernetes     │
+    │ ├─ Metrics        │  │ (Workflows)│  │ ├─ Pods        │
+    │ ├─ Alerts         │  │            │  │ ├─ Services    │
+    │ └─ Recording      │  │ Custom     │  │ ├─ Volumes     │
+    │                   │  │ Connectors │  │ └─ Ingress     │
+    │ Grafana           │  │ ├─ Stripe  │  │                │
+    │ ├─ Dashboards     │  │ ├─ Salesf. │  │ Docker         │
+    │ ├─ Alerts         │  │ └─ n more  │  │ ├─ Build       │
+    │ └─ Visualization  │  │            │  │ └─ Compose     │
+    │                   │  │ Webhooks   │  │                │
+    │ Loki              │  │ Manager    │  │ ArgoCD         │
+    │ ├─ Log Agg.       │  │            │  │ ├─ GitOps      │
+    │ └─ Querying       │  │            │  │ └─ Deployment  │
+    │                   │  │            │  │                │
+    │ Jaeger            │  │            │  │ HashiCorp Vault│
+    │ ├─ Traces         │  │            │  │ ├─ Secrets     │
+    │ ├─ Dependencies   │  │            │  │ └─ Encryption  │
+    │ └─ Bottlenecks    │  │            │  │                │
+    │                   │  │            │  │ ELK Stack      │
+    │ ELK Stack         │  │            │  │ ├─ Elasticsearch
+    │ ├─ Elasticsearch  │  │            │  │ ├─ Logstash    │
+    │ ├─ Logstash       │  │            │  │ └─ Kibana      │
+    │ └─ Kibana         │  │            │  │                │
+    └───────────────────┘  └────────────┘  │ GitHub Actions │
+                                           │ ├─ CI/CD        │
+                                           │ └─ Auto-deploy  │
+                                           └────────────────┘
+```
+
+## Data Flow Example: GL Entry with AI
+
+```
+User enters GL Entry → Next.js Form
+                  ↓
+          Form Validation (Zod)
+                  ↓
+        API Gateway (Kong) + Auth (Keycloak)
+                  ↓
+        NestJS GL Service
+    ├─ Validate entries
+    ├─ Check balancing
+    └─ Publish event to Kafka
+                  ↓
+        ┌────────┴────────┐
+        ↓                 ↓
+    PostgreSQL        AI Service
+    (Store entry)     (LLaMA anomaly detection)
+                      ├─ Check for unusual patterns
+                      ├─ Vector similarity (Milvus)
+                      └─ Return confidence score
+                  ↓
+        BullMQ Job: Send Notification
+                  ↓
+        User receives update via WebSocket
+```
+
+## Scaling Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│              LOAD BALANCER (CloudFlare/LB)          │
+└────────┬────────────────────────┬──────────────────┘
+         │                        │
+         ▼                        ▼
+┌─────────────────────┐  ┌─────────────────────┐
+│  K8s Cluster 1      │  │  K8s Cluster 2      │
+│  (Zone A)           │  │  (Zone B)           │
+│ ├─ API Pods (3)     │  │ ├─ API Pods (3)     │
+│ ├─ AI Service (2)   │  │ ├─ AI Service (2)   │
+│ └─ Workers (4)      │  │ └─ Workers (4)      │
+└────────┬────────────┘  └────────┬────────────┘
+         │                        │
+         └────────────┬───────────┘
+                      ▼
+    ┌──────────────────────────────────┐
+    │  PostgreSQL Primary              │
+    │  + 2 Read Replicas               │
+    │  + WAL Replication               │
+    └──────────────────────────────────┘
+           │        │        │
+           ▼        ▼        ▼
+    ┌──────────────────────────────────┐
+    │  Redis Cluster (6 nodes)         │
+    │  ├─ Master (3 shards)            │
+    │  └─ Replica (3 nodes)            │
+    └──────────────────────────────────┘
+           │        │
+           ▼        ▼
+    ┌──────────────┬──────────────┐
+    │ Milvus Cluster    │ MinIO (S3) │
+    │ ├─ Shards (4)     │ Replicated │
+    │ └─ Replicas (2)   │ (3 zones)  │
+    └──────────────┴──────────────┘
+```
+
+## Cost-Saving Architecture
+
+**Traditional SaaS:** OpenAI ($100-500/mo) + Pinecone ($50-200/mo) + PowerBI ($20-50/mo) + CloudFlare ($200/mo) = **$370-950/month**
+
+**Our Architecture:** Self-hosted LLMs + Milvus + Superset + All open-source = **$100-300/month** (infrastructure only)
+
+**Savings:** 60-70% cost reduction + Full data control + Unlimited customization
+

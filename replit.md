@@ -12,17 +12,60 @@
 ✅ **Sample Forms:** 7 production-ready forms implemented  
 🔄 **Build Phase:** In progress (systematic form implementation)
 
-## Technology Stack
+## Technology Stack (Updated to Internal Techstack)
 
-- **Frontend:** React 18 + Vite + TypeScript
-- **UI Framework:** Shadcn + Tailwind CSS + Material Design 3
-- **Backend:** Express.js + TypeScript
-- **Database:** PostgreSQL (development) / Neon (production-ready)
-- **Auth:** Passport.js local + session management
-- **State Management:** TanStack React Query (v5)
-- **AI Integration:** OpenAI (via Replit integrations)
-- **Routing:** Wouter (lightweight client-side)
-- **Styling:** Dark mode support, HSL color variables, responsive design
+### **Frontend (Transitioning)**
+- Current: React 18 + Vite + TypeScript
+- Target: **Next.js 14 + TypeScript** (SSR/SSG support)
+- UI: Shadcn + Tailwind CSS + Material Design 3
+- Charts: Recharts + D3.js + AG Grid
+- Forms: React Hook Form + Zod validation
+
+### **Backend (Transitioning)**
+- Current: Express.js + TypeScript
+- Target: **NestJS + TypeScript** (modular microservices)
+- API: REST + GraphQL (Apollo Server OSS)
+- Job Queue: **BullMQ** + Redis (async tasks)
+- Event Streaming: **Kafka** OSS (inter-service communication)
+- Auth: **Keycloak** (OAuth2/OpenID Connect, self-hosted)
+
+### **Databases**
+- **PostgreSQL:** Core operational data
+- **TimescaleDB:** Time-series (EPM, analytics)
+- **MongoDB:** Document storage
+- **Neo4j Community:** Graph data (org hierarchies)
+- **Redis:** Caching & sessions
+- **MinIO:** Object storage (S3-compatible)
+
+### **AI/ML Layer**
+- **LLMs:** LLaMA 2/3 (self-hosted, no OpenAI)
+- **Orchestration:** LangChain + LlamaIndex OSS
+- **Vector DB:** Milvus OSS (self-hosted)
+- **Embeddings:** Sentence Transformers (open-source)
+- **ML Pipelines:** Prefect OSS orchestration
+- **RAG:** Haystack OSS framework
+
+### **Infrastructure & DevOps**
+- **Containerization:** Docker + Docker Compose
+- **Orchestration:** Kubernetes OSS (self-hosted or managed)
+- **CI/CD:** GitHub Actions + ArgoCD (GitOps)
+- **Monitoring:** Prometheus + Grafana + Loki
+- **Tracing:** Jaeger OSS
+- **Logging:** ELK Stack (Elasticsearch + Logstash + Kibana)
+- **Secrets:** HashiCorp Vault OSS
+
+### **Analytics & BI**
+- **BI Tool:** Apache Superset (PowerBI-like)
+- **ETL:** Airbyte OSS
+- **Reporting:** Jasper Reports OSS
+- **Embedded:** AG Grid + Recharts
+
+### **Integration**
+- **API Gateway:** Kong OSS
+- **Workflow Automation:** n8n OSS
+- **Webhooks:** Self-hosted
+
+See **TECHSTACK.md** and **TECHSTACK_MIGRATION.md** for complete details.
 
 ## Project Structure
 
