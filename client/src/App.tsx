@@ -38,6 +38,7 @@ import IndustryConfiguration from "@/pages/IndustryConfiguration";
 import ComplianceDashboard from "@/pages/ComplianceDashboard";
 import UATAutomation from "@/pages/UATAutomation";
 import AdvancedFeatures from "@/pages/AdvancedFeatures";
+import IntegrationHub from "@/pages/IntegrationHub";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -68,6 +69,7 @@ function Router() {
       <Route path="/compliance" component={ComplianceDashboard} />
       <Route path="/uat" component={UATAutomation} />
       <Route path="/advanced" component={AdvancedFeatures} />
+      <Route path="/integrations" component={IntegrationHub} />
       <Route component={NotFound} />
     </Switch>
   );

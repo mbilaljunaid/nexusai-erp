@@ -22,6 +22,10 @@ import { ERPAdvancedModule } from './modules/erp/erp-advanced.module';
 import { FinanceAdvancedModule } from './modules/finance/finance-advanced.module';
 import { CRMAdvancedModule } from './modules/crm/crm-advanced.module';
 import { HRAdvancedModule } from './modules/hr/hr-advanced.module';
+import { ServiceAdvancedModule } from './modules/service/service-advanced.module';
+import { MarketingAdvancedModule } from './modules/marketing/marketing-advanced.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { IntegrationModule } from './modules/integration/integration.module';
 
 @Module({
   imports: [
@@ -65,6 +69,10 @@ import { HRAdvancedModule } from './modules/hr/hr-advanced.module';
     FinanceAdvancedModule,
     CRMAdvancedModule,
     HRAdvancedModule,
+    ServiceAdvancedModule,
+    MarketingAdvancedModule,
+    AnalyticsModule,
+    IntegrationModule,
   ],
 })
 export class AppModule {}
