@@ -10,6 +10,7 @@ import {
   insertLeadScoreSchema, insertCpqPricingRuleSchema, insertTerritorySchema,
   insertBenefitsPlanSchema, insertPayrollConfigSchema, insertSuccessionPlanSchema,
   insertLearningPathSchema, insertCompensationPlanSchema,
+  insertCopilotConversationSchema, insertCopilotMessageSchema, insertMobileDeviceSchema, insertOfflineSyncSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -242,6 +243,89 @@ export async function registerRoutes(
         return res.status(400).json({ error: error.errors });
       }
       res.status(500).json({ error: "Failed to create compensation plan" });
+    }
+  });
+
+  // PHASE 1: AI Copilot
+  app.get("/api/copilot/conversations", async (req, res) => {
+    const userId = req.query.userId as string;
+    const convs = await storage.listCopilotConversations(userId);
+    res.json(convs);
+  });
+
+  app.post("/api/copilot/conversations", async (req, res) => {
+    try {
+      const data = insertCopilotConversationSchema.parse(req.body);
+      const conv = await storage.createCopilotConversation(data);
+      res.status(201).json(conv);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create conversation" });
+    }
+  });
+
+  app.get("/api/copilot/messages/:conversationId", async (req, res) => {
+    const messages = await storage.listCopilotMessages(req.params.conversationId);
+    res.json(messages);
+  });
+
+  app.post("/api/copilot/messages", async (req, res) => {
+    try {
+      const data = insertCopilotMessageSchema.parse(req.body);
+      const msg = await storage.createCopilotMessage(data);
+      res.status(201).json(msg);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create message" });
+    }
+  });
+
+  // PHASE 1: Mobile Devices
+  app.get("/api/mobile/devices", async (req, res) => {
+    const userId = req.query.userId as string;
+    const devices = await storage.listMobileDevices(userId);
+    res.json(devices);
+  });
+
+  app.post("/api/mobile/register", async (req, res) => {
+    try {
+      const data = insertMobileDeviceSchema.parse(req.body);
+      const device = await storage.registerMobileDevice(data);
+      res.status(201).json(device);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to register device" });
+    }
+  });
+
+  app.post("/api/mobile/sync/:deviceId", async (req, res) => {
+    const device = await storage.updateMobileDeviceSync(req.params.deviceId);
+    if (!device) return res.status(404).json({ error: "Device not found" });
+    res.json(device);
+  });
+
+  // PHASE 1: Offline Sync Queue
+  app.get("/api/mobile/sync-queue/:deviceId", async (req, res) => {
+    const queue = await storage.getOfflineSyncQueue(req.params.deviceId);
+    res.json(queue);
+  });
+
+  app.post("/api/mobile/sync-queue", async (req, res) => {
+    try {
+      const data = insertOfflineSyncSchema.parse(req.body);
+      const sync = await storage.addToOfflineQueue(data);
+      res.status(201).json(sync);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to queue sync" });
     }
   });
 

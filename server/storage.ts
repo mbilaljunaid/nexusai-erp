@@ -294,6 +294,28 @@ export class MemStorage implements IStorage {
   async getCompensationPlan(id: string) { return this.compensationPlans.get(id); }
   async listCompensationPlans() { return Array.from(this.compensationPlans.values()); }
   async createCompensationPlan(p: InsertCompensationPlan) { const id = randomUUID(); const plan: CompensationPlan = { id, ...p, baseSalary: String(p.baseSalary) }; this.compensationPlans.set(id, plan); return plan; }
+
+  private copilotConversations = new Map<string, CopilotConversation>();
+  private copilotMessages = new Map<string, CopilotMessage>();
+  private mobileDevices = new Map<string, MobileDevice>();
+  private offlineSyncQueue = new Map<string, OfflineSync>();
+
+  async getCopilotConversation(id: string) { return this.copilotConversations.get(id); }
+  async listCopilotConversations(userId?: string) { const convs = Array.from(this.copilotConversations.values()); return userId ? convs.filter(c => c.userId === userId) : convs; }
+  async createCopilotConversation(c: InsertCopilotConversation) { const id = randomUUID(); const conv: CopilotConversation = { id, ...c, messageCount: 0, createdAt: new Date(), updatedAt: new Date() }; this.copilotConversations.set(id, conv); return conv; }
+
+  async getCopilotMessage(id: string) { return this.copilotMessages.get(id); }
+  async listCopilotMessages(convId: string) { return Array.from(this.copilotMessages.values()).filter(m => m.conversationId === convId).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()); }
+  async createCopilotMessage(m: InsertCopilotMessage) { const id = randomUUID(); const msg: CopilotMessage = { id, ...m, createdAt: new Date() }; this.copilotMessages.set(id, msg); const conv = this.copilotConversations.get(m.conversationId); if (conv) { conv.messageCount = (conv.messageCount || 0) + 1; conv.updatedAt = new Date(); } return msg; }
+
+  async getMobileDevice(id: string) { return this.mobileDevices.get(id); }
+  async listMobileDevices(userId?: string) { const devices = Array.from(this.mobileDevices.values()); return userId ? devices.filter(d => d.userId === userId) : devices; }
+  async registerMobileDevice(d: InsertMobileDevice) { const id = randomUUID(); const device: MobileDevice = { id, ...d, createdAt: new Date() }; this.mobileDevices.set(id, device); return device; }
+  async updateMobileDeviceSync(deviceId: string) { const device = this.mobileDevices.get(deviceId); if (device) { device.lastSyncDate = new Date(); } return device; }
+
+  async getOfflineSyncQueue(deviceId: string) { return Array.from(this.offlineSyncQueue.values()).filter(s => s.deviceId === deviceId && s.status === "pending"); }
+  async addToOfflineQueue(s: InsertOfflineSync) { const id = randomUUID(); const sync: OfflineSync = { id, ...s, createdAt: new Date() }; this.offlineSyncQueue.set(id, sync); return sync; }
+  async markSyncAsComplete(syncId: string) { const sync = this.offlineSyncQueue.get(syncId); if (sync) { sync.status = "synced"; sync.syncedAt = new Date(); } return sync; }
 }
 
 export const storage = new MemStorage();
