@@ -7,11 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Target } from "lucide-react";
+import { Sparkles, Target, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function CampaignEntryForm() {
   const [campaignName, setCampaignName] = useState("");
   const [showAI, setShowAI] = useState(false);
+  const [campaignType, setCampaignType] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [audienceSegment, setAudienceSegment] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -30,7 +39,7 @@ export function CampaignEntryForm() {
             </div>
             <div className="space-y-2">
               <Label>Campaign Type *</Label>
-              <Select><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+              <Select value={campaignType} onValueChange={setCampaignType}><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="email">Email</SelectItem>
                   <SelectItem value="social">Social Media</SelectItem>
@@ -42,17 +51,17 @@ export function CampaignEntryForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Start Date *</Label>
-              <Input type="date" />
+              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label>End Date *</Label>
-              <Input type="date" />
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label>Description</Label>
-            <Textarea placeholder="Campaign objectives and details..." className="min-h-20 text-sm" />
+            <Textarea placeholder="Campaign objectives and details..." value={description} onChange={(e) => setDescription(e.target.value)} className="min-h-20 text-sm" />
           </div>
         </CardContent>
       </Card>
@@ -63,7 +72,7 @@ export function CampaignEntryForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Audience Segment *</Label>
-              <Select><SelectTrigger><SelectValue placeholder="Select segment" /></SelectTrigger>
+              <Select value={audienceSegment} onValueChange={setAudienceSegment}><SelectTrigger><SelectValue placeholder="Select segment" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="vip">VIP Customers</SelectItem>
                   <SelectItem value="active">Active Users</SelectItem>
@@ -95,7 +104,28 @@ export function CampaignEntryForm() {
 
       <div className="flex gap-3">
         <Button variant="outline" onClick={() => setShowAI(!showAI)} className="gap-1"><Sparkles className="h-4 w-4" />AI Optimize</Button>
-        <Button>Launch Campaign</Button>
+        <Button 
+          onClick={async () => {
+            if (!campaignName || !campaignType || !startDate || !endDate || !audienceSegment) {
+              toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+              return;
+            }
+            setIsLoading(true);
+            try {
+              await api.marketing.campaigns.create({ campaignName, campaignType, startDate, endDate, description, audienceSegment });
+              toast({ title: "Success", description: "Campaign launched successfully" });
+              setCampaignName(""); setCampaignType(""); setStartDate(""); setEndDate(""); setDescription(""); setAudienceSegment("");
+            } catch (e) {
+              toast({ title: "Error", description: "Failed to launch campaign", variant: "destructive" });
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+          disabled={isLoading}
+        >
+          {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+          Launch Campaign
+        </Button>
         <Button variant="outline">Save Draft</Button>
       </div>
     </div>

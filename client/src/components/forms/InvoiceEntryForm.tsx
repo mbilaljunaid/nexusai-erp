@@ -8,11 +8,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Plus, Trash2, Sparkles } from "lucide-react";
+import { Plus, Trash2, Sparkles, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function InvoiceEntryForm() {
   const [lines, setLines] = useState([{ id: 1, desc: "", qty: "", rate: "" }]);
   const [showAI, setShowAI] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [vendor, setVendor] = useState("");
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [invoiceDate, setInvoiceDate] = useState("");
+  const [description, setDescription] = useState("");
+  const { toast } = useToast();
   
   const total = lines.reduce((sum, line) => sum + ((parseFloat(line.qty) || 0) * (parseFloat(line.rate) || 0)), 0);
 
@@ -36,7 +44,7 @@ export function InvoiceEntryForm() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label>Vendor *</Label>
-                  <Select><SelectTrigger className="text-sm"><SelectValue placeholder="Select vendor" /></SelectTrigger>
+                  <Select value={vendor} onValueChange={setVendor}><SelectTrigger className="text-sm"><SelectValue placeholder="Select vendor" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="acme">Acme Supplies</SelectItem>
                       <SelectItem value="tech">Tech Services Inc</SelectItem>
@@ -44,17 +52,17 @@ export function InvoiceEntryForm() {
                 </div>
                 <div className="space-y-2">
                   <Label>Invoice Number *</Label>
-                  <Input placeholder="INV-2024-001" className="text-sm" />
+                  <Input placeholder="INV-2024-001" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="text-sm" />
                 </div>
                 <div className="space-y-2">
                   <Label>Invoice Date *</Label>
-                  <Input type="date" className="text-sm" />
+                  <Input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} className="text-sm" />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label>Description</Label>
-                <Textarea placeholder="Invoice details..." className="min-h-16 text-sm" />
+                <Textarea placeholder="Invoice details..." value={description} onChange={(e) => setDescription(e.target.value)} className="min-h-16 text-sm" />
               </div>
             </CardContent>
           </Card>
@@ -101,7 +109,29 @@ export function InvoiceEntryForm() {
 
       <div className="flex gap-3">
         <Button variant="outline" onClick={() => setShowAI(!showAI)} className="gap-1"><Sparkles className="h-4 w-4" />AI Assist</Button>
-        <Button>Post Invoice</Button>
+        <Button 
+          onClick={async () => {
+            if (!vendor || !invoiceNumber || !invoiceDate) {
+              toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+              return;
+            }
+            setIsLoading(true);
+            try {
+              await api.erp.invoices.create({ vendor, invoiceNumber, invoiceDate, description, lines, total });
+              toast({ title: "Success", description: "Invoice posted successfully" });
+              setVendor(""); setInvoiceNumber(""); setInvoiceDate(""); setDescription("");
+              setLines([{ id: 1, desc: "", qty: "", rate: "" }]);
+            } catch (e) {
+              toast({ title: "Error", description: "Failed to post invoice", variant: "destructive" });
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+          disabled={isLoading}
+        >
+          {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+          Post Invoice
+        </Button>
         <Button variant="outline">Save Draft</Button>
       </div>
     </div>

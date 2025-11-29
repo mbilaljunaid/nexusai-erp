@@ -7,6 +7,12 @@ import { ERPModule } from './modules/erp/erp.module';
 import { EPMModule } from './modules/epm/epm.module';
 import { CRMModule } from './modules/crm/crm.module';
 import { HRModule } from './modules/hr/hr.module';
+import { ProjectsModule } from './modules/projects/projects.module';
+import { ServiceModule } from './modules/service/service.module';
+import { MarketingModule } from './modules/marketing/marketing.module';
+import { FinanceModule } from './modules/finance/finance.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
+import { ProcurementModule } from './modules/procurement/procurement.module';
 import { AIModule } from './modules/ai/ai.module';
 import { HealthModule } from './modules/health/health.module';
 
@@ -37,6 +43,12 @@ import { HealthModule } from './modules/health/health.module';
     EPMModule,
     CRMModule,
     HRModule,
+    ProjectsModule,
+    ServiceModule,
+    MarketingModule,
+    FinanceModule,
+    InventoryModule,
+    ProcurementModule,
     AIModule,
     HealthModule,
   ],

@@ -14,7 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Clock, AlertTriangle } from "lucide-react";
+import { Sparkles, Clock, AlertTriangle, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function ServiceTicketForm() {
   const [ticketTab, setTicketTab] = useState("entry");
@@ -24,6 +26,8 @@ export function ServiceTicketForm() {
   const [category, setCategory] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [showAISuggestions, setShowAISuggestions] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const priorityConfig: Record<string, { color: string; responseTime: string }> = {
     critical: { color: "destructive", responseTime: "30 min" },
@@ -214,7 +218,28 @@ export function ServiceTicketForm() {
 
           {/* Actions */}
           <div className="flex gap-3">
-            <Button>Create Ticket</Button>
+            <Button 
+              onClick={async () => {
+                if (!subject || !description || !category || !customerEmail) {
+                  toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+                  return;
+                }
+                setIsLoading(true);
+                try {
+                  await api.service.tickets.create({ subject, description, priority, category, customerEmail });
+                  toast({ title: "Success", description: "Ticket created successfully" });
+                  setSubject(""); setDescription(""); setPriority("medium"); setCategory(""); setCustomerEmail("");
+                } catch (e) {
+                  toast({ title: "Error", description: "Failed to create ticket", variant: "destructive" });
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
+              disabled={isLoading}
+            >
+              {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              Create Ticket
+            </Button>
             <Button variant="outline">Create & Notify</Button>
             <Button variant="outline">Save Draft</Button>
             <Button variant="ghost">Cancel</Button>

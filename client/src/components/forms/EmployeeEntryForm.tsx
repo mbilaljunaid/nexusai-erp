@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { User, Building2 } from "lucide-react";
+import { User, Building2, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function EmployeeEntryForm() {
   const [empTab, setEmpTab] = useState("personal");
@@ -24,6 +26,8 @@ export function EmployeeEntryForm() {
   const [hireDate, setHireDate] = useState("");
   const [salary, setSalary] = useState("");
   const [status, setStatus] = useState("active");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -269,8 +273,29 @@ export function EmployeeEntryForm() {
 
       {/* Actions */}
       <div className="flex gap-3">
-        <Button>Save Draft</Button>
-        <Button>Activate Employee</Button>
+        <Button variant="outline">Save Draft</Button>
+        <Button 
+          onClick={async () => {
+            if (!firstName || !lastName || !email || !department || !jobTitle || !hireDate) {
+              toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+              return;
+            }
+            setIsLoading(true);
+            try {
+              await api.hr.employees.create({ firstName, lastName, email, department, jobTitle, hireDate, salary, status });
+              toast({ title: "Success", description: "Employee created successfully" });
+              setFirstName(""); setLastName(""); setEmail(""); setDepartment(""); setJobTitle(""); setHireDate(""); setSalary(""); setStatus("active");
+            } catch (e) {
+              toast({ title: "Error", description: "Failed to create employee", variant: "destructive" });
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+          disabled={isLoading}
+        >
+          {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+          Activate Employee
+        </Button>
         <Button variant="ghost">Cancel</Button>
       </div>
 

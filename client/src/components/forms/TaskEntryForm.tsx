@@ -6,7 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { CheckSquare } from "lucide-react";
+import { CheckSquare, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function TaskEntryForm() {
   const [formData, setFormData] = useState({
@@ -21,9 +23,28 @@ export function TaskEntryForm() {
     dependencies: "",
     estimatedHours: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCreateTask = async () => {
+    if (!formData.title || !formData.project || !formData.assignee || !formData.dueDate) {
+      toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await api.projects.tasks.create(formData);
+      toast({ title: "Success", description: "Task created successfully" });
+      setFormData({ title: "", project: "", assignee: "", priority: "medium", status: "todo", startDate: "", dueDate: "", description: "", dependencies: "", estimatedHours: "" });
+    } catch (e) {
+      toast({ title: "Error", description: "Failed to create task", variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const priorityColors: Record<string, string> = {
@@ -187,7 +208,10 @@ export function TaskEntryForm() {
 
           <div className="flex justify-end gap-2">
             <Button variant="outline">Cancel</Button>
-            <Button>Create Task</Button>
+            <Button onClick={handleCreateTask} disabled={isLoading}>
+              {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              Create Task
+            </Button>
           </div>
         </CardContent>
       </Card>
