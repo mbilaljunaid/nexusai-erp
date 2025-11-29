@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BomForm } from "@/components/forms/BomForm";
-import { Factory } from "lucide-react";
+import { ModuleNav } from "@/components/ModuleNav";
+import { Factory, Package, CheckSquare } from "lucide-react";
 
 export default function Manufacturing() {
   const [activeTab, setActiveTab] = useState("bom");
@@ -82,6 +83,16 @@ export default function Manufacturing() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <ModuleNav
+        title="Manufacturing Modules"
+        items={[
+          { title: "Work Orders", icon: Package, href: "/work-orders" },
+          { title: "MRP Planning", icon: Factory, href: "/mrp" },
+          { title: "Shop Floor", icon: Factory, href: "/shop-floor" },
+          { title: "Quality Control", icon: CheckSquare, href: "/quality-control" },
+        ]}
+      />
     </div>
   );
 }

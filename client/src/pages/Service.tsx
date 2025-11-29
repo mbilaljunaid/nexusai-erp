@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { ModuleNav } from "@/components/ModuleNav";
+import { Package, Truck, BookOpen, Users, BarChart3 } from "lucide-react";
 
 export default function Service() {
   return (
@@ -111,6 +113,18 @@ export default function Service() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <ModuleNav
+        title="Service Modules"
+        items={[
+          { title: "Service Tickets", icon: Package, href: "/service-tickets" },
+          { title: "Ticket Dashboard", icon: BarChart3, href: "/ticket-dashboard" },
+          { title: "SLA Tracking", icon: Package, href: "/sla-tracking" },
+          { title: "Knowledge Base", icon: BookOpen, href: "/knowledge-base" },
+          { title: "Customer Portal", icon: Users, href: "/customer-portal" },
+          { title: "Field Service", icon: Truck, href: "/field-service" },
+        ]}
+      />
     </div>
   );
 }

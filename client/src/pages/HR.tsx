@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { ModuleNav } from "@/components/ModuleNav";
+import { Users, Calendar, DollarSign, BarChart3 } from "lucide-react";
 
 export default function HR() {
   return (
@@ -123,6 +125,18 @@ export default function HR() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <ModuleNav
+        title="HR Modules"
+        items={[
+          { title: "Employee Directory", icon: Users, href: "/employees" },
+          { title: "Org Chart", icon: Users, href: "/org-chart" },
+          { title: "Leave Requests", icon: Calendar, href: "/leave-request" },
+          { title: "Payroll", icon: DollarSign, href: "/payroll" },
+          { title: "Performance Reviews", icon: BarChart3, href: "/performance-reviews" },
+          { title: "Talent Pool", icon: Users, href: "/talent-pool" },
+        ]}
+      />
     </div>
   );
 }

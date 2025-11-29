@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, Plus } from "lucide-react";
+import { ModuleNav } from "@/components/ModuleNav";
+import { DollarSign, Plus, Package, Users, BarChart3 } from "lucide-react";
 
 export default function ERP() {
   return (
@@ -125,6 +126,18 @@ export default function ERP() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <ModuleNav
+        title="ERP Modules"
+        items={[
+          { title: "Invoices", icon: DollarSign, href: "/invoices" },
+          { title: "Purchase Orders", icon: Package, href: "/purchase-orders" },
+          { title: "Inventory", icon: Package, href: "/inventory" },
+          { title: "Vendors", icon: Users, href: "/vendors" },
+          { title: "General Ledger", icon: BarChart3, href: "/general-ledger" },
+          { title: "Financial Reports", icon: BarChart3, href: "/financial-reports" },
+        ]}
+      />
     </div>
   );
 }
