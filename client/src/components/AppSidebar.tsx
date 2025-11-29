@@ -29,6 +29,9 @@ import {
   Package,
   Briefcase,
   Building2,
+  Globe,
+  Mail,
+  ShoppingCart,
 } from "lucide-react";
 
 const platformNavItems = [
@@ -39,6 +42,12 @@ const platformNavItems = [
   { title: "HR & Talent", icon: Briefcase, href: "/hr" },
   { title: "Service & Support", icon: Package, href: "/service" },
   { title: "Marketing", icon: Sparkles, href: "/marketing" },
+];
+
+const digitialNavItems = [
+  { title: "Website Builder", icon: Zap, href: "/website" },
+  { title: "Email Management", icon: Package, href: "/email" },
+  { title: "E-Commerce", icon: ShoppingCart, href: "/ecommerce" },
 ];
 
 const analyticsNavItems = [
@@ -91,6 +100,28 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {platformNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={location === item.href}
+                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Digital & Web</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {digitialNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild 

@@ -29,6 +29,9 @@ import Marketing from "@/pages/Marketing";
 import Compliance from "@/pages/Compliance";
 import BPM from "@/pages/BPM";
 import Integrations from "@/pages/Integrations";
+import Website from "@/pages/Website";
+import Email from "@/pages/Email";
+import Ecommerce from "@/pages/Ecommerce";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -50,6 +53,9 @@ function Router() {
       <Route path="/compliance" component={Compliance} />
       <Route path="/bpm" component={BPM} />
       <Route path="/integrations" component={Integrations} />
+      <Route path="/website" component={Website} />
+      <Route path="/email" component={Email} />
+      <Route path="/ecommerce" component={Ecommerce} />
       <Route component={NotFound} />
     </Switch>
   );
