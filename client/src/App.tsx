@@ -77,6 +77,36 @@ import SalesPipeline from "@/pages/SalesPipeline";
 import ShopFloor from "@/pages/ShopFloor";
 import VendorManagement from "@/pages/VendorManagement";
 import WorkOrder from "@/pages/WorkOrder";
+import EmployeeDirectory from "@/pages/EmployeeDirectory";
+import OrgChart from "@/pages/OrgChart";
+import LeaveRequest from "@/pages/LeaveRequest";
+import LeaveApproval from "@/pages/LeaveApproval";
+import AttendanceDashboard from "@/pages/AttendanceDashboard";
+import PayrollProcessing from "@/pages/PayrollProcessing";
+import CompensationManagement from "@/pages/CompensationManagement";
+import PerformanceReviews from "@/pages/PerformanceReviews";
+import TalentPool from "@/pages/TalentPool";
+import HRAnalyticsDashboard from "@/pages/HRAnalyticsDashboard";
+import ServiceTicket from "@/pages/ServiceTicket";
+import TicketDashboard from "@/pages/TicketDashboard";
+import SLATracking from "@/pages/SLATracking";
+import KnowledgeBase from "@/pages/KnowledgeBase";
+import CustomerPortal from "@/pages/CustomerPortal";
+import ServiceAnalytics from "@/pages/ServiceAnalytics";
+import TeamUtilization from "@/pages/TeamUtilization";
+import ResponseAnalytics from "@/pages/ResponseAnalytics";
+import DashboardBuilder from "@/pages/DashboardBuilder";
+import ReportBuilder from "@/pages/ReportBuilder";
+import DataExplorer from "@/pages/DataExplorer";
+import SalesAnalytics from "@/pages/SalesAnalytics";
+import FinancialAnalytics from "@/pages/FinancialAnalytics";
+import OperationalAnalytics from "@/pages/OperationalAnalytics";
+import PredictiveAnalytics from "@/pages/PredictiveAnalytics";
+import LeadScoringAnalytics from "@/pages/LeadScoringAnalytics";
+import RevenueForecasting from "@/pages/RevenueForecasting";
+import ChurnRiskAnalysis from "@/pages/ChurnRiskAnalysis";
+import ExportManager from "@/pages/ExportManager";
+import ScheduledReports from "@/pages/ScheduledReports";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -143,6 +173,36 @@ function Router() {
       <Route path="/mrp" component={MRPDashboard} />
       <Route path="/shop-floor" component={ShopFloor} />
       <Route path="/quality-control" component={QualityControl} />
+      <Route path="/employees" component={EmployeeDirectory} />
+      <Route path="/org-chart" component={OrgChart} />
+      <Route path="/leave-request" component={LeaveRequest} />
+      <Route path="/leave-approval" component={LeaveApproval} />
+      <Route path="/attendance" component={AttendanceDashboard} />
+      <Route path="/payroll" component={PayrollProcessing} />
+      <Route path="/compensation" component={CompensationManagement} />
+      <Route path="/performance-reviews" component={PerformanceReviews} />
+      <Route path="/talent-pool" component={TalentPool} />
+      <Route path="/hr-analytics" component={HRAnalyticsDashboard} />
+      <Route path="/service-tickets" component={ServiceTicket} />
+      <Route path="/ticket-dashboard" component={TicketDashboard} />
+      <Route path="/sla-tracking" component={SLATracking} />
+      <Route path="/knowledge-base" component={KnowledgeBase} />
+      <Route path="/customer-portal" component={CustomerPortal} />
+      <Route path="/service-analytics" component={ServiceAnalytics} />
+      <Route path="/team-utilization" component={TeamUtilization} />
+      <Route path="/response-analytics" component={ResponseAnalytics} />
+      <Route path="/dashboard-builder" component={DashboardBuilder} />
+      <Route path="/report-builder" component={ReportBuilder} />
+      <Route path="/data-explorer" component={DataExplorer} />
+      <Route path="/sales-analytics" component={SalesAnalytics} />
+      <Route path="/financial-analytics" component={FinancialAnalytics} />
+      <Route path="/operational-analytics" component={OperationalAnalytics} />
+      <Route path="/predictive-analytics" component={PredictiveAnalytics} />
+      <Route path="/lead-scoring-analytics" component={LeadScoringAnalytics} />
+      <Route path="/revenue-forecasting" component={RevenueForecasting} />
+      <Route path="/churn-risk" component={ChurnRiskAnalysis} />
+      <Route path="/export-manager" component={ExportManager} />
+      <Route path="/scheduled-reports" component={ScheduledReports} />
       <Route component={NotFound} />
     </Switch>
   );

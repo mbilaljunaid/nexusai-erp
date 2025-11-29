@@ -41,6 +41,7 @@ import {
   CreditCard,
   Database,
   TrendingUp,
+  Download,
 } from "lucide-react";
 
 const platformNavItems = [
@@ -86,6 +87,45 @@ const manufacturingDetailItems = [
   { title: "MRP Planning", icon: Factory, href: "/mrp", badge: "PHASE1" },
   { title: "Shop Floor", icon: Factory, href: "/shop-floor", badge: "PHASE1" },
   { title: "Quality Control", icon: CheckSquare, href: "/quality-control", badge: "PHASE1" },
+];
+
+const hrDetailItems = [
+  { title: "Employee Directory", icon: Users, href: "/employees", badge: "PHASE2" },
+  { title: "Organization Chart", icon: Users, href: "/org-chart", badge: "PHASE2" },
+  { title: "Leave Requests", icon: Calendar, href: "/leave-request", badge: "PHASE2" },
+  { title: "Leave Approval", icon: CheckSquare, href: "/leave-approval", badge: "PHASE2" },
+  { title: "Attendance", icon: Calendar, href: "/attendance", badge: "PHASE2" },
+  { title: "Payroll", icon: DollarSign, href: "/payroll", badge: "PHASE2" },
+  { title: "Compensation", icon: DollarSign, href: "/compensation", badge: "PHASE2" },
+  { title: "Performance Reviews", icon: BarChart3, href: "/performance-reviews", badge: "PHASE2" },
+  { title: "Talent Pool", icon: Users, href: "/talent-pool", badge: "PHASE2" },
+  { title: "HR Analytics", icon: BarChart3, href: "/hr-analytics", badge: "PHASE2" },
+];
+
+const serviceDetailItems = [
+  { title: "Service Tickets", icon: Package, href: "/service-tickets", badge: "PHASE2" },
+  { title: "Ticket Dashboard", icon: BarChart3, href: "/ticket-dashboard", badge: "PHASE2" },
+  { title: "SLA Tracking", icon: Activity, href: "/sla-tracking", badge: "PHASE2" },
+  { title: "Knowledge Base", icon: BookOpen, href: "/knowledge-base", badge: "PHASE2" },
+  { title: "Customer Portal", icon: Users, href: "/customer-portal", badge: "PHASE2" },
+  { title: "Service Analytics", icon: BarChart3, href: "/service-analytics", badge: "PHASE2" },
+  { title: "Team Utilization", icon: Activity, href: "/team-utilization", badge: "PHASE2" },
+  { title: "Response Analytics", icon: BarChart3, href: "/response-analytics", badge: "PHASE2" },
+];
+
+const advancedAnalyticsItems = [
+  { title: "Dashboard Builder", icon: BarChart3, href: "/dashboard-builder", badge: "PHASE2" },
+  { title: "Report Builder", icon: BarChart3, href: "/report-builder", badge: "PHASE2" },
+  { title: "Data Explorer", icon: Database, href: "/data-explorer", badge: "PHASE2" },
+  { title: "Sales Analytics", icon: BarChart3, href: "/sales-analytics", badge: "PHASE2" },
+  { title: "Financial Analytics", icon: BarChart3, href: "/financial-analytics", badge: "PHASE2" },
+  { title: "Operational Analytics", icon: BarChart3, href: "/operational-analytics", badge: "PHASE2" },
+  { title: "Predictive Analytics", icon: BarChart3, href: "/predictive-analytics", badge: "PHASE2" },
+  { title: "Lead Scoring Analytics", icon: Sparkles, href: "/lead-scoring-analytics", badge: "PHASE2" },
+  { title: "Revenue Forecasting", icon: TrendingUp, href: "/revenue-forecasting", badge: "PHASE2" },
+  { title: "Churn Risk Analysis", icon: BarChart3, href: "/churn-risk", badge: "PHASE2" },
+  { title: "Export Manager", icon: Download, href: "/export-manager", badge: "PHASE2" },
+  { title: "Scheduled Reports", icon: Calendar, href: "/scheduled-reports", badge: "PHASE2" },
 ];
 
 const digitialNavItems = [
@@ -346,6 +386,60 @@ export function AppSidebar() {
                     isActive={location === item.href}
                     data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
                   >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">HR Details (Phase 2)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {hrDetailItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Service Details (Phase 2)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {serviceDetailItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Advanced Analytics (Phase 2)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {advancedAnalyticsItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
                     <Link href={item.href}>
                       <item.icon className="h-4 w-4" />
                       <span className="text-sm">{item.title}</span>
