@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, TrendingUp, Zap, PieChart } from "lucide-react";
+import { BarChart3, TrendingUp, Zap, PieChart, Settings, Sliders, BarChart3 as AnalyzeIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
 
 interface Budget {
   id: string;
@@ -15,6 +15,7 @@ interface Budget {
 }
 
 export default function BudgetPlanning() {
+  const [activeNav, setActiveNav] = useState("budgets");
   const { data: budgets = [] } = useQuery<Budget[]>({
     queryKey: ["/api/budgets"],
     retry: false,
@@ -26,6 +27,12 @@ export default function BudgetPlanning() {
     totalBudgeted: budgets.reduce((sum: number, b: any) => sum + parseFloat(b.amount || "0"), 0),
     variance: budgets.filter((b: any) => b.variance).reduce((sum: number, b: any) => sum + b.variance, 0),
   };
+
+  const navItems = [
+    { id: "budgets", label: "Budgets", icon: BarChart3, color: "text-blue-500" },
+    { id: "scenarios", label: "Scenarios", icon: Sliders, color: "text-purple-500" },
+    { id: "drivers", label: "Drivers", icon: AnalyzeIcon, color: "text-green-500" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -64,15 +71,12 @@ export default function BudgetPlanning() {
         </CardContent></Card>
       </div>
 
-      <Tabs defaultValue="budgets" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="budgets">Budgets</TabsTrigger>
-          <TabsTrigger value="scenarios">Scenarios</TabsTrigger>
-          <TabsTrigger value="drivers">Drivers</TabsTrigger>
-        </TabsList>
-        <TabsContent value="budgets">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {activeNav === "budgets" && (
+        <div className="space-y-3">
           {budgets.map((budget: any) => (
-            <Card key={budget.id}><CardContent className="p-4">
+            <Card key={budget.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{budget.name}</p>
                   <p className="text-sm text-muted-foreground">${(budget.amount / 1000000).toFixed(1)}M • {budget.department}</p></div>
@@ -80,10 +84,10 @@ export default function BudgetPlanning() {
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="scenarios"><p className="text-muted-foreground">What-if scenario analysis and modeling</p></TabsContent>
-        <TabsContent value="drivers"><p className="text-muted-foreground">Budget drivers and assumptions configuration</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "scenarios" && <Card><CardContent className="p-6"><p className="text-muted-foreground">What-if scenario analysis and modeling</p></CardContent></Card>}
+      {activeNav === "drivers" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Budget drivers and assumptions configuration</p></CardContent></Card>}
     </div>
   );
 }
