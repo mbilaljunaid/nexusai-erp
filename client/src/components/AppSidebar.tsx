@@ -46,213 +46,103 @@ import {
   FileText,
 } from "lucide-react";
 
-const platformNavItems = [
+// BUSINESS CATEGORY ITEMS
+const businessMainItems = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/" },
-  { title: "ERP & Finance", icon: DollarSign, href: "/erp" },
-  { title: "ERP Advanced", icon: DollarSign, href: "/erp-advanced", badge: "Premium" },
-  { title: "Inventory", icon: Package, href: "/inventory", badge: "NEW" },
-  { title: "Manufacturing", icon: Factory, href: "/manufacturing", badge: "New" },
-  { title: "EPM", icon: BarChart3, href: "/epm", badge: "New" },
   { title: "CRM & Sales", icon: Users, href: "/crm" },
-  { title: "CRM Advanced", icon: Users, href: "/crm-advanced", badge: "Premium" },
-  { title: "Projects", icon: FolderKanban, href: "/projects" },
+  { title: "ERP & Finance", icon: DollarSign, href: "/erp" },
   { title: "HR & Talent", icon: Briefcase, href: "/hr" },
-  { title: "HR Advanced", icon: Briefcase, href: "/hr-advanced", badge: "Premium" },
+  { title: "Manufacturing", icon: Factory, href: "/manufacturing" },
   { title: "Service & Support", icon: Package, href: "/service" },
-  { title: "Field Service", icon: Truck, href: "/field-service", badge: "New" },
-  { title: "Marketing", icon: Sparkles, href: "/marketing" },
 ];
 
-const crmDetailItems = [
-  { title: "Lead Details", icon: Users, href: "/lead-detail", badge: "PHASE1" },
-  { title: "Opportunities", icon: TrendingUp, href: "/opportunities", badge: "PHASE1" },
-  { title: "Sales Pipeline", icon: BarChart3, href: "/sales-pipeline", badge: "PHASE1" },
-  { title: "Revenue Forecast", icon: TrendingUp, href: "/forecast", badge: "PHASE1" },
-  { title: "Accounts", icon: Users, href: "/accounts", badge: "PHASE1" },
-  { title: "Account Hierarchy", icon: Users, href: "/account-hierarchy", badge: "PHASE1" },
-  { title: "Contacts", icon: Users, href: "/contacts", badge: "PHASE1" },
-  { title: "Activity Timeline", icon: Activity, href: "/activity-timeline", badge: "PHASE1" },
-  { title: "Lead Scoring", icon: Sparkles, href: "/lead-scoring", badge: "PHASE1" },
-  { title: "Convert Lead", icon: TrendingUp, href: "/lead-conversion", badge: "PHASE1" },
+const businessDetailItems = [
+  // CRM
+  { title: "Lead Details", icon: Users, href: "/lead-detail", badge: "CRM" },
+  { title: "Opportunities", icon: TrendingUp, href: "/opportunities", badge: "CRM" },
+  { title: "Sales Pipeline", icon: BarChart3, href: "/sales-pipeline", badge: "CRM" },
+  { title: "Accounts", icon: Users, href: "/accounts", badge: "CRM" },
+  { title: "Contacts", icon: Users, href: "/contacts", badge: "CRM" },
+  { title: "Activity Timeline", icon: Activity, href: "/activity-timeline", badge: "CRM" },
+  // ERP
+  { title: "Invoices", icon: DollarSign, href: "/invoices", badge: "ERP" },
+  { title: "Purchase Orders", icon: Package, href: "/purchase-orders", badge: "ERP" },
+  { title: "Inventory", icon: Package, href: "/inventory", badge: "ERP" },
+  { title: "Vendors", icon: Users, href: "/vendors", badge: "ERP" },
+  { title: "General Ledger", icon: BarChart3, href: "/general-ledger", badge: "ERP" },
+  // Manufacturing
+  { title: "Work Orders", icon: Package, href: "/work-orders", badge: "MFG" },
+  { title: "MRP Planning", icon: Factory, href: "/mrp", badge: "MFG" },
+  { title: "Shop Floor", icon: Factory, href: "/shop-floor", badge: "MFG" },
+  // HR
+  { title: "Employee Directory", icon: Users, href: "/employees", badge: "HR" },
+  { title: "Leave Requests", icon: Calendar, href: "/leave-request", badge: "HR" },
+  { title: "Payroll", icon: DollarSign, href: "/payroll", badge: "HR" },
+  // Service
+  { title: "Service Tickets", icon: Package, href: "/service-tickets", badge: "SVC" },
+  { title: "SLA Tracking", icon: Activity, href: "/sla-tracking", badge: "SVC" },
+  // Digital
+  { title: "Website Builder", icon: Zap, href: "/website", badge: "WEB" },
+  { title: "E-Commerce", icon: ShoppingCart, href: "/ecommerce", badge: "WEB" },
+  { title: "Marketing", icon: Sparkles, href: "/marketing", badge: "WEB" },
 ];
 
-const erpDetailItems = [
-  { title: "Invoices", icon: DollarSign, href: "/invoices", badge: "PHASE1" },
-  { title: "Purchase Orders", icon: Package, href: "/purchase-orders", badge: "PHASE1" },
-  { title: "Vendors", icon: Users, href: "/vendors", badge: "PHASE1" },
-  { title: "General Ledger", icon: BarChart3, href: "/general-ledger", badge: "PHASE1" },
-  { title: "Financial Reports", icon: BarChart3, href: "/financial-reports", badge: "PHASE1" },
-];
-
-const manufacturingDetailItems = [
-  { title: "Work Orders", icon: Package, href: "/work-orders", badge: "PHASE1" },
-  { title: "MRP Planning", icon: Factory, href: "/mrp", badge: "PHASE1" },
-  { title: "Shop Floor", icon: Factory, href: "/shop-floor", badge: "PHASE1" },
-  { title: "Quality Control", icon: CheckSquare, href: "/quality-control", badge: "PHASE1" },
-];
-
-const hrDetailItems = [
-  { title: "Employee Directory", icon: Users, href: "/employees", badge: "PHASE2" },
-  { title: "Organization Chart", icon: Users, href: "/org-chart", badge: "PHASE2" },
-  { title: "Leave Requests", icon: Calendar, href: "/leave-request", badge: "PHASE2" },
-  { title: "Leave Approval", icon: CheckSquare, href: "/leave-approval", badge: "PHASE2" },
-  { title: "Attendance", icon: Calendar, href: "/attendance", badge: "PHASE2" },
-  { title: "Payroll", icon: DollarSign, href: "/payroll", badge: "PHASE2" },
-  { title: "Compensation", icon: DollarSign, href: "/compensation", badge: "PHASE2" },
-  { title: "Performance Reviews", icon: BarChart3, href: "/performance-reviews", badge: "PHASE2" },
-  { title: "Talent Pool", icon: Users, href: "/talent-pool", badge: "PHASE2" },
-  { title: "HR Analytics", icon: BarChart3, href: "/hr-analytics", badge: "PHASE2" },
-];
-
-const serviceDetailItems = [
-  { title: "Service Tickets", icon: Package, href: "/service-tickets", badge: "PHASE2" },
-  { title: "Ticket Dashboard", icon: BarChart3, href: "/ticket-dashboard", badge: "PHASE2" },
-  { title: "SLA Tracking", icon: Activity, href: "/sla-tracking", badge: "PHASE2" },
-  { title: "Knowledge Base", icon: BookOpen, href: "/knowledge-base", badge: "PHASE2" },
-  { title: "Customer Portal", icon: Users, href: "/customer-portal", badge: "PHASE2" },
-  { title: "Service Analytics", icon: BarChart3, href: "/service-analytics", badge: "PHASE2" },
-  { title: "Team Utilization", icon: Activity, href: "/team-utilization", badge: "PHASE2" },
-  { title: "Response Analytics", icon: BarChart3, href: "/response-analytics", badge: "PHASE2" },
-];
-
-const advancedAnalyticsItems = [
-  { title: "Dashboard Builder", icon: BarChart3, href: "/dashboard-builder", badge: "PHASE2" },
-  { title: "Report Builder", icon: BarChart3, href: "/report-builder", badge: "PHASE2" },
-  { title: "Data Explorer", icon: Database, href: "/data-explorer", badge: "PHASE2" },
-  { title: "Sales Analytics", icon: BarChart3, href: "/sales-analytics", badge: "PHASE2" },
-  { title: "Financial Analytics", icon: BarChart3, href: "/financial-analytics", badge: "PHASE2" },
-  { title: "Operational Analytics", icon: BarChart3, href: "/operational-analytics", badge: "PHASE2" },
-  { title: "Predictive Analytics", icon: BarChart3, href: "/predictive-analytics", badge: "PHASE2" },
-  { title: "Lead Scoring Analytics", icon: Sparkles, href: "/lead-scoring-analytics", badge: "PHASE2" },
-  { title: "Revenue Forecasting", icon: TrendingUp, href: "/revenue-forecasting", badge: "PHASE2" },
-  { title: "Churn Risk Analysis", icon: BarChart3, href: "/churn-risk", badge: "PHASE2" },
-  { title: "Export Manager", icon: Download, href: "/export-manager", badge: "PHASE2" },
-  { title: "Scheduled Reports", icon: Calendar, href: "/scheduled-reports", badge: "PHASE2" },
-];
-
-const workflowItems = [
-  { title: "Workflow Builder", icon: Zap, href: "/workflow-builder", badge: "PHASE3" },
-  { title: "Templates", icon: BookOpen, href: "/workflow-templates", badge: "PHASE3" },
-  { title: "Execution History", icon: Activity, href: "/workflow-execution", badge: "PHASE3" },
-];
-
-const apiConfigItems = [
-  { title: "API Management", icon: Cpu, href: "/api-management", badge: "PHASE3" },
-  { title: "Webhooks", icon: Zap, href: "/webhooks", badge: "PHASE3" },
-  { title: "API Logs", icon: BarChart3, href: "/api-logs", badge: "PHASE3" },
-  { title: "Rate Limiting", icon: Shield, href: "/rate-limiting", badge: "PHASE3" },
-];
-
-const adminConfigItems = [
-  { title: "System Settings", icon: SettingsIcon, href: "/system-settings", badge: "PHASE3" },
-  { title: "Users", icon: Users, href: "/user-management", badge: "PHASE3" },
-  { title: "Roles", icon: Shield, href: "/role-management", badge: "PHASE3" },
-  { title: "Permissions", icon: Shield, href: "/permission-matrix", badge: "PHASE3" },
-];
-
-const dataConfigItems = [
-  { title: "Custom Fields", icon: Database, href: "/custom-fields", badge: "PHASE3" },
-  { title: "Data Import/Export", icon: Download, href: "/data-import", badge: "PHASE3" },
-  { title: "Data Cleanup", icon: Zap, href: "/data-cleanup", badge: "PHASE3" },
-  { title: "Audit Logs", icon: Activity, href: "/audit-logs", badge: "PHASE3" },
-];
-
-const securityItems = [
-  { title: "OAuth", icon: Shield, href: "/oauth-management", badge: "PHASE3" },
-  { title: "SSO", icon: Shield, href: "/sso", badge: "PHASE3" },
-  { title: "2FA", icon: Shield, href: "/two-factor-auth", badge: "PHASE3" },
-  { title: "Access Control", icon: Shield, href: "/access-control", badge: "PHASE3" },
-];
-
-const systemItems = [
-  { title: "Health Check", icon: Activity, href: "/health-check", badge: "PHASE3" },
-  { title: "Performance", icon: BarChart3, href: "/performance-monitoring", badge: "PHASE3" },
-  { title: "System Logs", icon: Activity, href: "/system-logs", badge: "PHASE3" },
-  { title: "Backup/Restore", icon: Download, href: "/backup-restore", badge: "PHASE3" },
-];
-
-const phase4Items = [
-  { title: "Mobile Optimization", icon: Smartphone, href: "/mobile-optimization", badge: "PHASE4" },
-  { title: "Accessibility", icon: Activity, href: "/accessibility-audit", badge: "PHASE4" },
-  { title: "Performance", icon: BarChart3, href: "/performance-optimization", badge: "PHASE4" },
-  { title: "Internationalization", icon: Zap, href: "/i18n-config", badge: "PHASE4" },
-  { title: "Advanced Search", icon: Zap, href: "/advanced-search", badge: "PHASE4" },
-  { title: "Bulk Operations", icon: Zap, href: "/bulk-ops", badge: "PHASE4" },
-  { title: "Duplicate Detection", icon: Database, href: "/duplicate-detection", badge: "PHASE4" },
-  { title: "Data Validation", icon: Database, href: "/data-validation", badge: "PHASE4" },
-  { title: "AI Recommendations", icon: Sparkles, href: "/recommendation-engine", badge: "PHASE4" },
-  { title: "Advanced Reports", icon: BarChart3, href: "/advanced-reporting", badge: "PHASE4" },
-  { title: "Geolocation", icon: Activity, href: "/geolocation", badge: "PHASE4" },
-  { title: "Collaboration", icon: Users, href: "/collaboration", badge: "PHASE4" },
-  { title: "Notifications", icon: Activity, href: "/notifications", badge: "PHASE4" },
-  { title: "Lead Scoring ML", icon: Sparkles, href: "/lead-scoring-ml", badge: "PHASE4" },
-  { title: "Customer Journey", icon: TrendingUp, href: "/customer-journey", badge: "PHASE4" },
-  { title: "Competitor Analysis", icon: BarChart3, href: "/competitor-analysis", badge: "PHASE4" },
-  { title: "Real-Time Alerts", icon: Activity, href: "/realtime-notifications", badge: "PHASE4" },
-  { title: "Templates", icon: BookOpen, href: "/templates", badge: "PHASE4" },
-  { title: "QA Dashboard", icon: BarChart3, href: "/qa-dashboard", badge: "PHASE4" },
-  { title: "Growth Metrics", icon: TrendingUp, href: "/growth-metrics", badge: "PHASE4" },
-  { title: "Customer Success", icon: Users, href: "/customer-success", badge: "PHASE4" },
-];
-
-const phase5Items = [
-  { title: "Advanced Permissions", icon: Shield, href: "/advanced-permissions", badge: "PHASE5" },
-  { title: "Encryption", icon: Shield, href: "/advanced-encryption", badge: "PHASE5" },
-  { title: "Multi-Tenancy", icon: Zap, href: "/multi-tenancy", badge: "PHASE5" },
-  { title: "API Versioning", icon: Cpu, href: "/api-versioning", badge: "PHASE5" },
-  { title: "Custom Workflows", icon: Zap, href: "/custom-workflows", badge: "PHASE5" },
-  { title: "Time Tracking", icon: Clock, href: "/time-tracking", badge: "PHASE5" },
-  { title: "Expense Tracking", icon: DollarSign, href: "/expense-tracking", badge: "PHASE5" },
-  { title: "Procurement", icon: Package, href: "/procurement", badge: "PHASE5" },
-  { title: "Contracts", icon: FileText, href: "/contracts", badge: "PHASE5" },
-  { title: "Supply Chain", icon: TrendingUp, href: "/supply-chain", badge: "PHASE5" },
-  { title: "Asset Management", icon: Package, href: "/assets", badge: "PHASE5" },
-  { title: "Knowledge Base", icon: BookOpen, href: "/knowledge-base", badge: "PHASE5" },
-  { title: "Community Forum", icon: Users, href: "/community-forum", badge: "PHASE5" },
-  { title: "Training Academy", icon: BookOpen, href: "/training-academy", badge: "PHASE5" },
-];
-
-const digitialNavItems = [
-  { title: "Website Builder", icon: Zap, href: "/website" },
-  { title: "Email Management", icon: Package, href: "/email" },
-  { title: "E-Commerce", icon: ShoppingCart, href: "/ecommerce" },
-];
-
-const analyticsNavItems = [
-  { title: "Analytics & BI", icon: BarChart3, href: "/analytics" },
-  { title: "Backend Integration", icon: Database, href: "/backend-integration", badge: "Live" },
-  { title: "Compliance & Audit", icon: Shield, href: "/compliance" },
-];
-
-const aiNavItems = [
+// INTELLIGENCE CATEGORY ITEMS
+const intelligenceItems = [
   { title: "AI Copilot", icon: Sparkles, href: "/copilot", badge: "AI" },
   { title: "AI Chat", icon: MessageCircle, href: "/ai-chat", badge: "AI" },
-  { title: "Planning & Forecasting", icon: Calendar, href: "/planning", badge: "AI" },
+  { title: "Analytics & BI", icon: BarChart3, href: "/analytics", badge: "BI" },
+  { title: "Dashboard Builder", icon: BarChart3, href: "/dashboard-builder", badge: "BI" },
+  { title: "Report Builder", icon: BarChart3, href: "/report-builder", badge: "BI" },
+  { title: "Data Explorer", icon: Database, href: "/data-explorer", badge: "BI" },
+  { title: "Predictive Analytics", icon: BarChart3, href: "/predictive-analytics", badge: "AI" },
+  { title: "Lead Scoring", icon: Sparkles, href: "/lead-scoring", badge: "AI" },
+  { title: "Revenue Forecast", icon: TrendingUp, href: "/forecast", badge: "BI" },
+  { title: "AI Recommendations", icon: Sparkles, href: "/recommendation-engine", badge: "AI" },
 ];
 
-const marketplaceNavItems = [
-  { title: "Marketplace", icon: Store, href: "/marketplace", badge: "New" },
-  { title: "Mobile Sync", icon: Smartphone, href: "/mobile-sync", badge: "Sync" },
-  { title: "Billing & Payments", icon: CreditCard, href: "/billing" },
+// ENTERPRISE CATEGORY ITEMS
+const enterpriseItems = [
+  { title: "Platform Admin", icon: Shield, href: "/admin/platform", badge: "ADMIN" },
+  { title: "Tenant Admin", icon: Users, href: "/admin/tenant", badge: "ADMIN" },
+  { title: "User Management", icon: Users, href: "/user-management", badge: "ADMIN" },
+  { title: "Roles & Permissions", icon: Shield, href: "/permission-matrix", badge: "ADMIN" },
+  { title: "OAuth", icon: Shield, href: "/oauth-management", badge: "SEC" },
+  { title: "SSO", icon: Shield, href: "/sso", badge: "SEC" },
+  { title: "2FA", icon: Shield, href: "/two-factor-auth", badge: "SEC" },
+  { title: "Advanced Permissions", icon: Shield, href: "/advanced-permissions", badge: "SEC" },
+  { title: "Encryption", icon: Shield, href: "/advanced-encryption", badge: "SEC" },
+  { title: "Marketplace", icon: Store, href: "/marketplace", badge: "MKT" },
+  { title: "Mobile Sync", icon: Smartphone, href: "/mobile-sync", badge: "MKT" },
+  { title: "Billing & Payments", icon: CreditCard, href: "/billing", badge: "MKT" },
 ];
 
-const advancedNavItems = [
-  { title: "Form Builder", icon: BookOpen, href: "/forms" },
-  { title: "UAT Automation", icon: CheckSquare, href: "/uat" },
-  { title: "Advanced Features", icon: Cpu, href: "/advanced", badge: "Beta" },
-  { title: "Industry Config", icon: Factory, href: "/industry-config" },
+// OPERATIONS CATEGORY ITEMS
+const operationsItems = [
+  { title: "Workflow Builder", icon: Zap, href: "/workflow-builder", badge: "OPS" },
+  { title: "Workflow Templates", icon: BookOpen, href: "/workflow-templates", badge: "OPS" },
+  { title: "API Management", icon: Cpu, href: "/api-management", badge: "API" },
+  { title: "Webhooks", icon: Zap, href: "/webhooks", badge: "API" },
+  { title: "Integration Hub", icon: Zap, href: "/integrations", badge: "OPS" },
+  { title: "Custom Fields", icon: Database, href: "/custom-fields", badge: "OPS" },
+  { title: "Data Import/Export", icon: Download, href: "/data-import", badge: "OPS" },
+  { title: "Audit Logs", icon: Activity, href: "/audit-logs", badge: "OPS" },
+  { title: "System Health", icon: Activity, href: "/health-check", badge: "OPS" },
+  { title: "Performance Monitoring", icon: BarChart3, href: "/performance-monitoring", badge: "OPS" },
+  { title: "System Logs", icon: Activity, href: "/system-logs", badge: "OPS" },
+  { title: "Procurement", icon: Package, href: "/procurement", badge: "OPS" },
+  { title: "Supply Chain", icon: TrendingUp, href: "/supply-chain", badge: "OPS" },
+  { title: "Time Tracking", icon: Clock, href: "/time-tracking", badge: "OPS" },
+  { title: "Expense Tracking", icon: DollarSign, href: "/expense-tracking", badge: "OPS" },
 ];
 
-const systemNavItems = [
-  { title: "Process Mapping", icon: Activity, href: "/bpm" },
-  { title: "Integration Hub", icon: Zap, href: "/integrations" },
-  { title: "System Health", icon: Activity, href: "/health" },
-  { title: "Settings", icon: SettingsIcon, href: "/settings" },
-];
-
-const adminNavItems = [
-  { title: "Platform Admin", icon: Shield, href: "/admin/platform", badge: "Platform" },
-  { title: "Tenant Admin", icon: Users, href: "/admin/tenant", badge: "Tenant" },
+// CONFIGURATION CATEGORY ITEMS
+const configurationItems = [
+  { title: "System Settings", icon: SettingsIcon, href: "/system-settings", badge: "CONFIG" },
+  { title: "Form Builder", icon: BookOpen, href: "/forms", badge: "CONFIG" },
+  { title: "Process Mapping", icon: Activity, href: "/bpm", badge: "CONFIG" },
+  { title: "Advanced Features", icon: Cpu, href: "/advanced", badge: "CONFIG" },
+  { title: "Industry Config", icon: Factory, href: "/industry-config", badge: "CONFIG" },
 ];
 
 const industryNavItems = [
@@ -266,7 +156,50 @@ const industryNavItems = [
 
 export function AppSidebar() {
   const [location] = useLocation();
+  const [businessExpanded, setBusinessExpanded] = useState(true);
+  const [intelligenceExpanded, setIntelligenceExpanded] = useState(true);
+  const [enterpriseExpanded, setEnterpriseExpanded] = useState(false);
+  const [operationsExpanded, setOperationsExpanded] = useState(false);
+  const [configExpanded, setConfigExpanded] = useState(false);
   const [industriesExpanded, setIndustriesExpanded] = useState(false);
+
+  const renderMenuGroup = (title: string, items: any[], expanded: boolean, setExpanded: any) => (
+    <SidebarGroup>
+      <div className="flex items-center justify-between px-2">
+        <SidebarGroupLabel className="text-xs uppercase tracking-wide">{title}</SidebarGroupLabel>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-5 w-5"
+          onClick={() => setExpanded(!expanded)}
+          data-testid={`button-expand-${title.toLowerCase().replace(/\s+/g, '-')}`}
+        >
+          <ChevronDown className={`h-3 w-3 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+        </Button>
+      </div>
+      {expanded && (
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {items.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location === item.href}
+                  data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  <Link href={item.href}>
+                    {item.icon && <item.icon className="h-4 w-4" />}
+                    <span className="text-sm">{item.title}</span>
+                    {item.badge && <span className="text-xs ml-auto bg-primary/20 text-primary px-2 py-0.5 rounded">{item.badge}</span>}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      )}
+    </SidebarGroup>
+  );
 
   return (
     <Sidebar>
@@ -283,377 +216,11 @@ export function AppSidebar() {
       </SidebarHeader>
       
       <SidebarContent className="space-y-2">
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Platforms</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {platformNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Digital & Web</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {digitialNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Analytics & Governance</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {analyticsNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">AI & Intelligence</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {aiNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Marketplace & Mobile</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {marketplaceNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Advanced & Configuration</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {advancedNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">CRM Details (Phase 1)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {crmDetailItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">ERP Details (Phase 1)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {erpDetailItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Manufacturing Details (Phase 1)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {manufacturingDetailItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">HR Details (Phase 2)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {hrDetailItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Service Details (Phase 2)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {serviceDetailItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Advanced Analytics (Phase 2)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {advancedAnalyticsItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Workflow (Phase 3)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {workflowItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">API Config (Phase 3)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {apiConfigItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Admin (Phase 3)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {adminConfigItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Data Config (Phase 3)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {dataConfigItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Security (Phase 3)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {securityItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">System (Phase 3)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {systemItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Final Polish (Phase 4)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {phase4Items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Advanced Enterprise (Phase 5)</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {phase5Items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {renderMenuGroup("Business", businessMainItems.concat(businessDetailItems), businessExpanded, setBusinessExpanded)}
+        {renderMenuGroup("Intelligence", intelligenceItems, intelligenceExpanded, setIntelligenceExpanded)}
+        {renderMenuGroup("Enterprise", enterpriseItems, enterpriseExpanded, setEnterpriseExpanded)}
+        {renderMenuGroup("Operations", operationsItems, operationsExpanded, setOperationsExpanded)}
+        {renderMenuGroup("Configuration", configurationItems, configExpanded, setConfigExpanded)}
 
         <SidebarGroup>
           <div className="flex items-center justify-between px-2">
@@ -663,6 +230,7 @@ export function AppSidebar() {
               size="icon" 
               className="h-5 w-5"
               onClick={() => setIndustriesExpanded(!industriesExpanded)}
+              data-testid="button-expand-industries"
             >
               <ChevronDown className={`h-3 w-3 transition-transform ${industriesExpanded ? 'rotate-180' : ''}`} />
             </Button>
@@ -676,6 +244,7 @@ export function AppSidebar() {
                       asChild 
                       isActive={location === item.href}
                       className="text-xs"
+                      data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       <Link href={item.href}>
                         <span>{item.title}</span>
@@ -686,50 +255,6 @@ export function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
           )}
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Admin</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {adminNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide">System</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {systemNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
