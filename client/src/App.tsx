@@ -47,6 +47,9 @@ import AIAssistantPage from "@/pages/AIAssistant";
 import FieldService from "@/pages/FieldService";
 import Billing from "@/pages/Billing";
 import Manufacturing from "@/pages/Manufacturing";
+import ERPAdvanced from "@/pages/advanced/ERPAdvanced";
+import CRMAdvanced from "@/pages/advanced/CRMAdvanced";
+import HRAdvanced from "@/pages/advanced/HRAdvanced";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -82,6 +85,9 @@ function Router() {
       <Route path="/field-service" component={FieldService} />
       <Route path="/analytics" component={Analytics} />
       <Route path="/billing" component={Billing} />
+      <Route path="/erp-advanced" component={ERPAdvanced} />
+      <Route path="/crm-advanced" component={CRMAdvanced} />
+      <Route path="/hr-advanced" component={HRAdvanced} />
       <Route component={NotFound} />
     </Switch>
   );

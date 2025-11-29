@@ -35,11 +35,14 @@ import {
 const platformNavItems = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/" },
   { title: "ERP & Finance", icon: DollarSign, href: "/erp" },
+  { title: "ERP Advanced", icon: DollarSign, href: "/erp-advanced", badge: "Premium" },
   { title: "Manufacturing", icon: Factory, href: "/manufacturing", badge: "New" },
   { title: "EPM", icon: BarChart3, href: "/epm", badge: "New" },
   { title: "CRM & Sales", icon: Users, href: "/crm" },
+  { title: "CRM Advanced", icon: Users, href: "/crm-advanced", badge: "Premium" },
   { title: "Projects", icon: FolderKanban, href: "/projects" },
   { title: "HR & Talent", icon: Briefcase, href: "/hr" },
+  { title: "HR Advanced", icon: Briefcase, href: "/hr-advanced", badge: "Premium" },
   { title: "Service & Support", icon: Package, href: "/service" },
   { title: "Marketing", icon: Sparkles, href: "/marketing" },
 ];
