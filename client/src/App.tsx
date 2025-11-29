@@ -197,6 +197,47 @@ const TimeTracking = lazy(() => import("@/pages/TimeTracking"));
 const TrainingAcademy = lazy(() => import("@/pages/TrainingAcademy"));
 const EPMPage = lazy(() => import("@/pages/EPMPage"));
 
+// Additional page imports
+const AdvancedEncryption = lazy(() => import("@/pages/AdvancedEncryption"));
+const AdvancedPermissions = lazy(() => import("@/pages/AdvancedPermissions"));
+const AdvancedReporting = lazy(() => import("@/pages/AdvancedReporting"));
+const AIAssistant = lazy(() => import("@/pages/AIAssistant"));
+const APIVersioning = lazy(() => import("@/pages/APIVersioning"));
+const AssetManagement = lazy(() => import("@/pages/AssetManagement"));
+const BackendIntegration = lazy(() => import("@/pages/BackendIntegration"));
+const CollaborationTools = lazy(() => import("@/pages/CollaborationTools"));
+const CommunityForum = lazy(() => import("@/pages/CommunityForum"));
+const CompetitorAnalysis = lazy(() => import("@/pages/CompetitorAnalysis"));
+const Compliance = lazy(() => import("@/pages/Compliance"));
+const ContractManagement = lazy(() => import("@/pages/ContractManagement"));
+const CustomerJourneyMap = lazy(() => import("@/pages/CustomerJourneyMap"));
+const CustomerSuccessPanel = lazy(() => import("@/pages/CustomerSuccessPanel"));
+const CustomWorkflows = lazy(() => import("@/pages/CustomWorkflows"));
+const DataValidation = lazy(() => import("@/pages/DataValidation"));
+const DataWarehouse = lazy(() => import("@/pages/DataWarehouse"));
+const DuplicateDetection = lazy(() => import("@/pages/DuplicateDetection"));
+const Email = lazy(() => import("@/pages/Email"));
+const EPMModule = lazy(() => import("@/pages/EPMModule"));
+const ExpenseTracking = lazy(() => import("@/pages/ExpenseTracking"));
+const GeolocationServices = lazy(() => import("@/pages/GeolocationServices"));
+const GrowthMetrics = lazy(() => import("@/pages/GrowthMetrics"));
+const Integrations = lazy(() => import("@/pages/Integrations"));
+const MobileAppSettings = lazy(() => import("@/pages/MobileAppSettings"));
+const MultiTenancy = lazy(() => import("@/pages/MultiTenancy"));
+const NotificationCenter = lazy(() => import("@/pages/NotificationCenter"));
+const PlatformAdmin = lazy(() => import("@/pages/admin/PlatformAdmin"));
+const PredictiveLeadScoring = lazy(() => import("@/pages/PredictiveLeadScoring"));
+const ProcurementManagement = lazy(() => import("@/pages/ProcurementManagement"));
+const QualityAssurance = lazy(() => import("@/pages/QualityAssurance"));
+const RealTimeNotifications = lazy(() => import("@/pages/RealTimeNotifications"));
+const RecommendationEngine = lazy(() => import("@/pages/RecommendationEngine"));
+const ServiceLevelConfig = lazy(() => import("@/pages/ServiceLevelConfig"));
+const SupplyChainOptimization = lazy(() => import("@/pages/SupplyChainOptimization"));
+const TemplateLibrary = lazy(() => import("@/pages/TemplateLibrary"));
+const TenantAdmin = lazy(() => import("@/pages/admin/TenantAdmin"));
+const QualityControl = lazy(() => import("@/pages/QualityControl"));
+const PurchaseOrder = lazy(() => import("@/pages/PurchaseOrder"));
+
 function Router() {
   return (
     <Switch>
@@ -255,6 +296,156 @@ function Router() {
       <Route path="/ai-chat" component={AIChat} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/integrations" component={IntegrationHub} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/admin/platform" component={PlatformAdmin} />
+      <Route path="/admin/tenant" component={TenantAdmin} />
+      <Route path="/advanced-encryption" component={AdvancedEncryption} />
+      <Route path="/advanced-permissions" component={AdvancedPermissions} />
+      <Route path="/advanced-reporting" component={AdvancedReporting} />
+      <Route path="/ai-assistant" component={AIAssistant} />
+      <Route path="/api-versioning" component={APIVersioning} />
+      <Route path="/asset-management" component={AssetManagement} />
+      <Route path="/backend-integration" component={BackendIntegration} />
+      <Route path="/collaboration-tools" component={CollaborationTools} />
+      <Route path="/community-forum" component={CommunityForum} />
+      <Route path="/competitor-analysis" component={CompetitorAnalysis} />
+      <Route path="/compliance" component={Compliance} />
+      <Route path="/contract-management" component={ContractManagement} />
+      <Route path="/customer-journey-map" component={CustomerJourneyMap} />
+      <Route path="/customer-success-panel" component={CustomerSuccessPanel} />
+      <Route path="/custom-workflows" component={CustomWorkflows} />
+      <Route path="/data-validation" component={DataValidation} />
+      <Route path="/data-warehouse" component={DataWarehouse} />
+      <Route path="/duplicate-detection" component={DuplicateDetection} />
+      <Route path="/email" component={Email} />
+      <Route path="/epm-module" component={EPMModule} />
+      <Route path="/expense-tracking" component={ExpenseTracking} />
+      <Route path="/geolocation-services" component={GeolocationServices} />
+      <Route path="/growth-metrics" component={GrowthMetrics} />
+      <Route path="/integrations-alt" component={Integrations} />
+      <Route path="/mobile-app-settings" component={MobileAppSettings} />
+      <Route path="/multi-tenancy" component={MultiTenancy} />
+      <Route path="/notification-center" component={NotificationCenter} />
+      <Route path="/predictive-lead-scoring" component={PredictiveLeadScoring} />
+      <Route path="/procurement-management" component={ProcurementManagement} />
+      <Route path="/quality-assurance" component={QualityAssurance} />
+      <Route path="/real-time-notifications" component={RealTimeNotifications} />
+      <Route path="/recommendation-engine" component={RecommendationEngine} />
+      <Route path="/service-level-config" component={ServiceLevelConfig} />
+      <Route path="/supply-chain-optimization" component={SupplyChainOptimization} />
+      <Route path="/template-library" component={TemplateLibrary} />
+      <Route path="/quality-control" component={QualityControl} />
+      <Route path="/purchase-orders" component={PurchaseOrder} />
+      <Route path="/ticket-dashboard" component={TicketDashboard} />
+      <Route path="/sla-tracking" component={SLATracking} />
+      <Route path="/customer-portal" component={CustomerPortal} />
+      <Route path="/service-analytics" component={ServiceAnalytics} />
+      <Route path="/team-utilization" component={TeamUtilization} />
+      <Route path="/response-analytics" component={ResponseAnalytics} />
+      <Route path="/account-directory" component={AccountDirectory} />
+      <Route path="/account-hierarchy" component={AccountHierarchy} />
+      <Route path="/contact-directory" component={ContactDirectory} />
+      <Route path="/activity-timeline" component={ActivityTimeline} />
+      <Route path="/lead-scoring-dashboard" component={LeadScoringDashboard} />
+      <Route path="/lead-conversion" component={LeadConversion} />
+      <Route path="/org-chart" component={OrgChart} />
+      <Route path="/leave-approval" component={LeaveApproval} />
+      <Route path="/performance-reviews" component={PerformanceReviews} />
+      <Route path="/talent-pool" component={TalentPool} />
+      <Route path="/website" component={Website} />
+      <Route path="/website-builder" component={WebsiteBuilder} />
+      <Route path="/ecommerce" component={Ecommerce} />
+      <Route path="/form-showcase" component={FormShowcase} />
+      <Route path="/uat-automation" component={UATAutomation} />
+      <Route path="/system-health" component={SystemHealth} />
+      <Route path="/planning" component={Planning} />
+      <Route path="/health" component={Health} />
+      <Route path="/industries" component={Industries} />
+      <Route path="/industry-configuration" component={IndustryConfiguration} />
+      <Route path="/dashboard-builder" component={DashboardBuilder} />
+      <Route path="/report-builder" component={ReportBuilder} />
+      <Route path="/data-explorer" component={DataExplorer} />
+      <Route path="/sales-analytics" component={SalesAnalytics} />
+      <Route path="/financial-analytics" component={FinancialAnalytics} />
+      <Route path="/operational-analytics" component={OperationalAnalytics} />
+      <Route path="/lead-scoring-analytics" component={LeadScoringAnalytics} />
+      <Route path="/revenue-forecasting" component={RevenueForecasting} />
+      <Route path="/churn-risk-analysis" component={ChurnRiskAnalysis} />
+      <Route path="/export-manager" component={ExportManager} />
+      <Route path="/scheduled-reports" component={ScheduledReports} />
+      <Route path="/workflow-builder" component={WorkflowBuilder} />
+      <Route path="/workflow-templates" component={WorkflowTemplates} />
+      <Route path="/workflow-execution" component={WorkflowExecution} />
+      <Route path="/api-management" component={APIManagement} />
+      <Route path="/webhook-management" component={WebhookManagement} />
+      <Route path="/api-logs" component={APILogs} />
+      <Route path="/rate-limiting" component={RateLimiting} />
+      <Route path="/app-store" component={AppStore} />
+      <Route path="/installed-apps" component={InstalledApps} />
+      <Route path="/system-settings" component={SystemSettings} />
+      <Route path="/user-management" component={UserManagement} />
+      <Route path="/role-management" component={RoleManagement} />
+      <Route path="/permission-matrix" component={PermissionMatrix} />
+      <Route path="/custom-fields" component={CustomFields} />
+      <Route path="/field-validation" component={FieldValidation} />
+      <Route path="/data-import" component={DataImport} />
+      <Route path="/data-export" component={DataExport} />
+      <Route path="/data-cleanup" component={DataCleanup} />
+      <Route path="/audit-logs" component={AuditLogs} />
+      <Route path="/compliance-reports" component={ComplianceReports} />
+      <Route path="/data-governance" component={DataGovernance} />
+      <Route path="/backup-restore" component={BackupRestore} />
+      <Route path="/performance-monitoring" component={PerformanceMonitoring} />
+      <Route path="/integration-management" component={IntegrationManagement} />
+      <Route path="/oauth-management" component={OAuthManagement} />
+      <Route path="/sso" component={SSO} />
+      <Route path="/two-factor-auth" component={TwoFactorAuth} />
+      <Route path="/access-control" component={AccessControl} />
+      <Route path="/feature-flags" component={FeatureFlags} />
+      <Route path="/localization" component={Localization} />
+      <Route path="/email-configuration" component={EmailConfiguration} />
+      <Route path="/notification-settings" component={NotificationSettings} />
+      <Route path="/scheduled-tasks" component={ScheduledTasks} />
+      <Route path="/system-logs" component={SystemLogs} />
+      <Route path="/database-maintenance" component={DatabaseMaintenance} />
+      <Route path="/branding-customization" component={BrandingCustomization} />
+      <Route path="/license-management" component={LicenseManagement} />
+      <Route path="/api-documentation" component={APIDocumentation} />
+      <Route path="/webhook-events" component={WebhookEvents} />
+      <Route path="/migrations" component={Migrations} />
+      <Route path="/deployment-settings" component={DeploymentSettings} />
+      <Route path="/security-audit" component={SecurityAudit} />
+      <Route path="/cache-management" component={CacheManagement} />
+      <Route path="/module-settings" component={ModuleSettings} />
+      <Route path="/webhooks" component={Webhooks} />
+      <Route path="/developer-tools" component={DeveloperTools} />
+      <Route path="/third-party-apps" component={ThirdPartyApps} />
+      <Route path="/reporting-configuration" component={ReportingConfiguration} />
+      <Route path="/archive-management" component={ArchiveManagement} />
+      <Route path="/metrics-and-monitoring" component={MetricsAndMonitoring} />
+      <Route path="/resource-allocation" component={ResourceAllocation} />
+      <Route path="/api-rate-limit-policy" component={APIRateLimitPolicy} />
+      <Route path="/authentication-methods" component={AuthenticationMethods} />
+      <Route path="/alerts-and-notifications" component={AlertsAndNotifications} />
+      <Route path="/health-check-dashboard" component={HealthCheckDashboard} />
+      <Route path="/batch-operations" component={BatchOperations} />
+      <Route path="/virtual-assistant" component={VirtualAssistant} />
+      <Route path="/mobile-optimization" component={MobileOptimization} />
+      <Route path="/accessibility-audit" component={AccessibilityAudit} />
+      <Route path="/performance-optimization" component={PerformanceOptimization} />
+      <Route path="/internationalization-config" component={InternationalizationConfig} />
+      <Route path="/bulk-operations" component={BulkOperations} />
+      <Route path="/time-tracking" component={TimeTracking} />
+      <Route path="/training-academy" component={TrainingAcademy} />
+      <Route path="/work-order" component={WorkOrder} />
+      <Route path="/mrp-dashboard" component={MRPDashboard} />
+      <Route path="/shop-floor" component={ShopFloor} />
+      <Route path="/bpm" component={BPM} />
+      <Route path="/compliance-dashboard" component={ComplianceDashboard} />
+      <Route path="/payroll-processing" component={PayrollProcessing} />
+      <Route path="/hranalytics-dashboard" component={HRAnalyticsDashboard} />
+      <Route path="/forecast-dashboard" component={ForecastDashboard} />
+      <Route path="/mobile-sync" component={MobileSync} />
       <Route component={NotFound} />
     </Switch>
   );
