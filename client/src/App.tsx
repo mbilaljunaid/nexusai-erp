@@ -107,6 +107,67 @@ import RevenueForecasting from "@/pages/RevenueForecasting";
 import ChurnRiskAnalysis from "@/pages/ChurnRiskAnalysis";
 import ExportManager from "@/pages/ExportManager";
 import ScheduledReports from "@/pages/ScheduledReports";
+import WorkflowBuilder from "@/pages/WorkflowBuilder";
+import WorkflowTemplates from "@/pages/WorkflowTemplates";
+import WorkflowExecution from "@/pages/WorkflowExecution";
+import APIManagement from "@/pages/APIManagement";
+import WebhookManagement from "@/pages/WebhookManagement";
+import APILogs from "@/pages/APILogs";
+import RateLimiting from "@/pages/RateLimiting";
+import AppStore from "@/pages/AppStore";
+import InstalledApps from "@/pages/InstalledApps";
+import SystemSettings from "@/pages/SystemSettings";
+import UserManagement from "@/pages/UserManagement";
+import RoleManagement from "@/pages/RoleManagement";
+import PermissionMatrix from "@/pages/PermissionMatrix";
+import CustomFields from "@/pages/CustomFields";
+import FieldValidation from "@/pages/FieldValidation";
+import DataImport from "@/pages/DataImport";
+import DataExport from "@/pages/DataExport";
+import DataCleanup from "@/pages/DataCleanup";
+import AuditLogs from "@/pages/AuditLogs";
+import ComplianceReports from "@/pages/ComplianceReports";
+import DataGovernance from "@/pages/DataGovernance";
+import BackupRestore from "@/pages/BackupRestore";
+import PerformanceMonitoring from "@/pages/PerformanceMonitoring";
+import IntegrationManagement from "@/pages/IntegrationManagement";
+import OAuthManagement from "@/pages/OAuthManagement";
+import SSO from "@/pages/SSO";
+import TwoFactorAuth from "@/pages/TwoFactorAuth";
+import AccessControl from "@/pages/AccessControl";
+import FeatureFlags from "@/pages/FeatureFlags";
+import Marketplace from "@/pages/Marketplace";
+import Localization from "@/pages/Localization";
+import EmailConfiguration from "@/pages/EmailConfiguration";
+import NotificationSettings from "@/pages/NotificationSettings";
+import ScheduledTasks from "@/pages/ScheduledTasks";
+import SystemLogs from "@/pages/SystemLogs";
+import DatabaseMaintenance from "@/pages/DatabaseMaintenance";
+import BrandingCustomization from "@/pages/BrandingCustomization";
+import LicenseManagement from "@/pages/LicenseManagement";
+import APIDocumentation from "@/pages/APIDocumentation";
+import WebhookEvents from "@/pages/WebhookEvents";
+import Migrations from "@/pages/Migrations";
+import DeploymentSettings from "@/pages/DeploymentSettings";
+import SecurityAudit from "@/pages/SecurityAudit";
+import CacheManagement from "@/pages/CacheManagement";
+import ModuleSettings from "@/pages/ModuleSettings";
+import Webhooks from "@/pages/Webhooks";
+import DeveloperTools from "@/pages/DeveloperTools";
+import ThirdPartyApps from "@/pages/ThirdPartyApps";
+import ReportingConfiguration from "@/pages/ReportingConfiguration";
+import ArchiveManagement from "@/pages/ArchiveManagement";
+import MetricsAndMonitoring from "@/pages/MetricsAndMonitoring";
+import ResourceAllocation from "@/pages/ResourceAllocation";
+import APIRateLimitPolicy from "@/pages/APIRateLimitPolicy";
+import AuthenticationMethods from "@/pages/AuthenticationMethods";
+import AlertsAndNotifications from "@/pages/AlertsAndNotifications";
+import HealthCheckDashboard from "@/pages/HealthCheckDashboard";
+import BatchOperations from "@/pages/BatchOperations";
+import ServiceLevelConfig from "@/pages/ServiceLevelConfig";
+import MobileAppSettings from "@/pages/MobileAppSettings";
+import VirtualAssistant from "@/pages/VirtualAssistant";
+import PlatformStatus from "@/pages/PlatformStatus";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -203,6 +264,68 @@ function Router() {
       <Route path="/churn-risk" component={ChurnRiskAnalysis} />
       <Route path="/export-manager" component={ExportManager} />
       <Route path="/scheduled-reports" component={ScheduledReports} />
+      <Route path="/workflow-builder" component={WorkflowBuilder} />
+      <Route path="/workflow-templates" component={WorkflowTemplates} />
+      <Route path="/workflow-execution" component={WorkflowExecution} />
+      <Route path="/api-management" component={APIManagement} />
+      <Route path="/webhook-management" component={WebhookManagement} />
+      <Route path="/api-logs" component={APILogs} />
+      <Route path="/rate-limiting" component={RateLimiting} />
+      <Route path="/app-store" component={AppStore} />
+      <Route path="/installed-apps" component={InstalledApps} />
+      <Route path="/system-settings" component={SystemSettings} />
+      <Route path="/user-management" component={UserManagement} />
+      <Route path="/role-management" component={RoleManagement} />
+      <Route path="/permission-matrix" component={PermissionMatrix} />
+      <Route path="/custom-fields" component={CustomFields} />
+      <Route path="/field-validation" component={FieldValidation} />
+      <Route path="/data-import" component={DataImport} />
+      <Route path="/data-export" component={DataExport} />
+      <Route path="/data-cleanup" component={DataCleanup} />
+      <Route path="/audit-logs" component={AuditLogs} />
+      <Route path="/compliance-reports" component={ComplianceReports} />
+      <Route path="/data-governance" component={DataGovernance} />
+      <Route path="/system-health" component={SystemHealth} />
+      <Route path="/backup-restore" component={BackupRestore} />
+      <Route path="/performance-monitoring" component={PerformanceMonitoring} />
+      <Route path="/integration-management" component={IntegrationManagement} />
+      <Route path="/oauth-management" component={OAuthManagement} />
+      <Route path="/sso" component={SSO} />
+      <Route path="/two-factor-auth" component={TwoFactorAuth} />
+      <Route path="/access-control" component={AccessControl} />
+      <Route path="/feature-flags" component={FeatureFlags} />
+      <Route path="/marketplace" component={Marketplace} />
+      <Route path="/localization" component={Localization} />
+      <Route path="/email-config" component={EmailConfiguration} />
+      <Route path="/notifications" component={NotificationSettings} />
+      <Route path="/scheduled-tasks-config" component={ScheduledTasks} />
+      <Route path="/system-logs" component={SystemLogs} />
+      <Route path="/database-maintenance" component={DatabaseMaintenance} />
+      <Route path="/branding" component={BrandingCustomization} />
+      <Route path="/license" component={LicenseManagement} />
+      <Route path="/api-docs" component={APIDocumentation} />
+      <Route path="/webhook-events" component={WebhookEvents} />
+      <Route path="/migrations" component={Migrations} />
+      <Route path="/deployment-settings" component={DeploymentSettings} />
+      <Route path="/security-audit" component={SecurityAudit} />
+      <Route path="/cache-management" component={CacheManagement} />
+      <Route path="/module-settings" component={ModuleSettings} />
+      <Route path="/webhooks" component={Webhooks} />
+      <Route path="/developer-tools" component={DeveloperTools} />
+      <Route path="/third-party-apps" component={ThirdPartyApps} />
+      <Route path="/reporting-config" component={ReportingConfiguration} />
+      <Route path="/archive-management" component={ArchiveManagement} />
+      <Route path="/metrics-monitoring" component={MetricsAndMonitoring} />
+      <Route path="/resource-allocation" component={ResourceAllocation} />
+      <Route path="/api-rate-limit-policy" component={APIRateLimitPolicy} />
+      <Route path="/auth-methods" component={AuthenticationMethods} />
+      <Route path="/alerts-notifications" component={AlertsAndNotifications} />
+      <Route path="/health-check" component={HealthCheckDashboard} />
+      <Route path="/batch-operations" component={BatchOperations} />
+      <Route path="/service-level-config" component={ServiceLevelConfig} />
+      <Route path="/mobile-app-settings" component={MobileAppSettings} />
+      <Route path="/virtual-assistant" component={VirtualAssistant} />
+      <Route path="/platform-status" component={PlatformStatus} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -128,6 +128,47 @@ const advancedAnalyticsItems = [
   { title: "Scheduled Reports", icon: Calendar, href: "/scheduled-reports", badge: "PHASE2" },
 ];
 
+const workflowItems = [
+  { title: "Workflow Builder", icon: Zap, href: "/workflow-builder", badge: "PHASE3" },
+  { title: "Templates", icon: BookOpen, href: "/workflow-templates", badge: "PHASE3" },
+  { title: "Execution History", icon: Activity, href: "/workflow-execution", badge: "PHASE3" },
+];
+
+const apiConfigItems = [
+  { title: "API Management", icon: Cpu, href: "/api-management", badge: "PHASE3" },
+  { title: "Webhooks", icon: Zap, href: "/webhooks", badge: "PHASE3" },
+  { title: "API Logs", icon: BarChart3, href: "/api-logs", badge: "PHASE3" },
+  { title: "Rate Limiting", icon: Shield, href: "/rate-limiting", badge: "PHASE3" },
+];
+
+const adminConfigItems = [
+  { title: "System Settings", icon: SettingsIcon, href: "/system-settings", badge: "PHASE3" },
+  { title: "Users", icon: Users, href: "/user-management", badge: "PHASE3" },
+  { title: "Roles", icon: Shield, href: "/role-management", badge: "PHASE3" },
+  { title: "Permissions", icon: Shield, href: "/permission-matrix", badge: "PHASE3" },
+];
+
+const dataConfigItems = [
+  { title: "Custom Fields", icon: Database, href: "/custom-fields", badge: "PHASE3" },
+  { title: "Data Import/Export", icon: Download, href: "/data-import", badge: "PHASE3" },
+  { title: "Data Cleanup", icon: Zap, href: "/data-cleanup", badge: "PHASE3" },
+  { title: "Audit Logs", icon: Activity, href: "/audit-logs", badge: "PHASE3" },
+];
+
+const securityItems = [
+  { title: "OAuth", icon: Shield, href: "/oauth-management", badge: "PHASE3" },
+  { title: "SSO", icon: Shield, href: "/sso", badge: "PHASE3" },
+  { title: "2FA", icon: Shield, href: "/two-factor-auth", badge: "PHASE3" },
+  { title: "Access Control", icon: Shield, href: "/access-control", badge: "PHASE3" },
+];
+
+const systemItems = [
+  { title: "Health Check", icon: Activity, href: "/health-check", badge: "PHASE3" },
+  { title: "Performance", icon: BarChart3, href: "/performance-monitoring", badge: "PHASE3" },
+  { title: "System Logs", icon: Activity, href: "/system-logs", badge: "PHASE3" },
+  { title: "Backup/Restore", icon: Download, href: "/backup-restore", badge: "PHASE3" },
+];
+
 const digitialNavItems = [
   { title: "Website Builder", icon: Zap, href: "/website" },
   { title: "Email Management", icon: Package, href: "/email" },
@@ -444,6 +485,96 @@ export function AppSidebar() {
                       <item.icon className="h-4 w-4" />
                       <span className="text-sm">{item.title}</span>
                     </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Workflow (Phase 3)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {workflowItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">API Config (Phase 3)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {apiConfigItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Admin (Phase 3)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {adminConfigItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Data Config (Phase 3)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {dataConfigItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Security (Phase 3)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {securityItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">System (Phase 3)</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {systemItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.href} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link href={item.href}><item.icon className="h-4 w-4" /><span className="text-sm">{item.title}</span></Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
