@@ -52,7 +52,6 @@ import HRAdvanced from "@/pages/advanced/HRAdvanced";
 import Copilot from "@/pages/Copilot";
 import Planning from "@/pages/Planning";
 import Marketplace from "@/pages/Marketplace";
-import DataWarehouse from "@/pages/DataWarehouse";
 import MobileSync from "@/pages/MobileSync";
 import AIChat from "@/pages/AIChat";
 import NotFound from "@/pages/not-found";
@@ -90,7 +89,6 @@ function Router() {
       <Route path="/field-service" component={FieldService} />
       <Route path="/planning" component={Planning} />
       <Route path="/marketplace" component={Marketplace} />
-      <Route path="/data-warehouse" component={DataWarehouse} />
       <Route path="/mobile-sync" component={MobileSync} />
       <Route path="/ai-chat" component={AIChat} />
       <Route path="/analytics" component={Analytics} />
