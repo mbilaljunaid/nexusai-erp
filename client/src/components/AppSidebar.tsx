@@ -28,9 +28,6 @@ import {
   Shield,
   Package,
   Briefcase,
-  Building2,
-  Globe,
-  Mail,
   ShoppingCart,
 } from "lucide-react";
 
@@ -64,7 +61,7 @@ const systemNavItems = [
 
 const adminNavItems = [
   { title: "Platform Admin", icon: Shield, href: "/admin/platform", badge: "Platform" },
-  { title: "Tenant Admin", icon: Building2, href: "/admin/tenant", badge: "Tenant" },
+  { title: "Tenant Admin", icon: Users, href: "/admin/tenant", badge: "Tenant" },
 ];
 
 const industryNavItems = [
