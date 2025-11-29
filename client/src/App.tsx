@@ -22,6 +22,13 @@ import Settings from "@/pages/Settings";
 import Industries from "@/pages/Industries";
 import PlatformAdmin from "@/pages/admin/PlatformAdmin";
 import TenantAdmin from "@/pages/admin/TenantAdmin";
+import ERP from "@/pages/ERP";
+import HR from "@/pages/HR";
+import Service from "@/pages/Service";
+import Marketing from "@/pages/Marketing";
+import Compliance from "@/pages/Compliance";
+import BPM from "@/pages/BPM";
+import Integrations from "@/pages/Integrations";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -36,6 +43,13 @@ function Router() {
       <Route path="/industries" component={Industries} />
       <Route path="/admin/platform" component={PlatformAdmin} />
       <Route path="/admin/tenant" component={TenantAdmin} />
+      <Route path="/erp" component={ERP} />
+      <Route path="/hr" component={HR} />
+      <Route path="/service" component={Service} />
+      <Route path="/marketing" component={Marketing} />
+      <Route path="/compliance" component={Compliance} />
+      <Route path="/bpm" component={BPM} />
+      <Route path="/integrations" component={Integrations} />
       <Route component={NotFound} />
     </Switch>
   );
