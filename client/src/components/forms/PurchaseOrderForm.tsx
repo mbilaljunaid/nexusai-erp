@@ -7,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Plus, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface POLine {
   id: number;
@@ -19,6 +22,7 @@ interface POLine {
 }
 
 export function PurchaseOrderForm() {
+  const { toast } = useToast();
   const [poNumber, setPoNumber] = useState("");
   const [vendor, setVendor] = useState("");
   const [poDate, setPoDate] = useState("");
@@ -26,6 +30,39 @@ export function PurchaseOrderForm() {
   const [lines, setLines] = useState<POLine[]>([
     { id: 1, item: "", description: "", quantity: "", unit: "EA", unitPrice: "", total: 0 }
   ]);
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      const subtotal = lines.reduce((sum, l) => sum + l.total, 0);
+      return apiRequest("POST", "/api/procurement/purchase-orders", {
+        poNumber: poNumber,
+        vendorId: vendor,
+        poDate: poDate,
+        dueDate: dueDate,
+        items: lines.map(l => ({
+          itemName: l.item,
+          description: l.description,
+          quantity: parseFloat(l.quantity) || 0,
+          unit: l.unit,
+          unitPrice: parseFloat(l.unitPrice) || 0
+        })),
+        subtotal: subtotal,
+        tax: subtotal * 0.1,
+        total: subtotal + (subtotal * 0.1)
+      });
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Purchase order saved successfully" });
+      setPoNumber("");
+      setVendor("");
+      setPoDate("");
+      setDueDate("");
+      setLines([{ id: 1, item: "", description: "", quantity: "", unit: "EA", unitPrice: "", total: 0 }]);
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to save purchase order", variant: "destructive" });
+    }
+  });
 
   const addLine = () => {
     setLines(prev => [...prev, {
@@ -168,7 +205,9 @@ export function PurchaseOrderForm() {
 
           <div className="flex justify-end gap-2">
             <Button variant="outline">Cancel</Button>
-            <Button>Save & Send</Button>
+            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
+              {submitMutation.isPending ? "Saving..." : "Save & Send"}
+            </Button>
           </div>
         </CardContent>
       </Card>

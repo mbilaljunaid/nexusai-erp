@@ -7,8 +7,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export function LeaveRequestForm() {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     leaveType: "",
     startDate: "",
@@ -44,6 +48,26 @@ export function LeaveRequestForm() {
   };
 
   const days = calculateDays();
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/hr/leaves", {
+        leaveType: formData.leaveType,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        reason: formData.reason,
+        approverId: formData.approver,
+        replacementId: formData.replacement
+      });
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Leave request submitted successfully" });
+      setFormData({ leaveType: "", startDate: "", endDate: "", days: "", reason: "", approver: "", replacement: "" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to submit leave request", variant: "destructive" });
+    }
+  });
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -158,7 +182,9 @@ export function LeaveRequestForm() {
 
           <div className="flex justify-end gap-2">
             <Button variant="outline">Cancel</Button>
-            <Button>Submit Request</Button>
+            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
+              {submitMutation.isPending ? "Submitting..." : "Submit Request"}
+            </Button>
           </div>
         </CardContent>
       </Card>

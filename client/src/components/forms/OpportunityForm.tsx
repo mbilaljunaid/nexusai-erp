@@ -7,8 +7,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Calendar } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export function OpportunityForm() {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     account: "",
@@ -36,6 +40,29 @@ export function OpportunityForm() {
 
   const expectedAmount = parseFloat(formData.expectedValue) || 0;
   const weightedValue = expectedAmount * (formData.probability / 100);
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/crm/opportunities", {
+        name: formData.name,
+        accountId: formData.account,
+        stage: formData.stage,
+        probability: formData.probability,
+        expectedValue: expectedAmount,
+        closeDate: formData.closeDate,
+        description: formData.description,
+        ownerId: formData.owner,
+        products: formData.products
+      });
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Opportunity saved successfully" });
+      setFormData({ name: "", account: "", stage: "lead", probability: 25, expectedValue: "", closeDate: "", description: "", owner: "", products: "" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to save opportunity", variant: "destructive" });
+    }
+  });
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -178,7 +205,9 @@ export function OpportunityForm() {
 
           <div className="flex justify-end gap-2">
             <Button variant="outline">Cancel</Button>
-            <Button>Save Opportunity</Button>
+            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
+              {submitMutation.isPending ? "Saving..." : "Save Opportunity"}
+            </Button>
           </div>
         </CardContent>
       </Card>

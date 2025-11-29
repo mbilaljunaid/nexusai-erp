@@ -7,8 +7,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Package } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export function ProductEntryForm() {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     sku: "",
     name: "",
@@ -30,6 +34,30 @@ export function ProductEntryForm() {
   const cost = parseFloat(formData.cost) || 0;
   const margin = price - cost;
   const marginPercent = price > 0 ? ((margin / price) * 100).toFixed(1) : "0";
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/inventory/products", {
+        sku: formData.sku,
+        name: formData.name,
+        category: formData.category,
+        description: formData.description,
+        price: price,
+        cost: cost,
+        stock: parseInt(formData.stock) || 0,
+        status: formData.status,
+        supplierId: formData.supplier,
+        tags: formData.tags
+      });
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Product saved successfully" });
+      setFormData({ sku: "", name: "", category: "", description: "", price: "", cost: "", stock: "", status: "active", supplier: "", tags: "" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to save product", variant: "destructive" });
+    }
+  });
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -183,7 +211,9 @@ export function ProductEntryForm() {
 
           <div className="flex justify-end gap-2">
             <Button variant="outline">Cancel</Button>
-            <Button>Save Product</Button>
+            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
+              {submitMutation.isPending ? "Saving..." : "Save Product"}
+            </Button>
           </div>
         </CardContent>
       </Card>

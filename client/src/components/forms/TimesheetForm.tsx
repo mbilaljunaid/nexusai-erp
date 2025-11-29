@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Plus, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface TimesheetEntry {
   id: number;
@@ -17,10 +20,34 @@ interface TimesheetEntry {
 }
 
 export function TimesheetForm() {
+  const { toast } = useToast();
   const [week, setWeek] = useState("");
   const [entries, setEntries] = useState<TimesheetEntry[]>([
     { id: 1, date: "", project: "", task: "", hours: "", notes: "" }
   ]);
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/hr/timesheets", {
+        weekStarting: week,
+        entries: entries.map(e => ({
+          date: e.date,
+          projectId: e.project,
+          taskName: e.task,
+          hours: parseFloat(e.hours) || 0,
+          notes: e.notes
+        }))
+      });
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Timesheet submitted successfully" });
+      setWeek("");
+      setEntries([{ id: 1, date: "", project: "", task: "", hours: "", notes: "" }]);
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to submit timesheet", variant: "destructive" });
+    }
+  });
 
   const addEntry = () => {
     setEntries(prev => [...prev, {
@@ -181,7 +208,9 @@ export function TimesheetForm() {
           <div className="flex justify-end gap-2">
             <Button variant="outline">Cancel</Button>
             <Button variant="outline">Save as Draft</Button>
-            <Button>Submit Timesheet</Button>
+            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
+              {submitMutation.isPending ? "Submitting..." : "Submit Timesheet"}
+            </Button>
           </div>
         </CardContent>
       </Card>

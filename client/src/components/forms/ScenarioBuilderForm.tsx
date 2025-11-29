@@ -16,14 +16,30 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from "recharts";
 import { Sparkles, AlertCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export function ScenarioBuilderForm() {
+  const { toast } = useToast();
   const [scenarioName, setScenarioName] = useState("20% Revenue Decline");
   const [adjustmentType, setAdjustmentType] = useState("percentage");
   const [revenueAdj, setRevenueAdj] = useState(-20);
   const [cogsAdj, setCOGSAdj] = useState(-12);
   const [opexAdj, setOpexAdj] = useState(5);
   const [taxAdj, setTaxAdj] = useState(0);
+
+  const submitMutation = useMutation({
+    mutationFn: async (scenario: any) => {
+      return apiRequest("POST", "/api/epm/scenarios", scenario);
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Scenario saved successfully" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to save scenario", variant: "destructive" });
+    }
+  });
 
   // Base case data
   const baseCase = {
@@ -274,7 +290,9 @@ export function ScenarioBuilderForm() {
               Run Sensitivity
             </Button>
             <Button variant="outline">Compare Scenarios</Button>
-            <Button variant="outline">Save as Scenario</Button>
+            <Button variant="outline" onClick={() => submitMutation.mutate({ scenarioName, revenueAdj, cogsAdj, opexAdj, taxAdj })} disabled={submitMutation.isPending}>
+              {submitMutation.isPending ? "Saving..." : "Save as Scenario"}
+            </Button>
             <Button variant="ghost">Cancel</Button>
           </div>
         </TabsContent>
