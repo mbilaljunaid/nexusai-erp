@@ -1,250 +1,257 @@
-# Design Guidelines: AI-First CRM & Project Management Platform
+# Design Guidelines: NexusAI - Ultimate AI-First Enterprise Platform
 
 ## Design Approach
 
-**Selected Approach:** Design System - Material Design 3 with Modern Enterprise SaaS Influences
+**Selected Approach:** Enterprise SaaS Design System - Modern Material Design 3 with Industry-Aware Module Navigation
 
-**Rationale:** This is a productivity-focused, information-dense enterprise application requiring efficiency, scalability, and professional trustworthiness. Drawing from Material Design 3's robust component system combined with modern SaaS patterns from Linear, Notion, and modern Salesforce.
+**Rationale:** This is a comprehensive, multi-domain enterprise platform serving 15+ industries with 40+ integrated modules. The design must balance complexity with clarity, support rapid module switching, and showcase AI capabilities across all functions. Drawing from enterprise patterns (Salesforce, Oracle Cloud, NetSuite) combined with modern SaaS efficiency (Linear, Notion, Slack).
 
 **Core Principles:**
-- Information clarity over visual flair
-- Scannable data hierarchies with clear action paths
-- Consistent, predictable interactions across modules
-- AI capabilities surface contextually, never obtrusive
-- Professional polish that builds enterprise trust
+- **Industry-Aware Navigation:** Quick access to industry-specific modules and solutions
+- **Modular Architecture:** Clear separation and grouping of ERP, CRM, HR, Finance, Project, etc.
+- **AI-First Design:** AI capabilities surface contextually in every module
+- **Information Clarity:** Dense but scannable data hierarchies with clear action paths
+- **Unified Experience:** Consistent interactions across all 40+ modules
+- **Dark/Light Mode:** Professional appearance that adapts to user preference
+- **Accessibility:** Full keyboard navigation, screen reader support, high contrast
+
+---
+
+## Navigation & Module Structure
+
+### Primary Navigation (Sidebar)
+
+**Top Section - Core Platforms (Collapsible Groups):**
+- **Dashboard** - Cross-module unified overview with industry KPIs
+- **ERP/Finance** - GL, AP/AR, Assets, Procurement, Inventory
+- **CRM/Sales** - Leads, Opportunities, Accounts, CPQ, Territory Management
+- **Project & Portfolio** - Projects, Tasks, Resources, Portfolio Analysis
+- **HRMS/Talent** - Employees, Recruitment, Payroll, L&D, Performance
+- **Service & Support** - Ticketing, Field Service, Knowledge Base, Chat
+- **Marketing & Web** - Campaigns, Automation, Website Builder, E-Commerce
+- **Analytics & BI** - Dashboards, Reports, Predictive Analytics, KPIs
+- **Collaboration** - Chat, Wiki, Documents, Calendar, Tasks
+- **Compliance & Audit** - Governance, Audit Trails, Compliance Monitoring
+
+**Mid Section - Industry Solutions:**
+- **Manufacturing** - Production, Maintenance, Quality, Demand Planning
+- **Retail & E-Commerce** - POS, Omni-channel, Inventory, Loyalty
+- **Wholesale & Distribution** - Logistics, Warehousing, Procurement
+- **Financial Services** - Risk, Portfolio, Loans, Regulatory Compliance
+- **Healthcare** - Patient Mgmt, Clinical Data, Billing, Regulatory
+- **Construction & Real Estate** - Projects, Budgeting, Property Mgmt
+- **Education** - Student Mgmt, Curriculum, Assessments, Admissions
+- **And 8+ more industries...**
+
+**Bottom Section - System:**
+- **Business Process Mapping** - Visual workflow designer, optimization engine
+- **Integration Hub** - Connectors, APIs, Automation workflows
+- **System Health** - Self-healing monitoring, diagnostics
+- **Settings** - Localization, Security, AI Preferences, Profile
+
+### Secondary Navigation (Breadcrumb + Module Switcher)
+- Show current module path
+- Quick module search/switcher (Cmd+K)
+- AI Context indicator
 
 ---
 
 ## Typography
 
 **Font Stack:**
-- **Primary:** Inter (via Google Fonts) - exceptional legibility for data-heavy interfaces
-- **Monospace:** JetBrains Mono - for numerical data, IDs, technical values
+- **Primary:** Inter 300-700 - clarity across data-dense interfaces
+- **Monospace:** JetBrains Mono 400-600 - numerical data, codes, IDs
 
 **Hierarchy:**
-- **Page Titles:** text-3xl font-semibold (30px) - Major section headers
-- **Section Headers:** text-2xl font-semibold (24px) - Dashboard widgets, card groups
-- **Subsections:** text-xl font-medium (20px) - Table headers, card titles
+- **Page Title:** text-3xl font-semibold (30px) - Major section header (ERP, CRM, etc.)
+- **Module Header:** text-2xl font-semibold (24px) - Module-specific headers
+- **Card Title:** text-lg font-semibold (18px) - Widget/card headers
 - **Body Large:** text-base font-medium (16px) - Primary content, form labels
-- **Body:** text-sm (14px) - Table content, descriptions, metadata
-- **Body Small:** text-xs (12px) - Secondary metadata, timestamps, badges
-- **Micro:** text-xs font-medium uppercase tracking-wide - Category labels, status indicators
+- **Body:** text-sm (14px) - Table content, descriptions
+- **Body Small:** text-xs (12px) - Metadata, timestamps, secondary info
+- **Label:** text-xs font-medium uppercase tracking-wide - Status badges, categories
 
 ---
 
 ## Layout System
 
-**Spacing Primitives:** Use Tailwind units of **2, 3, 4, 6, 8, 12, 16** for consistency
+**Spacing:** 2, 3, 4, 6, 8, 12, 16 (Tailwind units)
 
 **Common Patterns:**
 - Component padding: p-4 to p-6
 - Section spacing: space-y-6 or space-y-8
-- Card internal spacing: p-6
-- Form field spacing: space-y-4
+- Card padding: p-6
+- Form spacing: space-y-4
 - Grid gaps: gap-4 to gap-6
 - Page margins: px-6 to px-8
 
-**Grid System:**
-- Main dashboard: 12-column grid (grid-cols-12)
-- Metric cards: 4-column on desktop (grid-cols-1 md:grid-cols-2 lg:grid-cols-4)
-- Data tables: Full-width with responsive horizontal scroll
-- Sidebar navigation: Fixed 256px (w-64) on desktop, drawer on mobile
+**Sidebar + Main Structure:**
+- Sidebar: Fixed 16rem (w-64) desktop, collapsible mobile
+- Main content: flex-1 with max-width container
+- Header: Fixed h-14, sticky with subtle shadow
 
-**Container Strategy:**
-- App shell: Fixed sidebar + flex-1 main content area
-- Content max-width: max-w-7xl with px-6
-- Modal/Dialog max-width: max-w-2xl to max-w-4xl based on content
+**Module-Specific Layouts:**
+- **Dashboard:** 12-column grid for flexible metric cards and charts
+- **Data Tables:** Full-width with horizontal scroll, alternating row colors
+- **Forms:** Two-column on desktop, single-column mobile
+- **Detail Pages:** 70/30 split (detail + sidebar) or full-width tabs
 
 ---
 
 ## Component Library
 
-### Navigation & Shell
+### Module Cards (Cross-Module Navigation)
+- Icon + Module Name + Quick Stats + Status
+- Hover shows quick actions
+- Accessible from dashboard and module switcher
 
-**Top Navigation Bar:**
-- Height: h-16
-- Contains: Logo, global search, notifications, AI assistant toggle, user menu
-- Search: Prominent with kbd shortcuts displayed (⌘K)
-- Layout: Sticky with subtle shadow on scroll
-
-**Sidebar Navigation:**
-- Collapsible with icon-only compact mode
-- Sections: Dashboard, CRM, Projects, Analytics, Settings
-- Active state: Subtle background fill with left border accent
-- Sub-navigation: Nested items with indent
-
-### Dashboard Components
-
-**Metric Cards:**
-- Layout: Grid with 2-4 columns responsive
-- Structure: Icon + Label + Large Value + Trend Indicator + Sparkline
-- Padding: p-6, rounded-lg with subtle border
-- Trend: Small arrow + percentage with micro text
-
-**Charts & Analytics:**
-- Full-width or 2-column grid layouts
-- Headers: Title + date range selector + export action
-- Card-based: p-6, clear legends, axis labels
-- Use Chart.js or Recharts for consistency
-
-**Activity Feed:**
-- Timeline-style with left border accent
-- Items: Avatar + Name + Action + Timestamp + Object
-- Infinite scroll with loading states
-- Spacing: space-y-3 between items
-
-### CRM Module
-
-**Lead/Contact Cards:**
-- Compact card view for grid layouts
-- Structure: Avatar/Logo + Name + Company + Status Badge + Lead Score (AI-powered with star rating)
-- Quick actions: Call, Email, Task icons on hover
-- Click: Opens detail slideover panel
-
-**Detail Slideover:**
-- Width: Fixed 640px from right edge
-- Sections: Header + Tabs (Overview, Activity, Tasks, Notes) + Related items
-- AI Insights: Dedicated expandable section with suggestions
-- Scrollable content with sticky header
-
-**Lead Scoring Visual:**
-- Horizontal progress bar or circular gauge
-- AI confidence indicator badge
-- Explanatory tooltip on hover
-
-### Project Management Module
-
-**Task Lists:**
-- Table view with sortable columns: Task, Assignee, Due Date, Priority, Status
-- Row actions: Edit, Assign, Archive (icons, revealed on hover)
-- Bulk selection with checkbox column
-- Grouping: By project, assignee, or status with collapsible sections
-
-**Kanban Board:**
-- Columns: 3-5 status columns (To Do, In Progress, Review, Done)
-- Cards: Compact with title, assignee avatar, due date, priority indicator
-- Drag-and-drop with visual feedback
-- Column max-height with internal scroll
-
-**Resource Allocation View:**
-- Timeline chart showing team member capacity (horizontal bars)
-- AI-suggested optimal assignments highlighted
-- Filters: Team, date range, project
-
-**Project Cards:**
-- Grid: 2-3 columns on desktop
-- Structure: Project name + Progress bar + Team avatars + Key metrics (tasks, deadline)
-- Status indicators: On track / At risk / Delayed with semantic meaning
-
-### Forms & Inputs
-
-**Form Layout:**
-- Labels above inputs (not floating)
-- Input height: h-10 to h-12 for comfortable touch targets
-- Consistent spacing: space-y-4 between fields
-- Grouping: Related fields in bordered sections with p-4
-
-**Input Styling:**
-- Border: 1px solid with rounded-md
-- Focus: Ring with offset for accessibility
-- Error states: Red border + error message below
-- Helper text: text-xs below input
-
-**Buttons:**
-- Primary: px-4 py-2, rounded-md, font-medium
-- Secondary: Same size, outlined variant
-- Icon buttons: Square aspect ratio (h-10 w-10)
-- Loading states: Spinner inside button with disabled state
-
-### AI Assistant Components
-
-**Chat Interface:**
-- Fixed bottom-right corner or slideover panel
-- Message bubbles: User (right-aligned) vs AI (left-aligned)
-- Typing indicator with animated dots
-- Quick suggestion chips for common queries
-- Input: Multi-line with send button
-
-**AI Insights Cards:**
-- Distinct visual treatment (subtle gradient background or icon)
-- Structure: Icon + Insight title + Description + CTA ("View details" / "Apply suggestion")
-- Dismissible with × icon
-- Spacing: Appear contextually in relevant sections
-
-### Data Tables
-
-**Structure:**
+### Data Tables (Standardized Across Modules)
 - Sticky header with sort indicators
-- Alternating row backgrounds for scannability
-- Row height: h-12 to h-14
-- Pagination: Bottom with page numbers + rows per page selector
-- Empty states: Centered with illustration + helpful CTA
+- Row actions on hover (Edit, More)
+- Bulk selection with toolbar
+- Column visibility toggle
+- Pagination with configurable row count
+- Empty states with helpful CTAs
 
-**Table Actions:**
-- Row-level: Hover shows action icons (Edit, Delete, More)
-- Bulk: Checkbox selection with action toolbar appearing above table
-- Column controls: Show/hide columns dropdown
+### Forms (Configuration & Data Entry)
+- Labels above inputs (not floating)
+- Consistent h-10 to h-12 input heights
+- Grouped sections with subtle borders
+- Error states: red border + message below
+- Helper text: text-xs below input
+- Validation on blur/submit with clear messaging
 
-### Dialogs & Modals
+### Status Indicators (Industry-Specific)
+- ERP: Draft, Posted, Reviewed, Approved, Paid, Shipped
+- CRM: New, Contacted, Qualified, Proposal, Won, Lost
+- HR: Active, Offer, Inactive, Retired
+- Project: On Track, At Risk, Delayed, Completed
+- Color scheme consistent across all modules
 
-**Modal Styling:**
-- Overlay: Semi-transparent backdrop
-- Content: Centered, max-w-md to max-w-4xl based on content
-- Padding: p-6 with clear close button (top-right)
-- Footer: Sticky with action buttons right-aligned
+### AI Components
+- **Copilot Suggestions:** Distinct visual treatment with sparkle icon
+- **Predicted Insights:** "AI Forecast" badge with confidence level
+- **Auto-Actions:** Show "AI Generated" label with option to edit/approve
+- **Recommended Next Steps:** Card with icon, description, CTA
 
-**Confirmation Dialogs:**
-- Icon + Title + Description + Primary/Secondary actions
-- Destructive actions: Clear warning with emphasized cancel option
+---
 
-### Status & Notifications
+## Color System
 
-**Badges:**
-- Pill-shaped with rounded-full
-- Sizes: px-2 py-0.5 (small), px-3 py-1 (medium)
-- Text: text-xs font-medium uppercase
+### Base Colors
+- **Background:** Light: 0 0% 100% | Dark: 220 13% 9%
+- **Surface (Cards):** Light: 0 0% 98% | Dark: 220 13% 11%
+- **Primary (AI/Actions):** 217 91% 60% (Blue) - Represents AI-first nature
+- **Secondary (Secondary Actions):** 220 8% 90%
 
-**Toast Notifications:**
-- Top-right corner, stacked
-- Auto-dismiss after 5s with progress bar
-- Types: Success, Error, Warning, Info with corresponding icons
+### Status Colors (Consistent Across Modules)
+- **Success/Approved:** 142 76% 36% (Green)
+- **Warning/At Risk:** 36 100% 50% (Orange)
+- **Error/Critical:** 0 84% 60% (Red)
+- **Info/Neutral:** 220 13% 75% (Gray-Blue)
+- **Pending/Draft:** 271 81% 56% (Purple)
 
-**Progress Indicators:**
-- Linear: Full-width bar for page loading
-- Circular: For button loading states
-- Skeleton: For content placeholders (cards, tables)
-
-### Search
-
-**Global Search:**
-- Full-width dropdown appearing below search bar
-- Categorized results: Customers, Leads, Projects, Tasks
-- Result item: Icon + Primary text + Secondary metadata + Keyboard nav support
-- Recent searches shown when empty
+### Module Color Coding (Optional)
+- ERP/Finance: Teal - 187 100% 42%
+- CRM/Sales: Blue - 217 91% 60%
+- HR/Talent: Green - 142 76% 36%
+- Projects: Orange - 36 100% 50%
+- Compliance: Red - 0 84% 60%
+- Analytics: Purple - 271 81% 56%
+- Marketing: Pink - 339 90% 51%
+- Service: Cyan - 198 93% 60%
 
 ---
 
 ## Animations
 
-**Extremely Minimal - Use Only:**
-- Sidebar collapse/expand: 200ms ease transition
-- Dropdown menus: Fade in 150ms
-- Modal open/close: Scale from 95% to 100%, 200ms
-- Loading spinners: Continuous rotation
-- Toast notifications: Slide in from right, 300ms
-
-**No Animations For:**
-- Hover states (instant)
-- Page transitions
-- Data updates
-- Scroll effects
+**Minimal, purposeful transitions (200-300ms):**
+- Sidebar collapse/expand: 200ms ease
+- Modal open/close: 200ms scale from 95% to 100%
+- Menu open: 150ms fade in
+- Toast notifications: 300ms slide from right
+- Data loading: Skeleton screens (no spinners on tables)
+- Hover: Instant (no delay)
 
 ---
 
-## Images
+## Responsive Design
 
-This is a productivity application - no hero images or marketing imagery needed. Use icons throughout for visual communication (Heroicons via CDN).
+**Breakpoints:**
+- Mobile: < 640px (Single column, stacked)
+- Tablet: 640px - 1024px (Two columns)
+- Desktop: > 1024px (Three+ columns, full layout)
+
+**Sidebar Behavior:**
+- Desktop: Always visible
+- Tablet: Collapsible to icons (w-16)
+- Mobile: Hidden behind hamburger, full-width drawer
 
 ---
 
-This design system prioritizes professional functionality, ensuring users can efficiently manage complex business operations while experiencing the platform's AI capabilities as helpful, unobtrusive intelligence.
+## Dark Mode
+
+**Implementation:**
+1. CSS custom properties in :root and .dark
+2. Explicit light/dark variants for all visuals
+3. Reduced contrast in dark mode for eyes
+4. Toggle in header (previously: SidebarTrigger, now: Global Header)
+5. localStorage sync for persistence
+
+**Key Adjustments:**
+- Backgrounds darker for reduced eye strain
+- Text lighter for readability
+- Borders subtly visible without glare
+- Status colors slightly adjusted (less saturation in dark)
+
+---
+
+## Enterprise-Specific Patterns
+
+### Multi-Tenant/Multi-Company Navigation
+- Company/Tenant switcher in header
+- Fiscal period selector for Finance modules
+- Legal entity filter for Compliance modules
+- Role-based menu filtering (users see only accessible modules)
+
+### Workflow Indicators
+- Current step highlighted in workflow visualization
+- Approval chains show pending/completed
+- Escalation paths clearly visible
+- SLA status with time remaining (color-coded)
+
+### Industry-Specific Dashboards
+Each industry has pre-built KPI dashboard:
+- **Manufacturing:** Production efficiency, OEE, downtime, quality metrics
+- **Retail:** Sales by location, inventory turnover, customer lifetime value
+- **Finance:** Cash flow, AR aging, Expense ratios, Budget variance
+- **Healthcare:** Patient census, billing status, compliance alerts
+- **HR:** Headcount, turnover, open positions, engagement scores
+
+---
+
+## Accessibility
+
+**WCAG 2.1 AA Compliance:**
+- Color not only means of communication (icons + text)
+- Sufficient color contrast (4.5:1 for text)
+- Keyboard navigation on all interactive elements
+- Focus indicators clearly visible
+- Screen reader support (semantic HTML, aria labels)
+- All forms accessible via keyboard
+- Images have alt text
+- Links have descriptive text
+
+---
+
+## Performance Considerations
+
+- **Module Lazy Loading:** Only load visible module data
+- **Virtual Scrolling:** For tables with 1000+ rows
+- **Progressive Enhancement:** Basic functionality works without JS
+- **Asset Optimization:** Images optimized, fonts preloaded
+- **Caching Strategy:** Local caching for frequently accessed data
+
+---
+
+This design system supports rapid expansion from 2-3 modules to 40+, maintains consistency across industries, and keeps AI capabilities visible and accessible throughout the platform.

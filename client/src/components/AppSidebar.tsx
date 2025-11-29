@@ -1,4 +1,5 @@
 import { useLocation, Link } from "wouter";
+import { useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +13,7 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   Users,
@@ -20,22 +22,48 @@ import {
   Settings as SettingsIcon,
   Activity,
   Sparkles,
+  DollarSign,
+  Zap,
+  ChevronDown,
+  Shield,
+  Package,
+  Briefcase,
 } from "lucide-react";
 
-const mainNavItems = [
+const platformNavItems = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/" },
-  { title: "CRM", icon: Users, href: "/crm" },
+  { title: "ERP & Finance", icon: DollarSign, href: "/erp" },
+  { title: "CRM & Sales", icon: Users, href: "/crm" },
   { title: "Projects", icon: FolderKanban, href: "/projects" },
-  { title: "Analytics", icon: BarChart3, href: "/analytics" },
+  { title: "HR & Talent", icon: Briefcase, href: "/hr" },
+  { title: "Service & Support", icon: Package, href: "/service" },
+  { title: "Marketing", icon: Sparkles, href: "/marketing" },
+];
+
+const analyticsNavItems = [
+  { title: "Analytics & BI", icon: BarChart3, href: "/analytics" },
+  { title: "Compliance & Audit", icon: Shield, href: "/compliance" },
 ];
 
 const systemNavItems = [
+  { title: "Process Mapping", icon: Activity, href: "/bpm" },
+  { title: "Integration Hub", icon: Zap, href: "/integrations" },
   { title: "System Health", icon: Activity, href: "/health" },
   { title: "Settings", icon: SettingsIcon, href: "/settings" },
 ];
 
+const industryNavItems = [
+  { title: "Manufacturing", href: "/industry/manufacturing" },
+  { title: "Retail & E-Commerce", href: "/industry/retail" },
+  { title: "Financial Services", href: "/industry/finservices" },
+  { title: "Healthcare", href: "/industry/healthcare" },
+  { title: "Construction", href: "/industry/construction" },
+  { title: "View All Industries →", href: "/industries" },
+];
+
 export function AppSidebar() {
   const [location] = useLocation();
+  const [industriesExpanded, setIndustriesExpanded] = useState(false);
 
   return (
     <Sidebar>
@@ -46,26 +74,26 @@ export function AppSidebar() {
           </div>
           <div>
             <h1 className="font-semibold text-base">NexusAI</h1>
-            <p className="text-xs text-muted-foreground">AI-First Platform</p>
+            <p className="text-xs text-muted-foreground">Enterprise Platform</p>
           </div>
         </div>
       </SidebarHeader>
       
-      <SidebarContent>
+      <SidebarContent className="space-y-2">
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Platforms</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainNavItems.map((item) => (
+              {platformNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild 
                     isActive={location === item.href}
-                    data-testid={`nav-${item.title.toLowerCase()}`}
+                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     <Link href={item.href}>
                       <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                      <span className="text-sm">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -75,7 +103,62 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>System</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">Analytics & Governance</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {analyticsNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={location === item.href}
+                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <div className="flex items-center justify-between px-2">
+            <SidebarGroupLabel className="text-xs uppercase tracking-wide">Industries</SidebarGroupLabel>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-5 w-5"
+              onClick={() => setIndustriesExpanded(!industriesExpanded)}
+            >
+              <ChevronDown className={`h-3 w-3 transition-transform ${industriesExpanded ? 'rotate-180' : ''}`} />
+            </Button>
+          </div>
+          {industriesExpanded && (
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {industryNavItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={location === item.href}
+                      className="text-xs"
+                    >
+                      <Link href={item.href}>
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          )}
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs uppercase tracking-wide">System</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {systemNavItems.map((item) => (
@@ -87,7 +170,7 @@ export function AppSidebar() {
                   >
                     <Link href={item.href}>
                       <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                      <span className="text-sm">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

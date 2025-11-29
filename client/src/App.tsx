@@ -18,6 +18,7 @@ import Projects from "@/pages/Projects";
 import Analytics from "@/pages/Analytics";
 import Health from "@/pages/Health";
 import Settings from "@/pages/Settings";
+import Industries from "@/pages/Industries";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/health" component={Health} />
       <Route path="/settings" component={Settings} />
+      <Route path="/industries" component={Industries} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -50,9 +52,15 @@ function AppLayout() {
           <header className="flex items-center justify-between gap-4 h-14 px-4 border-b bg-background shrink-0">
             <div className="flex items-center gap-2">
               <SidebarTrigger data-testid="button-sidebar-toggle" />
+              <div className="text-xs text-muted-foreground font-medium px-2 py-1 rounded bg-muted hidden md:block">
+                Acme Corp • US • English
+              </div>
               <GlobalSearch />
             </div>
             <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" className="text-xs hidden md:flex" data-testid="button-industry-context">
+                Manufacturing
+              </Button>
               <Button variant="ghost" size="icon" data-testid="button-notifications">
                 <Bell className="h-4 w-4" />
               </Button>
