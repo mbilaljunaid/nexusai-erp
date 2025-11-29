@@ -145,6 +145,10 @@
 - Budget variance charts with drill-down
 - Cost center hierarchical selector
 - Multi-currency conversion displays
+- Period close checklist and status tracking
+- Journal consolidation workflow
+- Reconciliation matching interface (2-way, 3-way)
+- Financial statement builder (P&L, BS, CF)
 
 **CRM/Sales:**
 - Kanban pipeline board (draggable opportunities)
@@ -201,6 +205,21 @@
 - Report builder with dimension/metric selection
 - Data grid with Excel-like editing
 - Drill-down navigation
+
+**EPM (Enterprise Performance Management):**
+- Budget entry grid (hierarchical: Company → Dept → Cost Center → Account)
+- Monthly/quarterly input fields with AI growth suggestions
+- Forecast dashboard with accuracy metrics (MAPE, Tracking Signal)
+- Scenario builder with driver-based adjustments
+- Consolidation workflow: Collect → Validate → Match → FX → Eliminate
+- Multi-entity hierarchy tree with ownership percentages
+- FX translation dashboard with rate management
+- Variance analysis dashboard (Budget vs Actual color-coded by threshold)
+- Rolling forecast submission workflow with approvals
+- What-if analysis with interactive sliders
+- Waterfall charts showing impact breakdown
+- Consolidation elimination entry form
+- Plan cycle tracking and KPI dashboards
 
 ---
 

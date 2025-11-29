@@ -155,6 +155,176 @@ Enterprise-grade, AI-first platform with intuitive navigation, role-based contex
 
 ---
 
+## 2B. EPM (ENTERPRISE PERFORMANCE MANAGEMENT) MODULE DESIGN
+
+### EPM Dashboard
+**Top KPIs** (6 metrics)
+- Budget vs. Actual (%), Planning Completion %, Forecast Accuracy, Consolidation Status, Open Variances, Plan Cycle Time
+
+**Left Panel (Quick Actions)**
+- Start New Budget Cycle
+- Create Forecast
+- Run Consolidation
+- Create Scenario
+- View Variance Report
+- Access Rolling Forecast
+
+### Budget Planning
+- **Budget Cycles Dashboard**
+  - Cycle name, status (Planning/Review/Approved/Active/Closed), progress %, participants, due date
+  - Workflow status: Draft → Submitted → Approved → Active → Closed
+  - Budget versions (v1, v2, v3 with comparison capability)
+
+- **Budget Entry Form** (Hierarchical)
+  - Left tree: Company → Department → Cost Center → Account
+  - Main area: Monthly grid (Jan-Dec) with input fields
+  - Comparison columns: Last Year, Current Actuals, Budget vs Actual %
+  - AI features: "Auto-calculate based on growth trend +5%", "Suggest budget based on historical spend"
+  - Totals row showing sum by month and annual total
+  - Supporting notes/attachments per budget line
+
+- **Budget Detail View**
+  - Tabs:
+    - **Overview**: Budget name, cycle, amount, status, approver
+    - **Details**: Line item breakdown with variances
+    - **Approvals**: Approval workflow status and comments
+    - **Actuals**: Actual spending vs budget month-by-month
+    - **Variance**: Variance analysis with explanations
+    - **History**: Previous versions and changes
+
+### Forecasting
+- **Forecast Entry Interface**
+  - Similar to budget but for rolling forecasts (next 12-24 months)
+  - Frequency: Quarterly rolling forecasts (new quarter added, old quarter removed)
+  - AI predictions: "Based on trend, forecasted revenue is $2.5M", with confidence %
+  - Multiple forecast scenarios (Optimistic, Base Case, Conservative)
+  - Variance tracking from previous forecast
+
+- **Forecast vs. Actual Dashboard**
+  - Line chart: Forecasted vs Actual over time
+  - Accuracy metrics: MAPE (Mean Absolute Percentage Error), Tracking Signal
+  - Top forecasting errors highlighted
+  - Drill-down to detail by department/cost center
+
+### Scenario Modeling
+- **Scenario Builder** (Visual interface)
+  - Base scenario selection (from approved budget)
+  - Scenario name and description (e.g., "20% Revenue Decline", "Aggressive Expansion")
+  - Adjustment options:
+    - Percentage adjustment to all line items
+    - Individual line item modifications
+    - Driver-based: "If revenue increases 10%, adjust COGS proportionally"
+  - AI recommendations: "If scenario executes, profit margin drops to 12%"
+  - Comparison view: Base vs Scenario side-by-side with variance highlights
+
+- **Scenario Results Dashboard**
+  - KPI impact: Revenue, Gross Profit, EBITDA, Net Income (each showing scenario vs base)
+  - Sensitivity analysis: "For every 1% revenue change, operating income changes 2.5%"
+  - Waterfall chart showing impact breakdown
+  - Export scenario for board presentation
+
+- **What-If Analysis**
+  - Interactive sliders for key variables (Revenue, COGS %, OpEx, Tax rate)
+  - Real-time P&L impact visualization
+  - Scenario comparison (up to 5 scenarios side-by-side)
+  - Save frequently used scenarios
+
+### Consolidation
+- **Consolidation Hub** (Multi-entity consolidation)
+  - Status dashboard: Entities consolidated count, errors, warnings, pending
+  - Consolidation workflow:
+    1. Collect data from all legal entities
+    2. Validate accounts and balances
+    3. Automated matching and reconciliation
+    4. FX translation (for foreign entities)
+    5. Intercompany eliminations
+    6. Generate consolidated statements
+
+- **Entity Mapping**
+  - Entity hierarchy tree (Parent company → Subsidiary → Sub-subsidiary)
+  - Ownership % per entity
+  - Consolidation method (Full consolidation, Equity method, Proportionate)
+  - Automation: Auto-identify new entities from GL data
+
+- **Elimination Entries** (Visual interface)
+  - Table: Entity A, Entity B, Type (Sales-COGS, I/C receivable/payable), Amount, Eliminated
+  - AI matching: "Found $500K matching I/C transaction pairs in GL, auto-eliminate 45 entries?"
+  - Manual entry form for non-standard eliminations
+  - Approval workflow for eliminations above threshold
+
+- **FX Translation**
+  - Currency converter: Select translation date, rates (average, period-end, spot)
+  - Auto-pull rates from external feed (XE, OANDA, etc.)
+  - Translation adjustments flow to OCI (Other Comprehensive Income)
+  - Journal entry preview before posting
+
+- **Consolidated Results**
+  - Multi-entity P&L, Balance Sheet, Cash Flow
+  - Drill-down by entity, account, department
+  - Variance analysis: Consolidated vs prior period
+  - Segment reporting (by geography, business unit)
+
+### Rolling Forecasts
+- **Rolling Forecast Dashboard**
+  - Current forecast quarter/year
+  - Forecast vs Actual trend chart
+  - Refresh frequency (monthly, quarterly)
+  - Active forecasts list (in progress, submitted, approved)
+
+- **Forecast Submission & Approval**
+  - Status workflow: Draft → Submitted → Reviewed → Approved → Active
+  - Approver dashboard showing forecasts pending approval
+  - Comments and feedback loop
+  - Variance explanation requirement: "If variance > 5%, explain reason"
+  - AI-flagged unusual forecasts: "Forecast 30% above historical trend"
+
+### Analytics & Variance Analysis
+- **Variance Report** (Customizable dashboard)
+  - Budget vs Actual by: Month, Department, Cost Center, Account
+  - Variance $, Variance %, Status (On Track, Caution, Alert)
+  - Color-coded: Green (within 5%), Yellow (5-10%), Red (>10%)
+  - Root cause analysis (AI-suggested): "Overtime labor increased 15% due to Q4 push"
+  - Drill-down to transaction level
+
+- **Trend Analysis**
+  - Rolling 12-month actuals vs budget
+  - Trend line showing direction
+  - Seasonal patterns highlighted
+  - Forecasting accuracy improvement tracking
+
+- **KPI Scorecard**
+  - Budget approval cycle time, Forecast accuracy, Consolidation cycle time
+  - Planning automation %
+  - Plan vs Actual reporting compliance
+  - Benchmark against industry standards
+
+### Configuration (Admin)
+- **Planning Templates**
+  - Template library by industry/department
+  - Reusable budget/forecast structures
+  - Default assumptions and growth rates
+  - Locked cells vs. editable cells
+
+- **Allocation Rules**
+  - Rule builder: IF (condition) THEN allocate (amount) TO (accounts)
+  - Examples: "Allocate payroll by headcount", "Allocate overhead by revenue"
+  - Automation schedule: Monthly, Quarterly
+  - Audit trail of allocations
+
+- **KPI & Metric Definitions**
+  - Custom KPIs: Formula editor (e.g., "Gross Profit % = (Revenue - COGS) / Revenue")
+  - Calculation frequency
+  - Comparisons: Actual vs Forecast, vs Prior Year, vs Target
+  - Variance thresholds for alerts
+
+- **Period Setup**
+  - Fiscal calendar (different from calendar year if applicable)
+  - Budget periods (monthly, quarterly, annual)
+  - Budget locks (prevent changes after submission/approval)
+  - Close dates and holiday calendars
+
+---
+
 ## 3. CRM & SALES MODULE DESIGN
 
 ### Dashboard View
