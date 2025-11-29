@@ -433,7 +433,7 @@ export async function registerRoutes(
 
   app.post("/api/collaborations/comments/:id/like", async (req, res) => {
     for (const collab of collaborationsStore) {
-      const comment = collab.comments.find(c => c.id === req.params.id);
+      const comment = collab.comments.find((c: any) => c.id === req.params.id);
       if (comment) {
         comment.likes++;
         return res.json(comment);

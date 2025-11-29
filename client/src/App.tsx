@@ -235,8 +235,6 @@ const ServiceLevelConfig = lazy(() => import("@/pages/ServiceLevelConfig"));
 const SupplyChainOptimization = lazy(() => import("@/pages/SupplyChainOptimization"));
 const TemplateLibrary = lazy(() => import("@/pages/TemplateLibrary"));
 const TenantAdmin = lazy(() => import("@/pages/admin/TenantAdmin"));
-const QualityControl = lazy(() => import("@/pages/QualityControl"));
-const PurchaseOrder = lazy(() => import("@/pages/PurchaseOrder"));
 
 function Router() {
   return (
