@@ -39,6 +39,12 @@ import {
   type DashboardWidget, type InsertDashboardWidget,
   type Report, type InsertReport,
   type AuditLog, type InsertAuditLog,
+  type App, type InsertApp,
+  type AppReview, type InsertAppReview,
+  type AppInstallation, type InsertAppInstallation,
+  type Connector, type InsertConnector,
+  type ConnectorInstance, type InsertConnectorInstance,
+  type WebhookEvent, type InsertWebhookEvent,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -200,6 +206,30 @@ export interface IStorage {
   getAuditLog(id: string): Promise<AuditLog | undefined>;
   listAuditLogs(userId?: string): Promise<AuditLog[]>;
   createAuditLog(log: InsertAuditLog): Promise<AuditLog>;
+
+  getApp(id: string): Promise<App | undefined>;
+  listApps(category?: string): Promise<App[]>;
+  createApp(app: InsertApp): Promise<App>;
+
+  getAppReview(id: string): Promise<AppReview | undefined>;
+  listAppReviews(appId: string): Promise<AppReview[]>;
+  createAppReview(review: InsertAppReview): Promise<AppReview>;
+
+  getAppInstallation(id: string): Promise<AppInstallation | undefined>;
+  listAppInstallations(tenantId: string): Promise<AppInstallation[]>;
+  createAppInstallation(installation: InsertAppInstallation): Promise<AppInstallation>;
+
+  getConnector(id: string): Promise<Connector | undefined>;
+  listConnectors(type?: string): Promise<Connector[]>;
+  createConnector(connector: InsertConnector): Promise<Connector>;
+
+  getConnectorInstance(id: string): Promise<ConnectorInstance | undefined>;
+  listConnectorInstances(tenantId: string): Promise<ConnectorInstance[]>;
+  createConnectorInstance(instance: InsertConnectorInstance): Promise<ConnectorInstance>;
+
+  getWebhookEvent(id: string): Promise<WebhookEvent | undefined>;
+  listWebhookEvents(appId: string): Promise<WebhookEvent[]>;
+  createWebhookEvent(event: InsertWebhookEvent): Promise<WebhookEvent>;
 }
 
 export class MemStorage implements IStorage {
@@ -403,6 +433,37 @@ export class MemStorage implements IStorage {
   async getAuditLog(id: string) { return this.auditLogs.get(id); }
   async listAuditLogs(userId?: string) { const logs = Array.from(this.auditLogs.values()); return userId ? logs.filter(l => l.userId === userId) : logs; }
   async createAuditLog(l: InsertAuditLog) { const id = randomUUID(); const log: AuditLog = { id, ...l, timestamp: new Date() }; this.auditLogs.set(id, log); return log; }
+
+  private apps = new Map<string, App>();
+  private appReviews = new Map<string, AppReview>();
+  private appInstallations = new Map<string, AppInstallation>();
+  private connectors = new Map<string, Connector>();
+  private connectorInstances = new Map<string, ConnectorInstance>();
+  private webhookEvents = new Map<string, WebhookEvent>();
+
+  async getApp(id: string) { return this.apps.get(id); }
+  async listApps(category?: string) { const list = Array.from(this.apps.values()); return category ? list.filter(a => a.category === category) : list; }
+  async createApp(a: InsertApp) { const id = randomUUID(); const app: App = { id, ...a, rating: a.rating ? String(a.rating) : "0", installCount: a.installCount ?? 0, createdAt: new Date() }; this.apps.set(id, app); return app; }
+
+  async getAppReview(id: string) { return this.appReviews.get(id); }
+  async listAppReviews(appId: string) { return Array.from(this.appReviews.values()).filter(r => r.appId === appId); }
+  async createAppReview(r: InsertAppReview) { const id = randomUUID(); const review: AppReview = { id, ...r, createdAt: new Date() }; this.appReviews.set(id, review); return review; }
+
+  async getAppInstallation(id: string) { return this.appInstallations.get(id); }
+  async listAppInstallations(tenantId: string) { return Array.from(this.appInstallations.values()).filter(i => i.tenantId === tenantId); }
+  async createAppInstallation(i: InsertAppInstallation) { const id = randomUUID(); const inst: AppInstallation = { id, ...i }; this.appInstallations.set(id, inst); return inst; }
+
+  async getConnector(id: string) { return this.connectors.get(id); }
+  async listConnectors(type?: string) { const list = Array.from(this.connectors.values()); return type ? list.filter(c => c.connectorType === type) : list; }
+  async createConnector(c: InsertConnector) { const id = randomUUID(); const conn: Connector = { id, ...c, createdAt: new Date() }; this.connectors.set(id, conn); return conn; }
+
+  async getConnectorInstance(id: string) { return this.connectorInstances.get(id); }
+  async listConnectorInstances(tenantId: string) { return Array.from(this.connectorInstances.values()).filter(ci => ci.tenantId === tenantId); }
+  async createConnectorInstance(ci: InsertConnectorInstance) { const id = randomUUID(); const inst: ConnectorInstance = { id, ...ci, createdAt: new Date() }; this.connectorInstances.set(id, inst); return inst; }
+
+  async getWebhookEvent(id: string) { return this.webhookEvents.get(id); }
+  async listWebhookEvents(appId: string) { return Array.from(this.webhookEvents.values()).filter(w => w.appId === appId); }
+  async createWebhookEvent(w: InsertWebhookEvent) { const id = randomUUID(); const event: WebhookEvent = { id, ...w, createdAt: new Date() }; this.webhookEvents.set(id, event); return event; }
 }
 
 export const storage = new MemStorage();

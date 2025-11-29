@@ -13,6 +13,7 @@ import {
   insertCopilotConversationSchema, insertCopilotMessageSchema, insertMobileDeviceSchema, insertOfflineSyncSchema,
   insertRevenueForecastSchema, insertBudgetAllocationSchema, insertTimeSeriesDataSchema, insertForecastModelSchema,
   insertScenarioSchema, insertScenarioVariableSchema, insertDashboardWidgetSchema, insertReportSchema, insertAuditLogSchema,
+  insertAppSchema, insertAppReviewSchema, insertAppInstallationSchema, insertConnectorSchema, insertConnectorInstanceSchema, insertWebhookEventSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -554,6 +555,122 @@ export async function registerRoutes(
       }
       res.status(500).json({ error: "Failed to create audit log" });
     }
+  });
+
+  // PHASE 3: App Marketplace
+  app.get("/api/marketplace/apps", async (req, res) => {
+    const category = req.query.category as string;
+    const apps = await storage.listApps(category);
+    res.json(apps);
+  });
+
+  app.post("/api/marketplace/apps", async (req, res) => {
+    try {
+      const data = insertAppSchema.parse(req.body);
+      const app = await storage.createApp(data);
+      res.status(201).json(app);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create app" });
+    }
+  });
+
+  app.post("/api/marketplace/apps/:appId/reviews", async (req, res) => {
+    try {
+      const data = insertAppReviewSchema.parse({ ...req.body, appId: req.params.appId });
+      const review = await storage.createAppReview(data);
+      res.status(201).json(review);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create review" });
+    }
+  });
+
+  app.get("/api/marketplace/apps/:appId/reviews", async (req, res) => {
+    const reviews = await storage.listAppReviews(req.params.appId);
+    res.json(reviews);
+  });
+
+  app.post("/api/marketplace/installations", async (req, res) => {
+    try {
+      const data = insertAppInstallationSchema.parse(req.body);
+      const inst = await storage.createAppInstallation(data);
+      res.status(201).json(inst);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create installation" });
+    }
+  });
+
+  app.get("/api/marketplace/installations", async (req, res) => {
+    const tenantId = req.query.tenantId as string;
+    const insts = await storage.listAppInstallations(tenantId);
+    res.json(insts);
+  });
+
+  // PHASE 3: Connectors
+  app.get("/api/connectors", async (req, res) => {
+    const type = req.query.type as string;
+    const connectors = await storage.listConnectors(type);
+    res.json(connectors);
+  });
+
+  app.post("/api/connectors", async (req, res) => {
+    try {
+      const data = insertConnectorSchema.parse(req.body);
+      const connector = await storage.createConnector(data);
+      res.status(201).json(connector);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create connector" });
+    }
+  });
+
+  app.post("/api/connectors/instances", async (req, res) => {
+    try {
+      const data = insertConnectorInstanceSchema.parse(req.body);
+      const inst = await storage.createConnectorInstance(data);
+      res.status(201).json(inst);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create connector instance" });
+    }
+  });
+
+  app.get("/api/connectors/instances", async (req, res) => {
+    const tenantId = req.query.tenantId as string;
+    const insts = await storage.listConnectorInstances(tenantId);
+    res.json(insts);
+  });
+
+  // PHASE 3: Webhooks
+  app.post("/api/webhooks/events", async (req, res) => {
+    try {
+      const data = insertWebhookEventSchema.parse(req.body);
+      const event = await storage.createWebhookEvent(data);
+      res.status(201).json(event);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create webhook event" });
+    }
+  });
+
+  app.get("/api/webhooks/events", async (req, res) => {
+    const appId = req.query.appId as string;
+    const events = await storage.listWebhookEvents(appId);
+    res.json(events);
   });
 
   return httpServer;

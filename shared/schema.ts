@@ -1002,3 +1002,145 @@ export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({ id: tru
 
 export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
 export type AuditLog = typeof auditLogs.$inferSelect;
+
+// ========== PHASE 3: ECOSYSTEM & CONNECTORS ==========
+
+// App Marketplace: Apps
+export const apps = pgTable("apps", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  category: varchar("category").notNull(), // integration, workflow, analytics, reporting
+  version: varchar("version").default("1.0.0"),
+  rating: numeric("rating", { precision: 3, scale: 1 }).default("0"),
+  installCount: integer("install_count").default(0),
+  developer: varchar("developer").notNull(),
+  apiKey: varchar("api_key"),
+  webhookUrl: text("webhook_url"),
+  status: varchar("status").default("published"), // draft, pending, published, suspended
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAppSchema = createInsertSchema(apps).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  category: z.enum(["integration", "workflow", "analytics", "reporting"]),
+  developer: z.string().min(1),
+  description: z.string().optional().nullable(),
+  version: z.string().optional(),
+  rating: z.string().optional(),
+  installCount: z.number().optional(),
+  apiKey: z.string().optional().nullable(),
+  webhookUrl: z.string().optional().nullable(),
+  status: z.string().optional(),
+});
+
+export type InsertApp = z.infer<typeof insertAppSchema>;
+export type App = typeof apps.$inferSelect;
+
+// App Marketplace: App Reviews
+export const appReviews = pgTable("app_reviews", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  rating: integer("rating").notNull(), // 1-5
+  comment: text("comment"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAppReviewSchema = createInsertSchema(appReviews).omit({ id: true, createdAt: true }).extend({
+  appId: z.string().min(1),
+  userId: z.string().min(1),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().optional().nullable(),
+});
+
+export type InsertAppReview = z.infer<typeof insertAppReviewSchema>;
+export type AppReview = typeof appReviews.$inferSelect;
+
+// App Marketplace: App Installations
+export const appInstallations = pgTable("app_installations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  tenantId: varchar("tenant_id").notNull(),
+  installDate: timestamp("install_date").default(sql`now()`),
+  status: varchar("status").default("active"), // active, disabled, uninstalled
+  config: jsonb("config"),
+});
+
+export const insertAppInstallationSchema = createInsertSchema(appInstallations).omit({ id: true, installDate: true }).extend({
+  appId: z.string().min(1),
+  tenantId: z.string().min(1),
+  status: z.string().optional(),
+  config: z.object({}).passthrough().optional(),
+});
+
+export type InsertAppInstallation = z.infer<typeof insertAppInstallationSchema>;
+export type AppInstallation = typeof appInstallations.$inferSelect;
+
+// Pre-built Connectors: Integrations
+export const connectors = pgTable("connectors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  connectorType: varchar("connector_type").notNull(), // stripe, slack, shopify, salesforce, etc
+  description: text("description"),
+  credentialsSchema: jsonb("credentials_schema"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertConnectorSchema = createInsertSchema(connectors).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  connectorType: z.string().min(1),
+  description: z.string().optional().nullable(),
+  credentialsSchema: z.object({}).passthrough().optional(),
+  status: z.string().optional(),
+});
+
+export type InsertConnector = z.infer<typeof insertConnectorSchema>;
+export type Connector = typeof connectors.$inferSelect;
+
+// Pre-built Connectors: Connector Instances
+export const connectorInstances = pgTable("connector_instances", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  connectorId: varchar("connector_id").notNull(),
+  tenantId: varchar("tenant_id").notNull(),
+  name: varchar("name").notNull(),
+  credentials: jsonb("credentials"),
+  status: varchar("status").default("connected"),
+  lastSyncAt: timestamp("last_sync_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertConnectorInstanceSchema = createInsertSchema(connectorInstances).omit({ id: true, createdAt: true }).extend({
+  connectorId: z.string().min(1),
+  tenantId: z.string().min(1),
+  name: z.string().min(1),
+  credentials: z.object({}).passthrough(),
+  status: z.string().optional(),
+  lastSyncAt: z.date().optional().nullable(),
+});
+
+export type InsertConnectorInstance = z.infer<typeof insertConnectorInstanceSchema>;
+export type ConnectorInstance = typeof connectorInstances.$inferSelect;
+
+// Webhooks: Webhook Events
+export const webhookEvents = pgTable("webhook_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  eventType: varchar("event_type").notNull(), // order.created, lead.updated, etc
+  payload: jsonb("payload").notNull(),
+  status: varchar("status").default("pending"), // pending, delivered, failed
+  retryCount: integer("retry_count").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertWebhookEventSchema = createInsertSchema(webhookEvents).omit({ id: true, createdAt: true }).extend({
+  appId: z.string().min(1),
+  eventType: z.string().min(1),
+  payload: z.object({}).passthrough(),
+  status: z.string().optional(),
+  retryCount: z.number().optional(),
+});
+
+export type InsertWebhookEvent = z.infer<typeof insertWebhookEventSchema>;
+export type WebhookEvent = typeof webhookEvents.$inferSelect;

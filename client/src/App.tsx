@@ -52,6 +52,7 @@ import CRMAdvanced from "@/pages/advanced/CRMAdvanced";
 import HRAdvanced from "@/pages/advanced/HRAdvanced";
 import Copilot from "@/pages/Copilot";
 import Planning from "@/pages/Planning";
+import Marketplace from "@/pages/Marketplace";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -86,6 +87,7 @@ function Router() {
       <Route path="/copilot" component={Copilot} />
       <Route path="/field-service" component={FieldService} />
       <Route path="/planning" component={Planning} />
+      <Route path="/marketplace" component={Marketplace} />
       <Route path="/analytics" component={Analytics} />
       <Route path="/billing" component={Billing} />
       <Route path="/erp-advanced" component={ERPAdvanced} />
