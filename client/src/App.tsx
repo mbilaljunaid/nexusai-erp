@@ -23,6 +23,7 @@ import Industries from "@/pages/Industries";
 import PlatformAdmin from "@/pages/admin/PlatformAdmin";
 import TenantAdmin from "@/pages/admin/TenantAdmin";
 import ERP from "@/pages/ERP";
+import EPMModule from "@/pages/EPMModule";
 import HR from "@/pages/HR";
 import Service from "@/pages/Service";
 import Marketing from "@/pages/Marketing";
@@ -32,6 +33,7 @@ import Integrations from "@/pages/Integrations";
 import Website from "@/pages/Website";
 import Email from "@/pages/Email";
 import Ecommerce from "@/pages/Ecommerce";
+import FormShowcase from "@/pages/FormShowcase";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -47,6 +49,7 @@ function Router() {
       <Route path="/admin/platform" component={PlatformAdmin} />
       <Route path="/admin/tenant" component={TenantAdmin} />
       <Route path="/erp" component={ERP} />
+      <Route path="/epm" component={EPMModule} />
       <Route path="/hr" component={HR} />
       <Route path="/service" component={Service} />
       <Route path="/marketing" component={Marketing} />
@@ -56,6 +59,7 @@ function Router() {
       <Route path="/website" component={Website} />
       <Route path="/email" component={Email} />
       <Route path="/ecommerce" component={Ecommerce} />
+      <Route path="/forms" component={FormShowcase} />
       <Route component={NotFound} />
     </Switch>
   );

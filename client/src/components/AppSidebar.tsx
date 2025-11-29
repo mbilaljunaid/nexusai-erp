@@ -34,6 +34,7 @@ import {
 const platformNavItems = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/" },
   { title: "ERP & Finance", icon: DollarSign, href: "/erp" },
+  { title: "EPM", icon: BarChart3, href: "/epm", badge: "New" },
   { title: "CRM & Sales", icon: Users, href: "/crm" },
   { title: "Projects", icon: FolderKanban, href: "/projects" },
   { title: "HR & Talent", icon: Briefcase, href: "/hr" },
