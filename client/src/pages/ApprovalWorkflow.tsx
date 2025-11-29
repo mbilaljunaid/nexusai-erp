@@ -26,6 +26,12 @@ export default function ApprovalWorkflow() {
     retry: false,
   });
 
+  const stats = {
+    pending: requests.filter(r => r.status === "pending").length,
+    approved: requests.filter(r => r.status === "approved").length,
+    rejected: requests.filter(r => r.status === "rejected").length,
+  };
+
   const navItems = [
     { id: "pending", label: `Pending (${stats.pending})`, icon: Clock, color: "text-yellow-500" },
     { id: "approved", label: `Approved (${stats.approved})`, icon: CheckCircle2, color: "text-green-500" },
