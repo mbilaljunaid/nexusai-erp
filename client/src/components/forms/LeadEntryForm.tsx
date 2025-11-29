@@ -13,9 +13,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Sparkles, TrendingUp } from "lucide-react";
+import { Sparkles, TrendingUp, Check } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function LeadEntryForm() {
+  const { toast } = useToast();
   const [leadTab, setLeadTab] = useState("quick");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -25,9 +28,50 @@ export function LeadEntryForm() {
   const [source, setSource] = useState("");
   const [status, setStatus] = useState("new");
   const [showAIScore, setShowAIScore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const aiScore = 78;
   const aiScoreReason = "Tech company in growth stage, 50+ employees, matches target ICP";
+
+  const handleSaveLead = async () => {
+    if (!firstName || !lastName || !email) {
+      toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const payload = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        company,
+        source,
+        status
+      };
+      
+      await api.crm.leads.create(payload);
+      setSuccessMessage("Lead saved successfully!");
+      toast({ title: "Success", description: "Lead entry created" });
+      
+      // Reset form
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setCompany("");
+      setSource("");
+      setStatus("new");
+      
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -166,10 +210,27 @@ export function LeadEntryForm() {
           </Card>
 
           {/* Actions */}
-          <div className="flex gap-3">
-            <Button>Save Draft</Button>
-            <Button variant="outline">Save & Convert to Opportunity</Button>
-            <Button variant="ghost">Cancel</Button>
+          <div className="flex gap-3 flex-col">
+            <div className="flex gap-3">
+              <Button 
+                onClick={handleSaveLead}
+                disabled={isLoading}
+                data-testid="button-save-lead"
+              >
+                {isLoading ? "Saving..." : successMessage ? "Saved!" : "Save Draft"}
+              </Button>
+              <Button variant="outline">Save & Convert to Opportunity</Button>
+              <Button variant="ghost">Cancel</Button>
+            </div>
+            
+            {successMessage && (
+              <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-900">
+                <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <AlertDescription className="text-sm text-green-900 dark:text-green-100 ml-2">
+                  {successMessage}
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         </TabsContent>
 

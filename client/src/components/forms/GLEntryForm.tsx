@@ -14,9 +14,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, AlertTriangle, Plus } from "lucide-react";
+import { Sparkles, AlertTriangle, Plus, Check } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function GLEntryForm() {
+  const { toast } = useToast();
   const [tab, setTab] = useState("simple");
   const [journalDate, setJournalDate] = useState("");
   const [description, setDescription] = useState("");
@@ -25,9 +28,51 @@ export function GLEntryForm() {
   const [creditAccount, setCreditAccount] = useState("");
   const [creditAmount, setCreditAmount] = useState("");
   const [showAICheck, setShowAICheck] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [lines, setLines] = useState([
     { id: 1, account: "", debit: "", credit: "", desc: "" }
   ]);
+
+  const handlePostEntry = async () => {
+    if (!journalDate || !description) {
+      toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const payload = {
+        journalDate,
+        description,
+        lines: tab === "simple" 
+          ? [
+              { account: debitAccount, debit: parseFloat(debitAmount) || 0, credit: 0 },
+              { account: creditAccount, debit: 0, credit: parseFloat(creditAmount) || 0 }
+            ]
+          : lines
+      };
+      
+      await api.erp.glEntries.create(payload);
+      setSuccessMessage("GL Entry posted successfully!");
+      toast({ title: "Success", description: "GL Entry created" });
+      
+      // Reset form
+      setJournalDate("");
+      setDescription("");
+      setDebitAccount("");
+      setDebitAmount("");
+      setCreditAccount("");
+      setCreditAmount("");
+      setLines([{ id: 1, account: "", debit: "", credit: "", desc: "" }]);
+      
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const debit = parseFloat(debitAmount) || 0;
   const credit = parseFloat(creditAmount) || 0;
@@ -349,6 +394,26 @@ export function GLEntryForm() {
                   <AlertTriangle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                   <AlertDescription className="text-sm text-orange-900 dark:text-orange-100 ml-2">
                     Journal out of balance: ${Math.abs(totalDebit - totalCredit).toFixed(2)}
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  onClick={handlePostEntry}
+                  disabled={isLoading || !isTableBalanced}
+                  data-testid="button-post-entry"
+                >
+                  {isLoading ? "Posting..." : successMessage ? "Posted!" : "Post Entry"}
+                </Button>
+                <Button variant="ghost">Cancel</Button>
+              </div>
+              
+              {successMessage && (
+                <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-900">
+                  <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <AlertDescription className="text-sm text-green-900 dark:text-green-100 ml-2">
+                    {successMessage}
                   </AlertDescription>
                 </Alert>
               )}

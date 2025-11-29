@@ -18,7 +18,7 @@ export class BudgetController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Budget> {
+  findOne(@Param('id') id: string): Promise<Budget | null> {
     return this.budgetService.findOne(id);
   }
 
@@ -26,7 +26,7 @@ export class BudgetController {
   update(
     @Param('id') id: string,
     @Body() updateData: Partial<CreateBudgetDto>,
-  ): Promise<Budget> {
+  ): Promise<Budget | null> {
     return this.budgetService.update(id, updateData);
   }
 

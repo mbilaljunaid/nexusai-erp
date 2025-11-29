@@ -14,18 +14,59 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Sparkles, TrendingUp, Plus } from "lucide-react";
+import { Sparkles, TrendingUp, Plus, Check } from "lucide-react";
+import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function BudgetEntryForm() {
+  const { toast } = useToast();
   const [quickTab, setQuickTab] = useState("quick");
   const [budgetCycle, setBudgetCycle] = useState("");
   const [department, setDepartment] = useState("");
   const [costCenter, setCostCenter] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [monthlyBudget, setMonthlyBudget] = useState({
     jan: "", feb: "", mar: "", apr: "", may: "", jun: "",
     jul: "", aug: "", sep: "", oct: "", nov: "", dec: ""
   });
   const [showAISuggestion, setShowAISuggestion] = useState(false);
+
+  const handleSaveDraft = async () => {
+    if (!budgetCycle || !department || !costCenter) {
+      toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const payload = {
+        budgetCycle,
+        department,
+        costCenter,
+        amounts: monthlyBudget
+      };
+      
+      await api.epm.budgets.create(payload);
+      setSuccessMessage("Budget saved successfully!");
+      toast({ title: "Success", description: "Budget entry created" });
+      
+      // Reset form
+      setBudgetCycle("");
+      setDepartment("");
+      setCostCenter("");
+      setMonthlyBudget({
+        jan: "", feb: "", mar: "", apr: "", may: "", jun: "",
+        jul: "", aug: "", sep: "", oct: "", nov: "", dec: ""
+      });
+      
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -214,13 +255,29 @@ export function BudgetEntryForm() {
           </Card>
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4">
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Save Draft
-            </Button>
-            <Button variant="outline">Request Review</Button>
-            <Button variant="ghost">Cancel</Button>
+          <div className="flex gap-3 pt-4 flex-col">
+            <div className="flex gap-3">
+              <Button 
+                onClick={handleSaveDraft}
+                disabled={isLoading}
+                className="gap-2"
+                data-testid="button-save-budget"
+              >
+                <Plus className="h-4 w-4" />
+                {isLoading ? "Saving..." : successMessage ? "Saved!" : "Save Draft"}
+              </Button>
+              <Button variant="outline">Request Review</Button>
+              <Button variant="ghost">Cancel</Button>
+            </div>
+            
+            {successMessage && (
+              <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-900">
+                <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <AlertDescription className="text-sm text-green-900 dark:text-green-100 ml-2">
+                  {successMessage}
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         </TabsContent>
 
