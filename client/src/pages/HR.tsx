@@ -93,64 +93,52 @@ export default function HR() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="employees">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Employee Directory</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Employee management module coming soon. View, manage, and track all employee information.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "employees" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Employee Directory</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Employee management module coming soon. View, manage, and track all employee information.</p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="recruitment">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Recruitment</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Recruitment module coming soon. Manage job openings, candidates, and hiring process.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "recruitment" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Recruitment</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Recruitment module coming soon. Manage job openings, candidates, and hiring process.</p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="payroll">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Payroll</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Payroll module coming soon. Process salaries, deductions, and tax compliance.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "payroll" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Payroll</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Payroll module coming soon. Process salaries, deductions, and tax compliance.</p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="performance">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Performance Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Performance module coming soon. Manage goals, reviews, and development plans.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      <ModuleNav
-        title="HR Modules"
-        items={[
-          { title: "Employee Directory", icon: Users, href: "/employees" },
-          { title: "Org Chart", icon: Users, href: "/org-chart" },
-          { title: "Leave Requests", icon: Calendar, href: "/leave-request" },
-          { title: "Payroll", icon: DollarSign, href: "/payroll" },
-          { title: "Performance Reviews", icon: BarChart3, href: "/performance-reviews" },
-          { title: "Talent Pool", icon: Users, href: "/talent-pool" },
-        ]}
-      />
+      {activeNav === "performance" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Performance Management</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Performance module coming soon. Manage goals, reviews, and development plans.</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
