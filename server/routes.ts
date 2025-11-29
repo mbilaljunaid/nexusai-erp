@@ -48,6 +48,10 @@ const budgetsStore: any[] = [];
 const consolidationsStore: any[] = [];
 const variancesStore: any[] = [];
 const predictionsStore: any[] = [];
+const ragJobsStore: any[] = [];
+const copilotChatsStore: any[] = [];
+const errorEventsStore: any[] = [];
+const knowledgeEntitiesStore: any[] = [];
 
 export async function registerRoutes(
   httpServer: Server,
@@ -525,6 +529,85 @@ export async function registerRoutes(
       );
     }
     res.json(predictionsStore);
+  });
+
+  // PHASE 6: RAG Embeddings
+  app.get("/api/rag/embeddings", async (req, res) => {
+    if (ragJobsStore.length === 0) {
+      ragJobsStore.push(
+        { id: "rag1", name: "CRM Documents", status: "completed", vectors: 5000000, documents: 125000 },
+        { id: "rag2", name: "KB Articles", status: "processing", vectors: 2000000, documents: 50000 }
+      );
+    }
+    res.json(ragJobsStore);
+  });
+
+  // PHASE 6: Copilot (CRM, ERP, HR)
+  app.get("/api/copilot/crm", async (req, res) => {
+    if (copilotChatsStore.filter((c: any) => c.module === "crm").length === 0) {
+      copilotChatsStore.push(
+        { id: "c1", user: "Alice", message: "Best leads this quarter", type: "insight", module: "crm", timestamp: new Date().toISOString() },
+        { id: "c2", user: "Bob", message: "Cross-sell opportunity detected", type: "recommendation", module: "crm", timestamp: new Date().toISOString() }
+      );
+    }
+    res.json(copilotChatsStore.filter((c: any) => c.module === "crm"));
+  });
+
+  app.get("/api/copilot/erp", async (req, res) => {
+    const erpChats = [
+      { id: "e1", category: "Procurement", finding: "Unusual vendor payment pattern detected", severity: "critical", impact: "$250K savings" },
+      { id: "e2", category: "Inventory", finding: "Slow-moving stock identified", severity: "warning", impact: "$100K optimization" }
+    ];
+    res.json(erpChats);
+  });
+
+  app.get("/api/copilot/hr", async (req, res) => {
+    const hrInsights = [
+      { id: "h1", employee: "John Smith", insight: "Flight risk detected", category: "retention", action: "Schedule retention call" },
+      { id: "h2", employee: "Jane Doe", insight: "Leadership potential identified", category: "succession", action: "Recommend for mentor program" }
+    ];
+    res.json(hrInsights);
+  });
+
+  // PHASE 6: Performance Metrics
+  app.get("/api/performance/metrics", async (req, res) => {
+    const metrics = [
+      { id: "m1", name: "Page Load Time", before: 2500, after: 1200, unit: "ms" },
+      { id: "m2", name: "Bundle Size", before: 850, after: 320, unit: "KB" },
+      { id: "m3", name: "Time to Interactive", before: 3200, after: 1400, unit: "ms" }
+    ];
+    res.json(metrics);
+  });
+
+  // PHASE 6: Error Tracking
+  app.get("/api/errors/tracking", async (req, res) => {
+    if (errorEventsStore.length === 0) {
+      errorEventsStore.push(
+        { id: "err1", message: "Database connection timeout", severity: "critical", count: 12, status: "resolved" },
+        { id: "err2", message: "API rate limit exceeded", severity: "warning", count: 45, status: "tracking" }
+      );
+    }
+    res.json(errorEventsStore);
+  });
+
+  // PHASE 6: Semantic Search
+  app.get("/api/search/semantic", async (req, res) => {
+    const searches = [
+      { id: "s1", query: "customer churn analysis", resultCount: 127, avgRelevance: 0.92, executionTime: 234 },
+      { id: "s2", query: "revenue forecasting models", resultCount: 89, avgRelevance: 0.88, executionTime: 198 }
+    ];
+    res.json(searches);
+  });
+
+  // PHASE 6: Knowledge Graph
+  app.get("/api/knowledge-graph/entities", async (req, res) => {
+    if (knowledgeEntitiesStore.length === 0) {
+      knowledgeEntitiesStore.push(
+        { id: "kg1", name: "Salesforce", type: "Platform", relationships: 45, confidence: 0.95 },
+        { id: "kg2", name: "Revenue", type: "Metric", relationships: 78, confidence: 0.92 }
+      );
+    }
+    res.json(knowledgeEntitiesStore);
   });
 
   // PHASE 1: AI Copilot

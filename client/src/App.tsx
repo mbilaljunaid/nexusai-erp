@@ -104,6 +104,14 @@ const BudgetPlanning = lazy(() => import("@/pages/BudgetPlanning"));
 const ConsolidationEngine = lazy(() => import("@/pages/ConsolidationEngine"));
 const VarianceAnalysis = lazy(() => import("@/pages/VarianceAnalysis"));
 const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
+const RAGEmbeddingsPipeline = lazy(() => import("@/pages/RAGEmbeddingsPipeline"));
+const CRMCopilot = lazy(() => import("@/pages/CRMCopilot"));
+const ERPCopilot = lazy(() => import("@/pages/ERPCopilot"));
+const HRCopilot = lazy(() => import("@/pages/HRCopilot"));
+const PerformanceTuning = lazy(() => import("@/pages/PerformanceTuning"));
+const ErrorHandling = lazy(() => import("@/pages/ErrorHandling"));
+const SemanticSearch = lazy(() => import("@/pages/SemanticSearch"));
+const KnowledgeGraph = lazy(() => import("@/pages/KnowledgeGraph"));
 const Health = lazy(() => import("@/pages/Health"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Industries = lazy(() => import("@/pages/Industries"));
@@ -218,6 +226,14 @@ function Router() {
       <Route path="/consolidation-engine" component={ConsolidationEngine} />
       <Route path="/variance-analysis" component={VarianceAnalysis} />
       <Route path="/predictive-analytics" component={PredictiveAnalytics} />
+      <Route path="/rag-embeddings" component={RAGEmbeddingsPipeline} />
+      <Route path="/crm-copilot" component={CRMCopilot} />
+      <Route path="/erp-copilot" component={ERPCopilot} />
+      <Route path="/hr-copilot" component={HRCopilot} />
+      <Route path="/performance-tuning" component={PerformanceTuning} />
+      <Route path="/error-handling" component={ErrorHandling} />
+      <Route path="/semantic-search" component={SemanticSearch} />
+      <Route path="/knowledge-graph" component={KnowledgeGraph} />
       <Route path="/opportunities" component={OpportunityList} />
       <Route path="/opportunity/:id" component={OpportunityDetail} />
       <Route path="/leads/:id" component={LeadDetail} />
