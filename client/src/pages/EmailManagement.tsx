@@ -1,10 +1,19 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Send, Archive, Trash2, Plus } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { Mail, Send, Archive, BarChart3, Users } from "lucide-react";
 
 export default function EmailManagement() {
+  const [activeNav, setActiveNav] = useState("campaigns");
+
+  const navItems = [
+    { id: "campaigns", label: "Campaigns", icon: Send, color: "text-blue-500" },
+    { id: "templates", label: "Templates", icon: Mail, color: "text-purple-500" },
+    { id: "subscribers", label: "Subscribers", icon: Users, color: "text-green-500" },
+  ];
+
   const campaigns = [
     { id: "1", name: "Q1 2025 Launch", status: "active", sent: 5234, opens: 1249, clicks: 234 },
     { id: "2", name: "Holiday Promo", status: "completed", sent: 8934, opens: 2145, clicks: 512 },
@@ -27,23 +36,19 @@ export default function EmailManagement() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-bold">Email Management</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2"><Mail className="h-8 w-8" />Email Management</h1>
           <p className="text-muted-foreground mt-2">Create, send, and track email campaigns</p>
         </div>
         <Button data-testid="button-new-campaign">
-          <Plus className="h-4 w-4 mr-2" />
+          <Send className="h-4 w-4 mr-2" />
           New Campaign
         </Button>
       </div>
 
-      <Tabs defaultValue="campaigns" className="w-full">
-        <TabsList>
-          <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
-          <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="campaigns" className="space-y-4 mt-6">
+      {activeNav === "campaigns" && (
+        <div className="space-y-4">
           {campaigns.map((campaign) => {
             const stats = calculateStats(campaign.sent, campaign.opens, campaign.clicks);
             return (
@@ -62,79 +67,41 @@ export default function EmailManagement() {
                     </Badge>
                   </div>
                   <div className="grid grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Opens</p>
-                      <p className="text-lg font-semibold">{stats.openRate}%</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Clicks</p>
-                      <p className="text-lg font-semibold">{stats.clickRate}%</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Conversions</p>
-                      <p className="text-lg font-semibold">{campaign.clicks}</p>
-                    </div>
+                    <div><p className="text-xs text-muted-foreground">Opens</p><p className="text-lg font-semibold">{stats.openRate}%</p></div>
+                    <div><p className="text-xs text-muted-foreground">Clicks</p><p className="text-lg font-semibold">{stats.clickRate}%</p></div>
+                    <div><p className="text-xs text-muted-foreground">Conversions</p><p className="text-lg font-semibold">{campaign.clicks}</p></div>
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" data-testid={`button-edit-campaign-${campaign.id}`}>
-                      Edit
-                    </Button>
-                    {campaign.status === "active" && (
-                      <Button size="sm" variant="outline">
-                        <Archive className="h-4 w-4 mr-1" />
-                        Archive
-                      </Button>
-                    )}
+                    <Button size="sm" variant="outline" data-testid={`button-edit-campaign-${campaign.id}`}>Edit</Button>
+                    {campaign.status === "active" && (<Button size="sm" variant="outline"><Archive className="h-4 w-4 mr-1" />Archive</Button>)}
                   </div>
                 </CardContent>
               </Card>
             );
           })}
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="templates" className="space-y-4 mt-6">
-          {templates.map((template, idx) => (
-            <Card key={idx} data-testid={`template-${template.name.replace(/\s+/g, "-").toLowerCase()}`}>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">{template.name}</h3>
-                    <p className="text-sm text-muted-foreground">{template.category} • Used {template.uses} times</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline">
-                      Edit
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
+      {activeNav === "templates" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {templates.map((template) => (
+              <Card key={template.name} data-testid={`card-template-${template.name}`}>
+                <CardHeader>
+                  <CardTitle className="text-base">{template.name}</CardTitle>
+                </CardHeader>
+                <CardContent><p className="text-sm text-muted-foreground">Category: {template.category}</p><p className="text-sm font-semibold mt-2">Used {template.uses} times</p></CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
-        <TabsContent value="subscribers" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Subscriber Lists</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {["All Subscribers", "Active Users", "Inactive Users", "High-Value Customers"].map((list, idx) => (
-                  <div key={idx} className="p-3 border rounded-lg flex justify-between items-center" data-testid={`list-${list.replace(/\s+/g, "-").toLowerCase()}`}>
-                    <span className="font-medium">{list}</span>
-                    <Button size="sm" variant="outline">
-                      Manage
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {activeNav === "subscribers" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle className="text-base">Subscriber Management</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Total subscribers: 45,234</p><p className="text-muted-foreground">Active: 42,123</p><p className="text-muted-foreground">Unsubscribed: 3,111</p></CardContent></Card>
+        </div>
+      )}
     </div>
   );
 }
