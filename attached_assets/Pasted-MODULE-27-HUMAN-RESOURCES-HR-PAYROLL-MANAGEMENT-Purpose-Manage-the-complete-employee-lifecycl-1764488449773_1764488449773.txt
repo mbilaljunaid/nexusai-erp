@@ -1,0 +1,99 @@
+MODULE 27: HUMAN RESOURCES (HR) & PAYROLL MANAGEMENT
+
+Purpose: Manage the complete employee lifecycle including recruitment, onboarding, attendance, leave, performance, training, payroll, benefits, compliance, and analytics across ERP, Finance, Projects, CRM, Inventory, EPM, BI, AI, and Compliance modules.
+
+Important Note for Replit: Before creating any HR, payroll, or employee management objects, workflows, or dashboards, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+27.1 Employee Master & Profile Management
+
+Forms / Screens: Employee Creation/Edit, Personal Details, Job Details, Emergency Contacts, Employee Dashboard.
+
+Fields: Employee ID, Name, DOB, Gender, Address, Contact Details, Department, Designation, Role, Reporting Manager, Date of Joining, Employment Type (Full-Time, Part-Time, Contract), Status (Active, On Leave, Resigned, Terminated), Skills, Qualifications, Bank Details, Audit Fields.
+
+Validations: Mandatory fields enforced, contact info validated, reporting hierarchy checked, duplicate employee prevention, data accuracy verified.
+
+Workflows: Employee creation triggers onboarding checklist, notifications sent to managers and HR, dashboards reflect employee status, integration with Payroll, Projects, Finance, and Compliance modules.
+
+27.2 Recruitment & Onboarding
+
+Forms / Screens: Job Requisition, Candidate Management, Interview Scheduling, Offer Management, Onboarding Checklist.
+
+Fields: Job ID, Title, Department, Hiring Manager, Candidate ID, Resume, Interview Date, Status (Applied, Shortlisted, Interviewed, Offered, Hired, Rejected), Offer Details, Approval Workflow, Audit Fields.
+
+Validations: Mandatory fields enforced, duplicate candidates prevented, interview schedule conflicts checked, approvals enforced for offers.
+
+Workflows: Job posting triggers notifications, candidate stage changes update dashboards, offer acceptance triggers onboarding process, integration with HR, Payroll, and Compliance modules.
+
+27.3 Attendance & Leave Management
+
+Forms / Screens: Attendance Entry, Leave Request, Leave Approval, Shift Scheduling, Attendance Dashboard.
+
+Fields: Employee ID, Date, In-Time, Out-Time, Shift, Leave Type (Sick, Casual, Annual, Unpaid), Leave Balance, Status (Pending, Approved, Rejected), Approval Workflow, Audit Fields.
+
+Validations: Attendance times validated, leave balance checked, overlapping leaves prevented, mandatory approvals enforced.
+
+Workflows: Leave submission triggers approval workflow, attendance updates payroll calculations, dashboards reflect real-time employee presence, integration with Projects and Finance for resource allocation and cost tracking.
+
+27.4 Performance & Appraisal Management
+
+Forms / Screens: Goal Setting, Performance Review, Appraisal Input, Feedback, Performance Dashboard.
+
+Fields: Employee ID, Goals, Target Metrics, Review Period, Reviewer, Rating, Comments, Status (Draft, Submitted, Approved), Approval Workflow, Audit Fields.
+
+Validations: Goals validated, ratings within scale, reviewer assignment checked, approvals enforced.
+
+Workflows: Goal assignment triggers notifications, review completion triggers appraisal workflows, dashboards reflect performance metrics, integration with Payroll for incentive calculation.
+
+27.5 Training & Learning Management
+
+Forms / Screens: Training Program Setup, Employee Enrollment, Training Progress, Feedback, Learning Dashboard.
+
+Fields: Training ID, Program Name, Department, Employee List, Start/End Dates, Status, Completion %, Feedback Score, Approval Workflow, Audit Fields.
+
+Validations: Mandatory fields enforced, enrollment validated, progress tracked, feedback collected, approvals enforced.
+
+Workflows: Training assignment triggers notifications, completion updates dashboards, integration with HR and Performance modules for skill tracking.
+
+27.6 Payroll & Compensation
+
+Forms / Screens: Salary Structure, Payroll Processing, Payslip Generation, Tax & Deduction Management, Payroll Dashboard.
+
+Fields: Employee ID, Basic Salary, Allowances, Deductions, Taxes, Net Pay, Payment Date, Status, Approval Workflow, Audit Fields.
+
+Validations: Salary calculations validated, statutory compliance enforced, approvals for salary revisions, deductions verified.
+
+Workflows: Payroll processing triggers notifications, payslips generated automatically, integration with Finance for payments, dashboards updated in real-time, compliance reports generated.
+
+27.7 Benefits & Employee Self-Service
+
+Forms / Screens: Benefits Enrollment, Claims Management, Self-Service Portal, HR Dashboard.
+
+Fields: Employee ID, Benefit Type, Enrollment Period, Claims Details, Status (Pending, Approved, Rejected), Approval Workflow, Audit Fields.
+
+Validations: Benefit eligibility validated, claims accuracy checked, approvals enforced.
+
+Workflows: Enrollment or claims trigger notifications, updates reflected in dashboards, integration with Payroll and Finance, AI modules provide recommendations for benefit optimization.
+
+27.8 Reporting & Analytics
+
+Forms / Screens: HR Reports (Headcount, Attrition, Attendance, Leave, Training), Payroll Reports, Performance Reports, HR Dashboard.
+
+Fields: Report ID, Name, Module, Filters (Department, Employee, Period, Status), Metrics (Salary, Attendance, Performance, Training Completion), Export Options, Schedule, Audit Fields.
+
+Validations: Data accuracy validated, filters verified, scheduled execution tested, dashboards render correctly.
+
+Workflows: Reports generated on-demand or scheduled, dashboards update automatically, integration with BI and AI for predictive HR analytics.
+
+27.9 Integrations & Automations
+
+Automations: Leave notifications, payroll calculations, appraisal alerts, training reminders, employee onboarding workflows.
+
+Integrations: ERP/Finance for salary payments, Projects for resource allocation, CRM for role assignments, Compliance for labor law adherence, AI/BI modules for analytics and predictions.
+
+Key Features: Complete employee lifecycle management, recruitment & onboarding, attendance & leave, performance & appraisals, training & learning, payroll & compensation, benefits management, dashboards & analytics, workflow automation, AI-powered insights, cross-module integration, audit-ready and compliance integrated.
+
+Important Note for Replit: Before creating any HR, payroll, or employee management objects, workflows, dashboards, or integrations, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+⸻
+
+Do you want me to continue with Module 28: Finance & Accounting Management next?

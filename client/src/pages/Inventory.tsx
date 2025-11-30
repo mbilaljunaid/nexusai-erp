@@ -1,15 +1,56 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Package, Warehouse, AlertTriangle, TrendingDown } from "lucide-react";
+import { Package, Warehouse, AlertTriangle, TrendingDown, Plus, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Inventory() {
+  const { toast } = useToast();
   const [viewType, setViewType] = useState("items");
+  const [newItem, setNewItem] = useState({ itemName: "", sku: "", quantity: "" });
+  const [newWarehouse, setNewWarehouse] = useState({ warehouseName: "", location: "" });
 
-  const { data: items = [] } = useQuery<any[]>({ queryKey: ["/api/inventory/items"] });
-  const { data: warehouses = [] } = useQuery<any[]>({ queryKey: ["/api/inventory/warehouses"] });
+  const { data: items = [], isLoading: itemsLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/items"], queryFn: () => fetch("/api/inventory/items").then(r => r.json()).catch(() => []) });
+  const { data: warehouses = [], isLoading: whLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/warehouses"], queryFn: () => fetch("/api/inventory/warehouses").then(r => r.json()).catch(() => []) });
+
+  const createItemMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
+      setNewItem({ itemName: "", sku: "", quantity: "" });
+      toast({ title: "Item created" });
+    },
+  });
+
+  const deleteItemMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/inventory/items/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
+      toast({ title: "Item deleted" });
+    },
+  });
+
+  const createWhMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/inventory/warehouses", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/inventory/warehouses"] });
+      setNewWarehouse({ warehouseName: "", location: "" });
+      toast({ title: "Warehouse created" });
+    },
+  });
+
+  const deleteWhMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/inventory/warehouses/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/inventory/warehouses"] });
+      toast({ title: "Warehouse deleted" });
+    },
+  });
 
   const lowStockItems = items.filter((item: any) => item.quantity <= item.reorderLevel);
 
@@ -74,71 +115,73 @@ export default function Inventory() {
       </div>
 
       {viewType === "items" && (
-        <div className="space-y-3">
-          {items.map((item: any) => (
-            <Card key={item.id} data-testid={`card-item-${item.id}`}>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between mb-3">
+        <div className="space-y-4 p-4">
+          <Card data-testid="card-new-item">
+            <CardHeader><CardTitle className="text-base">Add New Item</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-3 gap-3">
+                <Input placeholder="Item name" value={newItem.itemName} onChange={(e) => setNewItem({ ...newItem, itemName: e.target.value })} data-testid="input-item-name" />
+                <Input placeholder="SKU" value={newItem.sku} onChange={(e) => setNewItem({ ...newItem, sku: e.target.value })} data-testid="input-sku" />
+                <Input placeholder="Quantity" type="number" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} data-testid="input-quantity" />
+              </div>
+              <Button onClick={() => createItemMutation.mutate(newItem)} disabled={createItemMutation.isPending || !newItem.itemName} className="w-full" data-testid="button-add-item">
+                <Plus className="w-4 h-4 mr-2" /> Add Item
+              </Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader><CardTitle className="text-base">Inventory Items</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              {itemsLoading ? <p>Loading...</p> : items.length === 0 ? <p className="text-muted-foreground text-center py-4">No items</p> : items.map((item: any) => (
+                <div key={item.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`item-${item.id}`}>
                   <div>
                     <h4 className="font-semibold">{item.itemName}</h4>
-                    <p className="text-xs text-muted-foreground">Code: {item.itemCode}</p>
+                    <p className="text-xs text-muted-foreground">SKU: {item.sku} • Qty: {item.quantity}</p>
                   </div>
-                  <Badge variant={item.quantity > item.reorderLevel ? "default" : "destructive"}>
-                    {item.quantity} units
-                  </Badge>
-                </div>
-                <div className="grid grid-cols-4 gap-2 text-sm">
-                  <div>
-                    <span className="text-xs text-muted-foreground">Category</span>
-                    <p className="font-medium">{item.category}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground">Reorder Level</span>
-                    <p className="font-medium">{item.reorderLevel}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground">Unit Cost</span>
-                    <p className="font-medium">${item.unitCost}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground">Warehouse</span>
-                    <p className="font-medium">{item.warehouse}</p>
+                  <div className="flex gap-2 items-center">
+                    <Badge>{item.quantity} units</Badge>
+                    <Button size="icon" variant="ghost" onClick={() => deleteItemMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              ))}
+            </CardContent>
+          </Card>
         </div>
       )}
 
       {viewType === "warehouses" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {warehouses.map((wh: any) => (
-            <Card key={wh.id} data-testid={`card-warehouse-${wh.id}`}>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Warehouse className="h-5 w-5 text-green-600" />
-                  {wh.warehouseName}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <span className="text-xs text-muted-foreground">Location</span>
-                  <p className="text-sm font-medium">{wh.location}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <span className="text-xs text-muted-foreground">Capacity</span>
-                    <p className="text-lg font-bold">{wh.capacity}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground">Occupancy</span>
-                    <p className="text-lg font-bold">{wh.occupancy}%</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="space-y-4 p-4">
+          <Card data-testid="card-new-warehouse">
+            <CardHeader><CardTitle className="text-base">Add Warehouse</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <Input placeholder="Warehouse name" value={newWarehouse.warehouseName} onChange={(e) => setNewWarehouse({ ...newWarehouse, warehouseName: e.target.value })} data-testid="input-wh-name" />
+                <Input placeholder="Location" value={newWarehouse.location} onChange={(e) => setNewWarehouse({ ...newWarehouse, location: e.target.value })} data-testid="input-location" />
+              </div>
+              <Button onClick={() => createWhMutation.mutate(newWarehouse)} disabled={createWhMutation.isPending || !newWarehouse.warehouseName} className="w-full" data-testid="button-add-warehouse">
+                <Plus className="w-4 h-4 mr-2" /> Add Warehouse
+              </Button>
+            </CardContent>
+          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {whLoading ? <p>Loading...</p> : warehouses.length === 0 ? <p className="text-muted-foreground col-span-2 text-center py-4">No warehouses</p> : warehouses.map((wh: any) => (
+              <Card key={wh.id} data-testid={`warehouse-${wh.id}`} className="hover-elevate">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center justify-between">
+                    <span className="flex items-center gap-2"><Warehouse className="h-5 w-5 text-green-600" />{wh.warehouseName}</span>
+                    <Button size="icon" variant="ghost" onClick={() => deleteWhMutation.mutate(wh.id)} data-testid={`button-delete-wh-${wh.id}`}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div><span className="text-xs text-muted-foreground">Location</span><p className="text-sm font-medium">{wh.location}</p></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       )}
     </div>
