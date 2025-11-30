@@ -3205,6 +3205,126 @@ export async function registerRoutes(
     res.status(201).json(tc);
   });
 
+  // ========== MODULE 9: CRM & CUSTOMER MANAGEMENT ENDPOINTS ==========
+  const customerStore: any[] = [];
+  const contactStore: any[] = [];
+  const opportunityStore: any[] = [];
+  const quoteStore: any[] = [];
+  const orderStore: any[] = [];
+  const salesActivityStore: any[] = [];
+  const salesPipelineStore: any[] = [];
+
+  app.get("/api/customers", (req, res) => {
+    if (customerStore.length === 0) {
+      customerStore.push(
+        { id: "c1", customerName: "Acme Corp", industry: "Technology", segment: "Enterprise", revenue: "50000000", status: "active" },
+        { id: "c2", customerName: "Global Industries", industry: "Manufacturing", segment: "Mid-Market", revenue: "20000000", status: "active" }
+      );
+    }
+    res.json(customerStore);
+  });
+
+  app.post("/api/customers", (req, res) => {
+    const cust = { id: `c-${Date.now()}`, ...req.body, status: "active" };
+    customerStore.push(cust);
+    res.status(201).json(cust);
+  });
+
+  app.get("/api/contacts", (req, res) => {
+    if (contactStore.length === 0) {
+      contactStore.push(
+        { id: "co1", customerId: "c1", firstName: "Alice", lastName: "Johnson", title: "CTO", email: "alice@acme.com", status: "active" },
+        { id: "co2", customerId: "c2", firstName: "Bob", lastName: "Smith", title: "Procurement Manager", email: "bob@global.com", status: "active" }
+      );
+    }
+    res.json(contactStore);
+  });
+
+  app.post("/api/contacts", (req, res) => {
+    const contact = { id: `co-${Date.now()}`, ...req.body, status: "active" };
+    contactStore.push(contact);
+    res.status(201).json(contact);
+  });
+
+  app.get("/api/opportunities", (req, res) => {
+    if (opportunityStore.length === 0) {
+      opportunityStore.push(
+        { id: "op1", customerId: "c1", opportunityName: "Cloud Migration", stage: "proposal", expectedValue: "250000", probability: "70", owner: "Alice", status: "active" },
+        { id: "op2", customerId: "c2", opportunityName: "ERP Implementation", stage: "negotiation", expectedValue: "500000", probability: "60", owner: "Bob", status: "active" }
+      );
+    }
+    res.json(opportunityStore);
+  });
+
+  app.post("/api/opportunities", (req, res) => {
+    const opp = { id: `op-${Date.now()}`, ...req.body, stage: "prospecting", status: "active" };
+    opportunityStore.push(opp);
+    res.status(201).json(opp);
+  });
+
+  app.get("/api/quotes", (req, res) => {
+    if (quoteStore.length === 0) {
+      quoteStore.push(
+        { id: "q1", customerId: "c1", quoteNumber: "QT-2025-001", totalAmount: "150000", status: "draft", approvalStatus: "pending" },
+        { id: "q2", customerId: "c2", quoteNumber: "QT-2025-002", totalAmount: "500000", status: "sent", approvalStatus: "pending" }
+      );
+    }
+    res.json(quoteStore);
+  });
+
+  app.post("/api/quotes", (req, res) => {
+    const quote = { id: `q-${Date.now()}`, ...req.body, status: "draft", approvalStatus: "pending" };
+    quoteStore.push(quote);
+    res.status(201).json(quote);
+  });
+
+  app.get("/api/orders", (req, res) => {
+    if (orderStore.length === 0) {
+      orderStore.push(
+        { id: "o1", customerId: "c1", orderNumber: "ORD-2025-001", totalAmount: "150000", status: "pending", approvalStatus: "pending" },
+        { id: "o2", customerId: "c2", orderNumber: "ORD-2025-002", totalAmount: "500000", status: "approved", approvalStatus: "approved" }
+      );
+    }
+    res.json(orderStore);
+  });
+
+  app.post("/api/orders", (req, res) => {
+    const order = { id: `o-${Date.now()}`, ...req.body, status: "pending", approvalStatus: "pending" };
+    orderStore.push(order);
+    res.status(201).json(order);
+  });
+
+  app.get("/api/sales-activities", (req, res) => {
+    if (salesActivityStore.length === 0) {
+      salesActivityStore.push(
+        { id: "sa1", customerId: "c1", activityType: "Call", subject: "Follow-up on proposal", owner: "Alice", priority: "high", completed: false },
+        { id: "sa2", customerId: "c2", activityType: "Email", subject: "Send contract", owner: "Bob", priority: "high", completed: false }
+      );
+    }
+    res.json(salesActivityStore);
+  });
+
+  app.post("/api/sales-activities", (req, res) => {
+    const activity = { id: `sa-${Date.now()}`, ...req.body, completed: false };
+    salesActivityStore.push(activity);
+    res.status(201).json(activity);
+  });
+
+  app.get("/api/sales-pipeline", (req, res) => {
+    if (salesPipelineStore.length === 0) {
+      salesPipelineStore.push(
+        { id: "sp1", ownerId: "u1", month: "November 2025", prospecting: "500000", qualification: "300000", proposal: "750000", closedWon: "150000" }
+      );
+    }
+    res.json(salesPipelineStore);
+  });
+
+  app.post("/api/sales-pipeline", (req, res) => {
+    const pipeline = { id: `sp-${Date.now()}`, ...req.body };
+    salesPipelineStore.push(pipeline);
+    res.status(201).json(pipeline);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

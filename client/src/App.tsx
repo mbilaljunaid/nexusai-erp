@@ -273,6 +273,10 @@ const TimesheetManagement = lazy(() => import("@/pages/TimesheetManagement"));
 const ProjectBudgetManagement = lazy(() => import("@/pages/ProjectBudgetManagement"));
 const ResourceUtilizationDashboard = lazy(() => import("@/pages/ResourceUtilizationDashboard"));
 const TeamCollaborationHub = lazy(() => import("@/pages/TeamCollaborationHub"));
+const ContactManagement = lazy(() => import("@/pages/ContactManagement"));
+const OpportunitiesPage = lazy(() => import("@/pages/OpportunitiesPage"));
+const QuotesAndOrders = lazy(() => import("@/pages/QuotesAndOrders"));
+const SalesActivities = lazy(() => import("@/pages/SalesActivities"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -725,6 +729,10 @@ function Router() {
       <Route path="/project-budget" component={ProjectBudgetManagement} />
       <Route path="/resource-utilization" component={ResourceUtilizationDashboard} />
       <Route path="/team-collaboration" component={TeamCollaborationHub} />
+      <Route path="/contacts" component={ContactManagement} />
+      <Route path="/opportunities" component={OpportunitiesPage} />
+      <Route path="/quotes-orders" component={QuotesAndOrders} />
+      <Route path="/sales-activities" component={SalesActivities} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />
