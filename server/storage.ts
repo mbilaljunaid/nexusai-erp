@@ -39,8 +39,6 @@ import {
   type Plan, type InsertPlan,
   type Subscription, type InsertSubscription,
   type Payment, type InsertPayment,
-  type ApiKey, type InsertApiKey,
-  type Webhook, type InsertWebhook,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -65,13 +63,6 @@ export interface IStorage {
   listPayments(invoiceId?: string): Promise<Payment[]>;
   createPayment(payment: InsertPayment): Promise<Payment>;
 
-  getApiKey(id: string): Promise<ApiKey | undefined>;
-  listApiKeys(tenantId?: string): Promise<ApiKey[]>;
-  createApiKey(key: InsertApiKey): Promise<ApiKey>;
-
-  getWebhook(id: string): Promise<Webhook | undefined>;
-  listWebhooks(tenantId?: string): Promise<Webhook[]>;
-  createWebhook(webhook: InsertWebhook): Promise<Webhook>;
 
   getUser(id: string): Promise<User | undefined>;
   listUsers(): Promise<User[]>;
@@ -226,8 +217,6 @@ export class MemStorage implements IStorage {
   private plans = new Map<string, Plan>();
   private subscriptions = new Map<string, Subscription>();
   private payments = new Map<string, Payment>();
-  private apiKeys = new Map<string, ApiKey>();
-  private webhooks = new Map<string, Webhook>();
   private users = new Map<string, User>();
   private projects = new Map<string, Project>();
   private invoices = new Map<string, Invoice>();
@@ -285,13 +274,6 @@ export class MemStorage implements IStorage {
   async listPayments(invoiceId?: string) { const list = Array.from(this.payments.values()); return invoiceId ? list.filter(p => p.invoiceId === invoiceId) : list; }
   async createPayment(p: InsertPayment) { const id = randomUUID(); const payment: Payment = { id, ...p as any, createdAt: new Date() }; this.payments.set(id, payment); return payment; }
 
-  async getApiKey(id: string) { return this.apiKeys.get(id); }
-  async listApiKeys(tenantId?: string) { const list = Array.from(this.apiKeys.values()); return tenantId ? list.filter(k => k.tenantId === tenantId) : list; }
-  async createApiKey(k: InsertApiKey) { const id = randomUUID(); const key: ApiKey = { id, ...k as any, createdAt: new Date() }; this.apiKeys.set(id, key); return key; }
-
-  async getWebhook(id: string) { return this.webhooks.get(id); }
-  async listWebhooks(tenantId?: string) { const list = Array.from(this.webhooks.values()); return tenantId ? list.filter(w => w.tenantId === tenantId) : list; }
-  async createWebhook(w: InsertWebhook) { const id = randomUUID(); const webhook: Webhook = { id, ...w as any, createdAt: new Date() }; this.webhooks.set(id, webhook); return webhook; }
 
   async getUser(id: string) { return this.users.get(id); }
   async listUsers() { return Array.from(this.users.values()); }
