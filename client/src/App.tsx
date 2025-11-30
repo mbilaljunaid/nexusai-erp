@@ -334,6 +334,16 @@ const ReplenishmentPlanning = lazy(() => import("@/pages/ReplenishmentPlanning")
 const PricingPromotionManagement = lazy(() => import("@/pages/PricingPromotionManagement"));
 const OmniChannelFulfillment = lazy(() => import("@/pages/OmniChannelFulfillment"));
 const RetailBIDashboard = lazy(() => import("@/pages/RetailBIDashboard"));
+const GoodsReceiptPutaway = lazy(() => import("@/pages/GoodsReceiptPutaway"));
+const StockPickingPacking = lazy(() => import("@/pages/StockPickingPacking"));
+const CycleCountingAudit = lazy(() => import("@/pages/CycleCountingAudit"));
+const FreightRateCalculation = lazy(() => import("@/pages/FreightRateCalculation"));
+const VehicleFleetManagement = lazy(() => import("@/pages/VehicleFleetManagement"));
+const MaintenanceScheduling = lazy(() => import("@/pages/MaintenanceScheduling"));
+const SupplierCarrierManagement = lazy(() => import("@/pages/SupplierCarrierManagement"));
+const InventoryAllocationOptimization = lazy(() => import("@/pages/InventoryAllocationOptimization"));
+const LogisticsComplianceSafety = lazy(() => import("@/pages/LogisticsComplianceSafety"));
+const LogisticsBIDashboard = lazy(() => import("@/pages/LogisticsBIDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -879,6 +889,16 @@ function Router() {
       <Route path="/pricing-promotions" component={PricingPromotionManagement} />
       <Route path="/omni-fulfillment" component={OmniChannelFulfillment} />
       <Route path="/retail-analytics" component={RetailBIDashboard} />
+      <Route path="/goods-receipt-putaway" component={GoodsReceiptPutaway} />
+      <Route path="/stock-picking-packing" component={StockPickingPacking} />
+      <Route path="/cycle-counting" component={CycleCountingAudit} />
+      <Route path="/freight-rate-calc" component={FreightRateCalculation} />
+      <Route path="/fleet-management" component={VehicleFleetManagement} />
+      <Route path="/maintenance-schedule" component={MaintenanceScheduling} />
+      <Route path="/suppliers-carriers" component={SupplierCarrierManagement} />
+      <Route path="/inventory-allocation" component={InventoryAllocationOptimization} />
+      <Route path="/compliance-safety" component={LogisticsComplianceSafety} />
+      <Route path="/logistics-analytics" component={LogisticsBIDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
