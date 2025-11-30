@@ -5643,6 +5643,87 @@ export async function registerRoutes(
     res.status(201).json(w);
   });
 
+  // ========== INDUSTRY PACK 27: RETAIL & E-COMMERCE ==========
+  const retProdStore: any[] = []; const retInvStore: any[] = []; const retOrdStore: any[] = [];
+  const retCustStore: any[] = []; const retLoyStore: any[] = []; const retPricStore: any[] = [];
+  const retBillStore: any[] = []; const retSupStore: any[] = []; const retHrStore: any[] = [];
+  const retMerchStore: any[] = []; const retAnalStore: any[] = []; const retCampStore: any[] = [];
+
+  app.get("/api/retail-products", (req, res) => { if (retProdStore.length === 0) retProdStore.push({ id: "p1", sku: "SKU-001", name: "Product", status: "active" }); res.json(retProdStore); });
+  app.post("/api/retail-products", (req, res) => { const p = { id: `p-${Date.now()}`, ...req.body }; retProdStore.push(p); res.status(201).json(p); });
+
+  app.get("/api/retail-inventory", (req, res) => { if (retInvStore.length === 0) retInvStore.push({ id: "i1", sku: "SKU-001", quantity: "100", warehouse: "WH-001" }); res.json(retInvStore); });
+  app.post("/api/retail-inventory", (req, res) => { const i = { id: `i-${Date.now()}`, ...req.body }; retInvStore.push(i); res.status(201).json(i); });
+
+  app.get("/api/retail-orders", (req, res) => { if (retOrdStore.length === 0) retOrdStore.push({ id: "o1", orderId: "ORD-001", total: "100", status: "fulfilled" }); res.json(retOrdStore); });
+  app.post("/api/retail-orders", (req, res) => { const o = { id: `o-${Date.now()}`, ...req.body }; retOrdStore.push(o); res.status(201).json(o); });
+
+  app.get("/api/retail-customers", (req, res) => { if (retCustStore.length === 0) retCustStore.push({ id: "c1", customerId: "CUST-001", email: "test@test.com", status: "active" }); res.json(retCustStore); });
+  app.post("/api/retail-customers", (req, res) => { const c = { id: `c-${Date.now()}`, ...req.body }; retCustStore.push(c); res.status(201).json(c); });
+
+  app.get("/api/retail-loyalty", (req, res) => { if (retLoyStore.length === 0) retLoyStore.push({ id: "l1", memberId: "MEM-001", points: "100", status: "active" }); res.json(retLoyStore); });
+  app.post("/api/retail-loyalty", (req, res) => { const l = { id: `l-${Date.now()}`, ...req.body }; retLoyStore.push(l); res.status(201).json(l); });
+
+  app.get("/api/retail-pricing", (req, res) => { if (retPricStore.length === 0) retPricStore.push({ id: "pr1", name: "Promo", discount: "10", status: "active" }); res.json(retPricStore); });
+  app.post("/api/retail-pricing", (req, res) => { const pr = { id: `pr-${Date.now()}`, ...req.body }; retPricStore.push(pr); res.status(201).json(pr); });
+
+  app.get("/api/retail-billing", (req, res) => { if (retBillStore.length === 0) retBillStore.push({ id: "b1", invoiceId: "INV-001", amount: "100", status: "paid" }); res.json(retBillStore); });
+  app.post("/api/retail-billing", (req, res) => { const b = { id: `b-${Date.now()}`, ...req.body }; retBillStore.push(b); res.status(201).json(b); });
+
+  app.get("/api/retail-supply", (req, res) => { if (retSupStore.length === 0) retSupStore.push({ id: "s1", supplierId: "SUPP-001", category: "Vendor", status: "active" }); res.json(retSupStore); });
+  app.post("/api/retail-supply", (req, res) => { const s = { id: `s-${Date.now()}`, ...req.body }; retSupStore.push(s); res.status(201).json(s); });
+
+  app.get("/api/retail-hr", (req, res) => { if (retHrStore.length === 0) retHrStore.push({ id: "e1", employeeId: "EMP-001", role: "staff", status: "active" }); res.json(retHrStore); });
+  app.post("/api/retail-hr", (req, res) => { const e = { id: `e-${Date.now()}`, ...req.body }; retHrStore.push(e); res.status(201).json(e); });
+
+  app.get("/api/retail-merchandising", (req, res) => { if (retMerchStore.length === 0) retMerchStore.push({ id: "m1", modelId: "MODEL-001", type: "recommendation", status: "active" }); res.json(retMerchStore); });
+  app.post("/api/retail-merchandising", (req, res) => { const m = { id: `m-${Date.now()}`, ...req.body }; retMerchStore.push(m); res.status(201).json(m); });
+
+  app.get("/api/retail-analytics", (req, res) => { if (retAnalStore.length === 0) retAnalStore.push({ id: "a1", channel: "online", revenue: "10000", margin: "25" }); res.json(retAnalStore); });
+  app.post("/api/retail-analytics", (req, res) => { const a = { id: `a-${Date.now()}`, ...req.body }; retAnalStore.push(a); res.status(201).json(a); });
+
+  app.get("/api/retail-campaigns", (req, res) => { if (retCampStore.length === 0) retCampStore.push({ id: "cam1", campaignId: "CAMP-001", channel: "email", status: "active" }); res.json(retCampStore); });
+  app.post("/api/retail-campaigns", (req, res) => { const cam = { id: `cam-${Date.now()}`, ...req.body }; retCampStore.push(cam); res.status(201).json(cam); });
+
+  // ========== INDUSTRY PACK 28: HOSPITALITY & TRAVEL ==========
+  const hospPropStore: any[] = []; const hospBookStore: any[] = []; const hospGuestStore: any[] = [];
+  const hospCrmStore: any[] = []; const hospBillStore: any[] = []; const hospSupStore: any[] = [];
+  const hospHrStore: any[] = []; const hospOptStore: any[] = []; const hospAnalStore: any[] = [];
+  const hospEvtStore: any[] = []; const hospItinStore: any[] = [];
+
+  app.get("/api/hospitality-properties", (req, res) => { if (hospPropStore.length === 0) hospPropStore.push({ id: "hp1", propertyId: "PROP-001", rooms: "100", status: "active" }); res.json(hospPropStore); });
+  app.post("/api/hospitality-properties", (req, res) => { const hp = { id: `hp-${Date.now()}`, ...req.body }; hospPropStore.push(hp); res.status(201).json(hp); });
+
+  app.get("/api/hospitality-bookings", (req, res) => { if (hospBookStore.length === 0) hospBookStore.push({ id: "hb1", bookingId: "BOOK-001", nights: "3", status: "confirmed" }); res.json(hospBookStore); });
+  app.post("/api/hospitality-bookings", (req, res) => { const hb = { id: `hb-${Date.now()}`, ...req.body }; hospBookStore.push(hb); res.status(201).json(hb); });
+
+  app.get("/api/hospitality-guests", (req, res) => { if (hospGuestStore.length === 0) hospGuestStore.push({ id: "hg1", guestId: "GUEST-001", tier: "vip", status: "active" }); res.json(hospGuestStore); });
+  app.post("/api/hospitality-guests", (req, res) => { const hg = { id: `hg-${Date.now()}`, ...req.body }; hospGuestStore.push(hg); res.status(201).json(hg); });
+
+  app.get("/api/hospitality-crm", (req, res) => { if (hospCrmStore.length === 0) hospCrmStore.push({ id: "hc1", memberId: "MEM-001", points: "500", status: "active" }); res.json(hospCrmStore); });
+  app.post("/api/hospitality-crm", (req, res) => { const hc = { id: `hc-${Date.now()}`, ...req.body }; hospCrmStore.push(hc); res.status(201).json(hc); });
+
+  app.get("/api/hospitality-billing", (req, res) => { if (hospBillStore.length === 0) hospBillStore.push({ id: "hbl1", invoiceId: "INV-001", amount: "500", status: "paid" }); res.json(hospBillStore); });
+  app.post("/api/hospitality-billing", (req, res) => { const hbl = { id: `hbl-${Date.now()}`, ...req.body }; hospBillStore.push(hbl); res.status(201).json(hbl); });
+
+  app.get("/api/hospitality-supply", (req, res) => { if (hospSupStore.length === 0) hospSupStore.push({ id: "hs1", supplierId: "SUPP-001", category: "F&B", status: "active" }); res.json(hospSupStore); });
+  app.post("/api/hospitality-supply", (req, res) => { const hs = { id: `hs-${Date.now()}`, ...req.body }; hospSupStore.push(hs); res.status(201).json(hs); });
+
+  app.get("/api/hospitality-hr", (req, res) => { if (hospHrStore.length === 0) hospHrStore.push({ id: "hhr1", employeeId: "EMP-001", role: "front-desk", status: "active" }); res.json(hospHrStore); });
+  app.post("/api/hospitality-hr", (req, res) => { const hhr = { id: `hhr-${Date.now()}`, ...req.body }; hospHrStore.push(hhr); res.status(201).json(hhr); });
+
+  app.get("/api/hospitality-optimization", (req, res) => { if (hospOptStore.length === 0) hospOptStore.push({ id: "hopt1", modelId: "MODEL-001", type: "pricing", status: "optimized" }); res.json(hospOptStore); });
+  app.post("/api/hospitality-optimization", (req, res) => { const hopt = { id: `hopt-${Date.now()}`, ...req.body }; hospOptStore.push(hopt); res.status(201).json(hopt); });
+
+  app.get("/api/hospitality-analytics", (req, res) => { if (hospAnalStore.length === 0) hospAnalStore.push({ id: "hana1", propertyId: "PROP-001", revenue: "50000", occupancy: "85" }); res.json(hospAnalStore); });
+  app.post("/api/hospitality-analytics", (req, res) => { const hana = { id: `hana-${Date.now()}`, ...req.body }; hospAnalStore.push(hana); res.status(201).json(hana); });
+
+  app.get("/api/hospitality-events", (req, res) => { if (hospEvtStore.length === 0) hospEvtStore.push({ id: "hev1", eventId: "EVENT-001", type: "conference", status: "active" }); res.json(hospEvtStore); });
+  app.post("/api/hospitality-events", (req, res) => { const hev = { id: `hev-${Date.now()}`, ...req.body }; hospEvtStore.push(hev); res.status(201).json(hev); });
+
+  app.get("/api/hospitality-itinerary", (req, res) => { if (hospItinStore.length === 0) hospItinStore.push({ id: "hit1", itineraryId: "ITIN-001", days: "7", status: "confirmed" }); res.json(hospItinStore); });
+  app.post("/api/hospitality-itinerary", (req, res) => { const hit = { id: `hit-${Date.now()}`, ...req.body }; hospItinStore.push(hit); res.status(201).json(hit); });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

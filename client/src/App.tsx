@@ -550,11 +550,11 @@ const EnergyAnalytics = lazy(() => import("@/pages/EnergyAnalytics"));
 const SupplyChainEnergy = lazy(() => import("@/pages/SupplyChainEnergy"));
 const EnergyFieldService = lazy(() => import("@/pages/FieldService"));
 const EnergyDashboard = lazy(() => import("@/pages/AssetManagement"));
-const ProductCatalog = lazy(() => import("@/pages/ProductCatalog"));
-const InventoryWarehouse = lazy(() => import("@/pages/InventoryWarehouse"));
-const OrderFulfillment = lazy(() => import("@/pages/OrderFulfillment"));
-const CustomerProfiles = lazy(() => import("@/pages/CustomerProfiles"));
-const LoyaltyPrograms = lazy(() => import("@/pages/LoyaltyPrograms"));
+const ProductCatalogRetail = lazy(() => import("@/pages/ProductCatalog"));
+const InventoryWarehouseRetail = lazy(() => import("@/pages/InventoryWarehouse"));
+const OrderFulfillmentRetail = lazy(() => import("@/pages/OrderFulfillment"));
+const CustomerProfilesRetail = lazy(() => import("@/pages/CustomerProfiles"));
+const LoyaltyProgramsRetail = lazy(() => import("@/pages/LoyaltyPrograms"));
 const PricingPromotionsRetail = lazy(() => import("@/pages/PricingPromotionsRetail"));
 const BillingPaymentsRetail = lazy(() => import("@/pages/BillingPaymentsRetail"));
 const SupplyChainRetail = lazy(() => import("@/pages/SupplyChainRetail"));
@@ -562,6 +562,17 @@ const HRRetailStaff = lazy(() => import("@/pages/HRRetailStaff"));
 const MerchandisingAI = lazy(() => import("@/pages/MerchandisingAI"));
 const RetailAnalyticsBI = lazy(() => import("@/pages/RetailAnalyticsBI"));
 const MarketingCampaignsRetail = lazy(() => import("@/pages/MarketingCampaignsRetail"));
+const PropertyManagement = lazy(() => import("@/pages/PropertyManagement"));
+const ReservationsBookings = lazy(() => import("@/pages/ReservationsBookings"));
+const GuestManagement = lazy(() => import("@/pages/GuestManagement"));
+const HospitalityCRM = lazy(() => import("@/pages/HospitalityCRM"));
+const HospitalityBilling = lazy(() => import("@/pages/HospitalityBilling"));
+const HospitalitySupply = lazy(() => import("@/pages/HospitalitySupply"));
+const HospitalityHR = lazy(() => import("@/pages/HospitalityHR"));
+const RevenueOptimization = lazy(() => import("@/pages/RevenueOptimization"));
+const HospitalityAnalytics = lazy(() => import("@/pages/HospitalityAnalytics"));
+const EventsActivities = lazy(() => import("@/pages/EventsActivities"));
+const TravelItinerary = lazy(() => import("@/pages/TravelItinerary"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1325,11 +1336,11 @@ function Router() {
       <Route path="/energy-analytics" component={EnergyAnalytics} />
       <Route path="/energy-supply" component={SupplyChainEnergy} />
       <Route path="/energy-fieldservice" component={EnergyFieldService} />
-      <Route path="/retail-products" component={ProductCatalog} />
-      <Route path="/retail-inventory" component={InventoryWarehouse} />
-      <Route path="/retail-orders" component={OrderFulfillment} />
-      <Route path="/retail-customers" component={CustomerProfiles} />
-      <Route path="/retail-loyalty" component={LoyaltyPrograms} />
+      <Route path="/retail-products" component={ProductCatalogRetail} />
+      <Route path="/retail-inventory" component={InventoryWarehouseRetail} />
+      <Route path="/retail-orders" component={OrderFulfillmentRetail} />
+      <Route path="/retail-customers" component={CustomerProfilesRetail} />
+      <Route path="/retail-loyalty" component={LoyaltyProgramsRetail} />
       <Route path="/retail-pricing" component={PricingPromotionsRetail} />
       <Route path="/retail-billing" component={BillingPaymentsRetail} />
       <Route path="/retail-supply" component={SupplyChainRetail} />
@@ -1337,6 +1348,17 @@ function Router() {
       <Route path="/retail-merchandising" component={MerchandisingAI} />
       <Route path="/retail-analytics" component={RetailAnalyticsBI} />
       <Route path="/retail-campaigns" component={MarketingCampaignsRetail} />
+      <Route path="/hospitality-properties" component={PropertyManagement} />
+      <Route path="/hospitality-bookings" component={ReservationsBookings} />
+      <Route path="/hospitality-guests" component={GuestManagement} />
+      <Route path="/hospitality-crm" component={HospitalityCRM} />
+      <Route path="/hospitality-billing" component={HospitalityBilling} />
+      <Route path="/hospitality-supply" component={HospitalitySupply} />
+      <Route path="/hospitality-hr" component={HospitalityHR} />
+      <Route path="/hospitality-optimization" component={RevenueOptimization} />
+      <Route path="/hospitality-analytics" component={HospitalityAnalytics} />
+      <Route path="/hospitality-events" component={EventsActivities} />
+      <Route path="/hospitality-itinerary" component={TravelItinerary} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
