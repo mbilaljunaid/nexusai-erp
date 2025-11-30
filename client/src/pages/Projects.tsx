@@ -20,7 +20,7 @@ import {
   Sparkles,
   LayoutGrid,
   ListTodo,
-  Users3
+  Users
 } from "lucide-react";
 import {
   Select,
@@ -50,7 +50,7 @@ export default function Projects() {
     { id: "overview", label: "Overview", icon: LayoutGrid, color: "text-blue-500" },
     { id: "kanban", label: "Kanban", icon: FolderKanban, color: "text-purple-500" },
     { id: "tasks", label: "All Tasks", icon: ListTodo, color: "text-green-500" },
-    { id: "resources", label: "Resources", icon: Users3, color: "text-orange-500" },
+    { id: "resources", label: "Resources", icon: Users, color: "text-orange-500" },
   ];
 
   // todo: remove mock functionality
@@ -166,7 +166,6 @@ export default function Projects() {
               </SelectContent>
             </Select>
           </div>
-      </div>
 
       {activeNav === "overview" && (
         <div className="space-y-6">
