@@ -519,6 +519,15 @@ const HRMfg = lazy(() => import("@/pages/HRMfg"));
 const MfgPredictiveMaintenance = lazy(() => import("@/pages/PredictiveMaintenance"));
 const MfgAnalytics = lazy(() => import("@/pages/MfgAnalytics"));
 const MfgDashboard = lazy(() => import("@/pages/MfgDashboard"));
+const CustomerBilling = lazy(() => import("@/pages/CustomerBilling"));
+const ServiceCatalog = lazy(() => import("@/pages/ServiceCatalog"));
+const OrdersNetwork = lazy(() => import("@/pages/OrdersNetwork"));
+const NetworkProvisioning = lazy(() => import("@/pages/NetworkProvisioning"));
+const HRTelecom = lazy(() => import("@/pages/HRTelecom"));
+const NetworkOptimization = lazy(() => import("@/pages/NetworkOptimization"));
+const InventoryTelecom = lazy(() => import("@/pages/InventoryTelecom"));
+const ComplianceTelecom = lazy(() => import("@/pages/ComplianceTelecom"));
+const TelecomDashboard = lazy(() => import("@/pages/TelecomDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1247,6 +1256,18 @@ function Router() {
       <Route path="/mfg-predictive" component={MfgPredictiveMaintenance} />
       <Route path="/mfg-analytics" component={MfgAnalytics} />
       <Route path="/mfg-dashboard" component={MfgDashboard} />
+      <Route path="/telecom-customers" component={CustomerBilling} />
+      <Route path="/telecom-services" component={ServiceCatalog} />
+      <Route path="/telecom-orders" component={OrdersNetwork} />
+      <Route path="/telecom-provisioning" component={NetworkProvisioning} />
+      <Route path="/telecom-support" component={Support} />
+      <Route path="/telecom-revenue" component={RevenueAssurance} />
+      <Route path="/telecom-hr" component={HRTelecom} />
+      <Route path="/telecom-optimization" component={NetworkOptimization} />
+      <Route path="/telecom-analytics" component={TelecomAnalytics} />
+      <Route path="/telecom-inventory" component={InventoryTelecom} />
+      <Route path="/telecom-compliance" component={ComplianceTelecom} />
+      <Route path="/telecom-dashboard" component={TelecomDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />

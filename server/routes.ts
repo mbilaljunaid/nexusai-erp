@@ -5315,6 +5315,82 @@ export async function registerRoutes(
     res.status(201).json(dash);
   });
 
+  // ========== INDUSTRY PACK 23: TELECOM & NETWORKS (Additional APIs) ==========
+  const telecomCustomersStore2: any[] = []; const telecomOrdersStore2: any[] = []; 
+  const telecomProvisioningStore2: any[] = []; const telecomHrStore2: any[] = []; 
+  const telecomOptimizationStore2: any[] = []; const telecomInventoryStore2: any[] = []; 
+  const telecomDashboardStore2: any[] = [];
+
+  app.get("/api/telecom-customers", (req, res) => {
+    if (telecomCustomersStore2.length === 0) telecomCustomersStore2.push({ id: "c1", customerId: "CUST-001", planId: "PLAN-001", status: "active", monthlyBill: "50" });
+    res.json(telecomCustomersStore2);
+  });
+  app.post("/api/telecom-customers", (req, res) => {
+    const cust = { id: `c-${Date.now()}`, ...req.body };
+    telecomCustomersStore2.push(cust);
+    res.status(201).json(cust);
+  });
+
+  app.get("/api/telecom-orders", (req, res) => {
+    if (telecomOrdersStore2.length === 0) telecomOrdersStore2.push({ id: "o1", orderId: "ORD-001", serviceId: "SVC-001", status: "activated" });
+    res.json(telecomOrdersStore2);
+  });
+  app.post("/api/telecom-orders", (req, res) => {
+    const ord = { id: `o-${Date.now()}`, ...req.body };
+    telecomOrdersStore2.push(ord);
+    res.status(201).json(ord);
+  });
+
+  app.get("/api/telecom-provisioning", (req, res) => {
+    if (telecomProvisioningStore2.length === 0) telecomProvisioningStore2.push({ id: "r1", resourceId: "RES-001", deviceId: "DEV-001", status: "active" });
+    res.json(telecomProvisioningStore2);
+  });
+  app.post("/api/telecom-provisioning", (req, res) => {
+    const res2 = { id: `r-${Date.now()}`, ...req.body };
+    telecomProvisioningStore2.push(res2);
+    res.status(201).json(res2);
+  });
+
+  app.get("/api/telecom-hr", (req, res) => {
+    if (telecomHrStore2.length === 0) telecomHrStore2.push({ id: "e1", employeeId: "EMP-001", department: "NOC", status: "active" });
+    res.json(telecomHrStore2);
+  });
+  app.post("/api/telecom-hr", (req, res) => {
+    const emp = { id: `e-${Date.now()}`, ...req.body };
+    telecomHrStore2.push(emp);
+    res.status(201).json(emp);
+  });
+
+  app.get("/api/telecom-optimization", (req, res) => {
+    if (telecomOptimizationStore2.length === 0) telecomOptimizationStore2.push({ id: "p1", predictionId: "PRED-001", type: "fault", status: "optimized" });
+    res.json(telecomOptimizationStore2);
+  });
+  app.post("/api/telecom-optimization", (req, res) => {
+    const pred = { id: `p-${Date.now()}`, ...req.body };
+    telecomOptimizationStore2.push(pred);
+    res.status(201).json(pred);
+  });
+
+  app.get("/api/telecom-inventory", (req, res) => {
+    if (telecomInventoryStore2.length === 0) telecomInventoryStore2.push({ id: "as1", assetId: "ASSET-001", type: "equipment", status: "active" });
+    res.json(telecomInventoryStore2);
+  });
+  app.post("/api/telecom-inventory", (req, res) => {
+    const ast = { id: `as-${Date.now()}`, ...req.body };
+    telecomInventoryStore2.push(ast);
+    res.status(201).json(ast);
+  });
+
+  app.get("/api/telecom-dashboard", (req, res) => {
+    if (telecomDashboardStore2.length === 0) telecomDashboardStore2.push({ id: "d1", kpiName: "Network Health", target: "99.9", actual: "99.8", status: "healthy" });
+    res.json(telecomDashboardStore2);
+  });
+  app.post("/api/telecom-dashboard", (req, res) => {
+    const dash = { id: `d-${Date.now()}`, ...req.body };
+    telecomDashboardStore2.push(dash);
+    res.status(201).json(dash);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
