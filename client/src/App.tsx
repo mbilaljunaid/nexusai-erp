@@ -125,6 +125,12 @@ const OnboardingAutomation = lazy(() => import("@/pages/OnboardingAutomation"));
 const BudgetPlanning = lazy(() => import("@/pages/BudgetPlanning"));
 const ConsolidationEngine = lazy(() => import("@/pages/ConsolidationEngine"));
 
+// Public Pages
+const LandingPage = lazy(() => import("@/pages/LandingPage"));
+const DemoManagement = lazy(() => import("@/pages/DemoManagement"));
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const BlogPage = lazy(() => import("@/pages/BlogPage"));
+
 // Detail pages for section navigation
 const LeadsDetail = lazy(() => import("@/pages/LeadsDetail"));
 const OpportunitiesDetail = lazy(() => import("@/pages/OpportunitiesDetail"));

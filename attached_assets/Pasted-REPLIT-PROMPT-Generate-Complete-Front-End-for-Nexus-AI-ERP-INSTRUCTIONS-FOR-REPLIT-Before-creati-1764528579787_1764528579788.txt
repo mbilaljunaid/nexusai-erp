@@ -1,0 +1,65 @@
+REPLIT PROMPT — Generate Complete Front-End for Nexus AI ERP
+
+INSTRUCTIONS FOR REPLIT:
+Before creating any front-end pages, Replit MUST scan the existing codebase and skip any already existing pages or objects. Do NOT duplicate or overwrite. Only create missing pages. All outputs must be copy-paste ready in Next.js / React framework, fully responsive, modern design, vibrant colors.
+
+TASKS:
+
+1. Generate **Landing Page**:
+- Hero Section with headline: "Nexus AI — Your All-in-One AI-Powered ERP"
+- Subheadline: "Transforming Enterprises Across 40+ Industries with AI, Automation & End-to-End Modules"
+- CTA button: "Request a Demo" → links to demo request form
+- Industry Coverage Section: clickable grid/list of all industries
+- Modules Overview Section: ERP, CRM, HR, Projects, EPM, Finance, Inventory, Compliance, BPM, Website, Email, BI, AI, Consolidation, Closing, Reconciliation
+- Advantages Section: AI automation, pre-configured workflows, competitor comparison (Oracle, Zoho, Salesforce, Odoo, Jira)
+- Demo CTA Section: "Click Here to See Demo"
+
+2. Generate **Industry Pages** (41 total):
+- Sections: Industry overview, modules enabled, process flows, automation templates, advantages, demo button
+
+3. Generate **Module Feature Pages** (one per module):
+- Detailed features and functionalities
+- Process flows
+- Comparisons with Oracle, Zoho, Salesforce, Odoo, Jira
+- Example diagrams/screenshots placeholders
+
+4. Generate **Training Guides / User Manuals**:
+- Step-by-step usage for each module
+- Workflow examples and AI recommendations
+
+5. Generate **Marketing / Competitor Comparison Pages**:
+- Feature-by-feature comparison with competitors
+- Advantages highlighted per module
+
+6. Generate **Community / Forum Pages**:
+- User posts, categories by module or industry
+- Voting, threads, moderator roles
+
+7. Generate **Demo Management / Request Pages**:
+- Form to submit email → triggers demo environment creation
+- Demo button links to seeded data environment
+- Automated email generation with credentials and instructions
+
+8. Generate **Blog / Knowledge Base Pages** (Optional):
+- Articles, ERP best practices, AI tips
+
+9. Generate **About / Contact Pages**:
+- About Nexus AI, mission, contact info, support links
+
+GENERAL NOTES:
+- Ensure all pages are fully responsive, Next.js / React compatible, and SEO optimized
+- Include demo button linking to demo scripts environment for seeded data
+- Maintain consistent design, module naming, and branding
+- All generated content should be copy-paste ready
+- Avoid duplicating existing pages
+
+EXECUTION:
+- Step 1: Landing Page
+- Step 2: Generate all Industry Pages
+- Step 3: Generate all Module Pages
+- Step 4: Training Guides / Manuals
+- Step 5: Marketing / Comparison Pages
+- Step 6: Community / Forum Pages
+- Step 7: Demo Management Pages
+- Step 8: Blog / Knowledge Base Pages
+- Step 9: About / Contact Pages
