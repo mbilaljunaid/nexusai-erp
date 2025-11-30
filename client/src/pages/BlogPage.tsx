@@ -2,10 +2,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, User } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
+
+  useEffect(() => {
+    document.title = "Blog | NexusAI ERP Platform";
+  }, []);
 
   const posts = [
     {
@@ -72,10 +76,6 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
-      <head>
-        <title>Blog | NexusAI ERP Platform</title>
-        <meta name="description" content="Read the latest articles, best practices, and insights about ERP, automation, and enterprise software." />
-      </head>
 
       {/* Hero */}
       <section className="px-4 py-16 text-center max-w-4xl mx-auto">

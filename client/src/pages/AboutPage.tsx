@@ -2,14 +2,15 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Linkedin, Github, Twitter } from "lucide-react";
 import { Link } from "wouter";
+import { useEffect } from "react";
 
 export default function AboutPage() {
+  useEffect(() => {
+    document.title = "About NexusAI | AI-Powered ERP Platform";
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
-      <head>
-        <title>About NexusAI | AI-Powered ERP Platform</title>
-        <meta name="description" content="Learn about NexusAI, the all-in-one AI-powered ERP platform transforming enterprises across 40+ industries." />
-      </head>
 
       {/* Hero */}
       <section className="px-4 py-20 text-center max-w-4xl mx-auto">

@@ -3,12 +3,17 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function LandingPage() {
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
   const [submitted, setSubmitted] = useState(false);
+
+  // Set page title
+  useEffect(() => {
+    document.title = "NexusAI - AI-Powered ERP for Enterprise | 40+ Industries";
+  }, []);
 
   const handleDemo = async () => {
     try {
@@ -48,10 +53,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
-      <head>
-        <title>NexusAI - AI-Powered ERP for Enterprise | 40+ Industries</title>
-        <meta name="description" content="Transform your enterprise with NexusAI's all-in-one AI-powered ERP. Pre-configured for 40+ industries with real-time automation, analytics, and AI insights." />
-      </head>
 
       {/* Hero Section */}
       <section className="px-4 py-24 text-center">
