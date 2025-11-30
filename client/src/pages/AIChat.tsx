@@ -25,11 +25,18 @@ export default function AIChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [currentMessages]);
 
+  // Default RBAC context for demo
+  const rbacHeaders = {
+    "x-tenant-id": "tenant1",
+    "x-user-id": "user1",
+    "x-user-role": "admin",
+  };
+
   const createConvMutation = useMutation({
     mutationFn: async () => {
       const resp = await fetch("/api/copilot/conversations", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...rbacHeaders },
         body: JSON.stringify({
           title: `Conversation ${new Date().toLocaleTimeString()}`,
           context: "general",
@@ -48,7 +55,7 @@ export default function AIChat() {
       if (!activeConvId) {
         const resp = await fetch("/api/copilot/conversations", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...rbacHeaders },
           body: JSON.stringify({
             title: `Conversation ${new Date().toLocaleTimeString()}`,
             context: "general",
@@ -58,7 +65,7 @@ export default function AIChat() {
         setActiveConvId(conv.id);
         await fetch("/api/copilot/messages", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...rbacHeaders },
           body: JSON.stringify({
             conversationId: conv.id,
             role: "user",
@@ -68,7 +75,7 @@ export default function AIChat() {
       } else {
         await fetch("/api/copilot/messages", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...rbacHeaders },
           body: JSON.stringify({
             conversationId: activeConvId,
             role: "user",

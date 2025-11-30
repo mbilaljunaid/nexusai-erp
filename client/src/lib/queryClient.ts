@@ -1,5 +1,18 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// Default RBAC context for demo (in production, this would come from auth system)
+const DEFAULT_TENANT_ID = "tenant1";
+const DEFAULT_USER_ID = "user1";
+const DEFAULT_USER_ROLE = "admin";
+
+function getRBACHeaders() {
+  return {
+    "x-tenant-id": DEFAULT_TENANT_ID,
+    "x-user-id": DEFAULT_USER_ID,
+    "x-user-role": DEFAULT_USER_ROLE,
+  };
+}
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
@@ -14,7 +27,10 @@ export async function apiRequest(
 ): Promise<Response> {
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers: {
+      ...getRBACHeaders(),
+      ...(data ? { "Content-Type": "application/json" } : {}),
+    },
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
@@ -30,6 +46,7 @@ export const getQueryFn: <T>(options: {
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     const res = await fetch(queryKey.join("/") as string, {
+      headers: getRBACHeaders(),
       credentials: "include",
     });
 
