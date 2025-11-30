@@ -1930,3 +1930,143 @@ export const dataIntegrationJobs = pgTable("data_integration_jobs", {
   status: varchar("status").default("scheduled"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== PHASE 6: DOCUMENT MANAGEMENT ==========
+export const documents = pgTable("documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  documentName: varchar("document_name").notNull(),
+  documentType: varchar("document_type"),
+  owner: varchar("owner"),
+  filePath: varchar("file_path"),
+  fileSize: integer("file_size"),
+  status: varchar("status").default("active"),
+  expiryDate: timestamp("expiry_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const documentApprovals = pgTable("document_approvals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  documentId: varchar("document_id").notNull(),
+  approver: varchar("approver"),
+  approvalStatus: varchar("approval_status"),
+  comments: text("comments"),
+  approvalDate: timestamp("approval_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 6: EXPENSE MANAGEMENT ==========
+export const expenseReports = pgTable("expense_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  reportNumber: varchar("report_number").notNull(),
+  employeeId: varchar("employee_id"),
+  totalAmount: numeric("total_amount", { precision: 15, scale: 2 }),
+  currency: varchar("currency").default("USD"),
+  status: varchar("status").default("draft"),
+  submitDate: timestamp("submit_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const expenseItems = pgTable("expense_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  reportId: varchar("report_id").notNull(),
+  category: varchar("category"),
+  description: text("description"),
+  amount: numeric("amount", { precision: 15, scale: 2 }),
+  receiptDate: timestamp("receipt_date"),
+  attachmentPath: varchar("attachment_path"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 6: TRAVEL MANAGEMENT ==========
+export const travelRequests = pgTable("travel_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  requestNumber: varchar("request_number").notNull(),
+  employeeId: varchar("employee_id"),
+  destination: varchar("destination"),
+  purpose: text("purpose"),
+  departureDate: timestamp("departure_date"),
+  returnDate: timestamp("return_date"),
+  status: varchar("status").default("pending"),
+  approvedBy: varchar("approved_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const travelExpenses = pgTable("travel_expenses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  travelRequestId: varchar("travel_request_id").notNull(),
+  category: varchar("category"),
+  vendor: varchar("vendor"),
+  amount: numeric("amount", { precision: 15, scale: 2 }),
+  bookingReference: varchar("booking_reference"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 6: TIME & ATTENDANCE ==========
+export const timeEntries = pgTable("time_entries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  employeeId: varchar("employee_id").notNull(),
+  entryDate: timestamp("entry_date"),
+  clockIn: timestamp("clock_in"),
+  clockOut: timestamp("clock_out"),
+  hoursWorked: numeric("hours_worked", { precision: 5, scale: 2 }),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const attendanceRecords = pgTable("attendance_records", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  employeeId: varchar("employee_id").notNull(),
+  recordDate: timestamp("record_date"),
+  status: varchar("status"),
+  reason: text("reason"),
+  approvedBy: varchar("approved_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 6: LEARNING MANAGEMENT ==========
+export const courses = pgTable("courses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  courseName: varchar("course_name").notNull(),
+  description: text("description"),
+  instructor: varchar("instructor"),
+  duration: integer("duration"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  capacity: integer("capacity"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const courseEnrollments = pgTable("course_enrollments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  courseId: varchar("course_id").notNull(),
+  employeeId: varchar("employee_id").notNull(),
+  enrollmentDate: timestamp("enrollment_date"),
+  completionDate: timestamp("completion_date"),
+  progressPercentage: numeric("progress_percentage", { precision: 5, scale: 2 }),
+  status: varchar("status").default("enrolled"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 6: KNOWLEDGE MANAGEMENT ==========
+export const knowledgeBase = pgTable("knowledge_base", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  content: text("content"),
+  category: varchar("category"),
+  author: varchar("author"),
+  tags: jsonb("tags"),
+  views: integer("views").default(0),
+  helpful: integer("helpful").default(0),
+  status: varchar("status").default("published"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const knowledgeComments = pgTable("knowledge_comments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  articleId: varchar("article_id").notNull(),
+  author: varchar("author"),
+  comment: text("comment"),
+  rating: integer("rating"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

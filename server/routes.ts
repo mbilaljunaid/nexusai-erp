@@ -2311,6 +2311,222 @@ export async function registerRoutes(
     res.status(201).json(job);
   });
 
+  // ========== PHASE 6: DOCUMENT MANAGEMENT ENDPOINTS ==========
+  const phase6DocsStore: any[] = [];
+  const phase6ApprovalsStore: any[] = [];
+
+  app.get("/api/documents/list", (req, res) => {
+    if (phase6DocsStore.length === 0) {
+      phase6DocsStore.push(
+        { id: "doc1", documentName: "HR Policy Manual", documentType: "Policy", owner: "Sarah Admin", filePath: "/docs/hr-policy.pdf", fileSize: 2048, status: "active", expiryDate: new Date(Date.now() + 31536000000).toISOString(), createdAt: new Date().toISOString() },
+        { id: "doc2", documentName: "Benefits Guide 2025", documentType: "Guide", owner: "HR Department", filePath: "/docs/benefits.pdf", fileSize: 1536, status: "active", expiryDate: new Date(Date.now() + 31536000000).toISOString(), createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6DocsStore);
+  });
+
+  app.post("/api/documents/list", (req, res) => {
+    const doc = { id: `doc-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6DocsStore.push(doc);
+    res.status(201).json(doc);
+  });
+
+  app.get("/api/documents/approvals", (req, res) => {
+    if (phase6ApprovalsStore.length === 0) {
+      phase6ApprovalsStore.push(
+        { id: "appr1", documentId: "doc1", approver: "John Manager", approvalStatus: "approved", comments: "Looks good", approvalDate: new Date().toISOString(), createdAt: new Date().toISOString() },
+        { id: "appr2", documentId: "doc2", approver: "Jane Director", approvalStatus: "pending", comments: "Under review", approvalDate: null, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6ApprovalsStore);
+  });
+
+  app.post("/api/documents/approvals", (req, res) => {
+    const appr = { id: `appr-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6ApprovalsStore.push(appr);
+    res.status(201).json(appr);
+  });
+
+  // ========== PHASE 6: EXPENSE MANAGEMENT ENDPOINTS ==========
+  const phase6ReportsStore: any[] = [];
+  const phase6ItemsStore: any[] = [];
+
+  app.get("/api/expenses/reports", (req, res) => {
+    if (phase6ReportsStore.length === 0) {
+      phase6ReportsStore.push(
+        { id: "exp1", reportNumber: "EXP-2025-001", employeeId: "EMP001", totalAmount: "1250.50", currency: "USD", status: "approved", submitDate: new Date().toISOString(), createdAt: new Date().toISOString() },
+        { id: "exp2", reportNumber: "EXP-2025-002", employeeId: "EMP002", totalAmount: "890.75", currency: "USD", status: "pending", submitDate: new Date().toISOString(), createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6ReportsStore);
+  });
+
+  app.post("/api/expenses/reports", (req, res) => {
+    const report = { id: `exp-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6ReportsStore.push(report);
+    res.status(201).json(report);
+  });
+
+  app.get("/api/expenses/items", (req, res) => {
+    if (phase6ItemsStore.length === 0) {
+      phase6ItemsStore.push(
+        { id: "item1", reportId: "exp1", category: "Meals", description: "Client lunch meeting", amount: "85.50", receiptDate: new Date().toISOString(), attachmentPath: "/receipts/lunch.jpg", createdAt: new Date().toISOString() },
+        { id: "item2", reportId: "exp1", category: "Transportation", description: "Uber to office", amount: "45.00", receiptDate: new Date().toISOString(), attachmentPath: "/receipts/uber.jpg", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6ItemsStore);
+  });
+
+  app.post("/api/expenses/items", (req, res) => {
+    const item = { id: `item-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6ItemsStore.push(item);
+    res.status(201).json(item);
+  });
+
+  // ========== PHASE 6: TRAVEL MANAGEMENT ENDPOINTS ==========
+  const phase6TravelReqStore: any[] = [];
+  const phase6TravelExpStore: any[] = [];
+
+  app.get("/api/travel/requests", (req, res) => {
+    if (phase6TravelReqStore.length === 0) {
+      phase6TravelReqStore.push(
+        { id: "tr1", requestNumber: "TRAV-2025-001", employeeId: "EMP001", destination: "New York", purpose: "Client meeting", departureDate: new Date(Date.now() + 604800000).toISOString(), returnDate: new Date(Date.now() + 1209600000).toISOString(), status: "approved", approvedBy: "Manager", createdAt: new Date().toISOString() },
+        { id: "tr2", requestNumber: "TRAV-2025-002", employeeId: "EMP003", destination: "Tokyo", purpose: "Conference", departureDate: new Date(Date.now() + 1209600000).toISOString(), returnDate: new Date(Date.now() + 1814400000).toISOString(), status: "pending", approvedBy: null, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6TravelReqStore);
+  });
+
+  app.post("/api/travel/requests", (req, res) => {
+    const travelRequest = { id: `tr-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6TravelReqStore.push(travelRequest);
+    res.status(201).json(travelRequest);
+  });
+
+  app.get("/api/travel/expenses", (req, res) => {
+    if (phase6TravelExpStore.length === 0) {
+      phase6TravelExpStore.push(
+        { id: "te1", travelRequestId: "tr1", category: "Airfare", vendor: "United Airlines", amount: "650.00", bookingReference: "UA123456", createdAt: new Date().toISOString() },
+        { id: "te2", travelRequestId: "tr1", category: "Hotel", vendor: "Hilton", amount: "450.00", bookingReference: "HI789012", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6TravelExpStore);
+  });
+
+  app.post("/api/travel/expenses", (req, res) => {
+    const exp = { id: `te-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6TravelExpStore.push(exp);
+    res.status(201).json(exp);
+  });
+
+  // ========== PHASE 6: TIME & ATTENDANCE ENDPOINTS ==========
+  const phase6TimeEntriesStore: any[] = [];
+  const phase6AttendanceStore: any[] = [];
+
+  app.get("/api/time/entries", (req, res) => {
+    if (phase6TimeEntriesStore.length === 0) {
+      phase6TimeEntriesStore.push(
+        { id: "te1", employeeId: "EMP001", entryDate: new Date().toISOString(), clockIn: new Date(Date.now() - 28800000).toISOString(), clockOut: new Date().toISOString(), hoursWorked: "8.0", status: "active", createdAt: new Date().toISOString() },
+        { id: "te2", employeeId: "EMP002", entryDate: new Date().toISOString(), clockIn: new Date(Date.now() - 28800000).toISOString(), clockOut: null, hoursWorked: null, status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6TimeEntriesStore);
+  });
+
+  app.post("/api/time/entries", (req, res) => {
+    const entry = { id: `te-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6TimeEntriesStore.push(entry);
+    res.status(201).json(entry);
+  });
+
+  app.get("/api/time/attendance", (req, res) => {
+    if (phase6AttendanceStore.length === 0) {
+      phase6AttendanceStore.push(
+        { id: "att1", employeeId: "EMP001", recordDate: new Date().toISOString(), status: "present", reason: null, approvedBy: null, createdAt: new Date().toISOString() },
+        { id: "att2", employeeId: "EMP002", recordDate: new Date().toISOString(), status: "absent", reason: "Sick leave", approvedBy: "HR", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6AttendanceStore);
+  });
+
+  app.post("/api/time/attendance", (req, res) => {
+    const att = { id: `att-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6AttendanceStore.push(att);
+    res.status(201).json(att);
+  });
+
+  // ========== PHASE 6: LEARNING MANAGEMENT ENDPOINTS ==========
+  const phase6CoursesStore: any[] = [];
+  const phase6EnrollmentsStore: any[] = [];
+
+  app.get("/api/learning/courses", (req, res) => {
+    if (phase6CoursesStore.length === 0) {
+      phase6CoursesStore.push(
+        { id: "c1", courseName: "Leadership Excellence", description: "Advanced leadership skills", instructor: "Dr. Smith", duration: 40, startDate: new Date().toISOString(), endDate: new Date(Date.now() + 2592000000).toISOString(), capacity: 30, status: "active", createdAt: new Date().toISOString() },
+        { id: "c2", courseName: "Data Analysis 101", description: "Introduction to data analysis", instructor: "Prof. Johnson", duration: 30, startDate: new Date().toISOString(), endDate: new Date(Date.now() + 2592000000).toISOString(), capacity: 50, status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6CoursesStore);
+  });
+
+  app.post("/api/learning/courses", (req, res) => {
+    const course = { id: `c-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6CoursesStore.push(course);
+    res.status(201).json(course);
+  });
+
+  app.get("/api/learning/enrollments", (req, res) => {
+    if (phase6EnrollmentsStore.length === 0) {
+      phase6EnrollmentsStore.push(
+        { id: "e1", courseId: "c1", employeeId: "EMP001", enrollmentDate: new Date().toISOString(), completionDate: null, progressPercentage: "75", status: "enrolled", createdAt: new Date().toISOString() },
+        { id: "e2", courseId: "c1", employeeId: "EMP002", enrollmentDate: new Date().toISOString(), completionDate: new Date().toISOString(), progressPercentage: "100", status: "completed", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6EnrollmentsStore);
+  });
+
+  app.post("/api/learning/enrollments", (req, res) => {
+    const enrollment = { id: `e-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6EnrollmentsStore.push(enrollment);
+    res.status(201).json(enrollment);
+  });
+
+  // ========== PHASE 6: KNOWLEDGE MANAGEMENT ENDPOINTS ==========
+  const phase6KnowledgeStore: any[] = [];
+  const phase6KnowledgeCommentsStore: any[] = [];
+
+  app.get("/api/knowledge/articles", (req, res) => {
+    if (phase6KnowledgeStore.length === 0) {
+      phase6KnowledgeStore.push(
+        { id: "k1", title: "Getting Started with NexusAI", content: "Complete guide to onboarding", category: "Getting Started", author: "Admin", tags: ["onboarding", "guide"], views: 245, helpful: 198, status: "published", createdAt: new Date().toISOString() },
+        { id: "k2", title: "Advanced Features Guide", content: "In-depth guide to advanced features", category: "Features", author: "Support Team", tags: ["advanced", "features"], views: 178, helpful: 142, status: "published", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6KnowledgeStore);
+  });
+
+  app.post("/api/knowledge/articles", (req, res) => {
+    const article = { id: `k-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6KnowledgeStore.push(article);
+    res.status(201).json(article);
+  });
+
+  app.get("/api/knowledge/comments", (req, res) => {
+    if (phase6KnowledgeCommentsStore.length === 0) {
+      phase6KnowledgeCommentsStore.push(
+        { id: "kc1", articleId: "k1", author: "User1", comment: "Very helpful, thanks!", rating: 5, createdAt: new Date().toISOString() },
+        { id: "kc2", articleId: "k1", author: "User2", comment: "Needs more examples", rating: 3, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase6KnowledgeCommentsStore);
+  });
+
+  app.post("/api/knowledge/comments", (req, res) => {
+    const comment = { id: `kc-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase6KnowledgeCommentsStore.push(comment);
+    res.status(201).json(comment);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

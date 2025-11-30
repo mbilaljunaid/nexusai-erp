@@ -351,6 +351,14 @@ const SupplyChain = lazy(() => import("@/pages/SupplyChain"));
 const Inventory = lazy(() => import("@/pages/Inventory"));
 const QualityManagement = lazy(() => import("@/pages/QualityManagement"));
 
+// Phase 6: Document, Expense, Travel, Time, Learning, Knowledge Management
+const DocumentManagement = lazy(() => import("@/pages/DocumentManagement"));
+const ExpenseManagement = lazy(() => import("@/pages/ExpenseManagement"));
+const TravelManagement = lazy(() => import("@/pages/TravelManagement"));
+const TimeAttendance = lazy(() => import("@/pages/TimeAttendance"));
+const LearningManagement = lazy(() => import("@/pages/LearningManagement"));
+const KnowledgeManagement = lazy(() => import("@/pages/KnowledgeManagement"));
+
 // Phase 3B: Projects & Agile Module
 const Epics = lazy(() => import("@/pages/Epics"));
 const Stories = lazy(() => import("@/pages/Stories"));
@@ -489,6 +497,12 @@ function Router() {
       <Route path="/supply-chain" component={SupplyChain} />
       <Route path="/inventory" component={Inventory} />
       <Route path="/quality-management" component={QualityManagement} />
+      <Route path="/documents" component={DocumentManagement} />
+      <Route path="/expenses" component={ExpenseManagement} />
+      <Route path="/travel" component={TravelManagement} />
+      <Route path="/time-attendance" component={TimeAttendance} />
+      <Route path="/learning" component={LearningManagement} />
+      <Route path="/knowledge" component={KnowledgeManagement} />
       <Route path="/finance" component={Finance} />
       <Route path="/finance/invoices" component={InvoicesDetail} />
       <Route path="/finance/expenses" component={ExpensesDetail} />
