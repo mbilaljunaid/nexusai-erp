@@ -1,17 +1,39 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IconNavigation } from "@/components/IconNavigation";
-import { Package, Plus, Search, AlertTriangle, TrendingDown, BarChart3, Warehouse } from "lucide-react";
+import { Package, Plus, Search, AlertTriangle, TrendingDown, BarChart3, Warehouse, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function InventoryManagement() {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeNav, setActiveNav] = useState("stock-levels");
+  const [newItem, setNewItem] = useState({ itemName: "", sku: "", quantity: "", category: "Raw Materials" });
 
-  const { data: inventory = [] } = useQuery({ queryKey: ["/api/inventory"] });
+  const { data: inventory = [], isLoading } = useQuery({ queryKey: ["/api/inventory/items"], queryFn: () => fetch("/api/inventory/items").then(r => r.json()) });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
+      setNewItem({ itemName: "", sku: "", quantity: "", category: "Raw Materials" });
+      toast({ title: "Item added to inventory" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/inventory/items/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
+      toast({ title: "Item removed" });
+    },
+  });
 
   const navItems = [
     { id: "stock-levels", label: "Stock Levels", icon: Package, color: "text-blue-500" },
@@ -62,6 +84,28 @@ export default function InventoryManagement() {
 
       {activeNav === "stock-levels" && (
         <div className="space-y-4">
+          <Card data-testid="card-add-item">
+            <CardHeader><CardTitle className="text-base">Add New Item</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-4 gap-3">
+                <Input placeholder="Item name" value={newItem.itemName} onChange={(e) => setNewItem({ ...newItem, itemName: e.target.value })} data-testid="input-item-name" />
+                <Input placeholder="SKU" value={newItem.sku} onChange={(e) => setNewItem({ ...newItem, sku: e.target.value })} data-testid="input-sku" />
+                <Input placeholder="Quantity" type="number" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} data-testid="input-quantity" />
+                <Select value={newItem.category} onValueChange={(v) => setNewItem({ ...newItem, category: v })}>
+                  <SelectTrigger data-testid="select-category"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Raw Materials">Raw Materials</SelectItem>
+                    <SelectItem value="Finished Goods">Finished Goods</SelectItem>
+                    <SelectItem value="WIP">Work in Progress</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button onClick={() => createMutation.mutate(newItem)} disabled={createMutation.isPending || !newItem.itemName} className="w-full" data-testid="button-add-item">
+                <Plus className="w-4 h-4 mr-2" /> Add Item
+              </Button>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between gap-4">
@@ -72,7 +116,25 @@ export default function InventoryManagement() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent><p className="text-muted-foreground">2,847 items tracked</p></CardContent>
+            <CardContent className="space-y-3">
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : inventory.length === 0 ? (
+                <p className="text-muted-foreground">{inventory.length} items tracked</p>
+              ) : (
+                inventory.map((item: any) => (
+                  <div key={item.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between" data-testid={`item-${item.id}`}>
+                    <div>
+                      <p className="font-semibold">{item.itemName}</p>
+                      <p className="text-sm text-muted-foreground">SKU: {item.sku} • Qty: {item.quantity}</p>
+                    </div>
+                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))
+              )}
+            </CardContent>
           </Card>
         </div>
       )}
