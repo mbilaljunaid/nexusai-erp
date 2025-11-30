@@ -10,6 +10,7 @@ import {
   insertAppSchema, insertAppReviewSchema, insertAppInstallationSchema, insertConnectorSchema, insertConnectorInstanceSchema, insertWebhookEventSchema,
   insertAbacRuleSchema, insertEncryptedFieldSchema, insertComplianceConfigSchema, insertSprintSchema, insertIssueSchema,
   insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
+  insertDemoSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -5723,6 +5724,56 @@ export async function registerRoutes(
   app.post("/api/automotive-quality", (req, res) => { const q = { id: `qual-${Date.now()}`, ...req.body }; res.status(201).json(q); });
 
   app.get("/api/automotive-dashboards", (req, res) => { res.json({ totalProduction: 5000, totalSales: 2500, activeServiceAppointments: 350, totalInventory: 1250, revenueThisMonth: 2500000000 }); });
+
+  // ========== DEMO MANAGEMENT ==========
+  app.post("/api/demos/request", async (req, res) => {
+    try {
+      const parsed = insertDemoSchema.parse(req.body);
+      const demo = await storage.createDemo(parsed);
+      res.status(201).json(demo);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/demos", async (req, res) => {
+    try {
+      const demos = await storage.listDemos();
+      res.json(demos);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/demos/:id", async (req, res) => {
+    try {
+      const demo = await storage.getDemo(req.params.id);
+      if (!demo) return res.status(404).json({ error: "Demo not found" });
+      res.json(demo);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.patch("/api/demos/:id", async (req, res) => {
+    try {
+      const demo = await storage.updateDemo(req.params.id, req.body);
+      if (!demo) return res.status(404).json({ error: "Demo not found" });
+      res.json(demo);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/demos/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteDemo(req.params.id);
+      if (!deleted) return res.status(404).json({ error: "Demo not found" });
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   return httpServer;
 }
