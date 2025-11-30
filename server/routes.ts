@@ -36,8 +36,8 @@ const apInvoicesStore: any[] = [];
 const bankTransactionsStore: any[] = [];
 const paymentSchedulesStore: any[] = [];
 const agingDataStore: any[] = [];
-const sprintsStore: any[] = [];
-const tasksStore: any[] = [];
+  const phase3SprintsStore: any[] = [];
+  const phase3TasksStore: any[] = [];
 const workflowsStore: any[] = [];
 const collaborationsStore: any[] = [];
 const payrollRunsStore: any[] = [];
@@ -1376,7 +1376,7 @@ export async function registerRoutes(
   });
 
   // Sprints
-  const sprintsStore: any[] = [];
+    const phase3SprintsStore: any[] = [];
   app.get("/api/projects/sprints", (req, res) => {
     if (sprintsStore.length === 0) {
       sprintsStore.push(
@@ -1409,7 +1409,7 @@ export async function registerRoutes(
   });
 
   // Tasks (for Kanban)
-  const tasksStore: any[] = [];
+    const phase3TasksStore: any[] = [];
   app.get("/api/projects/kanban-tasks", (req, res) => {
     if (tasksStore.length === 0) {
       tasksStore.push(
@@ -1825,252 +1825,252 @@ export async function registerRoutes(
   });
 
   // ========== PHASE 3: PROJECTS ENDPOINTS ==========
-  const projectsStore: any[] = [];
-  const sprintsStore: any[] = [];
-  const tasksStore: any[] = [];
+  const phase3ProjectsStore: any[] = [];
+  const phase3SprintsStore: any[] = [];
+  const phase3TasksStore: any[] = [];
 
   app.get("/api/projects", (req, res) => {
-    if (projectsStore.length === 0) {
-      projectsStore.push(
+    if (phase3ProjectsStore.length === 0) {
+      phase3ProjectsStore.push(
         { id: "p1", name: "Platform Migration", progress: 75, status: "active", budget: "250000", createdAt: new Date().toISOString() },
         { id: "p2", name: "Mobile App", progress: 45, status: "active", budget: "180000", createdAt: new Date().toISOString() }
       );
     }
-    res.json(projectsStore);
+    res.json(phase3ProjectsStore);
   });
 
   app.post("/api/projects", (req, res) => {
     const proj = { id: `p-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    projectsStore.push(proj);
+    phase3ProjectsStore.push(proj);
     res.status(201).json(proj);
   });
 
   app.get("/api/sprints", (req, res) => {
-    if (sprintsStore.length === 0) {
-      sprintsStore.push(
+    if (phase3SprintsStore.length === 0) {
+      phase3SprintsStore.push(
         { id: "s1", projectId: "p1", name: "Sprint 25", status: "active", goal: "Complete API", createdAt: new Date().toISOString() },
         { id: "s2", projectId: "p1", name: "Sprint 26", status: "planned", goal: "Frontend work", createdAt: new Date().toISOString() }
       );
     }
-    res.json(sprintsStore);
+    res.json(phase3SprintsStore);
   });
 
   app.post("/api/sprints", (req, res) => {
     const sprint = { id: `s-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    sprintsStore.push(sprint);
+    phase3SprintsStore.push(sprint);
     res.status(201).json(sprint);
   });
 
   app.get("/api/tasks", (req, res) => {
-    if (tasksStore.length === 0) {
-      tasksStore.push(
+    if (phase3TasksStore.length === 0) {
+      phase3TasksStore.push(
         { id: "t1", sprintId: "s1", title: "Fix auth", priority: "high", status: "in-progress", createdAt: new Date().toISOString() },
         { id: "t2", sprintId: "s1", title: "API endpoints", priority: "high", status: "in-progress", createdAt: new Date().toISOString() }
       );
     }
-    res.json(tasksStore);
+    res.json(phase3TasksStore);
   });
 
   app.post("/api/tasks", (req, res) => {
     const task = { id: `t-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    tasksStore.push(task);
+    phase3TasksStore.push(task);
     res.status(201).json(task);
   });
 
   // ========== PHASE 3: MARKETING ENDPOINTS ==========
-  const campaignsStore: any[] = [];
-  const segmentsStore: any[] = [];
-  const leadsStore: any[] = [];
+  const phase3CampaignsStore: any[] = [];
+  const phase3SegmentsStore: any[] = [];
+  const phase3LeadsStore: any[] = [];
 
   app.get("/api/marketing/campaigns", (req, res) => {
-    if (campaignsStore.length === 0) {
-      campaignsStore.push(
+    if (phase3CampaignsStore.length === 0) {
+      phase3CampaignsStore.push(
         { id: "c1", name: "Q1 Product Launch", channel: "Email", budget: "50000", status: "active", createdAt: new Date().toISOString() },
         { id: "c2", name: "Social Media Push", channel: "Social", budget: "30000", status: "active", createdAt: new Date().toISOString() }
       );
     }
-    res.json(campaignsStore);
+    res.json(phase3CampaignsStore);
   });
 
   app.post("/api/marketing/campaigns", (req, res) => {
     const camp = { id: `c-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    campaignsStore.push(camp);
+    phase3CampaignsStore.push(camp);
     res.status(201).json(camp);
   });
 
   app.get("/api/marketing/segments", (req, res) => {
-    if (segmentsStore.length === 0) {
-      segmentsStore.push(
+    if (phase3SegmentsStore.length === 0) {
+      phase3SegmentsStore.push(
         { id: "seg1", name: "Enterprise Buyers", audienceSize: 1200, status: "active", createdAt: new Date().toISOString() },
         { id: "seg2", name: "SMB Prospects", audienceSize: 2800, status: "active", createdAt: new Date().toISOString() }
       );
     }
-    res.json(segmentsStore);
+    res.json(phase3SegmentsStore);
   });
 
   app.post("/api/marketing/segments", (req, res) => {
     const seg = { id: `seg-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    segmentsStore.push(seg);
+    phase3SegmentsStore.push(seg);
     res.status(201).json(seg);
   });
 
   app.get("/api/marketing/leads", (req, res) => {
-    if (leadsStore.length === 0) {
-      leadsStore.push(
+    if (phase3LeadsStore.length === 0) {
+      phase3LeadsStore.push(
         { id: "l1", name: "Alice Corp", email: "alice@corp.com", score: 85, status: "qualified", createdAt: new Date().toISOString() },
         { id: "l2", name: "Bob Ltd", email: "bob@ltd.com", score: 65, status: "prospect", createdAt: new Date().toISOString() }
       );
     }
-    res.json(leadsStore);
+    res.json(phase3LeadsStore);
   });
 
   app.post("/api/marketing/leads", (req, res) => {
     const lead = { id: `l-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    leadsStore.push(lead);
+    phase3LeadsStore.push(lead);
     res.status(201).json(lead);
   });
 
   // ========== PHASE 3: MANUFACTURING ENDPOINTS ==========
-  const bomStore: any[] = [];
-  const workOrdersStore: any[] = [];
+  const phase3BomStore: any[] = [];
+  const phase3WorkOrdersStore: any[] = [];
 
   app.get("/api/manufacturing/bom", (req, res) => {
-    if (bomStore.length === 0) {
-      bomStore.push(
+    if (phase3BomStore.length === 0) {
+      phase3BomStore.push(
         { id: "b1", productId: "prod1", name: "Assembly A v1.0", status: "active", createdAt: new Date().toISOString() },
         { id: "b2", productId: "prod2", name: "Component B v2.1", status: "active", createdAt: new Date().toISOString() }
       );
     }
-    res.json(bomStore);
+    res.json(phase3BomStore);
   });
 
   app.post("/api/manufacturing/bom", (req, res) => {
     const bom = { id: `b-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    bomStore.push(bom);
+    phase3BomStore.push(bom);
     res.status(201).json(bom);
   });
 
   app.get("/api/manufacturing/work-orders", (req, res) => {
-    if (workOrdersStore.length === 0) {
-      workOrdersStore.push(
+    if (phase3WorkOrdersStore.length === 0) {
+      phase3WorkOrdersStore.push(
         { id: "w1", woNumber: "WO-001", productId: "prod1", quantity: 500, status: "in-progress", createdAt: new Date().toISOString() },
         { id: "w2", woNumber: "WO-002", productId: "prod2", quantity: 1200, status: "scheduled", createdAt: new Date().toISOString() }
       );
     }
-    res.json(workOrdersStore);
+    res.json(phase3WorkOrdersStore);
   });
 
   app.post("/api/manufacturing/work-orders", (req, res) => {
     const wo = { id: `w-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    workOrdersStore.push(wo);
+    phase3WorkOrdersStore.push(wo);
     res.status(201).json(wo);
   });
 
   // ========== PHASE 3: ANALYTICS ENDPOINTS ==========
-  const dashboardsStore: any[] = [];
-  const reportsStore: any[] = [];
+  const phase3DashboardsStore: any[] = [];
+  const phase3ReportsStore: any[] = [];
 
   app.get("/api/analytics/dashboards", (req, res) => {
-    if (dashboardsStore.length === 0) {
-      dashboardsStore.push(
+    if (phase3DashboardsStore.length === 0) {
+      phase3DashboardsStore.push(
         { id: "d1", name: "Sales Dashboard", owner: "admin", type: "sales", status: "active", createdAt: new Date().toISOString() },
         { id: "d2", name: "Revenue Dashboard", owner: "admin", type: "finance", status: "active", createdAt: new Date().toISOString() }
       );
     }
-    res.json(dashboardsStore);
+    res.json(phase3DashboardsStore);
   });
 
   app.post("/api/analytics/dashboards", (req, res) => {
     const dash = { id: `d-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    dashboardsStore.push(dash);
+    phase3DashboardsStore.push(dash);
     res.status(201).json(dash);
   });
 
   app.get("/api/analytics/reports", (req, res) => {
-    if (reportsStore.length === 0) {
-      reportsStore.push(
+    if (phase3ReportsStore.length === 0) {
+      phase3ReportsStore.push(
         { id: "r1", name: "Monthly Report", dashboardId: "d1", status: "completed", createdAt: new Date().toISOString() },
         { id: "r2", name: "Quarterly Forecast", dashboardId: "d2", status: "pending", createdAt: new Date().toISOString() }
       );
     }
-    res.json(reportsStore);
+    res.json(phase3ReportsStore);
   });
 
   app.post("/api/analytics/reports", (req, res) => {
     const report = { id: `r-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    reportsStore.push(report);
+    phase3ReportsStore.push(report);
     res.status(201).json(report);
   });
 
   // ========== PHASE 3: ADMIN CONSOLE ENDPOINTS ==========
-  const logsStore: any[] = [];
-  const settingsStore: any[] = [];
+  const phase3LogsStore: any[] = [];
+  const phase3SettingsStore: any[] = [];
 
   app.get("/api/admin/logs", (req, res) => {
-    if (logsStore.length === 0) {
-      logsStore.push(
+    if (phase3LogsStore.length === 0) {
+      phase3LogsStore.push(
         { id: "log1", userId: "admin1", action: "User Created", resource: "users", timestamp: new Date().toISOString() },
         { id: "log2", userId: "admin1", action: "Role Updated", resource: "roles", timestamp: new Date().toISOString() }
       );
     }
-    res.json(logsStore);
+    res.json(phase3LogsStore);
   });
 
   app.post("/api/admin/logs", (req, res) => {
     const log = { id: `log-${Date.now()}`, ...req.body, timestamp: new Date().toISOString() };
-    logsStore.push(log);
+    phase3LogsStore.push(log);
     res.status(201).json(log);
   });
 
   app.get("/api/admin/settings", (req, res) => {
-    if (settingsStore.length === 0) {
-      settingsStore.push(
+    if (phase3SettingsStore.length === 0) {
+      phase3SettingsStore.push(
         { id: "set1", key: "api_rate_limit", value: "10000", category: "api", createdAt: new Date().toISOString() },
         { id: "set2", key: "session_timeout", value: "1800", category: "security", createdAt: new Date().toISOString() }
       );
     }
-    res.json(settingsStore);
+    res.json(phase3SettingsStore);
   });
 
   app.post("/api/admin/settings", (req, res) => {
     const setting = { id: `set-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    settingsStore.push(setting);
+    phase3SettingsStore.push(setting);
     res.status(201).json(setting);
   });
 
   // ========== PHASE 3: COMPLIANCE ENDPOINTS ==========
-  const controlsStore: any[] = [];
-  const risksStore: any[] = [];
+  const phase3ControlsStore: any[] = [];
+  const phase3RisksStore: any[] = [];
 
   app.get("/api/compliance/controls", (req, res) => {
-    if (controlsStore.length === 0) {
-      controlsStore.push(
+    if (phase3ControlsStore.length === 0) {
+      phase3ControlsStore.push(
         { id: "ctrl1", name: "Access Control", framework: "SOC2", owner: "security", status: "active", createdAt: new Date().toISOString() },
         { id: "ctrl2", name: "Data Encryption", framework: "GDPR", owner: "security", status: "active", createdAt: new Date().toISOString() }
       );
     }
-    res.json(controlsStore);
+    res.json(phase3ControlsStore);
   });
 
   app.post("/api/compliance/controls", (req, res) => {
     const ctrl = { id: `ctrl-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    controlsStore.push(ctrl);
+    phase3ControlsStore.push(ctrl);
     res.status(201).json(ctrl);
   });
 
   app.get("/api/compliance/risks", (req, res) => {
-    if (risksStore.length === 0) {
-      risksStore.push(
+    if (phase3RisksStore.length === 0) {
+      phase3RisksStore.push(
         { id: "risk1", name: "Data Breach", likelihood: "medium", impact: "critical", status: "open", createdAt: new Date().toISOString() },
         { id: "risk2", name: "Compliance Violation", likelihood: "low", impact: "critical", status: "open", createdAt: new Date().toISOString() }
       );
     }
-    res.json(risksStore);
+    res.json(phase3RisksStore);
   });
 
   app.post("/api/compliance/risks", (req, res) => {
     const risk = { id: `risk-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    risksStore.push(risk);
+    phase3RisksStore.push(risk);
     res.status(201).json(risk);
   });
 
