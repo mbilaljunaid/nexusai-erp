@@ -110,6 +110,11 @@ const OpportunitiesDetail = lazy(() => import("@/pages/OpportunitiesDetail"));
 const InvoicesDetail = lazy(() => import("@/pages/InvoicesDetail"));
 const GeneralLedgerDetail = lazy(() => import("@/pages/GeneralLedgerDetail"));
 const ServiceTicketsDetail = lazy(() => import("@/pages/ServiceTicketsDetail"));
+const VendorsDetail = lazy(() => import("@/pages/VendorsDetail"));
+const CustomersDetail = lazy(() => import("@/pages/CustomersDetail"));
+const PurchaseOrdersDetail = lazy(() => import("@/pages/PurchaseOrdersDetail"));
+const ExpensesDetail = lazy(() => import("@/pages/ExpensesDetail"));
+const Finance = lazy(() => import("@/pages/Finance"));
 const VarianceAnalysis = lazy(() => import("@/pages/VarianceAnalysis"));
 const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
 const RAGEmbeddingsPipeline = lazy(() => import("@/pages/RAGEmbeddingsPipeline"));
@@ -309,11 +314,21 @@ function Router() {
     <Switch>
       <Route path="/" component={Dashboard} />
       <Route path="/crm" component={CRM} />
+      <Route path="/crm/leads" component={LeadsDetail} />
+      <Route path="/crm/opportunities" component={OpportunitiesDetail} />
+      <Route path="/crm/customers" component={CustomersDetail} />
       <Route path="/projects" component={Projects} />
       <Route path="/erp" component={ERP} />
+      <Route path="/erp/gl" component={GeneralLedgerDetail} />
+      <Route path="/erp/vendors" component={VendorsDetail} />
+      <Route path="/erp/purchase-orders" component={PurchaseOrdersDetail} />
+      <Route path="/finance" component={Finance} />
+      <Route path="/finance/invoices" component={InvoicesDetail} />
+      <Route path="/finance/expenses" component={ExpensesDetail} />
       <Route path="/hr" component={HR} />
       <Route path="/manufacturing" component={Manufacturing} />
       <Route path="/service" component={Service} />
+      <Route path="/service/tickets" component={ServiceTicketsDetail} />
       <Route path="/invoice-generator" component={InvoiceGenerator} />
       <Route path="/quote-builder" component={QuoteBuilder} />
       <Route path="/approval-workflow" component={ApprovalWorkflow} />

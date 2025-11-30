@@ -31,7 +31,7 @@ export default function GeneralLedgerDetail() {
         </div>
 
         <div className="space-y-2">
-          {(glEntries || []).filter((e: any) => (e.account || "").toLowerCase().includes(searchQuery.toLowerCase())).map((e: any, idx: number) => (
+          {((glEntries || []) as any).filter((e: any) => (e.account || "").toLowerCase().includes(searchQuery.toLowerCase())).map((e: any, idx: number) => (
             <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{e.account}</p><p className="text-sm text-muted-foreground">{e.description}</p></div><Badge>${(e.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
           ))}
         </div>

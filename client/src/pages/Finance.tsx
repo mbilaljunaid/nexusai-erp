@@ -8,6 +8,7 @@ import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { ExpenseEntryForm } from "@/components/forms/ExpenseEntryForm";
 import { BudgetEntryForm } from "@/components/forms/BudgetEntryForm";
 import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, Settings, Zap, Users, CreditCard } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Finance() {
   const [activeNav, setActiveNav] = useState("overview");
@@ -37,7 +38,16 @@ export default function Finance() {
         <Card><CardContent className="p-4"><p className="text-2xl font-semibold">72.7%</p><p className="text-xs text-muted-foreground">Gross Margin</p></CardContent></Card>
       </div>
 
-      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {navItems.map((item) => (
+          <Link key={item.id} to={item.id === "overview" ? "/finance" : `/finance/${item.id}`}>
+            <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+              <item.icon className={`w-6 h-6 ${item.color}`} />
+              <span className="text-sm font-medium text-center">{item.label}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
 
       {activeNav === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

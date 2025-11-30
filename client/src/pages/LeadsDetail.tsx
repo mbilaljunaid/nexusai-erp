@@ -31,7 +31,7 @@ export default function LeadsDetail() {
         </div>
 
         <div className="space-y-2">
-          {(leads || []).filter((l: any) => (l.name || "").toLowerCase().includes(searchQuery.toLowerCase())).map((l: any) => (
+          {((leads || []) as any).filter((l: any) => (l.name || "").toLowerCase().includes(searchQuery.toLowerCase())).map((l: any) => (
             <Card key={l.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{l.name}</p><p className="text-sm text-muted-foreground">{l.email}</p></div><Badge>{l.status}</Badge></div></CardContent></Card>
           ))}
         </div>

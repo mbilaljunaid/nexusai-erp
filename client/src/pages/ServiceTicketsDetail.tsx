@@ -31,7 +31,7 @@ export default function ServiceTicketsDetail() {
         </div>
 
         <div className="space-y-2">
-          {(tickets || []).filter((t: any) => (t.title || "").toLowerCase().includes(searchQuery.toLowerCase())).map((t: any, idx: number) => (
+          {((tickets || []) as any).filter((t: any) => (t.title || "").toLowerCase().includes(searchQuery.toLowerCase())).map((t: any, idx: number) => (
             <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{t.title}</p><p className="text-sm text-muted-foreground">{t.description}</p></div><Badge>{t.status}</Badge></div></CardContent></Card>
           ))}
         </div>

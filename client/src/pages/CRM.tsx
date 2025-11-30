@@ -44,14 +44,19 @@ export default function CRM() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {navItems.map((item) => (
-          <Link key={item.id} to={item.id === "overview" ? "/crm" : `/crm/${item.id}`}>
-            <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
-              <item.icon className={`w-6 h-6 ${item.color}`} />
-              <span className="text-sm font-medium text-center">{item.label}</span>
-            </div>
-          </Link>
-        ))}
+        {navItems.map((item) => {
+          let routePath = item.id === "overview" ? "/crm" : `/crm/${item.id}`;
+          if (item.id === "accounts") routePath = "/crm/customers";
+          if (item.id === "contacts") routePath = "/crm/customers";
+          return (
+            <Link key={item.id} to={routePath}>
+              <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+                <item.icon className={`w-6 h-6 ${item.color}`} />
+                <span className="text-sm font-medium text-center">{item.label}</span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
 
       {activeNav === "overview" && (

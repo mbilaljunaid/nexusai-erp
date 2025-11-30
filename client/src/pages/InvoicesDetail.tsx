@@ -31,7 +31,7 @@ export default function InvoicesDetail() {
         </div>
 
         <div className="space-y-2">
-          {(invoices || []).filter((i: any) => (i.id || "").toString().toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
+          {((invoices || []) as any).filter((i: any) => (i.id || "").toString().toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
             <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">Invoice {i.id}</p><p className="text-sm text-muted-foreground">{i.vendorId || i.customerId}</p></div><Badge>${(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
           ))}
         </div>

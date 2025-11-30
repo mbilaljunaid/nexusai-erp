@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users } from "lucide-react";
+import { Link } from "wouter";
 
 export default function ERP() {
   const [activeNav, setActiveNav] = useState("overview");
@@ -47,7 +48,19 @@ export default function ERP() {
         <Card><CardContent className="p-4"><p className="text-2xl font-semibold">342</p><p className="text-xs text-muted-foreground">POs This Month</p></CardContent></Card>
       </div>
 
-      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {navItems.map((item) => {
+          let routePath = item.id === "overview" ? "/erp" : `/erp/${item.id}`;
+          return (
+            <Link key={item.id} to={routePath}>
+              <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+                <item.icon className={`w-6 h-6 ${item.color}`} />
+                <span className="text-sm font-medium text-center">{item.label}</span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
 
       {activeNav === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

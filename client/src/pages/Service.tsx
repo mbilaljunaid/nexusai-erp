@@ -11,7 +11,7 @@ export default function Service() {
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
-    { id: "tickets", label: "Tickets", icon: AlertCircle, color: "text-green-500" },
+    { id: "tickets", label: "Tickets", icon: AlertCircle as any, color: "text-green-500" },
     { id: "customers", label: "Customers", icon: Users, color: "text-purple-500" },
     { id: "knowledge", label: "Knowledge Base", icon: FileText, color: "text-orange-500" },
     { id: "sla", label: "SLA Tracking", icon: Clock, color: "text-pink-500" },
@@ -35,14 +35,18 @@ export default function Service() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {navItems.map((item) => (
-          <Link key={item.id} to={item.id === "overview" ? "/service" : `/service/${item.id}`}>
-            <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
-              <item.icon className={`w-6 h-6 ${item.color}`} />
-              <span className="text-sm font-medium text-center">{item.label}</span>
-            </div>
-          </Link>
-        ))}
+        {navItems.map((item) => {
+          let routePath = item.id === "overview" ? "/service" : `/service/${item.id}`;
+          const IconComponent = item.icon as any;
+          return (
+            <Link key={item.id} to={routePath}>
+              <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+                <IconComponent className={`w-6 h-6 ${item.color}`} />
+                <span className="text-sm font-medium text-center">{item.label}</span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
 
       {activeNav === "overview" && (
