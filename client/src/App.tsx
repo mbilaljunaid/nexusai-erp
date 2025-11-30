@@ -287,6 +287,14 @@ const EquipmentManagement = lazy(() => import("@/pages/EquipmentManagement"));
 const DailyProgressReport = lazy(() => import("@/pages/DailyProgressReport"));
 const EarnedValueAnalysis = lazy(() => import("@/pages/EarnedValueAnalysis"));
 const HSESafety = lazy(() => import("@/pages/HSESafety"));
+const ProductCatalog = lazy(() => import("@/pages/ProductCatalog"));
+const PricingPromoEngine = lazy(() => import("@/pages/PricingPromoEngine"));
+const PointOfSale = lazy(() => import("@/pages/PointOfSale"));
+const StoreOperationsDashboard = lazy(() => import("@/pages/StoreOperationsDashboard"));
+const OmniChannelOrders = lazy(() => import("@/pages/OmniChannelOrders"));
+const DemandForecastingAI = lazy(() => import("@/pages/DemandForecastingAI"));
+const RetailAnalyticsDashboard = lazy(() => import("@/pages/RetailAnalyticsDashboard"));
+const MerchandisePlanning = lazy(() => import("@/pages/MerchandisePlanning"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -785,6 +793,14 @@ function Router() {
       <Route path="/daily-progress-report" component={DailyProgressReport} />
       <Route path="/earned-value-analysis" component={EarnedValueAnalysis} />
       <Route path="/hse-safety" component={HSESafety} />
+      <Route path="/product-catalog" component={ProductCatalog} />
+      <Route path="/pricing-promo-engine" component={PricingPromoEngine} />
+      <Route path="/point-of-sale" component={PointOfSale} />
+      <Route path="/store-operations" component={StoreOperationsDashboard} />
+      <Route path="/omni-channel-orders" component={OmniChannelOrders} />
+      <Route path="/demand-forecasting" component={DemandForecastingAI} />
+      <Route path="/retail-analytics" component={RetailAnalyticsDashboard} />
+      <Route path="/merchandise-planning" component={MerchandisePlanning} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
