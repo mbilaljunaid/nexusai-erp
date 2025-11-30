@@ -265,6 +265,10 @@ const CustomerManagement = lazy(() => import("@/pages/CustomerManagement"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
 const FinancialReportsDashboard = lazy(() => import("@/pages/FinancialReportsDashboard"));
+const PurchaseRequisitions = lazy(() => import("@/pages/PurchaseRequisitions"));
+const GoodsReceiptPage = lazy(() => import("@/pages/GoodsReceiptPage"));
+const DemandForecastingPage = lazy(() => import("@/pages/DemandForecastingPage"));
+const SupplierPerformance = lazy(() => import("@/pages/SupplierPerformance"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -709,6 +713,10 @@ function Router() {
       <Route path="/cash-management" component={CashManagementPage} />
       <Route path="/tax-management" component={TaxManagement} />
       <Route path="/financial-reports" component={FinancialReportsDashboard} />
+      <Route path="/purchase-requisitions" component={PurchaseRequisitions} />
+      <Route path="/goods-receipt" component={GoodsReceiptPage} />
+      <Route path="/demand-forecasting" component={DemandForecastingPage} />
+      <Route path="/supplier-performance" component={SupplierPerformance} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />

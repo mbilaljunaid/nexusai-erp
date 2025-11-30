@@ -2357,8 +2357,8 @@ export const journalEntries = pgTable("journal_entries", {
   journalId: varchar("journal_id"),
   entryDate: timestamp("entry_date"),
   description: text("description"),
-  debitAmount: decimal("debit_amount", { precision: 15, scale: 2 }),
-  creditAmount: decimal("credit_amount", { precision: 15, scale: 2 }),
+  debitAmount: numeric("debit_amount"),
+  creditAmount: numeric("credit_amount"),
   glAccount: varchar("gl_account"),
   referenceDocument: varchar("reference_document"),
   approvalStatus: varchar("approval_status").default("pending"),
@@ -2372,7 +2372,7 @@ export const cashManagementTransactions = pgTable("cash_management_transactions"
   bankAccountId: varchar("bank_account_id"),
   transactionDate: timestamp("transaction_date"),
   transactionType: varchar("transaction_type"),
-  amount: decimal("amount", { precision: 15, scale: 2 }),
+  amount: numeric("amount"),
   glAccount: varchar("gl_account"),
   reconciliationStatus: varchar("reconciliation_status").default("pending"),
   status: varchar("status").default("posted"),
@@ -2383,7 +2383,7 @@ export const taxCodesMaster = pgTable("tax_codes_master", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   taxName: varchar("tax_name").notNull(),
   taxType: varchar("tax_type"),
-  rate: decimal("rate", { precision: 5, scale: 2 }),
+  rate: numeric("rate"),
   jurisdiction: varchar("jurisdiction"),
   glAccount: varchar("gl_account"),
   status: varchar("status").default("active"),
@@ -2396,10 +2396,59 @@ export const financialReportsMaster = pgTable("financial_reports_master", {
   reportType: varchar("report_type"),
   periodStart: timestamp("period_start"),
   periodEnd: timestamp("period_end"),
-  totalAssets: decimal("total_assets", { precision: 15, scale: 2 }),
-  totalLiabilities: decimal("total_liabilities", { precision: 15, scale: 2 }),
-  totalEquity: decimal("total_equity", { precision: 15, scale: 2 }),
+  totalAssets: numeric("total_assets"),
+  totalLiabilities: numeric("total_liabilities"),
+  totalEquity: numeric("total_equity"),
   status: varchar("status").default("draft"),
   approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== MODULE 7: INVENTORY, PROCUREMENT & SUPPLY CHAIN ==========
+export const purchaseRequisitions = pgTable("purchase_requisitions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  requisitionNumber: varchar("requisition_number").notNull(),
+  requestedBy: varchar("requested_by"),
+  department: varchar("department"),
+  itemDescription: text("item_description"),
+  quantity: integer("quantity"),
+  unitPrice: numeric("unit_price"),
+  status: varchar("status").default("draft"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const goodsReceipt = pgTable("goods_receipt_master", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  receiptNumber: varchar("receipt_number").notNull(),
+  poNumber: varchar("po_number"),
+  vendorId: varchar("vendor_id"),
+  receiptDate: timestamp("receipt_date"),
+  totalItems: integer("total_items"),
+  status: varchar("status").default("pending"),
+  inspectionStatus: varchar("inspection_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const demandForecasting = pgTable("demand_forecasting", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  forecastPeriod: varchar("forecast_period"),
+  itemId: varchar("item_id"),
+  forecastedDemand: integer("forecasted_demand"),
+  actualDemand: integer("actual_demand"),
+  accuracy: numeric("accuracy"),
+  forecastMethod: varchar("forecast_method"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const supplierPerformance = pgTable("supplier_performance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  supplierId: varchar("supplier_id"),
+  onTimeDelivery: numeric("on_time_delivery"),
+  qualityScore: numeric("quality_score"),
+  costCompetitiveness: numeric("cost_competitiveness"),
+  responseTime: integer("response_time"),
+  overallRating: numeric("overall_rating"),
+  evaluationPeriod: varchar("evaluation_period"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });

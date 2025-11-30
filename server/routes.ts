@@ -3065,6 +3065,76 @@ export async function registerRoutes(
     res.status(201).json(report);
   });
 
+  // ========== MODULE 7: INVENTORY, PROCUREMENT & SUPPLY CHAIN ENDPOINTS ==========
+  const purchaseRequisitionsStore: any[] = [];
+  const goodsReceiptStore: any[] = [];
+  const demandForecastingStore: any[] = [];
+  const supplierPerformanceStore: any[] = [];
+
+  app.get("/api/purchase-requisitions", (req, res) => {
+    if (purchaseRequisitionsStore.length === 0) {
+      purchaseRequisitionsStore.push(
+        { id: "pr1", requisitionNumber: "PR-2025-001", requestedBy: "user1", department: "Operations", quantity: 50, unitPrice: "500", status: "draft", approvalStatus: "pending" },
+        { id: "pr2", requisitionNumber: "PR-2025-002", requestedBy: "user2", department: "Manufacturing", quantity: 120, unitPrice: "375", status: "draft", approvalStatus: "pending" }
+      );
+    }
+    res.json(purchaseRequisitionsStore);
+  });
+
+  app.post("/api/purchase-requisitions", (req, res) => {
+    const pr = { id: `pr-${Date.now()}`, ...req.body, status: "draft", approvalStatus: "pending" };
+    purchaseRequisitionsStore.push(pr);
+    res.status(201).json(pr);
+  });
+
+  app.get("/api/goods-receipt", (req, res) => {
+    if (goodsReceiptStore.length === 0) {
+      goodsReceiptStore.push(
+        { id: "gr1", receiptNumber: "GR-2025-001", poNumber: "PO-001", vendorId: "v1", totalItems: 50, status: "received", inspectionStatus: "passed" },
+        { id: "gr2", receiptNumber: "GR-2025-002", poNumber: "PO-002", vendorId: "v2", totalItems: 120, status: "received", inspectionStatus: "in-progress" }
+      );
+    }
+    res.json(goodsReceiptStore);
+  });
+
+  app.post("/api/goods-receipt", (req, res) => {
+    const gr = { id: `gr-${Date.now()}`, ...req.body, status: "received", inspectionStatus: "pending" };
+    goodsReceiptStore.push(gr);
+    res.status(201).json(gr);
+  });
+
+  app.get("/api/demand-forecasting", (req, res) => {
+    if (demandForecastingStore.length === 0) {
+      demandForecastingStore.push(
+        { id: "df1", forecastPeriod: "Q1-2026", itemId: "SKU-001", forecastedDemand: 5000, actualDemand: 4850, accuracy: "97", forecastMethod: "TimeSeries" },
+        { id: "df2", forecastPeriod: "Q1-2026", itemId: "SKU-002", forecastedDemand: 3200, actualDemand: 3400, accuracy: "94", forecastMethod: "MachineLearning" }
+      );
+    }
+    res.json(demandForecastingStore);
+  });
+
+  app.post("/api/demand-forecasting", (req, res) => {
+    const df = { id: `df-${Date.now()}`, ...req.body };
+    demandForecastingStore.push(df);
+    res.status(201).json(df);
+  });
+
+  app.get("/api/supplier-performance", (req, res) => {
+    if (supplierPerformanceStore.length === 0) {
+      supplierPerformanceStore.push(
+        { id: "sp1", supplierId: "v1", onTimeDelivery: "98", qualityScore: "96", costCompetitiveness: "92", overallRating: "4.9", evaluationPeriod: "Q4-2025" },
+        { id: "sp2", supplierId: "v2", onTimeDelivery: "94", qualityScore: "89", costCompetitiveness: "85", overallRating: "4.2", evaluationPeriod: "Q4-2025" }
+      );
+    }
+    res.json(supplierPerformanceStore);
+  });
+
+  app.post("/api/supplier-performance", (req, res) => {
+    const sp = { id: `sp-${Date.now()}`, ...req.body };
+    supplierPerformanceStore.push(sp);
+    res.status(201).json(sp);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

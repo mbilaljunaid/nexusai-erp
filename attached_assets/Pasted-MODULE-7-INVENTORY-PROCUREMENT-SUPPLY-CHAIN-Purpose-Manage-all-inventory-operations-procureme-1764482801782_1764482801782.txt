@@ -1,0 +1,79 @@
+MODULE 7: INVENTORY, PROCUREMENT & SUPPLY CHAIN
+
+Purpose: Manage all inventory operations, procurement processes, supply chain management, warehouse operations, and logistics across ERP, Finance, Projects, HR, CRM, EPM, and Compliance modules.
+
+Important Note for Replit: Before creating any inventory, procurement, or supply chain objects, workflows, or reports, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+7.1 Inventory Management
+
+Forms / Screens: Item Master, Warehouse Master, Stock Ledger, Stock Adjustment, Stock Transfer, Stock Counting, Inventory Reports, Inventory Dashboard.
+
+Fields: Item ID, Item Name, Item Category, SKU, Barcode, Unit of Measure, Cost Method (FIFO, LIFO, Weighted Average), Stock Quantity, Reorder Level, Reorder Quantity, Warehouse ID, Location, Batch Number, Serial Number, Expiry Date, Status (Active, Inactive, Reserved), Valuation, GL Account Mapping, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Stock levels cannot go negative, mandatory item attributes enforced, unit of measure consistent, valuation method applied correctly, batch/serial tracking enforced, expiry dates validated.
+
+Workflows: Stock adjustments trigger GL posting, stock transfers trigger inventory updates in source and target warehouses, inventory alerts trigger notifications for low stock, periodic stock counting reconciles physical and system quantities, stock ledger updated automatically.
+
+7.2 Procurement / Purchase Management
+
+Forms / Screens: Supplier Master, Purchase Requisition, Purchase Order Creation, Purchase Order Approval, Goods Receipt, Supplier Invoice, Payment Scheduling, Procurement Reports.
+
+Fields: Supplier ID, Supplier Name, Contact Info, Payment Terms, Currency, Purchase Requisition ID, Purchase Order ID, Items Ordered, Quantity, Unit Price, Total Amount, Delivery Date, GL Account Mapping, Approval Status, Invoice ID, Payment Status, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Purchase orders must have valid supplier and item references, quantity and price validated, approval required for thresholds, invoice matched to PO and GRN, duplicate orders prevented.
+
+Workflows: Purchase requisition triggers approval workflow, PO approval triggers supplier notification, goods receipt triggers inventory update, invoice triggers payment workflow, procurement reports generated automatically.
+
+7.3 Supplier & Vendor Management
+
+Forms / Screens: Supplier Registration, Supplier Evaluation, Supplier Rating, Supplier Performance Dashboard, Contract Management.
+
+Fields: Supplier ID, Supplier Name, Contact Info, Rating Score, Performance Metrics, Contract Start/End Dates, Payment Terms, Currency, Items Supplied, Compliance Status, Status (Active, Inactive), Audit Fields.
+
+Validations: Mandatory supplier attributes enforced, performance metrics validated, contracts within valid dates, inactive suppliers restricted from procurement.
+
+Workflows: Supplier registration triggers approval, performance monitoring triggers alerts for low ratings, contract expiry triggers notifications, supplier compliance audits scheduled automatically.
+
+7.4 Warehouse & Logistics Management
+
+Forms / Screens: Warehouse Configuration, Location Master, Bin Setup, Goods Receipt / Issue, Picking & Packing, Shipment Tracking, Transfer Orders, Warehouse Reports.
+
+Fields: Warehouse ID, Warehouse Name, Location, Bin/Section, Storage Capacity, Item ID, Stock Quantity, Batch/Serial Number, Expiry Date, Status (Active, Inactive), Transfer Orders, Shipment ID, Carrier Info, Delivery Date, Tracking Number, Audit Fields.
+
+Validations: Warehouse capacity not exceeded, item storage location validated, batch/serial tracking enforced, shipment tracking mandatory for outbound deliveries.
+
+Workflows: Goods receipt triggers inventory updates and GL posting, picking and packing triggers stock reservation, shipment creation triggers carrier notification, warehouse transfer updates source and target locations, logistics reports generated automatically.
+
+7.5 Supply Chain Management
+
+Forms / Screens: Demand Planning, Material Requirement Planning (MRP), Production Orders, Supplier Collaboration, Order Fulfillment, Supply Chain Reports.
+
+Fields: Product ID, Forecasted Demand, Planned Orders, Procurement Orders, Supplier Lead Time, Safety Stock, Reorder Points, Production Schedule, Delivery Schedule, Status, Approval Status, Audit Fields.
+
+Validations: Forecasts validated, MRP calculations checked, procurement and production orders aligned, supplier lead times enforced, inventory availability validated before production.
+
+Workflows: Demand planning triggers procurement and production orders, production completion triggers inventory updates, supplier collaboration triggers notifications and updates, order fulfillment triggers shipment scheduling, supply chain KPIs updated automatically.
+
+7.6 Reporting & Dashboards
+
+Forms / Screens: Inventory Reports, Stock Aging Reports, Procurement Reports, Supplier Performance Reports, Warehouse Utilization Reports, Supply Chain KPIs Dashboard.
+
+Fields: Report ID, Report Name, Module, Filters (Item, Supplier, Warehouse, Period), Data Fields (Stock Quantity, Value, PO Status, Supplier Rating, Production Status, Shipment Tracking), Export Options (PDF, Excel, CSV), Scheduled Execution, Audit Fields.
+
+Validations: Reports include all relevant data, filtering works correctly, scheduled reports triggered accurately, historical data preserved, access permissions enforced.
+
+Workflows: Scheduled reports generate automatically, dashboards update in real-time, alerts for low stock or overdue shipments triggered, exceptions highlighted, integration with BI tools.
+
+7.7 Integrations & Automations
+
+Automations: Automatic stock updates on goods receipt/issue, auto-generation of procurement orders from demand planning, automated supplier notifications, scheduled inventory reconciliations, automated shipment tracking updates.
+
+Integrations: ERP modules (Finance/GL, Projects, HR), Supplier Portals, Warehouse Management Systems, Shipping/Logistics APIs, Barcode/Scanning Systems, BI and Analytics tools, IoT device integrations for real-time inventory tracking.
+
+Key Features: End-to-end inventory and procurement management, supplier lifecycle management, warehouse operations, demand planning and MRP, supply chain visibility, integrated reporting and dashboards, real-time automation, cross-module integrations, audit and compliance-ready.
+
+Important Note for Replit: Before creating any inventory, procurement, supply chain forms, workflows, automations, reports, or integrations, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+⸻
+
+Do you want me to continue with Module 8: Projects, Task & Resource Management next?
