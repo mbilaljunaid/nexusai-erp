@@ -5,13 +5,21 @@ import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { PurchaseOrderForm } from "@/components/forms/PurchaseOrderForm";
-import { AdjustmentEntryForm } from "@/components/forms/AdjustmentEntryForm";
-import { VendorEntryForm } from "@/components/forms/VendorEntryForm";
+import AdjustmentEntryForm from "@/components/forms/AdjustmentEntryForm";
+import VendorEntryForm from "@/components/forms/VendorEntryForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
+import { useQuery } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users } from "lucide-react";
 
 export default function ERP() {
   const [activeNav, setActiveNav] = useState("overview");
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data: glEntries = [] } = useQuery({ queryKey: ["/api/ledger"], retry: false });
+  const { data: invoices = [] } = useQuery({ queryKey: ["/api/invoices"], retry: false });
+  const { data: pos = [] } = useQuery({ queryKey: ["/api/purchase-orders"], retry: false });
+  const { data: vendors = [] } = useQuery({ queryKey: ["/api/vendors"], retry: false });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
@@ -48,19 +56,97 @@ export default function ERP() {
         </div>
       )}
 
-      {activeNav === "gl" && <div className="space-y-4"><GLEntryForm /></div>}
+      {activeNav === "gl" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search ledger entries..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+            <Button>+ New Entry</Button>
+          </div>
+          <div className="space-y-2">
+            {(glEntries || []).filter((e: any) => (e.account || "").toLowerCase().includes(searchQuery.toLowerCase())).map((e: any, idx: number) => (
+              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{e.account}</p><p className="text-sm text-muted-foreground">{e.description}</p></div><Badge>${(e.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
+            ))}
+          </div>
+          <GLEntryForm />
+        </div>
+      )}
 
-      {activeNav === "ap" && <div className="space-y-4"><InvoiceEntryForm /></div>}
+      {activeNav === "ap" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search invoices..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+            <Button>+ New Invoice</Button>
+          </div>
+          <div className="space-y-2">
+            {(invoices || []).filter((i: any) => (i.vendorId || "").toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
+              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">Invoice {i.id}</p><p className="text-sm text-muted-foreground">{i.vendorId}</p></div><Badge>${(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
+            ))}
+          </div>
+          <InvoiceEntryForm />
+        </div>
+      )}
 
-      {activeNav === "ar" && <div className="space-y-4"><InvoiceEntryForm /></div>}
+      {activeNav === "ar" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search receivables..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+            <Button>+ New Invoice</Button>
+          </div>
+          <div className="space-y-2">
+            {(invoices || []).filter((i: any) => (i.customerId || "").toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
+              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">Invoice {i.id}</p><p className="text-sm text-muted-foreground">{i.customerId}</p></div><Badge>${(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
+            ))}
+          </div>
+          <InvoiceEntryForm />
+        </div>
+      )}
 
-      {activeNav === "inventory" && <div className="space-y-4"><AdjustmentEntryForm /></div>}
+      {activeNav === "inventory" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search inventory..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+            <Button>+ Adjust Stock</Button>
+          </div>
+          <div className="space-y-2">
+            {[{id: 1, name: "Widget A", qty: 145, value: 14500}, {id: 2, name: "Widget B", qty: 89, value: 8900}].filter((i: any) => i.name.toLowerCase().includes(searchQuery.toLowerCase())).map((i: any) => (
+              <Card key={i.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.name}</p><p className="text-sm text-muted-foreground">Qty: {i.qty}</p></div><Badge>${i.value.toLocaleString()}</Badge></div></CardContent></Card>
+            ))}
+          </div>
+          <AdjustmentEntryForm />
+        </div>
+      )}
 
-      {activeNav === "po" && <div className="space-y-4"><PurchaseOrderForm /></div>}
+      {activeNav === "po" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search POs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+            <Button>+ New PO</Button>
+          </div>
+          <div className="space-y-2">
+            {(pos || []).filter((p: any) => (p.id || "").toString().toLowerCase().includes(searchQuery.toLowerCase())).map((p: any, idx: number) => (
+              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">PO {p.id}</p><p className="text-sm text-muted-foreground">{p.vendor}</p></div><Badge>${(p.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
+            ))}
+          </div>
+          <PurchaseOrderForm />
+        </div>
+      )}
 
       {activeNav === "quality" && <div className="space-y-4"><AdjustmentEntryForm /></div>}
 
-      {activeNav === "suppliers" && <div className="space-y-4"><VendorEntryForm /></div>}
+      {activeNav === "suppliers" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search suppliers..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+            <Button>+ New Supplier</Button>
+          </div>
+          <div className="space-y-2">
+            {(vendors || []).filter((v: any) => (v.name || "").toLowerCase().includes(searchQuery.toLowerCase())).map((v: any, idx: number) => (
+              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{v.name}</p><p className="text-sm text-muted-foreground">{v.location}</p></div><Badge>{v.rating}/5</Badge></div></CardContent></Card>
+            ))}
+          </div>
+          <VendorEntryForm />
+        </div>
+      )}
 
       {activeNav === "settings" && (
         <div className="space-y-4">
