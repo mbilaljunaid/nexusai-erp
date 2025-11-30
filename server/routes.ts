@@ -5826,5 +5826,81 @@ export async function registerRoutes(
     }
   });
 
+  // ========== AUTHENTICATION ==========
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      // Super Admin Credentials
+      if (email === "admin@nexusai.com" && password === "Admin@2025!") {
+        return res.json({
+          success: true,
+          user: {
+            id: "admin-1",
+            email: "admin@nexusai.com",
+            name: "Super Admin",
+            role: "superadmin",
+            permissions: ["all"]
+          },
+          token: "admin-token-" + Date.now()
+        });
+      }
+
+      // Demo User Credentials
+      if (email === "demo@nexusai.com" && password === "Demo@2025") {
+        return res.json({
+          success: true,
+          user: {
+            id: "demo-1",
+            email: "demo@nexusai.com",
+            name: "Demo User",
+            role: "user",
+            permissions: ["read:demo"]
+          },
+          token: "demo-token-" + Date.now()
+        });
+      }
+
+      res.status(401).json({ error: "Invalid email or password" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+      res.json({
+        success: true,
+        user: {
+          id: "user-" + Date.now(),
+          email,
+          name,
+          role: "user"
+        }
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      res.json({ success: true, message: "Reset code sent to " + email });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const { email, resetCode, newPassword } = req.body;
+      res.json({ success: true, message: "Password reset successful" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   return httpServer;
 }
