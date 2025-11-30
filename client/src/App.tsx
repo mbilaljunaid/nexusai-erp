@@ -168,6 +168,9 @@ const ProjectsTimelineDetail = lazy(() => import("@/pages/detail/ProjectsTimelin
 const ProjectsAnalyticsDetail = lazy(() => import("@/pages/detail/ProjectsAnalyticsDetail"));
 const ProjectsSettingsDetail = lazy(() => import("@/pages/detail/ProjectsSettingsDetail"));
 const ERPSettingsDetail = lazy(() => import("@/pages/detail/ERPSettingsDetail"));
+const AdminOverviewDetail = lazy(() => import("@/pages/detail/AdminOverviewDetail"));
+const ComplianceStandardsDetail = lazy(() => import("@/pages/detail/ComplianceStandardsDetail"));
+const ComplianceRiskDetail = lazy(() => import("@/pages/detail/ComplianceRiskDetail"));
 const Finance = lazy(() => import("@/pages/Finance"));
 const VarianceAnalysis = lazy(() => import("@/pages/VarianceAnalysis"));
 const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
@@ -422,6 +425,25 @@ function Router() {
       <Route path="/erp/inventory" component={ERPInventoryDetail} />
       <Route path="/erp/quality" component={ERPQualityDetail} />
       <Route path="/erp/settings" component={ERPSettingsDetail} />
+      <Route path="/admin" component={AdminConsole} />
+      <Route path="/admin/overview" component={AdminOverviewDetail} />
+      <Route path="/admin/users" component={AdminUsersDetail} />
+      <Route path="/admin/roles" component={AdminRolesDetail} />
+      <Route path="/admin/permissions" component={AdminPermissionsDetail} />
+      <Route path="/admin/audit" component={AdminAuditDetail} />
+      <Route path="/analytics" component={Analytics} />
+      <Route path="/analytics/dashboard" component={AnalyticsDashboardDetail} />
+      <Route path="/analytics/reports" component={AnalyticsReportsDetail} />
+      <Route path="/analytics/insights" component={AnalyticsInsightsDetail} />
+      <Route path="/compliance" component={Compliance} />
+      <Route path="/compliance/controls" component={ComplianceControlsDetail} />
+      <Route path="/compliance/policies" component={CompliancePoliciesDetail} />
+      <Route path="/compliance/audits" component={ComplianceAuditDetail} />
+      <Route path="/compliance/standards" component={ComplianceStandardsDetail} />
+      <Route path="/compliance/risks" component={ComplianceRiskDetail} />
+      <Route path="/ai" component={AIChat} />
+      <Route path="/ai/chat" component={AIAssistantChatDetail} />
+      <Route path="/ai/knowledge" component={AIAssistantKnowledgeDetail} />
       <Route path="/finance" component={Finance} />
       <Route path="/finance/invoices" component={InvoicesDetail} />
       <Route path="/finance/expenses" component={ExpensesDetail} />
