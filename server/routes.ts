@@ -4960,6 +4960,224 @@ export async function registerRoutes(
     res.status(201).json(dash);
   });
 
+  // ========== INDUSTRY PACK 21: RETAIL & E-COMMERCE ==========
+  const retailProductsStore: any[] = [];
+  const retailOrdersStore: any[] = [];
+  const retailPromosStore: any[] = [];
+  const retailCustomersStore: any[] = [];
+  const retailBillingStore: any[] = [];
+  const retailSupplyStore: any[] = [];
+  const retailWarehouseStore: any[] = [];
+  const retailShippingStore: any[] = [];
+  const retailCampaignsStore: any[] = [];
+  const retailRecsStore: any[] = [];
+  const retailAnalyticsStore: any[] = [];
+  const retailHrStore: any[] = [];
+  const retailComplianceStore: any[] = [];
+  const retailReturnsStore: any[] = [];
+  const retailDashboardStore: any[] = [];
+
+  app.get("/api/retail-products", (req, res) => {
+    if (retailProductsStore.length === 0) {
+      retailProductsStore.push({ id: "p1", sku: "SKU-001", name: "Product A", category: "Electronics", stockQty: "100", status: "active" });
+    }
+    res.json(retailProductsStore);
+  });
+
+  app.post("/api/retail-products", (req, res) => {
+    const product = { id: `p-${Date.now()}`, ...req.body };
+    retailProductsStore.push(product);
+    res.status(201).json(product);
+  });
+
+  app.delete("/api/retail-products/:id", (req, res) => {
+    const idx = retailProductsStore.findIndex((p: any) => p.id === req.params.id);
+    if (idx >= 0) retailProductsStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/retail-orders", (req, res) => {
+    if (retailOrdersStore.length === 0) {
+      retailOrdersStore.push({ id: "o1", orderId: "ORD-001", customerId: "CUST-001", totalAmount: "500", status: "completed" });
+    }
+    res.json(retailOrdersStore);
+  });
+
+  app.post("/api/retail-orders", (req, res) => {
+    const order = { id: `o-${Date.now()}`, ...req.body };
+    retailOrdersStore.push(order);
+    res.status(201).json(order);
+  });
+
+  app.get("/api/retail-promos", (req, res) => {
+    if (retailPromosStore.length === 0) {
+      retailPromosStore.push({ id: "pr1", promoId: "PROMO-001", discountType: "percentage", budget: "10000", status: "active" });
+    }
+    res.json(retailPromosStore);
+  });
+
+  app.post("/api/retail-promos", (req, res) => {
+    const promo = { id: `pr-${Date.now()}`, ...req.body };
+    retailPromosStore.push(promo);
+    res.status(201).json(promo);
+  });
+
+  app.get("/api/retail-customers", (req, res) => {
+    if (retailCustomersStore.length === 0) {
+      retailCustomersStore.push({ id: "c1", customerId: "CUST-001", email: "customer@retail.com", tier: "vip", loyaltyPoints: "500" });
+    }
+    res.json(retailCustomersStore);
+  });
+
+  app.post("/api/retail-customers", (req, res) => {
+    const customer = { id: `c-${Date.now()}`, ...req.body };
+    retailCustomersStore.push(customer);
+    res.status(201).json(customer);
+  });
+
+  app.get("/api/retail-billing", (req, res) => {
+    if (retailBillingStore.length === 0) {
+      retailBillingStore.push({ id: "b1", invoiceId: "INV-001", amount: "5000", status: "paid" });
+    }
+    res.json(retailBillingStore);
+  });
+
+  app.post("/api/retail-billing", (req, res) => {
+    const bill = { id: `b-${Date.now()}`, ...req.body };
+    retailBillingStore.push(bill);
+    res.status(201).json(bill);
+  });
+
+  app.get("/api/retail-supply", (req, res) => {
+    if (retailSupplyStore.length === 0) {
+      retailSupplyStore.push({ id: "s1", poId: "PO-001", supplierId: "SUPP-001", status: "received" });
+    }
+    res.json(retailSupplyStore);
+  });
+
+  app.post("/api/retail-supply", (req, res) => {
+    const supply = { id: `s-${Date.now()}`, ...req.body };
+    retailSupplyStore.push(supply);
+    res.status(201).json(supply);
+  });
+
+  app.get("/api/retail-warehouse", (req, res) => {
+    if (retailWarehouseStore.length === 0) {
+      retailWarehouseStore.push({ id: "w1", warehouseId: "WH-001", capacity: "5000", status: "active" });
+    }
+    res.json(retailWarehouseStore);
+  });
+
+  app.post("/api/retail-warehouse", (req, res) => {
+    const wh = { id: `w-${Date.now()}`, ...req.body };
+    retailWarehouseStore.push(wh);
+    res.status(201).json(wh);
+  });
+
+  app.get("/api/retail-shipping", (req, res) => {
+    if (retailShippingStore.length === 0) {
+      retailShippingStore.push({ id: "sh1", shipmentId: "SHIP-001", carrier: "FedEx", status: "delivered" });
+    }
+    res.json(retailShippingStore);
+  });
+
+  app.post("/api/retail-shipping", (req, res) => {
+    const ship = { id: `sh-${Date.now()}`, ...req.body };
+    retailShippingStore.push(ship);
+    res.status(201).json(ship);
+  });
+
+  app.get("/api/retail-campaigns", (req, res) => {
+    if (retailCampaignsStore.length === 0) {
+      retailCampaignsStore.push({ id: "ca1", campaignId: "CAMP-001", channel: "email", budget: "5000", status: "active" });
+    }
+    res.json(retailCampaignsStore);
+  });
+
+  app.post("/api/retail-campaigns", (req, res) => {
+    const camp = { id: `ca-${Date.now()}`, ...req.body };
+    retailCampaignsStore.push(camp);
+    res.status(201).json(camp);
+  });
+
+  app.get("/api/retail-recommendations", (req, res) => {
+    if (retailRecsStore.length === 0) {
+      retailRecsStore.push({ id: "r1", productId: "SKU-001", confidence: "85" });
+    }
+    res.json(retailRecsStore);
+  });
+
+  app.post("/api/retail-recommendations", (req, res) => {
+    const rec = { id: `r-${Date.now()}`, ...req.body };
+    retailRecsStore.push(rec);
+    res.status(201).json(rec);
+  });
+
+  app.get("/api/retail-analytics", (req, res) => {
+    if (retailAnalyticsStore.length === 0) {
+      retailAnalyticsStore.push({ id: "a1", category: "Electronics", sales: "50", margin: "30" });
+    }
+    res.json(retailAnalyticsStore);
+  });
+
+  app.post("/api/retail-analytics", (req, res) => {
+    const ana = { id: `a-${Date.now()}`, ...req.body };
+    retailAnalyticsStore.push(ana);
+    res.status(201).json(ana);
+  });
+
+  app.get("/api/retail-hr", (req, res) => {
+    if (retailHrStore.length === 0) {
+      retailHrStore.push({ id: "h1", employeeId: "EMP-001", role: "Sales", status: "on-shift" });
+    }
+    res.json(retailHrStore);
+  });
+
+  app.post("/api/retail-hr", (req, res) => {
+    const hr = { id: `h-${Date.now()}`, ...req.body };
+    retailHrStore.push(hr);
+    res.status(201).json(hr);
+  });
+
+  app.get("/api/retail-compliance", (req, res) => {
+    if (retailComplianceStore.length === 0) {
+      retailComplianceStore.push({ id: "cmp1", taxType: "GST", region: "US", status: "compliant" });
+    }
+    res.json(retailComplianceStore);
+  });
+
+  app.post("/api/retail-compliance", (req, res) => {
+    const comp = { id: `cmp-${Date.now()}`, ...req.body };
+    retailComplianceStore.push(comp);
+    res.status(201).json(comp);
+  });
+
+  app.get("/api/retail-returns", (req, res) => {
+    if (retailReturnsStore.length === 0) {
+      retailReturnsStore.push({ id: "ret1", returnId: "RET-001", refundAmount: "500", status: "approved" });
+    }
+    res.json(retailReturnsStore);
+  });
+
+  app.post("/api/retail-returns", (req, res) => {
+    const ret = { id: `ret-${Date.now()}`, ...req.body };
+    retailReturnsStore.push(ret);
+    res.status(201).json(ret);
+  });
+
+  app.get("/api/retail-dashboard", (req, res) => {
+    if (retailDashboardStore.length === 0) {
+      retailDashboardStore.push({ id: "d1", kpiName: "Daily Sales", target: "10K", actual: "9.5K", status: "healthy" });
+    }
+    res.json(retailDashboardStore);
+  });
+
+  app.post("/api/retail-dashboard", (req, res) => {
+    const dash = { id: `d-${Date.now()}`, ...req.body };
+    retailDashboardStore.push(dash);
+    res.status(201).json(dash);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

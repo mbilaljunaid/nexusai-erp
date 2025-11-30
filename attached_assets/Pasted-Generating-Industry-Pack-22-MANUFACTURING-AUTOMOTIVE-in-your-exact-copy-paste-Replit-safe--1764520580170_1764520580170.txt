@@ -1,0 +1,405 @@
+Generating **Industry Pack 22 — MANUFACTURING & AUTOMOTIVE** in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Manufacturing & Automotive Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 22 — MANUFACTURING & AUTOMOTIVE
+
+**Purpose:** End-to-end solution for discrete and process manufacturing, automotive production, suppliers, and OEMs, covering production planning & scheduling, BOM & routing, shop floor management, quality & compliance, supply chain & procurement, inventory & warehouse, maintenance & asset management, order management, CRM & dealer management, finance & accounting, HR & workforce, BI & dashboards, AI-driven predictive maintenance & process optimization, EPM & budgeting, and integrations with IoT devices, MES, ERP, and automotive suppliers. Delivered as an industry template that auto-enables and configures all related modules.
+
+**Auto-enable modules when template is selected:** Production Planning & Scheduling, BOM & Routing, Shop Floor Management, Quality & Compliance, Supply Chain & Procurement, Inventory & Warehouse, Maintenance & Asset Management, Order Management, CRM & Dealer Management, Finance & EPM, HR & Workforce, AI / ML Predictive Analytics, BI & Dashboards, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+---
+
+## 1. PRODUCTION PLANNING & SCHEDULING
+
+**Screens / Forms**
+
+* Master production schedule (MPS)
+* Work orders & batch scheduling
+* Resource allocation (machines, labor)
+* Capacity planning & load balancing
+* Gantt & calendar views
+
+**Fields**
+WorkOrderID, ProductID, Quantity, StartDate, EndDate, ResourceID, Status, AuditFields.
+
+**Validations**
+
+* Capacity constraints check
+* Material availability verification
+* Conflicting schedule detection
+
+**Workflows**
+
+* Forecast → MPS → Work order creation → Resource assignment → Production execution → Completion → Inventory update
+
+---
+
+## 2. BOM & ROUTING
+
+**Screens / Forms**
+
+* Bill of Materials (BOM) master
+* Routing / operation sequences
+* Sub-assembly / multi-level BOM
+* Costing & scrap calculation
+
+**Fields**
+BOMID, ProductID, ComponentID, Quantity, OperationSequence, WorkCenterID, AuditFields.
+
+**Validations**
+
+* Component availability
+* Routing completeness
+* Scrap & yield validation
+
+**Workflows**
+
+* Create BOM → Assign routing → Link work centers → Update cost & availability → Integrate with production
+
+---
+
+## 3. SHOP FLOOR MANAGEMENT
+
+**Screens / Forms**
+
+* Work order tracking
+* Machine / labor assignment
+* Real-time production status
+* Downtime logging & exception handling
+* Labor & efficiency metrics
+
+**Fields**
+WorkOrderID, WorkCenterID, MachineID, EmployeeID, StartTime, EndTime, OutputQty, Status, AuditFields.
+
+**Validations**
+
+* Time entry accuracy
+* Machine & labor allocation
+* Output vs plan monitoring
+
+**Workflows**
+
+* Dispatch work order → Capture execution → Log downtime → Update production completion → Report efficiency
+
+---
+
+## 4. QUALITY & COMPLIANCE
+
+**Screens / Forms**
+
+* Quality inspection & test plans
+* Non-conformance / deviation tracking
+* Corrective & preventive action (CAPA)
+* ISO / automotive standards compliance (IATF 16949)
+* Audit logging
+
+**Fields**
+InspectionID, ProductID, WorkOrderID, Result, DeviationID, CAPAID, Status, AuditFields.
+
+**Validations**
+
+* Inspection before shipment
+* CAPA closure mandatory before release
+* Compliance checklist validation
+
+**Workflows**
+
+* Inspection → Deviations → CAPA → Approval → Release
+
+---
+
+## 5. SUPPLY CHAIN & PROCUREMENT
+
+**Screens / Forms**
+
+* Supplier / vendor master
+* Purchase requisitions & orders
+* Supplier performance tracking
+* Contract & SLA management
+
+**Fields**
+SupplierID, MaterialID, POID, Quantity, ReceivedQty, SLA, AuditFields.
+
+**Validations**
+
+* Supplier compliance check
+* Lead time verification
+* Purchase approval workflow
+
+**Workflows**
+
+* Material requisition → PO creation → Receive → QC → Inventory allocation → Payment
+
+---
+
+## 6. INVENTORY & WAREHOUSE
+
+**Screens / Forms**
+
+* Stock management (raw materials, WIP, finished goods)
+* Warehouse / bin location mapping
+* Batch / serial tracking
+* Stock movement & transfers
+
+**Fields**
+InventoryID, ProductID, Quantity, WarehouseID, BatchID, LocationID, Status, AuditFields.
+
+**Validations**
+
+* Stock reservation before production
+* Expiry / warranty check for automotive parts
+* Movement validation
+
+**Workflows**
+
+* Receive → Store → Issue to production → Transfer → Ship → Update stock
+
+---
+
+## 7. MAINTENANCE & ASSET MANAGEMENT
+
+**Screens / Forms**
+
+* Equipment / machine master
+* Preventive maintenance scheduling
+* Corrective maintenance logging
+* Spare parts tracking
+
+**Fields**
+AssetID, WorkCenterID, MaintenanceType, ScheduleDate, Status, PartsUsed, AuditFields.
+
+**Validations**
+
+* Preventive maintenance adherence
+* Downtime logging mandatory
+* Spare parts availability check
+
+**Workflows**
+
+* Asset registration → Schedule PM → Execute → Log CM → Track parts → Update asset status
+
+---
+
+## 8. ORDER MANAGEMENT
+
+**Screens / Forms**
+
+* Customer / dealer orders
+* Order fulfillment & shipment
+* Returns & warranty claims
+* Order tracking & status updates
+
+**Fields**
+OrderID, CustomerID, ProductID, Quantity, OrderStatus, ShipmentID, AuditFields.
+
+**Validations**
+
+* Stock allocation before confirmation
+* Return eligibility check
+* Order fulfillment SLA adherence
+
+**Workflows**
+
+* Order received → Confirm → Allocate stock → Pick & pack → Ship → Invoice → Track returns
+
+---
+
+## 9. CRM & DEALER MANAGEMENT
+
+**Screens / Forms**
+
+* Customer & dealer master
+* Lead & opportunity tracking
+* Dealer performance & incentives
+* Complaint / service request management
+
+**Fields**
+CustomerID, DealerID, LeadID, OpportunityID, Status, IncentiveID, AuditFields.
+
+**Validations**
+
+* Duplicate detection
+* SLA compliance for service requests
+
+**Workflows**
+
+* Capture lead → Convert to opportunity → Track dealer performance → Manage complaints → Generate incentive report
+
+---
+
+## 10. FINANCE & EPM
+
+**Screens / Forms**
+
+* GL / AP / AR / cost center management
+* Budgeting & forecasting (production, procurement)
+* Cost of goods sold (COGS) analysis
+* Variance reporting & profitability
+
+**Fields**
+GLAccountID, DepartmentID, ExpenseID, RevenueID, Forecast, Actual, Variance, AuditFields.
+
+**Validations**
+
+* Accurate cost allocation
+* Budget limit enforcement
+
+**Workflows**
+
+* Post transactions → Budget reconciliation → Variance reporting → EPM dashboard update
+
+---
+
+## 11. HR & WORKFORCE MANAGEMENT
+
+**Screens / Forms**
+
+* Employee master
+* Time & attendance
+* Skill / certification tracking
+* Shift scheduling (shop floor, warehouse, admin)
+
+**Fields**
+EmployeeID, Role, Department, SkillSet, CertificationExpiry, Shift, AuditFields.
+
+**Validations**
+
+* Role eligibility check
+* Certification compliance mandatory
+
+**Workflows**
+
+* Onboard employee → Assign shift → Track attendance → Evaluate performance → Process payroll
+
+---
+
+## 12. AI & PREDICTIVE ANALYTICS
+
+**Use Cases**
+
+* Predictive maintenance for machines
+* Production yield optimization
+* Demand forecasting
+* Inventory replenishment alerts
+* Quality defect prediction
+
+**Controls**
+
+* Threshold alerts for exceptions; human review for critical operations
+
+---
+
+## 13. BI & DASHBOARDS
+
+**Prebuilt Dashboards**
+
+* Production efficiency & downtime
+* Inventory levels & aging
+* Order fulfillment KPIs
+* Supplier performance
+* Cost & profitability analysis
+
+**Ad-hoc**
+
+* Drill down from plant → work center → product → batch → order
+
+---
+
+## 14. MOBILE APPS
+
+**Shop Floor App**
+
+* Work order tracking, machine status, downtime logging
+  **Warehouse App**
+* Inventory updates, pick/pack/ship
+  **Manager App**
+* Production KPIs, exception alerts, approvals
+
+---
+
+## 15. ROLES & PERMISSIONS
+
+**Core Roles**
+
+* Plant Manager / Supervisor
+* Production Operator
+* Warehouse / Inventory Staff
+* Maintenance Technician
+* Quality Engineer
+* Finance / Accounts
+* HR / Payroll
+* CRM / Dealer Manager
+* IT / Integration Engineer
+* Admin
+
+**Permission Notes**
+
+* Role-based access for production data, cost, quality, and financials
+
+---
+
+## 16. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+**Seed Data**
+
+* 20 products, 5 BOMs, 3 work centers, 10 employees, 5 warehouses, 10 orders, 5 suppliers
+
+**Onboarding Steps**
+
+* Register products & BOM → Create work orders → Assign resources → Track production → Update inventory → Generate reports → Validate dashboards
+
+---
+
+## 17. INTEGRATIONS & CONNECTORS
+
+**Suggested Integrations**
+
+* IoT sensors & MES
+* Supplier ERP systems
+* Automotive PLM / CAD
+* Logistics & shipping carriers
+* Finance & HR systems
+* BI / data warehouse
+
+**Integration Rules**
+
+* Idempotent ingestion, audit logging, secure credential storage
+
+---
+
+## 18. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+**Examples**
+
+* Machine downtime → alert maintenance
+* Stock below threshold → auto-reorder alert
+* Delayed order → notify manager
+* Production yield variance → generate exception report
+
+---
+
+## 19. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+**Idempotency & Safety**
+
+* Seeders check natural keys (ProductID + WorkOrderID + EmployeeID) before insert
+* Migrations additive; destructive changes require rollback scripts
+* Feature flags per tenant for AI predictive maintenance, MES integrations, multi-plant operations
+
+**Testing**
+
+* Work order lifecycle → production → quality → inventory → order → shipment → finance → KPI dashboards
+
+---
+
+## 20. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+**REPLIT MUST** — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and **NEVER** duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+---
+
+If you want me to generate **Industry Pack 23 — TELECOM & NETWORKS** next, reply **“Yes”** and I will produce it in the same format.

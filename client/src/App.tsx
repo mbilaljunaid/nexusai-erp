@@ -491,6 +491,21 @@ const EdAnalytics = lazy(() => import("@/pages/EdAnalytics"));
 const Gradebook = lazy(() => import("@/pages/Gradebook"));
 const Certification = lazy(() => import("@/pages/Certification"));
 const EdDashboard = lazy(() => import("@/pages/EdDashboard"));
+const ProductInventory = lazy(() => import("@/pages/ProductInventory"));
+const OrderManagementRetail = lazy(() => import("@/pages/OrderManagementRetail"));
+const PricingPromotions = lazy(() => import("@/pages/PricingPromotions"));
+const CustomerCRM = lazy(() => import("@/pages/CustomerCRM"));
+const BillingPaymentRetail = lazy(() => import("@/pages/BillingPaymentRetail"));
+const SupplyChainRetail = lazy(() => import("@/pages/SupplyChainRetail"));
+const Warehouse = lazy(() => import("@/pages/Warehouse"));
+const LogisticsShipping = lazy(() => import("@/pages/LogisticsShipping"));
+const MarketingCampaigns = lazy(() => import("@/pages/MarketingCampaigns"));
+const ProductRecommendations = lazy(() => import("@/pages/ProductRecommendations"));
+const RetailAnalytics = lazy(() => import("@/pages/RetailAnalytics"));
+const HRRetail = lazy(() => import("@/pages/HRRetail"));
+const ComplianceTax = lazy(() => import("@/pages/ComplianceTax"));
+const ReturnsManagement = lazy(() => import("@/pages/ReturnsManagement"));
+const RetailDashboard = lazy(() => import("@/pages/RetailDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1191,6 +1206,21 @@ function Router() {
       <Route path="/ed-grades" component={Gradebook} />
       <Route path="/ed-certificates" component={Certification} />
       <Route path="/ed-dashboard" component={EdDashboard} />
+      <Route path="/retail-products" component={ProductInventory} />
+      <Route path="/retail-orders" component={OrderManagementRetail} />
+      <Route path="/retail-pricing" component={PricingPromotions} />
+      <Route path="/retail-customers" component={CustomerCRM} />
+      <Route path="/retail-billing" component={BillingPaymentRetail} />
+      <Route path="/retail-supply" component={SupplyChainRetail} />
+      <Route path="/retail-warehouse" component={Warehouse} />
+      <Route path="/retail-shipping" component={LogisticsShipping} />
+      <Route path="/retail-campaigns" component={MarketingCampaigns} />
+      <Route path="/retail-recommendations" component={ProductRecommendations} />
+      <Route path="/retail-analytics" component={RetailAnalytics} />
+      <Route path="/retail-hr" component={HRRetail} />
+      <Route path="/retail-compliance" component={ComplianceTax} />
+      <Route path="/retail-returns" component={ReturnsManagement} />
+      <Route path="/retail-dashboard" component={RetailDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
