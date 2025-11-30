@@ -1185,36 +1185,6 @@ function Router() {
       <Route path="/demand-planning" component={FBDemandPlanning} />
       <Route path="/sustainability" component={SustainabilityTraceability} />
       <Route path="/fb-analytics" component={FoodBeverageBIDashboard} />
-      <Route path="/material-master" component={MaterialMaster} />
-      <Route path="/product-master" component={ProductMaster} />
-      <Route path="/formulation-composer" component={FormulationComposer} />
-      <Route path="/supplier-qualification" component={SupplierQualification} />
-      <Route path="/eln-research" component={ELNResearchNotebook} />
-      <Route path="/lims" component={LIMSLabManagement} />
-      <Route path="/batch-record" component={eBatchRecord} />
-      <Route path="/stability-studies" component={StabilityStudies} />
-      <Route path="/serialization" component={Serialization} />
-      <Route path="/qms-capa" component={QMSCAPA} />
-      <Route path="/regulatory-ectd" component={RegulatoryeCTD} />
-      <Route path="/pharmacovigilance" component={Pharmacovigilance} />
-      <Route path="/clinical-supply" component={ClinicalSupply} />
-      <Route path="/validation-csv" component={ValidationCSV} />
-      <Route path="/pharma-analytics" component={PharmaAnalytics} />
-      <Route path="/style-master" component={StyleMasterSKU} />
-      <Route path="/tech-packs" component={TechPackBuilder} />
-      <Route path="/sample-tracking" component={SampleTracking} />
-      <Route path="/cmt-factories" component={CMTFactoryManagement} />
-      <Route path="/assortment-planning" component={AssortmentPlanner} />
-      <Route path="/fashion-inventory" component={FashionInventory} />
-      <Route path="/ecommerce-marketplace" component={EcommerceMarketplace} />
-      <Route path="/fashion-pos" component={FashionPOS} />
-      <Route path="/returns-exchanges" component={ReturnsExchanges} />
-      <Route path="/costing-profitability" component={CostingProfitability} />
-      <Route path="/wholesale-b2b" component={WholesaleB2B} />
-      <Route path="/marketing-campaigns" component={MarketingCampaigns} />
-      <Route path="/sustainability-materials" component={SustainabilityMaterials} />
-      <Route path="/demand-forecasting-fashion" component={DemandForecastingFashion} />
-      <Route path="/fashion-analytics" component={FashionAnalytics} />
       <Route path="/cpg-products" component={ProductMasterCPG} />
       <Route path="/cpg-ingredients" component={IngredientMasterCPG} />
       <Route path="/cpg-recipes" component={RecipeBOMMaster} />

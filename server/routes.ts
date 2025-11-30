@@ -5807,41 +5807,10 @@ export async function registerRoutes(
   const eduAssignStore: any[] = [];
   const eduGradeStore: any[] = [];
   const eduBillStore: any[] = [];
+  // Health check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
+  });
 
-// ========== INDUSTRY PACK 31: EDUCATION & E-LEARNING ==========
-const eduStudStore: any[] = [];
-const eduFacStore: any[] = [];
-const eduCourStore: any[] = [];
-const eduEnrStore: any[] = [];
-const eduAssignStore: any[] = [];
-const eduGradeStore: any[] = [];
-const eduBillStore: any[] = [];
-const eduEvtStore: any[] = [];
-const eduAttStore: any[] = [];
-
-app.get("/api/education-students", (req, res) => { if (eduStudStore.length === 0) eduStudStore.push({ id: "es1", studentId: "STU-001", firstName: "Rajesh", lastName: "Kumar", status: "ACTIVE" }); res.json(eduStudStore); });
-app.post("/api/education-students", (req, res) => { const es = { id: `es-${Date.now()}`, ...req.body }; eduStudStore.push(es); res.status(201).json(es); });
-
-app.get("/api/education-faculty", (req, res) => { if (eduFacStore.length === 0) eduFacStore.push({ id: "ef1", facultyId: "FAC-001", firstName: "Dr.", lastName: "Sharma", department: "CSE" }); res.json(eduFacStore); });
-app.post("/api/education-faculty", (req, res) => { const ef = { id: `ef-${Date.now()}`, ...req.body }; eduFacStore.push(ef); res.status(201).json(ef); });
-
-app.get("/api/education-courses", (req, res) => { if (eduCourStore.length === 0) eduCourStore.push({ id: "ec1", courseId: "CSE101", courseName: "Data Structures", credits: 4 }); res.json(eduCourStore); });
-app.post("/api/education-courses", (req, res) => { const ec = { id: `ec-${Date.now()}`, ...req.body }; eduCourStore.push(ec); res.status(201).json(ec); });
-
-app.get("/api/education-admissions", (req, res) => { if (eduEnrStore.length === 0) eduEnrStore.push({ id: "ee1", applicationId: "APP-001", studentId: "STU-001", status: "APPROVED" }); res.json(eduEnrStore); });
-app.post("/api/education-admissions", (req, res) => { const ee = { id: `ee-${Date.now()}`, ...req.body }; eduEnrStore.push(ee); res.status(201).json(ee); });
-
-app.get("/api/education-assessment", (req, res) => { if (eduAssignStore.length === 0) eduAssignStore.push({ id: "ea1", assignmentId: "ASS-001", title: "Midterm", dueDate: "2025-02-15" }); res.json(eduAssignStore); });
-app.post("/api/education-assessment", (req, res) => { const ea = { id: `ea-${Date.now()}`, ...req.body }; eduAssignStore.push(ea); res.status(201).json(ea); });
-
-app.get("/api/education-grades", (req, res) => { if (eduGradeStore.length === 0) eduGradeStore.push({ id: "eg1", studentId: "STU-001", courseId: "CSE101", score: 85, grade: "A" }); res.json(eduGradeStore); });
-app.post("/api/education-grades", (req, res) => { const eg = { id: `eg-${Date.now()}`, ...req.body }; eduGradeStore.push(eg); res.status(201).json(eg); });
-
-app.get("/api/education-billing", (req, res) => { if (eduBillStore.length === 0) eduBillStore.push({ id: "ebill1", invoiceId: "INV-001", studentId: "STU-001", amount: "150000", status: "PENDING" }); res.json(eduBillStore); });
-app.post("/api/education-billing", (req, res) => { const ebill = { id: `ebill-${Date.now()}`, ...req.body }; eduBillStore.push(ebill); res.status(201).json(ebill); });
-
-app.get("/api/education-events", (req, res) => { if (eduEvtStore.length === 0) eduEvtStore.push({ id: "evt1", eventId: "EVENT-001", eventName: "Tech Fest", eventDate: "2025-03-10" }); res.json(eduEvtStore); });
-app.post("/api/education-events", (req, res) => { const evt = { id: `evt-${Date.now()}`, ...req.body }; eduEvtStore.push(evt); res.status(201).json(evt); });
-
-app.get("/api/education-attendance", (req, res) => { if (eduAttStore.length === 0) eduAttStore.push({ id: "att1", studentId: "STU-001", courseId: "CSE101", status: "PRESENT" }); res.json(eduAttStore); });
-app.post("/api/education-attendance", (req, res) => { const att = { id: `att-${Date.now()}`, ...req.body }; eduAttStore.push(att); res.status(201).json(att); });
+  return httpServer;
+}
