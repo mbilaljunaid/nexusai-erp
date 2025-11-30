@@ -47,7 +47,12 @@ export function Header() {
           </nav>
 
           {/* CTA & Mobile Menu */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <Link href="/login">
+              <Button variant="outline" className="hidden md:flex text-white border-slate-600 hover:bg-slate-800" size="sm" data-testid="button-header-login">
+                Login
+              </Button>
+            </Link>
             <Link href="/demo">
               <Button className="hidden md:flex bg-blue-600 hover:bg-blue-700" size="sm" data-testid="button-header-demo">
                 Request Demo
@@ -83,6 +88,11 @@ export function Header() {
                 </a>
               </Link>
             ))}
+            <Link href="/login">
+              <Button variant="outline" className="w-full text-white border-slate-600 hover:bg-slate-800" data-testid="button-mobile-login">
+                Login
+              </Button>
+            </Link>
             <Link href="/demo">
               <Button className="w-full bg-blue-600 hover:bg-blue-700" data-testid="button-mobile-demo">
                 Request Demo
