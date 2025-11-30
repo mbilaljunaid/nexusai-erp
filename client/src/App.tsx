@@ -581,7 +581,6 @@ function Router() {
       <Route path="/budget-planning" component={BudgetPlanning} />
       <Route path="/consolidation-engine" component={ConsolidationEngine} />
       <Route path="/variance-analysis" component={VarianceAnalysis} />
-      <Route path="/predictive-analytics" component={PredictiveAnalytics} />
       <Route path="/rag-embeddings" component={RAGEmbeddingsPipeline} />
       <Route path="/crm-copilot" component={CRMCopilot} />
       <Route path="/erp-copilot" component={ERPCopilot} />

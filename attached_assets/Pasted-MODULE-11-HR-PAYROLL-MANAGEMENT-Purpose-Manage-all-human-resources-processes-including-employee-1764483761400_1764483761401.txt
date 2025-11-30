@@ -1,0 +1,99 @@
+MODULE 11: HR & PAYROLL MANAGEMENT
+
+Purpose: Manage all human resources processes including employee records, payroll, attendance, leave, performance, recruitment, training, compliance, and reporting across HR, Finance, Projects, ERP, CRM, EPM, and BI modules.
+
+Important Note for Replit: Before creating any HR or Payroll objects, workflows, or reports, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+11.1 Employee Master
+
+Forms / Screens: Employee Creation, Employee Edit, Employee Import/Export, Employee Status Management, Employee Dashboard.
+
+Fields: Employee ID, First Name, Last Name, Employee Code, Department, Role/Designation, Manager, Employment Type (Full-Time, Part-Time, Contractor), Date of Joining, Date of Exit, Status (Active, Inactive, On Leave), Personal Information (DOB, Contact Info, Address, Emergency Contact), Bank Details, Tax Information, Skills, Certifications, Location, Work Schedule, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Mandatory fields enforced, unique employee identifier, employment dates validated, bank and tax details validated, department and role exist in system.
+
+Workflows: New employee triggers onboarding workflow, status changes trigger notifications, updates trigger audit logs, integration with payroll, projects, and access management.
+
+11.2 Attendance & Time Tracking
+
+Forms / Screens: Attendance Entry, Employee Clock-In/Clock-Out, Attendance Approval, Shift Scheduling, Overtime Tracking, Attendance Reports.
+
+Fields: Attendance ID, Employee ID, Date, Clock-In Time, Clock-Out Time, Break Duration, Shift, Status (Present, Absent, Leave, Late), Overtime Hours, Approval Status, Audit Fields.
+
+Validations: Clock-in/out within shift timings, mandatory approvals for manual entries, overtime calculation validated, leave status reconciled, exceptions flagged.
+
+Workflows: Attendance submission triggers manager approval, shift changes trigger notifications, overtime triggers payroll integration, attendance exceptions trigger alerts, dashboards updated in real-time.
+
+11.3 Leave & Absence Management
+
+Forms / Screens: Leave Request, Leave Approval, Leave Balance Tracking, Leave Policy Configuration, Absence Reports.
+
+Fields: Leave ID, Employee ID, Leave Type (Sick, Vacation, Casual, Unpaid, Maternity, Paternity), Start Date, End Date, Duration, Status (Pending, Approved, Rejected, Cancelled), Balance, Approval Workflow, Notes, Audit Fields.
+
+Validations: Leave balance availability validated, overlapping leaves checked, approval required for thresholds, mandatory fields enforced.
+
+Workflows: Leave request triggers approval workflow, approval updates leave balance and payroll, notifications sent to employee and manager, leave reports updated automatically.
+
+11.4 Payroll & Compensation
+
+Forms / Screens: Payroll Configuration, Salary Structure, Payroll Processing, Payroll Approval, Payslip Generation, Payroll Reports.
+
+Fields: Employee ID, Salary Components (Basic, HRA, Allowances, Deductions, Bonuses), Tax Details, Benefits, Currency, Payroll Period, Net Pay, Gross Pay, Payment Mode, Status (Draft, Approved, Paid), Created By, Created Date, Modified By, Modified Date.
+
+Validations: Salary components validated against structure, tax calculations accurate, deductions applied correctly, approvals enforced, net pay calculations verified.
+
+Workflows: Payroll processing triggers calculations and approval workflow, payslip generated and sent to employee, payroll journal posting triggers Finance module integration, exceptions trigger alerts, payroll reports updated automatically.
+
+11.5 Recruitment & Onboarding
+
+Forms / Screens: Job Requisition, Job Posting, Applicant Tracking, Interview Scheduling, Offer Letter, Onboarding Checklist, Recruitment Reports.
+
+Fields: Job ID, Job Title, Department, Location, Hiring Manager, Required Skills, Candidates, Application Status, Interview Feedback, Offer Status, Joining Date, Onboarding Tasks, Audit Fields.
+
+Validations: Job requisitions approved, candidate details validated, offer letters generated correctly, onboarding tasks completed.
+
+Workflows: Job posting triggers notifications to recruiters, candidate status changes trigger alerts, interview scheduling triggers calendar invites, offer acceptance triggers onboarding workflow, dashboards updated in real-time.
+
+11.6 Performance & Training
+
+Forms / Screens: Goal Setting, Performance Review, 360-Degree Feedback, Training Plan, Training Enrollment, Skill Development Reports.
+
+Fields: Employee ID, Goals, KPI Metrics, Review Period, Reviewer, Ratings, Comments, Training Program ID, Training Dates, Completion Status, Skill Score, Audit Fields.
+
+Validations: Performance metrics validated, training enrollments checked, feedback recorded correctly, rating scales consistent.
+
+Workflows: Goal creation triggers notifications, review submission triggers approval workflow, training completion updates skill profiles, performance dashboards updated automatically, alerts for pending actions.
+
+11.7 Compliance & Benefits
+
+Forms / Screens: Statutory Compliance Setup, Benefits Enrollment, Leave Compliance, Tax Filings, Labor Law Reports.
+
+Fields: Compliance ID, Employee ID, Jurisdiction, Tax Codes, Social Security Contributions, Benefits Type, Status, Effective Dates, Audit Fields.
+
+Validations: Statutory rules validated per jurisdiction, benefits eligibility verified, tax filings accurate, compliance deadlines enforced.
+
+Workflows: Compliance events trigger alerts, benefits enrollment triggers payroll integration, statutory filings scheduled automatically, exceptions escalated.
+
+11.8 Reporting & Dashboards
+
+Forms / Screens: Employee Reports, Attendance Reports, Leave Reports, Payroll Reports, Recruitment Reports, Performance Dashboards, Compliance Dashboards.
+
+Fields: Report ID, Name, Module, Filters (Employee, Department, Date Range, Status, Location), Data Fields (Hours Worked, Leave Taken, Salary, Tax, Bonus, KPI Scores, Training Completion), Export Options, Schedule, Audit Fields.
+
+Validations: Reports include all relevant data, filters validated, scheduled reports triggered correctly, historical data preserved, access permissions enforced.
+
+Workflows: Scheduled report generation triggers automatic emails, dashboards update in real-time, alerts triggered for exceptions, integration with BI tools for analytics.
+
+11.9 Integrations & Automations
+
+Automations: Payroll calculation triggers automatic GL posting, leave approvals update payroll and attendance, recruitment workflow triggers onboarding, performance review notifications, training completion updates skill profiles.
+
+Integrations: Finance/ERP module for payroll and budgeting, Projects module for resource allocation, CRM for sales incentives, Attendance/Access systems, Learning Management Systems (LMS), BI/Analytics tools, HR Portals.
+
+Key Features: Comprehensive HR lifecycle management, payroll processing, attendance & leave, recruitment & onboarding, performance & training, statutory compliance, reporting & dashboards, cross-module integration, automation of repetitive HR tasks, audit-ready and compliance integrated.
+
+Important Note for Replit: Before creating any HR or Payroll objects, workflows, reports, or integrations, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+⸻
+
+Do you want me to continue with Module 12: Compliance & Governance next?

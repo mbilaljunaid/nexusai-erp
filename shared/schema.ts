@@ -1804,17 +1804,6 @@ export const advancedDashboards = pgTable("advanced_dashboards", {
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const predictiveModels = pgTable("predictive_models", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  modelName: varchar("model_name").notNull(),
-  modelType: varchar("model_type"),
-  accuracy: numeric("accuracy", { precision: 5, scale: 2 }),
-  lastTrainDate: timestamp("last_train_date"),
-  predictions: jsonb("predictions"),
-  status: varchar("status").default("active"),
-  createdAt: timestamp("created_at").default(sql`now()`),
-});
-
 export const forecastData = pgTable("forecast_data", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   modelId: varchar("model_id").notNull(),
