@@ -6,9 +6,17 @@ import { useState } from "react";
 import { DollarSign, Calculator, TrendingUp, AlertCircle, Settings } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
+interface PayrollRun {
+  id: string;
+  name: string;
+  period: string;
+  status: string;
+  totalAmount?: string;
+}
+
 export default function PayrollEngine() {
   const [activeNav, setActiveNav] = useState("runs");
-  const { data: payrolls = [] } = useQuery({
+  const { data: payrolls = [] } = useQuery<PayrollRun[]>({
     queryKey: ["/api/payroll/runs"],
     retry: false,
   });
@@ -20,10 +28,10 @@ export default function PayrollEngine() {
   ];
 
   const stats = {
-    total: payrolls.length,
-    processed: payrolls.filter((p: any) => p.status === "processed").length,
-    pending: payrolls.filter((p: any) => p.status === "pending").length,
-    totalAmount: payrolls.reduce((sum: number, p: any) => sum + parseFloat(p.totalAmount || "0"), 0),
+    total: payrolls?.length || 0,
+    processed: (payrolls || []).filter((p: PayrollRun) => p.status === "processed").length,
+    pending: (payrolls || []).filter((p: PayrollRun) => p.status === "pending").length,
+    totalAmount: (payrolls || []).reduce((sum: number, p: PayrollRun) => sum + parseFloat(p.totalAmount || "0"), 0),
   };
 
   return (
@@ -87,12 +95,12 @@ export default function PayrollEngine() {
 
       {activeNav === "runs" && (
         <div className="space-y-3">
-          {payrolls.map((run: any) => (
+          {payrolls?.map((run: PayrollRun) => (
             <Card key={run.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{run.name}</p>
                   <p className="text-sm text-muted-foreground">{run.period}</p></div>
-                <Badge>{run.status.toUpperCase()}</Badge>
+                <Badge>{run.status?.toUpperCase() || 'PENDING'}</Badge>
               </div>
             </CardContent></Card>
           ))}
