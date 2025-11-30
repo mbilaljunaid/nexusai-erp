@@ -5763,6 +5763,42 @@ export async function registerRoutes(
   app.get("/api/telecom-fieldservice", (req, res) => { if (telFsStore.length === 0) telFsStore.push({ id: "tfs1", workOrderId: "WO-001", technicianId: "TECH-001", status: "completed" }); res.json(telFsStore); });
   app.post("/api/telecom-fieldservice", (req, res) => { const tfs = { id: `tfs-${Date.now()}`, ...req.body }; telFsStore.push(tfs); res.status(201).json(tfs); });
 
+  // ========== INDUSTRY PACK 30: GOVERNMENT & PUBLIC SECTOR ==========
+  const govCitStore: any[] = []; const govSvcStore: any[] = []; const govFinStore: any[] = [];
+  const govHrStore: any[] = []; const govProcStore: any[] = []; const govProjStore: any[] = [];
+  const govCompStore: any[] = []; const govBiStore: any[] = []; const govEngStore: any[] = [];
+  const govWfStore: any[] = [];
+
+  app.get("/api/gov-citizens", (req, res) => { if (govCitStore.length === 0) govCitStore.push({ id: "gc1", caseId: "CASE-001", citizenId: "CIT-001", status: "pending" }); res.json(govCitStore); });
+  app.post("/api/gov-citizens", (req, res) => { const gc = { id: `gc-${Date.now()}`, ...req.body }; govCitStore.push(gc); res.status(201).json(gc); });
+
+  app.get("/api/gov-services", (req, res) => { if (govSvcStore.length === 0) govSvcStore.push({ id: "gs1", serviceId: "SVC-001", departmentId: "DEPT-001", status: "processing" }); res.json(govSvcStore); });
+  app.post("/api/gov-services", (req, res) => { const gs = { id: `gs-${Date.now()}`, ...req.body }; govSvcStore.push(gs); res.status(201).json(gs); });
+
+  app.get("/api/gov-finance", (req, res) => { if (govFinStore.length === 0) govFinStore.push({ id: "gf1", budgetId: "BUD-001", amount: "1000000", status: "allocated" }); res.json(govFinStore); });
+  app.post("/api/gov-finance", (req, res) => { const gf = { id: `gf-${Date.now()}`, ...req.body }; govFinStore.push(gf); res.status(201).json(gf); });
+
+  app.get("/api/gov-hr", (req, res) => { if (govHrStore.length === 0) govHrStore.push({ id: "gh1", employeeId: "EMP-001", departmentId: "DEPT-001", status: "active" }); res.json(govHrStore); });
+  app.post("/api/gov-hr", (req, res) => { const gh = { id: `gh-${Date.now()}`, ...req.body }; govHrStore.push(gh); res.status(201).json(gh); });
+
+  app.get("/api/gov-procurement", (req, res) => { if (govProcStore.length === 0) govProcStore.push({ id: "gp1", supplierId: "SUPP-001", category: "materials", status: "pending" }); res.json(govProcStore); });
+  app.post("/api/gov-procurement", (req, res) => { const gp = { id: `gp-${Date.now()}`, ...req.body }; govProcStore.push(gp); res.status(201).json(gp); });
+
+  app.get("/api/gov-projects", (req, res) => { if (govProjStore.length === 0) govProjStore.push({ id: "gpr1", projectId: "PROJ-001", budget: "500000", status: "active" }); res.json(govProjStore); });
+  app.post("/api/gov-projects", (req, res) => { const gpr = { id: `gpr-${Date.now()}`, ...req.body }; govProjStore.push(gpr); res.status(201).json(gpr); });
+
+  app.get("/api/gov-compliance", (req, res) => { if (govCompStore.length === 0) govCompStore.push({ id: "gc1", regulationId: "REG-001", departmentId: "DEPT-001", status: "compliant" }); res.json(govCompStore); });
+  app.post("/api/gov-compliance", (req, res) => { const gc = { id: `gc-${Date.now()}`, ...req.body }; govCompStore.push(gc); res.status(201).json(gc); });
+
+  app.get("/api/gov-bi", (req, res) => { if (govBiStore.length === 0) govBiStore.push({ id: "gb1", kpiId: "KPI-001", departmentId: "DEPT-001", status: "on-track" }); res.json(govBiStore); });
+  app.post("/api/gov-bi", (req, res) => { const gb = { id: `gb-${Date.now()}`, ...req.body }; govBiStore.push(gb); res.status(201).json(gb); });
+
+  app.get("/api/gov-engagement", (req, res) => { if (govEngStore.length === 0) govEngStore.push({ id: "ge1", interactionId: "INT-001", type: "feedback", status: "pending" }); res.json(govEngStore); });
+  app.post("/api/gov-engagement", (req, res) => { const ge = { id: `ge-${Date.now()}`, ...req.body }; govEngStore.push(ge); res.status(201).json(ge); });
+
+  app.get("/api/gov-workflows", (req, res) => { if (govWfStore.length === 0) govWfStore.push({ id: "gw1", workflowId: "WF-001", stepId: "STEP-001", status: "active" }); res.json(govWfStore); });
+  app.post("/api/gov-workflows", (req, res) => { const gw = { id: `gw-${Date.now()}`, ...req.body }; govWfStore.push(gw); res.status(201).json(gw); });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

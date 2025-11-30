@@ -557,17 +557,16 @@ const CustomerProfilesRetail = lazy(() => import("@/pages/CustomerProfiles"));
 const LoyaltyProgramsRetail = lazy(() => import("@/pages/LoyaltyPrograms"));
 const PricingPromotionsRetail = lazy(() => import("@/pages/PricingPromotionsRetail"));
 const BillingPaymentsRetail = lazy(() => import("@/pages/BillingPaymentsRetail"));
-const SubscriberAccounts = lazy(() => import("@/pages/SubscriberAccounts"));
-const ServiceProvisioning = lazy(() => import("@/pages/ServiceProvisioning"));
-const TelecomBilling = lazy(() => import("@/pages/TelecomBilling"));
-const ContentMedia = lazy(() => import("@/pages/ContentMedia"));
-const TelecomCRM = lazy(() => import("@/pages/TelecomCRM"));
-const TelecomMarketing = lazy(() => import("@/pages/TelecomMarketing"));
-const TelecomHR = lazy(() => import("@/pages/TelecomHR"));
-const TelecomAnalytics = lazy(() => import("@/pages/TelecomAnalytics"));
-const TelecomBI = lazy(() => import("@/pages/TelecomBI"));
-const NetworkInfra = lazy(() => import("@/pages/NetworkInfra"));
-const TelecomFieldService = lazy(() => import("@/pages/TelecomFieldService"));
+const CitizenCaseManagement = lazy(() => import("@/pages/CitizenCaseManagement"));
+const PublicServicesDelivery = lazy(() => import("@/pages/PublicServicesDelivery"));
+const FinanceGrants = lazy(() => import("@/pages/FinanceGrants"));
+const GovernmentHR = lazy(() => import("@/pages/GovernmentHR"));
+const GovernmentProcurement = lazy(() => import("@/pages/GovernmentProcurement"));
+const ProjectInfrastructure = lazy(() => import("@/pages/ProjectInfrastructure"));
+const ComplianceReporting = lazy(() => import("@/pages/ComplianceReporting"));
+const GovernmentBI = lazy(() => import("@/pages/GovernmentBI"));
+const CitizenEngagement = lazy(() => import("@/pages/CitizenEngagement"));
+const WorkflowAutomation = lazy(() => import("@/pages/WorkflowAutomation"));
 const PropertyManagement = lazy(() => import("@/pages/PropertyManagement"));
 const ReservationsBookings = lazy(() => import("@/pages/ReservationsBookings"));
 const GuestManagement = lazy(() => import("@/pages/GuestManagement"));
@@ -1376,6 +1375,16 @@ function Router() {
       <Route path="/telecom-bi" component={TelecomBI} />
       <Route path="/telecom-network" component={NetworkInfra} />
       <Route path="/telecom-fieldservice" component={TelecomFieldService} />
+      <Route path="/gov-citizens" component={CitizenCaseManagement} />
+      <Route path="/gov-services" component={PublicServicesDelivery} />
+      <Route path="/gov-finance" component={FinanceGrants} />
+      <Route path="/gov-hr" component={GovernmentHR} />
+      <Route path="/gov-procurement" component={GovernmentProcurement} />
+      <Route path="/gov-projects" component={ProjectInfrastructure} />
+      <Route path="/gov-compliance" component={ComplianceReporting} />
+      <Route path="/gov-bi" component={GovernmentBI} />
+      <Route path="/gov-engagement" component={CitizenEngagement} />
+      <Route path="/gov-workflows" component={WorkflowAutomation} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
