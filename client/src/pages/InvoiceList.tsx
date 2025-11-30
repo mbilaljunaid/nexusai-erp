@@ -12,7 +12,7 @@ import { Download } from "lucide-react";
 export default function InvoiceList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
-  const { data: invoices = [] } = useQuery({
+  const { data: invoices = [] } = useQuery<any[]>({
     queryKey: ["/api/invoices"],
   });
   const invoiceFormMetadata = getFormMetadata("invoice");

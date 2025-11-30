@@ -11,7 +11,7 @@ import { Mail, Phone } from "lucide-react";
 export default function EmployeeDirectory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
-  const { data: employees = [] } = useQuery({ queryKey: ["/api/hr/employees"] });
+  const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"] });
   const employeeFormMetadata = getFormMetadata("employee");
 
   return (
