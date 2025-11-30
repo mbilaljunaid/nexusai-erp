@@ -280,6 +280,13 @@ const OrderFulfillment = lazy(() => import("@/pages/OrderFulfillment"));
 const RMAManagement = lazy(() => import("@/pages/RMAManagement"));
 const SupplyNetworkOptimization = lazy(() => import("@/pages/SupplyNetworkOptimization"));
 const ThirdPartyLogistics = lazy(() => import("@/pages/ThirdPartyLogistics"));
+const EstimationWorkbook = lazy(() => import("@/pages/EstimationWorkbook"));
+const BOQManagementConstruction = lazy(() => import("@/pages/BOQManagementConstruction"));
+const SubcontractorManagement = lazy(() => import("@/pages/SubcontractorManagement"));
+const EquipmentManagement = lazy(() => import("@/pages/EquipmentManagement"));
+const DailyProgressReport = lazy(() => import("@/pages/DailyProgressReport"));
+const EarnedValueAnalysis = lazy(() => import("@/pages/EarnedValueAnalysis"));
+const HSESafety = lazy(() => import("@/pages/HSESafety"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -771,6 +778,13 @@ function Router() {
       <Route path="/rma-management" component={RMAManagement} />
       <Route path="/supply-network" component={SupplyNetworkOptimization} />
       <Route path="/3pl-management" component={ThirdPartyLogistics} />
+      <Route path="/estimation-workbook" component={EstimationWorkbook} />
+      <Route path="/boq-construction" component={BOQManagementConstruction} />
+      <Route path="/subcontractor-management" component={SubcontractorManagement} />
+      <Route path="/equipment-management" component={EquipmentManagement} />
+      <Route path="/daily-progress-report" component={DailyProgressReport} />
+      <Route path="/earned-value-analysis" component={EarnedValueAnalysis} />
+      <Route path="/hse-safety" component={HSESafety} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
