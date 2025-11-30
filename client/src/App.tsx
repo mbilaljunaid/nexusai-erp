@@ -781,7 +781,14 @@ const QualityAssuranceHub = lazy(() => import("@/pages/QualityAssuranceHub"));
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
+      {/* Public Pages */}
+      <Route path="/" component={LandingPage} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/blog" component={BlogPage} />
+      <Route path="/demo" component={DemoManagement} />
+      
+      {/* Dashboard & Core Pages */}
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/pages" component={PagesIndex} />
       <Route path="/crm" component={CRM} />
       <Route path="/crm/leads" component={LeadsDetail} />
@@ -1667,17 +1674,3 @@ const AutomotiveCompliance = lazy(() => import("@/pages/AutomotiveCompliance"));
 const AutomotiveMobileApp = lazy(() => import("@/pages/AutomotiveMobileApp"));
 const AutomotiveQualityAnalytics = lazy(() => import("@/pages/AutomotiveQualityAnalytics"));
 const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
-
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={LandingPage} />
-      <Route path="/about" component={AboutPage} />
-      <Route path="/blog" component={BlogPage} />
-      <Route path="/demo" component={DemoManagement} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/pages" component={PagesIndex} />
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
