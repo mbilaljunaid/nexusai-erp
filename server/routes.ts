@@ -5685,141 +5685,46 @@ export async function registerRoutes(
   app.get("/api/retail-campaigns", (req, res) => { if (retCampStore.length === 0) retCampStore.push({ id: "cam1", campaignId: "CAMP-001", channel: "email", status: "active" }); res.json(retCampStore); });
   app.post("/api/retail-campaigns", (req, res) => { const cam = { id: `cam-${Date.now()}`, ...req.body }; retCampStore.push(cam); res.status(201).json(cam); });
 
-  // ========== INDUSTRY PACK 30: GOVERNMENT & PUBLIC SECTOR ==========
-  const govCitStore: any[] = []; const govSvcStore: any[] = []; const govFinStore: any[] = [];
-  const govHrStore: any[] = []; const govProcStore: any[] = []; const govProjStore: any[] = [];
-  const govCompStore: any[] = []; const govBiStore: any[] = []; const govEngStore: any[] = [];
-  const govWfStore: any[] = [];
+  // ========== INDUSTRY PACK 40: GOVERNMENT & PUBLIC SECTOR ==========
+  const govCitStore: any[] = [];
+  const govCaseStore: any[] = [];
+  const govPermStore: any[] = [];
+  const govGrantStore: any[] = [];
+  const govHRStore: any[] = [];
+  const govFinStore: any[] = [];
+  const govCompStore: any[] = [];
+  const govProjStore: any[] = [];
+  const govCRMStore: any[] = [];
+  const govAnalStore: any[] = [];
 
-  app.get("/api/gov-citizens", (req, res) => { if (govCitStore.length === 0) govCitStore.push({ id: "gc1", caseId: "CASE-001", citizenId: "CIT-001", status: "pending" }); res.json(govCitStore); });
-  app.post("/api/gov-citizens", (req, res) => { const gc = { id: `gc-${Date.now()}`, ...req.body }; govCitStore.push(gc); res.status(201).json(gc); });
+  app.get("/api/government-citizens", (req, res) => { if (govCitStore.length === 0) { for (let i = 1; i <= 15; i++) { govCitStore.push({ id: `cit${i}`, citizenId: `CIT-${String(i).padStart(4,'0')}`, citizenName: `Citizen ${i}`, email: `citizen${i}@gov.in`, phone: `+91-${String(i).padStart(10,'0')}`, docStatus: 'VERIFIED', status: 'ACTIVE' }); } } res.json(govCitStore); });
+  app.post("/api/government-citizens", (req, res) => { const c = { id: `cit-${Date.now()}`, ...req.body }; govCitStore.push(c); res.status(201).json(c); });
 
-  app.get("/api/gov-services", (req, res) => { if (govSvcStore.length === 0) govSvcStore.push({ id: "gs1", serviceId: "SVC-001", departmentId: "DEPT-001", status: "processing" }); res.json(govSvcStore); });
-  app.post("/api/gov-services", (req, res) => { const gs = { id: `gs-${Date.now()}`, ...req.body }; govSvcStore.push(gs); res.status(201).json(gs); });
+  app.get("/api/government-cases", (req, res) => { if (govCaseStore.length === 0) { for (let i = 1; i <= 12; i++) { govCaseStore.push({ id: `case${i}`, caseId: `CASE-${String(i).padStart(5,'0')}`, citizenId: `CIT-${String(i).padStart(4,'0')}`, serviceType: i % 3 === 0 ? 'Application' : i % 3 === 1 ? 'Complaint' : 'Request', description: `Case ${i}`, status: i % 2 === 0 ? 'RESOLVED' : 'PENDING' }); } } res.json(govCaseStore); });
+  app.post("/api/government-cases", (req, res) => { const ca = { id: `case-${Date.now()}`, ...req.body }; govCaseStore.push(ca); res.status(201).json(ca); });
 
-  app.get("/api/gov-finance", (req, res) => { if (govFinStore.length === 0) govFinStore.push({ id: "gf1", budgetId: "BUD-001", amount: "1000000", status: "allocated" }); res.json(govFinStore); });
-  app.post("/api/gov-finance", (req, res) => { const gf = { id: `gf-${Date.now()}`, ...req.body }; govFinStore.push(gf); res.status(201).json(gf); });
+  app.get("/api/government-permits", (req, res) => { if (govPermStore.length === 0) { for (let i = 1; i <= 10; i++) { govPermStore.push({ id: `perm${i}`, permitId: `PERM-${String(i).padStart(4,'0')}`, citizenId: `CIT-${String(i).padStart(4,'0')}`, permitType: i % 2 === 0 ? 'Business' : 'Residence', issueDate: new Date(Date.now() - i * 86400000).toISOString().split('T')[0], expiryDate: new Date(Date.now() + (365-i) * 86400000).toISOString().split('T')[0], status: 'ACTIVE' }); } } res.json(govPermStore); });
+  app.post("/api/government-permits", (req, res) => { const p = { id: `perm-${Date.now()}`, ...req.body }; govPermStore.push(p); res.status(201).json(p); });
 
-  app.get("/api/gov-hr", (req, res) => { if (govHrStore.length === 0) govHrStore.push({ id: "gh1", employeeId: "EMP-001", departmentId: "DEPT-001", status: "active" }); res.json(govHrStore); });
-  app.post("/api/gov-hr", (req, res) => { const gh = { id: `gh-${Date.now()}`, ...req.body }; govHrStore.push(gh); res.status(201).json(gh); });
+  app.get("/api/government-grants", (req, res) => { if (govGrantStore.length === 0) { for (let i = 1; i <= 8; i++) { govGrantStore.push({ id: `grant${i}`, grantId: `GRANT-${String(i).padStart(3,'0')}`, programName: `Program ${i}`, applicantId: `CIT-${String(i).padStart(4,'0')}`, amount: 100000 + (i * 50000), status: i % 3 === 0 ? 'APPROVED' : i % 3 === 1 ? 'PENDING' : 'DISBURSED' }); } } res.json(govGrantStore); });
+  app.post("/api/government-grants", (req, res) => { const g = { id: `grant-${Date.now()}`, ...req.body }; govGrantStore.push(g); res.status(201).json(g); });
 
-  app.get("/api/gov-procurement", (req, res) => { if (govProcStore.length === 0) govProcStore.push({ id: "gp1", supplierId: "SUPP-001", category: "materials", status: "pending" }); res.json(govProcStore); });
-  app.post("/api/gov-procurement", (req, res) => { const gp = { id: `gp-${Date.now()}`, ...req.body }; govProcStore.push(gp); res.status(201).json(gp); });
+  app.get("/api/government-employees", (req, res) => { if (govHRStore.length === 0) { for (let i = 1; i <= 10; i++) { govHRStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Officer ${i}`, role: i % 3 === 0 ? 'Manager' : i % 3 === 1 ? 'Clerk' : 'Officer', department: ['Revenue', 'Licensing', 'Social', 'Projects'][i % 4], status: 'ACTIVE' }); } } res.json(govHRStore); });
+  app.post("/api/government-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; govHRStore.push(e); res.status(201).json(e); });
 
-  app.get("/api/gov-projects", (req, res) => { if (govProjStore.length === 0) govProjStore.push({ id: "gpr1", projectId: "PROJ-001", budget: "500000", status: "active" }); res.json(govProjStore); });
-  app.post("/api/gov-projects", (req, res) => { const gpr = { id: `gpr-${Date.now()}`, ...req.body }; govProjStore.push(gpr); res.status(201).json(gpr); });
+  app.get("/api/government-finance", (req, res) => { if (govFinStore.length === 0) { for (let i = 1; i <= 10; i++) { govFinStore.push({ id: `fin${i}`, transactionId: `TXN-${String(i).padStart(4,'0')}`, departmentId: `DEPT-${String((i%4)+1).padStart(2,'0')}`, amount: 500000 + (i * 100000), type: i % 2 === 0 ? 'REVENUE' : 'EXPENSE', status: 'APPROVED' }); } } res.json(govFinStore); });
+  app.post("/api/government-finance", (req, res) => { const f = { id: `fin-${Date.now()}`, ...req.body }; govFinStore.push(f); res.status(201).json(f); });
 
-  app.get("/api/gov-compliance", (req, res) => { if (govCompStore.length === 0) govCompStore.push({ id: "gc1", regulationId: "REG-001", departmentId: "DEPT-001", status: "compliant" }); res.json(govCompStore); });
-  app.post("/api/gov-compliance", (req, res) => { const gc = { id: `gc-${Date.now()}`, ...req.body }; govCompStore.push(gc); res.status(201).json(gc); });
+  app.get("/api/government-compliance", (req, res) => { if (govCompStore.length === 0) { govCompStore.push({ id: 'comp1', regulation: 'RTI Act', department: 'ALL', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }, { id: 'comp2', regulation: 'RTI Act', department: 'ALL', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }); } res.json(govCompStore); });
+  app.post("/api/government-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; govCompStore.push(co); res.status(201).json(co); });
 
-  app.get("/api/gov-bi", (req, res) => { if (govBiStore.length === 0) govBiStore.push({ id: "gb1", kpiId: "KPI-001", departmentId: "DEPT-001", status: "on-track" }); res.json(govBiStore); });
-  app.post("/api/gov-bi", (req, res) => { const gb = { id: `gb-${Date.now()}`, ...req.body }; govBiStore.push(gb); res.status(201).json(gb); });
+  app.get("/api/government-projects", (req, res) => { if (govProjStore.length === 0) { for (let i = 1; i <= 8; i++) { govProjStore.push({ id: `proj${i}`, projectId: `PROJ-${String(i).padStart(3,'0')}`, name: `Project ${i}`, budget: 5000000 + (i * 1000000), progress: 30 + (i * 5), status: 'ACTIVE' }); } } res.json(govProjStore); });
+  app.post("/api/government-projects", (req, res) => { const pr = { id: `proj-${Date.now()}`, ...req.body }; govProjStore.push(pr); res.status(201).json(pr); });
 
-  app.get("/api/gov-engagement", (req, res) => { if (govEngStore.length === 0) govEngStore.push({ id: "ge1", interactionId: "INT-001", type: "feedback", status: "pending" }); res.json(govEngStore); });
-  app.post("/api/gov-engagement", (req, res) => { const ge = { id: `ge-${Date.now()}`, ...req.body }; govEngStore.push(ge); res.status(201).json(ge); });
+  app.get("/api/government-crm", (req, res) => { if (govCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { govCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, citizenId: `CIT-${String(i).padStart(4,'0')}`, type: i % 2 === 0 ? 'Feedback' : 'Support', subject: 'Service Request', status: 'RESOLVED' }); } } res.json(govCRMStore); });
+  app.post("/api/government-crm", (req, res) => { const cr = { id: `crm-${Date.now()}`, ...req.body }; govCRMStore.push(cr); res.status(201).json(cr); });
 
-  app.get("/api/gov-workflows", (req, res) => { if (govWfStore.length === 0) govWfStore.push({ id: "gw1", workflowId: "WF-001", stepId: "STEP-001", status: "active" }); res.json(govWfStore); });
-  app.post("/api/gov-workflows", (req, res) => { const gw = { id: `gw-${Date.now()}`, ...req.body }; govWfStore.push(gw); res.status(201).json(gw); });
-
-  // ========== INDUSTRY PACK 31: EDUCATION & E-LEARNING ==========
-  const eduStudStore: any[] = [];
-  const eduFacStore: any[] = [];
-  const eduCourStore: any[] = [];
-  const eduEnrStore: any[] = [];
-  const eduAssignStore: any[] = [];
-  const eduGradeStore: any[] = [];
-  const eduBillStore: any[] = [];
-
-  // ========== INDUSTRY PACK 33: RETAIL & E-COMMERCE ==========
-  const retailProdStore: any[] = [];
-  const retailOrderStore: any[] = [];
-  const retailCustStore: any[] = [];
-  const retailPromStore: any[] = [];
-  const retailInvStore: any[] = [];
-  const retailPOStore: any[] = [];
-  const retailEmpStore: any[] = [];
-  const retailWarehStore: any[] = [];
-  const retailAIStore: any[] = [];
-  const retailCampStore: any[] = [];
-
-  app.get("/api/retail-products", (req, res) => { if (retailProdStore.length === 0) { for (let i = 1; i <= 10; i++) { retailProdStore.push({ id: `prod${i}`, productId: `PROD-${String(i).padStart(3,'0')}`, name: `Product ${i}`, category: i % 3 === 0 ? 'Electronics' : i % 3 === 1 ? 'Clothing' : 'Home', sku: `SKU${String(i).padStart(3,'0')}`, price: 500 + (i * 100), quantity: Math.floor(Math.random() * 100), status: 'ACTIVE' }); } } res.json(retailProdStore); });
-  app.post("/api/retail-products", (req, res) => { const p = { id: `prod-${Date.now()}`, ...req.body }; retailProdStore.push(p); res.status(201).json(p); });
-  app.get("/api/retail-orders", (req, res) => { if (retailOrderStore.length === 0) { for (let i = 1; i <= 10; i++) { retailOrderStore.push({ id: `order${i}`, orderId: `ORD-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(Math.floor(Math.random()*50)+1).padStart(3,'0')}`, customerName: `Customer ${i}`, amount: 5000 + (i * 1000), status: i % 2 === 0 ? 'DELIVERED' : 'PROCESSING', paymentStatus: i % 3 === 0 ? 'PAID' : 'PENDING', orderDate: new Date(Date.now() - i * 86400000).toISOString().split('T')[0] }); } } res.json(retailOrderStore); });
-  app.post("/api/retail-orders", (req, res) => { const o = { id: `order-${Date.now()}`, ...req.body }; retailOrderStore.push(o); res.status(201).json(o); });
-  app.get("/api/retail-customers", (req, res) => { if (retailCustStore.length === 0) { for (let i = 1; i <= 10; i++) { retailCustStore.push({ id: `cust${i}`, customerId: `CUST-${String(i).padStart(3,'0')}`, name: `Customer ${i}`, email: `cust${i}@example.com`, phone: `+91-98${String(i).padStart(8,'0')}`, loyaltyPoints: i * 500, segment: i % 3 === 0 ? 'Premium' : i % 3 === 1 ? 'Regular' : 'New', status: 'ACTIVE' }); } } res.json(retailCustStore); });
-  app.post("/api/retail-customers", (req, res) => { const c = { id: `cust-${Date.now()}`, ...req.body }; retailCustStore.push(c); res.status(201).json(c); });
-  app.get("/api/retail-promotions", (req, res) => { if (retailPromStore.length === 0) { for (let i = 1; i <= 5; i++) { retailPromStore.push({ id: `promo${i}`, promotionId: `PROMO-${String(i).padStart(3,'0')}`, name: `Promotion ${i}`, type: i % 2 === 0 ? 'DISCOUNT' : 'CASHBACK', discount: 10 + (i * 5), status: i % 3 === 0 ? 'EXPIRED' : 'ACTIVE', validTill: new Date(Date.now() + i * 86400000 * 30).toISOString().split('T')[0] }); } } res.json(retailPromStore); });
-  app.post("/api/retail-promotions", (req, res) => { const pr = { id: `promo-${Date.now()}`, ...req.body }; retailPromStore.push(pr); res.status(201).json(pr); });
-  app.get("/api/retail-invoices", (req, res) => { if (retailInvStore.length === 0) { for (let i = 1; i <= 10; i++) { retailInvStore.push({ id: `inv${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, orderId: `ORD-${String(i).padStart(4,'0')}`, amount: 5000 + (i * 1000), paymentMethod: i % 3 === 0 ? 'CARD' : i % 3 === 1 ? 'UPI' : 'CASH', status: i % 2 === 0 ? 'PAID' : 'PENDING', date: new Date(Date.now() - i * 86400000).toISOString().split('T')[0] }); } } res.json(retailInvStore); });
-  app.post("/api/retail-invoices", (req, res) => { const inv = { id: `inv-${Date.now()}`, ...req.body }; retailInvStore.push(inv); res.status(201).json(inv); });
-  app.get("/api/retail-purchase-orders", (req, res) => { if (retailPOStore.length === 0) { for (let i = 1; i <= 5; i++) { retailPOStore.push({ id: `po${i}`, poId: `PO-${String(i).padStart(3,'0')}`, supplierId: `SUPP-${String(i).padStart(2,'0')}`, supplierName: `Supplier ${i}`, quantity: 100 + (i * 50), amount: 50000 + (i * 10000), status: i % 2 === 0 ? 'RECEIVED' : 'PENDING' }); } } res.json(retailPOStore); });
-  app.post("/api/retail-purchase-orders", (req, res) => { const po = { id: `po-${Date.now()}`, ...req.body }; retailPOStore.push(po); res.status(201).json(po); });
-  app.get("/api/retail-employees", (req, res) => { if (retailEmpStore.length === 0) { for (let i = 1; i <= 8; i++) { retailEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Manager' : i % 3 === 1 ? 'Cashier' : 'Warehouse', department: i % 2 === 0 ? 'Store' : 'Warehouse', shift: i % 2 === 0 ? 'Morning' : 'Evening', status: 'ACTIVE' }); } } res.json(retailEmpStore); });
-  app.post("/api/retail-employees", (req, res) => { const emp = { id: `emp-${Date.now()}`, ...req.body }; retailEmpStore.push(emp); res.status(201).json(emp); });
-  app.get("/api/retail-warehouses", (req, res) => { if (retailWarehStore.length === 0) { for (let i = 1; i <= 5; i++) { retailWarehStore.push({ id: `wh${i}`, warehouseId: `WH-${String(i).padStart(2,'0')}`, name: `Warehouse ${i}`, location: ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata'][i-1], capacity: 10000 + (i * 2000), used: 5000 + (i * 1000), skuCount: 500 + (i * 100), status: 'ACTIVE' }); } } res.json(retailWarehStore); });
-  app.post("/api/retail-warehouses", (req, res) => { const wh = { id: `wh-${Date.now()}`, ...req.body }; retailWarehStore.push(wh); res.status(201).json(wh); });
-  app.get("/api/retail-ai-recommendations", (req, res) => { if (retailAIStore.length === 0) { retailAIStore.push({ id: 'rec1', type: 'Cross-sell', productId: 'PROD-001', productName: 'Product 1', recommendation: 'Bundle with Product 3', confidence: 85, impact: 'High' }, { id: 'rec2', type: 'Reorder', productId: 'PROD-005', productName: 'Product 5', recommendation: 'Stock forecast: Reorder soon', confidence: 92, impact: 'Critical' }); } res.json(retailAIStore); });
-  app.post("/api/retail-ai-recommendations", (req, res) => { const rec = { id: `rec-${Date.now()}`, ...req.body }; retailAIStore.push(rec); res.status(201).json(rec); });
-  app.get("/api/retail-campaigns", (req, res) => { if (retailCampStore.length === 0) { for (let i = 1; i <= 5; i++) { retailCampStore.push({ id: `camp${i}`, campaignId: `CAMP-${String(i).padStart(3,'0')}`, name: `Campaign ${i}`, channel: i % 3 === 0 ? 'Email' : i % 3 === 1 ? 'SMS' : 'Push', recipients: 1000 + (i * 500), engagement: 20 + (i * 5), roi: 150 + (i * 30), status: 'ACTIVE' }); } } res.json(retailCampStore); });
-  app.post("/api/retail-campaigns", (req, res) => { const camp = { id: `camp-${Date.now()}`, ...req.body }; retailCampStore.push(camp); res.status(201).json(camp); });
-  app.get("/api/retail-kpis", (req, res) => { res.json({ totalSales: 1250000, totalOrders: 1234, avgOrderValue: 1014, totalCustomers: 567, activePromotions: 12 }); });
-
-
-  // ========== INDUSTRY PACK 37: TELECOMMUNICATIONS ==========
-  const telSubStore: any[] = [];
-  const telPlanStore: any[] = [];
-  const telBillStore: any[] = [];
-  const telNetStore: any[] = [];
-  const telCRMStore: any[] = [];
-  const telProvStore: any[] = [];
-  const telEmpStore: any[] = [];
-  const telOptStore: any[] = [];
-  const telCompStore: any[] = [];
-  const telUsageStore: any[] = [];
-
-  app.get("/api/telecom-subscribers", (req, res) => { if (telSubStore.length === 0) { for (let i = 1; i <= 20; i++) { telSubStore.push({ id: `sub${i}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, name: `Subscriber ${i}`, phone: `+91-98${String(i).padStart(8,'0')}`, accountStatus: 'ACTIVE', planId: `PLAN-${String((i%5)+1).padStart(2,'0')}` }); } } res.json(telSubStore); });
-  app.post("/api/telecom-subscribers", (req, res) => { const s = { id: `sub-${Date.now()}`, ...req.body }; telSubStore.push(s); res.status(201).json(s); });
-
-  // ========== INDUSTRY PACK 39: HOSPITALITY & TRAVEL ==========
-  const hospPropStore: any[] = [];
-  const hospResStore: any[] = [];
-  const hospGuestStore: any[] = [];
-  const hospPkgStore: any[] = [];
-  const hospBillStore: any[] = [];
-  const hospCRMStore: any[] = [];
-  const hospEmpStore: any[] = [];
-  const hospPricStore: any[] = [];
-  const hospCompStore: any[] = [];
-  const hospLoyStore: any[] = [];
-
-  app.get("/api/hospitality-properties", (req, res) => { if (hospPropStore.length === 0) { for (let i = 1; i <= 12; i++) { hospPropStore.push({ id: `prop${i}`, propertyId: `PROP-${String(i).padStart(3,'0')}`, propertyName: `Hotel ${i}`, type: i % 2 === 0 ? '5-Star' : '4-Star', rooms: 100 + (i * 20), city: ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai'][i % 5], status: 'ACTIVE' }); } } res.json(hospPropStore); });
-  app.post("/api/hospitality-properties", (req, res) => { const p = { id: `prop-${Date.now()}`, ...req.body }; hospPropStore.push(p); res.status(201).json(p); });
-
-  app.get("/api/hospitality-reservations", (req, res) => { if (hospResStore.length === 0) { for (let i = 1; i <= 12; i++) { hospResStore.push({ id: `res${i}`, reservationId: `RES-${String(i).padStart(5,'0')}`, propertyId: `PROP-${String((i%5)+1).padStart(3,'0')}`, guestId: `GUEST-${String(i).padStart(4,'0')}`, checkIn: new Date(Date.now() + i * 86400000).toISOString().split('T')[0], checkOut: new Date(Date.now() + (i+3) * 86400000).toISOString().split('T')[0], rooms: 1 + Math.floor(i / 4), status: i % 3 === 0 ? 'CONFIRMED' : 'PENDING' }); } } res.json(hospResStore); });
-  app.post("/api/hospitality-reservations", (req, res) => { const r = { id: `res-${Date.now()}`, ...req.body }; hospResStore.push(r); res.status(201).json(r); });
-
-  app.get("/api/hospitality-guests", (req, res) => { if (hospGuestStore.length === 0) { for (let i = 1; i <= 10; i++) { hospGuestStore.push({ id: `guest${i}`, guestId: `GUEST-${String(i).padStart(4,'0')}`, guestName: `Guest ${i}`, email: `guest${i}@travel.com`, phone: `+91-${String(i).padStart(10,'0')}`, tier: i % 2 === 0 ? 'Gold' : 'Silver', status: 'ACTIVE' }); } } res.json(hospGuestStore); });
-  app.post("/api/hospitality-guests", (req, res) => { const g = { id: `guest-${Date.now()}`, ...req.body }; hospGuestStore.push(g); res.status(201).json(g); });
-
-  app.get("/api/hospitality-packages", (req, res) => { if (hospPkgStore.length === 0) { for (let i = 1; i <= 8; i++) { hospPkgStore.push({ id: `pkg${i}`, packageId: `PKG-${String(i).padStart(3,'0')}`, packageName: `Package ${i}`, destination: ['Goa', 'Kerala', 'Rajasthan', 'Northeast'][i % 4], duration: 3 + i, price: 50000 + (i * 10000), status: 'ACTIVE' }); } } res.json(hospPkgStore); });
-  app.post("/api/hospitality-packages", (req, res) => { const pk = { id: `pkg-${Date.now()}`, ...req.body }; hospPkgStore.push(pk); res.status(201).json(pk); });
-
-  app.get("/api/hospitality-billing", (req, res) => { if (hospBillStore.length === 0) { for (let i = 1; i <= 10; i++) { hospBillStore.push({ id: `bill${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, reservationId: `RES-${String(i).padStart(5,'0')}`, amount: 10000 + (i * 5000), paymentStatus: i % 2 === 0 ? 'PAID' : 'PENDING', dueDate: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0] }); } } res.json(hospBillStore); });
-  app.post("/api/hospitality-billing", (req, res) => { const b = { id: `bill-${Date.now()}`, ...req.body }; hospBillStore.push(b); res.status(201).json(b); });
-
-  app.get("/api/hospitality-crm", (req, res) => { if (hospCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { hospCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, guestId: `GUEST-${String(i).padStart(4,'0')}`, type: i % 2 === 0 ? 'Feedback' : 'Request', subject: 'Guest Support', status: 'RESOLVED' }); } } res.json(hospCRMStore); });
-  app.post("/api/hospitality-crm", (req, res) => { const c = { id: `crm-${Date.now()}`, ...req.body }; hospCRMStore.push(c); res.status(201).json(c); });
-
-  app.get("/api/hospitality-employees", (req, res) => { if (hospEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { hospEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Manager' : i % 3 === 1 ? 'Staff' : 'Housekeeping', department: i % 2 === 0 ? 'Operations' : 'Front Desk', status: 'ACTIVE' }); } } res.json(hospEmpStore); });
-  app.post("/api/hospitality-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; hospEmpStore.push(e); res.status(201).json(e); });
-
-  app.get("/api/hospitality-pricing", (req, res) => { res.json([{ id: 'price1', propertyId: 'PROP-001', roomType: 'Suite', rate: 5000, dynamicRate: 5500, occupancy: 85 }, { id: 'price2', propertyId: 'PROP-002', roomType: 'Standard', rate: 2500, dynamicRate: 2750, occupancy: 72 }]); });
-  app.post("/api/hospitality-pricing", (req, res) => { const pr = { id: `price-${Date.now()}`, ...req.body }; res.status(201).json(pr); });
-
-  app.get("/api/hospitality-compliance", (req, res) => { if (hospCompStore.length === 0) { hospCompStore.push({ id: 'comp1', propertyId: 'PROP-001', regulation: 'Hotel License', status: 'COMPLIANT' }, { id: 'comp2', propertyId: 'PROP-002', regulation: 'Safety', status: 'COMPLIANT' }); } res.json(hospCompStore); });
-  app.post("/api/hospitality-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; hospCompStore.push(co); res.status(201).json(co); });
-
-  app.get("/api/hospitality-dashboards", (req, res) => { res.json({ totalProperties: 50, totalRooms: 2500, occupancyRate: 78, avgRevenue: 250000, guestSatisfaction: 92 }); });
+  app.get("/api/government-analytics", (req, res) => { res.json({ totalCitizens: 50000, activeCases: 1250, permitsIssued: 450, grantsApproved: 85, budgetUtilization: 68 }); });
 
   return httpServer;
 }

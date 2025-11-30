@@ -1633,3 +1633,17 @@ const HospitalityBIDashboards = lazy(() => import("@/pages/HospitalityBIDashboar
 const HospitalityCompliance = lazy(() => import("@/pages/HospitalityCompliance"));
 const HospitalityMobileApp = lazy(() => import("@/pages/HospitalityMobileApp"));
 const HospitalityReporting = lazy(() => import("@/pages/HospitalityReporting"));
+
+// Government & Public Sector Pack (Industry Pack 40)
+const GovernmentCitizenServices = lazy(() => import("@/pages/GovernmentCitizenServices"));
+const GovernmentPermitsLicensing = lazy(() => import("@/pages/GovernmentPermitsLicensing"));
+const GovernmentGrantsFunding = lazy(() => import("@/pages/GovernmentGrantsFunding"));
+const GovernmentHRWorkforce = lazy(() => import("@/pages/GovernmentHRWorkforce"));
+const GovernmentFinanceBudgeting = lazy(() => import("@/pages/GovernmentFinanceBudgeting"));
+const GovernmentCompliance = lazy(() => import("@/pages/GovernmentCompliance"));
+const GovernmentProjectsInfra = lazy(() => import("@/pages/GovernmentProjectsInfra"));
+const GovernmentCRMEngagement = lazy(() => import("@/pages/GovernmentCRMEngagement"));
+const GovernmentAIAnalytics = lazy(() => import("@/pages/GovernmentAIAnalytics"));
+const GovernmentBIDashboards = lazy(() => import("@/pages/GovernmentBIDashboards"));
+const GovernmentMobileApp = lazy(() => import("@/pages/GovernmentMobileApp"));
+const GovernmentReporting = lazy(() => import("@/pages/GovernmentReporting"));

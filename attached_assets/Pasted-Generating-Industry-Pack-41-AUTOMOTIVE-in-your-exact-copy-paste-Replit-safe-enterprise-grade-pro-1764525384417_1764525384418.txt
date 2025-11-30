@@ -1,0 +1,269 @@
+Generating Industry Pack 41 — AUTOMOTIVE in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Automotive Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 41 — AUTOMOTIVE
+
+Purpose: End-to-end solution for automotive manufacturers, dealerships, suppliers, and service providers, covering vehicle production & assembly, dealer & inventory management, sales & CRM, after-sales service & warranties, finance & invoicing, HR & workforce, AI-driven supply chain & quality analytics, BI & dashboards, compliance & regulatory reporting, BPM (approval workflows), mobile apps, and integrations with suppliers, dealerships, OEMs, and financial institutions. Delivered as an industry template that auto-enables and configures all related modules.
+
+Auto-enable modules when template is selected: Production & Assembly, Dealer & Inventory Management, Sales & CRM, After-Sales Service & Warranties, Finance & Invoicing, HR & Workforce, AI / ML Supply Chain & Quality Analytics, BI & Dashboards, Compliance & Regulatory Reporting, Mobile Apps, Integrations & API Gateway.
+
+⸻
+
+1. PRODUCTION & ASSEMBLY
+
+Screens / Forms
+	•	Vehicle model master & variants
+	•	Production schedule & line management
+	•	BOM (Bill of Materials) & inventory consumption
+	•	Quality checks & defect tracking
+
+Fields
+VehicleID, ModelID, VariantID, ProductionLineID, Status, AuditFields.
+
+Validations
+	•	Production capacity adherence
+	•	BOM completeness & inventory availability
+	•	Quality standards compliance
+
+Workflows
+	•	Schedule production → Consume inventory → Assemble vehicle → Quality check → Approve → Dispatch
+
+⸻
+
+2. DEALER & INVENTORY MANAGEMENT
+
+Screens / Forms
+	•	Dealer master & locations
+	•	Vehicle inventory tracking
+	•	Stock allocation & transfer
+	•	Pricing & promotional offers
+
+Fields
+DealerID, VehicleID, StockQty, Price, Status, AuditFields.
+
+Validations
+	•	Stock availability
+	•	Dealer eligibility
+	•	Pricing consistency
+
+Workflows
+	•	Assign stock → Track inventory → Transfer vehicles → Apply pricing → Reconcile stock
+
+⸻
+
+3. SALES & CRM
+
+Screens / Forms
+	•	Customer master & profiles
+	•	Lead & opportunity management
+	•	Vehicle quotation & order processing
+	•	Test drive scheduling & feedback
+
+Fields
+CustomerID, LeadID, OpportunityID, VehicleID, Status, AuditFields.
+
+Validations
+	•	Duplicate customer / lead detection
+	•	Eligibility & financing checks
+	•	Quotation accuracy
+
+Workflows
+	•	Capture lead → Qualify → Provide quote → Close sale → Deliver vehicle → Update CRM
+
+⸻
+
+4. AFTER-SALES SERVICE & WARRANTIES
+
+Screens / Forms
+	•	Service appointment booking
+	•	Maintenance & repair tracking
+	•	Warranty claims & coverage management
+	•	Parts replacement & inventory
+
+Fields
+ServiceID, CustomerID, VehicleID, AppointmentID, Status, AuditFields.
+
+Validations
+	•	Warranty eligibility
+	•	Parts availability
+	•	SLA adherence
+
+Workflows
+	•	Book service → Assign technician → Perform service → Close appointment → Update warranty & inventory
+
+⸻
+
+5. FINANCE & INVOICING
+
+Screens / Forms
+	•	Vehicle sale invoicing & payment collection
+	•	Financing & loan tracking
+	•	Refunds, rebates, and adjustments
+	•	Dealer commissions & reconciliation
+
+Fields
+InvoiceID, VehicleID, CustomerID, Amount, PaymentStatus, AuditFields.
+
+Validations
+	•	Billing accuracy
+	•	Payment verification
+	•	Finance approvals
+
+Workflows
+	•	Generate invoice → Collect payment → Process financing → Reconcile → Report
+
+⸻
+
+6. HR & WORKFORCE MANAGEMENT
+
+Screens / Forms
+	•	Employee master (production, service, sales, admin)
+	•	Payroll, attendance, performance
+	•	Role & shift management
+	•	Training & certification
+
+Fields
+EmployeeID, Role, Department, Shift, PayrollID, TrainingID, AuditFields.
+
+Validations
+	•	Role eligibility
+	•	Attendance & payroll accuracy
+
+Workflows
+	•	Onboard → Assign role → Track attendance → Evaluate → Payroll
+
+⸻
+
+7. AI & SUPPLY CHAIN / QUALITY ANALYTICS
+
+Use Cases
+	•	Predictive maintenance & production optimization
+	•	Supply chain demand forecasting
+	•	Quality defect prediction
+	•	Customer behavior & sales analytics
+
+Controls
+	•	Human review for flagged production, quality, or sales anomalies
+
+⸻
+
+8. BI & DASHBOARDS
+
+Prebuilt Dashboards
+	•	Production & assembly KPIs
+	•	Dealer stock & sales metrics
+	•	Customer orders & CRM pipeline
+	•	After-sales service & warranty claims
+	•	Finance & revenue analytics
+
+Ad-hoc
+	•	Drill down by vehicle → dealer → customer → production line → service → revenue
+
+⸻
+
+9. COMPLIANCE & REGULATORY REPORTING
+
+Screens / Forms
+	•	Vehicle safety & emission compliance
+	•	Regulatory filings & certifications
+	•	Quality audit reports
+	•	Exception management
+
+Fields
+ComplianceID, VehicleID, DealerID, Status, AuditFields.
+
+Validations
+	•	Regulatory adherence
+	•	Reporting deadlines
+
+Workflows
+	•	Capture compliance → Validate → Generate report → Submit → Track exceptions → Resolve
+
+⸻
+
+10. MOBILE APPS
+
+Customer App
+	•	Browse vehicles, book test drives, purchase, track service & warranty
+Dealer App
+	•	Manage inventory, process sales, schedule test drives
+Manager App
+	•	Dashboards, KPIs, workflow approvals, compliance tracking
+
+⸻
+
+11. ROLES & PERMISSIONS
+
+Core Roles
+	•	Customer / Buyer
+	•	Dealer / Sales Agent
+	•	Production Staff
+	•	Service Technician
+	•	Finance Officer
+	•	Quality & Compliance Officer
+	•	HR / Payroll
+	•	IT / Integration Engineer
+	•	Admin
+
+Permission Notes
+	•	Role-based access enforced for production, sales, inventory, service, and finance
+
+⸻
+
+12. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	50 vehicle models, 500 vehicles, 100 dealers, 200 customers, 100 service appointments, 30 employees
+
+Onboarding Steps
+	•	Create models → Add vehicles → Assign to dealers → Capture leads → Process sales → Schedule services → Track inventory & finances → Validate dashboards
+
+⸻
+
+13. INTEGRATIONS & CONNECTORS
+
+Suggested Integrations
+	•	Supplier & OEM systems
+	•	Dealer management portals
+	•	Financing & loan providers
+	•	Parts & inventory suppliers
+	•	BI / analytics platforms
+
+Integration Rules
+	•	Idempotent ingestion, audit logging, secure credential storage
+
+⸻
+
+14. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	Production line delay → notify operations & management
+	•	Dealer stock shortage → alert supply chain
+	•	Warranty claim anomaly → alert quality & service teams
+	•	Sales target deviation → notify sales management
+
+⸻
+
+15. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+Idempotency & Safety
+	•	Seeders check natural keys (VehicleID + DealerID + CustomerID) before insert
+	•	Migrations additive; destructive changes require rollback scripts
+	•	Feature flags per tenant for AI optimization, multi-dealer operations, dynamic inventory tracking
+
+Testing
+	•	Production lifecycle → dealer inventory → sales → service → CRM → dashboards
+
+⸻
+
+16. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you want me to generate Industry Pack 42 — RETAIL & E-COMMERCE next, reply “Yes” and I will produce it in the same format.
