@@ -19,7 +19,7 @@ export default function BudgetPlanning() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => fetch("/api/budgets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/budgets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/budgets"] });
       setNewBudget({ planName: "", department: "Finance", budgetAmount: "", forecastAmount: "" });
@@ -35,11 +35,13 @@ export default function BudgetPlanning() {
     },
   });
 
+  const totalBudgeted = budgets.reduce((sum: number, b: any) => sum + parseFloat(b.budgetAmount || "0"), 0);
+  const totalForecasted = budgets.reduce((sum: number, b: any) => sum + parseFloat(b.forecastAmount || "0"), 0);
   const stats = {
     total: budgets.length,
     active: budgets.filter((b: any) => b.status === "active").length,
-    totalBudgeted: budgets.reduce((sum: number, b: any) => sum + parseFloat(b.budgetAmount || "0"), 0),
-    avgVariance: budgets.length > 0 ? ((budgets.reduce((sum: number, b: any) => sum + parseFloat(b.forecastAmount || "0"), 0) / stats.totalBudgeted) * 100).toFixed(1) : "0",
+    totalBudgeted,
+    avgVariance: budgets.length > 0 && totalBudgeted > 0 ? ((totalForecasted / totalBudgeted) * 100).toFixed(1) : "0",
   };
 
   return (

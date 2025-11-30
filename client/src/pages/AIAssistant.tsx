@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Send, Mic, Zap, MessageCircle } from "lucide-react";
+import { Send, Mic, Zap, MessageCircle, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -14,6 +17,9 @@ interface Message {
 }
 
 export default function AIAssistant() {
+  const { toast } = useToast();
+  const [input, setInput] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -22,8 +28,27 @@ export default function AIAssistant() {
       timestamp: new Date(),
     },
   ]);
-  const [input, setInput] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
+
+  const { data: conversations = [] } = useQuery({
+    queryKey: ["/api/ai/conversations"],
+    queryFn: () => fetch("/api/ai/conversations").then(r => r.json()),
+  });
+
+  const createConversationMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/ai/conversations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/ai/conversations"] });
+      toast({ title: "Conversation saved" });
+    },
+  });
+
+  const deleteConversationMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/ai/conversations/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/ai/conversations"] });
+      toast({ title: "Conversation deleted" });
+    },
+  });
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -36,6 +61,7 @@ export default function AIAssistant() {
     };
 
     setMessages([...messages, userMsg]);
+    const userInput = input;
     setInput("");
 
     // Simulate AI response
@@ -43,7 +69,7 @@ export default function AIAssistant() {
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `I understand you want to: "${input}". Let me help you with that. Based on your request, I recommend the following actions...`,
+        content: `I understand you want to: "${userInput}". Let me help you with that. Based on your request, I recommend the following actions...`,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, assistantMsg]);
