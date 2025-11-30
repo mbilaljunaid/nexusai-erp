@@ -1556,3 +1556,17 @@ const RetailAIRecommendations = lazy(() => import("@/pages/RetailAIRecommendatio
 const RetailBIDashboards = lazy(() => import("@/pages/RetailBIDashboards"));
 const RetailCRMMarketing = lazy(() => import("@/pages/RetailCRMMarketing"));
 const RetailInventoryWarehouse = lazy(() => import("@/pages/RetailInventoryWarehouse"));
+
+// Healthcare & Pharma Pack (Industry Pack 34)
+const HealthcarePatientManagement = lazy(() => import("@/pages/HealthcarePatientManagement"));
+const HealthcareAppointments = lazy(() => import("@/pages/HealthcareAppointments"));
+const HealthcareEMR = lazy(() => import("@/pages/HealthcareEMR"));
+const HealthcarePharmacy = lazy(() => import("@/pages/HealthcarePharmacy"));
+const HealthcareLaboratory = lazy(() => import("@/pages/HealthcareLaboratory"));
+const HealthcareBillingInsurance = lazy(() => import("@/pages/HealthcareBillingInsurance"));
+const HealthcareCRMEngagement = lazy(() => import("@/pages/HealthcareCRMEngagement"));
+const HealthcareHRWorkforce = lazy(() => import("@/pages/HealthcareHRWorkforce"));
+const HealthcareAIDiagnostics = lazy(() => import("@/pages/HealthcareAIDiagnostics"));
+const HealthcareBIDashboards = lazy(() => import("@/pages/HealthcareBIDashboards"));
+const HealthcareCompliance = lazy(() => import("@/pages/HealthcareCompliance"));
+const HealthcareMobileApp = lazy(() => import("@/pages/HealthcareMobileApp"));
