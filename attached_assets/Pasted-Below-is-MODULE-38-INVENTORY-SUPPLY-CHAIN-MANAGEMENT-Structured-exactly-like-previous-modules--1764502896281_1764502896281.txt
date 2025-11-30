@@ -1,0 +1,304 @@
+Below is MODULE 38: INVENTORY & SUPPLY CHAIN MANAGEMENT
+(Structured exactly like previous modules + includes the required Replit instruction.)
+
+⸻
+
+MODULE 38: INVENTORY & SUPPLY CHAIN MANAGEMENT
+
+Purpose: Manage procurement, warehousing, stock movement, replenishment, demand planning, supplier management, logistics, and supply chain analytics across ERP, Finance, Projects, HR, CRM, EPM, AI, BI, BPM, and Compliance modules.
+
+Important Note for Replit:
+Before creating any inventory, procurement, supply chain, logistics, or warehouse objects, workflows, APIs, dashboards, or data models, Replit must ALWAYS check what is already built. Replit must not duplicate or recreate any object that already exists. Replit must only add missing functionalities.
+
+⸻
+
+38.1 Inventory Master Data Management
+
+Forms / Screens
+	•	Item Master
+	•	Item Category
+	•	Item Attributes
+	•	UOM Setup
+	•	Warehouse Setup
+	•	Bin/Location Setup
+
+Fields
+
+Item ID, Name, SKU, Barcode/RFID, Category, Subcategory, UOM, Cost Method (FIFO/LIFO/Weighted), Safety Stock, Min/Max Quantity, Lead Time, Supplier, Warehouse, Bin/Location, Reorder Point, Dimensions, Weight, Status, Audit Fields.
+
+Validations
+
+Mandatory fields, unique SKU, duplicate item prevention, valid UOM, warehouse/bin validation.
+
+Workflows
+
+Item creation triggers approval → sync with Inventory, Procurement, Sales, Finance, Supply Planning → dashboards updated → integrations with RFID and barcode systems.
+
+⸻
+
+38.2 Stock Transactions
+
+Forms / Screens
+	•	Stock Receipt
+	•	Stock Issue
+	•	Stock Transfer
+	•	Return to Vendor
+	•	Return from Customer
+	•	Adjustment Entry
+
+Fields
+
+Transaction ID, Item, Quantity, From/To Location, Cost, Reason Code, Reference Document (PO/SO/WO), Status, Audit Fields.
+
+Validations
+
+Negative inventory check, transaction type validation, approval workflow, correct bin/location mapping.
+
+Workflows
+
+Receipts update cost layer → issues reduce stock → transfers validate location capacity → dashboards refresh in real time → GL impacts posted to Finance.
+
+⸻
+
+38.3 Warehouse Management (WMS)
+
+Forms / Screens
+	•	Putaway Rules
+	•	Picking Rules
+	•	Cycle Count
+	•	Slotting Optimization
+	•	Warehouse Layout
+	•	Task Assignment
+
+Fields
+
+Task ID, Rule Type, Priority, Item, Location, Warehouse Zones, Worker Assignment, Status, Audit Fields.
+
+Validations
+
+Capacity checks, rule conflicts, worker availability, cycle-count variance thresholds.
+
+Workflows
+
+System auto-generates putaway tasks → picking guided via mobile app → cycle counts trigger adjustments → dashboards show worker productivity.
+
+⸻
+
+38.4 Procurement Management
+
+Forms / Screens
+	•	Supplier Master
+	•	Supplier Evaluation
+	•	Purchase Requisition
+	•	Purchase Order
+	•	Supplier Contract
+	•	GRN (Goods Receipt Note)
+
+Fields
+
+Supplier ID, PO ID, Item, Quantity, Price, Terms, Delivery Date, Status, Approval Workflow, Audit Fields.
+
+Validations
+
+Supplier scoring, mandatory fields, PO approval, contract compliance.
+
+Workflows
+
+PR → PO → GRN → Invoice → Payment → inventory updated → dashboards updated → integration with AP, Projects, EPM, Compliance.
+
+⸻
+
+38.5 Demand Planning & Forecasting
+
+Forms / Screens
+	•	Demand Forecast Setup
+	•	Planning Models
+	•	Forecast Overrides
+	•	Planning Dashboard
+
+Fields
+
+Model ID, Item, Time Period, Historical Demand, Forecast Quantity, AI Confidence Score, Status, Audit Fields.
+
+Validations
+
+Data integrity, forecast deviation thresholds, model accuracy.
+
+Workflows
+
+AI generates forecast → planners override → MRP/MPS consumes forecast → replenishment triggered.
+
+⸻
+
+38.6 Replenishment & MRP (Material Requirements Planning)
+
+Forms / Screens
+	•	MRP Run Setup
+	•	Exception Messages
+	•	Recommended Orders
+	•	MRP Dashboard
+
+Fields
+
+Item, Forecast, On-hand Quantity, Open POs, Lead Time, MRP Message Type, Suggested PO/WO Quantity, Status.
+
+Validations
+
+Lead time accuracy, minimum order quantity validation, exception message logic.
+
+Workflows
+
+MRP generates purchase/manufacturing suggestions → planners approve → PO/WO created → dashboards reflect supply positions.
+
+⸻
+
+38.7 Supplier & Contract Management
+
+Forms / Screens
+	•	Supplier Scorecards
+	•	Supplier Contracts
+	•	Compliance Documents
+	•	Supplier Portal
+
+Fields
+
+Performance Metrics (Quality, Delivery, Cost), Contract Terms, Expiry Date, Compliance Certifications, Risk Score.
+
+Validations
+
+Expiry date alerts, mandatory documents, duplicate contract prevention.
+
+Workflows
+
+Supplier performance auto-updates → alerts for expiring contracts → compliance integration triggers risk flags.
+
+⸻
+
+38.8 Logistics & Shipping
+
+Forms / Screens
+	•	Shipment Planning
+	•	Delivery Scheduling
+	•	Carrier Management
+	•	Tracking Dashboard
+
+Fields
+
+Shipment ID, Carrier, Route, Estimated Delivery, Freight Cost, Tracking Number, Status, Audit Fields.
+
+Validations
+
+Carrier capacity checks, route validation, freight charge verification.
+
+Workflows
+
+Outbound shipments update customer portal → tracking synced → finance posts freight accruals → dashboards show logistics KPIs.
+
+⸻
+
+38.9 Batch, Serial & RFID Tracking
+
+Forms / Screens
+	•	Batch/Serial Setup
+	•	RFID Tag Setup
+	•	Tracking Dashboard
+
+Fields
+
+Batch ID, Serial Number, RFID Tag, Production Date, Expiry Date, Warehouse, Location.
+
+Validations
+
+Unique serials, valid batch mapping, tag scan validation.
+
+Workflows
+
+RFID scans auto-update stock → serial usage tracked → audits simplified → compliance module notified for traceability.
+
+⸻
+
+38.10 Quality Management in Inventory
+
+Forms / Screens
+	•	QC Checklist
+	•	Inspection
+	•	Non-Conformance Report
+	•	CAPA (Corrective Action)
+
+Fields
+
+Inspection ID, Item, Result, Defect Code, Severity, Disposition (Accept/Reject/Rework).
+
+Validations
+
+Mandatory inspections, defect code accuracy, CAPA approvals.
+
+Workflows
+
+QC at GRN → inventory holds until approval → rejections trigger supplier notifications → analytics feed BI and AI models.
+
+⸻
+
+38.11 Reporting & Analytics
+
+Forms / Screens
+	•	Inventory Valuation
+	•	Supplier Performance
+	•	Demand vs Actual
+	•	Aging Stock
+	•	Stock Accuracy
+	•	Forecast Accuracy Dashboard
+
+Fields
+
+Filters (Item, Warehouse, Supplier, Time Period), Metrics (On-Hand, Turns, Variances, Accuracy, Lead Time).
+
+Validations
+
+Data consistency, metric validation.
+
+Workflows
+
+Scheduled reports → KPI dashboards updated → alerts for slow-moving/overstock/understock items → integration with AI for predictive supply chain risks.
+
+⸻
+
+38.12 Integrations & Automations
+
+Automations
+	•	Auto-reorder
+	•	Stock alerts
+	•	Cycle count triggers
+	•	Expiry/batch alerts
+	•	Supplier reminders
+	•	MRP/MPS runs
+
+Integrations
+
+ERP, Finance, Projects, HR, CRM, EPM, AI, BI, BPM, Compliance, Manufacturing, RFID hardware, Mobile warehouse apps.
+
+⸻
+
+Key Features
+	•	Full inventory management
+	•	Advanced procurement
+	•	WMS (putaway, picking, cycle counts)
+	•	MRP/MPS
+	•	Demand planning + AI forecast
+	•	Supplier + contract management
+	•	Logistics & shipping
+	•	RFID/serial/batch tracking
+	•	Quality control
+	•	Comprehensive analytics
+	•	Real-time dashboards
+	•	Cross-platform integration
+	•	Audit-ready & compliance enabled
+
+⸻
+
+Important Note for Replit (repeat for enforcement):
+Before generating ANY supply chain, inventory, procurement, warehouse, or logistics feature, table, form, workflow, API, or dashboard, Replit must check for existing implementation and MUST NOT duplicate anything. Only create what is missing.
+
+⸻
+
+Ready for Module 39: Manufacturing / Production Management?
