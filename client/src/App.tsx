@@ -17,7 +17,6 @@ const CRM = lazy(() => import("@/pages/CRM"));
 const ERP = lazy(() => import("@/pages/ERP"));
 const HR = lazy(() => import("@/pages/HR"));
 const Projects = lazy(() => import("@/pages/Projects"));
-const PagesIndex = lazy(() => import("@/pages/PagesIndex"));
 
 // Phase 2: Module Overviews
 const CRMModule = lazy(() => import("@/pages/CRMModule"));
@@ -799,7 +798,6 @@ function Router() {
       
       {/* Dashboard & Core Pages */}
       <Route path="/dashboard" component={Dashboard} />
-      <Route path="/pages" component={PagesIndex} />
       <Route path="/crm" component={CRM} />
       <Route path="/crm/leads" component={LeadsDetail} />
       <Route path="/crm/opportunities" component={OpportunitiesDetail} />
