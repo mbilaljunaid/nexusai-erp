@@ -253,6 +253,9 @@ const PasswordPolicies = lazy(() => import("@/pages/PasswordPolicies"));
 const DeviceManagement = lazy(() => import("@/pages/DeviceManagement"));
 const SecurityEventLog = lazy(() => import("@/pages/SecurityEventLog"));
 const AuthenticationMethods = lazy(() => import("@/pages/AuthenticationMethods"));
+const UserActivityDashboard = lazy(() => import("@/pages/UserActivityDashboard"));
+const ComplianceMonitoring = lazy(() => import("@/pages/ComplianceMonitoring"));
+const ComplianceExceptions = lazy(() => import("@/pages/ComplianceExceptions"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -685,6 +688,9 @@ function Router() {
       <Route path="/device-management" component={DeviceManagement} />
       <Route path="/security-event-log" component={SecurityEventLog} />
       <Route path="/authentication-methods" component={AuthenticationMethods} />
+      <Route path="/user-activity-dashboard" component={UserActivityDashboard} />
+      <Route path="/compliance-monitoring" component={ComplianceMonitoring} />
+      <Route path="/compliance-exceptions" component={ComplianceExceptions} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />

@@ -2265,3 +2265,47 @@ export const securityEventLog = pgTable("security_event_log", {
   actionTaken: text("action_taken"),
   timestamp: timestamp("timestamp").default(sql`now()`),
 });
+
+// ========== MODULE 4: USER ACTIVITY, AUDIT & COMPLIANCE ==========
+export const userActivityLog = pgTable("user_activity_log", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  role: varchar("role"),
+  module: varchar("module").notNull(),
+  screen: varchar("screen"),
+  action: varchar("action").notNull(),
+  recordId: varchar("record_id"),
+  previousValue: text("previous_value"),
+  newValue: text("new_value"),
+  deviceId: varchar("device_id"),
+  ipAddress: varchar("ip_address"),
+  browser: varchar("browser"),
+  status: varchar("status").default("success"),
+  duration: integer("duration"),
+  timestamp: timestamp("timestamp").default(sql`now()`),
+});
+
+export const complianceMonitoring = pgTable("compliance_monitoring", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  ruleId: varchar("rule_id").notNull(),
+  description: text("description"),
+  module: varchar("module"),
+  triggerCondition: text("trigger_condition"),
+  status: varchar("status").default("active"),
+  lastChecked: timestamp("last_checked"),
+  violationCount: integer("violation_count").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const complianceExceptions = pgTable("compliance_exceptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  ruleId: varchar("rule_id").notNull(),
+  userId: varchar("user_id"),
+  description: text("description"),
+  mitigationSteps: text("mitigation_steps"),
+  responsiblePerson: varchar("responsible_person"),
+  approvalRequired: boolean("approval_required").default(true),
+  approvedBy: varchar("approved_by"),
+  status: varchar("status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

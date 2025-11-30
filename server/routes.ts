@@ -2878,6 +2878,70 @@ export async function registerRoutes(
     res.status(201).json(event);
   });
 
+  // ========== MODULE 4: USER ACTIVITY, AUDIT & COMPLIANCE ENDPOINTS ==========
+  const userActivityStore: any[] = [];
+  const complianceMonitoringStore: any[] = [];
+  const complianceExceptionsStore: any[] = [];
+
+  app.get("/api/user-activity", (req, res) => {
+    if (userActivityStore.length === 0) {
+      userActivityStore.push(
+        { id: "ua1", userId: "u1", role: "admin", module: "CRM", screen: "Leads", action: "update", recordId: "rec-001", previousValue: "Status: New", newValue: "Status: Qualified", deviceId: "dev-001", ipAddress: "192.168.1.100", browser: "Chrome", status: "success", duration: 145, timestamp: new Date().toISOString() },
+        { id: "ua2", userId: "u2", role: "manager", module: "Finance", screen: "Invoices", action: "create", recordId: "inv-123", previousValue: null, newValue: "Invoice #INV-123 created", deviceId: "dev-002", ipAddress: "192.168.1.101", browser: "Safari", status: "success", duration: 234, timestamp: new Date(Date.now() - 3600000).toISOString() }
+      );
+    }
+    res.json(userActivityStore);
+  });
+
+  app.post("/api/user-activity", (req, res) => {
+    const activity = { id: `ua-${Date.now()}`, ...req.body, timestamp: new Date().toISOString() };
+    userActivityStore.push(activity);
+    res.status(201).json(activity);
+  });
+
+  app.get("/api/compliance/monitoring", (req, res) => {
+    if (complianceMonitoringStore.length === 0) {
+      complianceMonitoringStore.push(
+        { id: "cm1", ruleId: "rule-sod-001", description: "Approver cannot be Requestor", module: "Finance", triggerCondition: "user_id = approver_id AND user_id = requestor_id", status: "active", lastChecked: new Date().toISOString(), violationCount: 0 },
+        { id: "cm2", ruleId: "rule-access-001", description: "Salary field restricted to HR", module: "HR", triggerCondition: "field = 'salary' AND role != 'hr_admin'", status: "active", lastChecked: new Date().toISOString(), violationCount: 2 }
+      );
+    }
+    res.json(complianceMonitoringStore);
+  });
+
+  app.post("/api/compliance/monitoring", (req, res) => {
+    const rule = { id: `cm-${Date.now()}`, ...req.body, lastChecked: new Date().toISOString() };
+    complianceMonitoringStore.push(rule);
+    res.status(201).json(rule);
+  });
+
+  app.get("/api/compliance/exceptions", (req, res) => {
+    if (complianceExceptionsStore.length === 0) {
+      complianceExceptionsStore.push(
+        { id: "ce1", ruleId: "rule-sod-001", userId: "u1", description: "Emergency approval override", mitigationSteps: "Manual review performed", responsiblePerson: "admin@company.com", approvalRequired: true, status: "pending", createdAt: new Date().toISOString() },
+        { id: "ce2", ruleId: "rule-access-001", userId: "u2", description: "Audit request", mitigationSteps: "Audit trail logged", responsiblePerson: "auditor@company.com", approvalRequired: true, approvedBy: "ceo@company.com", status: "approved", createdAt: new Date(Date.now() - 86400000).toISOString() }
+      );
+    }
+    res.json(complianceExceptionsStore);
+  });
+
+  app.post("/api/compliance/exceptions", (req, res) => {
+    const exception = { id: `ce-${Date.now()}`, ...req.body, status: "pending", createdAt: new Date().toISOString() };
+    complianceExceptionsStore.push(exception);
+    res.status(201).json(exception);
+  });
+
+  app.patch("/api/compliance/exceptions/:id/approve", (req, res) => {
+    const exc = complianceExceptionsStore.find(e => e.id === req.params.id);
+    if (exc) {
+      exc.status = "approved";
+      exc.approvedBy = req.headers["x-user-id"];
+      res.json(exc);
+    } else {
+      res.status(404).json({ error: "Exception not found" });
+    }
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
