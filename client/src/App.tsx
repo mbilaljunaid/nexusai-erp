@@ -24,6 +24,14 @@ const HRModule = lazy(() => import("@/pages/HRModule"));
 const ERPModule = lazy(() => import("@/pages/ERPModule"));
 const ServiceModule = lazy(() => import("@/pages/ServiceModule"));
 
+// Phase 3: Advanced Modules
+const ProjectsModule = lazy(() => import("@/pages/ProjectsModule"));
+const MarketingModule = lazy(() => import("@/pages/MarketingModule"));
+const ManufacturingModule = lazy(() => import("@/pages/ManufacturingModule"));
+const AnalyticsModule = lazy(() => import("@/pages/AnalyticsModule"));
+const AdminConsoleModule = lazy(() => import("@/pages/AdminConsoleModule"));
+const ComplianceModule = lazy(() => import("@/pages/ComplianceModule"));
+
 // Phase 1: Enterprise Foundation (8 pages)
 const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
 const BillingPlans = lazy(() => import("@/pages/BillingPlans"));
@@ -737,6 +745,12 @@ function Router() {
       <Route path="/hr-module" component={HRModule} />
       <Route path="/erp-module" component={ERPModule} />
       <Route path="/service-module" component={ServiceModule} />
+      <Route path="/projects-module" component={ProjectsModule} />
+      <Route path="/marketing-module" component={MarketingModule} />
+      <Route path="/manufacturing-module" component={ManufacturingModule} />
+      <Route path="/analytics-module" component={AnalyticsModule} />
+      <Route path="/admin-console-module" component={AdminConsoleModule} />
+      <Route path="/compliance-module" component={ComplianceModule} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1625,3 +1625,122 @@ export const serviceSLA = pgTable("service_sla", {
   status: varchar("status").default("active"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== PHASE 3: PROJECTS & AGILE ==========
+export const tasks = pgTable("tasks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sprintId: varchar("sprint_id"),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  assignee: varchar("assignee"),
+  priority: varchar("priority").default("medium"),
+  status: varchar("status").default("todo"),
+  estimatedHours: integer("estimated_hours"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 3: MARKETING AUTOMATION ==========
+export const marketingCampaigns = pgTable("marketing_campaigns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  type: varchar("type"),
+  channel: varchar("channel"),
+  budget: numeric("budget", { precision: 12, scale: 2 }),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  status: varchar("status").default("draft"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const marketingSegments = pgTable("marketing_segments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  criteria: jsonb("criteria"),
+  audienceSize: integer("audience_size"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const marketingLeads = pgTable("marketing_leads", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  score: integer("score"),
+  source: varchar("source"),
+  status: varchar("status").default("new"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 3: MANUFACTURING ==========
+export const manufacturingBOM = pgTable("manufacturing_bom", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: varchar("product_id"),
+  name: varchar("name").notNull(),
+  version: varchar("version"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 3: ANALYTICS ==========
+export const analyticsDashboards = pgTable("analytics_dashboards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  owner: varchar("owner"),
+  type: varchar("type"),
+  metrics: jsonb("metrics"),
+  refreshRate: integer("refresh_rate"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const analyticsReports = pgTable("analytics_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  dashboardId: varchar("dashboard_id"),
+  data: jsonb("data"),
+  generatedAt: timestamp("generated_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 3: ADMIN CONSOLE ==========
+export const adminLogs = pgTable("admin_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  action: varchar("action"),
+  resource: varchar("resource"),
+  details: jsonb("details"),
+  timestamp: timestamp("timestamp").default(sql`now()`),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const systemSettings = pgTable("system_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  key: varchar("key").notNull().unique(),
+  value: text("value"),
+  category: varchar("category"),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 3: COMPLIANCE & RISK ==========
+export const complianceControls = pgTable("compliance_controls", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  framework: varchar("framework"),
+  status: varchar("status").default("active"),
+  owner: varchar("owner"),
+  lastAssessed: timestamp("last_assessed"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const riskAssessments = pgTable("risk_assessments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  riskId: varchar("risk_id"),
+  name: varchar("name").notNull(),
+  likelihood: varchar("likelihood"),
+  impact: varchar("impact"),
+  mitigation: text("mitigation"),
+  status: varchar("status").default("open"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
