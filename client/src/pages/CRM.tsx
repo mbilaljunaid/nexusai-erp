@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LeadTable } from "@/components/LeadTable";
 import { LeadCard } from "@/components/LeadCard";
 import { AddLeadDialog } from "@/components/AddLeadDialog";
-import { AnalyticsChart } from "@/components/AnalyticsChart";
-import { Search, Filter, LayoutGrid, List, Sparkles, TrendingUp, Users, Target, Calendar, DollarSign, Clock, AlertCircle, CheckCircle2, Plus, Phone, Mail, MapPin } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { Search, Filter, LayoutGrid, List, Sparkles, TrendingUp, Users, Target, BarChart3 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Lead { id: string; name: string; email: string; phone: string; company: string; status: "new" | "contacted" | "qualified" | "proposal" | "won" | "lost"; score: number; value: number; source: string; owner: string; nextAction: string; nextActionDate: string; lastActivity: string; }
@@ -21,7 +20,15 @@ export default function CRM() {
   const [leadView, setLeadView] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [activeNav, setActiveNav] = useState("leads");
   const { data: leads = [] } = useQuery({ queryKey: ["/api/leads"] });
+
+  const navItems = [
+    { id: "leads", label: "Leads", icon: Users, color: "text-blue-500" },
+    { id: "opportunities", label: "Opportunities", icon: Target, color: "text-purple-500" },
+    { id: "accounts", label: "Accounts", icon: BarChart3, color: "text-green-500" },
+    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-orange-500" },
+  ];
 
   const mockLeads: Lead[] = [ { id: "1", name: "Sarah Johnson", email: "sarah@acme.com", phone: "+1-555-0101", company: "ACME Corp", status: "proposal", score: 92, value: 250000, source: "website", owner: "John Smith", nextAction: "Follow up call", nextActionDate: "2024-12-14", lastActivity: "2024-12-10" } ];
 
@@ -39,15 +46,10 @@ export default function CRM() {
         <AddLeadDialog />
       </div>
 
-      <Tabs defaultValue="leads" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-4">
-          <TabsTrigger value="leads">Leads</TabsTrigger>
-          <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
-          <TabsTrigger value="accounts">Accounts</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="leads" className="space-y-4">
+      {activeNav === "leads" && (
+        <div className="space-y-4">
           <div className="flex gap-4 flex-wrap">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -83,9 +85,11 @@ export default function CRM() {
           ) : (
             <LeadTable leads={mockLeads} />
           )}
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="opportunities" className="space-y-4">
+      {activeNav === "opportunities" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {mockOpportunities.map((opp) => (
               <Card key={opp.id} data-testid={`card-opportunity-${opp.id}`}>
@@ -103,9 +107,11 @@ export default function CRM() {
               </Card>
             ))}
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="accounts" className="space-y-4">
+      {activeNav === "accounts" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {mockAccounts.map((acc) => (
               <Card key={acc.id} data-testid={`card-account-${acc.id}`}>
@@ -120,17 +126,19 @@ export default function CRM() {
               </Card>
             ))}
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="analytics" className="space-y-4">
+      {activeNav === "analytics" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Total Leads</p><p className="text-2xl font-bold">1,234</p></CardContent></Card>
             <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Conversion Rate</p><p className="text-2xl font-bold text-green-600">18%</p></CardContent></Card>
             <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Pipeline Value</p><p className="text-2xl font-bold">$2.4M</p></CardContent></Card>
             <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Win Rate</p><p className="text-2xl font-bold text-green-600">32%</p></CardContent></Card>
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }
