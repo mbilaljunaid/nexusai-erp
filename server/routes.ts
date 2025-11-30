@@ -1589,6 +1589,241 @@ export async function registerRoutes(
     }
   });
 
+  // ========== PHASE 2: CRM ENDPOINTS ==========
+  const crmAccountsStore: any[] = [];
+  const crmOpportunitiesStore: any[] = [];
+  const crmContactsStore: any[] = [];
+
+  app.get("/api/crm/accounts", (req, res) => {
+    if (crmAccountsStore.length === 0) {
+      crmAccountsStore.push(
+        { id: "acc1", name: "Tech Corp", industry: "Technology", revenue: "50M", employees: 500, status: "active", createdAt: new Date().toISOString() },
+        { id: "acc2", name: "Finance Inc", industry: "Finance", revenue: "75M", employees: 750, status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(crmAccountsStore);
+  });
+
+  app.post("/api/crm/accounts", (req, res) => {
+    const account = { id: `acc-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    crmAccountsStore.push(account);
+    res.status(201).json(account);
+  });
+
+  app.get("/api/crm/opportunities", (req, res) => {
+    if (crmOpportunitiesStore.length === 0) {
+      crmOpportunitiesStore.push(
+        { id: "opp1", name: "Enterprise License", accountId: "acc1", amount: "500000", stage: "negotiation", probability: 75, status: "open", createdAt: new Date().toISOString() },
+        { id: "opp2", name: "Implementation Services", accountId: "acc2", amount: "150000", stage: "proposal", probability: 50, status: "open", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(crmOpportunitiesStore);
+  });
+
+  app.post("/api/crm/opportunities", (req, res) => {
+    const opp = { id: `opp-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    crmOpportunitiesStore.push(opp);
+    res.status(201).json(opp);
+  });
+
+  app.get("/api/crm/contacts", (req, res) => {
+    res.json(crmContactsStore.length === 0 ? [{ id: "con1", firstName: "John", lastName: "Smith", email: "john@techcorp.com", phone: "555-0100", accountId: "acc1", jobTitle: "CTO", status: "active", createdAt: new Date().toISOString() }] : crmContactsStore);
+  });
+
+  app.post("/api/crm/contacts", (req, res) => {
+    const contact = { id: `con-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    crmContactsStore.push(contact);
+    res.status(201).json(contact);
+  });
+
+  // ========== PHASE 2: FINANCE ENDPOINTS ==========
+  const financeExpensesStore: any[] = [];
+  const financeRevenueStore: any[] = [];
+  const financeForecastsStore: any[] = [];
+
+  app.get("/api/finance/expenses", (req, res) => {
+    if (financeExpensesStore.length === 0) {
+      financeExpensesStore.push(
+        { id: "exp1", description: "Software Licenses", amount: "25000", category: "Software", vendor: "Adobe", status: "paid", createdAt: new Date().toISOString() },
+        { id: "exp2", description: "Team Salaries", amount: "150000", category: "Payroll", vendor: "Internal", status: "paid", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(financeExpensesStore);
+  });
+
+  app.post("/api/finance/expenses", (req, res) => {
+    const expense = { id: `exp-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    financeExpensesStore.push(expense);
+    res.status(201).json(expense);
+  });
+
+  app.get("/api/finance/revenue", (req, res) => {
+    if (financeRevenueStore.length === 0) {
+      financeRevenueStore.push(
+        { id: "rev1", description: "Product Sales", amount: "800000", source: "Direct", status: "received", createdAt: new Date().toISOString() },
+        { id: "rev2", description: "Service Revenue", amount: "300000", source: "Consulting", status: "received", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(financeRevenueStore);
+  });
+
+  app.post("/api/finance/revenue", (req, res) => {
+    const revenue = { id: `rev-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    financeRevenueStore.push(revenue);
+    res.status(201).json(revenue);
+  });
+
+  app.get("/api/finance/forecasts", (req, res) => {
+    res.json(financeForecastsStore.length === 0 ? [{ id: "fc1", period: "Q1 2024", revenue: "1200000", expenses: "450000", confidence: 85, createdAt: new Date().toISOString() }] : financeForecastsStore);
+  });
+
+  app.post("/api/finance/forecasts", (req, res) => {
+    const forecast = { id: `fc-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    financeForecastsStore.push(forecast);
+    res.status(201).json(forecast);
+  });
+
+  // ========== PHASE 2: HR ENDPOINTS ==========
+  const hrJobPostingsStore: any[] = [];
+  const hrCandidatesStore: any[] = [];
+  const hrTrainingStore: any[] = [];
+
+  app.get("/api/hr/job-postings", (req, res) => {
+    if (hrJobPostingsStore.length === 0) {
+      hrJobPostingsStore.push(
+        { id: "job1", title: "Senior Developer", department: "Engineering", requirements: "5+ years experience", salary: "120000", status: "open", createdAt: new Date().toISOString() },
+        { id: "job2", title: "Product Manager", department: "Product", requirements: "3+ years PM experience", salary: "110000", status: "open", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(hrJobPostingsStore);
+  });
+
+  app.post("/api/hr/job-postings", (req, res) => {
+    const job = { id: `job-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    hrJobPostingsStore.push(job);
+    res.status(201).json(job);
+  });
+
+  app.get("/api/hr/candidates", (req, res) => {
+    if (hrCandidatesStore.length === 0) {
+      hrCandidatesStore.push(
+        { id: "cand1", name: "Alice Johnson", email: "alice@email.com", phone: "555-0101", position: "Senior Developer", status: "applied", rating: 4, createdAt: new Date().toISOString() },
+        { id: "cand2", name: "Bob Smith", email: "bob@email.com", phone: "555-0102", position: "Product Manager", status: "interview", rating: 5, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(hrCandidatesStore);
+  });
+
+  app.post("/api/hr/candidates", (req, res) => {
+    const candidate = { id: `cand-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    hrCandidatesStore.push(candidate);
+    res.status(201).json(candidate);
+  });
+
+  app.get("/api/hr/training", (req, res) => {
+    res.json(hrTrainingStore.length === 0 ? [{ id: "train1", name: "Leadership Development", duration: 40, provider: "LinkedIn Learning", status: "scheduled", createdAt: new Date().toISOString() }] : hrTrainingStore);
+  });
+
+  app.post("/api/hr/training", (req, res) => {
+    const training = { id: `train-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    hrTrainingStore.push(training);
+    res.status(201).json(training);
+  });
+
+  // ========== PHASE 2: ERP ENDPOINTS ==========
+  const erpPurchaseOrdersStore: any[] = [];
+  const erpInventoryStore: any[] = [];
+  const erpSalesOrdersStore: any[] = [];
+
+  app.get("/api/erp/purchase-orders", (req, res) => {
+    if (erpPurchaseOrdersStore.length === 0) {
+      erpPurchaseOrdersStore.push(
+        { id: "po1", poNumber: "PO-001", vendorId: "v1", amount: "50000", status: "open", createdAt: new Date().toISOString() },
+        { id: "po2", poNumber: "PO-002", vendorId: "v2", amount: "75000", status: "received", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(erpPurchaseOrdersStore);
+  });
+
+  app.post("/api/erp/purchase-orders", (req, res) => {
+    const po = { id: `po-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    erpPurchaseOrdersStore.push(po);
+    res.status(201).json(po);
+  });
+
+  app.get("/api/erp/inventory", (req, res) => {
+    if (erpInventoryStore.length === 0) {
+      erpInventoryStore.push(
+        { id: "inv1", sku: "SKU-001", productName: "Widget A", quantity: 500, reorderLevel: 100, status: "active", createdAt: new Date().toISOString() },
+        { id: "inv2", sku: "SKU-002", productName: "Component B", quantity: 250, reorderLevel: 50, status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(erpInventoryStore);
+  });
+
+  app.post("/api/erp/inventory", (req, res) => {
+    const inv = { id: `inv-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    erpInventoryStore.push(inv);
+    res.status(201).json(inv);
+  });
+
+  app.get("/api/erp/sales-orders", (req, res) => {
+    res.json(erpSalesOrdersStore.length === 0 ? [{ id: "so1", soNumber: "SO-001", customerId: "c1", totalAmount: "15000", status: "shipped", createdAt: new Date().toISOString() }] : erpSalesOrdersStore);
+  });
+
+  app.post("/api/erp/sales-orders", (req, res) => {
+    const so = { id: `so-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    erpSalesOrdersStore.push(so);
+    res.status(201).json(so);
+  });
+
+  // ========== PHASE 2: SERVICE ENDPOINTS ==========
+  const serviceContractsStore: any[] = [];
+  const serviceIncidentsStore: any[] = [];
+  const serviceSLAStore: any[] = [];
+
+  app.get("/api/service/contracts", (req, res) => {
+    if (serviceContractsStore.length === 0) {
+      serviceContractsStore.push(
+        { id: "sc1", contractNumber: "SC-001", customerId: "c1", serviceType: "Premium Support", amount: "50000", status: "active", createdAt: new Date().toISOString() },
+        { id: "sc2", contractNumber: "SC-002", customerId: "c2", serviceType: "Enterprise Plus", amount: "75000", status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(serviceContractsStore);
+  });
+
+  app.post("/api/service/contracts", (req, res) => {
+    const contract = { id: `sc-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    serviceContractsStore.push(contract);
+    res.status(201).json(contract);
+  });
+
+  app.get("/api/service/incidents", (req, res) => {
+    if (serviceIncidentsStore.length === 0) {
+      serviceIncidentsStore.push(
+        { id: "inc1", incidentNumber: "INC-001", customerId: "c1", title: "System Outage", severity: "critical", status: "open", createdAt: new Date().toISOString() },
+        { id: "inc2", incidentNumber: "INC-002", customerId: "c2", title: "Database Connection", severity: "high", status: "in-progress", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(serviceIncidentsStore);
+  });
+
+  app.post("/api/service/incidents", (req, res) => {
+    const incident = { id: `inc-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    serviceIncidentsStore.push(incident);
+    res.status(201).json(incident);
+  });
+
+  app.get("/api/service/sla", (req, res) => {
+    res.json(serviceSLAStore.length === 0 ? [{ id: "sla1", name: "Premium SLA", responseTime: 60, resolutionTime: 480, uptime: "99.9", status: "active", createdAt: new Date().toISOString() }] : serviceSLAStore);
+  });
+
+  app.post("/api/service/sla", (req, res) => {
+    const sla = { id: `sla-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    serviceSLAStore.push(sla);
+    res.status(201).json(sla);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

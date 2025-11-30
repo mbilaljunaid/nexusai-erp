@@ -17,6 +17,13 @@ const ERP = lazy(() => import("@/pages/ERP"));
 const HR = lazy(() => import("@/pages/HR"));
 const Projects = lazy(() => import("@/pages/Projects"));
 
+// Phase 2: Module Overviews
+const CRMModule = lazy(() => import("@/pages/CRMModule"));
+const FinanceModule = lazy(() => import("@/pages/FinanceModule"));
+const HRModule = lazy(() => import("@/pages/HRModule"));
+const ERPModule = lazy(() => import("@/pages/ERPModule"));
+const ServiceModule = lazy(() => import("@/pages/ServiceModule"));
+
 // Phase 1: Enterprise Foundation (8 pages)
 const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
 const BillingPlans = lazy(() => import("@/pages/BillingPlans"));
@@ -725,6 +732,11 @@ function Router() {
       <Route path="/cost-optimization" component={CostOptimization} />
       <Route path="/sustainability-reporting" component={SustainabilityReporting} />
       <Route path="/quality-assurance" component={QualityAssuranceHub} />
+      <Route path="/crm-module" component={CRMModule} />
+      <Route path="/finance-module" component={FinanceModule} />
+      <Route path="/hr-module" component={HRModule} />
+      <Route path="/erp-module" component={ERPModule} />
+      <Route path="/service-module" component={ServiceModule} />
       <Route component={NotFound} />
     </Switch>
   );
