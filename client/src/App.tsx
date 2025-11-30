@@ -130,6 +130,8 @@ const LandingPage = lazy(() => import("@/pages/LandingPage"));
 const DemoManagement = lazy(() => import("@/pages/DemoManagement"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
+const UseCasesPage = lazy(() => import("@/pages/UseCasesPage"));
+const IndustriesPage = lazy(() => import("@/pages/IndustriesPage"));
 
 // Detail pages for section navigation
 const LeadsDetail = lazy(() => import("@/pages/LeadsDetail"));
@@ -786,6 +788,8 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/demo" component={DemoManagement} />
+      <Route path="/use-cases" component={UseCasesPage} />
+      <Route path="/industries" component={IndustriesPage} />
       
       {/* Dashboard & Core Pages */}
       <Route path="/dashboard" component={Dashboard} />

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Header, Footer } from "@/components/Navigation";
 
 export default function LandingPage() {
   const [email, setEmail] = useState("");
@@ -52,8 +53,10 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
-
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+      <Header />
+      
+      <main className="flex-1">
       {/* Hero Section */}
       <section className="px-4 py-24 text-center">
         <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">NOW AVAILABLE</Badge>
