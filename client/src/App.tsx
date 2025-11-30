@@ -346,6 +346,11 @@ const ThreeWayMatch = lazy(() => import("@/pages/ThreeWayMatch"));
 const IoT = lazy(() => import("@/pages/IoT"));
 const MobileApps = lazy(() => import("@/pages/MobileApps"));
 
+// Phase 5: Supply Chain, Inventory, Quality, Integration
+const SupplyChain = lazy(() => import("@/pages/SupplyChain"));
+const Inventory = lazy(() => import("@/pages/Inventory"));
+const QualityManagement = lazy(() => import("@/pages/QualityManagement"));
+
 // Phase 3B: Projects & Agile Module
 const Epics = lazy(() => import("@/pages/Epics"));
 const Stories = lazy(() => import("@/pages/Stories"));
@@ -481,6 +486,9 @@ function Router() {
       <Route path="/iot" component={IoT} />
       <Route path="/mobile-apps" component={MobileApps} />
       <Route path="/advanced-analytics" component={AdvancedAnalytics} />
+      <Route path="/supply-chain" component={SupplyChain} />
+      <Route path="/inventory" component={Inventory} />
+      <Route path="/quality-management" component={QualityManagement} />
       <Route path="/finance" component={Finance} />
       <Route path="/finance/invoices" component={InvoicesDetail} />
       <Route path="/finance/expenses" component={ExpensesDetail} />

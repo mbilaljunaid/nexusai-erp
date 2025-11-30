@@ -2164,6 +2164,153 @@ export async function registerRoutes(
     res.status(201).json(forecast);
   });
 
+  // ========== PHASE 5: SUPPLY CHAIN MANAGEMENT ENDPOINTS ==========
+  const phase5PartnersStore: any[] = [];
+  const phase5ShipmentsStore: any[] = [];
+
+  app.get("/api/supply-chain/partners", (req, res) => {
+    if (phase5PartnersStore.length === 0) {
+      phase5PartnersStore.push(
+        { id: "partner1", partnerName: "Global Logistics Inc", partnerType: "3PL", location: "Singapore", rating: "4.8", reliabilityScore: "96.5", contracts: { active: 3 }, status: "active", createdAt: new Date().toISOString() },
+        { id: "partner2", partnerName: "Diamond Suppliers Ltd", partnerType: "Supplier", location: "Mumbai", rating: "4.6", reliabilityScore: "94.2", contracts: { active: 2 }, status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase5PartnersStore);
+  });
+
+  app.post("/api/supply-chain/partners", (req, res) => {
+    const partner = { id: `partner-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase5PartnersStore.push(partner);
+    res.status(201).json(partner);
+  });
+
+  app.get("/api/supply-chain/shipments", (req, res) => {
+    if (phase5ShipmentsStore.length === 0) {
+      phase5ShipmentsStore.push(
+        { id: "ship1", shipmentNumber: "SHP-001", supplierId: "partner1", origin: "Singapore", destination: "New York", departureDate: new Date().toISOString(), arrivalDate: new Date(Date.now() + 86400000 * 30).toISOString(), status: "in-transit", trackingNumber: "TRACK123456", cost: "15000", createdAt: new Date().toISOString() },
+        { id: "ship2", shipmentNumber: "SHP-002", supplierId: "partner2", origin: "Mumbai", destination: "London", departureDate: new Date().toISOString(), arrivalDate: new Date(Date.now() + 86400000 * 25).toISOString(), status: "in-transit", trackingNumber: "TRACK789012", cost: "12500", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase5ShipmentsStore);
+  });
+
+  app.post("/api/supply-chain/shipments", (req, res) => {
+    const shipment = { id: `shipment-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase5ShipmentsStore.push(shipment);
+    res.status(201).json(shipment);
+  });
+
+  // ========== PHASE 5: INVENTORY MANAGEMENT ENDPOINTS ==========
+  const phase5ItemsStore: any[] = [];
+  const phase5WarehousesStore: any[] = [];
+
+  app.get("/api/inventory/items", (req, res) => {
+    if (phase5ItemsStore.length === 0) {
+      phase5ItemsStore.push(
+        { id: "item1", itemCode: "INV-001", itemName: "CPU Processors", category: "Electronics", quantity: 450, reorderLevel: 200, unitCost: "850.00", warehouse: "WH-01", status: "active", createdAt: new Date().toISOString() },
+        { id: "item2", itemCode: "INV-002", itemName: "RAM Memory Modules", category: "Electronics", quantity: 180, reorderLevel: 300, unitCost: "120.00", warehouse: "WH-01", status: "active", createdAt: new Date().toISOString() },
+        { id: "item3", itemCode: "INV-003", itemName: "Hard Disk Drives", category: "Storage", quantity: 320, reorderLevel: 150, unitCost: "450.00", warehouse: "WH-02", status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase5ItemsStore);
+  });
+
+  app.post("/api/inventory/items", (req, res) => {
+    const item = { id: `item-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase5ItemsStore.push(item);
+    res.status(201).json(item);
+  });
+
+  app.get("/api/inventory/warehouses", (req, res) => {
+    if (phase5WarehousesStore.length === 0) {
+      phase5WarehousesStore.push(
+        { id: "wh1", warehouseName: "Central Hub - Tokyo", location: "Tokyo, Japan", capacity: 50000, occupancy: "78.5", manager: "Hiroshi Tanaka", status: "active", createdAt: new Date().toISOString() },
+        { id: "wh2", warehouseName: "North Distribution - Shanghai", location: "Shanghai, China", capacity: 35000, occupancy: "62.3", manager: "Wei Chen", status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase5WarehousesStore);
+  });
+
+  app.post("/api/inventory/warehouses", (req, res) => {
+    const warehouse = { id: `warehouse-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase5WarehousesStore.push(warehouse);
+    res.status(201).json(warehouse);
+  });
+
+  // ========== PHASE 5: QUALITY MANAGEMENT ENDPOINTS ==========
+  const phase5ChecksStore: any[] = [];
+  const phase5NCStore: any[] = [];
+
+  app.get("/api/quality/checks", (req, res) => {
+    if (phase5ChecksStore.length === 0) {
+      phase5ChecksStore.push(
+        { id: "qc1", checkNumber: "QC-001", itemId: "item1", checkType: "Performance", inspector: "Sarah Johnson", result: "pass", defects: null, checkDate: new Date().toISOString(), status: "completed", createdAt: new Date().toISOString() },
+        { id: "qc2", checkNumber: "QC-002", itemId: "item2", checkType: "Dimension", inspector: "Michael Chen", result: "fail", defects: { dimension: "out of spec" }, checkDate: new Date().toISOString(), status: "completed", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase5ChecksStore);
+  });
+
+  app.post("/api/quality/checks", (req, res) => {
+    const check = { id: `qc-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase5ChecksStore.push(check);
+    res.status(201).json(check);
+  });
+
+  app.get("/api/quality/non-conformances", (req, res) => {
+    if (phase5NCStore.length === 0) {
+      phase5NCStore.push(
+        { id: "nc1", ncNumber: "NC-001", description: "Paint inconsistency", severity: "high", rootCause: "Improper temperature control", correctionAction: "Recalibrate equipment", assignedTo: "David Lee", dueDate: new Date(Date.now() + 86400000 * 5).toISOString(), status: "open", createdAt: new Date().toISOString() },
+        { id: "nc2", ncNumber: "NC-002", description: "Missing component", severity: "medium", rootCause: "Assembly line error", correctionAction: "Retraining session", assignedTo: "Emma Watson", dueDate: new Date(Date.now() + 86400000 * 7).toISOString(), status: "open", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase5NCStore);
+  });
+
+  app.post("/api/quality/non-conformances", (req, res) => {
+    const nc = { id: `nc-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase5NCStore.push(nc);
+    res.status(201).json(nc);
+  });
+
+  // ========== PHASE 5: INTEGRATION HUB ENDPOINTS ==========
+  const phase5ConnectionsStore: any[] = [];
+  const phase5JobsStore: any[] = [];
+
+  app.get("/api/integrations/connections", (req, res) => {
+    if (phase5ConnectionsStore.length === 0) {
+      phase5ConnectionsStore.push(
+        { id: "conn1", systemName: "Salesforce", apiEndpoint: "https://api.salesforce.com/v57.0", authType: "OAuth2", status: "connected", lastSyncDate: new Date(Date.now() - 3600000).toISOString(), errorLogs: null, createdAt: new Date().toISOString() },
+        { id: "conn2", systemName: "SAP ERP", apiEndpoint: "https://sap.enterprise.com/api", authType: "JWT", status: "connected", lastSyncDate: new Date(Date.now() - 7200000).toISOString(), errorLogs: null, createdAt: new Date().toISOString() },
+        { id: "conn3", systemName: "NetSuite", apiEndpoint: "https://api.netsuite.com", authType: "API_KEY", status: "disconnected", lastSyncDate: new Date(Date.now() - 259200000).toISOString(), errorLogs: { error: "Authentication failed" }, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase5ConnectionsStore);
+  });
+
+  app.post("/api/integrations/connections", (req, res) => {
+    const conn = { id: `conn-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase5ConnectionsStore.push(conn);
+    res.status(201).json(conn);
+  });
+
+  app.get("/api/integrations/jobs", (req, res) => {
+    if (phase5JobsStore.length === 0) {
+      phase5JobsStore.push(
+        { id: "job1", jobName: "Daily Sync - CRM to DW", sourceSystem: "Salesforce", targetSystem: "DataWarehouse", frequency: "daily", lastRunDate: new Date(Date.now() - 3600000).toISOString(), nextRunDate: new Date(Date.now() + 86400000).toISOString(), recordsProcessed: 25840, status: "scheduled", createdAt: new Date().toISOString() },
+        { id: "job2", jobName: "Inventory Sync", sourceSystem: "Warehouse", targetSystem: "ERP", frequency: "hourly", lastRunDate: new Date(Date.now() - 1800000).toISOString(), nextRunDate: new Date(Date.now() + 3600000).toISOString(), recordsProcessed: 12540, status: "scheduled", createdAt: new Date().toISOString() },
+        { id: "job3", jobName: "GL Consolidation", sourceSystem: "GL", targetSystem: "Reporting", frequency: "weekly", lastRunDate: new Date(Date.now() - 604800000).toISOString(), nextRunDate: new Date(Date.now() + 604800000).toISOString(), recordsProcessed: 89342, status: "scheduled", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase5JobsStore);
+  });
+
+  app.post("/api/integrations/jobs", (req, res) => {
+    const job = { id: `job-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase5JobsStore.push(job);
+    res.status(201).json(job);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
