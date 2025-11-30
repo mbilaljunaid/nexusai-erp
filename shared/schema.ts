@@ -2452,3 +2452,57 @@ export const supplierPerformance = pgTable("supplier_performance", {
   evaluationPeriod: varchar("evaluation_period"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 8: PROJECTS, TASK & RESOURCE MANAGEMENT ==========
+export const timesheets = pgTable("timesheets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  projectId: varchar("project_id"),
+  taskId: varchar("task_id"),
+  entryDate: timestamp("entry_date"),
+  hoursWorked: numeric("hours_worked"),
+  activityType: varchar("activity_type"),
+  description: text("description"),
+  billable: boolean("billable").default(true),
+  status: varchar("status").default("draft"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const projectBudgets = pgTable("project_budgets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: varchar("project_id").notNull(),
+  costCategory: varchar("cost_category"),
+  allocatedAmount: numeric("allocated_amount"),
+  actualCost: numeric("actual_cost"),
+  forecastedCost: numeric("forecasted_cost"),
+  variance: numeric("variance"),
+  status: varchar("status").default("active"),
+  approvalStatus: varchar("approval_status").default("approved"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const resourceUtilization = pgTable("resource_utilization", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  resourceId: varchar("resource_id").notNull(),
+  projectId: varchar("project_id"),
+  allocationPercentage: numeric("allocation_percentage"),
+  hoursScheduled: numeric("hours_scheduled"),
+  hoursUsed: numeric("hours_used"),
+  utilizationPercentage: numeric("utilization_percentage"),
+  status: varchar("status").default("active"),
+  evaluationPeriod: varchar("evaluation_period"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const teamCollaboration = pgTable("team_collaboration", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: varchar("project_id"),
+  taskId: varchar("task_id"),
+  userId: varchar("user_id"),
+  commentText: text("comment_text"),
+  attachmentUrl: varchar("attachment_url"),
+  status: varchar("status").default("active"),
+  readBy: jsonb("read_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

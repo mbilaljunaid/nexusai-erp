@@ -3135,6 +3135,76 @@ export async function registerRoutes(
     res.status(201).json(sp);
   });
 
+  // ========== MODULE 8: PROJECTS, TASK & RESOURCE MANAGEMENT ENDPOINTS ==========
+  const timesheetStore: any[] = [];
+  const projectBudgetStore: any[] = [];
+  const resourceUtilizationStore: any[] = [];
+  const teamCollaborationStore: any[] = [];
+
+  app.get("/api/timesheets", (req, res) => {
+    if (timesheetStore.length === 0) {
+      timesheetStore.push(
+        { id: "ts1", userId: "u1", projectId: "p1", taskId: "t1", hoursWorked: "8", activityType: "Development", billable: true, status: "submitted", approvalStatus: "pending" },
+        { id: "ts2", userId: "u2", projectId: "p2", taskId: "t2", hoursWorked: "8", activityType: "Design", billable: true, status: "approved", approvalStatus: "approved" }
+      );
+    }
+    res.json(timesheetStore);
+  });
+
+  app.post("/api/timesheets", (req, res) => {
+    const ts = { id: `ts-${Date.now()}`, ...req.body, status: "draft", approvalStatus: "pending" };
+    timesheetStore.push(ts);
+    res.status(201).json(ts);
+  });
+
+  app.get("/api/project-budgets", (req, res) => {
+    if (projectBudgetStore.length === 0) {
+      projectBudgetStore.push(
+        { id: "pb1", projectId: "p1", costCategory: "Labor", allocatedAmount: "150000", actualCost: "135000", variance: "-15000", status: "active" },
+        { id: "pb2", projectId: "p2", costCategory: "Materials", allocatedAmount: "80000", actualCost: "82500", variance: "2500", status: "active" }
+      );
+    }
+    res.json(projectBudgetStore);
+  });
+
+  app.post("/api/project-budgets", (req, res) => {
+    const pb = { id: `pb-${Date.now()}`, ...req.body, status: "active", approvalStatus: "approved" };
+    projectBudgetStore.push(pb);
+    res.status(201).json(pb);
+  });
+
+  app.get("/api/resource-utilization", (req, res) => {
+    if (resourceUtilizationStore.length === 0) {
+      resourceUtilizationStore.push(
+        { id: "ru1", resourceId: "r1", projectId: "p1", allocationPercentage: "100", hoursScheduled: "40", hoursUsed: "38", utilizationPercentage: "95" },
+        { id: "ru2", resourceId: "r2", projectId: "p2", allocationPercentage: "75", hoursScheduled: "30", hoursUsed: "25", utilizationPercentage: "83" }
+      );
+    }
+    res.json(resourceUtilizationStore);
+  });
+
+  app.post("/api/resource-utilization", (req, res) => {
+    const ru = { id: `ru-${Date.now()}`, ...req.body, status: "active" };
+    resourceUtilizationStore.push(ru);
+    res.status(201).json(ru);
+  });
+
+  app.get("/api/team-collaboration", (req, res) => {
+    if (teamCollaborationStore.length === 0) {
+      teamCollaborationStore.push(
+        { id: "tc1", projectId: "p1", userId: "u1", commentText: "Great progress on design", attachmentUrl: "file1.pdf", status: "active" },
+        { id: "tc2", projectId: "p2", userId: "u2", commentText: "API integration complete", attachmentUrl: "file2.doc", status: "active" }
+      );
+    }
+    res.json(teamCollaborationStore);
+  });
+
+  app.post("/api/team-collaboration", (req, res) => {
+    const tc = { id: `tc-${Date.now()}`, ...req.body, status: "active" };
+    teamCollaborationStore.push(tc);
+    res.status(201).json(tc);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
