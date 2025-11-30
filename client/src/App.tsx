@@ -284,6 +284,7 @@ const RecruitmentManagement = lazy(() => import("@/pages/RecruitmentManagement")
 const PeriodClose = lazy(() => import("@/pages/PeriodClose"));
 const FinancialConsolidation = lazy(() => import("@/pages/FinancialConsolidation"));
 const AccountReconciliation = lazy(() => import("@/pages/AccountReconciliation"));
+const IntercompanyEliminations = lazy(() => import("@/pages/IntercompanyEliminations"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -756,6 +757,7 @@ function Router() {
       <Route path="/period-close" component={PeriodClose} />
       <Route path="/financial-consolidation" component={FinancialConsolidation} />
       <Route path="/account-reconciliation" component={AccountReconciliation} />
+      <Route path="/intercompany-eliminations" component={IntercompanyEliminations} />
       <Route path="/ai-automation" component={AIAutomation} />
       <Route path="/document-processing" component={DocumentProcessing} />
       <Route path="/cognitive-services" component={CognitiveServices} />
