@@ -1,14 +1,38 @@
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Users, Plus } from "lucide-react";
+import { Users, Plus, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ContactManagement() {
-  const contacts = [
-    { id: "co1", name: "Alice Johnson", company: "Acme Corp", title: "CTO", email: "alice@acme.com", phone: "+1-555-0101", status: "active" },
-    { id: "co2", name: "Bob Smith", company: "Global Industries", title: "Procurement Manager", email: "bob@global.com", phone: "+1-555-0102", status: "active" },
-    { id: "co3", name: "Carol Davis", company: "StartUp Labs", title: "CEO", email: "carol@startup.com", phone: "+1-555-0103", status: "active" },
-  ];
+  const { toast } = useToast();
+  const [newContact, setNewContact] = useState({ name: "", company: "", title: "", email: "", phone: "" });
+
+  const { data: contacts = [], isLoading } = useQuery({
+    queryKey: ["/api/crm/contacts"],
+    queryFn: () => fetch("/api/crm/contacts").then(r => r.json()).catch(() => []),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/crm/contacts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/crm/contacts"] });
+      setNewContact({ name: "", company: "", title: "", email: "", phone: "" });
+      toast({ title: "Contact added" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/crm/contacts/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/crm/contacts"] });
+      toast({ title: "Contact deleted" });
+    },
+  });
 
   return (
     <div className="space-y-6 p-4">
@@ -20,11 +44,18 @@ export default function ContactManagement() {
         <p className="text-muted-foreground mt-2">Manage customer contacts and relationships</p>
       </div>
 
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6">
-          <Button className="w-full gap-2" data-testid="button-add-contact">
-            <Plus className="h-4 w-4" />
-            Add Contact
+      <Card data-testid="card-new-contact">
+        <CardHeader><CardTitle className="text-base">Add Contact</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-5 gap-3">
+            <Input placeholder="Name" value={newContact.name} onChange={(e) => setNewContact({ ...newContact, name: e.target.value })} data-testid="input-name" />
+            <Input placeholder="Company" value={newContact.company} onChange={(e) => setNewContact({ ...newContact, company: e.target.value })} data-testid="input-company" />
+            <Input placeholder="Title" value={newContact.title} onChange={(e) => setNewContact({ ...newContact, title: e.target.value })} data-testid="input-title" />
+            <Input placeholder="Email" value={newContact.email} onChange={(e) => setNewContact({ ...newContact, email: e.target.value })} data-testid="input-email" />
+            <Input placeholder="Phone" value={newContact.phone} onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })} data-testid="input-phone" />
+          </div>
+          <Button onClick={() => createMutation.mutate(newContact)} disabled={createMutation.isPending || !newContact.name} className="w-full" data-testid="button-add-contact">
+            <Plus className="h-4 w-4 mr-2" /> Add Contact
           </Button>
         </CardContent>
       </Card>
@@ -38,13 +69,18 @@ export default function ContactManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Contact List</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {contacts.map((contact) => (
-            <div key={contact.id} className="p-3 border rounded-lg hover-elevate" data-testid={`contact-${contact.id}`}>
-              <div className="flex items-center justify-between mb-2">
+          {isLoading ? <p>Loading...</p> : contacts.length === 0 ? <p className="text-muted-foreground text-center py-4">No contacts</p> : contacts.map((contact: any) => (
+            <div key={contact.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`contact-${contact.id}`}>
+              <div className="flex-1">
                 <h3 className="font-semibold">{contact.name}</h3>
-                <Badge variant="default">{contact.title}</Badge>
+                <p className="text-sm text-muted-foreground">Company: {contact.company} • Email: {contact.email} • Phone: {contact.phone}</p>
               </div>
-              <p className="text-sm text-muted-foreground">Company: {contact.company} • Email: {contact.email} • Phone: {contact.phone}</p>
+              <div className="flex gap-2 items-center">
+                <Badge variant="default">{contact.title}</Badge>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(contact.id)} data-testid={`button-delete-${contact.id}`}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </CardContent>
