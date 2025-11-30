@@ -1,14 +1,39 @@
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Users2, Plus } from "lucide-react";
+import { Users2, Plus, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function RecruitmentManagement() {
-  const jobs = [
-    { id: "j1", title: "Senior Developer", dept: "Engineering", applicants: 15, stage: "interview", target: "2025-12-15" },
-    { id: "j2", title: "Product Manager", dept: "Product", applicants: 8, stage: "screening", target: "2025-12-30" },
-    { id: "j3", title: "Sales Executive", dept: "Sales", applicants: 12, stage: "offer", target: "2025-12-10" },
-  ];
+  const { toast } = useToast();
+  const [newJob, setNewJob] = useState({ title: "", department: "Engineering", stage: "open" });
+
+  const { data: jobs = [], isLoading } = useQuery({
+    queryKey: ["/api/recruitment/jobs"],
+    queryFn: () => fetch("/api/recruitment/jobs").then(r => r.json()).catch(() => []),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/recruitment/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/recruitment/jobs"] });
+      setNewJob({ title: "", department: "Engineering", stage: "open" });
+      toast({ title: "Job posted" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/recruitment/jobs/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/recruitment/jobs"] });
+      toast({ title: "Job deleted" });
+    },
+  });
 
   return (
     <div className="space-y-6 p-4">
@@ -20,15 +45,31 @@ export default function RecruitmentManagement() {
         <p className="text-muted-foreground mt-2">Manage job openings and candidates</p>
       </div>
 
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6 flex gap-2">
-          <Button className="flex-1 gap-2" data-testid="button-post-job">
-            <Plus className="h-4 w-4" />
-            Post Job
-          </Button>
-          <Button className="flex-1 gap-2" data-testid="button-add-candidate">
-            <Plus className="h-4 w-4" />
-            Add Candidate
+      <Card data-testid="card-post-job">
+        <CardHeader><CardTitle className="text-base">Post New Job</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <Input placeholder="Job title" value={newJob.title} onChange={(e) => setNewJob({ ...newJob, title: e.target.value })} data-testid="input-title" />
+            <Select value={newJob.department} onValueChange={(v) => setNewJob({ ...newJob, department: v })}>
+              <SelectTrigger data-testid="select-department"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Engineering">Engineering</SelectItem>
+                <SelectItem value="Sales">Sales</SelectItem>
+                <SelectItem value="Product">Product</SelectItem>
+                <SelectItem value="Operations">Operations</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={newJob.stage} onValueChange={(v) => setNewJob({ ...newJob, stage: v })}>
+              <SelectTrigger data-testid="select-stage"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="screening">Screening</SelectItem>
+                <SelectItem value="interview">Interview</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button onClick={() => createMutation.mutate(newJob)} disabled={createMutation.isPending || !newJob.title} className="w-full" data-testid="button-create-job">
+            <Plus className="w-4 h-4 mr-2" /> Post Job
           </Button>
         </CardContent>
       </Card>
@@ -43,13 +84,18 @@ export default function RecruitmentManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Active Openings</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {jobs.map((job) => (
-            <div key={job.id} className="p-3 border rounded-lg hover-elevate" data-testid={`job-${job.id}`}>
-              <div className="flex items-center justify-between mb-2">
+          {isLoading ? <p>Loading...</p> : jobs.length === 0 ? <p className="text-muted-foreground text-center py-4">No open positions</p> : jobs.map((job: any) => (
+            <div key={job.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`job-${job.id}`}>
+              <div>
                 <h3 className="font-semibold">{job.title}</h3>
-                <Badge variant="outline">{job.stage}</Badge>
+                <p className="text-sm text-muted-foreground">Dept: {job.department || job.dept} • Applicants: {job.applicants || 0}</p>
               </div>
-              <p className="text-sm text-muted-foreground">Dept: {job.dept} • Applicants: {job.applicants} • Target: {job.target}</p>
+              <div className="flex gap-2 items-center">
+                <Badge variant="outline">{job.stage}</Badge>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(job.id)} data-testid={`button-delete-${job.id}`}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </CardContent>

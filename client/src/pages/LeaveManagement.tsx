@@ -1,14 +1,39 @@
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Plus } from "lucide-react";
+import { Calendar, Plus, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LeaveManagement() {
-  const leaves = [
-    { id: "l1", employee: "Alice Johnson", type: "Vacation", start: "2025-12-01", end: "2025-12-05", duration: "5 days", status: "approved" },
-    { id: "l2", employee: "Bob Smith", type: "Sick", start: "2025-11-30", end: "2025-11-30", duration: "1 day", status: "pending" },
-    { id: "l3", employee: "Carol Davis", type: "Casual", start: "2025-12-10", end: "2025-12-10", duration: "1 day", status: "approved" },
-  ];
+  const { toast } = useToast();
+  const [newLeave, setNewLeave] = useState({ employee: "", type: "Vacation", status: "pending" });
+
+  const { data: leaves = [], isLoading } = useQuery({
+    queryKey: ["/api/hr/leaves"],
+    queryFn: () => fetch("/api/hr/leaves").then(r => r.json()).catch(() => []),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/hr/leaves", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/hr/leaves"] });
+      setNewLeave({ employee: "", type: "Vacation", status: "pending" });
+      toast({ title: "Leave request created" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/hr/leaves/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/hr/leaves"] });
+      toast({ title: "Leave deleted" });
+    },
+  });
 
   return (
     <div className="space-y-6 p-4">
@@ -20,11 +45,31 @@ export default function LeaveManagement() {
         <p className="text-muted-foreground mt-2">Manage employee leave requests</p>
       </div>
 
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6">
-          <Button className="w-full gap-2" data-testid="button-request-leave">
-            <Plus className="h-4 w-4" />
-            Request Leave
+      <Card data-testid="card-request-leave">
+        <CardHeader><CardTitle className="text-base">Request Leave</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <Input placeholder="Employee name" value={newLeave.employee} onChange={(e) => setNewLeave({ ...newLeave, employee: e.target.value })} data-testid="input-employee" />
+            <Select value={newLeave.type} onValueChange={(v) => setNewLeave({ ...newLeave, type: v })}>
+              <SelectTrigger data-testid="select-type"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Vacation">Vacation</SelectItem>
+                <SelectItem value="Sick">Sick</SelectItem>
+                <SelectItem value="Casual">Casual</SelectItem>
+                <SelectItem value="Unpaid">Unpaid</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={newLeave.status} onValueChange={(v) => setNewLeave({ ...newLeave, status: v })}>
+              <SelectTrigger data-testid="select-status"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button onClick={() => createMutation.mutate(newLeave)} disabled={createMutation.isPending || !newLeave.employee} className="w-full" data-testid="button-create-leave">
+            <Plus className="w-4 h-4 mr-2" /> Request Leave
           </Button>
         </CardContent>
       </Card>
@@ -39,13 +84,18 @@ export default function LeaveManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Leave Requests</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {leaves.map((leave) => (
-            <div key={leave.id} className="p-3 border rounded-lg hover-elevate" data-testid={`leave-${leave.id}`}>
-              <div className="flex items-center justify-between mb-2">
+          {isLoading ? <p>Loading...</p> : leaves.length === 0 ? <p className="text-muted-foreground text-center py-4">No leave requests</p> : leaves.map((leave: any) => (
+            <div key={leave.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`leave-${leave.id}`}>
+              <div>
                 <h3 className="font-semibold">{leave.employee}</h3>
-                <Badge variant={leave.status === "approved" ? "default" : "secondary"}>{leave.status}</Badge>
+                <p className="text-sm text-muted-foreground">Type: {leave.type}</p>
               </div>
-              <p className="text-sm text-muted-foreground">Type: {leave.type} • {leave.start} to {leave.end} ({leave.duration})</p>
+              <div className="flex gap-2 items-center">
+                <Badge variant={leave.status === "approved" ? "default" : "secondary"}>{leave.status}</Badge>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(leave.id)} data-testid={`button-delete-${leave.id}`}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </CardContent>
