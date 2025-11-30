@@ -2628,6 +2628,71 @@ export async function registerRoutes(
     res.json(result);
   });
 
+  // ========== MODULE 1: USER & IDENTITY MANAGEMENT ENDPOINTS ==========
+  const userSessionsStore: any[] = [];
+  const loginAuditStore: any[] = [];
+  const securitySettingsStore: any[] = [];
+
+  app.get("/api/user/sessions", (req, res) => {
+    if (userSessionsStore.length === 0) {
+      userSessionsStore.push(
+        { id: "s1", userId: "u1", deviceName: "Chrome on MacOS", ipAddress: "192.168.1.100", location: "New York, USA", loginTime: new Date().toISOString(), lastActivityTime: new Date().toISOString(), status: "active" },
+        { id: "s2", userId: "u1", deviceName: "Safari on iPhone", ipAddress: "192.168.1.101", location: "New York, USA", loginTime: new Date(Date.now() - 3600000).toISOString(), lastActivityTime: new Date().toISOString(), status: "active" }
+      );
+    }
+    res.json(userSessionsStore);
+  });
+
+  app.post("/api/user/sessions/logout", (req, res) => {
+    const { sessionId } = req.body;
+    const session = userSessionsStore.find(s => s.id === sessionId);
+    if (session) {
+      session.status = "inactive";
+      res.json({ status: "logged_out" });
+    } else {
+      res.status(404).json({ error: "Session not found" });
+    }
+  });
+
+  app.get("/api/user/login-history", (req, res) => {
+    if (loginAuditStore.length === 0) {
+      loginAuditStore.push(
+        { id: "l1", userId: "u1", email: "alice@example.com", ipAddress: "192.168.1.100", device: "Chrome/MacOS", location: "New York, USA", status: "success", mfaUsed: true, loginTime: new Date().toISOString() },
+        { id: "l2", userId: "u1", email: "alice@example.com", ipAddress: "192.168.1.101", device: "Safari/iPhone", location: "New York, USA", status: "success", mfaUsed: true, loginTime: new Date(Date.now() - 3600000).toISOString() },
+        { id: "l3", userId: "u1", email: "alice@example.com", ipAddress: "192.168.2.50", device: "Firefox/Windows", location: "New York, USA", status: "failed", mfaUsed: false, loginTime: new Date(Date.now() - 86400000).toISOString() }
+      );
+    }
+    res.json(loginAuditStore);
+  });
+
+  app.post("/api/user/login-audit", (req, res) => {
+    const audit = { id: `l-${Date.now()}`, ...req.body, loginTime: new Date().toISOString() };
+    loginAuditStore.push(audit);
+    res.status(201).json(audit);
+  });
+
+  app.get("/api/user/security-settings", (req, res) => {
+    const userId = req.headers["x-user-id"] as string;
+    let settings = securitySettingsStore.find(s => s.userId === userId);
+    if (!settings) {
+      settings = { id: `sec-${Date.now()}`, userId, mfaEnabled: true, mfaMethods: ["email", "authenticator"], sessionTimeout: 30, passwordExpiry: 90, ipWhitelist: ["192.168.1.0/24"], maxConcurrentSessions: 3, loginAttemptLimit: 5 };
+      securitySettingsStore.push(settings);
+    }
+    res.json(settings);
+  });
+
+  app.post("/api/user/security-settings", (req, res) => {
+    const userId = req.headers["x-user-id"] as string;
+    let settings = securitySettingsStore.find(s => s.userId === userId);
+    if (settings) {
+      Object.assign(settings, req.body);
+    } else {
+      settings = { id: `sec-${Date.now()}`, userId, ...req.body };
+      securitySettingsStore.push(settings);
+    }
+    res.json(settings);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

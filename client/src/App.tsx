@@ -241,6 +241,9 @@ const InstalledApps = lazy(() => import("@/pages/InstalledApps"));
 const SystemSettings = lazy(() => import("@/pages/SystemSettings"));
 const UserManagement = lazy(() => import("@/pages/UserManagement"));
 const RoleManagement = lazy(() => import("@/pages/RoleManagement"));
+const SessionManagement = lazy(() => import("@/pages/SessionManagement"));
+const LoginHistory = lazy(() => import("@/pages/LoginHistory"));
+const SecuritySettings = lazy(() => import("@/pages/SecuritySettings"));
 const PermissionMatrix = lazy(() => import("@/pages/PermissionMatrix"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
@@ -663,6 +666,9 @@ function Router() {
       <Route path="/system-settings" component={SystemSettings} />
       <Route path="/user-management" component={UserManagement} />
       <Route path="/role-management" component={RoleManagement} />
+      <Route path="/session-management" component={SessionManagement} />
+      <Route path="/login-history" component={LoginHistory} />
+      <Route path="/security-settings" component={SecuritySettings} />
       <Route path="/permission-matrix" component={PermissionMatrix} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
