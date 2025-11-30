@@ -18,7 +18,7 @@ import { Search, Filter, LayoutGrid, List, Target, Users, BarChart3, TrendingUp,
 export default function CRM() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeNav, setActiveNav] = useState("overview");
-  const { data: leads = [] } = useQuery({ queryKey: ["/api/leads"], retry: false });
+  const { data: leads = [] } = useQuery<any[]>({ queryKey: ["/api/leads"], retry: false });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
@@ -82,14 +82,14 @@ export default function CRM() {
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input 
-                placeholder="Search leads by name, email, company..." 
+                placeholder="Search by name, email, company..." 
                 value={searchQuery} 
                 onChange={(e) => setSearchQuery(e.target.value)} 
                 className="pl-8" 
                 data-testid="input-search-leads"
               />
             </div>
-            <Button data-testid="button-add-lead">+ Add Lead</Button>
+            <AddLeadDialog onAddLead={() => {}} />
           </div>
           <div className="space-y-2">
             {((filteredLeads as any[]) || []).length > 0 ? (

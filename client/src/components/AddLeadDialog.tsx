@@ -36,24 +36,41 @@ export function AddLeadDialog({ onAddLead }: AddLeadDialogProps) {
     value: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsScoring(true);
     
-    // todo: remove mock functionality - integrate with AI scoring
-    setTimeout(() => {
-      onAddLead?.({
-        name: formData.name,
-        email: formData.email,
-        company: formData.company,
-        status: formData.status,
-        value: parseInt(formData.value) || 0,
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.company) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    setIsScoring(true);
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          status: formData.status,
+          score: parseInt(formData.value) || 0,
+        }),
       });
-      setIsScoring(false);
+
+      if (!response.ok) throw new Error("Failed to create lead");
+
+      const newLead = await response.json();
+      onAddLead?.(newLead);
       setOpen(false);
       setFormData({ name: "", email: "", company: "", status: "new", value: "" });
-      console.log("Lead added:", formData);
-    }, 1500);
+    } catch (err) {
+      console.error("Error adding lead:", err);
+      alert("Failed to add lead");
+    } finally {
+      setIsScoring(false);
+    }
   };
 
   return (

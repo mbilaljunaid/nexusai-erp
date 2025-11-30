@@ -11,18 +11,8 @@ interface FormSearchProps {
 }
 
 /**
- * Generic form search component that filters data based on multiple searchable fields
- * Usage: Each form passes its own searchable fields and gets back filtered results
- * 
- * Example:
- * <FormSearch
- *   placeholder="Search by invoice number, customer, or amount..."
- *   value={searchQuery}
- *   onChange={setSearchQuery}
- *   searchFields={['invoiceNumber', 'customerId', 'amount']}
- *   data={invoices}
- *   onFilter={setFilteredInvoices}
- * />
+ * Form-specific search component - each form defines its own searchable fields
+ * Filters data based on form's searchable fields defined in formMetadata
  */
 export function FormSearch({
   placeholder = "Search...",
