@@ -976,6 +976,154 @@ export async function registerRoutes(
     res.status(201).json(opp);
   });
 
+  // ========== PHASE 7: INVENTORY APIs ==========
+  const inventoryStore: any[] = [];
+  app.get("/api/inventory/items", (req, res) => {
+    if (inventoryStore.length === 0) {
+      inventoryStore.push(
+        { id: "inv1", sku: "SKU-001", quantity: "500", reorderLevel: "100", unitPrice: "25", warehouseId: "WH-01" },
+        { id: "inv2", sku: "SKU-002", quantity: "50", reorderLevel: "100", unitPrice: "45", warehouseId: "WH-01" },
+        { id: "inv3", sku: "SKU-003", quantity: "250", reorderLevel: "50", unitPrice: "15", warehouseId: "WH-02" }
+      );
+    }
+    res.json(inventoryStore);
+  });
+  app.post("/api/inventory/items", (req, res) => {
+    const item = { id: `inv-${Date.now()}`, ...req.body };
+    inventoryStore.push(item);
+    res.status(201).json(item);
+  });
+
+  // ========== PHASE 8: MANUFACTURING APIs ==========
+  const workOrdersStore: any[] = [];
+  app.get("/api/manufacturing/work-orders", (req, res) => {
+    if (workOrdersStore.length === 0) {
+      workOrdersStore.push(
+        { id: "wo1", orderNumber: "WO-001", bomId: "BOM-01", quantity: "100", status: "in_progress" },
+        { id: "wo2", orderNumber: "WO-002", bomId: "BOM-02", quantity: "50", status: "completed" }
+      );
+    }
+    res.json(workOrdersStore);
+  });
+  app.post("/api/manufacturing/work-orders", (req, res) => {
+    const wo = { id: `wo-${Date.now()}`, ...req.body };
+    workOrdersStore.push(wo);
+    res.status(201).json(wo);
+  });
+
+  // ========== PHASE 9: EPM & ANALYTICS APIs ==========
+  const budgetsStore: any[] = [];
+  app.get("/api/epm/budgets", (req, res) => {
+    if (budgetsStore.length === 0) {
+      budgetsStore.push(
+        { id: "b1", department: "Engineering", amount: "500000", spent: "350000", period: "2024-Q1" },
+        { id: "b2", department: "Sales", amount: "250000", spent: "180000", period: "2024-Q1" }
+      );
+    }
+    res.json(budgetsStore);
+  });
+  app.post("/api/epm/budgets", (req, res) => {
+    const budget = { id: `budget-${Date.now()}`, ...req.body };
+    budgetsStore.push(budget);
+    res.status(201).json(budget);
+  });
+
+  // ========== PHASE 10: SUPPORT APIs ==========
+  const ticketsStore: any[] = [];
+  app.get("/api/support/tickets", (req, res) => {
+    if (ticketsStore.length === 0) {
+      ticketsStore.push(
+        { id: "t1", title: "Login Issue", customerName: "John Doe", status: "open", priority: "high" },
+        { id: "t2", title: "Feature Request", customerName: "Jane Smith", status: "resolved", priority: "low" }
+      );
+    }
+    res.json(ticketsStore);
+  });
+  app.post("/api/support/tickets", (req, res) => {
+    const ticket = { id: `ticket-${Date.now()}`, ...req.body };
+    ticketsStore.push(ticket);
+    res.status(201).json(ticket);
+  });
+
+  // ========== PHASE 11: MARKETING APIs ==========
+  const campaignsStore: any[] = [];
+  app.get("/api/marketing/campaigns", (req, res) => {
+    if (campaignsStore.length === 0) {
+      campaignsStore.push(
+        { id: "c1", name: "Q1 Product Launch", budget: "50000", status: "active" },
+        { id: "c2", name: "Holiday Promotion", budget: "75000", status: "completed" }
+      );
+    }
+    res.json(campaignsStore);
+  });
+  app.post("/api/marketing/campaigns", (req, res) => {
+    const campaign = { id: `campaign-${Date.now()}`, ...req.body };
+    campaignsStore.push(campaign);
+    res.status(201).json(campaign);
+  });
+
+  // ========== PHASE 12: COMPLIANCE APIs ==========
+  const controlsStore: any[] = [];
+  app.get("/api/compliance/controls", (req, res) => {
+    if (controlsStore.length === 0) {
+      controlsStore.push(
+        { id: "ctrl1", name: "Access Control", framework: "ISO-27001", status: "effective" },
+        { id: "ctrl2", name: "Data Encryption", framework: "GDPR", status: "at_risk" }
+      );
+    }
+    res.json(controlsStore);
+  });
+  app.post("/api/compliance/controls", (req, res) => {
+    const control = { id: `ctrl-${Date.now()}`, ...req.body };
+    controlsStore.push(control);
+    res.status(201).json(control);
+  });
+
+  // ========== PHASE 13: CONTENT MANAGEMENT APIs ==========
+  const pagesStore: any[] = [];
+  app.get("/api/content/pages", (req, res) => {
+    if (pagesStore.length === 0) {
+      pagesStore.push(
+        { id: "p1", title: "Home", slug: "home", status: "published" },
+        { id: "p2", title: "About Us", slug: "about", status: "draft" }
+      );
+    }
+    res.json(pagesStore);
+  });
+  app.post("/api/content/pages", (req, res) => {
+    const page = { id: `page-${Date.now()}`, ...req.body };
+    pagesStore.push(page);
+    res.status(201).json(page);
+  });
+
+  // ========== PHASE 14: ADMIN APIs ==========
+  const adminUsersStore: any[] = [];
+  const rolesStore: any[] = [];
+  app.get("/api/admin/users", (req, res) => {
+    if (adminUsersStore.length === 0) {
+      adminUsersStore.push(
+        { id: "u1", name: "Admin User", email: "admin@company.com", status: "active", role: "Admin" },
+        { id: "u2", name: "Manager", email: "manager@company.com", status: "active", role: "Manager" }
+      );
+    }
+    res.json(adminUsersStore);
+  });
+  app.get("/api/admin/roles", (req, res) => {
+    if (rolesStore.length === 0) {
+      rolesStore.push(
+        { id: "r1", name: "Admin" },
+        { id: "r2", name: "Manager" },
+        { id: "r3", name: "User" }
+      );
+    }
+    res.json(rolesStore);
+  });
+  app.post("/api/admin/users", (req, res) => {
+    const user = { id: `user-${Date.now()}`, ...req.body };
+    adminUsersStore.push(user);
+    res.status(201).json(user);
+  });
+
   // ========== PHASE 3B: PROJECTS & AGILE APIs ==========
 
   // Epics

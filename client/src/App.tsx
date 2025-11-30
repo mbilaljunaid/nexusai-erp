@@ -262,6 +262,16 @@ const PayrollRuns = lazy(() => import("@/pages/PayrollRuns"));
 // Phase 6: CRM & Sales Module
 const OpportunitiesNew = lazy(() => import("@/pages/OpportunitiesNew"));
 
+// Phase 7-14: Additional Enterprise Modules
+const InventoryDashboard = lazy(() => import("@/pages/InventoryDashboard"));
+const WorkOrdersDashboard = lazy(() => import("@/pages/WorkOrdersDashboard"));
+const BudgetingDashboard = lazy(() => import("@/pages/BudgetingDashboard"));
+const TicketsDashboard = lazy(() => import("@/pages/TicketsDashboard"));
+const CampaignsDashboard = lazy(() => import("@/pages/CampaignsDashboard"));
+const ComplianceDashboardNew = lazy(() => import("@/pages/ComplianceDashboardNew"));
+const ContentManagement = lazy(() => import("@/pages/ContentManagement"));
+const AdminConsole = lazy(() => import("@/pages/AdminConsole"));
+
 function Router() {
   return (
     <Switch>
@@ -487,6 +497,14 @@ function Router() {
       <Route path="/employees-list" component={EmployeesList} />
       <Route path="/payroll-runs" component={PayrollRuns} />
       <Route path="/opportunities-sales" component={OpportunitiesNew} />
+      <Route path="/inventory-dashboard" component={InventoryDashboard} />
+      <Route path="/work-orders" component={WorkOrdersDashboard} />
+      <Route path="/budgeting" component={BudgetingDashboard} />
+      <Route path="/tickets" component={TicketsDashboard} />
+      <Route path="/campaigns" component={CampaignsDashboard} />
+      <Route path="/compliance-risk" component={ComplianceDashboardNew} />
+      <Route path="/content-management" component={ContentManagement} />
+      <Route path="/admin-console" component={AdminConsole} />
       <Route component={NotFound} />
     </Switch>
   );
