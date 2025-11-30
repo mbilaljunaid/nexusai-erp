@@ -1110,7 +1110,6 @@ export async function registerRoutes(
 
   // ========== PHASE 14: ADMIN APIs ==========
   const adminUsersStore: any[] = [];
-  const rolesStore: any[] = [];
   app.get("/api/admin/users", (req, res) => {
     if (adminUsersStore.length === 0) {
       adminUsersStore.push(
@@ -1521,6 +1520,72 @@ export async function registerRoutes(
       res.status(201).json(payment);
     } catch (error) {
       res.status(400).json({ error: "Failed to create payment" });
+    }
+  });
+
+  // ========== PHASE 1: API GATEWAY & API KEYS ==========
+  const rolesStore: any[] = [
+    { id: "role1", tenantId: "tenant1", name: "Admin", permissions: ["read", "write", "delete"], status: "active", createdAt: new Date().toISOString() },
+    { id: "role2", tenantId: "tenant1", name: "Editor", permissions: ["read", "write"], status: "active", createdAt: new Date().toISOString() },
+    { id: "role3", tenantId: "tenant1", name: "Viewer", permissions: ["read"], status: "active", createdAt: new Date().toISOString() }
+  ];
+  const apiKeysStore: any[] = [];
+
+  app.get("/api/roles", (req, res) => {
+    const tenantId = req.query.tenantId as string;
+    const roles = tenantId ? rolesStore.filter(r => r.tenantId === tenantId) : rolesStore;
+    res.json(roles);
+  });
+
+  app.post("/api/roles", (req, res) => {
+    try {
+      const role = {
+        id: `role-${Date.now()}`,
+        tenantId: req.body.tenantId,
+        name: req.body.name,
+        permissions: req.body.permissions || [],
+        status: "active",
+        createdAt: new Date().toISOString()
+      };
+      rolesStore.push(role);
+      res.status(201).json(role);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create role" });
+    }
+  });
+
+  app.get("/api/api-keys", (req, res) => {
+    const tenantId = req.query.tenantId as string;
+    const keys = tenantId ? apiKeysStore.filter(k => k.tenantId === tenantId) : apiKeysStore;
+    res.json(keys);
+  });
+
+  app.post("/api/api-keys", (req, res) => {
+    try {
+      const key = Math.random().toString(36).substring(2, 15);
+      const apiKey = {
+        id: `key-${Date.now()}`,
+        tenantId: req.body.tenantId,
+        name: req.body.name,
+        key: key,
+        permissions: req.body.permissions || ["read"],
+        status: "active",
+        createdAt: new Date().toISOString()
+      };
+      apiKeysStore.push(apiKey);
+      res.status(201).json(apiKey);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create API key" });
+    }
+  });
+
+  app.delete("/api/api-keys/:id", (req, res) => {
+    const idx = apiKeysStore.findIndex(k => k.id === req.params.id);
+    if (idx !== -1) {
+      apiKeysStore.splice(idx, 1);
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: "API key not found" });
     }
   });
 
