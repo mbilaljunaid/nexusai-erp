@@ -1647,3 +1647,17 @@ const GovernmentAIAnalytics = lazy(() => import("@/pages/GovernmentAIAnalytics")
 const GovernmentBIDashboards = lazy(() => import("@/pages/GovernmentBIDashboards"));
 const GovernmentMobileApp = lazy(() => import("@/pages/GovernmentMobileApp"));
 const GovernmentReporting = lazy(() => import("@/pages/GovernmentReporting"));
+
+// Automotive Pack (Industry Pack 41)
+const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
+const AutomotiveDealerInventory = lazy(() => import("@/pages/AutomotiveDealerInventory"));
+const AutomotiveSalesCRM = lazy(() => import("@/pages/AutomotiveSalesCRM"));
+const AutomotiveAfterSalesService = lazy(() => import("@/pages/AutomotiveAfterSalesService"));
+const AutomotiveFinanceInvoicing = lazy(() => import("@/pages/AutomotiveFinanceInvoicing"));
+const AutomotiveHRWorkforce = lazy(() => import("@/pages/AutomotiveHRWorkforce"));
+const AutomotiveSupplyChain = lazy(() => import("@/pages/AutomotiveSupplyChain"));
+const AutomotiveBIDashboards = lazy(() => import("@/pages/AutomotiveBIDashboards"));
+const AutomotiveCompliance = lazy(() => import("@/pages/AutomotiveCompliance"));
+const AutomotiveMobileApp = lazy(() => import("@/pages/AutomotiveMobileApp"));
+const AutomotiveQualityAnalytics = lazy(() => import("@/pages/AutomotiveQualityAnalytics"));
+const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));

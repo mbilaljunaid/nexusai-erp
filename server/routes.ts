@@ -5685,46 +5685,44 @@ export async function registerRoutes(
   app.get("/api/retail-campaigns", (req, res) => { if (retCampStore.length === 0) retCampStore.push({ id: "cam1", campaignId: "CAMP-001", channel: "email", status: "active" }); res.json(retCampStore); });
   app.post("/api/retail-campaigns", (req, res) => { const cam = { id: `cam-${Date.now()}`, ...req.body }; retCampStore.push(cam); res.status(201).json(cam); });
 
-  // ========== INDUSTRY PACK 40: GOVERNMENT & PUBLIC SECTOR ==========
-  const govCitStore: any[] = [];
-  const govCaseStore: any[] = [];
-  const govPermStore: any[] = [];
-  const govGrantStore: any[] = [];
-  const govHRStore: any[] = [];
-  const govFinStore: any[] = [];
-  const govCompStore: any[] = [];
-  const govProjStore: any[] = [];
-  const govCRMStore: any[] = [];
-  const govAnalStore: any[] = [];
 
-  app.get("/api/government-citizens", (req, res) => { if (govCitStore.length === 0) { for (let i = 1; i <= 15; i++) { govCitStore.push({ id: `cit${i}`, citizenId: `CIT-${String(i).padStart(4,'0')}`, citizenName: `Citizen ${i}`, email: `citizen${i}@gov.in`, phone: `+91-${String(i).padStart(10,'0')}`, docStatus: 'VERIFIED', status: 'ACTIVE' }); } } res.json(govCitStore); });
-  app.post("/api/government-citizens", (req, res) => { const c = { id: `cit-${Date.now()}`, ...req.body }; govCitStore.push(c); res.status(201).json(c); });
+  // ========== INDUSTRY PACK 41: AUTOMOTIVE ==========
+  const autoProdStore: any[] = [];
+  const autoDealStore: any[] = [];
+  const autoSalesStore: any[] = [];
+  const autoServiceStore: any[] = [];
+  const autoFinStore: any[] = [];
+  const autoEmpStore: any[] = [];
+  const autoSupStore: any[] = [];
+  const autoQualStore: any[] = [];
+  const autoCustStore: any[] = [];
+  const autoInvStore: any[] = [];
 
-  app.get("/api/government-cases", (req, res) => { if (govCaseStore.length === 0) { for (let i = 1; i <= 12; i++) { govCaseStore.push({ id: `case${i}`, caseId: `CASE-${String(i).padStart(5,'0')}`, citizenId: `CIT-${String(i).padStart(4,'0')}`, serviceType: i % 3 === 0 ? 'Application' : i % 3 === 1 ? 'Complaint' : 'Request', description: `Case ${i}`, status: i % 2 === 0 ? 'RESOLVED' : 'PENDING' }); } } res.json(govCaseStore); });
-  app.post("/api/government-cases", (req, res) => { const ca = { id: `case-${Date.now()}`, ...req.body }; govCaseStore.push(ca); res.status(201).json(ca); });
+  app.get("/api/automotive-production", (req, res) => { if (autoProdStore.length === 0) { for (let i = 1; i <= 12; i++) { autoProdStore.push({ id: `prod${i}`, modelId: `MODEL-${String(i).padStart(3,'0')}`, modelName: `Model ${i}`, variant: i % 2 === 0 ? 'Sedan' : 'SUV', productionLine: `Line-${String((i%3)+1)}`, status: 'ACTIVE', dailyCapacity: 100 + (i * 10) }); } } res.json(autoProdStore); });
+  app.post("/api/automotive-production", (req, res) => { const p = { id: `prod-${Date.now()}`, ...req.body }; autoProdStore.push(p); res.status(201).json(p); });
 
-  app.get("/api/government-permits", (req, res) => { if (govPermStore.length === 0) { for (let i = 1; i <= 10; i++) { govPermStore.push({ id: `perm${i}`, permitId: `PERM-${String(i).padStart(4,'0')}`, citizenId: `CIT-${String(i).padStart(4,'0')}`, permitType: i % 2 === 0 ? 'Business' : 'Residence', issueDate: new Date(Date.now() - i * 86400000).toISOString().split('T')[0], expiryDate: new Date(Date.now() + (365-i) * 86400000).toISOString().split('T')[0], status: 'ACTIVE' }); } } res.json(govPermStore); });
-  app.post("/api/government-permits", (req, res) => { const p = { id: `perm-${Date.now()}`, ...req.body }; govPermStore.push(p); res.status(201).json(p); });
+  app.get("/api/automotive-dealers", (req, res) => { if (autoDealStore.length === 0) { for (let i = 1; i <= 10; i++) { autoDealStore.push({ id: `deal${i}`, dealerId: `DEAL-${String(i).padStart(3,'0')}`, dealerName: `Dealer ${i}`, city: ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Chennai'][i % 5], inventory: 50 + (i * 10), status: 'ACTIVE' }); } } res.json(autoDealStore); });
+  app.post("/api/automotive-dealers", (req, res) => { const d = { id: `deal-${Date.now()}`, ...req.body }; autoDealStore.push(d); res.status(201).json(d); });
 
-  app.get("/api/government-grants", (req, res) => { if (govGrantStore.length === 0) { for (let i = 1; i <= 8; i++) { govGrantStore.push({ id: `grant${i}`, grantId: `GRANT-${String(i).padStart(3,'0')}`, programName: `Program ${i}`, applicantId: `CIT-${String(i).padStart(4,'0')}`, amount: 100000 + (i * 50000), status: i % 3 === 0 ? 'APPROVED' : i % 3 === 1 ? 'PENDING' : 'DISBURSED' }); } } res.json(govGrantStore); });
-  app.post("/api/government-grants", (req, res) => { const g = { id: `grant-${Date.now()}`, ...req.body }; govGrantStore.push(g); res.status(201).json(g); });
+  app.get("/api/automotive-sales", (req, res) => { if (autoSalesStore.length === 0) { for (let i = 1; i <= 12; i++) { autoSalesStore.push({ id: `sale${i}`, orderId: `ORDER-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(4,'0')}`, modelId: `MODEL-${String((i%5)+1).padStart(3,'0')}`, price: 1000000 + (i * 100000), status: i % 2 === 0 ? 'DELIVERED' : 'PROCESSING' }); } } res.json(autoSalesStore); });
+  app.post("/api/automotive-sales", (req, res) => { const s = { id: `sale-${Date.now()}`, ...req.body }; autoSalesStore.push(s); res.status(201).json(s); });
 
-  app.get("/api/government-employees", (req, res) => { if (govHRStore.length === 0) { for (let i = 1; i <= 10; i++) { govHRStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Officer ${i}`, role: i % 3 === 0 ? 'Manager' : i % 3 === 1 ? 'Clerk' : 'Officer', department: ['Revenue', 'Licensing', 'Social', 'Projects'][i % 4], status: 'ACTIVE' }); } } res.json(govHRStore); });
-  app.post("/api/government-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; govHRStore.push(e); res.status(201).json(e); });
+  app.get("/api/automotive-service", (req, res) => { if (autoServiceStore.length === 0) { for (let i = 1; i <= 10; i++) { autoServiceStore.push({ id: `svc${i}`, serviceId: `SVC-${String(i).padStart(4,'0')}`, vehicleId: `VEH-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(4,'0')}`, serviceType: i % 2 === 0 ? 'Maintenance' : 'Repair', appointmentDate: new Date(Date.now() + i * 86400000).toISOString().split('T')[0], status: 'SCHEDULED' }); } } res.json(autoServiceStore); });
+  app.post("/api/automotive-service", (req, res) => { const sv = { id: `svc-${Date.now()}`, ...req.body }; autoServiceStore.push(sv); res.status(201).json(sv); });
 
-  app.get("/api/government-finance", (req, res) => { if (govFinStore.length === 0) { for (let i = 1; i <= 10; i++) { govFinStore.push({ id: `fin${i}`, transactionId: `TXN-${String(i).padStart(4,'0')}`, departmentId: `DEPT-${String((i%4)+1).padStart(2,'0')}`, amount: 500000 + (i * 100000), type: i % 2 === 0 ? 'REVENUE' : 'EXPENSE', status: 'APPROVED' }); } } res.json(govFinStore); });
-  app.post("/api/government-finance", (req, res) => { const f = { id: `fin-${Date.now()}`, ...req.body }; govFinStore.push(f); res.status(201).json(f); });
+  app.get("/api/automotive-finance", (req, res) => { if (autoFinStore.length === 0) { for (let i = 1; i <= 10; i++) { autoFinStore.push({ id: `fin${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, orderId: `ORDER-${String(i).padStart(4,'0')}`, amount: 1000000 + (i * 100000), paymentStatus: i % 2 === 0 ? 'PAID' : 'PENDING', dueDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0] }); } } res.json(autoFinStore); });
+  app.post("/api/automotive-finance", (req, res) => { const f = { id: `fin-${Date.now()}`, ...req.body }; autoFinStore.push(f); res.status(201).json(f); });
 
-  app.get("/api/government-compliance", (req, res) => { if (govCompStore.length === 0) { govCompStore.push({ id: 'comp1', regulation: 'RTI Act', department: 'ALL', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }, { id: 'comp2', regulation: 'RTI Act', department: 'ALL', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }); } res.json(govCompStore); });
-  app.post("/api/government-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; govCompStore.push(co); res.status(201).json(co); });
+  app.get("/api/automotive-employees", (req, res) => { if (autoEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { autoEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Production' : i % 3 === 1 ? 'Service' : 'Sales', department: i % 2 === 0 ? 'Manufacturing' : 'Service', status: 'ACTIVE' }); } } res.json(autoEmpStore); });
+  app.post("/api/automotive-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; autoEmpStore.push(e); res.status(201).json(e); });
 
-  app.get("/api/government-projects", (req, res) => { if (govProjStore.length === 0) { for (let i = 1; i <= 8; i++) { govProjStore.push({ id: `proj${i}`, projectId: `PROJ-${String(i).padStart(3,'0')}`, name: `Project ${i}`, budget: 5000000 + (i * 1000000), progress: 30 + (i * 5), status: 'ACTIVE' }); } } res.json(govProjStore); });
-  app.post("/api/government-projects", (req, res) => { const pr = { id: `proj-${Date.now()}`, ...req.body }; govProjStore.push(pr); res.status(201).json(pr); });
+  app.get("/api/automotive-supply", (req, res) => { if (autoSupStore.length === 0) { for (let i = 1; i <= 8; i++) { autoSupStore.push({ id: `sup${i}`, supplierId: `SUP-${String(i).padStart(3,'0')}`, supplierName: `Supplier ${i}`, partType: i % 2 === 0 ? 'Engine' : 'Chassis', leadTime: 7 + i, status: 'ACTIVE' }); } } res.json(autoSupStore); });
+  app.post("/api/automotive-supply", (req, res) => { const su = { id: `sup-${Date.now()}`, ...req.body }; autoSupStore.push(su); res.status(201).json(su); });
 
-  app.get("/api/government-crm", (req, res) => { if (govCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { govCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, citizenId: `CIT-${String(i).padStart(4,'0')}`, type: i % 2 === 0 ? 'Feedback' : 'Support', subject: 'Service Request', status: 'RESOLVED' }); } } res.json(govCRMStore); });
-  app.post("/api/government-crm", (req, res) => { const cr = { id: `crm-${Date.now()}`, ...req.body }; govCRMStore.push(cr); res.status(201).json(cr); });
+  app.get("/api/automotive-quality", (req, res) => { res.json([{ id: 'qual1', modelId: 'MODEL-001', defectType: 'Paint', count: 2, status: 'RESOLVED' }, { id: 'qual2', modelId: 'MODEL-002', defectType: 'Electrical', count: 5, status: 'PENDING' }]); });
+  app.post("/api/automotive-quality", (req, res) => { const q = { id: `qual-${Date.now()}`, ...req.body }; res.status(201).json(q); });
 
-  app.get("/api/government-analytics", (req, res) => { res.json({ totalCitizens: 50000, activeCases: 1250, permitsIssued: 450, grantsApproved: 85, budgetUtilization: 68 }); });
+  app.get("/api/automotive-dashboards", (req, res) => { res.json({ totalProduction: 5000, totalSales: 2500, activeServiceAppointments: 350, totalInventory: 1250, revenueThisMonth: 2500000000 }); });
 
   return httpServer;
 }
