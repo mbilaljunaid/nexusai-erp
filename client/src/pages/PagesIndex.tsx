@@ -6,7 +6,8 @@ const PAGES_BY_PACK = [
   { pack: "Hospitality & Travel", pages: ["PropertyManagement", "ReservationsBookings", "GuestManagement", "HospitalityCRM", "HospitalityBilling", "HospitalitySupply", "HospitalityHR", "RevenueOptimization", "HospitalityAnalytics", "EventsActivities", "TravelItinerary"] },
   { pack: "Telecom & Media", pages: ["SubscriberManagement", "ServiceProvisioning", "BillingInvoicing", "NetworkUsageMonitoring", "CustomerSupportCRM", "MarketingTelecom", "HRTelecom", "TelecomAnalytics", "TelecomDashboard", "NetworkProvisioning"] },
   { pack: "Government & Public Sector", pages: ["CitizenCaseManagement", "PublicServicesDelivery", "FinanceGrants", "GovernmentHR", "GovernmentProcurement", "ProjectInfrastructure", "ComplianceReporting", "GovernmentBI", "CitizenEngagement", "WorkflowAutomation"] },
-  { pack: "Education & E-Learning", pages: ["StudentManagement", "FacultyManagement", "CourseManagement", "AdmissionsEnrollment", "AssessmentGrading", "LMSContent", "EducationCRM", "EducationBilling", "EducationHR", "EducationAttendance", "EducationEvents", "EducationAnalytics"] },
+  { pack: "Retail { pack: "Education & E-Learning", pages: [ E-Commerce", pages: ["RetailProductCatalog", "RetailOrderManagement", "RetailCustomerManagement", "RetailPromotionsLoyalty", "RetailPaymentsBilling", "RetailSupplyChainProcurement", "RetailPOSOperations", "RetailHRWorkforce", "RetailAIRecommendations", "RetailBIDashboards", "RetailCRMMarketing", "RetailInventoryWarehouse"] },
+  { pack: "Education { pack: "Education & E-Learning", pages: [ E-Learning", pages: ["StudentManagement", "FacultyManagement", "CourseManagement", "AdmissionsEnrollment", "AssessmentGrading", "LMSContent", "EducationCRM", "EducationBilling", "EducationHR", "EducationAttendance", "EducationEvents", "EducationAnalytics"] },
 ];
 
 function pageToUrl(pageName: string): string {

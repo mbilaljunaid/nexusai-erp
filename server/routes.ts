@@ -5807,10 +5807,40 @@ export async function registerRoutes(
   const eduAssignStore: any[] = [];
   const eduGradeStore: any[] = [];
   const eduBillStore: any[] = [];
-  // Health check
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
-  });
+
+  // ========== INDUSTRY PACK 33: RETAIL & E-COMMERCE ==========
+  const retailProdStore: any[] = [];
+  const retailOrderStore: any[] = [];
+  const retailCustStore: any[] = [];
+  const retailPromStore: any[] = [];
+  const retailInvStore: any[] = [];
+  const retailPOStore: any[] = [];
+  const retailEmpStore: any[] = [];
+  const retailWarehStore: any[] = [];
+  const retailAIStore: any[] = [];
+  const retailCampStore: any[] = [];
+
+  app.get("/api/retail-products", (req, res) => { if (retailProdStore.length === 0) { for (let i = 1; i <= 10; i++) { retailProdStore.push({ id: `prod${i}`, productId: `PROD-${String(i).padStart(3,'0')}`, name: `Product ${i}`, category: i % 3 === 0 ? 'Electronics' : i % 3 === 1 ? 'Clothing' : 'Home', sku: `SKU${String(i).padStart(3,'0')}`, price: 500 + (i * 100), quantity: Math.floor(Math.random() * 100), status: 'ACTIVE' }); } } res.json(retailProdStore); });
+  app.post("/api/retail-products", (req, res) => { const p = { id: `prod-${Date.now()}`, ...req.body }; retailProdStore.push(p); res.status(201).json(p); });
+  app.get("/api/retail-orders", (req, res) => { if (retailOrderStore.length === 0) { for (let i = 1; i <= 10; i++) { retailOrderStore.push({ id: `order${i}`, orderId: `ORD-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(Math.floor(Math.random()*50)+1).padStart(3,'0')}`, customerName: `Customer ${i}`, amount: 5000 + (i * 1000), status: i % 2 === 0 ? 'DELIVERED' : 'PROCESSING', paymentStatus: i % 3 === 0 ? 'PAID' : 'PENDING', orderDate: new Date(Date.now() - i * 86400000).toISOString().split('T')[0] }); } } res.json(retailOrderStore); });
+  app.post("/api/retail-orders", (req, res) => { const o = { id: `order-${Date.now()}`, ...req.body }; retailOrderStore.push(o); res.status(201).json(o); });
+  app.get("/api/retail-customers", (req, res) => { if (retailCustStore.length === 0) { for (let i = 1; i <= 10; i++) { retailCustStore.push({ id: `cust${i}`, customerId: `CUST-${String(i).padStart(3,'0')}`, name: `Customer ${i}`, email: `cust${i}@example.com`, phone: `+91-98${String(i).padStart(8,'0')}`, loyaltyPoints: i * 500, segment: i % 3 === 0 ? 'Premium' : i % 3 === 1 ? 'Regular' : 'New', status: 'ACTIVE' }); } } res.json(retailCustStore); });
+  app.post("/api/retail-customers", (req, res) => { const c = { id: `cust-${Date.now()}`, ...req.body }; retailCustStore.push(c); res.status(201).json(c); });
+  app.get("/api/retail-promotions", (req, res) => { if (retailPromStore.length === 0) { for (let i = 1; i <= 5; i++) { retailPromStore.push({ id: `promo${i}`, promotionId: `PROMO-${String(i).padStart(3,'0')}`, name: `Promotion ${i}`, type: i % 2 === 0 ? 'DISCOUNT' : 'CASHBACK', discount: 10 + (i * 5), status: i % 3 === 0 ? 'EXPIRED' : 'ACTIVE', validTill: new Date(Date.now() + i * 86400000 * 30).toISOString().split('T')[0] }); } } res.json(retailPromStore); });
+  app.post("/api/retail-promotions", (req, res) => { const pr = { id: `promo-${Date.now()}`, ...req.body }; retailPromStore.push(pr); res.status(201).json(pr); });
+  app.get("/api/retail-invoices", (req, res) => { if (retailInvStore.length === 0) { for (let i = 1; i <= 10; i++) { retailInvStore.push({ id: `inv${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, orderId: `ORD-${String(i).padStart(4,'0')}`, amount: 5000 + (i * 1000), paymentMethod: i % 3 === 0 ? 'CARD' : i % 3 === 1 ? 'UPI' : 'CASH', status: i % 2 === 0 ? 'PAID' : 'PENDING', date: new Date(Date.now() - i * 86400000).toISOString().split('T')[0] }); } } res.json(retailInvStore); });
+  app.post("/api/retail-invoices", (req, res) => { const inv = { id: `inv-${Date.now()}`, ...req.body }; retailInvStore.push(inv); res.status(201).json(inv); });
+  app.get("/api/retail-purchase-orders", (req, res) => { if (retailPOStore.length === 0) { for (let i = 1; i <= 5; i++) { retailPOStore.push({ id: `po${i}`, poId: `PO-${String(i).padStart(3,'0')}`, supplierId: `SUPP-${String(i).padStart(2,'0')}`, supplierName: `Supplier ${i}`, quantity: 100 + (i * 50), amount: 50000 + (i * 10000), status: i % 2 === 0 ? 'RECEIVED' : 'PENDING' }); } } res.json(retailPOStore); });
+  app.post("/api/retail-purchase-orders", (req, res) => { const po = { id: `po-${Date.now()}`, ...req.body }; retailPOStore.push(po); res.status(201).json(po); });
+  app.get("/api/retail-employees", (req, res) => { if (retailEmpStore.length === 0) { for (let i = 1; i <= 8; i++) { retailEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Manager' : i % 3 === 1 ? 'Cashier' : 'Warehouse', department: i % 2 === 0 ? 'Store' : 'Warehouse', shift: i % 2 === 0 ? 'Morning' : 'Evening', status: 'ACTIVE' }); } } res.json(retailEmpStore); });
+  app.post("/api/retail-employees", (req, res) => { const emp = { id: `emp-${Date.now()}`, ...req.body }; retailEmpStore.push(emp); res.status(201).json(emp); });
+  app.get("/api/retail-warehouses", (req, res) => { if (retailWarehStore.length === 0) { for (let i = 1; i <= 5; i++) { retailWarehStore.push({ id: `wh${i}`, warehouseId: `WH-${String(i).padStart(2,'0')}`, name: `Warehouse ${i}`, location: ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata'][i-1], capacity: 10000 + (i * 2000), used: 5000 + (i * 1000), skuCount: 500 + (i * 100), status: 'ACTIVE' }); } } res.json(retailWarehStore); });
+  app.post("/api/retail-warehouses", (req, res) => { const wh = { id: `wh-${Date.now()}`, ...req.body }; retailWarehStore.push(wh); res.status(201).json(wh); });
+  app.get("/api/retail-ai-recommendations", (req, res) => { if (retailAIStore.length === 0) { retailAIStore.push({ id: 'rec1', type: 'Cross-sell', productId: 'PROD-001', productName: 'Product 1', recommendation: 'Bundle with Product 3', confidence: 85, impact: 'High' }, { id: 'rec2', type: 'Reorder', productId: 'PROD-005', productName: 'Product 5', recommendation: 'Stock forecast: Reorder soon', confidence: 92, impact: 'Critical' }); } res.json(retailAIStore); });
+  app.post("/api/retail-ai-recommendations", (req, res) => { const rec = { id: `rec-${Date.now()}`, ...req.body }; retailAIStore.push(rec); res.status(201).json(rec); });
+  app.get("/api/retail-campaigns", (req, res) => { if (retailCampStore.length === 0) { for (let i = 1; i <= 5; i++) { retailCampStore.push({ id: `camp${i}`, campaignId: `CAMP-${String(i).padStart(3,'0')}`, name: `Campaign ${i}`, channel: i % 3 === 0 ? 'Email' : i % 3 === 1 ? 'SMS' : 'Push', recipients: 1000 + (i * 500), engagement: 20 + (i * 5), roi: 150 + (i * 30), status: 'ACTIVE' }); } } res.json(retailCampStore); });
+  app.post("/api/retail-campaigns", (req, res) => { const camp = { id: `camp-${Date.now()}`, ...req.body }; retailCampStore.push(camp); res.status(201).json(camp); });
+  app.get("/api/retail-kpis", (req, res) => { res.json({ totalSales: 1250000, totalOrders: 1234, avgOrderValue: 1014, totalCustomers: 567, activePromotions: 12 }); });
 
   return httpServer;
 }

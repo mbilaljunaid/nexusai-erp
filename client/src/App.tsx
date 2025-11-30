@@ -1542,3 +1542,17 @@ export default function App() {
 }
 
 // Placeholder for redirect - will be added properly below
+
+// Retail & E-Commerce Pack (Industry Pack 33)
+const RetailProductCatalog = lazy(() => import("@/pages/RetailProductCatalog"));
+const RetailOrderManagement = lazy(() => import("@/pages/RetailOrderManagement"));
+const RetailCustomerManagement = lazy(() => import("@/pages/RetailCustomerManagement"));
+const RetailPromotionsLoyalty = lazy(() => import("@/pages/RetailPromotionsLoyalty"));
+const RetailPaymentsBilling = lazy(() => import("@/pages/RetailPaymentsBilling"));
+const RetailSupplyChainProcurement = lazy(() => import("@/pages/RetailSupplyChainProcurement"));
+const RetailPOSOperations = lazy(() => import("@/pages/RetailPOSOperations"));
+const RetailHRWorkforce = lazy(() => import("@/pages/RetailHRWorkforce"));
+const RetailAIRecommendations = lazy(() => import("@/pages/RetailAIRecommendations"));
+const RetailBIDashboards = lazy(() => import("@/pages/RetailBIDashboards"));
+const RetailCRMMarketing = lazy(() => import("@/pages/RetailCRMMarketing"));
+const RetailInventoryWarehouse = lazy(() => import("@/pages/RetailInventoryWarehouse"));

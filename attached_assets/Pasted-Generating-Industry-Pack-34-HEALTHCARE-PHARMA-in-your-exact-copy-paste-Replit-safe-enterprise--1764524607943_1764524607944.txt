@@ -1,0 +1,311 @@
+Generating Industry Pack 34 — HEALTHCARE & PHARMA in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Healthcare & Pharma Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 34 — HEALTHCARE & PHARMA
+
+Purpose: End-to-end solution for hospitals, clinics, pharmaceutical companies, diagnostic labs, and healthcare providers, covering patient & provider management, appointments & scheduling, EMR / EHR, pharmacy & inventory, laboratory & diagnostics, billing & insurance claims, CRM & patient engagement, HR & workforce, AI-driven diagnostics & analytics, BI & dashboards, regulatory compliance, mobile apps, and integrations with medical devices, insurance providers, lab systems, and e-prescription platforms. Delivered as an industry template that auto-enables and configures all related modules.
+
+Auto-enable modules when template is selected: Patient & Provider Management, Appointments & Scheduling, EMR / EHR, Pharmacy & Inventory, Laboratory & Diagnostics, Billing & Insurance Claims, CRM & Patient Engagement, HR & Workforce, AI / ML Diagnostics & Analytics, BI & Dashboards, Regulatory Compliance & Reporting, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+⸻
+
+1. PATIENT & PROVIDER MANAGEMENT
+
+Screens / Forms
+	•	Patient master & profiles
+	•	Provider / doctor master & specialties
+	•	Medical history & allergies
+	•	Contact & emergency info
+	•	Role & permissions mapping
+
+Fields
+PatientID, ProviderID, MedicalRecordID, ContactInfo, InsuranceID, Status, AuditFields.
+
+Validations
+	•	Duplicate detection
+	•	Insurance eligibility
+	•	Data completeness
+
+Workflows
+	•	Register patient → Assign provider → Track medical records → Schedule appointments → Update history
+
+⸻
+
+2. APPOINTMENTS & SCHEDULING
+
+Screens / Forms
+	•	Doctor availability & calendar
+	•	Patient appointment booking & rescheduling
+	•	Resource & room allocation
+	•	Notifications & reminders
+
+Fields
+AppointmentID, PatientID, ProviderID, DateTime, Status, RoomID, AuditFields.
+
+Validations
+	•	Slot availability
+	•	Conflict resolution
+	•	SLA adherence
+
+Workflows
+	•	Book appointment → Confirm → Notify → Check-in → Conduct consultation → Close appointment
+
+⸻
+
+3. EMR / EHR (Electronic Medical / Health Records)
+
+Screens / Forms
+	•	Clinical notes & observations
+	•	Medication prescriptions
+	•	Lab & diagnostic results
+	•	Immunization & vaccination records
+
+Fields
+RecordID, PatientID, ProviderID, Observations, Medications, TestResults, AuditFields.
+
+Validations
+	•	Data integrity
+	•	Patient consent compliance
+	•	Duplicate record prevention
+
+Workflows
+	•	Create record → Update clinical data → Attach lab results → Review → Close
+
+⸻
+
+4. PHARMACY & INVENTORY
+
+Screens / Forms
+	•	Drug / medication master
+	•	Stock levels & batch tracking
+	•	Prescription fulfillment
+	•	Reorder & expiration alerts
+
+Fields
+DrugID, BatchID, ExpiryDate, Quantity, Location, AuditFields.
+
+Validations
+	•	Stock availability
+	•	Expiry date compliance
+	•	Prescription validation
+
+Workflows
+	•	Receive stock → Store → Fulfill prescription → Track usage → Reorder → Audit
+
+⸻
+
+5. LABORATORY & DIAGNOSTICS
+
+Screens / Forms
+	•	Lab test catalog & protocols
+	•	Sample collection & tracking
+	•	Results entry & reporting
+	•	Quality control & calibration
+
+Fields
+TestID, PatientID, SampleID, Result, TechnicianID, Status, AuditFields.
+
+Validations
+	•	Test eligibility & prerequisites
+	•	Sample integrity
+	•	Reporting accuracy
+
+Workflows
+	•	Create test → Collect sample → Process → Validate results → Deliver report → Update EMR
+
+⸻
+
+6. BILLING & INSURANCE CLAIMS
+
+Screens / Forms
+	•	Patient billing & invoices
+	•	Insurance claim processing
+	•	Payment collection & reconciliation
+	•	Refunds & adjustments
+
+Fields
+InvoiceID, PatientID, Amount, InsuranceID, PaymentStatus, AuditFields.
+
+Validations
+	•	Billing accuracy
+	•	Insurance eligibility
+	•	Claim submission validation
+
+Workflows
+	•	Generate invoice → Submit claim → Collect payment → Reconcile → Handle adjustments → Report
+
+⸻
+
+7. CRM & PATIENT ENGAGEMENT
+
+Screens / Forms
+	•	Patient communication & reminders
+	•	Feedback & satisfaction tracking
+	•	Health awareness campaigns
+	•	Appointment follow-ups
+
+Fields
+PatientID, InteractionID, FeedbackID, CampaignID, AuditFields.
+
+Validations
+	•	SLA adherence
+	•	Duplicate interaction detection
+
+Workflows
+	•	Capture interaction → Assign → Respond → Notify → Track engagement
+
+⸻
+
+8. HR & WORKFORCE MANAGEMENT
+
+Screens / Forms
+	•	Employee master (doctors, nurses, lab staff, admin)
+	•	Shift scheduling & attendance
+	•	Payroll & performance tracking
+	•	Certifications & training
+
+Fields
+EmployeeID, Role, Department, Shift, PayrollID, TrainingID, AuditFields.
+
+Validations
+	•	Role eligibility
+	•	Attendance & payroll accuracy
+
+Workflows
+	•	Onboard → Assign role → Track attendance → Evaluate performance → Payroll
+
+⸻
+
+9. AI & DIAGNOSTICS / ANALYTICS
+
+Use Cases
+	•	Predictive diagnosis & treatment suggestions
+	•	Patient risk scoring
+	•	Resource optimization (beds, staff)
+	•	Drug interaction & recommendation analysis
+
+Controls
+	•	Human clinical review for all AI-driven recommendations
+
+⸻
+
+10. BI & DASHBOARDS
+
+Prebuilt Dashboards
+	•	Patient admissions & occupancy
+	•	Revenue & billing metrics
+	•	Clinical outcomes & treatment efficiency
+	•	Pharmacy inventory & usage
+	•	Lab & diagnostic KPIs
+
+Ad-hoc
+	•	Drill down by patient → provider → department → service → billing
+
+⸻
+
+11. REGULATORY COMPLIANCE & REPORTING
+
+Screens / Forms
+	•	HIPAA / GDPR / local healthcare regulations
+	•	Audit trails & reporting
+	•	Accreditation & certification tracking
+	•	Exception management
+
+Fields
+ComplianceID, PatientID, DepartmentID, Status, AuditFields.
+
+Validations
+	•	Reporting deadlines
+	•	Data privacy & security compliance
+
+Workflows
+	•	Collect compliance data → Validate → Generate report → Submit → Track
+
+⸻
+
+12. MOBILE APPS
+
+Patient App
+	•	Book appointments, view medical records, receive reminders
+Provider App
+	•	Patient consultation, EMR updates, lab result access
+Admin / Manager App
+	•	Dashboards, KPIs, workflow approvals, compliance monitoring
+
+⸻
+
+13. ROLES & PERMISSIONS
+
+Core Roles
+	•	Patient
+	•	Doctor / Provider
+	•	Nurse / Lab Technician
+	•	Pharmacist
+	•	Admin / Operations
+	•	Finance / Accounts
+	•	HR / Payroll
+	•	IT / Integration Engineer
+
+Permission Notes
+	•	Role-based access enforced for patient, clinical, pharmacy, lab, billing, and operational data
+
+⸻
+
+14. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	200 patients, 50 providers, 20 lab tests, 50 medications, 20 departments, 50 appointments
+
+Onboarding Steps
+	•	Register patients & providers → Configure departments → Create lab tests & medications → Schedule appointments → Generate invoices → Track KPIs → Validate dashboards
+
+⸻
+
+15. INTEGRATIONS & CONNECTORS
+
+Suggested Integrations
+	•	EHR / EMR platforms
+	•	Lab information systems
+	•	Pharmacy & drug databases
+	•	Insurance providers
+	•	Medical devices & IoT
+	•	BI / analytics platforms
+
+Integration Rules
+	•	Idempotent ingestion, audit logging, secure credential storage
+
+⸻
+
+16. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	Appointment no-show → alert patient & provider
+	•	Medication stock below threshold → alert pharmacy
+	•	Critical lab result → notify provider immediately
+	•	Billing discrepancy → escalate to finance
+
+⸻
+
+17. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+Idempotency & Safety
+	•	Seeders check natural keys (PatientID + AppointmentID + TestID) before insert
+	•	Migrations additive; destructive changes require rollback scripts
+	•	Feature flags per tenant for AI recommendations, mobile notifications, multi-department operations
+
+Testing
+	•	Patient lifecycle → appointments → EMR → lab → pharmacy → billing → KPI dashboards
+
+⸻
+
+18. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you want me to generate Industry Pack 35 — ENERGY & UTILITIES next, reply “Yes” and I will produce it in the same format.
