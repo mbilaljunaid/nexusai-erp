@@ -1416,6 +1416,7 @@ export async function registerRoutes(
     res.status(201).json(task);
   });
 
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
