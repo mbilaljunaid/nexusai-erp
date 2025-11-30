@@ -384,6 +384,14 @@ const FreightCostingBilling = lazy(() => import("@/pages/FreightCostingBilling")
 const CustomsCompliance = lazy(() => import("@/pages/CustomsCompliance"));
 const FleetDriverManagement = lazy(() => import("@/pages/FleetDriverManagement"));
 const TransportationBIDashboard = lazy(() => import("@/pages/TransportationBIDashboard"));
+const VehicleInventoryManagement = lazy(() => import("@/pages/VehicleInventoryManagement"));
+const DigitalRetailLeads = lazy(() => import("@/pages/DigitalRetailLeads"));
+const VehicleSalesDeals = lazy(() => import("@/pages/VehicleSalesDeals"));
+const WorkshopServiceOrders = lazy(() => import("@/pages/WorkshopServiceOrders"));
+const PartsInventory = lazy(() => import("@/pages/PartsInventory"));
+const WarrantyClaimsManagement = lazy(() => import("@/pages/WarrantyClaimsManagement"));
+const TelematicsVehicleData = lazy(() => import("@/pages/TelematicsVehicleData"));
+const AutomotiveBIDashboard = lazy(() => import("@/pages/AutomotiveBIDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -979,6 +987,14 @@ function Router() {
       <Route path="/customs-compliance" component={CustomsCompliance} />
       <Route path="/fleet-drivers" component={FleetDriverManagement} />
       <Route path="/tl-analytics" component={TransportationBIDashboard} />
+      <Route path="/vehicle-inventory" component={VehicleInventoryManagement} />
+      <Route path="/digital-retail-leads" component={DigitalRetailLeads} />
+      <Route path="/vehicle-sales-deals" component={VehicleSalesDeals} />
+      <Route path="/workshop-service" component={WorkshopServiceOrders} />
+      <Route path="/auto-parts" component={PartsInventory} />
+      <Route path="/warranty-claims" component={WarrantyClaimsManagement} />
+      <Route path="/telematics" component={TelematicsVehicleData} />
+      <Route path="/auto-analytics" component={AutomotiveBIDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />

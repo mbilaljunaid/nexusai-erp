@@ -1,0 +1,414 @@
+Generating **Industry Pack 13 — AUTOMOTIVE DEALERSHIPS & SERVICE CENTERS** now in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, or integrations for the AUTOMOTIVE DEALERSHIPS & SERVICE CENTERS Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate, overwrite, or recreate existing objects. Only generate missing features, augment existing components safely, and keep all naming, schemas and identifiers consistent with previously built modules. All seed data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 13 — AUTOMOTIVE DEALERSHIPS & SERVICE CENTERS
+
+**Purpose:** Full dealership and after-sales solution covering vehicle inventory (new & used), vehicle configurator, sales (F&I), CRM for leads & prospects, trade-in appraisal, appointments & dealer scheduling, workshop & service order management, parts & workshop inventory, warranty & recall handling, vehicle telematics integration, dealer commissions, finance & insurance (F&I) processing, DMS integrations, BI & KPIs (sales by model, margins, service ROI), multi-outlet operations, point-of-sale for parts & accessories, digital retailing (online showroom), and mobile apps for sales & technicians. Delivered as an industry template that auto-enables and configures all related modules.
+
+**Auto-enable modules when template is selected:** CRM, Sales (vehicle sales & F&I), Inventory & Used Vehicle Management, Pricing & Offers, Procurement (parts), Parts Warehouse & WMS, Service Workshop (Repair Orders / RO), Appointment Scheduler, Shop Floor / Technician Management, Warranty & Recall Management, Telematics & Vehicle Data, Finance & Accounting (GL/AP/AR), Dealer Commissions & Incentives, BI & Analytics, EPM (forecast & targets), BPM (workflows), Website / Digital Retail, Mobile Apps (sales & tech), Integrations (OEM DMS, lender/insurance, vehicle data), Compliance & Audit.
+
+---
+
+## 1. MASTER DATA & CONFIGURATION
+
+**Screens / Forms**
+
+* Vehicle Master (VIN, model, trim, color, features)
+* New Vehicle Inventory / Allocation (by dealer)
+* Used Vehicle Intake & Appraisal Form
+* Parts Master (OEM/Aftermarket), Accessory Catalog
+* Price Book & MSRP / Dealer Invoice / Market Adjustments
+* Customer / Prospect / Fleet Account Master
+* Salesperson / Technician Master (skills, certifications)
+* Finance & Insurance Partner Master (lenders, insurers)
+* Tax & Registration Rules (jurisdiction mapping)
+
+**Key Fields**
+VIN, StockID, ModelCode, Trim, Year, Mileage (for used), ConditionRating, DealerCost, MSRP, SalePrice, PartID, PartQty, LeadTime, SupplierID, CustomerID, ProspectSource, SalesRepID, TechnicianID, WarrantyType, ClaimCode, AuditFields.
+
+**Validations**
+
+* VIN uniqueness and checksum validation.
+* Used vehicle appraisal must capture Odometer, Damage, Service history.
+* Part catalogue SKUs unique per supplier mapping.
+* Finance quote requires eligibility checks.
+
+**Workflows**
+
+* New vehicle allocation → Dealer stock update → Publish online showroom.
+* Trade-in appraisal → Suggest retail price / seller offer → Create used vehicle stock record.
+
+---
+
+## 2. DIGITAL RETAIL & LEAD MANAGEMENT
+
+**Screens / Forms**
+
+* Online Showroom & Vehicle Configurator (options, pricing)
+* Lead Capture (website, walk-in, third party, campaign)
+* CRM Lead Qualify → Sales Pipeline → Quote → Reservation / Deposit
+* Finance & Insurance Pre-qualification workflow
+* Contact / Test Drive Scheduling & Follow-ups
+
+**Fields**
+LeadID, Source, ConfigSelected (packages/options), QuoteID, ReservationStatus, DepositAmt, CreditPreQualStatus, TestDriveSlot, CampaignID, AuditFields.
+
+**Validations**
+
+* Deposit rules (amount, refundable, expiry).
+* Test drive ID verification & insurance check.
+
+**Workflows**
+
+* Lead captured → Auto-assign territory/sales rep → Nurture cadence → Quote → Reservation → Handover checklist.
+
+---
+
+## 3. VEHICLE SALES, DEAL CLOSING & F&I (FINANCE & INSURANCE)
+
+**Screens / Forms**
+
+* Quotation & Deal Structuring (cash, finance, lease)
+* Trade-in Valuation & Allowance Calculator
+* F&I Package Builder (warranties, GAP, service plans)
+* Deal Approval Matrix (discount approvals, manager sign-off)
+* Sales Contract Generation & eSign
+* Registration & Title Filing Integration (where available)
+
+**Fields**
+DealID, CustomerID, VIN/StockID, SalePrice, TradeAllowance, FinanceTerm, APR, DownPayment, MonthlyPayment, InsurancePolicyID, WarrantyPlanID, Fees (registration, doc fee), SalesTax, Deposit, NetDealerProfit, AuditFields.
+
+**Validations**
+
+* Pricing approval flows for discounts beyond thresholds.
+* Mandatory ID verification for finance deals.
+* sanity checks for monthly payment calculation & rounding.
+
+**Workflows**
+
+* Quote → Approval → F&I offer → Document generation → eSign → Delivery scheduling → GL posting.
+
+---
+
+## 4. WORKSHOP / SERVICE ORDER MANAGEMENT (RO)
+
+**Screens / Forms**
+
+* Service Appointment Booking (online / phone / walk-in)
+* Repair Order (RO) creation & lifecycle (Booked → In Service → Quality Check → Ready → Closed)
+* Vehicle Intake Checklist & Damage Capture (photos)
+* Job Card / Operation Tasks with labor times & skill requirements
+* Technician Assignment & Skill matching
+* Sublet & Outsourced Job management
+* Labor Time Capture & Clock-in at bay / operation level
+
+**Fields**
+AppointmentID, ROID, VIN, CustomerID, Complaint, SymptomCode, DiagnosticCodes, LaborLine (OpCode, Hrs, Rate), PartLines (PartID, Qty, Price), TechnicianID, BayID, EstimatedCompletion, ActualStart, ActualFinish, QualityCheckStatus, AuditFields.
+
+**Validations**
+
+* Technician certified for task code.
+* Parts availability check before scheduling certain repairs.
+* Warranty coverage check before charging customer.
+
+**Workflows**
+
+* Appointment scheduled → Pre-check & estimates sent to customer → Vehicle in → Diagnostics → Repair → QC → Final invoice → Customer notification.
+
+---
+
+## 5. PARTS WAREHOUSE & INVENTORY (BOPIS / POS FOR PARTS)
+
+**Screens / Forms**
+
+* Parts Inventory by Location (warehouse / branch)
+* Bin / Shelf / Vendor Managed Inventory (VMI) for high turnover parts
+* Kitting (repair kits, service kits)
+* Parts POS (counter sales, internal charge to RO)
+* Replenishment Rules (min/max, EOQ, forecast)
+* Returns to Supplier & Warranty Return Processing
+
+**Fields**
+PartID, LocationID, BinID, QtyOnHand, QtyReservedForRO, ReorderPoint, LeadTime, VendorPartNumber, OEMRef, Cost, RetailPrice, WarrantyReturnFlag, AuditFields.
+
+**Validations**
+
+* No negative inventory unless authorized.
+* Warranty returns require RMA reference & proof.
+* Kitting consumes component parts atomically.
+
+**Workflows**
+
+* RO requirement → Reserve parts → Pick / Pack / Issue to bay → Inventory decrement → Reorder suggested automatically.
+
+---
+
+## 6. WARRANTY, CLAIMS & RECALL MANAGEMENT
+
+**Screens / Forms**
+
+* Warranty Policy & Coverage Rules (duration, mileage, exclusions)
+* Warranty Claim Submission to OEM (with attachments)
+* Claim Tracking & Settlement (approved amount, reimbursement)
+* Recall Notification & Campaigns (VIN level)
+* Customer Notification & Repair Scheduling for Recall
+
+**Fields**
+ClaimID, VIN, WarrantyPlanID, FailureCode, ClaimAmount, OEMClaimStatus, RecallID, CampaignID, NotificationStatus, AuditFields.
+
+**Validations**
+
+* Eligibility checks: Warranty period, mileage, prior claims.
+* Recall VIN mapping must be accurate and complete.
+
+**Workflows**
+
+* RO indicates warranty candidate → Submit claim to OEM (with evidence) → Track approval → Post settlement & GL treatment → Notify customer.
+
+---
+
+## 7. PRICING, PROMOTIONS & INCENTIVES
+
+**Screens / Forms**
+
+* MSRP / Dealer Invoice / Market Adjustment configuration
+* Campaign & Incentive Engine (cash rebate, dealer incentive, manufacturer programs)
+* Salesperson Commission & Bonus Rules
+* Dealer Price Book & Regional Pricing controls
+
+**Fields**
+PriceListID, IncentiveID, EligibilityRules, StartDate, EndDate, SalesCommissionRule, CommissionAccrualID, AuditFields.
+
+**Validations**
+
+* Incentive stacking rules (manufacturer + dealer + seasonal).
+* Commission splits for co-selling reps.
+
+**Workflows**
+
+* Campaign publish → Auto apply eligible incentives at quote → Commission accrual on invoice → Payout run.
+
+---
+
+## 8. TELEMATICS, CONNECTIVITY & VEHICLE DATA
+
+**Screens / Forms**
+
+* Telematics Device Registry & VIN linking
+* OBD / Connected Car Data ingest (mileage, DTC codes, battery, fuel level)
+* Remote Diagnostics & Predictive Service Alerts
+* OTA service reminders and proactive campaign triggers (e.g., recall, maintenance)
+
+**Fields**
+DeviceID, VIN, TelemetryMetric, Timestamp, DTCCode, Mileage, BatteryStatus, AlertID, AuditFields.
+
+**Validations**
+
+* Device ↔ VIN mapping correct; data time sync sanity checks.
+* DTC thresholds validated before auto-notifying customer.
+
+**Workflows**
+
+* Telemetry alert (oil change / DTC) → Create Service Lead → Propose appointment → Customer confirms → RO created.
+
+---
+
+## 9. FINANCE, TAX, GL & DEALER ACCOUNTING
+
+**Screens / Forms**
+
+* Sales invoicing (vehicle & parts) & GL mapping
+* Dealer floor plan financing handling & interest postings
+* AR & Customer payment plans (deposits, installments)
+* AP for parts & supplier invoices (3-way match optional)
+* Tax & Registration fee handling per jurisdiction
+* Daily cash reconciliation for showroom & parts counter
+
+**Fields**
+InvoiceID, GLAccount, PaymentID, FinanceChargeID, FloorPlanID, RegistrationFee, TaxAmount, APInvoiceID, AuditFields.
+
+**Validations**
+
+* Proper GL mapping for rebate, trade adjustments, and commissions.
+* Payment application priority rules (deposit → balance → accessories).
+
+**Workflows**
+
+* Sale → Invoice → Finance integration (if credit/loan) → Settlement & GL posting → Commission accrual.
+
+---
+
+## 10. DEALER NETWORK & MULTI-OUTLET OPERATIONS
+
+**Screens / Forms**
+
+* Multi-dealer / franchise management (allocation, transfers)
+* Stock transfers between branches / service hubs
+* Central procurement vs local buy rules
+* Performance dashboards per dealer / outlet
+
+**Fields**
+DealerID, OutletID, StockTransferID, AllocationRule, TransferStatus, AuditFields.
+
+**Validations**
+
+* Allocation respects allocation rules (area, forecast, retail demand).
+* Transfer lead time & costing applied.
+
+**Workflows**
+
+* Central allocation → Dealer acceptance → Transfer → Update stock levels & cost.
+
+---
+
+## 11. CUSTOMER EXPERIENCE & AFTERSALES
+
+**Screens / Forms**
+
+* Customer Portal (service history, upcoming appointments, invoices)
+* Service Reminders & Loyalty Programs (service discounts, points)
+* Feedback / NPS capture post service & sales
+* Loaner Vehicle Management & Agreements
+
+**Fields**
+CustomerID, LoyaltyID, PointsBalance, LastServiceDate, FeedbackScore, LoanerID, AgreementID, AuditFields.
+
+**Validations**
+
+* Loaner agreements require driver license capture & deposit.
+* Loyalty redemptions validated against balance & blackout rules.
+
+**Workflows**
+
+* Post-service survey → Capture NPS → If low score → Auto escalate to service manager.
+
+---
+
+## 12. BI, DASHBOARDS & KPIs
+
+**Prebuilt Dashboards**
+
+* New vehicle sales & gross profit by model & dealer
+* Used vehicle margins & days on lot
+* Service revenue, labor utilization, bay productivity
+* Parts turns, stockouts, fill rates
+* Warranty claim rates & OEM reimbursements
+* Sales pipeline conversion & lead source ROI
+* Technician performance & average repair order ($ per RO)
+
+**Ad-hoc & Drilldown**
+
+* Drill from KPI to deal line items, vehicle VIN, RO labor lines, part pick tickets, and GL postings.
+
+---
+
+## 13. WORKFORCE, TECHNICIAN SKILLS & ROSTERING
+
+**Screens / Forms**
+
+* Technician skills matrix & certifications
+* Bay / Workstation scheduling & shift rostering
+* Job assignment & ETA to completion per operation
+* Productivity capture (touch time, idle time)
+
+**Fields**
+TechnicianID, SkillCode, CertificationExpiry, AssignedROs, ShiftID, OvertimeFlag, AuditFields.
+
+**Validations**
+
+* Certain repairs require certified tech; auto-block assignment otherwise.
+* Overtime thresholds and labor law compliance checks.
+
+**Workflows**
+
+* Scheduler assigns jobs → Technician accepts on mobile app → Record start/stop → Auto capture labor for RO.
+
+---
+
+## 14. INTEGRATIONS & CONNECTORS
+
+**Essential Integrations**
+
+* OEM DMS / Warranty portals (claims, parts lookup)
+* Lender & Insurance partner APIs (pre-qual, contract docs)
+* Vehicle history / CARFAX / auction feeds (for used vehicle intake)
+* Telematics providers (OEM connected services, aftermarket devices)
+* Payment gateways & POS devices
+* Dealer websites & marketplace feeds (AutoTrader, local portals)
+* Accounting systems & GL (Oracle/NetSuite/QuickBooks)
+* EDI for parts ordering where applicable
+
+**Integration Rules**
+
+* Idempotent order/message ingestion; mapping templates per OEM/partner; DLQ & reconciliation; secure credential storage.
+
+---
+
+## 15. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+**Seed Data**
+
+* 1 dealership with 2 outlets (showroom + service center)
+* 30 new vehicles (various models/trims) + 25 used vehicle records with history
+* 2,000 part SKUs (popular SKUs, tires, oils, filters)
+* 10 technicians & 8 sales reps
+* 50 sample service orders and 20 sample deals
+
+**Onboarding Steps**
+
+* VIN import & decode, map existing stock tables, seed parts & pricebook, run test sale (quote → F&I → delivery), create RO → pick parts → complete invoice → warranty claim simulation.
+
+---
+
+## 16. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+**Examples**
+
+* Telemetry triggers pre-service: high engine hours → create service lead + appointment suggestion.
+* Used vehicle price aging > X days → auto markdown suggestion.
+* Parts backorder > threshold → auto suggest transfer or expedited PO.
+* Warranty claim denial → open dispute workflow & notify manager.
+
+---
+
+## 17. SECURITY, COMPLIANCE & DATA GOVERNANCE
+
+**Features**
+
+* Role-based access; field-level masking for PII (SSN, payment details)
+* Audit logs for deals, price overrides, clerk actions
+* Compliance for consumer finance disclosures (document retention)
+* PCI-DSS guidance for payment handling (tokenization)
+
+---
+
+## 18. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+**Idempotency & Safety**
+
+* Seeders check by VIN / StockID / SKU natural keys.
+* Migrations additive only; destructive changes require migration plan & rollback.
+* Feature flags for phased enablement (online retail, telematics).
+* Test harness: Sales flow, RO flow, parts pick & issue, warranty claim round-trip.
+
+**Performance**
+
+* Scale listing & search for online showroom; use indexes for VIN lookups, part lookups, and RO queues.
+
+**Rollback**
+
+* Transactional migrations for critical flows; backups before mass seed or stock adjustments.
+
+---
+
+## 19. FINAL MANDATE (REPEAT)
+
+**REPLIT MUST** — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or enhance existing functionality only; and NEVER duplicate or overwrite objects without an explicit migration strategy. All seed data must be idempotent and safe to execute multiple times.
+
+---
+
+If you’re ready, reply **“Yes, generate Industry Pack 14”** and I will produce **INDUSTRY PACK 14 — FOOD & BEVERAGE** next.
