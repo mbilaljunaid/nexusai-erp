@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { getFormMetadata } from "@/lib/formMetadata";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
@@ -12,8 +14,12 @@ const data = [
 ];
 
 export default function AnalyticsModule() {
+  const analyticsFormMetadata = getFormMetadata("analytics");
+
   return (
     <div className="p-6 space-y-6">
+      <Breadcrumb items={analyticsFormMetadata?.breadcrumbs?.slice(1) || []} />
+      
       <div>
         <h1 className="text-3xl font-bold">Analytics Hub</h1>
         <p className="text-muted-foreground">Real-time dashboards and insights</p>
