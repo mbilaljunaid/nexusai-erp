@@ -1124,6 +1124,135 @@ export async function registerRoutes(
     res.status(201).json(user);
   });
 
+  // ========== PHASE 15+: ADVANCED ENTERPRISE APIs ==========
+  
+  // Integration Connections
+  const integrationsStore: any[] = [];
+  app.get("/api/integration/connections", (req, res) => {
+    if (integrationsStore.length === 0) {
+      integrationsStore.push(
+        { id: "int1", name: "Stripe", type: "payment", status: "active" },
+        { id: "int2", name: "Salesforce", type: "crm", status: "active" }
+      );
+    }
+    res.json(integrationsStore);
+  });
+
+  // AI Models
+  const aiModelsStore: any[] = [];
+  app.get("/api/ai/models", (req, res) => {
+    if (aiModelsStore.length === 0) {
+      aiModelsStore.push(
+        { id: "m1", name: "CRM Copilot", domain: "sales", type: "copilot" },
+        { id: "m2", name: "HR Copilot", domain: "hr", type: "copilot" }
+      );
+    }
+    res.json(aiModelsStore);
+  });
+
+  app.get("/api/ai/conversations", (req, res) => {
+    res.json([
+      { id: "c1", title: "Sales Strategy", messages: 12, timestamp: new Date().toISOString() },
+      { id: "c2", title: "Payroll Questions", messages: 8, timestamp: new Date().toISOString() }
+    ]);
+  });
+
+  // Analytics Metrics
+  const analyticsStore: any[] = [];
+  app.get("/api/analytics/advanced", (req, res) => {
+    if (analyticsStore.length === 0) {
+      analyticsStore.push(
+        { id: "a1", name: "Revenue Growth", value: "+23%" },
+        { id: "a2", name: "Customer Churn", value: "-2.1%" }
+      );
+    }
+    res.json(analyticsStore);
+  });
+
+  // Tenants
+  const tenantsStore: any[] = [];
+  app.get("/api/admin/tenants", (req, res) => {
+    if (tenantsStore.length === 0) {
+      tenantsStore.push(
+        { id: "t1", name: "Acme Corp", domain: "acme.nexusai.com", status: "active" },
+        { id: "t2", name: "TechFlow", domain: "techflow.nexusai.com", status: "active" }
+      );
+    }
+    res.json(tenantsStore);
+  });
+
+  // Security Policies
+  const securityStore: any[] = [];
+  app.get("/api/security/policies", (req, res) => {
+    if (securityStore.length === 0) {
+      securityStore.push(
+        { id: "s1", name: "2FA Enforcement", type: "authentication", status: "active" },
+        { id: "s2", name: "Data Encryption", type: "encryption", status: "active" }
+      );
+    }
+    res.json(securityStore);
+  });
+
+  // Audit Logs
+  const auditStore: any[] = [];
+  app.get("/api/audit/logs", (req, res) => {
+    if (auditStore.length === 0) {
+      auditStore.push(
+        { id: "log1", action: "User Login", user: "admin@company.com", timestamp: new Date().toISOString() },
+        { id: "log2", action: "Report Generated", user: "manager@company.com", timestamp: new Date(Date.now() - 3600000).toISOString() }
+      );
+    }
+    res.json(auditStore);
+  });
+
+  // Warehouses
+  const warehousesStore: any[] = [];
+  app.get("/api/warehouse/locations", (req, res) => {
+    if (warehousesStore.length === 0) {
+      warehousesStore.push(
+        { id: "wh1", name: "Main Warehouse", location: "New York, NY", status: "active" },
+        { id: "wh2", name: "Regional Hub", location: "Chicago, IL", status: "active" }
+      );
+    }
+    res.json(warehousesStore);
+  });
+
+  // Suppliers
+  const suppliersStore: any[] = [];
+  app.get("/api/procurement/suppliers", (req, res) => {
+    if (suppliersStore.length === 0) {
+      suppliersStore.push(
+        { id: "sup1", name: "Global Parts Inc", category: "electronics", status: "active" },
+        { id: "sup2", name: "Premium Materials", category: "raw-materials", status: "active" }
+      );
+    }
+    res.json(suppliersStore);
+  });
+
+  // Loyalty Members
+  const loyaltyStore: any[] = [];
+  app.get("/api/loyalty/members", (req, res) => {
+    if (loyaltyStore.length === 0) {
+      loyaltyStore.push(
+        { id: "lm1", name: "Alice Johnson", tier: "Gold", points: 5500 },
+        { id: "lm2", name: "Bob Smith", tier: "Silver", points: 2300 }
+      );
+    }
+    res.json(loyaltyStore);
+  });
+
+  // APIs
+  const apisStore: any[] = [];
+  app.get("/api/admin/api-list", (req, res) => {
+    if (apisStore.length === 0) {
+      apisStore.push(
+        { id: "api1", method: "GET", path: "/api/invoices", calls: "45000" },
+        { id: "api2", method: "POST", path: "/api/invoices", calls: "12000" }
+      );
+    }
+    res.json(apisStore);
+  });
+
   // ========== PHASE 3B: PROJECTS & AGILE APIs ==========
 
   // Epics

@@ -272,6 +272,17 @@ const ComplianceDashboardNew = lazy(() => import("@/pages/ComplianceDashboardNew
 const ContentManagement = lazy(() => import("@/pages/ContentManagement"));
 const AdminConsole = lazy(() => import("@/pages/AdminConsole"));
 
+// Phase 15-20: Advanced Enterprise Features
+const IntegrationHubNew = lazy(() => import("@/pages/IntegrationHubNew"));
+const AIAssistantAdvanced = lazy(() => import("@/pages/AIAssistantAdvanced"));
+const AdvancedAnalytics = lazy(() => import("@/pages/AdvancedAnalytics"));
+const MultiTenancyConfig = lazy(() => import("@/pages/MultiTenancyConfig"));
+const SecurityManagement = lazy(() => import("@/pages/SecurityManagement"));
+const AuditTrails = lazy(() => import("@/pages/AuditTrails"));
+const WarehouseManagement = lazy(() => import("@/pages/WarehouseManagement"));
+const SupplierManagement = lazy(() => import("@/pages/SupplierManagement"));
+const CustomerLoyalty = lazy(() => import("@/pages/CustomerLoyalty"));
+
 function Router() {
   return (
     <Switch>
@@ -505,6 +516,15 @@ function Router() {
       <Route path="/compliance-risk" component={ComplianceDashboardNew} />
       <Route path="/content-management" component={ContentManagement} />
       <Route path="/admin-console" component={AdminConsole} />
+      <Route path="/integration-hub" component={IntegrationHubNew} />
+      <Route path="/ai-assistant-advanced" component={AIAssistantAdvanced} />
+      <Route path="/advanced-analytics" component={AdvancedAnalytics} />
+      <Route path="/multi-tenancy" component={MultiTenancyConfig} />
+      <Route path="/security-management" component={SecurityManagement} />
+      <Route path="/audit-trails" component={AuditTrails} />
+      <Route path="/warehouse-management" component={WarehouseManagement} />
+      <Route path="/supplier-management" component={SupplierManagement} />
+      <Route path="/customer-loyalty" component={CustomerLoyalty} />
       <Route component={NotFound} />
     </Switch>
   );
