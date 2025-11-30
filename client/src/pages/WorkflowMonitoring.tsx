@@ -58,7 +58,7 @@ export default function WorkflowMonitoring() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {executions.map((exec) => (
+          {executions.map((exec: any) => (
             <div key={exec.id} className="flex items-center justify-between p-3 border rounded-lg hover-elevate" data-testid={`execution-${exec.id}`}>
               <div className="flex-1">
                 <p className="font-medium text-sm">{exec.workflow}</p>
