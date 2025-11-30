@@ -36,8 +36,6 @@ const apInvoicesStore: any[] = [];
 const bankTransactionsStore: any[] = [];
 const paymentSchedulesStore: any[] = [];
 const agingDataStore: any[] = [];
-  const phase3SprintsStore: any[] = [];
-  const phase3TasksStore: any[] = [];
 const workflowsStore: any[] = [];
 const collaborationsStore: any[] = [];
 const payrollRunsStore: any[] = [];
@@ -1375,57 +1373,7 @@ export async function registerRoutes(
     res.status(201).json(story);
   });
 
-  // Sprints
-    const phase3SprintsStore: any[] = [];
-  app.get("/api/projects/sprints", (req, res) => {
-    if (sprintsStore.length === 0) {
-      sprintsStore.push(
-        { id: "sprint1", sprintKey: "SPRINT-1", name: "Sprint 1 - UI Refresh", status: "active", startDate: new Date().toISOString(), endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), goal: "Complete dashboard redesign", teamId: "team1" },
-        { id: "sprint2", sprintKey: "SPRINT-2", name: "Sprint 2 - API Optimization", status: "planning", startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), endDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(), goal: "50% latency reduction", teamId: "team2" }
-      );
-    }
-    res.json(sprintsStore);
-  });
-  app.post("/api/projects/sprints/:id/start", (req, res) => {
-    const sprint = sprintsStore.find((s: any) => s.id === req.params.id);
-    if (sprint) {
-      sprint.status = "active";
-      sprint.startDate = new Date().toISOString();
-    }
-    res.json(sprint);
-  });
-  app.post("/api/projects/sprints/:id/complete", (req, res) => {
-    const sprint = sprintsStore.find((s: any) => s.id === req.params.id);
-    if (sprint) {
-      sprint.status = "completed";
-    }
-    res.json(sprint);
-  });
-
-  // Kanban Board
-  const boardStore = { id: "board1", name: "Main Board", columns: ["Todo", "In Progress", "Review", "Done"] };
-  app.get("/api/projects/kanban-board", (req, res) => {
-    res.json(boardStore);
-  });
-
-  // Tasks (for Kanban)
-    const phase3TasksStore: any[] = [];
-  app.get("/api/projects/kanban-tasks", (req, res) => {
-    if (tasksStore.length === 0) {
-      tasksStore.push(
-        { id: "task1", taskKey: "TASK-001", storyId: "story1", title: "Implement theme provider", description: "Add React Context for theme", status: "in_progress", assignee: "Alice Dev", estimatedHours: "3", actualHours: "1.5" },
-        { id: "task2", taskKey: "TASK-002", storyId: "story1", title: "Add theme toggle button", description: "UI component for theme switch", status: "todo", assignee: "Alice Dev", estimatedHours: "2", actualHours: "0" },
-        { id: "task3", taskKey: "TASK-003", storyId: "story2", title: "Create wireframe", description: "Design new dashboard layout", status: "review", assignee: "Bob Designer", estimatedHours: "5", actualHours: "5" },
-        { id: "task4", taskKey: "TASK-004", storyId: "story2", title: "Dashboard component", description: "Build React component", status: "done", assignee: "Alice Dev", estimatedHours: "8", actualHours: "8.5" }
-      );
-    }
-    res.json(tasksStore);
-  });
-  app.post("/api/projects/kanban-tasks", (req, res) => {
-    const task = { id: `task-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
-    tasksStore.push(task);
-    res.status(201).json(task);
-  });
+  // Sprints - commented out (handled by PHASE 3 endpoints below)
 
 
   // ========== PHASE 1: TENANT MANAGEMENT ==========
