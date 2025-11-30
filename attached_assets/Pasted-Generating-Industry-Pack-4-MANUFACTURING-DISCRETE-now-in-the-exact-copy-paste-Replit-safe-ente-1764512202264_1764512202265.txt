@@ -1,0 +1,444 @@
+Generating Industry Pack 4 — MANUFACTURING (DISCRETE) now in the exact copy-paste, Replit-safe, enterprise-grade prompt format you requested.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the MANUFACTURING — DISCRETE Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate, overwrite, or recreate existing objects. Only generate missing features, augment existing components safely, and keep all naming, schemas and identifiers consistent with previously built modules. All seed data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 4 — MANUFACTURING (DISCRETE)
+
+Purpose: End-to-end discrete manufacturing solution covering PLM (product lifecycle / engineering BOM), BOM & Routing management, MRP (materials planning), APS/finite scheduling, MES (shop floor execution), quality & traceability, maintenance, capacity planning, costing & variance analysis, EDI/partner integration, IoT & machine telemetry, sales & order-to-cash integration, supply chain & procurement, EHS & compliance, BI & advanced analytics, and AI (demand, yield, maintenance predictions). Delivered as an industry template that auto-enables and configures all required modules.
+
+Auto-enable modules when template is selected: PLM, BOM & Routing, Inventory & WMS, Procurement, Manufacturing Execution (MES), MRP/MPS/APS, Scheduling, Quality Management, Maintenance (CMMS), Engineering Change Management, Sales Order, CRM, Finance (GL/AP/AR/COGS), EPM, BI & Analytics, AI/ML, BPM, IoT integrations, Document Management, Compliance, Mobile Apps, Integrations & API Gateway.
+
+⸻
+
+1. TOP-LINE ENTITIES & MASTER DATA
+
+Screens / Forms
+	•	Product / Finished Goods Master (FG)
+	•	Engineering BOM (eBOM) / Manufacturing BOM (mBOM) / Service BOM
+	•	Item Master (raw materials, bought parts, consumables, tools)
+	•	Routing / Operations / Work Center Master
+	•	Tooling & Fixture Master
+	•	Supplier / Vendor Master (component suppliers, contract manufacturers)
+	•	Customer / Sales Channel Master
+	•	Plant / Shop / Line / Work Center Hierarchy
+	•	Resource Calendar & Shift Patterns
+	•	Quality Specs & Inspection Plans
+
+Key Fields
+PartID, PartType (FG/Component/Raw/Tool), Revision, eBOMVersion, mBOMVersion, RoutingID, OperationSeq, WorkCenterID, CycleTime, SetupTime, StdLaborHours, StdMaterialQty, ScrapFactor, UoM, LeadTimeDays, SupplierLeadTime, MOQ, CostStd, CostActual, SafetyStock, ReorderPoint, LotControlFlag, SerialControlFlag, ShelfLife, AuditFields.
+
+Validations
+	•	BOM version must tie to product revision.
+	•	Routing sequences unique and monotonically increasing.
+	•	Parts flagged serial-controlled require unique serial on issue.
+	•	Work center capacity calendar must exist before scheduling.
+	•	Tooling must be assigned if operation requires.
+
+Workflows
+	•	New product design → PLM review → eBOM approval → create mBOM & routings for production → release to shop floor.
+	•	Part master creation triggers supplier sourcing workflow and preferred supplier suggestion.
+
+⸻
+
+2. PRODUCT LIFECYCLE MANAGEMENT (PLM) & ENGINEERING CHANGE CONTROL
+
+Screens / Forms
+	•	Change Request (CR) / ECO Form
+	•	Design Review Board (DRB) Dashboard
+	•	Document & Drawing Link (CAD/PDF)
+	•	BOM Compare / Diff Viewer
+	•	CAD Integration Connector (e.g., Autodesk, SolidWorks)
+
+Fields
+CR ID, Title, ProposedBy, AffectedParts, ChangeType (Design/Material/Process), ImpactedBOMs, ApprovalsNeeded, EffectiveDate, VersionPostChange, RollbackPlan, Audit Trail.
+
+Validations
+	•	CR must include affected mBOM/eBOM versions and test plan.
+	•	ECO cannot be released without DRB approval and updated documentation.
+
+Workflows
+	•	CR submission → impact analysis (cost, schedule, procurement) → DRB review → ECO approval → BOM/Routing update → Shop floor sync.
+
+⸻
+
+3. BILL OF MATERIALS (BOM) & ROUTING
+
+Screens / Forms
+	•	BOM Master (multi-level) with substitution rules
+	•	BOM Cost Rollup & Where-Used Reports
+	•	Routing Editor (operation definitions, resources, tooling)
+	•	Alternate Components & Approved Vendor Lists (AVL)
+
+Fields
+BOMLineID, ParentPartID, ChildPartID, QtyPerAsm, ScrapPct, ReferenceDesignator, EffectiveFrom, EffectiveTo, SubstituteParts, ProcurementType (Buy/Make), LeadTime, SafetyStock.
+
+Validations
+	•	Multi-level BOM rollup must compute total raw material needs.
+	•	Substitute parts only selectable if approved and within allowed tolerance.
+
+Workflows
+	•	Approve BOM → Trigger cost rollup → Update MRP master data → Notify procurement if new buys.
+
+⸻
+
+4. MATERIAL REQUIREMENTS PLANNING (MRP) / MPS / APS
+
+Screens / Forms
+	•	MPS (Master Production Schedule) Editor
+	•	MRP Execution Console (planner workbench)
+	•	Capacity Check & Finite Scheduling (APS)
+	•	Exception Messages (late supplier, shortage, excess, MOQ)
+	•	Suggested PO/Work Order creation UI
+
+Fields
+PlanHorizon, DemandSource (Sales Orders / Forecast / SafetyStock), OnHand, OnOrder, Allocation, SuggestedAction (Buy/Make/Transfer), SupplierLeadTime, LotSize, ATP, ExceptionCode.
+
+Validations
+	•	MRP run validates BOM integrity and routing availability.
+	•	Suggested orders respect MOQ, lead times, and lot-sizing rules.
+
+Workflows
+	•	Scheduled MRP → Generate suggestions → Planner review/approve → Create POs/WO/Transfers → Integration to procurement/MES.
+
+⸻
+
+5. WORK ORDER & MES (SHOP FLOOR EXECUTION)
+
+Screens / Forms
+	•	Work Order (WO) Creation / Release / Hold / Close
+	•	Operation Dispatch / Traveler (digital)
+	•	WIP Tracking & WIP Ledger
+	•	Serial / Lot Assignment & Genealogy Capture
+	•	Shop Floor Data Collection (SFC) — start/stop, yield, scrap, defects
+	•	Operator Terminal / Terminal Board / Kiosk
+	•	Mobile Operator App (scan, report, attach photos)
+
+Fields
+WOID, WOType (Make-to-Order / Make-to-Stock / Repair), BOMVersion, RoutingVersion, QuantityPlanned, QuantityProduced, QuantityScrap, StartDatePlanned, EndDatePlanned, ActualStart, ActualEnd, ResourceAssigned, QualityStatus, TraceabilityLinks.
+
+Validations
+	•	WO cannot be released if required components are missing in inventory (unless backflush config).
+	•	Serialized items must be captured at specified operations.
+	•	Operation cannot be completed until required inspections pass.
+
+Workflows
+	•	WO release → Material reservation → Dispatch → Record operation events → QC in-process → Completion → Move to finished goods → GL posting for production costs.
+
+⸻
+
+6. SHOP FLOOR QUALITY & TRACEABILITY
+
+Screens / Forms
+	•	Inspection Plans & ITP (Incoming, In-Process, Final)
+	•	SPC (Statistical Process Control) charts capture
+	•	Nonconformance Report (NCR) & Disposition
+	•	CAPA Management & Root Cause Analysis
+	•	Traceability / Genealogy Viewer (parent ↔ children serials/lots)
+
+Fields
+InspectionID, WOID, OperationID, SampleSize, MeasuredValues, ControlLimits, PassFail, DefectCode, NCRID, DispositionAction, CorrectiveActionID.
+
+Validations
+	•	Mandatory inspections for designated operations.
+	•	NCR cannot be closed without CAPA closure and evidence.
+
+Workflows
+	•	QC failure → Hold WIP → Trigger NCR → Assign CAPA → Rework/Repair → Update quality metrics & BI.
+
+⸻
+
+7. MAINTENANCE (CMMS) & PREDICTIVE MAINTENANCE
+
+Screens / Forms
+	•	Asset/Equipment Master & Bill of Materials for Equipment
+	•	Preventive Maintenance Schedules (PMs)
+	•	Maintenance Work Orders (MWO) & Spare Parts Req
+	•	Downtime Capture & OEE Dashboard
+	•	IoT Telemetry Integration (vibration, temp, run hrs)
+	•	Predictive Maintenance Model outputs
+
+Fields
+EquipmentID, AssetType, MaintenanceType (Preventive/Corrective), PMFrequency, MTTR, MTBF, SparePartList, DowntimeReasonCode, OEEMetrics (Availability, Performance, Quality).
+
+Validations
+	•	PM cannot be skipped without approval.
+	•	Equipment criticality must be set for priority scheduling.
+
+Workflows
+	•	IoT alert → Create MWO → Technician assignment → Spare parts reservation → Work completion → Record downtime & cost → Retrain predictive model.
+
+⸻
+
+8. COSTING, VARIANCE & FINANCIAL INTEGRATION
+
+Screens / Forms
+	•	Standard Cost Setup (material, labor, overhead)
+	•	Actual Cost Capture (WIP postings, resource hours, scrap)
+	•	Cost Rollup & Standard vs Actual Variance Reports
+	•	Overhead Allocation Rules & Absorption
+	•	GL Posting Mapping (production, WIP, variances)
+
+Fields
+StdMaterialCost, StdLaborRate, OverheadRate, ActualMaterialCost, ActualLaborHours, ScrapCost, VarianceType, VarianceAmount, GLAccount.
+
+Validations
+	•	Cost rollup recompute must pass checksum validations.
+	•	Variance threshold alerts when over configured %.
+
+Workflows
+	•	Production close → Post actual costs → Compute variances → Send alerts for investigation if > threshold → Create corrective action.
+
+⸻
+
+9. SUPPLY CHAIN & PROCUREMENT (MFG)
+
+Screens / Forms
+	•	Supplier Sourcing & RFQ (component qualification)
+	•	PO creation (direct to production line / stock)
+	•	ASN & Vendor Quality Records (incoming inspection plans)
+	•	Consignment & Kitting (kit creation for assembly)
+	•	Supplier Scorecards & CAPA for supplier defects
+
+Fields
+POLineID, SupplierQualityRating, ASNID, InspectionLotID, KittingWOID, ConsignmentFlag, VendorHoldFlag.
+
+Validations
+	•	Supplier qualification mandatory for critical components.
+	•	Incoming accepts only within tolerance; else auto-reject & open supplier claim.
+
+Workflows
+	•	PO receipt → Incoming inspection → Release to production/stock or Reject → Supplier claim/corrective plan.
+
+⸻
+
+10. ENGINEERING & TOOLING
+
+Screens / Forms
+	•	Tooling/Fixture Work Requests
+	•	Tool Calibration & Certification Tracking
+	•	Tool Life / Usage Logs
+	•	Tooling Cost Allocation to WOs
+
+Fields
+ToolID, CalibrationDueDate, UsageCount, ToolOwner, ToolCostCenter, ToolLocation.
+
+Validations
+	•	Tool cannot be used if calibration expired.
+	•	Tool assignment must be recorded per WO.
+
+Workflows
+	•	Tool request → Approve → Assign → Update tool life → Recalibrate per schedule.
+
+⸻
+
+11. PLANT SCHEDULING & APS (ADVANCED PLANNING & SCHEDULING)
+
+Screens / Forms
+	•	Finite Capacity Scheduler / Gantt (drag/drop)
+	•	Bottleneck Analysis (constraint identification)
+	•	What-If Scenario Planner (reschedule, add capacity)
+	•	Shift & Overtime Planner
+	•	Material availability gating
+
+Fields
+ScheduleID, ResourceCapacity, OperationLoad, BottleneckID, OvertimeRequested, ScenarioID.
+
+Validations
+	•	No double-booking on finite resources.
+	•	Overtime rules must respect labor union rules if configured.
+
+Workflows
+	•	APS run → Optimization suggestions → Planner accepts → Reschedule WOs → Dispatch changes to MES.
+
+⸻
+
+12. TRACEABILITY, SERIALIZATION & REGULATORY (IF APPLICABLE)
+
+Screens / Forms
+	•	Serialization Schema & Template
+	•	Genealogy Records Export (for recalls)
+	•	Batch Release & Quarantine Management
+	•	Regulatory Compliance Pack (trace files, audit extracts)
+
+Fields
+SerialNumber, LotNumber, ManufactureDate, ExpiryDate, TraceLinks, RecallFlag, QuarantineReason.
+
+Validations
+	•	Serialized FG must have tracebacks to component lot/serials.
+	•	Recall process must lock affected inventory and notify stakeholders.
+
+Workflows
+	•	Trace query → Genealogy report → If recall → Quarantine affected stock → Generate customer return notices & regulatory filings.
+
+⸻
+
+13. QUALITY, SAFETY & EHS (PLANT)
+
+Screens / Forms
+	•	Safety Permits & Lockout/Tagout Forms
+	•	Incident Reporting (EHS) & Investigation
+	•	Material Safety Data Sheet (MSDS) Library
+	•	Training Compliance & Certifications
+
+Fields
+IncidentID, Severity, RootCause, EmployeeID, TrainingExpiry, LOTOStatus, MSDSLink.
+
+Validations
+	•	Critical incidents require immediate escalation within SLA.
+	•	Employee must have valid certification for certain machines.
+
+Workflows
+	•	Incident report → EHS review → Corrective action → Training update → Closure.
+
+⸻
+
+14. BI, DASHBOARDS & KPIs (MANUFACTURING)
+
+Prebuilt Dashboards
+	•	Production Throughput & Yield by Line/Shift
+	•	OEE (Availability / Performance / Quality) by Work Center
+	•	Scrap & Rework Costs by Part & Cause
+	•	On-Time Delivery (OTD) & Lead Time Variability
+	•	Supplier Quality & Incoming Defects
+	•	WIP Aging & Bottleneck Heatmap
+	•	Maintenance KPIs (MTTR, MTBF)
+	•	Cost Variance & Margin Impact
+
+Ad-hoc & Drilldown
+	•	Drill to operation event, measurement, serial genealogy, supplier batch.
+
+⸻
+
+15. AI & PREDICTIVE MODELS (MANUFACTURING)
+
+Models & Use Cases
+	•	Demand Forecast (SKU × Plant) to feed MPS
+	•	Predictive Maintenance (vibration/temp → failure probability)
+	•	Yield Prediction (process parameter → expected yield)
+	•	Anomaly Detection on SPC streams
+	•	Supplier Lead Time / Risk Scoring
+
+Controls
+	•	Human-in-the-loop approvals for automated PO/WO creation above thresholds.
+	•	Model explainability attributes included in suggestions.
+
+⸻
+
+16. IOT & INDUSTRY 4.0 INTEGRATIONS
+
+Integrations
+	•	OPC-UA / MQTT connectors for PLCs, sensors, CNC machine telemetry
+	•	Edge gateways for shop-floor data capture
+	•	Telemetry ingestion into time-series DB (Prometheus/Influx) and model input pipelines
+
+Use Cases
+	•	Auto-capture cycle time & reject counts from equipment.
+	•	Trigger MES events from PLCs (job done).
+	•	Real-time OEE dashboards.
+
+⸻
+
+17. DOCUMENT MANAGEMENT & TECHNICAL FILES
+
+Screens / Forms
+	•	Drawing Repository (versioned links to CAD)
+	•	Specs, Test Reports & Certificates
+	•	Work Instructions (WI) & Standard Operating Procedures (SOP)
+	•	Controlled Document Distribution & Acknowledgment
+
+Workflows
+	•	Release document → Sync to operator terminals → Require read/acknowledgment for critical changes.
+
+⸻
+
+18. ROLES & PERMISSIONS (MANUFACTURING)
+
+Core Roles
+	•	Plant Admin / Manufacturing Ops Lead
+	•	Production Planner / Scheduler
+	•	Shop Floor Supervisor
+	•	Machine Operator / Technician
+	•	Quality Engineer
+	•	Maintenance Technician
+	•	Tooling Engineer
+	•	Materials / Buyer / Procurement
+	•	Warehouse / Logistics Clerk
+	•	Finance Cost Accountant
+	•	PLM Engineer / Design Engineer
+	•	EHS Officer
+	•	BI Analyst / Data Scientist
+	•	Integration / IoT Engineer
+
+Permission Notes
+	•	Operator terminals limited to necessary WO/operation tasks.
+	•	PLM edits restricted to engineers; ECO/ECR approvals require DRB.
+
+⸻
+
+19. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	1 Plant with 2 lines, 4 work centers
+	•	50 Parts (mixed FG, bought parts, consumables) with multi-level BOMs
+	•	20 Routings & 10 sample WOs (MTO and MTS)
+	•	5 Suppliers with lead times and sample POs/ASNs
+	•	10 Operators & 2 Shifts
+
+Onboarding Steps
+	•	Map legacy part/customer tables → Validate BOMs → Dry run MRP → Run MES test WO → QC sample inspections → Verify GL postings.
+
+⸻
+
+20. INTEGRATIONS & EDI SUPPORT
+
+Connectors
+	•	ERP/Finance (GL, AP, AR) posting APIs
+	•	EDI (850/855/856/810) for orders/ASN/invoices with trading partners
+	•	CAD/PLM system connector (Autodesk/SolidWorks)
+	•	TMS / Carrier for outbound shipments
+	•	Supplier Portals for ASN & RFQ
+	•	Data Lake & BI exports
+
+Integration Rules
+	•	Use idempotent endpoints, message retry & DLQ, partner-specific mapping templates, strong audit trail and reconciliation logs.
+
+⸻
+
+21. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	MRP exception: supplier late → auto create expedite PR with approval.
+	•	WO scrap > threshold → suspend line & notify quality & engineering.
+	•	OEE drop below target → auto create investigation ticket.
+	•	Serialized product returned → auto pull genealogy & notify customers.
+
+⸻
+
+22. DEPLOYMENT, MIGRATION & REPLIT EXECUTION GUIDELINES
+
+Idempotency & Safety
+	•	Seeders must check existence (by natural key) and skip/merge.
+	•	Migrations must be additive; destructive changes require migration plan & revert scripts.
+	•	Feature flags for enabling manufacturing capabilities per tenant.
+
+Testing
+	•	MES dry-run (simulate events), MRP dry-run (simulate suggestions), end-to-end order → produce → ship test, EDI test harnesses.
+
+Rollback
+	•	Versioned migrations and rollback scripts, DB backups before major data loads, transactional operations where possible.
+
+Performance
+	•	Use queuing for heavy MRP/APS runs; separate analytics pipelines; time-series DB for IoT telemetry.
+
+⸻
+
+23. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the current codebase; detect existing implementations; skip or enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you’re happy with this pack, reply “Yes, generate Industry Pack 5” and I will produce INDUSTRY PACK 5 — MANUFACTURING (PROCESS / BATCH) next.

@@ -303,6 +303,16 @@ const CreditManagementCollections = lazy(() => import("@/pages/CreditManagementC
 const SalesCommissionManagement = lazy(() => import("@/pages/SalesCommissionManagement"));
 const InventoryOptimization = lazy(() => import("@/pages/InventoryOptimization"));
 const EDIMarketplaceConnectors = lazy(() => import("@/pages/EDIMarketplaceConnectors"));
+const PLMEngineeringChangeControl = lazy(() => import("@/pages/PLMEngineeringChangeControl"));
+const MRPMPSPlanning = lazy(() => import("@/pages/MRPMPSPlanning"));
+const ShopFloorDataCollection = lazy(() => import("@/pages/ShopFloorDataCollection"));
+const CMMSMaintenance = lazy(() => import("@/pages/CMMSMaintenance"));
+const InspectionPlansITP = lazy(() => import("@/pages/InspectionPlansITP"));
+const NCRCAMAManagement = lazy(() => import("@/pages/NCRCAMAManagement"));
+const ProductionSchedulingGantt = lazy(() => import("@/pages/ProductionSchedulingGantt"));
+const ToolingManagement = lazy(() => import("@/pages/ToolingManagement"));
+const WIPTrackingDashboard = lazy(() => import("@/pages/WIPTrackingDashboard"));
+const SupplierQualityScorecard = lazy(() => import("@/pages/SupplierQualityScorecard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -817,6 +827,16 @@ function Router() {
       <Route path="/sales-commission" component={SalesCommissionManagement} />
       <Route path="/inventory-optimization" component={InventoryOptimization} />
       <Route path="/edi-marketplace" component={EDIMarketplaceConnectors} />
+      <Route path="/plm-engineering-changes" component={PLMEngineeringChangeControl} />
+      <Route path="/mrp-mps-planning" component={MRPMPSPlanning} />
+      <Route path="/shop-floor-collection" component={ShopFloorDataCollection} />
+      <Route path="/cmms-maintenance" component={CMMSMaintenance} />
+      <Route path="/inspection-plans-itp" component={InspectionPlansITP} />
+      <Route path="/ncr-cama-management" component={NCRCAMAManagement} />
+      <Route path="/production-scheduling" component={ProductionSchedulingGantt} />
+      <Route path="/tooling-management" component={ToolingManagement} />
+      <Route path="/wip-tracking" component={WIPTrackingDashboard} />
+      <Route path="/supplier-quality-scorecard" component={SupplierQualityScorecard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
