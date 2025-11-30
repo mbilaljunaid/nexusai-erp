@@ -1,14 +1,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Plus, Mail } from "lucide-react";
+import { Plus, Mail, Users, Send, Settings, BarChart3 } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { useState } from "react";
 
 export default function Email() {
+  const [activeNav, setActiveNav] = useState("inbox");
+
+  const navItems = [
+    { id: "inbox", label: "Inbox", icon: Mail, color: "text-blue-500" },
+    { id: "accounts", label: "Accounts", icon: Users, color: "text-purple-500" },
+    { id: "campaigns", label: "Campaigns", icon: Send, color: "text-green-500" },
+    { id: "templates", label: "Templates", icon: Settings, color: "text-orange-500" },
+    { id: "automation", label: "Automation", icon: BarChart3, color: "text-red-500" },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold">Email Management</h1>
+          <h1 className="text-3xl font-semibold flex items-center gap-2"><Mail className="h-8 w-8" />Email Management</h1>
           <p className="text-muted-foreground text-sm">Unified email, team collaboration, and marketing campaigns</p>
         </div>
         <Button data-testid="button-compose-email">
@@ -17,16 +28,9 @@ export default function Email() {
         </Button>
       </div>
 
-      <Tabs defaultValue="inbox" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="inbox" data-testid="tab-inbox">Inbox</TabsTrigger>
-          <TabsTrigger value="accounts" data-testid="tab-accounts">Email Accounts</TabsTrigger>
-          <TabsTrigger value="campaigns" data-testid="tab-campaigns">Campaigns</TabsTrigger>
-          <TabsTrigger value="templates" data-testid="tab-templates">Templates</TabsTrigger>
-          <TabsTrigger value="automation" data-testid="tab-automation">Automation</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="inbox" className="space-y-4">
+      {activeNav === "inbox" && (<div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
@@ -84,25 +88,26 @@ export default function Email() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>)}
 
-        <TabsContent value="accounts">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Email Accounts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Email accounts module loading. Connect and manage multiple email addresses and accounts.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "accounts" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Email Accounts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Email accounts module loading. Connect and manage multiple email addresses and accounts.</p>
+            <Button size="sm" className="mt-4">+ Connect Account</Button>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="campaigns">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Email Campaigns</CardTitle>
-            </CardHeader>
-            <CardContent>
+      {activeNav === "campaigns" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Email Campaigns</CardTitle>
+          </CardHeader>
+          <CardContent>
               <p className="text-muted-foreground text-sm">Email campaigns module loading. Create and send bulk email campaigns with tracking.</p>
             </CardContent>
           </Card>
