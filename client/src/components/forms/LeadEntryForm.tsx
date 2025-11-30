@@ -20,12 +20,10 @@ import { useToast } from "@/hooks/use-toast";
 export function LeadEntryForm() {
   const { toast } = useToast();
   const [leadTab, setLeadTab] = useState("quick");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
-  const [source, setSource] = useState("");
+  const [score, setScore] = useState("0");
   const [status, setStatus] = useState("new");
   const [showAIScore, setShowAIScore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,34 +33,37 @@ export function LeadEntryForm() {
   const aiScoreReason = "Tech company in growth stage, 50+ employees, matches target ICP";
 
   const handleSaveLead = async () => {
-    if (!firstName || !lastName || !email) {
-      toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
+    if (!name || !email) {
+      toast({ title: "Error", description: "Name and Email are required", variant: "destructive" });
       return;
     }
 
     setIsLoading(true);
     try {
       const payload = {
-        firstName,
-        lastName,
+        name,
         email,
-        phone,
-        company,
-        source,
+        company: company || undefined,
+        score: score || "0",
         status
       };
       
-      await api.crm.leads.create(payload);
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      if (!response.ok) throw new Error("Failed to create lead");
+      
       setSuccessMessage("Lead saved successfully!");
-      toast({ title: "Success", description: "Lead entry created" });
+      toast({ title: "Success", description: "Lead created" });
       
       // Reset form
-      setFirstName("");
-      setLastName("");
+      setName("");
       setEmail("");
-      setPhone("");
       setCompany("");
-      setSource("");
+      setScore("0");
       setStatus("new");
       
       setTimeout(() => setSuccessMessage(""), 3000);
@@ -95,23 +96,14 @@ export function LeadEntryForm() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name *</Label>
+                  <Label htmlFor="name">Name *</Label>
                   <Input
-                    id="firstName"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="John"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John Smith"
                     className="text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name *</Label>
-                  <Input
-                    id="lastName"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Smith"
-                    className="text-sm"
+                    data-testid="input-lead-name"
                   />
                 </div>
                 <div className="space-y-2">
@@ -123,6 +115,7 @@ export function LeadEntryForm() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="john@example.com"
                     className="text-sm"
+                    data-testid="input-lead-email"
                   />
                 </div>
                 <div className="space-y-2">
