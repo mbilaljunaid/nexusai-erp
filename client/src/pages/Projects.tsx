@@ -81,7 +81,16 @@ export default function Projects() {
         <Card><CardContent className="p-4"><p className="text-2xl font-semibold">12</p><p className="text-xs text-muted-foreground">Team Members</p></CardContent></Card>
       </div>
 
-      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+        {navItems.map((item) => (
+          <Link key={item.id} to={item.id === "overview" ? "/projects" : `/projects/${item.id}`}>
+            <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+              <item.icon className={`w-6 h-6 ${item.color}`} />
+              <span className="text-sm font-medium text-center">{item.label}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
 
       {(activeNav === "overview" || activeNav === "kanban" || activeNav === "tasks" || activeNav === "resources") && (
         <div className="flex items-center gap-2 flex-wrap">
