@@ -26,7 +26,7 @@ export default function Analytics() {
   const { data: olapResults } = useQuery({ queryKey: ["/api/analytics/olap/query"] });
 
   // Use backend forecast data or mock as fallback
-  const dashboardData = forecastData?.timeSeries || [
+  const dashboardData = (forecastData as any)?.timeSeries || [
     { month: "Jan", revenue: 65000, expenses: 42000 },
     { month: "Feb", revenue: 72000, expenses: 45000 },
     { month: "Mar", revenue: 68000, expenses: 43000 },
@@ -245,7 +245,7 @@ export default function Analytics() {
                     </tr>
                   </thead>
                   <tbody>
-                    {dashboardData.map((row, idx) => {
+                    {dashboardData.map((row: any, idx: number) => {
                       const profit = row.revenue - row.expenses;
                       const margin = ((profit / row.revenue) * 100).toFixed(1);
                       return (

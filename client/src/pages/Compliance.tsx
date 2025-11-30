@@ -25,6 +25,7 @@ export default function Compliance() {
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "overview" && (
+        <div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
@@ -80,6 +81,7 @@ export default function Compliance() {
               ))}
             </CardContent>
           </Card>
+        </div>
       )}
 
       {activeNav === "standards" && (
