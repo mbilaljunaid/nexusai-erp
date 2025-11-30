@@ -12,6 +12,15 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true }).extend({
+  email: z.string().email().optional(),
+  password: z.string().optional(),
+  name: z.string().optional(),
+});
+
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
+
 export const projects = pgTable("projects", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: varchar("name").notNull(),
