@@ -749,9 +749,6 @@ function Router() {
       <Route path="/predictive-analytics" component={PredictiveAnalytics} />
       <Route path="/leave-management" component={LeaveManagement} />
       <Route path="/recruitment" component={RecruitmentManagement} />
-      <Route path="/compliance-governance" component={ComplianceGovernance} />
-      <Route path="/risk-management" component={RiskManagement} />
-      <Route path="/audit-management" component={AuditManagement} />
       <Route path="/period-close" component={PeriodClose} />
       <Route path="/financial-consolidation" component={FinancialConsolidation} />
       <Route path="/account-reconciliation" component={AccountReconciliation} />
@@ -859,7 +856,6 @@ function Router() {
       <Route path="/business-intelligence" component={BusinessIntelligence} />
       <Route path="/voice-of-customer" component={VoiceOfCustomer} />
       <Route path="/procurement-automation" component={ProcurementAutomation} />
-      <Route path="/risk-management" component={RiskManagement} />
       <Route path="/employee-engagement" component={EmployeeEngagement} />
       <Route path="/succession-planning" component={SuccessionPlanning} />
       <Route path="/capacity-planning" component={CapacityPlanning} />
