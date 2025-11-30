@@ -434,6 +434,19 @@ const MarketingCampaigns = lazy(() => import("@/pages/MarketingCampaigns"));
 const SustainabilityMaterials = lazy(() => import("@/pages/SustainabilityMaterials"));
 const DemandForecastingFashion = lazy(() => import("@/pages/DemandForecastingFashion"));
 const FashionAnalytics = lazy(() => import("@/pages/FashionAnalytics"));
+const ProductMasterCPG = lazy(() => import("@/pages/ProductMasterCPG"));
+const IngredientMasterCPG = lazy(() => import("@/pages/IngredientMasterCPG"));
+const RecipeBOMMaster = lazy(() => import("@/pages/RecipeBOMMaster"));
+const ProductionPackaging = lazy(() => import("@/pages/ProductionPackaging"));
+const InventoryWarehousingCPG = lazy(() => import("@/pages/InventoryWarehousingCPG"));
+const SalesDistribution = lazy(() => import("@/pages/SalesDistribution"));
+const ForecastingDemandCPG = lazy(() => import("@/pages/ForecastingDemandCPG"));
+const TradePromotions = lazy(() => import("@/pages/TradePromotions"));
+const CRMLoyalty = lazy(() => import("@/pages/CRMLoyalty"));
+const ReturnsWarranty = lazy(() => import("@/pages/ReturnsWarranty"));
+const CostingMarginCPG = lazy(() => import("@/pages/CostingMarginCPG"));
+const SustainabilityComplianceCPG = lazy(() => import("@/pages/SustainabilityComplianceCPG"));
+const CPGAnalytics = lazy(() => import("@/pages/CPGAnalytics"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1076,6 +1089,19 @@ function Router() {
       <Route path="/sustainability-materials" component={SustainabilityMaterials} />
       <Route path="/demand-forecasting-fashion" component={DemandForecastingFashion} />
       <Route path="/fashion-analytics" component={FashionAnalytics} />
+      <Route path="/cpg-products" component={ProductMasterCPG} />
+      <Route path="/cpg-ingredients" component={IngredientMasterCPG} />
+      <Route path="/cpg-recipes" component={RecipeBOMMaster} />
+      <Route path="/cpg-production" component={ProductionPackaging} />
+      <Route path="/cpg-inventory" component={InventoryWarehousingCPG} />
+      <Route path="/cpg-sales" component={SalesDistribution} />
+      <Route path="/cpg-forecast" component={ForecastingDemandCPG} />
+      <Route path="/cpg-promotions" component={TradePromotions} />
+      <Route path="/cpg-crm" component={CRMLoyalty} />
+      <Route path="/cpg-returns" component={ReturnsWarranty} />
+      <Route path="/cpg-costing" component={CostingMarginCPG} />
+      <Route path="/cpg-compliance" component={SustainabilityComplianceCPG} />
+      <Route path="/cpg-analytics" component={CPGAnalytics} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
