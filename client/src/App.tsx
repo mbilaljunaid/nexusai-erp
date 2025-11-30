@@ -456,6 +456,9 @@ const ChangeManagement = lazy(() => import("@/pages/ChangeManagement"));
 const AIAutomation = lazy(() => import("@/pages/AIAutomation"));
 const DocumentProcessing = lazy(() => import("@/pages/DocumentProcessing"));
 const CognitiveServices = lazy(() => import("@/pages/CognitiveServices"));
+const WebsiteManagement = lazy(() => import("@/pages/WebsiteManagement"));
+const PortalManagement = lazy(() => import("@/pages/PortalManagement"));
+const CommunicationCenter = lazy(() => import("@/pages/CommunicationCenter"));
 const CostOptimization = lazy(() => import("@/pages/CostOptimization"));
 const SustainabilityReporting = lazy(() => import("@/pages/SustainabilityReporting"));
 const QualityAssuranceHub = lazy(() => import("@/pages/QualityAssuranceHub"));
@@ -758,6 +761,9 @@ function Router() {
       <Route path="/ai-automation" component={AIAutomation} />
       <Route path="/document-processing" component={DocumentProcessing} />
       <Route path="/cognitive-services" component={CognitiveServices} />
+      <Route path="/website-management" component={WebsiteManagement} />
+      <Route path="/portal-management" component={PortalManagement} />
+      <Route path="/communication-center" component={CommunicationCenter} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />

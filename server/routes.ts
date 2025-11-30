@@ -3757,6 +3757,88 @@ export async function registerRoutes(
     res.status(201).json(model);
   });
 
+  // ========== MODULE 15: WEBSITE, PORTAL & COMMUNICATION ENDPOINTS ==========
+  const webStore: any[] = [];
+  const portalStore: any[] = [];
+  const commStore: any[] = [];
+  const notificationStore: any[] = [];
+
+  app.get("/api/web-pages", (req, res) => {
+    if (webStore.length === 0) {
+      webStore.push(
+        { id: "w1", pageName: "Home", url: "/", status: "published" },
+        { id: "w2", pageName: "Products", url: "/products", status: "published" }
+      );
+    }
+    res.json(webStore);
+  });
+
+  app.post("/api/web-pages", (req, res) => {
+    const page = { id: `w-${Date.now()}`, ...req.body, status: "draft" };
+    webStore.push(page);
+    res.status(201).json(page);
+  });
+
+  app.get("/api/portals", (req, res) => {
+    if (portalStore.length === 0) {
+      portalStore.push(
+        { id: "pt1", portalName: "Customer Portal", portalType: "external", status: "active" }
+      );
+    }
+    res.json(portalStore);
+  });
+
+  app.post("/api/portals", (req, res) => {
+    const portal = { id: `pt-${Date.now()}`, ...req.body, status: "active" };
+    portalStore.push(portal);
+    res.status(201).json(portal);
+  });
+
+  app.get("/api/communications", (req, res) => {
+    if (commStore.length === 0) {
+      commStore.push(
+        { id: "c1", communicationType: "Email", subject: "Welcome", status: "sent" }
+      );
+    }
+    res.json(commStore);
+  });
+
+  app.post("/api/communications", (req, res) => {
+    const comm = { id: `c-${Date.now()}`, ...req.body, status: "pending" };
+    commStore.push(comm);
+    res.status(201).json(comm);
+  });
+
+  app.get("/api/email-templates", (req, res) => {
+    if (emailStore.length === 0) {
+      emailStore.push(
+        { id: "et1", templateName: "Welcome Email", subject: "Welcome to our platform", status: "active" }
+      );
+    }
+    res.json(emailStore);
+  });
+
+  app.post("/api/email-templates", (req, res) => {
+    const template = { id: `et-${Date.now()}`, ...req.body, status: "active" };
+    emailStore.push(template);
+    res.status(201).json(template);
+  });
+
+  app.get("/api/notifications", (req, res) => {
+    if (notificationStore.length === 0) {
+      notificationStore.push(
+        { id: "n1", notificationType: "alert", title: "System Update", isRead: false }
+      );
+    }
+    res.json(notificationStore);
+  });
+
+  app.post("/api/notifications", (req, res) => {
+    const notification = { id: `n-${Date.now()}`, ...req.body, isRead: false };
+    notificationStore.push(notification);
+    res.status(201).json(notification);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

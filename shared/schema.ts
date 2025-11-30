@@ -2904,3 +2904,59 @@ export const predictiveAnalytics = pgTable("predictive_analytics", {
   status: varchar("status").default("active"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 15: WEBSITE, PORTAL & COMMUNICATION MANAGEMENT ==========
+export const webPages = pgTable("web_pages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  pageName: varchar("page_name").notNull(),
+  url: varchar("url"),
+  title: varchar("title"),
+  seoDescription: text("seo_description"),
+  content: text("content"),
+  status: varchar("status").default("draft"),
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const portals = pgTable("portals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  portalName: varchar("portal_name").notNull(),
+  portalType: varchar("portal_type"),
+  description: text("description"),
+  features: jsonb("features"),
+  userRoles: jsonb("user_roles"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const communications = pgTable("communications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  communicationType: varchar("communication_type"),
+  recipient: varchar("recipient"),
+  subject: varchar("subject"),
+  message: text("message"),
+  channel: varchar("channel"),
+  status: varchar("status").default("pending"),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const emailTemplates = pgTable("email_templates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  templateName: varchar("template_name").notNull(),
+  subject: varchar("subject"),
+  body: text("body"),
+  variables: jsonb("variables"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const notificationCenter = pgTable("notification_center", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  notificationType: varchar("notification_type"),
+  title: varchar("title"),
+  message: text("message"),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
