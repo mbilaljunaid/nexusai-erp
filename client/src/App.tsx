@@ -268,6 +268,11 @@ const FinancialReportsDashboard = lazy(() => import("@/pages/FinancialReportsDas
 const PurchaseRequisitions = lazy(() => import("@/pages/PurchaseRequisitions"));
 const GoodsReceiptPage = lazy(() => import("@/pages/GoodsReceiptPage"));
 const DemandForecastingPage = lazy(() => import("@/pages/DemandForecastingPage"));
+const StockIssue = lazy(() => import("@/pages/StockIssue"));
+const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
+const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
+const DeliveryScheduling = lazy(() => import("@/pages/DeliveryScheduling"));
+const TrackingDashboard = lazy(() => import("@/pages/TrackingDashboard"));
 const SupplierPerformance = lazy(() => import("@/pages/SupplierPerformance"));
 const TimesheetManagement = lazy(() => import("@/pages/TimesheetManagement"));
 const ProjectBudgetManagement = lazy(() => import("@/pages/ProjectBudgetManagement"));
@@ -742,6 +747,11 @@ function Router() {
       <Route path="/purchase-requisitions" component={PurchaseRequisitions} />
       <Route path="/goods-receipt" component={GoodsReceiptPage} />
       <Route path="/demand-forecasting" component={DemandForecastingPage} />
+      <Route path="/stock-issue" component={StockIssue} />
+      <Route path="/stock-transfer" component={StockTransfer} />
+      <Route path="/shipment-planning" component={ShipmentPlanning} />
+      <Route path="/delivery-scheduling" component={DeliveryScheduling} />
+      <Route path="/tracking-dashboard" component={TrackingDashboard} />
       <Route path="/supplier-performance" component={SupplierPerformance} />
       <Route path="/timesheet-management" component={TimesheetManagement} />
       <Route path="/project-budget" component={ProjectBudgetManagement} />
