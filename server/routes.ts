@@ -3908,6 +3908,404 @@ export async function registerRoutes(
     res.status(201).json(notification);
   });
 
+  // ========== INDUSTRY PACK 15: PHARMACEUTICALS & LIFE SCIENCES ==========
+  const pharmaMatStore: any[] = [];
+  const pharmaProdStore: any[] = [];
+  const pharmaFormStore: any[] = [];
+  const pharmaSuppStore: any[] = [];
+  const pharmaElnStore: any[] = [];
+  const pharmaLimsStore: any[] = [];
+  const pharmaEbrStore: any[] = [];
+  const pharmaStabStore: any[] = [];
+  const pharmaSerialStore: any[] = [];
+  const pharmaQmsStore: any[] = [];
+  const pharmaRegStore: any[] = [];
+  const pharmaPvStore: any[] = [];
+  const pharmaClinicStore: any[] = [];
+  const pharmaValStore: any[] = [];
+  const pharmaAnalyticsStore: any[] = [];
+
+  app.get("/api/pharma-materials", (req, res) => {
+    if (pharmaMatStore.length === 0) {
+      pharmaMatStore.push({ id: "m1", materialId: "API-001", name: "Acetaminophen", type: "API", cas: "103-90-2", supplier: "ChemCorp", qualified: true });
+    }
+    res.json(pharmaMatStore);
+  });
+
+  app.post("/api/pharma-materials", (req, res) => {
+    const mat = { id: `m-${Date.now()}`, ...req.body };
+    pharmaMatStore.push(mat);
+    res.status(201).json(mat);
+  });
+
+  app.delete("/api/pharma-materials/:id", (req, res) => {
+    const idx = pharmaMatStore.findIndex((m: any) => m.id === req.params.id);
+    if (idx >= 0) pharmaMatStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/pharma-products", (req, res) => {
+    if (pharmaProdStore.length === 0) {
+      pharmaProdStore.push({ id: "p1", productId: "PROD-001", name: "Paracetamol Tablet", strength: "500mg", dosageForm: "tablet", status: "active" });
+    }
+    res.json(pharmaProdStore);
+  });
+
+  app.post("/api/pharma-products", (req, res) => {
+    const prod = { id: `p-${Date.now()}`, ...req.body };
+    pharmaProdStore.push(prod);
+    res.status(201).json(prod);
+  });
+
+  app.delete("/api/pharma-products/:id", (req, res) => {
+    const idx = pharmaProdStore.findIndex((p: any) => p.id === req.params.id);
+    if (idx >= 0) pharmaProdStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/pharma-formulations", (req, res) => {
+    if (pharmaFormStore.length === 0) {
+      pharmaFormStore.push({ id: "f1", formulationId: "FORM-001", productId: "PROD-001", version: "1", ingredientCount: "3", status: "approved" });
+    }
+    res.json(pharmaFormStore);
+  });
+
+  app.get("/api/pharma-suppliers", (req, res) => {
+    if (pharmaSuppStore.length === 0) {
+      pharmaSuppStore.push({ id: "s1", supplierId: "SUPP-001", type: "CMO", status: "qualified", auditStatus: "passed" });
+    }
+    res.json(pharmaSuppStore);
+  });
+
+  app.get("/api/pharma-eln", (req, res) => {
+    if (pharmaElnStore.length === 0) {
+      pharmaElnStore.push({ id: "e1", studyId: "STUDY-001", researcher: "Dr. Smith", status: "completed" });
+    }
+    res.json(pharmaElnStore);
+  });
+
+  app.get("/api/pharma-lims", (req, res) => {
+    if (pharmaLimsStore.length === 0) {
+      pharmaLimsStore.push({ id: "l1", testId: "TEST-001", batchId: "BATCH-001", method: "HPLC", result: "passed" });
+    }
+    res.json(pharmaLimsStore);
+  });
+
+  app.get("/api/pharma-ebr", (req, res) => {
+    if (pharmaEbrStore.length === 0) {
+      pharmaEbrStore.push({ id: "b1", batchId: "BATCH-001", recipeVersion: "1", quantity: "1000", status: "completed" });
+    }
+    res.json(pharmaEbrStore);
+  });
+
+  app.get("/api/pharma-stability", (req, res) => {
+    if (pharmaStabStore.length === 0) {
+      pharmaStabStore.push({ id: "st1", studyId: "STAB-001", condition: "25°C/60% RH", shelfLife: "36", status: "completed" });
+    }
+    res.json(pharmaStabStore);
+  });
+
+  app.get("/api/pharma-serialization", (req, res) => {
+    if (pharmaSerialStore.length === 0) {
+      pharmaSerialStore.push({ id: "sr1", serialNumber: "SN001", lotNumber: "LOT001", expiryDate: "2026-12-31", status: "commissioned" });
+    }
+    res.json(pharmaSerialStore);
+  });
+
+  app.get("/api/pharma-qms", (req, res) => {
+    if (pharmaQmsStore.length === 0) {
+      pharmaQmsStore.push({ id: "q1", issueId: "CAPA-001", type: "CAPA", dueDate: "2025-12-31", status: "open" });
+    }
+    res.json(pharmaQmsStore);
+  });
+
+  app.get("/api/pharma-regulatory", (req, res) => {
+    if (pharmaRegStore.length === 0) {
+      pharmaRegStore.push({ id: "r1", submissionId: "SUB-001", region: "EU", productId: "PROD-001", status: "approved" });
+    }
+    res.json(pharmaRegStore);
+  });
+
+  app.get("/api/pharma-pv", (req, res) => {
+    if (pharmaPvStore.length === 0) {
+      pharmaPvStore.push({ id: "pv1", caseId: "CASE-001", reaction: "Headache", eventDate: "2025-11-01", severity: "AE", reported: true });
+    }
+    res.json(pharmaPvStore);
+  });
+
+  app.get("/api/pharma-clinical", (req, res) => {
+    if (pharmaClinicStore.length === 0) {
+      pharmaClinicStore.push({ id: "c1", kitId: "KIT-001", studyId: "STUDY-001", siteId: "SITE-001", status: "allocated" });
+    }
+    res.json(pharmaClinicStore);
+  });
+
+  app.get("/api/pharma-validation", (req, res) => {
+    if (pharmaValStore.length === 0) {
+      pharmaValStore.push({ id: "v1", planId: "VAL-001", phase: "IQ", status: "in-progress" });
+    }
+    res.json(pharmaValStore);
+  });
+
+  app.get("/api/pharma-analytics", (req, res) => {
+    if (pharmaAnalyticsStore.length === 0) {
+      pharmaAnalyticsStore.push({ id: "a1", batchId: "BATCH-001", yield: "98.5", costPerUnit: "12.50", qualityScore: "95" });
+    }
+    res.json(pharmaAnalyticsStore);
+  });
+
+  // ========== INDUSTRY PACK 16: FASHION, APPAREL & FOOTWEAR ==========
+  const fashionStyleStore: any[] = [];
+  const fashionTechStore: any[] = [];
+  const fashionSampleStore: any[] = [];
+  const fashionFactStore: any[] = [];
+  const fashionAssortStore: any[] = [];
+  const fashionInvStore: any[] = [];
+  const fashionEcomStore: any[] = [];
+  const fashionPosStore: any[] = [];
+  const fashionRetStore: any[] = [];
+  const fashionCostStore: any[] = [];
+  const fashionWholesaleStore: any[] = [];
+  const fashionCampStore: any[] = [];
+  const fashionSustStore: any[] = [];
+  const fashionFcStore: any[] = [];
+  const fashionAnalyticsStore: any[] = [];
+
+  app.get("/api/fashion-styles", (req, res) => {
+    if (fashionStyleStore.length === 0) {
+      fashionStyleStore.push({ id: "st1", styleId: "STY-001", name: "Classic T-Shirt", season: "SS25", collection: "Summer", status: "active", skuCount: "12" });
+    }
+    res.json(fashionStyleStore);
+  });
+
+  app.post("/api/fashion-styles", (req, res) => {
+    const style = { id: `st-${Date.now()}`, ...req.body };
+    fashionStyleStore.push(style);
+    res.status(201).json(style);
+  });
+
+  app.delete("/api/fashion-styles/:id", (req, res) => {
+    const idx = fashionStyleStore.findIndex((s: any) => s.id === req.params.id);
+    if (idx >= 0) fashionStyleStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/fashion-techpack", (req, res) => {
+    if (fashionTechStore.length === 0) {
+      fashionTechStore.push({ id: "tp1", packId: "PACK-001", sizeRange: "XS-XXL", status: "approved" });
+    }
+    res.json(fashionTechStore);
+  });
+
+  app.get("/api/fashion-samples", (req, res) => {
+    if (fashionSampleStore.length === 0) {
+      fashionSampleStore.push({ id: "sa1", sampleId: "SAMP-001", type: "fit", status: "approved" });
+    }
+    res.json(fashionSampleStore);
+  });
+
+  app.get("/api/fashion-factories", (req, res) => {
+    if (fashionFactStore.length === 0) {
+      fashionFactStore.push({ id: "fa1", factoryId: "FACT-001", leadTime: "30", capacity: "5000", status: "qualified", passRate: "98" });
+    }
+    res.json(fashionFactStore);
+  });
+
+  app.get("/api/fashion-assortment", (req, res) => {
+    if (fashionAssortStore.length === 0) {
+      fashionAssortStore.push({ id: "as1", assortmentId: "ASSRT-001", storeCount: "150", skuCount: "45", status: "active" });
+    }
+    res.json(fashionAssortStore);
+  });
+
+  app.get("/api/fashion-inventory", (req, res) => {
+    if (fashionInvStore.length === 0) {
+      fashionInvStore.push({ id: "inv1", sku: "SKU-001", color: "Black", sizes: "6", quantity: "120" });
+    }
+    res.json(fashionInvStore);
+  });
+
+  app.get("/api/fashion-ecom", (req, res) => {
+    if (fashionEcomStore.length === 0) {
+      fashionEcomStore.push({ id: "ec1", sku: "SKU-001", marketplace: "Amazon", status: "active", sales: "2500" });
+    }
+    res.json(fashionEcomStore);
+  });
+
+  app.get("/api/fashion-pos", (req, res) => {
+    if (fashionPosStore.length === 0) {
+      fashionPosStore.push({ id: "pos1", transactionId: "TXN-001", storeId: "STORE-001", type: "sale", amount: "89.99" });
+    }
+    res.json(fashionPosStore);
+  });
+
+  app.get("/api/fashion-returns", (req, res) => {
+    if (fashionRetStore.length === 0) {
+      fashionRetStore.push({ id: "ret1", rmaId: "RMA-001", reason: "Size", disposition: "resell", returnRate: "5.2" });
+    }
+    res.json(fashionRetStore);
+  });
+
+  app.get("/api/fashion-costing", (req, res) => {
+    if (fashionCostStore.length === 0) {
+      fashionCostStore.push({ id: "cos1", sku: "SKU-001", cost: "25", msrp: "89.99", margin: "65", collection: "Summer" });
+    }
+    res.json(fashionCostStore);
+  });
+
+  app.get("/api/fashion-wholesale", (req, res) => {
+    if (fashionWholesaleStore.length === 0) {
+      fashionWholesaleStore.push({ id: "wh1", poId: "PO-001", buyerId: "BUYER-001", status: "confirmed", value: "50000" });
+    }
+    res.json(fashionWholesaleStore);
+  });
+
+  app.get("/api/fashion-campaigns", (req, res) => {
+    if (fashionCampStore.length === 0) {
+      fashionCampStore.push({ id: "camp1", campaignId: "CAMP-001", dropDate: "2025-12-15", status: "active", conversion: "3.5" });
+    }
+    res.json(fashionCampStore);
+  });
+
+  app.get("/api/fashion-sustainability", (req, res) => {
+    if (fashionSustStore.length === 0) {
+      fashionSustStore.push({ id: "sust1", materialId: "MAT-001", certType: "GOTS", recycledContent: "40", ecoScore: "8.5", certified: true });
+    }
+    res.json(fashionSustStore);
+  });
+
+  app.get("/api/fashion-forecast", (req, res) => {
+    if (fashionFcStore.length === 0) {
+      fashionFcStore.push({ id: "fc1", sku: "SKU-001", quantity: "5000", accuracy: "87", modelType: "ML", period: "Q1" });
+    }
+    res.json(fashionFcStore);
+  });
+
+  app.get("/api/fashion-analytics", (req, res) => {
+    if (fashionAnalyticsStore.length === 0) {
+      fashionAnalyticsStore.push({ id: "fa1", sku: "SKU-001", sellThru: "75", returnRate: "4.5", collection: "Summer" });
+    }
+    res.json(fashionAnalyticsStore);
+  });
+
+  // ========== INDUSTRY PACK 17: CONSUMER PACKAGED GOODS (CPG) ==========
+  const cpgProdStore: any[] = [];
+  const cpgIngStore: any[] = [];
+  const cpgRecipeStore: any[] = [];
+  const cpgProdWoStore: any[] = [];
+  const cpgInvStore: any[] = [];
+  const cpgSalesStore: any[] = [];
+  const cpgFcStore: any[] = [];
+  const cpgPromoStore: any[] = [];
+  const cpgCrmStore: any[] = [];
+  const cpgRetStore: any[] = [];
+  const cpgCostStore: any[] = [];
+  const cpgCompStore: any[] = [];
+  const cpgAnalyticsStore: any[] = [];
+
+  app.get("/api/cpg-products", (req, res) => {
+    if (cpgProdStore.length === 0) {
+      cpgProdStore.push({ id: "p1", sku: "SKU-001", name: "Vanilla Yogurt", packSize: "150g", upc: "012345", status: "active" });
+    }
+    res.json(cpgProdStore);
+  });
+
+  app.post("/api/cpg-products", (req, res) => {
+    const prod = { id: `p-${Date.now()}`, ...req.body };
+    cpgProdStore.push(prod);
+    res.status(201).json(prod);
+  });
+
+  app.delete("/api/cpg-products/:id", (req, res) => {
+    const idx = cpgProdStore.findIndex((p: any) => p.id === req.params.id);
+    if (idx >= 0) cpgProdStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/cpg-ingredients", (req, res) => {
+    if (cpgIngStore.length === 0) {
+      cpgIngStore.push({ id: "i1", ingredientId: "ING-001", type: "Culture", supplierId: "SUPP-001", certified: true });
+    }
+    res.json(cpgIngStore);
+  });
+
+  app.get("/api/cpg-recipes", (req, res) => {
+    if (cpgRecipeStore.length === 0) {
+      cpgRecipeStore.push({ id: "r1", recipeId: "REC-001", sku: "SKU-001", version: "1", status: "approved" });
+    }
+    res.json(cpgRecipeStore);
+  });
+
+  app.get("/api/cpg-production", (req, res) => {
+    if (cpgProdWoStore.length === 0) {
+      cpgProdWoStore.push({ id: "w1", woId: "WO-001", quantity: "10000", lineId: "LINE-001", status: "completed" });
+    }
+    res.json(cpgProdWoStore);
+  });
+
+  app.get("/api/cpg-inventory", (req, res) => {
+    if (cpgInvStore.length === 0) {
+      cpgInvStore.push({ id: "inv1", sku: "SKU-001", batchId: "BATCH-001", qty: "5000", expiryDate: "2026-02-15" });
+    }
+    res.json(cpgInvStore);
+  });
+
+  app.get("/api/cpg-sales", (req, res) => {
+    if (cpgSalesStore.length === 0) {
+      cpgSalesStore.push({ id: "s1", orderId: "ORD-001", customerId: "CUST-001", value: "15000", status: "delivered" });
+    }
+    res.json(cpgSalesStore);
+  });
+
+  app.get("/api/cpg-forecast", (req, res) => {
+    if (cpgFcStore.length === 0) {
+      cpgFcStore.push({ id: "fc1", sku: "SKU-001", quantity: "20000", accuracy: "88", channel: "Retail", period: "Q1" });
+    }
+    res.json(cpgFcStore);
+  });
+
+  app.get("/api/cpg-promotions", (req, res) => {
+    if (cpgPromoStore.length === 0) {
+      cpgPromoStore.push({ id: "pr1", promoId: "PROMO-001", discount: "15", budget: "50000", customerId: "CUST-001", status: "active" });
+    }
+    res.json(cpgPromoStore);
+  });
+
+  app.get("/api/cpg-crm", (req, res) => {
+    if (cpgCrmStore.length === 0) {
+      cpgCrmStore.push({ id: "c1", customerId: "CUST-001", points: "5000", tier: "premium" });
+    }
+    res.json(cpgCrmStore);
+  });
+
+  app.get("/api/cpg-returns", (req, res) => {
+    if (cpgRetStore.length === 0) {
+      cpgRetStore.push({ id: "ret1", rmaId: "RMA-001", reason: "Damaged", refund: "500", status: "processed" });
+    }
+    res.json(cpgRetStore);
+  });
+
+  app.get("/api/cpg-costing", (req, res) => {
+    if (cpgCostStore.length === 0) {
+      cpgCostStore.push({ id: "cos1", sku: "SKU-001", cost: "2.50", msrp: "5.99", margin: "58", collection: "Standard" });
+    }
+    res.json(cpgCostStore);
+  });
+
+  app.get("/api/cpg-compliance", (req, res) => {
+    if (cpgCompStore.length === 0) {
+      cpgCompStore.push({ id: "comp1", itemId: "ITEM-001", type: "Ingredient", ecoScore: "8", compliant: true, certified: true });
+    }
+    res.json(cpgCompStore);
+  });
+
+  app.get("/api/cpg-analytics", (req, res) => {
+    if (cpgAnalyticsStore.length === 0) {
+      cpgAnalyticsStore.push({ id: "a1", sku: "SKU-001", sellThru: "82", returnRate: "2.1", channel: "Retail" });
+    }
+    res.json(cpgAnalyticsStore);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
