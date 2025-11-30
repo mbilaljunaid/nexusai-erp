@@ -1251,7 +1251,7 @@ function Router() {
       <Route path="/retail-supply" component={SupplyChainRetail} />
       <Route path="/retail-warehouse" component={Warehouse} />
       <Route path="/retail-shipping" component={LogisticsShipping} />
-      <Route path="/retail-campaigns" component={MarketingCampaigns} />
+      // <Route path="/retail-campaigns" component={MarketingCampaigns} /> REMOVED - component not defined
       <Route path="/retail-recommendations" component={ProductRecommendations} />
       <Route path="/retail-analytics" component={RetailAnalytics} />
       <Route path="/retail-hr" component={HRRetail} />
@@ -1597,3 +1597,17 @@ const InsuranceAIFraudDetection = lazy(() => import("@/pages/InsuranceAIFraudDet
 const InsuranceBIDashboards = lazy(() => import("@/pages/InsuranceBIDashboards"));
 const InsuranceMobileApp = lazy(() => import("@/pages/InsuranceMobileApp"));
 const InsuranceReporting = lazy(() => import("@/pages/InsuranceReporting"));
+
+// Telecommunications Pack (Industry Pack 37)
+const TelecomSubscriberManagement = lazy(() => import("@/pages/TelecomSubscriberManagement"));
+const TelecomPlansPackages = lazy(() => import("@/pages/TelecomPlansPackages"));
+const TelecomBillingInvoicing = lazy(() => import("@/pages/TelecomBillingInvoicing"));
+const TelecomNetworkOperations = lazy(() => import("@/pages/TelecomNetworkOperations"));
+const TelecomCRMEngagement = lazy(() => import("@/pages/TelecomCRMEngagement"));
+const TelecomServiceProvisioning = lazy(() => import("@/pages/TelecomServiceProvisioning"));
+const TelecomHRWorkforce = lazy(() => import("@/pages/TelecomHRWorkforce"));
+const TelecomAIOptimization = lazy(() => import("@/pages/TelecomAIOptimization"));
+const TelecomBIDashboards = lazy(() => import("@/pages/TelecomBIDashboards"));
+const TelecomCompliance = lazy(() => import("@/pages/TelecomCompliance"));
+const TelecomMobileApp = lazy(() => import("@/pages/TelecomMobileApp"));
+const TelecomReporting = lazy(() => import("@/pages/TelecomReporting"));

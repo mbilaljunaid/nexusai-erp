@@ -1,0 +1,290 @@
+Generating Industry Pack 38 — MEDIA & ENTERTAINMENT in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Media & Entertainment Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 38 — MEDIA & ENTERTAINMENT
+
+Purpose: End-to-end solution for media companies, broadcasters, streaming platforms, content creators, film studios, and entertainment agencies, covering content management, production workflows, distribution, subscription & billing, advertising & marketing, CRM & audience engagement, HR & workforce, AI-driven content recommendations & analytics, BI & dashboards, regulatory compliance, mobile apps, and integrations with OTT platforms, advertising networks, social media, and payment gateways. Delivered as an industry template that auto-enables and configures all related modules.
+
+Auto-enable modules when template is selected: Content Management, Production & Studio Workflows, Distribution, Subscription & Billing, Advertising & Marketing, CRM & Audience Engagement, HR & Workforce, AI / ML Content Recommendation & Analytics, BI & Dashboards, Regulatory Compliance, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+⸻
+
+1. CONTENT MANAGEMENT
+
+Screens / Forms
+	•	Content library (video, audio, images, scripts)
+	•	Metadata & tagging
+	•	Rights & licensing management
+	•	Version control & approval workflow
+
+Fields
+ContentID, Title, Type, Category, Rights, Status, AuditFields.
+
+Validations
+	•	Duplicate content detection
+	•	License validity
+	•	Metadata completeness
+
+Workflows
+	•	Upload content → Tag & categorize → Review & approve → Publish → Track usage
+
+⸻
+
+2. PRODUCTION & STUDIO WORKFLOWS
+
+Screens / Forms
+	•	Project & episode master
+	•	Production schedule & resources
+	•	Crew & cast assignment
+	•	Task tracking & approvals
+
+Fields
+ProjectID, EpisodeID, TaskID, ResourceID, Schedule, Status, AuditFields.
+
+Validations
+	•	Resource availability
+	•	Schedule conflicts
+	•	Task dependencies
+
+Workflows
+	•	Create project → Assign resources → Track production → Approvals → Complete → Archive
+
+⸻
+
+3. DISTRIBUTION
+
+Screens / Forms
+	•	Channel & platform configuration (TV, OTT, streaming)
+	•	Content release schedules
+	•	Rights & geo-restrictions
+	•	Licensing & revenue tracking
+
+Fields
+ContentID, PlatformID, Schedule, Rights, Revenue, Status, AuditFields.
+
+Validations
+	•	Platform eligibility
+	•	Rights compliance
+	•	Schedule conflicts
+
+Workflows
+	•	Assign content → Configure platform & schedule → Release → Track performance → Renew / retire
+
+⸻
+
+4. SUBSCRIPTION & BILLING
+
+Screens / Forms
+	•	Subscriber management (individual & corporate)
+	•	Subscription plans & packages
+	•	Invoicing & recurring billing
+	•	Refunds & adjustments
+
+Fields
+SubscriberID, SubscriptionID, PlanID, Amount, PaymentStatus, AuditFields.
+
+Validations
+	•	Plan eligibility
+	•	Payment verification
+	•	Refund / adjustment authorization
+
+Workflows
+	•	Subscribe → Activate plan → Process billing → Reconcile → Renew / cancel
+
+⸻
+
+5. ADVERTISING & MARKETING
+
+Screens / Forms
+	•	Ad campaign creation & tracking
+	•	Audience segmentation
+	•	Revenue from ads & sponsorships
+	•	Analytics & reporting
+
+Fields
+CampaignID, ContentID, AudienceSegment, Revenue, Status, AuditFields.
+
+Validations
+	•	Targeting accuracy
+	•	Revenue recognition
+	•	Campaign compliance
+
+Workflows
+	•	Create campaign → Assign content → Track impressions & revenue → Analyze → Optimize
+
+⸻
+
+6. CRM & AUDIENCE ENGAGEMENT
+
+Screens / Forms
+	•	Subscriber support & ticketing
+	•	Surveys & feedback
+	•	Notifications for content, events, promotions
+	•	Loyalty & reward programs
+
+Fields
+SubscriberID, InteractionID, FeedbackID, CampaignID, AuditFields.
+
+Validations
+	•	SLA adherence
+	•	Duplicate interaction detection
+	•	Consent / opt-in compliance
+
+Workflows
+	•	Capture interaction → Assign → Respond → Notify → Track engagement
+
+⸻
+
+7. HR & WORKFORCE MANAGEMENT
+
+Screens / Forms
+	•	Employee master (creative, production, operations, admin)
+	•	Payroll, attendance, performance
+	•	Role & shift management
+	•	Training & certification
+
+Fields
+EmployeeID, Role, Department, Shift, PayrollID, TrainingID, AuditFields.
+
+Validations
+	•	Role eligibility
+	•	Attendance & payroll accuracy
+
+Workflows
+	•	Onboard → Assign role → Track attendance → Evaluate → Payroll
+
+⸻
+
+8. AI & CONTENT RECOMMENDATION / ANALYTICS
+
+Use Cases
+	•	Personalized content recommendations
+	•	Audience engagement prediction
+	•	Churn prediction & retention
+	•	Revenue & campaign optimization
+
+Controls
+	•	Human review for recommendation and content moderation decisions
+
+⸻
+
+9. BI & DASHBOARDS
+
+Prebuilt Dashboards
+	•	Content consumption metrics
+	•	Subscriber growth & churn
+	•	Revenue & ARPU per platform
+	•	Campaign & advertising performance
+	•	Production KPIs
+
+Ad-hoc
+	•	Drill down by content → project → platform → subscriber → revenue
+
+⸻
+
+10. REGULATORY COMPLIANCE
+
+Screens / Forms
+	•	Content copyright & licensing compliance
+	•	Broadcasting regulations & geo-restrictions
+	•	DRM tracking & reporting
+	•	Exception management
+
+Fields
+ComplianceID, ContentID, PlatformID, Status, AuditFields.
+
+Validations
+	•	Licensing validity
+	•	Regulatory adherence
+
+Workflows
+	•	Capture compliance → Validate → Report → Track exceptions → Resolve
+
+⸻
+
+11. MOBILE APPS
+
+Subscriber App
+	•	Browse content, subscribe, watch/listen, pay, receive notifications
+Staff App
+	•	Production tracking, content approvals, campaign management
+Manager App
+	•	Dashboards, KPIs, workflow approvals, compliance monitoring
+
+⸻
+
+12. ROLES & PERMISSIONS
+
+Core Roles
+	•	Subscriber / Viewer
+	•	Content Creator
+	•	Production Crew
+	•	Marketing / Ad Manager
+	•	Compliance Officer
+	•	Finance / Accounts
+	•	HR / Payroll
+	•	IT / Integration Engineer
+	•	Admin
+
+Permission Notes
+	•	Role-based access enforced for content, campaigns, subscribers, billing, and compliance
+
+⸻
+
+13. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	200 content items, 50 subscribers, 20 campaigns, 30 production projects, 20 employees
+
+Onboarding Steps
+	•	Upload content → Assign metadata → Create subscribers → Activate subscriptions → Run campaigns → Track consumption → Validate dashboards
+
+⸻
+
+14. INTEGRATIONS & CONNECTORS
+
+Suggested Integrations
+	•	OTT & streaming platforms
+	•	Social media & marketing channels
+	•	Payment gateways & wallets
+	•	DRM & copyright management tools
+	•	BI / analytics platforms
+
+Integration Rules
+	•	Idempotent ingestion, audit logging, secure credential storage
+
+⸻
+
+15. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	New content published → notify subscribers
+	•	Ad campaign underperformance → alert marketing
+	•	Payment failure → notify customer & finance
+	•	Compliance exceptions → escalate to management
+
+⸻
+
+16. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+Idempotency & Safety
+	•	Seeders check natural keys (ContentID + SubscriberID + CampaignID) before insert
+	•	Migrations additive; destructive changes require rollback scripts
+	•	Feature flags per tenant for AI recommendations, mobile notifications, multi-platform operations
+
+Testing
+	•	Content lifecycle → production → distribution → subscriptions → campaigns → dashboards
+
+⸻
+
+17. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you want me to generate Industry Pack 39 — HOSPITALITY & TRAVEL next, reply “Yes” and I will produce it in the same format.

@@ -5724,45 +5724,6 @@ export async function registerRoutes(
   app.get("/api/hospitality-itinerary", (req, res) => { if (hospItinStore.length === 0) hospItinStore.push({ id: "hit1", itineraryId: "ITIN-001", days: "7", status: "confirmed" }); res.json(hospItinStore); });
   app.post("/api/hospitality-itinerary", (req, res) => { const hit = { id: `hit-${Date.now()}`, ...req.body }; hospItinStore.push(hit); res.status(201).json(hit); });
 
-  // ========== INDUSTRY PACK 29: TELECOM & MEDIA ==========
-  const telSubStore: any[] = []; const telSvcStore: any[] = []; const telBillStore: any[] = [];
-  const telContStore: any[] = []; const telCrmStore: any[] = []; const telMktStore: any[] = [];
-  const telHrStore: any[] = []; const telAnalStore: any[] = []; const telBiStore: any[] = [];
-  const telNetStore: any[] = []; const telFsStore: any[] = [];
-
-  app.get("/api/telecom-subscribers", (req, res) => { if (telSubStore.length === 0) telSubStore.push({ id: "ts1", subscriberId: "SUB-001", plan: "premium", status: "active" }); res.json(telSubStore); });
-  app.post("/api/telecom-subscribers", (req, res) => { const ts = { id: `ts-${Date.now()}`, ...req.body }; telSubStore.push(ts); res.status(201).json(ts); });
-
-  app.get("/api/telecom-services", (req, res) => { if (telSvcStore.length === 0) telSvcStore.push({ id: "tsv1", serviceId: "SVC-001", sla: "99.9", status: "active" }); res.json(telSvcStore); });
-  app.post("/api/telecom-services", (req, res) => { const tsv = { id: `tsv-${Date.now()}`, ...req.body }; telSvcStore.push(tsv); res.status(201).json(tsv); });
-
-  app.get("/api/telecom-billing", (req, res) => { if (telBillStore.length === 0) telBillStore.push({ id: "tb1", invoiceId: "INV-001", amount: "500", status: "paid" }); res.json(telBillStore); });
-  app.post("/api/telecom-billing", (req, res) => { const tb = { id: `tb-${Date.now()}`, ...req.body }; telBillStore.push(tb); res.status(201).json(tb); });
-
-  app.get("/api/telecom-content", (req, res) => { if (telContStore.length === 0) telContStore.push({ id: "tc1", title: "Content", type: "video", licensed: true }); res.json(telContStore); });
-  app.post("/api/telecom-content", (req, res) => { const tc = { id: `tc-${Date.now()}`, ...req.body }; telContStore.push(tc); res.status(201).json(tc); });
-
-  app.get("/api/telecom-crm", (req, res) => { if (telCrmStore.length === 0) telCrmStore.push({ id: "tcm1", ticketId: "TKT-001", priority: "high", status: "open" }); res.json(telCrmStore); });
-  app.post("/api/telecom-crm", (req, res) => { const tcm = { id: `tcm-${Date.now()}`, ...req.body }; telCrmStore.push(tcm); res.status(201).json(tcm); });
-
-  app.get("/api/telecom-marketing", (req, res) => { if (telMktStore.length === 0) telMktStore.push({ id: "tm1", campaignId: "CAMP-001", channel: "sms", status: "active" }); res.json(telMktStore); });
-  app.post("/api/telecom-marketing", (req, res) => { const tm = { id: `tm-${Date.now()}`, ...req.body }; telMktStore.push(tm); res.status(201).json(tm); });
-
-  app.get("/api/telecom-hr", (req, res) => { if (telHrStore.length === 0) telHrStore.push({ id: "thr1", employeeId: "EMP-001", role: "engineer", status: "active" }); res.json(telHrStore); });
-  app.post("/api/telecom-hr", (req, res) => { const thr = { id: `thr-${Date.now()}`, ...req.body }; telHrStore.push(thr); res.status(201).json(thr); });
-
-  app.get("/api/telecom-analytics", (req, res) => { if (telAnalStore.length === 0) telAnalStore.push({ id: "ta1", modelId: "MODEL-001", type: "churn", churnRisk: "low" }); res.json(telAnalStore); });
-  app.post("/api/telecom-analytics", (req, res) => { const ta = { id: `ta-${Date.now()}`, ...req.body }; telAnalStore.push(ta); res.status(201).json(ta); });
-
-  app.get("/api/telecom-bi", (req, res) => { if (telBiStore.length === 0) telBiStore.push({ id: "tbi1", dashboardId: "DASH-001", subscribers: "50000", arpu: "25" }); res.json(telBiStore); });
-  app.post("/api/telecom-bi", (req, res) => { const tbi = { id: `tbi-${Date.now()}`, ...req.body }; telBiStore.push(tbi); res.status(201).json(tbi); });
-
-  app.get("/api/telecom-network", (req, res) => { if (telNetStore.length === 0) telNetStore.push({ id: "tn1", elementId: "ELEM-001", type: "router", status: "healthy" }); res.json(telNetStore); });
-  app.post("/api/telecom-network", (req, res) => { const tn = { id: `tn-${Date.now()}`, ...req.body }; telNetStore.push(tn); res.status(201).json(tn); });
-
-  app.get("/api/telecom-fieldservice", (req, res) => { if (telFsStore.length === 0) telFsStore.push({ id: "tfs1", workOrderId: "WO-001", technicianId: "TECH-001", status: "completed" }); res.json(telFsStore); });
-  app.post("/api/telecom-fieldservice", (req, res) => { const tfs = { id: `tfs-${Date.now()}`, ...req.body }; telFsStore.push(tfs); res.status(201).json(tfs); });
-
   // ========== INDUSTRY PACK 30: GOVERNMENT & PUBLIC SECTOR ==========
   const govCitStore: any[] = []; const govSvcStore: any[] = []; const govFinStore: any[] = [];
   const govHrStore: any[] = []; const govProcStore: any[] = []; const govProjStore: any[] = [];
@@ -5843,46 +5804,46 @@ export async function registerRoutes(
   app.get("/api/retail-kpis", (req, res) => { res.json({ totalSales: 1250000, totalOrders: 1234, avgOrderValue: 1014, totalCustomers: 567, activePromotions: 12 }); });
 
 
-  // ========== INDUSTRY PACK 36: INSURANCE ==========
-  const insPolStore: any[] = [];
-  const insUWStore: any[] = [];
-  const insClaimStore: any[] = [];
-  const insCustStore: any[] = [];
-  const insBillStore: any[] = [];
-  const insCRMStore: any[] = [];
-  const insRiskStore: any[] = [];
-  const insEmpStore: any[] = [];
-  const insFraudStore: any[] = [];
-  const insDashStore: any[] = [];
+  // ========== INDUSTRY PACK 37: TELECOMMUNICATIONS ==========
+  const telSubStore: any[] = [];
+  const telPlanStore: any[] = [];
+  const telBillStore: any[] = [];
+  const telNetStore: any[] = [];
+  const telCRMStore: any[] = [];
+  const telProvStore: any[] = [];
+  const telEmpStore: any[] = [];
+  const telOptStore: any[] = [];
+  const telCompStore: any[] = [];
+  const telUsageStore: any[] = [];
 
-  app.get("/api/insurance-policies", (req, res) => { if (insPolStore.length === 0) { for (let i = 1; i <= 15; i++) { insPolStore.push({ id: `pol${i}`, policyId: `POL-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, policyType: i % 3 === 0 ? 'Life' : i % 3 === 1 ? 'Health' : 'Property', coverage: 500000 + (i * 50000), premium: 5000 + (i * 500), status: 'ACTIVE' }); } } res.json(insPolStore); });
-  app.post("/api/insurance-policies", (req, res) => { const p = { id: `pol-${Date.now()}`, ...req.body }; insPolStore.push(p); res.status(201).json(p); });
+  app.get("/api/telecom-subscribers", (req, res) => { if (telSubStore.length === 0) { for (let i = 1; i <= 20; i++) { telSubStore.push({ id: `sub${i}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, name: `Subscriber ${i}`, phone: `+91-98${String(i).padStart(8,'0')}`, accountStatus: 'ACTIVE', planId: `PLAN-${String((i%5)+1).padStart(2,'0')}` }); } } res.json(telSubStore); });
+  app.post("/api/telecom-subscribers", (req, res) => { const s = { id: `sub-${Date.now()}`, ...req.body }; telSubStore.push(s); res.status(201).json(s); });
 
-  app.get("/api/insurance-underwriting", (req, res) => { if (insUWStore.length === 0) { for (let i = 1; i <= 10; i++) { insUWStore.push({ id: `uw${i}`, appId: `APP-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, riskScore: 40 + (i * 5), coverage: 300000 + (i * 50000), status: i % 2 === 0 ? 'APPROVED' : 'PENDING' }); } } res.json(insUWStore); });
-  app.post("/api/insurance-underwriting", (req, res) => { const u = { id: `uw-${Date.now()}`, ...req.body }; insUWStore.push(u); res.status(201).json(u); });
+  app.get("/api/telecom-plans", (req, res) => { if (telPlanStore.length === 0) { for (let i = 1; i <= 8; i++) { telPlanStore.push({ id: `plan${i}`, planId: `PLAN-${String(i).padStart(2,'0')}`, name: `Plan ${i}`, type: i % 2 === 0 ? 'Postpaid' : 'Prepaid', price: 499 + (i * 100), validity: 28 + (i * 2), data: 1 + (i * 0.5), status: 'ACTIVE' }); } } res.json(telPlanStore); });
+  app.post("/api/telecom-plans", (req, res) => { const p = { id: `plan-${Date.now()}`, ...req.body }; telPlanStore.push(p); res.status(201).json(p); });
 
-  app.get("/api/insurance-claims", (req, res) => { if (insClaimStore.length === 0) { for (let i = 1; i <= 12; i++) { insClaimStore.push({ id: `claim${i}`, claimId: `CLAIM-${String(i).padStart(5,'0')}`, policyId: `POL-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, amount: 50000 + (i * 10000), claimType: i % 2 === 0 ? 'Health' : 'Claim', status: i % 3 === 0 ? 'APPROVED' : i % 3 === 1 ? 'PENDING' : 'PAID' }); } } res.json(insClaimStore); });
-  app.post("/api/insurance-claims", (req, res) => { const c = { id: `claim-${Date.now()}`, ...req.body }; insClaimStore.push(c); res.status(201).json(c); });
+  app.get("/api/telecom-billing", (req, res) => { if (telBillStore.length === 0) { for (let i = 1; i <= 12; i++) { telBillStore.push({ id: `bill${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, amount: 499 + (i * 100), paymentStatus: i % 2 === 0 ? 'PAID' : 'PENDING', dueDate: new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0] }); } } res.json(telBillStore); });
+  app.post("/api/telecom-billing", (req, res) => { const b = { id: `bill-${Date.now()}`, ...req.body }; telBillStore.push(b); res.status(201).json(b); });
 
-  app.get("/api/insurance-customers", (req, res) => { if (insCustStore.length === 0) { for (let i = 1; i <= 12; i++) { insCustStore.push({ id: `cust${i}`, customerId: `CUST-${String(i).padStart(3,'0')}`, name: `Customer ${i}`, email: `cust${i}@insurance.com`, phone: `+91-${String(i).padStart(10,'0')}`, status: 'ACTIVE' }); } } res.json(insCustStore); });
-  app.post("/api/insurance-customers", (req, res) => { const cu = { id: `cust-${Date.now()}`, ...req.body }; insCustStore.push(cu); res.status(201).json(cu); });
+  app.get("/api/telecom-network", (req, res) => { if (telNetStore.length === 0) { for (let i = 1; i <= 10; i++) { telNetStore.push({ id: `net${i}`, networkId: `NET-${String(i).padStart(3,'0')}`, deviceType: i % 2 === 0 ? 'Tower' : 'BTS', trafficLoad: 40 + (i * 5), uptime: 99.9, status: 'OPERATIONAL' }); } } res.json(telNetStore); });
+  app.post("/api/telecom-network", (req, res) => { const n = { id: `net-${Date.now()}`, ...req.body }; telNetStore.push(n); res.status(201).json(n); });
 
-  app.get("/api/insurance-billing", (req, res) => { if (insBillStore.length === 0) { for (let i = 1; i <= 10; i++) { insBillStore.push({ id: `bill${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, policyId: `POL-${String(i).padStart(4,'0')}`, amount: 5000 + (i * 500), paymentStatus: i % 2 === 0 ? 'PAID' : 'PENDING', dueDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0] }); } } res.json(insBillStore); });
-  app.post("/api/insurance-billing", (req, res) => { const b = { id: `bill-${Date.now()}`, ...req.body }; insBillStore.push(b); res.status(201).json(b); });
+  app.get("/api/telecom-crm", (req, res) => { if (telCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { telCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, type: i % 2 === 0 ? 'CALL' : 'SMS', subject: 'Plan Inquiry', status: 'COMPLETED' }); } } res.json(telCRMStore); });
+  app.post("/api/telecom-crm", (req, res) => { const c = { id: `crm-${Date.now()}`, ...req.body }; telCRMStore.push(c); res.status(201).json(c); });
 
-  app.get("/api/insurance-crm", (req, res) => { if (insCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { insCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, type: i % 2 === 0 ? 'CALL' : 'EMAIL', subject: 'Policy Inquiry', status: 'COMPLETED' }); } } res.json(insCRMStore); });
-  app.post("/api/insurance-crm", (req, res) => { const cr = { id: `crm-${Date.now()}`, ...req.body }; insCRMStore.push(cr); res.status(201).json(cr); });
+  app.get("/api/telecom-provisioning", (req, res) => { if (telProvStore.length === 0) { for (let i = 1; i <= 10; i++) { telProvStore.push({ id: `prov${i}`, serviceId: `SVC-${String(i).padStart(4,'0')}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, service: i % 2 === 0 ? 'Voice' : 'Data', activationDate: new Date(Date.now() - i * 86400000).toISOString().split('T')[0], status: 'ACTIVE' }); } } res.json(telProvStore); });
+  app.post("/api/telecom-provisioning", (req, res) => { const pr = { id: `prov-${Date.now()}`, ...req.body }; telProvStore.push(pr); res.status(201).json(pr); });
 
-  app.get("/api/insurance-risk", (req, res) => { if (insRiskStore.length === 0) { insRiskStore.push({ id: 'risk1', regulation: 'IRDA', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }, { id: 'risk2', regulation: 'KYC', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }); } res.json(insRiskStore); });
-  app.post("/api/insurance-risk", (req, res) => { const r = { id: `risk-${Date.now()}`, ...req.body }; insRiskStore.push(r); res.status(201).json(r); });
+  app.get("/api/telecom-employees", (req, res) => { if (telEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { telEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Engineer' : i % 3 === 1 ? 'Support' : 'Admin', department: 'Operations', status: 'ACTIVE' }); } } res.json(telEmpStore); });
+  app.post("/api/telecom-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; telEmpStore.push(e); res.status(201).json(e); });
 
-  app.get("/api/insurance-employees", (req, res) => { if (insEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { insEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Underwriter' : i % 3 === 1 ? 'Claims Adjuster' : 'Admin', department: 'Operations', status: 'ACTIVE' }); } } res.json(insEmpStore); });
-  app.post("/api/insurance-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; insEmpStore.push(e); res.status(201).json(e); });
+  app.get("/api/telecom-optimization", (req, res) => { res.json([{ id: 'opt1', prediction: 'Network load: High', confidence: 85, recommendation: 'Activate backup capacity' }, { id: 'opt2', prediction: 'Churn risk: Low', confidence: 92, recommendation: 'Continue engagement' }]); });
+  app.post("/api/telecom-optimization", (req, res) => { const o = { id: `opt-${Date.now()}`, ...req.body }; res.status(201).json(o); });
 
-  app.get("/api/insurance-fraud", (req, res) => { res.json([{ id: 'f1', claimId: 'CLAIM-00001', riskScore: 25, status: 'LOW_RISK' }, { id: 'f2', claimId: 'CLAIM-00002', riskScore: 88, status: 'HIGH_RISK' }]); });
-  app.post("/api/insurance-fraud", (req, res) => { const f = { id: `fraud-${Date.now()}`, ...req.body }; res.status(201).json(f); });
+  app.get("/api/telecom-compliance", (req, res) => { if (telCompStore.length === 0) { telCompStore.push({ id: 'comp1', regulation: 'Spectrum License', status: 'COMPLIANT' }, { id: 'comp2', regulation: 'Privacy Act', status: 'COMPLIANT' }); } res.json(telCompStore); });
+  app.post("/api/telecom-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; telCompStore.push(co); res.status(201).json(co); });
 
-  app.get("/api/insurance-dashboards", (req, res) => { res.json({ totalPolicies: 850, activeClaims: 120, premiumCollected: 42500000, customerSatisfaction: 92, fraudDetected: 8 }); });
+  app.get("/api/telecom-usage", (req, res) => { res.json({ totalSubscribers: 5000, activeSubscribers: 4850, totalRevenue: 24500000, networkUptime: 99.95, topPlan: 'Plan 3' }); });
 
   return httpServer;
 }
