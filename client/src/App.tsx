@@ -274,6 +274,12 @@ const MRPDashboardFull = lazy(() => import("@/pages/MRPDashboardFull"));
 const WIPTracking = lazy(() => import("@/pages/WIPTracking"));
 const NCRManagement = lazy(() => import("@/pages/NCRManagement"));
 const StandardCosting = lazy(() => import("@/pages/StandardCosting"));
+const TradeComplianceDashboard = lazy(() => import("@/pages/TradeComplianceDashboard"));
+const TransportationManagementSystem = lazy(() => import("@/pages/TransportationManagementSystem"));
+const OrderFulfillment = lazy(() => import("@/pages/OrderFulfillment"));
+const RMAManagement = lazy(() => import("@/pages/RMAManagement"));
+const SupplyNetworkOptimization = lazy(() => import("@/pages/SupplyNetworkOptimization"));
+const ThirdPartyLogistics = lazy(() => import("@/pages/ThirdPartyLogistics"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -759,6 +765,12 @@ function Router() {
       <Route path="/wip-tracking" component={WIPTracking} />
       <Route path="/ncr-management" component={NCRManagement} />
       <Route path="/standard-costing" component={StandardCosting} />
+      <Route path="/trade-compliance" component={TradeComplianceDashboard} />
+      <Route path="/transportation-management" component={TransportationManagementSystem} />
+      <Route path="/order-fulfillment" component={OrderFulfillment} />
+      <Route path="/rma-management" component={RMAManagement} />
+      <Route path="/supply-network" component={SupplyNetworkOptimization} />
+      <Route path="/3pl-management" component={ThirdPartyLogistics} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
