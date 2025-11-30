@@ -77,7 +77,7 @@ export default function TaxManagement() {
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Active Codes</p>
-            <p className="text-2xl font-bold text-green-600">{taxCodes.filter(t => t.status === "active").length}</p>
+            <p className="text-2xl font-bold text-green-600">{taxCodes.filter((t: any) => t.status === "active").length}</p>
           </CardContent>
         </Card>
         <Card className="p-3">
