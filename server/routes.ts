@@ -5843,52 +5843,46 @@ export async function registerRoutes(
   app.get("/api/retail-kpis", (req, res) => { res.json({ totalSales: 1250000, totalOrders: 1234, avgOrderValue: 1014, totalCustomers: 567, activePromotions: 12 }); });
 
 
-  // ========== INDUSTRY PACK 35: BANKING & FINANCIAL SERVICES ==========
-  const bankAcctStore: any[] = [];
-  const bankCustStore: any[] = [];
-  const bankLoanStore: any[] = [];
-  const bankDepStore: any[] = [];
-  const bankTxnStore: any[] = [];
-  const bankRiskStore: any[] = [];
-  const bankCRMStore: any[] = [];
-  const bankTreasStore: any[] = [];
-  const bankEmpStore: any[] = [];
-  const bankCompStore: any[] = [];
+  // ========== INDUSTRY PACK 36: INSURANCE ==========
+  const insPolStore: any[] = [];
+  const insUWStore: any[] = [];
+  const insClaimStore: any[] = [];
+  const insCustStore: any[] = [];
+  const insBillStore: any[] = [];
+  const insCRMStore: any[] = [];
+  const insRiskStore: any[] = [];
+  const insEmpStore: any[] = [];
+  const insFraudStore: any[] = [];
+  const insDashStore: any[] = [];
 
-  app.get("/api/banking-accounts", (req, res) => { if (bankAcctStore.length === 0) { for (let i = 1; i <= 20; i++) { bankAcctStore.push({ id: `acct${i}`, accountId: `ACC-${String(i).padStart(5,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, accountType: i % 2 === 0 ? 'Savings' : 'Checking', balance: 100000 + (i * 5000), status: 'ACTIVE' }); } } res.json(bankAcctStore); });
-  app.post("/api/banking-accounts", (req, res) => { const a = { id: `acct-${Date.now()}`, ...req.body }; bankAcctStore.push(a); res.status(201).json(a); });
+  app.get("/api/insurance-policies", (req, res) => { if (insPolStore.length === 0) { for (let i = 1; i <= 15; i++) { insPolStore.push({ id: `pol${i}`, policyId: `POL-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, policyType: i % 3 === 0 ? 'Life' : i % 3 === 1 ? 'Health' : 'Property', coverage: 500000 + (i * 50000), premium: 5000 + (i * 500), status: 'ACTIVE' }); } } res.json(insPolStore); });
+  app.post("/api/insurance-policies", (req, res) => { const p = { id: `pol-${Date.now()}`, ...req.body }; insPolStore.push(p); res.status(201).json(p); });
 
-  app.get("/api/banking-customers", (req, res) => { if (bankCustStore.length === 0) { for (let i = 1; i <= 15; i++) { bankCustStore.push({ id: `cust${i}`, customerId: `CUST-${String(i).padStart(3,'0')}`, name: `Customer ${i}`, email: `customer${i}@bank.com`, phone: `+91-${String(i).padStart(10,'0')}`, kycStatus: 'VERIFIED', status: 'ACTIVE' }); } } res.json(bankCustStore); });
-  app.post("/api/banking-customers", (req, res) => { const c = { id: `cust-${Date.now()}`, ...req.body }; bankCustStore.push(c); res.status(201).json(c); });
+  app.get("/api/insurance-underwriting", (req, res) => { if (insUWStore.length === 0) { for (let i = 1; i <= 10; i++) { insUWStore.push({ id: `uw${i}`, appId: `APP-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, riskScore: 40 + (i * 5), coverage: 300000 + (i * 50000), status: i % 2 === 0 ? 'APPROVED' : 'PENDING' }); } } res.json(insUWStore); });
+  app.post("/api/insurance-underwriting", (req, res) => { const u = { id: `uw-${Date.now()}`, ...req.body }; insUWStore.push(u); res.status(201).json(u); });
 
-  app.get("/api/banking-loans", (req, res) => { if (bankLoanStore.length === 0) { for (let i = 1; i <= 10; i++) { bankLoanStore.push({ id: `loan${i}`, loanId: `LOAN-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, amount: 500000 + (i * 100000), interestRate: 7 + (i * 0.5), status: i % 2 === 0 ? 'ACTIVE' : 'APPROVED' }); } } res.json(bankLoanStore); });
-  app.post("/api/banking-loans", (req, res) => { const l = { id: `loan-${Date.now()}`, ...req.body }; bankLoanStore.push(l); res.status(201).json(l); });
+  app.get("/api/insurance-claims", (req, res) => { if (insClaimStore.length === 0) { for (let i = 1; i <= 12; i++) { insClaimStore.push({ id: `claim${i}`, claimId: `CLAIM-${String(i).padStart(5,'0')}`, policyId: `POL-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, amount: 50000 + (i * 10000), claimType: i % 2 === 0 ? 'Health' : 'Claim', status: i % 3 === 0 ? 'APPROVED' : i % 3 === 1 ? 'PENDING' : 'PAID' }); } } res.json(insClaimStore); });
+  app.post("/api/insurance-claims", (req, res) => { const c = { id: `claim-${Date.now()}`, ...req.body }; insClaimStore.push(c); res.status(201).json(c); });
 
-  app.get("/api/banking-deposits", (req, res) => { if (bankDepStore.length === 0) { for (let i = 1; i <= 10; i++) { bankDepStore.push({ id: `dep${i}`, depositId: `DEP-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, amount: 50000 + (i * 5000), interestRate: 5 + (i * 0.25), maturityDate: new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0], status: 'ACTIVE' }); } } res.json(bankDepStore); });
-  app.post("/api/banking-deposits", (req, res) => { const d = { id: `dep-${Date.now()}`, ...req.body }; bankDepStore.push(d); res.status(201).json(d); });
+  app.get("/api/insurance-customers", (req, res) => { if (insCustStore.length === 0) { for (let i = 1; i <= 12; i++) { insCustStore.push({ id: `cust${i}`, customerId: `CUST-${String(i).padStart(3,'0')}`, name: `Customer ${i}`, email: `cust${i}@insurance.com`, phone: `+91-${String(i).padStart(10,'0')}`, status: 'ACTIVE' }); } } res.json(insCustStore); });
+  app.post("/api/insurance-customers", (req, res) => { const cu = { id: `cust-${Date.now()}`, ...req.body }; insCustStore.push(cu); res.status(201).json(cu); });
 
-  app.get("/api/banking-transactions", (req, res) => { if (bankTxnStore.length === 0) { for (let i = 1; i <= 15; i++) { bankTxnStore.push({ id: `txn${i}`, transactionId: `TXN-${String(i).padStart(6,'0')}`, fromAccount: `ACC-${String(Math.floor(Math.random()*20)+1).padStart(5,'0')}`, toAccount: `ACC-${String(Math.floor(Math.random()*20)+1).padStart(5,'0')}`, amount: 1000 + (i * 500), status: 'SUCCESS' }); } } res.json(bankTxnStore); });
-  app.post("/api/banking-transactions", (req, res) => { const t = { id: `txn-${Date.now()}`, ...req.body }; bankTxnStore.push(t); res.status(201).json(t); });
+  app.get("/api/insurance-billing", (req, res) => { if (insBillStore.length === 0) { for (let i = 1; i <= 10; i++) { insBillStore.push({ id: `bill${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, policyId: `POL-${String(i).padStart(4,'0')}`, amount: 5000 + (i * 500), paymentStatus: i % 2 === 0 ? 'PAID' : 'PENDING', dueDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0] }); } } res.json(insBillStore); });
+  app.post("/api/insurance-billing", (req, res) => { const b = { id: `bill-${Date.now()}`, ...req.body }; insBillStore.push(b); res.status(201).json(b); });
 
-  app.get("/api/banking-risk", (req, res) => { if (bankRiskStore.length === 0) { bankRiskStore.push({ id: 'risk1', type: 'AML', status: 'COMPLIANT', alerts: 0 }, { id: 'risk2', type: 'KYC', status: 'COMPLIANT', alerts: 0 }, { id: 'risk3', type: 'Credit Risk', status: 'MONITORED', alerts: 2 }); } res.json(bankRiskStore); });
-  app.post("/api/banking-risk", (req, res) => { const r = { id: `risk-${Date.now()}`, ...req.body }; bankRiskStore.push(r); res.status(201).json(r); });
+  app.get("/api/insurance-crm", (req, res) => { if (insCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { insCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, type: i % 2 === 0 ? 'CALL' : 'EMAIL', subject: 'Policy Inquiry', status: 'COMPLETED' }); } } res.json(insCRMStore); });
+  app.post("/api/insurance-crm", (req, res) => { const cr = { id: `crm-${Date.now()}`, ...req.body }; insCRMStore.push(cr); res.status(201).json(cr); });
 
-  app.get("/api/banking-crm", (req, res) => { if (bankCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { bankCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, type: i % 2 === 0 ? 'CALL' : 'EMAIL', subject: 'Product Offer', status: 'COMPLETED' }); } } res.json(bankCRMStore); });
-  app.post("/api/banking-crm", (req, res) => { const cr = { id: `crm-${Date.now()}`, ...req.body }; bankCRMStore.push(cr); res.status(201).json(cr); });
+  app.get("/api/insurance-risk", (req, res) => { if (insRiskStore.length === 0) { insRiskStore.push({ id: 'risk1', regulation: 'IRDA', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }, { id: 'risk2', regulation: 'KYC', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }); } res.json(insRiskStore); });
+  app.post("/api/insurance-risk", (req, res) => { const r = { id: `risk-${Date.now()}`, ...req.body }; insRiskStore.push(r); res.status(201).json(r); });
 
-  app.get("/api/banking-treasury", (req, res) => { if (bankTreasStore.length === 0) { bankTreasStore.push({ id: 'treas1', totalLiquidity: 50000000, investedAmount: 30000000, availableFunds: 20000000, status: 'BALANCED' }); } res.json(bankTreasStore); });
-  app.post("/api/banking-treasury", (req, res) => { const tr = { id: `treas-${Date.now()}`, ...req.body }; bankTreasStore.push(tr); res.status(201).json(tr); });
+  app.get("/api/insurance-employees", (req, res) => { if (insEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { insEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Underwriter' : i % 3 === 1 ? 'Claims Adjuster' : 'Admin', department: 'Operations', status: 'ACTIVE' }); } } res.json(insEmpStore); });
+  app.post("/api/insurance-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; insEmpStore.push(e); res.status(201).json(e); });
 
-  app.get("/api/banking-employees", (req, res) => { if (bankEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { bankEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Manager' : i % 3 === 1 ? 'Teller' : 'Officer', department: 'Banking', status: 'ACTIVE' }); } } res.json(bankEmpStore); });
-  app.post("/api/banking-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; bankEmpStore.push(e); res.status(201).json(e); });
+  app.get("/api/insurance-fraud", (req, res) => { res.json([{ id: 'f1', claimId: 'CLAIM-00001', riskScore: 25, status: 'LOW_RISK' }, { id: 'f2', claimId: 'CLAIM-00002', riskScore: 88, status: 'HIGH_RISK' }]); });
+  app.post("/api/insurance-fraud", (req, res) => { const f = { id: `fraud-${Date.now()}`, ...req.body }; res.status(201).json(f); });
 
-  app.get("/api/banking-compliance", (req, res) => { if (bankCompStore.length === 0) { bankCompStore.push({ id: 'comp1', regulation: 'Basel III', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }, { id: 'comp2', regulation: 'GDPR', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }); } res.json(bankCompStore); });
-  app.post("/api/banking-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; bankCompStore.push(co); res.status(201).json(co); });
-
-  app.get("/api/banking-fraud", (req, res) => { res.json([{ id: 'f1', transactionId: 'TXN-000001', riskScore: 15, status: 'LOW_RISK' }, { id: 'f2', transactionId: 'TXN-000002', riskScore: 92, status: 'HIGH_RISK' }]); });
-  app.post("/api/banking-fraud", (req, res) => { const f = { id: `fraud-${Date.now()}`, ...req.body }; res.status(201).json(f); });
-
-  app.get("/api/banking-dashboards", (req, res) => { res.json({ totalAccounts: 1250, totalLoans: 450, totalDeposits: 8500000, activeTransactions: 1230, riskAlerts: 5 }); });
+  app.get("/api/insurance-dashboards", (req, res) => { res.json({ totalPolicies: 850, activeClaims: 120, premiumCollected: 42500000, customerSatisfaction: 92, fraudDetected: 8 }); });
 
   return httpServer;
 }

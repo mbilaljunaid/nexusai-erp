@@ -1583,3 +1583,17 @@ const BankingHRWorkforce = lazy(() => import("@/pages/BankingHRWorkforce"));
 const BankingAIFraudDetection = lazy(() => import("@/pages/BankingAIFraudDetection"));
 const BankingBIDashboards = lazy(() => import("@/pages/BankingBIDashboards"));
 const BankingMobileApp = lazy(() => import("@/pages/BankingMobileApp"));
+
+// Insurance Pack (Industry Pack 36)
+const InsurancePolicyManagement = lazy(() => import("@/pages/InsurancePolicyManagement"));
+const InsuranceUnderwriting = lazy(() => import("@/pages/InsuranceUnderwriting"));
+const InsuranceClaimsProcessing = lazy(() => import("@/pages/InsuranceClaimsProcessing"));
+const InsuranceCustomerAccounts = lazy(() => import("@/pages/InsuranceCustomerAccounts"));
+const InsuranceBillingPremiums = lazy(() => import("@/pages/InsuranceBillingPremiums"));
+const InsuranceCRMEngagement = lazy(() => import("@/pages/InsuranceCRMEngagement"));
+const InsuranceRiskCompliance = lazy(() => import("@/pages/InsuranceRiskCompliance"));
+const InsuranceHRWorkforce = lazy(() => import("@/pages/InsuranceHRWorkforce"));
+const InsuranceAIFraudDetection = lazy(() => import("@/pages/InsuranceAIFraudDetection"));
+const InsuranceBIDashboards = lazy(() => import("@/pages/InsuranceBIDashboards"));
+const InsuranceMobileApp = lazy(() => import("@/pages/InsuranceMobileApp"));
+const InsuranceReporting = lazy(() => import("@/pages/InsuranceReporting"));

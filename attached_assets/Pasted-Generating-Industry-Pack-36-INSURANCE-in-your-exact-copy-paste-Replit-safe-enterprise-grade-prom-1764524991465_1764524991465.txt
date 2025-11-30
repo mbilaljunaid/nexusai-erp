@@ -1,0 +1,289 @@
+Generating Industry Pack 36 — INSURANCE in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Insurance Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 36 — INSURANCE
+
+Purpose: End-to-end solution for life, health, property, casualty, and specialty insurance companies, covering policy management, underwriting, claims processing, customer accounts, billing & premium collections, CRM & customer engagement, risk & compliance, HR & workforce, AI-driven risk assessment & fraud detection, BI & dashboards, mobile apps, and integrations with reinsurers, payment gateways, regulatory authorities, and third-party data providers. Delivered as an industry template that auto-enables and configures all related modules.
+
+Auto-enable modules when template is selected: Policy Management, Underwriting, Claims Processing, Customer Accounts, Billing & Premium Collections, CRM & Customer Engagement, Risk & Compliance, HR & Workforce, AI / ML Risk & Fraud Analytics, BI & Dashboards, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+⸻
+
+1. POLICY MANAGEMENT
+
+Screens / Forms
+	•	Policy master & types
+	•	Policyholder creation & maintenance
+	•	Coverage, riders & endorsements
+	•	Policy lifecycle tracking
+
+Fields
+PolicyID, CustomerID, PolicyType, CoverageAmount, Term, Premium, Status, AuditFields.
+
+Validations
+	•	Duplicate policy detection
+	•	Eligibility & underwriting rules
+	•	Coverage & premium consistency
+
+Workflows
+	•	Create policy → Approve → Activate → Update endorsements → Renew → Close
+
+⸻
+
+2. UNDERWRITING
+
+Screens / Forms
+	•	Application intake & risk assessment
+	•	Risk scoring & eligibility checks
+	•	Approval / rejection workflow
+	•	Reinsurance & co-insurance configuration
+
+Fields
+ApplicationID, CustomerID, RiskScore, CoverageAmount, Status, AuditFields.
+
+Validations
+	•	Compliance with underwriting rules
+	•	Risk limit adherence
+	•	Documentation completeness
+
+Workflows
+	•	Receive application → Assess risk → Approve / Reject → Assign coverage → Notify customer
+
+⸻
+
+3. CLAIMS PROCESSING
+
+Screens / Forms
+	•	Claim registration & verification
+	•	Documentation & supporting evidence
+	•	Assessment & approval
+	•	Payment / settlement
+
+Fields
+ClaimID, PolicyID, CustomerID, ClaimType, Amount, Status, AuditFields.
+
+Validations
+	•	Policy coverage check
+	•	Fraud detection
+	•	Claim limits & approval rules
+
+Workflows
+	•	Register claim → Validate → Assess → Approve → Pay → Close → Update policy
+
+⸻
+
+4. CUSTOMER ACCOUNTS
+
+Screens / Forms
+	•	Customer master & profiles
+	•	Contact info & communication preferences
+	•	Policy portfolio overview
+	•	Claims history
+
+Fields
+CustomerID, Name, ContactInfo, PolicyID, ClaimID, AuditFields.
+
+Validations
+	•	Duplicate detection
+	•	Contact & KYC verification
+
+Workflows
+	•	Register customer → Link policies & claims → Update portfolio → Notify changes → Track engagement
+
+⸻
+
+5. BILLING & PREMIUM COLLECTIONS
+
+Screens / Forms
+	•	Premium invoicing & payment tracking
+	•	Refunds & adjustments
+	•	Multi-payment methods & recurring payments
+	•	Reconciliation & reporting
+
+Fields
+InvoiceID, PolicyID, Amount, PaymentStatus, PaymentMethod, AuditFields.
+
+Validations
+	•	Accurate billing
+	•	Payment verification
+	•	Refund & adjustment authorization
+
+Workflows
+	•	Generate invoice → Collect payment → Reconcile → Handle adjustments → Update dashboards
+
+⸻
+
+6. CRM & CUSTOMER ENGAGEMENT
+
+Screens / Forms
+	•	Customer support & ticketing
+	•	Campaigns for policy renewals, cross-sell / upsell
+	•	Customer feedback & surveys
+	•	Notifications for policy updates, claims, and renewals
+
+Fields
+CustomerID, InteractionID, CampaignID, FeedbackID, AuditFields.
+
+Validations
+	•	SLA adherence
+	•	Duplicate interaction detection
+	•	Consent / opt-in compliance
+
+Workflows
+	•	Capture interaction → Assign → Respond → Notify → Track engagement
+
+⸻
+
+7. RISK & COMPLIANCE
+
+Screens / Forms
+	•	Regulatory reporting & filings
+	•	Internal audit & risk management
+	•	Anti-fraud & AML controls
+	•	Risk scoring & monitoring
+
+Fields
+RiskID, PolicyID, ClaimID, CustomerID, Status, AuditFields.
+
+Validations
+	•	Compliance with local regulations
+	•	Risk thresholds
+	•	Reporting accuracy
+
+Workflows
+	•	Collect risk & compliance data → Analyze → Generate report → Escalate exceptions → Track resolution
+
+⸻
+
+8. HR & WORKFORCE MANAGEMENT
+
+Screens / Forms
+	•	Employee master (underwriters, claims staff, admin)
+	•	Payroll, attendance, performance
+	•	Role & shift management
+	•	Training & certification
+
+Fields
+EmployeeID, Role, Department, Shift, PayrollID, TrainingID, AuditFields.
+
+Validations
+	•	Role eligibility
+	•	Attendance & payroll accuracy
+
+Workflows
+	•	Onboard → Assign role → Track attendance → Evaluate → Payroll
+
+⸻
+
+9. AI & RISK / FRAUD DETECTION
+
+Use Cases
+	•	Predictive fraud detection in claims
+	•	Risk scoring for new policies
+	•	Early warning for high-risk clients
+	•	Customer behavior analytics
+
+Controls
+	•	Human review for all flagged activities and decisions
+
+⸻
+
+10. BI & DASHBOARDS
+
+Prebuilt Dashboards
+	•	Policy issuance & renewal rates
+	•	Claims volume & settlement metrics
+	•	Premium collection & receivables
+	•	Customer engagement & satisfaction KPIs
+	•	Risk & fraud analytics
+
+Ad-hoc
+	•	Drill down by policy → customer → claim → branch → product line
+
+⸻
+
+11. MOBILE APPS
+
+Customer App
+	•	View policies, submit claims, track claim status, pay premiums
+Staff App
+	•	Claims processing, policy management, approvals
+Manager App
+	•	Dashboards, KPIs, workflow approvals, compliance tracking
+
+⸻
+
+12. ROLES & PERMISSIONS
+
+Core Roles
+	•	Customer
+	•	Underwriter
+	•	Claims Adjuster
+	•	Risk & Compliance Officer
+	•	Finance / Accounts
+	•	HR / Payroll
+	•	IT / Integration Engineer
+	•	Admin
+
+Permission Notes
+	•	Role-based access enforced for policies, claims, premiums, compliance, and operational data
+
+⸻
+
+13. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	100 customers, 50 policies, 50 claims, 20 employees, 10 campaigns
+
+Onboarding Steps
+	•	Register customers → Create policies → Link claims → Collect premiums → Process claims → Track KPIs → Validate dashboards
+
+⸻
+
+14. INTEGRATIONS & CONNECTORS
+
+Suggested Integrations
+	•	Payment gateways & banks
+	•	Reinsurance & co-insurance systems
+	•	Regulatory & reporting platforms
+	•	Third-party data providers (credit & risk)
+	•	BI / analytics platforms
+
+Integration Rules
+	•	Idempotent ingestion, audit logging, secure credential storage
+
+⸻
+
+15. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	Premium overdue → notify customer & agent
+	•	Fraudulent claim detected → alert risk officer
+	•	Policy renewal approaching → notify customer & agent
+	•	System exceptions → escalate to operations
+
+⸻
+
+16. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+Idempotency & Safety
+	•	Seeders check natural keys (CustomerID + PolicyID + ClaimID) before insert
+	•	Migrations additive; destructive changes require rollback scripts
+	•	Feature flags per tenant for AI fraud detection, claims automation, multi-product operations
+
+Testing
+	•	Policy lifecycle → underwriting → claims → premiums → CRM → dashboards
+
+⸻
+
+17. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you want me to generate Industry Pack 37 — TELECOMMUNICATIONS next, reply “Yes” and I will produce it in the same format.
