@@ -145,6 +145,7 @@ export default function Billing() {
               </Card>
             ))}
           </div>
+        </div>
       )}
 
       {activeNav === "usage" && (
@@ -284,7 +285,6 @@ export default function Billing() {
           </Card>
         </div>
       )}
-    </div>
     </div>
   );
 }
