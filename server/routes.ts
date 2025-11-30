@@ -3426,6 +3426,90 @@ export async function registerRoutes(
     res.status(201).json(pd);
   });
 
+  // ========== MODULE 11: HR & PAYROLL MANAGEMENT ENDPOINTS ==========
+  const leaveStore: any[] = [];
+  const recruitmentStore: any[] = [];
+  const performanceStore: any[] = [];
+  const payrollStore: any[] = [];
+  const trainingStore: any[] = [];
+
+  app.get("/api/leave-requests", (req, res) => {
+    if (leaveStore.length === 0) {
+      leaveStore.push(
+        { id: "l1", employeeId: "e1", leaveType: "Vacation", startDate: "2025-12-01", endDate: "2025-12-05", status: "approved" },
+        { id: "l2", employeeId: "e2", leaveType: "Sick", startDate: "2025-11-30", endDate: "2025-11-30", status: "pending" }
+      );
+    }
+    res.json(leaveStore);
+  });
+
+  app.post("/api/leave-requests", (req, res) => {
+    const leave = { id: `l-${Date.now()}`, ...req.body, status: "pending", approvalStatus: "pending" };
+    leaveStore.push(leave);
+    res.status(201).json(leave);
+  });
+
+  app.get("/api/recruitment", (req, res) => {
+    if (recruitmentStore.length === 0) {
+      recruitmentStore.push(
+        { id: "j1", jobTitle: "Senior Developer", department: "Engineering", applicantCount: 15, stage: "interview", status: "active" },
+        { id: "j2", jobTitle: "Product Manager", department: "Product", applicantCount: 8, stage: "screening", status: "active" }
+      );
+    }
+    res.json(recruitmentStore);
+  });
+
+  app.post("/api/recruitment", (req, res) => {
+    const job = { id: `j-${Date.now()}`, ...req.body, stage: "open", status: "active" };
+    recruitmentStore.push(job);
+    res.status(201).json(job);
+  });
+
+  app.get("/api/performance-reviews", (req, res) => {
+    if (performanceStore.length === 0) {
+      performanceStore.push(
+        { id: "pr1", employeeId: "e1", reviewPeriod: "Q4 2025", rating: "4.5", status: "approved" }
+      );
+    }
+    res.json(performanceStore);
+  });
+
+  app.post("/api/performance-reviews", (req, res) => {
+    const review = { id: `pr-${Date.now()}`, ...req.body, status: "pending" };
+    performanceStore.push(review);
+    res.status(201).json(review);
+  });
+
+  app.get("/api/payroll-processing", (req, res) => {
+    if (payrollStore.length === 0) {
+      payrollStore.push(
+        { id: "p1", employeeId: "e1", payrollPeriod: "Nov 2025", basicSalary: "5000", grossSalary: "6200", netSalary: "5100", status: "approved" }
+      );
+    }
+    res.json(payrollStore);
+  });
+
+  app.post("/api/payroll-processing", (req, res) => {
+    const payroll = { id: `p-${Date.now()}`, ...req.body, status: "draft", approvalStatus: "pending" };
+    payrollStore.push(payroll);
+    res.status(201).json(payroll);
+  });
+
+  app.get("/api/training-programs", (req, res) => {
+    if (trainingStore.length === 0) {
+      trainingStore.push(
+        { id: "t1", programName: "Leadership Development", instructor: "John Doe", maxParticipants: 20, enrolledCount: 15, status: "active" }
+      );
+    }
+    res.json(trainingStore);
+  });
+
+  app.post("/api/training-programs", (req, res) => {
+    const training = { id: `t-${Date.now()}`, ...req.body, enrolledCount: 0, status: "active" };
+    trainingStore.push(training);
+    res.status(201).json(training);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

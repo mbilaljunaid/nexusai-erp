@@ -2676,3 +2676,69 @@ export const performanceDashboards = pgTable("performance_dashboards", {
   status: varchar("status").default("active"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 11: HR & PAYROLL MANAGEMENT ==========
+export const leaveRequests = pgTable("leave_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  employeeId: varchar("employee_id").notNull(),
+  leaveType: varchar("leave_type").notNull(),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  duration: numeric("duration"),
+  reason: text("reason"),
+  status: varchar("status").default("pending"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  approvedBy: varchar("approved_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const recruitment = pgTable("recruitment", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobTitle: varchar("job_title").notNull(),
+  department: varchar("department"),
+  hiringManager: varchar("hiring_manager"),
+  applicantCount: integer("applicant_count").default(0),
+  stage: varchar("stage").default("open"),
+  status: varchar("status").default("active"),
+  targetHireDate: timestamp("target_hire_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const performanceReviews = pgTable("performance_reviews", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  employeeId: varchar("employee_id").notNull(),
+  reviewPeriod: varchar("review_period"),
+  rating: numeric("rating"),
+  goals: text("goals"),
+  feedback: text("feedback"),
+  reviewerName: varchar("reviewer_name"),
+  status: varchar("status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const payrollProcessing = pgTable("payroll_processing", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  employeeId: varchar("employee_id").notNull(),
+  payrollPeriod: varchar("payroll_period"),
+  basicSalary: numeric("basic_salary"),
+  grossSalary: numeric("gross_salary"),
+  netSalary: numeric("net_salary"),
+  deductions: numeric("deductions"),
+  taxAmount: numeric("tax_amount"),
+  status: varchar("status").default("draft"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const trainingPrograms = pgTable("training_programs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  programName: varchar("program_name").notNull(),
+  description: text("description"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  instructor: varchar("instructor"),
+  maxParticipants: integer("max_participants"),
+  enrolledCount: integer("enrolled_count").default(0),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
