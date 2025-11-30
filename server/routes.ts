@@ -3510,6 +3510,14 @@ export async function registerRoutes(
     res.status(201).json(training);
   });
 
+  // Helper: Calculate risk score from likelihood and impact
+  const calculateRiskScore = (likelihood: string, impact: string): string => {
+    const scores: Record<string, number> = { low: 1, medium: 2, high: 3 };
+    const likelihoodScore = scores[likelihood] || 2;
+    const impactScore = scores[impact] || 2;
+    return (likelihoodScore * impactScore * 2.5).toFixed(1);
+  };
+
   // ========== MODULE 12: COMPLIANCE & GOVERNANCE ENDPOINTS ==========
   const complianceStore: any[] = [];
   const riskStore: any[] = [];
