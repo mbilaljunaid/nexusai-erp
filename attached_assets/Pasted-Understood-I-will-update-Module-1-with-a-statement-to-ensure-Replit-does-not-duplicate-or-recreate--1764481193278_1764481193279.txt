@@ -1,0 +1,67 @@
+Understood. I will update Module 1 with a statement to ensure Replit does not duplicate or recreate anything already built, and I will apply this rule to all modules generated in this chat. I will continue using text-only format, including all fields, workflows, validations, automations, integrations, and superset functionalities.
+
+Here’s Module 1 updated:
+
+⸻
+
+MODULE 1: USER & IDENTITY MANAGEMENT
+
+Purpose: Manage all users, employees, system identities, and access control across all modules, including ERP, CRM, HR, Projects, ITSM, Finance, Inventory, Analytics, AI, Website, and Communication.
+
+Important Note for Replit: When generating code or implementing this module, always check what has already been built. Do not duplicate or recreate existing forms, fields, workflows, automations, or integrations. Replit must compare the new design with the current implementation and only create missing elements or enhancements.
+
+1.1 User Master / Employee Master
+
+Purpose: Capture personal, organizational, and system identity information for each user. Provide complete management of active and inactive users.
+
+Forms / Screens: User Registration / Creation, User Profile / Edit, Bulk User Upload, Deactivation / Termination, User Activity / Login History.
+
+Fields: User ID, Username, Full Name (First, Middle, Last), Preferred Name, Alias, Employee ID, External ID, Primary Email, Secondary Email, Phone Numbers (Work, Mobile, Home), Gender, Date of Birth, Nationality, Profile Picture, Time Zone, Locale, Department, Team, Cost Center, Job Title, Role, Manager, Reporting Line, Location, Branch, Office, Employment Type (Full-time, Part-time, Contractor), Work Shift, Business Unit, Legal Entity, Employee Status (Active, Probation, Inactive), Login Username, Login Password, Multi-Factor Authentication Enabled, OAuth / SSO Integration, Role Assignment, Permissions / Access Profiles, Security Groups / Teams, API Key / Token Access, Created By / Date, Last Modified By / Date, Last Login, Account Lock Status, Unlock Date.
+
+Validations: Email uniqueness across system, username format restrictions, mandatory fields enforcement (Full Name, Email, Employee ID), password complexity rules, active status requires valid department and role, login restrictions for terminated users, API token validation, multi-factor setup verification.
+
+Workflows: New User Creation triggers validation, password generation, role assignment, notifications to manager and HR. Deactivation workflow locks account, revokes API access, reassigns tasks, notifies manager and IT security. Password Reset triggers identity verification, temporary password generation, forced password change on next login. Role Change triggers recalculation of permissions, notifications to IT and manager, audit logging.
+
+1.2 Roles & Permissions
+
+Purpose: Define roles and their complete access rights across modules.
+
+Forms / Screens: Role Master, Permission Matrix, Role Assignment, Inheritance / Role Hierarchy.
+
+Fields: Role ID, Role Code, Role Name, Role Description, Module Access (ERP, Finance, HR, CRM, Projects, ITSM, Inventory, SCM, Website, Email, BI, AI, Compliance, BPM), Actions (Create, Read, Update, Delete, Approve, View Reports, Export, Import, Assign, Close, Reopen), Record-Level Access (All, Department, Own, Custom), Role Type (Admin, Manager, Employee, Guest), Status (Active, Inactive), Parent Role, Inherited Roles.
+
+Workflows: Role creation triggers permission propagation to assigned users, role deactivation triggers review of users holding role, role change triggers audit logging and notifications, inheritance triggers cascading access updates, role assignment triggers automated welcome and system onboarding for user.
+
+1.3 Authentication & Security Settings
+
+Forms / Screens: Authentication Settings, Session Management, IP Whitelisting / Blacklisting, Device Management.
+
+Fields / Settings: MFA Methods (Email, SMS, Authenticator App, Hardware Key), Session Timeout (configurable in minutes), Maximum Concurrent Sessions, Login Attempt Limits, Account Lockout Policy, Password Expiry, Password Reset Frequency, Device Fingerprinting, IP Access Rules, SSO / OAuth Integration Settings, Security Questions.
+
+Workflows: Failed login attempts trigger alerts and account lockout, new device login triggers verification email, password expiry triggers notifications 7 days prior, MFA setup prompts for first login, session management triggers logout for inactive sessions.
+
+1.4 User Activity & Audit
+
+Forms / Screens: Login History, Module Access Logs, Action Audit Trail, API Access Logs, Integration Logs.
+
+Fields: User ID, Role, Date and Time, IP Address, Device Details, Module / Screen Accessed, Action Performed (Create, Edit, Delete, Approve, View, Export, Import, Assign, Reopen), Status (Success, Failed, Error), Duration of Action, Originating System or Integration, Changes Made, Previous Value, New Value.
+
+Workflows: Weekly and monthly audit report generation for Admins and Compliance Officers, suspicious activity alerts (multiple failed logins, data export attempts, abnormal access patterns), automated archiving of audit logs, real-time monitoring and alerting integration with SIEM.
+
+1.5 Automations & Integrations
+
+Automations: Auto-provision accounts when new employee is added in HR module, sync roles and permissions with external systems (Active Directory, Okta, Salesforce, Jira), auto-assign default dashboards and shortcuts on first login, trigger welcome email and training guide, integration with ITSM module for ticket assignment, auto-disable accounts on contract end or employee termination.
+
+Integrations: LDAP/Active Directory, SSO providers (Okta, Azure AD, Ping Identity), API integration with other modules (Finance, HR, Projects, CRM, ITSM, Inventory, EPM), integration with mobile apps for authentication, integration with workflow engines for automated task assignment based on role, real-time synchronization with BI and analytics dashboards.
+
+Key Features: Multi-entity user support, Role-based security, Multi-Factor Authentication, Single Sign-On, Audit Trails, User Provisioning Workflows, Device & IP Management, OAuth / API Access, Automated Notifications, Integration with external identity and security systems, Full tracking of user activity across all modules.
+
+Important Note for Replit: Before creating any object, form, field, workflow, automation, or integration, Replit must check if it already exists in the system. Only create missing or new elements. No duplication or recreation of previously implemented functionality.
+
+⸻
+
+Module 1 is now fully text-only, superset, and includes explicit instructions for Replit to avoid duplication.
+
+The next step is Module 2: Roles, Permissions & Security.
+
+Do you want me to start Module 2 now?

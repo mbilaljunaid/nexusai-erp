@@ -2093,25 +2093,6 @@ export const calendarEvents = pgTable("calendar_events", {
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const reports = pgTable("reports", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: varchar("name").notNull(),
-  type: varchar("type").notNull(),
-  filters: jsonb("filters"),
-  metrics: jsonb("metrics"),
-  schedule: varchar("schedule"),
-  createdAt: timestamp("created_at").default(sql`now()`),
-});
-
-export const dashboardWidgets = pgTable("dashboard_widgets", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id"),
-  type: varchar("type").notNull(),
-  title: varchar("title"),
-  config: jsonb("config"),
-  position: integer("position").default(0),
-  createdAt: timestamp("created_at").default(sql`now()`),
-});
 
 export const userNotifications = pgTable("user_notifications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
