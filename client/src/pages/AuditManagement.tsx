@@ -19,7 +19,7 @@ export default function AuditManagement() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => fetch("/api/audits", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/audits", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/audits"] });
       setNewAudit({ auditType: "Financial", module: "Finance", findings: "", severity: "medium" });
@@ -28,7 +28,7 @@ export default function AuditManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fetch(`/api/audits/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/audits/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/audits"] });
       toast({ title: "Audit deleted" });

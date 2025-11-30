@@ -19,7 +19,7 @@ export default function RiskManagement() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => fetch("/api/risk-register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/risk-register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/risk-register"] });
       setNewRisk({ riskDescription: "", likelihood: "medium", impact: "medium", riskCategory: "operational" });
@@ -28,7 +28,7 @@ export default function RiskManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fetch(`/api/risk-register/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/risk-register/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/risk-register"] });
       toast({ title: "Risk deleted" });
