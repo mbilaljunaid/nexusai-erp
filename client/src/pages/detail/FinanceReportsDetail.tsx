@@ -1,2 +1,53 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { ArrowLeft } from "lucide-react"; import { Link } from "wouter";
-export default function FinanceReportsDetail() { return ( <div className="space-y-6"> <div className="flex items-center gap-2"><Link to="/finance"><Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button></Link><div><h1 className="text-3xl font-semibold">Financial Reports</h1><p className="text-muted-foreground text-sm">P&L, Balance Sheet, Cash Flow</p></div></div> <div className="grid grid-cols-1 md:grid-cols-3 gap-4"><Card><CardHeader><CardTitle className="text-base">P&L Statement</CardTitle></CardHeader><CardContent><Button className="w-full">View Report</Button></CardContent></Card><Card><CardHeader><CardTitle className="text-base">Balance Sheet</CardTitle></CardHeader><CardContent><Button className="w-full">View Report</Button></CardContent></Card><Card><CardHeader><CardTitle className="text-base">Cash Flow</CardTitle></CardHeader><CardContent><Button className="w-full">View Report</Button></CardContent></Card></div></div> ); }
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ContextualSearch } from "@/components/ContextualSearch";
+import { generateBreadcrumbs, getSearchFields } from "@/lib/pageConfig";
+
+export default function FinanceReportsDetail() {
+  const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
+  const [items] = useState([]);
+
+  const filteredItems = items.filter((item: any) => {
+    return true;
+  });
+
+  const breadcrumbs = generateBreadcrumbs("FinanceReports", "Overview");
+  const searchFields = getSearchFields("FinanceReports");
+
+  return (
+    <div className="space-y-6">
+      <Breadcrumbs items={breadcrumbs} />
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold">Overview</h1>
+          <p className="text-muted-foreground text-sm">Manage overview</p>
+        </div>
+        <Button data-testid="button-new-item">
+          <Plus className="h-4 w-4 mr-2" />
+          New Item
+        </Button>
+      </div>
+
+      <ContextualSearch
+        fields={searchFields}
+        onSearch={setSearchFilters}
+        placeholder="Search..."
+        testId="search-items"
+      />
+
+      <div className="space-y-2">
+        {filteredItems.map((item: any) => (
+          <Card key={item.id} className="hover-elevate">
+            <CardContent className="p-4">
+              <p className="font-semibold">No items yet</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}

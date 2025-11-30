@@ -1,2 +1,53 @@
-import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { ArrowLeft } from "lucide-react"; import { Link } from "wouter";
-export default function CRMAnalyticsDetail() { return ( <div className="space-y-6"> <div className="flex items-center gap-2"><Link to="/crm"><Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button></Link><div><h1 className="text-3xl font-semibold">CRM Analytics</h1><p className="text-muted-foreground text-sm">Sales performance and metrics</p></div></div> <div className="grid grid-cols-1 md:grid-cols-4 gap-4"><Card><CardContent className="p-4"><p className="text-2xl font-semibold">$4.2M</p><p className="text-sm text-muted-foreground">Pipeline Value</p></CardContent></Card><Card><CardContent className="p-4"><p className="text-2xl font-semibold">35%</p><p className="text-sm text-muted-foreground">Win Rate</p></CardContent></Card><Card><CardContent className="p-4"><p className="text-2xl font-semibold">18 days</p><p className="text-sm text-muted-foreground">Avg Sales Cycle</p></CardContent></Card><Card><CardContent className="p-4"><p className="text-2xl font-semibold">1,250</p><p className="text-sm text-muted-foreground">Total Leads</p></CardContent></Card></div></div> ); }
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ContextualSearch } from "@/components/ContextualSearch";
+import { generateBreadcrumbs, getSearchFields } from "@/lib/pageConfig";
+
+export default function CRMAnalyticsDetail() {
+  const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
+  const [items] = useState([]);
+
+  const filteredItems = items.filter((item: any) => {
+    return true;
+  });
+
+  const breadcrumbs = generateBreadcrumbs("CRMAnalytics", "Overview");
+  const searchFields = getSearchFields("CRMAnalytics");
+
+  return (
+    <div className="space-y-6">
+      <Breadcrumbs items={breadcrumbs} />
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold">Overview</h1>
+          <p className="text-muted-foreground text-sm">Manage overview</p>
+        </div>
+        <Button data-testid="button-new-item">
+          <Plus className="h-4 w-4 mr-2" />
+          New Item
+        </Button>
+      </div>
+
+      <ContextualSearch
+        fields={searchFields}
+        onSearch={setSearchFilters}
+        placeholder="Search..."
+        testId="search-items"
+      />
+
+      <div className="space-y-2">
+        {filteredItems.map((item: any) => (
+          <Card key={item.id} className="hover-elevate">
+            <CardContent className="p-4">
+              <p className="font-semibold">No items yet</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}

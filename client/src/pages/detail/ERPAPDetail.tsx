@@ -1,3 +1,53 @@
-import { useState } from "react"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { Badge } from "@/components/ui/badge"; import { Input } from "@/components/ui/input"; import { Search, ArrowLeft } from "lucide-react"; import { Link } from "wouter";
-export default function ERPAPDetail() { const [searchQuery, setSearchQuery] = useState(""); const invoices = [{id: 1, vendor: "Vendor A", amount: "$5,000", due: "2024-12-31"}];
-return ( <div className="space-y-6"> <div className="flex items-center gap-2"><Link to="/erp"><Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button></Link><div><h1 className="text-3xl font-semibold">Accounts Payable</h1><p className="text-muted-foreground text-sm">Manage vendor invoices</p></div></div> <div className="space-y-4"><div className="flex gap-2 items-center"><div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div><Button>+ New Invoice</Button></div> <div className="space-y-2">{invoices.map((i) => (<Card key={i.id} className="hover-elevate"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.vendor}</p></div><Badge>{i.amount}</Badge></div></CardContent></Card>))}</div></div></div> ); }
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ContextualSearch } from "@/components/ContextualSearch";
+import { generateBreadcrumbs, getSearchFields } from "@/lib/pageConfig";
+
+export default function ERPAPDetail() {
+  const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
+  const [items] = useState([]);
+
+  const filteredItems = items.filter((item: any) => {
+    return true;
+  });
+
+  const breadcrumbs = generateBreadcrumbs("ERPAP", "Overview");
+  const searchFields = getSearchFields("ERPAP");
+
+  return (
+    <div className="space-y-6">
+      <Breadcrumbs items={breadcrumbs} />
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold">Overview</h1>
+          <p className="text-muted-foreground text-sm">Manage overview</p>
+        </div>
+        <Button data-testid="button-new-item">
+          <Plus className="h-4 w-4 mr-2" />
+          New Item
+        </Button>
+      </div>
+
+      <ContextualSearch
+        fields={searchFields}
+        onSearch={setSearchFilters}
+        placeholder="Search..."
+        testId="search-items"
+      />
+
+      <div className="space-y-2">
+        {filteredItems.map((item: any) => (
+          <Card key={item.id} className="hover-elevate">
+            <CardContent className="p-4">
+              <p className="font-semibold">No items yet</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}

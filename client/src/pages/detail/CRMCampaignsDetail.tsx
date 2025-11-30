@@ -1,3 +1,53 @@
-import { useState } from "react"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { Badge } from "@/components/ui/badge"; import { Input } from "@/components/ui/input"; import { Search, ArrowLeft } from "lucide-react"; import { Link } from "wouter"; import { CampaignEntryForm } from "@/components/forms/CampaignEntryForm";
-export default function CRMCampaignsDetail() { const [searchQuery, setSearchQuery] = useState(""); const campaigns = [{id: 1, name: "Q4 Campaign", status: "active", contacts: 5000}];
-return ( <div className="space-y-6"> <div className="flex items-center gap-2"><Link to="/crm"><Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button></Link><div><h1 className="text-3xl font-semibold">Campaigns</h1><p className="text-muted-foreground text-sm">Manage marketing campaigns</p></div></div> <div className="space-y-4"><div className="flex gap-2 items-center"><div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div><Button>+ New</Button></div> <div className="space-y-2">{campaigns.map((c) => (<Card key={c.id} className="hover-elevate"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{c.name}</p></div><Badge>{c.status}</Badge></div></CardContent></Card>))}</div> <div className="mt-8 border-t pt-8"><h2 className="text-xl font-semibold mb-4">+ New Campaign</h2><CampaignEntryForm /></div></div></div> ); }
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ContextualSearch } from "@/components/ContextualSearch";
+import { generateBreadcrumbs, getSearchFields } from "@/lib/pageConfig";
+
+export default function CRMCampaignsDetail() {
+  const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
+  const [items] = useState([]);
+
+  const filteredItems = items.filter((item: any) => {
+    return true;
+  });
+
+  const breadcrumbs = generateBreadcrumbs("CRMCampaigns", "Overview");
+  const searchFields = getSearchFields("CRMCampaigns");
+
+  return (
+    <div className="space-y-6">
+      <Breadcrumbs items={breadcrumbs} />
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold">Overview</h1>
+          <p className="text-muted-foreground text-sm">Manage overview</p>
+        </div>
+        <Button data-testid="button-new-item">
+          <Plus className="h-4 w-4 mr-2" />
+          New Item
+        </Button>
+      </div>
+
+      <ContextualSearch
+        fields={searchFields}
+        onSearch={setSearchFilters}
+        placeholder="Search..."
+        testId="search-items"
+      />
+
+      <div className="space-y-2">
+        {filteredItems.map((item: any) => (
+          <Card key={item.id} className="hover-elevate">
+            <CardContent className="p-4">
+              <p className="font-semibold">No items yet</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
