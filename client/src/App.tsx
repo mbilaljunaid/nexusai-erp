@@ -279,9 +279,11 @@ const QuotesAndOrders = lazy(() => import("@/pages/QuotesAndOrders"));
 const SalesActivities = lazy(() => import("@/pages/SalesActivities"));
 const DataSourceConfiguration = lazy(() => import("@/pages/DataSourceConfiguration"));
 const KPIDashboard = lazy(() => import("@/pages/KPIDashboard"));
-const PayrollProcessing = lazy(() => import("@/pages/PayrollProcessing"));
 const LeaveManagement = lazy(() => import("@/pages/LeaveManagement"));
 const RecruitmentManagement = lazy(() => import("@/pages/RecruitmentManagement"));
+const ComplianceGovernance = lazy(() => import("@/pages/ComplianceGovernance"));
+const RiskManagement = lazy(() => import("@/pages/RiskManagement"));
+const AuditManagement = lazy(() => import("@/pages/AuditManagement"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -740,9 +742,11 @@ function Router() {
       <Route path="/data-sources" component={DataSourceConfiguration} />
       <Route path="/kpi-dashboard" component={KPIDashboard} />
       <Route path="/predictive-analytics" component={PredictiveAnalytics} />
-      <Route path="/payroll-processing" component={PayrollProcessing} />
       <Route path="/leave-management" component={LeaveManagement} />
       <Route path="/recruitment" component={RecruitmentManagement} />
+      <Route path="/compliance-governance" component={ComplianceGovernance} />
+      <Route path="/risk-management" component={RiskManagement} />
+      <Route path="/audit-management" component={AuditManagement} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />

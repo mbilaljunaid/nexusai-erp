@@ -2742,3 +2742,51 @@ export const trainingPrograms = pgTable("training_programs", {
   status: varchar("status").default("active"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 12: COMPLIANCE & GOVERNANCE ==========
+export const regulatoryCompliance = pgTable("regulatory_compliance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  ruleName: varchar("rule_name").notNull(),
+  module: varchar("module"),
+  jurisdiction: varchar("jurisdiction"),
+  effectiveDate: timestamp("effective_date"),
+  riskLevel: varchar("risk_level"),
+  status: varchar("status").default("active"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const riskRegister = pgTable("risk_register", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  riskDescription: text("risk_description").notNull(),
+  riskCategory: varchar("risk_category"),
+  likelihood: varchar("likelihood"),
+  impact: varchar("impact"),
+  riskScore: numeric("risk_score"),
+  mitigationPlan: text("mitigation_plan"),
+  status: varchar("status").default("open"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const auditManagement = pgTable("audit_management", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  auditType: varchar("audit_type"),
+  module: varchar("module"),
+  auditor: varchar("auditor"),
+  findings: text("findings"),
+  severity: varchar("severity"),
+  status: varchar("status").default("open"),
+  auditDate: timestamp("audit_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const policyManagement = pgTable("policy_management", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  policyName: varchar("policy_name").notNull(),
+  description: text("description"),
+  effectiveDate: timestamp("effective_date"),
+  version: varchar("version"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
