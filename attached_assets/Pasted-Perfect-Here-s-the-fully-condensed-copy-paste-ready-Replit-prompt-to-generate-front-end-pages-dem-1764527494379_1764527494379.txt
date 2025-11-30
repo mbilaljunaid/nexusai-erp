@@ -1,0 +1,90 @@
+Perfect. Here’s the fully condensed, copy-paste ready Replit prompt to generate front-end pages, demo scripts, and technical documentation for all industries with Nexus AI, optimized for one-shot execution.
+
+⸻
+
+REPLIT PROMPT — Nexus AI Front-End Pages, Demo Scripts & Technical Docs (All Industries)
+
+TOP-LINE MANDATORY:
+
+Before creating any front-end pages, back-end schemas, APIs, workflows, demo scripts, or technical documentation, Replit MUST scan the existing codebase. Do NOT duplicate or overwrite existing objects. Only create missing functionality. All generated pages, scripts, and documentation must be copy-paste ready. Maintain consistent IDs, schemas, and audit fields across modules and industries.
+
+⸻
+
+TASK 1 — Front-End Public-Facing Pages
+
+For each industry (41 total), generate:
+	•	Industry-specific public-facing page for Nexus AI ERP.
+	•	Sections to include:
+	1.	Overview of Nexus AI (modern AI-powered ERP)
+	2.	Modules coverage for the industry (auto-enabled modules)
+	3.	End-to-end process flows per module
+	4.	Automation templates pre-configured per industry
+	5.	Advantages of Nexus AI (AI-driven recommendations, faster onboarding, all-in-one ERP, competitor comparison, multi-industry coverage, ready-to-use modules)
+	6.	Unique selling points
+	7.	Call-to-action button: “Click Here to See Demo”
+	•	Links to demo management system
+	•	Users enter email → trigger demo creation → automated email sent with demo link, username, password, and guide
+
+Requirements:
+	•	Modern, responsive design (Next.js / React compatible)
+	•	SEO optimized: headings, sub-headings, meta descriptions, keywords
+	•	Industry-specific examples and illustrations placeholders
+	•	Navigation for modules, advantages, process flows, demo button
+
+⸻
+
+TASK 2 — Demo Management System & Scripts
+
+For each industry:
+	•	Admin / Demo Manager UI: select industry → “Create Demo” → runs scripts to seed demo environment
+	•	Scripts populate: all modules, forms, fields, workflows, roles, sample data
+	•	Idempotent: safe to run multiple times without duplication
+	•	User flow: demo button click → email entry → automated email → demo link & credentials
+	•	Demo environment tracks creation status, expiration, audit logs
+	•	Admin can re-seed or reset demo environment safely
+
+⸻
+
+TASK 3 — Back-End Technical Documentation
+
+For each industry:
+	•	Full module list & description
+	•	Forms, fields, validations, workflows, automation templates
+	•	Demo scripts: seeded data, environment configuration, process flow
+	•	Roles & permissions per module
+	•	Integration points: APIs, external systems, payment gateways
+	•	Deployment guidelines: idempotency, migrations, rollback, feature flags
+	•	Developer-ready Markdown/HTML for copy-paste
+
+⸻
+
+GENERAL NOTES FOR REPLIT
+	1.	Scan codebase first; do not overwrite existing objects.
+	2.	Use consistent IDs, natural keys, audit fields across modules and industries.
+	3.	Include front-end demo button, demo request & email automation flow, backend demo scripts.
+	4.	SEO: headings, sub-headings, meta descriptions, keywords, examples.
+	5.	Technical: all forms, workflows, IDs, audit logs, automation triggers, sample data, integrations.
+	6.	ERP name: Nexus AI.
+
+⸻
+
+EXECUTION FLOW
+	1.	Generate front-end page for Industry 1 → SEO, modules, process flows, demo button.
+	2.	Generate demo scripts for Industry 1 → seed data, workflows, automation templates.
+	3.	Generate technical documentation for Industry 1 → modules, forms, workflows, scripts, integration points.
+	4.	Repeat for all 41 industries.
+	5.	Ensure Replit skips already generated objects and only creates missing functionality.
+
+⸻
+
+✅ Output expected:
+	•	41 front-end industry pages (Next.js / React)
+	•	41 demo scripts for automated seeded data in demo environment
+	•	41 technical documentation sets for developers (Markdown/HTML)
+	•	Fully linked front-end demo buttons → demo scripts → demo email flow
+
+⸻
+
+If you want, I can also create a super-condensed one-paragraph version optimized to just feed into Replit without any line breaks, so it literally runs as one input for all 41 industries.
+
+Do you want me to do that next?
