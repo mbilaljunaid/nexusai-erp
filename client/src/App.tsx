@@ -344,6 +344,18 @@ const SupplierCarrierManagement = lazy(() => import("@/pages/SupplierCarrierMana
 const InventoryAllocationOptimization = lazy(() => import("@/pages/InventoryAllocationOptimization"));
 const LogisticsComplianceSafety = lazy(() => import("@/pages/LogisticsComplianceSafety"));
 const LogisticsBIDashboard = lazy(() => import("@/pages/LogisticsBIDashboard"));
+const CustomerSubscriberManagement = lazy(() => import("@/pages/CustomerSubscriberManagement"));
+const ServiceProvisioningOrder = lazy(() => import("@/pages/ServiceProvisioningOrder"));
+const NetworkInventoryOSS = lazy(() => import("@/pages/NetworkInventoryOSS"));
+const TelecomBillingRevenue = lazy(() => import("@/pages/TelecomBillingRevenue"));
+const FaultPerformanceMonitoring = lazy(() => import("@/pages/FaultPerformanceMonitoring"));
+const MarketingEngagement = lazy(() => import("@/pages/MarketingEngagement"));
+const TelecomFinanceCompliance = lazy(() => import("@/pages/TelecomFinanceCompliance"));
+const TelecomBIDashboard = lazy(() => import("@/pages/TelecomBIDashboard"));
+const CustomerDeviceManagement = lazy(() => import("@/pages/CustomerDeviceManagement"));
+const SLAServiceTierManagement = lazy(() => import("@/pages/SLAServiceTierManagement"));
+const SubscriptionLifecycle = lazy(() => import("@/pages/SubscriptionLifecycle"));
+const TelecomCustomerSupport = lazy(() => import("@/pages/TelecomCustomerSupport"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -899,6 +911,18 @@ function Router() {
       <Route path="/inventory-allocation" component={InventoryAllocationOptimization} />
       <Route path="/compliance-safety" component={LogisticsComplianceSafety} />
       <Route path="/logistics-analytics" component={LogisticsBIDashboard} />
+      <Route path="/telecom-subscribers" component={CustomerSubscriberManagement} />
+      <Route path="/service-provisioning" component={ServiceProvisioningOrder} />
+      <Route path="/network-inventory" component={NetworkInventoryOSS} />
+      <Route path="/telecom-billing" component={TelecomBillingRevenue} />
+      <Route path="/fault-monitoring" component={FaultPerformanceMonitoring} />
+      <Route path="/telecom-marketing" component={MarketingEngagement} />
+      <Route path="/telecom-finance" component={TelecomFinanceCompliance} />
+      <Route path="/telecom-analytics" component={TelecomBIDashboard} />
+      <Route path="/device-management" component={CustomerDeviceManagement} />
+      <Route path="/sla-management" component={SLAServiceTierManagement} />
+      <Route path="/subscription-lifecycle" component={SubscriptionLifecycle} />
+      <Route path="/telecom-support" component={TelecomCustomerSupport} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />

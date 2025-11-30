@@ -1,0 +1,332 @@
+Generating **Industry Pack 9 — TELECOM / ISP** now in the exact copy-paste, Replit-safe, enterprise-grade prompt format you requested.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the TELECOM / ISP Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate, overwrite, or recreate existing objects. Only generate missing features, augment existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 9 — TELECOM / ISP
+
+**Purpose:** Comprehensive telecom and ISP management solution covering customer lifecycle, billing, network management, service provisioning, fault & performance monitoring, CRM, marketing, finance integration, compliance, BI, AI-driven predictive maintenance, and multi-channel support. Delivered as an industry template that auto-enables all required modules.
+
+**Auto-enable modules when template is selected:** CRM, Customer Lifecycle Management, Service Provisioning, Network Inventory & OSS, Billing & Revenue Management (BRM), Finance (GL/AP/AR), Fault & Performance Monitoring, Marketing Automation, AI / Predictive Analytics, BI & Dashboards, BPM, Customer Support, Mobile & Web Apps, Compliance, Integrations & API Gateway.
+
+---
+
+## 1. MASTER DATA & CONFIGURATION
+
+**Screens / Forms**
+
+* Customer / Subscriber Master
+* Service / Plan Catalog
+* Product / Device Master
+* Network Elements / Node Master
+* Vendor / Supplier Master
+* Billing & Rate Plan Master
+* SLA / Service Tier Master
+* Tax Rules & Regulatory Mapping
+* Equipment / Modem / SIM Management
+
+**Key Fields**
+CustomerID, SubscriberID, ServiceID, DeviceID, NetworkElementID, VendorID, PlanID, RateID, SLAID, TaxClass, AuditFields.
+
+**Validations**
+
+* Unique subscriber IDs
+* Device assignment validation
+* Service plan compatibility with customer location
+* SLA mapping per service
+
+**Workflows**
+
+* Customer signup → Device assignment → Service activation → Billing & SLA setup → Integration with network & finance systems
+
+---
+
+## 2. CUSTOMER LIFECYCLE & CRM
+
+**Screens / Forms**
+
+* Lead / Prospect Management
+* Customer Onboarding / KYC
+* Account Management & Service Enrollment
+* Plan Upgrades / Downgrades / Add-ons
+* Customer Complaints / Tickets
+* Loyalty Programs & Retention
+
+**Fields**
+CustomerID, LeadID, ServiceID, PlanID, DeviceID, TicketID, ComplaintType, SLAStatus, LoyaltyPoints, AuditFields.
+
+**Validations**
+
+* KYC compliance
+* Plan eligibility
+* Ticket escalation rules
+
+**Workflows**
+
+* Lead → Convert → Onboard → Service provisioning → Billing setup → SLA assignment → Customer communication → Ticket management
+
+---
+
+## 3. SERVICE PROVISIONING & ORDER MANAGEMENT
+
+**Screens / Forms**
+
+* Service Order Creation & Tracking
+* Device / SIM Provisioning
+* Service Activation / Deactivation
+* Plan / Add-on Activation
+* Order Status Tracking & Notifications
+
+**Fields**
+OrderID, CustomerID, ServiceID, DeviceID, ActivationDate, DeactivationDate, Status, AuditFields.
+
+**Validations**
+
+* Device compatibility check
+* Service activation only on valid account
+* SLA compliance checks
+
+**Workflows**
+
+* Service order → Provisioning → Activation → Billing → Customer notification
+
+---
+
+## 4. NETWORK INVENTORY & OSS
+
+**Screens / Forms**
+
+* Network Elements & Topology Mapping
+* Capacity Management & Utilization Tracking
+* Maintenance / Service Window Scheduling
+* Fault Detection & Alerts
+* Equipment Assignment & Lifecycle Tracking
+
+**Fields**
+NodeID, EquipmentID, ServiceID, LocationID, Capacity, Status, MaintenanceSchedule, AuditFields.
+
+**Validations**
+
+* Node / equipment capacity checks
+* Maintenance windows must not disrupt SLA
+* Fault reporting validated
+
+**Workflows**
+
+* Network addition → Capacity allocation → Maintenance scheduling → Fault monitoring → Escalation
+
+---
+
+## 5. BILLING & REVENUE MANAGEMENT (BRM)
+
+**Screens / Forms**
+
+* Rate Plan Configuration & Management
+* Usage Capture (Voice / Data / SMS / OTT)
+* Invoice Generation & Billing Cycles
+* Payment Processing / Collection
+* Refunds & Adjustments
+* AR Aging & Reconciliation
+
+**Fields**
+InvoiceID, CustomerID, ServiceID, PlanID, UsageUnits, Charges, TaxAmount, PaymentStatus, RefundID, AuditFields.
+
+**Validations**
+
+* Usage matches billing rules
+* Tax compliance per jurisdiction
+* Invoice accuracy before dispatch
+
+**Workflows**
+
+* Usage capture → Billing run → Invoice generation → Payment posting → AR reconciliation → Dispute resolution
+
+---
+
+## 6. FAULT & PERFORMANCE MONITORING
+
+**Screens / Forms**
+
+* Event / Alarm Dashboard
+* Network Fault Logging & Ticketing
+* SLA Violation Alerts
+* Performance Metrics & KPIs
+* Automated Escalation & Remediation
+
+**Fields**
+EventID, NodeID, ServiceID, Severity, Status, TicketID, SLAImpact, AuditFields.
+
+**Validations**
+
+* Critical faults trigger automatic escalation
+* SLA impact computed per incident
+
+**Workflows**
+
+* Fault detection → Ticket creation → Assignment → Remediation → Status update → SLA tracking
+
+---
+
+## 7. MARKETING & CUSTOMER ENGAGEMENT
+
+**Screens / Forms**
+
+* Campaign Management (Email, SMS, Push)
+* Promotions & Plan Offers
+* Customer Segmentation & Targeting
+* Churn Prediction & Retention Campaigns
+* Loyalty Programs / Rewards
+
+**Fields**
+CampaignID, Type, StartDate, EndDate, TargetSegment, ProductID, PlanID, DiscountRate, TriggerEvents.
+
+**Validations**
+
+* Campaigns target active customers
+* Discounts / promotions validated
+* Communication consent compliance
+
+**Workflows**
+
+* Campaign creation → Segment selection → Automation → Performance monitoring → Adjust / terminate
+
+---
+
+## 8. FINANCE, TAX & COMPLIANCE
+
+**Screens / Forms**
+
+* GL / AP / AR Integration
+* Tax & Regulatory Reporting
+* Revenue Recognition per Service
+* Refund / Credit Note Management
+* Compliance Audit Trail
+
+**Fields**
+TransactionID, InvoiceID, ServiceID, GLAccount, TaxAmount, PaymentStatus, RefundStatus, AuditFields.
+
+**Validations**
+
+* Revenue recognized per accounting rules
+* Tax compliance per region
+* Audit logs complete and immutable
+
+**Workflows**
+
+* Billing → GL posting → Tax calculation → Reporting → Audit
+
+---
+
+## 9. BI & DASHBOARDS
+
+**Prebuilt Dashboards**
+
+* Revenue by Service / Plan / Region
+* Subscriber Growth & Churn
+* Network Utilization & Faults
+* Billing & AR KPIs
+* Campaign ROI & Customer Engagement Metrics
+
+**Ad-hoc Analysis**
+
+* Drill-down by subscriber, service, plan, device, or region
+
+---
+
+## 10. AI & PREDICTIVE MODELS
+
+**Use Cases**
+
+* Churn prediction & proactive retention
+* Network fault prediction
+* Usage pattern forecasting & capacity planning
+* Dynamic pricing / promotions optimization
+
+**Controls**
+
+* Human approval for critical interventions
+* Model explainability and traceability
+
+---
+
+## 11. MOBILE & CUSTOMER APPS
+
+**Screens / Forms**
+
+* Customer Account & Plan Management
+* Device & SIM Activation / Deactivation
+* Billing / Payment History
+* Usage Monitoring & Alerts
+* Support Ticket Logging
+
+**Offline Mode**
+
+* Limited offline viewing & sync when online
+
+---
+
+## 12. ROLES & PERMISSIONS
+
+* Telecom Admin
+* Customer Support / Helpdesk
+* Network Engineer / Ops
+* Billing Analyst / Accountant
+* Marketing / Campaign Manager
+* IT / Integration Engineer
+* BI Analyst / Data Scientist
+
+**Permissions:** Subscriber data access controlled; network changes require engineer approval; billing posting only by finance.
+
+---
+
+## 13. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+* 50 subscribers
+* 10 service plans
+* 20 devices / modems / SIMs
+* 5 network nodes
+* 10 sample invoices & usage records
+* 5 campaigns
+
+---
+
+## 14. INTEGRATIONS & CONNECTORS
+
+* ERP / Finance / GL / AP / AR
+* CRM / Marketing Automation
+* Billing Systems / BRM
+* Network OSS / NMS APIs
+* BI / Data Lake
+* Third-party Vendor & Device Portals
+
+**Rules:** Idempotent endpoints, retry logic, audit trail, DLQ handling
+
+---
+
+## 15. ALERTS, AUTOMATIONS & SLA RULES
+
+* SLA violation → automatic ticket → escalation
+* Subscription near renewal → customer notification
+* Payment failure → retry & notify
+* Network fault detection → auto remediation or alert
+
+---
+
+## 16. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+* Seeders and migrations must be idempotent
+* Feature flags for telecom / ISP modules
+* Dry-run simulations for service activation, billing, network events
+* End-to-end simulation: customer → device → service → billing → support
+
+---
+
+## 17. FINAL MANDATE (REPEAT)
+
+**REPLIT MUST** scan codebase, skip existing functionality, enhance only missing elements, maintain schema consistency, and ensure idempotent deployment. Never duplicate existing objects.
+
+---
+
+Reply **“Yes, generate Industry Pack 10”** to produce **INDUSTRY PACK 10 — HEALTHCARE / HOSPITAL MANAGEMENT** next.
