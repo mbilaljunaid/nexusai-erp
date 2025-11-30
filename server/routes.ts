@@ -14,8 +14,10 @@ import {
 import { z } from "zod";
 import OpenAI from "openai";
 
+// Using Replit AI Integrations for OpenAI (no API key needed, billed to credits)
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "",
+  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || "https://api.openai.com/v1",
+  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY || "dummy-key",
 });
 
 // Domain-specific AI prompts
@@ -63,10 +65,47 @@ const plansStore: any[] = [
 const subscriptionsStore: any[] = [];
 const paymentsPhase1Store: any[] = [];
 
+// RBAC Enforcement Middleware
+const enforceRBAC = (requiredPermission?: string) => {
+  return async (req: any, res: any, next: any) => {
+    const tenantId = req.headers["x-tenant-id"] as string;
+    const userId = req.headers["x-user-id"] as string;
+    
+    if (!tenantId || !userId) {
+      return res.status(401).json({ error: "Missing tenant or user context" });
+    }
+    
+    req.tenantId = tenantId;
+    req.userId = userId;
+    req.role = req.headers["x-user-role"] || "viewer";
+    
+    // Simple role-based check
+    if (requiredPermission) {
+      const rolePermissions: Record<string, string[]> = {
+        admin: ["read", "write", "delete", "admin"],
+        editor: ["read", "write"],
+        viewer: ["read"],
+      };
+      const allowedPerms = rolePermissions[req.role] || [];
+      if (!allowedPerms.includes(requiredPermission)) {
+        return res.status(403).json({ error: "Insufficient permissions" });
+      }
+    }
+    
+    next();
+  };
+};
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+
+  // Apply RBAC middleware to all /api routes (except health check)
+  app.use("/api", (req, res, next) => {
+    if (req.path === "/health") return next();
+    enforceRBAC()(req, res, next);
+  });
 
   // PHASE 1: Invoices
   app.get("/api/invoices", async (req, res) => {
@@ -666,13 +705,15 @@ export async function registerRoutes(
       }
       
       try {
+        // Use gpt-5 (latest model) if available, fallback to gpt-4o-mini
+        const model = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL ? "gpt-5" : "gpt-4o-mini";
         const completion = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
+          model,
           messages: [
             { role: "system", content: systemPrompt },
             ...messages,
           ],
-          max_tokens: 500,
+          max_tokens: 1024,
         });
         
         const aiResponse = completion.choices[0]?.message?.content || "I couldn't generate a response.";
@@ -684,6 +725,12 @@ export async function registerRoutes(
         });
       } catch (aiError) {
         console.error("OpenAI API error:", aiError);
+        // Fallback response if API fails
+        await storage.createCopilotMessage({
+          conversationId: data.conversationId,
+          role: "assistant",
+          content: "Sorry, I encountered an issue. Please try again.",
+        });
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
