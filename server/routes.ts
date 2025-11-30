@@ -53,6 +53,18 @@ const copilotChatsStore: any[] = [];
 const errorEventsStore: any[] = [];
 const knowledgeEntitiesStore: any[] = [];
 
+// PHASE 1: Enterprise Foundation
+const tenantsStore: any[] = [
+  { id: "tenant1", name: "Acme Corp", slug: "acme", status: "active", createdAt: new Date().toISOString() }
+];
+const plansStore: any[] = [
+  { id: "plan1", name: "Starter", price: "99", billingCycle: "monthly", features: ["Core Features", "5 Users", "Basic Support"], status: "active", createdAt: new Date().toISOString() },
+  { id: "plan2", name: "Professional", price: "299", billingCycle: "monthly", features: ["All Features", "25 Users", "Priority Support", "Analytics"], status: "active", createdAt: new Date().toISOString() },
+  { id: "plan3", name: "Enterprise", price: "999", billingCycle: "monthly", features: ["All Features", "Unlimited Users", "24/7 Support", "Custom Integration"], status: "active", createdAt: new Date().toISOString() }
+];
+const subscriptionsStore: any[] = [];
+const paymentsPhase1Store: any[] = [];
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -1416,6 +1428,101 @@ export async function registerRoutes(
     res.status(201).json(task);
   });
 
+
+  // ========== PHASE 1: TENANT MANAGEMENT ==========
+  app.get("/api/tenants", (req, res) => {
+    res.json(tenantsStore);
+  });
+
+  app.post("/api/tenants", (req, res) => {
+    try {
+      const tenant = {
+        id: `tenant-${Date.now()}`,
+        name: req.body.name,
+        slug: req.body.slug || req.body.name.toLowerCase().replace(/\s+/g, '-'),
+        status: "active",
+        createdAt: new Date().toISOString()
+      };
+      tenantsStore.push(tenant);
+      res.status(201).json(tenant);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create tenant" });
+    }
+  });
+
+  app.get("/api/tenants/:id", (req, res) => {
+    const tenant = tenantsStore.find(t => t.id === req.params.id);
+    res.json(tenant || {});
+  });
+
+  // ========== PHASE 1: BILLING PLANS ==========
+  app.get("/api/plans", (req, res) => {
+    res.json(plansStore);
+  });
+
+  app.post("/api/plans", (req, res) => {
+    try {
+      const plan = {
+        id: `plan-${Date.now()}`,
+        ...req.body,
+        createdAt: new Date().toISOString()
+      };
+      plansStore.push(plan);
+      res.status(201).json(plan);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create plan" });
+    }
+  });
+
+  // ========== PHASE 1: SUBSCRIPTIONS ==========
+  app.get("/api/subscriptions", (req, res) => {
+    res.json(subscriptionsStore);
+  });
+
+  app.get("/api/subscriptions/:tenantId", (req, res) => {
+    const subs = subscriptionsStore.filter(s => s.tenantId === req.params.tenantId);
+    res.json(subs);
+  });
+
+  app.post("/api/subscriptions", (req, res) => {
+    try {
+      const subscription = {
+        id: `sub-${Date.now()}`,
+        tenantId: req.body.tenantId,
+        planId: req.body.planId,
+        status: "active",
+        startDate: new Date().toISOString(),
+        autoRenew: true,
+        createdAt: new Date().toISOString()
+      };
+      subscriptionsStore.push(subscription);
+      res.status(201).json(subscription);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create subscription" });
+    }
+  });
+
+  // ========== PHASE 1: PAYMENTS ==========
+  app.get("/api/payments-phase1", (req, res) => {
+    res.json(paymentsPhase1Store);
+  });
+
+  app.post("/api/payments-phase1", (req, res) => {
+    try {
+      const payment = {
+        id: `payment-${Date.now()}`,
+        invoiceId: req.body.invoiceId,
+        amount: req.body.amount,
+        method: req.body.method || "credit_card",
+        status: "completed",
+        createdAt: new Date().toISOString()
+      };
+      paymentsPhase1Store.push(payment);
+      res.status(201).json(payment);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create payment" });
+    }
+  });
 
   // Health check
   app.get("/api/health", (req, res) => {

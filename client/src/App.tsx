@@ -17,7 +17,9 @@ const ERP = lazy(() => import("@/pages/ERP"));
 const HR = lazy(() => import("@/pages/HR"));
 const Projects = lazy(() => import("@/pages/Projects"));
 
-// Phase 1: Payments & CRM (4 pages)
+// Phase 1: Enterprise Foundation (6 pages)
+const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
+const BillingPlans = lazy(() => import("@/pages/BillingPlans"));
 const InvoiceGenerator = lazy(() => import("@/pages/InvoiceGenerator"));
 const QuoteBuilder = lazy(() => import("@/pages/QuoteBuilder"));
 const ApprovalWorkflow = lazy(() => import("@/pages/ApprovalWorkflow"));
