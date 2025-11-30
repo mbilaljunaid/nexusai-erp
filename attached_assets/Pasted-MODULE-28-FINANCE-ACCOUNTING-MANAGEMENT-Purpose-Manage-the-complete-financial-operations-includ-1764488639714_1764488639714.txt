@@ -1,0 +1,99 @@
+MODULE 28: FINANCE & ACCOUNTING MANAGEMENT
+
+Purpose: Manage the complete financial operations including general ledger, accounts payable, accounts receivable, cash management, fixed assets, budgeting, taxation, reporting, and integration with ERP, HR, Projects, CRM, Inventory, EPM, BI, AI, and Compliance modules.
+
+Important Note for Replit: Before creating any finance or accounting objects, workflows, or dashboards, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+28.1 General Ledger (GL)
+
+Forms / Screens: Chart of Accounts, Journal Entry, GL Posting, Period Close, GL Dashboard.
+
+Fields: GL Account ID, Account Name, Account Type, Currency, Debit, Credit, Balance, Transaction Date, Description, Reference, Status, Approval Workflow, Audit Fields.
+
+Validations: Account mapping validated, debit/credit balance verified, mandatory fields enforced, approval required for manual journal entries.
+
+Workflows: Journal entry submission triggers approval workflow, postings update GL balances automatically, dashboards reflect real-time financial position, integration with EPM for consolidation.
+
+28.2 Accounts Payable (AP)
+
+Forms / Screens: Vendor Invoice Entry, Payment Processing, Vendor Credit Notes, AP Aging Reports, AP Dashboard.
+
+Fields: Vendor ID, Invoice ID, Invoice Date, Due Date, Amount, Currency, Payment Terms, Payment Method, Status (Pending, Approved, Paid), Approval Workflow, Audit Fields.
+
+Validations: Invoice amounts validated, vendor details correct, payment dates enforced, duplicate invoices prevented.
+
+Workflows: Invoice submission triggers approval workflow, payment processing updates GL, dashboards reflect liabilities, integration with Inventory and Projects for material and service validation.
+
+28.3 Accounts Receivable (AR)
+
+Forms / Screens: Customer Invoice Creation, Payment Receipt, Credit Memo, AR Aging Reports, AR Dashboard.
+
+Fields: Customer ID, Invoice ID, Invoice Date, Due Date, Amount, Currency, Payment Terms, Payment Status, Status (Pending, Paid, Overdue), Approval Workflow, Audit Fields.
+
+Validations: Invoice accuracy verified, customer details correct, payment status updated, duplicate invoices prevented.
+
+Workflows: Invoice creation triggers notifications, payments update AR balances automatically, dashboards reflect receivables, integration with CRM for customer follow-ups.
+
+28.4 Cash & Bank Management
+
+Forms / Screens: Bank Account Setup, Cash Receipts, Bank Transfers, Reconciliation, Cash Flow Dashboard.
+
+Fields: Account ID, Bank Name, Account Number, Currency, Transaction Date, Amount, Transaction Type (Deposit, Withdrawal, Transfer), Status, Approval Workflow, Audit Fields.
+
+Validations: Transactions validated, balances checked, approvals enforced, reconciliation validated.
+
+Workflows: Transactions trigger ledger updates, bank reconciliations update GL, dashboards reflect cash position, integration with Finance, Projects, and ERP for real-time cash visibility.
+
+28.5 Fixed Assets Management
+
+Forms / Screens: Asset Master, Asset Acquisition, Depreciation Setup, Asset Disposal, Fixed Assets Dashboard.
+
+Fields: Asset ID, Name, Category, Acquisition Date, Cost, Depreciation Method, Depreciation Rate, Book Value, Location, Status (Active, Retired), Approval Workflow, Audit Fields.
+
+Validations: Acquisition cost validated, depreciation calculated correctly, disposal entries approved, asset location verified.
+
+Workflows: Asset addition triggers GL postings, depreciation calculated automatically, disposal updates financials, dashboards reflect asset portfolio, integration with Projects for capital allocation.
+
+28.6 Budgeting & Forecasting
+
+Forms / Screens: Budget Entry, Forecast Input, Variance Analysis, Budget Dashboard, Approval Workflow.
+
+Fields: Budget ID, Department/Project, Period, Budget Amount, Forecast Amount, Actuals, Variance, Status, Approval Workflow, Audit Fields.
+
+Validations: Amounts validated, period consistency checked, approvals enforced, integration with GL and EPM verified.
+
+Workflows: Budget submission triggers approval workflow, forecasts updated periodically, dashboards show variance analysis, integration with EPM for planning and consolidation.
+
+28.7 Tax Management
+
+Forms / Screens: Tax Master, Tax Calculation, Tax Filing, Tax Reports, Tax Dashboard.
+
+Fields: Tax ID, Name, Type (GST, VAT, Income, Payroll), Jurisdiction, Rate, Calculation Method, Transaction Reference, Filing Status, Audit Fields.
+
+Validations: Tax rates correct, calculations accurate, compliance enforced, approvals for manual adjustments.
+
+Workflows: Transaction posting triggers tax calculation, filings generated automatically, dashboards updated, integration with Finance and Compliance modules.
+
+28.8 Financial Reporting & Analytics
+
+Forms / Screens: P&L, Balance Sheet, Cash Flow, Custom Reports, Dashboard.
+
+Fields: Report ID, Name, Module, Filters (Period, Department, Project, Entity), Metrics (Revenue, Expenses, Assets, Liabilities, Equity), Export Options, Scheduled Execution, Audit Fields.
+
+Validations: Data integrity verified, report calculations accurate, filters validated, dashboards render correctly.
+
+Workflows: Reports generated on-demand or scheduled, dashboards update automatically, integration with BI and AI modules for predictive financial analytics, approvals enforced for financial statements.
+
+28.9 Integrations & Automations
+
+Automations: Automatic journal postings, invoice approvals, payment notifications, bank reconciliation alerts, depreciation calculations, tax calculation, budget variance alerts.
+
+Integrations: ERP/Inventory/Projects for cost and revenue data, HR for payroll and benefits, CRM for sales data, EPM for consolidation, BI/AI modules for analytics, Compliance for audit and regulatory reporting.
+
+Key Features: Complete finance and accounting management, GL, AP, AR, cash & bank, fixed assets, budgeting & forecasting, tax management, reporting & analytics, workflow automation, AI-powered insights, cross-module integration, audit-ready and compliance integrated.
+
+Important Note for Replit: Before creating any finance or accounting objects, workflows, dashboards, or integrations, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+⸻
+
+Do you want me to continue with Module 29: Projects & Project Management next?

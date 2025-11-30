@@ -1,13 +1,39 @@
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, TrendingUp } from "lucide-react";
+import { DollarSign, TrendingUp, Plus, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CashManagementPage() {
-  const transactions = [
-    { id: "ct1", date: "Nov 30, 2025", type: "Receipt", amount: "$50,000", account: "1010", status: "reconciled" },
-    { id: "ct2", date: "Nov 29, 2025", type: "Payment", amount: "$25,000", account: "2050", status: "pending" },
-    { id: "ct3", date: "Nov 28, 2025", type: "Transfer", amount: "$15,000", account: "1020", status: "reconciled" },
-  ];
+  const { toast } = useToast();
+  const [newTransaction, setNewTransaction] = useState({ type: "Receipt", amount: "", account: "" });
+
+  const { data: transactions = [], isLoading } = useQuery({
+    queryKey: ["/api/finance/cash-transactions"],
+    queryFn: () => fetch("/api/finance/cash-transactions").then(r => r.json()).catch(() => []),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/finance/cash-transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/finance/cash-transactions"] });
+      setNewTransaction({ type: "Receipt", amount: "", account: "" });
+      toast({ title: "Transaction created" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/finance/cash-transactions/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/finance/cash-transactions"] });
+      toast({ title: "Transaction deleted" });
+    },
+  });
 
   return (
     <div className="space-y-6 p-4">
@@ -46,23 +72,47 @@ export default function CashManagementPage() {
         </Card>
       </div>
 
+      <Card data-testid="card-new-transaction">
+        <CardHeader><CardTitle className="text-base">Record Transaction</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-4 gap-3">
+            <Select value={newTransaction.type} onValueChange={(v) => setNewTransaction({ ...newTransaction, type: v })}>
+              <SelectTrigger data-testid="select-type"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Receipt">Receipt</SelectItem>
+                <SelectItem value="Payment">Payment</SelectItem>
+                <SelectItem value="Transfer">Transfer</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input placeholder="Amount" type="number" value={newTransaction.amount} onChange={(e) => setNewTransaction({ ...newTransaction, amount: e.target.value })} data-testid="input-amount" />
+            <Input placeholder="Account" value={newTransaction.account} onChange={(e) => setNewTransaction({ ...newTransaction, account: e.target.value })} data-testid="input-account" />
+            <Button onClick={() => createMutation.mutate(newTransaction)} disabled={createMutation.isPending || !newTransaction.amount} className="w-full" data-testid="button-record-transaction">
+              <Plus className="w-4 h-4 mr-2" /> Record
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
-            Recent Transactions
+            Transactions
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {transactions.map((trans) => (
+          {isLoading ? <p>Loading...</p> : transactions.length === 0 ? <p className="text-muted-foreground text-center py-4">No transactions</p> : transactions.map((trans: any) => (
             <div key={trans.id} className="flex items-center justify-between p-3 border rounded-lg hover-elevate" data-testid={`transaction-${trans.id}`}>
               <div className="flex-1">
                 <p className="font-medium text-sm">{trans.type}</p>
-                <p className="text-xs text-muted-foreground">Account: {trans.account} • {trans.date}</p>
+                <p className="text-xs text-muted-foreground">Account: {trans.account}</p>
               </div>
               <div className="flex items-center gap-2">
-                <p className="font-semibold">{trans.amount}</p>
-                <Badge variant={trans.status === "reconciled" ? "default" : "secondary"}>{trans.status}</Badge>
+                <p className="font-semibold">${trans.amount}</p>
+                <Badge variant="default">recorded</Badge>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(trans.id)} data-testid={`button-delete-${trans.id}`}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           ))}
