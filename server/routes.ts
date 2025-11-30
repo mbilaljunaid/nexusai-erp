@@ -4742,6 +4742,224 @@ export async function registerRoutes(
     res.status(201).json(dash);
   });
 
+  // ========== INDUSTRY PACK 20: EDUCATION & E-LEARNING ==========
+  const edStudentsStore: any[] = [];
+  const edCoursesStore: any[] = [];
+  const edAssessmentsStore: any[] = [];
+  const edAttendanceStore: any[] = [];
+  const edVirtualStore: any[] = [];
+  const edBillingStore: any[] = [];
+  const edEnrollmentStore: any[] = [];
+  const edAlumniStore: any[] = [];
+  const edPersonalizedStore: any[] = [];
+  const edFacultyStore: any[] = [];
+  const edComplianceStore: any[] = [];
+  const edAnalyticsStore: any[] = [];
+  const edGradesStore: any[] = [];
+  const edCertificatesStore: any[] = [];
+  const edDashboardStore: any[] = [];
+
+  app.get("/api/ed-students", (req, res) => {
+    if (edStudentsStore.length === 0) {
+      edStudentsStore.push({ id: "s1", studentId: "STU-001", name: "Alice Johnson", email: "alice@edu.com", programId: "PROG-001", status: "active" });
+    }
+    res.json(edStudentsStore);
+  });
+
+  app.post("/api/ed-students", (req, res) => {
+    const student = { id: `s-${Date.now()}`, ...req.body };
+    edStudentsStore.push(student);
+    res.status(201).json(student);
+  });
+
+  app.delete("/api/ed-students/:id", (req, res) => {
+    const idx = edStudentsStore.findIndex((s: any) => s.id === req.params.id);
+    if (idx >= 0) edStudentsStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/ed-courses", (req, res) => {
+    if (edCoursesStore.length === 0) {
+      edCoursesStore.push({ id: "c1", courseId: "COURSE-001", name: "Python 101", credits: "3", facultyId: "FAC-001", status: "active" });
+    }
+    res.json(edCoursesStore);
+  });
+
+  app.post("/api/ed-courses", (req, res) => {
+    const course = { id: `c-${Date.now()}`, ...req.body };
+    edCoursesStore.push(course);
+    res.status(201).json(course);
+  });
+
+  app.get("/api/ed-assessments", (req, res) => {
+    if (edAssessmentsStore.length === 0) {
+      edAssessmentsStore.push({ id: "a1", assessmentId: "ASSESS-001", type: "Quiz", score: "85", status: "completed" });
+    }
+    res.json(edAssessmentsStore);
+  });
+
+  app.post("/api/ed-assessments", (req, res) => {
+    const assess = { id: `a-${Date.now()}`, ...req.body };
+    edAssessmentsStore.push(assess);
+    res.status(201).json(assess);
+  });
+
+  app.get("/api/ed-attendance", (req, res) => {
+    if (edAttendanceStore.length === 0) {
+      edAttendanceStore.push({ id: "at1", classId: "CLASS-001", date: "2025-11-30", studentId: "STU-001", status: "present" });
+    }
+    res.json(edAttendanceStore);
+  });
+
+  app.post("/api/ed-attendance", (req, res) => {
+    const attend = { id: `at-${Date.now()}`, ...req.body };
+    edAttendanceStore.push(attend);
+    res.status(201).json(attend);
+  });
+
+  app.get("/api/ed-virtual", (req, res) => {
+    if (edVirtualStore.length === 0) {
+      edVirtualStore.push({ id: "v1", sessionId: "SESSION-001", courseId: "COURSE-001", attendees: "25", hasRecording: true, status: "completed" });
+    }
+    res.json(edVirtualStore);
+  });
+
+  app.post("/api/ed-virtual", (req, res) => {
+    const virt = { id: `v-${Date.now()}`, ...req.body };
+    edVirtualStore.push(virt);
+    res.status(201).json(virt);
+  });
+
+  app.get("/api/ed-billing", (req, res) => {
+    if (edBillingStore.length === 0) {
+      edBillingStore.push({ id: "b1", invoiceId: "INV-001", studentId: "STU-001", amount: "5000", status: "paid" });
+    }
+    res.json(edBillingStore);
+  });
+
+  app.post("/api/ed-billing", (req, res) => {
+    const bill = { id: `b-${Date.now()}`, ...req.body };
+    edBillingStore.push(bill);
+    res.status(201).json(bill);
+  });
+
+  app.get("/api/ed-enrollment", (req, res) => {
+    if (edEnrollmentStore.length === 0) {
+      edEnrollmentStore.push({ id: "e1", enrollmentId: "ENR-001", studentId: "STU-001", programId: "PROG-001", status: "active" });
+    }
+    res.json(edEnrollmentStore);
+  });
+
+  app.post("/api/ed-enrollment", (req, res) => {
+    const enr = { id: `e-${Date.now()}`, ...req.body };
+    edEnrollmentStore.push(enr);
+    res.status(201).json(enr);
+  });
+
+  app.get("/api/ed-alumni", (req, res) => {
+    if (edAlumniStore.length === 0) {
+      edAlumniStore.push({ id: "al1", alumniId: "ALUM-001", studentId: "STU-001", employmentStatus: "employed", engagementStatus: "active" });
+    }
+    res.json(edAlumniStore);
+  });
+
+  app.post("/api/ed-alumni", (req, res) => {
+    const alum = { id: `al-${Date.now()}`, ...req.body };
+    edAlumniStore.push(alum);
+    res.status(201).json(alum);
+  });
+
+  app.get("/api/ed-personalized", (req, res) => {
+    if (edPersonalizedStore.length === 0) {
+      edPersonalizedStore.push({ id: "p1", studentId: "STU-001", progressScore: "78", progressStatus: "on-track", riskStatus: "low" });
+    }
+    res.json(edPersonalizedStore);
+  });
+
+  app.post("/api/ed-personalized", (req, res) => {
+    const per = { id: `p-${Date.now()}`, ...req.body };
+    edPersonalizedStore.push(per);
+    res.status(201).json(per);
+  });
+
+  app.get("/api/ed-faculty", (req, res) => {
+    if (edFacultyStore.length === 0) {
+      edFacultyStore.push({ id: "f1", facultyId: "FAC-001", name: "Dr. Smith", qualification: "PhD", certified: true, status: "active" });
+    }
+    res.json(edFacultyStore);
+  });
+
+  app.post("/api/ed-faculty", (req, res) => {
+    const fac = { id: `f-${Date.now()}`, ...req.body };
+    edFacultyStore.push(fac);
+    res.status(201).json(fac);
+  });
+
+  app.get("/api/ed-compliance", (req, res) => {
+    if (edComplianceStore.length === 0) {
+      edComplianceStore.push({ id: "cpl1", accreditationId: "ACC-001", standard: "ABET", status: "compliant" });
+    }
+    res.json(edComplianceStore);
+  });
+
+  app.post("/api/ed-compliance", (req, res) => {
+    const comp = { id: `cpl-${Date.now()}`, ...req.body };
+    edComplianceStore.push(comp);
+    res.status(201).json(comp);
+  });
+
+  app.get("/api/ed-analytics", (req, res) => {
+    if (edAnalyticsStore.length === 0) {
+      edAnalyticsStore.push({ id: "an1", programId: "PROG-001", enrolled: "100", completionRate: "85", growth: "10" });
+    }
+    res.json(edAnalyticsStore);
+  });
+
+  app.post("/api/ed-analytics", (req, res) => {
+    const ana = { id: `an-${Date.now()}`, ...req.body };
+    edAnalyticsStore.push(ana);
+    res.status(201).json(ana);
+  });
+
+  app.get("/api/ed-grades", (req, res) => {
+    if (edGradesStore.length === 0) {
+      edGradesStore.push({ id: "g1", studentId: "STU-001", courseId: "COURSE-001", grade: "90", status: "passed" });
+    }
+    res.json(edGradesStore);
+  });
+
+  app.post("/api/ed-grades", (req, res) => {
+    const grad = { id: `g-${Date.now()}`, ...req.body };
+    edGradesStore.push(grad);
+    res.status(201).json(grad);
+  });
+
+  app.get("/api/ed-certificates", (req, res) => {
+    if (edCertificatesStore.length === 0) {
+      edCertificatesStore.push({ id: "cr1", certificateId: "CERT-001", courseId: "COURSE-001", studentId: "STU-001", status: "issued" });
+    }
+    res.json(edCertificatesStore);
+  });
+
+  app.post("/api/ed-certificates", (req, res) => {
+    const cert = { id: `cr-${Date.now()}`, ...req.body };
+    edCertificatesStore.push(cert);
+    res.status(201).json(cert);
+  });
+
+  app.get("/api/ed-dashboard", (req, res) => {
+    if (edDashboardStore.length === 0) {
+      edDashboardStore.push({ id: "d1", kpiName: "Enrollment", target: "500", actual: "480", status: "healthy" });
+    }
+    res.json(edDashboardStore);
+  });
+
+  app.post("/api/ed-dashboard", (req, res) => {
+    const dash = { id: `d-${Date.now()}`, ...req.body };
+    edDashboardStore.push(dash);
+    res.status(201).json(dash);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

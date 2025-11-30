@@ -476,6 +476,21 @@ const ReadmissionRisk = lazy(() => import("@/pages/ReadmissionRisk"));
 const LabTurnaround = lazy(() => import("@/pages/LabTurnaround"));
 const InventoryHealthcare = lazy(() => import("@/pages/InventoryHealthcare"));
 const HealthcareDashboard = lazy(() => import("@/pages/HealthcareDashboard"));
+const StudentManagementEd = lazy(() => import("@/pages/StudentManagementEd"));
+const CourseManagement = lazy(() => import("@/pages/CourseManagement"));
+const Assessments = lazy(() => import("@/pages/Assessments"));
+const Attendance = lazy(() => import("@/pages/Attendance"));
+const VirtualClassroom = lazy(() => import("@/pages/VirtualClassroom"));
+const BillingEducation = lazy(() => import("@/pages/BillingEducation"));
+const Enrollment = lazy(() => import("@/pages/Enrollment"));
+const AlumniEngagement = lazy(() => import("@/pages/AlumniEngagement"));
+const PersonalizedLearning = lazy(() => import("@/pages/PersonalizedLearning"));
+const EdFaculty = lazy(() => import("@/pages/EdFaculty"));
+const EdCompliance = lazy(() => import("@/pages/EdCompliance"));
+const EdAnalytics = lazy(() => import("@/pages/EdAnalytics"));
+const Gradebook = lazy(() => import("@/pages/Gradebook"));
+const Certification = lazy(() => import("@/pages/Certification"));
+const EdDashboard = lazy(() => import("@/pages/EdDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1161,6 +1176,21 @@ function Router() {
       <Route path="/hc-tat" component={LabTurnaround} />
       <Route path="/hc-inventory" component={InventoryHealthcare} />
       <Route path="/hc-dashboard" component={HealthcareDashboard} />
+      <Route path="/ed-students" component={StudentManagementEd} />
+      <Route path="/ed-courses" component={CourseManagement} />
+      <Route path="/ed-assessments" component={Assessments} />
+      <Route path="/ed-attendance" component={Attendance} />
+      <Route path="/ed-virtual" component={VirtualClassroom} />
+      <Route path="/ed-billing" component={BillingEducation} />
+      <Route path="/ed-enrollment" component={Enrollment} />
+      <Route path="/ed-alumni" component={AlumniEngagement} />
+      <Route path="/ed-personalized" component={PersonalizedLearning} />
+      <Route path="/ed-faculty" component={EdFaculty} />
+      <Route path="/ed-compliance" component={EdCompliance} />
+      <Route path="/ed-analytics" component={EdAnalytics} />
+      <Route path="/ed-grades" component={Gradebook} />
+      <Route path="/ed-certificates" component={Certification} />
+      <Route path="/ed-dashboard" component={EdDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
