@@ -462,6 +462,20 @@ const WarrantyReturns = lazy(() => import("@/pages/WarrantyReturns"));
 const MarketingTelecom = lazy(() => import("@/pages/MarketingTelecom"));
 const ComplianceAudit = lazy(() => import("@/pages/ComplianceAudit"));
 const TelecomAnalytics = lazy(() => import("@/pages/TelecomAnalytics"));
+const ClinicalEHR = lazy(() => import("@/pages/ClinicalEHR"));
+const LaboratoryDiagnostics = lazy(() => import("@/pages/LaboratoryDiagnostics"));
+const PharmacyInventory = lazy(() => import("@/pages/PharmacyInventory"));
+const SupplyChainHealthcare = lazy(() => import("@/pages/SupplyChainHealthcare"));
+const BillingInsurance = lazy(() => import("@/pages/BillingInsurance"));
+const ClinicalTrials = lazy(() => import("@/pages/ClinicalTrials"));
+const ComplianceQuality = lazy(() => import("@/pages/ComplianceQuality"));
+const FinanceHealthcare = lazy(() => import("@/pages/FinanceHealthcare"));
+const HRScheduling = lazy(() => import("@/pages/HRScheduling"));
+const HealthcareBI = lazy(() => import("@/pages/HealthcareBI"));
+const ReadmissionRisk = lazy(() => import("@/pages/ReadmissionRisk"));
+const LabTurnaround = lazy(() => import("@/pages/LabTurnaround"));
+const InventoryHealthcare = lazy(() => import("@/pages/InventoryHealthcare"));
+const HealthcareDashboard = lazy(() => import("@/pages/HealthcareDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1132,6 +1146,21 @@ function Router() {
       <Route path="/telecom-campaigns" component={MarketingTelecom} />
       <Route path="/telecom-compliance" component={ComplianceAudit} />
       <Route path="/telecom-analytics" component={TelecomAnalytics} />
+      <Route path="/hc-patients" component={PatientManagement} />
+      <Route path="/hc-ehr" component={ClinicalEHR} />
+      <Route path="/hc-labs" component={LaboratoryDiagnostics} />
+      <Route path="/hc-pharmacy" component={PharmacyInventory} />
+      <Route path="/hc-supply" component={SupplyChainHealthcare} />
+      <Route path="/hc-billing" component={BillingInsurance} />
+      <Route path="/hc-trials" component={ClinicalTrials} />
+      <Route path="/hc-compliance" component={ComplianceQuality} />
+      <Route path="/hc-finance" component={FinanceHealthcare} />
+      <Route path="/hc-hr" component={HRScheduling} />
+      <Route path="/hc-analytics" component={HealthcareBI} />
+      <Route path="/hc-readmission" component={ReadmissionRisk} />
+      <Route path="/hc-tat" component={LabTurnaround} />
+      <Route path="/hc-inventory" component={InventoryHealthcare} />
+      <Route path="/hc-dashboard" component={HealthcareDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />

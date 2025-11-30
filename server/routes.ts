@@ -4524,6 +4524,224 @@ export async function registerRoutes(
     res.status(201).json(analytics);
   });
 
+  // ========== INDUSTRY PACK 19: HEALTHCARE & LIFE SCIENCES ==========
+  const hcPatientsStore: any[] = [];
+  const hcEncountersStore: any[] = [];
+  const hcLabsStore: any[] = [];
+  const hcPharmacyStore: any[] = [];
+  const hcSupplyStore: any[] = [];
+  const hcBillingStore: any[] = [];
+  const hcTrialsStore: any[] = [];
+  const hcComplianceStore: any[] = [];
+  const hcFinanceStore: any[] = [];
+  const hcHrStore: any[] = [];
+  const hcAnalyticsStore: any[] = [];
+  const hcReadmissionStore: any[] = [];
+  const hcTatStore: any[] = [];
+  const hcInventoryStore: any[] = [];
+  const hcDashboardStore: any[] = [];
+
+  app.get("/api/hc-patients", (req, res) => {
+    if (hcPatientsStore.length === 0) {
+      hcPatientsStore.push({ id: "p1", patientId: "PAT-001", name: "Jane Smith", dob: "1980-05-15", email: "jane@example.com", status: "active" });
+    }
+    res.json(hcPatientsStore);
+  });
+
+  app.post("/api/hc-patients", (req, res) => {
+    const patient = { id: `p-${Date.now()}`, ...req.body };
+    hcPatientsStore.push(patient);
+    res.status(201).json(patient);
+  });
+
+  app.delete("/api/hc-patients/:id", (req, res) => {
+    const idx = hcPatientsStore.findIndex((p: any) => p.id === req.params.id);
+    if (idx >= 0) hcPatientsStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/hc-encounters", (req, res) => {
+    if (hcEncountersStore.length === 0) {
+      hcEncountersStore.push({ id: "e1", encounterId: "ENC-001", patientId: "PAT-001", diagnosis: "HTN", status: "completed" });
+    }
+    res.json(hcEncountersStore);
+  });
+
+  app.post("/api/hc-encounters", (req, res) => {
+    const enc = { id: `e-${Date.now()}`, ...req.body };
+    hcEncountersStore.push(enc);
+    res.status(201).json(enc);
+  });
+
+  app.get("/api/hc-labs", (req, res) => {
+    if (hcLabsStore.length === 0) {
+      hcLabsStore.push({ id: "l1", testId: "TEST-001", testName: "Blood Work", tatHours: "4", status: "completed" });
+    }
+    res.json(hcLabsStore);
+  });
+
+  app.post("/api/hc-labs", (req, res) => {
+    const lab = { id: `l-${Date.now()}`, ...req.body };
+    hcLabsStore.push(lab);
+    res.status(201).json(lab);
+  });
+
+  app.get("/api/hc-pharmacy", (req, res) => {
+    if (hcPharmacyStore.length === 0) {
+      hcPharmacyStore.push({ id: "ph1", medicationId: "MED-001", medicationName: "Aspirin", stockQty: "500", minQty: "100" });
+    }
+    res.json(hcPharmacyStore);
+  });
+
+  app.post("/api/hc-pharmacy", (req, res) => {
+    const med = { id: `ph-${Date.now()}`, ...req.body };
+    hcPharmacyStore.push(med);
+    res.status(201).json(med);
+  });
+
+  app.get("/api/hc-supply", (req, res) => {
+    if (hcSupplyStore.length === 0) {
+      hcSupplyStore.push({ id: "s1", poId: "PO-001", supplierId: "SUPP-001", status: "received" });
+    }
+    res.json(hcSupplyStore);
+  });
+
+  app.post("/api/hc-supply", (req, res) => {
+    const supply = { id: `s-${Date.now()}`, ...req.body };
+    hcSupplyStore.push(supply);
+    res.status(201).json(supply);
+  });
+
+  app.get("/api/hc-billing", (req, res) => {
+    if (hcBillingStore.length === 0) {
+      hcBillingStore.push({ id: "b1", claimId: "CLM-001", amountBilled: "5000", status: "processed" });
+    }
+    res.json(hcBillingStore);
+  });
+
+  app.post("/api/hc-billing", (req, res) => {
+    const claim = { id: `b-${Date.now()}`, ...req.body };
+    hcBillingStore.push(claim);
+    res.status(201).json(claim);
+  });
+
+  app.get("/api/hc-trials", (req, res) => {
+    if (hcTrialsStore.length === 0) {
+      hcTrialsStore.push({ id: "t1", trialId: "TRIAL-001", enrolled: "25", status: "active" });
+    }
+    res.json(hcTrialsStore);
+  });
+
+  app.post("/api/hc-trials", (req, res) => {
+    const trial = { id: `t-${Date.now()}`, ...req.body };
+    hcTrialsStore.push(trial);
+    res.status(201).json(trial);
+  });
+
+  app.get("/api/hc-compliance", (req, res) => {
+    if (hcComplianceStore.length === 0) {
+      hcComplianceStore.push({ id: "c1", auditId: "AUD-001", complianceType: "HIPAA", status: "compliant", capaStatus: "closed" });
+    }
+    res.json(hcComplianceStore);
+  });
+
+  app.post("/api/hc-compliance", (req, res) => {
+    const comp = { id: `c-${Date.now()}`, ...req.body };
+    hcComplianceStore.push(comp);
+    res.status(201).json(comp);
+  });
+
+  app.get("/api/hc-finance", (req, res) => {
+    if (hcFinanceStore.length === 0) {
+      hcFinanceStore.push({ id: "f1", departmentId: "DEPT-001", revenue: "100000", expense: "60000" });
+    }
+    res.json(hcFinanceStore);
+  });
+
+  app.post("/api/hc-finance", (req, res) => {
+    const fin = { id: `f-${Date.now()}`, ...req.body };
+    hcFinanceStore.push(fin);
+    res.status(201).json(fin);
+  });
+
+  app.get("/api/hc-hr", (req, res) => {
+    if (hcHrStore.length === 0) {
+      hcHrStore.push({ id: "h1", employeeId: "EMP-001", role: "Physician", certified: true, status: "on-shift" });
+    }
+    res.json(hcHrStore);
+  });
+
+  app.post("/api/hc-hr", (req, res) => {
+    const hr = { id: `h-${Date.now()}`, ...req.body };
+    hcHrStore.push(hr);
+    res.status(201).json(hr);
+  });
+
+  app.get("/api/hc-analytics", (req, res) => {
+    if (hcAnalyticsStore.length === 0) {
+      hcAnalyticsStore.push({ id: "a1", location: "Hospital A", volume: "500", occupancy: "85", growth: "10" });
+    }
+    res.json(hcAnalyticsStore);
+  });
+
+  app.post("/api/hc-analytics", (req, res) => {
+    const analytics = { id: `a-${Date.now()}`, ...req.body };
+    hcAnalyticsStore.push(analytics);
+    res.status(201).json(analytics);
+  });
+
+  app.get("/api/hc-readmission", (req, res) => {
+    if (hcReadmissionStore.length === 0) {
+      hcReadmissionStore.push({ id: "r1", patientId: "PAT-001", riskScore: "45" });
+    }
+    res.json(hcReadmissionStore);
+  });
+
+  app.post("/api/hc-readmission", (req, res) => {
+    const readm = { id: `r-${Date.now()}`, ...req.body };
+    hcReadmissionStore.push(readm);
+    res.status(201).json(readm);
+  });
+
+  app.get("/api/hc-tat", (req, res) => {
+    if (hcTatStore.length === 0) {
+      hcTatStore.push({ id: "tat1", testId: "TEST-001", actualHours: "3", slaHours: "4" });
+    }
+    res.json(hcTatStore);
+  });
+
+  app.post("/api/hc-tat", (req, res) => {
+    const tat = { id: `tat-${Date.now()}`, ...req.body };
+    hcTatStore.push(tat);
+    res.status(201).json(tat);
+  });
+
+  app.get("/api/hc-inventory", (req, res) => {
+    if (hcInventoryStore.length === 0) {
+      hcInventoryStore.push({ id: "inv1", itemId: "ITEM-001", itemName: "Syringes", daysToExpiry: "60", status: "in-stock" });
+    }
+    res.json(hcInventoryStore);
+  });
+
+  app.post("/api/hc-inventory", (req, res) => {
+    const inv = { id: `inv-${Date.now()}`, ...req.body };
+    hcInventoryStore.push(inv);
+    res.status(201).json(inv);
+  });
+
+  app.get("/api/hc-dashboard", (req, res) => {
+    if (hcDashboardStore.length === 0) {
+      hcDashboardStore.push({ id: "d1", kpiName: "Patient Wait Time", target: "15min", actual: "12min", status: "on-track" });
+    }
+    res.json(hcDashboardStore);
+  });
+
+  app.post("/api/hc-dashboard", (req, res) => {
+    const dash = { id: `d-${Date.now()}`, ...req.body };
+    hcDashboardStore.push(dash);
+    res.status(201).json(dash);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

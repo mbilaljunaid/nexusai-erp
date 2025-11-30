@@ -1,0 +1,356 @@
+Generating **Industry Pack 20 — EDUCATION & E-LEARNING** in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Education & E-Learning Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 20 — EDUCATION & E-LEARNING
+
+**Purpose:** End-to-end solution for educational institutions, e-learning platforms, and corporate learning, covering student & faculty management, course catalog & curriculum, enrollment & admissions, learning management system (LMS), assessment & grading, certification, online classrooms, attendance tracking, content management, billing & payments, CRM & alumni engagement, AI-based personalized learning, BI & dashboards, HR & workforce management, compliance & accreditation, and integrations with external platforms and content providers. Delivered as an industry template that auto-enables and configures all related modules.
+
+**Auto-enable modules when template is selected:** Student & Faculty Management, LMS / Course Management, Assessments & Grading, Curriculum & Syllabus, Certification, Attendance & Scheduling, Billing & Payments, CRM & Alumni, AI / ML Personalization, BI & Dashboards, HR & Payroll, EPM (budget & resource planning), BPM (approval workflows), Mobile Apps, Integrations & API Gateway, Compliance & Accreditation.
+
+---
+
+## 1. STUDENT & FACULTY MANAGEMENT
+
+**Screens / Forms**
+
+* Student Master (demographics, enrollment, guardians, emergency contacts)
+* Faculty / Instructor Master (qualifications, courses, availability)
+* Enrollment & admission tracking
+* Multi-campus / multi-department association
+* Student profile, progress, and transcript
+
+**Fields**
+StudentID, Name, DOB, ContactInfo, EnrollmentDate, ProgramID, ClassID, FacultyID, Status, AuditFields.
+
+**Validations**
+
+* Unique student ID enforcement
+* Admission eligibility verification
+* Multi-program enrollment restrictions
+
+**Workflows**
+
+* Admission → Enrollment → Course registration → Progress tracking → Graduation → Alumni transition
+
+---
+
+## 2. COURSE, CURRICULUM & LMS
+
+**Screens / Forms**
+
+* Course / Program catalog
+* Curriculum builder (modules, subjects, credit hours)
+* Learning content management (videos, PDFs, SCORM, interactive)
+* LMS course enrollment & tracking
+* Prerequisite & co-requisite rules
+
+**Fields**
+CourseID, ProgramID, ModuleID, ContentID, CreditHours, FacultyID, Prerequisites, AuditFields.
+
+**Validations**
+
+* Course prerequisite enforcement
+* Credit hour totals validated for graduation
+* LMS content upload checks (file type, size, versioning)
+
+**Workflows**
+
+* Create course → Upload content → Assign faculty → Enroll students → Track progress → Issue certificates
+
+---
+
+## 3. ASSESSMENTS, GRADING & CERTIFICATION
+
+**Screens / Forms**
+
+* Test / Quiz / Exam builder (MCQ, essay, coding, practical)
+* Grading rubrics & evaluation criteria
+* Grade book & transcript generation
+* Certification issuance (digital badges, PDF certificates)
+* Reassessment / retake management
+
+**Fields**
+AssessmentID, StudentID, CourseID, Score, Grade, Pass/Fail, CertificateID, AuditFields.
+
+**Validations**
+
+* Grading scale compliance
+* Certificate issuance only on course completion
+* Reassessment allowed only per policy
+
+**Workflows**
+
+* Assessment creation → Student participation → Grading → Transcript update → Certificate issuance
+
+---
+
+## 4. ATTENDANCE & SCHEDULING
+
+**Screens / Forms**
+
+* Timetable / Class schedule management
+* Attendance capture (manual, biometric, online)
+* Faculty assignment & substitution
+* Leave / absence tracking
+
+**Fields**
+ClassID, StudentID, FacultyID, Date, AttendanceStatus, LeaveReason, AuditFields.
+
+**Validations**
+
+* Attendance recorded per class session
+* Faculty availability check before scheduling
+* Absence approvals tracked
+
+**Workflows**
+
+* Schedule classes → Assign faculty → Capture attendance → Update student record → Notify absences
+
+---
+
+## 5. ONLINE CLASSROOM & VIRTUAL LEARNING
+
+**Screens / Forms**
+
+* Virtual classroom sessions (live streaming, breakout rooms)
+* Student interaction (chat, polls, Q&A)
+* Recording & playback
+* Integration with LMS content
+
+**Fields**
+SessionID, CourseID, FacultyID, StudentIDs, StartTime, EndTime, RecordingLink, AuditFields.
+
+**Validations**
+
+* Access restricted to enrolled students
+* Faculty authentication before session
+* Attendance tracked automatically
+
+**Workflows**
+
+* Schedule virtual class → Notify participants → Conduct session → Record & archive → Update LMS progress
+
+---
+
+## 6. BILLING, PAYMENTS & FINANCE
+
+**Screens / Forms**
+
+* Fee structure & tuition management
+* Payment capture (online, offline, installments)
+* Scholarship / discount management
+* Refund processing
+* Finance integration (GL, AP, AR)
+
+**Fields**
+InvoiceID, StudentID, FeeID, Amount, PaymentDate, PaymentMethod, Status, AuditFields.
+
+**Validations**
+
+* Fees per program validated against catalog
+* Payment confirmation required before enrollment confirmation
+* Refund approvals per policy
+
+**Workflows**
+
+* Fee setup → Generate invoice → Capture payment → Update student account → Reconcile with finance
+
+---
+
+## 7. CRM, ALUMNI & STUDENT ENGAGEMENT
+
+**Screens / Forms**
+
+* Student / alumni engagement campaigns (email, SMS, push)
+* Feedback & survey capture
+* Scholarship & grant communications
+* Career services & job placement tracking
+
+**Fields**
+CampaignID, StudentID, AlumniID, InteractionType, FeedbackScore, PlacementStatus, AuditFields.
+
+**Validations**
+
+* Segmentation based on program, year, or location
+* GDPR / privacy compliance for communications
+
+**Workflows**
+
+* Create campaign → Send communication → Track response → Analyze engagement → Update CRM
+
+---
+
+## 8. AI & PERSONALIZED LEARNING
+
+**Use Cases**
+
+* Adaptive learning paths per student progress
+* Content recommendations
+* Early warning for at-risk students
+* Predictive performance analytics
+
+**Controls**
+
+* Thresholds for intervention alerts; human validation for recommendations
+
+---
+
+## 9. BI & DASHBOARDS
+
+**Prebuilt Dashboards**
+
+* Enrollment trends & demographics
+* Course completion rates & grades
+* Attendance & participation analytics
+* Financial summary (tuition, payments, scholarships)
+* Faculty workload & performance metrics
+
+**Ad-hoc**
+
+* Drill down from program → course → student → assessments → grades
+
+---
+
+## 10. HR & WORKFORCE MANAGEMENT
+
+**Screens / Forms**
+
+* Faculty & staff master
+* Payroll & compensation
+* Recruitment & credential verification
+* Leave & attendance
+* Performance evaluation
+
+**Fields**
+EmployeeID, Role, Department, Credentials, LeaveBalance, PayrollID, PerformanceRating, AuditFields.
+
+**Validations**
+
+* Credential verification mandatory for teaching staff
+* Payroll calculations validated per HR rules
+
+**Workflows**
+
+* Employee onboarding → Assign role & schedule → Track attendance → Evaluate performance → Process payroll
+
+---
+
+## 11. COMPLIANCE & ACCREDITATION
+
+**Screens / Forms**
+
+* Accreditation tracking (national & international)
+* Audit logs & documentation management
+* Data privacy & student consent
+* Policy & guideline enforcement
+
+**Fields**
+AccreditationID, InstitutionID, Standard, ValidFrom, ValidTo, AuditFields.
+
+**Validations**
+
+* Compliance checks before program approval
+* Audit logs immutable
+
+**Workflows**
+
+* Track accreditation → Document submission → Audit → Approval → Certification
+
+---
+
+## 12. MOBILE APPS
+
+**Student App**
+
+* Course access, assessments, attendance, notifications
+  **Faculty App**
+* Class schedule, grading, student communication
+  **Admin App**
+* Enrollment management, fee tracking, analytics dashboards
+
+---
+
+## 13. ROLES & PERMISSIONS
+
+**Core Roles**
+
+* Student / Learner
+* Faculty / Instructor
+* Department Head / Academic Admin
+* Finance / Accounts
+* HR / Payroll
+* LMS Administrator
+* Compliance Officer / Accreditation Manager
+* IT / Integration Engineer
+
+**Permission Notes**
+
+* Sensitive academic records require audit trails and approval workflows for changes
+
+---
+
+## 14. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+**Seed Data**
+
+* 50 students, 10 faculty, 5 programs, 20 courses, 10 assessments, 5 virtual classrooms, 5 invoices, 3 campaigns.
+
+**Onboarding Steps**
+
+* Import student & faculty → Create programs & courses → Enroll students → Conduct assessments → Issue certificates → Capture payments → Validate dashboards
+
+---
+
+## 15. INTEGRATIONS & CONNECTORS
+
+**Suggested Integrations**
+
+* LMS platforms & content providers
+* Virtual classroom & video conferencing
+* Payment gateways & finance system
+* Student information system (SIS)
+* CRM & alumni platforms
+* BI / data warehouse
+
+**Integration Rules**
+
+* Idempotent ingestion, audit logging, secure credential handling
+
+---
+
+## 16. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+**Examples**
+
+* Assignment due reminder → notify student
+* Low attendance → alert faculty & student
+* Tuition payment overdue → auto-reminder & finance notification
+* Assessment grading incomplete → notify faculty
+
+---
+
+## 17. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+**Idempotency & Safety**
+
+* Seeders check natural keys (StudentID + CourseID + AssessmentID) before insert
+* Migrations additive; destructive changes require rollback scripts
+* Feature flags per tenant for AI personalization, virtual classroom, and finance integrations
+
+**Testing**
+
+* Student lifecycle → course enrollment → assessment → grading → certification → billing → KPI dashboards
+
+---
+
+## 18. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+**REPLIT MUST** — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and **NEVER** duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+---
+
+If you want me to generate **Industry Pack 21 — RETAIL & E-COMMERCE** next, reply **“Yes”** and I will produce it in the same format.
