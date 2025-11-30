@@ -39,6 +39,7 @@ import {
   type Plan, type InsertPlan,
   type Subscription, type InsertSubscription,
   type Payment, type InsertPayment,
+  type Demo, type InsertDemo,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -63,6 +64,11 @@ export interface IStorage {
   listPayments(invoiceId?: string): Promise<Payment[]>;
   createPayment(payment: InsertPayment): Promise<Payment>;
 
+  getDemo(id: string): Promise<Demo | undefined>;
+  listDemos(): Promise<Demo[]>;
+  createDemo(demo: InsertDemo): Promise<Demo>;
+  deleteDemo(id: string): Promise<boolean>;
+  updateDemo(id: string, demo: Partial<InsertDemo>): Promise<Demo | undefined>;
 
   getUser(id: string): Promise<User | undefined>;
   listUsers(): Promise<User[]>;
@@ -420,6 +426,34 @@ export class MemStorage implements IStorage {
   async getPayrollConfig(id: string) { return this.payrollConfigs.get(id); }
   async listPayrollConfigs() { return Array.from(this.payrollConfigs.values()); }
   async createPayrollConfig(c: InsertPayrollConfig) { const id = randomUUID(); const cfg: PayrollConfig = { id, ...c, createdAt: new Date() }; this.payrollConfigs.set(id, cfg); return cfg; }
+
+  // Demo Management
+  private demos = new Map<string, Demo>();
+
+  async getDemo(id: string) { return this.demos.get(id); }
+  async listDemos() { return Array.from(this.demos.values()); }
+  async createDemo(d: InsertDemo) { 
+    const id = randomUUID(); 
+    const demo: Demo = { 
+      id, 
+      ...d, 
+      demoToken: `demo_${randomUUID()}`,
+      createdAt: new Date(),
+      expiresAt: d.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    }; 
+    this.demos.set(id, demo); 
+    return demo; 
+  }
+  async deleteDemo(id: string) { 
+    return this.demos.delete(id); 
+  }
+  async updateDemo(id: string, d: Partial<InsertDemo>) { 
+    const demo = this.demos.get(id);
+    if (!demo) return undefined;
+    const updated: Demo = { ...demo, ...d };
+    this.demos.set(id, updated);
+    return updated;
+  }
 }
 
 export const storage = new MemStorage();
