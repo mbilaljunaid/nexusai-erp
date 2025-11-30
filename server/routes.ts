@@ -14,6 +14,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
+import { generateDemoData } from "./demoSeeds";
 
 // Using Replit AI Integrations for OpenAI (no API key needed, billed to credits)
 const openai = new OpenAI({
@@ -5770,6 +5771,56 @@ export async function registerRoutes(
       const deleted = await storage.deleteDemo(req.params.id);
       if (!deleted) return res.status(404).json({ error: "Demo not found" });
       res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ========== DEMO SEEDING ==========
+  app.post("/api/demos/seed/:industry", async (req, res) => {
+    try {
+      const { industry } = req.params;
+      const demoData = generateDemoData(industry);
+      if (!demoData) {
+        return res.status(400).json({ error: "Industry not found" });
+      }
+      res.json({ success: true, data: demoData, recordsSeeded: demoData.recordCount });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/demos/send-credentials", async (req, res) => {
+    try {
+      const { email, industry, demoLink, username, password } = req.body;
+      
+      // Simulate email sending (in production, integrate with SendGrid/Resend)
+      const emailContent = `
+        <h2>Your NexusAI ${industry} Demo is Ready!</h2>
+        <p>Your demo environment has been created with seeded industry data.</p>
+        <h3>Demo Credentials:</h3>
+        <p><strong>Username:</strong> ${username}</p>
+        <p><strong>Password:</strong> ${password}</p>
+        <p><strong>Demo Link:</strong> <a href="${demoLink}">${demoLink}</a></p>
+        <p>Complete Guide: <a href="${demoLink}/guide">View Complete Guide</a></p>
+      `;
+      
+      console.log(`Email sent to ${email}:\n${emailContent}`);
+      
+      res.json({ 
+        success: true, 
+        message: `Demo credentials sent to ${email}`,
+        credentials: { username, password }
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/demos/industries", async (req, res) => {
+    try {
+      const industries = Object.keys(require("./demoSeeds").industrySeeds);
+      res.json(industries);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

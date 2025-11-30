@@ -194,46 +194,9 @@ export default function LandingPage() {
         </Card>
       </section>
 
-      {/* Footer */}
-      <footer className="px-4 py-12 border-t border-slate-700 mt-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-sm text-slate-400">
-          <div>
-            <h4 className="font-bold text-white mb-3">Product</h4>
-            <ul className="space-y-2">
-              <li><Link href="/modules">Modules</Link></li>
-              <li><Link href="/industries">Industries</Link></li>
-              <li><Link href="/pricing">Pricing</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-3">Resources</h4>
-            <ul className="space-y-2">
-              <li><Link href="/docs">Documentation</Link></li>
-              <li><Link href="/blog">Blog</Link></li>
-              <li><Link href="/community">Community</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-3">Company</h4>
-            <ul className="space-y-2">
-              <li><Link href="/about">About</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
-              <li><Link href="/careers">Careers</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-3">Legal</h4>
-            <ul className="space-y-2">
-              <li><a href="#privacy">Privacy</a></li>
-              <li><a href="#terms">Terms</a></li>
-              <li><a href="#security">Security</a></li>
-            </ul>
-          </div>
-        </div>
-        <div className="text-center mt-8 pt-8 border-t border-slate-700 text-slate-500">
-          <p>© 2025 NexusAI. All rights reserved.</p>
-        </div>
-      </footer>
+      </main>
+
+      <Footer />
     </div>
   );
 }

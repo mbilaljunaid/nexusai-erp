@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Download, Refresh, Trash2, Copy } from "lucide-react";
+import { Plus, Download, Refresh, Trash2, Copy, Zap } from "lucide-react";
 
 export default function DemoManagement() {
   const [industries, setIndustries] = useState<string[]>([]);
@@ -38,7 +38,7 @@ export default function DemoManagement() {
     }
   };
 
-  const createDemo = async () => {
+  const createDemo = async (seedData = false) => {
     if (!selectedIndustry || !email) {
       alert("Please select industry and enter email");
       return;
@@ -46,17 +46,41 @@ export default function DemoManagement() {
     
     setLoading(true);
     try {
-      const res = await fetch("/api/demos/create", {
+      // First seed the data if requested
+      if (seedData) {
+        const seedRes = await fetch(`/api/demos/seed/${selectedIndustry}`, {
+          method: "POST",
+          headers: { "x-user-role": "admin" },
+        });
+        const seedData = await seedRes.json();
+        console.log(`Seeded ${seedData.recordsSeeded} records for ${selectedIndustry}`);
+      }
+
+      const res = await fetch("/api/demos/request", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-user-role": "admin",
-        },
-        body: JSON.stringify({ industry: selectedIndustry, email }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, company: selectedIndustry, industry: selectedIndustry }),
       });
       const data = await res.json();
-      if (data.success) {
-        alert(`Demo created! Username: ${data.credentials.username}, Password: ${data.credentials.password}`);
+      if (res.ok) {
+        const username = `demo_${selectedIndustry.toLowerCase().replace(/\s+/g, "_")}`;
+        const password = `Demo@${new Date().getFullYear()}`;
+        
+        alert(`✓ Demo created!\n\nUsername: ${username}\nPassword: ${password}\n\nEmail sent to: ${email}`);
+        
+        // Send credentials
+        await fetch("/api/demos/send-credentials", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            industry: selectedIndustry,
+            demoLink: `${window.location.origin}/demo-access/${data.id}`,
+            username,
+            password,
+          }),
+        });
+        
         fetchDemos();
         setEmail("");
       }
@@ -126,15 +150,26 @@ export default function DemoManagement() {
                   />
                 </div>
 
-                <Button 
-                  onClick={createDemo} 
-                  disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  data-testid="button-create-demo"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  {loading ? "Creating..." : "Create Demo"}
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => createDemo(false)} 
+                    disabled={loading}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    data-testid="button-create-demo"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    {loading ? "Creating..." : "Create Demo"}
+                  </Button>
+                  <Button 
+                    onClick={() => createDemo(true)} 
+                    disabled={loading}
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    data-testid="button-create-demo-seeded"
+                  >
+                    <Zap className="w-4 h-4 mr-2" />
+                    {loading ? "Seeding..." : "Seed Data"}
+                  </Button>
+                </div>
               </div>
 
               <div className="mt-8 p-4 bg-slate-700/50 rounded-lg text-sm text-slate-300">
