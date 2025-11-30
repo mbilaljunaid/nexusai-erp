@@ -375,6 +375,15 @@ const RevenueManagement = lazy(() => import("@/pages/RevenueManagement"));
 const HospitalityInventory = lazy(() => import("@/pages/HospitalityInventory"));
 const HospitalityHRRostering = lazy(() => import("@/pages/HospitalityHRRostering"));
 const HospitalityBIDashboard = lazy(() => import("@/pages/HospitalityBIDashboard"));
+const ShipmentOrderManagement = lazy(() => import("@/pages/ShipmentOrderManagement"));
+const RouteLoadOptimization = lazy(() => import("@/pages/RouteLoadOptimization"));
+const YardDockManagement = lazy(() => import("@/pages/YardDockManagement"));
+const CarrierProcurement = lazy(() => import("@/pages/CarrierProcurement"));
+const ShipmentTracking = lazy(() => import("@/pages/ShipmentTracking"));
+const FreightCostingBilling = lazy(() => import("@/pages/FreightCostingBilling"));
+const CustomsCompliance = lazy(() => import("@/pages/CustomsCompliance"));
+const FleetDriverManagement = lazy(() => import("@/pages/FleetDriverManagement"));
+const TransportationBIDashboard = lazy(() => import("@/pages/TransportationBIDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -961,6 +970,15 @@ function Router() {
       <Route path="/hospitality-inventory" component={HospitalityInventory} />
       <Route path="/hr-rostering" component={HospitalityHRRostering} />
       <Route path="/hospitality-analytics" component={HospitalityBIDashboard} />
+      <Route path="/shipment-management" component={ShipmentOrderManagement} />
+      <Route path="/route-optimization" component={RouteLoadOptimization} />
+      <Route path="/yard-dock" component={YardDockManagement} />
+      <Route path="/carrier-procurement" component={CarrierProcurement} />
+      <Route path="/shipment-tracking" component={ShipmentTracking} />
+      <Route path="/freight-billing" component={FreightCostingBilling} />
+      <Route path="/customs-compliance" component={CustomsCompliance} />
+      <Route path="/fleet-drivers" component={FleetDriverManagement} />
+      <Route path="/tl-analytics" component={TransportationBIDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />

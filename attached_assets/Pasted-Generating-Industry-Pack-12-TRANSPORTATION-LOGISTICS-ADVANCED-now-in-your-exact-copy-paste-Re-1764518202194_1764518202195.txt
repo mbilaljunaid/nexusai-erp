@@ -1,0 +1,412 @@
+Generating Industry Pack 12 — TRANSPORTATION & LOGISTICS (ADVANCED) now in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the TRANSPORTATION & LOGISTICS (ADVANCED) Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate, overwrite, or recreate existing objects. Only generate missing features, augment existing components safely, and keep all naming, schemas and identifiers consistent with previously built modules. All seed data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 12 — TRANSPORTATION & LOGISTICS (ADVANCED)
+
+Purpose: End-to-end transportation & logistics platform addressing fleet & asset management, TMS (transportation management), route & load optimization, yard management, carrier procurement, shipment visibility, cross-docking, warehousing integration, freight cost management, carrier settlements, customs & trade compliance, multi-modal support (road/rail/air/sea), dock scheduling, last-mile orchestration, 3PL & marketplace integrations, telematics, driver management, BI/SLAs, and AI-driven ETA/routing. Delivered as an industry template that auto-enables all required modules.
+
+Auto-enable modules when template is selected: TMS, Fleet & Asset Management, WMS integration, Yard Management, Load Planning & Optimization, Route Optimization, Carrier Management, Billing & Freight Settlement, Procurement (carrier sourcing), Customer Order & Shipment Management, Tracking & Visibility, Compliance & Customs, BI & Analytics, AI/ETA Predictions, Telematics / IoT, Mobile Driver App, EDI/API Connectors, BPM & Automations, Finance (GL/AP/AR) integration, Security & Audit.
+
+⸻
+
+1. MASTER DATA & CONFIGURATION
+
+Screens / Forms
+	•	Locations (Hub, DC, Port, Terminal, Customer Site)
+	•	Route / Lane Master & Zone Mapping
+	•	Vehicle / Trailer / Container Master
+	•	Driver / Crew Master & Qualifications
+	•	Carrier / 3PL Partner Master & Contracts
+	•	Tariff / Rate Card / Surcharge Master
+	•	Equipment Type & Capacity Profiles
+	•	Hazardous Goods Parameters & Special Handling Codes
+
+Key Fields
+LocationID, LaneID, RouteID, VehicleID, TrailerID, ContainerID, DriverID, CarrierID, Capacity (cbm/weight/pallets), TariffID, SurchargeType, HazardClass, UoM, AuditFields.
+
+Validations
+	•	Vehicle capacity > 0 and matches assigned equipment type.
+	•	Driver qualifications valid for assigned routes (hazmat/oversize).
+	•	Tariff validity period enforced; duplicate tariff detection.
+
+Workflows
+	•	New carrier onboarding → Contract & SLA capture → Test EDI/API connection → Activate for booking.
+
+⸻
+
+2. ORDER MANAGEMENT & SHIPMENT CREATION
+
+Screens / Forms
+	•	Shipment Order Entry (single / bulk / EDI / API)
+	•	Multi-stop & Multi-pickup Shipment Builder
+	•	Consolidation / Deconsolidation Orders
+	•	Service Level / Transit Time Selection
+	•	Shipment Validation & Pre-check (DIM/weight limits)
+
+Fields
+ShipmentID, OrderID, CustomerID, Origin, Destination, Stops[], Commodity, Weight, DimensionalWeight, PalletCount, PickupWindow, DeliveryWindow, ServiceLevel, Incoterm, HazardFlag, AuditFields.
+
+Validations
+	•	Dimensional weight calculation and chargeable weight checks.
+	•	Route feasibility (e.g., bridge/height restrictions) for oversize loads.
+	•	Pickup/Delivery window conflicts flagged.
+
+Workflows
+	•	Order ingestion → Validate → Consolidation suggestion → Carrier tender → Pickup scheduling → Execution.
+
+⸻
+
+3. TMS: ROUTE, LOAD & SCHEDULE OPTIMIZATION
+
+Screens / Forms
+	•	Load Planning / Palletization Engine
+	•	Multi-Stop Route Sequencing & Optimization (time-window aware)
+	•	Mixed Fleet Optimization (truck/trailer/container)
+	•	Backhaul & Empty Run Optimization
+	•	Real-time Re-routing & Dynamic Reassignment
+
+Fields
+LoadID, StopSequence, ETA, ETD, LoadWeight, LoadVolume, Pallets, DriverID, VehicleID, Cost, FuelEstimate, CO2Estimate, AuditFields.
+
+Validations
+	•	No route exceeds max drive time or violates driver hours rules.
+	•	Weight & cube constraints checked per vehicle/trailer.
+	•	Compatibility checks for hazardous goods and segregation requirements.
+
+Workflows
+	•	Build loads → Optimize routes → Assign vehicles/drivers → Publish manifests & ETA → Monitor & adjust.
+
+⸻
+
+4. YARD & DOCK MANAGEMENT
+
+Screens / Forms
+	•	Yard Slot Management & Dock Scheduling
+	•	Gate In / Gate Out Entry & Validation
+	•	Yard Task Assignment (drop, hook, move)
+	•	Container & Trailer Status Board
+	•	Appointment Booking for Carriers & Customers
+
+Fields
+YardID, DockID, SlotID, AppointmentID, ContainerID, TrailerID, GatePassID, ArrivalTime, DepartureTime, Status, AuditFields.
+
+Validations
+	•	Dock appointments cannot overlap beyond capacity.
+	•	Gate checks for damaged containers or missing seals.
+	•	Yard dwell time SLA triggers alerts.
+
+Workflows
+	•	Carrier appointment created → Gate check upon arrival → Yard assignment → Docking → Loading → Gate out.
+
+⸻
+
+5. CARRIER PROCUREMENT & RATE MANAGEMENT
+
+Screens / Forms
+	•	Carrier RFQ / Rate Tendering (lane / time period)
+	•	Contract Rate Card with SLA & Accessorials
+	•	Dynamic Spot Rate Integration (market feeds)
+	•	Carrier Performance & Scorecard
+
+Fields
+TenderID, LaneID, RateID, RatePerKg, RatePerPallet, FuelSurcharge, Accessorials, EffectiveFrom, EffectiveTo, SLAParams, PerformanceMetrics.
+
+Validations
+	•	Rate conflicts across tenders and contracts resolved by priority.
+	•	Accessorial mapping must have valid codes and amounts.
+
+Workflows
+	•	Tender issuance → Carrier bids → Award contract → Load tendering (auto or manual) → Carrier confirmation.
+
+⸻
+
+6. VISIBILITY & TRACKING (REAL-TIME)
+
+Screens / Forms
+	•	Real-time Shipment Tracker (map view)
+	•	ETA Predictions & Confidence Scores
+	•	Event Timeline (pickup, departure, checkpoint, customs, exceptions)
+	•	POD / Proof of Delivery Capture (signature, photo)
+	•	Geo-fencing Alerts & Route Deviation Alerts
+
+Fields
+EventID, ShipmentID, GPSLatLong, Speed, Heading, Timestamp, ETA, ConfidenceScore, PODImageURL, SignatureHash, ExceptionCode, AuditFields.
+
+Validations
+	•	GPS device ID mapping to vehicle/trailer.
+	•	POD image metadata validated (timestamp, geo).
+	•	Route deviation rules trigger alerts.
+
+Workflows
+	•	Telemetry ingest → Update location & ETA → Notify customer/stakeholders → If exception, open incident & replan.
+
+⸻
+
+7. FREIGHT COSTING, BILLING & SETTLEMENT
+
+Screens / Forms
+	•	Freight Calculation Engine (tariff + accessorials + surcharges)
+	•	Freight Audit & Billing (customer & carrier)
+	•	Carrier Settlement / Remittance (AP)
+	•	Claims & Dispute Management (shortage, damage)
+
+Fields
+FreightChargeID, TariffApplied, Accessorials[], FuelSurchargePct, Currency, InvoiceID, CarrierInvoiceID, ClaimID, SettlementStatus, AuditFields.
+
+Validations
+	•	Freight math must be auditable with rate lookup trace.
+	•	Claims require proof (POD, photos, inspection).
+	•	Currency conversion and FX applied consistently.
+
+Workflows
+	•	Shipment completion → Freight calculation → Customer invoice → Carrier invoice matching → Carrier settlement → Handling claims if any.
+
+⸻
+
+8. CROSS-DOCK, HUB & 3PL OPERATIONS
+
+Screens / Forms
+	•	Cross-dock Planning (inbound → consolidation → outbound)
+	•	3PL Task & Order Management (pick/pack/service levels)
+	•	Billing Model for 3PL (storage, throughput, handling)
+	•	Inventory visibility & custody tracking for client stock
+
+Fields
+CrossdockRunID, InboundID, OutboundID, ClientID, StorageDays, HandlingUnits, ChargeableQty, SLA, AuditFields.
+
+Validations
+	•	Custody transfer signoff required for third-party stock.
+	•	3PL invoices must map to executed tasks & quantities.
+
+Workflows
+	•	Inbound receipt → Sorting/consolidation → Outbound load creation → Dispatch → 3PL billing.
+
+⸻
+
+9. CUSTOMS, TRADE & GLOBAL COMPLIANCE
+
+Screens / Forms
+	•	Export/Import Declaration Forms (HS codes, Invoice, BL/AWB)
+	•	Customs Document Management & Filing Status
+	•	Trade Compliance Screening (restricted parties, embargo lists)
+	•	Duties & Taxes Estimation & Posting
+
+Fields
+DeclarationID, HSCode, CountryOfOrigin, Incoterm, BLNo, AWBNo, DutyAmount, CustomsStatus, ScreeningResult, AuditFields.
+
+Validations
+	•	HS code mandatory for cross-border shipments.
+	•	Restricted party match prohibits shipping until cleared.
+	•	Document completeness checks before filing.
+
+Workflows
+	•	Shipment flagged for export → Build customs docs → Submit to customs / broker → Update clearance status → Release for export/import.
+
+⸻
+
+10. FLEET & DRIVER MANAGEMENT
+
+Screens / Forms
+	•	Vehicle & Trailer Maintenance Schedules (CMMS ties)
+	•	Driver Rosters & Hours of Service (HOS) tracking
+	•	Fuel & Mileage Logging (integration to fuel cards)
+	•	Driver Performance & Safety Dashboards
+	•	Driver App: route, manifests, ePOD, status updates
+
+Fields
+VehicleID, DriverID, LicenseType, HOSHours, NextServiceDate, FuelCardID, FuelTxns, IncidentID, SafetyScore, AuditFields.
+
+Validations
+	•	Driver HOS must not exceed legal limits.
+	•	Vehicle maintenance due prevents assignment to heavy loads.
+	•	Fuel transaction matching to vehicle/driver.
+
+Workflows
+	•	Assign driver & vehicle → Driver app receives route → Driver captures ePOD → Driver hours logged → Post-trip checks → Fuel & maintenance triggers.
+
+⸻
+
+11. TELEMATICS, IOT & EDGE INTEGRATIONS
+
+Screens / Forms
+	•	Telematics Device Registry & Health Monitoring
+	•	Sensor Data Ingest (temperature, door open/close, shock)
+	•	Rules & Alerts Engine (temp breach, shock, door open)
+	•	Time-series Storage & Analytics for telemetry
+
+Fields
+DeviceID, VehicleID, SensorType, MetricName, MetricValue, Timestamp, AlertID, AuditFields.
+
+Validations
+	•	Device heartbeat validation (expected interval).
+	•	Sensor units validated & normalized (C vs F, kg vs lb).
+
+Workflows
+	•	Telemetry ingest → Evaluate rules → Trigger alert → Create incident & notify stakeholders → Attach telemetry to shipment record.
+
+⸻
+
+12. AI & PREDICTIVE MODELS
+
+Use Cases
+	•	ETA Prediction with confidence bands (multimodal & historical traffic)
+	•	Demand & Capacity Forecasting (lane level)
+	•	Dynamic Pricing / Spot Rate Suggestions (market feed influenced)
+	•	Predictive Maintenance signals from telematics
+
+Controls
+	•	Explainability metadata & human-in-the-loop approval for auto decisions (e.g., auto reassign expensive reroutes).
+	•	Model retrain & versioning policies.
+
+⸻
+
+13. BI, DASHBOARDS & KPIs
+
+Prebuilt Dashboards
+	•	On-time Delivery % by lane, client, carrier
+	•	Fleet Utilization & Empty Miles %
+	•	Cost per ton/km, cost per pallet, fuel per km
+	•	Dock utilization & yard dwell time
+	•	Carrier SLA compliance & scorecards
+	•	Claims rate & resolution time
+
+Ad-hoc Analysis
+	•	Drill to shipment events, telematics streams, driver trips, or carrier invoices.
+
+⸻
+
+14. CLIENT & CUSTOMER PORTALS
+
+Features
+	•	Shipment booking & tracking portal (B2B)
+	•	Rate discovery & tendering portal for customers
+	•	Document download (BL, POD, invoices)
+	•	Notifications & SLA dashboards per customer
+
+Validations
+	•	Customer access governed by SSO & role permissions.
+	•	Document access audited.
+
+⸻
+
+15. EDI, API & MARKETPLACE CONNECTORS
+
+Supported Interfaces
+	•	EDI 204/210/211/214/990 for transport documents & settlement
+	•	REST APIs for order ingestion, status callback, booking, tracking
+	•	Marketplace & Broker connectors (load boards, spot rate feeds)
+	•	AS2, SFTP for partner integrations
+
+Integration Rules
+	•	Idempotent ingestion, mapping templates per partner, DLQ handling, message retry & reconciliation.
+
+⸻
+
+16. RETURNS, REVERSE LOGISTICS & REVERSE FLOW OPTIMIZATION
+
+Screens / Forms
+	•	Reverse Pickup Scheduling & Authorization
+	•	Inspection & Disposition (return to inventory / repair / scrap)
+	•	Reverse Flow Optimization to combine reverse pickups with forward deliveries
+
+Fields
+ReturnID, OriginalShipmentID, PickupWindow, ReturnReason, Disposition, RepairOrderID, CreditMemoID, AuditFields.
+
+Workflows
+	•	Customer initiates return → Authorization → Reverse pickup scheduled → Inspect → Disposition → Credit or replacement.
+
+⸻
+
+17. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	ETA deviation > threshold → notify stakeholders & replan.
+	•	Carrier misses pickup window → auto escalate & tender alternative.
+	•	Yard dwell > SLA → generate chargeback & notify ops.
+	•	Temperature breach for cold chain → immediate halt & notify QA with containment steps.
+
+⸻
+
+18. PRICING MODELS & BILLING RULES
+
+Bill Types
+	•	Per weight, per pallet, per km, per zone, flat per shipment, tiered volume discounts
+	•	Accessorials (liftgate, inside delivery, reconsignment, detention, demurrage)
+	•	Multi-currency and multi-leg calculation rules
+	•	Freight accrual & allocation to GL per client
+
+Validations
+	•	Accessorials only billed if matching events recorded.
+	•	Chargeback calculation audited & traceable.
+
+⸻
+
+19. ROLES & PERMISSIONS
+
+Core Roles
+	•	Logistics / TMS Admin
+	•	Load Planner / Scheduler
+	•	Fleet Manager
+	•	Yard Manager / Gate Agent
+	•	Driver / Courier
+	•	Carrier Relations / Procurement
+	•	Customer Success / Operations
+	•	Billing & Settlement Specialist
+	•	Telematics / IoT Engineer
+	•	BI Analyst / Data Scientist
+	•	IT / Integration Engineer
+
+Permission Notes
+	•	Critical ops changes (tendering, route changes) require approval thresholds.
+	•	Billing edits require dual approval and audit trail.
+
+⸻
+
+20. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	2 hubs, 1 cross-dock facility, 10 lanes, 15 vehicles (mix of trailer types), 5 carriers, 50 sample shipments (mixed modes), 20 drivers, telematics device samples.
+
+Onboarding Steps
+	•	Map master data (locations, vehicles), run tender & carrier onboarding test, simulate order → load → dispatch → tracking → POD → billing flows, telematics playback simulation.
+
+⸻
+
+21. INTEGRATIONS & THIRD-PARTY CONNECTORS
+	•	Telematics vendors (Samsara, Geotab, Trimble)
+	•	TMS / ERP integrations (GL posting, invoicing)
+	•	Carrier marketplaces & spot rate feeds
+	•	Customs brokers & filing systems
+	•	Payment & settlement platforms for carrier payments
+	•	BI / Data Lake exports
+
+Rules: Idempotent endpoints, retry & DLQ, reconciliation reports, secure credential management.
+
+⸻
+
+22. DEPLOYMENT, SCALING & TECH GUIDELINES
+
+Idempotency & Safety
+	•	Seeders check natural keys; migrations additive only.
+	•	Queues for heavy compute (route optimization, ETA recompute).
+	•	Time-series DB (Influx/TSDB) for telematics storage; separate analytics infra.
+
+Performance
+	•	Optimize route engine for near real-time adjustments; use caching for static lane data; horizontal scale for tracking feeds.
+
+Rollback
+	•	Versioned migrations and rollback scripts. Backups and dry-run mode for mass tendering.
+
+⸻
+
+23. FINAL MANDATE (REPEAT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you want to continue, reply “Yes, generate Industry Pack 13” and I will produce INDUSTRY PACK 13 — AUTOMOTIVE DEALERSHIPS & SERVICE CENTERS next.
