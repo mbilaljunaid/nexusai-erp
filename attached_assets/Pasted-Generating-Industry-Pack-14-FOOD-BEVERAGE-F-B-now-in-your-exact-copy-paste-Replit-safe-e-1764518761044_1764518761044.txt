@@ -1,0 +1,445 @@
+Generating **Industry Pack 14 — FOOD & BEVERAGE (F&B)** now in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, or integrations for the FOOD & BEVERAGE Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate, overwrite, or recreate existing objects. Only generate missing features, augment existing components safely, and keep all naming, schemas and identifiers consistent with previously built modules. All seed data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 14 — FOOD & BEVERAGE (F&B)
+
+**Purpose:** End-to-end F&B solution covering foodservice (restaurants, cafes, QSR), food & beverage manufacturing (formulation / recipe / batch), cold chain logistics, traceability, HACCP/GMP compliance, quality & lab integration (LIMS), procurement of perishables, packaging & labeling, POS & catering, e-commerce & delivery integrations, wholesale/food distribution, inventory for bulk & finished goods, MRP for batch/continuous, food safety audit trails, BI & forecasting, and AI-assisted demand/recipe optimization. Delivered as an industry template that auto-enables and configures all related modules.
+
+**Auto-enable modules when template is selected:** Recipe/Formulation Management, Batch Manufacturing (if plant operations), Inventory & WMS (including cold storage), Procurement, Quality & LIMS, HACCP/Compliance, POS (F&B), Catering & Events, E-commerce & Delivery Integration, Cold Chain TMS, Traceability/Batch/Lot management, MRP/MPS/APS (for manufacturing), Menu & Costing, Pricing & Promotions, CRM, Finance (GL/AP/AR), HR (rosters & kitchens), BI & Analytics, AI (forecasting, yield), Mobile (kitchen & delivery), Integrations & API Gateway, BPM & Automations.
+
+---
+
+## 1. MASTER DATA & CONFIGURATION
+
+**Screens / Forms**
+
+* Product / Ingredient Master (raw ingredients, packaging, FG)
+* Recipe / Formulation Master (versions)
+* Supplier / Vendor Master (farms, packers, co-packers)
+* Packaging & Label Master (SKUs with label templates)
+* Warehouse (ambient, chilled, frozen) & Bin Master
+* UoM (kg, g, L, ml, case, pallet) & conversion rules
+* Allergen / Dietary Tagging (gluten, nuts, vegan, halal/kosher)
+* Regulatory Codes (local food codes, e.g., FDA, FSSAI)
+* Shelf-life & Storage Conditions
+
+**Key Fields**
+ItemID, IngredientType, SKU, BatchFlag, LotNumber, ExpiryDate, FIFO/FEFO flag, SupplierID, CountryOfOrigin, UoM, PackagingType, AllergenTags, StorageTempRange, AuditFields.
+
+**Validations**
+
+* Unique SKU / ingredient code.
+* Mandatory allergen tags for food items.
+* Shelf-life set for perishable items; expiry > manufacture date.
+* Storage temp/range validated on warehouse assignment.
+
+**Workflows**
+
+* New ingredient → Supplier qualification (KYC, certificates) → Approval → Release to procurement & recipe builder.
+
+---
+
+## 2. RECIPE / FORMULATION & R&D
+
+**Screens / Forms**
+
+* Recipe Editor (ingredient %, weight / scalable batch sizes)
+* Versioning & Revision History (ECO)
+* Substitution Rules / Approved Alternatives & Cost Impact
+* Nutrition Calculator (calories, macros per serving)
+* Label Generation (allergen, ingredients list, nutrition panel)
+* Pilot Batch / Test Run Logging
+
+**Fields**
+RecipeID, Version, Ingredients (PartID, Qty, UoM, %), YieldFactor, TargetPortionSize, AllergenList, NutritionValues, PackagingSpec, ApprovalStatus, AuditFields.
+
+**Validations**
+
+* Ingredient % must sum to 100% (or equivalent constraints).
+* Substitutions flagged and require QA approval.
+* Label compliance checks (local regulatory must be satisfied before publish).
+
+**Workflows**
+
+* R&D creates recipe → Cost & nutrition estimate → QA & Regulatory review → Release to production/menu → Publish to POS/menu boards.
+
+---
+
+## 3. BATCH MANUFACTURING / KITCHEN EXECUTION
+
+**Screens / Forms**
+
+* Batch / Production Order (restaurant batch, central kitchen, co-packer)
+* Scaled Batch Sheets & Work Instructions
+* Ingredient Issue (dispense / weigh / pump) with operator sign-off
+* In-process checks (temp, pH, viscosity) & SPC capture
+* Batch Completion & Yield Capture; scrap recording
+* Genealogy & Traceability (batch → FG → deliveries)
+
+**Fields**
+BatchID, RecipeID, BatchQtyPlanned, BatchQtyActual, IssuedIngredients (lot/batch), OperatorID, StartTime, EndTime, QCChecks, YieldPct, AuditFields.
+
+**Validations**
+
+* Mandatory in-process checks for critical control points.
+* Ingredient lot numbers must be captured for traceability.
+* Batch cannot be released for distribution until QA release.
+
+**Workflows**
+
+* Create batch → Reserve ingredients → Execute → In-process QC → Final QC → Release to FG inventory → Post cost to GL.
+
+---
+
+## 4. QUALITY, LIMS & FOOD SAFETY (HACCP / GMP)
+
+**Screens / Forms**
+
+* HACCP Plan Templates & CCPs (Critical Control Points)
+* QC Test Plans & LIMS integration (microbial tests, shelf life)
+* Sampling Plans (randomized / stratified)
+* Non-Conformance Report (NCR) & CAPA workflow
+* Recall Management & Simulation (mock recalls)
+* Audit Trail & Inspection Checklists (internal & regulator)
+
+**Fields**
+TestID, SampleID, CCPID, MeasuredValue, ControlLimit, PassFail, NCRID, CAPAID, InspectorID, AuditFields.
+
+**Validations**
+
+* Automatic hold for batches failing critical CCP.
+* QC acceptance required for release; auto-escalation for critical failures.
+* LIMS result mapping and unit verification.
+
+**Workflows**
+
+* QC sampling → Instrumented test → LIMS result → QA review → Release or hold & CAPA initiation.
+
+---
+
+## 5. INVENTORY, COLD CHAIN & WMS (PERISHABLES)
+
+**Screens / Forms**
+
+* Ambient / Chilled / Frozen location definitions
+* FEFO (First Expiry First Out) & FIFO support
+* Temperature logging & breach alerts (IoT sensors integration)
+* Pallet / Case / Portion tracking (prep packs)
+* Quarantine / Hold locations & disposition flows
+* Batch / Lot traceability across supply chain
+
+**Fields**
+LocationType (Ambient/Cold/Frozen), TempLog (timestamp,temp), BatchID, LotID, ExpiryDate, OnHandQty, ReservedQty, PortionBatchID, AuditFields.
+
+**Validations**
+
+* Expiry enforcement: expired batches cannot be used/sold.
+* Temperature excursions cause auto-hold and QA notification.
+* FEFO allocation logic for expiry sensitive items.
+
+**Workflows**
+
+* GRN with batch & expiry capture → Putaway to correct temp zone → Temp sensor monitoring → Allocation for production/picking → Auto reorder triggers.
+
+---
+
+## 6. PROCUREMENT, SUSTAINABILITY & Sourcing
+
+**Screens / Forms**
+
+* Supplier Qualification & Certificate Repository (SDS, organic, halal, kosher)
+* RFQ / PO for perishable scheduling (daily/weekly)
+* Spot buying vs contract sourcing logic
+* Sustainability tracking (farm origin, CO2 footprint, packaging recyclability)
+* Forward buying/shelf life-aware procurement
+
+**Fields**
+SupplierID, CertType, CertExpiry, LeadTimeDays, MOQ, DeliveryWindow, SustainabilityTag, Price, ContractTerms, AuditFields.
+
+**Validations**
+
+* Certificate validity check before approval for critical suppliers.
+* PO delivery windows must align with shelf life and production needs.
+
+**Workflows**
+
+* Demand (forecast/order) → Sourcing suggestion → PO → ASN → GRN with batch & temp capture → Supplier scorecard update.
+
+---
+
+## 7. MENU, POS & FOOD SERVICE OPERATIONS
+
+**Screens / Forms**
+
+* Menu Management (menus by outlet, daypart, specials)
+* POS integration (dine-in, takeaway, delivery aggregator)
+* Recipe to portion mapping & auto portion costing at POS
+* Modifier & allergen prompts at order entry
+* Kitchen Display System (KDS) & prep station routing
+* Catering / Events order builder & fulfillment slips
+
+**Fields**
+MenuID, OutletID, MenuItemID, PortionSize, FoodCostPerPortion, MenuPrice, TillID, ModifierID, AllergenWarnings, CookingTime, PrepStation, AuditFields.
+
+**Validations**
+
+* POS must prompt staff for allergen confirmation when item contains allergens.
+* Menu price must reflect cost + margin rules; manager approval for manual override.
+
+**Workflows**
+
+* Menu changes → Cost recalc → Publish to POS/KDS → Sync with online channels → Monitor sales & margin.
+
+---
+
+## 8. E-COMMERCE, DELIVERY & MARKETPLACES
+
+**Screens / Forms**
+
+* Online menu & order capture (own storefront + aggregators)
+* Delivery orchestration (own fleet or 3rd party) & ETA tracking
+* Packed order labeling (batch/lot info for traceability)
+* Order exceptions (missing ingredient, substitution rules)
+* Promotions & coupon handling (time, location, channel specific)
+
+**Fields**
+OrderID, Channel, Items (with portionBatchID), DeliveryWindow, CarrierID, ETA, SubstitutionAllowed, RefundStatus, AuditFields.
+
+**Validations**
+
+* Orders validated against available menu & portioned stock.
+* Delivery ETA must consider prep time and route.
+
+**Workflows**
+
+* Customer order → Check menu inventory/portions → Assign kitchen → Pack with lot label → Handover to rider/carrier → Update CRM & BI.
+
+---
+
+## 9. PACKAGING, LABELING & TRACEABILITY
+
+**Screens / Forms**
+
+* Label Template Builder (ingredients, nutrition, allergens, batch, expiry, barcodes/QR)
+* Packaging Lot Tracking & Serialization (for high value items)
+* Shelf Life & Best-Before calculation per pack format
+* Packaging Waste / Recycling flags & reporting
+
+**Fields**
+LabelID, BatchID, LotNumber, ManufactureDate, ExpiryDate, NutritionPanel, Barcode, QRLink (trace page), PackagingType, AuditFields.
+
+**Validations**
+
+* Labels must include mandated fields per region.
+* Nutrition panel calculated and locked per recipe version.
+
+**Workflows**
+
+* Batch release → Print labels with batch & expiry → Attach to packs → Scan at dispatch for traceability.
+
+---
+
+## 10. COLD CHAIN LOGISTICS & LAST MILE
+
+**Screens / Forms**
+
+* Temperature-controlled TMS routes & vehicle temp monitoring
+* Cold chain checkpoints & custody transfer logs
+* Fleet assignment by temp capability (reefer specs)
+* Delivery exceptions for temp excursion → hold & QA decision
+
+**Fields**
+ShipmentID, TempMin, TempMax, CheckpointTempLog, CustodyTransferID, POD, TempExcursionFlag, AuditFields.
+
+**Validations**
+
+* Only vehicles meeting temp specs can be assigned.
+* Temp excursions generate immediate alerts and quarantine flows.
+
+**Workflows**
+
+* Dispatch → Telemetry & checkpoint logging → POD with lot scan → Customer acceptance & feedback.
+
+---
+
+## 11. MRP / DEMAND PLANNING & FORECASTING (F&B SPECIFIC)
+
+**Screens / Forms**
+
+* Demand by outlet/daypart/sku forecasting (AI model + rule overrides)
+* Portion & ingredient depletion model (portion consumption x forecast)
+* MRP run for raw ingredients & packaging (short lead time handling)
+* Suggested orders with shelf life constraints
+
+**Fields**
+ForecastHorizon, OutletID, Daypart, ForecastQty, SafetyStockDays, ShelfLifeImpact, SuggestedPOQty, LeadTimeAdjustedQty.
+
+**Validations**
+
+* Suggested PO respects shelf life and anticipated consumption.
+* Forecast overrides by store manager must be recorded.
+
+**Workflows**
+
+* Forecast → MRP suggestions → Procurement approval → PO creation → Execution.
+
+---
+
+## 12. SUSTAINABILITY, TRACEABILITY & CSR
+
+**Screens / Forms**
+
+* Farm / Supplier trace page (origin, certifications)
+* CO2 & Food-miles calculation per SKU / batch
+* Waste tracking & composting logs (kitchen waste)
+* Packaging recyclability & supplier reporting
+
+**Fields**
+SupplierOrigin, CO2kgPerUnit, WasteKg, DiversionRate, PackagingRecyclability, AuditFields.
+
+**Validations**
+
+* CO2 & sustainability claims require supplier evidence/certificates.
+* Waste diversion targets must be measured periodically.
+
+**Workflows**
+
+* Procurement & menu planning include sustainability filters → Reporting for CSR & regulatory disclosure.
+
+---
+
+## 13. BI, REPORTING & KPIs
+
+**Prebuilt Dashboards**
+
+* Sales by menu item, outlet & daypart
+* Food cost % by menu item & recipe (actual vs standard)
+* Waste & shrinkage trends (by outlet & shift)
+* Batch yield & variance reporting
+* Supplier on-time & quality metrics
+* Cold chain compliance & temp excursion reports
+* Order throughput & kitchen lead times
+
+**Ad-hoc**
+
+* Drill to batch, lot, QC result, order, or POS transaction.
+
+---
+
+## 14. AI & ADVANCED MODELS
+
+**Use Cases**
+
+* Demand forecast by outlet & daypart (reduce waste)
+* Dynamic menu pricing for promotions & margin optimization
+* Recipe optimization to maximize yield or reduce cost with substitution suggestions (human-approved)
+* Predictive spoilage / shelf life based on temp logs & transport history
+* Anomaly detection in QC / LIMS results or temp breaches
+
+**Controls**
+
+* Human-in-the-loop for recipe changes and auto-PO creation thresholds; model explainability metadata included.
+
+---
+
+## 15. ROLES & PERMISSIONS
+
+**Core Roles**
+
+* Food Safety / QA Manager
+* Production / Central Kitchen Manager
+* Head Chef / Sous Chef
+* Outlet Manager / Shift Manager
+* Procurement / Buyer (fresh produce)
+* Warehouse / Cold Store Manager
+* Rider / Delivery Coordinator
+* POS Cashier / Barista / Server
+* Lab Technician (LIMS)
+* Finance / Cost Accountant
+* BI Analyst / Data Scientist
+* IT / Integration Engineer
+
+**Permission Notes**
+
+* QA approvals required for release of batches.
+* Recipe edits restricted to R&D / QA with ECO approval.
+* Temp sensor configuration restricted to ops & IT.
+
+---
+
+## 16. SAMPLE DATA & IDENTITY / ONBOARDING (IDEMPOTENT)
+
+**Seed Data**
+
+* 3 outlets (restaurant, cafe, quick service) + 1 central kitchen
+* 100 SKUs (ingredients, portioned goods, packaging)
+* 20 recipes with portion costs & nutrition values
+* 50 sample batches (with lot & expiry)
+* 10 suppliers with certificates & lead times
+* Temp sensor sample feed & excursion cases
+
+**Onboarding Steps**
+
+* Map current SKUs/recipes → Validate recipe yields → Run MRP dry run → Execute pilot batch → Simulate order fulfillment & cold chain dispatch → Verify traceability from batch → customer order.
+
+---
+
+## 17. INTEGRATIONS & CONNECTORS
+
+**Suggested Integrations**
+
+* LIMS / Lab instruments (microbiology, shelf life tests)
+* IoT sensor platforms (temperature/humidity)
+* Delivery aggregators (UberEats, DoorDash, Deliveroo) & own rider apps
+* POS hardware & KDS systems
+* EDI/API to co-packers / distributors
+* Accounting systems & tax engines
+* Packaging label printers & QR code trace pages
+* Marketplaces & retail distributors (if wholesale)
+
+**Integration Rules**
+
+* Idempotent endpoints, message retry & DLQ, mapping templates per partner, secure credentials, audit logging for recalls.
+
+---
+
+## 18. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+**Examples**
+
+* Temp excursion > threshold → Auto hold affected batches & notify QA + ops.
+* QC fail (microbial) → Auto quarantine FG & notify recall workflow.
+* Forecast drop → Auto suggest markdown / promotions to reduce waste.
+* Supplier certificate expiry → Block ordering until renewal.
+
+---
+
+## 19. DEPLOYMENT, MIGRATION & REPLIT EXECUTION GUIDELINES
+
+**Idempotency & Safety**
+
+* All seeders check natural keys (SKU, RecipeID, BatchID) before insert.
+* Migrations additive only; destructive changes require migration plan & rollback.
+* Feature flags for production vs kitchen features per tenant/outlet.
+
+**Testing**
+
+* Run traceability mock recall (end-to-end) test, MRP dry runs, LIMS flows, temp breach simulations, POS order to dispatch tests.
+
+**Rollback**
+
+* Provide rollback scripts for schema changes & seed data; ensure backups before major uploads.
+
+---
+
+## 20. FINAL MANDATE (REPEAT FOR ENFORCEMENT)
+
+**REPLIT MUST** — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or enhance existing functionality only; and **NEVER** duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+---
+
+If you want me to proceed to **Industry Pack 15 — PHARMACEUTICALS & LIFE SCIENCES**, reply **“Yes”** and I will generate it next.

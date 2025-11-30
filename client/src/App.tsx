@@ -392,6 +392,18 @@ const PartsInventory = lazy(() => import("@/pages/PartsInventory"));
 const WarrantyClaimsManagement = lazy(() => import("@/pages/WarrantyClaimsManagement"));
 const TelematicsVehicleData = lazy(() => import("@/pages/TelematicsVehicleData"));
 const AutomotiveBIDashboard = lazy(() => import("@/pages/AutomotiveBIDashboard"));
+const RecipeFormulation = lazy(() => import("@/pages/RecipeFormulation"));
+const BatchManufacturing = lazy(() => import("@/pages/BatchManufacturing"));
+const QualityFoodSafety = lazy(() => import("@/pages/QualityFoodSafety"));
+const FBInventoryColdChain = lazy(() => import("@/pages/FBInventoryColdChain"));
+const ProcurementSourcing = lazy(() => import("@/pages/ProcurementSourcing"));
+const MenuPOSOperations = lazy(() => import("@/pages/MenuPOSOperations"));
+const ECommerceDelivery = lazy(() => import("@/pages/ECommerceDelivery"));
+const PackagingTraceability = lazy(() => import("@/pages/PackagingTraceability"));
+const ColdChainLogistics = lazy(() => import("@/pages/ColdChainLogistics"));
+const FBDemandPlanning = lazy(() => import("@/pages/FBDemandPlanning"));
+const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTraceability"));
+const FoodBeverageBIDashboard = lazy(() => import("@/pages/FoodBeverageBIDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -995,6 +1007,18 @@ function Router() {
       <Route path="/warranty-claims" component={WarrantyClaimsManagement} />
       <Route path="/telematics" component={TelematicsVehicleData} />
       <Route path="/auto-analytics" component={AutomotiveBIDashboard} />
+      <Route path="/recipes" component={RecipeFormulation} />
+      <Route path="/batch-manufacturing" component={BatchManufacturing} />
+      <Route path="/quality-safety" component={QualityFoodSafety} />
+      <Route path="/fb-inventory" component={FBInventoryColdChain} />
+      <Route path="/procurement" component={ProcurementSourcing} />
+      <Route path="/menu-pos" component={MenuPOSOperations} />
+      <Route path="/ecommerce-delivery" component={ECommerceDelivery} />
+      <Route path="/packaging-labels" component={PackagingTraceability} />
+      <Route path="/cold-chain" component={ColdChainLogistics} />
+      <Route path="/demand-planning" component={FBDemandPlanning} />
+      <Route path="/sustainability" component={SustainabilityTraceability} />
+      <Route path="/fb-analytics" component={FoodBeverageBIDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
