@@ -1,0 +1,99 @@
+MODULE 17: FINANCE, TREASURY & ADVANCED ACCOUNTING
+
+Purpose: Manage all financial processes including general ledger, accounts payable, accounts receivable, cash management, treasury, advanced accounting, intercompany, tax compliance, and reporting across ERP, CRM, HR, Projects, Inventory, EPM, BI, AI, and Compliance modules.
+
+Important Note for Replit: Before creating any finance, treasury, or accounting objects, workflows, or reports, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+17.1 General Ledger (GL)
+
+Forms / Screens: Chart of Accounts, GL Account Creation/Edit, Journal Entry, Recurring Journal, GL Dashboard, Account Hierarchy Management.
+
+Fields: Account ID, Account Name, Account Type (Asset, Liability, Equity, Revenue, Expense), Parent Account, Currency, Opening Balance, Current Balance, Status (Active, Inactive), Approval Workflow, Audit Fields.
+
+Validations: Unique account codes, mandatory fields enforced, account type validation, currency consistency, journal entries validated.
+
+Workflows: New GL account triggers approval workflow, journal entries update balances automatically, recurring journals schedule automatically, integration with AP, AR, Payroll, Projects, and Inventory modules.
+
+17.2 Accounts Payable (AP)
+
+Forms / Screens: Vendor Invoice Entry, Payment Processing, Credit/Debit Note, Vendor Reconciliation, AP Reports, Vendor Dashboard.
+
+Fields: Vendor ID, Invoice ID, Invoice Date, Due Date, Amount, Currency, Payment Terms, Payment Method, Status (Pending, Approved, Paid), Approval Workflow, Audit Fields.
+
+Validations: Mandatory fields enforced, invoice amount matches PO/receipt, duplicate invoices prevented, approval enforced, tax and statutory compliance validated.
+
+Workflows: Invoice submission triggers approval workflow, approved invoices schedule payments, payment posting triggers GL update, integration with Procurement and Treasury for cash planning.
+
+17.3 Accounts Receivable (AR)
+
+Forms / Screens: Customer Invoice, Payment Receipt, Credit/Debit Note, Aging Report, AR Dashboard.
+
+Fields: Customer ID, Invoice ID, Invoice Date, Due Date, Amount, Currency, Payment Terms, Payment Method, Status (Pending, Paid, Overdue), Approval Workflow, Audit Fields.
+
+Validations: Mandatory fields enforced, invoice calculations validated, payment allocation correct, overdue alerts configured, duplicate invoice prevention.
+
+Workflows: Invoice generation triggers customer notification, payment receipt triggers AR balance update, overdue notifications to customers, integration with CRM and Finance for collections and cash flow.
+
+17.4 Cash & Treasury Management
+
+Forms / Screens: Bank Account Management, Cash Positioning, Bank Reconciliation, Payment Scheduling, Treasury Dashboard, Cash Forecasting.
+
+Fields: Bank ID, Account Number, Bank Name, Currency, Opening Balance, Current Balance, Transaction ID, Payment Type (Transfer, Check, Online), Status (Pending, Completed, Failed), Approval Workflow, Audit Fields.
+
+Validations: Bank account details validated, cash balances accurate, transaction amounts positive, approvals enforced, reconciliation verified.
+
+Workflows: Payment approvals trigger bank transfers, cash position updated automatically, bank reconciliation triggers alerts for discrepancies, cash forecast updates dashboards and planning tools.
+
+17.5 Fixed Assets & Depreciation
+
+Forms / Screens: Asset Master, Asset Acquisition, Depreciation Schedule, Asset Transfer, Asset Disposal, Asset Dashboard.
+
+Fields: Asset ID, Asset Name, Asset Category, Purchase Date, Cost, Depreciation Method, Useful Life, Residual Value, Accumulated Depreciation, Book Value, Status, Location, Responsible Employee, Audit Fields.
+
+Validations: Depreciation calculations validated, asset status accurate, accounting entries correct, approval enforced for acquisitions and disposals.
+
+Workflows: Asset acquisition triggers journal entries, depreciation calculated automatically per schedule, asset transfers update ledger, disposal triggers gain/loss calculation and approval workflow.
+
+17.6 Intercompany Accounting
+
+Forms / Screens: Intercompany Transaction Entry, Settlement Management, Intercompany Reconciliation, Reporting.
+
+Fields: Transaction ID, Source Entity, Target Entity, GL Accounts, Amount, Currency, Status, Approval Workflow, Audit Fields.
+
+Validations: Transaction matches both entities, currency conversions accurate, approvals enforced, eliminations validated for consolidation.
+
+Workflows: Intercompany postings trigger automatic reconciliations, approvals trigger notifications, integration with consolidation/EPM module for financial close.
+
+17.7 Tax Management & Compliance
+
+Forms / Screens: Tax Configuration, Tax Calculation, Tax Filing, Withholding Management, Tax Reports, Compliance Dashboard.
+
+Fields: Tax ID, Tax Type (GST, VAT, Income Tax, Withholding), Rate, Jurisdiction, Transaction Type, Status, Approval Workflow, Audit Fields.
+
+Validations: Tax rates accurate per jurisdiction, tax calculations validated, compliance deadlines enforced, approvals for tax filing.
+
+Workflows: Transactions trigger tax calculation automatically, tax reports generated on schedule, filing workflow triggers notifications, integration with Finance and Compliance modules.
+
+17.8 Financial Reporting & Analytics
+
+Forms / Screens: Balance Sheet, Profit & Loss, Cash Flow Statement, Trial Balance, GL Reports, AP/AR Reports, Treasury Reports, Financial Dashboards.
+
+Fields: Report ID, Name, Module, Entity, Period, Currency, Filters, KPIs, Drill-Down Options, Export Options, Schedule, Audit Fields.
+
+Validations: Report data accuracy, calculation validation, filters tested, drill-down functional, permissions enforced.
+
+Workflows: Reports scheduled or on-demand, dashboards updated in real-time, anomalies trigger alerts, integration with BI and EPM modules for analysis.
+
+17.9 Integrations & Automations
+
+Automations: Recurring journal posting, automated payments and receipts, bank reconciliation alerts, intercompany settlement processing, automatic depreciation posting, tax calculation on transactions.
+
+Integrations: ERP/Inventory/Projects modules, HR/Payroll, CRM/AR, AI/BI tools for analytics, EPM/Consolidation, Compliance and Tax systems, Banking platforms.
+
+Key Features: Full financial management, GL/AP/AR, cash & treasury, fixed assets, intercompany, tax compliance, reporting & analytics, workflow automation, cross-module integration, audit-ready and compliance integrated.
+
+Important Note for Replit: Before creating any finance, treasury, accounting, or tax objects, workflows, reports, or automations, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+⸻
+
+Do you want me to continue with Module 18: Projects & Portfolio Management next?
