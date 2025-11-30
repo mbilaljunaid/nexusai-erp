@@ -3532,6 +3532,12 @@ export async function registerRoutes(
     res.status(201).json(rule);
   });
 
+  app.delete("/api/compliance-rules/:id", (req, res) => {
+    const idx = complianceStore.findIndex((r: any) => r.id === req.params.id);
+    if (idx > -1) complianceStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
   app.get("/api/risk-register", (req, res) => {
     if (riskStore.length === 0) {
       riskStore.push(
@@ -3542,9 +3548,15 @@ export async function registerRoutes(
   });
 
   app.post("/api/risk-register", (req, res) => {
-    const risk = { id: `r-${Date.now()}`, ...req.body, status: "open" };
+    const risk = { id: `r-${Date.now()}`, ...req.body, status: "open", riskScore: calculateRiskScore(req.body.likelihood, req.body.impact) };
     riskStore.push(risk);
     res.status(201).json(risk);
+  });
+
+  app.delete("/api/risk-register/:id", (req, res) => {
+    const idx = riskStore.findIndex((r: any) => r.id === req.params.id);
+    if (idx > -1) riskStore.splice(idx, 1);
+    res.json({ success: true });
   });
 
   app.get("/api/audits", (req, res) => {
@@ -3557,9 +3569,21 @@ export async function registerRoutes(
   });
 
   app.post("/api/audits", (req, res) => {
-    const audit = { id: `a-${Date.now()}`, ...req.body, status: "open" };
+    const audit = { id: `a-${Date.now()}`, ...req.body, status: "open", auditDate: new Date().toISOString() };
     auditStore.push(audit);
     res.status(201).json(audit);
+  });
+
+  app.delete("/api/audits/:id", (req, res) => {
+    const idx = auditStore.findIndex((a: any) => a.id === req.params.id);
+    if (idx > -1) auditStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.patch("/api/audits/:id", (req, res) => {
+    const audit = auditStore.find((a: any) => a.id === req.params.id);
+    if (audit) Object.assign(audit, req.body);
+    res.json(audit);
   });
 
   app.get("/api/policies", (req, res) => {
