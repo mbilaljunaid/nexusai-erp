@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { IconNavigation } from "@/components/IconNavigation";
+import { CampaignEntryForm } from "@/components/forms/CampaignEntryForm";
 import { useState } from "react";
-import { BarChart3, Mail, Share2, TrendingUp } from "lucide-react";
+import { BarChart3, Mail, Share2, TrendingUp, Users, Settings, Zap, PieChart, Target, Activity } from "lucide-react";
 
 export default function Marketing() {
   const [activeNav, setActiveNav] = useState("overview");
@@ -11,7 +12,13 @@ export default function Marketing() {
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
     { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-purple-500" },
     { id: "email", label: "Email", icon: Mail, color: "text-green-500" },
-    { id: "social", label: "Social", icon: Share2, color: "text-orange-500" },
+    { id: "social", label: "Social Media", icon: Share2, color: "text-pink-500" },
+    { id: "leads", label: "Lead Scoring", icon: Target, color: "text-orange-500" },
+    { id: "segments", label: "Segmentation", icon: Users, color: "text-cyan-500" },
+    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-indigo-500" },
+    { id: "automation", label: "Automation", icon: Zap, color: "text-yellow-500" },
+    { id: "budget", label: "Budget", icon: PieChart, color: "text-red-500" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
   ];
 
   return (
@@ -21,49 +28,70 @@ export default function Marketing() {
         <p className="text-muted-foreground text-sm">Create campaigns, nurture leads, and track engagement</p>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">18</p><p className="text-xs text-muted-foreground">Active Campaigns</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">28.5%</p><p className="text-xs text-muted-foreground">Avg Open Rate</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">4.2%</p><p className="text-xs text-muted-foreground">Click Rate</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$245K</p><p className="text-xs text-muted-foreground">Pipeline Generated</p></CardContent></Card>
+      </div>
+
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "overview" && (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">18</p><p className="text-xs text-muted-foreground">Active Campaigns</p></div></CardContent></Card>
-            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">28.5%</p><p className="text-xs text-muted-foreground">Avg Open Rate</p></div></CardContent></Card>
-            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">4.2%</p><p className="text-xs text-muted-foreground">Click Rate</p></div></CardContent></Card>
-            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">$245K</p><p className="text-xs text-muted-foreground">Pipeline Generated</p></div></CardContent></Card>
-          </div>
-          <Card>
-            <CardHeader><CardTitle className="text-base">Marketing Modules</CardTitle></CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { name: "Email Campaigns", description: "Design, send, and track email campaigns" },
-                  { name: "Lead Nurturing", description: "Automated drip campaigns and workflows" },
-                  { name: "Social Media", description: "Schedule and manage social posts" },
-                  { name: "Landing Pages", description: "Create conversion-optimized pages" },
-                  { name: "Analytics", description: "Track engagement and ROI" },
-                  { name: "Segmentation", description: "Target audiences with precision" },
-                ].map((module) => (
-                  <Button key={module.name} variant="outline" className="h-auto flex flex-col items-start justify-start p-4">
-                    <span className="font-medium">{module.name}</span>
-                    <span className="text-xs text-muted-foreground mt-1">{module.description}</span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card><CardHeader><CardTitle className="text-base">Campaign Performance</CardTitle></CardHeader><CardContent><div className="space-y-2"><p className="text-sm">Active: 18</p><p className="text-sm">Scheduled: 5</p><p className="text-sm">Draft: 8</p></div></CardContent></Card>
+          <Card><CardHeader><CardTitle className="text-base">Engagement Metrics</CardTitle></CardHeader><CardContent><div className="space-y-2"><p className="text-sm">Open Rate: 28.5%</p><p className="text-sm">Click Rate: 4.2%</p><p className="text-sm">Conv Rate: 2.1%</p></div></CardContent></Card>
         </div>
       )}
 
-      {activeNav === "campaigns" && (
-        <Card><CardHeader><CardTitle className="text-base">Campaigns</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Campaign management loading. Create multi-channel marketing campaigns.</p><Button size="sm" className="mt-4">+ New Campaign</Button></CardContent></Card>
-      )}
+      {activeNav === "campaigns" && <div className="space-y-4"><CampaignEntryForm /></div>}
 
       {activeNav === "email" && (
-        <Card><CardHeader><CardTitle className="text-base">Email Marketing</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Email module loading. Design and send targeted email campaigns.</p></CardContent></Card>
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Email Marketing</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Design and send targeted email campaigns</p><Button size="sm" className="mt-4">+ Create Email</Button></CardContent></Card>
+        </div>
       )}
 
       {activeNav === "social" && (
-        <Card><CardHeader><CardTitle className="text-base">Social Media</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Social media module loading. Manage your social presence.</p></CardContent></Card>
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Social Media</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Schedule and manage social media posts across platforms</p><Button size="sm" className="mt-4">+ Schedule Post</Button></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "leads" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Lead Scoring</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Automatically score and qualify leads</p><Button size="sm" className="mt-4">+ Score Lead</Button></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "segments" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Audience Segmentation</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Target audiences with precision</p><Button size="sm" className="mt-4">+ Create Segment</Button></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "analytics" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Marketing Analytics</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Track engagement and ROI across campaigns</p><Button size="sm" className="mt-4">+ View Reports</Button></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "automation" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Marketing Automation</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Create automated workflows and nurture sequences</p><Button size="sm" className="mt-4">+ Create Workflow</Button></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "budget" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Campaign Budget</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Allocate and track campaign budgets</p><Button size="sm" className="mt-4">+ Set Budget</Button></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "settings" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Marketing Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure integrations and preferences</p></CardContent></Card>
+        </div>
       )}
     </div>
   );
