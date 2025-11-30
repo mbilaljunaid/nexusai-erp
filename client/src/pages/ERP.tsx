@@ -8,28 +8,22 @@ import { PurchaseOrderForm } from "@/components/forms/PurchaseOrderForm";
 import AdjustmentEntryForm from "@/components/forms/AdjustmentEntryForm";
 import VendorEntryForm from "@/components/forms/VendorEntryForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
+import { FormSearch } from "@/components/FormSearch";
 import { useQuery } from "@tanstack/react-query";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users } from "lucide-react";
 import { Link } from "wouter";
 
 export default function ERP() {
   const [activeNav, setActiveNav] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
+  const [filteredGLEntries, setFilteredGLEntries] = useState<any[]>([]);
+  const [filteredVendors, setFilteredVendors] = useState<any[]>([]);
+  
   const { data: glEntries = [] } = useQuery({ queryKey: ["/api/ledger"], retry: false });
   const { data: invoices = [] } = useQuery({ queryKey: ["/api/invoices"], retry: false });
   const { data: pos = [] } = useQuery({ queryKey: ["/api/purchase-orders"], retry: false });
   const { data: vendors = [] } = useQuery({ queryKey: ["/api/vendors"], retry: false });
-
-  const filteredInvoices = ((invoices as any[]) || []).filter((inv: any) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      (inv.invoiceNumber || "").toLowerCase().includes(query) ||
-      (inv.customerId || "").toLowerCase().includes(query) ||
-      (inv.amount || "").toString().includes(query)
-    );
-  });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
@@ -81,13 +75,24 @@ export default function ERP() {
       {activeNav === "gl" && (
         <div className="space-y-4">
           <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search ledger entries..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Entry</Button>
+            <FormSearch
+              placeholder="Search by account code, description, or type..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['accountCode', 'description', 'accountType']}
+              data={glEntries}
+              onFilter={setFilteredGLEntries}
+            />
+            <Button data-testid="button-add-gl-entry">+ Add GL Entry</Button>
           </div>
           <div className="space-y-2">
-            {((glEntries || []) as any).filter((e: any) => (e.account || "").toLowerCase().includes(searchQuery.toLowerCase())).map((e: any, idx: number) => (
-              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{e.account}</p><p className="text-sm text-muted-foreground">{e.description}</p></div><Badge>${(e.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
-            ))}
+            {filteredGLEntries.length > 0 ? (
+              filteredGLEntries.map((e: any, idx: number) => (
+                <Card key={e.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{e.accountCode}</p><p className="text-sm text-muted-foreground">{e.description}</p></div><Badge>{e.accountType}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No GL entries found</p></CardContent></Card>
+            )}
           </div>
           <GLEntryForm />
         </div>
@@ -96,7 +101,14 @@ export default function ERP() {
       {activeNav === "ap" && (
         <div className="space-y-4">
           <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search by invoice number, customer, or amount..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" data-testid="input-search-invoices" /></div>
+            <FormSearch
+              placeholder="Search by invoice number, customer, or amount..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['invoiceNumber', 'customerId', 'amount']}
+              data={invoices}
+              onFilter={setFilteredInvoices}
+            />
             <Button data-testid="button-add-invoice">+ Add Invoice</Button>
           </div>
           <div className="space-y-2">
@@ -115,13 +127,24 @@ export default function ERP() {
       {activeNav === "ar" && (
         <div className="space-y-4">
           <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search receivables..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Invoice</Button>
+            <FormSearch
+              placeholder="Search receivables by customer or invoice..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['customerId', 'invoiceNumber']}
+              data={invoices}
+              onFilter={setFilteredInvoices}
+            />
+            <Button data-testid="button-new-invoice">+ New Invoice</Button>
           </div>
           <div className="space-y-2">
-            {((invoices || []) as any).filter((i: any) => (i.customerId || "").toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
-              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">Invoice {i.id}</p><p className="text-sm text-muted-foreground">{i.customerId}</p></div><Badge>${(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
-            ))}
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((i: any, idx: number) => (
+                <Card key={i.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">Invoice {i.invoiceNumber}</p><p className="text-sm text-muted-foreground">{i.customerId}</p></div><Badge>${(Number(i.amount) || 0).toLocaleString()}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No receivables found</p></CardContent></Card>
+            )}
           </div>
           <InvoiceEntryForm />
         </div>
@@ -130,13 +153,24 @@ export default function ERP() {
       {activeNav === "inventory" && (
         <div className="space-y-4">
           <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search inventory..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ Adjust Stock</Button>
+            <FormSearch
+              placeholder="Search inventory by product name..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['name']}
+              data={[{id: 1, name: "Widget A", qty: 145, value: 14500}, {id: 2, name: "Widget B", qty: 89, value: 8900}]}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-adjust-stock">+ Adjust Stock</Button>
           </div>
           <div className="space-y-2">
-            {[{id: 1, name: "Widget A", qty: 145, value: 14500}, {id: 2, name: "Widget B", qty: 89, value: 8900}].filter((i: any) => i.name.toLowerCase().includes(searchQuery.toLowerCase())).map((i: any) => (
-              <Card key={i.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.name}</p><p className="text-sm text-muted-foreground">Qty: {i.qty}</p></div><Badge>${i.value.toLocaleString()}</Badge></div></CardContent></Card>
-            ))}
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((i: any) => (
+                <Card key={i.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.name}</p><p className="text-sm text-muted-foreground">Qty: {i.qty}</p></div><Badge>${i.value.toLocaleString()}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No inventory items found</p></CardContent></Card>
+            )}
           </div>
           <AdjustmentEntryForm />
         </div>
@@ -145,13 +179,24 @@ export default function ERP() {
       {activeNav === "po" && (
         <div className="space-y-4">
           <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search POs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New PO</Button>
+            <FormSearch
+              placeholder="Search POs by ID or vendor..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['id', 'vendor']}
+              data={pos}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-new-po">+ New PO</Button>
           </div>
           <div className="space-y-2">
-            {((pos || []) as any).filter((p: any) => (p.id || "").toString().toLowerCase().includes(searchQuery.toLowerCase())).map((p: any, idx: number) => (
-              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">PO {p.id}</p><p className="text-sm text-muted-foreground">{p.vendor}</p></div><Badge>${(p.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
-            ))}
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((p: any, idx: number) => (
+                <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">PO {p.id}</p><p className="text-sm text-muted-foreground">{p.vendor}</p></div><Badge>${(p.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No purchase orders found</p></CardContent></Card>
+            )}
           </div>
           <PurchaseOrderForm />
         </div>
@@ -162,13 +207,24 @@ export default function ERP() {
       {activeNav === "suppliers" && (
         <div className="space-y-4">
           <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search suppliers..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Supplier</Button>
+            <FormSearch
+              placeholder="Search suppliers by name or location..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['vendorName', 'email']}
+              data={vendors}
+              onFilter={setFilteredVendors}
+            />
+            <Button data-testid="button-new-supplier">+ New Supplier</Button>
           </div>
           <div className="space-y-2">
-            {((vendors || []) as any).filter((v: any) => (v.name || "").toLowerCase().includes(searchQuery.toLowerCase())).map((v: any, idx: number) => (
-              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{v.name}</p><p className="text-sm text-muted-foreground">{v.location}</p></div><Badge>{v.rating}/5</Badge></div></CardContent></Card>
-            ))}
+            {filteredVendors.length > 0 ? (
+              filteredVendors.map((v: any, idx: number) => (
+                <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{v.vendorName}</p><p className="text-sm text-muted-foreground">{v.email}</p></div><Badge>Active</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No suppliers found</p></CardContent></Card>
+            )}
           </div>
           <VendorEntryForm />
         </div>
