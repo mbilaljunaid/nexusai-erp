@@ -3592,6 +3592,88 @@ export async function registerRoutes(
     res.status(201).json(incident);
   });
 
+  // ========== MODULE 13: EPM, CONSOLIDATION & FINANCIAL CLOSE ENDPOINTS ==========
+  const budgetStore: any[] = [];
+  const consolidationStore: any[] = [];
+  const closeStore: any[] = [];
+  const reconciliationStore: any[] = [];
+  const intercompanyStore: any[] = [];
+
+  app.get("/api/budgets", (req, res) => {
+    if (budgetStore.length === 0) {
+      budgetStore.push(
+        { id: "b1", planName: "2025 Annual Budget", department: "Operations", budgetAmount: "500000", forecastAmount: "480000", status: "active" }
+      );
+    }
+    res.json(budgetStore);
+  });
+
+  app.post("/api/budgets", (req, res) => {
+    const budget = { id: `b-${Date.now()}`, ...req.body, status: "active", approvalStatus: "pending" };
+    budgetStore.push(budget);
+    res.status(201).json(budget);
+  });
+
+  app.get("/api/consolidations", (req, res) => {
+    if (consolidationStore.length === 0) {
+      consolidationStore.push(
+        { id: "con1", entityName: "Acme Corp", consolidationMethod: "full", currency: "USD", status: "consolidated" }
+      );
+    }
+    res.json(consolidationStore);
+  });
+
+  app.post("/api/consolidations", (req, res) => {
+    const consolidation = { id: `con-${Date.now()}`, ...req.body, status: "pending", approvalStatus: "pending" };
+    consolidationStore.push(consolidation);
+    res.status(201).json(consolidation);
+  });
+
+  app.get("/api/period-close", (req, res) => {
+    if (closeStore.length === 0) {
+      closeStore.push(
+        { id: "pc1", periodId: "NOV2025", module: "Finance", closeTask: "GL Reconciliation", status: "completed" }
+      );
+    }
+    res.json(closeStore);
+  });
+
+  app.post("/api/period-close", (req, res) => {
+    const close = { id: `pc-${Date.now()}`, ...req.body, status: "not_started", approvalStatus: "pending" };
+    closeStore.push(close);
+    res.status(201).json(close);
+  });
+
+  app.get("/api/reconciliations", (req, res) => {
+    if (reconciliationStore.length === 0) {
+      reconciliationStore.push(
+        { id: "rec1", accountId: "1000", glBalance: "50000", subledgerBalance: "50000", variance: "0", status: "reconciled" }
+      );
+    }
+    res.json(reconciliationStore);
+  });
+
+  app.post("/api/reconciliations", (req, res) => {
+    const reconciliation = { id: `rec-${Date.now()}`, ...req.body, status: "pending", approvalStatus: "pending" };
+    reconciliationStore.push(reconciliation);
+    res.status(201).json(reconciliation);
+  });
+
+  app.get("/api/intercompany", (req, res) => {
+    if (intercompanyStore.length === 0) {
+      intercompanyStore.push(
+        { id: "ic1", fromEntity: "Acme Corp", toEntity: "Acme EU", amount: "100000", currency: "USD", status: "pending" }
+      );
+    }
+    res.json(intercompanyStore);
+  });
+
+  app.post("/api/intercompany", (req, res) => {
+    const intercompany = { id: `ic-${Date.now()}`, ...req.body, status: "pending", approvalStatus: "pending" };
+    intercompanyStore.push(intercompany);
+    res.status(201).json(intercompany);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

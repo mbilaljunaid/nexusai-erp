@@ -2790,3 +2790,65 @@ export const policyManagement = pgTable("policy_management", {
   status: varchar("status").default("active"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 13: EPM, CONSOLIDATION & FINANCIAL CLOSE ==========
+export const budgetPlanning = pgTable("budget_planning", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  planName: varchar("plan_name").notNull(),
+  department: varchar("department"),
+  budgetAmount: numeric("budget_amount"),
+  forecastAmount: numeric("forecast_amount"),
+  period: varchar("period"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const financialConsolidation = pgTable("financial_consolidation", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  entityName: varchar("entity_name").notNull(),
+  parentEntity: varchar("parent_entity"),
+  consolidationMethod: varchar("consolidation_method"),
+  currency: varchar("currency"),
+  period: varchar("period"),
+  status: varchar("status").default("pending"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const periodClose = pgTable("period_close", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  periodId: varchar("period_id"),
+  module: varchar("module"),
+  closeTask: varchar("close_task"),
+  assignedUser: varchar("assigned_user"),
+  dueDate: timestamp("due_date"),
+  completionDate: timestamp("completion_date"),
+  status: varchar("status").default("not_started"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const accountReconciliation = pgTable("account_reconciliation", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  accountId: varchar("account_id").notNull(),
+  glBalance: numeric("gl_balance"),
+  subledgerBalance: numeric("subledger_balance"),
+  variance: numeric("variance"),
+  status: varchar("status").default("pending"),
+  resolutionAction: text("resolution_action"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const intercompanyTransactions = pgTable("intercompany_transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fromEntity: varchar("from_entity"),
+  toEntity: varchar("to_entity"),
+  amount: numeric("amount"),
+  currency: varchar("currency"),
+  description: text("description"),
+  status: varchar("status").default("pending"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
