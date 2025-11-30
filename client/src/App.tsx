@@ -373,6 +373,8 @@ const ProcurementManagement = lazy(() => import("@/pages/ProcurementManagement")
 const QualityAssurance = lazy(() => import("@/pages/QualityAssurance"));
 const RealTimeNotifications = lazy(() => import("@/pages/RealTimeNotifications"));
 const RecommendationEngine = lazy(() => import("@/pages/RecommendationEngine"));
+const AnomalyDetection = lazy(() => import("@/pages/AnomalyDetection"));
+const PredictiveModeling = lazy(() => import("@/pages/PredictiveModeling"));
 const ServiceLevelConfig = lazy(() => import("@/pages/ServiceLevelConfig"));
 const SupplyChainOptimization = lazy(() => import("@/pages/SupplyChainOptimization"));
 const TemplateLibrary = lazy(() => import("@/pages/TemplateLibrary"));
@@ -654,6 +656,8 @@ function Router() {
       <Route path="/quality-assurance" component={QualityAssurance} />
       <Route path="/real-time-notifications" component={RealTimeNotifications} />
       <Route path="/recommendation-engine" component={RecommendationEngine} />
+      <Route path="/anomaly-detection" component={AnomalyDetection} />
+      <Route path="/predictive-modeling" component={PredictiveModeling} />
       <Route path="/service-level-config" component={ServiceLevelConfig} />
       <Route path="/supply-chain-optimization" component={SupplyChainOptimization} />
       <Route path="/template-library" component={TemplateLibrary} />
