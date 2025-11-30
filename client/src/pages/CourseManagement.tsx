@@ -1,1 +1,23 @@
-import { useQuery } from "@tanstack/react-query"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { BookOpen } from "lucide-react"; export default function CourseManagement() { const { data: courses = [], isLoading } = useQuery({ queryKey: ["/api/ed-courses"], queryFn: () => fetch("/api/ed-courses").then(r => r.json()).catch(() => []), }); const active = courses.filter((c: any) => c.status === "active").length; return ( <div className="space-y-6 p-4"> <div> <h1 className="text-3xl font-bold flex items-center gap-2"> <BookOpen className="h-8 w-8" /> Course, Curriculum & LMS </h1> <p className="text-muted-foreground mt-2">Catalog, curriculum builder, modules, LMS content, prerequisites, credit hours, faculty assignment</p> </div> <div className="grid grid-cols-4 gap-3"> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Courses</p><p className="text-2xl font-bold">{courses.length}</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Active</p><p className="text-2xl font-bold text-green-600">{active}</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Credits</p><p className="text-2xl font-bold text-blue-600">{courses.reduce((sum: number, c: any) => sum + (parseInt(c.credits) || 0), 0)}</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Avg Credits</p><p className="text-2xl font-bold">{courses.length > 0 ? (courses.reduce((sum: number, c: any) => sum + (parseInt(c.credits) || 0), 0) / courses.length).toFixed(1) : 0}</p></CardContent></Card> </div> <Card> <CardHeader><CardTitle className="text-base">Courses</CardTitle></CardHeader> <CardContent className="space-y-2"> {isLoading ? <p>Loading...</p> : courses.length === 0 ? <p className="text-muted-foreground text-center py-4">No courses</p> : courses.slice(0, 10).map((c: any) => ( <div key={c.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`course-${c.id}`}> <div className="flex-1"><p className="font-semibold">{c.courseId}</p><p className="text-xs text-muted-foreground">{c.credits} credits</p></div> <Badge variant={c.status === "active" ? "default" : "secondary"} className="text-xs">{c.status}</Badge> </div> ))} </CardContent> </Card> </div> ); }
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus, BookOpen } from "lucide-react";
+
+export default function CourseManagement() {
+  const courses = [
+    { id: "CSE101", name: "Data Structures", faculty: "Dr. Sharma", credits: 4, students: 45 },
+    { id: "CSE102", name: "Web Development", faculty: "Dr. Sharma", credits: 3, students: 38 },
+  ];
+  return (
+    <div className="space-y-6 p-6">
+      <div className="flex justify-between items-center"><div><h1 className="text-3xl font-bold">Courses & Curriculum</h1></div><Button data-testid="button-add-course"><Plus className="h-4 w-4 mr-2" /> Add Course</Button></div>
+      <div className="grid gap-4">
+        {courses.map(c => (
+          <Card key={c.id} className="hover-elevate" data-testid={`card-course-${c.id}`}>
+            <CardContent className="pt-6"><div className="flex justify-between"><div><h3 className="font-semibold">{c.name}</h3><p className="text-sm text-muted-foreground">{c.faculty}</p><p className="text-sm">{c.credits} Credits • {c.students} Students</p></div></div></CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}

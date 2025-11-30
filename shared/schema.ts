@@ -2960,3 +2960,108 @@ export const notificationCenter = pgTable("notification_center", {
   isRead: boolean("is_read").default(false),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// Education & E-Learning Pack (Industry Pack 31)
+export const educationStudents = pgTable("education_students", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  studentId: varchar("student_id").notNull().unique(),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  email: varchar("email").notNull(),
+  phone: varchar("phone"),
+  enrollmentStatus: varchar("enrollment_status").default("ACTIVE"),
+  programId: varchar("program_id"),
+  admissionDate: timestamp("admission_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const educationFaculty = pgTable("education_faculty", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  facultyId: varchar("faculty_id").notNull().unique(),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  email: varchar("email").notNull(),
+  department: varchar("department"),
+  qualification: varchar("qualification"),
+  status: varchar("status").default("ACTIVE"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const educationCourses = pgTable("education_courses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  courseId: varchar("course_id").notNull().unique(),
+  courseName: varchar("course_name").notNull(),
+  description: text("description"),
+  facultyId: varchar("faculty_id"),
+  credits: integer("credits"),
+  status: varchar("status").default("ACTIVE"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const educationEnrollments = pgTable("education_enrollments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  studentId: varchar("student_id").notNull(),
+  courseId: varchar("course_id").notNull(),
+  enrollmentDate: timestamp("enrollment_date"),
+  status: varchar("status").default("ENROLLED"),
+  grade: varchar("grade"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const educationAssignments = pgTable("education_assignments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  assignmentId: varchar("assignment_id").notNull().unique(),
+  courseId: varchar("course_id").notNull(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  dueDate: timestamp("due_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const educationGrades = pgTable("education_grades", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  studentId: varchar("student_id").notNull(),
+  courseId: varchar("course_id").notNull(),
+  score: integer("score"),
+  grade: varchar("grade"),
+  gradeDate: timestamp("grade_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const educationBilling = pgTable("education_billing", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  invoiceId: varchar("invoice_id").notNull().unique(),
+  studentId: varchar("student_id").notNull(),
+  amount: numeric("amount"),
+  dueDate: timestamp("due_date"),
+  status: varchar("status").default("PENDING"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const educationEvents = pgTable("education_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  eventId: varchar("event_id").notNull().unique(),
+  eventName: varchar("event_name").notNull(),
+  eventDate: timestamp("event_date"),
+  capacity: integer("capacity"),
+  status: varchar("status").default("SCHEDULED"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const educationAttendance = pgTable("education_attendance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  studentId: varchar("student_id").notNull(),
+  courseId: varchar("course_id"),
+  attendanceDate: timestamp("attendance_date"),
+  status: varchar("status").default("PRESENT"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

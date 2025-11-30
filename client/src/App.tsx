@@ -568,6 +568,20 @@ const ComplianceReporting = lazy(() => import("@/pages/ComplianceReporting"));
 const GovernmentBI = lazy(() => import("@/pages/GovernmentBI"));
 const CitizenEngagement = lazy(() => import("@/pages/CitizenEngagement"));
 const WorkflowAutomation = lazy(() => import("@/pages/WorkflowAutomation"));
+
+// Education & E-Learning Pack (Industry Pack 31)
+const StudentManagement = lazy(() => import("@/pages/StudentManagement"));
+const FacultyManagement = lazy(() => import("@/pages/FacultyManagement"));
+const CourseManagement = lazy(() => import("@/pages/CourseManagement"));
+const AdmissionsEnrollment = lazy(() => import("@/pages/AdmissionsEnrollment"));
+const AssessmentGrading = lazy(() => import("@/pages/AssessmentGrading"));
+const LMSContent = lazy(() => import("@/pages/LMSContent"));
+const EducationCRM = lazy(() => import("@/pages/EducationCRM"));
+const EducationBilling = lazy(() => import("@/pages/EducationBilling"));
+const EducationHR = lazy(() => import("@/pages/EducationHR"));
+const EducationAttendance = lazy(() => import("@/pages/EducationAttendance"));
+const EducationEvents = lazy(() => import("@/pages/EducationEvents"));
+const EducationAnalytics = lazy(() => import("@/pages/EducationAnalytics"));
 const PropertyManagement = lazy(() => import("@/pages/PropertyManagement"));
 const ReservationsBookings = lazy(() => import("@/pages/ReservationsBookings"));
 const GuestManagement = lazy(() => import("@/pages/GuestManagement"));
@@ -1378,6 +1392,18 @@ function Router() {
       <Route path="/gov-finance" component={FinanceGrants} />
       <Route path="/gov-hr" component={GovernmentHR} />
       <Route path="/gov-procurement" component={GovernmentProcurement} />
+      <Route path="/education-students" component={StudentManagement} />
+      <Route path="/education-faculty" component={FacultyManagement} />
+      <Route path="/education-courses" component={CourseManagement} />
+      <Route path="/education-admissions" component={AdmissionsEnrollment} />
+      <Route path="/education-assessment" component={AssessmentGrading} />
+      <Route path="/education-lms" component={LMSContent} />
+      <Route path="/education-crm" component={EducationCRM} />
+      <Route path="/education-billing" component={EducationBilling} />
+      <Route path="/education-hr" component={EducationHR} />
+      <Route path="/education-attendance" component={EducationAttendance} />
+      <Route path="/education-events" component={EducationEvents} />
+      <Route path="/education-analytics" component={EducationAnalytics} />
       <Route path="/gov-projects" component={ProjectInfrastructure} />
       <Route path="/gov-compliance" component={ComplianceReporting} />
       <Route path="/gov-bi" component={GovernmentBI} />
@@ -1565,3 +1591,5 @@ export default function App() {
     </RBACProvider>
   );
 }
+
+// Placeholder for redirect - will be added properly below
