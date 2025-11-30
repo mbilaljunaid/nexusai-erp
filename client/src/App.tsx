@@ -1251,7 +1251,6 @@ function Router() {
       <Route path="/retail-supply" component={SupplyChainRetail} />
       <Route path="/retail-warehouse" component={Warehouse} />
       <Route path="/retail-shipping" component={LogisticsShipping} />
-      // <Route path="/retail-campaigns" component={MarketingCampaigns} /> REMOVED - component not defined
       <Route path="/retail-recommendations" component={ProductRecommendations} />
       <Route path="/retail-analytics" component={RetailAnalytics} />
       <Route path="/retail-hr" component={HRRetail} />
@@ -1611,3 +1610,17 @@ const TelecomBIDashboards = lazy(() => import("@/pages/TelecomBIDashboards"));
 const TelecomCompliance = lazy(() => import("@/pages/TelecomCompliance"));
 const TelecomMobileApp = lazy(() => import("@/pages/TelecomMobileApp"));
 const TelecomReporting = lazy(() => import("@/pages/TelecomReporting"));
+
+// Media & Entertainment Pack (Industry Pack 38)
+const MediaContentManagement = lazy(() => import("@/pages/MediaContentManagement"));
+const MediaProductionWorkflows = lazy(() => import("@/pages/MediaProductionWorkflows"));
+const MediaDistribution = lazy(() => import("@/pages/MediaDistribution"));
+const MediaSubscriptionBilling = lazy(() => import("@/pages/MediaSubscriptionBilling"));
+const MediaAdvertisingMarketing = lazy(() => import("@/pages/MediaAdvertisingMarketing"));
+const MediaCRMEngagement = lazy(() => import("@/pages/MediaCRMEngagement"));
+const MediaHRWorkforce = lazy(() => import("@/pages/MediaHRWorkforce"));
+const MediaAIRecommendations = lazy(() => import("@/pages/MediaAIRecommendations"));
+const MediaBIDashboards = lazy(() => import("@/pages/MediaBIDashboards"));
+const MediaCompliance = lazy(() => import("@/pages/MediaCompliance"));
+const MediaMobileApp = lazy(() => import("@/pages/MediaMobileApp"));
+const MediaReporting = lazy(() => import("@/pages/MediaReporting"));

@@ -5819,31 +5819,46 @@ export async function registerRoutes(
   app.get("/api/telecom-subscribers", (req, res) => { if (telSubStore.length === 0) { for (let i = 1; i <= 20; i++) { telSubStore.push({ id: `sub${i}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, name: `Subscriber ${i}`, phone: `+91-98${String(i).padStart(8,'0')}`, accountStatus: 'ACTIVE', planId: `PLAN-${String((i%5)+1).padStart(2,'0')}` }); } } res.json(telSubStore); });
   app.post("/api/telecom-subscribers", (req, res) => { const s = { id: `sub-${Date.now()}`, ...req.body }; telSubStore.push(s); res.status(201).json(s); });
 
-  app.get("/api/telecom-plans", (req, res) => { if (telPlanStore.length === 0) { for (let i = 1; i <= 8; i++) { telPlanStore.push({ id: `plan${i}`, planId: `PLAN-${String(i).padStart(2,'0')}`, name: `Plan ${i}`, type: i % 2 === 0 ? 'Postpaid' : 'Prepaid', price: 499 + (i * 100), validity: 28 + (i * 2), data: 1 + (i * 0.5), status: 'ACTIVE' }); } } res.json(telPlanStore); });
-  app.post("/api/telecom-plans", (req, res) => { const p = { id: `plan-${Date.now()}`, ...req.body }; telPlanStore.push(p); res.status(201).json(p); });
+  // ========== INDUSTRY PACK 38: MEDIA & ENTERTAINMENT ==========
+  const medContentStore: any[] = [];
+  const medProdStore: any[] = [];
+  const medDistStore: any[] = [];
+  const medSubStore: any[] = [];
+  const medAdStore: any[] = [];
+  const medCRMStore: any[] = [];
+  const medEmpStore: any[] = [];
+  const medRecStore: any[] = [];
+  const medCompStore: any[] = [];
+  const medCampStore: any[] = [];
 
-  app.get("/api/telecom-billing", (req, res) => { if (telBillStore.length === 0) { for (let i = 1; i <= 12; i++) { telBillStore.push({ id: `bill${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, amount: 499 + (i * 100), paymentStatus: i % 2 === 0 ? 'PAID' : 'PENDING', dueDate: new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0] }); } } res.json(telBillStore); });
-  app.post("/api/telecom-billing", (req, res) => { const b = { id: `bill-${Date.now()}`, ...req.body }; telBillStore.push(b); res.status(201).json(b); });
+  app.get("/api/media-content", (req, res) => { if (medContentStore.length === 0) { for (let i = 1; i <= 15; i++) { medContentStore.push({ id: `cont${i}`, contentId: `CONT-${String(i).padStart(4,'0')}`, title: `Content ${i}`, type: i % 3 === 0 ? 'Video' : i % 3 === 1 ? 'Audio' : 'Image', category: i % 2 === 0 ? 'Drama' : 'Comedy', duration: 45 + (i * 5), status: 'PUBLISHED' }); } } res.json(medContentStore); });
+  app.post("/api/media-content", (req, res) => { const c = { id: `cont-${Date.now()}`, ...req.body }; medContentStore.push(c); res.status(201).json(c); });
 
-  app.get("/api/telecom-network", (req, res) => { if (telNetStore.length === 0) { for (let i = 1; i <= 10; i++) { telNetStore.push({ id: `net${i}`, networkId: `NET-${String(i).padStart(3,'0')}`, deviceType: i % 2 === 0 ? 'Tower' : 'BTS', trafficLoad: 40 + (i * 5), uptime: 99.9, status: 'OPERATIONAL' }); } } res.json(telNetStore); });
-  app.post("/api/telecom-network", (req, res) => { const n = { id: `net-${Date.now()}`, ...req.body }; telNetStore.push(n); res.status(201).json(n); });
+  app.get("/api/media-production", (req, res) => { if (medProdStore.length === 0) { for (let i = 1; i <= 10; i++) { medProdStore.push({ id: `prod${i}`, projectId: `PROJ-${String(i).padStart(3,'0')}`, name: `Project ${i}`, status: i % 2 === 0 ? 'IN_PROGRESS' : 'COMPLETED', crew: 8 + i, budget: 500000 + (i * 100000), progress: 50 + (i * 5) }); } } res.json(medProdStore); });
+  app.post("/api/media-production", (req, res) => { const p = { id: `prod-${Date.now()}`, ...req.body }; medProdStore.push(p); res.status(201).json(p); });
 
-  app.get("/api/telecom-crm", (req, res) => { if (telCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { telCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, type: i % 2 === 0 ? 'CALL' : 'SMS', subject: 'Plan Inquiry', status: 'COMPLETED' }); } } res.json(telCRMStore); });
-  app.post("/api/telecom-crm", (req, res) => { const c = { id: `crm-${Date.now()}`, ...req.body }; telCRMStore.push(c); res.status(201).json(c); });
+  app.get("/api/media-distribution", (req, res) => { if (medDistStore.length === 0) { for (let i = 1; i <= 10; i++) { medDistStore.push({ id: `dist${i}`, contentId: `CONT-${String(i).padStart(4,'0')}`, platform: i % 3 === 0 ? 'Netflix' : i % 3 === 1 ? 'YouTube' : 'Prime', releaseDate: new Date(Date.now() - i * 86400000).toISOString().split('T')[0], views: 100000 + (i * 50000), status: 'ACTIVE' }); } } res.json(medDistStore); });
+  app.post("/api/media-distribution", (req, res) => { const d = { id: `dist-${Date.now()}`, ...req.body }; medDistStore.push(d); res.status(201).json(d); });
 
-  app.get("/api/telecom-provisioning", (req, res) => { if (telProvStore.length === 0) { for (let i = 1; i <= 10; i++) { telProvStore.push({ id: `prov${i}`, serviceId: `SVC-${String(i).padStart(4,'0')}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, service: i % 2 === 0 ? 'Voice' : 'Data', activationDate: new Date(Date.now() - i * 86400000).toISOString().split('T')[0], status: 'ACTIVE' }); } } res.json(telProvStore); });
-  app.post("/api/telecom-provisioning", (req, res) => { const pr = { id: `prov-${Date.now()}`, ...req.body }; telProvStore.push(pr); res.status(201).json(pr); });
+  app.get("/api/media-subscriptions", (req, res) => { if (medSubStore.length === 0) { for (let i = 1; i <= 12; i++) { medSubStore.push({ id: `sub${i}`, subscriberId: `SUB-${String(i).padStart(4,'0')}`, plan: i % 2 === 0 ? 'Premium' : 'Standard', amount: 299 + (i * 50), status: 'ACTIVE', renewalDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0] }); } } res.json(medSubStore); });
+  app.post("/api/media-subscriptions", (req, res) => { const s = { id: `sub-${Date.now()}`, ...req.body }; medSubStore.push(s); res.status(201).json(s); });
 
-  app.get("/api/telecom-employees", (req, res) => { if (telEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { telEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Engineer' : i % 3 === 1 ? 'Support' : 'Admin', department: 'Operations', status: 'ACTIVE' }); } } res.json(telEmpStore); });
-  app.post("/api/telecom-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; telEmpStore.push(e); res.status(201).json(e); });
+  app.get("/api/media-advertising", (req, res) => { if (medAdStore.length === 0) { for (let i = 1; i <= 8; i++) { medAdStore.push({ id: `ad${i}`, campaignId: `CAMP-${String(i).padStart(3,'0')}`, adType: i % 2 === 0 ? 'Banner' : 'Video', impressions: 1000 + (i * 500), clicks: 100 + (i * 50), revenue: 5000 + (i * 1000) }); } } res.json(medAdStore); });
+  app.post("/api/media-advertising", (req, res) => { const a = { id: `ad-${Date.now()}`, ...req.body }; medAdStore.push(a); res.status(201).json(a); });
 
-  app.get("/api/telecom-optimization", (req, res) => { res.json([{ id: 'opt1', prediction: 'Network load: High', confidence: 85, recommendation: 'Activate backup capacity' }, { id: 'opt2', prediction: 'Churn risk: Low', confidence: 92, recommendation: 'Continue engagement' }]); });
-  app.post("/api/telecom-optimization", (req, res) => { const o = { id: `opt-${Date.now()}`, ...req.body }; res.status(201).json(o); });
+  app.get("/api/media-crm", (req, res) => { if (medCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { medCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, subscriberId: `SUB-${String(i).padStart(4,'0')}`, type: i % 2 === 0 ? 'Support Ticket' : 'Feedback', subject: 'Content Request', status: 'RESOLVED' }); } } res.json(medCRMStore); });
+  app.post("/api/media-crm", (req, res) => { const cr = { id: `crm-${Date.now()}`, ...req.body }; medCRMStore.push(cr); res.status(201).json(cr); });
 
-  app.get("/api/telecom-compliance", (req, res) => { if (telCompStore.length === 0) { telCompStore.push({ id: 'comp1', regulation: 'Spectrum License', status: 'COMPLIANT' }, { id: 'comp2', regulation: 'Privacy Act', status: 'COMPLIANT' }); } res.json(telCompStore); });
-  app.post("/api/telecom-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; telCompStore.push(co); res.status(201).json(co); });
+  app.get("/api/media-employees", (req, res) => { if (medEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { medEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Director' : i % 3 === 1 ? 'Producer' : 'Editor', department: i % 2 === 0 ? 'Production' : 'Operations', status: 'ACTIVE' }); } } res.json(medEmpStore); });
+  app.post("/api/media-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; medEmpStore.push(e); res.status(201).json(e); });
 
-  app.get("/api/telecom-usage", (req, res) => { res.json({ totalSubscribers: 5000, activeSubscribers: 4850, totalRevenue: 24500000, networkUptime: 99.95, topPlan: 'Plan 3' }); });
+  app.get("/api/media-recommendations", (req, res) => { res.json([{ id: 'rec1', contentId: 'CONT-0001', title: 'Content 1', score: 92, reason: 'Based on your watchlist' }, { id: 'rec2', contentId: 'CONT-0002', title: 'Content 2', score: 88, reason: 'Trending now' }]); });
+  app.post("/api/media-recommendations", (req, res) => { const r = { id: `rec-${Date.now()}`, ...req.body }; res.status(201).json(r); });
+
+  app.get("/api/media-compliance", (req, res) => { if (medCompStore.length === 0) { medCompStore.push({ id: 'comp1', contentId: 'CONT-0001', regulation: 'Copyright', status: 'COMPLIANT' }, { id: 'comp2', contentId: 'CONT-0002', regulation: 'GDPR', status: 'COMPLIANT' }); } res.json(medCompStore); });
+  app.post("/api/media-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; medCompStore.push(co); res.status(201).json(co); });
+
+  app.get("/api/media-dashboards", (req, res) => { res.json({ totalContent: 2500, totalSubscribers: 125000, totalRevenue: 15250000, engagementRate: 68, adRevenue: 3200000 }); });
 
   return httpServer;
 }
