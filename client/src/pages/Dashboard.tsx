@@ -21,27 +21,24 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function Dashboard() {
   // Fetch real data from backend APIs
-  const { data: leads = [] } = useQuery<any[]>({ queryKey: ["/api/leads"] });
-  const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"] });
-  const { data: metrics } = useQuery({ queryKey: ["/api/analytics/dashboard/summary"] });
-  const { data: forecast } = useQuery({ queryKey: ["/api/analytics/forecast-advanced"] });
-  const { data: aiScores } = useQuery({ queryKey: ["/api/ai/predictive-analytics"] });
+  const { data: leads = [], isLoading: leadsLoading } = useQuery<any[]>({ queryKey: ["/api/leads"], retry: false });
+  const { data: invoices = [], isLoading: invoicesLoading } = useQuery<any[]>({ queryKey: ["/api/invoices"], retry: false });
 
-  // Transform leads to display format with AI scores
+  // Transform leads to display format
   const topLeads: Lead[] = leads.slice(0, 3).map((lead: any, idx: number) => ({
     id: lead.id || `${idx}`,
     name: lead.name || "Unknown",
     email: lead.email || "",
     company: lead.company || "",
     status: (lead.status || "new") as Lead["status"],
-    score: lead.score || 75,
-    value: lead.value || 45000
+    score: Number(lead.score) || 75,
+    value: 45000
   }));
 
   const urgentTasks: Task[] = [
-    { id: "1", title: "Follow up with TechCorp proposal", status: "todo", priority: "urgent", dueDate: "Today", aiGenerated: true },
-    { id: "2", title: "Review Q4 marketing strategy", status: "in_progress", priority: "high", dueDate: "Tomorrow", assignee: { name: "Alex", initials: "AC" } },
-    { id: "3", title: "Send onboarding docs to new leads", status: "todo", priority: "high", dueDate: "Dec 15", aiGenerated: true },
+    { id: "1", title: "Follow up with sales leads", status: "todo", priority: "urgent", dueDate: "Today", aiGenerated: true },
+    { id: "2", title: "Review quarterly performance", status: "in_progress", priority: "high", dueDate: "Tomorrow", assignee: { name: "System", initials: "SYS" } },
+    { id: "3", title: "Process pending invoices", status: "todo", priority: "high", dueDate: "Dec 15", aiGenerated: true },
   ];
 
   return (

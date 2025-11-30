@@ -16,7 +16,6 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { Search, Filter, LayoutGrid, List, Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 
 export default function CRM() {
-  const [leadView, setLeadView] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeNav, setActiveNav] = useState("overview");
   const { data: leads = [] } = useQuery({ queryKey: ["/api/leads"], retry: false });
@@ -32,6 +31,15 @@ export default function CRM() {
     { id: "analytics", label: "Analytics", icon: Activity, color: "text-yellow-500" },
     { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
   ];
+
+  const filteredLeads = leads.filter((lead: any) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      (lead.name || "").toLowerCase().includes(query) ||
+      (lead.email || "").toLowerCase().includes(query) ||
+      (lead.company || "").toLowerCase().includes(query)
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -61,10 +69,49 @@ export default function CRM() {
 
       {activeNav === "overview" && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">1,250</p><p className="text-xs text-muted-foreground">Total Leads</p></CardContent></Card>
+          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">{leads.length}</p><p className="text-xs text-muted-foreground">Total Leads</p></CardContent></Card>
           <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$4.2M</p><p className="text-xs text-muted-foreground">Pipeline Value</p></CardContent></Card>
           <Card><CardContent className="p-4"><p className="text-2xl font-semibold">35%</p><p className="text-xs text-muted-foreground">Avg Win Rate</p></CardContent></Card>
           <Card><CardContent className="p-4"><p className="text-2xl font-semibold">18 days</p><p className="text-xs text-muted-foreground">Avg Sales Cycle</p></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "leads" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <div className="relative flex-1">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search leads by name, email, company..." 
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                className="pl-8" 
+                data-testid="input-search-leads"
+              />
+            </div>
+            <Button data-testid="button-add-lead">+ Add Lead</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredLeads.length > 0 ? (
+              filteredLeads.map((lead: any, idx: number) => (
+                <Card key={lead.id || idx} className="hover-elevate cursor-pointer">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="font-semibold">{lead.name}</p>
+                        <p className="text-sm text-muted-foreground">{lead.email}</p>
+                        <p className="text-xs text-muted-foreground">{lead.company}</p>
+                      </div>
+                      <Badge variant="secondary">{lead.status}</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No leads found</p></CardContent></Card>
+            )}
+          </div>
+          <LeadEntryForm />
         </div>
       )}
 
