@@ -133,6 +133,8 @@ const BlogPage = lazy(() => import("@/pages/BlogPage"));
 const UseCasesPage = lazy(() => import("@/pages/UseCasesPage"));
 const IndustriesPage = lazy(() => import("@/pages/IndustriesPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
+const SignupPage = lazy(() => import("@/pages/SignupPage"));
+const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 
 // Detail pages for section navigation
 const LeadsDetail = lazy(() => import("@/pages/LeadsDetail"));
@@ -792,6 +794,8 @@ function Router() {
       <Route path="/use-cases" component={UseCasesPage} />
       <Route path="/industries" component={IndustriesPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/signup" component={SignupPage} />
+      <Route path="/forgot-password" component={ForgotPasswordPage} />
       
       {/* Dashboard & Core Pages */}
       <Route path="/dashboard" component={Dashboard} />
