@@ -1,24 +1,25 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LeadTable } from "@/components/LeadTable";
 import { LeadCard } from "@/components/LeadCard";
 import { AddLeadDialog } from "@/components/AddLeadDialog";
 import { LeadEntryForm } from "@/components/forms/LeadEntryForm";
-import { OpportunityForm } from "@/components/forms/OpportunityForm";
-import CustomerEntryForm from "@/components/forms/CustomerEntryForm";
-import { CampaignEntryForm } from "@/components/forms/CampaignEntryForm";
-import { IconNavigation } from "@/components/IconNavigation";
-import { Search, Filter, LayoutGrid, List, Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
+import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 
 export default function CRM() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
   const [activeNav, setActiveNav] = useState("overview");
   const { data: leads = [] } = useQuery<any[]>({ queryKey: ["/api/leads"], retry: false });
+  
+  // Get lead form metadata for search parameters, button text, breadcrumbs
+  const leadFormMetadata = getFormMetadata("lead");
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
@@ -31,15 +32,6 @@ export default function CRM() {
     { id: "analytics", label: "Analytics", icon: Activity, color: "text-yellow-500" },
     { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
   ];
-
-  const filteredLeads = ((leads as any[]) || []).filter((lead: any) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      (lead.name || "").toLowerCase().includes(query) ||
-      (lead.email || "").toLowerCase().includes(query) ||
-      (lead.company || "").toLowerCase().includes(query)
-    );
-  });
 
   return (
     <div className="space-y-6">
@@ -78,22 +70,25 @@ export default function CRM() {
 
       {activeNav === "leads" && (
         <div className="space-y-4">
+          <Breadcrumb items={leadFormMetadata?.breadcrumbs?.slice(1) || []} />
+          
           <div className="flex gap-2 items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search by name, email, company..." 
-                value={searchQuery} 
-                onChange={(e) => setSearchQuery(e.target.value)} 
-                className="pl-8" 
-                data-testid="input-search-leads"
-              />
-            </div>
-            <AddLeadDialog onAddLead={() => {}} />
+            <FormSearchWithMetadata
+              formMetadata={leadFormMetadata}
+              value={searchQuery}
+              onChange={setSearchQuery}
+              data={leads}
+              onFilter={setFilteredLeads}
+            />
+            <SmartAddButton
+              formMetadata={leadFormMetadata}
+              onClick={() => {}}
+            />
           </div>
+          
           <div className="space-y-2">
-            {((filteredLeads as any[]) || []).length > 0 ? (
-              ((filteredLeads as any[]) || []).map((lead: any, idx: number) => (
+            {filteredLeads.length > 0 ? (
+              filteredLeads.map((lead: any, idx: number) => (
                 <Card key={lead.id || idx} className="hover-elevate cursor-pointer">
                   <CardContent className="p-4">
                     <div className="flex justify-between">
@@ -123,12 +118,20 @@ export default function CRM() {
 
       {activeNav === "analytics" && (
         <div className="space-y-4">
+          <Breadcrumb items={[
+            { label: "CRM", path: "/crm" },
+            { label: "Analytics", path: "/crm/analytics" },
+          ]} />
           <Card><CardHeader><CardTitle>CRM Analytics</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Reports, forecasts, and performance metrics</p></CardContent></Card>
         </div>
       )}
 
       {activeNav === "settings" && (
         <div className="space-y-4">
+          <Breadcrumb items={[
+            { label: "CRM", path: "/crm" },
+            { label: "Settings", path: "/crm/settings" },
+          ]} />
           <Card><CardHeader><CardTitle>CRM Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure CRM workflows and customizations</p></CardContent></Card>
         </div>
       )}

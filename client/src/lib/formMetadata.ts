@@ -1,4 +1,4 @@
-// Form metadata system - defines searchable fields and configuration for each form
+// Enhanced form metadata system with module/page mappings
 export interface FormFieldConfig {
   name: string;
   label: string;
@@ -16,9 +16,14 @@ export interface FormMetadata {
   searchFields: string[];
   displayField: string;
   createButtonText: string;
+  module: string; // e.g., "CRM", "Finance", "HR"
+  page: string; // e.g., "/crm/leads"
+  allowCreate: boolean; // e.g., false for analytics pages
+  showSearch: boolean;
+  breadcrumbs: Array<{ label: string; path: string }>;
 }
 
-// Define form metadata for all major forms
+// Form metadata registry - searchable fields are FORM-SPECIFIC, not generic
 export const formMetadataRegistry: Record<string, FormMetadata> = {
   lead: {
     id: "lead",
@@ -34,6 +39,15 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
     searchFields: ["name", "email", "company"],
     displayField: "name",
     createButtonText: "Add Lead",
+    module: "CRM",
+    page: "/crm/leads",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Leads", path: "/crm/leads" },
+    ],
   },
   
   invoice: {
@@ -50,6 +64,15 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
     searchFields: ["invoiceNumber", "customerId", "status"],
     displayField: "invoiceNumber",
     createButtonText: "Create Invoice",
+    module: "Finance",
+    page: "/finance/invoices",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Finance", path: "/finance" },
+      { label: "Invoices", path: "/finance/invoices" },
+    ],
   },
 
   employee: {
@@ -66,6 +89,15 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
     searchFields: ["name", "email", "department", "role"],
     displayField: "name",
     createButtonText: "Add Employee",
+    module: "HR",
+    page: "/hr/employees",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "HR", path: "/hr" },
+      { label: "Employees", path: "/hr/employees" },
+    ],
   },
 
   customer: {
@@ -84,24 +116,15 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
     searchFields: ["customerName", "email", "phone", "company"],
     displayField: "customerName",
     createButtonText: "Add Customer",
-  },
-
-  vendor: {
-    id: "vendor",
-    name: "Vendor",
-    apiEndpoint: "/api/suppliers",
-    fields: [
-      { name: "vendorName", label: "Vendor Name", type: "text", required: true, searchable: true },
-      { name: "email", label: "Email", type: "email", required: true, searchable: true },
-      { name: "phone", label: "Phone", type: "text", required: true, searchable: true },
-      { name: "paymentTerms", label: "Payment Terms", type: "select", required: false, searchable: false },
-      { name: "bankAccount", label: "Bank Account", type: "text", required: false, searchable: false },
-      { name: "category", label: "Category", type: "select", required: false, searchable: false },
-      { name: "status", label: "Status", type: "select", required: false, searchable: false },
+    module: "CRM",
+    page: "/crm/customers",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Customers", path: "/crm/customers" },
     ],
-    searchFields: ["vendorName", "email", "phone"],
-    displayField: "vendorName",
-    createButtonText: "Add Vendor",
   },
 
   opportunity: {
@@ -116,62 +139,44 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
       { name: "expectedValue", label: "Expected Value", type: "number", required: false, searchable: false },
       { name: "closeDate", label: "Close Date", type: "date", required: false, searchable: false },
     ],
-    searchFields: ["name", "accountId"],
+    searchFields: ["name"],
     displayField: "name",
     createButtonText: "Add Opportunity",
+    module: "CRM",
+    page: "/crm/opportunities",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Opportunities", path: "/crm/opportunities" },
+    ],
   },
 
-  campaign: {
-    id: "campaign",
-    name: "Campaign",
-    apiEndpoint: "/api/marketing/campaigns",
-    fields: [
-      { name: "campaignName", label: "Campaign Name", type: "text", required: true, searchable: true },
-      { name: "campaignType", label: "Campaign Type", type: "select", required: true, searchable: false },
-      { name: "startDate", label: "Start Date", type: "date", required: true, searchable: false },
-      { name: "endDate", label: "End Date", type: "date", required: true, searchable: false },
-      { name: "budget", label: "Budget", type: "number", required: true, searchable: false },
-      { name: "status", label: "Status", type: "select", required: false, searchable: false },
+  // Analytics dashboard - NO create button, NO search
+  analyticsDashboard: {
+    id: "analytics",
+    name: "Analytics",
+    apiEndpoint: "/api/analytics",
+    fields: [],
+    searchFields: [],
+    displayField: "name",
+    createButtonText: "",
+    module: "Analytics",
+    page: "/analytics",
+    allowCreate: false,
+    showSearch: false,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Analytics", path: "/analytics" },
     ],
-    searchFields: ["campaignName", "campaignType"],
-    displayField: "campaignName",
-    createButtonText: "Create Campaign",
-  },
-
-  budget: {
-    id: "budget",
-    name: "Budget",
-    apiEndpoint: "/api/finance/budgets",
-    fields: [
-      { name: "budgetCycle", label: "Budget Cycle", type: "select", required: true, searchable: false },
-      { name: "department", label: "Department", type: "select", required: true, searchable: true },
-      { name: "costCenter", label: "Cost Center", type: "select", required: false, searchable: true },
-      { name: "totalBudget", label: "Total Budget", type: "number", required: true, searchable: false },
-    ],
-    searchFields: ["department", "costCenter", "budgetCycle"],
-    displayField: "department",
-    createButtonText: "Create Budget",
   },
 };
 
-// Get searchable field labels for a form
-export function getSearchableFields(formId: string): FormFieldConfig[] {
-  const metadata = formMetadataRegistry[formId];
-  if (!metadata) return [];
-  return metadata.fields.filter(f => f.searchable);
+export function getFormMetadata(formId: string): FormMetadata | undefined {
+  return formMetadataRegistry[formId];
 }
 
-// Build search query across all searchable fields
-export function buildSearchQuery(query: string, formId: string, items: any[]): any[] {
-  const metadata = formMetadataRegistry[formId];
-  if (!metadata || !query) return items;
-
-  const searchFields = metadata.searchFields;
-  const lowerQuery = query.toLowerCase();
-
-  return items.filter(item =>
-    searchFields.some(field =>
-      (item[field] || "").toString().toLowerCase().includes(lowerQuery)
-    )
-  );
+export function getModuleForms(module: string): FormMetadata[] {
+  return Object.values(formMetadataRegistry).filter(f => f.module === module);
 }
