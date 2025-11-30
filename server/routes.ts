@@ -105,9 +105,10 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  // Apply RBAC middleware to all /api routes (except health check)
+  // Apply RBAC middleware to all /api routes (except health check and auth)
   app.use("/api", (req, res, next) => {
     if (req.path === "/health") return next();
+    if (req.path.startsWith("/auth")) return next();
     enforceRBAC()(req, res, next);
   });
 
