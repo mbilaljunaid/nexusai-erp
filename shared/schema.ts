@@ -2070,3 +2070,74 @@ export const knowledgeComments = pgTable("knowledge_comments", {
   rating: integer("rating"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== PRODUCTION FEATURES ==========
+export const emailCampaigns = pgTable("email_campaigns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  subject: varchar("subject").notNull(),
+  content: text("content"),
+  recipientCount: integer("recipient_count").default(0),
+  status: varchar("status").default("draft"),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const calendarEvents = pgTable("calendar_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time"),
+  location: varchar("location"),
+  attendees: jsonb("attendees"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const reports = pgTable("reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(),
+  filters: jsonb("filters"),
+  metrics: jsonb("metrics"),
+  schedule: varchar("schedule"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const dashboardWidgets = pgTable("dashboard_widgets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  type: varchar("type").notNull(),
+  title: varchar("title"),
+  config: jsonb("config"),
+  position: integer("position").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const userNotifications = pgTable("user_notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  title: varchar("title").notNull(),
+  message: text("message"),
+  type: varchar("type").default("info"),
+  read: boolean("read").default(false),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const guidedTours = pgTable("guided_tours", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  tourId: varchar("tour_id").notNull(),
+  status: varchar("status").default("not_started"),
+  currentStep: integer("current_step").default(0),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const churnPredictions = pgTable("churn_predictions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  riskScore: numeric("risk_score", { precision: 5, scale: 2 }),
+  factors: jsonb("factors"),
+  recommendedActions: jsonb("recommended_actions"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

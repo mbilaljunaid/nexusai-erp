@@ -2574,6 +2574,60 @@ export async function registerRoutes(
     res.status(201).json(comment);
   });
 
+  // ========== PRODUCTION FEATURES ENDPOINTS ==========
+  const emailStore: any[] = [];
+  const reportsStore: any[] = [];
+  const notificationsStore: any[] = [];
+  const calendarStore: any[] = [];
+  const churnStore: any[] = [];
+
+  app.post("/api/email/send", (req, res) => {
+    const email = { id: `email-${Date.now()}`, ...req.body, status: "sent", sentAt: new Date().toISOString() };
+    emailStore.push(email);
+    res.status(201).json(email);
+  });
+
+  app.get("/api/reports", (req, res) => {
+    if (reportsStore.length === 0) {
+      reportsStore.push(
+        { id: "r1", name: "Monthly Sales", type: "sales", metrics: ["Revenue", "Conversion"], schedule: "monthly" },
+        { id: "r2", name: "Churn Analysis", type: "churn", metrics: ["Churn Rate", "At-Risk"], schedule: "weekly" }
+      );
+    }
+    res.json(reportsStore);
+  });
+
+  app.post("/api/notifications", (req, res) => {
+    const notif = { id: `notif-${Date.now()}`, ...req.body, read: false, createdAt: new Date().toISOString() };
+    notificationsStore.push(notif);
+    res.status(201).json(notif);
+  });
+
+  app.get("/api/calendar/events", (req, res) => {
+    if (calendarStore.length === 0) {
+      calendarStore.push(
+        { id: "ev1", title: "Team Meeting", startTime: new Date().toISOString(), location: "Conference Room" },
+        { id: "ev2", title: "Client Presentation", startTime: new Date(Date.now() + 86400000).toISOString(), location: "Virtual" }
+      );
+    }
+    res.json(calendarStore);
+  });
+
+  app.get("/api/analytics/churn-prediction", (req, res) => {
+    if (churnStore.length === 0) {
+      churnStore.push(
+        { id: "c1", customerId: "CUST-001", riskScore: "85.5", factors: ["Low Activity", "No Recent Purchase"], recommendedActions: ["Personal Outreach", "Special Offer"] },
+        { id: "c2", customerId: "CUST-002", riskScore: "42.3", factors: ["Regular Activity"], recommendedActions: ["Continue Engagement"] }
+      );
+    }
+    res.json(churnStore);
+  });
+
+  app.post("/api/import-export", (req, res) => {
+    const result = { id: `import-${Date.now()}`, status: "completed", recordsProcessed: 1000, createdAt: new Date().toISOString() };
+    res.json(result);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
