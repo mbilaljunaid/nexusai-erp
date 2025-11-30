@@ -2160,3 +2160,43 @@ export const securitySettings = pgTable("security_settings", {
   loginAttemptLimit: integer("login_attempt_limit").default(5),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+export const roleHierarchies = pgTable("role_hierarchies", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  parentRoleId: varchar("parent_role_id"),
+  childRoleId: varchar("child_role_id"),
+  inheritPermissions: boolean("inherit_permissions").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const segregationOfDuties = pgTable("segregation_of_duties", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  ruleId: varchar("rule_id").notNull(),
+  conflictingRole1: varchar("conflicting_role_1").notNull(),
+  conflictingRole2: varchar("conflicting_role_2").notNull(),
+  description: text("description"),
+  mitigationControl: text("mitigation_control"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const roleAssignments = pgTable("role_assignments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  roleId: varchar("role_id").notNull(),
+  startDate: timestamp("start_date").default(sql`now()`),
+  endDate: timestamp("end_date"),
+  status: varchar("status").default("active"),
+  assignedBy: varchar("assigned_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const permissionOverrides = pgTable("permission_overrides", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  roleId: varchar("role_id").notNull(),
+  module: varchar("module").notNull(),
+  action: varchar("action").notNull(),
+  allowed: boolean("allowed").default(true),
+  fieldLevelSecurity: jsonb("field_level_security"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

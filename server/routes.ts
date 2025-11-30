@@ -2695,6 +2695,83 @@ export async function registerRoutes(
     res.json(settings);
   });
 
+  // ========== MODULE 2: ROLES, PERMISSIONS & SECURITY ENDPOINTS ==========
+  const roleHierarchiesStore: any[] = [];
+  const sodRulesStore: any[] = [];
+  const roleAssignmentsStore: any[] = [];
+  const permissionsStore: any[] = [];
+
+  app.get("/api/roles/hierarchies", (req, res) => {
+    if (roleHierarchiesStore.length === 0) {
+      roleHierarchiesStore.push(
+        { id: "h1", parentRoleId: "admin", childRoleId: "manager", inheritPermissions: true },
+        { id: "h2", parentRoleId: "manager", childRoleId: "operator", inheritPermissions: true }
+      );
+    }
+    res.json(roleHierarchiesStore);
+  });
+
+  app.post("/api/roles/hierarchies", (req, res) => {
+    const hierarchy = { id: `h-${Date.now()}`, ...req.body };
+    roleHierarchiesStore.push(hierarchy);
+    res.status(201).json(hierarchy);
+  });
+
+  app.get("/api/segregation-of-duties", (req, res) => {
+    if (sodRulesStore.length === 0) {
+      sodRulesStore.push(
+        { id: "sod1", ruleId: "rule1", conflictingRole1: "approver", conflictingRole2: "requestor", description: "Cannot approve own requests", mitigationControl: "Manager approval", status: "active" },
+        { id: "sod2", ruleId: "rule2", conflictingRole1: "operator", conflictingRole2: "auditor", description: "Cannot audit own work", mitigationControl: "Independent audit", status: "active" }
+      );
+    }
+    res.json(sodRulesStore);
+  });
+
+  app.post("/api/segregation-of-duties", (req, res) => {
+    const sod = { id: `sod-${Date.now()}`, ...req.body, status: "active" };
+    sodRulesStore.push(sod);
+    res.status(201).json(sod);
+  });
+
+  app.get("/api/role-assignments", (req, res) => {
+    if (roleAssignmentsStore.length === 0) {
+      roleAssignmentsStore.push(
+        { id: "a1", userId: "u1", roleId: "admin", startDate: new Date().toISOString(), endDate: null, status: "active", assignedBy: "system" },
+        { id: "a2", userId: "u2", roleId: "manager", startDate: new Date().toISOString(), endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), status: "active", assignedBy: "admin" }
+      );
+    }
+    res.json(roleAssignmentsStore);
+  });
+
+  app.post("/api/role-assignments", (req, res) => {
+    const assignment = { id: `a-${Date.now()}`, ...req.body, status: "active", assignedBy: req.headers["x-user-id"] };
+    roleAssignmentsStore.push(assignment);
+    res.status(201).json(assignment);
+  });
+
+  app.get("/api/permissions/matrix", (req, res) => {
+    if (permissionsStore.length === 0) {
+      const modules = ["CRM", "ERP", "Finance", "HR", "Projects", "Analytics"];
+      const roles = ["Admin", "Manager", "Operator", "Viewer"];
+      modules.forEach(mod => {
+        roles.forEach(role => {
+          permissionsStore.push({
+            id: `perm-${mod}-${role}`,
+            module: mod,
+            role: role,
+            create: role === "Admin" || role === "Manager",
+            read: true,
+            update: role === "Admin" || role === "Manager",
+            delete: role === "Admin",
+            approve: role === "Admin",
+            export: role !== "Viewer"
+          });
+        });
+      });
+    }
+    res.json(permissionsStore);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

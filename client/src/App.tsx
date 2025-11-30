@@ -245,6 +245,9 @@ const SessionManagement = lazy(() => import("@/pages/SessionManagement"));
 const LoginHistory = lazy(() => import("@/pages/LoginHistory"));
 const SecuritySettings = lazy(() => import("@/pages/SecuritySettings"));
 const PermissionMatrix = lazy(() => import("@/pages/PermissionMatrix"));
+const RoleHierarchy = lazy(() => import("@/pages/RoleHierarchy"));
+const SoDRules = lazy(() => import("@/pages/SoDRules"));
+const RoleAssignment = lazy(() => import("@/pages/RoleAssignment"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -670,6 +673,9 @@ function Router() {
       <Route path="/login-history" component={LoginHistory} />
       <Route path="/security-settings" component={SecuritySettings} />
       <Route path="/permission-matrix" component={PermissionMatrix} />
+      <Route path="/role-hierarchy" component={RoleHierarchy} />
+      <Route path="/sod-rules" component={SoDRules} />
+      <Route path="/role-assignment" component={RoleAssignment} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />

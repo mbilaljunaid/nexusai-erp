@@ -1,0 +1,77 @@
+Understood. From now on, I will provide only the detailed text prompts for each module. You can copy-paste directly, and I will continue in the same extremely detailed, text-only, superset format, including instructions to force Replit to check for existing functionality before creating anything.
+
+Here’s the prompt for Module 2: Roles, Permissions & Security:
+
+⸻
+
+MODULE 2: ROLES, PERMISSIONS & SECURITY
+
+Purpose: Define all roles, permissions, and security rules across the entire system, ensuring access control, segregation of duties, and compliance enforcement across all modules including ERP, CRM, HR, Projects, ITSM, Finance, Inventory, Analytics, AI, Website, and Communication.
+
+Important Note for Replit: Before generating any roles, permissions, workflows, or related objects, check the system for existing roles, permission sets, hierarchies, or security rules. Do not duplicate or recreate any functionality already implemented. Only create missing elements or enhance existing ones.
+
+2.1 Role Master
+
+Forms / Screens: Role Creation, Role Edit, Role Deactivation, Role Clone / Template, Role Hierarchy Management.
+
+Fields: Role ID, Role Code, Role Name, Role Description, Role Type (Admin, Manager, Employee, Guest, External), Status (Active, Inactive), Parent Role, Child Roles, Inherited Roles, Associated Users, Module Access Permissions, Action Permissions (Create, Read, Update, Delete, Approve, Assign, Close, Reopen, Export, Import, View Reports), Record-Level Access (All, Department, Team, Own, Custom), Data Masking Settings, Field-Level Security Settings, Conditional Access Rules, Audit Settings.
+
+Validations: Role Name uniqueness, mandatory Role Type, valid parent role assignment, at least one module access must be assigned, inheritance loops prevented, status change restrictions if assigned to active users.
+
+Workflows: Role creation triggers propagation of permissions to assigned users, role update triggers recalculation of inherited permissions and notifications, role deactivation triggers review and reassignment of associated users, role cloning generates template roles for faster deployment, role hierarchy changes trigger automated audits and compliance checks.
+
+2.2 Permission Matrix
+
+Forms / Screens: Permission Mapping, Module Access Configuration, Action Permission Configuration, Field-Level Access Mapping, Data Segmentation Rules, Conditional Permissions.
+
+Fields: Module Name, CRUD Actions, Approve/Reject Actions, View/Export/Import Actions, Field-Level Read/Write/Hide Permissions, Record-Level Filters, Role Assignment, Effective Permissions, Inheritance Flag, Override Flag, Audit Trail.
+
+Validations: No permission conflicts, mandatory CRUD mapping per module, inheritance consistency, field-level security conflicts resolved, effective permissions verified against assigned roles.
+
+Workflows: Updating permissions triggers automatic recalculation of effective permissions for all users, permission changes trigger notifications to Admin and Compliance, inheritance changes propagate updates to child roles, conflict detection triggers alerts before saving.
+
+2.3 Role Assignment
+
+Forms / Screens: Assign Role to User, Assign Role to Team, Bulk Role Assignment, Role Revocation, Role Transfer.
+
+Fields: User ID, Team/Department ID, Role ID, Assignment Start Date, Assignment End Date, Status (Active, Inactive, Pending), Effective Permissions, Audit Fields (Assigned By, Assigned On).
+
+Validations: Users must have valid active status, teams must exist, role assignment must not conflict with existing assignments, role revocation triggers confirmation workflow, overlapping role assignment rules enforced.
+
+Workflows: Role assignment triggers notifications to user and manager, triggers automated provisioning of dashboards and access, revocation triggers disabling of access and reallocation of responsibilities, role transfer triggers audit logging.
+
+2.4 Access Control & Segregation of Duties (SoD)
+
+Forms / Screens: SoD Rules Definition, SoD Violation Reports, Access Control Settings, Emergency Access / Firefighter Role.
+
+Fields: Rule ID, Rule Description, Conflicting Roles, Restricted Actions, Affected Modules, Mitigation Controls, Exception Flags, Approval Workflow, Audit Trail.
+
+Validations: Conflicting roles cannot be assigned simultaneously, mitigation controls must exist for exception, emergency access approvals logged, SoD violation alerts generated in real-time.
+
+Workflows: SoD violation detection triggers alerts and workflow notifications, emergency access requests follow approval workflow, role changes trigger SoD validation, periodic review workflows enforce compliance.
+
+2.5 Security Policies & Settings
+
+Forms / Screens: Password Policy, Session Management, MFA Settings, IP Access Rules, Device Management, Audit & Monitoring Settings.
+
+Fields: Minimum Password Length, Complexity Rules, Password Expiry, Login Attempt Limits, Account Lockout Policy, Multi-Factor Authentication Methods (Email, SMS, Authenticator App, Hardware Key), Allowed IP Ranges, Blocked IP Ranges, Device Fingerprinting, Session Timeout, Session Limits, Security Logging Level, Data Masking Rules.
+
+Validations: Passwords must comply with complexity, session rules enforced, MFA setup mandatory for privileged roles, IP restrictions validated, device enrollment verified, logging levels comply with compliance requirements.
+
+Workflows: Security policy updates trigger enforcement across all users and roles, failed logins trigger alerts and account lockout, MFA prompts triggered on first login or new device, audit logs generated automatically, session management rules enforce logout for inactive users.
+
+2.6 Audit, Monitoring & Reporting
+
+Forms / Screens: Role Audit Reports, Permission Change Reports, User Access Logs, SoD Violation Reports, Security Event Logs, Compliance Dashboards.
+
+Fields: Event ID, User ID, Role ID, Action Performed, Date and Time, Module, Screen, Previous Value, New Value, Status, Approval Info, Exception Flags.
+
+Workflows: Reports generated on-demand or scheduled, alerts sent for critical changes, compliance dashboards updated in real-time, historical changes archived, integration with SIEM or external monitoring tools.
+
+Key Features: Role-based security across all modules, multi-level hierarchy, field-level access control, record-level segmentation, segregation of duties enforcement, emergency access management, audit and compliance logging, automatic notification workflows, integration with external identity and security systems, full tracking of permissions and access changes, Replit instruction: check existing roles, permissions, and settings before creating new ones; do not duplicate or recreate existing functionality.
+
+⸻
+
+If you confirm, I will prepare Module 3: Authentication, MFA & Security Settings in the same fully detailed, text-only, superset prompt format ready for copy-paste.
+
+Do you want me to proceed with Module 3?
