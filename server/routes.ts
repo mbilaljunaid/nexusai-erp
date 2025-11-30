@@ -3510,6 +3510,88 @@ export async function registerRoutes(
     res.status(201).json(training);
   });
 
+  // ========== MODULE 12: COMPLIANCE & GOVERNANCE ENDPOINTS ==========
+  const complianceStore: any[] = [];
+  const riskStore: any[] = [];
+  const policyStore: any[] = [];
+  const incidentStore: any[] = [];
+
+  app.get("/api/compliance-rules", (req, res) => {
+    if (complianceStore.length === 0) {
+      complianceStore.push(
+        { id: "c1", ruleName: "Data Privacy Regulation", jurisdiction: "GDPR", status: "active", riskLevel: "high" },
+        { id: "c2", ruleName: "Financial Reporting", jurisdiction: "SOX", status: "active", riskLevel: "high" }
+      );
+    }
+    res.json(complianceStore);
+  });
+
+  app.post("/api/compliance-rules", (req, res) => {
+    const rule = { id: `c-${Date.now()}`, ...req.body, status: "active", approvalStatus: "pending" };
+    complianceStore.push(rule);
+    res.status(201).json(rule);
+  });
+
+  app.get("/api/risk-register", (req, res) => {
+    if (riskStore.length === 0) {
+      riskStore.push(
+        { id: "r1", riskDescription: "Data breach vulnerability", likelihood: "medium", impact: "high", status: "open", riskScore: "8.5" }
+      );
+    }
+    res.json(riskStore);
+  });
+
+  app.post("/api/risk-register", (req, res) => {
+    const risk = { id: `r-${Date.now()}`, ...req.body, status: "open" };
+    riskStore.push(risk);
+    res.status(201).json(risk);
+  });
+
+  app.get("/api/audits", (req, res) => {
+    if (auditStore.length === 0) {
+      auditStore.push(
+        { id: "a1", auditType: "Financial", findings: "Minor discrepancies", severity: "low", status: "closed" }
+      );
+    }
+    res.json(auditStore);
+  });
+
+  app.post("/api/audits", (req, res) => {
+    const audit = { id: `a-${Date.now()}`, ...req.body, status: "open" };
+    auditStore.push(audit);
+    res.status(201).json(audit);
+  });
+
+  app.get("/api/policies", (req, res) => {
+    if (policyStore.length === 0) {
+      policyStore.push(
+        { id: "p1", policyName: "Data Security Policy", version: "1.0", status: "active", approvalStatus: "approved" }
+      );
+    }
+    res.json(policyStore);
+  });
+
+  app.post("/api/policies", (req, res) => {
+    const policy = { id: `p-${Date.now()}`, ...req.body, status: "active", approvalStatus: "pending" };
+    policyStore.push(policy);
+    res.status(201).json(policy);
+  });
+
+  app.get("/api/incidents", (req, res) => {
+    if (incidentStore.length === 0) {
+      incidentStore.push(
+        { id: "i1", incidentType: "Security", severity: "high", status: "open" }
+      );
+    }
+    res.json(incidentStore);
+  });
+
+  app.post("/api/incidents", (req, res) => {
+    const incident = { id: `i-${Date.now()}`, ...req.body, status: "open" };
+    incidentStore.push(incident);
+    res.status(201).json(incident);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
