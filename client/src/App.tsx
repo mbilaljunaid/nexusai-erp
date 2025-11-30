@@ -319,6 +319,13 @@ const LIMSLabIntegration = lazy(() => import("@/pages/LIMSLabIntegration"));
 const BulkInventoryManagement = lazy(() => import("@/pages/BulkInventoryManagement"));
 const YieldVarianceTracking = lazy(() => import("@/pages/YieldVarianceTracking"));
 const BatchTraceabilityGeology = lazy(() => import("@/pages/BatchTraceabilityGeology"));
+const ShoppingCartCheckout = lazy(() => import("@/pages/ShoppingCartCheckout"));
+const ProductReviewsRatings = lazy(() => import("@/pages/ProductReviewsRatings"));
+const InventoryStockManagement = lazy(() => import("@/pages/InventoryStockManagement"));
+const ShippingManagement = lazy(() => import("@/pages/ShippingManagement"));
+const PromotionDiscountCodes = lazy(() => import("@/pages/PromotionDiscountCodes"));
+const ReturnsRefundsManagement = lazy(() => import("@/pages/ReturnsRefundsManagement"));
+const EcommerceBIDashboard = lazy(() => import("@/pages/EcommerceBIDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -849,6 +856,13 @@ function Router() {
       <Route path="/bulk-inventory" component={BulkInventoryManagement} />
       <Route path="/yield-variance" component={YieldVarianceTracking} />
       <Route path="/batch-genealogy" component={BatchTraceabilityGeology} />
+      <Route path="/shopping-cart" component={ShoppingCartCheckout} />
+      <Route path="/product-reviews" component={ProductReviewsRatings} />
+      <Route path="/inventory-management" component={InventoryStockManagement} />
+      <Route path="/shipping-management" component={ShippingManagement} />
+      <Route path="/promotions" component={PromotionDiscountCodes} />
+      <Route path="/returns-refunds" component={ReturnsRefundsManagement} />
+      <Route path="/ecommerce-analytics" component={EcommerceBIDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
