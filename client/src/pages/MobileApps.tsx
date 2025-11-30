@@ -8,8 +8,8 @@ import { Smartphone, BarChart3, Download, TrendingUp, AlertCircle } from "lucide
 export default function MobileApps() {
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
 
-  const { data: apps = [] } = useQuery({ queryKey: ["/api/mobile/apps"] });
-  const { data: metrics = [] } = useQuery({ queryKey: ["/api/mobile/metrics"] });
+  const { data: apps = [] } = useQuery<any[]>({ queryKey: ["/api/mobile/apps"] });
+  const { data: metrics = [] } = useQuery<any[]>({ queryKey: ["/api/mobile/metrics"] });
 
   return (
     <div className="space-y-6">

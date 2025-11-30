@@ -342,6 +342,10 @@ const GoodsReceipt = lazy(() => import("@/pages/GoodsReceipt"));
 const SupplierInvoices = lazy(() => import("@/pages/SupplierInvoices"));
 const ThreeWayMatch = lazy(() => import("@/pages/ThreeWayMatch"));
 
+// Phase 4: IoT, Mobile, Advanced Analytics
+const IoT = lazy(() => import("@/pages/IoT"));
+const MobileApps = lazy(() => import("@/pages/MobileApps"));
+
 // Phase 3B: Projects & Agile Module
 const Epics = lazy(() => import("@/pages/Epics"));
 const Stories = lazy(() => import("@/pages/Stories"));

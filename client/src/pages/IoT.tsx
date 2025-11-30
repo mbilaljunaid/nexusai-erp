@@ -8,9 +8,9 @@ import { Activity, Zap, MapPin, Gauge } from "lucide-react";
 export default function IoT() {
   const [activeTab, setActiveTab] = useState("devices");
 
-  const { data: devices = [] } = useQuery({ queryKey: ["/api/iot/devices"] });
-  const { data: sensors = [] } = useQuery({ queryKey: ["/api/iot/sensors"] });
-  const { data: jobs = [] } = useQuery({ queryKey: ["/api/field-service/jobs"] });
+  const { data: devices = [] } = useQuery<any[]>({ queryKey: ["/api/iot/devices"] });
+  const { data: sensors = [] } = useQuery<any[]>({ queryKey: ["/api/iot/sensors"] });
+  const { data: jobs = [] } = useQuery<any[]>({ queryKey: ["/api/field-service/jobs"] });
 
   const tabs = [
     { id: "devices", label: "IoT Devices", icon: Activity, count: devices.length },
