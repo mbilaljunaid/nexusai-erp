@@ -43,7 +43,16 @@ export default function CRM() {
         <AddLeadDialog />
       </div>
 
-      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {navItems.map((item) => (
+          <Link key={item.id} to={item.id === "overview" ? "/crm" : `/crm/${item.id}`}>
+            <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+              <item.icon className={`w-6 h-6 ${item.color}`} />
+              <span className="text-sm font-medium text-center">{item.label}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
 
       {activeNav === "overview" && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -51,81 +60,6 @@ export default function CRM() {
           <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$4.2M</p><p className="text-xs text-muted-foreground">Pipeline Value</p></CardContent></Card>
           <Card><CardContent className="p-4"><p className="text-2xl font-semibold">35%</p><p className="text-xs text-muted-foreground">Avg Win Rate</p></CardContent></Card>
           <Card><CardContent className="p-4"><p className="text-2xl font-semibold">18 days</p><p className="text-xs text-muted-foreground">Avg Sales Cycle</p></CardContent></Card>
-        </div>
-      )}
-
-      {activeNav === "leads" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search leads..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Lead</Button>
-          </div>
-          <div className="space-y-2">
-            {(leads || []).filter((l: any) => (l.name || "").toLowerCase().includes(searchQuery.toLowerCase())).map((l: any) => (
-              <Card key={l.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{l.name}</p><p className="text-sm text-muted-foreground">{l.email}</p></div><Badge>{l.status}</Badge></div></CardContent></Card>
-            ))}
-          </div>
-          <LeadEntryForm />
-        </div>
-      )}
-
-      {activeNav === "opportunities" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search opportunities..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Opportunity</Button>
-          </div>
-          <div className="space-y-2">
-            {[{id: 1, name: "Enterprise Deal", value: 250000, stage: "proposal"}, {id: 2, name: "SMB Package", value: 45000, stage: "negotiation"}].filter((o: any) => o.name.toLowerCase().includes(searchQuery.toLowerCase())).map((o: any) => (
-              <Card key={o.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{o.name}</p><p className="text-sm text-muted-foreground">{o.stage}</p></div><Badge>${(o.value / 1000).toFixed(0)}K</Badge></div></CardContent></Card>
-            ))}
-          </div>
-          <OpportunityForm />
-        </div>
-      )}
-
-      {activeNav === "accounts" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search accounts..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Account</Button>
-          </div>
-          <div className="space-y-2">
-            {[{id: 1, name: "TechCorp Inc", industry: "Technology", revenue: "100M"}, {id: 2, name: "RetailCo", industry: "Retail", revenue: "50M"}].filter((a: any) => a.name.toLowerCase().includes(searchQuery.toLowerCase())).map((a: any) => (
-              <Card key={a.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{a.name}</p><p className="text-sm text-muted-foreground">{a.industry}</p></div><Badge>{a.revenue}</Badge></div></CardContent></Card>
-            ))}
-          </div>
-          <CustomerEntryForm />
-        </div>
-      )}
-
-      {activeNav === "contacts" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search contacts..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Contact</Button>
-          </div>
-          <div className="space-y-2">
-            {[{id: 1, name: "Sarah Johnson", title: "CEO", email: "sarah@acme.com"}, {id: 2, name: "John Smith", title: "CTO", email: "john@acme.com"}].filter((c: any) => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map((c: any) => (
-              <Card key={c.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{c.name}</p><p className="text-sm text-muted-foreground">{c.title}</p></div><p className="text-xs text-muted-foreground">{c.email}</p></div></CardContent></Card>
-            ))}
-          </div>
-          <CustomerEntryForm />
-        </div>
-      )}
-
-      {activeNav === "campaigns" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search campaigns..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Campaign</Button>
-          </div>
-          <div className="space-y-2">
-            {[{id: 1, name: "Q4 Email Blast", status: "active", recipients: 5000}, {id: 2, name: "Holiday Sale", status: "planned", recipients: 8000}].filter((c: any) => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map((c: any) => (
-              <Card key={c.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{c.name}</p><p className="text-sm text-muted-foreground">{c.recipients} recipients</p></div><Badge>{c.status}</Badge></div></CardContent></Card>
-            ))}
-          </div>
-          <CampaignEntryForm />
         </div>
       )}
 

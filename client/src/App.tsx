@@ -103,6 +103,13 @@ const PerformanceManagement = lazy(() => import("@/pages/PerformanceManagement")
 const OnboardingAutomation = lazy(() => import("@/pages/OnboardingAutomation"));
 const BudgetPlanning = lazy(() => import("@/pages/BudgetPlanning"));
 const ConsolidationEngine = lazy(() => import("@/pages/ConsolidationEngine"));
+
+// Detail pages for section navigation
+const LeadsDetail = lazy(() => import("@/pages/LeadsDetail"));
+const OpportunitiesDetail = lazy(() => import("@/pages/OpportunitiesDetail"));
+const InvoicesDetail = lazy(() => import("@/pages/InvoicesDetail"));
+const GeneralLedgerDetail = lazy(() => import("@/pages/GeneralLedgerDetail"));
+const ServiceTicketsDetail = lazy(() => import("@/pages/ServiceTicketsDetail"));
 const VarianceAnalysis = lazy(() => import("@/pages/VarianceAnalysis"));
 const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
 const RAGEmbeddingsPipeline = lazy(() => import("@/pages/RAGEmbeddingsPipeline"));

@@ -3,16 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
-import { ServiceTicketForm } from "@/components/forms/ServiceTicketForm";
-import CustomerEntryForm from "@/components/forms/CustomerEntryForm";
-import { AlertCircle, Users, BarChart3, FileText, Settings, Zap, TrendingUp, Clock, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
+import { AlertCircle, Users, BarChart3, FileText, Settings, Zap, TrendingUp, Clock } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Service() {
   const [activeNav, setActiveNav] = useState("overview");
-  const [searchQuery, setSearchQuery] = useState("");
-  const { data: tickets = [] } = useQuery({ queryKey: ["/api/service-tickets"], retry: false });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
@@ -39,7 +34,16 @@ export default function Service() {
         <Card><CardContent className="p-4"><p className="text-2xl font-semibold">4.8/5</p><p className="text-xs text-muted-foreground">CSAT Score</p></CardContent></Card>
       </div>
 
-      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {navItems.map((item) => (
+          <Link key={item.id} to={item.id === "overview" ? "/service" : `/service/${item.id}`}>
+            <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+              <item.icon className={`w-6 h-6 ${item.color}`} />
+              <span className="text-sm font-medium text-center">{item.label}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
 
       {activeNav === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -48,35 +52,6 @@ export default function Service() {
         </div>
       )}
 
-      {activeNav === "tickets" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search tickets..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Ticket</Button>
-          </div>
-          <div className="space-y-2">
-            {(tickets || []).filter((t: any) => (t.title || "").toLowerCase().includes(searchQuery.toLowerCase())).map((t: any, idx: number) => (
-              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{t.title}</p><p className="text-sm text-muted-foreground">{t.description}</p></div><Badge>{t.status}</Badge></div></CardContent></Card>
-            ))}
-          </div>
-          <ServiceTicketForm />
-        </div>
-      )}
-
-      {activeNav === "customers" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search customers..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Customer</Button>
-          </div>
-          <div className="space-y-2">
-            {[{id: 1, name: "TechCorp Inc", email: "support@techcorp.com", tickets: 12}, {id: 2, name: "RetailCo", email: "support@retailco.com", tickets: 8}].filter((c: any) => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map((c: any) => (
-              <Card key={c.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{c.name}</p><p className="text-sm text-muted-foreground">{c.email}</p></div><Badge>{c.tickets} tickets</Badge></div></CardContent></Card>
-            ))}
-          </div>
-          <CustomerEntryForm />
-        </div>
-      )}
 
       {activeNav === "knowledge" && (
         <div className="space-y-4">
