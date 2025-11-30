@@ -23,7 +23,7 @@ export default function Service() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold flex items-center gap-2"><TicketSquare className="w-8 h-8" />Customer Service</h1>
+        <h1 className="text-3xl font-semibold flex items-center gap-2"><AlertCircle className="w-8 h-8" />Customer Service</h1>
         <p className="text-muted-foreground text-sm">Manage support tickets, SLAs, and customer satisfaction</p>
       </div>
 
