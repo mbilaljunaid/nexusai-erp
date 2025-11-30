@@ -62,7 +62,7 @@ export default function ContactManagement() {
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Contacts</p><p className="text-2xl font-bold">{contacts.length}</p></CardContent></Card>
-        <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Active</p><p className="text-2xl font-bold text-green-600">{contacts.filter(c => c.status === "active").length}</p></CardContent></Card>
+        <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Active</p><p className="text-2xl font-bold text-green-600">{contacts.filter((c: any) => c.status === "active").length}</p></CardContent></Card>
         <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Companies</p><p className="text-2xl font-bold">3</p></CardContent></Card>
       </div>
 

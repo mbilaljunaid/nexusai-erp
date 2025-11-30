@@ -84,7 +84,7 @@ export default function CustomerManagement() {
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Active</p>
-            <p className="text-2xl font-bold text-green-600">{customers.filter(c => c.status === "active").length}</p>
+            <p className="text-2xl font-bold text-green-600">{customers.filter((c: any) => c.status === "active").length}</p>
           </CardContent>
         </Card>
         <Card className="p-3">
