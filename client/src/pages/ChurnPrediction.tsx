@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, TrendingDown } from "lucide-react";
 
 export default function ChurnPrediction() {
-  const { data: predictions = [] } = useQuery({ queryKey: ["/api/analytics/churn-prediction"] });
+  const { data: predictions = [] } = useQuery({ queryKey: ["/api/analytics/churn-prediction"], queryFn: () => fetch("/api/analytics/churn-prediction").then(r => r.json()).catch(() => []) });
 
   return (
     <div className="space-y-6 p-4">

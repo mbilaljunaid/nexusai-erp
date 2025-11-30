@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Zap, TrendingUp, AlertTriangle, BarChart3, Brain, AlertCircle } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Zap, TrendingUp, AlertTriangle, BarChart3, Brain, AlertCircle, Plus, Trash2 } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { IconNavigation } from "@/components/IconNavigation";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface Prediction {
   id: string;
@@ -15,10 +20,30 @@ interface Prediction {
 }
 
 export default function PredictiveAnalytics() {
+  const { toast } = useToast();
   const [activeNav, setActiveNav] = useState("forecasts");
-  const { data: predictions = [] } = useQuery<Prediction[]>({
+  const [newPrediction, setNewPrediction] = useState({ modelName: "", algorithm: "regression", confidence: "0.85" });
+
+  const { data: predictions = [], isLoading } = useQuery<Prediction[]>({
     queryKey: ["/api/predictions"],
-    retry: false,
+    queryFn: () => fetch("/api/predictions").then(r => r.json()).catch(() => []),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/predictions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/predictions"] });
+      setNewPrediction({ modelName: "", algorithm: "regression", confidence: "0.85" });
+      toast({ title: "Model created" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/predictions/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/predictions"] });
+      toast({ title: "Model deleted" });
+    },
   });
 
   const stats = {
@@ -35,10 +60,38 @@ export default function PredictiveAnalytics() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Predictive Analytics</h1>
+    <div className="space-y-6 p-4">
+      <div><h1 className="text-3xl font-semibold flex items-center gap-2"><Brain className="w-8 h-8" />Predictive Analytics</h1>
         <p className="text-muted-foreground text-sm">ML forecasting and anomaly detection</p>
       </div>
+
+      <Card data-testid="card-new-model">
+        <CardHeader><CardTitle className="text-base">Create ML Model</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <Input placeholder="Model name" value={newPrediction.modelName} onChange={(e) => setNewPrediction({ ...newPrediction, modelName: e.target.value })} data-testid="input-model-name" />
+            <Select value={newPrediction.algorithm} onValueChange={(v) => setNewPrediction({ ...newPrediction, algorithm: v })}>
+              <SelectTrigger data-testid="select-algorithm"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="regression">Regression</SelectItem>
+                <SelectItem value="classification">Classification</SelectItem>
+                <SelectItem value="clustering">Clustering</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={newPrediction.confidence} onValueChange={(v) => setNewPrediction({ ...newPrediction, confidence: v })}>
+              <SelectTrigger data-testid="select-confidence"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0.7">70%</SelectItem>
+                <SelectItem value="0.8">80%</SelectItem>
+                <SelectItem value="0.9">90%</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button onClick={() => createMutation.mutate(newPrediction)} disabled={createMutation.isPending || !newPrediction.modelName} className="w-full" data-testid="button-create-model">
+            <Plus className="w-4 h-4 mr-2" /> Create Model
+          </Button>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4">
@@ -74,17 +127,25 @@ export default function PredictiveAnalytics() {
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "forecasts" && (
-        <div className="space-y-3">
-          {predictions.map((pred: any) => (
-            <Card key={pred.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div><p className="font-semibold">{pred.name}</p>
-                  <p className="text-sm text-muted-foreground">Forecast: ${(pred.forecast / 1000000).toFixed(1)}M • Confidence: {(pred.confidence * 100).toFixed(0)}%</p></div>
-                <Badge>{(pred.confidence * 100).toFixed(0)}%</Badge>
+        <Card>
+          <CardHeader><CardTitle className="text-base">Predictive Models</CardTitle></CardHeader>
+          <CardContent className="space-y-3">
+            {isLoading ? <p>Loading...</p> : predictions.length === 0 ? <p className="text-muted-foreground text-center py-4">No models</p> : predictions.map((pred: any) => (
+              <div key={pred.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`model-${pred.id}`}>
+                <div>
+                  <p className="font-semibold">{pred.name}</p>
+                  <p className="text-sm text-muted-foreground">Forecast: ${(pred.forecast / 1000000).toFixed(1)}M • Confidence: {(pred.confidence * 100).toFixed(0)}%</p>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Badge>{(pred.confidence * 100).toFixed(0)}%</Badge>
+                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(pred.id)} data-testid={`button-delete-${pred.id}`}>
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
-            </CardContent></Card>
-          ))}
-        </div>
+            ))}
+          </CardContent>
+        </Card>
       )}
       {activeNav === "anomalies" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Detected anomalies and outliers</p></CardContent></Card>}
       {activeNav === "models" && <Card><CardContent className="p-6"><p className="text-muted-foreground">ML model configuration and training</p></CardContent></Card>}
