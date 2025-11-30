@@ -335,51 +335,51 @@ export default function Ecommerce() {
       )}
 
       {selectedTab === "customers" && (
-          <Card>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="px-4 py-3 text-left font-medium">Name</th>
-                      <th className="px-4 py-3 text-left font-medium">Email</th>
-                      <th className="px-4 py-3 text-left font-medium">Phone</th>
-                      <th className="px-4 py-3 text-left font-medium">Orders</th>
-                      <th className="px-4 py-3 text-left font-medium">Total Spent</th>
-                      <th className="px-4 py-3 text-left font-medium">Status</th>
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="px-4 py-3 text-left font-medium">Name</th>
+                    <th className="px-4 py-3 text-left font-medium">Email</th>
+                    <th className="px-4 py-3 text-left font-medium">Phone</th>
+                    <th className="px-4 py-3 text-left font-medium">Orders</th>
+                    <th className="px-4 py-3 text-left font-medium">Total Spent</th>
+                    <th className="px-4 py-3 text-left font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {customers.map((customer) => (
+                    <tr key={customer.id} className="border-b hover:bg-muted/50">
+                      <td className="px-4 py-3 font-medium">{customer.name}</td>
+                      <td className="px-4 py-3 text-xs">{customer.email}</td>
+                      <td className="px-4 py-3 text-xs">{customer.phone}</td>
+                      <td className="px-4 py-3 font-mono">{customer.totalOrders}</td>
+                      <td className="px-4 py-3 font-mono">${customer.totalSpent}</td>
+                      <td className="px-4 py-3">
+                        <Badge className={customer.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-gray-600"}>
+                          {customer.status}
+                        </Badge>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {customers.map((customer) => (
-                      <tr key={customer.id} className="border-b hover:bg-muted/50">
-                        <td className="px-4 py-3 font-medium">{customer.name}</td>
-                        <td className="px-4 py-3 text-xs">{customer.email}</td>
-                        <td className="px-4 py-3 text-xs">{customer.phone}</td>
-                        <td className="px-4 py-3 font-mono">{customer.totalOrders}</td>
-                        <td className="px-4 py-3 font-mono">${customer.totalSpent}</td>
-                        <td className="px-4 py-3">
-                          <Badge className={customer.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-gray-600"}>
-                            {customer.status}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {selectedTab === "analytics" && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">E-Commerce Analytics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Analytics loading with detailed sales charts, customer insights, and product performance metrics.</p>
-            </CardContent>
-          </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">E-Commerce Analytics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">Analytics loading with detailed sales charts, customer insights, and product performance metrics.</p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
