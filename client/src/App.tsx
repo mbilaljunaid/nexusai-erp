@@ -449,11 +449,13 @@ const DataGovernancePage = lazy(() => import("@/pages/DataGovernancePage"));
 const BusinessIntelligence = lazy(() => import("@/pages/BusinessIntelligence"));
 const VoiceOfCustomer = lazy(() => import("@/pages/VoiceOfCustomer"));
 const ProcurementAutomation = lazy(() => import("@/pages/ProcurementAutomation"));
-const RiskManagement = lazy(() => import("@/pages/RiskManagement"));
 const EmployeeEngagement = lazy(() => import("@/pages/EmployeeEngagement"));
 const SuccessionPlanning = lazy(() => import("@/pages/SuccessionPlanning"));
 const CapacityPlanning = lazy(() => import("@/pages/CapacityPlanning"));
 const ChangeManagement = lazy(() => import("@/pages/ChangeManagement"));
+const AIAutomation = lazy(() => import("@/pages/AIAutomation"));
+const DocumentProcessing = lazy(() => import("@/pages/DocumentProcessing"));
+const CognitiveServices = lazy(() => import("@/pages/CognitiveServices"));
 const CostOptimization = lazy(() => import("@/pages/CostOptimization"));
 const SustainabilityReporting = lazy(() => import("@/pages/SustainabilityReporting"));
 const QualityAssuranceHub = lazy(() => import("@/pages/QualityAssuranceHub"));
@@ -753,6 +755,9 @@ function Router() {
       <Route path="/period-close" component={PeriodClose} />
       <Route path="/financial-consolidation" component={FinancialConsolidation} />
       <Route path="/account-reconciliation" component={AccountReconciliation} />
+      <Route path="/ai-automation" component={AIAutomation} />
+      <Route path="/document-processing" component={DocumentProcessing} />
+      <Route path="/cognitive-services" component={CognitiveServices} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />

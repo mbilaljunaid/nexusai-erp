@@ -2852,3 +2852,55 @@ export const intercompanyTransactions = pgTable("intercompany_transactions", {
   approvalStatus: varchar("approval_status").default("pending"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 14: AI, AUTOMATION & COGNITIVE SERVICES ==========
+export const aiModels = pgTable("ai_models", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  modelName: varchar("model_name").notNull(),
+  modelType: varchar("model_type"),
+  provider: varchar("provider"),
+  capabilities: jsonb("capabilities"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const automationWorkflows = pgTable("automation_workflows", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  workflowName: varchar("workflow_name").notNull(),
+  description: text("description"),
+  triggers: jsonb("triggers"),
+  actions: jsonb("actions"),
+  status: varchar("status").default("draft"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const cognitiveServices = pgTable("cognitive_services", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceName: varchar("service_name").notNull(),
+  serviceType: varchar("service_type"),
+  inputFormat: varchar("input_format"),
+  outputFormat: varchar("output_format"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const documentProcessing = pgTable("document_processing", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  documentName: varchar("document_name").notNull(),
+  documentType: varchar("document_type"),
+  extractedData: jsonb("extracted_data"),
+  processingStatus: varchar("processing_status").default("pending"),
+  accuracy: numeric("accuracy"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const predictiveAnalytics = pgTable("predictive_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  modelName: varchar("model_name").notNull(),
+  dataSource: varchar("data_source"),
+  predictions: jsonb("predictions"),
+  accuracy: numeric("accuracy"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

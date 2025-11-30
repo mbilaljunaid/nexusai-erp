@@ -3674,6 +3674,89 @@ export async function registerRoutes(
     res.status(201).json(intercompany);
   });
 
+  // ========== MODULE 14: AI, AUTOMATION & COGNITIVE SERVICES ENDPOINTS ==========
+  const aiStore: any[] = [];
+  const workflowStore: any[] = [];
+  const cognitiveStore: any[] = [];
+  const documentStore: any[] = [];
+  const predictiveStore: any[] = [];
+
+  app.get("/api/ai-models", (req, res) => {
+    if (aiStore.length === 0) {
+      aiStore.push(
+        { id: "ai1", modelName: "GPT-5 Language", modelType: "LLM", provider: "OpenAI", status: "active" },
+        { id: "ai2", modelName: "Vision Pro", modelType: "Vision", provider: "Custom", status: "active" }
+      );
+    }
+    res.json(aiStore);
+  });
+
+  app.post("/api/ai-models", (req, res) => {
+    const model = { id: `ai-${Date.now()}`, ...req.body, status: "active" };
+    aiStore.push(model);
+    res.status(201).json(model);
+  });
+
+  app.get("/api/workflows", (req, res) => {
+    if (workflowStore.length === 0) {
+      workflowStore.push(
+        { id: "w1", workflowName: "Lead Scoring", status: "active", approvalStatus: "approved" }
+      );
+    }
+    res.json(workflowStore);
+  });
+
+  app.post("/api/workflows", (req, res) => {
+    const workflow = { id: `w-${Date.now()}`, ...req.body, status: "draft", approvalStatus: "pending" };
+    workflowStore.push(workflow);
+    res.status(201).json(workflow);
+  });
+
+  app.get("/api/cognitive-services", (req, res) => {
+    if (cognitiveStore.length === 0) {
+      cognitiveStore.push(
+        { id: "cs1", serviceName: "Text Analytics", serviceType: "NLP", status: "active" }
+      );
+    }
+    res.json(cognitiveStore);
+  });
+
+  app.post("/api/cognitive-services", (req, res) => {
+    const service = { id: `cs-${Date.now()}`, ...req.body, status: "active" };
+    cognitiveStore.push(service);
+    res.status(201).json(service);
+  });
+
+  app.get("/api/documents", (req, res) => {
+    if (documentStore.length === 0) {
+      documentStore.push(
+        { id: "doc1", documentName: "Invoice_OCT2025.pdf", documentType: "Invoice", processingStatus: "completed", accuracy: "98" }
+      );
+    }
+    res.json(documentStore);
+  });
+
+  app.post("/api/documents", (req, res) => {
+    const doc = { id: `doc-${Date.now()}`, ...req.body, processingStatus: "pending" };
+    documentStore.push(doc);
+    res.status(201).json(doc);
+  });
+
+  app.get("/api/predictive-models", (req, res) => {
+    if (predictiveStore.length === 0) {
+      predictiveStore.push(
+        { id: "pred1", modelName: "Churn Prediction", dataSource: "CRM", accuracy: "92", status: "active" }
+      );
+    }
+    res.json(predictiveStore);
+  });
+
+  app.post("/api/predictive-models", (req, res) => {
+    const model = { id: `pred-${Date.now()}`, ...req.body, status: "active" };
+    predictiveStore.push(model);
+    res.status(201).json(model);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
