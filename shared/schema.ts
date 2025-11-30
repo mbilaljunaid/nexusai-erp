@@ -1452,3 +1452,176 @@ export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = z.infer<typeof insertSubscriptionSchema>;
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
+
+// ========== PHASE 2: CRM MODULE ==========
+export const crmAccounts = pgTable("crm_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  industry: varchar("industry"),
+  revenue: numeric("revenue", { precision: 15, scale: 2 }),
+  employees: integer("employees"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const crmOpportunities = pgTable("crm_opportunities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  accountId: varchar("account_id"),
+  amount: numeric("amount", { precision: 15, scale: 2 }),
+  stage: varchar("stage").default("prospecting"),
+  probability: integer("probability"),
+  closeDate: timestamp("close_date"),
+  status: varchar("status").default("open"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const crmContacts = pgTable("crm_contacts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name"),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  accountId: varchar("account_id"),
+  jobTitle: varchar("job_title"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 2: FINANCE MODULE ==========
+export const financeExpenses = pgTable("finance_expenses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  description: text("description").notNull(),
+  amount: numeric("amount", { precision: 15, scale: 2 }).notNull(),
+  category: varchar("category"),
+  vendor: varchar("vendor"),
+  expenseDate: timestamp("expense_date"),
+  status: varchar("status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const financeRevenue = pgTable("finance_revenue", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  description: text("description").notNull(),
+  amount: numeric("amount", { precision: 15, scale: 2 }).notNull(),
+  source: varchar("source"),
+  revenueDate: timestamp("revenue_date"),
+  status: varchar("status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const financeForecasts = pgTable("finance_forecasts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  period: varchar("period").notNull(),
+  revenue: numeric("revenue", { precision: 15, scale: 2 }),
+  expenses: numeric("expenses", { precision: 15, scale: 2 }),
+  confidence: integer("confidence"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 2: HR MODULE ==========
+export const hrJobPostings = pgTable("hr_job_postings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  department: varchar("department"),
+  description: text("description"),
+  requirements: text("requirements"),
+  salary: numeric("salary", { precision: 12, scale: 2 }),
+  status: varchar("status").default("open"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const hrCandidates = pgTable("hr_candidates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  position: varchar("position"),
+  status: varchar("status").default("applied"),
+  rating: integer("rating"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const hrTrainingPrograms = pgTable("hr_training_programs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  duration: integer("duration"),
+  provider: varchar("provider"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  status: varchar("status").default("scheduled"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 2: ERP MODULE ==========
+export const erpPurchaseOrders = pgTable("erp_purchase_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  poNumber: varchar("po_number").notNull().unique(),
+  vendorId: varchar("vendor_id"),
+  amount: numeric("amount", { precision: 15, scale: 2 }),
+  orderDate: timestamp("order_date"),
+  dueDate: timestamp("due_date"),
+  status: varchar("status").default("draft"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const erpInventory = pgTable("erp_inventory", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sku: varchar("sku").notNull().unique(),
+  productName: varchar("product_name"),
+  quantity: integer("quantity").default(0),
+  reorderLevel: integer("reorder_level"),
+  lastRestockDate: timestamp("last_restock_date"),
+  warehouseLocation: varchar("warehouse_location"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const erpSalesOrders = pgTable("erp_sales_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  soNumber: varchar("so_number").notNull().unique(),
+  customerId: varchar("customer_id"),
+  totalAmount: numeric("total_amount", { precision: 15, scale: 2 }),
+  orderDate: timestamp("order_date"),
+  shipDate: timestamp("ship_date"),
+  status: varchar("status").default("open"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 2: SERVICE MODULE ==========
+export const serviceContracts = pgTable("service_contracts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractNumber: varchar("contract_number").notNull().unique(),
+  customerId: varchar("customer_id"),
+  serviceType: varchar("service_type"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  amount: numeric("amount", { precision: 15, scale: 2 }),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const serviceIncidents = pgTable("service_incidents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  incidentNumber: varchar("incident_number").notNull().unique(),
+  customerId: varchar("customer_id"),
+  title: varchar("title"),
+  description: text("description"),
+  severity: varchar("severity").default("medium"),
+  status: varchar("status").default("open"),
+  assignedTo: varchar("assigned_to"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const serviceSLA = pgTable("service_sla", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  responseTime: integer("response_time"),
+  resolutionTime: integer("resolution_time"),
+  uptime: numeric("uptime", { precision: 5, scale: 2 }),
+  penalty: numeric("penalty", { precision: 10, scale: 2 }),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
