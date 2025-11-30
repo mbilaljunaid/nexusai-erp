@@ -5391,6 +5391,132 @@ export async function registerRoutes(
     res.status(201).json(dash);
   });
 
+  // ========== INDUSTRY PACK 25: LOGISTICS & TRANSPORTATION ==========
+  const logFleetStore: any[] = []; const logShipmentStore: any[] = []; const logInventoryStore: any[] = []; 
+  const logOrdersStore: any[] = []; const logSupplyStore: any[] = []; const logRoutesStore: any[] = []; 
+  const logClientsStore: any[] = []; const logBillingStore: any[] = []; const logHrStore: any[] = []; 
+  const logOptStore: any[] = []; const logAnalStore: any[] = []; const logDashStore: any[] = [];
+
+  app.get("/api/logistics-fleet", (req, res) => {
+    if (logFleetStore.length === 0) logFleetStore.push({ id: "v1", vehicleId: "VEH-001", type: "truck", status: "active" });
+    res.json(logFleetStore);
+  });
+  app.post("/api/logistics-fleet", (req, res) => {
+    const veh = { id: `v-${Date.now()}`, ...req.body };
+    logFleetStore.push(veh);
+    res.status(201).json(veh);
+  });
+
+  app.get("/api/logistics-shipments", (req, res) => {
+    if (logShipmentStore.length === 0) logShipmentStore.push({ id: "s1", shipmentId: "SHIP-001", customerId: "CUST-001", status: "delivered" });
+    res.json(logShipmentStore);
+  });
+  app.post("/api/logistics-shipments", (req, res) => {
+    const ship = { id: `s-${Date.now()}`, ...req.body };
+    logShipmentStore.push(ship);
+    res.status(201).json(ship);
+  });
+
+  app.get("/api/logistics-inventory", (req, res) => {
+    if (logInventoryStore.length === 0) logInventoryStore.push({ id: "i1", productId: "PROD-001", quantity: "100", warehouseId: "WH-001" });
+    res.json(logInventoryStore);
+  });
+  app.post("/api/logistics-inventory", (req, res) => {
+    const inv = { id: `i-${Date.now()}`, ...req.body };
+    logInventoryStore.push(inv);
+    res.status(201).json(inv);
+  });
+
+  app.get("/api/logistics-orders", (req, res) => {
+    if (logOrdersStore.length === 0) logOrdersStore.push({ id: "o1", orderId: "ORD-001", customerId: "CUST-001", status: "fulfilled" });
+    res.json(logOrdersStore);
+  });
+  app.post("/api/logistics-orders", (req, res) => {
+    const ord = { id: `o-${Date.now()}`, ...req.body };
+    logOrdersStore.push(ord);
+    res.status(201).json(ord);
+  });
+
+  app.get("/api/logistics-supply", (req, res) => {
+    if (logSupplyStore.length === 0) logSupplyStore.push({ id: "sup1", supplierId: "SUPP-001", region: "North", status: "active" });
+    res.json(logSupplyStore);
+  });
+  app.post("/api/logistics-supply", (req, res) => {
+    const sup = { id: `sup-${Date.now()}`, ...req.body };
+    logSupplyStore.push(sup);
+    res.status(201).json(sup);
+  });
+
+  app.get("/api/logistics-routes", (req, res) => {
+    if (logRoutesStore.length === 0) logRoutesStore.push({ id: "r1", routeId: "ROUTE-001", stops: "5", status: "completed" });
+    res.json(logRoutesStore);
+  });
+  app.post("/api/logistics-routes", (req, res) => {
+    const route = { id: `r-${Date.now()}`, ...req.body };
+    logRoutesStore.push(route);
+    res.status(201).json(route);
+  });
+
+  app.get("/api/logistics-clients", (req, res) => {
+    if (logClientsStore.length === 0) logClientsStore.push({ id: "c1", clientId: "CLIENT-001", region: "North", status: "active" });
+    res.json(logClientsStore);
+  });
+  app.post("/api/logistics-clients", (req, res) => {
+    const cl = { id: `c-${Date.now()}`, ...req.body };
+    logClientsStore.push(cl);
+    res.status(201).json(cl);
+  });
+
+  app.get("/api/logistics-billing", (req, res) => {
+    if (logBillingStore.length === 0) logBillingStore.push({ id: "b1", invoiceId: "INV-001", amount: "5000", status: "paid" });
+    res.json(logBillingStore);
+  });
+  app.post("/api/logistics-billing", (req, res) => {
+    const bill = { id: `b-${Date.now()}`, ...req.body };
+    logBillingStore.push(bill);
+    res.status(201).json(bill);
+  });
+
+  app.get("/api/logistics-hr", (req, res) => {
+    if (logHrStore.length === 0) logHrStore.push({ id: "e1", employeeId: "EMP-001", role: "driver", status: "active" });
+    res.json(logHrStore);
+  });
+  app.post("/api/logistics-hr", (req, res) => {
+    const emp = { id: `e-${Date.now()}`, ...req.body };
+    logHrStore.push(emp);
+    res.status(201).json(emp);
+  });
+
+  app.get("/api/logistics-optimization", (req, res) => {
+    if (logOptStore.length === 0) logOptStore.push({ id: "p1", modelId: "MODEL-001", type: "eta", status: "optimized" });
+    res.json(logOptStore);
+  });
+  app.post("/api/logistics-optimization", (req, res) => {
+    const pred = { id: `p-${Date.now()}`, ...req.body };
+    logOptStore.push(pred);
+    res.status(201).json(pred);
+  });
+
+  app.get("/api/logistics-analytics", (req, res) => {
+    if (logAnalStore.length === 0) logAnalStore.push({ id: "a1", region: "North", shipments: "100", efficiency: "92" });
+    res.json(logAnalStore);
+  });
+  app.post("/api/logistics-analytics", (req, res) => {
+    const anal = { id: `a-${Date.now()}`, ...req.body };
+    logAnalStore.push(anal);
+    res.status(201).json(anal);
+  });
+
+  app.get("/api/logistics-dashboard", (req, res) => {
+    if (logDashStore.length === 0) logDashStore.push({ id: "d1", kpiName: "On-Time Delivery", target: "95", actual: "93", status: "healthy" });
+    res.json(logDashStore);
+  });
+  app.post("/api/logistics-dashboard", (req, res) => {
+    const dash = { id: `d-${Date.now()}`, ...req.body };
+    logDashStore.push(dash);
+    res.status(201).json(dash);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

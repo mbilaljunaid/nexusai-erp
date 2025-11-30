@@ -1,0 +1,378 @@
+Generating **Industry Pack 27 — RETAIL & E-COMMERCE** in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Retail & E-Commerce Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 27 — RETAIL & E-COMMERCE
+
+**Purpose:** End-to-end solution for retail stores, online marketplaces, direct-to-consumer brands, and omni-channel businesses, covering product & catalog management, inventory & warehouse, order & fulfillment, customer management, CRM & loyalty programs, pricing & promotions, billing & payments, supply chain & procurement, HR & workforce, AI-driven merchandising & recommendations, BI & dashboards, marketing & campaigns, mobile apps, and integrations with marketplaces, payment gateways, POS systems, and logistics providers. Delivered as an industry template that auto-enables and configures all related modules.
+
+**Auto-enable modules when template is selected:** Product & Catalog Management, Inventory & Warehouse, Order & Fulfillment, Customer Management, CRM & Loyalty Programs, Pricing & Promotions, Billing & Payments, Supply Chain & Procurement, HR & Workforce, AI / ML Merchandising & Recommendations, BI & Dashboards, Marketing & Campaigns, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+---
+
+## 1. PRODUCT & CATALOG MANAGEMENT
+
+**Screens / Forms**
+
+* Product master & SKUs
+* Categories & subcategories
+* Product attributes & variants (size, color, material)
+* Supplier & vendor mapping
+* Product lifecycle & status
+
+**Fields**
+ProductID, SKU, Name, CategoryID, VariantAttributes, SupplierID, Status, AuditFields.
+
+**Validations**
+
+* Duplicate SKU check
+* Attribute completeness
+* Supplier assignment verification
+
+**Workflows**
+
+* Create product → Assign category & attributes → Map suppliers → Publish online/offline → Update inventory
+
+---
+
+## 2. INVENTORY & WAREHOUSE
+
+**Screens / Forms**
+
+* Warehouse master & location mapping
+* Stock management (available, reserved, backorder)
+* Batch / serial tracking
+* Stock movements & transfers
+* Replenishment alerts
+
+**Fields**
+WarehouseID, ProductID, BatchID, Quantity, Status, AuditFields.
+
+**Validations**
+
+* Stock sufficiency check before order allocation
+* Warehouse capacity compliance
+* Movement logging
+
+**Workflows**
+
+* Receive → Store → Pick → Pack → Transfer → Update stock → Audit
+
+---
+
+## 3. ORDER & FULFILLMENT
+
+**Screens / Forms**
+
+* Customer orders (online, POS, marketplace)
+* Order status & tracking
+* Fulfillment workflows (pick, pack, ship, delivery)
+* Returns & refunds
+* Multi-channel order management
+
+**Fields**
+OrderID, CustomerID, ProductID, Quantity, Status, ShipmentID, AuditFields.
+
+**Validations**
+
+* Stock availability check
+* SLA compliance for delivery
+* Return eligibility
+
+**Workflows**
+
+* Capture order → Allocate stock → Pick & pack → Ship → Track → Delivery confirmation → Handle returns
+
+---
+
+## 4. CUSTOMER MANAGEMENT
+
+**Screens / Forms**
+
+* Customer master & profiles
+* Addresses & contact info
+* Loyalty points & membership
+* Support & feedback management
+
+**Fields**
+CustomerID, Name, ContactInfo, MembershipID, LoyaltyPoints, AuditFields.
+
+**Validations**
+
+* Duplicate detection
+* Address validation
+* Membership eligibility
+
+**Workflows**
+
+* Register customer → Update profile → Track loyalty → Manage support → Engage via campaigns
+
+---
+
+## 5. CRM & LOYALTY PROGRAMS
+
+**Screens / Forms**
+
+* Customer segmentation & profiling
+* Loyalty program rules & points management
+* Marketing preferences
+* Campaign tracking & effectiveness
+
+**Fields**
+CustomerID, SegmentID, PointsBalance, CampaignID, InteractionID, AuditFields.
+
+**Validations**
+
+* Loyalty points accumulation & redemption rules
+* Consent for marketing communications
+
+**Workflows**
+
+* Assign segment → Run campaign → Track engagement → Award / redeem points → Analyze results
+
+---
+
+## 6. PRICING & PROMOTIONS
+
+**Screens / Forms**
+
+* Price lists & multi-channel pricing
+* Discounts, vouchers, and promo campaigns
+* Bundle & combo offers
+* Flash sale / limited-time promotions
+
+**Fields**
+ProductID, Price, DiscountID, CampaignID, StartDate, EndDate, AuditFields.
+
+**Validations**
+
+* Price consistency across channels
+* Campaign validity period
+* Discount eligibility
+
+**Workflows**
+
+* Define pricing → Configure promotions → Publish → Track redemption → Adjust
+
+---
+
+## 7. BILLING & PAYMENTS
+
+**Screens / Forms**
+
+* Invoice generation
+* Payment capture & reconciliation
+* Refund & adjustment processing
+* Payment gateways & installment plans
+
+**Fields**
+InvoiceID, OrderID, Amount, PaymentStatus, PaymentMethod, AuditFields.
+
+**Validations**
+
+* Payment verification
+* Accurate invoicing
+* Refund authorization
+
+**Workflows**
+
+* Generate invoice → Send → Collect payment → Reconcile → Handle refunds → Update financials
+
+---
+
+## 8. SUPPLY CHAIN & PROCUREMENT
+
+**Screens / Forms**
+
+* Vendor / supplier master
+* Purchase requisitions & orders
+* Contract & SLA management
+* Stock replenishment & procurement workflows
+
+**Fields**
+SupplierID, MaterialID, POID, Quantity, SLA, ReceivedQty, AuditFields.
+
+**Validations**
+
+* Supplier compliance
+* Lead time verification
+* Quality checks
+
+**Workflows**
+
+* Requisition → PO creation → Receive → Quality check → Stock update → Payment
+
+---
+
+## 9. HR & WORKFORCE MANAGEMENT
+
+**Screens / Forms**
+
+* Employee master (store staff, warehouse, admin)
+* Shift scheduling & attendance
+* Payroll & performance tracking
+* Role & access control
+
+**Fields**
+EmployeeID, Role, Department, Shift, PayrollID, PerformanceRating, AuditFields.
+
+**Validations**
+
+* Role eligibility
+* Attendance compliance
+* Payroll accuracy
+
+**Workflows**
+
+* Onboard → Assign role/shift → Track attendance → Evaluate → Payroll
+
+---
+
+## 10. AI & MERCHANDISING / RECOMMENDATIONS
+
+**Use Cases**
+
+* Personalized product recommendations
+* Demand forecasting
+* Inventory optimization
+* Dynamic pricing suggestions
+
+**Controls**
+
+* Human validation for price adjustments or promotion overrides
+
+---
+
+## 11. BI & DASHBOARDS
+
+**Prebuilt Dashboards**
+
+* Sales & revenue by channel
+* Product performance & stock levels
+* Customer segmentation & loyalty
+* Campaign effectiveness
+* Supply chain KPIs
+
+**Ad-hoc**
+
+* Drill down by store / warehouse → product → order → customer → invoice
+
+---
+
+## 12. MARKETING & CAMPAIGNS
+
+**Screens / Forms**
+
+* Campaign creation & scheduling
+* Omnichannel (email, SMS, push notifications)
+* Tracking & analytics
+* Customer engagement scoring
+
+**Fields**
+CampaignID, Channel, TargetSegment, StartDate, EndDate, EngagementMetrics, AuditFields.
+
+**Validations**
+
+* Consent & opt-in compliance
+* Campaign scheduling conflicts
+
+**Workflows**
+
+* Create campaign → Deploy → Track → Analyze → Optimize
+
+---
+
+## 13. MOBILE APPS
+
+**Customer App**
+
+* Browse catalog, place orders, track shipments, loyalty, payments
+  **Store App**
+* POS, inventory updates, order fulfillment
+  **Manager App**
+* BI dashboards, KPIs, campaign monitoring, approvals
+
+---
+
+## 14. ROLES & PERMISSIONS
+
+**Core Roles**
+
+* Customer / Shopper
+* Store / Warehouse Staff
+* Logistics Coordinator
+* Marketing / CRM Manager
+* Finance / Accounts
+* HR / Payroll
+* IT / Integration Engineer
+* Admin
+
+**Permission Notes**
+
+* Role-based access enforced for inventory, order, financial, and customer data
+
+---
+
+## 15. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+**Seed Data**
+
+* 100 products, 50 SKUs, 20 warehouses, 10 stores, 50 customers, 100 orders, 5 campaigns
+
+**Onboarding Steps**
+
+* Create products → Configure warehouses & stores → Register customers → Place test orders → Apply promotions → Track fulfillment → Validate dashboards
+
+---
+
+## 16. INTEGRATIONS & CONNECTORS
+
+**Suggested Integrations**
+
+* Payment gateways & POS systems
+* E-commerce marketplaces
+* CRM / marketing automation
+* Logistics & shipment providers
+* BI / data warehouse
+
+**Integration Rules**
+
+* Idempotent ingestion, audit logging, secure credential storage
+
+---
+
+## 17. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+**Examples**
+
+* Stock below threshold → alert warehouse
+* Order delayed → notify customer
+* Payment failure → notify finance
+* Campaign engagement anomaly → alert marketing
+
+---
+
+## 18. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+**Idempotency & Safety**
+
+* Seeders check natural keys (ProductID + OrderID + CustomerID) before insert
+* Migrations additive; destructive changes require rollback scripts
+* Feature flags per tenant for AI recommendations, dynamic pricing, multi-channel operations
+
+**Testing**
+
+* Product lifecycle → inventory → orders → fulfillment → billing → campaigns → KPI dashboards
+
+---
+
+## 19. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+**REPLIT MUST** — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and **NEVER** duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+---
+
+If you want me to generate **Industry Pack 28 — HOSPITALITY & TRAVEL** next, reply **“Yes”** and I will produce it in the same format.

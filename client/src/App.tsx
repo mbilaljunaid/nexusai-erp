@@ -499,7 +499,6 @@ const BillingPaymentRetail = lazy(() => import("@/pages/BillingPaymentRetail"));
 const SupplyChainRetail = lazy(() => import("@/pages/SupplyChainRetail"));
 const Warehouse = lazy(() => import("@/pages/Warehouse"));
 const LogisticsShipping = lazy(() => import("@/pages/LogisticsShipping"));
-const MarketingCampaigns = lazy(() => import("@/pages/MarketingCampaigns"));
 const ProductRecommendations = lazy(() => import("@/pages/ProductRecommendations"));
 const RetailAnalytics = lazy(() => import("@/pages/RetailAnalytics"));
 const HRRetail = lazy(() => import("@/pages/HRRetail"));
@@ -528,6 +527,17 @@ const NetworkOptimization = lazy(() => import("@/pages/NetworkOptimization"));
 const InventoryTelecom = lazy(() => import("@/pages/InventoryTelecom"));
 const ComplianceTelecom = lazy(() => import("@/pages/ComplianceTelecom"));
 const TelecomDashboard = lazy(() => import("@/pages/TelecomDashboard"));
+const FleetManagement = lazy(() => import("@/pages/FleetManagement"));
+const WarehouseInventoryLogistics = lazy(() => import("@/pages/WarehouseInventoryLogistics"));
+const OrdersLogistics = lazy(() => import("@/pages/OrdersLogistics"));
+const SupplyChainLogistics = lazy(() => import("@/pages/SupplyChainLogistics"));
+const RouteOptimization = lazy(() => import("@/pages/RouteOptimization"));
+const ClientManagement = lazy(() => import("@/pages/ClientManagement"));
+const BillingLogistics = lazy(() => import("@/pages/BillingLogistics"));
+const HRLogistics = lazy(() => import("@/pages/HRLogistics"));
+const LogisticsOptimization = lazy(() => import("@/pages/LogisticsOptimization"));
+const LogisticsAnalytics = lazy(() => import("@/pages/LogisticsAnalytics"));
+const LogisticsDashboard = lazy(() => import("@/pages/LogisticsDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1268,6 +1278,18 @@ function Router() {
       <Route path="/telecom-inventory" component={InventoryTelecom} />
       <Route path="/telecom-compliance" component={ComplianceTelecom} />
       <Route path="/telecom-dashboard" component={TelecomDashboard} />
+      <Route path="/logistics-fleet" component={FleetManagement} />
+      <Route path="/logistics-shipments" component={ShipmentTracking} />
+      <Route path="/logistics-inventory" component={WarehouseInventoryLogistics} />
+      <Route path="/logistics-orders" component={OrdersLogistics} />
+      <Route path="/logistics-supply" component={SupplyChainLogistics} />
+      <Route path="/logistics-routes" component={RouteOptimization} />
+      <Route path="/logistics-clients" component={ClientManagement} />
+      <Route path="/logistics-billing" component={BillingLogistics} />
+      <Route path="/logistics-hr" component={HRLogistics} />
+      <Route path="/logistics-optimization" component={LogisticsOptimization} />
+      <Route path="/logistics-analytics" component={LogisticsAnalytics} />
+      <Route path="/logistics-dashboard" component={LogisticsDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
