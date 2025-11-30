@@ -2350,3 +2350,56 @@ export const integrationConfigs = pgTable("integration_configs", {
   lastSync: timestamp("last_sync"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 6: FINANCIAL MANAGEMENT & ERP CORE ==========
+export const journalEntries = pgTable("journal_entries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  journalId: varchar("journal_id"),
+  entryDate: timestamp("entry_date"),
+  description: text("description"),
+  debitAmount: decimal("debit_amount", { precision: 15, scale: 2 }),
+  creditAmount: decimal("credit_amount", { precision: 15, scale: 2 }),
+  glAccount: varchar("gl_account"),
+  referenceDocument: varchar("reference_document"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  status: varchar("status").default("draft"),
+  createdBy: varchar("created_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const cashManagementTransactions = pgTable("cash_management_transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  bankAccountId: varchar("bank_account_id"),
+  transactionDate: timestamp("transaction_date"),
+  transactionType: varchar("transaction_type"),
+  amount: decimal("amount", { precision: 15, scale: 2 }),
+  glAccount: varchar("gl_account"),
+  reconciliationStatus: varchar("reconciliation_status").default("pending"),
+  status: varchar("status").default("posted"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const taxCodesMaster = pgTable("tax_codes_master", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  taxName: varchar("tax_name").notNull(),
+  taxType: varchar("tax_type"),
+  rate: decimal("rate", { precision: 5, scale: 2 }),
+  jurisdiction: varchar("jurisdiction"),
+  glAccount: varchar("gl_account"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const financialReportsMaster = pgTable("financial_reports_master", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  reportName: varchar("report_name").notNull(),
+  reportType: varchar("report_type"),
+  periodStart: timestamp("period_start"),
+  periodEnd: timestamp("period_end"),
+  totalAssets: decimal("total_assets", { precision: 15, scale: 2 }),
+  totalLiabilities: decimal("total_liabilities", { precision: 15, scale: 2 }),
+  totalEquity: decimal("total_equity", { precision: 15, scale: 2 }),
+  status: varchar("status").default("draft"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

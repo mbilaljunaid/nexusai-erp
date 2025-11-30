@@ -2995,6 +2995,76 @@ export async function registerRoutes(
     res.status(201).json(config);
   });
 
+  // ========== MODULE 6: FINANCIAL MANAGEMENT & ERP CORE ENDPOINTS ==========
+  const journalEntriesStore: any[] = [];
+  const cashManagementStore: any[] = [];
+  const taxCodesStore: any[] = [];
+  const financialReportsStore: any[] = [];
+
+  app.get("/api/journal-entries", (req, res) => {
+    if (journalEntriesStore.length === 0) {
+      journalEntriesStore.push(
+        { id: "je1", journalId: "j001", entryDate: new Date().toISOString(), description: "Sales revenue", debitAmount: "0", creditAmount: "50000", glAccount: "4000", approvalStatus: "approved", status: "posted" },
+        { id: "je2", journalId: "j002", entryDate: new Date(Date.now() - 86400000).toISOString(), description: "Expense entry", debitAmount: "15000", creditAmount: "0", glAccount: "6100", approvalStatus: "pending", status: "draft" }
+      );
+    }
+    res.json(journalEntriesStore);
+  });
+
+  app.post("/api/journal-entries", (req, res) => {
+    const entry = { id: `je-${Date.now()}`, ...req.body, status: "draft", approvalStatus: "pending" };
+    journalEntriesStore.push(entry);
+    res.status(201).json(entry);
+  });
+
+  app.get("/api/cash-management", (req, res) => {
+    if (cashManagementStore.length === 0) {
+      cashManagementStore.push(
+        { id: "cm1", bankAccountId: "ba001", transactionDate: new Date().toISOString(), transactionType: "receipt", amount: "50000", reconciliationStatus: "reconciled", status: "posted" },
+        { id: "cm2", bankAccountId: "ba001", transactionDate: new Date(Date.now() - 3600000).toISOString(), transactionType: "payment", amount: "25000", reconciliationStatus: "pending", status: "posted" }
+      );
+    }
+    res.json(cashManagementStore);
+  });
+
+  app.post("/api/cash-management", (req, res) => {
+    const transaction = { id: `cm-${Date.now()}`, ...req.body, status: "posted" };
+    cashManagementStore.push(transaction);
+    res.status(201).json(transaction);
+  });
+
+  app.get("/api/tax-codes", (req, res) => {
+    if (taxCodesStore.length === 0) {
+      taxCodesStore.push(
+        { id: "t1", taxName: "Sales Tax 8%", taxType: "Sales Tax", rate: "8", jurisdiction: "California", status: "active" },
+        { id: "t2", taxName: "VAT 20%", taxType: "VAT", rate: "20", jurisdiction: "UK", status: "active" }
+      );
+    }
+    res.json(taxCodesStore);
+  });
+
+  app.post("/api/tax-codes", (req, res) => {
+    const tax = { id: `t-${Date.now()}`, ...req.body, status: "active" };
+    taxCodesStore.push(tax);
+    res.status(201).json(tax);
+  });
+
+  app.get("/api/financial-reports", (req, res) => {
+    if (financialReportsStore.length === 0) {
+      financialReportsStore.push(
+        { id: "fr1", reportName: "Balance Sheet Q3", reportType: "Balance Sheet", totalAssets: "25500000", totalLiabilities: "12300000", totalEquity: "13200000", status: "approved" },
+        { id: "fr2", reportName: "P&L November", reportType: "P&L", totalAssets: "0", totalLiabilities: "0", totalEquity: "2100000", status: "draft" }
+      );
+    }
+    res.json(financialReportsStore);
+  });
+
+  app.post("/api/financial-reports", (req, res) => {
+    const report = { id: `fr-${Date.now()}`, ...req.body, status: "draft", approvalStatus: "pending" };
+    financialReportsStore.push(report);
+    res.status(201).json(report);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

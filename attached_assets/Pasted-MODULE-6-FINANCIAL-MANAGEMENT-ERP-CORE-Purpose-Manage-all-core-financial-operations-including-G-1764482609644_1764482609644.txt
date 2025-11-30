@@ -1,0 +1,99 @@
+MODULE 6: FINANCIAL MANAGEMENT & ERP CORE
+
+Purpose: Manage all core financial operations including General Ledger, Accounts Payable, Accounts Receivable, Asset Management, Cash Management, Budgeting, Financial Reporting, Taxation, and multi-entity consolidation across ERP, Finance, Projects, HR, Inventory, CRM, EPM, and Compliance modules.
+
+Important Note for Replit: Before creating any financial objects, forms, workflows, or reports, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+6.1 General Ledger (GL)
+
+Forms / Screens: Chart of Accounts, GL Account Creation, GL Account Edit, Journal Entry Creation, Journal Entry Approval, Recurring Journal Setup, GL Reports Dashboard.
+
+Fields: Account ID, Account Name, Account Type (Asset, Liability, Equity, Revenue, Expense), Currency, Parent Account, Segment/Cost Center, Accounting Period, Account Status (Active, Inactive), Journal Entry ID, Date, Description, Debit, Credit, Reference Document, Approval Status, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Account uniqueness enforced, mandatory fields (Account Name, Type, Currency), period must be open, journal entry debits must equal credits, recurring journals validated for frequency, approval required for restricted accounts.
+
+Workflows: Journal Entry creation triggers approval workflow, recurring journal executes on schedule, account updates trigger notifications, GL reports generated daily and monthly, audit logs maintained.
+
+6.2 Accounts Payable (AP)
+
+Forms / Screens: Vendor Master, Invoice Entry, Invoice Approval, Payment Scheduling, Payment Execution, Vendor Statement Reports, AP Aging Reports.
+
+Fields: Vendor ID, Vendor Name, Contact Info, Payment Terms, Bank Details, Invoice ID, Invoice Date, Due Date, Amount, Currency, GL Account Mapping, Tax Code, Payment Status, Approval Status, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Invoice amounts must match supporting documents, mandatory vendor banking details, payment terms enforced, duplicate invoice prevention, approval workflow enforced.
+
+Workflows: Invoice submission triggers approval workflow, payment schedule triggers automated payments, overdue invoices trigger alerts, AP reports updated in real-time.
+
+6.3 Accounts Receivable (AR)
+
+Forms / Screens: Customer Master, Invoice Generation, Payment Receipt, Credit Memo, AR Aging Reports, Cash Application.
+
+Fields: Customer ID, Customer Name, Contact Info, Payment Terms, Currency, Invoice ID, Invoice Date, Due Date, Amount, Payment Method, Applied Payments, Credit Memo ID, Approval Status, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Invoice amounts validated, payment application must match invoices, credit memos approved, duplicate invoice prevention, overdue payments trigger alerts.
+
+Workflows: Invoice generation triggers notifications, payments trigger cash application, overdue reminders sent automatically, AR reports updated in real-time.
+
+6.4 Asset Management
+
+Forms / Screens: Fixed Asset Master, Asset Acquisition, Depreciation Schedule, Asset Disposal, Asset Revaluation, Asset Reports.
+
+Fields: Asset ID, Asset Name, Asset Type, Purchase Date, Purchase Price, Currency, Vendor, Depreciation Method, Useful Life, Salvage Value, Book Value, GL Account Mapping, Status (Active, Retired), Location, Responsible Employee, Approval Status, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Depreciation calculations validated, acquisition requires approval, disposal requires approval, asset status correctly updated, GL mapping verified.
+
+Workflows: Asset acquisition triggers approval and GL posting, depreciation automatically calculated per schedule, asset disposal triggers notifications and accounting adjustments, asset reports generated periodically.
+
+6.5 Cash Management
+
+Forms / Screens: Bank Account Master, Cash Receipt, Cash Payment, Bank Reconciliation, Cash Position Reports.
+
+Fields: Bank Account ID, Bank Name, Account Number, Currency, Balance, Transaction ID, Date, Amount, Payment Method, GL Account, Status, Reconciliation Status, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Cash transactions must match supporting documents, bank reconciliation validated, currency conversion rates applied correctly, cash position reports accurate.
+
+Workflows: Cash receipt/payment triggers GL posting, bank reconciliation workflow executes on schedule, alerts generated for discrepancies, cash reports updated automatically.
+
+6.6 Budgeting & Forecasting
+
+Forms / Screens: Budget Master, Budget Allocation, Budget Approval, Budget Monitoring Reports, Variance Analysis Reports.
+
+Fields: Budget ID, Budget Name, Module/Department, Fiscal Period, Amount, Currency, GL Account Mapping, Approval Status, Status (Draft, Approved, Active), Created By, Created Date, Modified By, Modified Date.
+
+Validations: Budget allocations validated against GL accounts, approvals enforced, over-budget triggers alerts, variance analysis calculated accurately.
+
+Workflows: Budget creation triggers approval workflow, approved budgets enforce spending limits, variance alerts trigger notifications, budget reports generated automatically.
+
+6.7 Taxation & Compliance
+
+Forms / Screens: Tax Code Master, Tax Rule Configuration, Tax Calculation Engine, Tax Filing Reports, Tax Payment Execution.
+
+Fields: Tax ID, Tax Name, Tax Type (Sales, VAT, GST, Withholding), Rate, Jurisdiction, GL Account Mapping, Applicability Rules, Status, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Tax rules correctly applied per jurisdiction, tax calculations validated for invoices, payments, and journal entries, filings generated accurately, compliance deadlines enforced.
+
+Workflows: Invoice or payment triggers tax calculation, tax filing schedule triggers report generation, payments trigger GL posting, audit logs maintained.
+
+6.8 Financial Reporting & Consolidation
+
+Forms / Screens: Financial Statement Reports, Balance Sheet, Profit & Loss, Cash Flow Statement, Consolidation Reports, Multi-Entity Reporting, Drill-Down Reports.
+
+Fields: Report ID, Report Name, Module, Entity, Period, Currency, Consolidation Method, GL Accounts Included, Adjustments, Eliminations, Status, Approval Status, Created By, Created Date, Modified By, Modified Date.
+
+Validations: Consolidated balances verified, multi-currency conversion applied, eliminations accurate, audit trail maintained, report generation validated.
+
+Workflows: Scheduled report generation triggers automated consolidation, exceptions trigger alerts, multi-entity drill-down available, reports exported to PDF/Excel/CSV, dashboards updated automatically.
+
+6.9 Integrations & Automations
+
+Automations: Automatic posting of transactions to GL, automated AP and AR workflows, scheduled bank reconciliation, automated depreciation calculation, budget alerts, tax calculation triggers, consolidation automation.
+
+Integrations: Integration with Payroll/HR module, Inventory/Procurement module, Projects/Timesheets, CRM invoices, EPM Planning tools, Banking APIs, Tax filing systems, BI/Analytics platforms.
+
+Key Features: Full ERP financial management covering GL, AP, AR, Assets, Cash, Budgeting, Taxation, Financial Reporting, Multi-Entity Consolidation, Real-Time Automation, Cross-Module Integration, Audit & Compliance Ready.
+
+Important Note for Replit: Before creating any financial forms, workflows, automations, reports, or integrations, Replit must check the system for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+⸻
+
+Do you want me to proceed with Module 7: Inventory, Procurement & Supply Chain next?

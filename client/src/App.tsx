@@ -260,6 +260,11 @@ const AutomationRules = lazy(() => import("@/pages/AutomationRules"));
 const EventTriggers = lazy(() => import("@/pages/EventTriggers"));
 const WorkflowMonitoring = lazy(() => import("@/pages/WorkflowMonitoring"));
 const IntegrationStatus = lazy(() => import("@/pages/IntegrationStatus"));
+const JournalEntries = lazy(() => import("@/pages/JournalEntries"));
+const CustomerManagement = lazy(() => import("@/pages/CustomerManagement"));
+const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
+const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
+const FinancialReportsDashboard = lazy(() => import("@/pages/FinancialReportsDashboard"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -699,6 +704,11 @@ function Router() {
       <Route path="/event-triggers" component={EventTriggers} />
       <Route path="/workflow-monitoring" component={WorkflowMonitoring} />
       <Route path="/integration-status" component={IntegrationStatus} />
+      <Route path="/journal-entries" component={JournalEntries} />
+      <Route path="/customers" component={CustomerManagement} />
+      <Route path="/cash-management" component={CashManagementPage} />
+      <Route path="/tax-management" component={TaxManagement} />
+      <Route path="/financial-reports" component={FinancialReportsDashboard} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />
