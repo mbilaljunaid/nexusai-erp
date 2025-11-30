@@ -4306,6 +4306,224 @@ export async function registerRoutes(
     res.json(cpgAnalyticsStore);
   });
 
+  // ========== INDUSTRY PACK 18: TELECOM & TECHNOLOGY ==========
+  const telecomSubsStore: any[] = [];
+  const telecomPlansStore: any[] = [];
+  const telecomBillingStore: any[] = [];
+  const telecomDevicesStore: any[] = [];
+  const telecomServicesStore: any[] = [];
+  const telecomUsageStore: any[] = [];
+  const telecomSupportStore: any[] = [];
+  const telecomLoyaltyStore: any[] = [];
+  const telecomChurnStore: any[] = [];
+  const telecomRevenueStore: any[] = [];
+  const telecomFinanceStore: any[] = [];
+  const telecomWarrantyStore: any[] = [];
+  const telecomCampaignsStore: any[] = [];
+  const telecomComplianceStore: any[] = [];
+  const telecomAnalyticsStore: any[] = [];
+
+  app.get("/api/telecom-subscribers", (req, res) => {
+    if (telecomSubsStore.length === 0) {
+      telecomSubsStore.push({ id: "s1", customerId: "SUB-001", name: "John Doe", email: "john@example.com", phone: "+1-555-0001", status: "active" });
+    }
+    res.json(telecomSubsStore);
+  });
+
+  app.post("/api/telecom-subscribers", (req, res) => {
+    const sub = { id: `s-${Date.now()}`, ...req.body };
+    telecomSubsStore.push(sub);
+    res.status(201).json(sub);
+  });
+
+  app.delete("/api/telecom-subscribers/:id", (req, res) => {
+    const idx = telecomSubsStore.findIndex((s: any) => s.id === req.params.id);
+    if (idx >= 0) telecomSubsStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/telecom-plans", (req, res) => {
+    if (telecomPlansStore.length === 0) {
+      telecomPlansStore.push({ id: "p1", planId: "PLAN-001", dataLimit: "10", voiceLimit: "500", price: "49.99", status: "active" });
+    }
+    res.json(telecomPlansStore);
+  });
+
+  app.post("/api/telecom-plans", (req, res) => {
+    const plan = { id: `p-${Date.now()}`, ...req.body };
+    telecomPlansStore.push(plan);
+    res.status(201).json(plan);
+  });
+
+  app.get("/api/telecom-billing", (req, res) => {
+    if (telecomBillingStore.length === 0) {
+      telecomBillingStore.push({ id: "b1", invoiceId: "INV-001", customerId: "SUB-001", amount: "49.99", status: "paid" });
+    }
+    res.json(telecomBillingStore);
+  });
+
+  app.post("/api/telecom-billing", (req, res) => {
+    const bill = { id: `b-${Date.now()}`, ...req.body };
+    telecomBillingStore.push(bill);
+    res.status(201).json(bill);
+  });
+
+  app.get("/api/telecom-devices", (req, res) => {
+    if (telecomDevicesStore.length === 0) {
+      telecomDevicesStore.push({ id: "d1", deviceId: "DEV-001", imei: "123456789012345", status: "active", underWarranty: true });
+    }
+    res.json(telecomDevicesStore);
+  });
+
+  app.post("/api/telecom-devices", (req, res) => {
+    const device = { id: `d-${Date.now()}`, ...req.body };
+    telecomDevicesStore.push(device);
+    res.status(201).json(device);
+  });
+
+  app.get("/api/telecom-services", (req, res) => {
+    if (telecomServicesStore.length === 0) {
+      telecomServicesStore.push({ id: "sv1", serviceId: "SVC-001", status: "active", slaCompliance: 99 });
+    }
+    res.json(telecomServicesStore);
+  });
+
+  app.post("/api/telecom-services", (req, res) => {
+    const service = { id: `sv-${Date.now()}`, ...req.body };
+    telecomServicesStore.push(service);
+    res.status(201).json(service);
+  });
+
+  app.get("/api/telecom-usage", (req, res) => {
+    if (telecomUsageStore.length === 0) {
+      telecomUsageStore.push({ id: "u1", customerId: "SUB-001", dataUsed: "8", dataLimit: "10", voiceUsed: "400", voiceLimit: "500" });
+    }
+    res.json(telecomUsageStore);
+  });
+
+  app.post("/api/telecom-usage", (req, res) => {
+    const usage = { id: `u-${Date.now()}`, ...req.body };
+    telecomUsageStore.push(usage);
+    res.status(201).json(usage);
+  });
+
+  app.get("/api/telecom-support", (req, res) => {
+    if (telecomSupportStore.length === 0) {
+      telecomSupportStore.push({ id: "t1", ticketId: "TKT-001", issueType: "Billing", status: "pending", slaCompliance: 95 });
+    }
+    res.json(telecomSupportStore);
+  });
+
+  app.post("/api/telecom-support", (req, res) => {
+    const ticket = { id: `t-${Date.now()}`, ...req.body };
+    telecomSupportStore.push(ticket);
+    res.status(201).json(ticket);
+  });
+
+  app.get("/api/telecom-loyalty", (req, res) => {
+    if (telecomLoyaltyStore.length === 0) {
+      telecomLoyaltyStore.push({ id: "l1", customerId: "SUB-001", points: "5000", tier: "gold" });
+    }
+    res.json(telecomLoyaltyStore);
+  });
+
+  app.post("/api/telecom-loyalty", (req, res) => {
+    const loyalty = { id: `l-${Date.now()}`, ...req.body };
+    telecomLoyaltyStore.push(loyalty);
+    res.status(201).json(loyalty);
+  });
+
+  app.get("/api/telecom-churn", (req, res) => {
+    if (telecomChurnStore.length === 0) {
+      telecomChurnStore.push({ id: "ch1", customerId: "SUB-001", riskScore: "25", retentionAction: "discount" });
+    }
+    res.json(telecomChurnStore);
+  });
+
+  app.post("/api/telecom-churn", (req, res) => {
+    const churn = { id: `ch-${Date.now()}`, ...req.body };
+    telecomChurnStore.push(churn);
+    res.status(201).json(churn);
+  });
+
+  app.get("/api/telecom-revenue", (req, res) => {
+    if (telecomRevenueStore.length === 0) {
+      telecomRevenueStore.push({ id: "r1", sourceId: "SRC-001", amount: "50000", projected: "52000" });
+    }
+    res.json(telecomRevenueStore);
+  });
+
+  app.post("/api/telecom-revenue", (req, res) => {
+    const revenue = { id: `r-${Date.now()}`, ...req.body };
+    telecomRevenueStore.push(revenue);
+    res.status(201).json(revenue);
+  });
+
+  app.get("/api/telecom-finance", (req, res) => {
+    if (telecomFinanceStore.length === 0) {
+      telecomFinanceStore.push({ id: "f1", entityId: "ENT-001", revenue: "100000", cost: "60000", profit: "40000" });
+    }
+    res.json(telecomFinanceStore);
+  });
+
+  app.post("/api/telecom-finance", (req, res) => {
+    const finance = { id: `f-${Date.now()}`, ...req.body };
+    telecomFinanceStore.push(finance);
+    res.status(201).json(finance);
+  });
+
+  app.get("/api/telecom-warranty", (req, res) => {
+    if (telecomWarrantyStore.length === 0) {
+      telecomWarrantyStore.push({ id: "w1", claimId: "CLAIM-001", deviceId: "DEV-001", status: "resolved", resolution: "replacement" });
+    }
+    res.json(telecomWarrantyStore);
+  });
+
+  app.post("/api/telecom-warranty", (req, res) => {
+    const warranty = { id: `w-${Date.now()}`, ...req.body };
+    telecomWarrantyStore.push(warranty);
+    res.status(201).json(warranty);
+  });
+
+  app.get("/api/telecom-campaigns", (req, res) => {
+    if (telecomCampaignsStore.length === 0) {
+      telecomCampaignsStore.push({ id: "c1", campaignId: "CAMP-001", budget: "50000", status: "active" });
+    }
+    res.json(telecomCampaignsStore);
+  });
+
+  app.post("/api/telecom-campaigns", (req, res) => {
+    const campaign = { id: `c-${Date.now()}`, ...req.body };
+    telecomCampaignsStore.push(campaign);
+    res.status(201).json(campaign);
+  });
+
+  app.get("/api/telecom-compliance", (req, res) => {
+    if (telecomComplianceStore.length === 0) {
+      telecomComplianceStore.push({ id: "co1", customerId: "SUB-001", kycStatus: "verified", status: "compliant" });
+    }
+    res.json(telecomComplianceStore);
+  });
+
+  app.post("/api/telecom-compliance", (req, res) => {
+    const compliance = { id: `co-${Date.now()}`, ...req.body };
+    telecomComplianceStore.push(compliance);
+    res.status(201).json(compliance);
+  });
+
+  app.get("/api/telecom-analytics", (req, res) => {
+    if (telecomAnalyticsStore.length === 0) {
+      telecomAnalyticsStore.push({ id: "a1", region: "North", subscribers: "50000", arpu: "45", growth: "15" });
+    }
+    res.json(telecomAnalyticsStore);
+  });
+
+  app.post("/api/telecom-analytics", (req, res) => {
+    const analytics = { id: `a-${Date.now()}`, ...req.body };
+    telecomAnalyticsStore.push(analytics);
+    res.status(201).json(analytics);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

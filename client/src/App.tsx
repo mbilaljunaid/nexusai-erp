@@ -447,6 +447,21 @@ const ReturnsWarranty = lazy(() => import("@/pages/ReturnsWarranty"));
 const CostingMarginCPG = lazy(() => import("@/pages/CostingMarginCPG"));
 const SustainabilityComplianceCPG = lazy(() => import("@/pages/SustainabilityComplianceCPG"));
 const CPGAnalytics = lazy(() => import("@/pages/CPGAnalytics"));
+const SubscriberManagement = lazy(() => import("@/pages/SubscriberManagement"));
+const PlanPackageManagement = lazy(() => import("@/pages/PlanPackageManagement"));
+const BillingInvoicing = lazy(() => import("@/pages/BillingInvoicing"));
+const DeviceSIMManagement = lazy(() => import("@/pages/DeviceSIMManagement"));
+const ServiceProvisioning = lazy(() => import("@/pages/ServiceProvisioning"));
+const NetworkUsageMonitoring = lazy(() => import("@/pages/NetworkUsageMonitoring"));
+const CustomerSupportCRM = lazy(() => import("@/pages/CustomerSupportCRM"));
+const LoyaltyPrograms = lazy(() => import("@/pages/LoyaltyPrograms"));
+const ChurnPredictionTelecom = lazy(() => import("@/pages/ChurnPrediction"));
+const RevenueAssurance = lazy(() => import("@/pages/RevenueAssurance"));
+const FinanceAccounting = lazy(() => import("@/pages/FinanceAccounting"));
+const WarrantyReturns = lazy(() => import("@/pages/WarrantyReturns"));
+const MarketingTelecom = lazy(() => import("@/pages/MarketingTelecom"));
+const ComplianceAudit = lazy(() => import("@/pages/ComplianceAudit"));
+const TelecomAnalytics = lazy(() => import("@/pages/TelecomAnalytics"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1102,6 +1117,21 @@ function Router() {
       <Route path="/cpg-costing" component={CostingMarginCPG} />
       <Route path="/cpg-compliance" component={SustainabilityComplianceCPG} />
       <Route path="/cpg-analytics" component={CPGAnalytics} />
+      <Route path="/telecom-subscribers" component={SubscriberManagement} />
+      <Route path="/telecom-plans" component={PlanPackageManagement} />
+      <Route path="/telecom-billing" component={BillingInvoicing} />
+      <Route path="/telecom-devices" component={DeviceSIMManagement} />
+      <Route path="/telecom-services" component={ServiceProvisioning} />
+      <Route path="/telecom-usage" component={NetworkUsageMonitoring} />
+      <Route path="/telecom-support" component={CustomerSupportCRM} />
+      <Route path="/telecom-loyalty" component={LoyaltyPrograms} />
+      <Route path="/telecom-churn" component={ChurnPredictionTelecom} />
+      <Route path="/telecom-revenue" component={RevenueAssurance} />
+      <Route path="/telecom-finance" component={FinanceAccounting} />
+      <Route path="/telecom-warranty" component={WarrantyReturns} />
+      <Route path="/telecom-campaigns" component={MarketingTelecom} />
+      <Route path="/telecom-compliance" component={ComplianceAudit} />
+      <Route path="/telecom-analytics" component={TelecomAnalytics} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
