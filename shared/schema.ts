@@ -2122,3 +2122,41 @@ export const churnPredictions = pgTable("churn_predictions", {
   recommendedActions: jsonb("recommended_actions"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+export const userSessions = pgTable("user_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  deviceName: varchar("device_name"),
+  ipAddress: varchar("ip_address"),
+  location: varchar("location"),
+  loginTime: timestamp("login_time").default(sql`now()`),
+  lastActivityTime: timestamp("last_activity_time"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const loginAudit = pgTable("login_audit", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  email: varchar("email"),
+  ipAddress: varchar("ip_address"),
+  device: varchar("device"),
+  location: varchar("location"),
+  status: varchar("status").default("success"),
+  mfaUsed: boolean("mfa_used").default(false),
+  loginTime: timestamp("login_time").default(sql`now()`),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const securitySettings = pgTable("security_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  mfaEnabled: boolean("mfa_enabled").default(false),
+  mfaMethods: jsonb("mfa_methods"),
+  sessionTimeout: integer("session_timeout").default(30),
+  passwordExpiry: integer("password_expiry").default(90),
+  ipWhitelist: jsonb("ip_whitelist"),
+  maxConcurrentSessions: integer("max_concurrent_sessions").default(3),
+  loginAttemptLimit: integer("login_attempt_limit").default(5),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
