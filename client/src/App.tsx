@@ -114,6 +114,11 @@ const VendorsDetail = lazy(() => import("@/pages/VendorsDetail"));
 const CustomersDetail = lazy(() => import("@/pages/CustomersDetail"));
 const PurchaseOrdersDetail = lazy(() => import("@/pages/PurchaseOrdersDetail"));
 const ExpensesDetail = lazy(() => import("@/pages/ExpensesDetail"));
+const EmployeesDetail = lazy(() => import("@/pages/EmployeesDetail"));
+const PayrollDetail = lazy(() => import("@/pages/PayrollDetail"));
+const CampaignsDetail = lazy(() => import("@/pages/CampaignsDetail"));
+const TasksDetail = lazy(() => import("@/pages/TasksDetail"));
+const BOMDetail = lazy(() => import("@/pages/BOMDetail"));
 const Finance = lazy(() => import("@/pages/Finance"));
 const VarianceAnalysis = lazy(() => import("@/pages/VarianceAnalysis"));
 const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
@@ -317,7 +322,15 @@ function Router() {
       <Route path="/crm/leads" component={LeadsDetail} />
       <Route path="/crm/opportunities" component={OpportunitiesDetail} />
       <Route path="/crm/customers" component={CustomersDetail} />
+      <Route path="/hr" component={HR} />
+      <Route path="/hr/employees" component={EmployeesDetail} />
+      <Route path="/hr/payroll" component={PayrollDetail} />
+      <Route path="/marketing" component={Marketing} />
+      <Route path="/marketing/campaigns" component={CampaignsDetail} />
       <Route path="/projects" component={Projects} />
+      <Route path="/projects/tasks" component={TasksDetail} />
+      <Route path="/manufacturing" component={Manufacturing} />
+      <Route path="/manufacturing/bom" component={BOMDetail} />
       <Route path="/erp" component={ERP} />
       <Route path="/erp/gl" component={GeneralLedgerDetail} />
       <Route path="/erp/vendors" component={VendorsDetail} />

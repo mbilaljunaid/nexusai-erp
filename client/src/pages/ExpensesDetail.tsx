@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import ExpenseEntryForm from "@/components/forms/ExpenseEntryForm";
+import { ExpenseEntryForm } from "@/components/forms/ExpenseEntryForm";
 
 export default function ExpensesDetail() {
   const [searchQuery, setSearchQuery] = useState("");

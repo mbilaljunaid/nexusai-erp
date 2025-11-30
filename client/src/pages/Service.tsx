@@ -11,7 +11,7 @@ export default function Service() {
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
-    { id: "tickets", label: "Tickets", icon: AlertCircle as any, color: "text-green-500" },
+    { id: "tickets", label: "Tickets", icon: AlertCircle, color: "text-green-500" },
     { id: "customers", label: "Customers", icon: Users, color: "text-purple-500" },
     { id: "knowledge", label: "Knowledge Base", icon: FileText, color: "text-orange-500" },
     { id: "sla", label: "SLA Tracking", icon: Clock, color: "text-pink-500" },

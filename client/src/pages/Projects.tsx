@@ -13,6 +13,7 @@ import { TaskEntryForm } from "@/components/forms/TaskEntryForm";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Search, Filter, FolderKanban, CheckCircle2, Clock, AlertTriangle, Sparkles, LayoutGrid, ListTodo, Users, Settings, Zap, BarChart3, TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Link } from "wouter";
 
 interface Project {
   id: string;

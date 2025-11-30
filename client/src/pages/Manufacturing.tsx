@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { BomForm } from "@/components/forms/BomForm";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Factory, Package, CheckSquare, Zap, QrCode } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Manufacturing() {
   const [activeNav, setActiveNav] = useState("bom");
@@ -30,7 +31,16 @@ export default function Manufacturing() {
         </div>
       </div>
 
-      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {navItems.map((item) => (
+          <Link key={item.id} to={item.id === "bom" ? `/manufacturing/bom` : `/manufacturing/${item.id}`}>
+            <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+              <item.icon className={`w-6 h-6 ${item.color}`} />
+              <span className="text-sm font-medium text-center">{item.label}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
 
       {activeNav === "bom" && (
         <div className="space-y-6">
