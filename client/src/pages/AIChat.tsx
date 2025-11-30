@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Bot, Send, Sparkles, Loader } from "lucide-react";
-import { queryClient, apiRequest } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 
 export default function AIChat() {
   const [input, setInput] = useState("");
@@ -27,13 +27,17 @@ export default function AIChat() {
 
   const createConvMutation = useMutation({
     mutationFn: async () => {
-      const conv = await apiRequest("POST", "/api/copilot/conversations", {
-        title: `Conversation ${new Date().toLocaleTimeString()}`,
-        context: "general",
+      const resp = await fetch("/api/copilot/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: `Conversation ${new Date().toLocaleTimeString()}`,
+          context: "general",
+        }),
       });
-      return conv;
+      return resp.json() as Promise<any>;
     },
-    onSuccess: (conv) => {
+    onSuccess: (conv: any) => {
       setActiveConvId(conv.id);
       queryClient.invalidateQueries({ queryKey: ["/api/copilot/conversations"] });
     },
@@ -42,21 +46,34 @@ export default function AIChat() {
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
       if (!activeConvId) {
-        const conv = await apiRequest("POST", "/api/copilot/conversations", {
-          title: `Conversation ${new Date().toLocaleTimeString()}`,
-          context: "general",
+        const resp = await fetch("/api/copilot/conversations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: `Conversation ${new Date().toLocaleTimeString()}`,
+            context: "general",
+          }),
         });
+        const conv = (await resp.json()) as any;
         setActiveConvId(conv.id);
-        await apiRequest("POST", "/api/copilot/messages", {
-          conversationId: conv.id,
-          role: "user",
-          content,
+        await fetch("/api/copilot/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            conversationId: conv.id,
+            role: "user",
+            content,
+          }),
         });
       } else {
-        await apiRequest("POST", "/api/copilot/messages", {
-          conversationId: activeConvId,
-          role: "user",
-          content,
+        await fetch("/api/copilot/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            conversationId: activeConvId,
+            role: "user",
+            content,
+          }),
         });
       }
     },
