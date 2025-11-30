@@ -283,6 +283,20 @@ const WarehouseManagement = lazy(() => import("@/pages/WarehouseManagement"));
 const SupplierManagement = lazy(() => import("@/pages/SupplierManagement"));
 const CustomerLoyalty = lazy(() => import("@/pages/CustomerLoyalty"));
 
+// Phase 21-25: Final Enterprise Modules
+const DataGovernancePage = lazy(() => import("@/pages/DataGovernancePage"));
+const BusinessIntelligence = lazy(() => import("@/pages/BusinessIntelligence"));
+const VoiceOfCustomer = lazy(() => import("@/pages/VoiceOfCustomer"));
+const ProcurementAutomation = lazy(() => import("@/pages/ProcurementAutomation"));
+const RiskManagement = lazy(() => import("@/pages/RiskManagement"));
+const EmployeeEngagement = lazy(() => import("@/pages/EmployeeEngagement"));
+const SuccessionPlanning = lazy(() => import("@/pages/SuccessionPlanning"));
+const CapacityPlanning = lazy(() => import("@/pages/CapacityPlanning"));
+const ChangeManagement = lazy(() => import("@/pages/ChangeManagement"));
+const CostOptimization = lazy(() => import("@/pages/CostOptimization"));
+const SustainabilityReporting = lazy(() => import("@/pages/SustainabilityReporting"));
+const QualityAssuranceHub = lazy(() => import("@/pages/QualityAssuranceHub"));
+
 function Router() {
   return (
     <Switch>
@@ -525,6 +539,18 @@ function Router() {
       <Route path="/warehouse-management" component={WarehouseManagement} />
       <Route path="/supplier-management" component={SupplierManagement} />
       <Route path="/customer-loyalty" component={CustomerLoyalty} />
+      <Route path="/data-governance" component={DataGovernancePage} />
+      <Route path="/business-intelligence" component={BusinessIntelligence} />
+      <Route path="/voice-of-customer" component={VoiceOfCustomer} />
+      <Route path="/procurement-automation" component={ProcurementAutomation} />
+      <Route path="/risk-management" component={RiskManagement} />
+      <Route path="/employee-engagement" component={EmployeeEngagement} />
+      <Route path="/succession-planning" component={SuccessionPlanning} />
+      <Route path="/capacity-planning" component={CapacityPlanning} />
+      <Route path="/change-management" component={ChangeManagement} />
+      <Route path="/cost-optimization" component={CostOptimization} />
+      <Route path="/sustainability-reporting" component={SustainabilityReporting} />
+      <Route path="/quality-assurance" component={QualityAssuranceHub} />
       <Route component={NotFound} />
     </Switch>
   );

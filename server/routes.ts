@@ -1253,6 +1253,81 @@ export async function registerRoutes(
     res.json(apisStore);
   });
 
+  // Data Governance
+  app.get("/api/data-governance/policies", (req, res) => {
+    res.json([
+      { id: "dg1", name: "Data Classification", status: "active" },
+      { id: "dg2", name: "Retention Policy", status: "active" }
+    ]);
+  });
+
+  // Business Intelligence
+  app.get("/api/bi/dashboards", (req, res) => {
+    res.json([
+      { id: "bi1", name: "Executive Dashboard", views: 1200 },
+      { id: "bi2", name: "Sales Dashboard", views: 3400 }
+    ]);
+  });
+
+  // Voice of Customer
+  app.get("/api/voc/feedback", (req, res) => {
+    res.json([
+      { id: "voc1", feedback: "Great platform", sentiment: "positive" },
+      { id: "voc2", feedback: "Needs improvement", sentiment: "neutral" }
+    ]);
+  });
+
+  // Procurement Automation
+  app.get("/api/procurement/automation-rules", (req, res) => {
+    res.json([
+      { id: "pa1", name: "Auto-approve <$1000", status: "active" },
+      { id: "pa2", name: "Route to CFO >$50000", status: "active" }
+    ]);
+  });
+
+  // Risk Management
+  app.get("/api/risk/register", (req, res) => {
+    res.json([
+      { id: "rm1", risk: "Market volatility", probability: "high", impact: "high", status: "active" },
+      { id: "rm2", risk: "Supply chain disruption", probability: "medium", impact: "high", status: "mitigated" }
+    ]);
+  });
+
+  // Employee Engagement
+  app.get("/api/hr/engagement", (req, res) => {
+    res.json([{ surveyScore: 7.8, participation: 87, actionItems: 24 }]);
+  });
+
+  // Succession Planning
+  app.get("/api/hr/succession", (req, res) => {
+    res.json([{ keyPositions: 12, readyNow: 8, inDevelopment: 4 }]);
+  });
+
+  // Capacity Planning
+  app.get("/api/resource/capacity", (req, res) => {
+    res.json([{ totalCapacity: 2400, utilization: 82, available: 432 }]);
+  });
+
+  // Change Management
+  app.get("/api/operations/changes", (req, res) => {
+    res.json([{ total: 34, approved: 28, inProgress: 6 }]);
+  });
+
+  // Cost Optimization
+  app.get("/api/finance/cost-optimization", (req, res) => {
+    res.json([{ opportunities: 47, realized: 2300000, pipeline: 1800000 }]);
+  });
+
+  // Sustainability
+  app.get("/api/esg/metrics", (req, res) => {
+    res.json([{ carbon: 1234, reductionYoY: -12, esgScore: 78 }]);
+  });
+
+  // Quality Assurance
+  app.get("/api/quality/metrics", (req, res) => {
+    res.json([{ tests: 1234, passRate: 96, defects: 12 }]);
+  });
+
   // ========== PHASE 3B: PROJECTS & AGILE APIs ==========
 
   // Epics
