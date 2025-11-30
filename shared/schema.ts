@@ -1744,3 +1744,99 @@ export const riskAssessments = pgTable("risk_assessments", {
   status: varchar("status").default("open"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== PHASE 4: IoT & Field Service ==========
+export const iotDevices = pgTable("iot_devices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  deviceName: varchar("device_name").notNull(),
+  deviceType: varchar("device_type"),
+  serialNumber: varchar("serial_number").unique(),
+  location: varchar("location"),
+  status: varchar("status").default("active"),
+  lastHeartbeat: timestamp("last_heartbeat"),
+  metrics: jsonb("metrics"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const iotSensors = pgTable("iot_sensors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  deviceId: varchar("device_id").notNull(),
+  sensorType: varchar("sensor_type"),
+  readingValue: numeric("reading_value", { precision: 10, scale: 2 }),
+  unit: varchar("unit"),
+  timestamp: timestamp("timestamp").default(sql`now()`),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const fieldServiceJobs = pgTable("field_service_jobs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobNumber: varchar("job_number").notNull(),
+  deviceId: varchar("device_id"),
+  technician: varchar("technician"),
+  status: varchar("status").default("scheduled"),
+  priority: varchar("priority"),
+  location: varchar("location"),
+  scheduledDate: timestamp("scheduled_date"),
+  completedDate: timestamp("completed_date"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 4: MOBILE APPS ==========
+export const mobileApps = pgTable("mobile_apps", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appName: varchar("app_name").notNull(),
+  platform: varchar("platform"),
+  version: varchar("version"),
+  releaseDate: timestamp("release_date"),
+  status: varchar("status").default("active"),
+  downloadCount: integer("download_count").default(0),
+  rating: numeric("rating", { precision: 3, scale: 1 }),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const mobileUsageMetrics = pgTable("mobile_usage_metrics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  dailyActiveUsers: integer("daily_active_users"),
+  sessionDuration: integer("session_duration"),
+  crashReports: integer("crash_reports"),
+  timestamp: timestamp("timestamp").default(sql`now()`),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 4: ADVANCED ANALYTICS ==========
+export const advancedDashboards = pgTable("advanced_dashboards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  owner: varchar("owner"),
+  dashboardType: varchar("dashboard_type"),
+  widgets: jsonb("widgets"),
+  customMetrics: jsonb("custom_metrics"),
+  refreshInterval: integer("refresh_interval"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const predictiveModels = pgTable("predictive_models", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  modelName: varchar("model_name").notNull(),
+  modelType: varchar("model_type"),
+  accuracy: numeric("accuracy", { precision: 5, scale: 2 }),
+  lastTrainDate: timestamp("last_train_date"),
+  predictions: jsonb("predictions"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const forecastData = pgTable("forecast_data", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  modelId: varchar("model_id").notNull(),
+  forecastPeriod: varchar("forecast_period"),
+  metric: varchar("metric"),
+  predictedValue: numeric("predicted_value", { precision: 15, scale: 2 }),
+  confidenceInterval: numeric("confidence_interval", { precision: 5, scale: 2 }),
+  actualValue: numeric("actual_value", { precision: 15, scale: 2 }),
+  timestamp: timestamp("timestamp").default(sql`now()`),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

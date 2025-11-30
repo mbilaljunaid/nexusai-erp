@@ -2022,6 +2022,148 @@ export async function registerRoutes(
     res.status(201).json(risk);
   });
 
+  // ========== PHASE 4: IoT ENDPOINTS ==========
+  const phase4DevicesStore: any[] = [];
+  const phase4SensorsStore: any[] = [];
+  const phase4JobsStore: any[] = [];
+
+  app.get("/api/iot/devices", (req, res) => {
+    if (phase4DevicesStore.length === 0) {
+      phase4DevicesStore.push(
+        { id: "dev1", deviceName: "Sensor A", deviceType: "temperature", serialNumber: "SN-001", location: "Warehouse A", status: "active", lastHeartbeat: new Date().toISOString(), metrics: { temperature: 22.5, humidity: 45 }, createdAt: new Date().toISOString() },
+        { id: "dev2", deviceName: "Sensor B", deviceType: "pressure", serialNumber: "SN-002", location: "Warehouse B", status: "active", lastHeartbeat: new Date().toISOString(), metrics: { pressure: 1013.25 }, createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase4DevicesStore);
+  });
+
+  app.post("/api/iot/devices", (req, res) => {
+    const device = { id: `dev-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase4DevicesStore.push(device);
+    res.status(201).json(device);
+  });
+
+  app.get("/api/iot/sensors", (req, res) => {
+    if (phase4SensorsStore.length === 0) {
+      phase4SensorsStore.push(
+        { id: "s1", deviceId: "dev1", sensorType: "temperature", readingValue: "22.5", unit: "°C", timestamp: new Date().toISOString(), createdAt: new Date().toISOString() },
+        { id: "s2", deviceId: "dev1", sensorType: "humidity", readingValue: "45", unit: "%", timestamp: new Date().toISOString(), createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase4SensorsStore);
+  });
+
+  app.post("/api/iot/sensors", (req, res) => {
+    const sensor = { id: `sensor-${Date.now()}`, ...req.body, timestamp: new Date().toISOString(), createdAt: new Date().toISOString() };
+    phase4SensorsStore.push(sensor);
+    res.status(201).json(sensor);
+  });
+
+  app.get("/api/field-service/jobs", (req, res) => {
+    if (phase4JobsStore.length === 0) {
+      phase4JobsStore.push(
+        { id: "job1", jobNumber: "FSJ-001", deviceId: "dev1", technician: "John Smith", status: "scheduled", priority: "high", location: "Warehouse A", scheduledDate: new Date().toISOString(), completedDate: null, notes: "Routine maintenance", createdAt: new Date().toISOString() },
+        { id: "job2", jobNumber: "FSJ-002", deviceId: "dev2", technician: "Jane Doe", status: "in-progress", priority: "medium", location: "Warehouse B", scheduledDate: new Date().toISOString(), completedDate: null, notes: "Sensor calibration", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase4JobsStore);
+  });
+
+  app.post("/api/field-service/jobs", (req, res) => {
+    const job = { id: `job-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase4JobsStore.push(job);
+    res.status(201).json(job);
+  });
+
+  // ========== PHASE 4: MOBILE APPS ENDPOINTS ==========
+  const phase4AppsStore: any[] = [];
+  const phase4MetricsStore: any[] = [];
+
+  app.get("/api/mobile/apps", (req, res) => {
+    if (phase4AppsStore.length === 0) {
+      phase4AppsStore.push(
+        { id: "app1", appName: "NexusAI Mobile", platform: "iOS", version: "2.5.0", releaseDate: new Date().toISOString(), status: "active", downloadCount: 125000, rating: "4.8", createdAt: new Date().toISOString() },
+        { id: "app2", appName: "NexusAI Mobile", platform: "Android", version: "2.4.8", releaseDate: new Date().toISOString(), status: "active", downloadCount: 98000, rating: "4.7", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase4AppsStore);
+  });
+
+  app.post("/api/mobile/apps", (req, res) => {
+    const app = { id: `app-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase4AppsStore.push(app);
+    res.status(201).json(app);
+  });
+
+  app.get("/api/mobile/metrics", (req, res) => {
+    if (phase4MetricsStore.length === 0) {
+      phase4MetricsStore.push(
+        { id: "m1", appId: "app1", dailyActiveUsers: 15200, sessionDuration: 450, crashReports: 2, timestamp: new Date().toISOString(), createdAt: new Date().toISOString() },
+        { id: "m2", appId: "app2", dailyActiveUsers: 12800, sessionDuration: 420, crashReports: 1, timestamp: new Date().toISOString(), createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase4MetricsStore);
+  });
+
+  app.post("/api/mobile/metrics", (req, res) => {
+    const metric = { id: `metric-${Date.now()}`, ...req.body, timestamp: new Date().toISOString(), createdAt: new Date().toISOString() };
+    phase4MetricsStore.push(metric);
+    res.status(201).json(metric);
+  });
+
+  // ========== PHASE 4: ADVANCED ANALYTICS ENDPOINTS ==========
+  const phase4AdvDashboardsStore: any[] = [];
+  const phase4ModelsStore: any[] = [];
+  const phase4ForecastStore: any[] = [];
+
+  app.get("/api/analytics/advanced-dashboards", (req, res) => {
+    if (phase4AdvDashboardsStore.length === 0) {
+      phase4AdvDashboardsStore.push(
+        { id: "adash1", name: "Executive Dashboard", owner: "ceo@nexus.ai", dashboardType: "executive", widgets: ["revenue", "growth", "forecast"], customMetrics: { kpis: ["ARR", "MRR", "CAC"] }, refreshInterval: 300, status: "active", createdAt: new Date().toISOString() },
+        { id: "adash2", name: "Sales Analytics", owner: "sales@nexus.ai", dashboardType: "sales", widgets: ["pipeline", "conversion", "forecast"], customMetrics: { stages: ["lead", "opportunity", "proposal"] }, refreshInterval: 600, status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase4AdvDashboardsStore);
+  });
+
+  app.post("/api/analytics/advanced-dashboards", (req, res) => {
+    const dash = { id: `adash-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase4AdvDashboardsStore.push(dash);
+    res.status(201).json(dash);
+  });
+
+  app.get("/api/analytics/models", (req, res) => {
+    if (phase4ModelsStore.length === 0) {
+      phase4ModelsStore.push(
+        { id: "model1", modelName: "Revenue Forecast", modelType: "time-series", accuracy: "92.5", lastTrainDate: new Date().toISOString(), predictions: { q1: 500000, q2: 550000 }, status: "active", createdAt: new Date().toISOString() },
+        { id: "model2", modelName: "Churn Predictor", modelType: "classification", accuracy: "87.3", lastTrainDate: new Date().toISOString(), predictions: { risk_score: 0.15 }, status: "active", createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase4ModelsStore);
+  });
+
+  app.post("/api/analytics/models", (req, res) => {
+    const model = { id: `model-${Date.now()}`, ...req.body, createdAt: new Date().toISOString() };
+    phase4ModelsStore.push(model);
+    res.status(201).json(model);
+  });
+
+  app.get("/api/analytics/forecast", (req, res) => {
+    if (phase4ForecastStore.length === 0) {
+      phase4ForecastStore.push(
+        { id: "f1", modelId: "model1", forecastPeriod: "Q1-2025", metric: "revenue", predictedValue: "500000", confidenceInterval: "95", actualValue: null, timestamp: new Date().toISOString(), createdAt: new Date().toISOString() },
+        { id: "f2", modelId: "model1", forecastPeriod: "Q2-2025", metric: "revenue", predictedValue: "550000", confidenceInterval: "92", actualValue: null, timestamp: new Date().toISOString(), createdAt: new Date().toISOString() }
+      );
+    }
+    res.json(phase4ForecastStore);
+  });
+
+  app.post("/api/analytics/forecast", (req, res) => {
+    const forecast = { id: `forecast-${Date.now()}`, ...req.body, timestamp: new Date().toISOString(), createdAt: new Date().toISOString() };
+    phase4ForecastStore.push(forecast);
+    res.status(201).json(forecast);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
