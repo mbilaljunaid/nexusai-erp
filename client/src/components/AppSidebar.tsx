@@ -29,11 +29,13 @@ import {
   Briefcase,
   Store,
   MessageCircle,
+  Grid3x3,
 } from "lucide-react";
 
 // MAIN MODULES - Clean sidebar navigation
 const mainModules = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/" },
+  { title: "Pages Explorer", icon: Grid3x3, href: "/pages", badge: "800+ pages" },
   { title: "CRM & Sales", icon: Users, href: "/crm", badge: "9 pages" },
   { title: "ERP & Finance", icon: DollarSign, href: "/erp", badge: "9 pages" },
   { title: "Projects", icon: Zap, href: "/projects", badge: "4 pages" },

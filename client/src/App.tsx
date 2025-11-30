@@ -17,6 +17,7 @@ const CRM = lazy(() => import("@/pages/CRM"));
 const ERP = lazy(() => import("@/pages/ERP"));
 const HR = lazy(() => import("@/pages/HR"));
 const Projects = lazy(() => import("@/pages/Projects"));
+const PagesIndex = lazy(() => import("@/pages/PagesIndex"));
 
 // Phase 2: Module Overviews
 const CRMModule = lazy(() => import("@/pages/CRMModule"));
@@ -784,6 +785,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/pages" component={PagesIndex} />
       <Route path="/crm" component={CRM} />
       <Route path="/crm/leads" component={LeadsDetail} />
       <Route path="/crm/opportunities" component={OpportunitiesDetail} />
@@ -1349,10 +1351,6 @@ function Router() {
       <Route path="/retail-pricing" component={PricingPromotionsRetail} />
       <Route path="/retail-billing" component={BillingPaymentsRetail} />
       <Route path="/retail-supply" component={SupplyChainRetail} />
-      <Route path="/retail-hr" component={HRRetailStaff} />
-      <Route path="/retail-merchandising" component={MerchandisingAI} />
-      <Route path="/retail-analytics" component={RetailAnalyticsBI} />
-      <Route path="/retail-campaigns" component={MarketingCampaignsRetail} />
       <Route path="/hospitality-properties" component={PropertyManagement} />
       <Route path="/hospitality-bookings" component={ReservationsBookings} />
       <Route path="/hospitality-guests" component={GuestManagement} />
