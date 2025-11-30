@@ -152,7 +152,8 @@
 | Backend APIs | 800+ | ✅ Operational |
 | Industries | 43 | ✅ All Visible on Dashboard |
 | Core Modules | 15 | ✅ Complete |
-| Forms (Actually Used) | 21 | ✅ 3 Integrated, 18 Expanding |
+| Forms Defined | 23 | ✅ 3 Integrated, 20 Expanding |
+| Forms Actually Used | 21 | ✅ 2 Unused |
 | Industries Widget | ✅ New | ✅ Carousel with All 43 |
 | Demo Scripts | 1 Master | ✅ Idempotent |
 | Automation Workflows | 20+ | ✅ Templates Ready |
