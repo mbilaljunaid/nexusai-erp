@@ -419,6 +419,21 @@ const Pharmacovigilance = lazy(() => import("@/pages/Pharmacovigilance"));
 const ClinicalSupply = lazy(() => import("@/pages/ClinicalSupply"));
 const ValidationCSV = lazy(() => import("@/pages/ValidationCSV"));
 const PharmaAnalytics = lazy(() => import("@/pages/PharmaAnalytics"));
+const StyleMasterSKU = lazy(() => import("@/pages/StyleMasterSKU"));
+const TechPackBuilder = lazy(() => import("@/pages/TechPackBuilder"));
+const SampleTracking = lazy(() => import("@/pages/SampleTracking"));
+const CMTFactoryManagement = lazy(() => import("@/pages/CMTFactoryManagement"));
+const AssortmentPlanner = lazy(() => import("@/pages/AssortmentPlanner"));
+const FashionInventory = lazy(() => import("@/pages/FashionInventory"));
+const EcommerceMarketplace = lazy(() => import("@/pages/EcommerceMarketplace"));
+const FashionPOS = lazy(() => import("@/pages/FashionPOS"));
+const ReturnsExchanges = lazy(() => import("@/pages/ReturnsExchanges"));
+const CostingProfitability = lazy(() => import("@/pages/CostingProfitability"));
+const WholesaleB2B = lazy(() => import("@/pages/WholesaleB2B"));
+const MarketingCampaigns = lazy(() => import("@/pages/MarketingCampaigns"));
+const SustainabilityMaterials = lazy(() => import("@/pages/SustainabilityMaterials"));
+const DemandForecastingFashion = lazy(() => import("@/pages/DemandForecastingFashion"));
+const FashionAnalytics = lazy(() => import("@/pages/FashionAnalytics"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1046,6 +1061,21 @@ function Router() {
       <Route path="/clinical-supply" component={ClinicalSupply} />
       <Route path="/validation-csv" component={ValidationCSV} />
       <Route path="/pharma-analytics" component={PharmaAnalytics} />
+      <Route path="/style-master" component={StyleMasterSKU} />
+      <Route path="/tech-packs" component={TechPackBuilder} />
+      <Route path="/sample-tracking" component={SampleTracking} />
+      <Route path="/cmt-factories" component={CMTFactoryManagement} />
+      <Route path="/assortment-planning" component={AssortmentPlanner} />
+      <Route path="/fashion-inventory" component={FashionInventory} />
+      <Route path="/ecommerce-marketplace" component={EcommerceMarketplace} />
+      <Route path="/fashion-pos" component={FashionPOS} />
+      <Route path="/returns-exchanges" component={ReturnsExchanges} />
+      <Route path="/costing-profitability" component={CostingProfitability} />
+      <Route path="/wholesale-b2b" component={WholesaleB2B} />
+      <Route path="/marketing-campaigns" component={MarketingCampaigns} />
+      <Route path="/sustainability-materials" component={SustainabilityMaterials} />
+      <Route path="/demand-forecasting-fashion" component={DemandForecastingFashion} />
+      <Route path="/fashion-analytics" component={FashionAnalytics} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
