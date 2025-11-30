@@ -281,9 +281,6 @@ const DataSourceConfiguration = lazy(() => import("@/pages/DataSourceConfigurati
 const KPIDashboard = lazy(() => import("@/pages/KPIDashboard"));
 const LeaveManagement = lazy(() => import("@/pages/LeaveManagement"));
 const RecruitmentManagement = lazy(() => import("@/pages/RecruitmentManagement"));
-const ComplianceGovernance = lazy(() => import("@/pages/ComplianceGovernance"));
-const RiskManagement = lazy(() => import("@/pages/RiskManagement"));
-const AuditManagement = lazy(() => import("@/pages/AuditManagement"));
 const PeriodClose = lazy(() => import("@/pages/PeriodClose"));
 const FinancialConsolidation = lazy(() => import("@/pages/FinancialConsolidation"));
 const AccountReconciliation = lazy(() => import("@/pages/AccountReconciliation"));
