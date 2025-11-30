@@ -356,6 +356,15 @@ const CustomerDeviceManagement = lazy(() => import("@/pages/CustomerDeviceManage
 const SLAServiceTierManagement = lazy(() => import("@/pages/SLAServiceTierManagement"));
 const SubscriptionLifecycle = lazy(() => import("@/pages/SubscriptionLifecycle"));
 const TelecomCustomerSupport = lazy(() => import("@/pages/TelecomCustomerSupport"));
+const PatientManagement = lazy(() => import("@/pages/PatientManagement"));
+const AppointmentScheduling = lazy(() => import("@/pages/AppointmentScheduling"));
+const ClinicalDocumentation = lazy(() => import("@/pages/ClinicalDocumentation"));
+const LaboratoryManagement = lazy(() => import("@/pages/LaboratoryManagement"));
+const PharmacyManagement = lazy(() => import("@/pages/PharmacyManagement"));
+const MedicalBilling = lazy(() => import("@/pages/MedicalBilling"));
+const InpatientManagement = lazy(() => import("@/pages/InpatientManagement"));
+const HealthcareBIDashboard = lazy(() => import("@/pages/HealthcareBIDashboard"));
+const HealthcareCompliance = lazy(() => import("@/pages/HealthcareCompliance"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -923,6 +932,15 @@ function Router() {
       <Route path="/sla-management" component={SLAServiceTierManagement} />
       <Route path="/subscription-lifecycle" component={SubscriptionLifecycle} />
       <Route path="/telecom-support" component={TelecomCustomerSupport} />
+      <Route path="/patient-management" component={PatientManagement} />
+      <Route path="/appointment-scheduling" component={AppointmentScheduling} />
+      <Route path="/clinical-documentation" component={ClinicalDocumentation} />
+      <Route path="/laboratory-management" component={LaboratoryManagement} />
+      <Route path="/pharmacy-management" component={PharmacyManagement} />
+      <Route path="/medical-billing" component={MedicalBilling} />
+      <Route path="/inpatient-management" component={InpatientManagement} />
+      <Route path="/healthcare-analytics" component={HealthcareBIDashboard} />
+      <Route path="/healthcare-compliance" component={HealthcareCompliance} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
