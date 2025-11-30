@@ -287,27 +287,27 @@ export class MemStorage implements IStorage {
 
   async getProject(id: string) { return this.projects.get(id); }
   async listProjects(ownerId?: string) { const list = Array.from(this.projects.values()); return ownerId ? list.filter(p => p.ownerId === ownerId) : list; }
-  async createProject(p: InsertProject) { const id = randomUUID(); const project: Project = { id, ...p, createdAt: new Date() }; this.projects.set(id, project); return project; }
+  async createProject(p: InsertProject) { const id = randomUUID(); const project: Project = { id, ...p, createdAt: new Date(), description: p.description ?? null }; this.projects.set(id, project); return project; }
 
   async getInvoice(id: string) { return this.invoices.get(id); }
   async listInvoices(customerId?: string) { const list = Array.from(this.invoices.values()); return customerId ? list.filter(i => i.customerId === customerId) : list; }
-  async createInvoice(i: InsertInvoice) { const id = randomUUID(); const invoice: Invoice = { id, ...i as any, createdAt: new Date() }; this.invoices.set(id, invoice); return invoice; }
+  async createInvoice(i: InsertInvoice) { const id = randomUUID(); const invoice: Invoice = { id, invoiceNumber: i.invoiceNumber, customerId: i.customerId ?? null, amount: i.amount, dueDate: i.dueDate ?? null, status: i.status ?? "draft", createdAt: new Date() }; this.invoices.set(id, invoice); return invoice; }
 
   async getLead(id: string) { return this.leads.get(id); }
   async listLeads() { return Array.from(this.leads.values()); }
-  async createLead(l: InsertLead) { const id = randomUUID(); const lead: Lead = { id, ...l as any, createdAt: new Date() }; this.leads.set(id, lead); return lead; }
+  async createLead(l: InsertLead) { const id = randomUUID(); const lead: Lead = { id, name: l.name, email: l.email ?? null, company: l.company ?? null, score: l.score ? parseFloat(l.score) : 0, status: l.status ?? "new", createdAt: new Date() }; this.leads.set(id, lead); return lead; }
 
   async getWorkOrder(id: string) { return this.workOrders.get(id); }
   async listWorkOrders() { return Array.from(this.workOrders.values()); }
-  async createWorkOrder(w: InsertWorkOrder) { const id = randomUUID(); const wo: WorkOrder = { id, ...w, createdAt: new Date() }; this.workOrders.set(id, wo); return wo; }
+  async createWorkOrder(w: InsertWorkOrder) { const id = randomUUID(); const wo: WorkOrder = { id, title: w.title, status: w.status ?? null, description: w.description ?? null, assignedTo: w.assignedTo ?? null, dueDate: w.dueDate ?? null, createdAt: new Date() }; this.workOrders.set(id, wo); return wo; }
 
   async getEmployee(id: string) { return this.employees.get(id); }
   async listEmployees(department?: string) { const list = Array.from(this.employees.values()); return department ? list.filter(e => e.department === department) : list; }
-  async createEmployee(e: InsertEmployee) { const id = randomUUID(); const emp: Employee = { id, ...e as any, createdAt: new Date() }; this.employees.set(id, emp); return emp; }
+  async createEmployee(e: InsertEmployee) { const id = randomUUID(); const emp: Employee = { id, name: e.name, email: e.email ?? null, department: e.department ?? null, role: e.role ?? null, salary: e.salary ? parseFloat(e.salary) : null, createdAt: new Date() }; this.employees.set(id, emp); return emp; }
 
   async getMobileDevice(id: string) { return this.mobileDevices.get(id); }
   async listMobileDevices(userId?: string) { const list = Array.from(this.mobileDevices.values()); return userId ? list.filter(d => d.userId === userId) : list; }
-  async createMobileDevice(d: InsertMobileDevice) { const id = randomUUID(); const dev: MobileDevice = { id, ...d as any, createdAt: new Date() }; this.mobileDevices.set(id, dev); return dev; }
+  async createMobileDevice(d: InsertMobileDevice) { const id = randomUUID(); const dev: MobileDevice = { id, userId: d.userId, deviceId: d.deviceId, platform: d.platform ?? null, lastSync: d.lastSync ?? null, createdAt: new Date() }; this.mobileDevices.set(id, dev); return dev; }
   async registerMobileDevice(d: InsertMobileDevice) { return this.createMobileDevice(d); }
   async updateMobileDeviceSync(deviceId: string) { return this.mobileDevices.get(deviceId); }
 
@@ -323,7 +323,7 @@ export class MemStorage implements IStorage {
 
   async getCopilotMessage(id: string) { return this.copilotMessages.get(id); }
   async listCopilotMessages(conversationId?: string) { const list = Array.from(this.copilotMessages.values()); return conversationId ? list.filter(m => m.conversationId === conversationId) : list; }
-  async createCopilotMessage(m: InsertCopilotMessage) { const id = randomUUID(); const msg: CopilotMessage = { id, ...m, createdAt: new Date() }; this.copilotMessages.set(id, msg); return msg; }
+  async createCopilotMessage(m: InsertCopilotMessage) { const id = randomUUID(); const msg: CopilotMessage = { id, conversationId: m.conversationId, role: m.role, content: m.content ?? null, createdAt: new Date() }; this.copilotMessages.set(id, msg); return msg; }
 
   async getRevenueForecast(id: string) { return this.revenueForecasts.get(id); }
   async listRevenueForecasts() { return Array.from(this.revenueForecasts.values()); }

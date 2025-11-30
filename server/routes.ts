@@ -702,11 +702,11 @@ export async function registerRoutes(
       const recentMessages = await storage.listCopilotMessages(data.conversationId);
       const messages = recentMessages.slice(-10).map((m) => ({
         role: m.role as "user" | "assistant",
-        content: m.content,
+        content: m.content || "",
       }));
       
       if (messages[messages.length - 1]?.content !== data.content) {
-        messages.push({ role: "user", content: data.content });
+        messages.push({ role: "user", content: data.content || "" });
       }
       
       try {
@@ -716,7 +716,7 @@ export async function registerRoutes(
           model,
           messages: [
             { role: "system", content: systemPrompt },
-            ...messages,
+            ...messages.map(m => ({ role: m.role as "user" | "assistant", content: m.content })),
           ],
           max_tokens: 1024,
         });
@@ -743,6 +743,38 @@ export async function registerRoutes(
       }
       res.status(500).json({ error: "Failed to create message" });
     }
+  });
+
+  // ========== CRM: LEADS ==========
+  app.get("/api/leads", async (req, res) => {
+    const leads = await storage.listLeads();
+    res.json(leads);
+  });
+
+  app.post("/api/leads", async (req, res) => {
+    try {
+      const data = insertLeadSchema.parse(req.body);
+      const lead = await storage.createLead(data);
+      res.status(201).json(lead);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create lead" });
+    }
+  });
+
+  app.get("/api/leads/:id", async (req, res) => {
+    const lead = await storage.getLead(req.params.id);
+    if (!lead) return res.status(404).json({ error: "Lead not found" });
+    res.json(lead);
+  });
+
+  app.patch("/api/leads/:id", async (req, res) => {
+    const lead = await storage.getLead(req.params.id);
+    if (!lead) return res.status(404).json({ error: "Lead not found" });
+    const updated = { ...lead, ...req.body };
+    res.json(updated);
   });
 
   // ========== PHASE 3: PROCUREMENT APIs ==========
