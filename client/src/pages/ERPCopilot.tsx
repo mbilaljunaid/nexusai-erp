@@ -1,9 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, AlertTriangle, Zap, TrendingDown } from "lucide-react";
+import { BarChart3, AlertTriangle, Zap, TrendingDown, Brain } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
+import { useState } from "react";
 
 interface ERPAnalysis {
   id: string;
@@ -14,10 +15,17 @@ interface ERPAnalysis {
 }
 
 export default function ERPCopilot() {
+  const [activeNav, setActiveNav] = useState("findings");
   const { data: analyses = [] } = useQuery<ERPAnalysis[]>({
     queryKey: ["/api/copilot/erp"],
     retry: false,
   });
+
+  const navItems = [
+    { id: "findings", label: "Findings", icon: AlertTriangle, color: "text-red-500" },
+    { id: "recommendations", label: "Recommendations", icon: Zap, color: "text-yellow-500" },
+    { id: "impact", label: "Impact", icon: TrendingDown, color: "text-green-500" },
+  ];
 
   const stats = {
     total: analyses.length,
@@ -28,7 +36,7 @@ export default function ERPCopilot() {
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">ERP Copilot</h1>
+      <div><h1 className="text-3xl font-semibold flex items-center gap-2"><Brain className="h-8 w-8" />ERP Copilot</h1>
         <p className="text-muted-foreground text-sm">Financial optimization and anomaly detection</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -61,15 +69,12 @@ export default function ERPCopilot() {
           </div>
         </CardContent></Card>
       </div>
-      <Tabs defaultValue="findings" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="findings">Findings</TabsTrigger>
-          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-          <TabsTrigger value="impact">Impact</TabsTrigger>
-        </TabsList>
-        <TabsContent value="findings">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      
+      {activeNav === "findings" && (
+        <div className="space-y-3">
           {analyses.map((analysis: any) => (
-            <Card key={analysis.id}><CardContent className="p-4">
+            <Card key={analysis.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-start justify-between">
                 <div><p className="font-semibold">{analysis.category}</p>
                   <p className="text-sm text-muted-foreground mt-1">{analysis.finding}</p></div>
@@ -77,10 +82,10 @@ export default function ERPCopilot() {
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="recommendations"><p className="text-muted-foreground">AI-driven cost optimization and efficiency recommendations</p></TabsContent>
-        <TabsContent value="impact"><p className="text-muted-foreground">Quantified business impact analysis</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "recommendations" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">AI-driven cost optimization and efficiency recommendations</p><div className="mt-4"><Button size="sm">Review Opportunities</Button></div></CardContent></Card>)}
+      {activeNav === "impact" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Quantified business impact analysis</p></CardContent></Card>)}
     </div>
   );
 }

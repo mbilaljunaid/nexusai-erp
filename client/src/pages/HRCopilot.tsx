@@ -1,9 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Users, TrendingUp, AlertCircle, CheckCircle2, Brain } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
+import { useState } from "react";
 
 interface HRInsight {
   id: string;
@@ -14,10 +15,17 @@ interface HRInsight {
 }
 
 export default function HRCopilot() {
+  const [activeNav, setActiveNav] = useState("insights");
   const { data: insights = [] } = useQuery<HRInsight[]>({
     queryKey: ["/api/copilot/hr"],
     retry: false,
   });
+
+  const navItems = [
+    { id: "insights", label: "Insights", icon: AlertCircle, color: "text-red-500" },
+    { id: "actions", label: "Actions", icon: CheckCircle2, color: "text-green-500" },
+    { id: "outcomes", label: "Outcomes", icon: TrendingUp, color: "text-blue-500" },
+  ];
 
   const stats = {
     total: insights.length,
@@ -28,7 +36,7 @@ export default function HRCopilot() {
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">HR Copilot</h1>
+      <div><h1 className="text-3xl font-semibold flex items-center gap-2"><Brain className="h-8 w-8" />HR Copilot</h1>
         <p className="text-muted-foreground text-sm">Talent management and people insights</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -61,15 +69,12 @@ export default function HRCopilot() {
           </div>
         </CardContent></Card>
       </div>
-      <Tabs defaultValue="insights" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="insights">Insights</TabsTrigger>
-          <TabsTrigger value="actions">Actions</TabsTrigger>
-          <TabsTrigger value="outcomes">Outcomes</TabsTrigger>
-        </TabsList>
-        <TabsContent value="insights">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      
+      {activeNav === "insights" && (
+        <div className="space-y-3">
           {insights.map((insight: any) => (
-            <Card key={insight.id}><CardContent className="p-4">
+            <Card key={insight.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-start justify-between">
                 <div><p className="font-semibold">{insight.employee}</p>
                   <p className="text-sm text-muted-foreground mt-1">{insight.insight}</p>
@@ -78,10 +83,10 @@ export default function HRCopilot() {
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="actions"><p className="text-muted-foreground">Recommended HR actions and interventions</p></TabsContent>
-        <TabsContent value="outcomes"><p className="text-muted-foreground">Outcome tracking and effectiveness metrics</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "actions" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Recommended HR actions and interventions</p><div className="mt-4 space-y-2"><Button size="sm" variant="outline" className="w-full">Review Retention Actions</Button><Button size="sm" variant="outline" className="w-full">Schedule Development Plans</Button></div></CardContent></Card>)}
+      {activeNav === "outcomes" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Outcome tracking and effectiveness metrics</p></CardContent></Card>)}
     </div>
   );
 }

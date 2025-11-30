@@ -1,10 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, CheckCircle, Zap, Code } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { useState } from "react";
+import { AlertCircle, CheckCircle, Zap, Code, Plug, Webhook } from "lucide-react";
 
 export default function IntegrationHub() {
+  const [activeNav, setActiveNav] = useState("integrations");
+
+  const navItems = [
+    { id: "integrations", label: "Integrations", icon: Plug, color: "text-blue-500" },
+    { id: "workflows", label: "Workflows", icon: Zap, color: "text-purple-500" },
+    { id: "webhooks", label: "Webhooks", icon: Webhook, color: "text-green-500" },
+    { id: "marketplace", label: "Marketplace", icon: Code, color: "text-orange-500" },
+  ];
+
   const integrations = [
     { name: "Salesforce", status: "active", lastSync: "2 hours ago", type: "CRM" },
     { name: "HubSpot", status: "active", lastSync: "15 minutes ago", type: "Marketing" },
@@ -36,22 +46,17 @@ export default function IntegrationHub() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Integration Hub</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2"><Plug className="h-8 w-8" />Integration Hub</h1>
         <p className="text-muted-foreground mt-2">Connect your business systems and automate workflows</p>
       </div>
 
-      <Tabs defaultValue="integrations" className="w-full">
-        <TabsList>
-          <TabsTrigger value="integrations">Integrations</TabsTrigger>
-          <TabsTrigger value="workflows">Workflows</TabsTrigger>
-          <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
-          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="integrations" className="space-y-4 mt-6">
+      {activeNav === "integrations" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {integrations.map((integration, idx) => (
-              <Card key={idx} data-testid={`card-integration-${integration.name.replace(/\s+/g, "-").toLowerCase()}`}>
+              <Card key={idx} data-testid={`card-integration-${integration.name.replace(/\s+/g, "-").toLowerCase()}`} className="hover-elevate cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -69,92 +74,51 @@ export default function IntegrationHub() {
                   </div>
                   <p className="text-xs text-muted-foreground mb-4">Last sync: {integration.lastSync}</p>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" data-testid={`button-test-${integration.name.replace(/\s+/g, "-").toLowerCase()}`}>
-                      Test
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      Config
-                    </Button>
+                    <Button size="sm" variant="outline" data-testid={`button-test-${integration.name.replace(/\s+/g, "-").toLowerCase()}`}>Test</Button>
+                    <Button size="sm" variant="outline">Configure</Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="workflows" className="space-y-4 mt-6">
-          <Button data-testid="button-create-workflow" className="mb-4">
-            <Zap className="h-4 w-4 mr-2" />
-            Create Workflow
-          </Button>
+      {activeNav === "workflows" && (
+        <div className="space-y-4">
           {workflows.map((workflow) => (
-            <Card key={workflow.id} data-testid={`card-workflow-${workflow.id}`}>
+            <Card key={workflow.id} data-testid={`card-workflow-${workflow.id}`} className="hover-elevate cursor-pointer">
               <CardContent className="pt-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
                     <h3 className="font-semibold">{workflow.name}</h3>
                     <p className="text-sm text-muted-foreground">Trigger: {workflow.trigger}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Actions: {workflow.actions}</p>
                   </div>
-                  <Badge variant={workflow.status === "active" ? "default" : "secondary"}>
-                    {workflow.status}
-                  </Badge>
+                  <Badge variant={workflow.status === "active" ? "default" : "secondary"}>{workflow.status}</Badge>
                 </div>
-                <p className="text-xs text-muted-foreground mb-3">{workflow.actions} actions configured</p>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline">
-                    Edit
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    Test
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    {workflow.status === "active" ? "Disable" : "Enable"}
-                  </Button>
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" variant="outline">Edit</Button>
+                  <Button size="sm" variant="outline">Run</Button>
+                  <Button size="sm" variant="outline">Delete</Button>
                 </div>
               </CardContent>
             </Card>
           ))}
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="webhooks" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Code className="h-5 w-5" />
-                Webhook Configuration
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">
-                Create webhooks to receive real-time events from your integrated systems
-              </p>
-              <Button data-testid="button-create-webhook">Create Webhook</Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "webhooks" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle className="text-base">Webhook Configuration</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">12 active webhooks</p><Button className="mt-4" size="sm">+ Add Webhook</Button></CardContent></Card>
+        </div>
+      )}
 
-        <TabsContent value="marketplace" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Integration Marketplace</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {["SAP", "Oracle", "NetSuite", "QuickBooks", "ServiceNow", "Jira"].map((app, idx) => (
-                  <div key={idx} className="p-4 border rounded-lg hover:bg-muted transition-colors" data-testid={`app-${app.replace(/\s+/g, "-").toLowerCase()}`}>
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-semibold">{app}</h4>
-                      <Button size="sm" variant="outline">
-                        Install
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {activeNav === "marketplace" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle className="text-base">App Marketplace</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Browse and install 500+ enterprise applications</p><Button className="mt-4" size="sm">Browse Apps</Button></CardContent></Card>
+        </div>
+      )}
     </div>
   );
 }
