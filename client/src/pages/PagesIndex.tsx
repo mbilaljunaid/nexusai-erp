@@ -2,10 +2,11 @@ import { useState, useMemo } from "react"; import { Input } from "@/components/u
 
 const PAGES_BY_PACK = [
   { pack: "Core Modules", pages: ["Dashboard", "UserProfile", "Settings", "Notifications"] },
-  { pack: "Retail & E-Commerce", pages: ["ProductCatalog", "InventoryWarehouse", "OrderFulfillment", "CustomerProfiles", "LoyaltyPrograms", "PricingPromotionsRetail", "BillingPaymentsRetail", "SupplyChainRetail", "HRRetailStaff", "MerchandisingAI", "RetailAnalyticsBI", "MarketingCampaignsRetail"] },
+  { pack: "Retail & E-Commerce", pages: ["ProductCatalog", "InventoryWarehouse", "OrderFulfillment", "CustomerProfiles", "LoyaltyPrograms", "PricingPromotionsRetail", "BillingPaymentsRetail", "SupplyChainRetail"] },
   { pack: "Hospitality & Travel", pages: ["PropertyManagement", "ReservationsBookings", "GuestManagement", "HospitalityCRM", "HospitalityBilling", "HospitalitySupply", "HospitalityHR", "RevenueOptimization", "HospitalityAnalytics", "EventsActivities", "TravelItinerary"] },
-  { pack: "Telecom & Media", pages: ["SubscriberAccounts", "ServiceProvisioning", "TelecomBilling", "ContentMedia", "TelecomCRM", "TelecomMarketing", "TelecomHR", "TelecomAnalytics", "TelecomBI", "NetworkInfra", "TelecomFieldService"] },
+  { pack: "Telecom & Media", pages: ["SubscriberManagement", "ServiceProvisioning", "BillingInvoicing", "NetworkUsageMonitoring", "CustomerSupportCRM", "MarketingTelecom", "HRTelecom", "TelecomAnalytics", "TelecomDashboard", "NetworkProvisioning"] },
   { pack: "Government & Public Sector", pages: ["CitizenCaseManagement", "PublicServicesDelivery", "FinanceGrants", "GovernmentHR", "GovernmentProcurement", "ProjectInfrastructure", "ComplianceReporting", "GovernmentBI", "CitizenEngagement", "WorkflowAutomation"] },
+  { pack: "Education & E-Learning", pages: ["StudentManagement", "FacultyManagement", "CourseManagement", "AdmissionsEnrollment", "AssessmentGrading", "LMSContent", "EducationCRM", "EducationBilling", "EducationHR", "EducationAttendance", "EducationEvents", "EducationAnalytics"] },
 ];
 
 function pageToUrl(pageName: string): string {

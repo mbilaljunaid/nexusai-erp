@@ -405,36 +405,6 @@ const ColdChainLogistics = lazy(() => import("@/pages/ColdChainLogistics"));
 const FBDemandPlanning = lazy(() => import("@/pages/FBDemandPlanning"));
 const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTraceability"));
 const FoodBeverageBIDashboard = lazy(() => import("@/pages/FoodBeverageBIDashboard"));
-const MaterialMaster = lazy(() => import("@/pages/MaterialMaster"));
-const ProductMaster = lazy(() => import("@/pages/ProductMaster"));
-const FormulationComposer = lazy(() => import("@/pages/FormulationComposer"));
-const SupplierQualification = lazy(() => import("@/pages/SupplierQualification"));
-const ELNResearchNotebook = lazy(() => import("@/pages/ELNResearchNotebook"));
-const LIMSLabManagement = lazy(() => import("@/pages/LIMSLabManagement"));
-const eBatchRecord = lazy(() => import("@/pages/eBatchRecord"));
-const StabilityStudies = lazy(() => import("@/pages/StabilityStudies"));
-const Serialization = lazy(() => import("@/pages/Serialization"));
-const QMSCAPA = lazy(() => import("@/pages/QMSCAPA"));
-const RegulatoryeCTD = lazy(() => import("@/pages/RegulatoryeCTD"));
-const Pharmacovigilance = lazy(() => import("@/pages/Pharmacovigilance"));
-const ClinicalSupply = lazy(() => import("@/pages/ClinicalSupply"));
-const ValidationCSV = lazy(() => import("@/pages/ValidationCSV"));
-const PharmaAnalytics = lazy(() => import("@/pages/PharmaAnalytics"));
-const StyleMasterSKU = lazy(() => import("@/pages/StyleMasterSKU"));
-const TechPackBuilder = lazy(() => import("@/pages/TechPackBuilder"));
-const SampleTracking = lazy(() => import("@/pages/SampleTracking"));
-const CMTFactoryManagement = lazy(() => import("@/pages/CMTFactoryManagement"));
-const AssortmentPlanner = lazy(() => import("@/pages/AssortmentPlanner"));
-const FashionInventory = lazy(() => import("@/pages/FashionInventory"));
-const EcommerceMarketplace = lazy(() => import("@/pages/EcommerceMarketplace"));
-const FashionPOS = lazy(() => import("@/pages/FashionPOS"));
-const ReturnsExchanges = lazy(() => import("@/pages/ReturnsExchanges"));
-const CostingProfitability = lazy(() => import("@/pages/CostingProfitability"));
-const WholesaleB2B = lazy(() => import("@/pages/WholesaleB2B"));
-const MarketingCampaigns = lazy(() => import("@/pages/MarketingCampaigns"));
-const SustainabilityMaterials = lazy(() => import("@/pages/SustainabilityMaterials"));
-const DemandForecastingFashion = lazy(() => import("@/pages/DemandForecastingFashion"));
-const FashionAnalytics = lazy(() => import("@/pages/FashionAnalytics"));
 const ProductMasterCPG = lazy(() => import("@/pages/ProductMasterCPG"));
 const IngredientMasterCPG = lazy(() => import("@/pages/IngredientMasterCPG"));
 const RecipeBOMMaster = lazy(() => import("@/pages/RecipeBOMMaster"));
@@ -558,6 +528,15 @@ const CustomerProfilesRetail = lazy(() => import("@/pages/CustomerProfiles"));
 const LoyaltyProgramsRetail = lazy(() => import("@/pages/LoyaltyPrograms"));
 const PricingPromotionsRetail = lazy(() => import("@/pages/PricingPromotionsRetail"));
 const BillingPaymentsRetail = lazy(() => import("@/pages/BillingPaymentsRetail"));
+const SubscriberAccounts = lazy(() => import("@/pages/SubscriberManagement"));
+const TelecomBilling = lazy(() => import("@/pages/BillingInvoicing"));
+const ContentMedia = lazy(() => import("@/pages/NetworkUsageMonitoring"));
+const TelecomCRM = lazy(() => import("@/pages/CustomerSupportCRM"));
+const TelecomMarketing = lazy(() => import("@/pages/MarketingTelecom"));
+const TelecomHR = lazy(() => import("@/pages/HRTelecom"));
+const TelecomBI = lazy(() => import("@/pages/TelecomDashboard"));
+const NetworkInfra = lazy(() => import("@/pages/NetworkProvisioning"));
+const TelecomFieldService = lazy(() => import("@/pages/FieldService"));
 const CitizenCaseManagement = lazy(() => import("@/pages/CitizenCaseManagement"));
 const PublicServicesDelivery = lazy(() => import("@/pages/PublicServicesDelivery"));
 const FinanceGrants = lazy(() => import("@/pages/FinanceGrants"));
@@ -572,7 +551,7 @@ const WorkflowAutomation = lazy(() => import("@/pages/WorkflowAutomation"));
 // Education & E-Learning Pack (Industry Pack 31)
 const StudentManagement = lazy(() => import("@/pages/StudentManagement"));
 const FacultyManagement = lazy(() => import("@/pages/FacultyManagement"));
-const CourseManagement = lazy(() => import("@/pages/CourseManagement"));
+const CourseManagementEdu = lazy(() => import("@/pages/CourseManagement"));
 const AdmissionsEnrollment = lazy(() => import("@/pages/AdmissionsEnrollment"));
 const AssessmentGrading = lazy(() => import("@/pages/AssessmentGrading"));
 const LMSContent = lazy(() => import("@/pages/LMSContent"));
@@ -1394,7 +1373,7 @@ function Router() {
       <Route path="/gov-procurement" component={GovernmentProcurement} />
       <Route path="/education-students" component={StudentManagement} />
       <Route path="/education-faculty" component={FacultyManagement} />
-      <Route path="/education-courses" component={CourseManagement} />
+      <Route path="/education-courses" component={CourseManagementEdu} />
       <Route path="/education-admissions" component={AdmissionsEnrollment} />
       <Route path="/education-assessment" component={AssessmentGrading} />
       <Route path="/education-lms" component={LMSContent} />

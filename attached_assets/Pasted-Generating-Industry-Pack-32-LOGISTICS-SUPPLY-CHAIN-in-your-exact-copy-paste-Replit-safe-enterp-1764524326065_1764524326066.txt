@@ -1,0 +1,292 @@
+Generating Industry Pack 32 — LOGISTICS & SUPPLY CHAIN in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Logistics & Supply Chain Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 32 — LOGISTICS & SUPPLY CHAIN
+
+Purpose: End-to-end solution for freight forwarders, logistics providers, shipping companies, warehousing operators, and supply chain enterprises, covering inventory & warehouse management, transportation & fleet management, order management, procurement, supplier & vendor management, CRM & customer support, billing & invoicing, HR & workforce, AI-driven route & demand optimization, BI & dashboards, compliance & regulatory reporting, mobile apps, and integrations with carriers, e-commerce platforms, ERP systems, and IoT / tracking devices. Delivered as an industry template that auto-enables and configures all related modules.
+
+Auto-enable modules when template is selected: Inventory & Warehouse Management, Transportation & Fleet Management, Order Management, Procurement & Supplier Management, CRM & Customer Support, Billing & Invoicing, HR & Workforce, AI / ML Route & Demand Optimization, BI & Dashboards, Compliance & Regulatory Reporting, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+⸻
+
+1. INVENTORY & WAREHOUSE MANAGEMENT
+
+Screens / Forms
+	•	Warehouse master & storage locations
+	•	Stock & SKU master
+	•	Stock in/out transactions
+	•	Batch & lot tracking
+	•	Expiry & quality control
+
+Fields
+WarehouseID, SKU, Quantity, BatchID, LotID, ExpiryDate, Location, AuditFields.
+
+Validations
+	•	Stock level validation
+	•	Location capacity enforcement
+	•	Batch/lot uniqueness
+
+Workflows
+	•	Receive goods → Store → Track stock → Issue → Audit → Report
+
+⸻
+
+2. TRANSPORTATION & FLEET MANAGEMENT
+
+Screens / Forms
+	•	Vehicle / fleet master
+	•	Driver / operator master
+	•	Route planning & scheduling
+	•	Fleet maintenance & inspections
+	•	Fuel & utilization tracking
+
+Fields
+VehicleID, DriverID, RouteID, Status, MaintenanceSchedule, FuelConsumption, AuditFields.
+
+Validations
+	•	Vehicle availability
+	•	Driver licensing & compliance
+	•	Route capacity & schedule adherence
+
+Workflows
+	•	Assign vehicle → Plan route → Dispatch → Monitor → Maintain → Log usage
+
+⸻
+
+3. ORDER MANAGEMENT
+
+Screens / Forms
+	•	Sales orders / shipment requests
+	•	Order tracking & status updates
+	•	Delivery scheduling & dispatch
+	•	Returns & reverse logistics
+
+Fields
+OrderID, CustomerID, SKU, Quantity, Status, DeliveryDate, AuditFields.
+
+Validations
+	•	Stock availability
+	•	Delivery feasibility
+	•	Customer credit & compliance checks
+
+Workflows
+	•	Capture order → Validate → Pick & pack → Ship → Track → Deliver → Close order
+
+⸻
+
+4. PROCUREMENT & SUPPLIER MANAGEMENT
+
+Screens / Forms
+	•	Vendor / supplier master
+	•	Purchase requisitions & purchase orders
+	•	Contract & SLA management
+	•	Supplier performance tracking
+
+Fields
+SupplierID, MaterialID, POID, Quantity, SLA, ReceivedQty, AuditFields.
+
+Validations
+	•	Supplier compliance
+	•	Material availability & quality checks
+	•	SLA adherence
+
+Workflows
+	•	Requisition → PO creation → Receive → Quality check → Update stock → Payment
+
+⸻
+
+5. CRM & CUSTOMER SUPPORT
+
+Screens / Forms
+	•	Customer accounts & profiles
+	•	Complaints & ticket management
+	•	Shipment & delivery queries
+	•	SLA & response tracking
+
+Fields
+TicketID, CustomerID, OrderID, Status, Priority, AuditFields.
+
+Validations
+	•	SLA adherence
+	•	Duplicate ticket detection
+	•	Escalation rules
+
+Workflows
+	•	Capture ticket → Assign → Resolve → Close → Notify customer
+
+⸻
+
+6. BILLING & INVOICING
+
+Screens / Forms
+	•	Invoice creation for shipments, storage, and services
+	•	Payment collection & reconciliation
+	•	Discounts, penalties, and claims
+	•	Multi-currency & multi-location billing
+
+Fields
+InvoiceID, OrderID, Amount, PaymentStatus, PaymentMethod, AuditFields.
+
+Validations
+	•	Accurate invoicing
+	•	Payment verification
+	•	Adjustment & claim validation
+
+Workflows
+	•	Generate invoice → Send → Collect payment → Reconcile → Apply adjustments → Report
+
+⸻
+
+7. HR & WORKFORCE MANAGEMENT
+
+Screens / Forms
+	•	Employee master (warehouse, drivers, admin)
+	•	Shift & attendance tracking
+	•	Payroll & performance management
+	•	Certifications & training
+
+Fields
+EmployeeID, Role, Department, Shift, PayrollID, TrainingID, AuditFields.
+
+Validations
+	•	Role eligibility
+	•	Shift compliance
+	•	Payroll accuracy
+
+Workflows
+	•	Onboard → Assign shift/role → Track attendance → Evaluate → Payroll
+
+⸻
+
+8. AI & ROUTE / DEMAND OPTIMIZATION
+
+Use Cases
+	•	Optimal routing & fleet allocation
+	•	Demand forecasting & stock replenishment
+	•	Delivery ETA predictions
+	•	Predictive maintenance
+
+Controls
+	•	Human review required for critical operational decisions
+
+⸻
+
+9. BI & DASHBOARDS
+
+Prebuilt Dashboards
+	•	Inventory & stock levels
+	•	Fleet utilization & performance
+	•	Order fulfillment & delivery KPIs
+	•	Supplier performance metrics
+	•	Revenue & billing analysis
+
+Ad-hoc
+	•	Drill down by warehouse → SKU → order → route → vehicle → customer
+
+⸻
+
+10. COMPLIANCE & REGULATORY REPORTING
+
+Screens / Forms
+	•	Customs, safety, and environmental compliance
+	•	Shipment documentation
+	•	Audit trails & reporting
+	•	Exception management
+
+Fields
+ComplianceID, OrderID, RegulationID, Status, AuditFields.
+
+Validations
+	•	Regulatory adherence
+	•	Documentation completeness
+
+Workflows
+	•	Collect compliance data → Validate → Generate report → Submit → Track
+
+⸻
+
+11. MOBILE APPS
+
+Customer App
+	•	Track shipments, payments, notifications, complaints
+Driver / Staff App
+	•	Route assignments, delivery confirmation, issue reporting
+Manager App
+	•	Dashboards, KPIs, fleet & inventory monitoring, approvals
+
+⸻
+
+12. ROLES & PERMISSIONS
+
+Core Roles
+	•	Customer
+	•	Warehouse Staff
+	•	Driver / Fleet Operator
+	•	Logistics / Operations Manager
+	•	Finance / Accounts
+	•	HR / Payroll
+	•	IT / Integration Engineer
+	•	Admin
+
+Permission Notes
+	•	Role-based access enforced for inventory, order, delivery, billing, and operational data
+
+⸻
+
+13. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	100 SKUs, 5 warehouses, 20 vehicles, 50 orders, 10 suppliers, 50 employees
+
+Onboarding Steps
+	•	Register warehouses & stock → Configure vehicles & routes → Create orders → Assign staff → Track shipments → Generate invoices → Update dashboards
+
+⸻
+
+14. INTEGRATIONS & CONNECTORS
+
+Suggested Integrations
+	•	E-commerce & ERP platforms
+	•	Carriers & freight partners
+	•	IoT tracking devices & sensors
+	•	Payment gateways
+	•	BI / data warehouse
+
+Integration Rules
+	•	Idempotent ingestion, audit logging, secure credential storage
+
+⸻
+
+15. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	Stock below minimum → alert warehouse manager
+	•	Delivery delay → notify operations & customer
+	•	Fleet maintenance due → alert maintenance team
+	•	Order discrepancy → escalate automatically
+
+⸻
+
+16. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+Idempotency & Safety
+	•	Seeders check natural keys (OrderID + SKU + VehicleID) before insert
+	•	Migrations additive; destructive changes require rollback scripts
+	•	Feature flags per tenant for route optimization, multi-warehouse operations, AI recommendations
+
+Testing
+	•	Order lifecycle → warehouse → fleet → delivery → billing → KPI dashboards
+
+⸻
+
+17. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you want me to generate Industry Pack 33 — RETAIL & E-COMMERCE next, reply “Yes” and I will produce it in the same format.
