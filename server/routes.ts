@@ -5843,41 +5843,52 @@ export async function registerRoutes(
   app.get("/api/retail-kpis", (req, res) => { res.json({ totalSales: 1250000, totalOrders: 1234, avgOrderValue: 1014, totalCustomers: 567, activePromotions: 12 }); });
 
 
-  // ========== INDUSTRY PACK 34: HEALTHCARE & PHARMA ==========
-  const hcPatStore: any[] = [];
-  const hcProvStore: any[] = [];
-  const hcApptStore: any[] = [];
-  const hcEMRStore: any[] = [];
-  const hcPharmStore: any[] = [];
-  const hcLabStore: any[] = [];
-  const hcBillStore: any[] = [];
-  const hcCRMStore: any[] = [];
-  const hcEmpStore: any[] = [];
-  const hcCompStore: any[] = [];
+  // ========== INDUSTRY PACK 35: BANKING & FINANCIAL SERVICES ==========
+  const bankAcctStore: any[] = [];
+  const bankCustStore: any[] = [];
+  const bankLoanStore: any[] = [];
+  const bankDepStore: any[] = [];
+  const bankTxnStore: any[] = [];
+  const bankRiskStore: any[] = [];
+  const bankCRMStore: any[] = [];
+  const bankTreasStore: any[] = [];
+  const bankEmpStore: any[] = [];
+  const bankCompStore: any[] = [];
 
-  app.get("/api/healthcare-patients", (req, res) => { if (hcPatStore.length === 0) { for (let i = 1; i <= 20; i++) { hcPatStore.push({ id: `pat${i}`, patientId: `PAT-${String(i).padStart(4,'0')}`, firstName: `Patient`, lastName: `${i}`, dob: "1990-01-15", insuranceId: `INS-${String(i).padStart(3,'0')}`, status: 'ACTIVE' }); } } res.json(hcPatStore); });
-  app.post("/api/healthcare-patients", (req, res) => { const p = { id: `pat-${Date.now()}`, ...req.body }; hcPatStore.push(p); res.status(201).json(p); });
-  app.get("/api/healthcare-providers", (req, res) => { if (hcProvStore.length === 0) { for (let i = 1; i <= 10; i++) { hcProvStore.push({ id: `prov${i}`, providerId: `PROV-${String(i).padStart(3,'0')}`, firstName: `Dr.`, lastName: `Provider ${i}`, specialty: i % 3 === 0 ? 'Cardiology' : i % 3 === 1 ? 'Pediatrics' : 'Orthopedics', licenseNo: `LIC-${i}`, status: 'ACTIVE' }); } } res.json(hcProvStore); });
-  app.post("/api/healthcare-providers", (req, res) => { const pr = { id: `prov-${Date.now()}`, ...req.body }; hcProvStore.push(pr); res.status(201).json(pr); });
-  app.get("/api/healthcare-appointments", (req, res) => { if (hcApptStore.length === 0) { for (let i = 1; i <= 15; i++) { hcApptStore.push({ id: `appt${i}`, appointmentId: `APPT-${String(i).padStart(4,'0')}`, patientId: `PAT-${String(Math.floor(Math.random()*20)+1).padStart(4,'0')}`, providerId: `PROV-${String(Math.floor(Math.random()*10)+1).padStart(3,'0')}`, datetime: new Date(Date.now() + i * 86400000).toISOString(), status: i % 2 === 0 ? 'COMPLETED' : 'SCHEDULED' }); } } res.json(hcApptStore); });
-  app.post("/api/healthcare-appointments", (req, res) => { const a = { id: `appt-${Date.now()}`, ...req.body }; hcApptStore.push(a); res.status(201).json(a); });
-  app.get("/api/healthcare-emr", (req, res) => { if (hcEMRStore.length === 0) { for (let i = 1; i <= 10; i++) { hcEMRStore.push({ id: `emr${i}`, recordId: `EMR-${String(i).padStart(4,'0')}`, patientId: `PAT-${String(i).padStart(4,'0')}`, providerId: `PROV-${String((i%10)+1).padStart(3,'0')}`, diagnosis: 'Common Cold', medications: ['Aspirin', 'Cough Syrup'], status: 'COMPLETED' }); } } res.json(hcEMRStore); });
-  app.post("/api/healthcare-emr", (req, res) => { const e = { id: `emr-${Date.now()}`, ...req.body }; hcEMRStore.push(e); res.status(201).json(e); });
-  app.get("/api/healthcare-pharmacy", (req, res) => { if (hcPharmStore.length === 0) { for (let i = 1; i <= 10; i++) { hcPharmStore.push({ id: `pharm${i}`, drugId: `DRUG-${String(i).padStart(3,'0')}`, name: `Medication ${i}`, batch: `BATCH-${i}`, quantity: 100 + (i * 10), expiryDate: new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0], status: 'ACTIVE' }); } } res.json(hcPharmStore); });
-  app.post("/api/healthcare-pharmacy", (req, res) => { const ph = { id: `pharm-${Date.now()}`, ...req.body }; hcPharmStore.push(ph); res.status(201).json(ph); });
-  app.get("/api/healthcare-laboratory", (req, res) => { if (hcLabStore.length === 0) { for (let i = 1; i <= 8; i++) { hcLabStore.push({ id: `lab${i}`, testId: `TEST-${String(i).padStart(3,'0')}`, patientId: `PAT-${String(i).padStart(4,'0')}`, testName: i % 2 === 0 ? 'Blood Test' : 'X-Ray', sampleId: `SAMPLE-${i}`, result: 'Normal', status: 'COMPLETED' }); } } res.json(hcLabStore); });
-  app.post("/api/healthcare-laboratory", (req, res) => { const l = { id: `lab-${Date.now()}`, ...req.body }; hcLabStore.push(l); res.status(201).json(l); });
-  app.get("/api/healthcare-billing", (req, res) => { if (hcBillStore.length === 0) { for (let i = 1; i <= 12; i++) { hcBillStore.push({ id: `bill${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, patientId: `PAT-${String(i).padStart(4,'0')}`, amount: 5000 + (i * 500), insuranceStatus: i % 2 === 0 ? 'CLAIMED' : 'PENDING', paymentStatus: i % 3 === 0 ? 'PAID' : 'PENDING' }); } } res.json(hcBillStore); });
-  app.post("/api/healthcare-billing", (req, res) => { const b = { id: `bill-${Date.now()}`, ...req.body }; hcBillStore.push(b); res.status(201).json(b); });
-  app.get("/api/healthcare-crm", (req, res) => { if (hcCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { hcCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, patientId: `PAT-${String(i).padStart(4,'0')}`, type: i % 2 === 0 ? 'CALL' : 'EMAIL', subject: 'Health Reminder', status: 'COMPLETED' }); } } res.json(hcCRMStore); });
-  app.post("/api/healthcare-crm", (req, res) => { const c = { id: `crm-${Date.now()}`, ...req.body }; hcCRMStore.push(c); res.status(201).json(c); });
-  app.get("/api/healthcare-employees", (req, res) => { if (hcEmpStore.length === 0) { for (let i = 1; i <= 12; i++) { hcEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, firstName: `Staff`, lastName: `${i}`, role: i % 3 === 0 ? 'Doctor' : i % 3 === 1 ? 'Nurse' : 'Admin', department: 'Medical', status: 'ACTIVE' }); } } res.json(hcEmpStore); });
-  app.post("/api/healthcare-employees", (req, res) => { const emp = { id: `emp-${Date.now()}`, ...req.body }; hcEmpStore.push(emp); res.status(201).json(emp); });
-  app.get("/api/healthcare-compliance", (req, res) => { if (hcCompStore.length === 0) { hcCompStore.push({ id: 'comp1', type: 'HIPAA', department: 'All', status: 'COMPLIANT', lastReview: new Date().toISOString().split('T')[0] }, { id: 'comp2', type: 'Data Privacy', department: 'Records', status: 'COMPLIANT', lastReview: new Date().toISOString().split('T')[0] }); } res.json(hcCompStore); });
-  app.post("/api/healthcare-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; hcCompStore.push(co); res.status(201).json(co); });
-  app.get("/api/healthcare-ai-diagnostics", (req, res) => { res.json([{ id: 'ai1', patientId: 'PAT-0001', prediction: 'Risk: Medium', confidence: 78, recommendation: 'Schedule follow-up' }, { id: 'ai2', patientId: 'PAT-0002', prediction: 'Risk: Low', confidence: 92, recommendation: 'Continue current treatment' }]); });
-  app.post("/api/healthcare-ai-diagnostics", (req, res) => { const ai = { id: `ai-${Date.now()}`, ...req.body }; res.status(201).json(ai); });
-  app.get("/api/healthcare-dashboards", (req, res) => { res.json({ patients: 1245, providers: 45, appointments: 892, occupancy: 78, revenue: 2500000, claims: 856 }); });
+  app.get("/api/banking-accounts", (req, res) => { if (bankAcctStore.length === 0) { for (let i = 1; i <= 20; i++) { bankAcctStore.push({ id: `acct${i}`, accountId: `ACC-${String(i).padStart(5,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, accountType: i % 2 === 0 ? 'Savings' : 'Checking', balance: 100000 + (i * 5000), status: 'ACTIVE' }); } } res.json(bankAcctStore); });
+  app.post("/api/banking-accounts", (req, res) => { const a = { id: `acct-${Date.now()}`, ...req.body }; bankAcctStore.push(a); res.status(201).json(a); });
+
+  app.get("/api/banking-customers", (req, res) => { if (bankCustStore.length === 0) { for (let i = 1; i <= 15; i++) { bankCustStore.push({ id: `cust${i}`, customerId: `CUST-${String(i).padStart(3,'0')}`, name: `Customer ${i}`, email: `customer${i}@bank.com`, phone: `+91-${String(i).padStart(10,'0')}`, kycStatus: 'VERIFIED', status: 'ACTIVE' }); } } res.json(bankCustStore); });
+  app.post("/api/banking-customers", (req, res) => { const c = { id: `cust-${Date.now()}`, ...req.body }; bankCustStore.push(c); res.status(201).json(c); });
+
+  app.get("/api/banking-loans", (req, res) => { if (bankLoanStore.length === 0) { for (let i = 1; i <= 10; i++) { bankLoanStore.push({ id: `loan${i}`, loanId: `LOAN-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, amount: 500000 + (i * 100000), interestRate: 7 + (i * 0.5), status: i % 2 === 0 ? 'ACTIVE' : 'APPROVED' }); } } res.json(bankLoanStore); });
+  app.post("/api/banking-loans", (req, res) => { const l = { id: `loan-${Date.now()}`, ...req.body }; bankLoanStore.push(l); res.status(201).json(l); });
+
+  app.get("/api/banking-deposits", (req, res) => { if (bankDepStore.length === 0) { for (let i = 1; i <= 10; i++) { bankDepStore.push({ id: `dep${i}`, depositId: `DEP-${String(i).padStart(4,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, amount: 50000 + (i * 5000), interestRate: 5 + (i * 0.25), maturityDate: new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0], status: 'ACTIVE' }); } } res.json(bankDepStore); });
+  app.post("/api/banking-deposits", (req, res) => { const d = { id: `dep-${Date.now()}`, ...req.body }; bankDepStore.push(d); res.status(201).json(d); });
+
+  app.get("/api/banking-transactions", (req, res) => { if (bankTxnStore.length === 0) { for (let i = 1; i <= 15; i++) { bankTxnStore.push({ id: `txn${i}`, transactionId: `TXN-${String(i).padStart(6,'0')}`, fromAccount: `ACC-${String(Math.floor(Math.random()*20)+1).padStart(5,'0')}`, toAccount: `ACC-${String(Math.floor(Math.random()*20)+1).padStart(5,'0')}`, amount: 1000 + (i * 500), status: 'SUCCESS' }); } } res.json(bankTxnStore); });
+  app.post("/api/banking-transactions", (req, res) => { const t = { id: `txn-${Date.now()}`, ...req.body }; bankTxnStore.push(t); res.status(201).json(t); });
+
+  app.get("/api/banking-risk", (req, res) => { if (bankRiskStore.length === 0) { bankRiskStore.push({ id: 'risk1', type: 'AML', status: 'COMPLIANT', alerts: 0 }, { id: 'risk2', type: 'KYC', status: 'COMPLIANT', alerts: 0 }, { id: 'risk3', type: 'Credit Risk', status: 'MONITORED', alerts: 2 }); } res.json(bankRiskStore); });
+  app.post("/api/banking-risk", (req, res) => { const r = { id: `risk-${Date.now()}`, ...req.body }; bankRiskStore.push(r); res.status(201).json(r); });
+
+  app.get("/api/banking-crm", (req, res) => { if (bankCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { bankCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, customerId: `CUST-${String(i).padStart(3,'0')}`, type: i % 2 === 0 ? 'CALL' : 'EMAIL', subject: 'Product Offer', status: 'COMPLETED' }); } } res.json(bankCRMStore); });
+  app.post("/api/banking-crm", (req, res) => { const cr = { id: `crm-${Date.now()}`, ...req.body }; bankCRMStore.push(cr); res.status(201).json(cr); });
+
+  app.get("/api/banking-treasury", (req, res) => { if (bankTreasStore.length === 0) { bankTreasStore.push({ id: 'treas1', totalLiquidity: 50000000, investedAmount: 30000000, availableFunds: 20000000, status: 'BALANCED' }); } res.json(bankTreasStore); });
+  app.post("/api/banking-treasury", (req, res) => { const tr = { id: `treas-${Date.now()}`, ...req.body }; bankTreasStore.push(tr); res.status(201).json(tr); });
+
+  app.get("/api/banking-employees", (req, res) => { if (bankEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { bankEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Manager' : i % 3 === 1 ? 'Teller' : 'Officer', department: 'Banking', status: 'ACTIVE' }); } } res.json(bankEmpStore); });
+  app.post("/api/banking-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; bankEmpStore.push(e); res.status(201).json(e); });
+
+  app.get("/api/banking-compliance", (req, res) => { if (bankCompStore.length === 0) { bankCompStore.push({ id: 'comp1', regulation: 'Basel III', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }, { id: 'comp2', regulation: 'GDPR', status: 'COMPLIANT', lastAudit: new Date().toISOString().split('T')[0] }); } res.json(bankCompStore); });
+  app.post("/api/banking-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; bankCompStore.push(co); res.status(201).json(co); });
+
+  app.get("/api/banking-fraud", (req, res) => { res.json([{ id: 'f1', transactionId: 'TXN-000001', riskScore: 15, status: 'LOW_RISK' }, { id: 'f2', transactionId: 'TXN-000002', riskScore: 92, status: 'HIGH_RISK' }]); });
+  app.post("/api/banking-fraud", (req, res) => { const f = { id: `fraud-${Date.now()}`, ...req.body }; res.status(201).json(f); });
+
+  app.get("/api/banking-dashboards", (req, res) => { res.json({ totalAccounts: 1250, totalLoans: 450, totalDeposits: 8500000, activeTransactions: 1230, riskAlerts: 5 }); });
 
   return httpServer;
 }

@@ -1,0 +1,310 @@
+Generating Industry Pack 35 — BANKING & FINANCIAL SERVICES in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Banking & Financial Services Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 35 — BANKING & FINANCIAL SERVICES
+
+Purpose: End-to-end solution for banks, credit unions, fintech companies, and financial institutions, covering core banking, customer accounts, loans & credit, deposits & savings, payments & settlements, risk & compliance, CRM & customer engagement, treasury & liquidity management, HR & workforce, AI-driven fraud detection & analytics, BI & dashboards, mobile banking, and integrations with payment networks, regulators, and third-party financial services. Delivered as an industry template that auto-enables and configures all related modules.
+
+Auto-enable modules when template is selected: Core Banking, Customer Accounts, Loans & Credit, Deposits & Savings, Payments & Settlements, Risk & Compliance, CRM & Customer Engagement, Treasury & Liquidity Management, HR & Workforce, AI / ML Fraud Detection & Analytics, BI & Dashboards, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+⸻
+
+1. CORE BANKING
+
+Screens / Forms
+	•	Bank branch & department master
+	•	Account types & services
+	•	Customer account creation & maintenance
+	•	Transaction posting & ledger updates
+
+Fields
+AccountID, CustomerID, BranchID, AccountType, Balance, Status, AuditFields.
+
+Validations
+	•	Duplicate account detection
+	•	Account eligibility & KYC verification
+	•	Transaction limits & controls
+
+Workflows
+	•	Open account → Assign branch → Enable services → Track transactions → Close account
+
+⸻
+
+2. CUSTOMER ACCOUNTS
+
+Screens / Forms
+	•	Personal & business account management
+	•	Account statements & transaction history
+	•	Alerts & notifications
+	•	Account closure / freeze requests
+
+Fields
+CustomerID, AccountID, ContactInfo, Status, AuditFields.
+
+Validations
+	•	Account verification
+	•	Contact info accuracy
+	•	Regulatory compliance
+
+Workflows
+	•	Register customer → Link accounts → Enable services → Update statements → Close / Freeze
+
+⸻
+
+3. LOANS & CREDIT
+
+Screens / Forms
+	•	Loan application & approval workflow
+	•	Credit scoring & eligibility checks
+	•	Loan disbursement & repayment schedule
+	•	Collateral management
+
+Fields
+LoanID, CustomerID, LoanType, Amount, InterestRate, Term, Status, AuditFields.
+
+Validations
+	•	Credit eligibility
+	•	Collateral validation
+	•	Repayment schedule consistency
+
+Workflows
+	•	Apply loan → Credit check → Approve / Reject → Disburse → Track repayment → Close
+
+⸻
+
+4. DEPOSITS & SAVINGS
+
+Screens / Forms
+	•	Savings accounts, fixed deposits, recurring deposits
+	•	Interest calculation & accrual
+	•	Maturity & renewal processing
+
+Fields
+DepositID, CustomerID, AccountID, Amount, InterestRate, MaturityDate, Status, AuditFields.
+
+Validations
+	•	Deposit eligibility
+	•	Interest calculation accuracy
+	•	Renewal & maturity compliance
+
+Workflows
+	•	Create deposit → Accrue interest → Notify maturity → Renew / Close → Update ledger
+
+⸻
+
+5. PAYMENTS & SETTLEMENTS
+
+Screens / Forms
+	•	Internal & external fund transfers
+	•	Payment gateway integration
+	•	Clearing & settlement reports
+	•	Reconciliation & exception handling
+
+Fields
+TransactionID, FromAccountID, ToAccountID, Amount, PaymentMethod, Status, AuditFields.
+
+Validations
+	•	Sufficient balance
+	•	Fraud & AML checks
+	•	Settlement confirmation
+
+Workflows
+	•	Initiate payment → Validate → Process → Reconcile → Notify → Record in ledger
+
+⸻
+
+6. RISK & COMPLIANCE
+
+Screens / Forms
+	•	Regulatory reporting (KYC, AML, Basel norms)
+	•	Internal audit & risk assessment
+	•	Fraud monitoring & alerts
+	•	Compliance dashboards
+
+Fields
+RiskID, CustomerID, TransactionID, Status, AuditFields.
+
+Validations
+	•	Regulatory adherence
+	•	Exception detection
+	•	Reporting accuracy
+
+Workflows
+	•	Capture risk data → Analyze → Generate report → Escalate exceptions → Track resolution
+
+⸻
+
+7. CRM & CUSTOMER ENGAGEMENT
+
+Screens / Forms
+	•	Customer support & ticketing
+	•	Campaigns for cross-sell / upsell
+	•	Customer feedback & satisfaction tracking
+	•	Personalized communication & alerts
+
+Fields
+CustomerID, InteractionID, CampaignID, FeedbackID, AuditFields.
+
+Validations
+	•	SLA adherence
+	•	Duplicate interaction detection
+	•	Opt-in / consent compliance
+
+Workflows
+	•	Capture interaction → Assign → Respond → Notify → Track engagement
+
+⸻
+
+8. TREASURY & LIQUIDITY MANAGEMENT
+
+Screens / Forms
+	•	Cash flow tracking & projections
+	•	Liquidity planning & management
+	•	Investment & portfolio monitoring
+	•	Interbank settlement
+
+Fields
+TransactionID, AccountID, Amount, Status, AuditFields.
+
+Validations
+	•	Fund sufficiency
+	•	Risk limits
+	•	Settlement confirmation
+
+Workflows
+	•	Forecast cash → Allocate → Track → Reconcile → Report
+
+⸻
+
+9. HR & WORKFORCE MANAGEMENT
+
+Screens / Forms
+	•	Employee master (tellers, operations, back-office)
+	•	Payroll, attendance, performance tracking
+	•	Training & certification
+	•	Role & shift management
+
+Fields
+EmployeeID, Role, Department, Shift, PayrollID, TrainingID, AuditFields.
+
+Validations
+	•	Role eligibility
+	•	Attendance & payroll accuracy
+
+Workflows
+	•	Onboard → Assign role → Track attendance → Evaluate → Payroll
+
+⸻
+
+10. AI & FRAUD DETECTION / ANALYTICS
+
+Use Cases
+	•	Transaction anomaly detection
+	•	Predictive credit risk scoring
+	•	Early warning for loan defaults
+	•	Customer behavior analysis
+
+Controls
+	•	Human review for flagged transactions and decisions
+
+⸻
+
+11. BI & DASHBOARDS
+
+Prebuilt Dashboards
+	•	Account balances & growth
+	•	Loan portfolio & repayment performance
+	•	Deposit trends & interest accrual
+	•	Transaction volume & risk metrics
+	•	Customer engagement & retention KPIs
+
+Ad-hoc
+	•	Drill down by branch → account → transaction → loan → customer
+
+⸻
+
+12. MOBILE BANKING APPS
+
+Customer App
+	•	Account overview, fund transfers, loan applications, payments, alerts
+Staff App
+	•	Teller operations, approvals, transaction monitoring
+Manager App
+	•	Dashboards, KPIs, workflow approvals, compliance tracking
+
+⸻
+
+13. ROLES & PERMISSIONS
+
+Core Roles
+	•	Customer
+	•	Teller / Branch Staff
+	•	Loan Officer
+	•	Risk & Compliance Officer
+	•	Treasury / Finance Manager
+	•	HR / Payroll
+	•	IT / Integration Engineer
+	•	Admin
+
+Permission Notes
+	•	Role-based access enforced for accounts, transactions, loans, compliance, and operational data
+
+⸻
+
+14. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	200 customer accounts, 50 loans, 50 deposits, 100 transactions, 20 employees, 5 branches
+
+Onboarding Steps
+	•	Register branches & accounts → Configure loans & deposits → Capture transactions → Track repayment → Generate dashboards → Validate workflows
+
+⸻
+
+15. INTEGRATIONS & CONNECTORS
+
+Suggested Integrations
+	•	Payment networks (ACH, SWIFT, NEFT)
+	•	Credit bureaus & scoring engines
+	•	Regulatory & reporting platforms
+	•	Core banking & ERP systems
+	•	BI / analytics platforms
+
+Integration Rules
+	•	Idempotent ingestion, audit logging, secure credential storage
+
+⸻
+
+16. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	Low balance → notify customer & branch
+	•	Fraud detected → alert risk officer
+	•	Loan overdue → notify customer & escalate
+	•	Transaction failed → notify operations & reconcile
+
+⸻
+
+17. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+Idempotency & Safety
+	•	Seeders check natural keys (CustomerID + AccountID + TransactionID) before insert
+	•	Migrations additive; destructive changes require rollback scripts
+	•	Feature flags per tenant for AI fraud detection, mobile banking, multi-branch operations
+
+Testing
+	•	Account lifecycle → loans → deposits → payments → risk & compliance → KPI dashboards
+
+⸻
+
+18. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you want me to generate Industry Pack 36 — INSURANCE next, reply “Yes” and I will produce it in the same format.

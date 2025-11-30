@@ -1568,5 +1568,18 @@ const HealthcareCRMEngagement = lazy(() => import("@/pages/HealthcareCRMEngageme
 const HealthcareHRWorkforce = lazy(() => import("@/pages/HealthcareHRWorkforce"));
 const HealthcareAIDiagnostics = lazy(() => import("@/pages/HealthcareAIDiagnostics"));
 const HealthcareBIDashboards = lazy(() => import("@/pages/HealthcareBIDashboards"));
-const HealthcareCompliance = lazy(() => import("@/pages/HealthcareCompliance"));
 const HealthcareMobileApp = lazy(() => import("@/pages/HealthcareMobileApp"));
+
+// Banking & Financial Services Pack (Industry Pack 35)
+const BankingCoreBanking = lazy(() => import("@/pages/BankingCoreBanking"));
+const BankingCustomerAccounts = lazy(() => import("@/pages/BankingCustomerAccounts"));
+const BankingLoansCredit = lazy(() => import("@/pages/BankingLoansCredit"));
+const BankingDeposits = lazy(() => import("@/pages/BankingDeposits"));
+const BankingPayments = lazy(() => import("@/pages/BankingPayments"));
+const BankingRiskCompliance = lazy(() => import("@/pages/BankingRiskCompliance"));
+const BankingCRMEngagement = lazy(() => import("@/pages/BankingCRMEngagement"));
+const BankingTreasury = lazy(() => import("@/pages/BankingTreasury"));
+const BankingHRWorkforce = lazy(() => import("@/pages/BankingHRWorkforce"));
+const BankingAIFraudDetection = lazy(() => import("@/pages/BankingAIFraudDetection"));
+const BankingBIDashboards = lazy(() => import("@/pages/BankingBIDashboards"));
+const BankingMobileApp = lazy(() => import("@/pages/BankingMobileApp"));
