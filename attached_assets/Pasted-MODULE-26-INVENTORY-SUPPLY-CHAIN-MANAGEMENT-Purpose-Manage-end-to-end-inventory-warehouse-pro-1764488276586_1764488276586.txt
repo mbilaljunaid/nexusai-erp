@@ -1,0 +1,79 @@
+MODULE 26: INVENTORY & SUPPLY CHAIN MANAGEMENT
+
+Purpose: Manage end-to-end inventory, warehouse, procurement, logistics, and supply chain processes to optimize stock levels, reduce costs, ensure timely fulfillment, and integrate with ERP, Finance, Projects, CRM, HR, EPM, BI, AI, and Compliance modules.
+
+Important Note for Replit: Before creating any inventory, warehouse, procurement, or supply chain objects, workflows, or dashboards, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+26.1 Inventory Management
+
+Forms / Screens: Item Master, Stock Ledger, Stock Movement, Stock Adjustment, Inventory Dashboard, Batch & Serial Tracking.
+
+Fields: Item ID, Item Name, Category, UOM, SKU, Batch Number, Serial Number, Quantity On Hand, Quantity Reserved, Reorder Level, Location, Status (Active, Inactive), Supplier, Audit Fields.
+
+Validations: Stock levels validated, batch/serial integrity maintained, mandatory fields enforced, location mapping correct, duplicate items prevented.
+
+Workflows: Stock movements trigger ledger updates, reorder alerts trigger procurement requests, integration with ERP, Finance, and Projects for costing and usage tracking.
+
+26.2 Warehouse Management
+
+Forms / Screens: Warehouse Setup, Bin & Location Management, Stock Transfer, Receiving & Dispatch, Warehouse Dashboard.
+
+Fields: Warehouse ID, Name, Location, Capacity, Bin/Section ID, Item Allocation, Stock Level, Status, Responsible Person, Audit Fields.
+
+Validations: Bin capacity validated, stock allocation correct, mandatory fields enforced, warehouse operational status verified.
+
+Workflows: Receiving updates inventory ledger, dispatch reduces stock levels, stock transfers update both source and destination warehouses, dashboards update in real-time.
+
+26.3 Procurement & Supplier Management
+
+Forms / Screens: Supplier Master, Purchase Requisition, Purchase Order, Supplier Quotation, Procurement Dashboard.
+
+Fields: Supplier ID, Name, Contact Details, Rating, Item/Service Offered, Lead Time, Purchase Request ID, Order ID, Quantity, Price, Status, Approval Workflow, Audit Fields.
+
+Validations: Supplier validated, mandatory fields enforced, approvals required for high-value orders, duplicate orders prevented, pricing and lead times verified.
+
+Workflows: Requisition triggers approval workflow, approved purchase order sent to supplier, delivery updates stock ledger, integration with Finance for invoice matching and payment.
+
+26.4 Demand & Supply Planning
+
+Forms / Screens: Forecast Input, Demand Planning, Supply Planning, Material Requirement Planning (MRP), Planning Dashboard.
+
+Fields: Item ID, Forecast Quantity, Forecast Period, Demand Source, Lead Time, Safety Stock, Reorder Point, Suggested Procurement Quantity, Status, Audit Fields.
+
+Validations: Forecasts validated against historical consumption, lead times accurate, safety stock levels verified, planning algorithms checked.
+
+Workflows: Forecast updates trigger procurement recommendations, integration with production schedules in Projects, dashboards reflect demand-supply alignment, AI modules provide predictive planning insights.
+
+26.5 Order Fulfillment & Logistics
+
+Forms / Screens: Sales Order Processing, Picking & Packing, Shipment Tracking, Delivery Confirmation, Logistics Dashboard.
+
+Fields: Order ID, Customer, Items, Quantity, Warehouse, Shipment Method, Delivery Date, Status (Pending, Picked, Shipped, Delivered), Approval Workflow, Audit Fields.
+
+Validations: Stock availability validated, shipping dates accurate, mandatory fields enforced, shipment tracking verified.
+
+Workflows: Sales order triggers picking list, dispatch updates stock and delivery status, integration with CRM for customer updates, Finance for invoicing, dashboards reflect order fulfillment performance.
+
+26.6 Inventory Reporting & Analytics
+
+Forms / Screens: Stock Reports, Reorder Reports, Procurement Analysis, Supplier Performance, Warehouse Performance, Inventory Dashboard.
+
+Fields: Report ID, Name, Module, Filters (Item, Warehouse, Supplier, Date Range, Status), Metrics (Stock Levels, Turnover, Lead Time, Supplier Performance), Export Options, Schedule, Audit Fields.
+
+Validations: Data accuracy verified, filters validated, reports executed correctly, dashboards updated in real-time.
+
+Workflows: Reports generated on-demand or scheduled, dashboards refresh automatically, AI modules provide predictive insights for inventory optimization.
+
+26.7 Integrations & Automations
+
+Automations: Reorder alerts, stock movement notifications, automated purchase order generation, stock ledger updates, AI-driven demand forecasting.
+
+Integrations: ERP/Finance for costing, Projects for production materials, CRM for sales order fulfillment, AI/BI modules for predictive analytics, Compliance for inventory audit.
+
+Key Features: End-to-end inventory management, warehouse operations, procurement, demand-supply planning, order fulfillment, logistics, reporting & analytics, automated workflows, AI-driven predictions, cross-module integration, audit-ready and compliance integrated.
+
+Important Note for Replit: Before creating any inventory, warehouse, procurement, logistics, or reporting objects, workflows, dashboards, or integrations, Replit must check for existing implementations. Do not duplicate or recreate anything already built. Only create missing elements or enhancements.
+
+⸻
+
+Do you want me to continue with Module 27: Human Resources (HR) & Payroll Management next?

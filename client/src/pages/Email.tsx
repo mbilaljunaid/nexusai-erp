@@ -1,11 +1,40 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Mail, Users, Send, Settings, Zap } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, Mail, Users, Send, Settings, Zap, Trash2 } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Email() {
+  const { toast } = useToast();
   const [activeNav, setActiveNav] = useState("inbox");
+  const [newTemplate, setNewTemplate] = useState({ name: "", category: "general", subject: "" });
+
+  const { data: templates = [], isLoading } = useQuery({
+    queryKey: ["/api/email-templates"],
+    queryFn: () => fetch("/api/email-templates").then(r => r.json()).catch(() => []),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/email-templates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/email-templates"] });
+      setNewTemplate({ name: "", category: "general", subject: "" });
+      toast({ title: "Email template created" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/email-templates/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/email-templates"] });
+      toast({ title: "Template deleted" });
+    },
+  });
 
   const navItems = [
     { id: "inbox", label: "Inbox", icon: Mail, color: "text-blue-500" },
