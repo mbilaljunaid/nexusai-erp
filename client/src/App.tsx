@@ -295,6 +295,14 @@ const OmniChannelOrders = lazy(() => import("@/pages/OmniChannelOrders"));
 const DemandForecastingAI = lazy(() => import("@/pages/DemandForecastingAI"));
 const RetailAnalyticsDashboard = lazy(() => import("@/pages/RetailAnalyticsDashboard"));
 const MerchandisePlanning = lazy(() => import("@/pages/MerchandisePlanning"));
+const SalesOrderManagement = lazy(() => import("@/pages/SalesOrderManagement"));
+const PricingRebatesEngine = lazy(() => import("@/pages/PricingRebatesEngine"));
+const SupplierCollaborationPortal = lazy(() => import("@/pages/SupplierCollaborationPortal"));
+const FreightManagement = lazy(() => import("@/pages/FreightManagement"));
+const CreditManagementCollections = lazy(() => import("@/pages/CreditManagementCollections"));
+const SalesCommissionManagement = lazy(() => import("@/pages/SalesCommissionManagement"));
+const InventoryOptimization = lazy(() => import("@/pages/InventoryOptimization"));
+const EDIMarketplaceConnectors = lazy(() => import("@/pages/EDIMarketplaceConnectors"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -801,6 +809,14 @@ function Router() {
       <Route path="/demand-forecasting" component={DemandForecastingAI} />
       <Route path="/retail-analytics" component={RetailAnalyticsDashboard} />
       <Route path="/merchandise-planning" component={MerchandisePlanning} />
+      <Route path="/sales-order-management" component={SalesOrderManagement} />
+      <Route path="/pricing-rebates-engine" component={PricingRebatesEngine} />
+      <Route path="/supplier-collaboration" component={SupplierCollaborationPortal} />
+      <Route path="/freight-management" component={FreightManagement} />
+      <Route path="/credit-management" component={CreditManagementCollections} />
+      <Route path="/sales-commission" component={SalesCommissionManagement} />
+      <Route path="/inventory-optimization" component={InventoryOptimization} />
+      <Route path="/edi-marketplace" component={EDIMarketplaceConnectors} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
