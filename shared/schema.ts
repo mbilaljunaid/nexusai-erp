@@ -2200,3 +2200,68 @@ export const permissionOverrides = pgTable("permission_overrides", {
   fieldLevelSecurity: jsonb("field_level_security"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 3: AUTHENTICATION, MFA & SECURITY ==========
+export const authenticationSettings = pgTable("authentication_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  authMethod: varchar("auth_method").notNull(),
+  ssoProvider: varchar("sso_provider"),
+  oauthClientId: varchar("oauth_client_id"),
+  redirectUrls: jsonb("redirect_urls"),
+  tokenExpiry: integer("token_expiry").default(3600),
+  enabled: boolean("enabled").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const mfaPolicies = pgTable("mfa_policies", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  mfaType: varchar("mfa_type").notNull(),
+  enforced: boolean("enforced").default(false),
+  scope: varchar("scope").default("all_users"),
+  backupCodesEnabled: boolean("backup_codes_enabled").default(true),
+  maxAttempts: integer("max_attempts").default(5),
+  expiryMinutes: integer("expiry_minutes").default(10),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const passwordPolicies = pgTable("password_policies", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  minLength: integer("min_length").default(8),
+  maxLength: integer("max_length").default(128),
+  requireUppercase: boolean("require_uppercase").default(true),
+  requireLowercase: boolean("require_lowercase").default(true),
+  requireNumbers: boolean("require_numbers").default(true),
+  requireSpecialChars: boolean("require_special_chars").default(true),
+  expiryDays: integer("expiry_days").default(90),
+  reuseRestriction: integer("reuse_restriction").default(5),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const deviceEnrollment = pgTable("device_enrollment", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  deviceId: varchar("device_id").notNull(),
+  deviceType: varchar("device_type"),
+  deviceOs: varchar("device_os"),
+  deviceBrowser: varchar("device_browser"),
+  status: varchar("status").default("pending"),
+  ipAddress: varchar("ip_address"),
+  enrolledAt: timestamp("enrolled_at").default(sql`now()`),
+  lastUsed: timestamp("last_used"),
+});
+
+export const securityEventLog = pgTable("security_event_log", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id"),
+  userId: varchar("user_id"),
+  eventType: varchar("event_type").notNull(),
+  module: varchar("module"),
+  device: varchar("device"),
+  ipAddress: varchar("ip_address"),
+  status: varchar("status"),
+  actionTaken: text("action_taken"),
+  timestamp: timestamp("timestamp").default(sql`now()`),
+});

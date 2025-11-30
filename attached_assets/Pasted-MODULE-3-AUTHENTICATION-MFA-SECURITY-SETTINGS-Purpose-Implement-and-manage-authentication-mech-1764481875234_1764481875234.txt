@@ -1,0 +1,79 @@
+MODULE 3: AUTHENTICATION, MFA & SECURITY SETTINGS
+
+Purpose: Implement and manage authentication mechanisms, multi-factor authentication, session management, password policies, device controls, and overall system security for all users across all modules including ERP, CRM, HR, Projects, ITSM, Finance, Inventory, Analytics, AI, Website, and Communication.
+
+Important Note for Replit: Before creating any authentication or security objects, workflows, or settings, check the system for existing implementations. Do not duplicate or recreate existing functionality. Only create missing or enhanced elements.
+
+3.1 Authentication Settings
+
+Forms / Screens: Authentication Configuration, Single Sign-On (SSO) Setup, OAuth Integration, Social Login Configuration, Authentication Logs.
+
+Fields: Authentication Method (Password, SSO, OAuth, Social Login), SSO Provider Details, OAuth Client ID and Secret, Redirect URLs, Token Expiry, Allowed Domains, Social Login Platforms (Google, Microsoft, LinkedIn), Authentication Enabled Flag, Default Authentication Method, Fallback Authentication Method, Audit Fields (Created By, Created Date, Modified By, Modified Date).
+
+Validations: Ensure valid provider configurations, mandatory fields for each method, unique client IDs for OAuth, URL validation, authentication method must be enabled, authentication method cannot conflict with SSO or MFA rules.
+
+Workflows: Authentication method change triggers user notifications, SSO configuration triggers synchronization with identity provider, failed SSO or OAuth login triggers alert workflow, authentication logs automatically captured and sent to audit system.
+
+3.2 Multi-Factor Authentication (MFA)
+
+Forms / Screens: MFA Setup, MFA Enrollment, MFA Recovery, MFA Enforcement Policies, MFA Logs.
+
+Fields: MFA Type (Email, SMS, Authenticator App, Hardware Token, Biometric), Enabled Flag, Enforcement Scope (All Users, Roles, Departments, Specific Modules), Recovery Options, Backup Codes, Device Registration, MFA Expiry, MFA Attempt Limits, Audit Fields (Created By, Modified By, Timestamp).
+
+Validations: MFA enabled users must complete enrollment, backup codes must be securely stored, enforcement rules applied consistently across all modules, maximum attempt limits enforced, expired MFA devices flagged.
+
+Workflows: MFA enrollment triggers onboarding instructions, MFA failures trigger lockout or notification workflow, device change triggers re-verification, periodic MFA compliance checks trigger alerts for non-compliant users.
+
+3.3 Password Policies
+
+Forms / Screens: Password Policy Configuration, Password History, Password Expiry, Password Reset Requests, Password Change Logs.
+
+Fields: Minimum Length, Maximum Length, Complexity Requirements (Uppercase, Lowercase, Numbers, Special Characters), Password Expiry Days, Password Reuse Restriction, Mandatory Reset Flag, Temporary Password Validity, Reset Token Expiry, Audit Fields.
+
+Validations: Password must meet complexity rules, expired passwords trigger forced reset workflow, temporary password token validation enforced, history rules prevent reuse, mandatory reset enforced for privileged users.
+
+Workflows: Policy changes trigger enforcement across all users, password reset requests trigger identity verification workflow, expiration notifications sent 7 days prior, reset token expiration triggers alerts, audit logs maintained for compliance.
+
+3.4 Session Management
+
+Forms / Screens: Session Configuration, Active Sessions Monitor, Session Termination, Timeout Rules.
+
+Fields: Session Timeout Duration, Maximum Concurrent Sessions, Session Expiry Policy, Forced Logout Flag, Device/Browser Tracking, Active Session Logs, Audit Fields.
+
+Validations: Active sessions do not exceed maximum limit, session expiry enforced, inactive sessions automatically logged out, forced logout executed correctly, session logs captured.
+
+Workflows: Session violations trigger alert notifications, forced logout triggers system notification, session logs synced to audit and compliance dashboards, administrators can terminate sessions manually or automatically based on rules.
+
+3.5 Device & IP Management
+
+Forms / Screens: Device Enrollment, Device Approval, Device Revocation, IP Whitelisting, IP Blacklisting, Access Logs.
+
+Fields: Device ID, Device Type (Desktop, Mobile, Tablet), Device OS, Device Browser, Device Status (Approved, Pending, Revoked), IP Address, IP Range, Access Allowed Flag, Access Denied Flag, Audit Fields.
+
+Validations: Only approved devices can access system, IP restrictions enforced, device compliance verified, revoked devices blocked immediately.
+
+Workflows: New device enrollment triggers approval workflow, unauthorized device access triggers alert, IP changes trigger verification, device revocation triggers forced logout, periodic compliance checks executed automatically.
+
+3.6 Security Event Logging & Monitoring
+
+Forms / Screens: Security Event Log Viewer, Alert Configuration, Threat Detection Rules, Audit Dashboards.
+
+Fields: Event ID, Event Type (Login, MFA, Password Change, Unauthorized Access, Role Change, Permission Update), User ID, Role, Module, Screen, Device ID, IP Address, Timestamp, Status (Success, Failed, Alerted), Action Taken, Audit Notes.
+
+Validations: Ensure all critical security events are logged, timestamps accurate, status recorded correctly, events linked to user and device, alert thresholds configured.
+
+Workflows: Critical security events trigger real-time alerts, daily and weekly security reports generated, integration with SIEM or external monitoring tools, audit dashboards updated automatically, suspicious patterns trigger automated workflows.
+
+3.7 Automations & Integrations
+
+Automations: Automatic enforcement of password and MFA policies, automated session termination for inactive users, automatic device enrollment notifications, alerts for IP and device violations, scheduled compliance checks.
+
+Integrations: LDAP/Active Directory, SSO providers (Okta, Azure AD, Ping Identity), MFA providers (Google Authenticator, Microsoft Authenticator), Mobile authentication apps, External security monitoring and SIEM systems, Workflow engines for automated security alerts.
+
+Key Features: Centralized authentication management, multi-factor authentication across all modules, strict password policies, session control, device and IP management, real-time security monitoring, automated compliance enforcement, audit-ready event logging, integration with external identity and security systems.
+
+Important Note for Replit: Before creating any authentication objects, MFA rules, password policies, sessions, device management or logging workflows, Replit must check the system for existing implementations. Do not duplicate or recreate anything already built. Only create missing or enhanced functionality.
+
+⸻
+
+Do you want me to continue with Module 4: User Activity, Audit & Compliance next in the same detailed format?
