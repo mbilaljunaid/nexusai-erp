@@ -5724,6 +5724,45 @@ export async function registerRoutes(
   app.get("/api/hospitality-itinerary", (req, res) => { if (hospItinStore.length === 0) hospItinStore.push({ id: "hit1", itineraryId: "ITIN-001", days: "7", status: "confirmed" }); res.json(hospItinStore); });
   app.post("/api/hospitality-itinerary", (req, res) => { const hit = { id: `hit-${Date.now()}`, ...req.body }; hospItinStore.push(hit); res.status(201).json(hit); });
 
+  // ========== INDUSTRY PACK 29: TELECOM & MEDIA ==========
+  const telSubStore: any[] = []; const telSvcStore: any[] = []; const telBillStore: any[] = [];
+  const telContStore: any[] = []; const telCrmStore: any[] = []; const telMktStore: any[] = [];
+  const telHrStore: any[] = []; const telAnalStore: any[] = []; const telBiStore: any[] = [];
+  const telNetStore: any[] = []; const telFsStore: any[] = [];
+
+  app.get("/api/telecom-subscribers", (req, res) => { if (telSubStore.length === 0) telSubStore.push({ id: "ts1", subscriberId: "SUB-001", plan: "premium", status: "active" }); res.json(telSubStore); });
+  app.post("/api/telecom-subscribers", (req, res) => { const ts = { id: `ts-${Date.now()}`, ...req.body }; telSubStore.push(ts); res.status(201).json(ts); });
+
+  app.get("/api/telecom-services", (req, res) => { if (telSvcStore.length === 0) telSvcStore.push({ id: "tsv1", serviceId: "SVC-001", sla: "99.9", status: "active" }); res.json(telSvcStore); });
+  app.post("/api/telecom-services", (req, res) => { const tsv = { id: `tsv-${Date.now()}`, ...req.body }; telSvcStore.push(tsv); res.status(201).json(tsv); });
+
+  app.get("/api/telecom-billing", (req, res) => { if (telBillStore.length === 0) telBillStore.push({ id: "tb1", invoiceId: "INV-001", amount: "500", status: "paid" }); res.json(telBillStore); });
+  app.post("/api/telecom-billing", (req, res) => { const tb = { id: `tb-${Date.now()}`, ...req.body }; telBillStore.push(tb); res.status(201).json(tb); });
+
+  app.get("/api/telecom-content", (req, res) => { if (telContStore.length === 0) telContStore.push({ id: "tc1", title: "Content", type: "video", licensed: true }); res.json(telContStore); });
+  app.post("/api/telecom-content", (req, res) => { const tc = { id: `tc-${Date.now()}`, ...req.body }; telContStore.push(tc); res.status(201).json(tc); });
+
+  app.get("/api/telecom-crm", (req, res) => { if (telCrmStore.length === 0) telCrmStore.push({ id: "tcm1", ticketId: "TKT-001", priority: "high", status: "open" }); res.json(telCrmStore); });
+  app.post("/api/telecom-crm", (req, res) => { const tcm = { id: `tcm-${Date.now()}`, ...req.body }; telCrmStore.push(tcm); res.status(201).json(tcm); });
+
+  app.get("/api/telecom-marketing", (req, res) => { if (telMktStore.length === 0) telMktStore.push({ id: "tm1", campaignId: "CAMP-001", channel: "sms", status: "active" }); res.json(telMktStore); });
+  app.post("/api/telecom-marketing", (req, res) => { const tm = { id: `tm-${Date.now()}`, ...req.body }; telMktStore.push(tm); res.status(201).json(tm); });
+
+  app.get("/api/telecom-hr", (req, res) => { if (telHrStore.length === 0) telHrStore.push({ id: "thr1", employeeId: "EMP-001", role: "engineer", status: "active" }); res.json(telHrStore); });
+  app.post("/api/telecom-hr", (req, res) => { const thr = { id: `thr-${Date.now()}`, ...req.body }; telHrStore.push(thr); res.status(201).json(thr); });
+
+  app.get("/api/telecom-analytics", (req, res) => { if (telAnalStore.length === 0) telAnalStore.push({ id: "ta1", modelId: "MODEL-001", type: "churn", churnRisk: "low" }); res.json(telAnalStore); });
+  app.post("/api/telecom-analytics", (req, res) => { const ta = { id: `ta-${Date.now()}`, ...req.body }; telAnalStore.push(ta); res.status(201).json(ta); });
+
+  app.get("/api/telecom-bi", (req, res) => { if (telBiStore.length === 0) telBiStore.push({ id: "tbi1", dashboardId: "DASH-001", subscribers: "50000", arpu: "25" }); res.json(telBiStore); });
+  app.post("/api/telecom-bi", (req, res) => { const tbi = { id: `tbi-${Date.now()}`, ...req.body }; telBiStore.push(tbi); res.status(201).json(tbi); });
+
+  app.get("/api/telecom-network", (req, res) => { if (telNetStore.length === 0) telNetStore.push({ id: "tn1", elementId: "ELEM-001", type: "router", status: "healthy" }); res.json(telNetStore); });
+  app.post("/api/telecom-network", (req, res) => { const tn = { id: `tn-${Date.now()}`, ...req.body }; telNetStore.push(tn); res.status(201).json(tn); });
+
+  app.get("/api/telecom-fieldservice", (req, res) => { if (telFsStore.length === 0) telFsStore.push({ id: "tfs1", workOrderId: "WO-001", technicianId: "TECH-001", status: "completed" }); res.json(telFsStore); });
+  app.post("/api/telecom-fieldservice", (req, res) => { const tfs = { id: `tfs-${Date.now()}`, ...req.body }; telFsStore.push(tfs); res.status(201).json(tfs); });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

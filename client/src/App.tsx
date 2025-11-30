@@ -557,11 +557,17 @@ const CustomerProfilesRetail = lazy(() => import("@/pages/CustomerProfiles"));
 const LoyaltyProgramsRetail = lazy(() => import("@/pages/LoyaltyPrograms"));
 const PricingPromotionsRetail = lazy(() => import("@/pages/PricingPromotionsRetail"));
 const BillingPaymentsRetail = lazy(() => import("@/pages/BillingPaymentsRetail"));
-const SupplyChainRetail = lazy(() => import("@/pages/SupplyChainRetail"));
-const HRRetailStaff = lazy(() => import("@/pages/HRRetailStaff"));
-const MerchandisingAI = lazy(() => import("@/pages/MerchandisingAI"));
-const RetailAnalyticsBI = lazy(() => import("@/pages/RetailAnalyticsBI"));
-const MarketingCampaignsRetail = lazy(() => import("@/pages/MarketingCampaignsRetail"));
+const SubscriberAccounts = lazy(() => import("@/pages/SubscriberAccounts"));
+const ServiceProvisioning = lazy(() => import("@/pages/ServiceProvisioning"));
+const TelecomBilling = lazy(() => import("@/pages/TelecomBilling"));
+const ContentMedia = lazy(() => import("@/pages/ContentMedia"));
+const TelecomCRM = lazy(() => import("@/pages/TelecomCRM"));
+const TelecomMarketing = lazy(() => import("@/pages/TelecomMarketing"));
+const TelecomHR = lazy(() => import("@/pages/TelecomHR"));
+const TelecomAnalytics = lazy(() => import("@/pages/TelecomAnalytics"));
+const TelecomBI = lazy(() => import("@/pages/TelecomBI"));
+const NetworkInfra = lazy(() => import("@/pages/NetworkInfra"));
+const TelecomFieldService = lazy(() => import("@/pages/TelecomFieldService"));
 const PropertyManagement = lazy(() => import("@/pages/PropertyManagement"));
 const ReservationsBookings = lazy(() => import("@/pages/ReservationsBookings"));
 const GuestManagement = lazy(() => import("@/pages/GuestManagement"));
@@ -1359,6 +1365,17 @@ function Router() {
       <Route path="/hospitality-analytics" component={HospitalityAnalytics} />
       <Route path="/hospitality-events" component={EventsActivities} />
       <Route path="/hospitality-itinerary" component={TravelItinerary} />
+      <Route path="/telecom-subscribers" component={SubscriberAccounts} />
+      <Route path="/telecom-services" component={ServiceProvisioning} />
+      <Route path="/telecom-billing" component={TelecomBilling} />
+      <Route path="/telecom-content" component={ContentMedia} />
+      <Route path="/telecom-crm" component={TelecomCRM} />
+      <Route path="/telecom-marketing" component={TelecomMarketing} />
+      <Route path="/telecom-hr" component={TelecomHR} />
+      <Route path="/telecom-analytics" component={TelecomAnalytics} />
+      <Route path="/telecom-bi" component={TelecomBI} />
+      <Route path="/telecom-network" component={NetworkInfra} />
+      <Route path="/telecom-fieldservice" component={TelecomFieldService} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
