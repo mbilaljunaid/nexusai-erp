@@ -2,15 +2,13 @@ import { useState, useMemo } from "react"; import { Input } from "@/components/u
 
 const PAGES_BY_PACK = [
   { pack: "Core Modules", pages: ["Dashboard", "UserProfile", "Settings", "Notifications"] },
-  { pack: "Healthcare { pack: "Retail & E-Commerce", pages: [ Pharma", pages: ["HealthcarePatientManagement", "HealthcareAppointments", "HealthcareEMR", "HealthcarePharmacy", "HealthcareLaboratory", "HealthcareBillingInsurance", "HealthcareCRMEngagement", "HealthcareHRWorkforce", "HealthcareAIDiagnostics", "HealthcareBIDashboards", "HealthcareCompliance", "HealthcareMobileApp"] },
-  { pack: "Retail { pack: "Retail & E-Commerce", pages: [ E-Commerce", pages: ["ProductCatalog", "InventoryWarehouse", "OrderFulfillment", "CustomerProfiles", "LoyaltyPrograms", "PricingPromotionsRetail", "BillingPaymentsRetail", "SupplyChainRetail"] },
-  { pack: "Government { pack: "Hospitality & Travel", pages: [ Public Sector", pages: ["GovernmentCitizenServices", "GovernmentPermitsLicensing", "GovernmentGrantsFunding", "GovernmentHRWorkforce", "GovernmentFinanceBudgeting", "GovernmentCompliance", "GovernmentProjectsInfra", "GovernmentCRMEngagement", "GovernmentAIAnalytics", "GovernmentBIDashboards", "GovernmentMobileApp", "GovernmentReporting"] },
-  { pack: "Hospitality { pack: "Hospitality & Travel", pages: [ Travel", pages: ["PropertyManagement", "ReservationsBookings", "GuestManagement", "HospitalityCRM", "HospitalityBilling", "HospitalitySupply", "HospitalityHR", "RevenueOptimization", "HospitalityAnalytics", "EventsActivities", "TravelItinerary"] },
+  { pack: "Healthcare Pharma", pages: ["HealthcarePatientManagement", "HealthcareAppointments", "HealthcareEMR", "HealthcarePharmacy", "HealthcareLaboratory", "HealthcareBillingInsurance", "HealthcareCRMEngagement", "HealthcareHRWorkforce", "HealthcareAIDiagnostics", "HealthcareBIDashboards", "HealthcareCompliance", "HealthcareMobileApp"] },
+  { pack: "Retail & E-Commerce", pages: ["ProductCatalog", "InventoryWarehouse", "OrderFulfillment", "CustomerProfiles", "LoyaltyPrograms", "PricingPromotionsRetail", "BillingPaymentsRetail", "SupplyChainRetail", "RetailProductCatalog", "RetailOrderManagement", "RetailCustomerManagement", "RetailPromotionsLoyalty", "RetailPaymentsBilling", "RetailSupplyChainProcurement", "RetailPOSOperations", "RetailHRWorkforce", "RetailAIRecommendations", "RetailBIDashboards", "RetailCRMMarketing", "RetailInventoryWarehouse"] },
+  { pack: "Government & Public Sector", pages: ["GovernmentCitizenServices", "GovernmentPermitsLicensing", "GovernmentGrantsFunding", "GovernmentHRWorkforce", "GovernmentFinanceBudgeting", "GovernmentCompliance", "GovernmentProjectsInfra", "GovernmentCRMEngagement", "GovernmentAIAnalytics", "GovernmentBIDashboards", "GovernmentMobileApp", "GovernmentReporting", "CitizenCaseManagement", "PublicServicesDelivery", "FinanceGrants", "GovernmentProcurement", "ProjectInfrastructure", "ComplianceReporting", "GovernmentBI", "CitizenEngagement", "WorkflowAutomation"] },
+  { pack: "Hospitality & Travel", pages: ["PropertyManagement", "ReservationsBookings", "GuestManagement", "HospitalityCRM", "HospitalityBilling", "HospitalitySupply", "HospitalityHR", "RevenueOptimization", "HospitalityAnalytics", "EventsActivities", "TravelItinerary"] },
   { pack: "Telecom & Media", pages: ["SubscriberManagement", "ServiceProvisioning", "BillingInvoicing", "NetworkUsageMonitoring", "CustomerSupportCRM", "MarketingTelecom", "HRTelecom", "TelecomAnalytics", "TelecomDashboard", "NetworkProvisioning"] },
   { pack: "Automotive", pages: ["AutomotiveProduction", "AutomotiveDealerInventory", "AutomotiveSalesCRM", "AutomotiveAfterSalesService", "AutomotiveFinanceInvoicing", "AutomotiveHRWorkforce", "AutomotiveSupplyChain", "AutomotiveBIDashboards", "AutomotiveCompliance", "AutomotiveMobileApp", "AutomotiveQualityAnalytics", "AutomotiveReporting"] },
-  { pack: "Government { pack: "Government & Public Sector", pages: [ Public Sector", pages: ["CitizenCaseManagement", "PublicServicesDelivery", "FinanceGrants", "GovernmentHR", "GovernmentProcurement", "ProjectInfrastructure", "ComplianceReporting", "GovernmentBI", "CitizenEngagement", "WorkflowAutomation"] },
-  { pack: "Retail { pack: "Education & E-Learning", pages: [ E-Commerce", pages: ["RetailProductCatalog", "RetailOrderManagement", "RetailCustomerManagement", "RetailPromotionsLoyalty", "RetailPaymentsBilling", "RetailSupplyChainProcurement", "RetailPOSOperations", "RetailHRWorkforce", "RetailAIRecommendations", "RetailBIDashboards", "RetailCRMMarketing", "RetailInventoryWarehouse"] },
-  { pack: "Education { pack: "Education & E-Learning", pages: [ E-Learning", pages: ["StudentManagement", "FacultyManagement", "CourseManagement", "AdmissionsEnrollment", "AssessmentGrading", "LMSContent", "EducationCRM", "EducationBilling", "EducationHR", "EducationAttendance", "EducationEvents", "EducationAnalytics"] },
+  { pack: "Education & E-Learning", pages: ["StudentManagement", "FacultyManagement", "CourseManagement", "AdmissionsEnrollment", "AssessmentGrading", "LMSContent", "EducationCRM", "EducationBilling", "EducationHR", "EducationAttendance", "EducationEvents", "EducationAnalytics"] },
 ];
 
 function pageToUrl(pageName: string): string {
@@ -47,7 +45,7 @@ export default function PagesIndex() {
       <div className="space-y-4">
         <div>
           <h1 className="text-4xl font-bold">Pages Explorer</h1>
-          <p className="text-muted-foreground mt-1">Browse all {PAGES_BY_PACK.reduce((sum, p) => sum + p.pages.length, 0)} pages across 30+ industry packs</p>
+          <p className="text-muted-foreground mt-1">Browse all {PAGES_BY_PACK.reduce((sum, p) => sum + p.pages.length, 0)} pages across 8 industry packs</p>
         </div>
 
         <div className="flex gap-2 items-center">
