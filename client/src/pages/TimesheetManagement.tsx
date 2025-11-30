@@ -1,14 +1,39 @@
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Plus } from "lucide-react";
+import { Clock, Plus, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function TimesheetManagement() {
-  const timesheets = [
-    { id: "ts1", week: "Nov 24-30", user: "Alice", hours: 40, project: "Project A", status: "submitted", approval: "pending" },
-    { id: "ts2", week: "Nov 17-23", user: "Bob", hours: 38, project: "Project B", status: "approved", approval: "approved" },
-    { id: "ts3", week: "Nov 10-16", user: "Carol", hours: 42, project: "Project C", status: "submitted", approval: "pending" },
-  ];
+  const { toast } = useToast();
+  const [newTimesheet, setNewTimesheet] = useState({ user: "", week: "", project: "", hours: "", approval: "pending" });
+
+  const { data: timesheets = [], isLoading } = useQuery({
+    queryKey: ["/api/timesheets"],
+    queryFn: () => fetch("/api/timesheets").then(r => r.json()).catch(() => []),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/timesheets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/timesheets"] });
+      setNewTimesheet({ user: "", week: "", project: "", hours: "", approval: "pending" });
+      toast({ title: "Timesheet submitted" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/timesheets/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/timesheets"] });
+      toast({ title: "Timesheet deleted" });
+    },
+  });
 
   return (
     <div className="space-y-6 p-4">
@@ -20,11 +45,25 @@ export default function TimesheetManagement() {
         <p className="text-muted-foreground mt-2">Track and manage project timesheets</p>
       </div>
 
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6">
-          <Button className="w-full gap-2" data-testid="button-submit-timesheet">
-            <Plus className="h-4 w-4" />
-            Submit Timesheet
+      <Card data-testid="card-new-timesheet">
+        <CardHeader><CardTitle className="text-base">Submit Timesheet</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-5 gap-3">
+            <Input placeholder="Employee" value={newTimesheet.user} onChange={(e) => setNewTimesheet({ ...newTimesheet, user: e.target.value })} data-testid="input-user" />
+            <Input placeholder="Week" value={newTimesheet.week} onChange={(e) => setNewTimesheet({ ...newTimesheet, week: e.target.value })} data-testid="input-week" />
+            <Input placeholder="Project" value={newTimesheet.project} onChange={(e) => setNewTimesheet({ ...newTimesheet, project: e.target.value })} data-testid="input-project" />
+            <Input placeholder="Hours" type="number" value={newTimesheet.hours} onChange={(e) => setNewTimesheet({ ...newTimesheet, hours: e.target.value })} data-testid="input-hours" />
+            <Select value={newTimesheet.approval} onValueChange={(v) => setNewTimesheet({ ...newTimesheet, approval: v })}>
+              <SelectTrigger data-testid="select-approval"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button onClick={() => createMutation.mutate(newTimesheet)} disabled={createMutation.isPending || !newTimesheet.user} className="w-full" data-testid="button-submit-timesheet">
+            <Plus className="h-4 w-4 mr-2" /> Submit Timesheet
           </Button>
         </CardContent>
       </Card>
@@ -57,18 +96,20 @@ export default function TimesheetManagement() {
       </div>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">Recent Timesheets</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base">Timesheets</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {timesheets.map((ts) => (
-            <div key={ts.id} className="p-3 border rounded-lg hover-elevate" data-testid={`timesheet-${ts.id}`}>
-              <div className="flex items-center justify-between mb-2">
+          {isLoading ? <p>Loading...</p> : timesheets.length === 0 ? <p className="text-muted-foreground text-center py-4">No timesheets</p> : timesheets.map((ts: any) => (
+            <div key={ts.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`timesheet-${ts.id}`}>
+              <div>
                 <h3 className="font-semibold">{ts.week}</h3>
-                <div className="flex gap-2">
-                  <Badge variant={ts.approval === "approved" ? "default" : "secondary"}>{ts.approval}</Badge>
-                  <Badge variant="outline">{ts.status}</Badge>
-                </div>
+                <p className="text-sm text-muted-foreground">User: {ts.user} • Project: {ts.project} • Hours: {ts.hours}h</p>
               </div>
-              <p className="text-sm text-muted-foreground">User: {ts.user} • Project: {ts.project} • Hours: {ts.hours}h</p>
+              <div className="flex gap-2 items-center">
+                <Badge variant={ts.approval === "approved" ? "default" : "secondary"}>{ts.approval}</Badge>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(ts.id)} data-testid={`button-delete-${ts.id}`}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </CardContent>
