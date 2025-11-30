@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
+import { ExpenseEntryForm } from "@/components/forms/ExpenseEntryForm";
+import { BudgetEntryForm } from "@/components/forms/BudgetEntryForm";
 import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, Settings, Zap, Users, CreditCard } from "lucide-react";
 
 export default function Finance() {
@@ -46,17 +48,9 @@ export default function Finance() {
 
       {activeNav === "invoices" && <div className="space-y-4"><InvoiceEntryForm /></div>}
 
-      {activeNav === "expenses" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Expense Management</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Monthly expenses: $234K | 423 transactions</p><Button size="sm" className="mt-4">+ Record Expense</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "expenses" && <div className="space-y-4"><ExpenseEntryForm /></div>}
 
-      {activeNav === "budgets" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Budget Planning</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Q4 budget: $1.2M | Spent: $856K | Remaining: 28.7%</p><Button size="sm" className="mt-4">+ Create Budget</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "budgets" && <div className="space-y-4"><BudgetEntryForm /></div>}
 
       {activeNav === "reports" && (
         <div className="space-y-4">

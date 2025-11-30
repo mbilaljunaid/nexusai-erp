@@ -10,6 +10,8 @@ import { LeadCard } from "@/components/LeadCard";
 import { AddLeadDialog } from "@/components/AddLeadDialog";
 import { LeadEntryForm } from "@/components/forms/LeadEntryForm";
 import { OpportunityForm } from "@/components/forms/OpportunityForm";
+import { CustomerEntryForm } from "@/components/forms/CustomerEntryForm";
+import { CampaignEntryForm } from "@/components/forms/CampaignEntryForm";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Search, Filter, LayoutGrid, List, Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 
@@ -64,23 +66,11 @@ export default function CRM() {
         </div>
       )}
 
-      {activeNav === "accounts" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Account Management</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Add, edit, and manage customer accounts</p><Button size="sm" className="mt-4">+ New Account</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "accounts" && <div className="space-y-4"><CustomerEntryForm /></div>}
 
-      {activeNav === "contacts" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Contacts</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Manage contact information and relationships</p><Button size="sm" className="mt-4">+ New Contact</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "contacts" && <div className="space-y-4"><CustomerEntryForm /></div>}
 
-      {activeNav === "campaigns" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Marketing Campaigns</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Create and track marketing campaigns</p><Button size="sm" className="mt-4">+ New Campaign</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "campaigns" && <div className="space-y-4"><CampaignEntryForm /></div>}
 
       {activeNav === "pipeline" && (
         <div className="space-y-4">

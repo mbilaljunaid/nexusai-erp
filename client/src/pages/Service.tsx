@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { ServiceTicketForm } from "@/components/forms/ServiceTicketForm";
+import { CustomerEntryForm } from "@/components/forms/CustomerEntryForm";
 import { TicketSquare, Users, BarChart3, FileText, Settings, Zap, TrendingUp, Clock } from "lucide-react";
 
 export default function Service() {
@@ -45,11 +46,7 @@ export default function Service() {
 
       {activeNav === "tickets" && <div className="space-y-4"><ServiceTicketForm /></div>}
 
-      {activeNav === "customers" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Customer Management</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">2,345 customers | 342 active support cases</p><Button size="sm" className="mt-4">+ New Customer</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "customers" && <div className="space-y-4"><CustomerEntryForm /></div>}
 
       {activeNav === "knowledge" && (
         <div className="space-y-4">

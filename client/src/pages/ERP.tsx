@@ -5,6 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { PurchaseOrderForm } from "@/components/forms/PurchaseOrderForm";
+import { AdjustmentEntryForm } from "@/components/forms/AdjustmentEntryForm";
+import { VendorEntryForm } from "@/components/forms/VendorEntryForm";
+import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users } from "lucide-react";
 
 export default function ERP() {
@@ -47,37 +50,17 @@ export default function ERP() {
 
       {activeNav === "gl" && <div className="space-y-4"><GLEntryForm /></div>}
 
-      {activeNav === "ap" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Accounts Payable</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Outstanding: $342K | 1,234 invoices</p><Button size="sm" className="mt-4">+ Record Invoice</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "ap" && <div className="space-y-4"><InvoiceEntryForm /></div>}
 
-      {activeNav === "ar" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Accounts Receivable</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Outstanding: $512K | 892 invoices | 94% collection rate</p><Button size="sm" className="mt-4">+ Record Payment</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "ar" && <div className="space-y-4"><InvoiceEntryForm /></div>}
 
-      {activeNav === "inventory" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Inventory Management</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">2,456 items | Value: $523K | Turnover: 4.2x</p><Button size="sm" className="mt-4">+ Adjust Stock</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "inventory" && <div className="space-y-4"><AdjustmentEntryForm /></div>}
 
       {activeNav === "po" && <div className="space-y-4"><PurchaseOrderForm /></div>}
 
-      {activeNav === "quality" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Quality Control</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Defect rate: 0.8% | Approved: 98.2%</p><Button size="sm" className="mt-4">+ Quality Check</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "quality" && <div className="space-y-4"><AdjustmentEntryForm /></div>}
 
-      {activeNav === "suppliers" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Supplier Management</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">128 active suppliers | Avg rating: 4.2/5</p><Button size="sm" className="mt-4">+ New Supplier</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "suppliers" && <div className="space-y-4"><VendorEntryForm /></div>}
 
       {activeNav === "settings" && (
         <div className="space-y-4">

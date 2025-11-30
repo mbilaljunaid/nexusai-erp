@@ -52,17 +52,9 @@ export default function Marketing() {
         </div>
       )}
 
-      {activeNav === "social" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Social Media</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Schedule and manage social media posts across platforms</p><Button size="sm" className="mt-4">+ Schedule Post</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "social" && <div className="space-y-4"><CampaignEntryForm /></div>}
 
-      {activeNav === "leads" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Lead Scoring</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Automatically score and qualify leads</p><Button size="sm" className="mt-4">+ Score Lead</Button></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "leads" && <div className="space-y-4"><CampaignEntryForm /></div>}
 
       {activeNav === "segments" && (
         <div className="space-y-4">

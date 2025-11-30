@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { IconNavigation } from "@/components/IconNavigation";
 import { EmployeeEntryForm } from "@/components/forms/EmployeeEntryForm";
-import { PayrollForm } from "@/components/forms/PayrollForm";
-import { PerformanceRatingForm } from "@/components/forms/PerformanceRatingForm";
+import PayrollForm from "@/components/forms/PayrollForm";
+import PerformanceRatingForm from "@/components/forms/PerformanceRatingForm";
 import { LeaveRequestForm } from "@/components/forms/LeaveRequestForm";
 import { Users, BarChart3, Briefcase, DollarSign, TrendingUp, Calendar, BookOpen, Target, Heart, Award, Clock, PieChart, Settings, Zap } from "lucide-react";
 
