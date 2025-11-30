@@ -365,6 +365,16 @@ const MedicalBilling = lazy(() => import("@/pages/MedicalBilling"));
 const InpatientManagement = lazy(() => import("@/pages/InpatientManagement"));
 const HealthcareBIDashboard = lazy(() => import("@/pages/HealthcareBIDashboard"));
 const HealthcareCompliance = lazy(() => import("@/pages/HealthcareCompliance"));
+const ReservationBooking = lazy(() => import("@/pages/ReservationBooking"));
+const FrontDeskOperations = lazy(() => import("@/pages/FrontDeskOperations"));
+const HousekeepingManagement = lazy(() => import("@/pages/HousekeepingManagement"));
+const FoodBeveragePOS = lazy(() => import("@/pages/FoodBeveragePOS"));
+const EventBanquetingManagement = lazy(() => import("@/pages/EventBanquetingManagement"));
+const GuestCRMManagement = lazy(() => import("@/pages/GuestCRMManagement"));
+const RevenueManagement = lazy(() => import("@/pages/RevenueManagement"));
+const HospitalityInventory = lazy(() => import("@/pages/HospitalityInventory"));
+const HospitalityHRRostering = lazy(() => import("@/pages/HospitalityHRRostering"));
+const HospitalityBIDashboard = lazy(() => import("@/pages/HospitalityBIDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -941,6 +951,16 @@ function Router() {
       <Route path="/inpatient-management" component={InpatientManagement} />
       <Route path="/healthcare-analytics" component={HealthcareBIDashboard} />
       <Route path="/healthcare-compliance" component={HealthcareCompliance} />
+      <Route path="/reservations" component={ReservationBooking} />
+      <Route path="/front-desk" component={FrontDeskOperations} />
+      <Route path="/housekeeping" component={HousekeepingManagement} />
+      <Route path="/fb-pos" component={FoodBeveragePOS} />
+      <Route path="/events-banqueting" component={EventBanquetingManagement} />
+      <Route path="/guest-crm" component={GuestCRMManagement} />
+      <Route path="/revenue-management" component={RevenueManagement} />
+      <Route path="/hospitality-inventory" component={HospitalityInventory} />
+      <Route path="/hr-rostering" component={HospitalityHRRostering} />
+      <Route path="/hospitality-analytics" component={HospitalityBIDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
