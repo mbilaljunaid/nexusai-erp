@@ -1,20 +1,29 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Users, Briefcase } from "lucide-react";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
+import { Users, Briefcase } from "lucide-react";
 
 export default function HRModule() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
+  const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"], retry: false });
+  const employeeFormMetadata = getFormMetadata("employee");
+
   return (
     <div className="p-6 space-y-6">
+      <Breadcrumb items={employeeFormMetadata?.breadcrumbs?.slice(1) || []} />
+      
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">HR Module</h1>
           <p className="text-muted-foreground">Manage recruitment, employees, and training programs</p>
         </div>
-        <Button data-testid="button-post-job">
-          <Plus className="w-4 h-4 mr-2" />
-          Post Job
-        </Button>
+        <SmartAddButton formMetadata={employeeFormMetadata} onClick={() => {}} />
       </div>
 
       <div className="grid grid-cols-4 gap-4">
@@ -56,6 +65,39 @@ export default function HRModule() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex gap-2 items-center">
+          <FormSearchWithMetadata
+            formMetadata={employeeFormMetadata}
+            value={searchQuery}
+            onChange={setSearchQuery}
+            data={employees}
+            onFilter={setFilteredEmployees}
+          />
+        </div>
+        
+        <div className="space-y-2">
+          {filteredEmployees.length > 0 ? (
+            filteredEmployees.map((employee: any, idx: number) => (
+              <Card key={employee.id || idx} className="hover-elevate cursor-pointer">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-semibold">{employee.name}</p>
+                      <p className="text-sm text-muted-foreground">{employee.email}</p>
+                      <p className="text-xs text-muted-foreground">{employee.department} - {employee.role}</p>
+                    </div>
+                    <Badge variant="secondary">{employee.department}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Card><CardContent className="p-4"><p className="text-muted-foreground">No employees found</p></CardContent></Card>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

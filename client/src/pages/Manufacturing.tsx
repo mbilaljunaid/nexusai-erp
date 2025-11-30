@@ -1,14 +1,21 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BomForm } from "@/components/forms/BomForm";
-import { IconNavigation } from "@/components/IconNavigation";
-import { Factory, Package, CheckSquare, Zap, QrCode } from "lucide-react";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
+import { Factory, Package, Zap, QrCode } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Manufacturing() {
-  const [activeNav, setActiveNav] = useState("bom");
+  const [activeNav, setActiveNav] = useState("workorders");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredWorkOrders, setFilteredWorkOrders] = useState<any[]>([]);
+  const { data: workOrders = [] } = useQuery<any[]>({ queryKey: ["/api/manufacturing/work-orders"], retry: false });
+  const workOrderFormMetadata = getFormMetadata("workorder");
 
   const navItems = [
     { id: "bom", label: "Bill of Materials", icon: Package, color: "text-blue-500" },
@@ -19,6 +26,8 @@ export default function Manufacturing() {
 
   return (
     <div className="space-y-6 p-6">
+      <Breadcrumb items={workOrderFormMetadata?.breadcrumbs?.slice(1) || []} />
+      
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -29,6 +38,7 @@ export default function Manufacturing() {
             Manage BOMs, work orders, production planning, and quality control
           </p>
         </div>
+        <SmartAddButton formMetadata={workOrderFormMetadata} onClick={() => {}} />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -58,16 +68,38 @@ export default function Manufacturing() {
 
       {activeNav === "workorders" && (
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Work Orders <Badge variant="secondary">Coming Soon</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Work order management will be available soon.</p>
-            </CardContent>
-          </Card>
+          <div className="flex gap-2 items-center">
+            <FormSearchWithMetadata
+              formMetadata={workOrderFormMetadata}
+              value={searchQuery}
+              onChange={setSearchQuery}
+              data={workOrders}
+              onFilter={setFilteredWorkOrders}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            {filteredWorkOrders.length > 0 ? (
+              filteredWorkOrders.map((wo: any, idx: number) => (
+                <Card key={wo.id || idx} className="hover-elevate cursor-pointer">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="font-semibold">{wo.title}</p>
+                        <p className="text-sm text-muted-foreground">{wo.description}</p>
+                        <p className="text-xs text-muted-foreground mt-1">Assigned to: {wo.assignedTo || 'Unassigned'}</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant="secondary">{wo.status || 'pending'}</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No work orders found</p></CardContent></Card>
+            )}
+          </div>
         </div>
       )}
 

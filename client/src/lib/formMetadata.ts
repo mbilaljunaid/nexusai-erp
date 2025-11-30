@@ -153,6 +153,31 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
     ],
   },
 
+  workorder: {
+    id: "workorder",
+    name: "Work Order",
+    apiEndpoint: "/api/work-orders",
+    fields: [
+      { name: "title", label: "Title", type: "text", required: true, searchable: true },
+      { name: "description", label: "Description", type: "textarea", required: false, searchable: true },
+      { name: "status", label: "Status", type: "select", required: false, searchable: false },
+      { name: "assignedTo", label: "Assigned To", type: "text", required: false, searchable: true },
+      { name: "dueDate", label: "Due Date", type: "date", required: false, searchable: false },
+    ],
+    searchFields: ["title", "description", "assignedTo"],
+    displayField: "title",
+    createButtonText: "Create Work Order",
+    module: "Manufacturing",
+    page: "/manufacturing/workorders",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Manufacturing", path: "/manufacturing" },
+      { label: "Work Orders", path: "/manufacturing/workorders" },
+    ],
+  },
+
   // Analytics dashboard - NO create button, NO search
   analyticsDashboard: {
     id: "analytics",
@@ -169,6 +194,64 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
     breadcrumbs: [
       { label: "Dashboard", path: "/" },
       { label: "Analytics", path: "/analytics" },
+    ],
+  },
+
+  // Settings pages - NO create button, NO search
+  crmSettings: {
+    id: "crm-settings",
+    name: "CRM Settings",
+    apiEndpoint: "/api/crm/settings",
+    fields: [],
+    searchFields: [],
+    displayField: "name",
+    createButtonText: "",
+    module: "CRM",
+    page: "/crm/settings",
+    allowCreate: false,
+    showSearch: false,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Settings", path: "/crm/settings" },
+    ],
+  },
+
+  hrSettings: {
+    id: "hr-settings",
+    name: "HR Settings",
+    apiEndpoint: "/api/hr/settings",
+    fields: [],
+    searchFields: [],
+    displayField: "name",
+    createButtonText: "",
+    module: "HR",
+    page: "/hr/settings",
+    allowCreate: false,
+    showSearch: false,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "HR", path: "/hr" },
+      { label: "Settings", path: "/hr/settings" },
+    ],
+  },
+
+  financeSettings: {
+    id: "finance-settings",
+    name: "Finance Settings",
+    apiEndpoint: "/api/finance/settings",
+    fields: [],
+    searchFields: [],
+    displayField: "name",
+    createButtonText: "",
+    module: "Finance",
+    page: "/finance/settings",
+    allowCreate: false,
+    showSearch: false,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Finance", path: "/finance" },
+      { label: "Settings", path: "/finance/settings" },
     ],
   },
 };

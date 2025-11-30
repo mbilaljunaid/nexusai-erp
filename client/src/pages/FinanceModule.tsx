@@ -1,20 +1,29 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, TrendingUp, TrendingDown } from "lucide-react";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 export default function FinanceModule() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
+  const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"], retry: false });
+  const invoiceFormMetadata = getFormMetadata("invoice");
+
   return (
     <div className="p-6 space-y-6">
+      <Breadcrumb items={invoiceFormMetadata?.breadcrumbs?.slice(1) || []} />
+      
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Finance Module</h1>
           <p className="text-muted-foreground">Track expenses, revenue, and financial forecasts</p>
         </div>
-        <Button data-testid="button-create-transaction">
-          <Plus className="w-4 h-4 mr-2" />
-          New Transaction
-        </Button>
+        <SmartAddButton formMetadata={invoiceFormMetadata} onClick={() => {}} />
       </div>
 
       <div className="grid grid-cols-4 gap-4">
@@ -56,6 +65,41 @@ export default function FinanceModule() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex gap-2 items-center">
+          <FormSearchWithMetadata
+            formMetadata={invoiceFormMetadata}
+            value={searchQuery}
+            onChange={setSearchQuery}
+            data={invoices}
+            onFilter={setFilteredInvoices}
+          />
+        </div>
+        
+        <div className="space-y-2">
+          {filteredInvoices.length > 0 ? (
+            filteredInvoices.map((invoice: any, idx: number) => (
+              <Card key={invoice.id || idx} className="hover-elevate cursor-pointer">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-semibold">{invoice.invoiceNumber}</p>
+                      <p className="text-sm text-muted-foreground">{invoice.customerId}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">${invoice.amount}</p>
+                      <Badge variant="secondary">{invoice.status}</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Card><CardContent className="p-4"><p className="text-muted-foreground">No invoices found</p></CardContent></Card>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
