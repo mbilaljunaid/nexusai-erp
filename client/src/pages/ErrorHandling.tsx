@@ -1,8 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertTriangle, CheckCircle2, AlertCircle, TrendingUp } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { useState } from "react";
+import { AlertTriangle, CheckCircle2, AlertCircle, TrendingUp, Bell } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 interface ErrorEvent {
@@ -14,10 +15,17 @@ interface ErrorEvent {
 }
 
 export default function ErrorHandling() {
+  const [activeNav, setActiveNav] = useState("errors");
   const { data: errors = [] } = useQuery<ErrorEvent[]>({
     queryKey: ["/api/errors/tracking"],
     retry: false,
   });
+
+  const navItems = [
+    { id: "errors", label: "Errors", icon: AlertTriangle, color: "text-red-500" },
+    { id: "alerts", label: "Alerts", icon: Bell, color: "text-orange-500" },
+    { id: "recovery", label: "Recovery", icon: CheckCircle2, color: "text-green-500" },
+  ];
 
   const stats = {
     total: errors.length,
@@ -28,7 +36,7 @@ export default function ErrorHandling() {
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Error Handling & Resilience</h1>
+      <div><h1 className="text-3xl font-semibold flex items-center gap-2"><AlertTriangle className="h-8 w-8" />Error Handling & Resilience</h1>
         <p className="text-muted-foreground text-sm">Error tracking, alerting, and recovery</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -61,15 +69,11 @@ export default function ErrorHandling() {
           </div>
         </CardContent></Card>
       </div>
-      <Tabs defaultValue="errors" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="errors">Errors</TabsTrigger>
-          <TabsTrigger value="alerts">Alerts</TabsTrigger>
-          <TabsTrigger value="recovery">Recovery</TabsTrigger>
-        </TabsList>
-        <TabsContent value="errors">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      {activeNav === "errors" && (
+        <div className="space-y-3">
           {errors.map((error: any) => (
-            <Card key={error.id}><CardContent className="p-4">
+            <Card key={error.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-start justify-between">
                 <div><p className="font-semibold">{error.message}</p>
                   <p className="text-sm text-muted-foreground">Occurrences: {error.count}</p></div>
@@ -77,10 +81,10 @@ export default function ErrorHandling() {
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="alerts"><p className="text-muted-foreground">Real-time alerting and notifications</p></TabsContent>
-        <TabsContent value="recovery"><p className="text-muted-foreground">Automatic recovery and failover mechanisms</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "alerts" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Real-time alerting and notifications</p></CardContent></Card>)}
+      {activeNav === "recovery" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Automatic recovery and failover mechanisms</p></CardContent></Card>)}
     </div>
   );
 }

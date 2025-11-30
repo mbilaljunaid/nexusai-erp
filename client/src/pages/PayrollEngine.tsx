@@ -1,15 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DollarSign, Calculator, TrendingUp, AlertCircle } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { useState } from "react";
+import { DollarSign, Calculator, TrendingUp, AlertCircle, Settings } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 export default function PayrollEngine() {
+  const [activeNav, setActiveNav] = useState("runs");
   const { data: payrolls = [] } = useQuery({
     queryKey: ["/api/payroll/runs"],
     retry: false,
   });
+
+  const navItems = [
+    { id: "runs", label: "Payroll Runs", icon: Calculator, color: "text-blue-500" },
+    { id: "taxes", label: "Tax Config", icon: AlertCircle, color: "text-orange-500" },
+    { id: "deductions", label: "Deductions", icon: Settings, color: "text-green-500" },
+  ];
 
   const stats = {
     total: payrolls.length,
@@ -22,7 +30,7 @@ export default function PayrollEngine() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-semibold">Payroll Engine</h1>
+          <h1 className="text-3xl font-semibold flex items-center gap-2"><Calculator className="h-8 w-8" />Payroll Engine</h1>
           <p className="text-muted-foreground text-sm">Tax calculations and compliance</p>
         </div>
         <Button><Calculator className="w-4 h-4 mr-2" />Run Payroll</Button>
@@ -75,26 +83,23 @@ export default function PayrollEngine() {
         </Card>
       </div>
 
-      <Tabs defaultValue="runs" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="runs">Payroll Runs</TabsTrigger>
-          <TabsTrigger value="taxes">Tax Config</TabsTrigger>
-          <TabsTrigger value="deductions">Deductions</TabsTrigger>
-        </TabsList>
-        <TabsContent value="runs" className="space-y-3">
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {activeNav === "runs" && (
+        <div className="space-y-3">
           {payrolls.map((run: any) => (
-            <Card key={run.id}><CardContent className="p-4">
+            <Card key={run.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{run.name}</p>
                   <p className="text-sm text-muted-foreground">{run.period}</p></div>
-                <div><Badge>{run.status.toUpperCase()}</Badge></div>
+                <Badge>{run.status.toUpperCase()}</Badge>
               </div>
             </CardContent></Card>
           ))}
-        </TabsContent>
-        <TabsContent value="taxes"><p className="text-muted-foreground">Tax configuration settings</p></TabsContent>
-        <TabsContent value="deductions"><p className="text-muted-foreground">Employee deductions and withholdings</p></TabsContent>
-      </Tabs>
+        </div>
+      )}
+      {activeNav === "taxes" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Tax configuration settings</p><Button size="sm" className="mt-4">Configure Tax Rules</Button></CardContent></Card>)}
+      {activeNav === "deductions" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Employee deductions and withholdings</p><Button size="sm" className="mt-4">Manage Deductions</Button></CardContent></Card>)}
     </div>
   );
 }

@@ -2,10 +2,9 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Plus, Download, Send, CheckCircle2, Clock, AlertCircle, DollarSign, Calendar } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
+import { FileText, Plus, Download, Send, CheckCircle2, Clock, AlertCircle, DollarSign, BarChart3 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
@@ -21,9 +20,8 @@ interface Invoice {
 }
 
 export default function InvoiceGenerator() {
-  const [viewMode, setViewMode] = useState<"list" | "detail">("list");
-  const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
-
+  const [activeNav, setActiveNav] = useState("list");
+  
   const { data: invoices = [] } = useQuery<Invoice[]>({
     queryKey: ["/api/invoices"],
     retry: false,
@@ -39,6 +37,13 @@ export default function InvoiceGenerator() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/invoices"] }),
   });
 
+  const navItems = [
+    { id: "list", label: "Invoices", icon: FileText, color: "text-blue-500" },
+    { id: "templates", label: "Templates", icon: Download, color: "text-purple-500" },
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-green-500" },
+    { id: "settings", label: "Settings", icon: DollarSign, color: "text-orange-500" },
+  ];
+
   const stats = {
     total: invoices.length,
     sent: invoices.filter(i => i.status === "sent" || i.status === "paid").length,
@@ -50,7 +55,7 @@ export default function InvoiceGenerator() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-semibold">Invoice Generator</h1>
+          <h1 className="text-3xl font-semibold flex items-center gap-2"><FileText className="h-8 w-8" />Invoice Generator</h1>
           <p className="text-muted-foreground text-sm">Create, send, and track customer invoices</p>
         </div>
         <Button onClick={() => createMutation.mutate({ invoiceNumber: `INV-${Date.now()}`, amount: "0" })}>
@@ -87,7 +92,7 @@ export default function InvoiceGenerator() {
         <Card className="cursor-pointer hover-elevate">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-orange-500" />
+              <AlertCircle className="h-5 w-5 text-red-500" />
               <div>
                 <p className="text-2xl font-semibold">{stats.overdue}</p>
                 <p className="text-xs text-muted-foreground">Overdue</p>
@@ -108,52 +113,40 @@ export default function InvoiceGenerator() {
         </Card>
       </div>
 
-      <Tabs defaultValue="draft" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="draft" data-testid="tab-draft">Draft</TabsTrigger>
-          <TabsTrigger value="sent" data-testid="tab-sent">Sent</TabsTrigger>
-          <TabsTrigger value="paid" data-testid="tab-paid">Paid</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        {["draft", "sent", "paid"].map((status) => (
-          <TabsContent key={status} value={status} className="space-y-4">
-            {invoices
-              .filter((inv) => (status === "draft" ? inv.status === "draft" : status === "sent" ? inv.status === "sent" : inv.status === "paid"))
-              .map((invoice) => (
-                <Card key={invoice.id} className="hover-elevate">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold">{invoice.invoiceNumber}</p>
-                        <p className="text-sm text-muted-foreground">Customer: {invoice.customerId}</p>
-                        <div className="flex gap-2 mt-2">
-                          <Badge>{invoice.status.toUpperCase()}</Badge>
-                          <Badge variant="outline">${parseFloat(invoice.amount).toLocaleString()}</Badge>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Download className="w-4 h-4" />
-                        </Button>
-                        {invoice.status === "draft" && (
-                          <Button size="sm" onClick={() => sendMutation.mutate(invoice.id)}>
-                            <Send className="w-4 h-4 mr-1" />
-                            Send
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            {invoices.filter((inv) => (status === "draft" ? inv.status === "draft" : status === "sent" ? inv.status === "sent" : inv.status === "paid")).length === 0 && (
-              <Card>
-                <CardContent className="p-4 text-center text-muted-foreground">No invoices in {status} status</CardContent>
-              </Card>
-            )}
-          </TabsContent>
-        ))}
-      </Tabs>
+      {activeNav === "list" && (
+        <div className="space-y-3">
+          {invoices.map((invoice) => (
+            <Card key={invoice.id} className="hover-elevate cursor-pointer">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold">{invoice.invoiceNumber}</p>
+                    <p className="text-sm text-muted-foreground">Due: {invoice.dueDate}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <p className="font-semibold">${invoice.amount}</p>
+                    <Badge variant={invoice.status === "paid" ? "default" : invoice.status === "overdue" ? "destructive" : "secondary"}>{invoice.status}</Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {activeNav === "templates" && (
+        <Card><CardHeader><CardTitle className="text-base">Invoice Templates</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Professional invoice templates</p></CardContent></Card>
+      )}
+
+      {activeNav === "analytics" && (
+        <Card><CardHeader><CardTitle className="text-base">Invoice Analytics</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Revenue tracking and payment analysis</p></CardContent></Card>
+      )}
+
+      {activeNav === "settings" && (
+        <Card><CardHeader><CardTitle className="text-base">Invoice Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure invoice numbering and payment terms</p></CardContent></Card>
+      )}
     </div>
   );
 }

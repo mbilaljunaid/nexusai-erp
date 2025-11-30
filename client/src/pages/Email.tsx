@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Mail, Users, Send, Settings, BarChart3 } from "lucide-react";
+import { Plus, Mail, Users, Send, Settings, Zap } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
 
@@ -12,7 +12,7 @@ export default function Email() {
     { id: "accounts", label: "Accounts", icon: Users, color: "text-purple-500" },
     { id: "campaigns", label: "Campaigns", icon: Send, color: "text-green-500" },
     { id: "templates", label: "Templates", icon: Settings, color: "text-orange-500" },
-    { id: "automation", label: "Automation", icon: BarChart3, color: "text-red-500" },
+    { id: "automation", label: "Automation", icon: Zap, color: "text-red-500" },
   ];
 
   return (
@@ -30,46 +30,16 @@ export default function Email() {
 
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-      {activeNav === "inbox" && (<div className="space-y-4">
+      {activeNav === "inbox" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">842</p>
-                  <p className="text-xs text-muted-foreground">Unread Emails</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">15</p>
-                  <p className="text-xs text-muted-foreground">Team Members</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">28</p>
-                  <p className="text-xs text-muted-foreground">Email Accounts</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">2.4h</p>
-                  <p className="text-xs text-muted-foreground">Avg Response Time</p>
-                </div>
-              </CardContent>
-            </Card>
+            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">842</p><p className="text-xs text-muted-foreground">Unread Emails</p></div></CardContent></Card>
+            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">15</p><p className="text-xs text-muted-foreground">Team Members</p></div></CardContent></Card>
+            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">28</p><p className="text-xs text-muted-foreground">Email Accounts</p></div></CardContent></Card>
+            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">2.4h</p><p className="text-xs text-muted-foreground">Avg Response Time</p></div></CardContent></Card>
           </div>
-
           <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Email Management Capabilities</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle className="text-base">Email Management Capabilities</CardTitle></CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
@@ -88,53 +58,24 @@ export default function Email() {
               </div>
             </CardContent>
           </Card>
-        </div>)}
+        </div>
+      )}
 
       {activeNav === "accounts" && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Email Accounts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground text-sm">Email accounts module loading. Connect and manage multiple email addresses and accounts.</p>
-            <Button size="sm" className="mt-4">+ Connect Account</Button>
-          </CardContent>
-        </Card>
+        <Card><CardHeader><CardTitle className="text-base">Email Accounts</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Email accounts module loading. Connect and manage multiple email addresses and accounts.</p><Button size="sm" className="mt-4">+ Connect Account</Button></CardContent></Card>
       )}
 
       {activeNav === "campaigns" && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Email Campaigns</CardTitle>
-          </CardHeader>
-          <CardContent>
-              <p className="text-muted-foreground text-sm">Email campaigns module loading. Create and send bulk email campaigns with tracking.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        <Card><CardHeader><CardTitle className="text-base">Email Campaigns</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Email campaigns module loading. Create and send bulk email campaigns with tracking.</p></CardContent></Card>
+      )}
 
-        <TabsContent value="templates">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Email Templates</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Templates module loading. Create and manage reusable email templates.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "templates" && (
+        <Card><CardHeader><CardTitle className="text-base">Email Templates</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Templates module loading. Create and manage reusable email templates.</p></CardContent></Card>
+      )}
 
-        <TabsContent value="automation">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Email Automation</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Automation module loading. Set up automatic workflows and follow-ups.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {activeNav === "automation" && (
+        <Card><CardHeader><CardTitle className="text-base">Email Automation</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Automation module loading. Set up automatic workflows and follow-ups.</p></CardContent></Card>
+      )}
     </div>
   );
 }

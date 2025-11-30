@@ -1,63 +1,38 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { IconNavigation } from "@/components/IconNavigation";
+import { useState } from "react";
+import { BarChart3, Mail, Share2, TrendingUp } from "lucide-react";
 
 export default function Marketing() {
+  const [activeNav, setActiveNav] = useState("overview");
+
+  const navItems = [
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-purple-500" },
+    { id: "email", label: "Email", icon: Mail, color: "text-green-500" },
+    { id: "social", label: "Social", icon: Share2, color: "text-orange-500" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold">Marketing Automation</h1>
+        <h1 className="text-3xl font-semibold flex items-center gap-2"><TrendingUp className="h-8 w-8" />Marketing Automation</h1>
         <p className="text-muted-foreground text-sm">Create campaigns, nurture leads, and track engagement</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-          <TabsTrigger value="campaigns" data-testid="tab-campaigns">Campaigns</TabsTrigger>
-          <TabsTrigger value="email" data-testid="tab-email">Email</TabsTrigger>
-          <TabsTrigger value="social" data-testid="tab-social">Social</TabsTrigger>
-        </TabsList>
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
-        <TabsContent value="overview" className="space-y-4">
+      {activeNav === "overview" && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">18</p>
-                  <p className="text-xs text-muted-foreground">Active Campaigns</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">28.5%</p>
-                  <p className="text-xs text-muted-foreground">Avg Open Rate</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">4.2%</p>
-                  <p className="text-xs text-muted-foreground">Click Rate</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-1">
-                  <p className="text-2xl font-semibold">$245K</p>
-                  <p className="text-xs text-muted-foreground">Pipeline Generated</p>
-                </div>
-              </CardContent>
-            </Card>
+            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">18</p><p className="text-xs text-muted-foreground">Active Campaigns</p></div></CardContent></Card>
+            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">28.5%</p><p className="text-xs text-muted-foreground">Avg Open Rate</p></div></CardContent></Card>
+            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">4.2%</p><p className="text-xs text-muted-foreground">Click Rate</p></div></CardContent></Card>
+            <Card><CardContent className="p-4"><div className="space-y-1"><p className="text-2xl font-semibold">$245K</p><p className="text-xs text-muted-foreground">Pipeline Generated</p></div></CardContent></Card>
           </div>
-
           <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Marketing Modules</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle className="text-base">Marketing Modules</CardTitle></CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
@@ -76,41 +51,20 @@ export default function Marketing() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="campaigns">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Campaigns</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Campaign management loading. Create multi-channel marketing campaigns.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "campaigns" && (
+        <Card><CardHeader><CardTitle className="text-base">Campaigns</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Campaign management loading. Create multi-channel marketing campaigns.</p><Button size="sm" className="mt-4">+ New Campaign</Button></CardContent></Card>
+      )}
 
-        <TabsContent value="email">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Email Marketing</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Email module loading. Design and send targeted email campaigns.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {activeNav === "email" && (
+        <Card><CardHeader><CardTitle className="text-base">Email Marketing</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Email module loading. Design and send targeted email campaigns.</p></CardContent></Card>
+      )}
 
-        <TabsContent value="social">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Social Media</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Social media module loading. Manage your social presence.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {activeNav === "social" && (
+        <Card><CardHeader><CardTitle className="text-base">Social Media</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Social media module loading. Manage your social presence.</p></CardContent></Card>
+      )}
     </div>
   );
 }
