@@ -5,6 +5,7 @@ import { SystemHealth } from "@/components/SystemHealth";
 import { ResourceAllocation } from "@/components/ResourceAllocation";
 import { LeadCard, type Lead } from "@/components/LeadCard";
 import { TaskCard, type Task } from "@/components/TaskCard";
+import { IndustriesWidget } from "@/components/IndustriesWidget";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +60,10 @@ export default function Dashboard() {
         <MetricCard title="Total Revenue" value={`$${invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0).toLocaleString()}`} change={8.2} icon={DollarSign} />
         <MetricCard title="Conversion Rate" value="24.8%" change={-2.1} icon={Target} />
         <MetricCard title="Forecast Accuracy" value="95%" change={5} icon={FolderKanban} />
+      </div>
+
+      <div className="space-y-6">
+        <IndustriesWidget />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
