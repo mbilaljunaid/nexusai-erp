@@ -1,93 +1,147 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, TrendingUp, Zap, PieChart, Settings, Sliders, BarChart3 as AnalyzeIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { IconNavigation } from "@/components/IconNavigation";
-
-interface Budget {
-  id: string;
-  name: string;
-  amount: number;
-  status: string;
-  department: string;
-  variance: number;
-}
+import { BarChart3, TrendingUp, Zap, PieChart, Plus, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function BudgetPlanning() {
-  const [activeNav, setActiveNav] = useState("budgets");
-  const { data: budgets = [] } = useQuery<Budget[]>({
+  const { toast } = useToast();
+  const [newBudget, setNewBudget] = useState({ planName: "", department: "Finance", budgetAmount: "", forecastAmount: "" });
+
+  const { data: budgets = [], isLoading } = useQuery({
     queryKey: ["/api/budgets"],
-    retry: false,
+    queryFn: () => fetch("/api/budgets").then(r => r.json()),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data) => fetch("/api/budgets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/budgets"] });
+      setNewBudget({ planName: "", department: "Finance", budgetAmount: "", forecastAmount: "" });
+      toast({ title: "Budget plan created" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => fetch(`/api/budgets/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/budgets"] });
+      toast({ title: "Budget deleted" });
+    },
   });
 
   const stats = {
     total: budgets.length,
     active: budgets.filter((b: any) => b.status === "active").length,
-    totalBudgeted: budgets.reduce((sum: number, b: any) => sum + parseFloat(b.amount || "0"), 0),
-    variance: budgets.filter((b: any) => b.variance).reduce((sum: number, b: any) => sum + b.variance, 0),
+    totalBudgeted: budgets.reduce((sum: number, b: any) => sum + parseFloat(b.budgetAmount || "0"), 0),
+    avgVariance: budgets.length > 0 ? ((budgets.reduce((sum: number, b: any) => sum + parseFloat(b.forecastAmount || "0"), 0) / stats.totalBudgeted) * 100).toFixed(1) : "0",
   };
 
-  const navItems = [
-    { id: "budgets", label: "Budgets", icon: BarChart3, color: "text-blue-500" },
-    { id: "scenarios", label: "Scenarios", icon: Sliders, color: "text-purple-500" },
-    { id: "drivers", label: "Drivers", icon: AnalyzeIcon, color: "text-green-500" },
-  ];
-
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Budget Planning</h1>
+    <div className="space-y-6 p-4" data-testid="budget-planning">
+      <div>
+        <h1 className="text-3xl font-semibold">Budget Planning</h1>
         <p className="text-muted-foreground text-sm">Driver-based planning and scenario modeling</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="hover-elevate"><CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <BarChart3 className="h-5 w-5 text-blue-500" />
-            <div><p className="text-2xl font-semibold">{stats.total}</p>
-              <p className="text-xs text-muted-foreground">Budgets</p></div>
-          </div>
-        </CardContent></Card>
-        <Card className="hover-elevate"><CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <Zap className="h-5 w-5 text-yellow-500" />
-            <div><p className="text-2xl font-semibold">{stats.active}</p>
-              <p className="text-xs text-muted-foreground">Active</p></div>
-          </div>
-        </CardContent></Card>
-        <Card className="hover-elevate"><CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <TrendingUp className="h-5 w-5 text-green-500" />
-            <div><p className="text-2xl font-semibold font-mono">${(stats.totalBudgeted / 1000000).toFixed(1)}M</p>
-              <p className="text-xs text-muted-foreground">Total</p></div>
-          </div>
-        </CardContent></Card>
-        <Card className="hover-elevate"><CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <PieChart className="h-5 w-5 text-orange-500" />
-            <div><p className="text-2xl font-semibold font-mono">{(stats.variance).toFixed(1)}%</p>
-              <p className="text-xs text-muted-foreground">Avg Variance</p></div>
-          </div>
-        </CardContent></Card>
+        <Card className="hover-elevate" data-testid="card-total-budgets">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <BarChart3 className="h-5 w-5 text-blue-500" />
+              <div><p className="text-2xl font-semibold">{stats.total}</p>
+                <p className="text-xs text-muted-foreground">Budgets</p></div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="hover-elevate" data-testid="card-active">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Zap className="h-5 w-5 text-yellow-500" />
+              <div><p className="text-2xl font-semibold">{stats.active}</p>
+                <p className="text-xs text-muted-foreground">Active</p></div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="hover-elevate" data-testid="card-total-amount">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="h-5 w-5 text-green-500" />
+              <div><p className="text-2xl font-semibold font-mono">${(stats.totalBudgeted / 1000000).toFixed(1)}M</p>
+                <p className="text-xs text-muted-foreground">Total</p></div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="hover-elevate" data-testid="card-variance">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <PieChart className="h-5 w-5 text-orange-500" />
+              <div><p className="text-2xl font-semibold font-mono">{stats.avgVariance}%</p>
+                <p className="text-xs text-muted-foreground">Avg Variance</p></div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+      <Card data-testid="card-new-budget">
+        <CardHeader>
+          <CardTitle className="text-base">Create Budget Plan</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Input placeholder="Plan name" value={newBudget.planName} onChange={(e) => setNewBudget({ ...newBudget, planName: e.target.value })} data-testid="input-plan-name" />
+            <Select value={newBudget.department} onValueChange={(v) => setNewBudget({ ...newBudget, department: v })}>
+              <SelectTrigger data-testid="select-department">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Operations">Operations</SelectItem>
+                <SelectItem value="HR">HR</SelectItem>
+                <SelectItem value="Sales">Sales</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input placeholder="Budget amount" type="number" value={newBudget.budgetAmount} onChange={(e) => setNewBudget({ ...newBudget, budgetAmount: e.target.value })} data-testid="input-budget-amount" />
+            <Input placeholder="Forecast amount" type="number" value={newBudget.forecastAmount} onChange={(e) => setNewBudget({ ...newBudget, forecastAmount: e.target.value })} data-testid="input-forecast-amount" />
+          </div>
+          <Button onClick={() => createMutation.mutate(newBudget)} disabled={createMutation.isPending || !newBudget.planName} className="w-full" data-testid="button-create-budget">
+            <Plus className="w-4 h-4 mr-2" /> Create Budget
+          </Button>
+        </CardContent>
+      </Card>
 
-      {activeNav === "budgets" && (
-        <div className="space-y-3">
-          {budgets.map((budget: any) => (
-            <Card key={budget.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div><p className="font-semibold">{budget.name}</p>
-                  <p className="text-sm text-muted-foreground">${(budget.amount / 1000000).toFixed(1)}M • {budget.department}</p></div>
-                <Badge variant={budget.status === "active" ? "default" : "secondary"}>{budget.status}</Badge>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Budget Plans</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {isLoading ? (
+            <div className="text-center py-4">Loading...</div>
+          ) : budgets.length === 0 ? (
+            <div className="text-center py-4 text-muted-foreground">No budgets created yet</div>
+          ) : (
+            budgets.map((budget: any) => (
+              <div key={budget.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between" data-testid={`budget-item-${budget.id}`}>
+                <div className="flex-1">
+                  <p className="font-semibold">{budget.planName}</p>
+                  <p className="text-sm text-muted-foreground">${(budget.budgetAmount / 1000000).toFixed(1)}M • {budget.department}</p>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Badge variant={budget.status === "active" ? "default" : "secondary"}>{budget.status}</Badge>
+                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(budget.id)} data-testid={`button-delete-${budget.id}`}>
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
-            </CardContent></Card>
-          ))}
-        </div>
-      )}
-      {activeNav === "scenarios" && <Card><CardContent className="p-6"><p className="text-muted-foreground">What-if scenario analysis and modeling</p></CardContent></Card>}
-      {activeNav === "drivers" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Budget drivers and assumptions configuration</p></CardContent></Card>}
+            ))
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

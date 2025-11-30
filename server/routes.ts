@@ -3646,6 +3646,12 @@ export async function registerRoutes(
     res.status(201).json(budget);
   });
 
+  app.delete("/api/budgets/:id", (req, res) => {
+    const idx = budgetStore.findIndex((b: any) => b.id === req.params.id);
+    if (idx > -1) budgetStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
   app.get("/api/consolidations", (req, res) => {
     if (consolidationStore.length === 0) {
       consolidationStore.push(
@@ -3661,6 +3667,12 @@ export async function registerRoutes(
     res.status(201).json(consolidation);
   });
 
+  app.delete("/api/consolidations/:id", (req, res) => {
+    const idx = consolidationStore.findIndex((c: any) => c.id === req.params.id);
+    if (idx > -1) consolidationStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
   app.get("/api/period-close", (req, res) => {
     if (closeStore.length === 0) {
       closeStore.push(
@@ -3671,9 +3683,21 @@ export async function registerRoutes(
   });
 
   app.post("/api/period-close", (req, res) => {
-    const close = { id: `pc-${Date.now()}`, ...req.body, status: "not_started", approvalStatus: "pending" };
+    const close = { id: `pc-${Date.now()}`, ...req.body, status: "not_started", approvalStatus: "pending", dueDate: new Date().toISOString() };
     closeStore.push(close);
     res.status(201).json(close);
+  });
+
+  app.delete("/api/period-close/:id", (req, res) => {
+    const idx = closeStore.findIndex((c: any) => c.id === req.params.id);
+    if (idx > -1) closeStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.patch("/api/period-close/:id", (req, res) => {
+    const close = closeStore.find((c: any) => c.id === req.params.id);
+    if (close) Object.assign(close, req.body);
+    res.json(close);
   });
 
   app.get("/api/reconciliations", (req, res) => {
@@ -3686,9 +3710,22 @@ export async function registerRoutes(
   });
 
   app.post("/api/reconciliations", (req, res) => {
-    const reconciliation = { id: `rec-${Date.now()}`, ...req.body, status: "pending", approvalStatus: "pending" };
+    const variance = Math.abs(parseFloat(req.body.glBalance || "0") - parseFloat(req.body.subledgerBalance || "0"));
+    const reconciliation = { id: `rec-${Date.now()}`, ...req.body, variance: variance.toString(), status: variance === 0 ? "reconciled" : "exception", approvalStatus: "pending" };
     reconciliationStore.push(reconciliation);
     res.status(201).json(reconciliation);
+  });
+
+  app.delete("/api/reconciliations/:id", (req, res) => {
+    const idx = reconciliationStore.findIndex((r: any) => r.id === req.params.id);
+    if (idx > -1) reconciliationStore.splice(idx, 1);
+    res.json({ success: true });
+  });
+
+  app.patch("/api/reconciliations/:id", (req, res) => {
+    const reconciliation = reconciliationStore.find((r: any) => r.id === req.params.id);
+    if (reconciliation) Object.assign(reconciliation, req.body);
+    res.json(reconciliation);
   });
 
   app.get("/api/intercompany", (req, res) => {
