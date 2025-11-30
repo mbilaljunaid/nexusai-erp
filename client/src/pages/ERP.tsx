@@ -76,7 +76,7 @@ export default function ERP() {
             <Button>+ New Entry</Button>
           </div>
           <div className="space-y-2">
-            {(glEntries || []).filter((e: any) => (e.account || "").toLowerCase().includes(searchQuery.toLowerCase())).map((e: any, idx: number) => (
+            {((glEntries || []) as any).filter((e: any) => (e.account || "").toLowerCase().includes(searchQuery.toLowerCase())).map((e: any, idx: number) => (
               <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{e.account}</p><p className="text-sm text-muted-foreground">{e.description}</p></div><Badge>${(e.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
             ))}
           </div>
@@ -91,7 +91,7 @@ export default function ERP() {
             <Button>+ New Invoice</Button>
           </div>
           <div className="space-y-2">
-            {(invoices || []).filter((i: any) => (i.vendorId || "").toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
+            {((invoices || []) as any).filter((i: any) => (i.vendorId || "").toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
               <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">Invoice {i.id}</p><p className="text-sm text-muted-foreground">{i.vendorId}</p></div><Badge>${(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
             ))}
           </div>
@@ -106,7 +106,7 @@ export default function ERP() {
             <Button>+ New Invoice</Button>
           </div>
           <div className="space-y-2">
-            {(invoices || []).filter((i: any) => (i.customerId || "").toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
+            {((invoices || []) as any).filter((i: any) => (i.customerId || "").toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
               <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">Invoice {i.id}</p><p className="text-sm text-muted-foreground">{i.customerId}</p></div><Badge>${(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
             ))}
           </div>
@@ -136,7 +136,7 @@ export default function ERP() {
             <Button>+ New PO</Button>
           </div>
           <div className="space-y-2">
-            {(pos || []).filter((p: any) => (p.id || "").toString().toLowerCase().includes(searchQuery.toLowerCase())).map((p: any, idx: number) => (
+            {((pos || []) as any).filter((p: any) => (p.id || "").toString().toLowerCase().includes(searchQuery.toLowerCase())).map((p: any, idx: number) => (
               <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">PO {p.id}</p><p className="text-sm text-muted-foreground">{p.vendor}</p></div><Badge>${(p.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
             ))}
           </div>
@@ -153,7 +153,7 @@ export default function ERP() {
             <Button>+ New Supplier</Button>
           </div>
           <div className="space-y-2">
-            {(vendors || []).filter((v: any) => (v.name || "").toLowerCase().includes(searchQuery.toLowerCase())).map((v: any, idx: number) => (
+            {((vendors || []) as any).filter((v: any) => (v.name || "").toLowerCase().includes(searchQuery.toLowerCase())).map((v: any, idx: number) => (
               <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{v.name}</p><p className="text-sm text-muted-foreground">{v.location}</p></div><Badge>{v.rating}/5</Badge></div></CardContent></Card>
             ))}
           </div>

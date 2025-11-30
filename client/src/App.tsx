@@ -119,6 +119,33 @@ const PayrollDetail = lazy(() => import("@/pages/PayrollDetail"));
 const CampaignsDetail = lazy(() => import("@/pages/CampaignsDetail"));
 const TasksDetail = lazy(() => import("@/pages/TasksDetail"));
 const BOMDetail = lazy(() => import("@/pages/BOMDetail"));
+const CRMCampaignsDetail = lazy(() => import("@/pages/detail/CRMCampaignsDetail"));
+const CRMPipelineDetail = lazy(() => import("@/pages/detail/CRMPipelineDetail"));
+const CRMAnalyticsDetail = lazy(() => import("@/pages/detail/CRMAnalyticsDetail"));
+const ERPAPDetail = lazy(() => import("@/pages/detail/ERPAPDetail"));
+const ERPARDetail = lazy(() => import("@/pages/detail/ERPARDetail"));
+const ERPInventoryDetail = lazy(() => import("@/pages/detail/ERPInventoryDetail"));
+const FinanceBudgetsDetail = lazy(() => import("@/pages/detail/FinanceBudgetsDetail"));
+const FinanceReportsDetail = lazy(() => import("@/pages/detail/FinanceReportsDetail"));
+const ServiceCustomersDetail = lazy(() => import("@/pages/detail/ServiceCustomersDetail"));
+const ServiceKnowledgeDetail = lazy(() => import("@/pages/detail/ServiceKnowledgeDetail"));
+const HRRecruitmentDetail = lazy(() => import("@/pages/detail/HRRecruitmentDetail"));
+const HRPerformanceDetail = lazy(() => import("@/pages/detail/HRPerformanceDetail"));
+const HRLeaveDetail = lazy(() => import("@/pages/detail/HRLeaveDetail"));
+const MarketingEmailDetail = lazy(() => import("@/pages/detail/MarketingEmailDetail"));
+const MarketingSocialDetail = lazy(() => import("@/pages/detail/MarketingSocialDetail"));
+const ProjectsKanbanDetail = lazy(() => import("@/pages/detail/ProjectsKanbanDetail"));
+const ManufacturingWorkOrdersDetail = lazy(() => import("@/pages/detail/ManufacturingWorkOrdersDetail"));
+const ManufacturingProductionDetail = lazy(() => import("@/pages/detail/ManufacturingProductionDetail"));
+const ManufacturingQualityDetail = lazy(() => import("@/pages/detail/ManufacturingQualityDetail"));
+const CRMSettingsDetail = lazy(() => import("@/pages/detail/CRMSettingsDetail"));
+const CRMContactsDetail = lazy(() => import("@/pages/detail/CRMContactsDetail"));
+const ERPQualityDetail = lazy(() => import("@/pages/detail/ERPQualityDetail"));
+const FinancePaymentsDetail = lazy(() => import("@/pages/detail/FinancePaymentsDetail"));
+const ServiceSLADetail = lazy(() => import("@/pages/detail/ServiceSLADetail"));
+const HRTrainingDetail = lazy(() => import("@/pages/detail/HRTrainingDetail"));
+const MarketingLeadsDetail = lazy(() => import("@/pages/detail/MarketingLeadsDetail"));
+const ProjectsResourcesDetail = lazy(() => import("@/pages/detail/ProjectsResourcesDetail"));
 const Finance = lazy(() => import("@/pages/Finance"));
 const VarianceAnalysis = lazy(() => import("@/pages/VarianceAnalysis"));
 const PredictiveAnalytics = lazy(() => import("@/pages/PredictiveAnalytics"));
@@ -322,26 +349,53 @@ function Router() {
       <Route path="/crm/leads" component={LeadsDetail} />
       <Route path="/crm/opportunities" component={OpportunitiesDetail} />
       <Route path="/crm/customers" component={CustomersDetail} />
+      <Route path="/crm/campaigns" component={CRMCampaignsDetail} />
+      <Route path="/crm/pipeline" component={CRMPipelineDetail} />
+      <Route path="/crm/analytics" component={CRMAnalyticsDetail} />
+      <Route path="/crm/settings" component={CRMSettingsDetail} />
+      <Route path="/crm/contacts" component={CRMContactsDetail} />
       <Route path="/hr" component={HR} />
       <Route path="/hr/employees" component={EmployeesDetail} />
       <Route path="/hr/payroll" component={PayrollDetail} />
+      <Route path="/hr/recruitment" component={HRRecruitmentDetail} />
+      <Route path="/hr/performance" component={HRPerformanceDetail} />
+      <Route path="/hr/leave" component={HRLeaveDetail} />
+      <Route path="/hr/training" component={HRTrainingDetail} />
       <Route path="/marketing" component={Marketing} />
       <Route path="/marketing/campaigns" component={CampaignsDetail} />
+      <Route path="/marketing/email" component={MarketingEmailDetail} />
+      <Route path="/marketing/social" component={MarketingSocialDetail} />
+      <Route path="/marketing/leads" component={MarketingLeadsDetail} />
       <Route path="/projects" component={Projects} />
       <Route path="/projects/tasks" component={TasksDetail} />
+      <Route path="/projects/kanban" component={ProjectsKanbanDetail} />
+      <Route path="/projects/resources" component={ProjectsResourcesDetail} />
       <Route path="/manufacturing" component={Manufacturing} />
       <Route path="/manufacturing/bom" component={BOMDetail} />
+      <Route path="/manufacturing/workorders" component={ManufacturingWorkOrdersDetail} />
+      <Route path="/manufacturing/production" component={ManufacturingProductionDetail} />
+      <Route path="/manufacturing/quality" component={ManufacturingQualityDetail} />
       <Route path="/erp" component={ERP} />
       <Route path="/erp/gl" component={GeneralLedgerDetail} />
       <Route path="/erp/vendors" component={VendorsDetail} />
       <Route path="/erp/purchase-orders" component={PurchaseOrdersDetail} />
+      <Route path="/erp/ap" component={ERPAPDetail} />
+      <Route path="/erp/ar" component={ERPARDetail} />
+      <Route path="/erp/inventory" component={ERPInventoryDetail} />
+      <Route path="/erp/quality" component={ERPQualityDetail} />
       <Route path="/finance" component={Finance} />
       <Route path="/finance/invoices" component={InvoicesDetail} />
       <Route path="/finance/expenses" component={ExpensesDetail} />
+      <Route path="/finance/budgets" component={FinanceBudgetsDetail} />
+      <Route path="/finance/reports" component={FinanceReportsDetail} />
+      <Route path="/finance/payments" component={FinancePaymentsDetail} />
       <Route path="/hr" component={HR} />
       <Route path="/manufacturing" component={Manufacturing} />
       <Route path="/service" component={Service} />
       <Route path="/service/tickets" component={ServiceTicketsDetail} />
+      <Route path="/service/customers" component={ServiceCustomersDetail} />
+      <Route path="/service/knowledge" component={ServiceKnowledgeDetail} />
+      <Route path="/service/sla" component={ServiceSLADetail} />
       <Route path="/invoice-generator" component={InvoiceGenerator} />
       <Route path="/quote-builder" component={QuoteBuilder} />
       <Route path="/approval-workflow" component={ApprovalWorkflow} />
