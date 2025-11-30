@@ -277,6 +277,8 @@ const ContactManagement = lazy(() => import("@/pages/ContactManagement"));
 const OpportunitiesPage = lazy(() => import("@/pages/OpportunitiesPage"));
 const QuotesAndOrders = lazy(() => import("@/pages/QuotesAndOrders"));
 const SalesActivities = lazy(() => import("@/pages/SalesActivities"));
+const DataSourceConfiguration = lazy(() => import("@/pages/DataSourceConfiguration"));
+const KPIDashboard = lazy(() => import("@/pages/KPIDashboard"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -733,6 +735,9 @@ function Router() {
       <Route path="/opportunities" component={OpportunitiesPage} />
       <Route path="/quotes-orders" component={QuotesAndOrders} />
       <Route path="/sales-activities" component={SalesActivities} />
+      <Route path="/data-sources" component={DataSourceConfiguration} />
+      <Route path="/kpi-dashboard" component={KPIDashboard} />
+      <Route path="/predictive-analytics" component={PredictiveAnalytics} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />

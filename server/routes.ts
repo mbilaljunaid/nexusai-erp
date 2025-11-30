@@ -3325,6 +3325,107 @@ export async function registerRoutes(
     res.status(201).json(pipeline);
   });
 
+  // ========== MODULE 10: BUSINESS INTELLIGENCE (BI) & ANALYTICS ENDPOINTS ==========
+  const dataSourceStore: any[] = [];
+  const dataModelStore: any[] = [];
+  const kpiStore: any[] = [];
+  const predictiveModelStore: any[] = [];
+  const analyticsQueryStore: any[] = [];
+  const dashboardStore: any[] = [];
+
+  app.get("/api/data-sources", (req, res) => {
+    if (dataSourceStore.length === 0) {
+      dataSourceStore.push(
+        { id: "ds1", sourceType: "ERP", connectionName: "ERP System", status: "active", refreshFrequency: "Every 1 hour" },
+        { id: "ds2", sourceType: "CRM", connectionName: "CRM Database", status: "active", refreshFrequency: "Every 30 minutes" }
+      );
+    }
+    res.json(dataSourceStore);
+  });
+
+  app.post("/api/data-sources", (req, res) => {
+    const ds = { id: `ds-${Date.now()}`, ...req.body, status: "active" };
+    dataSourceStore.push(ds);
+    res.status(201).json(ds);
+  });
+
+  app.get("/api/data-models", (req, res) => {
+    if (dataModelStore.length === 0) {
+      dataModelStore.push(
+        { id: "dm1", modelName: "Sales Fact Model", sourceDataSourceId: "ds2", loadType: "incremental", status: "active" }
+      );
+    }
+    res.json(dataModelStore);
+  });
+
+  app.post("/api/data-models", (req, res) => {
+    const dm = { id: `dm-${Date.now()}`, ...req.body, status: "active" };
+    dataModelStore.push(dm);
+    res.status(201).json(dm);
+  });
+
+  app.get("/api/kpi-configurations", (req, res) => {
+    if (kpiStore.length === 0) {
+      kpiStore.push(
+        { id: "kpi1", kpiName: "Revenue", module: "Finance", targetValue: "3000000", warningThreshold: "2500000", status: "active" },
+        { id: "kpi2", kpiName: "Customer Acquisition", module: "CRM", targetValue: "150", warningThreshold: "125", status: "active" }
+      );
+    }
+    res.json(kpiStore);
+  });
+
+  app.post("/api/kpi-configurations", (req, res) => {
+    const kpi = { id: `kpi-${Date.now()}`, ...req.body, status: "active" };
+    kpiStore.push(kpi);
+    res.status(201).json(kpi);
+  });
+
+  app.get("/api/predictive-models", (req, res) => {
+    if (predictiveModelStore.length === 0) {
+      predictiveModelStore.push(
+        { id: "pm1", modelName: "Revenue Forecast", modelType: "Time Series", accuracy: "94", forecastPeriod: "Q4 2025", status: "active" },
+        { id: "pm2", modelName: "Churn Prediction", modelType: "Classification", accuracy: "89", forecastPeriod: "Current", status: "active" }
+      );
+    }
+    res.json(predictiveModelStore);
+  });
+
+  app.post("/api/predictive-models", (req, res) => {
+    const pm = { id: `pm-${Date.now()}`, ...req.body, status: "active" };
+    predictiveModelStore.push(pm);
+    res.status(201).json(pm);
+  });
+
+  app.get("/api/analytics-queries", (req, res) => {
+    if (analyticsQueryStore.length === 0) {
+      analyticsQueryStore.push(
+        { id: "aq1", userId: "u1", queryName: "Sales by Region", visualizationType: "bar", status: "active" }
+      );
+    }
+    res.json(analyticsQueryStore);
+  });
+
+  app.post("/api/analytics-queries", (req, res) => {
+    const aq = { id: `aq-${Date.now()}`, ...req.body, status: "draft" };
+    analyticsQueryStore.push(aq);
+    res.status(201).json(aq);
+  });
+
+  app.get("/api/performance-dashboards", (req, res) => {
+    if (dashboardStore.length === 0) {
+      dashboardStore.push(
+        { id: "pd1", dashboardName: "Executive Dashboard", module: "Finance", refreshInterval: "5 minutes", status: "active" }
+      );
+    }
+    res.json(dashboardStore);
+  });
+
+  app.post("/api/performance-dashboards", (req, res) => {
+    const pd = { id: `pd-${Date.now()}`, ...req.body, status: "active" };
+    dashboardStore.push(pd);
+    res.status(201).json(pd);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

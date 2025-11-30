@@ -2614,3 +2614,76 @@ export const salesPipeline = pgTable("sales_pipeline", {
   totalPipeline: numeric("total_pipeline"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 10: BUSINESS INTELLIGENCE (BI) & ANALYTICS ==========
+export const dataSources = pgTable("data_sources", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sourceType: varchar("source_type").notNull(),
+  connectionName: varchar("connection_name").notNull(),
+  status: varchar("status").default("active"),
+  refreshFrequency: varchar("refresh_frequency"),
+  lastSyncTime: timestamp("last_sync_time"),
+  fieldMappingRules: jsonb("field_mapping_rules"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const dataModels = pgTable("data_models", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  modelName: varchar("model_name").notNull(),
+  sourceDataSourceId: varchar("source_data_source_id"),
+  transformationLogic: text("transformation_logic"),
+  loadType: varchar("load_type").default("incremental"),
+  schedule: varchar("schedule"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const kpiConfigurations = pgTable("kpi_configurations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  kpiName: varchar("kpi_name").notNull(),
+  module: varchar("module"),
+  calculationLogic: text("calculation_logic"),
+  targetValue: numeric("target_value"),
+  warningThreshold: numeric("warning_threshold"),
+  criticalThreshold: numeric("critical_threshold"),
+  displayType: varchar("display_type"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const predictiveModels = pgTable("predictive_models", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  modelName: varchar("model_name").notNull(),
+  modelType: varchar("model_type"),
+  inputVariables: jsonb("input_variables"),
+  outputVariables: jsonb("output_variables"),
+  trainingDatasetId: varchar("training_dataset_id"),
+  validationMetrics: jsonb("validation_metrics"),
+  forecastPeriod: varchar("forecast_period"),
+  confidenceLevel: numeric("confidence_level"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const analyticsQueries = pgTable("analytics_queries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  queryName: varchar("query_name"),
+  selectedFields: jsonb("selected_fields"),
+  filters: jsonb("filters"),
+  aggregations: jsonb("aggregations"),
+  visualizationType: varchar("visualization_type"),
+  status: varchar("status").default("draft"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const performanceDashboards = pgTable("performance_dashboards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  dashboardName: varchar("dashboard_name").notNull(),
+  module: varchar("module"),
+  kpiIds: jsonb("kpi_ids"),
+  chartConfigurations: jsonb("chart_configurations"),
+  refreshInterval: varchar("refresh_interval"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
