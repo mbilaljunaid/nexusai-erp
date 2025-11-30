@@ -538,6 +538,18 @@ const HRLogistics = lazy(() => import("@/pages/HRLogistics"));
 const LogisticsOptimization = lazy(() => import("@/pages/LogisticsOptimization"));
 const LogisticsAnalytics = lazy(() => import("@/pages/LogisticsAnalytics"));
 const LogisticsDashboard = lazy(() => import("@/pages/LogisticsDashboard"));
+const GridOperations = lazy(() => import("@/pages/GridOperations"));
+const EnergyTrading = lazy(() => import("@/pages/EnergyTrading"));
+const BillingCustomers = lazy(() => import("@/pages/BillingCustomers"));
+const MaintenanceReliability = lazy(() => import("@/pages/MaintenanceReliability"));
+const RegulatoryCompliance = lazy(() => import("@/pages/RegulatoryCompliance"));
+const HREnergy = lazy(() => import("@/pages/HREnergy"));
+const FinanceEnergy = lazy(() => import("@/pages/FinanceEnergy"));
+const EnergyOptimization = lazy(() => import("@/pages/EnergyOptimization"));
+const EnergyAnalytics = lazy(() => import("@/pages/EnergyAnalytics"));
+const SupplyChainEnergy = lazy(() => import("@/pages/SupplyChainEnergy"));
+const FieldService = lazy(() => import("@/pages/FieldService"));
+const EnergyDashboard = lazy(() => import("@/pages/AssetManagement"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1270,7 +1282,6 @@ function Router() {
       <Route path="/telecom-services" component={ServiceCatalog} />
       <Route path="/telecom-orders" component={OrdersNetwork} />
       <Route path="/telecom-provisioning" component={NetworkProvisioning} />
-      <Route path="/telecom-support" component={Support} />
       <Route path="/telecom-revenue" component={RevenueAssurance} />
       <Route path="/telecom-hr" component={HRTelecom} />
       <Route path="/telecom-optimization" component={NetworkOptimization} />
@@ -1290,6 +1301,18 @@ function Router() {
       <Route path="/logistics-optimization" component={LogisticsOptimization} />
       <Route path="/logistics-analytics" component={LogisticsAnalytics} />
       <Route path="/logistics-dashboard" component={LogisticsDashboard} />
+      <Route path="/energy-assets" component={EnergyDashboard} />
+      <Route path="/energy-grid" component={GridOperations} />
+      <Route path="/energy-trading" component={EnergyTrading} />
+      <Route path="/energy-billing" component={BillingCustomers} />
+      <Route path="/energy-maintenance" component={MaintenanceReliability} />
+      <Route path="/energy-compliance" component={RegulatoryCompliance} />
+      <Route path="/energy-hr" component={HREnergy} />
+      <Route path="/energy-finance" component={FinanceEnergy} />
+      <Route path="/energy-optimization" component={EnergyOptimization} />
+      <Route path="/energy-analytics" component={EnergyAnalytics} />
+      <Route path="/energy-supply" component={SupplyChainEnergy} />
+      <Route path="/energy-fieldservice" component={FieldService} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />

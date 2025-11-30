@@ -5517,6 +5517,132 @@ export async function registerRoutes(
     res.status(201).json(dash);
   });
 
+  // ========== INDUSTRY PACK 26: ENERGY & UTILITIES ==========
+  const engAssetStore: any[] = []; const engGridStore: any[] = []; const engTradingStore: any[] = []; 
+  const engBillingStore: any[] = []; const engMainStore: any[] = []; const engCompStore: any[] = []; 
+  const engHrStore: any[] = []; const engFinStore: any[] = []; const engOptStore: any[] = []; 
+  const engAnalStore: any[] = []; const engSupplyStore: any[] = []; const engFieldStore: any[] = [];
+
+  app.get("/api/energy-assets", (req, res) => {
+    if (engAssetStore.length === 0) engAssetStore.push({ id: "a1", assetId: "ASSET-001", type: "generator", status: "operational", capacity: "500" });
+    res.json(engAssetStore);
+  });
+  app.post("/api/energy-assets", (req, res) => {
+    const a = { id: `a-${Date.now()}`, ...req.body };
+    engAssetStore.push(a);
+    res.status(201).json(a);
+  });
+
+  app.get("/api/energy-grid", (req, res) => {
+    if (engGridStore.length === 0) engGridStore.push({ id: "g1", substationId: "SUBST-001", load: "350", status: "healthy" });
+    res.json(engGridStore);
+  });
+  app.post("/api/energy-grid", (req, res) => {
+    const g = { id: `g-${Date.now()}`, ...req.body };
+    engGridStore.push(g);
+    res.status(201).json(g);
+  });
+
+  app.get("/api/energy-trading", (req, res) => {
+    if (engTradingStore.length === 0) engTradingStore.push({ id: "t1", tradeId: "TRADE-001", value: "100000", status: "settled" });
+    res.json(engTradingStore);
+  });
+  app.post("/api/energy-trading", (req, res) => {
+    const t = { id: `t-${Date.now()}`, ...req.body };
+    engTradingStore.push(t);
+    res.status(201).json(t);
+  });
+
+  app.get("/api/energy-billing", (req, res) => {
+    if (engBillingStore.length === 0) engBillingStore.push({ id: "b1", customerId: "CUST-001", usage: "150", status: "active" });
+    res.json(engBillingStore);
+  });
+  app.post("/api/energy-billing", (req, res) => {
+    const b = { id: `b-${Date.now()}`, ...req.body };
+    engBillingStore.push(b);
+    res.status(201).json(b);
+  });
+
+  app.get("/api/energy-maintenance", (req, res) => {
+    if (engMainStore.length === 0) engMainStore.push({ id: "m1", maintenanceId: "MAINT-001", type: "PM", status: "completed" });
+    res.json(engMainStore);
+  });
+  app.post("/api/energy-maintenance", (req, res) => {
+    const m = { id: `m-${Date.now()}`, ...req.body };
+    engMainStore.push(m);
+    res.status(201).json(m);
+  });
+
+  app.get("/api/energy-compliance", (req, res) => {
+    if (engCompStore.length === 0) engCompStore.push({ id: "c1", reportId: "REP-001", regulation: "EPA-101", status: "compliant" });
+    res.json(engCompStore);
+  });
+  app.post("/api/energy-compliance", (req, res) => {
+    const c = { id: `c-${Date.now()}`, ...req.body };
+    engCompStore.push(c);
+    res.status(201).json(c);
+  });
+
+  app.get("/api/energy-hr", (req, res) => {
+    if (engHrStore.length === 0) engHrStore.push({ id: "e1", employeeId: "EMP-001", role: "technician", status: "active", certified: "yes" });
+    res.json(engHrStore);
+  });
+  app.post("/api/energy-hr", (req, res) => {
+    const e = { id: `e-${Date.now()}`, ...req.body };
+    engHrStore.push(e);
+    res.status(201).json(e);
+  });
+
+  app.get("/api/energy-finance", (req, res) => {
+    if (engFinStore.length === 0) engFinStore.push({ id: "f1", accountId: "ACC-001", revenue: "500000", expense: "300000" });
+    res.json(engFinStore);
+  });
+  app.post("/api/energy-finance", (req, res) => {
+    const f = { id: `f-${Date.now()}`, ...req.body };
+    engFinStore.push(f);
+    res.status(201).json(f);
+  });
+
+  app.get("/api/energy-optimization", (req, res) => {
+    if (engOptStore.length === 0) engOptStore.push({ id: "o1", modelId: "MODEL-001", type: "load-forecast", status: "optimized" });
+    res.json(engOptStore);
+  });
+  app.post("/api/energy-optimization", (req, res) => {
+    const o = { id: `o-${Date.now()}`, ...req.body };
+    engOptStore.push(o);
+    res.status(201).json(o);
+  });
+
+  app.get("/api/energy-analytics", (req, res) => {
+    if (engAnalStore.length === 0) engAnalStore.push({ id: "an1", region: "North", production: "1000", efficiency: "88" });
+    res.json(engAnalStore);
+  });
+  app.post("/api/energy-analytics", (req, res) => {
+    const an = { id: `an-${Date.now()}`, ...req.body };
+    engAnalStore.push(an);
+    res.status(201).json(an);
+  });
+
+  app.get("/api/energy-supply", (req, res) => {
+    if (engSupplyStore.length === 0) engSupplyStore.push({ id: "s1", supplierId: "SUPP-001", region: "North", status: "active" });
+    res.json(engSupplyStore);
+  });
+  app.post("/api/energy-supply", (req, res) => {
+    const s = { id: `s-${Date.now()}`, ...req.body };
+    engSupplyStore.push(s);
+    res.status(201).json(s);
+  });
+
+  app.get("/api/energy-fieldservice", (req, res) => {
+    if (engFieldStore.length === 0) engFieldStore.push({ id: "w1", workOrderId: "WO-001", technicianId: "TECH-001", status: "completed" });
+    res.json(engFieldStore);
+  });
+  app.post("/api/energy-fieldservice", (req, res) => {
+    const w = { id: `w-${Date.now()}`, ...req.body };
+    engFieldStore.push(w);
+    res.status(201).json(w);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

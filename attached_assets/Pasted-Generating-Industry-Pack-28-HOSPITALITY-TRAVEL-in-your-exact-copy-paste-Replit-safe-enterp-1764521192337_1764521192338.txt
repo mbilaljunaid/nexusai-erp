@@ -1,0 +1,354 @@
+Generating **Industry Pack 28 — HOSPITALITY & TRAVEL** in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Hospitality & Travel Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 28 — HOSPITALITY & TRAVEL
+
+**Purpose:** End-to-end solution for hotels, resorts, travel agencies, airlines, tour operators, and hospitality service providers, covering property & room management, reservations & bookings, guest management, CRM & loyalty, billing & payments, supply chain & procurement, HR & workforce, AI-driven revenue optimization, BI & dashboards, events & activities management, travel itinerary & ticketing, mobile apps, and integrations with OTAs, GDS, payment gateways, and travel APIs. Delivered as an industry template that auto-enables and configures all related modules.
+
+**Auto-enable modules when template is selected:** Property & Room Management, Reservations & Bookings, Guest Management, CRM & Loyalty, Billing & Payments, Supply Chain & Procurement, HR & Workforce, AI / ML Revenue Optimization, BI & Dashboards, Events & Activities Management, Travel Itinerary & Ticketing, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+---
+
+## 1. PROPERTY & ROOM MANAGEMENT
+
+**Screens / Forms**
+
+* Property master (hotels, resorts)
+* Room / unit master & configurations
+* Room availability & occupancy tracking
+* Facilities & amenities management
+* Maintenance scheduling & logs
+
+**Fields**
+PropertyID, RoomID, Type, Status, Capacity, Amenities, MaintenanceSchedule, AuditFields.
+
+**Validations**
+
+* Room uniqueness within property
+* Occupancy compliance
+* Maintenance adherence
+
+**Workflows**
+
+* Create property → Add rooms → Configure amenities → Schedule maintenance → Update availability
+
+---
+
+## 2. RESERVATIONS & BOOKINGS
+
+**Screens / Forms**
+
+* Guest reservation & booking form
+* Online / offline booking integration
+* Calendar & slot availability
+* Group bookings & package reservations
+* Cancellation & modification management
+
+**Fields**
+BookingID, GuestID, PropertyID, RoomID, CheckIn, CheckOut, Status, PackageID, AuditFields.
+
+**Validations**
+
+* Room availability check
+* Booking conflicts prevention
+* Package eligibility validation
+
+**Workflows**
+
+* Create booking → Confirm → Notify guest → Check-in → Stay → Check-out → Billing
+
+---
+
+## 3. GUEST MANAGEMENT
+
+**Screens / Forms**
+
+* Guest master & profile
+* Loyalty program membership
+* Preferences & special requests
+* Complaint & feedback logging
+
+**Fields**
+GuestID, Name, ContactInfo, LoyaltyID, Preferences, AuditFields.
+
+**Validations**
+
+* Duplicate detection
+* Loyalty eligibility
+* Consent for marketing communications
+
+**Workflows**
+
+* Register guest → Assign room → Track stay → Collect feedback → Update CRM
+
+---
+
+## 4. CRM & LOYALTY
+
+**Screens / Forms**
+
+* Guest segmentation & profiling
+* Loyalty program rules & point management
+* Campaign management & communication
+* Guest engagement tracking
+
+**Fields**
+GuestID, SegmentID, LoyaltyPoints, CampaignID, InteractionID, AuditFields.
+
+**Validations**
+
+* Points accumulation & redemption rules
+* Consent for marketing
+* Campaign targeting accuracy
+
+**Workflows**
+
+* Assign segment → Run campaign → Track engagement → Award / redeem points → Analyze results
+
+---
+
+## 5. BILLING & PAYMENTS
+
+**Screens / Forms**
+
+* Invoice generation for room, services, and events
+* Payment collection & reconciliation
+* Refunds & adjustments
+* Multi-currency & payment gateway integration
+
+**Fields**
+InvoiceID, BookingID, Amount, PaymentStatus, PaymentMethod, AuditFields.
+
+**Validations**
+
+* Accurate invoicing
+* Payment verification
+* Refund authorization
+
+**Workflows**
+
+* Generate invoice → Send → Collect payment → Reconcile → Handle refunds → Update finance
+
+---
+
+## 6. SUPPLY CHAIN & PROCUREMENT
+
+**Screens / Forms**
+
+* Vendor / supplier master
+* Purchase orders for F&B, housekeeping, amenities
+* Contract & SLA management
+* Stock & inventory management
+
+**Fields**
+SupplierID, MaterialID, POID, Quantity, SLA, ReceivedQty, AuditFields.
+
+**Validations**
+
+* Supplier compliance
+* Stock availability & quality checks
+* SLA adherence
+
+**Workflows**
+
+* Requisition → PO creation → Receive → Quality check → Update stock → Payment
+
+---
+
+## 7. HR & WORKFORCE MANAGEMENT
+
+**Screens / Forms**
+
+* Employee master (front desk, housekeeping, F&B, admin)
+* Shift scheduling & attendance
+* Payroll & performance
+* Certifications & training
+
+**Fields**
+EmployeeID, Role, Department, Shift, PayrollID, TrainingID, AuditFields.
+
+**Validations**
+
+* Role eligibility
+* Shift compliance
+* Payroll accuracy
+
+**Workflows**
+
+* Onboard → Assign shift/role → Track attendance → Evaluate performance → Payroll
+
+---
+
+## 8. AI & REVENUE OPTIMIZATION
+
+**Use Cases**
+
+* Dynamic pricing / room rate optimization
+* Occupancy forecasting
+* Guest preference prediction
+* Upsell / cross-sell recommendations
+
+**Controls**
+
+* Human approval required for pricing adjustments
+
+---
+
+## 9. BI & DASHBOARDS
+
+**Prebuilt Dashboards**
+
+* Occupancy & revenue by property
+* Booking trends & cancellations
+* Guest satisfaction & loyalty
+* F&B & ancillary revenue metrics
+* Staff performance KPIs
+
+**Ad-hoc**
+
+* Drill down by property → room → booking → guest → invoice
+
+---
+
+## 10. EVENTS & ACTIVITIES MANAGEMENT
+
+**Screens / Forms**
+
+* Event scheduling & booking
+* Activity / tour management
+* Guest participation & registration tracking
+
+**Fields**
+EventID, GuestID, PropertyID, ActivityID, Status, AuditFields.
+
+**Validations**
+
+* Event capacity
+* Guest eligibility
+* Booking conflicts
+
+**Workflows**
+
+* Create event → Register guests → Schedule → Track participation → Generate revenue
+
+---
+
+## 11. TRAVEL ITINERARY & TICKETING
+
+**Screens / Forms**
+
+* Itinerary creation
+* Flight / transport booking
+* Package tour management
+* Ticketing & confirmations
+
+**Fields**
+ItineraryID, GuestID, BookingID, TransportID, Status, AuditFields.
+
+**Validations**
+
+* Availability check
+* Itinerary conflict prevention
+* Ticket confirmation validation
+
+**Workflows**
+
+* Create itinerary → Book transport → Confirm → Notify guest → Update CRM
+
+---
+
+## 12. MOBILE APPS
+
+**Guest App**
+
+* Booking, itinerary, loyalty, payment, feedback
+  **Staff App**
+* Room assignment, housekeeping, service requests, shift management
+  **Manager App**
+* Dashboards, KPI monitoring, revenue optimization, approvals
+
+---
+
+## 13. ROLES & PERMISSIONS
+
+**Core Roles**
+
+* Guest
+* Front Desk / Concierge
+* Housekeeping / F&B Staff
+* Event / Tour Coordinator
+* Finance / Accounts
+* HR / Payroll
+* IT / Integration Engineer
+* Admin
+
+**Permission Notes**
+
+* Role-based access enforced for guest, booking, financial, and operational data
+
+---
+
+## 14. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+**Seed Data**
+
+* 10 properties, 50 rooms, 20 staff, 50 guests, 20 bookings, 5 events, 10 itineraries
+
+**Onboarding Steps**
+
+* Register properties & rooms → Create guests → Book stays & events → Assign staff → Generate invoices → Track KPIs → Validate dashboards
+
+---
+
+## 15. INTEGRATIONS & CONNECTORS
+
+**Suggested Integrations**
+
+* OTA / booking engines
+* Payment gateways & POS systems
+* Travel APIs / airlines / transport
+* CRM / marketing automation
+* BI / data warehouse
+
+**Integration Rules**
+
+* Idempotent ingestion, audit logging, secure credential storage
+
+---
+
+## 16. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+**Examples**
+
+* Overbooking → alert front desk & management
+* Payment failure → notify finance
+* Event capacity exceeded → alert coordinator
+* Guest complaints → escalate automatically
+
+---
+
+## 17. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+**Idempotency & Safety**
+
+* Seeders check natural keys (PropertyID + RoomID + BookingID) before insert
+* Migrations additive; destructive changes require rollback scripts
+* Feature flags per tenant for dynamic pricing, AI recommendations, multi-property operations
+
+**Testing**
+
+* Guest lifecycle → booking → stay → events → billing → loyalty → KPI dashboards
+
+---
+
+## 18. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+**REPLIT MUST** — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and **NEVER** duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+---
+
+If you want me to generate **Industry Pack 29 — TELECOM & MEDIA** next, reply **“Yes”** and I will produce it in the same format.
