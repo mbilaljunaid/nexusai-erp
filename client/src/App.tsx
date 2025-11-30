@@ -317,7 +317,6 @@ const RecommendationEngine = lazy(() => import("@/pages/RecommendationEngine"));
 const ServiceLevelConfig = lazy(() => import("@/pages/ServiceLevelConfig"));
 const SupplyChainOptimization = lazy(() => import("@/pages/SupplyChainOptimization"));
 const TemplateLibrary = lazy(() => import("@/pages/TemplateLibrary"));
-const TenantAdmin = lazy(() => import("@/pages/admin/TenantAdmin"));
 
 // Phase 3: Procurement Module
 const RFQs = lazy(() => import("@/pages/RFQs"));
@@ -476,6 +475,8 @@ function Router() {
       <Route path="/service/analytics" component={ServiceAnalyticsDetail} />
       <Route path="/service/queue" component={ServiceQueueDetail} />
       <Route path="/service/settings" component={ServiceSettingsDetail} />
+      <Route path="/tenant-admin" component={TenantAdmin} />
+      <Route path="/billing-plans" component={BillingPlans} />
       <Route path="/invoice-generator" component={InvoiceGenerator} />
       <Route path="/quote-builder" component={QuoteBuilder} />
       <Route path="/approval-workflow" component={ApprovalWorkflow} />
