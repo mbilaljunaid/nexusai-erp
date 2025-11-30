@@ -2309,3 +2309,44 @@ export const complianceExceptions = pgTable("compliance_exceptions", {
   status: varchar("status").default("pending"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 5: AUTOMATIONS, WORKFLOWS & INTEGRATIONS ==========
+export const automationRules = pgTable("automation_rules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  module: varchar("module").notNull(),
+  trigger: varchar("trigger").notNull(),
+  conditions: jsonb("conditions"),
+  actions: jsonb("actions"),
+  priority: integer("priority").default(50),
+  status: varchar("status").default("active"),
+  exceptionHandling: varchar("exception_handling").default("alert"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const eventTriggers = pgTable("event_triggers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id"),
+  eventType: varchar("event_type").notNull(),
+  module: varchar("module"),
+  triggerCondition: text("trigger_condition"),
+  notificationType: varchar("notification_type"),
+  recipientRole: varchar("recipient_role"),
+  recipientUser: varchar("recipient_user"),
+  templateId: varchar("template_id"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const integrationConfigs = pgTable("integration_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  sourceSystem: varchar("source_system"),
+  targetSystem: varchar("target_system"),
+  integrationType: varchar("integration_type"),
+  apiEndpoint: varchar("api_endpoint"),
+  dataMapping: jsonb("data_mapping"),
+  status: varchar("status").default("active"),
+  lastSync: timestamp("last_sync"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});

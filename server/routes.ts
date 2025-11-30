@@ -2942,6 +2942,59 @@ export async function registerRoutes(
     }
   });
 
+  // ========== MODULE 5: AUTOMATIONS, WORKFLOWS & INTEGRATIONS ENDPOINTS ==========
+  const automationRulesStore: any[] = [];
+  const eventTriggersStore: any[] = [];
+  const integrationConfigsStore: any[] = [];
+
+  app.get("/api/automation/rules", (req, res) => {
+    if (automationRulesStore.length === 0) {
+      automationRulesStore.push(
+        { id: "ar1", name: "Auto-assign leads", module: "CRM", trigger: "lead_created", conditions: { value: "> 10000" }, actions: [{ type: "assign", assignee: "sales_manager" }], priority: 90, status: "active" },
+        { id: "ar2", name: "Send approval notification", module: "Finance", trigger: "invoice_threshold", conditions: { amount: "> 50000" }, actions: [{ type: "notify", recipients: ["cfо"] }], priority: 80, status: "active" }
+      );
+    }
+    res.json(automationRulesStore);
+  });
+
+  app.post("/api/automation/rules", (req, res) => {
+    const rule = { id: `ar-${Date.now()}`, ...req.body, status: "active" };
+    automationRulesStore.push(rule);
+    res.status(201).json(rule);
+  });
+
+  app.get("/api/events/triggers", (req, res) => {
+    if (eventTriggersStore.length === 0) {
+      eventTriggersStore.push(
+        { id: "et1", eventId: "evt-login", eventType: "user_login", module: "core", triggerCondition: "on_login", notificationType: "email", recipientRole: "admin", status: "active" },
+        { id: "et2", eventId: "evt-approve", eventType: "approval", module: "finance", triggerCondition: "on_approval", notificationType: "sms", recipientRole: "manager", status: "active" }
+      );
+    }
+    res.json(eventTriggersStore);
+  });
+
+  app.post("/api/events/triggers", (req, res) => {
+    const trigger = { id: `et-${Date.now()}`, ...req.body, status: "active" };
+    eventTriggersStore.push(trigger);
+    res.status(201).json(trigger);
+  });
+
+  app.get("/api/integrations/config", (req, res) => {
+    if (integrationConfigsStore.length === 0) {
+      integrationConfigsStore.push(
+        { id: "ic1", name: "Salesforce", sourceSystem: "salesforce", targetSystem: "nexusai", integrationType: "real-time", apiEndpoint: "https://api.salesforce.com", dataMapping: { lead_id: "id" }, status: "connected", lastSync: new Date().toISOString() },
+        { id: "ic2", name: "QuickBooks", sourceSystem: "quickbooks", targetSystem: "nexusai", integrationType: "batch", apiEndpoint: "https://api.quickbooks.com", dataMapping: { invoice_id: "id" }, status: "connected", lastSync: new Date(Date.now() - 3600000).toISOString() }
+      );
+    }
+    res.json(integrationConfigsStore);
+  });
+
+  app.post("/api/integrations/config", (req, res) => {
+    const config = { id: `ic-${Date.now()}`, ...req.body, status: "connected", lastSync: new Date().toISOString() };
+    integrationConfigsStore.push(config);
+    res.status(201).json(config);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
