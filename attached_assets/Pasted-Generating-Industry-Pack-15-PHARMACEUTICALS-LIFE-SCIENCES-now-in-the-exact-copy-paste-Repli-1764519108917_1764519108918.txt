@@ -1,0 +1,482 @@
+Generating **Industry Pack 15 — PHARMACEUTICALS & LIFE SCIENCES** now in the exact copy-paste, Replit-safe, enterprise-grade prompt format you requested.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, or integrations for the PHARMACEUTICALS & LIFE SCIENCES Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate, overwrite, or recreate existing objects. Only generate missing features, augment existing components safely, and keep all naming, schemas and identifiers consistent with previously built modules. All seed data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 15 — PHARMACEUTICALS & LIFE SCIENCES (COPY-PASTE PROMPT)
+
+**Purpose:** End-to-end regulated life sciences platform covering drug product R&D and formulation, PLM, formulation/BOM, batch and continuous manufacturing, LIMS, stability studies, serialization & track-and-trace, QA/QC, regulatory submissions (eCTD), pharmacovigilance, clinical trial support (CTMS/EDC integration), supply chain for APIs/excipients/packaging, cold chain, controlled substances, CAPA/QMS, validation & computer system validation (CSV), environmental health & safety (EHS), GLP/GMP/GCP/21 CFR Part 11 / Annex 11 compliance, batch release, labeling & artwork, contract manufacturing (CMO) & contract testing labs, and BI/AI for predictive stability, demand, and anomaly detection. Delivered as an industry template that auto-enables and configures all related modules.
+
+**Auto-enable modules when template is selected:** PLM, R&D/Formulation, BOM & Recipe Management, Batch/Process Manufacturing, MRP, MES (batch & continuous), LIMS, Stability Management, QMS (CAPA/NCR/ECO), Serialization & EPC/GS1, Track & Trace, Regulatory (eCTD), Clinical systems integrations (CTMS, EDC), Pharmacovigilance (PV), Supply Chain & Cold Chain, Warehouse with controlled substances handling, QA Release, Documentation & DMS, Validation Management (IQ/OQ/PQ), Finance, EPM, BI, AI/ML, BPM, Mobile Apps, Integrations & API Gateway.
+
+---
+
+## 1. MASTER DATA & CONFIGURATION (REGULATED)
+
+**Screens / Forms**
+
+* Part/Material Master (API, Excipient, Packaging, Reagent)
+* Product Master (Drug Product, Strength, Dosage Form, Presentation)
+* Formulation / Recipe (eBOM / mBOM) with excipient details and chemical identifiers (CAS, InChIKey)
+* Manufacturer / CMO / Supplier Master with certificates & qualification status
+* Stability Study Template & Condition Matrix
+* Controlled Substance Registry & License mapping
+* Regulatory Master (country submission rules, dossier mapping)
+
+**Fields**
+MaterialID, CAS, SupplierCerts (COA, GMP), StoreCondition, StorageTempRange, BatchFlag, PotencyUnits, Strength, DosageForm, PackagingSpec, SerializationScheme, ShelfLife, RiskClassification, AuditFields, 21CFRPart11Flags.
+
+**Validations**
+
+* Unique material identifiers and CAS validation.
+* Supplier certificate expiry check before PO.
+* Storage conditions mandatory for cold chain items.
+* Controlled substance handling requires license & chain-of-custody audit.
+
+**Workflows**
+
+* New material → Qualifications (COA, audit) → Approve for use → Publish to formulation and procurement.
+
+---
+
+## 2. R&D, FORMULATION & PLM (LAB → PILOT → SCALE)
+
+**Screens / Forms**
+
+* Research Notebook / ELN (structured observations + attachments)
+* Formulation Composer (API:excipient ratios, %w/w, calculation engine)
+* Process Development records (scale-up rules, critical process parameters (CPP), critical quality attributes (CQA))
+* PLM change control (ECO/ECR) with impact analysis (process, labeling, regulatory)
+* Tech Transfer Package creator (pilot → plant)
+
+**Fields**
+StudyID, FormulationVersion, CPPs (temp, pH, pressure), CQA list, ProcessStage, ScaleFactor, RiskAssessment (FMEA), ReleaseCriteria, Audit Trail.
+
+**Validations**
+
+* Versioned documents & locked records after approval.
+* Tech transfer cannot proceed without required tests (stability pilot, scale-down model).
+* ELN entries timestamped & signed (electronic signature support).
+
+**Workflows**
+
+* R&D → Pilot batch → Tech transfer → Create manufacturing BOM & routings → CSV & validation plan generation.
+
+---
+
+## 3. LIMS & QC (INSTRUMENT & MANUAL)
+
+**Screens / Forms**
+
+* Test Catalog (method, LOD/LOQ, units, SOP link)
+* Sample Accessioning & Chain of Custody (COC)
+* Instrument Registry & Calibration/PM schedules
+* Result Entry (manual & instrument interface), delta checks, QC charts (Levey-Jennings / SPC)
+* Method Versioning & Reagent Lot management
+* COA / Release Certificate generation
+
+**Fields**
+SpecimenID, TestID, MethodID, InstrumentID, ResultValue, Units, Limit, QCStatus, CalibrationDate, ReagentLot, AnalystID, AuditFields.
+
+**Validations**
+
+* Method validation status required before use.
+* Instrument calibration due prevents result release.
+* Critical value triggers auto escalation & hold on batch release.
+
+**Workflows**
+
+* Sample receive → Accession → Test queue → Instrument interface/result import → Review → Release COA.
+
+---
+
+## 4. BATCH / PROCESS MANUFACTURING (MES + S88)
+
+**Screens / Forms**
+
+* Batch Record Template (electronic batch record, eBR) per S88 with stepwise instructions & required attestations
+* Batch Execution Board (dispatch, operations, material issue)
+* Kitting & Material Reservation (lot allocation rules)
+* In-process sampling & automated hold logic for failed CCPs
+* Deviation Recording during batch with immediate CAPA linkage
+
+**Fields**
+BatchID, RecipeVersion, WOID, MaterialLots (with potency), OperatorSignatures, OperationStartEnd, CPPReadings, QCHoldFlag, DeviationIDs, AuditFields.
+
+**Validations**
+
+* eBR cannot be closed without required signatures and QC release.
+* Material potency and identity checks enforced at issue.
+* Configurable backflush or issue at event modes.
+
+**Workflows**
+
+* Release batch → Issue materials (lot tracked) → Execute steps → Auto sample → QC results → Conditional hold/release → Complete & move to FG inventory.
+
+---
+
+## 5. STABILITY STUDIES & SHELF-LIFE MANAGEMENT
+
+**Screens / Forms**
+
+* Stability Study Setup (conditions, chambers, timepoints, protocols)
+* Sample dispensing & storage location mapping (chamber, shelf)
+* Timepoint result entry & trend analysis; stability reports (ICH Q1A)
+* Accelerated & Photostability studies support
+* Shelf-life calculation & extrapolation models
+
+**Fields**
+StudyID, Condition (temp/RH), ChamberID, Timepoint, Parameter (assay, degradation product), Result, Trend, ShelfLifeEstimation, AuditFields.
+
+**Validations**
+
+* Chain of custody for stability samples.
+* Stability report generation needs complete timepoint dataset & signoff.
+
+**Workflows**
+
+* Create stability protocol → Assign to chamber → Capture measurements per timepoint → Statistical analysis → Propose shelf life → Regulatory submission attach.
+
+---
+
+## 6. SERIALIZATION & TRACK-AND-TRACE (GS1 / EPCIS)
+
+**Screens / Forms**
+
+* Serialization Schema & Configuration (SSCC, SGTIN, GTIN mapping)
+* Aggregation (pack → case → pallet) & de-aggregation UI
+* EPCIS event generation (commission, pack, ship, dispense, decommission)
+* Serialization exception handling (duplicate serials, blacklist matches)
+* Public trace pages / QR code generation per regulations
+
+**Fields**
+SerialNumber, GTIN, LotNumber, ExpiryDate, SSCC, ParentAggregation, EPCISEventID, Status, AuditFields.
+
+**Validations**
+
+* Unique serial number enforcement, GS1 format validation.
+* Blacklist match blocks distribution.
+* Aggregation parent must match children and nest correctly.
+
+**Workflows**
+
+* Serialization at pack line → EPCIS commission event → Aggregate → Ship → EPCIS ship event → Customer / regulator queries.
+
+---
+
+## 7. QMS (CAPA, NCR, Change Control, Complaints)
+
+**Screens / Forms**
+
+* CAPA module (root cause, corrective/preventive actions, verification)
+* Nonconformance (NCR) capture linked to batch, test result, or supplier material
+* Complaints & Adverse Event intake (link to PV)
+* ECO/ECR change control with regulatory and validation impact matrix
+* Periodic review scheduling & management review pack
+
+**Fields**
+IssueID, Type (NCR/CAPA/Complaint), RootCause, ActionOwner, DueDate, EffectivenessCheck, RelatedBatch/Material, AuditFields.
+
+**Validations**
+
+* CAPA must have an effectiveness verification and due date.
+* Complaints classified by severity and automatically route to PV where required.
+
+**Workflows**
+
+* NCR detected → CAPA created → Implement → Verify → Close → Update risk registers & PLM.
+
+---
+
+## 8. REGULATORY SUBMISSIONS & eCTD
+
+**Screens / Forms**
+
+* eCTD dossier builder (sequence, modules mapping)
+* Regulatory requirement matrix per country (labeling, stability, impurity limits)
+* Labeling & Artwork approval workflow with versioned master artwork
+* Regulatory correspondence tracker & commitment/obligation management
+
+**Fields**
+SubmissionID, Region, Module (eCTD Module 2/3/4/5 mapping), SequenceNumber, DossierStatus, ArtworkVersion, CommitmentID, AuditFields.
+
+**Validations**
+
+* eCTD package validation (xml structure, checksum) before submission.
+* Label translations & local regulatory claims must be validated per country rules.
+
+**Workflows**
+
+* Prepare dossier → Run validation → Package and sign → Transmit to agency / regulatory gateway → Track receipt & queries → Manage commitments.
+
+---
+
+## 9. PHARMACOVIGILANCE (PV) & SAFETY
+
+**Screens / Forms**
+
+* ADR/AE intake form (structured ICSR capture)
+* Case intake & triage workflow (SUSAR/SAE severity classification)
+* Expedited reporting rules & submission (E2B XML)
+* Safety signal detection & aggregate reporting (PSUR/Periodic safety updates)
+* Integration with global safety databases & regional gateways
+
+**Fields**
+CaseID, PatientPseudoID, EventDate, Reaction, MedDRA Terms, Severity, Reporter, ActionTaken, RegReportingFlag, AuditFields.
+
+**Validations**
+
+* Mandatory data fields for expedited reporting.
+* Timelines enforced for SAE expedited submissions.
+
+**Workflows**
+
+* Case intake → Triage → Case processing → Periodic reports & expedited submission → Signal review & regulatory notification.
+
+---
+
+## 10. CLINICAL TRIALS CONNECTIVITY (CTMS / EDC)
+
+**Screens / Forms**
+
+* Integration interfaces with CTMS/EDC (study metadata, subject ID pseudonymization, randomization status)
+* Clinical supply management (IMP: investigational medicinal product) — kit assignment, expiration, resupply triggers
+* Site safety & sample logistics (central lab integration)
+* Investigator payments & site financials (linked to projects module)
+
+**Fields**
+StudyID, SubjectPseudoID, IMPKitID, RandomizationArm, SiteID, ShipmentID, ChainOfCustody, AuditFields.
+
+**Validations**
+
+* Subject identifiers pseudonymized; linkage key protected.
+* IMP expiry & stability must be respected in dispensing rules.
+
+**Workflows**
+
+* Study start → Supply planning → Dispense/return/recall support → Link to PV for SAE events.
+
+---
+
+## 11. SUPPLY CHAIN, CMO & CONTRACT TESTING LABS
+
+**Screens / Forms**
+
+* CMO order & schedule management (batch forecasting, slot booking)
+* Outsourced lab order / sample tracking & COA ingestion
+* Vendor quality agreements & qualification evidence (audit docs)
+* Chain-of-custody and custody transfer for hazardous reagents and controlled substances
+
+**Fields**
+CMOOrderID, SlotDate, POID, SampleID, LabResultID, COAID, AuditFields.
+
+**Validations**
+
+* CMO capacity / slot must be booked and confirmed.
+* Returned COA must match required tests & acceptance criteria.
+
+**Workflows**
+
+* Forecast → CMO booking → Tech transfer documents → Monitor → Batch return & COA → Release.
+
+---
+
+## 12. VALIDATION, COMPUTER SYSTEM VALIDATION (CSV) & GxP
+
+**Screens / Forms**
+
+* Validation Plan (IQ/OQ/PQ templates, DS/FS)
+* Computer System Validation artifacts (URS, FRS, Traceability Matrix, Test Scripts)
+* Periodic review & change control linked to validation status
+* Audit trail & e-signature controls (21 CFR Part 11 / Annex 11 supportive)
+
+**Fields**
+URSID, TestID, Script, EvidenceAttachment, ExecutionStatus, SignedBy, ExecutionDate, TraceID, AuditFields.
+
+**Validations**
+
+* Production system changes require impact analysis and revalidation plan.
+* Electronic signature flows enforced with reason & password.
+
+**Workflows**
+
+* Validation plan → Execute IQ/OQ/PQ → Capture evidence → Approve → Move to production with monitoring.
+
+---
+
+## 13. EHS, HAZMAT & WASTE MANAGEMENT
+
+**Screens / Forms**
+
+* MSDS / SDS repository linked to material master
+* Controlled waste tracking & disposal manifests
+* Hazardous goods handling procedures & PPE tracking
+* Incident & spill reporting with CAPA linkage
+
+**Fields**
+MSDSID, WasteManifestID, HazardCode, PPERequired, WasteVolume, DisposalVendor, AuditFields.
+
+**Validations**
+
+* Hazardous shipments need appropriate documentation & carrier approval.
+* Disposal manifests signed by authorized personnel.
+
+**Workflows**
+
+* Hazardous material use → Waste collection → Manifest → Disposal vendor pickup → Record & invoice.
+
+---
+
+## 14. BI, DASHBOARDS & KPIs (REGULATED)
+
+**Prebuilt Dashboards**
+
+* Batch release throughput and rejection rates
+* LIMS test turnaround times and OOS trends
+* Stability trending and shelf-life estimates by product
+* CAPA aging & closure rates
+* Supplier COA pass rates and audit status
+* Serialization event counts & exceptions
+* Clinical supply stock & site resupply KPIs
+
+**Ad-hoc**
+
+* Drill to batch → QC results → instrument log → analyst signature.
+
+---
+
+## 15. AI & PREDICTIVE MODELS (LIFE SCIENCES)
+
+**Use Cases**
+
+* Predictive stability models (degradation kinetics) to optimize shelf-life
+* Predictive maintenance for critical equipment (lyophilizers, reactors)
+* Anomaly detection in LIMS / QC results (early OOS detection)
+* Demand forecasting tied to market/regulatory events & launch ramp models
+
+**Controls**
+
+* Explainability metadata, model performance dashboards, human validation before auto-action on critical recommendations.
+
+---
+
+## 16. LABELING, ARTWORK & COMPLIANCE
+
+**Screens / Forms**
+
+* Multi-jurisdictional label templates (language support) & artwork master with version control
+* Barcode/QR generation (serialization link) & print job management
+* Local regulatory text & claims management per country (no-claim lists)
+* Label approval workflow (Regulatory, QA, Packaging, Legal)
+
+**Fields**
+ArtworkID, LabelVersion, Language, ClaimsList, SerialRange, PrintJobID, ApprovalSignatures, AuditFields.
+
+**Validations**
+
+* Label must include mandated statements per jurisdiction and match approved artwork.
+* Artwork cannot be used in production without final approval & print validation.
+
+**Workflows**
+
+* Artwork request → Proof generation → Regulatory review → Print release → Batch print job & reconciliation.
+
+---
+
+## 17. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+**Seed Data**
+
+* 2 APIs, 4 formulations (solid dose, sterile liquid, topical), 20 materials (APIs/excipients/packaging), 10 sample batches (with lot & potency), 1 stability study sample set, 1 serialization config (GTIN+SGTIN sample), 5 suppliers with COA.
+
+**Onboarding Steps**
+
+* Map material & product masters → Upload COAs → Run sample LIMS tests → Execute one pilot batch eBR → Simulate serialization flow → Run eCTD dry-pack validation (no transmit) → Run PV case ingestion test.
+
+---
+
+## 18. INTEGRATIONS & CONNECTORS
+
+**Suggested Integrations**
+
+* Instrument middleware (Thermo, Waters, Agilent connectors) & LIMS vendor APIs
+* eCTD publishing gateways & regulator APIs (where available)
+* Serialization aggregators & NSAs (national serial registries)
+* CTMS/EDC for clinical trials (Medidata, Oracle CTMS, RedCap)
+* CMO/CMO portals & EDI for scheduling
+* ERP / Finance for GL postings & cost of goods (COGS) integration
+* IoT/SCADA for process control, OPC-UA connectors
+* Identity & SSO, eSign providers, secure file transfer (SFTP, AS2)
+
+**Rules**
+
+* All integrations must be idempotent where applicable, have DLQ & reconciliation, secure credentials & audit logging. Data with PHI or regulated info must use encrypted channels & adhere to data residency.
+
+---
+
+## 19. ROLES & PERMISSIONS (GxP)
+
+**Core Roles**
+
+* QA Manager / QP (Qualified Person)
+* Head of Manufacturing / Plant Director
+* Production Manager / Shift Lead
+* QC Analyst / LIMS Analyst
+* Validation Engineer
+* Regulatory Affairs Manager
+* Pharmacovigilance Officer
+* R&D Scientist / Formulation Lead
+* Supply Chain Planner / Materials Manager
+* CMO Coordinator / Outsourcing Manager
+* EHS Officer
+* IT / CSV Engineer
+* BI Analyst
+
+**Permission Notes**
+
+* QP/QA approvals required for batch release & regulatory submissions.
+* CSV required for privileged configuration changes.
+* Audit trails and e-signature enforcement based on role.
+
+---
+
+## 20. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+**Examples**
+
+* Batch OOS → auto hold inventory & create deviation + CAPA ticket.
+* Stability trending breach → notify regulatory & change shelf-life workflow.
+* COA mismatch on GRN → auto quarantine & supplier notification.
+* Serialization blacklist match → block shipment + notify compliance.
+* PV SAE detected → auto expedite case intake and submission route.
+
+---
+
+## 21. DEPLOYMENT, VALIDATION & REPLIT EXECUTION GUIDELINES
+
+**Idempotency & Safety**
+
+* Seeders check by natural keys (Material CAS, Product GTIN, BatchID).
+* Migrations must be additive; destructive changes require validation & rollback plan.
+* Feature flags for enabling regulated modules per tenant.
+
+**Validation**
+
+* Provide CSV artifacts (URS/FRS/Test scripts) as generated templates for new modules.
+* Provide test harnesses for eBR flows, LIMS instrument integrations, serialization event flows, and eCTD dry-pack validation.
+
+**Regulatory**
+
+* Provide documentation for Part 11 & Annex 11 controls: audit trails, electronic signatures, time synchronization, access controls, retention policies.
+
+---
+
+## 22. FINAL MANDATE (REPEAT FOR EVERY ARTIFACT)
+
+**REPLIT MUST** — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or enhance existing functionality only; and **NEVER** duplicate or overwrite objects without explicit migration strategy and validation plan. All seed/sample data must be idempotent and safe to run multiple times.
+
+---
+
+If you want me to continue with **Industry Pack 16 — FASHION, APPAREL & FOOTWEAR**, reply **“Yes”** and I will generate it next.

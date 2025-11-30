@@ -404,6 +404,21 @@ const ColdChainLogistics = lazy(() => import("@/pages/ColdChainLogistics"));
 const FBDemandPlanning = lazy(() => import("@/pages/FBDemandPlanning"));
 const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTraceability"));
 const FoodBeverageBIDashboard = lazy(() => import("@/pages/FoodBeverageBIDashboard"));
+const MaterialMaster = lazy(() => import("@/pages/MaterialMaster"));
+const ProductMaster = lazy(() => import("@/pages/ProductMaster"));
+const FormulationComposer = lazy(() => import("@/pages/FormulationComposer"));
+const SupplierQualification = lazy(() => import("@/pages/SupplierQualification"));
+const ELNResearchNotebook = lazy(() => import("@/pages/ELNResearchNotebook"));
+const LIMSLabManagement = lazy(() => import("@/pages/LIMSLabManagement"));
+const eBatchRecord = lazy(() => import("@/pages/eBatchRecord"));
+const StabilityStudies = lazy(() => import("@/pages/StabilityStudies"));
+const Serialization = lazy(() => import("@/pages/Serialization"));
+const QMSCAPA = lazy(() => import("@/pages/QMSCAPA"));
+const RegulatoryeCTD = lazy(() => import("@/pages/RegulatoryeCTD"));
+const Pharmacovigilance = lazy(() => import("@/pages/Pharmacovigilance"));
+const ClinicalSupply = lazy(() => import("@/pages/ClinicalSupply"));
+const ValidationCSV = lazy(() => import("@/pages/ValidationCSV"));
+const PharmaAnalytics = lazy(() => import("@/pages/PharmaAnalytics"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -907,8 +922,6 @@ function Router() {
       <Route path="/point-of-sale" component={PointOfSale} />
       <Route path="/store-operations" component={StoreOperationsDashboard} />
       <Route path="/omni-channel-orders" component={OmniChannelOrders} />
-      <Route path="/demand-forecasting" component={DemandForecastingAI} />
-      <Route path="/retail-analytics" component={RetailAnalyticsDashboard} />
       <Route path="/merchandise-planning" component={MerchandisePlanning} />
       <Route path="/sales-order-management" component={SalesOrderManagement} />
       <Route path="/pricing-rebates-engine" component={PricingRebatesEngine} />
@@ -948,7 +961,6 @@ function Router() {
       <Route path="/replenishment-planning" component={ReplenishmentPlanning} />
       <Route path="/pricing-promotions" component={PricingPromotionManagement} />
       <Route path="/omni-fulfillment" component={OmniChannelFulfillment} />
-      <Route path="/retail-analytics" component={RetailBIDashboard} />
       <Route path="/goods-receipt-putaway" component={GoodsReceiptPutaway} />
       <Route path="/stock-picking-packing" component={StockPickingPacking} />
       <Route path="/cycle-counting" component={CycleCountingAudit} />
@@ -1019,6 +1031,21 @@ function Router() {
       <Route path="/demand-planning" component={FBDemandPlanning} />
       <Route path="/sustainability" component={SustainabilityTraceability} />
       <Route path="/fb-analytics" component={FoodBeverageBIDashboard} />
+      <Route path="/material-master" component={MaterialMaster} />
+      <Route path="/product-master" component={ProductMaster} />
+      <Route path="/formulation-composer" component={FormulationComposer} />
+      <Route path="/supplier-qualification" component={SupplierQualification} />
+      <Route path="/eln-research" component={ELNResearchNotebook} />
+      <Route path="/lims" component={LIMSLabManagement} />
+      <Route path="/batch-record" component={eBatchRecord} />
+      <Route path="/stability-studies" component={StabilityStudies} />
+      <Route path="/serialization" component={Serialization} />
+      <Route path="/qms-capa" component={QMSCAPA} />
+      <Route path="/regulatory-ectd" component={RegulatoryeCTD} />
+      <Route path="/pharmacovigilance" component={Pharmacovigilance} />
+      <Route path="/clinical-supply" component={ClinicalSupply} />
+      <Route path="/validation-csv" component={ValidationCSV} />
+      <Route path="/pharma-analytics" component={PharmaAnalytics} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
@@ -1111,7 +1138,6 @@ function Router() {
       <Route path="/forecast-dashboard" component={ForecastDashboard} />
       <Route path="/mobile-sync" component={MobileSync} />
       <Route path="/rfqs" component={RFQs} />
-      <Route path="/purchase-orders" component={PurchaseOrders} />
       <Route path="/goods-receipt" component={GoodsReceipt} />
       <Route path="/supplier-invoices" component={SupplierInvoices} />
       <Route path="/three-way-match" component={ThreeWayMatch} />
