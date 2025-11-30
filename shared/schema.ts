@@ -2506,3 +2506,111 @@ export const teamCollaboration = pgTable("team_collaboration", {
   readBy: jsonb("read_by"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// ========== MODULE 9: CRM & CUSTOMER MANAGEMENT ==========
+export const customers = pgTable("customers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerName: varchar("customer_name").notNull(),
+  industry: varchar("industry"),
+  accountType: varchar("account_type"),
+  status: varchar("status").default("active"),
+  segment: varchar("segment"),
+  annualRevenue: numeric("annual_revenue"),
+  employees: integer("employees"),
+  website: varchar("website"),
+  billingAddress: text("billing_address"),
+  shippingAddress: text("shipping_address"),
+  primaryContact: varchar("primary_contact"),
+  phone: varchar("phone"),
+  email: varchar("email"),
+  rating: numeric("rating"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const contacts = pgTable("contacts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  title: varchar("title"),
+  department: varchar("department"),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  mobile: varchar("mobile"),
+  role: varchar("role"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const opportunities = pgTable("opportunities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  opportunityName: varchar("opportunity_name").notNull(),
+  stage: varchar("stage").default("prospecting"),
+  probability: numeric("probability"),
+  expectedValue: numeric("expected_value"),
+  closeDate: timestamp("close_date"),
+  owner: varchar("owner"),
+  source: varchar("source"),
+  type: varchar("type"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const quotes = pgTable("quotes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  quoteNumber: varchar("quote_number").notNull(),
+  opportunityId: varchar("opportunity_id"),
+  totalAmount: numeric("total_amount"),
+  tax: numeric("tax"),
+  discount: numeric("discount"),
+  expiryDate: timestamp("expiry_date"),
+  status: varchar("status").default("draft"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const orders = pgTable("orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  orderNumber: varchar("order_number").notNull(),
+  quoteId: varchar("quote_id"),
+  totalAmount: numeric("total_amount"),
+  tax: numeric("tax"),
+  discount: numeric("discount"),
+  orderDate: timestamp("order_date"),
+  dueDate: timestamp("due_date"),
+  status: varchar("status").default("pending"),
+  approvalStatus: varchar("approval_status").default("pending"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const salesActivities = pgTable("sales_activities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id"),
+  contactId: varchar("contact_id"),
+  opportunityId: varchar("opportunity_id"),
+  activityType: varchar("activity_type"),
+  subject: varchar("subject"),
+  description: text("description"),
+  dueDate: timestamp("due_date"),
+  completed: boolean("completed").default(false),
+  owner: varchar("owner"),
+  priority: varchar("priority").default("normal"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const salesPipeline = pgTable("sales_pipeline", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  ownerId: varchar("owner_id"),
+  month: varchar("month"),
+  prospecting: numeric("prospecting"),
+  qualification: numeric("qualification"),
+  proposal: numeric("proposal"),
+  negotiation: numeric("negotiation"),
+  closedWon: numeric("closed_won"),
+  closedLost: numeric("closed_lost"),
+  totalPipeline: numeric("total_pipeline"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
