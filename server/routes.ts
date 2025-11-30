@@ -5178,6 +5178,143 @@ export async function registerRoutes(
     res.status(201).json(dash);
   });
 
+  // ========== INDUSTRY PACK 22: MANUFACTURING & AUTOMOTIVE ==========
+  const mfgProductionStore: any[] = []; const mfgBomStore: any[] = []; const mfgQualityStore: any[] = []; 
+  const mfgSupplyStore: any[] = []; const mfgInventoryStore: any[] = []; const mfgMaintenanceStore: any[] = []; 
+  const mfgOrdersStore: any[] = []; const mfgDealersStore: any[] = []; const mfgFinanceStore: any[] = []; 
+  const mfgHrStore: any[] = []; const mfgPredictiveStore: any[] = []; const mfgAnalyticsStore: any[] = []; 
+  const mfgDashboardStore: any[] = [];
+
+  app.get("/api/mfg-production", (req, res) => {
+    if (mfgProductionStore.length === 0) mfgProductionStore.push({ id: "wo1", workOrderId: "WO-001", quantity: "100", status: "in-progress" });
+    res.json(mfgProductionStore);
+  });
+  app.post("/api/mfg-production", (req, res) => {
+    const wo = { id: `wo-${Date.now()}`, ...req.body };
+    mfgProductionStore.push(wo);
+    res.status(201).json(wo);
+  });
+
+  app.get("/api/mfg-bom", (req, res) => {
+    if (mfgBomStore.length === 0) mfgBomStore.push({ id: "bom1", bomId: "BOM-001", productId: "PROD-001", status: "complete" });
+    res.json(mfgBomStore);
+  });
+  app.post("/api/mfg-bom", (req, res) => {
+    const bom = { id: `bom-${Date.now()}`, ...req.body };
+    mfgBomStore.push(bom);
+    res.status(201).json(bom);
+  });
+
+  app.get("/api/mfg-quality", (req, res) => {
+    if (mfgQualityStore.length === 0) mfgQualityStore.push({ id: "insp1", inspectionId: "INSP-001", productId: "PROD-001", status: "passed" });
+    res.json(mfgQualityStore);
+  });
+  app.post("/api/mfg-quality", (req, res) => {
+    const insp = { id: `insp-${Date.now()}`, ...req.body };
+    mfgQualityStore.push(insp);
+    res.status(201).json(insp);
+  });
+
+  app.get("/api/mfg-supply", (req, res) => {
+    if (mfgSupplyStore.length === 0) mfgSupplyStore.push({ id: "po1", poId: "PO-001", supplierId: "SUPP-001", status: "received" });
+    res.json(mfgSupplyStore);
+  });
+  app.post("/api/mfg-supply", (req, res) => {
+    const po = { id: `po-${Date.now()}`, ...req.body };
+    mfgSupplyStore.push(po);
+    res.status(201).json(po);
+  });
+
+  app.get("/api/mfg-inventory", (req, res) => {
+    if (mfgInventoryStore.length === 0) mfgInventoryStore.push({ id: "inv1", productId: "PROD-001", quantity: "500", warehouseId: "WH-001" });
+    res.json(mfgInventoryStore);
+  });
+  app.post("/api/mfg-inventory", (req, res) => {
+    const inv = { id: `inv-${Date.now()}`, ...req.body };
+    mfgInventoryStore.push(inv);
+    res.status(201).json(inv);
+  });
+
+  app.get("/api/mfg-maintenance", (req, res) => {
+    if (mfgMaintenanceStore.length === 0) mfgMaintenanceStore.push({ id: "maint1", maintenanceId: "MAINT-001", assetId: "ASSET-001", status: "completed" });
+    res.json(mfgMaintenanceStore);
+  });
+  app.post("/api/mfg-maintenance", (req, res) => {
+    const maint = { id: `maint-${Date.now()}`, ...req.body };
+    mfgMaintenanceStore.push(maint);
+    res.status(201).json(maint);
+  });
+
+  app.get("/api/mfg-orders", (req, res) => {
+    if (mfgOrdersStore.length === 0) mfgOrdersStore.push({ id: "ord1", orderId: "ORD-001", orderValue: "5000", status: "shipped" });
+    res.json(mfgOrdersStore);
+  });
+  app.post("/api/mfg-orders", (req, res) => {
+    const ord = { id: `ord-${Date.now()}`, ...req.body };
+    mfgOrdersStore.push(ord);
+    res.status(201).json(ord);
+  });
+
+  app.get("/api/mfg-dealers", (req, res) => {
+    if (mfgDealersStore.length === 0) mfgDealersStore.push({ id: "d1", dealerId: "DEALER-001", region: "North", status: "active" });
+    res.json(mfgDealersStore);
+  });
+  app.post("/api/mfg-dealers", (req, res) => {
+    const dealer = { id: `d-${Date.now()}`, ...req.body };
+    mfgDealersStore.push(dealer);
+    res.status(201).json(dealer);
+  });
+
+  app.get("/api/mfg-finance", (req, res) => {
+    if (mfgFinanceStore.length === 0) mfgFinanceStore.push({ id: "fin1", departmentId: "DEPT-001", revenue: "100000", expense: "60000" });
+    res.json(mfgFinanceStore);
+  });
+  app.post("/api/mfg-finance", (req, res) => {
+    const fin = { id: `fin-${Date.now()}`, ...req.body };
+    mfgFinanceStore.push(fin);
+    res.status(201).json(fin);
+  });
+
+  app.get("/api/mfg-hr", (req, res) => {
+    if (mfgHrStore.length === 0) mfgHrStore.push({ id: "emp1", employeeId: "EMP-001", role: "Operator", skilled: true, status: "active" });
+    res.json(mfgHrStore);
+  });
+  app.post("/api/mfg-hr", (req, res) => {
+    const emp = { id: `emp-${Date.now()}`, ...req.body };
+    mfgHrStore.push(emp);
+    res.status(201).json(emp);
+  });
+
+  app.get("/api/mfg-predictive", (req, res) => {
+    if (mfgPredictiveStore.length === 0) mfgPredictiveStore.push({ id: "pred1", assetId: "ASSET-001", riskScore: "45" });
+    res.json(mfgPredictiveStore);
+  });
+  app.post("/api/mfg-predictive", (req, res) => {
+    const pred = { id: `pred-${Date.now()}`, ...req.body };
+    mfgPredictiveStore.push(pred);
+    res.status(201).json(pred);
+  });
+
+  app.get("/api/mfg-analytics", (req, res) => {
+    if (mfgAnalyticsStore.length === 0) mfgAnalyticsStore.push({ id: "ana1", plantId: "PLANT-001", output: "500", efficiency: "85" });
+    res.json(mfgAnalyticsStore);
+  });
+  app.post("/api/mfg-analytics", (req, res) => {
+    const ana = { id: `ana-${Date.now()}`, ...req.body };
+    mfgAnalyticsStore.push(ana);
+    res.status(201).json(ana);
+  });
+
+  app.get("/api/mfg-dashboard", (req, res) => {
+    if (mfgDashboardStore.length === 0) mfgDashboardStore.push({ id: "d1", kpiName: "Production", target: "1000", actual: "950", status: "healthy" });
+    res.json(mfgDashboardStore);
+  });
+  app.post("/api/mfg-dashboard", (req, res) => {
+    const dash = { id: `d-${Date.now()}`, ...req.body };
+    mfgDashboardStore.push(dash);
+    res.status(201).json(dash);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

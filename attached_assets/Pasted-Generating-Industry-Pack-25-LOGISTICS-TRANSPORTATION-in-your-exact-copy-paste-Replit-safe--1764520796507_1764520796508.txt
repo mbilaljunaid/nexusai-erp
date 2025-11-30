@@ -1,0 +1,354 @@
+Generating **Industry Pack 25 — LOGISTICS & TRANSPORTATION** in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+**TOP-LINE MANDATORY FOR REPLIT:**
+**Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Logistics & Transportation Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.**
+
+---
+
+# ✅ INDUSTRY PACK 25 — LOGISTICS & TRANSPORTATION
+
+**Purpose:** End-to-end solution for logistics operators, freight forwarders, courier services, transport companies, and 3PL/4PL providers, covering fleet management, shipment & delivery tracking, warehouse & inventory, order management, supply chain & procurement, route optimization, CRM & client management, billing & finance, HR & workforce, AI-driven logistics optimization, BI & dashboards, compliance & safety, mobile operations, and integrations with carriers, tracking systems, and marketplaces. Delivered as an industry template that auto-enables and configures all related modules.
+
+**Auto-enable modules when template is selected:** Fleet & Vehicle Management, Shipment & Delivery Tracking, Warehouse & Inventory, Order Management, Supply Chain & Procurement, Route Optimization, CRM & Client Management, Billing & Finance, HR & Workforce, AI / ML Logistics Optimization, BI & Dashboards, BPM (approval workflows), Mobile Apps, Integrations & API Gateway, Compliance & Safety.
+
+---
+
+## 1. FLEET & VEHICLE MANAGEMENT
+
+**Screens / Forms**
+
+* Vehicle master & registration
+* Maintenance & servicing schedule
+* Driver assignment & records
+* Fuel & usage tracking
+* Fleet utilization & availability
+
+**Fields**
+VehicleID, Type, RegistrationNo, Status, MaintenanceSchedule, DriverID, Location, AuditFields.
+
+**Validations**
+
+* Registration verification
+* Maintenance overdue alerts
+* Driver assignment compliance
+
+**Workflows**
+
+* Register vehicle → Assign driver → Schedule maintenance → Track usage → Update status
+
+---
+
+## 2. SHIPMENT & DELIVERY TRACKING
+
+**Screens / Forms**
+
+* Shipment master & orders
+* Pickup & delivery scheduling
+* Real-time tracking & ETA
+* Exception handling & rescheduling
+* Delivery confirmation & proof-of-delivery
+
+**Fields**
+ShipmentID, OrderID, CustomerID, VehicleID, Status, PickupDate, DeliveryDate, TrackingNumber, AuditFields.
+
+**Validations**
+
+* Shipment capacity check
+* Delivery SLA compliance
+* Proof-of-delivery mandatory
+
+**Workflows**
+
+* Capture shipment → Assign vehicle & driver → Track → Handle exceptions → Confirm delivery → Update order status
+
+---
+
+## 3. WAREHOUSE & INVENTORY
+
+**Screens / Forms**
+
+* Warehouse master & location mapping
+* Stock management (raw, WIP, finished goods)
+* Picking, packing, loading workflows
+* Inventory reconciliation & audit
+* Batch & serial tracking
+
+**Fields**
+WarehouseID, LocationID, ProductID, Quantity, BatchID, Status, AuditFields.
+
+**Validations**
+
+* Stock allocation before shipment
+* Bin / warehouse capacity validation
+* Movement logging
+
+**Workflows**
+
+* Receive → Store → Pick → Pack → Ship → Update inventory
+
+---
+
+## 4. ORDER MANAGEMENT
+
+**Screens / Forms**
+
+* Customer / client orders
+* Fulfillment & shipment scheduling
+* Returns / reverse logistics
+* Order status tracking & notifications
+
+**Fields**
+OrderID, CustomerID, ProductID, Quantity, OrderStatus, ShipmentID, AuditFields.
+
+**Validations**
+
+* Stock availability check
+* SLA compliance
+* Return eligibility
+
+**Workflows**
+
+* Order received → Allocate inventory → Assign shipment → Track → Deliver → Handle returns
+
+---
+
+## 5. SUPPLY CHAIN & PROCUREMENT
+
+**Screens / Forms**
+
+* Vendor / supplier master
+* Purchase requisitions & orders
+* Fleet & logistics service contracts
+* SLA & performance tracking
+
+**Fields**
+SupplierID, MaterialID, POID, Quantity, SLA, ReceivedQty, AuditFields.
+
+**Validations**
+
+* Supplier compliance & contract adherence
+* Lead time verification
+
+**Workflows**
+
+* Requisition → PO creation → Receive / onboard → Track SLA → Payment
+
+---
+
+## 6. ROUTE OPTIMIZATION
+
+**Screens / Forms**
+
+* Route planning & scheduling
+* Real-time traffic & weather integration
+* Dynamic rerouting
+* Delivery priority management
+
+**Fields**
+RouteID, VehicleID, DriverID, Stops, ETA, Status, AuditFields.
+
+**Validations**
+
+* Route feasibility
+* Vehicle capacity check
+* Compliance with delivery SLA
+
+**Workflows**
+
+* Plan route → Assign vehicle/driver → Monitor → Re-optimize dynamically → Complete delivery
+
+---
+
+## 7. CRM & CLIENT MANAGEMENT
+
+**Screens / Forms**
+
+* Client master & contact management
+* Order / shipment history
+* SLA & contract management
+* Communication & support tickets
+
+**Fields**
+ClientID, ContactID, OrderHistory, SLAID, TicketID, AuditFields.
+
+**Validations**
+
+* Duplicate detection
+* SLA compliance tracking
+
+**Workflows**
+
+* Capture client → Track orders → Manage SLA → Handle tickets → Feedback collection
+
+---
+
+## 8. BILLING & FINANCE
+
+**Screens / Forms**
+
+* Invoice generation for shipments & services
+* Payment collection & reconciliation
+* Costing (fuel, labor, maintenance)
+* Revenue reporting & analysis
+
+**Fields**
+InvoiceID, ShipmentID, Amount, PaymentStatus, AuditFields.
+
+**Validations**
+
+* Accurate billing per contract/SLA
+* Payment verification
+* Cost allocation correctness
+
+**Workflows**
+
+* Generate invoice → Send → Collect payment → Reconcile → Update finance
+
+---
+
+## 9. HR & WORKFORCE MANAGEMENT
+
+**Screens / Forms**
+
+* Employee master (drivers, warehouse, admin)
+* Shift scheduling & attendance
+* Certifications & license tracking
+* Payroll & performance management
+
+**Fields**
+EmployeeID, Role, Department, Shift, CertificationExpiry, PayrollID, AuditFields.
+
+**Validations**
+
+* License validity check
+* Shift assignment compliance
+
+**Workflows**
+
+* Onboard → Assign role/shift → Track attendance → Evaluate performance → Payroll
+
+---
+
+## 10. AI & LOGISTICS OPTIMIZATION
+
+**Use Cases**
+
+* Predictive delivery ETA
+* Fuel consumption optimization
+* Vehicle & fleet utilization forecasting
+* Route optimization & traffic predictions
+* Risk & exception prediction
+
+**Controls**
+
+* Human override required for critical routing changes or SLA breaches
+
+---
+
+## 11. BI & DASHBOARDS
+
+**Prebuilt Dashboards**
+
+* Fleet utilization & maintenance
+* Shipment status & SLA compliance
+* Inventory & warehouse efficiency
+* Cost & profitability analysis
+* Client performance & satisfaction
+
+**Ad-hoc**
+
+* Drill down from shipment → vehicle → route → client → invoice
+
+---
+
+## 12. MOBILE APPS
+
+**Driver App**
+
+* Route, shipment, proof-of-delivery, exception reporting
+  **Warehouse App**
+* Pick/pack/ship, inventory updates, exception logging
+  **Manager App**
+* BI dashboards, KPI monitoring, alerts, approvals
+
+---
+
+## 13. ROLES & PERMISSIONS
+
+**Core Roles**
+
+* Driver / Operator
+* Warehouse / Inventory Staff
+* Fleet Manager
+* Logistics Coordinator
+* Finance / Accounts
+* HR / Payroll
+* IT / Integration Engineer
+* Admin
+
+**Permission Notes**
+
+* Role-based access enforced for shipment, fleet, financial, and client data
+
+---
+
+## 14. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+**Seed Data**
+
+* 50 vehicles, 20 drivers, 10 warehouses, 100 shipments, 50 orders, 5 clients, 10 routes
+
+**Onboarding Steps**
+
+* Register fleet & drivers → Configure warehouses → Create clients → Process test shipments → Update inventory → Validate dashboards
+
+---
+
+## 15. INTEGRATIONS & CONNECTORS
+
+**Suggested Integrations**
+
+* GPS / Telematics & IoT devices
+* Payment gateways & invoicing systems
+* CRM / ERP systems
+* Marketplaces & e-commerce platforms
+* BI / data warehouse
+
+**Integration Rules**
+
+* Idempotent ingestion, audit logging, secure credential storage
+
+---
+
+## 16. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+**Examples**
+
+* Vehicle breakdown → alert fleet manager
+* Delayed shipment → notify client & coordinator
+* Stock shortage → alert warehouse
+* SLA breach → escalate automatically
+
+---
+
+## 17. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+**Idempotency & Safety**
+
+* Seeders check natural keys (VehicleID + ShipmentID + OrderID) before insert
+* Migrations additive; destructive changes require rollback scripts
+* Feature flags per tenant for AI logistics optimization, dynamic routing, multi-warehouse operations
+
+**Testing**
+
+* Shipment lifecycle → pick → pack → route → deliver → billing → KPI dashboards
+
+---
+
+## 18. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+**REPLIT MUST** — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and **NEVER** duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+---
+
+If you want me to generate **Industry Pack 26 — ENERGY & UTILITIES** next, reply **“Yes”** and I will produce it in the same format.

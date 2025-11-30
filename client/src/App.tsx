@@ -506,6 +506,19 @@ const HRRetail = lazy(() => import("@/pages/HRRetail"));
 const ComplianceTax = lazy(() => import("@/pages/ComplianceTax"));
 const ReturnsManagement = lazy(() => import("@/pages/ReturnsManagement"));
 const RetailDashboard = lazy(() => import("@/pages/RetailDashboard"));
+const ProductionPlanning = lazy(() => import("@/pages/ProductionPlanning"));
+const BOMRouting = lazy(() => import("@/pages/BOMRouting"));
+const QualityCompliance = lazy(() => import("@/pages/QualityCompliance"));
+const SupplyChainMfg = lazy(() => import("@/pages/SupplyChainMfg"));
+const InventoryMfg = lazy(() => import("@/pages/InventoryMfg"));
+const Maintenance = lazy(() => import("@/pages/Maintenance"));
+const OrdersMfg = lazy(() => import("@/pages/OrdersMfg"));
+const CRMDealer = lazy(() => import("@/pages/CRMDealer"));
+const FinanceMfg = lazy(() => import("@/pages/FinanceMfg"));
+const HRMfg = lazy(() => import("@/pages/HRMfg"));
+const MfgPredictiveMaintenance = lazy(() => import("@/pages/PredictiveMaintenance"));
+const MfgAnalytics = lazy(() => import("@/pages/MfgAnalytics"));
+const MfgDashboard = lazy(() => import("@/pages/MfgDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -1221,6 +1234,19 @@ function Router() {
       <Route path="/retail-compliance" component={ComplianceTax} />
       <Route path="/retail-returns" component={ReturnsManagement} />
       <Route path="/retail-dashboard" component={RetailDashboard} />
+      <Route path="/mfg-production" component={ProductionPlanning} />
+      <Route path="/mfg-bom" component={BOMRouting} />
+      <Route path="/mfg-quality" component={QualityCompliance} />
+      <Route path="/mfg-supply" component={SupplyChainMfg} />
+      <Route path="/mfg-inventory" component={InventoryMfg} />
+      <Route path="/mfg-maintenance" component={Maintenance} />
+      <Route path="/mfg-orders" component={OrdersMfg} />
+      <Route path="/mfg-dealers" component={CRMDealer} />
+      <Route path="/mfg-finance" component={FinanceMfg} />
+      <Route path="/mfg-hr" component={HRMfg} />
+      <Route path="/mfg-predictive" component={MfgPredictiveMaintenance} />
+      <Route path="/mfg-analytics" component={MfgAnalytics} />
+      <Route path="/mfg-dashboard" component={MfgDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
