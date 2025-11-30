@@ -1347,3 +1347,134 @@ export const insertFinStmtSchema = createInsertSchema(financialStatements).omit(
 
 export type InsertFinStmt = z.infer<typeof insertFinStmtSchema>;
 export type FinancialStatement = typeof financialStatements.$inferSelect;
+
+// ========== PHASE 1: AUTH & MULTI-TENANT ==========
+export const tenants = pgTable("tenants", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  slug: varchar("slug").unique().notNull(),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const roles = pgTable("roles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  permissions: jsonb("permissions"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const userRoles = pgTable("user_roles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  roleId: varchar("role_id"),
+  assignedAt: timestamp("assigned_at").default(sql`now()`),
+});
+
+// ========== PHASE 1: SUBSCRIPTIONS & BILLING ==========
+export const plans = pgTable("plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency").default("USD"),
+  billingCycle: varchar("billing_cycle"),
+  features: jsonb("features"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const subscriptions = pgTable("subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  planId: varchar("plan_id"),
+  status: varchar("status").default("active"),
+  startDate: timestamp("start_date").default(sql`now()`),
+  endDate: timestamp("end_date"),
+  autoRenew: boolean("auto_renew").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const payments = pgTable("payments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  invoiceId: varchar("invoice_id"),
+  amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
+  method: varchar("method").notNull(),
+  status: varchar("status").default("pending"),
+  transactionId: varchar("transaction_id"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const credits = pgTable("credits", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  balance: numeric("balance", { precision: 12, scale: 2 }).notNull().default("0"),
+  usedAmount: numeric("used_amount", { precision: 12, scale: 2 }).default("0"),
+  expiryDate: timestamp("expiry_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 1: API GATEWAY ==========
+export const apiKeys = pgTable("api_keys", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  userId: varchar("user_id"),
+  name: varchar("name").notNull(),
+  key: varchar("key").unique().notNull(),
+  secret: varchar("secret"),
+  permissions: jsonb("permissions"),
+  rateLimit: integer("rate_limit"),
+  status: varchar("status").default("active"),
+  lastUsed: timestamp("last_used"),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const webhooks = pgTable("webhooks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  url: varchar("url").notNull(),
+  events: jsonb("events").default(sql`'[]'::jsonb`),
+  secret: varchar("secret"),
+  active: boolean("active").default(true),
+  retryCount: integer("retry_count").default(3),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const webhookEvents = pgTable("webhook_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  webhookId: varchar("webhook_id"),
+  event: varchar("event").notNull(),
+  payload: jsonb("payload"),
+  status: varchar("status").default("pending"),
+  attempts: integer("attempts").default(0),
+  lastAttempt: timestamp("last_attempt"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PHASE 1: ZSCHEMAS & TYPES ==========
+export const insertTenantSchema = createInsertSchema(tenants).omit({ id: true, createdAt: true });
+export const insertRoleSchema = createInsertSchema(roles).omit({ id: true, createdAt: true });
+export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true });
+export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true, createdAt: true });
+export const insertPaymentSchema = createInsertSchema(payments).omit({ id: true, createdAt: true });
+export const insertApiKeySchema = createInsertSchema(apiKeys).omit({ id: true, createdAt: true });
+export const insertWebhookSchema = createInsertSchema(webhooks).omit({ id: true, createdAt: true });
+
+export type Tenant = typeof tenants.$inferSelect;
+export type InsertTenant = z.infer<typeof insertTenantSchema>;
+export type Role = typeof roles.$inferSelect;
+export type InsertRole = z.infer<typeof insertRoleSchema>;
+export type Plan = typeof plans.$inferSelect;
+export type InsertPlan = z.infer<typeof insertPlanSchema>;
+export type Subscription = typeof subscriptions.$inferSelect;
+export type InsertSubscription = z.infer<typeof insertSubscriptionSchema>;
+export type Payment = typeof payments.$inferSelect;
+export type InsertPayment = z.infer<typeof insertPaymentSchema>;
+export type ApiKey = typeof apiKeys.$inferSelect;
+export type InsertApiKey = z.infer<typeof insertApiKeySchema>;
+export type Webhook = typeof webhooks.$inferSelect;
+export type InsertWebhook = z.infer<typeof insertWebhookSchema>;

@@ -34,10 +34,45 @@ import {
   type BiDashboard, type InsertBiDashboard,
   type FieldServiceJob, type InsertFieldServiceJob,
   type PayrollConfig, type InsertPayrollConfig,
+  type Tenant, type InsertTenant,
+  type Role, type InsertRole,
+  type Plan, type InsertPlan,
+  type Subscription, type InsertSubscription,
+  type Payment, type InsertPayment,
+  type ApiKey, type InsertApiKey,
+  type Webhook, type InsertWebhook,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
+  getTenant(id: string): Promise<Tenant | undefined>;
+  listTenants(): Promise<Tenant[]>;
+  createTenant(tenant: InsertTenant): Promise<Tenant>;
+
+  getRole(id: string): Promise<Role | undefined>;
+  listRoles(tenantId?: string): Promise<Role[]>;
+  createRole(role: InsertRole): Promise<Role>;
+
+  getPlan(id: string): Promise<Plan | undefined>;
+  listPlans(): Promise<Plan[]>;
+  createPlan(plan: InsertPlan): Promise<Plan>;
+
+  getSubscription(id: string): Promise<Subscription | undefined>;
+  listSubscriptions(tenantId?: string): Promise<Subscription[]>;
+  createSubscription(sub: InsertSubscription): Promise<Subscription>;
+
+  getPayment(id: string): Promise<Payment | undefined>;
+  listPayments(invoiceId?: string): Promise<Payment[]>;
+  createPayment(payment: InsertPayment): Promise<Payment>;
+
+  getApiKey(id: string): Promise<ApiKey | undefined>;
+  listApiKeys(tenantId?: string): Promise<ApiKey[]>;
+  createApiKey(key: InsertApiKey): Promise<ApiKey>;
+
+  getWebhook(id: string): Promise<Webhook | undefined>;
+  listWebhooks(tenantId?: string): Promise<Webhook[]>;
+  createWebhook(webhook: InsertWebhook): Promise<Webhook>;
+
   getUser(id: string): Promise<User | undefined>;
   listUsers(): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
@@ -186,6 +221,13 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
+  private tenants = new Map<string, Tenant>();
+  private roles = new Map<string, Role>();
+  private plans = new Map<string, Plan>();
+  private subscriptions = new Map<string, Subscription>();
+  private payments = new Map<string, Payment>();
+  private apiKeys = new Map<string, ApiKey>();
+  private webhooks = new Map<string, Webhook>();
   private users = new Map<string, User>();
   private projects = new Map<string, Project>();
   private invoices = new Map<string, Invoice>();
@@ -221,6 +263,35 @@ export class MemStorage implements IStorage {
   private biDashboards = new Map<string, BiDashboard>();
   private fieldServiceJobs = new Map<string, FieldServiceJob>();
   private payrollConfigs = new Map<string, PayrollConfig>();
+
+  // PHASE 1 Methods
+  async getTenant(id: string) { return this.tenants.get(id); }
+  async listTenants() { return Array.from(this.tenants.values()); }
+  async createTenant(t: InsertTenant) { const id = randomUUID(); const tenant: Tenant = { id, ...t as any, createdAt: new Date() }; this.tenants.set(id, tenant); return tenant; }
+
+  async getRole(id: string) { return this.roles.get(id); }
+  async listRoles(tenantId?: string) { const list = Array.from(this.roles.values()); return tenantId ? list.filter(r => r.tenantId === tenantId) : list; }
+  async createRole(r: InsertRole) { const id = randomUUID(); const role: Role = { id, ...r as any, createdAt: new Date() }; this.roles.set(id, role); return role; }
+
+  async getPlan(id: string) { return this.plans.get(id); }
+  async listPlans() { return Array.from(this.plans.values()); }
+  async createPlan(p: InsertPlan) { const id = randomUUID(); const plan: Plan = { id, ...p as any, createdAt: new Date() }; this.plans.set(id, plan); return plan; }
+
+  async getSubscription(id: string) { return this.subscriptions.get(id); }
+  async listSubscriptions(tenantId?: string) { const list = Array.from(this.subscriptions.values()); return tenantId ? list.filter(s => s.tenantId === tenantId) : list; }
+  async createSubscription(s: InsertSubscription) { const id = randomUUID(); const sub: Subscription = { id, ...s as any, createdAt: new Date() }; this.subscriptions.set(id, sub); return sub; }
+
+  async getPayment(id: string) { return this.payments.get(id); }
+  async listPayments(invoiceId?: string) { const list = Array.from(this.payments.values()); return invoiceId ? list.filter(p => p.invoiceId === invoiceId) : list; }
+  async createPayment(p: InsertPayment) { const id = randomUUID(); const payment: Payment = { id, ...p as any, createdAt: new Date() }; this.payments.set(id, payment); return payment; }
+
+  async getApiKey(id: string) { return this.apiKeys.get(id); }
+  async listApiKeys(tenantId?: string) { const list = Array.from(this.apiKeys.values()); return tenantId ? list.filter(k => k.tenantId === tenantId) : list; }
+  async createApiKey(k: InsertApiKey) { const id = randomUUID(); const key: ApiKey = { id, ...k as any, createdAt: new Date() }; this.apiKeys.set(id, key); return key; }
+
+  async getWebhook(id: string) { return this.webhooks.get(id); }
+  async listWebhooks(tenantId?: string) { const list = Array.from(this.webhooks.values()); return tenantId ? list.filter(w => w.tenantId === tenantId) : list; }
+  async createWebhook(w: InsertWebhook) { const id = randomUUID(); const webhook: Webhook = { id, ...w as any, createdAt: new Date() }; this.webhooks.set(id, webhook); return webhook; }
 
   async getUser(id: string) { return this.users.get(id); }
   async listUsers() { return Array.from(this.users.values()); }
