@@ -326,6 +326,14 @@ const ShippingManagement = lazy(() => import("@/pages/ShippingManagement"));
 const PromotionDiscountCodes = lazy(() => import("@/pages/PromotionDiscountCodes"));
 const ReturnsRefundsManagement = lazy(() => import("@/pages/ReturnsRefundsManagement"));
 const EcommerceBIDashboard = lazy(() => import("@/pages/EcommerceBIDashboard"));
+const POSTerminalCheckout = lazy(() => import("@/pages/POSTerminalCheckout"));
+const StoreOutletManagement = lazy(() => import("@/pages/StoreOutletManagement"));
+const POSCashReconciliation = lazy(() => import("@/pages/POSCashReconciliation"));
+const WorkforceScheduling = lazy(() => import("@/pages/WorkforceScheduling"));
+const ReplenishmentPlanning = lazy(() => import("@/pages/ReplenishmentPlanning"));
+const PricingPromotionManagement = lazy(() => import("@/pages/PricingPromotionManagement"));
+const OmniChannelFulfillment = lazy(() => import("@/pages/OmniChannelFulfillment"));
+const RetailBIDashboard = lazy(() => import("@/pages/RetailBIDashboard"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -863,6 +871,14 @@ function Router() {
       <Route path="/promotions" component={PromotionDiscountCodes} />
       <Route path="/returns-refunds" component={ReturnsRefundsManagement} />
       <Route path="/ecommerce-analytics" component={EcommerceBIDashboard} />
+      <Route path="/pos-terminal" component={POSTerminalCheckout} />
+      <Route path="/store-management" component={StoreOutletManagement} />
+      <Route path="/pos-reconciliation" component={POSCashReconciliation} />
+      <Route path="/workforce-scheduling" component={WorkforceScheduling} />
+      <Route path="/replenishment-planning" component={ReplenishmentPlanning} />
+      <Route path="/pricing-promotions" component={PricingPromotionManagement} />
+      <Route path="/omni-fulfillment" component={OmniChannelFulfillment} />
+      <Route path="/retail-analytics" component={RetailBIDashboard} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />
