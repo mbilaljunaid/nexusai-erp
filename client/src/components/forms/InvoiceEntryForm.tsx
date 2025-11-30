@@ -4,136 +4,159 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Plus, Trash2, Sparkles, Loader2 } from "lucide-react";
-import { api } from "@/lib/api";
+import { Check, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function InvoiceEntryForm() {
-  const [lines, setLines] = useState([{ id: 1, desc: "", qty: "", rate: "" }]);
-  const [showAI, setShowAI] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [vendor, setVendor] = useState("");
-  const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [invoiceDate, setInvoiceDate] = useState("");
-  const [description, setDescription] = useState("");
   const { toast } = useToast();
-  
-  const total = lines.reduce((sum, line) => sum + ((parseFloat(line.qty) || 0) * (parseFloat(line.rate) || 0)), 0);
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [customerId, setCustomerId] = useState("");
+  const [amount, setAmount] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [status, setStatus] = useState("draft");
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSaveInvoice = async () => {
+    if (!invoiceNumber || !amount) {
+      toast({ title: "Error", description: "Invoice Number and Amount are required", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const payload = {
+        invoiceNumber,
+        customerId: customerId || undefined,
+        amount,
+        dueDate: dueDate || undefined,
+        status
+      };
+
+      const response = await fetch("/api/invoices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error("Failed to create invoice");
+
+      setSuccessMessage("Invoice saved successfully!");
+      toast({ title: "Success", description: "Invoice created" });
+
+      // Reset form
+      setInvoiceNumber("");
+      setCustomerId("");
+      setAmount("");
+      setDueDate("");
+      setStatus("draft");
+
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-2xl">
       <div>
-        <h2 className="text-2xl font-semibold">Vendor Invoice Entry</h2>
-        <p className="text-sm text-muted-foreground">Create and process vendor invoices with automatic GL mapping</p>
+        <h2 className="text-2xl font-semibold">Add Invoice</h2>
+        <p className="text-sm text-muted-foreground mt-1">Create and process vendor invoices</p>
       </div>
 
-      <Tabs defaultValue="entry" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="entry">Invoice Details</TabsTrigger>
-          <TabsTrigger value="lines">Line Items</TabsTrigger>
-        </TabsList>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Invoice Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="invoiceNumber">Invoice Number *</Label>
+              <Input
+                id="invoiceNumber"
+                value={invoiceNumber}
+                onChange={(e) => setInvoiceNumber(e.target.value)}
+                placeholder="INV-2024-001"
+                className="text-sm"
+                data-testid="input-invoice-number"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="customerId">Customer ID</Label>
+              <Input
+                id="customerId"
+                value={customerId}
+                onChange={(e) => setCustomerId(e.target.value)}
+                placeholder="CUST-001"
+                className="text-sm"
+                data-testid="input-invoice-customer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="amount">Amount *</Label>
+              <Input
+                id="amount"
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="1000.00"
+                step="0.01"
+                className="text-sm"
+                data-testid="input-invoice-amount"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dueDate">Due Date</Label>
+              <Input
+                id="dueDate"
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="text-sm"
+                data-testid="input-invoice-duedate"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="status">Status</Label>
+              <Select value={status} onValueChange={setStatus}>
+                <SelectTrigger id="status" className="text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="sent">Sent</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
-        <TabsContent value="entry" className="space-y-6">
-          <Card>
-            <CardHeader><CardTitle className="text-base">Invoice Header</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label>Vendor *</Label>
-                  <Select value={vendor} onValueChange={setVendor}><SelectTrigger className="text-sm"><SelectValue placeholder="Select vendor" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="acme">Acme Supplies</SelectItem>
-                      <SelectItem value="tech">Tech Services Inc</SelectItem>
-                    </SelectContent></Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Invoice Number *</Label>
-                  <Input placeholder="INV-2024-001" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="text-sm" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Invoice Date *</Label>
-                  <Input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} className="text-sm" />
-                </div>
-              </div>
+          <div className="flex gap-3">
+            <Button
+              onClick={handleSaveInvoice}
+              disabled={isLoading}
+              data-testid="button-save-invoice"
+            >
+              {isLoading ? "Saving..." : successMessage ? "Saved!" : "Save Invoice"}
+            </Button>
+            <Button variant="outline">Cancel</Button>
+          </div>
 
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <Textarea placeholder="Invoice details..." value={description} onChange={(e) => setDescription(e.target.value)} className="min-h-16 text-sm" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {showAI && (
-            <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
-              <Sparkles className="h-4 w-4 text-blue-600" />
-              <AlertDescription className="text-sm text-blue-900 dark:text-blue-100 ml-2">
-                <strong>AI Suggestions:</strong> Vendor matched • GL accounts auto-mapped • Tax calculated
+          {successMessage && (
+            <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-900">
+              <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+              <AlertDescription className="text-sm text-green-900 dark:text-green-100 ml-2">
+                {successMessage}
               </AlertDescription>
             </Alert>
           )}
-        </TabsContent>
-
-        <TabsContent value="lines" className="space-y-6">
-          <Card>
-            <CardHeader><CardTitle className="text-base">Line Items</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b"><th className="text-left p-2">Description</th><th className="text-right p-2">Qty</th><th className="text-right p-2">Rate</th><th className="text-right p-2">Amount</th><th className="p-2">GL Account</th><th></th></tr>
-                  </thead>
-                  <tbody>
-                    {lines.map((line, idx) => (
-                      <tr key={line.id} className="border-b hover:bg-muted">
-                        <td className="p-2"><Input type="text" placeholder="Item" value={line.desc} onChange={(e) => { const newLines = [...lines]; newLines[idx].desc = e.target.value; setLines(newLines); }} className="text-xs h-8" /></td>
-                        <td className="p-2 text-right"><Input type="number" placeholder="0" value={line.qty} onChange={(e) => { const newLines = [...lines]; newLines[idx].qty = e.target.value; setLines(newLines); }} className="text-xs h-8 text-right" /></td>
-                        <td className="p-2 text-right"><Input type="number" placeholder="0.00" value={line.rate} onChange={(e) => { const newLines = [...lines]; newLines[idx].rate = e.target.value; setLines(newLines); }} className="text-xs h-8 text-right font-mono" /></td>
-                        <td className="p-2 text-right font-mono text-xs">${((parseFloat(line.qty) || 0) * (parseFloat(line.rate) || 0)).toFixed(2)}</td>
-                        <td className="p-2"><Select><SelectTrigger className="text-xs h-8"><SelectValue placeholder="5000" /></SelectTrigger><SelectContent><SelectItem value="5100">5100 - Supplies</SelectItem></SelectContent></Select></td>
-                        <td className="p-2"><Button variant="ghost" size="sm" onClick={() => setLines(lines.filter((_, i) => i !== idx))}><Trash2 className="h-3 w-3" /></Button></td>
-                      </tr>
-                    ))}
-                    <tr className="font-semibold border-t-2 bg-muted"><td colSpan={4} className="p-2">Total:</td><td colSpan={2} className="p-2 text-right font-mono">${total.toFixed(2)}</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => setLines([...lines, { id: Math.max(...lines.map(l => l.id)) + 1, desc: "", qty: "", rate: "" }])}><Plus className="h-4 w-4 mr-2" />Add Line</Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      <div className="flex gap-3">
-        <Button variant="outline" onClick={() => setShowAI(!showAI)} className="gap-1"><Sparkles className="h-4 w-4" />AI Assist</Button>
-        <Button 
-          onClick={async () => {
-            if (!vendor || !invoiceNumber || !invoiceDate) {
-              toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
-              return;
-            }
-            setIsLoading(true);
-            try {
-              await api.erp.invoices.create({ vendor, invoiceNumber, invoiceDate, description, lines, total });
-              toast({ title: "Success", description: "Invoice posted successfully" });
-              setVendor(""); setInvoiceNumber(""); setInvoiceDate(""); setDescription("");
-              setLines([{ id: 1, desc: "", qty: "", rate: "" }]);
-            } catch (e) {
-              toast({ title: "Error", description: "Failed to post invoice", variant: "destructive" });
-            } finally {
-              setIsLoading(false);
-            }
-          }}
-          disabled={isLoading}
-        >
-          {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-          Post Invoice
-        </Button>
-        <Button variant="outline">Save Draft</Button>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -22,6 +22,15 @@ export default function ERP() {
   const { data: pos = [] } = useQuery({ queryKey: ["/api/purchase-orders"], retry: false });
   const { data: vendors = [] } = useQuery({ queryKey: ["/api/vendors"], retry: false });
 
+  const filteredInvoices = ((invoices as any[]) || []).filter((inv: any) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      (inv.invoiceNumber || "").toLowerCase().includes(query) ||
+      (inv.customerId || "").toLowerCase().includes(query) ||
+      (inv.amount || "").toString().includes(query)
+    );
+  });
+
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
     { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500" },
@@ -87,13 +96,17 @@ export default function ERP() {
       {activeNav === "ap" && (
         <div className="space-y-4">
           <div className="flex gap-2 items-center">
-            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search invoices..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
-            <Button>+ New Invoice</Button>
+            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search by invoice number, customer, or amount..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" data-testid="input-search-invoices" /></div>
+            <Button data-testid="button-add-invoice">+ Add Invoice</Button>
           </div>
           <div className="space-y-2">
-            {((invoices || []) as any).filter((i: any) => (i.vendorId || "").toLowerCase().includes(searchQuery.toLowerCase())).map((i: any, idx: number) => (
-              <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">Invoice {i.id}</p><p className="text-sm text-muted-foreground">{i.vendorId}</p></div><Badge>${(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
-            ))}
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((i: any, idx: number) => (
+                <Card key={i.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.invoiceNumber}</p><p className="text-sm text-muted-foreground">{i.customerId}</p></div><Badge>${Number(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No invoices found</p></CardContent></Card>
+            )}
           </div>
           <InvoiceEntryForm />
         </div>

@@ -32,7 +32,7 @@ export default function CRM() {
     { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
   ];
 
-  const filteredLeads = leads.filter((lead: any) => {
+  const filteredLeads = ((leads as any[]) || []).filter((lead: any) => {
     const query = searchQuery.toLowerCase();
     return (
       (lead.name || "").toLowerCase().includes(query) ||
@@ -92,8 +92,8 @@ export default function CRM() {
             <Button data-testid="button-add-lead">+ Add Lead</Button>
           </div>
           <div className="space-y-2">
-            {filteredLeads.length > 0 ? (
-              filteredLeads.map((lead: any, idx: number) => (
+            {((filteredLeads as any[]) || []).length > 0 ? (
+              ((filteredLeads as any[]) || []).map((lead: any, idx: number) => (
                 <Card key={lead.id || idx} className="hover-elevate cursor-pointer">
                   <CardContent className="p-4">
                     <div className="flex justify-between">

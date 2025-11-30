@@ -10,303 +10,154 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { User, Building2, Loader2 } from "lucide-react";
-import { api } from "@/lib/api";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function EmployeeEntryForm() {
-  const [empTab, setEmpTab] = useState("personal");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const { toast } = useToast();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [department, setDepartment] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
-  const [hireDate, setHireDate] = useState("");
+  const [role, setRole] = useState("");
   const [salary, setSalary] = useState("");
-  const [status, setStatus] = useState("active");
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSaveEmployee = async () => {
+    if (!name || !email) {
+      toast({ title: "Error", description: "Name and Email are required", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const payload = {
+        name,
+        email,
+        department: department || undefined,
+        role: role || undefined,
+        salary: salary || undefined
+      };
+
+      const response = await fetch("/api/employees", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error("Failed to create employee");
+
+      setSuccessMessage("Employee saved successfully!");
+      toast({ title: "Success", description: "Employee created" });
+
+      // Reset form
+      setName("");
+      setEmail("");
+      setDepartment("");
+      setRole("");
+      setSalary("");
+
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-2xl">
       <div>
-        <h2 className="text-2xl font-semibold">Employee Entry</h2>
+        <h2 className="text-2xl font-semibold">Add Employee</h2>
         <p className="text-sm text-muted-foreground mt-1">Add a new employee to the organization</p>
       </div>
 
-      <Tabs value={empTab} onValueChange={setEmpTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="personal" className="gap-2">
-            <User className="h-4 w-4" />
-            Personal
-          </TabsTrigger>
-          <TabsTrigger value="employment" className="gap-2">
-            <Building2 className="h-4 w-4" />
-            Employment
-          </TabsTrigger>
-          <TabsTrigger value="compensation">Compensation</TabsTrigger>
-        </TabsList>
-
-        {/* Personal Tab */}
-        <TabsContent value="personal" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Personal Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name *</Label>
-                  <Input
-                    id="firstName"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="John"
-                    className="text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name *</Label>
-                  <Input
-                    id="lastName"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Smith"
-                    className="text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="john.smith@company.com"
-                    className="text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dob">Date of Birth (Optional)</Label>
-                  <Input
-                    id="dob"
-                    type="date"
-                    className="text-sm"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Address</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Input placeholder="Street address" className="text-sm" />
-              <div className="grid grid-cols-3 gap-2">
-                <Input placeholder="City" className="text-sm" />
-                <Input placeholder="State" className="text-sm" />
-                <Input placeholder="ZIP" className="text-sm" />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Employment Tab */}
-        <TabsContent value="employment" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Employment Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Job Title *</Label>
-                  <Input
-                    id="title"
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                    placeholder="Senior Manager"
-                    className="text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dept">Department *</Label>
-                  <Select value={department} onValueChange={setDepartment}>
-                    <SelectTrigger id="dept" className="text-sm">
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="sales">Sales</SelectItem>
-                      <SelectItem value="engineering">Engineering</SelectItem>
-                      <SelectItem value="hr">Human Resources</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="ops">Operations</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="hireDate">Hire Date *</Label>
-                  <Input
-                    id="hireDate"
-                    type="date"
-                    value={hireDate}
-                    onChange={(e) => setHireDate(e.target.value)}
-                    className="text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="status">Employment Status *</Label>
-                  <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger id="status" className="text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
-                      <SelectItem value="onleave">On Leave</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="manager">Manager</Label>
-                <Select>
-                  <SelectTrigger id="manager" className="text-sm">
-                    <SelectValue placeholder="Select manager" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="sarah">Sarah Chen (VP Sales)</SelectItem>
-                    <SelectItem value="mike">Mike Johnson (VP Engineering)</SelectItem>
-                    <SelectItem value="lisa">Lisa Wong (CFO)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Government IDs</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="ssn">SSN (Encrypted)</Label>
-                  <Input
-                    id="ssn"
-                    type="password"
-                    placeholder="●●●-●●-●●●●"
-                    className="text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="passport">Passport Number</Label>
-                  <Input
-                    id="passport"
-                    placeholder="Optional"
-                    className="text-sm"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Compensation Tab */}
-        <TabsContent value="compensation" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Compensation Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="salary">Annual Salary *</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-2.5 text-sm text-muted-foreground">$</span>
-                    <Input
-                      id="salary"
-                      value={salary}
-                      onChange={(e) => setSalary(e.target.value)}
-                      placeholder="0.00"
-                      className="text-sm pl-7 font-mono"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="frequency">Pay Frequency</Label>
-                  <Select defaultValue="monthly">
-                    <SelectTrigger id="frequency" className="text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="biweekly">Bi-weekly</SelectItem>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                      <SelectItem value="semiannual">Semi-annual</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="costCenter">Cost Center</Label>
-                <Select>
-                  <SelectTrigger id="costCenter" className="text-sm">
-                    <SelectValue placeholder="Select cost center" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="cc-001">CC-001: Field Sales</SelectItem>
-                    <SelectItem value="cc-002">CC-002: Sales Ops</SelectItem>
-                    <SelectItem value="cc-003">CC-003: Engineering</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      {/* Actions */}
-      <div className="flex gap-3">
-        <Button variant="outline">Save Draft</Button>
-        <Button 
-          onClick={async () => {
-            if (!firstName || !lastName || !email || !department || !jobTitle || !hireDate) {
-              toast({ title: "Error", description: "Please fill in all required fields", variant: "destructive" });
-              return;
-            }
-            setIsLoading(true);
-            try {
-              await api.hr.employees.create({ firstName, lastName, email, department, jobTitle, hireDate, salary, status });
-              toast({ title: "Success", description: "Employee created successfully" });
-              setFirstName(""); setLastName(""); setEmail(""); setDepartment(""); setJobTitle(""); setHireDate(""); setSalary(""); setStatus("active");
-            } catch (e) {
-              toast({ title: "Error", description: "Failed to create employee", variant: "destructive" });
-            } finally {
-              setIsLoading(false);
-            }
-          }}
-          disabled={isLoading}
-        >
-          {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-          Activate Employee
-        </Button>
-        <Button variant="ghost">Cancel</Button>
-      </div>
-
-      {/* Status */}
       <Card>
-        <CardContent className="p-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium">Employee Status</p>
-            <p className="text-xs text-muted-foreground">New employee entry, pending activation</p>
+        <CardHeader>
+          <CardTitle className="text-base">Employee Information</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name *</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="John Smith"
+                className="text-sm"
+                data-testid="input-employee-name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="john@company.com"
+                className="text-sm"
+                data-testid="input-employee-email"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="department">Department</Label>
+              <Input
+                id="department"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                placeholder="Engineering"
+                className="text-sm"
+                data-testid="input-employee-department"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Input
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="Senior Engineer"
+                className="text-sm"
+                data-testid="input-employee-role"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="salary">Salary</Label>
+              <Input
+                id="salary"
+                type="number"
+                value={salary}
+                onChange={(e) => setSalary(e.target.value)}
+                placeholder="75000.00"
+                step="0.01"
+                className="text-sm"
+                data-testid="input-employee-salary"
+              />
+            </div>
           </div>
-          <Badge variant="outline">Draft</Badge>
+
+          <div className="flex gap-3">
+            <Button
+              onClick={handleSaveEmployee}
+              disabled={isLoading}
+              data-testid="button-save-employee"
+            >
+              {isLoading ? "Saving..." : successMessage ? "Saved!" : "Save Employee"}
+            </Button>
+            <Button variant="outline">Cancel</Button>
+          </div>
+
+          {successMessage && (
+            <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-900">
+              <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+              <AlertDescription className="text-sm text-green-900 dark:text-green-100 ml-2">
+                {successMessage}
+              </AlertDescription>
+            </Alert>
+          )}
         </CardContent>
       </Card>
     </div>

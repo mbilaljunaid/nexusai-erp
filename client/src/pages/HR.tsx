@@ -1,16 +1,29 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { IconNavigation } from "@/components/IconNavigation";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { EmployeeEntryForm } from "@/components/forms/EmployeeEntryForm";
 import PayrollForm from "@/components/forms/PayrollForm";
 import PerformanceRatingForm from "@/components/forms/PerformanceRatingForm";
 import { LeaveRequestForm } from "@/components/forms/LeaveRequestForm";
-import { Users, BarChart3, Briefcase, DollarSign, TrendingUp, Calendar, BookOpen, Target, Heart, Award, Clock, PieChart, Settings, Zap } from "lucide-react";
+import { Users, BarChart3, Briefcase, DollarSign, TrendingUp, Calendar, BookOpen, Target, Heart, Award, Clock, PieChart, Settings, Zap, Search } from "lucide-react";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 
 export default function HR() {
   const [activeNav, setActiveNav] = useState("overview");
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data: employees = [] } = useQuery({ queryKey: ["/api/employees"], retry: false });
+
+  const filteredEmployees = ((employees as any[]) || []).filter((emp: any) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      (emp.name || "").toLowerCase().includes(query) ||
+      (emp.email || "").toLowerCase().includes(query) ||
+      (emp.department || "").toLowerCase().includes(query)
+    );
+  });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
@@ -61,7 +74,24 @@ export default function HR() {
         </div>
       )}
 
-      {activeNav === "employees" && <div className="space-y-4"><EmployeeEntryForm /></div>}
+      {activeNav === "employees" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search employees by name, email, or department..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" data-testid="input-search-employees" /></div>
+            <Button data-testid="button-add-employee">+ Add Employee</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredEmployees.length > 0 ? (
+              filteredEmployees.map((emp: any, idx: number) => (
+                <Card key={emp.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{emp.name}</p><p className="text-sm text-muted-foreground">{emp.email}</p><p className="text-xs text-muted-foreground">{emp.department} - {emp.role}</p></div><Badge variant="secondary">${Number(emp.salary || 0).toLocaleString()}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No employees found</p></CardContent></Card>
+            )}
+          </div>
+          <EmployeeEntryForm />
+        </div>
+      )}
 
       {activeNav === "recruitment" && (
         <div className="space-y-4">

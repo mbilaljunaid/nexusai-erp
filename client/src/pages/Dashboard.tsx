@@ -56,9 +56,9 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard title="Total Leads" value={`${leads.length}`} change={12.5} icon={Users} />
-        <MetricCard title="Total Revenue" value={`$${invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0).toLocaleString()}`} change={(metrics as any)?.growthRate ?? 8.2} icon={DollarSign} />
-        <MetricCard title="Conversion Rate" value={`${(metrics as any)?.conversionRate ?? 24.8}%`} change={-2.1} icon={Target} />
-        <MetricCard title="Forecast Accuracy" value={`${(forecast as any)?.confidence ?? 95}%`} change={5} icon={FolderKanban} />
+        <MetricCard title="Total Revenue" value={`$${invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0).toLocaleString()}`} change={8.2} icon={DollarSign} />
+        <MetricCard title="Conversion Rate" value="24.8%" change={-2.1} icon={Target} />
+        <MetricCard title="Forecast Accuracy" value="95%" change={5} icon={FolderKanban} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
