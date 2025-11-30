@@ -5685,45 +5685,6 @@ export async function registerRoutes(
   app.get("/api/retail-campaigns", (req, res) => { if (retCampStore.length === 0) retCampStore.push({ id: "cam1", campaignId: "CAMP-001", channel: "email", status: "active" }); res.json(retCampStore); });
   app.post("/api/retail-campaigns", (req, res) => { const cam = { id: `cam-${Date.now()}`, ...req.body }; retCampStore.push(cam); res.status(201).json(cam); });
 
-  // ========== INDUSTRY PACK 28: HOSPITALITY & TRAVEL ==========
-  const hospPropStore: any[] = []; const hospBookStore: any[] = []; const hospGuestStore: any[] = [];
-  const hospCrmStore: any[] = []; const hospBillStore: any[] = []; const hospSupStore: any[] = [];
-  const hospHrStore: any[] = []; const hospOptStore: any[] = []; const hospAnalStore: any[] = [];
-  const hospEvtStore: any[] = []; const hospItinStore: any[] = [];
-
-  app.get("/api/hospitality-properties", (req, res) => { if (hospPropStore.length === 0) hospPropStore.push({ id: "hp1", propertyId: "PROP-001", rooms: "100", status: "active" }); res.json(hospPropStore); });
-  app.post("/api/hospitality-properties", (req, res) => { const hp = { id: `hp-${Date.now()}`, ...req.body }; hospPropStore.push(hp); res.status(201).json(hp); });
-
-  app.get("/api/hospitality-bookings", (req, res) => { if (hospBookStore.length === 0) hospBookStore.push({ id: "hb1", bookingId: "BOOK-001", nights: "3", status: "confirmed" }); res.json(hospBookStore); });
-  app.post("/api/hospitality-bookings", (req, res) => { const hb = { id: `hb-${Date.now()}`, ...req.body }; hospBookStore.push(hb); res.status(201).json(hb); });
-
-  app.get("/api/hospitality-guests", (req, res) => { if (hospGuestStore.length === 0) hospGuestStore.push({ id: "hg1", guestId: "GUEST-001", tier: "vip", status: "active" }); res.json(hospGuestStore); });
-  app.post("/api/hospitality-guests", (req, res) => { const hg = { id: `hg-${Date.now()}`, ...req.body }; hospGuestStore.push(hg); res.status(201).json(hg); });
-
-  app.get("/api/hospitality-crm", (req, res) => { if (hospCrmStore.length === 0) hospCrmStore.push({ id: "hc1", memberId: "MEM-001", points: "500", status: "active" }); res.json(hospCrmStore); });
-  app.post("/api/hospitality-crm", (req, res) => { const hc = { id: `hc-${Date.now()}`, ...req.body }; hospCrmStore.push(hc); res.status(201).json(hc); });
-
-  app.get("/api/hospitality-billing", (req, res) => { if (hospBillStore.length === 0) hospBillStore.push({ id: "hbl1", invoiceId: "INV-001", amount: "500", status: "paid" }); res.json(hospBillStore); });
-  app.post("/api/hospitality-billing", (req, res) => { const hbl = { id: `hbl-${Date.now()}`, ...req.body }; hospBillStore.push(hbl); res.status(201).json(hbl); });
-
-  app.get("/api/hospitality-supply", (req, res) => { if (hospSupStore.length === 0) hospSupStore.push({ id: "hs1", supplierId: "SUPP-001", category: "F&B", status: "active" }); res.json(hospSupStore); });
-  app.post("/api/hospitality-supply", (req, res) => { const hs = { id: `hs-${Date.now()}`, ...req.body }; hospSupStore.push(hs); res.status(201).json(hs); });
-
-  app.get("/api/hospitality-hr", (req, res) => { if (hospHrStore.length === 0) hospHrStore.push({ id: "hhr1", employeeId: "EMP-001", role: "front-desk", status: "active" }); res.json(hospHrStore); });
-  app.post("/api/hospitality-hr", (req, res) => { const hhr = { id: `hhr-${Date.now()}`, ...req.body }; hospHrStore.push(hhr); res.status(201).json(hhr); });
-
-  app.get("/api/hospitality-optimization", (req, res) => { if (hospOptStore.length === 0) hospOptStore.push({ id: "hopt1", modelId: "MODEL-001", type: "pricing", status: "optimized" }); res.json(hospOptStore); });
-  app.post("/api/hospitality-optimization", (req, res) => { const hopt = { id: `hopt-${Date.now()}`, ...req.body }; hospOptStore.push(hopt); res.status(201).json(hopt); });
-
-  app.get("/api/hospitality-analytics", (req, res) => { if (hospAnalStore.length === 0) hospAnalStore.push({ id: "hana1", propertyId: "PROP-001", revenue: "50000", occupancy: "85" }); res.json(hospAnalStore); });
-  app.post("/api/hospitality-analytics", (req, res) => { const hana = { id: `hana-${Date.now()}`, ...req.body }; hospAnalStore.push(hana); res.status(201).json(hana); });
-
-  app.get("/api/hospitality-events", (req, res) => { if (hospEvtStore.length === 0) hospEvtStore.push({ id: "hev1", eventId: "EVENT-001", type: "conference", status: "active" }); res.json(hospEvtStore); });
-  app.post("/api/hospitality-events", (req, res) => { const hev = { id: `hev-${Date.now()}`, ...req.body }; hospEvtStore.push(hev); res.status(201).json(hev); });
-
-  app.get("/api/hospitality-itinerary", (req, res) => { if (hospItinStore.length === 0) hospItinStore.push({ id: "hit1", itineraryId: "ITIN-001", days: "7", status: "confirmed" }); res.json(hospItinStore); });
-  app.post("/api/hospitality-itinerary", (req, res) => { const hit = { id: `hit-${Date.now()}`, ...req.body }; hospItinStore.push(hit); res.status(201).json(hit); });
-
   // ========== INDUSTRY PACK 30: GOVERNMENT & PUBLIC SECTOR ==========
   const govCitStore: any[] = []; const govSvcStore: any[] = []; const govFinStore: any[] = [];
   const govHrStore: any[] = []; const govProcStore: any[] = []; const govProjStore: any[] = [];
@@ -5819,46 +5780,46 @@ export async function registerRoutes(
   app.get("/api/telecom-subscribers", (req, res) => { if (telSubStore.length === 0) { for (let i = 1; i <= 20; i++) { telSubStore.push({ id: `sub${i}`, subscriberId: `SUB-${String(i).padStart(5,'0')}`, name: `Subscriber ${i}`, phone: `+91-98${String(i).padStart(8,'0')}`, accountStatus: 'ACTIVE', planId: `PLAN-${String((i%5)+1).padStart(2,'0')}` }); } } res.json(telSubStore); });
   app.post("/api/telecom-subscribers", (req, res) => { const s = { id: `sub-${Date.now()}`, ...req.body }; telSubStore.push(s); res.status(201).json(s); });
 
-  // ========== INDUSTRY PACK 38: MEDIA & ENTERTAINMENT ==========
-  const medContentStore: any[] = [];
-  const medProdStore: any[] = [];
-  const medDistStore: any[] = [];
-  const medSubStore: any[] = [];
-  const medAdStore: any[] = [];
-  const medCRMStore: any[] = [];
-  const medEmpStore: any[] = [];
-  const medRecStore: any[] = [];
-  const medCompStore: any[] = [];
-  const medCampStore: any[] = [];
+  // ========== INDUSTRY PACK 39: HOSPITALITY & TRAVEL ==========
+  const hospPropStore: any[] = [];
+  const hospResStore: any[] = [];
+  const hospGuestStore: any[] = [];
+  const hospPkgStore: any[] = [];
+  const hospBillStore: any[] = [];
+  const hospCRMStore: any[] = [];
+  const hospEmpStore: any[] = [];
+  const hospPricStore: any[] = [];
+  const hospCompStore: any[] = [];
+  const hospLoyStore: any[] = [];
 
-  app.get("/api/media-content", (req, res) => { if (medContentStore.length === 0) { for (let i = 1; i <= 15; i++) { medContentStore.push({ id: `cont${i}`, contentId: `CONT-${String(i).padStart(4,'0')}`, title: `Content ${i}`, type: i % 3 === 0 ? 'Video' : i % 3 === 1 ? 'Audio' : 'Image', category: i % 2 === 0 ? 'Drama' : 'Comedy', duration: 45 + (i * 5), status: 'PUBLISHED' }); } } res.json(medContentStore); });
-  app.post("/api/media-content", (req, res) => { const c = { id: `cont-${Date.now()}`, ...req.body }; medContentStore.push(c); res.status(201).json(c); });
+  app.get("/api/hospitality-properties", (req, res) => { if (hospPropStore.length === 0) { for (let i = 1; i <= 12; i++) { hospPropStore.push({ id: `prop${i}`, propertyId: `PROP-${String(i).padStart(3,'0')}`, propertyName: `Hotel ${i}`, type: i % 2 === 0 ? '5-Star' : '4-Star', rooms: 100 + (i * 20), city: ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai'][i % 5], status: 'ACTIVE' }); } } res.json(hospPropStore); });
+  app.post("/api/hospitality-properties", (req, res) => { const p = { id: `prop-${Date.now()}`, ...req.body }; hospPropStore.push(p); res.status(201).json(p); });
 
-  app.get("/api/media-production", (req, res) => { if (medProdStore.length === 0) { for (let i = 1; i <= 10; i++) { medProdStore.push({ id: `prod${i}`, projectId: `PROJ-${String(i).padStart(3,'0')}`, name: `Project ${i}`, status: i % 2 === 0 ? 'IN_PROGRESS' : 'COMPLETED', crew: 8 + i, budget: 500000 + (i * 100000), progress: 50 + (i * 5) }); } } res.json(medProdStore); });
-  app.post("/api/media-production", (req, res) => { const p = { id: `prod-${Date.now()}`, ...req.body }; medProdStore.push(p); res.status(201).json(p); });
+  app.get("/api/hospitality-reservations", (req, res) => { if (hospResStore.length === 0) { for (let i = 1; i <= 12; i++) { hospResStore.push({ id: `res${i}`, reservationId: `RES-${String(i).padStart(5,'0')}`, propertyId: `PROP-${String((i%5)+1).padStart(3,'0')}`, guestId: `GUEST-${String(i).padStart(4,'0')}`, checkIn: new Date(Date.now() + i * 86400000).toISOString().split('T')[0], checkOut: new Date(Date.now() + (i+3) * 86400000).toISOString().split('T')[0], rooms: 1 + Math.floor(i / 4), status: i % 3 === 0 ? 'CONFIRMED' : 'PENDING' }); } } res.json(hospResStore); });
+  app.post("/api/hospitality-reservations", (req, res) => { const r = { id: `res-${Date.now()}`, ...req.body }; hospResStore.push(r); res.status(201).json(r); });
 
-  app.get("/api/media-distribution", (req, res) => { if (medDistStore.length === 0) { for (let i = 1; i <= 10; i++) { medDistStore.push({ id: `dist${i}`, contentId: `CONT-${String(i).padStart(4,'0')}`, platform: i % 3 === 0 ? 'Netflix' : i % 3 === 1 ? 'YouTube' : 'Prime', releaseDate: new Date(Date.now() - i * 86400000).toISOString().split('T')[0], views: 100000 + (i * 50000), status: 'ACTIVE' }); } } res.json(medDistStore); });
-  app.post("/api/media-distribution", (req, res) => { const d = { id: `dist-${Date.now()}`, ...req.body }; medDistStore.push(d); res.status(201).json(d); });
+  app.get("/api/hospitality-guests", (req, res) => { if (hospGuestStore.length === 0) { for (let i = 1; i <= 10; i++) { hospGuestStore.push({ id: `guest${i}`, guestId: `GUEST-${String(i).padStart(4,'0')}`, guestName: `Guest ${i}`, email: `guest${i}@travel.com`, phone: `+91-${String(i).padStart(10,'0')}`, tier: i % 2 === 0 ? 'Gold' : 'Silver', status: 'ACTIVE' }); } } res.json(hospGuestStore); });
+  app.post("/api/hospitality-guests", (req, res) => { const g = { id: `guest-${Date.now()}`, ...req.body }; hospGuestStore.push(g); res.status(201).json(g); });
 
-  app.get("/api/media-subscriptions", (req, res) => { if (medSubStore.length === 0) { for (let i = 1; i <= 12; i++) { medSubStore.push({ id: `sub${i}`, subscriberId: `SUB-${String(i).padStart(4,'0')}`, plan: i % 2 === 0 ? 'Premium' : 'Standard', amount: 299 + (i * 50), status: 'ACTIVE', renewalDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0] }); } } res.json(medSubStore); });
-  app.post("/api/media-subscriptions", (req, res) => { const s = { id: `sub-${Date.now()}`, ...req.body }; medSubStore.push(s); res.status(201).json(s); });
+  app.get("/api/hospitality-packages", (req, res) => { if (hospPkgStore.length === 0) { for (let i = 1; i <= 8; i++) { hospPkgStore.push({ id: `pkg${i}`, packageId: `PKG-${String(i).padStart(3,'0')}`, packageName: `Package ${i}`, destination: ['Goa', 'Kerala', 'Rajasthan', 'Northeast'][i % 4], duration: 3 + i, price: 50000 + (i * 10000), status: 'ACTIVE' }); } } res.json(hospPkgStore); });
+  app.post("/api/hospitality-packages", (req, res) => { const pk = { id: `pkg-${Date.now()}`, ...req.body }; hospPkgStore.push(pk); res.status(201).json(pk); });
 
-  app.get("/api/media-advertising", (req, res) => { if (medAdStore.length === 0) { for (let i = 1; i <= 8; i++) { medAdStore.push({ id: `ad${i}`, campaignId: `CAMP-${String(i).padStart(3,'0')}`, adType: i % 2 === 0 ? 'Banner' : 'Video', impressions: 1000 + (i * 500), clicks: 100 + (i * 50), revenue: 5000 + (i * 1000) }); } } res.json(medAdStore); });
-  app.post("/api/media-advertising", (req, res) => { const a = { id: `ad-${Date.now()}`, ...req.body }; medAdStore.push(a); res.status(201).json(a); });
+  app.get("/api/hospitality-billing", (req, res) => { if (hospBillStore.length === 0) { for (let i = 1; i <= 10; i++) { hospBillStore.push({ id: `bill${i}`, invoiceId: `INV-${String(i).padStart(4,'0')}`, reservationId: `RES-${String(i).padStart(5,'0')}`, amount: 10000 + (i * 5000), paymentStatus: i % 2 === 0 ? 'PAID' : 'PENDING', dueDate: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0] }); } } res.json(hospBillStore); });
+  app.post("/api/hospitality-billing", (req, res) => { const b = { id: `bill-${Date.now()}`, ...req.body }; hospBillStore.push(b); res.status(201).json(b); });
 
-  app.get("/api/media-crm", (req, res) => { if (medCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { medCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, subscriberId: `SUB-${String(i).padStart(4,'0')}`, type: i % 2 === 0 ? 'Support Ticket' : 'Feedback', subject: 'Content Request', status: 'RESOLVED' }); } } res.json(medCRMStore); });
-  app.post("/api/media-crm", (req, res) => { const cr = { id: `crm-${Date.now()}`, ...req.body }; medCRMStore.push(cr); res.status(201).json(cr); });
+  app.get("/api/hospitality-crm", (req, res) => { if (hospCRMStore.length === 0) { for (let i = 1; i <= 8; i++) { hospCRMStore.push({ id: `crm${i}`, interactionId: `INT-${String(i).padStart(3,'0')}`, guestId: `GUEST-${String(i).padStart(4,'0')}`, type: i % 2 === 0 ? 'Feedback' : 'Request', subject: 'Guest Support', status: 'RESOLVED' }); } } res.json(hospCRMStore); });
+  app.post("/api/hospitality-crm", (req, res) => { const c = { id: `crm-${Date.now()}`, ...req.body }; hospCRMStore.push(c); res.status(201).json(c); });
 
-  app.get("/api/media-employees", (req, res) => { if (medEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { medEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Director' : i % 3 === 1 ? 'Producer' : 'Editor', department: i % 2 === 0 ? 'Production' : 'Operations', status: 'ACTIVE' }); } } res.json(medEmpStore); });
-  app.post("/api/media-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; medEmpStore.push(e); res.status(201).json(e); });
+  app.get("/api/hospitality-employees", (req, res) => { if (hospEmpStore.length === 0) { for (let i = 1; i <= 10; i++) { hospEmpStore.push({ id: `emp${i}`, employeeId: `EMP-${String(i).padStart(3,'0')}`, name: `Employee ${i}`, role: i % 3 === 0 ? 'Manager' : i % 3 === 1 ? 'Staff' : 'Housekeeping', department: i % 2 === 0 ? 'Operations' : 'Front Desk', status: 'ACTIVE' }); } } res.json(hospEmpStore); });
+  app.post("/api/hospitality-employees", (req, res) => { const e = { id: `emp-${Date.now()}`, ...req.body }; hospEmpStore.push(e); res.status(201).json(e); });
 
-  app.get("/api/media-recommendations", (req, res) => { res.json([{ id: 'rec1', contentId: 'CONT-0001', title: 'Content 1', score: 92, reason: 'Based on your watchlist' }, { id: 'rec2', contentId: 'CONT-0002', title: 'Content 2', score: 88, reason: 'Trending now' }]); });
-  app.post("/api/media-recommendations", (req, res) => { const r = { id: `rec-${Date.now()}`, ...req.body }; res.status(201).json(r); });
+  app.get("/api/hospitality-pricing", (req, res) => { res.json([{ id: 'price1', propertyId: 'PROP-001', roomType: 'Suite', rate: 5000, dynamicRate: 5500, occupancy: 85 }, { id: 'price2', propertyId: 'PROP-002', roomType: 'Standard', rate: 2500, dynamicRate: 2750, occupancy: 72 }]); });
+  app.post("/api/hospitality-pricing", (req, res) => { const pr = { id: `price-${Date.now()}`, ...req.body }; res.status(201).json(pr); });
 
-  app.get("/api/media-compliance", (req, res) => { if (medCompStore.length === 0) { medCompStore.push({ id: 'comp1', contentId: 'CONT-0001', regulation: 'Copyright', status: 'COMPLIANT' }, { id: 'comp2', contentId: 'CONT-0002', regulation: 'GDPR', status: 'COMPLIANT' }); } res.json(medCompStore); });
-  app.post("/api/media-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; medCompStore.push(co); res.status(201).json(co); });
+  app.get("/api/hospitality-compliance", (req, res) => { if (hospCompStore.length === 0) { hospCompStore.push({ id: 'comp1', propertyId: 'PROP-001', regulation: 'Hotel License', status: 'COMPLIANT' }, { id: 'comp2', propertyId: 'PROP-002', regulation: 'Safety', status: 'COMPLIANT' }); } res.json(hospCompStore); });
+  app.post("/api/hospitality-compliance", (req, res) => { const co = { id: `comp-${Date.now()}`, ...req.body }; hospCompStore.push(co); res.status(201).json(co); });
 
-  app.get("/api/media-dashboards", (req, res) => { res.json({ totalContent: 2500, totalSubscribers: 125000, totalRevenue: 15250000, engagementRate: 68, adRevenue: 3200000 }); });
+  app.get("/api/hospitality-dashboards", (req, res) => { res.json({ totalProperties: 50, totalRooms: 2500, occupancyRate: 78, avgRevenue: 250000, guestSatisfaction: 92 }); });
 
   return httpServer;
 }

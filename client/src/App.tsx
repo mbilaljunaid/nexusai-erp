@@ -522,9 +522,7 @@ const SupplyChainEnergy = lazy(() => import("@/pages/SupplyChainEnergy"));
 const EnergyFieldService = lazy(() => import("@/pages/FieldService"));
 const EnergyDashboard = lazy(() => import("@/pages/AssetManagement"));
 const ProductCatalogRetail = lazy(() => import("@/pages/ProductCatalog"));
-const InventoryWarehouseRetail = lazy(() => import("@/pages/InventoryWarehouse"));
 const OrderFulfillmentRetail = lazy(() => import("@/pages/OrderFulfillment"));
-const CustomerProfilesRetail = lazy(() => import("@/pages/CustomerProfiles"));
 const LoyaltyProgramsRetail = lazy(() => import("@/pages/LoyaltyPrograms"));
 const PricingPromotionsRetail = lazy(() => import("@/pages/PricingPromotionsRetail"));
 const BillingPaymentsRetail = lazy(() => import("@/pages/BillingPaymentsRetail"));
@@ -1306,9 +1304,7 @@ function Router() {
       <Route path="/energy-supply" component={SupplyChainEnergy} />
       <Route path="/energy-fieldservice" component={EnergyFieldService} />
       <Route path="/retail-products" component={ProductCatalogRetail} />
-      <Route path="/retail-inventory" component={InventoryWarehouseRetail} />
       <Route path="/retail-orders" component={OrderFulfillmentRetail} />
-      <Route path="/retail-customers" component={CustomerProfilesRetail} />
       <Route path="/retail-loyalty" component={LoyaltyProgramsRetail} />
       <Route path="/retail-pricing" component={PricingPromotionsRetail} />
       <Route path="/retail-billing" component={BillingPaymentsRetail} />
@@ -1554,7 +1550,6 @@ const RetailHRWorkforce = lazy(() => import("@/pages/RetailHRWorkforce"));
 const RetailAIRecommendations = lazy(() => import("@/pages/RetailAIRecommendations"));
 const RetailBIDashboards = lazy(() => import("@/pages/RetailBIDashboards"));
 const RetailCRMMarketing = lazy(() => import("@/pages/RetailCRMMarketing"));
-const RetailInventoryWarehouse = lazy(() => import("@/pages/RetailInventoryWarehouse"));
 
 // Healthcare & Pharma Pack (Industry Pack 34)
 const HealthcarePatientManagement = lazy(() => import("@/pages/HealthcarePatientManagement"));
@@ -1624,3 +1619,17 @@ const MediaBIDashboards = lazy(() => import("@/pages/MediaBIDashboards"));
 const MediaCompliance = lazy(() => import("@/pages/MediaCompliance"));
 const MediaMobileApp = lazy(() => import("@/pages/MediaMobileApp"));
 const MediaReporting = lazy(() => import("@/pages/MediaReporting"));
+
+// Hospitality & Travel Pack (Industry Pack 39)
+const HospitalityPropertyManagement = lazy(() => import("@/pages/HospitalityPropertyManagement"));
+const HospitalityReservations = lazy(() => import("@/pages/HospitalityReservations"));
+const HospitalityGuestServices = lazy(() => import("@/pages/HospitalityGuestServices"));
+const HospitalityTravelPackages = lazy(() => import("@/pages/HospitalityTravelPackages"));
+const HospitalityBillingInvoicing = lazy(() => import("@/pages/HospitalityBillingInvoicing"));
+const HospitalityCRMEngagement = lazy(() => import("@/pages/HospitalityCRMEngagement"));
+const HospitalityHRWorkforce = lazy(() => import("@/pages/HospitalityHRWorkforce"));
+const HospitalityAIPricing = lazy(() => import("@/pages/HospitalityAIPricing"));
+const HospitalityBIDashboards = lazy(() => import("@/pages/HospitalityBIDashboards"));
+const HospitalityCompliance = lazy(() => import("@/pages/HospitalityCompliance"));
+const HospitalityMobileApp = lazy(() => import("@/pages/HospitalityMobileApp"));
+const HospitalityReporting = lazy(() => import("@/pages/HospitalityReporting"));

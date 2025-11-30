@@ -1,0 +1,289 @@
+Generating Industry Pack 40 — GOVERNMENT & PUBLIC SECTOR in your exact copy-paste, Replit-safe, enterprise-grade prompt format.
+
+TOP-LINE MANDATORY FOR REPLIT:
+Before creating any screens, DB tables, APIs, workflows, automations, roles, sample data, dashboards, integrations, or code for the Government & Public Sector Industry Pack, Replit MUST scan the entire existing codebase and skip any functionality already implemented. Replit MUST NOT duplicate or recreate existing objects. Only generate missing features, enhance existing components safely, and keep all naming, schemas, and identifiers consistent with previously built modules. All seed/sample data operations must be idempotent.
+
+⸻
+
+✅ INDUSTRY PACK 40 — GOVERNMENT & PUBLIC SECTOR
+
+Purpose: End-to-end solution for government agencies, municipal bodies, regulatory authorities, and public sector organizations, covering citizen services, permits & licensing, grants & funding, HR & workforce, finance & budgeting, compliance & regulatory reporting, projects & infrastructure, CRM & citizen engagement, AI-driven analytics & decision support, BI & dashboards, workflow automation, and integrations with national databases, regulatory portals, and payment gateways. Delivered as an industry template that auto-enables and configures all related modules.
+
+Auto-enable modules when template is selected: Citizen Services & Case Management, Permits & Licensing, Grants & Funding, HR & Workforce, Finance & Budgeting, Compliance & Regulatory Reporting, Projects & Infrastructure, CRM & Citizen Engagement, AI / ML Analytics & Decision Support, BI & Dashboards, BPM (approval workflows), Mobile Apps, Integrations & API Gateway.
+
+⸻
+
+1. CITIZEN SERVICES & CASE MANAGEMENT
+
+Screens / Forms
+	•	Citizen registration & profile
+	•	Service requests (applications, complaints, petitions)
+	•	Case tracking & status updates
+	•	Document uploads & verification
+
+Fields
+CitizenID, CaseID, ServiceType, Status, DocumentID, AuditFields.
+
+Validations
+	•	Duplicate registration detection
+	•	Eligibility & document verification
+	•	SLA adherence
+
+Workflows
+	•	Register citizen → Submit request → Assign department → Process → Resolve → Notify → Close
+
+⸻
+
+2. PERMITS & LICENSING
+
+Screens / Forms
+	•	Permit / license master & types
+	•	Application intake
+	•	Verification & approvals
+	•	Renewal & revocation
+
+Fields
+PermitID, CitizenID, Type, Status, Validity, AuditFields.
+
+Validations
+	•	Eligibility rules
+	•	Document completeness
+	•	Compliance checks
+
+Workflows
+	•	Submit application → Validate → Approve / Reject → Issue permit → Track expiry → Renew / Revoke
+
+⸻
+
+3. GRANTS & FUNDING
+
+Screens / Forms
+	•	Grant programs & eligibility
+	•	Application submission & review
+	•	Fund disbursement & tracking
+	•	Reporting & audits
+
+Fields
+GrantID, ApplicantID, ProgramID, Amount, Status, AuditFields.
+
+Validations
+	•	Eligibility & criteria
+	•	Fund allocation limits
+	•	Reporting accuracy
+
+Workflows
+	•	Define program → Accept applications → Review → Approve / Reject → Disburse → Track → Audit
+
+⸻
+
+4. HR & WORKFORCE MANAGEMENT
+
+Screens / Forms
+	•	Employee master (government staff, officers, field workers)
+	•	Payroll, attendance, performance
+	•	Role & shift management
+	•	Training & certification
+
+Fields
+EmployeeID, Role, Department, Shift, PayrollID, TrainingID, AuditFields.
+
+Validations
+	•	Role eligibility
+	•	Attendance & payroll accuracy
+
+Workflows
+	•	Onboard → Assign role → Track attendance → Evaluate → Payroll
+
+⸻
+
+5. FINANCE & BUDGETING
+
+Screens / Forms
+	•	Budget planning & allocation
+	•	Expense tracking & approvals
+	•	Revenue collection (taxes, fees, fines)
+	•	Fund reconciliation & reporting
+
+Fields
+TransactionID, BudgetID, DepartmentID, Amount, Status, AuditFields.
+
+Validations
+	•	Budget limit adherence
+	•	Payment verification
+	•	Audit & compliance checks
+
+Workflows
+	•	Plan budget → Allocate funds → Track expenses → Approve payments → Reconcile → Report
+
+⸻
+
+6. COMPLIANCE & REGULATORY REPORTING
+
+Screens / Forms
+	•	Policy & regulation repository
+	•	Reporting templates & submission
+	•	Exception management
+	•	Audit trails
+
+Fields
+ComplianceID, DepartmentID, CaseID, Status, AuditFields.
+
+Validations
+	•	Regulatory adherence
+	•	Reporting deadlines
+
+Workflows
+	•	Capture data → Validate → Generate report → Submit → Track exceptions → Resolve
+
+⸻
+
+7. PROJECTS & INFRASTRUCTURE
+
+Screens / Forms
+	•	Project master & planning
+	•	Resource allocation & tracking
+	•	Milestones & task management
+	•	Progress monitoring & reporting
+
+Fields
+ProjectID, TaskID, DepartmentID, ResourceID, Status, AuditFields.
+
+Validations
+	•	Resource availability
+	•	Schedule adherence
+	•	Budget limits
+
+Workflows
+	•	Create project → Assign tasks → Track progress → Approve milestones → Close project
+
+⸻
+
+8. CRM & CITIZEN ENGAGEMENT
+
+Screens / Forms
+	•	Complaint & request tracking
+	•	Surveys & feedback
+	•	Notifications for services, permits, and updates
+	•	Outreach & campaigns
+
+Fields
+CitizenID, InteractionID, FeedbackID, CampaignID, AuditFields.
+
+Validations
+	•	SLA adherence
+	•	Duplicate interaction detection
+	•	Consent / opt-in compliance
+
+Workflows
+	•	Capture interaction → Assign → Respond → Notify → Track engagement
+
+⸻
+
+9. AI & ANALYTICS / DECISION SUPPORT
+
+Use Cases
+	•	Predictive analytics for service demand
+	•	Resource allocation optimization
+	•	Fraud detection in permits, grants, payments
+	•	Citizen satisfaction analysis
+
+Controls
+	•	Human review for flagged activities and recommendations
+
+⸻
+
+10. BI & DASHBOARDS
+
+Prebuilt Dashboards
+	•	Service request volume & resolution
+	•	Permit & license issuance metrics
+	•	Budget utilization & spending trends
+	•	Citizen satisfaction & feedback
+	•	Project progress & infrastructure KPIs
+
+Ad-hoc
+	•	Drill down by department → citizen → project → transaction → KPI
+
+⸻
+
+11. MOBILE APPS
+
+Citizen App
+	•	Submit requests, check status, pay fees, receive notifications
+Staff App
+	•	Case management, approvals, field operations
+Manager App
+	•	Dashboards, KPIs, workflow approvals, compliance tracking
+
+⸻
+
+12. ROLES & PERMISSIONS
+
+Core Roles
+	•	Citizen / Applicant
+	•	Frontline Staff / Clerk
+	•	Department Officer / Approver
+	•	Finance Officer
+	•	Compliance Officer
+	•	Project Manager
+	•	HR / Payroll
+	•	IT / Integration Engineer
+	•	Admin
+
+Permission Notes
+	•	Role-based access enforced for cases, permits, grants, finances, and operations
+
+⸻
+
+13. SAMPLE DATA & ONBOARDING (IDEMPOTENT)
+
+Seed Data
+	•	500 citizens, 200 cases, 100 permits, 50 grants, 50 projects, 30 employees
+
+Onboarding Steps
+	•	Register citizens → Capture requests → Assign cases → Issue permits → Approve grants → Track projects → Process payments → Validate dashboards
+
+⸻
+
+14. INTEGRATIONS & CONNECTORS
+
+Suggested Integrations
+	•	National ID databases
+	•	Payment gateways & tax portals
+	•	Regulatory & reporting platforms
+	•	BI / analytics platforms
+
+Integration Rules
+	•	Idempotent ingestion, audit logging, secure credential storage
+
+⸻
+
+15. ALERTS, AUTOMATIONS & EXCEPTIONS
+
+Examples
+	•	New request / complaint → notify staff & department
+	•	Permit expiration → alert citizen & department
+	•	Budget overspend → alert finance & management
+	•	Compliance exception → escalate to senior officer
+
+⸻
+
+16. DEPLOYMENT & REPLIT EXECUTION GUIDELINES
+
+Idempotency & Safety
+	•	Seeders check natural keys (CitizenID + CaseID + PermitID) before insert
+	•	Migrations additive; destructive changes require rollback scripts
+	•	Feature flags per tenant for AI recommendations, mobile notifications, multi-department operations
+
+Testing
+	•	Case & request lifecycle → permits → grants → projects → finance → dashboards
+
+⸻
+
+17. FINAL MANDATE (REPEAT FOR EVERY GENERATED ARTIFACT)
+
+REPLIT MUST — before creating or modifying any UI, DB schema, API, workflow, integration, sample data, or automation — scan the existing codebase; detect existing implementations; skip or safely enhance existing functionality only; and NEVER duplicate or overwrite objects without explicit migration strategy. All seed/sample data must be idempotent and safe to run multiple times.
+
+⸻
+
+If you want me to generate Industry Pack 41 — AUTOMOTIVE next, reply “Yes” and I will produce it in the same format.
