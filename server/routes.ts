@@ -2772,6 +2772,112 @@ export async function registerRoutes(
     res.json(permissionsStore);
   });
 
+  // ========== MODULE 3: AUTHENTICATION, MFA & SECURITY ENDPOINTS ==========
+  const authSettingsStore: any[] = [];
+  const mfaPoliciesStore: any[] = [];
+  const passwordPoliciesStore: any[] = [];
+  const deviceEnrollmentStore: any[] = [];
+  const securityEventStore: any[] = [];
+
+  app.get("/api/authentication/settings", (req, res) => {
+    if (authSettingsStore.length === 0) {
+      authSettingsStore.push(
+        { id: "as1", tenantId: "tenant1", authMethod: "password", ssoProvider: null, oauthClientId: null, redirectUrls: [], tokenExpiry: 3600, enabled: true },
+        { id: "as2", tenantId: "tenant1", authMethod: "sso", ssoProvider: "okta", oauthClientId: "client-123", redirectUrls: ["https://app.example.com/auth/callback"], tokenExpiry: 7200, enabled: true }
+      );
+    }
+    res.json(authSettingsStore);
+  });
+
+  app.post("/api/authentication/settings", (req, res) => {
+    const setting = { id: `as-${Date.now()}`, ...req.body };
+    authSettingsStore.push(setting);
+    res.status(201).json(setting);
+  });
+
+  app.get("/api/mfa/policies", (req, res) => {
+    if (mfaPoliciesStore.length === 0) {
+      mfaPoliciesStore.push(
+        { id: "mp1", tenantId: "tenant1", mfaType: "email", enforced: true, scope: "all_users", backupCodesEnabled: true, maxAttempts: 5, expiryMinutes: 10 },
+        { id: "mp2", tenantId: "tenant1", mfaType: "authenticator", enforced: false, scope: "admin_only", backupCodesEnabled: true, maxAttempts: 5, expiryMinutes: 10 }
+      );
+    }
+    res.json(mfaPoliciesStore);
+  });
+
+  app.post("/api/mfa/policies", (req, res) => {
+    const policy = { id: `mp-${Date.now()}`, ...req.body };
+    mfaPoliciesStore.push(policy);
+    res.status(201).json(policy);
+  });
+
+  app.get("/api/password/policies", (req, res) => {
+    if (passwordPoliciesStore.length === 0) {
+      passwordPoliciesStore.push({
+        id: "pp1",
+        tenantId: "tenant1",
+        minLength: 8,
+        maxLength: 128,
+        requireUppercase: true,
+        requireLowercase: true,
+        requireNumbers: true,
+        requireSpecialChars: true,
+        expiryDays: 90,
+        reuseRestriction: 5
+      });
+    }
+    res.json(passwordPoliciesStore);
+  });
+
+  app.post("/api/password/policies", (req, res) => {
+    const policy = { id: `pp-${Date.now()}`, ...req.body };
+    passwordPoliciesStore.push(policy);
+    res.status(201).json(policy);
+  });
+
+  app.get("/api/device/enrollment", (req, res) => {
+    if (deviceEnrollmentStore.length === 0) {
+      deviceEnrollmentStore.push(
+        { id: "de1", userId: "u1", deviceId: "dev-001", deviceType: "Desktop", deviceOs: "macOS 14", deviceBrowser: "Chrome 120", status: "approved", ipAddress: "192.168.1.100", enrolledAt: new Date().toISOString(), lastUsed: new Date().toISOString() },
+        { id: "de2", userId: "u1", deviceId: "dev-002", deviceType: "Mobile", deviceOs: "iOS 17", deviceBrowser: "Safari", status: "approved", ipAddress: "192.168.1.101", enrolledAt: new Date().toISOString(), lastUsed: new Date(Date.now() - 3600000).toISOString() }
+      );
+    }
+    res.json(deviceEnrollmentStore);
+  });
+
+  app.post("/api/device/enrollment", (req, res) => {
+    const device = { id: `de-${Date.now()}`, ...req.body, status: "pending", enrolledAt: new Date().toISOString() };
+    deviceEnrollmentStore.push(device);
+    res.status(201).json(device);
+  });
+
+  app.patch("/api/device/enrollment/:id/approve", (req, res) => {
+    const device = deviceEnrollmentStore.find(d => d.id === req.params.id);
+    if (device) {
+      device.status = "approved";
+      res.json(device);
+    } else {
+      res.status(404).json({ error: "Device not found" });
+    }
+  });
+
+  app.get("/api/security/events", (req, res) => {
+    if (securityEventStore.length === 0) {
+      securityEventStore.push(
+        { id: "se1", eventId: "evt-001", userId: "u1", eventType: "login", module: "core", device: "Chrome/macOS", ipAddress: "192.168.1.100", status: "success", actionTaken: "Login successful", timestamp: new Date().toISOString() },
+        { id: "se2", eventId: "evt-002", userId: "u2", eventType: "mfa_failed", module: "core", device: "Safari/iPhone", ipAddress: "192.168.1.101", status: "failed", actionTaken: "MFA attempt failed - 3 attempts remaining", timestamp: new Date(Date.now() - 3600000).toISOString() },
+        { id: "se3", eventId: "evt-003", userId: "u3", eventType: "password_change", module: "security", device: "Chrome/Windows", ipAddress: "192.168.1.102", status: "success", actionTaken: "Password changed successfully", timestamp: new Date(Date.now() - 7200000).toISOString() }
+      );
+    }
+    res.json(securityEventStore);
+  });
+
+  app.post("/api/security/events", (req, res) => {
+    const event = { id: `se-${Date.now()}`, eventId: `evt-${Date.now()}`, ...req.body, timestamp: new Date().toISOString() };
+    securityEventStore.push(event);
+    res.status(201).json(event);
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });

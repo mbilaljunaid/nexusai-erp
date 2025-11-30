@@ -248,6 +248,11 @@ const PermissionMatrix = lazy(() => import("@/pages/PermissionMatrix"));
 const RoleHierarchy = lazy(() => import("@/pages/RoleHierarchy"));
 const SoDRules = lazy(() => import("@/pages/SoDRules"));
 const RoleAssignment = lazy(() => import("@/pages/RoleAssignment"));
+const MFAEnrollment = lazy(() => import("@/pages/MFAEnrollment"));
+const PasswordPolicies = lazy(() => import("@/pages/PasswordPolicies"));
+const DeviceManagement = lazy(() => import("@/pages/DeviceManagement"));
+const SecurityEventLog = lazy(() => import("@/pages/SecurityEventLog"));
+const AuthenticationMethods = lazy(() => import("@/pages/AuthenticationMethods"));
 const CustomFields = lazy(() => import("@/pages/CustomFields"));
 const FieldValidation = lazy(() => import("@/pages/FieldValidation"));
 const DataImport = lazy(() => import("@/pages/DataImport"));
@@ -287,7 +292,6 @@ const ArchiveManagement = lazy(() => import("@/pages/ArchiveManagement"));
 const MetricsAndMonitoring = lazy(() => import("@/pages/MetricsAndMonitoring"));
 const ResourceAllocation = lazy(() => import("@/pages/ResourceAllocation"));
 const APIRateLimitPolicy = lazy(() => import("@/pages/APIRateLimitPolicy"));
-const AuthenticationMethods = lazy(() => import("@/pages/AuthenticationMethods"));
 const AlertsAndNotifications = lazy(() => import("@/pages/AlertsAndNotifications"));
 const HealthCheckDashboard = lazy(() => import("@/pages/HealthCheckDashboard"));
 const BatchOperations = lazy(() => import("@/pages/BatchOperations"));
@@ -676,6 +680,11 @@ function Router() {
       <Route path="/role-hierarchy" component={RoleHierarchy} />
       <Route path="/sod-rules" component={SoDRules} />
       <Route path="/role-assignment" component={RoleAssignment} />
+      <Route path="/mfa-enrollment" component={MFAEnrollment} />
+      <Route path="/password-policies" component={PasswordPolicies} />
+      <Route path="/device-management" component={DeviceManagement} />
+      <Route path="/security-event-log" component={SecurityEventLog} />
+      <Route path="/authentication-methods" component={AuthenticationMethods} />
       <Route path="/custom-fields" component={CustomFields} />
       <Route path="/field-validation" component={FieldValidation} />
       <Route path="/data-import" component={DataImport} />
