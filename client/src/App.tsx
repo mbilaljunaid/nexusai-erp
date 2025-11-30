@@ -478,6 +478,9 @@ function Router() {
       <Route path="/ai" component={AIChat} />
       <Route path="/ai/chat" component={AIAssistantChatDetail} />
       <Route path="/ai/knowledge" component={AIAssistantKnowledgeDetail} />
+      <Route path="/iot" component={IoT} />
+      <Route path="/mobile-apps" component={MobileApps} />
+      <Route path="/advanced-analytics" component={AdvancedAnalytics} />
       <Route path="/finance" component={Finance} />
       <Route path="/finance/invoices" component={InvoicesDetail} />
       <Route path="/finance/expenses" component={ExpensesDetail} />

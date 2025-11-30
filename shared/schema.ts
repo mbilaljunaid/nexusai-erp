@@ -1768,20 +1768,6 @@ export const iotSensors = pgTable("iot_sensors", {
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const fieldServiceJobs = pgTable("field_service_jobs", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  jobNumber: varchar("job_number").notNull(),
-  deviceId: varchar("device_id"),
-  technician: varchar("technician"),
-  status: varchar("status").default("scheduled"),
-  priority: varchar("priority"),
-  location: varchar("location"),
-  scheduledDate: timestamp("scheduled_date"),
-  completedDate: timestamp("completed_date"),
-  notes: text("notes"),
-  createdAt: timestamp("created_at").default(sql`now()`),
-});
-
 // ========== PHASE 4: MOBILE APPS ==========
 export const mobileApps = pgTable("mobile_apps", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
