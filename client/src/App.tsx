@@ -313,6 +313,12 @@ const ProductionSchedulingGantt = lazy(() => import("@/pages/ProductionSchedulin
 const ToolingManagement = lazy(() => import("@/pages/ToolingManagement"));
 const WIPTrackingDashboard = lazy(() => import("@/pages/WIPTrackingDashboard"));
 const SupplierQualityScorecard = lazy(() => import("@/pages/SupplierQualityScorecard"));
+const FormulationRecipeManagement = lazy(() => import("@/pages/FormulationRecipeManagement"));
+const BatchOrdersManagement = lazy(() => import("@/pages/BatchOrdersManagement"));
+const LIMSLabIntegration = lazy(() => import("@/pages/LIMSLabIntegration"));
+const BulkInventoryManagement = lazy(() => import("@/pages/BulkInventoryManagement"));
+const YieldVarianceTracking = lazy(() => import("@/pages/YieldVarianceTracking"));
+const BatchTraceabilityGeology = lazy(() => import("@/pages/BatchTraceabilityGeology"));
 const StockIssue = lazy(() => import("@/pages/StockIssue"));
 const StockTransfer = lazy(() => import("@/pages/StockTransfer"));
 const ShipmentPlanning = lazy(() => import("@/pages/ShipmentPlanning"));
@@ -837,6 +843,12 @@ function Router() {
       <Route path="/tooling-management" component={ToolingManagement} />
       <Route path="/wip-tracking" component={WIPTrackingDashboard} />
       <Route path="/supplier-quality-scorecard" component={SupplierQualityScorecard} />
+      <Route path="/formulation-recipes" component={FormulationRecipeManagement} />
+      <Route path="/batch-orders" component={BatchOrdersManagement} />
+      <Route path="/lims-lab" component={LIMSLabIntegration} />
+      <Route path="/bulk-inventory" component={BulkInventoryManagement} />
+      <Route path="/yield-variance" component={YieldVarianceTracking} />
+      <Route path="/batch-genealogy" component={BatchTraceabilityGeology} />
       <Route path="/stock-issue" component={StockIssue} />
       <Route path="/stock-transfer" component={StockTransfer} />
       <Route path="/shipment-planning" component={ShipmentPlanning} />

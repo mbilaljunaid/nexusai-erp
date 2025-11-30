@@ -43,7 +43,7 @@ export default function WIPTrackingDashboard() {
         </Card>
         <Card className="p-3">
           <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Aged WIP (>7 days)</p>
+            <p className="text-xs text-muted-foreground">Aged WIP (&gt;7 days)</p>
             <p className="text-2xl font-bold text-red-600">{aged}</p>
           </CardContent>
         </Card>
