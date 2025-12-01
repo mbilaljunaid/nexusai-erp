@@ -35,21 +35,21 @@ export default function LandingPage() {
   ];
 
   const modules = [
-    { title: "ERP Core", icon: Package, href: "/erp" },
-    { title: "CRM", icon: Users, href: "/crm" },
-    { title: "HR & Payroll", icon: Briefcase, href: "/hr" },
-    { title: "Projects", icon: BarChart3, href: "/projects" },
-    { title: "EPM", icon: TrendingUp, href: "/dashboard" },
-    { title: "Finance", icon: DollarSign, href: "/erp" },
-    { title: "Inventory", icon: Factory, href: "/erp" },
-    { title: "Compliance", icon: CheckCircle, href: "/dashboard" },
-    { title: "BPM", icon: Settings, href: "/dashboard" },
-    { title: "Website", icon: Globe, href: "/dashboard" },
-    { title: "Email", icon: Mail, href: "/dashboard" },
-    { title: "BI & Analytics", icon: BarChart3, href: "/dashboard" },
-    { title: "AI Copilot", icon: Bot, href: "/dashboard" },
-    { title: "Consolidation", icon: Layers, href: "/dashboard" },
-    { title: "Financial Close", icon: Sparkles, href: "/dashboard" },
+    { title: "ERP Core", icon: Package, href: "/module/erp-core" },
+    { title: "CRM", icon: Users, href: "/module/crm" },
+    { title: "HR & Payroll", icon: Briefcase, href: "/module/hr" },
+    { title: "Projects", icon: BarChart3, href: "/module/projects" },
+    { title: "EPM", icon: TrendingUp, href: "/module/epm" },
+    { title: "Finance", icon: DollarSign, href: "/module/finance" },
+    { title: "Inventory", icon: Factory, href: "/module/inventory" },
+    { title: "Compliance", icon: CheckCircle, href: "/module/compliance" },
+    { title: "BPM", icon: Settings, href: "/module/bpm" },
+    { title: "Website", icon: Globe, href: "/module/website" },
+    { title: "Email", icon: Mail, href: "/module/email" },
+    { title: "BI & Analytics", icon: BarChart3, href: "/module/analytics" },
+    { title: "AI Copilot", icon: Bot, href: "/module/ai-copilot" },
+    { title: "Consolidation", icon: Layers, href: "/module/consolidation" },
+    { title: "Financial Close", icon: Sparkles, href: "/module/financial-close" },
   ];
 
   return (

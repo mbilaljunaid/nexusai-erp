@@ -431,6 +431,7 @@ function Router() {
       <Route path="/hr" component={HR} />
       <Route path="/projects" component={Projects} />
       <Route path="/industry/:slug" component={IndustryDetail} />
+      <Route path="/module/:slug" component={ModuleDetail} />
       <Route component={NotFound} />
     </Switch>
   );
