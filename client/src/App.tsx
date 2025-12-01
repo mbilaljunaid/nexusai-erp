@@ -426,14 +426,10 @@ function Router() {
       <Route path="/admin" component={AdminConsole} />
       <Route path="/demo" component={DemoManagement} />
       <Route path="/dashboard" component={Dashboard} />
-      <Route path="/crm" component={CRM} />
-      <Route path="/crm/:page" component={CRM} />
-      <Route path="/erp" component={ERP} />
-      <Route path="/erp/:page" component={ERP} />
-      <Route path="/hr" component={HR} />
-      <Route path="/hr/:page" component={HR} />
-      <Route path="/projects" component={Projects} />
-      <Route path="/projects/:page" component={Projects} />
+      <Route path="/crm/:page?" component={CRM} />
+      <Route path="/erp/:page?" component={ERP} />
+      <Route path="/hr/:page?" component={HR} />
+      <Route path="/projects/:page?" component={Projects} />
       <Route path="/industry-setup" component={IndustrySetup} />
       <Route path="/industry-deployments" component={IndustrySetup} />
       <Route path="/environment-management" component={EnvironmentManagement} />
