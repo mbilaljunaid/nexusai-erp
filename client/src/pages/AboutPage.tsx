@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Linkedin, Github, Twitter } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect } from "react";
+import { Header, Footer } from "@/components/Navigation";
 
 export default function AboutPage() {
   useEffect(() => {
@@ -10,8 +11,10 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+      <Header />
 
+      <main className="flex-1">
       {/* Hero */}
       <section className="px-4 py-20 text-center max-w-4xl mx-auto">
         <h1 className="text-5xl font-bold mb-6">About NexusAI</h1>
@@ -110,6 +113,8 @@ export default function AboutPage() {
           <a href="#twitter" className="text-slate-400 hover:text-blue-400 transition"><Twitter className="w-8 h-8" /></a>
         </div>
       </section>
+      </main>
+      <Footer />
     </div>
   );
 }

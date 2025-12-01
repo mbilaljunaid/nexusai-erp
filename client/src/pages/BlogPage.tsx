@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, User } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Header, Footer } from "@/components/Navigation";
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -75,7 +76,9 @@ export default function BlogPage() {
     : posts.filter(p => p.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+      <Header />
+      <main className="flex-1">
 
       {/* Hero */}
       <section className="px-4 py-16 text-center max-w-4xl mx-auto">
@@ -143,6 +146,8 @@ export default function BlogPage() {
           </div>
         </div>
       </section>
+      </main>
+      <Footer />
     </div>
   );
 }
