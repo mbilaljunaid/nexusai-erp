@@ -16,6 +16,7 @@ const LandingPage = lazy(() => import("@/pages/LandingPage"));
 
 // Core pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const DynamicFormPage = lazy(() => import("@/pages/DynamicFormPage"));
 const CRM = lazy(() => import("@/pages/CRM"));
 const ERP = lazy(() => import("@/pages/ERP"));
 const HR = lazy(() => import("@/pages/HR"));
@@ -415,7 +416,8 @@ function Router() {
       <Route path="/hr" component={HR} />
       <Route path="/projects" component={Projects} />
       <Route path="/industry/logistics" component={LogisticsDashboard} />
-      <Route component={NotFound} />
+      {/* Catch-all route for all 809 dynamic form pages */}
+      <Route component={DynamicFormPage} />
     </Switch>
   );
 }
