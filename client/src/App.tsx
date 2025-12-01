@@ -1683,3 +1683,17 @@ const AutomotiveCompliance = lazy(() => import("@/pages/AutomotiveCompliance"));
 const AutomotiveMobileApp = lazy(() => import("@/pages/AutomotiveMobileApp"));
 const AutomotiveQualityAnalytics = lazy(() => import("@/pages/AutomotiveQualityAnalytics"));
 const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
+
+function Router() {
+  return (
+    <Switch>
+      <Route path="/" component={Dashboard} />
+      <Route path="/crm" component={CRM} />
+      <Route path="/erp" component={ERP} />
+      <Route path="/hr" component={HR} />
+      <Route path="/projects" component={Projects} />
+      <Route path="/industry/logistics" component={LogisticsDashboard} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
