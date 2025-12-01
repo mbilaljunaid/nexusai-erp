@@ -140,8 +140,8 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Products</h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              <li><Link href="/use-cases" className="hover:text-white transition" data-testid="link-footer-usecases">Use Cases</Link></li>
-              <li><Link href="/industries" className="hover:text-white transition" data-testid="link-footer-industries">Industries</Link></li>
+              <li><Link to="/use-cases" className="hover:text-white transition" data-testid="link-footer-usecases">Use Cases</Link></li>
+              <li><Link to="/industries" className="hover:text-white transition" data-testid="link-footer-industries">Industries</Link></li>
               <li><a href="#" className="hover:text-white transition">Modules</a></li>
               <li><a href="#" className="hover:text-white transition">Pricing</a></li>
             </ul>
@@ -151,7 +151,7 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              <li><Link href="/blog" className="hover:text-white transition" data-testid="link-footer-blog">Blog</Link></li>
+              <li><Link to="/blog" className="hover:text-white transition" data-testid="link-footer-blog">Blog</Link></li>
               <li><a href="#" className="hover:text-white transition">Documentation</a></li>
               <li><a href="#" className="hover:text-white transition">API Docs</a></li>
               <li><a href="#" className="hover:text-white transition">Support</a></li>
@@ -162,7 +162,7 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              <li><Link href="/about" className="hover:text-white transition" data-testid="link-footer-about">About</Link></li>
+              <li><Link to="/about" className="hover:text-white transition" data-testid="link-footer-about">About</Link></li>
               <li><a href="#" className="hover:text-white transition">Careers</a></li>
               <li><a href="#" className="hover:text-white transition">Contact</a></li>
               <li><a href="#" className="hover:text-white transition">Legal</a></li>

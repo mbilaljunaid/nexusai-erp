@@ -21,7 +21,7 @@ export function ModuleNav({ title, items }: ModuleNavProps) {
         <h2 className="text-lg font-semibold mb-4">{title}</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {items.map((item) => (
-            <Link key={item.href} href={item.href}>
+            <Link key={item.href} to={item.href}>
               <div 
                 className="flex flex-col items-center justify-center p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 cursor-pointer transition-all hover-elevate"
                 data-testid={`nav-icon-${item.title.toLowerCase().replace(/\s+/g, '-')}`}

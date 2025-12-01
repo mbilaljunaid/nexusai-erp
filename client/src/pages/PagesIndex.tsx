@@ -80,7 +80,7 @@ export default function PagesIndex() {
                 {viewMode === "grid" ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                     {pack.pages.map(page => (
-                      <Link key={page} href={pageToUrl(page)}>
+                      <Link key={page} to={pageToUrl(page)}>
                         <a className="p-3 border rounded hover-elevate transition block text-sm font-medium text-center" data-testid={`link-${page.toLowerCase()}`}>
                           <span className="line-clamp-2">{page}</span>
                         </a>
@@ -90,7 +90,7 @@ export default function PagesIndex() {
                 ) : (
                   <div className="space-y-1">
                     {pack.pages.map(page => (
-                      <Link key={page} href={pageToUrl(page)}>
+                      <Link key={page} to={pageToUrl(page)}>
                         <a className="p-2 border rounded hover-elevate transition flex items-center text-sm" data-testid={`link-${page.toLowerCase()}`}>
                           {page}
                         </a>

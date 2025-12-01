@@ -209,7 +209,7 @@ export function AppSidebar() {
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.url}>
                     <SidebarMenuButton asChild>
-                      <Link href={item.url}>
+                      <Link to={item.url}>
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
                       </Link>

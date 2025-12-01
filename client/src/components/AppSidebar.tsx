@@ -128,7 +128,7 @@ export function AppSidebar() {
                   isActive={location === item.href}
                   data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
                 >
-                  <Link href={item.href}>
+                  <Link to={item.href}>
                     {item.icon && <item.icon className="h-4 w-4" />}
                     <span className="text-sm">{item.title}</span>
                   </Link>
