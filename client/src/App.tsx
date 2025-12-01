@@ -414,66 +414,6 @@ const PackagingTraceability = lazy(() => import("@/pages/PackagingTraceability")
 const ColdChainLogistics = lazy(() => import("@/pages/ColdChainLogistics"));
 const FBDemandPlanning = lazy(() => import("@/pages/FBDemandPlanning"));
 const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTraceability"));
-const admin = lazy(() => import("@/pages/admin"));
-const advanced = lazy(() => import("@/pages/advanced"));
-const ApprovalEscalations = lazy(() => import("@/pages/ApprovalEscalations"));
-const AssortmentPlanner = lazy(() => import("@/pages/AssortmentPlanner"));
-const AuditManagement = lazy(() => import("@/pages/AuditManagement"));
-const Calendar = lazy(() => import("@/pages/Calendar"));
-const ClinicalSupply = lazy(() => import("@/pages/ClinicalSupply"));
-const CMTFactoryManagement = lazy(() => import("@/pages/CMTFactoryManagement"));
-const ComplianceGovernance = lazy(() => import("@/pages/ComplianceGovernance"));
-const ContentMedia = lazy(() => import("@/pages/ContentMedia"));
-const CostingProfitability = lazy(() => import("@/pages/CostingProfitability"));
-const CustomerProfiles = lazy(() => import("@/pages/CustomerProfiles"));
-const DemandForecastingFashion = lazy(() => import("@/pages/DemandForecastingFashion"));
-const detail = lazy(() => import("@/pages/detail"));
-const eBatchRecord = lazy(() => import("@/pages/eBatchRecord"));
-const EcommerceMarketplace = lazy(() => import("@/pages/EcommerceMarketplace"));
-const ELNResearchNotebook = lazy(() => import("@/pages/ELNResearchNotebook"));
-const FashionAnalytics = lazy(() => import("@/pages/FashionAnalytics"));
-const FashionInventory = lazy(() => import("@/pages/FashionInventory"));
-const FashionPOS = lazy(() => import("@/pages/FashionPOS"));
-const FormulationComposer = lazy(() => import("@/pages/FormulationComposer"));
-const HRRetailStaff = lazy(() => import("@/pages/HRRetailStaff"));
-const IndustryDemoPage = lazy(() => import("@/pages/IndustryDemoPage"));
-const InventoryWarehouse = lazy(() => import("@/pages/InventoryWarehouse"));
-const LIMSLabManagement = lazy(() => import("@/pages/LIMSLabManagement"));
-const MarketingCampaigns = lazy(() => import("@/pages/MarketingCampaigns"));
-const MarketingCampaignsRetail = lazy(() => import("@/pages/MarketingCampaignsRetail"));
-const MaterialMaster = lazy(() => import("@/pages/MaterialMaster"));
-const MerchandisingAI = lazy(() => import("@/pages/MerchandisingAI"));
-const NetworkInfra = lazy(() => import("@/pages/NetworkInfra"));
-const PagesIndex = lazy(() => import("@/pages/PagesIndex"));
-const PharmaAnalytics = lazy(() => import("@/pages/PharmaAnalytics"));
-const Pharmacovigilance = lazy(() => import("@/pages/Pharmacovigilance"));
-const ProcessAnalytics = lazy(() => import("@/pages/ProcessAnalytics"));
-const ProcessDesigner = lazy(() => import("@/pages/ProcessDesigner"));
-const ProductMaster = lazy(() => import("@/pages/ProductMaster"));
-const QMSCAPA = lazy(() => import("@/pages/QMSCAPA"));
-const RegulatoryeCTD = lazy(() => import("@/pages/RegulatoryeCTD"));
-const Reporting = lazy(() => import("@/pages/Reporting"));
-const RetailAnalyticsBI = lazy(() => import("@/pages/RetailAnalyticsBI"));
-const RetailInventoryWarehouse = lazy(() => import("@/pages/RetailInventoryWarehouse"));
-const ReturnsExchanges = lazy(() => import("@/pages/ReturnsExchanges"));
-const RiskManagement = lazy(() => import("@/pages/RiskManagement"));
-const SampleTracking = lazy(() => import("@/pages/SampleTracking"));
-const Serialization = lazy(() => import("@/pages/Serialization"));
-const StabilityStudies = lazy(() => import("@/pages/StabilityStudies"));
-const StyleMasterSKU = lazy(() => import("@/pages/StyleMasterSKU"));
-const SubscriberAccounts = lazy(() => import("@/pages/SubscriberAccounts"));
-const SupplierQualification = lazy(() => import("@/pages/SupplierQualification"));
-const Support = lazy(() => import("@/pages/Support"));
-const SustainabilityMaterials = lazy(() => import("@/pages/SustainabilityMaterials"));
-const TechPackBuilder = lazy(() => import("@/pages/TechPackBuilder"));
-const TelecomBI = lazy(() => import("@/pages/TelecomBI"));
-const TelecomBilling = lazy(() => import("@/pages/TelecomBilling"));
-const TelecomCRM = lazy(() => import("@/pages/TelecomCRM"));
-const TelecomFieldService = lazy(() => import("@/pages/TelecomFieldService"));
-const TelecomHR = lazy(() => import("@/pages/TelecomHR"));
-const TelecomMarketing = lazy(() => import("@/pages/TelecomMarketing"));
-const ValidationCSV = lazy(() => import("@/pages/ValidationCSV"));
-const WholesaleB2B = lazy(() => import("@/pages/WholesaleB2B"));
 const FoodBeverageBIDashboard = lazy(() => import("@/pages/FoodBeverageBIDashboard"));
 const ProductMasterCPG = lazy(() => import("@/pages/ProductMasterCPG"));
 const IngredientMasterCPG = lazy(() => import("@/pages/IngredientMasterCPG"));
@@ -1644,66 +1584,6 @@ function Router() {
       <Route component={NotFound} />
     </Switch>
   );
-}
-
-export default function App() {
-  const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
-
-  return (
-    <RBACProvider>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <TooltipProvider>
-            <SidebarProvider style={style}>
-              <div className="flex h-screen w-full">
-                <AppSidebar />
-                <div className="flex flex-col flex-1">
-                  <header className="flex items-center justify-between p-2 border-b">
-                    <SidebarTrigger data-testid="button-sidebar-toggle" />
-                    <ThemeToggle />
-                  </header>
-                  <main className="flex-1 overflow-auto">
-                    <Suspense fallback={<div className="p-4">Loading...</div>}>
-                      <Router />
-                    </Suspense>
-                  </main>
-                </div>
-              </div>
-            </SidebarProvider>
-            <Toaster />
-          </TooltipProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </RBACProvider>
-  );
-}
-
-// Placeholder for redirect - will be added properly below
-
-// Retail & E-Commerce Pack (Industry Pack 33)
-const RetailProductCatalog = lazy(() => import("@/pages/RetailProductCatalog"));
-const RetailOrderManagement = lazy(() => import("@/pages/RetailOrderManagement"));
-const RetailCustomerManagement = lazy(() => import("@/pages/RetailCustomerManagement"));
-const RetailPromotionsLoyalty = lazy(() => import("@/pages/RetailPromotionsLoyalty"));
-const RetailPaymentsBilling = lazy(() => import("@/pages/RetailPaymentsBilling"));
-const RetailSupplyChainProcurement = lazy(() => import("@/pages/RetailSupplyChainProcurement"));
-const RetailPOSOperations = lazy(() => import("@/pages/RetailPOSOperations"));
-const RetailHRWorkforce = lazy(() => import("@/pages/RetailHRWorkforce"));
-const RetailAIRecommendations = lazy(() => import("@/pages/RetailAIRecommendations"));
-const RetailBIDashboards = lazy(() => import("@/pages/RetailBIDashboards"));
-const RetailCRMMarketing = lazy(() => import("@/pages/RetailCRMMarketing"));
-
-// Healthcare & Pharma Pack (Industry Pack 34)
-const HealthcarePatientManagement = lazy(() => import("@/pages/HealthcarePatientManagement"));
-const HealthcareAppointments = lazy(() => import("@/pages/HealthcareAppointments"));
-const HealthcareEMR = lazy(() => import("@/pages/HealthcareEMR"));
-const HealthcarePharmacy = lazy(() => import("@/pages/HealthcarePharmacy"));
-const HealthcareLaboratory = lazy(() => import("@/pages/HealthcareLaboratory"));
-const HealthcareBillingInsurance = lazy(() => import("@/pages/HealthcareBillingInsurance"));
-const HealthcareCRMEngagement = lazy(() => import("@/pages/HealthcareCRMEngagement"));
-const HealthcareHRWorkforce = lazy(() => import("@/pages/HealthcareHRWorkforce"));
-const HealthcareAIDiagnostics = lazy(() => import("@/pages/HealthcareAIDiagnostics"));
-const HealthcareBIDashboards = lazy(() => import("@/pages/HealthcareBIDashboards"));
 const HealthcareMobileApp = lazy(() => import("@/pages/HealthcareMobileApp"));
 
 // Banking & Financial Services Pack (Industry Pack 35)
