@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IconNavigation } from "@/components/IconNavigation";
+import { AutoRequisitionForm } from "@/components/forms/AutoRequisitionForm";
 import { Package, Plus, Search, AlertTriangle, TrendingDown, BarChart3, Warehouse, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -141,10 +142,26 @@ export default function InventoryManagement() {
 
       {activeNav === "reorder-points" && (
         <div className="space-y-4">
-          <Card>
-            <CardHeader><CardTitle className="text-base">Reorder Points Configuration</CardTitle></CardHeader>
-            <CardContent><p className="text-muted-foreground">34 items need attention</p><Badge variant="destructive" className="mt-2">Low Stock</Badge></CardContent>
+          <Card className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-orange-600" />
+                Low Stock Items - Auto-Requisition Ready
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">34 items need attention. Click "Create Auto-Requisition" to automatically trigger purchase workflow</p>
+            </CardContent>
           </Card>
+          <div className="space-y-3">
+            {[
+              { id: "1", itemName: "Widget A", sku: "W-001", quantity: 5, reorderLevel: 20, reorderQuantity: 100 },
+              { id: "2", itemName: "Component B", sku: "C-002", quantity: 12, reorderLevel: 50, reorderQuantity: 200 },
+              { id: "3", itemName: "Material C", sku: "M-003", quantity: 8, reorderLevel: 30, reorderQuantity: 150 },
+            ].map((item) => (
+              <AutoRequisitionForm key={item.id} item={item} />
+            ))}
+          </div>
         </div>
       )}
 
