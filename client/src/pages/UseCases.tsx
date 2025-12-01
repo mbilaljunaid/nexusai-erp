@@ -1,38 +1,39 @@
 import { Header, Footer } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Rocket, TrendingUp, Settings, DollarSign, Globe, Lock } from "lucide-react";
 
 export default function UseCases() {
   const useCases = [
     {
       title: "Digital Transformation",
       desc: "Modernize legacy systems with AI-powered enterprise solutions",
-      icon: "🚀",
+      icon: Rocket,
     },
     {
       title: "Revenue Growth",
       desc: "Accelerate sales with predictive analytics and CRM automation",
-      icon: "📈",
+      icon: TrendingUp,
     },
     {
       title: "Operational Efficiency",
       desc: "Automate workflows and reduce manual processes by 70%",
-      icon: "⚙️",
+      icon: Settings,
     },
     {
       title: "Cost Optimization",
       desc: "Reduce ERP implementation costs by 50% with pre-built modules",
-      icon: "💰",
+      icon: DollarSign,
     },
     {
       title: "Global Expansion",
       desc: "Multi-tenant, multi-currency support for international operations",
-      icon: "🌍",
+      icon: Globe,
     },
     {
       title: "Compliance & Risk",
       desc: "Automated compliance tracking and audit trails for all operations",
-      icon: "🔐",
+      icon: Lock,
     },
   ];
 
@@ -47,13 +48,16 @@ export default function UseCases() {
           </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {useCases.map((useCase, i) => (
-              <Card key={i} className="landing-card p-6">
-                <p className="text-3xl mb-4">{useCase.icon}</p>
-                <h3 className="text-xl font-bold mb-2">{useCase.title}</h3>
-                <p style={{ color: `hsl(var(--muted-foreground))` }}>{useCase.desc}</p>
-              </Card>
-            ))}
+            {useCases.map((useCase, i) => {
+              const UseCaseIcon = useCase.icon;
+              return (
+                <Card key={i} className="landing-card p-6">
+                  <UseCaseIcon className="w-8 h-8 mb-4" style={{ color: `hsl(var(--primary))` }} />
+                  <h3 className="text-xl font-bold mb-2">{useCase.title}</h3>
+                  <p style={{ color: `hsl(var(--muted-foreground))` }}>{useCase.desc}</p>
+                </Card>
+              );
+            })}
           </div>
         </section>
       </main>

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles } from "lucide-react";
+import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles, Package, Users, Briefcase, BarChart3, DollarSign, Factory, CheckCircle, Settings, Mail, Bot, Layers } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 
@@ -35,21 +35,21 @@ export default function LandingPage() {
   ];
 
   const modules = [
-    { title: "ERP Core", icon: "📦" },
-    { title: "CRM", icon: "👥" },
-    { title: "HR & Payroll", icon: "👔" },
-    { title: "Projects", icon: "📊" },
-    { title: "EPM", icon: "📈" },
-    { title: "Finance", icon: "💰" },
-    { title: "Inventory", icon: "🏭" },
-    { title: "Compliance", icon: "✅" },
-    { title: "BPM", icon: "⚙️" },
-    { title: "Website", icon: "🌐" },
-    { title: "Email", icon: "📧" },
-    { title: "BI & Analytics", icon: "📉" },
-    { title: "AI Copilot", icon: "🤖" },
-    { title: "Consolidation", icon: "🔗" },
-    { title: "Financial Close", icon: "✨" },
+    { title: "ERP Core", icon: Package },
+    { title: "CRM", icon: Users },
+    { title: "HR & Payroll", icon: Briefcase },
+    { title: "Projects", icon: BarChart3 },
+    { title: "EPM", icon: TrendingUp },
+    { title: "Finance", icon: DollarSign },
+    { title: "Inventory", icon: Factory },
+    { title: "Compliance", icon: CheckCircle },
+    { title: "BPM", icon: Settings },
+    { title: "Website", icon: Globe },
+    { title: "Email", icon: Mail },
+    { title: "BI & Analytics", icon: BarChart3 },
+    { title: "AI Copilot", icon: Bot },
+    { title: "Consolidation", icon: Layers },
+    { title: "Financial Close", icon: Sparkles },
   ];
 
   return (
@@ -95,12 +95,15 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12">15 Enterprise Modules</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {modules.map((mod, i) => (
-              <Card key={i} className="landing-card p-4 text-center hover-elevate">
-                <p className="text-3xl mb-2">{mod.icon}</p>
-                <p className="font-semibold">{mod.title}</p>
-              </Card>
-            ))}
+            {modules.map((mod, i) => {
+              const ModuleIcon = mod.icon;
+              return (
+                <Card key={i} className="landing-card p-4 text-center hover-elevate">
+                  <ModuleIcon className="w-8 h-8 mx-auto mb-2" style={{ color: `hsl(var(--primary))` }} />
+                  <p className="font-semibold">{mod.title}</p>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
