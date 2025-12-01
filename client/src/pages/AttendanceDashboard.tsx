@@ -1,15 +1,22 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function AttendanceDashboard() {
-  const attendanceData = [
-    { employee: "Alice", present: 22, absent: 1, late: 2 },
-    { employee: "Bob", present: 23, absent: 0, late: 2 },
-    { employee: "Carol", present: 20, absent: 3, late: 2 },
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const { data: attendanceData = [] } = useQuery<any[]>({ queryKey: ["/api/attendance"] });
+  const formMetadata = getFormMetadata("attendanceDashboard");
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={attendanceData} onFilter={setFiltered} />
+      
       <div>
         <h1 className="text-3xl font-bold">Attendance Dashboard</h1>
         <p className="text-muted-foreground mt-1">Track employee attendance and punctuality</p>

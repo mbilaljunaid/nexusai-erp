@@ -1,9 +1,22 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function TalentPool() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const { data: talents = [] } = useQuery<any[]>({ queryKey: ["/api/talent"] });
+  const formMetadata = getFormMetadata("talentPool");
+
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={talents} onFilter={setFiltered} />
+      
       <div>
         <h1 className="text-3xl font-bold">Talent Pool & Succession Planning</h1>
         <p className="text-muted-foreground mt-1">Identify and develop future leaders</p>

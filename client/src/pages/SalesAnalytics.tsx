@@ -1,15 +1,22 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function SalesAnalytics() {
-  const data = [
-    { month: "Jan", revenue: 45000, deals: 12 },
-    { month: "Feb", revenue: 52000, deals: 15 },
-    { month: "Mar", revenue: 48000, deals: 13 },
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const { data: data = [] } = useQuery<any[]>({ queryKey: ["/api/sales/analytics"] });
+  const formMetadata = getFormMetadata("salesAnalytics");
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={data} onFilter={setFiltered} />
+      
       <div>
         <h1 className="text-3xl font-bold">Sales Analytics</h1>
         <p className="text-muted-foreground mt-1">Revenue and sales pipeline metrics</p>

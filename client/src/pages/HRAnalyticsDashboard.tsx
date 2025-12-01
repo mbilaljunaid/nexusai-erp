@@ -1,25 +1,22 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function HRAnalyticsDashboard() {
-  const turnoverData = [
-    { month: "Jan", turnover: 2 },
-    { month: "Feb", turnover: 1 },
-    { month: "Mar", turnover: 3 },
-  ];
-
-  const depData = [
-    { name: "Sales", value: 25 },
-    { name: "Engineering", value: 35 },
-    { name: "HR", value: 8 },
-    { name: "Finance", value: 12 },
-    { name: "Operations", value: 20 },
-  ];
-
-  const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const { data: analyticsData = [] } = useQuery<any[]>({ queryKey: ["/api/hr/analytics"] });
+  const formMetadata = getFormMetadata("hrAnalytics");
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={analyticsData} onFilter={setFiltered} />
+      
       <div>
         <h1 className="text-3xl font-bold">HR Analytics Dashboard</h1>
         <p className="text-muted-foreground mt-1">Key HR metrics and insights</p>

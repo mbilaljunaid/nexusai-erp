@@ -1,16 +1,22 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function TicketDashboard() {
-  const ticketData = [
-    { status: "Open", count: 15 },
-    { status: "In Progress", count: 8 },
-    { status: "Resolved", count: 42 },
-    { status: "On Hold", count: 3 },
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const { data: ticketData = [] } = useQuery<any[]>({ queryKey: ["/api/tickets/dashboard"] });
+  const formMetadata = getFormMetadata("ticketDashboard");
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={ticketData} onFilter={setFiltered} />
+      
       <div>
         <h1 className="text-3xl font-bold">Service Ticket Dashboard</h1>
         <p className="text-muted-foreground mt-1">Overview of support ticket metrics</p>
