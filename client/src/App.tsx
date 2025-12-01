@@ -1697,3 +1697,35 @@ function Router() {
     </Switch>
   );
 }
+
+export default function App() {
+  const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
+
+  return (
+    <RBACProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <SidebarProvider style={style}>
+              <div className="flex h-screen w-full">
+                <AppSidebar />
+                <div className="flex flex-col flex-1">
+                  <header className="flex items-center justify-between p-2 border-b">
+                    <SidebarTrigger data-testid="button-sidebar-toggle" />
+                    <ThemeToggle />
+                  </header>
+                  <main className="flex-1 overflow-auto">
+                    <Suspense fallback={<div className="p-4">Loading...</div>}>
+                      <Router />
+                    </Suspense>
+                  </main>
+                </div>
+              </div>
+            </SidebarProvider>
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </RBACProvider>
+  );
+}
