@@ -107,20 +107,22 @@ export default function DemoManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2">Demo Management</h1>
-        <p className="text-slate-300 mb-8">Create and manage demo environments for all industries</p>
+    <div className="public-page min-h-screen flex flex-col">
+      <Header />
+      <div className="flex-1">
+        <div className="max-w-6xl mx-auto px-4 py-20">
+          <h1 className="public-hero-title text-4xl font-bold mb-2">Demo Management</h1>
+          <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-8">Create and manage demo environments for all industries</p>
 
-        <Tabs defaultValue="create" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-slate-800">
-            <TabsTrigger value="create">Create Demo</TabsTrigger>
-            <TabsTrigger value="active">Active Demos</TabsTrigger>
-          </TabsList>
+          <Tabs defaultValue="create" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="create">Create Demo</TabsTrigger>
+              <TabsTrigger value="active">Active Demos</TabsTrigger>
+            </TabsList>
 
-          {/* Create Demo Tab */}
-          <TabsContent value="create">
-            <Card className="bg-slate-800 border-slate-700 p-6">
+            {/* Create Demo Tab */}
+            <TabsContent value="create">
+              <Card className="public-card p-6">
               <h2 className="text-2xl font-bold mb-6">Create New Demo Environment</h2>
               
               <div className="space-y-4">
@@ -129,7 +131,7 @@ export default function DemoManagement() {
                   <select
                     value={selectedIndustry}
                     onChange={(e) => setSelectedIndustry(e.target.value)}
-                    className="w-full px-4 py-2 rounded bg-slate-700 border border-slate-600 text-white"
+                    className="w-full px-4 py-2 rounded bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] text-[hsl(var(--foreground))]"
                     data-testid="select-industry"
                   >
                     <option value="">-- Choose Industry --</option>
@@ -146,7 +148,7 @@ export default function DemoManagement() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="user@company.com"
-                    className="w-full px-4 py-2 rounded bg-slate-700 border border-slate-600 text-white placeholder-slate-400"
+                    className="w-full px-4 py-2 rounded bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] text-[hsl(var(--foreground))] placeholder-[hsl(var(--muted-foreground))]"
                     data-testid="input-demo-email"
                   />
                 </div>
@@ -155,7 +157,7 @@ export default function DemoManagement() {
                   <Button 
                     onClick={() => createDemo(false)} 
                     disabled={loading}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    className="flex-1 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white"
                     data-testid="button-create-demo"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -164,7 +166,7 @@ export default function DemoManagement() {
                   <Button 
                     onClick={() => createDemo(true)} 
                     disabled={loading}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                     data-testid="button-create-demo-seeded"
                   >
                     <Zap className="w-4 h-4 mr-2" />
@@ -173,7 +175,7 @@ export default function DemoManagement() {
                 </div>
               </div>
 
-              <div className="mt-8 p-4 bg-slate-700/50 rounded-lg text-sm text-slate-300">
+              <div className="mt-8 p-4 rounded-lg text-sm" style={{ backgroundColor: `hsl(var(--muted) / 0.5)`, color: `hsl(var(--muted-foreground))` }}>
                 <p className="font-semibold mb-2">What happens:</p>
                 <ul className="space-y-1 list-disc list-inside">
                   <li>Demo environment created with full sample data</li>
@@ -185,9 +187,9 @@ export default function DemoManagement() {
             </Card>
           </TabsContent>
 
-          {/* Active Demos Tab */}
-          <TabsContent value="active">
-            <Card className="bg-slate-800 border-slate-700 p-6">
+            {/* Active Demos Tab */}
+            <TabsContent value="active">
+              <Card className="public-card p-6">
               <h2 className="text-2xl font-bold mb-6">Active Demo Environments</h2>
               
               {demos.length === 0 ? (
@@ -195,12 +197,12 @@ export default function DemoManagement() {
               ) : (
                 <div className="space-y-4">
                   {demos.map((demo) => (
-                    <Card key={demo.id} className="bg-slate-700 border-slate-600 p-4">
+                    <Card key={demo.id} className="public-card p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="font-bold text-lg">{demo.industry}</h3>
-                          <p className="text-sm text-slate-400 mt-1">ID: {demo.id}</p>
-                          <p className="text-sm text-slate-400">Created: {new Date(demo.createdAt).toLocaleDateString()}</p>
+                          <p className="text-sm" style={{ color: `hsl(var(--muted-foreground))` }} >ID: {demo.id}</p>
+                          <p className="text-sm" style={{ color: `hsl(var(--muted-foreground))` }} >Created: {new Date(demo.createdAt).toLocaleDateString()}</p>
                           <div className="mt-3 flex gap-2">
                             <span className={`px-3 py-1 rounded text-xs font-semibold ${
                               demo.status === "active" ? "bg-green-600/20 text-green-300" : "bg-slate-600/20 text-slate-300"
@@ -225,10 +227,12 @@ export default function DemoManagement() {
                   ))}
                 </div>
               )}
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

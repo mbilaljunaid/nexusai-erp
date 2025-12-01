@@ -22,6 +22,7 @@ const DemoManagement = lazy(() => import("@/pages/DemoManagement"));
 const UseCases = lazy(() => import("@/pages/UseCases"));
 const IndustriesPage = lazy(() => import("@/pages/Industries"));
 const IndustryDetail = lazy(() => import("@/pages/IndustryDetail"));
+const ModuleDetail = lazy(() => import("@/pages/ModuleDetail"));
 
 // Core pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));

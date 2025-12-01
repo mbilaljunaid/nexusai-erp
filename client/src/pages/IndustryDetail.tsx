@@ -66,12 +66,12 @@ export default function IndustryDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <div className="public-page min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="px-4 py-24 max-w-7xl mx-auto">
-          <h1 className="text-6xl font-bold mb-6">{industry.name} ERP Solution</h1>
-          <p className="text-2xl text-slate-300 mb-12 max-w-3xl">{industry.description}</p>
+        <section className="public-hero px-4 py-24 max-w-7xl mx-auto">
+          <h1 className="public-hero-title text-6xl font-bold mb-6">{industry.name} ERP Solution</h1>
+          <p className="public-hero-subtitle text-2xl mb-12 max-w-3xl">{industry.description}</p>
 
           <div className="grid md:grid-cols-2 gap-12 mb-20">
             <div>
@@ -79,7 +79,7 @@ export default function IndustryDetail() {
               <div className="space-y-3">
                 {industry.modules.map((module, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    <CheckCircle className="w-5 h-5" style={{ color: `hsl(var(--primary))` }} />
                     <span className="text-lg">{module}</span>
                   </div>
                 ))}
@@ -91,7 +91,7 @@ export default function IndustryDetail() {
               <div className="space-y-3">
                 {industry.features.map((feature, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    <CheckCircle className="w-5 h-5" style={{ color: `hsl(var(--primary))` }} />
                     <span className="text-lg">{feature}</span>
                   </div>
                 ))}
@@ -99,10 +99,10 @@ export default function IndustryDetail() {
             </div>
           </div>
 
-          <Card className="bg-gradient-to-r from-blue-600 to-blue-700 border-0 p-8 text-center">
+          <Card className="p-8 text-center border-l-4 public-accent-border" style={{ backgroundColor: `hsl(var(--primary) / 0.15)`, borderColor: `hsl(var(--primary) / 0.4)` }}>
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Business?</h2>
-            <p className="text-blue-100 mb-6 text-lg">Get instant access to a fully seeded demo environment</p>
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-bold" data-testid="button-request-demo">
+            <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-6 text-lg">Get instant access to a fully seeded demo environment</p>
+            <Button size="lg" className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white font-bold" data-testid="button-request-demo">
               Request Demo <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Card>

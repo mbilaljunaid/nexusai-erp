@@ -131,18 +131,18 @@ export default function BlogPage() {
       </section>
 
       {/* Newsletter */}
-      <section className="px-4 py-16 bg-slate-800/50">
+      <section className="public-section-alt px-4 py-16">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
-          <p className="text-slate-300 mb-6">Get weekly insights on ERP, AI automation, and industry best practices.</p>
+          <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-6">Get weekly insights on ERP, AI automation, and industry best practices.</p>
           <div className="flex gap-2">
             <input
               type="email"
               placeholder="your@email.com"
-              className="flex-1 px-4 py-2 rounded bg-slate-700 border border-slate-600 text-white placeholder-slate-400"
+              className="flex-1 px-4 py-2 rounded bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] text-[hsl(var(--foreground))] placeholder-[hsl(var(--muted-foreground))]"
               data-testid="input-newsletter-email"
             />
-            <Button className="bg-blue-600 hover:bg-blue-700" data-testid="button-subscribe">Subscribe</Button>
+            <Button className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white" data-testid="button-subscribe">Subscribe</Button>
           </div>
         </div>
       </section>

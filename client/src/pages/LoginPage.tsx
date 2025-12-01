@@ -47,20 +47,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <div className="public-page min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1 flex items-center justify-center px-4 py-20">
         <div className="w-full max-w-md">
           <div className="text-center mb-12">
-            <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">LOGIN</Badge>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Welcome Back
-            </h1>
-            <p className="text-slate-300">Sign in to access your NexusAI dashboard</p>
+            <Badge className="public-badge mb-4">LOGIN</Badge>
+            <h1 className="public-hero-title text-4xl font-bold mb-2">Welcome Back</h1>
+            <p className="public-hero-subtitle">Sign in to access your NexusAI dashboard</p>
           </div>
 
-          <Card className="bg-slate-800/50 border-slate-700 p-8" data-testid="card-login">
+          <Card className="public-card p-8" data-testid="card-login">
             {success ? (
               <div className="text-center py-8">
                 <div className="mb-4 text-green-400 text-4xl">✓</div>
@@ -79,13 +77,13 @@ export default function LoginPage() {
                 <div>
                   <label className="block text-sm font-medium mb-2">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
+                    <Mail className="absolute left-3 top-3 w-5 h-5" style={{ color: `hsl(var(--muted-foreground))` }} />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="your@company.com"
-                      className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                      className="w-full pl-10 pr-4 py-2 bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] rounded text-[hsl(var(--foreground))] placeholder-[hsl(var(--muted-foreground))] focus:outline-none focus:border-[hsl(var(--primary))]"
                       required
                       data-testid="input-email"
                     />
@@ -96,20 +94,21 @@ export default function LoginPage() {
                 <div>
                   <label className="block text-sm font-medium mb-2">Password</label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
+                    <Lock className="absolute left-3 top-3 w-5 h-5" style={{ color: `hsl(var(--muted-foreground))` }} />
                     <input
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                      className="w-full pl-10 pr-10 py-2 bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] rounded text-[hsl(var(--foreground))] placeholder-[hsl(var(--muted-foreground))] focus:outline-none focus:border-[hsl(var(--primary))]"
                       required
                       data-testid="input-password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-slate-500 hover:text-slate-300"
+                      className="absolute right-3 top-3"
+                      style={{ color: `hsl(var(--muted-foreground))` }}
                       data-testid="button-toggle-password"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -124,7 +123,7 @@ export default function LoginPage() {
                     <span>Remember me</span>
                   </label>
                   <Link href="/forgot-password">
-                    <a className="text-blue-400 hover:text-blue-300">Forgot password?</a>
+                    <a style={{ color: `hsl(var(--primary))` }} className="hover:opacity-80">Forgot password?</a>
                   </Link>
                 </div>
 
@@ -132,7 +131,7 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  className="w-full bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white"
                   data-testid="button-login"
                 >
                   {loading ? "Signing in..." : "Sign In"} <ArrowRight className="ml-2 w-4 h-4" />

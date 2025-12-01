@@ -38,20 +38,22 @@ export default function UseCases() {
   ];
 
   return (
-    <div className="landing-page min-h-screen flex flex-col">
+    <div className="public-page min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="px-4 py-24 max-w-7xl mx-auto">
-          <h1 className="text-5xl font-bold mb-6">Use Cases</h1>
-          <p className="text-xl mb-12" style={{ color: `hsl(var(--muted-foreground))` }}>
+        <section className="public-hero px-4 py-24 max-w-7xl mx-auto">
+          <h1 className="public-hero-title text-5xl font-bold mb-6">Use Cases</h1>
+          <p className="public-hero-subtitle text-xl">
             Discover how NexusAI solves real business challenges across industries
           </p>
+        </section>
 
+        <section className="public-section px-4 py-20 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {useCases.map((useCase, i) => {
               const UseCaseIcon = useCase.icon;
               return (
-                <Card key={i} className="landing-card p-6">
+                <Card key={i} className="public-card p-6" data-testid={`card-usecase-${i}`}>
                   <UseCaseIcon className="w-8 h-8 mb-4" style={{ color: `hsl(var(--primary))` }} />
                   <h3 className="text-xl font-bold mb-2">{useCase.title}</h3>
                   <p style={{ color: `hsl(var(--muted-foreground))` }}>{useCase.desc}</p>
