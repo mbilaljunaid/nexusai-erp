@@ -1,19 +1,39 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus } from "lucide-react";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function LeaveRequest() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredLeaves, setFilteredLeaves] = useState<any[]>([]);
+  const { data: leaves = [] } = useQuery<any[]>({
+    queryKey: ["/api/hr/leave-requests"],
+  });
+  const formMetadata = getFormMetadata("leaveRequest");
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Leave Requests</h1>
           <p className="text-muted-foreground mt-1">Manage and track employee leave requests</p>
         </div>
-        <Button data-testid="button-new-request"><Plus className="h-4 w-4 mr-2" />New Request</Button>
+        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
       </div>
+
+      <FormSearchWithMetadata
+        formMetadata={formMetadata}
+        value={searchQuery}
+        onChange={setSearchQuery}
+        data={leaves}
+        onFilter={setFilteredLeaves}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
@@ -39,19 +59,14 @@ export default function LeaveRequest() {
       <Card>
         <CardHeader><CardTitle className="text-base">Leave History</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {[
-            { type: "Annual Leave", from: "Jan 15", to: "Jan 20", status: "Approved" },
-            { type: "Sick Leave", from: "Feb 10", to: "Feb 12", status: "Approved" },
-            { type: "Casual Leave", from: "Mar 1", to: "Mar 3", status: "Pending" },
-          ].map((req, idx) => (
+          {filteredLeaves.length > 0 ? filteredLeaves.map((req: any, idx: number) => (
             <div key={idx} className="flex justify-between items-center p-2 border rounded">
               <div>
                 <p className="font-medium text-sm">{req.type}</p>
-                <p className="text-xs text-muted-foreground">{req.from} to {req.to}</p>
               </div>
               <Badge className={req.status === "Approved" ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}>{req.status}</Badge>
             </div>
-          ))}
+          )) : <p className="text-muted-foreground text-center py-4">No leave requests found</p>}
         </CardContent>
       </Card>
     </div>

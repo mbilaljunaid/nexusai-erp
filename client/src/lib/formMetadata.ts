@@ -718,6 +718,56 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
       { label: "Audit Logs", path: "/governance/audit" },
     ],
   },
+
+  qualityControl: { id: "qualityControl", name: "Quality Control", apiEndpoint: "/api/quality", fields: [], searchFields: ["product", "status"], displayField: "product", createButtonText: "", module: "Manufacturing", page: "/manufacturing/quality", allowCreate: false, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Manufacturing", path: "/manufacturing" }, { label: "Quality", path: "/manufacturing/quality" }] },
+  
+  financialReports: { id: "financialReports", name: "Financial Reports", apiEndpoint: "/api/reports", fields: [], searchFields: ["name", "period"], displayField: "name", createButtonText: "", module: "Finance", page: "/finance/reports", allowCreate: false, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Finance", path: "/finance" }, { label: "Reports", path: "/finance/reports" }] },
+  
+  orgChart: { id: "orgChart", name: "Organization Chart", apiEndpoint: "/api/org", fields: [], searchFields: ["name", "role"], displayField: "name", createButtonText: "", module: "HR", page: "/hr/org-chart", allowCreate: false, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "HR", path: "/hr" }, { label: "Org Chart", path: "/hr/org-chart" }] },
+  
+  inventory: { id: "inventory", name: "Inventory", apiEndpoint: "/api/inventory", fields: [], searchFields: ["sku", "name", "location"], displayField: "sku", createButtonText: "Add Item", module: "Procurement", page: "/procurement/inventory", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Procurement", path: "/procurement" }, { label: "Inventory", path: "/procurement/inventory" }] },
+  
+  warehouse: { id: "warehouse", name: "Warehouse", apiEndpoint: "/api/warehouse", fields: [], searchFields: ["name", "location", "status"], displayField: "name", createButtonText: "Add Warehouse", module: "Procurement", page: "/procurement/warehouse", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Procurement", path: "/procurement" }, { label: "Warehouse", path: "/procurement/warehouse" }] },
+  
+  campaign: { id: "campaign", name: "Campaign", apiEndpoint: "/api/campaigns", fields: [], searchFields: ["name", "status", "channel"], displayField: "name", createButtonText: "Create Campaign", module: "CRM", page: "/crm/campaigns", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "CRM", path: "/crm" }, { label: "Campaigns", path: "/crm/campaigns" }] },
+  
+  opportunity: { id: "opportunity", name: "Opportunity", apiEndpoint: "/api/opportunities", fields: [], searchFields: ["name", "stage", "account"], displayField: "name", createButtonText: "Add Opportunity", module: "CRM", page: "/crm/opportunities", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "CRM", path: "/crm" }, { label: "Opportunities", path: "/crm/opportunities" }] },
+  
+  territory: { id: "territory", name: "Territory", apiEndpoint: "/api/territories", fields: [], searchFields: ["name", "manager", "region"], displayField: "name", createButtonText: "Add Territory", module: "CRM", page: "/crm/territories", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "CRM", path: "/crm" }, { label: "Territories", path: "/crm/territories" }] },
+  
+  forecast: { id: "forecast", name: "Forecast", apiEndpoint: "/api/forecast", fields: [], searchFields: ["product", "period", "status"], displayField: "product", createButtonText: "Add Forecast", module: "CRM", page: "/crm/forecast", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "CRM", path: "/crm" }, { label: "Forecast", path: "/crm/forecast" }] },
+  
+  budgetPlanning: { id: "budgetPlanning", name: "Budget Planning", apiEndpoint: "/api/budget", fields: [], searchFields: ["department", "period", "status"], displayField: "department", createButtonText: "Create Budget", module: "Finance", page: "/finance/budget", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Finance", path: "/finance" }, { label: "Budget", path: "/finance/budget" }] },
+  
+  costAnalysis: { id: "costAnalysis", name: "Cost Analysis", apiEndpoint: "/api/costs", fields: [], searchFields: ["category", "period", "status"], displayField: "category", createButtonText: "", module: "Finance", page: "/finance/costs", allowCreate: false, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Finance", path: "/finance" }, { label: "Costs", path: "/finance/costs" }] },
+  
+  generalLedger: { id: "generalLedger", name: "General Ledger", apiEndpoint: "/api/ledger", fields: [], searchFields: ["account", "period", "type"], displayField: "account", createButtonText: "", module: "Finance", page: "/finance/ledger", allowCreate: false, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Finance", path: "/finance" }, { label: "Ledger", path: "/finance/ledger" }] },
+  
+  taxManagement: { id: "taxManagement", name: "Tax Management", apiEndpoint: "/api/tax", fields: [], searchFields: ["type", "period", "status"], displayField: "type", createButtonText: "Add Tax Record", module: "Finance", page: "/finance/tax", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Finance", path: "/finance" }, { label: "Tax", path: "/finance/tax" }] },
+  
+  trainingDevelopment: { id: "trainingDevelopment", name: "Training Development", apiEndpoint: "/api/training", fields: [], searchFields: ["title", "instructor", "status"], displayField: "title", createButtonText: "Create Training", module: "HR", page: "/hr/training", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "HR", path: "/hr" }, { label: "Training", path: "/hr/training" }] },
+  
+  performanceManagement: { id: "performanceManagement", name: "Performance Management", apiEndpoint: "/api/performance", fields: [], searchFields: ["employee", "period", "rating"], displayField: "employee", createButtonText: "", module: "HR", page: "/hr/performance", allowCreate: false, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "HR", path: "/hr" }, { label: "Performance", path: "/hr/performance" }] },
+  
+  ticketManagement: { id: "ticketManagement", name: "Ticket Management", apiEndpoint: "/api/tickets", fields: [], searchFields: ["id", "title", "status"], displayField: "title", createButtonText: "Create Ticket", module: "ServiceDesk", page: "/service/ticket-management", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Service Desk", path: "/service" }, { label: "Tickets", path: "/service/ticket-management" }] },
+  
+  knowledgeBase: { id: "knowledgeBase", name: "Knowledge Base", apiEndpoint: "/api/knowledge", fields: [], searchFields: ["title", "category", "status"], displayField: "title", createButtonText: "Add Article", module: "ServiceDesk", page: "/service/knowledge", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Service Desk", path: "/service" }, { label: "Knowledge", path: "/service/knowledge" }] },
+  
+  slaTracking: { id: "slaTracking", name: "SLA Tracking", apiEndpoint: "/api/sla", fields: [], searchFields: ["ticket", "sla", "status"], displayField: "ticket", createButtonText: "", module: "ServiceDesk", page: "/service/sla", allowCreate: false, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Service Desk", path: "/service" }, { label: "SLA", path: "/service/sla" }] },
+  
+  customerPortal: { id: "customerPortal", name: "Customer Portal", apiEndpoint: "/api/portal", fields: [], searchFields: ["customer", "status", "type"], displayField: "customer", createButtonText: "", module: "ServiceDesk", page: "/service/portal", allowCreate: false, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Service Desk", path: "/service" }, { label: "Portal", path: "/service/portal" }] },
+  
+  shippingManagement: { id: "shippingManagement", name: "Shipping Management", apiEndpoint: "/api/shipping", fields: [], searchFields: ["trackingId", "destination", "status"], displayField: "trackingId", createButtonText: "Create Shipment", module: "Procurement", page: "/procurement/shipping", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Procurement", path: "/procurement" }, { label: "Shipping", path: "/procurement/shipping" }] },
+  
+  productionSchedule: { id: "productionSchedule", name: "Production Schedule", apiEndpoint: "/api/schedule", fields: [], searchFields: ["product", "period", "status"], displayField: "product", createButtonText: "Create Schedule", module: "Manufacturing", page: "/manufacturing/schedule", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Manufacturing", path: "/manufacturing" }, { label: "Schedule", path: "/manufacturing/schedule" }] },
+  
+  contractManagement: { id: "contractManagement", name: "Contract Management", apiEndpoint: "/api/contracts", fields: [], searchFields: ["vendor", "type", "status"], displayField: "vendor", createButtonText: "Create Contract", module: "Procurement", page: "/procurement/contracts", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Procurement", path: "/procurement" }, { label: "Contracts", path: "/procurement/contracts" }] },
+  
+  roleManagement: { id: "roleManagement", name: "Role Management", apiEndpoint: "/api/roles", fields: [], searchFields: ["name", "type", "status"], displayField: "name", createButtonText: "Create Role", module: "Admin", page: "/admin/roles", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Admin", path: "/admin" }, { label: "Roles", path: "/admin/roles" }] },
+  
+  incidentManagement: { id: "incidentManagement", name: "Incident Management", apiEndpoint: "/api/incidents", fields: [], searchFields: ["id", "title", "severity"], displayField: "title", createButtonText: "Report Incident", module: "ServiceDesk", page: "/service/incidents", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Service Desk", path: "/service" }, { label: "Incidents", path: "/service/incidents" }] },
+
+  feedbackManagement: { id: "feedbackManagement", name: "Feedback Management", apiEndpoint: "/api/feedback", fields: [], searchFields: ["source", "status", "rating"], displayField: "source", createButtonText: "Add Feedback", module: "ServiceDesk", page: "/service/feedback", allowCreate: true, showSearch: true, breadcrumbs: [{ label: "Dashboard", path: "/" }, { label: "Service Desk", path: "/service" }, { label: "Feedback", path: "/service/feedback" }] },
 };
 
 export function getFormMetadata(formId: string): FormMetadata | undefined {

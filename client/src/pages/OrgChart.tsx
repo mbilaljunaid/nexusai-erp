@@ -1,12 +1,34 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function OrgChart() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredOrg, setFilteredOrg] = useState<any[]>([]);
+  const { data: orgData = [] } = useQuery<any[]>({
+    queryKey: ["/api/org"],
+  });
+  const formMetadata = getFormMetadata("orgChart");
+
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
       <div>
         <h1 className="text-3xl font-bold">Organization Chart</h1>
         <p className="text-muted-foreground mt-1">View company hierarchy and reporting structure</p>
       </div>
+
+      <FormSearchWithMetadata
+        formMetadata={formMetadata}
+        value={searchQuery}
+        onChange={setSearchQuery}
+        data={orgData}
+        onFilter={setFilteredOrg}
+      />
 
       <Card>
         <CardHeader><CardTitle className="text-base">Company Structure</CardTitle></CardHeader>
