@@ -35,21 +35,21 @@ export default function LandingPage() {
   ];
 
   const modules = [
-    { title: "ERP Core", icon: Package },
-    { title: "CRM", icon: Users },
-    { title: "HR & Payroll", icon: Briefcase },
-    { title: "Projects", icon: BarChart3 },
-    { title: "EPM", icon: TrendingUp },
-    { title: "Finance", icon: DollarSign },
-    { title: "Inventory", icon: Factory },
-    { title: "Compliance", icon: CheckCircle },
-    { title: "BPM", icon: Settings },
-    { title: "Website", icon: Globe },
-    { title: "Email", icon: Mail },
-    { title: "BI & Analytics", icon: BarChart3 },
-    { title: "AI Copilot", icon: Bot },
-    { title: "Consolidation", icon: Layers },
-    { title: "Financial Close", icon: Sparkles },
+    { title: "ERP Core", icon: Package, href: "/erp" },
+    { title: "CRM", icon: Users, href: "/crm" },
+    { title: "HR & Payroll", icon: Briefcase, href: "/hr" },
+    { title: "Projects", icon: BarChart3, href: "/projects" },
+    { title: "EPM", icon: TrendingUp, href: "/dashboard" },
+    { title: "Finance", icon: DollarSign, href: "/erp" },
+    { title: "Inventory", icon: Factory, href: "/erp" },
+    { title: "Compliance", icon: CheckCircle, href: "/dashboard" },
+    { title: "BPM", icon: Settings, href: "/dashboard" },
+    { title: "Website", icon: Globe, href: "/dashboard" },
+    { title: "Email", icon: Mail, href: "/dashboard" },
+    { title: "BI & Analytics", icon: BarChart3, href: "/dashboard" },
+    { title: "AI Copilot", icon: Bot, href: "/dashboard" },
+    { title: "Consolidation", icon: Layers, href: "/dashboard" },
+    { title: "Financial Close", icon: Sparkles, href: "/dashboard" },
   ];
 
   return (
@@ -70,9 +70,11 @@ export default function LandingPage() {
           <Button size="lg" className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white text-lg" data-testid="button-request-demo">
             Request a Demo <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
-          <Button size="lg" variant="outline">
-            Explore Modules
-          </Button>
+          <Link href="/dashboard">
+            <Button size="lg" variant="outline" data-testid="button-explore-modules">
+              Explore Modules <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -98,10 +100,12 @@ export default function LandingPage() {
             {modules.map((mod, i) => {
               const ModuleIcon = mod.icon;
               return (
-                <Card key={i} className="landing-card p-4 text-center hover-elevate">
-                  <ModuleIcon className="w-8 h-8 mx-auto mb-2" style={{ color: `hsl(var(--primary))` }} />
-                  <p className="font-semibold">{mod.title}</p>
-                </Card>
+                <Link key={i} href={mod.href}>
+                  <Card className="landing-card p-4 text-center hover-elevate cursor-pointer transition-all" data-testid={`card-module-${mod.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <ModuleIcon className="w-8 h-8 mx-auto mb-2" style={{ color: `hsl(var(--primary))` }} />
+                    <p className="font-semibold">{mod.title}</p>
+                  </Card>
+                </Link>
               );
             })}
           </div>
