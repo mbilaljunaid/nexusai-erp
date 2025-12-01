@@ -409,6 +409,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/landing" component={LandingPage} />
       <Route path="/crm" component={CRM} />
       <Route path="/erp" component={ERP} />
       <Route path="/hr" component={HR} />
