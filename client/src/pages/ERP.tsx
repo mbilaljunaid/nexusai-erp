@@ -327,7 +327,43 @@ export default function ERP() {
 
       {activeNav === "settings" && (
         <div className="space-y-4">
-          <Card><CardHeader><CardTitle>ERP Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure financials, inventory, and supply chain</p></CardContent></Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>ERP Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="font-semibold mb-2">System Configuration</p>
+                <p className="text-sm text-muted-foreground">Configure financials, inventory, and supply chain settings</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">GL Configuration</p>
+                  <Button size="sm" variant="outline" className="mt-2" data-testid="button-gl-settings">
+                    Configure GL
+                  </Button>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">Inventory Settings</p>
+                  <Button size="sm" variant="outline" className="mt-2" data-testid="button-inventory-settings">
+                    Configure Inventory
+                  </Button>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">Procurement Rules</p>
+                  <Button size="sm" variant="outline" className="mt-2" data-testid="button-procurement-settings">
+                    Configure Procurement
+                  </Button>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">Approval Workflows</p>
+                  <Button size="sm" variant="outline" className="mt-2" data-testid="button-workflow-settings">
+                    Configure Workflows
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>
