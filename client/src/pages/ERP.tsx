@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,10 +11,17 @@ import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { FormSearch } from "@/components/FormSearch";
 import { useQuery } from "@tanstack/react-query";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 
 export default function ERP() {
+  const [match, params] = useRoute("/erp/:page");
   const [activeNav, setActiveNav] = useState("overview");
+
+  useEffect(() => {
+    if (params?.page) {
+      setActiveNav(params.page);
+    }
+  }, [params?.page]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const [filteredGLEntries, setFilteredGLEntries] = useState<any[]>([]);

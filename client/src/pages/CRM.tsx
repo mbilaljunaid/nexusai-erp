@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useEffect } from "react";
+import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,9 +13,16 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 
 export default function CRM() {
+  const [match, params] = useRoute("/crm/:page");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
   const [activeNav, setActiveNav] = useState("overview");
+
+  useEffect(() => {
+    if (params?.page) {
+      setActiveNav(params.page);
+    }
+  }, [params?.page]);
   const { data: leads = [] } = useQuery<any[]>({ queryKey: ["/api/leads"], retry: false });
   
   // Get lead form metadata for search parameters, button text, breadcrumbs

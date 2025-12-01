@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,11 +8,18 @@ import PayrollForm from "@/components/forms/PayrollForm";
 import PerformanceRatingForm from "@/components/forms/PerformanceRatingForm";
 import { LeaveRequestForm } from "@/components/forms/LeaveRequestForm";
 import { Users, BarChart3, Briefcase, DollarSign, TrendingUp, Calendar, BookOpen, Target, Heart, Award, Clock, PieChart, Settings, Zap, Search } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 
 export default function HR() {
+  const [match, params] = useRoute("/hr/:page");
   const [activeNav, setActiveNav] = useState("overview");
+
+  useEffect(() => {
+    if (params?.page) {
+      setActiveNav(params.page);
+    }
+  }, [params?.page]);
   const [searchQuery, setSearchQuery] = useState("");
   const { data: employees = [] } = useQuery({ queryKey: ["/api/employees"], retry: false });
 

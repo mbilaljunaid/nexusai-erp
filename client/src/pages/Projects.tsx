@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,7 @@ import { TaskEntryForm } from "@/components/forms/TaskEntryForm";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Search, Filter, FolderKanban, CheckCircle2, Clock, AlertTriangle, Sparkles, LayoutGrid, ListTodo, Users, Settings, Zap, BarChart3, TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 
 interface Project {
   id: string;
@@ -27,9 +27,16 @@ interface Project {
 }
 
 export default function Projects() {
+  const [match, params] = useRoute("/projects/:page");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [activeNav, setActiveNav] = useState("overview");
+
+  useEffect(() => {
+    if (params?.page) {
+      setActiveNav(params.page);
+    }
+  }, [params?.page]);
 
   const navItems = [
     { id: "overview", label: "Overview", icon: LayoutGrid, color: "text-blue-500" },
