@@ -52,7 +52,6 @@ const ComplianceModule = lazy(() => import("@/pages/ComplianceModule"));
 
 // Phase 1: Enterprise Foundation (8 pages)
 const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
-const BillingPlans = lazy(() => import("@/pages/BillingPlans"));
 const AdminRoles = lazy(() => import("@/pages/AdminRoles"));
 const APIGateway = lazy(() => import("@/pages/APIGateway"));
 const InvoiceGenerator = lazy(() => import("@/pages/InvoiceGenerator"));
@@ -401,9 +400,6 @@ const ECommerceDelivery = lazy(() => import("@/pages/ECommerceDelivery"));
 const PackagingTraceability = lazy(() => import("@/pages/PackagingTraceability"));
 const FBDemandPlanning = lazy(() => import("@/pages/FBDemandPlanning"));
 const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTraceability"));
-
-// All industry packs (continue with remaining...
-// Placeholder for remaining imports - all 809 pages are configured in metadata
 
 // Automotive Pack
 const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
