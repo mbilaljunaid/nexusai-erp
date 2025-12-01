@@ -6,12 +6,14 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 
 export default function CRM() {
-  const [match, params] = useRoute("/crm/:page");
+  const [match, params] = useRoute("/crm/:page?");
   const [activeNav, setActiveNav] = useState("overview");
 
   useEffect(() => {
     if (params?.page) {
       setActiveNav(params.page);
+    } else {
+      setActiveNav("overview");
     }
   }, [params?.page]);
 
@@ -41,9 +43,13 @@ export default function CRM() {
           let routePath = item.id === "overview" ? "/crm" : `/crm/${item.id}`;
           if (item.id === "accounts") routePath = "/crm/customers";
           if (item.id === "contacts") routePath = "/crm/customers";
+          const isActive = (item.id === "overview" && activeNav === "overview") || 
+                          (item.id !== "overview" && activeNav === item.id);
           return (
             <Link key={item.id} to={routePath}>
-              <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+              <div className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${
+                isActive ? "border-primary bg-primary/5" : "hover:border-primary hover-elevate"
+              }`}>
                 <item.icon className={`w-6 h-6 ${item.color}`} />
                 <span className="text-sm font-medium text-center">{item.label}</span>
               </div>
