@@ -29,29 +29,63 @@ import {
   Briefcase,
   Store,
   MessageCircle,
+  Cog,
+  Brain,
+  TrendingUp,
+  Workflow,
+  GitBranch,
+  ShoppingCart,
+  GraduationCap,
+  Bell,
+  Grid3x3,
+  Database,
+  Lock,
+  Radio,
+  Truck,
 } from "lucide-react";
 
-// MAIN MODULES - Clean sidebar navigation
-const mainModules = [
+// MAIN MODULES - All 22 modules
+const coreBusinessModules = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { title: "CRM & Sales", icon: Users, href: "/crm", badge: "9 pages" },
-  { title: "ERP & Finance", icon: DollarSign, href: "/erp", badge: "9 pages" },
-  { title: "Projects", icon: Zap, href: "/projects", badge: "4 pages" },
-  { title: "HR & Talent", icon: Briefcase, href: "/hr", badge: "14 pages" },
-  { title: "Manufacturing", icon: Factory, href: "/manufacturing", badge: "4 pages" },
-  { title: "Service & Support", icon: Package, href: "/service", badge: "8 pages" },
+  { title: "CRM", icon: Users, href: "/crm" },
+  { title: "ERP", icon: DollarSign, href: "/erp" },
+  { title: "HR", icon: Briefcase, href: "/hr" },
+  { title: "Projects", icon: Zap, href: "/projects" },
+];
+
+const operationsModules = [
+  { title: "Operations", icon: Cog, href: "/operations" },
+  { title: "Admin", icon: Shield, href: "/admin" },
+  { title: "General", icon: Grid3x3, href: "/general" },
+  { title: "Finance", icon: DollarSign, href: "/finance" },
+];
+
+const financeModules = [
+  { title: "Procurement", icon: ShoppingCart, href: "/procurement" },
+  { title: "Governance", icon: Lock, href: "/governance" },
 ];
 
 const intelligenceModules = [
-  { title: "AI Copilot", icon: Sparkles, href: "/copilot" },
-  { title: "AI Chat", icon: MessageCircle, href: "/ai-chat" },
-  { title: "Analytics & BI", icon: BarChart3, href: "/analytics" },
+  { title: "Analytics", icon: BarChart3, href: "/analytics" },
+  { title: "AI", icon: Sparkles, href: "/ai" },
+  { title: "Developer", icon: GitBranch, href: "/developer" },
 ];
 
-const enterpriseModules = [
-  { title: "Admin", icon: Shield, href: "/admin/platform" },
-  { title: "Marketplace", icon: Store, href: "/marketplace" },
-  { title: "Integrations", icon: Zap, href: "/integrations" },
+const operationalModules = [
+  { title: "Service", icon: Package, href: "/service" },
+  { title: "Manufacturing", icon: Factory, href: "/manufacturing" },
+  { title: "Logistics", icon: Truck, href: "/logistics" },
+];
+
+const automationModules = [
+  { title: "Workflow", icon: Workflow, href: "/workflow" },
+  { title: "Automation", icon: Brain, href: "/automation" },
+  { title: "Communication", icon: Bell, href: "/communication" },
+];
+
+const educationModules = [
+  { title: "Education", icon: GraduationCap, href: "/education" },
+  { title: "Marketing", icon: TrendingUp, href: "/marketing" },
 ];
 
 const industryNavItems = [
@@ -65,9 +99,13 @@ const industryNavItems = [
 
 export function AppSidebar() {
   const [location] = useLocation();
-  const [mainExpanded, setMainExpanded] = useState(true);
-  const [intelligenceExpanded, setIntelligenceExpanded] = useState(true);
-  const [enterpriseExpanded, setEnterpriseExpanded] = useState(false);
+  const [coreExpanded, setCoreExpanded] = useState(true);
+  const [opsExpanded, setOpsExpanded] = useState(true);
+  const [finExpanded, setFinExpanded] = useState(true);
+  const [intExpanded, setIntExpanded] = useState(true);
+  const [opModExpanded, setOpModExpanded] = useState(true);
+  const [autoExpanded, setAutoExpanded] = useState(false);
+  const [eduExpanded, setEduExpanded] = useState(false);
   const [industriesExpanded, setIndustriesExpanded] = useState(false);
 
   const renderMenuGroup = (title: string, items: any[], expanded: boolean, setExpanded: any) => (
@@ -97,7 +135,6 @@ export function AppSidebar() {
                   <Link href={item.href}>
                     {item.icon && <item.icon className="h-4 w-4" />}
                     <span className="text-sm">{item.title}</span>
-                    {item.badge && <span className="text-xs ml-auto text-muted-foreground">{item.badge}</span>}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -122,10 +159,14 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
       
-      <SidebarContent className="space-y-2">
-        {renderMenuGroup("Business Modules", mainModules, mainExpanded, setMainExpanded)}
-        {renderMenuGroup("Intelligence", intelligenceModules, intelligenceExpanded, setIntelligenceExpanded)}
-        {renderMenuGroup("Enterprise", enterpriseModules, enterpriseExpanded, setEnterpriseExpanded)}
+      <SidebarContent className="space-y-2 overflow-y-auto">
+        {renderMenuGroup("Core Business", coreBusinessModules, coreExpanded, setCoreExpanded)}
+        {renderMenuGroup("Operations & Admin", operationsModules, opsExpanded, setOpsExpanded)}
+        {renderMenuGroup("Finance & Compliance", financeModules, finExpanded, setFinExpanded)}
+        {renderMenuGroup("Intelligence & Integration", intelligenceModules, intExpanded, setIntExpanded)}
+        {renderMenuGroup("Service & Supply", operationalModules, opModExpanded, setOpModExpanded)}
+        {renderMenuGroup("Workflow & Automation", automationModules, autoExpanded, setAutoExpanded)}
+        {renderMenuGroup("Education & Marketing", educationModules, eduExpanded, setEduExpanded)}
 
         <SidebarGroup>
           <div className="flex items-center justify-between px-2">
