@@ -472,9 +472,10 @@ export default function App() {
   const [location] = useLocation();
   const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
   
-  // Public routes don't show sidebar
+  // Public routes don't show sidebar - includes dynamic routes
   const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo"];
-  const isPublicRoute = publicRoutes.includes(location);
+  const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/");
+  const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
 
   return (
     <RBACProvider>
