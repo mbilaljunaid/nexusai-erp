@@ -14,6 +14,14 @@ import NotFound from "@/pages/not-found";
 // Landing Page
 const LandingPage = lazy(() => import("@/pages/LandingPage"));
 
+// Public Pages (resolve 404s)
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const BlogPage = lazy(() => import("@/pages/BlogPage"));
+const LoginPage = lazy(() => import("@/pages/LoginPage"));
+const DemoManagement = lazy(() => import("@/pages/DemoManagement"));
+const UseCases = lazy(() => import("@/pages/UseCases"));
+const IndustriesPage = lazy(() => import("@/pages/Industries"));
+
 // Core pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const CRM = lazy(() => import("@/pages/CRM"));
@@ -409,6 +417,12 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
+      <Route path="/use-cases" component={UseCases} />
+      <Route path="/industries" component={IndustriesPage} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/blog" component={BlogPage} />
+      <Route path="/login" component={LoginPage} />
+      <Route path="/demo" component={DemoManagement} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/crm" component={CRM} />
       <Route path="/erp" component={ERP} />
