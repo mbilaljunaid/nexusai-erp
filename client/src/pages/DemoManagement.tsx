@@ -33,9 +33,10 @@ export default function DemoManagement() {
         headers: { "x-user-role": "admin" },
       });
       const data = await res.json();
-      setDemos(data);
+      setDemos(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);
+      setDemos([]);
     }
   };
 

@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useRBAC } from "@/components/RBACContext";
 import {
   Users,
   DollarSign,
@@ -15,6 +17,13 @@ import {
 
 export default function Dashboard() {
   const [, navigate] = useLocation();
+  const { isAuthenticated } = useRBAC();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   const metrics = [
     {
