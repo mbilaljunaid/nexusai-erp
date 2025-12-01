@@ -414,6 +414,66 @@ const PackagingTraceability = lazy(() => import("@/pages/PackagingTraceability")
 const ColdChainLogistics = lazy(() => import("@/pages/ColdChainLogistics"));
 const FBDemandPlanning = lazy(() => import("@/pages/FBDemandPlanning"));
 const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTraceability"));
+const admin = lazy(() => import("@/pages/admin"));
+const advanced = lazy(() => import("@/pages/advanced"));
+const ApprovalEscalations = lazy(() => import("@/pages/ApprovalEscalations"));
+const AssortmentPlanner = lazy(() => import("@/pages/AssortmentPlanner"));
+const AuditManagement = lazy(() => import("@/pages/AuditManagement"));
+const Calendar = lazy(() => import("@/pages/Calendar"));
+const ClinicalSupply = lazy(() => import("@/pages/ClinicalSupply"));
+const CMTFactoryManagement = lazy(() => import("@/pages/CMTFactoryManagement"));
+const ComplianceGovernance = lazy(() => import("@/pages/ComplianceGovernance"));
+const ContentMedia = lazy(() => import("@/pages/ContentMedia"));
+const CostingProfitability = lazy(() => import("@/pages/CostingProfitability"));
+const CustomerProfiles = lazy(() => import("@/pages/CustomerProfiles"));
+const DemandForecastingFashion = lazy(() => import("@/pages/DemandForecastingFashion"));
+const detail = lazy(() => import("@/pages/detail"));
+const eBatchRecord = lazy(() => import("@/pages/eBatchRecord"));
+const EcommerceMarketplace = lazy(() => import("@/pages/EcommerceMarketplace"));
+const ELNResearchNotebook = lazy(() => import("@/pages/ELNResearchNotebook"));
+const FashionAnalytics = lazy(() => import("@/pages/FashionAnalytics"));
+const FashionInventory = lazy(() => import("@/pages/FashionInventory"));
+const FashionPOS = lazy(() => import("@/pages/FashionPOS"));
+const FormulationComposer = lazy(() => import("@/pages/FormulationComposer"));
+const HRRetailStaff = lazy(() => import("@/pages/HRRetailStaff"));
+const IndustryDemoPage = lazy(() => import("@/pages/IndustryDemoPage"));
+const InventoryWarehouse = lazy(() => import("@/pages/InventoryWarehouse"));
+const LIMSLabManagement = lazy(() => import("@/pages/LIMSLabManagement"));
+const MarketingCampaigns = lazy(() => import("@/pages/MarketingCampaigns"));
+const MarketingCampaignsRetail = lazy(() => import("@/pages/MarketingCampaignsRetail"));
+const MaterialMaster = lazy(() => import("@/pages/MaterialMaster"));
+const MerchandisingAI = lazy(() => import("@/pages/MerchandisingAI"));
+const NetworkInfra = lazy(() => import("@/pages/NetworkInfra"));
+const PagesIndex = lazy(() => import("@/pages/PagesIndex"));
+const PharmaAnalytics = lazy(() => import("@/pages/PharmaAnalytics"));
+const Pharmacovigilance = lazy(() => import("@/pages/Pharmacovigilance"));
+const ProcessAnalytics = lazy(() => import("@/pages/ProcessAnalytics"));
+const ProcessDesigner = lazy(() => import("@/pages/ProcessDesigner"));
+const ProductMaster = lazy(() => import("@/pages/ProductMaster"));
+const QMSCAPA = lazy(() => import("@/pages/QMSCAPA"));
+const RegulatoryeCTD = lazy(() => import("@/pages/RegulatoryeCTD"));
+const Reporting = lazy(() => import("@/pages/Reporting"));
+const RetailAnalyticsBI = lazy(() => import("@/pages/RetailAnalyticsBI"));
+const RetailInventoryWarehouse = lazy(() => import("@/pages/RetailInventoryWarehouse"));
+const ReturnsExchanges = lazy(() => import("@/pages/ReturnsExchanges"));
+const RiskManagement = lazy(() => import("@/pages/RiskManagement"));
+const SampleTracking = lazy(() => import("@/pages/SampleTracking"));
+const Serialization = lazy(() => import("@/pages/Serialization"));
+const StabilityStudies = lazy(() => import("@/pages/StabilityStudies"));
+const StyleMasterSKU = lazy(() => import("@/pages/StyleMasterSKU"));
+const SubscriberAccounts = lazy(() => import("@/pages/SubscriberAccounts"));
+const SupplierQualification = lazy(() => import("@/pages/SupplierQualification"));
+const Support = lazy(() => import("@/pages/Support"));
+const SustainabilityMaterials = lazy(() => import("@/pages/SustainabilityMaterials"));
+const TechPackBuilder = lazy(() => import("@/pages/TechPackBuilder"));
+const TelecomBI = lazy(() => import("@/pages/TelecomBI"));
+const TelecomBilling = lazy(() => import("@/pages/TelecomBilling"));
+const TelecomCRM = lazy(() => import("@/pages/TelecomCRM"));
+const TelecomFieldService = lazy(() => import("@/pages/TelecomFieldService"));
+const TelecomHR = lazy(() => import("@/pages/TelecomHR"));
+const TelecomMarketing = lazy(() => import("@/pages/TelecomMarketing"));
+const ValidationCSV = lazy(() => import("@/pages/ValidationCSV"));
+const WholesaleB2B = lazy(() => import("@/pages/WholesaleB2B"));
 const FoodBeverageBIDashboard = lazy(() => import("@/pages/FoodBeverageBIDashboard"));
 const ProductMasterCPG = lazy(() => import("@/pages/ProductMasterCPG"));
 const IngredientMasterCPG = lazy(() => import("@/pages/IngredientMasterCPG"));
@@ -1521,6 +1581,66 @@ function Router() {
       <Route path="/analytics-module" component={AnalyticsModule} />
       <Route path="/admin-console-module" component={AdminConsoleModule} />
       <Route path="/compliance-module" component={ComplianceModule} />
+      <Route path="/admin" component={admin} />
+      <Route path="/advanced" component={advanced} />
+      <Route path="/approval-escalations" component={ApprovalEscalations} />
+      <Route path="/assortment-planner" component={AssortmentPlanner} />
+      <Route path="/audit-management" component={AuditManagement} />
+      <Route path="/calendar" component={Calendar} />
+      <Route path="/clinical-supply" component={ClinicalSupply} />
+      <Route path="/c-m-t-factory-management" component={CMTFactoryManagement} />
+      <Route path="/compliance-governance" component={ComplianceGovernance} />
+      <Route path="/content-media" component={ContentMedia} />
+      <Route path="/costing-profitability" component={CostingProfitability} />
+      <Route path="/customer-profiles" component={CustomerProfiles} />
+      <Route path="/demand-forecasting-fashion" component={DemandForecastingFashion} />
+      <Route path="/detail" component={detail} />
+      <Route path="/e-batch-record" component={eBatchRecord} />
+      <Route path="/ecommerce-marketplace" component={EcommerceMarketplace} />
+      <Route path="/e-l-n-research-notebook" component={ELNResearchNotebook} />
+      <Route path="/fashion-analytics" component={FashionAnalytics} />
+      <Route path="/fashion-inventory" component={FashionInventory} />
+      <Route path="/fashion-p-o-s" component={FashionPOS} />
+      <Route path="/formulation-composer" component={FormulationComposer} />
+      <Route path="/h-r-retail-staff" component={HRRetailStaff} />
+      <Route path="/industry-demo-page" component={IndustryDemoPage} />
+      <Route path="/inventory-warehouse" component={InventoryWarehouse} />
+      <Route path="/l-i-m-s-lab-management" component={LIMSLabManagement} />
+      <Route path="/marketing-campaigns" component={MarketingCampaigns} />
+      <Route path="/marketing-campaigns-retail" component={MarketingCampaignsRetail} />
+      <Route path="/material-master" component={MaterialMaster} />
+      <Route path="/merchandising-a-i" component={MerchandisingAI} />
+      <Route path="/network-infra" component={NetworkInfra} />
+      <Route path="/pages-index" component={PagesIndex} />
+      <Route path="/pharma-analytics" component={PharmaAnalytics} />
+      <Route path="/pharmacovigilance" component={Pharmacovigilance} />
+      <Route path="/process-analytics" component={ProcessAnalytics} />
+      <Route path="/process-designer" component={ProcessDesigner} />
+      <Route path="/product-master" component={ProductMaster} />
+      <Route path="/q-m-s-c-a-p-a" component={QMSCAPA} />
+      <Route path="/regulatorye-c-t-d" component={RegulatoryeCTD} />
+      <Route path="/reporting" component={Reporting} />
+      <Route path="/retail-analytics-b-i" component={RetailAnalyticsBI} />
+      <Route path="/retail-inventory-warehouse" component={RetailInventoryWarehouse} />
+      <Route path="/returns-exchanges" component={ReturnsExchanges} />
+      <Route path="/risk-management" component={RiskManagement} />
+      <Route path="/sample-tracking" component={SampleTracking} />
+      <Route path="/serialization" component={Serialization} />
+      <Route path="/stability-studies" component={StabilityStudies} />
+      <Route path="/style-master-s-k-u" component={StyleMasterSKU} />
+      <Route path="/subscriber-accounts" component={SubscriberAccounts} />
+      <Route path="/supplier-qualification" component={SupplierQualification} />
+      <Route path="/support" component={Support} />
+      <Route path="/sustainability-materials" component={SustainabilityMaterials} />
+      <Route path="/tech-pack-builder" component={TechPackBuilder} />
+      <Route path="/telecom-b-i" component={TelecomBI} />
+      <Route path="/telecom-billing" component={TelecomBilling} />
+      <Route path="/telecom-c-r-m" component={TelecomCRM} />
+      <Route path="/telecom-field-service" component={TelecomFieldService} />
+      <Route path="/telecom-h-r" component={TelecomHR} />
+      <Route path="/telecom-marketing" component={TelecomMarketing} />
+      <Route path="/validation-c-s-v" component={ValidationCSV} />
+      <Route path="/wholesale-b2-b" component={WholesaleB2B} />
       <Route component={NotFound} />
     </Switch>
   );
