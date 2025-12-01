@@ -1021,6 +1021,7 @@ function Router() {
       <Route path="/health" component={Health} />
       <Route path="/industries" component={Industries} />
       <Route path="/industry-configuration" component={IndustryConfiguration} />
+      <Route path="/industry/logistics" component={LogisticsDashboard} />
       <Route path="/dashboard-builder" component={DashboardBuilder} />
       <Route path="/report-builder" component={ReportBuilder} />
       <Route path="/data-explorer" component={DataExplorer} />
