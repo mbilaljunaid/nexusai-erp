@@ -371,3 +371,57 @@
 .landing-card:hover {
   background-color: hsl(var(--primary) / 0.1);
 }
+
+/* Public Pages Theme Variables - Universal across all public pages */
+.public-page {
+  background: linear-gradient(to bottom, hsl(var(--background)), hsl(var(--muted)));
+  color: hsl(var(--foreground));
+}
+
+.public-hero {
+  background: linear-gradient(to bottom, hsl(var(--background)), hsl(var(--background) / 0.8));
+  color: hsl(var(--foreground));
+}
+
+.public-hero-title {
+  color: hsl(var(--foreground));
+  font-weight: bold;
+}
+
+.public-hero-subtitle {
+  color: hsl(var(--muted-foreground));
+}
+
+.public-section {
+  color: hsl(var(--foreground));
+  background-color: transparent;
+}
+
+.public-section-alt {
+  background-color: hsl(var(--muted) / 0.5);
+}
+
+.public-card {
+  background-color: hsl(var(--card));
+  border-color: hsl(var(--card-border));
+  color: hsl(var(--card-foreground));
+}
+
+.public-card:hover {
+  background-color: hsl(var(--primary) / 0.1);
+}
+
+.public-cta {
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--ring)));
+  border: 1px solid hsl(var(--primary));
+}
+
+.public-badge {
+  background-color: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+  border-color: hsl(var(--primary) / 0.4);
+}
+
+.public-accent-border {
+  border-color: hsl(var(--primary));
+}

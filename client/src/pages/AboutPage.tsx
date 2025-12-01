@@ -11,36 +11,36 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <div className="public-page min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1">
       {/* Hero */}
-      <section className="px-4 py-20 text-center max-w-4xl mx-auto">
-        <h1 className="text-5xl font-bold mb-6">About NexusAI</h1>
-        <p className="text-xl text-slate-300">Revolutionizing enterprise software with AI-powered automation and industry-specific solutions for the modern workforce.</p>
+      <section className="public-hero px-4 py-20 text-center max-w-4xl mx-auto">
+        <h1 className="public-hero-title text-5xl font-bold mb-6">About NexusAI</h1>
+        <p className="public-hero-subtitle text-xl">Revolutionizing enterprise software with AI-powered automation and industry-specific solutions for the modern workforce.</p>
       </section>
 
       {/* Mission */}
-      <section className="px-4 py-16 bg-slate-800/50">
+      <section className="public-section-alt px-4 py-16">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="bg-slate-800 border-slate-700 p-6">
-            <h3 className="text-2xl font-bold mb-3">🎯 Our Mission</h3>
-            <p className="text-slate-300">Empower businesses of all sizes with enterprise-grade ERP software that's affordable, easy to use, and powered by artificial intelligence.</p>
+          <Card className="public-card p-6">
+            <h3 className="text-2xl font-bold mb-3">Our Mission</h3>
+            <p style={{ color: `hsl(var(--muted-foreground))` }}>Empower businesses of all sizes with enterprise-grade ERP software that's affordable, easy to use, and powered by artificial intelligence.</p>
           </Card>
-          <Card className="bg-slate-800 border-slate-700 p-6">
-            <h3 className="text-2xl font-bold mb-3">👁️ Our Vision</h3>
-            <p className="text-slate-300">To become the world's most trusted all-in-one ERP platform, enabling companies to operate more efficiently across 40+ industries globally.</p>
+          <Card className="public-card p-6">
+            <h3 className="text-2xl font-bold mb-3">Our Vision</h3>
+            <p style={{ color: `hsl(var(--muted-foreground))` }}>To become the world's most trusted all-in-one ERP platform, enabling companies to operate more efficiently across 40+ industries globally.</p>
           </Card>
-          <Card className="bg-slate-800 border-slate-700 p-6">
-            <h3 className="text-2xl font-bold mb-3">💡 Our Values</h3>
-            <p className="text-slate-300">Innovation, transparency, customer-first thinking, and continuous improvement in everything we do.</p>
+          <Card className="public-card p-6">
+            <h3 className="text-2xl font-bold mb-3">Our Values</h3>
+            <p style={{ color: `hsl(var(--muted-foreground))` }}>Innovation, transparency, customer-first thinking, and continuous improvement in everything we do.</p>
           </Card>
         </div>
       </section>
 
       {/* Why NexusAI */}
-      <section className="px-4 py-20 max-w-6xl mx-auto">
+      <section className="public-section px-4 py-20 max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold mb-12 text-center">Why Choose NexusAI?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
@@ -51,16 +51,16 @@ export default function AboutPage() {
             { title: "Transparent Pricing", desc: "No hidden fees. Scale-as-you-grow pricing model." },
             { title: "Enterprise Security", desc: "RBAC, multi-tenant isolation, audit logging, SOC 2 compliant." },
           ].map((item, i) => (
-            <div key={i} className="border-l-4 border-blue-500 pl-6">
+            <div key={i} className="public-accent-border border-l-4 pl-6">
               <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-              <p className="text-slate-300">{item.desc}</p>
+              <p style={{ color: `hsl(var(--muted-foreground))` }}>{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Contact */}
-      <section className="px-4 py-20 bg-slate-800/50">
+      <section className="public-section-alt px-4 py-20">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center">Get in Touch</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

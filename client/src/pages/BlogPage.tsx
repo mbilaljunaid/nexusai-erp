@@ -76,18 +76,18 @@ export default function BlogPage() {
     : posts.filter(p => p.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <div className="public-page min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
 
       {/* Hero */}
-      <section className="px-4 py-16 text-center max-w-4xl mx-auto">
-        <h1 className="text-5xl font-bold mb-4">NexusAI Blog</h1>
-        <p className="text-xl text-slate-300">Insights, best practices, and industry news for enterprise ERP</p>
+      <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
+        <h1 className="public-hero-title text-5xl font-bold mb-4">NexusAI Blog</h1>
+        <p className="public-hero-subtitle text-xl">Insights, best practices, and industry news for enterprise ERP</p>
       </section>
 
       {/* Category Filter */}
-      <section className="px-4 py-8 flex justify-center gap-3 flex-wrap">
+      <section className="public-section px-4 py-8 flex justify-center gap-3 flex-wrap">
         {categories.map((cat) => (
           <Button
             key={cat}
@@ -102,10 +102,10 @@ export default function BlogPage() {
       </section>
 
       {/* Blog Posts */}
-      <section className="px-4 py-12 max-w-6xl mx-auto">
+      <section className="public-section px-4 py-12 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((post) => (
-            <Card key={post.id} className="bg-slate-800 border-slate-700 overflow-hidden hover-elevate cursor-pointer" data-testid={`card-blog-post-${post.id}`}>
+            <Card key={post.id} className="public-card overflow-hidden hover-elevate cursor-pointer" data-testid={`card-blog-post-${post.id}`}>
               <div className="text-6xl p-4 text-center bg-slate-700/50">{post.image}</div>
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
