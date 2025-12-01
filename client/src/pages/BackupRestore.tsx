@@ -34,7 +34,7 @@ export default function BackupRestore() {
               <p className="text-sm text-muted-foreground">{b.size} • {b.status}</p>
             </CardContent>
           </Card>
-        )) : <p className="text-muted-foreground text-center py-4">No backups found</p>
+        )) : <p className="text-muted-foreground text-center py-4">No backups found</p>}
       </div>
     </div>
   );

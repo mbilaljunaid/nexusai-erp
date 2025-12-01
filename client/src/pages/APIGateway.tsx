@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { queryClient } from "@/lib/queryClient";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -67,7 +68,7 @@ export default function APIGateway() {
           <Input 
             placeholder="Key Name (e.g., Production API, Mobile App)" 
             value={newKey.name}
-            onChange={e => setNewKey({...newKey, name: e.target.value})}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewKey({...newKey, name: e.target.value})}
             data-testid="input-api-key-name"
           />
           <Button 
