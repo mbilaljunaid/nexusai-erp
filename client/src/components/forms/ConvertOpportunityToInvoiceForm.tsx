@@ -30,7 +30,7 @@ export function ConvertOpportunityToInvoiceForm({ opportunity, onClose }: { oppo
   const convertMutation = useMutation({
     mutationFn: async () => {
       // Create invoice linked to opportunity
-      const invoice = await apiRequest("POST", "/api/invoices", {
+      const invoice: any = await apiRequest("POST", "/api/invoices", {
         invoiceNumber,
         customerId,
         amount: parseFloat(amount),
@@ -46,7 +46,7 @@ export function ConvertOpportunityToInvoiceForm({ opportunity, onClose }: { oppo
         description: `Revenue from ${opportunity.name}`,
         debit: 0,
         credit: parseFloat(amount),
-        invoiceId: invoice.id,
+        invoiceId: invoice?.id,
         linkedOpportunityId: opportunity.id
       });
 

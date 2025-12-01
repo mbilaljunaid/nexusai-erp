@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertTriangle, AutoFix } from "lucide-react";
+import { AlertTriangle, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -83,7 +83,7 @@ export function AutoRequisitionForm({ item }: { item: LowStockItem }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
-          <AutoFix className="w-5 h-5" />
+          <Zap className="w-5 h-5" />
           Create Auto-Requisition for {item.itemName}
         </CardTitle>
       </CardHeader>
