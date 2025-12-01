@@ -254,6 +254,36 @@ export default function Dashboard() {
               <h3 className="font-bold text-slate-900 dark:text-white">Role Management</h3>
               <p className="text-sm text-slate-600 dark:text-slate-400">Configure user roles</p>
             </button>
+
+            <button
+              onClick={() => navigate("/environment-management")}
+              data-testid="button-admin-environment"
+              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+            >
+              <Settings className="w-8 h-8 text-cyan-600 dark:text-cyan-400 mb-2" />
+              <h3 className="font-bold text-slate-900 dark:text-white">Environment Vars</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Manage configurations</p>
+            </button>
+
+            <button
+              onClick={() => navigate("/subscription-management")}
+              data-testid="button-admin-subscriptions"
+              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+            >
+              <DollarSign className="w-8 h-8 text-indigo-600 dark:text-indigo-400 mb-2" />
+              <h3 className="font-bold text-slate-900 dark:text-white">Subscriptions</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Manage plans & billing</p>
+            </button>
+
+            <button
+              onClick={() => navigate("/billing-management")}
+              data-testid="button-admin-billing"
+              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+            >
+              <BarChart3 className="w-8 h-8 text-pink-600 dark:text-pink-400 mb-2" />
+              <h3 className="font-bold text-slate-900 dark:text-white">Billing</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Invoices & payments</p>
+            </button>
           </div>
         </Card>
       )}

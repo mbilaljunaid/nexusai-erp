@@ -24,6 +24,9 @@ const IndustriesPage = lazy(() => import("@/pages/Industries"));
 const IndustryDetail = lazy(() => import("@/pages/IndustryDetail"));
 const ModuleDetail = lazy(() => import("@/pages/ModuleDetail"));
 const IndustrySetup = lazy(() => import("@/pages/IndustrySetup"));
+const EnvironmentManagement = lazy(() => import("@/pages/EnvironmentManagement"));
+const SubscriptionManagement = lazy(() => import("@/pages/SubscriptionManagement"));
+const BillingManagement = lazy(() => import("@/pages/BillingManagement"));
 
 // Core pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -437,6 +440,9 @@ function Router() {
       <Route path="/projects/:page" component={Projects} />
       <Route path="/industry-setup" component={IndustrySetup} />
       <Route path="/industry-deployments" component={IndustrySetup} />
+      <Route path="/environment-management" component={EnvironmentManagement} />
+      <Route path="/subscription-management" component={SubscriptionManagement} />
+      <Route path="/billing-management" component={BillingManagement} />
       <Route path="/industry/:slug" component={IndustryDetail} />
       <Route path="/module/:slug" component={ModuleDetail} />
       <Route component={NotFound} />
