@@ -38,7 +38,7 @@ export default function Dashboard() {
     }
   }, [isAuthenticated, navigate]);
 
-  const { data: leads = [] } = useQuery({
+  const { data: leads = [] } = useQuery<any[]>({
     queryKey: ["/api/leads"],
     retry: false
   });

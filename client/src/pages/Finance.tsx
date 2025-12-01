@@ -20,7 +20,7 @@ export default function Finance() {
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const invoicesMetadata = getFormMetadata("invoices");
   
-  const { data: invoices = [] } = useQuery({
+  const { data: invoices = [] } = useQuery<any[]>({
     queryKey: ["/api/invoices"],
     retry: false
   });

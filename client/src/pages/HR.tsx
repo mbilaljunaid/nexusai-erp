@@ -27,7 +27,7 @@ export default function HR() {
     }
   }, [params?.page]);
   
-  const { data: employees = [] } = useQuery({ queryKey: ["/api/employees"], retry: false });
+  const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/employees"], retry: false });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
