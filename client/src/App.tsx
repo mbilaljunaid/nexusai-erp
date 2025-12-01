@@ -424,6 +424,7 @@ function Router() {
       <Route path="/blog" component={BlogPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin" component={AdminConsole} />
+      <Route path="/admin-roles" component={AdminRoles} />
       <Route path="/demo" component={DemoManagement} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/crm/:page?" component={CRM} />
@@ -431,6 +432,33 @@ function Router() {
       <Route path="/finance/:page?" component={Finance} />
       <Route path="/hr/:page?" component={HR} />
       <Route path="/projects/:page?" component={Projects} />
+      <Route path="/crm-module" component={CRMModule} />
+      <Route path="/finance-module" component={FinanceModule} />
+      <Route path="/hr-module" component={HRModule} />
+      <Route path="/erp-module" component={ERPModule} />
+      <Route path="/service-module" component={ServiceModule} />
+      <Route path="/projects-module" component={ProjectsModule} />
+      <Route path="/marketing-module" component={MarketingModule} />
+      <Route path="/manufacturing-module" component={ManufacturingModule} />
+      <Route path="/analytics-module" component={AnalyticsModule} />
+      <Route path="/admin-console-module" component={AdminConsoleModule} />
+      <Route path="/compliance-module" component={ComplianceModule} />
+      <Route path="/epm-module" component={EPMModule} />
+      <Route path="/analytics" component={Analytics} />
+      <Route path="/copilot" component={Copilot} />
+      <Route path="/marketplace" component={Marketplace} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/integrations" component={Integrations} />
+      <Route path="/mrp-dashboard" component={MRPDashboard} />
+      <Route path="/attendance-dashboard" component={AttendanceDashboard} />
+      <Route path="/ticket-dashboard" component={TicketDashboard} />
+      <Route path="/api-gateway" component={APIGateway} />
+      <Route path="/tenant-admin" component={TenantAdmin} />
+      <Route path="/invoice-generator" component={InvoiceGenerator} />
+      <Route path="/quote-builder" component={QuoteBuilder} />
+      <Route path="/approval-workflow" component={ApprovalWorkflow} />
+      <Route path="/payment-flow" component={PaymentFlow} />
+      <Route path="/user-management" component={UserManagement} />
       <Route path="/industry-setup" component={IndustrySetup} />
       <Route path="/industry-deployments" component={IndustrySetup} />
       <Route path="/environment-management" component={EnvironmentManagement} />
