@@ -24,51 +24,49 @@ export default function UATAutomation() {
   const [selectedModule, setSelectedModule] = useState("");
 
   const { data: scripts = [], isLoading } = useQuery<UATScript[]>({
-    queryKey: ["/api/uat/scripts", selectedIndustry],
-    enabled: !!selectedIndustry,
-    queryFn: () =>
+    queryKey: ["/api/uat/scripts", selectedIndustry]
+    enabled: !!selectedIndustry
       fetch(`http://localhost:3001/api/uat/scripts/${selectedIndustry}`, { credentials: "include" }).then(
         (r) => r.json()
-      ),
+      )
   });
 
   const { data: coverage, refetch: refetchCoverage } = useQuery({
-    queryKey: ["/api/uat/coverage", selectedIndustry],
-    enabled: !!selectedIndustry,
-    queryFn: () =>
+    queryKey: ["/api/uat/coverage", selectedIndustry]
+    enabled: !!selectedIndustry
       fetch(`http://localhost:3001/api/uat/coverage/${selectedIndustry}`, { credentials: "include" }).then(
         (r) => r.json()
-      ),
+      )
   });
 
   const generateMutation = useMutation({
     mutationFn: async () => {
       return apiRequest("POST", `http://localhost:3001/api/uat/generate/${selectedIndustry}/${selectedModule}`, {
-        count: 5,
+        count: 5
       });
-    },
+    }
     onSuccess: () => {
       toast({ title: "Success", description: "UAT scripts generated successfully" });
       refetchCoverage();
-    },
+    }
     onError: () => {
       toast({ title: "Error", description: "Failed to generate UAT scripts", variant: "destructive" });
-    },
+    }
   });
 
   const industries = [
-    { id: "manufacturing", name: "Manufacturing" },
-    { id: "retail", name: "Retail" },
-    { id: "finance", name: "Finance" },
-    { id: "healthcare", name: "Healthcare" },
-    { id: "construction", name: "Construction" },
+    { id: "manufacturing", name: "Manufacturing" }
+    { id: "retail", name: "Retail" }
+    { id: "finance", name: "Finance" }
+    { id: "healthcare", name: "Healthcare" }
+    { id: "construction", name: "Construction" }
   ];
 
   const modules = [
-    { id: "erp", name: "ERP" },
-    { id: "crm", name: "CRM" },
-    { id: "hr", name: "HR" },
-    { id: "projects", name: "Projects" },
+    { id: "erp", name: "ERP" }
+    { id: "crm", name: "CRM" }
+    { id: "hr", name: "HR" }
+    { id: "projects", name: "Projects" }
   ];
 
   const getPriorityIcon = (priority: string) => {

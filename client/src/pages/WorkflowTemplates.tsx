@@ -13,25 +13,25 @@ export default function WorkflowTemplates() {
   const [newTemplate, setNewTemplate] = useState({ name: "", category: "Sales" });
 
   const { data: templates = [], isLoading } = useQuery({
-    queryKey: ["/api/workflow-templates"],
-    queryFn: () => fetch("/api/workflow-templates").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/workflow-templates"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/workflow-templates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/workflow-templates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workflow-templates"] });
       setNewTemplate({ name: "", category: "Sales" });
       toast({ title: "Template created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/workflow-templates/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/workflow-templates/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workflow-templates"] });
       toast({ title: "Template deleted" });
-    },
+    }
   });
 
   return (

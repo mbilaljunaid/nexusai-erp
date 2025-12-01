@@ -7,9 +7,9 @@ export default function PermissionMatrix() {
   const actions = ["Create", "Read", "Update", "Delete", "Approve", "Export"];
   
   const permissions = {
-    "CRM": { Admin: "✓✓✓✓✓✓", Manager: "✓✓✓○✓✓", Supervisor: "✓✓✓○○✓", Operator: "✓✓○○○✓", Viewer: "✓○○○○○" },
-    "ERP": { Admin: "✓✓✓✓✓✓", Manager: "✓✓✓✓✓✓", Supervisor: "✓✓✓○○✓", Operator: "✓✓○○○○", Viewer: "✓○○○○○" },
-    "Finance": { Admin: "✓✓✓✓✓✓", Manager: "✓✓✓✓✓✓", Supervisor: "✓✓✓✓○✓", Operator: "✓✓○○○✓", Viewer: "✓○○○○○" },
+    "CRM": { Admin: "✓✓✓✓✓✓", Manager: "✓✓✓○✓✓", Supervisor: "✓✓✓○○✓", Operator: "✓✓○○○✓", Viewer: "✓○○○○○" }
+    "ERP": { Admin: "✓✓✓✓✓✓", Manager: "✓✓✓✓✓✓", Supervisor: "✓✓✓○○✓", Operator: "✓✓○○○○", Viewer: "✓○○○○○" }
+    "Finance": { Admin: "✓✓✓✓✓✓", Manager: "✓✓✓✓✓✓", Supervisor: "✓✓✓✓○✓", Operator: "✓✓○○○✓", Viewer: "✓○○○○○" }
   };
 
   return (

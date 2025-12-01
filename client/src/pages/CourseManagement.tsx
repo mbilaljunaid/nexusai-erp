@@ -5,8 +5,8 @@ import { Plus, BookOpen } from "lucide-react";
 
 export default function CourseManagement() {
   const courses = [
-    { id: "CSE101", name: "Data Structures", faculty: "Dr. Sharma", credits: 4, students: 45 },
-    { id: "CSE102", name: "Web Development", faculty: "Dr. Sharma", credits: 3, students: 38 },
+    { id: "CSE101", name: "Data Structures", faculty: "Dr. Sharma", credits: 4, students: 45 }
+    { id: "CSE102", name: "Web Development", faculty: "Dr. Sharma", credits: 3, students: 38 }
   ];
   return (
     <div className="space-y-6 p-6">

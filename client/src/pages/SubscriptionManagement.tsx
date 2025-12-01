@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select
+  SelectContent
+  SelectItem
+  SelectTrigger
+  SelectValue
 } from "@/components/ui/select";
 import { Plus, Edit, Trash2, CheckCircle2, AlertCircle, Clock } from "lucide-react";
 
@@ -28,44 +28,44 @@ interface Subscription {
 export default function SubscriptionManagement() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([
     {
-      id: "sub-1",
-      tenantId: "tenant-1",
-      tenantName: "Acme Corporation",
-      plan: "enterprise",
-      status: "active",
-      users: 150,
-      storage: 500,
-      startDate: "2024-01-01",
-      renewalDate: "2025-01-01",
-      amount: 5000,
-      autoRenew: true,
-    },
+      id: "sub-1"
+      tenantId: "tenant-1"
+      tenantName: "Acme Corporation"
+      plan: "enterprise"
+      status: "active"
+      users: 150
+      storage: 500
+      startDate: "2024-01-01"
+      renewalDate: "2025-01-01"
+      amount: 5000
+      autoRenew: true
+    }
     {
-      id: "sub-2",
-      tenantId: "tenant-2",
-      tenantName: "Global Industries",
-      plan: "professional",
-      status: "active",
-      users: 50,
-      storage: 100,
-      startDate: "2024-06-15",
-      renewalDate: "2025-06-15",
-      amount: 1500,
-      autoRenew: true,
-    },
+      id: "sub-2"
+      tenantId: "tenant-2"
+      tenantName: "Global Industries"
+      plan: "professional"
+      status: "active"
+      users: 50
+      storage: 100
+      startDate: "2024-06-15"
+      renewalDate: "2025-06-15"
+      amount: 1500
+      autoRenew: true
+    }
     {
-      id: "sub-3",
-      tenantId: "tenant-3",
-      tenantName: "Tech Solutions",
-      plan: "starter",
-      status: "paused",
-      users: 10,
-      storage: 20,
-      startDate: "2024-09-01",
-      renewalDate: "2025-09-01",
-      amount: 300,
-      autoRenew: false,
-    },
+      id: "sub-3"
+      tenantId: "tenant-3"
+      tenantName: "Tech Solutions"
+      plan: "starter"
+      status: "paused"
+      users: 10
+      storage: 20
+      startDate: "2024-09-01"
+      renewalDate: "2025-09-01"
+      amount: 300
+      autoRenew: false
+    }
   ]);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterPlan, setFilterPlan] = useState<string>("all");
@@ -101,16 +101,16 @@ export default function SubscriptionManagement() {
   });
 
   const stats = {
-    total: subscriptions.length,
-    active: subscriptions.filter((s) => s.status === "active").length,
+    total: subscriptions.length
+    active: subscriptions.filter((s) => s.status === "active").length
     revenue: subscriptions
       .filter((s) => s.status === "active")
-      .reduce((sum, s) => sum + s.amount, 0),
+      .reduce((sum, s) => sum + s.amount, 0)
     expiring: subscriptions.filter(
       (s) =>
         new Date(s.renewalDate).getTime() - Date.now() < 30 * 24 * 60 * 60 * 1000 &&
         s.status === "active"
-    ).length,
+    ).length
   };
 
   const getPlanColor = (plan: string) => {

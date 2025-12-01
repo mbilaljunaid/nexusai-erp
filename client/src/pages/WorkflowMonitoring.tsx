@@ -5,12 +5,11 @@ import { Activity, TrendingUp, AlertCircle } from "lucide-react";
 
 export default function WorkflowMonitoring() {
   const { data: executions = [] } = useQuery({
-    queryKey: ["/api/workflow-executions"],
-    queryFn: () => fetch("/api/workflow-executions").then(r => r.json()).catch(() => [
-      { id: "we1", workflow: "Auto-assign leads", status: "success", executionTime: "145ms", records: 42, timestamp: "Nov 30, 10:15 AM" },
-      { id: "we2", workflow: "Send approval notification", status: "success", executionTime: "234ms", records: 18, timestamp: "Nov 30, 10:10 AM" },
-      { id: "we3", workflow: "Create task on ticket", status: "failed", executionTime: "5023ms", records: 1, timestamp: "Nov 30, 09:45 AM" },
-    ]),
+    queryKey: ["/api/workflow-executions"]
+      { id: "we1", workflow: "Auto-assign leads", status: "success", executionTime: "145ms", records: 42, timestamp: "Nov 30, 10:15 AM" }
+      { id: "we2", workflow: "Send approval notification", status: "success", executionTime: "234ms", records: 18, timestamp: "Nov 30, 10:10 AM" }
+      { id: "we3", workflow: "Create task on ticket", status: "failed", executionTime: "5023ms", records: 1, timestamp: "Nov 30, 09:45 AM" }
+    ])
   });
 
   return (

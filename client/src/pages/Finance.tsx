@@ -14,14 +14,14 @@ export default function Finance() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
-    { id: "invoices", label: "Invoices", icon: FileText, color: "text-green-500" },
-    { id: "expenses", label: "Expenses", icon: DollarSign, color: "text-orange-500" },
-    { id: "budgets", label: "Budgets", icon: PieChart, color: "text-purple-500" },
-    { id: "reports", label: "Reports", icon: TrendingUp, color: "text-pink-500" },
-    { id: "payments", label: "Payments", icon: CreditCard, color: "text-cyan-500" },
-    { id: "ledger", label: "General Ledger", icon: Zap, color: "text-indigo-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
+    { id: "invoices", label: "Invoices", icon: FileText, color: "text-green-500" }
+    { id: "expenses", label: "Expenses", icon: DollarSign, color: "text-orange-500" }
+    { id: "budgets", label: "Budgets", icon: PieChart, color: "text-purple-500" }
+    { id: "reports", label: "Reports", icon: TrendingUp, color: "text-pink-500" }
+    { id: "payments", label: "Payments", icon: CreditCard, color: "text-cyan-500" }
+    { id: "ledger", label: "General Ledger", icon: Zap, color: "text-indigo-500" }
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" }
   ];
 
   return (

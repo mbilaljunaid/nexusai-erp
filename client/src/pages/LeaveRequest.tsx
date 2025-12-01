@@ -11,7 +11,7 @@ export default function LeaveRequest() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredLeaves, setFilteredLeaves] = useState<any[]>([]);
   const { data: leaves = [] } = useQuery<any[]>({
-    queryKey: ["/api/hr/leave-requests"],
+    queryKey: ["/api/hr/leave-requests"]
   });
   const formMetadata = getFormMetadata("leaveRequest");
 

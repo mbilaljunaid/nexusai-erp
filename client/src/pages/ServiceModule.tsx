@@ -68,8 +68,8 @@ export default function ServiceModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { num: "INC-001", title: "System Outage", severity: "critical" },
-              { num: "INC-002", title: "Database Connection", severity: "high" },
+              { num: "INC-001", title: "System Outage", severity: "critical" }
+              { num: "INC-002", title: "Database Connection", severity: "high" }
             ].map((incident) => (
               <div key={incident.num} className="p-3 border rounded">
                 <div className="flex justify-between items-start">
@@ -92,8 +92,8 @@ export default function ServiceModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { num: "SC-001", customer: "Tech Corp", amount: "$50K", uptime: "99.9%" },
-              { num: "SC-002", customer: "Finance Inc", amount: "$75K", uptime: "99.95%" },
+              { num: "SC-001", customer: "Tech Corp", amount: "$50K", uptime: "99.9%" }
+              { num: "SC-002", customer: "Finance Inc", amount: "$75K", uptime: "99.95%" }
             ].map((contract) => (
               <div key={contract.num} className="p-3 border rounded">
                 <div className="flex justify-between items-start">

@@ -14,25 +14,25 @@ export default function PricingRebatesEngine() {
   const [newRebate, setNewRebate] = useState({ customer: "", tierQty: "1000", rebateRate: "5", period: "monthly", status: "active" });
 
   const { data: rebates = [], isLoading } = useQuery({
-    queryKey: ["/api/rebates"],
-    queryFn: () => fetch("/api/rebates").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/rebates"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/rebates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/rebates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/rebates"] });
       setNewRebate({ customer: "", tierQty: "1000", rebateRate: "5", period: "monthly", status: "active" });
       toast({ title: "Rebate tier created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/rebates/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/rebates/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/rebates"] });
       toast({ title: "Rebate deleted" });
-    },
+    }
   });
 
   const active = rebates.filter((r: any) => r.status === "active").length;

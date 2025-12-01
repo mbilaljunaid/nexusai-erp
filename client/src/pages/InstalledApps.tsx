@@ -11,8 +11,8 @@ export default function InstalledApps() {
       </div>
       <div className="grid gap-4">
         {[
-          { name: "Slack Integration", version: "2.1.0", status: "Active" },
-          { name: "Salesforce Sync", version: "1.5.2", status: "Active" },
+          { name: "Slack Integration", version: "2.1.0", status: "Active" }
+          { name: "Salesforce Sync", version: "1.5.2", status: "Active" }
         ].map((app) => (
           <Card key={app.name}>
             <CardContent className="pt-6">

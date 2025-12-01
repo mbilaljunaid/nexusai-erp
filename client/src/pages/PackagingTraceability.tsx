@@ -5,8 +5,8 @@ import { Tag } from "lucide-react";
 
 export default function PackagingTraceability() {
   const { data: labels = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-labels"],
-    queryFn: () => fetch("/api/fb-labels").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/fb-labels"]
+    
   });
 
   return (

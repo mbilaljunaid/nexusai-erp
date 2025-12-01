@@ -14,25 +14,25 @@ export default function CashManagementPage() {
   const [newTransaction, setNewTransaction] = useState({ type: "Receipt", amount: "", account: "" });
 
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ["/api/finance/cash-transactions"],
-    queryFn: () => fetch("/api/finance/cash-transactions").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/finance/cash-transactions"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/finance/cash-transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/finance/cash-transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/cash-transactions"] });
       setNewTransaction({ type: "Receipt", amount: "", account: "" });
       toast({ title: "Transaction created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/cash-transactions/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/finance/cash-transactions/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/cash-transactions"] });
       toast({ title: "Transaction deleted" });
-    },
+    }
   });
 
   return (

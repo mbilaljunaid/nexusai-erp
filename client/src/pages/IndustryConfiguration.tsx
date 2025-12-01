@@ -23,18 +23,17 @@ export default function IndustryConfiguration() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("");
   const [enabledModules, setEnabledModules] = useState<string[]>([]);
   const [config, setConfig] = useState({
-    currency: "USD",
-    timezone: "UTC",
-    language: "en",
-    accountingStandard: "GAAP",
+    currency: "USD"
+    timezone: "UTC"
+    language: "en"
+    accountingStandard: "GAAP"
   });
 
   const { data: industries, isLoading } = useQuery<IndustryData[]>({
-    queryKey: ["/api/industries"],
-    queryFn: () =>
+    queryKey: ["/api/industries"]
       fetch("http://localhost:3001/api/industries", { credentials: "include" }).then((r) =>
         r.json()
-      ),
+      )
   });
 
   const selectedIndustryData = industries?.find((i) => i.id === selectedIndustry);
@@ -42,21 +41,21 @@ export default function IndustryConfiguration() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       return apiRequest("POST", "http://localhost:3001/api/configuration", {
-        industryId: selectedIndustry,
-        tenantId: "acme",
-        enabledModules,
-        taxRules: {},
-        laborLaws: {},
-        ...config,
-        complianceRequirements: selectedIndustryData?.regulations || [],
+        industryId: selectedIndustry
+        tenantId: "acme"
+        enabledModules
+        taxRules: {}
+        laborLaws: {}
+        ...config
+        complianceRequirements: selectedIndustryData?.regulations || []
       });
-    },
+    }
     onSuccess: () => {
       toast({ title: "Success", description: "Industry configuration saved" });
-    },
+    }
     onError: () => {
       toast({ title: "Error", description: "Failed to save configuration", variant: "destructive" });
-    },
+    }
   });
 
   const handleModuleToggle = (module: string) => {

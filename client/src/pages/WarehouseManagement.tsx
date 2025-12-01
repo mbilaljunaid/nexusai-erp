@@ -14,25 +14,25 @@ export default function WarehouseManagement() {
   const [newWarehouse, setNewWarehouse] = useState({ warehouseName: "", location: "", capacity: "" });
 
   const { data: warehouses = [], isLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/warehouse/locations"],
-    queryFn: () => fetch("/api/warehouse/locations").then(r => r.json()),
+    queryKey: ["/api/warehouse/locations"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/warehouse/locations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/warehouse/locations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/warehouse/locations"] });
       setNewWarehouse({ warehouseName: "", location: "", capacity: "" });
       toast({ title: "Warehouse created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/warehouse/locations/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/warehouse/locations/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/warehouse/locations"] });
       toast({ title: "Warehouse deleted" });
-    },
+    }
   });
 
   return (

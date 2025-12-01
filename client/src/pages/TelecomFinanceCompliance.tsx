@@ -5,8 +5,8 @@ import { Briefcase } from "lucide-react";
 
 export default function TelecomFinanceCompliance() {
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ["/api/telecom-finance"],
-    queryFn: () => fetch("/api/telecom-finance").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/telecom-finance"]
+    
   });
 
   const totalRevenue = transactions.reduce((sum: number, t: any) => sum + (parseFloat(t.amount) || 0), 0);

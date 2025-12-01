@@ -14,8 +14,8 @@ export default function RoleManagement() {
       </div>
       <div className="grid gap-4">
         {[
-          { name: "Administrator", permissions: 150, users: 2 },
-          { name: "Sales Manager", permissions: 45, users: 8 },
+          { name: "Administrator", permissions: 150, users: 2 }
+          { name: "Sales Manager", permissions: 45, users: 8 }
         ].map((role) => (
           <Card key={role.name}>
             <CardContent className="pt-6">

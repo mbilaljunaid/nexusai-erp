@@ -14,25 +14,25 @@ export default function PortalManagement() {
   const [newPortal, setNewPortal] = useState({ portalName: "", portalType: "External", userCount: "" });
 
   const { data: portals = [], isLoading } = useQuery({
-    queryKey: ["/api/portals"],
-    queryFn: () => fetch("/api/portals").then(r => r.json()),
+    queryKey: ["/api/portals"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/portals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/portals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/portals"] });
       setNewPortal({ portalName: "", portalType: "External", userCount: "" });
       toast({ title: "Portal created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/portals/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/portals/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/portals"] });
       toast({ title: "Portal deleted" });
-    },
+    }
   });
 
   const totalUsers = portals.reduce((sum: number, p: any) => sum + (parseInt(p.userCount) || 0), 0);

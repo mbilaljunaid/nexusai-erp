@@ -5,8 +5,8 @@ import { BarChart3 } from "lucide-react";
 
 export default function HospitalityBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/hospitality-bi"],
-    queryFn: () => fetch("/api/hospitality-bi").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/hospitality-bi"]
+    
   });
 
   const totalRevenue = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.revenue) || 0), 0);

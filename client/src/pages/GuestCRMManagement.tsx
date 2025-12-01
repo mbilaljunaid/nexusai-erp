@@ -13,25 +13,25 @@ export default function GuestCRMManagement() {
   const [newGuest, setNewGuest] = useState({ guestId: "", name: "", email: "", tier: "standard", points: "0" });
 
   const { data: guests = [], isLoading } = useQuery({
-    queryKey: ["/api/hospitality-guests"],
-    queryFn: () => fetch("/api/hospitality-guests").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/hospitality-guests"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hospitality-guests", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/hospitality-guests", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-guests"] });
       setNewGuest({ guestId: "", name: "", email: "", tier: "standard", points: "0" });
       toast({ title: "Guest profile created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hospitality-guests/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/hospitality-guests/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-guests"] });
       toast({ title: "Guest deleted" });
-    },
+    }
   });
 
   const vip = guests.filter((g: any) => g.tier === "vip").length;

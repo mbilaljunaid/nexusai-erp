@@ -9,8 +9,8 @@ export default function AccessControl() {
       </div>
       <div className="grid gap-4">
         {[
-          { policy: "Department-based", rules: 12, status: "Active" },
-          { policy: "Region-based", rules: 8, status: "Active" },
+          { policy: "Department-based", rules: 12, status: "Active" }
+          { policy: "Region-based", rules: 8, status: "Active" }
         ].map((policy) => (
           <Card key={policy.policy}>
             <CardContent className="pt-6">

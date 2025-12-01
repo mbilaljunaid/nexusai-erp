@@ -13,57 +13,57 @@ export default function IndustriesPage() {
   }, []);
 
   const industries = [
-    { name: "Automotive", category: "manufacturing", description: "Production, dealer management, service, finance" },
-    { name: "Banking & Finance", category: "finance", description: "Core banking, lending, treasury, compliance" },
-    { name: "Healthcare", category: "services", description: "Patient management, EMR, pharmacy, billing" },
-    { name: "Education", category: "services", description: "Student enrollment, course management, grading" },
-    { name: "Retail & E-Commerce", category: "retail", description: "POS, inventory, loyalty, merchandising" },
-    { name: "Manufacturing", category: "manufacturing", description: "BOM, production, quality, supply chain" },
-    { name: "Logistics & Transportation", category: "logistics", description: "Fleet management, route optimization, tracking" },
-    { name: "Telecom", category: "telecom", description: "Subscriber management, billing, network ops" },
-    { name: "Insurance", category: "finance", description: "Policy management, claims, underwriting" },
-    { name: "Fashion & Apparel", category: "retail", description: "Design, inventory, retail, supply chain" },
-    { name: "Government & Public Sector", category: "services", description: "Citizen services, permits, budgeting" },
-    { name: "Hospitality & Travel", category: "services", description: "Reservations, guest services, billing" },
-    { name: "Pharmaceuticals", category: "manufacturing", description: "Production, R&D, compliance, distribution" },
-    { name: "CPG & Food & Beverage", category: "manufacturing", description: "Supply chain, distribution, retail" },
-    { name: "Energy & Utilities", category: "manufacturing", description: "Grid management, billing, compliance" },
-    { name: "Business Services", category: "services", description: "Consulting, project management, billing" },
-    { name: "Real Estate & Construction", category: "logistics", description: "Project management, finance, compliance" },
-    { name: "Media & Entertainment", category: "services", description: "Content management, distribution, analytics" },
-    { name: "Warehouse & Storage", category: "logistics", description: "Inventory, WMS, distribution" },
-    { name: "Wholesale & Distribution", category: "logistics", description: "Procurement, inventory, logistics" },
-    { name: "Laboratory Services", category: "services", description: "Testing, quality, compliance reporting" },
-    { name: "Equipment Rental", category: "logistics", description: "Asset management, rental, maintenance" },
-    { name: "Marine & Shipping", category: "logistics", description: "Vessel management, cargo, compliance" },
-    { name: "Training & Development", category: "services", description: "Course delivery, certifications, analytics" },
-    { name: "Vehicle & Auto Rental", category: "logistics", description: "Fleet management, billing, maintenance" },
-    { name: "Mortgage & Lending", category: "finance", description: "Loan origination, servicing, compliance" },
-    { name: "Credit & Collections", category: "finance", description: "Credit management, collections, analytics" },
-    { name: "Freight & Cargo", category: "logistics", description: "Booking, tracking, billing" },
-    { name: "Export & Import", category: "logistics", description: "Documentation, compliance, logistics" },
-    { name: "Events & Conferences", category: "services", description: "Registration, ticketing, analytics" },
-    { name: "Marketing & Advertising", category: "services", description: "Campaign management, analytics, ROI" },
-    { name: "Property Management", category: "logistics", description: "Tenant management, billing, maintenance" },
-    { name: "Security & Defense", category: "services", description: "Personnel management, compliance, reporting" },
-    { name: "Portal & Digital Services", category: "services", description: "User management, digital workflows" },
-    { name: "Audit & Compliance", category: "services", description: "Compliance tracking, audit trails" },
-    { name: "Carrier & Shipping", category: "logistics", description: "Shipment management, tracking, billing" },
-    { name: "Clinical Research", category: "services", description: "Study management, patient tracking, compliance" },
-    { name: "Finance & Investment", category: "finance", description: "Portfolio management, analytics, compliance" },
-    { name: "Laboratory Technology", category: "manufacturing", description: "Equipment management, data, compliance" },
-    { name: "Pharmacy & Retail", category: "retail", description: "Inventory, prescription management, POS" },
-    { name: "Shipment Management", category: "logistics", description: "Tracking, routing, compliance" },
+    { name: "Automotive", category: "manufacturing", description: "Production, dealer management, service, finance" }
+    { name: "Banking & Finance", category: "finance", description: "Core banking, lending, treasury, compliance" }
+    { name: "Healthcare", category: "services", description: "Patient management, EMR, pharmacy, billing" }
+    { name: "Education", category: "services", description: "Student enrollment, course management, grading" }
+    { name: "Retail & E-Commerce", category: "retail", description: "POS, inventory, loyalty, merchandising" }
+    { name: "Manufacturing", category: "manufacturing", description: "BOM, production, quality, supply chain" }
+    { name: "Logistics & Transportation", category: "logistics", description: "Fleet management, route optimization, tracking" }
+    { name: "Telecom", category: "telecom", description: "Subscriber management, billing, network ops" }
+    { name: "Insurance", category: "finance", description: "Policy management, claims, underwriting" }
+    { name: "Fashion & Apparel", category: "retail", description: "Design, inventory, retail, supply chain" }
+    { name: "Government & Public Sector", category: "services", description: "Citizen services, permits, budgeting" }
+    { name: "Hospitality & Travel", category: "services", description: "Reservations, guest services, billing" }
+    { name: "Pharmaceuticals", category: "manufacturing", description: "Production, R&D, compliance, distribution" }
+    { name: "CPG & Food & Beverage", category: "manufacturing", description: "Supply chain, distribution, retail" }
+    { name: "Energy & Utilities", category: "manufacturing", description: "Grid management, billing, compliance" }
+    { name: "Business Services", category: "services", description: "Consulting, project management, billing" }
+    { name: "Real Estate & Construction", category: "logistics", description: "Project management, finance, compliance" }
+    { name: "Media & Entertainment", category: "services", description: "Content management, distribution, analytics" }
+    { name: "Warehouse & Storage", category: "logistics", description: "Inventory, WMS, distribution" }
+    { name: "Wholesale & Distribution", category: "logistics", description: "Procurement, inventory, logistics" }
+    { name: "Laboratory Services", category: "services", description: "Testing, quality, compliance reporting" }
+    { name: "Equipment Rental", category: "logistics", description: "Asset management, rental, maintenance" }
+    { name: "Marine & Shipping", category: "logistics", description: "Vessel management, cargo, compliance" }
+    { name: "Training & Development", category: "services", description: "Course delivery, certifications, analytics" }
+    { name: "Vehicle & Auto Rental", category: "logistics", description: "Fleet management, billing, maintenance" }
+    { name: "Mortgage & Lending", category: "finance", description: "Loan origination, servicing, compliance" }
+    { name: "Credit & Collections", category: "finance", description: "Credit management, collections, analytics" }
+    { name: "Freight & Cargo", category: "logistics", description: "Booking, tracking, billing" }
+    { name: "Export & Import", category: "logistics", description: "Documentation, compliance, logistics" }
+    { name: "Events & Conferences", category: "services", description: "Registration, ticketing, analytics" }
+    { name: "Marketing & Advertising", category: "services", description: "Campaign management, analytics, ROI" }
+    { name: "Property Management", category: "logistics", description: "Tenant management, billing, maintenance" }
+    { name: "Security & Defense", category: "services", description: "Personnel management, compliance, reporting" }
+    { name: "Portal & Digital Services", category: "services", description: "User management, digital workflows" }
+    { name: "Audit & Compliance", category: "services", description: "Compliance tracking, audit trails" }
+    { name: "Carrier & Shipping", category: "logistics", description: "Shipment management, tracking, billing" }
+    { name: "Clinical Research", category: "services", description: "Study management, patient tracking, compliance" }
+    { name: "Finance & Investment", category: "finance", description: "Portfolio management, analytics, compliance" }
+    { name: "Laboratory Technology", category: "manufacturing", description: "Equipment management, data, compliance" }
+    { name: "Pharmacy & Retail", category: "retail", description: "Inventory, prescription management, POS" }
+    { name: "Shipment Management", category: "logistics", description: "Tracking, routing, compliance" }
   ];
 
   const categories = [
-    { id: "all", label: "All Industries", icon: Briefcase },
-    { id: "manufacturing", label: "Manufacturing", icon: Package },
-    { id: "retail", label: "Retail & Commerce", icon: Building2 },
-    { id: "finance", label: "Finance & Banking", icon: Briefcase },
-    { id: "logistics", label: "Logistics & Supply", icon: Building2 },
-    { id: "services", label: "Services", icon: Headphones },
-    { id: "telecom", label: "Telecom & Tech", icon: Building2 },
+    { id: "all", label: "All Industries", icon: Briefcase }
+    { id: "manufacturing", label: "Manufacturing", icon: Package }
+    { id: "retail", label: "Retail & Commerce", icon: Building2 }
+    { id: "finance", label: "Finance & Banking", icon: Briefcase }
+    { id: "logistics", label: "Logistics & Supply", icon: Building2 }
+    { id: "services", label: "Services", icon: Headphones }
+    { id: "telecom", label: "Telecom & Tech", icon: Building2 }
   ];
 
   const filtered = selectedCategory === "all" 

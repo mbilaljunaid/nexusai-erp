@@ -5,9 +5,9 @@ import { Monitor, Smartphone, X, Plus } from "lucide-react";
 
 export default function DeviceManagement() {
   const devices = [
-    { id: "d1", name: "MacBook Pro", type: "Desktop", os: "macOS 14", browser: "Chrome 120", ip: "192.168.1.100", status: "approved", lastUsed: "2 mins ago" },
-    { id: "d2", name: "iPhone 14", type: "Mobile", os: "iOS 17", browser: "Safari", ip: "192.168.1.101", status: "approved", lastUsed: "1 hour ago" },
-    { id: "d3", name: "iPad Air", type: "Tablet", os: "iPadOS 17", browser: "Safari", ip: "192.168.1.102", status: "pending", lastUsed: "3 days ago" },
+    { id: "d1", name: "MacBook Pro", type: "Desktop", os: "macOS 14", browser: "Chrome 120", ip: "192.168.1.100", status: "approved", lastUsed: "2 mins ago" }
+    { id: "d2", name: "iPhone 14", type: "Mobile", os: "iOS 17", browser: "Safari", ip: "192.168.1.101", status: "approved", lastUsed: "1 hour ago" }
+    { id: "d3", name: "iPad Air", type: "Tablet", os: "iPadOS 17", browser: "Safari", ip: "192.168.1.102", status: "pending", lastUsed: "3 days ago" }
   ];
 
   return (

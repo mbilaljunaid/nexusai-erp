@@ -1,14 +1,14 @@
 import { useState, useMemo } from "react"; import { Input } from "@/components/ui/input"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { Search, Grid3x3, List } from "lucide-react"; import { Link } from "wouter";
 
 const PAGES_BY_PACK = [
-  { pack: "Core Modules", pages: ["Dashboard", "UserProfile", "Settings", "Notifications"] },
-  { pack: "Healthcare Pharma", pages: ["HealthcarePatientManagement", "HealthcareAppointments", "HealthcareEMR", "HealthcarePharmacy", "HealthcareLaboratory", "HealthcareBillingInsurance", "HealthcareCRMEngagement", "HealthcareHRWorkforce", "HealthcareAIDiagnostics", "HealthcareBIDashboards", "HealthcareCompliance", "HealthcareMobileApp"] },
-  { pack: "Retail & E-Commerce", pages: ["ProductCatalog", "InventoryWarehouse", "OrderFulfillment", "CustomerProfiles", "LoyaltyPrograms", "PricingPromotionsRetail", "BillingPaymentsRetail", "SupplyChainRetail", "RetailProductCatalog", "RetailOrderManagement", "RetailCustomerManagement", "RetailPromotionsLoyalty", "RetailPaymentsBilling", "RetailSupplyChainProcurement", "RetailPOSOperations", "RetailHRWorkforce", "RetailAIRecommendations", "RetailBIDashboards", "RetailCRMMarketing", "RetailInventoryWarehouse"] },
-  { pack: "Government & Public Sector", pages: ["GovernmentCitizenServices", "GovernmentPermitsLicensing", "GovernmentGrantsFunding", "GovernmentHRWorkforce", "GovernmentFinanceBudgeting", "GovernmentCompliance", "GovernmentProjectsInfra", "GovernmentCRMEngagement", "GovernmentAIAnalytics", "GovernmentBIDashboards", "GovernmentMobileApp", "GovernmentReporting", "CitizenCaseManagement", "PublicServicesDelivery", "FinanceGrants", "GovernmentProcurement", "ProjectInfrastructure", "ComplianceReporting", "GovernmentBI", "CitizenEngagement", "WorkflowAutomation"] },
-  { pack: "Hospitality & Travel", pages: ["PropertyManagement", "ReservationsBookings", "GuestManagement", "HospitalityCRM", "HospitalityBilling", "HospitalitySupply", "HospitalityHR", "RevenueOptimization", "HospitalityAnalytics", "EventsActivities", "TravelItinerary"] },
-  { pack: "Telecom & Media", pages: ["SubscriberManagement", "ServiceProvisioning", "BillingInvoicing", "NetworkUsageMonitoring", "CustomerSupportCRM", "MarketingTelecom", "HRTelecom", "TelecomAnalytics", "TelecomDashboard", "NetworkProvisioning"] },
-  { pack: "Automotive", pages: ["AutomotiveProduction", "AutomotiveDealerInventory", "AutomotiveSalesCRM", "AutomotiveAfterSalesService", "AutomotiveFinanceInvoicing", "AutomotiveHRWorkforce", "AutomotiveSupplyChain", "AutomotiveBIDashboards", "AutomotiveCompliance", "AutomotiveMobileApp", "AutomotiveQualityAnalytics", "AutomotiveReporting"] },
-  { pack: "Education & E-Learning", pages: ["StudentManagement", "FacultyManagement", "CourseManagement", "AdmissionsEnrollment", "AssessmentGrading", "LMSContent", "EducationCRM", "EducationBilling", "EducationHR", "EducationAttendance", "EducationEvents", "EducationAnalytics"] },
+  { pack: "Core Modules", pages: ["Dashboard", "UserProfile", "Settings", "Notifications"] }
+  { pack: "Healthcare Pharma", pages: ["HealthcarePatientManagement", "HealthcareAppointments", "HealthcareEMR", "HealthcarePharmacy", "HealthcareLaboratory", "HealthcareBillingInsurance", "HealthcareCRMEngagement", "HealthcareHRWorkforce", "HealthcareAIDiagnostics", "HealthcareBIDashboards", "HealthcareCompliance", "HealthcareMobileApp"] }
+  { pack: "Retail & E-Commerce", pages: ["ProductCatalog", "InventoryWarehouse", "OrderFulfillment", "CustomerProfiles", "LoyaltyPrograms", "PricingPromotionsRetail", "BillingPaymentsRetail", "SupplyChainRetail", "RetailProductCatalog", "RetailOrderManagement", "RetailCustomerManagement", "RetailPromotionsLoyalty", "RetailPaymentsBilling", "RetailSupplyChainProcurement", "RetailPOSOperations", "RetailHRWorkforce", "RetailAIRecommendations", "RetailBIDashboards", "RetailCRMMarketing", "RetailInventoryWarehouse"] }
+  { pack: "Government & Public Sector", pages: ["GovernmentCitizenServices", "GovernmentPermitsLicensing", "GovernmentGrantsFunding", "GovernmentHRWorkforce", "GovernmentFinanceBudgeting", "GovernmentCompliance", "GovernmentProjectsInfra", "GovernmentCRMEngagement", "GovernmentAIAnalytics", "GovernmentBIDashboards", "GovernmentMobileApp", "GovernmentReporting", "CitizenCaseManagement", "PublicServicesDelivery", "FinanceGrants", "GovernmentProcurement", "ProjectInfrastructure", "ComplianceReporting", "GovernmentBI", "CitizenEngagement", "WorkflowAutomation"] }
+  { pack: "Hospitality & Travel", pages: ["PropertyManagement", "ReservationsBookings", "GuestManagement", "HospitalityCRM", "HospitalityBilling", "HospitalitySupply", "HospitalityHR", "RevenueOptimization", "HospitalityAnalytics", "EventsActivities", "TravelItinerary"] }
+  { pack: "Telecom & Media", pages: ["SubscriberManagement", "ServiceProvisioning", "BillingInvoicing", "NetworkUsageMonitoring", "CustomerSupportCRM", "MarketingTelecom", "HRTelecom", "TelecomAnalytics", "TelecomDashboard", "NetworkProvisioning"] }
+  { pack: "Automotive", pages: ["AutomotiveProduction", "AutomotiveDealerInventory", "AutomotiveSalesCRM", "AutomotiveAfterSalesService", "AutomotiveFinanceInvoicing", "AutomotiveHRWorkforce", "AutomotiveSupplyChain", "AutomotiveBIDashboards", "AutomotiveCompliance", "AutomotiveMobileApp", "AutomotiveQualityAnalytics", "AutomotiveReporting"] }
+  { pack: "Education & E-Learning", pages: ["StudentManagement", "FacultyManagement", "CourseManagement", "AdmissionsEnrollment", "AssessmentGrading", "LMSContent", "EducationCRM", "EducationBilling", "EducationHR", "EducationAttendance", "EducationEvents", "EducationAnalytics"] }
 ];
 
 function pageToUrl(pageName: string): string {
@@ -24,8 +24,8 @@ export default function PagesIndex() {
   const filteredPacks = useMemo(() => {
     const searchLower = search.toLowerCase();
     return PAGES_BY_PACK.map(pack => ({
-      ...pack,
-      pages: pack.pages.filter(page => page.toLowerCase().includes(searchLower) || pack.pack.toLowerCase().includes(searchLower)),
+      ...pack
+      pages: pack.pages.filter(page => page.toLowerCase().includes(searchLower) || pack.pack.toLowerCase().includes(searchLower))
     })).filter(pack => pack.pages.length > 0);
   }, [search]);
 

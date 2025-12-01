@@ -20,22 +20,22 @@ interface PaymentSchedule {
 export default function PaymentScheduling() {
   const [activeNav, setActiveNav] = useState("pending");
   const { data: schedules = [] } = useQuery<PaymentSchedule[]>({
-    queryKey: ["/api/payment-schedules"],
-    retry: false,
+    queryKey: ["/api/payment-schedules"]
+    retry: false
   });
 
   const stats = {
-    pending: (schedules || []).filter(s => s.status === "pending").length,
-    scheduled: (schedules || []).filter(s => s.status === "scheduled").length,
-    processed: (schedules || []).filter(s => s.status === "processed").length,
-    totalAmount: (schedules || []).filter(s => s.status !== "failed").reduce((sum, s) => sum + parseFloat(s.amount || "0"), 0),
+    pending: (schedules || []).filter(s => s.status === "pending").length
+    scheduled: (schedules || []).filter(s => s.status === "scheduled").length
+    processed: (schedules || []).filter(s => s.status === "processed").length
+    totalAmount: (schedules || []).filter(s => s.status !== "failed").reduce((sum, s) => sum + parseFloat(s.amount || "0"), 0)
   };
 
   const navItems = [
-    { id: "pending", label: "Pending", icon: Clock, color: "text-yellow-500" },
-    { id: "scheduled", label: "Scheduled", icon: Calendar, color: "text-blue-500" },
-    { id: "processed", label: "Processed", icon: CheckCircle2, color: "text-green-500" },
-    { id: "amount", label: "Amount", icon: DollarSign, color: "text-orange-500" },
+    { id: "pending", label: "Pending", icon: Clock, color: "text-yellow-500" }
+    { id: "scheduled", label: "Scheduled", icon: Calendar, color: "text-blue-500" }
+    { id: "processed", label: "Processed", icon: CheckCircle2, color: "text-green-500" }
+    { id: "amount", label: "Amount", icon: DollarSign, color: "text-orange-500" }
   ];
 
   return (

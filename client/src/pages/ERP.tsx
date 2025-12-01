@@ -33,15 +33,15 @@ export default function ERP() {
   const { data: vendors = [] } = useQuery({ queryKey: ["/api/vendors"], retry: false });
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
-    { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500" },
-    { id: "ap", label: "Accounts Payable", icon: FileText, color: "text-orange-500" },
-    { id: "ar", label: "Accounts Receivable", icon: TrendingUp, color: "text-purple-500" },
-    { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500" },
-    { id: "po", label: "Purchase Orders", icon: ShoppingCart, color: "text-pink-500" },
-    { id: "quality", label: "Quality Control", icon: Zap, color: "text-cyan-500" },
-    { id: "suppliers", label: "Suppliers", icon: Users, color: "text-indigo-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
+    { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500" }
+    { id: "ap", label: "Accounts Payable", icon: FileText, color: "text-orange-500" }
+    { id: "ar", label: "Accounts Receivable", icon: TrendingUp, color: "text-purple-500" }
+    { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500" }
+    { id: "po", label: "Purchase Orders", icon: ShoppingCart, color: "text-pink-500" }
+    { id: "quality", label: "Quality Control", icon: Zap, color: "text-cyan-500" }
+    { id: "suppliers", label: "Suppliers", icon: Users, color: "text-indigo-500" }
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" }
   ];
 
   return (

@@ -17,21 +17,21 @@ interface ErrorEvent {
 export default function ErrorHandling() {
   const [activeNav, setActiveNav] = useState("errors");
   const { data: errors = [] } = useQuery<ErrorEvent[]>({
-    queryKey: ["/api/errors/tracking"],
-    retry: false,
+    queryKey: ["/api/errors/tracking"]
+    retry: false
   });
 
   const navItems = [
-    { id: "errors", label: "Errors", icon: AlertTriangle, color: "text-red-500" },
-    { id: "alerts", label: "Alerts", icon: Bell, color: "text-orange-500" },
-    { id: "recovery", label: "Recovery", icon: CheckCircle2, color: "text-green-500" },
+    { id: "errors", label: "Errors", icon: AlertTriangle, color: "text-red-500" }
+    { id: "alerts", label: "Alerts", icon: Bell, color: "text-orange-500" }
+    { id: "recovery", label: "Recovery", icon: CheckCircle2, color: "text-green-500" }
   ];
 
   const stats = {
-    total: errors.length,
-    critical: errors.filter((e: any) => e.severity === "critical").length,
-    resolved: errors.filter((e: any) => e.status === "resolved").length,
-    mttr: 45,
+    total: errors.length
+    critical: errors.filter((e: any) => e.severity === "critical").length
+    resolved: errors.filter((e: any) => e.status === "resolved").length
+    mttr: 45
   };
 
   return (

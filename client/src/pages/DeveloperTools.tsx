@@ -10,8 +10,8 @@ export default function DeveloperTools() {
       </div>
       <div className="grid gap-4">
         {[
-          { tool: "API Explorer", desc: "Test API endpoints" },
-          { tool: "GraphQL Playground", desc: "Query GraphQL API" },
+          { tool: "API Explorer", desc: "Test API endpoints" }
+          { tool: "GraphQL Playground", desc: "Query GraphQL API" }
         ].map((t) => (
           <Card key={t.tool}>
             <CardContent className="pt-6">

@@ -14,34 +14,34 @@ export default function AccountReconciliation() {
   const [newRecon, setNewRecon] = useState({ accountId: "", glBalance: "", subledgerBalance: "" });
 
   const { data: reconciliations = [], isLoading } = useQuery({
-    queryKey: ["/api/reconciliations"],
-    queryFn: () => fetch("/api/reconciliations").then(r => r.json()),
+    queryKey: ["/api/reconciliations"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/reconciliations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/reconciliations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reconciliations"] });
       setNewRecon({ accountId: "", glBalance: "", subledgerBalance: "" });
       toast({ title: "Reconciliation created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fetch(`/api/reconciliations/${id}`, { method: "DELETE" }),
+    mutationFn: (id) => fetch(`/api/reconciliations/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reconciliations"] });
       toast({ title: "Reconciliation deleted" });
-    },
+    }
   });
 
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) =>
-      fetch(`/api/reconciliations/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) }),
+      fetch(`/api/reconciliations/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reconciliations"] });
       toast({ title: "Status updated" });
-    },
+    }
   });
 
   const calculateVariance = (gl: string, sub: string) => {
@@ -51,10 +51,10 @@ export default function AccountReconciliation() {
   };
 
   const metrics = {
-    total: reconciliations.length,
-    reconciled: reconciliations.filter((r: any) => r.status === "reconciled").length,
-    exceptions: reconciliations.filter((r: any) => r.status === "exception").length,
-    totalVariance: reconciliations.reduce((sum: number, r: any) => sum + parseFloat(calculateVariance(r.glBalance || "0", r.subledgerBalance || "0")), 0),
+    total: reconciliations.length
+    reconciled: reconciliations.filter((r: any) => r.status === "reconciled").length
+    exceptions: reconciliations.filter((r: any) => r.status === "exception").length
+    totalVariance: reconciliations.reduce((sum: number, r: any) => sum + parseFloat(calculateVariance(r.glBalance || "0", r.subledgerBalance || "0")), 0)
   };
 
   return (

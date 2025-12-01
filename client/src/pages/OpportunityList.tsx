@@ -15,36 +15,36 @@ export default function OpportunityList() {
   const [newOpp, setNewOpp] = useState({ name: "", account: "", stage: "Prospecting", value: "" });
 
   const { data: opportunities = [], isLoading } = useQuery({
-    queryKey: ["/api/crm/opportunities"],
-    queryFn: () => fetch("/api/crm/opportunities").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/crm/opportunities"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/crm/opportunities", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/crm/opportunities", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/opportunities"] });
       setNewOpp({ name: "", account: "", stage: "Prospecting", value: "" });
       toast({ title: "Opportunity created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/crm/opportunities/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/crm/opportunities/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/opportunities"] });
       toast({ title: "Opportunity deleted" });
-    },
+    }
   });
 
   const getStageColor = (stage: string) => {
     const colors: Record<string, string> = {
-      "Prospecting": "bg-blue-100 text-blue-800",
-      "Qualification": "bg-cyan-100 text-cyan-800",
-      "Needs Analysis": "bg-purple-100 text-purple-800",
-      "Proposal": "bg-amber-100 text-amber-800",
-      "Negotiation": "bg-orange-100 text-orange-800",
-      "Closed Won": "bg-green-100 text-green-800",
-      "Closed Lost": "bg-red-100 text-red-800",
+      "Prospecting": "bg-blue-100 text-blue-800"
+      "Qualification": "bg-cyan-100 text-cyan-800"
+      "Needs Analysis": "bg-purple-100 text-purple-800"
+      "Proposal": "bg-amber-100 text-amber-800"
+      "Negotiation": "bg-orange-100 text-orange-800"
+      "Closed Won": "bg-green-100 text-green-800"
+      "Closed Lost": "bg-red-100 text-red-800"
     };
     return colors[stage] || "bg-gray-100 text-gray-800";
   };

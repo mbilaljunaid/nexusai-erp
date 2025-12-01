@@ -5,9 +5,9 @@ import { LogOut, Clock, Smartphone } from "lucide-react";
 
 export default function SessionManagement() {
   const sessions = [
-    { id: "s1", device: "Chrome on MacOS", ip: "192.168.1.100", lastActive: "2 mins ago", loginTime: "Nov 30, 10:15 AM", status: "active" },
-    { id: "s2", device: "Safari on iPhone", ip: "192.168.1.101", lastActive: "1 hour ago", loginTime: "Nov 30, 9:30 AM", status: "active" },
-    { id: "s3", device: "Firefox on Windows", ip: "192.168.1.102", lastActive: "3 days ago", loginTime: "Nov 27, 2:45 PM", status: "inactive" },
+    { id: "s1", device: "Chrome on MacOS", ip: "192.168.1.100", lastActive: "2 mins ago", loginTime: "Nov 30, 10:15 AM", status: "active" }
+    { id: "s2", device: "Safari on iPhone", ip: "192.168.1.101", lastActive: "1 hour ago", loginTime: "Nov 30, 9:30 AM", status: "active" }
+    { id: "s3", device: "Firefox on Windows", ip: "192.168.1.102", lastActive: "3 days ago", loginTime: "Nov 27, 2:45 PM", status: "inactive" }
   ];
 
   return (

@@ -5,8 +5,8 @@ import { Plus, CheckSquare } from "lucide-react";
 
 export default function AssessmentGrading() {
   const exams = [
-    { id: "EXM001", name: "Midterm - Data Structures", course: "CSE101", date: "2025-02-10", status: "SCHEDULED" },
-    { id: "EXM002", name: "Quiz 1 - Web Dev", course: "CSE102", date: "2025-02-05", status: "COMPLETED" },
+    { id: "EXM001", name: "Midterm - Data Structures", course: "CSE101", date: "2025-02-10", status: "SCHEDULED" }
+    { id: "EXM002", name: "Quiz 1 - Web Dev", course: "CSE102", date: "2025-02-05", status: "COMPLETED" }
   ];
   return (
     <div className="space-y-6 p-6">

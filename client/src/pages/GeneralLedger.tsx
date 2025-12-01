@@ -14,25 +14,25 @@ export default function GeneralLedger() {
   const [newEntry, setNewEntry] = useState({ description: "", accountId: "", debitAmount: "", creditAmount: "" });
 
   const { data: entries = [], isLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/finance/general-ledger"],
-    queryFn: () => fetch("/api/finance/general-ledger").then(r => r.json()),
+    queryKey: ["/api/finance/general-ledger"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/finance/general-ledger", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/finance/general-ledger", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/general-ledger"] });
       setNewEntry({ description: "", accountId: "", debitAmount: "", creditAmount: "" });
       toast({ title: "Journal entry created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/general-ledger/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/finance/general-ledger/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/general-ledger"] });
       toast({ title: "Entry deleted" });
-    },
+    }
   });
 
   const totalDebits = entries.reduce((sum, e: any) => sum + parseFloat(e.debitAmount || 0), 0);

@@ -5,8 +5,8 @@ import { TrendingDown, AlertTriangle, DollarSign } from "lucide-react";
 
 export default function CreditManagementCollections() {
   const { data: creditData = [], isLoading } = useQuery({
-    queryKey: ["/api/credit-management"],
-    queryFn: () => fetch("/api/credit-management").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/credit-management"]
+    
   });
 
   const overdue = creditData.filter((c: any) => c.overdueDays >= 30).length;

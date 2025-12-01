@@ -27,31 +27,31 @@ interface AgingData {
 export default function AgingReport() {
   const [activeNav, setActiveNav] = useState("ap");
   const { data: apData = [] } = useQuery<AgingData[]>({
-    queryKey: ["/api/aging-report?type=ap"],
-    retry: false,
+    queryKey: ["/api/aging-report?type=ap"]
+    retry: false
   });
 
   const { data: arData = [] } = useQuery<AgingData[]>({
-    queryKey: ["/api/aging-report?type=ar"],
-    retry: false,
+    queryKey: ["/api/aging-report?type=ar"]
+    retry: false
   });
 
   const apLatest = apData[0];
   const arLatest = arData[0];
   
   const navItems = [
-    { id: "ap", label: "Accounts Payable", icon: CreditCard, color: "text-blue-500" },
-    { id: "ar", label: "Accounts Receivable", icon: Clock, color: "text-green-500" },
+    { id: "ap", label: "Accounts Payable", icon: CreditCard, color: "text-blue-500" }
+    { id: "ar", label: "Accounts Receivable", icon: Clock, color: "text-green-500" }
   ];
 
   const renderAgingChart = (data: AgingData | undefined) => {
     if (!data) return <p className="text-muted-foreground">No data available</p>;
 
     const buckets = [
-      { label: "Current", data: data.current, color: "bg-green-500" },
-      { label: "30-60 Days", data: data.days30, color: "bg-yellow-500" },
-      { label: "60-90 Days", data: data.days60, color: "bg-orange-500" },
-      { label: "90+ Days", data: data.over90, color: "bg-red-500" },
+      { label: "Current", data: data.current, color: "bg-green-500" }
+      { label: "30-60 Days", data: data.days30, color: "bg-yellow-500" }
+      { label: "60-90 Days", data: data.days60, color: "bg-orange-500" }
+      { label: "90+ Days", data: data.over90, color: "bg-red-500" }
     ];
 
     return (

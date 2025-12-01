@@ -7,42 +7,42 @@ import { CheckCircle, Zap, TrendingUp, Users } from "lucide-react";
 export default function AdvancedFeatures() {
   const features = [
     {
-      category: "ERP Advanced",
-      icon: <Zap className="h-6 w-6" />,
+      category: "ERP Advanced"
+      icon: <Zap className="h-6 w-6" />
       features: [
-        { name: "Bank Reconciliation", description: "Auto-match transactions with fuzzy logic", status: "ready" },
-        { name: "Multi-Entity Consolidation", description: "Consolidate financials across subsidiaries", status: "ready" },
-        { name: "Tax Engine", description: "Automated tax calculation by jurisdiction", status: "ready" },
-        { name: "Auto-Reconciliation", description: "AI-powered transaction matching", status: "ready" },
-      ],
-    },
+        { name: "Bank Reconciliation", description: "Auto-match transactions with fuzzy logic", status: "ready" }
+        { name: "Multi-Entity Consolidation", description: "Consolidate financials across subsidiaries", status: "ready" }
+        { name: "Tax Engine", description: "Automated tax calculation by jurisdiction", status: "ready" }
+        { name: "Auto-Reconciliation", description: "AI-powered transaction matching", status: "ready" }
+      ]
+    }
     {
-      category: "Finance Advanced",
-      icon: <TrendingUp className="h-6 w-6" />,
+      category: "Finance Advanced"
+      icon: <TrendingUp className="h-6 w-6" />
       features: [
-        { name: "Period Close Automation", description: "Guided close process with checklist", status: "ready" },
-        { name: "FX Translation", description: "Multi-currency translation & gains/losses", status: "ready" },
-        { name: "Intercompany Elimination", description: "Automatic elimination of IC transactions", status: "ready" },
-      ],
-    },
+        { name: "Period Close Automation", description: "Guided close process with checklist", status: "ready" }
+        { name: "FX Translation", description: "Multi-currency translation & gains/losses", status: "ready" }
+        { name: "Intercompany Elimination", description: "Automatic elimination of IC transactions", status: "ready" }
+      ]
+    }
     {
-      category: "CRM Advanced",
-      icon: <Users className="h-6 w-6" />,
+      category: "CRM Advanced"
+      icon: <Users className="h-6 w-6" />
       features: [
-        { name: "Territory Management", description: "Optimize sales territories & quotas", status: "ready" },
-        { name: "CPQ (Configure-Price-Quote)", description: "Dynamic quoting with discounts", status: "ready" },
-        { name: "Partner Portal", description: "Self-service portal for partners", status: "ready" },
-      ],
-    },
+        { name: "Territory Management", description: "Optimize sales territories & quotas", status: "ready" }
+        { name: "CPQ (Configure-Price-Quote)", description: "Dynamic quoting with discounts", status: "ready" }
+        { name: "Partner Portal", description: "Self-service portal for partners", status: "ready" }
+      ]
+    }
     {
-      category: "HRMS Advanced",
-      icon: <Users className="h-6 w-6" />,
+      category: "HRMS Advanced"
+      icon: <Users className="h-6 w-6" />
       features: [
-        { name: "Recruitment", description: "Job posting, applicant tracking, scoring", status: "ready" },
-        { name: "Learning Management", description: "Course enrollment, tracking, plans", status: "ready" },
-        { name: "Compensation Planning", description: "Salary reviews and benchmarking", status: "coming" },
-      ],
-    },
+        { name: "Recruitment", description: "Job posting, applicant tracking, scoring", status: "ready" }
+        { name: "Learning Management", description: "Course enrollment, tracking, plans", status: "ready" }
+        { name: "Compensation Planning", description: "Salary reviews and benchmarking", status: "coming" }
+      ]
+    }
   ];
 
   return (

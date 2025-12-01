@@ -14,25 +14,25 @@ export default function CustomerSubscriberManagement() {
   const [newSubscriber, setNewSubscriber] = useState({ subscriberId: "", name: "", email: "", phone: "", status: "active" });
 
   const { data: subscribers = [], isLoading } = useQuery({
-    queryKey: ["/api/telecom-subscribers"],
-    queryFn: () => fetch("/api/telecom-subscribers").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/telecom-subscribers"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/telecom-subscribers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/telecom-subscribers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/telecom-subscribers"] });
       setNewSubscriber({ subscriberId: "", name: "", email: "", phone: "", status: "active" });
       toast({ title: "Subscriber created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/telecom-subscribers/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/telecom-subscribers/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/telecom-subscribers"] });
       toast({ title: "Subscriber deleted" });
-    },
+    }
   });
 
   const active = subscribers.filter((s: any) => s.status === "active").length;

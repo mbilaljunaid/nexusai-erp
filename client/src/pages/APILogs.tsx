@@ -11,8 +11,8 @@ export default function APILogs() {
         <CardHeader><CardTitle className="text-base">Recent API Calls</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {[
-            { endpoint: "GET /api/leads", status: 200, time: "10ms" },
-            { endpoint: "POST /api/deals", status: 201, time: "45ms" },
+            { endpoint: "GET /api/leads", status: 200, time: "10ms" }
+            { endpoint: "POST /api/deals", status: 201, time: "45ms" }
           ].map((log, idx) => (
             <div key={idx} className="p-2 border rounded font-mono text-sm flex justify-between">
               <span>{log.endpoint}</span>

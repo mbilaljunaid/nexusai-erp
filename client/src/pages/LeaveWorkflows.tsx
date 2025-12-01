@@ -17,22 +17,22 @@ interface LeaveRequest {
 export default function LeaveWorkflows() {
   const [activeNav, setActiveNav] = useState("pending");
   const { data: requests = [] } = useQuery<LeaveRequest[]>({
-    queryKey: ["/api/leave-requests"],
-    retry: false,
+    queryKey: ["/api/leave-requests"]
+    retry: false
   });
 
   const stats = {
-    total: (requests || []).length,
-    pending: (requests || []).filter((r: any) => r.status === "pending").length,
-    approved: (requests || []).filter((r: any) => r.status === "approved").length,
-    days: (requests || []).filter((r: any) => r.status === "approved").reduce((sum: number, r: any) => sum + (r.days || 0), 0),
+    total: (requests || []).length
+    pending: (requests || []).filter((r: any) => r.status === "pending").length
+    approved: (requests || []).filter((r: any) => r.status === "approved").length
+    days: (requests || []).filter((r: any) => r.status === "approved").reduce((sum: number, r: any) => sum + (r.days || 0), 0)
   };
 
   const navItems = [
-    { id: "pending", label: "Pending", icon: Clock, color: "text-yellow-500" },
-    { id: "approved", label: "Approved", icon: CheckCircle2, color: "text-green-500" },
-    { id: "all", label: "All", icon: Calendar, color: "text-blue-500" },
-    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-purple-500" },
+    { id: "pending", label: "Pending", icon: Clock, color: "text-yellow-500" }
+    { id: "approved", label: "Approved", icon: CheckCircle2, color: "text-green-500" }
+    { id: "all", label: "All", icon: Calendar, color: "text-blue-500" }
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-purple-500" }
   ];
 
   return (

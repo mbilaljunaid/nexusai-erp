@@ -12,9 +12,9 @@ export default function ExportManager() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { name: "Sales Report", format: "PDF, Excel, CSV" },
-          { name: "Lead Database", format: "CSV, Excel" },
-          { name: "Financial Summary", format: "PDF" },
+          { name: "Sales Report", format: "PDF, Excel, CSV" }
+          { name: "Lead Database", format: "CSV, Excel" }
+          { name: "Financial Summary", format: "PDF" }
         ].map((exp) => (
           <Card key={exp.name}>
             <CardContent className="pt-6">

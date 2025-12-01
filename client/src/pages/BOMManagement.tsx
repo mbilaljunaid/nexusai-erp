@@ -14,25 +14,25 @@ export default function BOMManagement() {
   const [newBOM, setNewBOM] = useState({ name: "", product: "Product-A", version: "1.0", status: "draft" });
 
   const { data: boms = [], isLoading } = useQuery({
-    queryKey: ["/api/bom"],
-    queryFn: () => fetch("/api/bom").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/bom"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/bom", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/bom", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/bom"] });
       setNewBOM({ name: "", product: "Product-A", version: "1.0", status: "draft" });
       toast({ title: "BOM created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/bom/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/bom/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/bom"] });
       toast({ title: "BOM deleted" });
-    },
+    }
   });
 
   const activeBOMs = boms.filter((b: any) => b.status === "active").length;

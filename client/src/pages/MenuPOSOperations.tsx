@@ -13,25 +13,25 @@ export default function MenuPOSOperations() {
   const [newItem, setNewItem] = useState({ menuId: "", itemName: "", price: "0", status: "active" });
 
   const { data: items = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-menu"],
-    queryFn: () => fetch("/api/fb-menu").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/fb-menu"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/fb-menu", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/fb-menu", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-menu"] });
       setNewItem({ menuId: "", itemName: "", price: "0", status: "active" });
       toast({ title: "Menu item created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/fb-menu/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/fb-menu/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-menu"] });
       toast({ title: "Menu item deleted" });
-    },
+    }
   });
 
   const active = items.filter((i: any) => i.status === "active").length;

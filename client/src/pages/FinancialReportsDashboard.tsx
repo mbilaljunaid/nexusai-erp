@@ -4,9 +4,9 @@ import { BarChart3, Download } from "lucide-react";
 
 export default function FinancialReportsDashboard() {
   const reports = [
-    { id: "fr1", name: "Balance Sheet - Q3 2025", type: "Balance Sheet", period: "Q3", status: "approved", date: "Nov 30, 2025" },
-    { id: "fr2", name: "P&L Statement - Nov 2025", type: "P&L", period: "Monthly", status: "draft", date: "Nov 30, 2025" },
-    { id: "fr3", name: "Cash Flow - YTD 2025", type: "Cash Flow", period: "YTD", status: "approved", date: "Nov 25, 2025" },
+    { id: "fr1", name: "Balance Sheet - Q3 2025", type: "Balance Sheet", period: "Q3", status: "approved", date: "Nov 30, 2025" }
+    { id: "fr2", name: "P&L Statement - Nov 2025", type: "P&L", period: "Monthly", status: "draft", date: "Nov 30, 2025" }
+    { id: "fr3", name: "Cash Flow - YTD 2025", type: "Cash Flow", period: "YTD", status: "approved", date: "Nov 25, 2025" }
   ];
 
   return (

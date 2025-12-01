@@ -62,9 +62,9 @@ export default function ManufacturingModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { wo: "WO-001", product: "Assembly A", qty: "500", status: "in-progress" },
-              { wo: "WO-002", product: "Component B", qty: "1200", status: "in-progress" },
-              { wo: "WO-003", product: "Unit C", qty: "300", status: "scheduled" },
+              { wo: "WO-001", product: "Assembly A", qty: "500", status: "in-progress" }
+              { wo: "WO-002", product: "Component B", qty: "1200", status: "in-progress" }
+              { wo: "WO-003", product: "Unit C", qty: "300", status: "scheduled" }
             ].map((order) => (
               <div key={order.wo} className="p-3 border rounded">
                 <div className="flex justify-between items-start">
@@ -87,8 +87,8 @@ export default function ManufacturingModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { issue: "Component Tolerance", severity: "medium", items: 5 },
-              { issue: "Assembly Alignment", severity: "low", items: 2 },
+              { issue: "Component Tolerance", severity: "medium", items: 5 }
+              { issue: "Assembly Alignment", severity: "low", items: 2 }
             ].map((q) => (
               <div key={q.issue} className="p-3 border rounded">
                 <div className="flex justify-between items-start">

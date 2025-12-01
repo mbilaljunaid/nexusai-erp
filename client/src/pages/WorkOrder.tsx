@@ -11,7 +11,7 @@ export default function WorkOrder() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredWorkOrders, setFilteredWorkOrders] = useState<any[]>([]);
   const { data: workOrders = [] } = useQuery<any[]>({
-    queryKey: ["/api/work-orders"],
+    queryKey: ["/api/work-orders"]
   });
   const formMetadata = getFormMetadata("workOrder");
 

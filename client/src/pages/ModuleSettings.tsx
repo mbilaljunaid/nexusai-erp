@@ -10,9 +10,9 @@ export default function ModuleSettings() {
       </div>
       <div className="grid gap-4">
         {[
-          { module: "CRM", enabled: true },
-          { module: "ERP", enabled: true },
-          { module: "HR", enabled: true },
+          { module: "CRM", enabled: true }
+          { module: "ERP", enabled: true }
+          { module: "HR", enabled: true }
         ].map((m) => (
           <Card key={m.module}>
             <CardContent className="pt-6">

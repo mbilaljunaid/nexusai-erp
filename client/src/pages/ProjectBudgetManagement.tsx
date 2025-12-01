@@ -14,25 +14,25 @@ export default function ProjectBudgetManagement() {
   const [newBudget, setNewBudget] = useState({ project: "", category: "Labor", allocated: "", actual: "" });
 
   const { data: budgets = [], isLoading } = useQuery({
-    queryKey: ["/api/project-budgets"],
-    queryFn: () => fetch("/api/project-budgets").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/project-budgets"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/project-budgets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/project-budgets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/project-budgets"] });
       setNewBudget({ project: "", category: "Labor", allocated: "", actual: "" });
       toast({ title: "Budget created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/project-budgets/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/project-budgets/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/project-budgets"] });
       toast({ title: "Budget deleted" });
-    },
+    }
   });
 
   return (

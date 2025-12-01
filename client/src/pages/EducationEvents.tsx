@@ -5,8 +5,8 @@ import { Plus, Calendar } from "lucide-react";
 
 export default function EducationEvents() {
   const events = [
-    { id: "EVT001", name: "Tech Fest 2025", date: "2025-03-10", capacity: 500, registered: 234 },
-    { id: "EVT002", name: "Debate Championship", date: "2025-02-28", capacity: 100, registered: 67 },
+    { id: "EVT001", name: "Tech Fest 2025", date: "2025-03-10", capacity: 500, registered: 234 }
+    { id: "EVT002", name: "Debate Championship", date: "2025-02-28", capacity: 100, registered: 67 }
   ];
   return (
     <div className="space-y-6 p-6">

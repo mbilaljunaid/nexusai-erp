@@ -14,25 +14,25 @@ export default function TimesheetManagement() {
   const [newTimesheet, setNewTimesheet] = useState({ user: "", week: "", project: "", hours: "", approval: "pending" });
 
   const { data: timesheets = [], isLoading } = useQuery({
-    queryKey: ["/api/timesheets"],
-    queryFn: () => fetch("/api/timesheets").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/timesheets"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/timesheets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/timesheets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/timesheets"] });
       setNewTimesheet({ user: "", week: "", project: "", hours: "", approval: "pending" });
       toast({ title: "Timesheet submitted" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/timesheets/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/timesheets/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/timesheets"] });
       toast({ title: "Timesheet deleted" });
-    },
+    }
   });
 
   return (

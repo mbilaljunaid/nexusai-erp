@@ -13,25 +13,25 @@ export default function BatchManufacturing() {
   const [newBatch, setNewBatch] = useState({ batchId: "", recipeId: "", quantity: "100", status: "planned" });
 
   const { data: batches = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-batches"],
-    queryFn: () => fetch("/api/fb-batches").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/fb-batches"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/fb-batches", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/fb-batches", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-batches"] });
       setNewBatch({ batchId: "", recipeId: "", quantity: "100", status: "planned" });
       toast({ title: "Batch created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/fb-batches/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/fb-batches/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-batches"] });
       toast({ title: "Batch deleted" });
-    },
+    }
   });
 
   const completed = batches.filter((b: any) => b.status === "completed").length;

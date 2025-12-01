@@ -5,8 +5,8 @@ import { Plus, FileText } from "lucide-react";
 
 export default function AdmissionsEnrollment() {
   const applications = [
-    { id: "APP001", name: "Amit Kumar", program: "B.Tech CS", status: "APPROVED", appliedDate: "2025-01-15" },
-    { id: "APP002", name: "Neha Singh", program: "B.Tech ECE", status: "PENDING", appliedDate: "2025-01-16" },
+    { id: "APP001", name: "Amit Kumar", program: "B.Tech CS", status: "APPROVED", appliedDate: "2025-01-15" }
+    { id: "APP002", name: "Neha Singh", program: "B.Tech ECE", status: "PENDING", appliedDate: "2025-01-16" }
   ];
   return (
     <div className="space-y-6 p-6">

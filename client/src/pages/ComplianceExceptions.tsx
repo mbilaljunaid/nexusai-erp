@@ -14,25 +14,25 @@ export default function ComplianceExceptions() {
   const [newException, setNewException] = useState({ rule: "", user: "", reason: "", status: "pending" });
 
   const { data: exceptions = [], isLoading } = useQuery({
-    queryKey: ["/api/compliance/exceptions"],
-    queryFn: () => fetch("/api/compliance/exceptions").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/compliance/exceptions"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/compliance/exceptions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/compliance/exceptions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance/exceptions"] });
       setNewException({ rule: "", user: "", reason: "", status: "pending" });
       toast({ title: "Exception requested" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/compliance/exceptions/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/compliance/exceptions/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance/exceptions"] });
       toast({ title: "Exception deleted" });
-    },
+    }
   });
 
   const pending = exceptions.filter((e: any) => e.status === "pending").length;

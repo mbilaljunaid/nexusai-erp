@@ -14,25 +14,25 @@ export default function SLAServiceTierManagement() {
   const [newSLA, setNewSLA] = useState({ slaId: "", tier: "gold", uptime: "99.9", responseTime: "1" });
 
   const { data: slas = [], isLoading } = useQuery({
-    queryKey: ["/api/sla-tiers"],
-    queryFn: () => fetch("/api/sla-tiers").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/sla-tiers"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/sla-tiers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/sla-tiers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sla-tiers"] });
       setNewSLA({ slaId: "", tier: "gold", uptime: "99.9", responseTime: "1" });
       toast({ title: "SLA tier created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/sla-tiers/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/sla-tiers/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sla-tiers"] });
       toast({ title: "SLA deleted" });
-    },
+    }
   });
 
   const met = slas.filter((s: any) => s.compliance === "met").length;

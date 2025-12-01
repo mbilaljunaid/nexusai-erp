@@ -14,25 +14,25 @@ export default function KPIDashboard() {
   const [newKPI, setNewKPI] = useState({ name: "", value: "", target: "", status: "on-track" });
 
   const { data: kpis = [], isLoading } = useQuery({
-    queryKey: ["/api/kpis"],
-    queryFn: () => fetch("/api/kpis").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/kpis"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/kpis", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/kpis", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/kpis"] });
       setNewKPI({ name: "", value: "", target: "", status: "on-track" });
       toast({ title: "KPI created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/kpis/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/kpis/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/kpis"] });
       toast({ title: "KPI deleted" });
-    },
+    }
   });
 
   return (

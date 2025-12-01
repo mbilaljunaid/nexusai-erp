@@ -9,16 +9,16 @@ import { useQuery } from "@tanstack/react-query";
 export default function Analytics() {
   const [activeNav, setActiveNav] = useState("dashboard");
   const navItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, color: "text-blue-500" },
-    { id: "reports", label: "Reports", icon: FileText, color: "text-green-500" },
-    { id: "excel", label: "Data", icon: Table2, color: "text-purple-500" },
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, color: "text-blue-500" }
+    { id: "reports", label: "Reports", icon: FileText, color: "text-green-500" }
+    { id: "excel", label: "Data", icon: Table2, color: "text-purple-500" }
   ];
   
   const kpiIcons = [
-    { name: "Revenue", icon: TrendingUp, color: "text-blue-500" },
-    { name: "Profit Margin", icon: Percent, color: "text-green-500" },
-    { name: "Customer Count", icon: Users, color: "text-purple-500" },
-    { name: "Avg Order Value", icon: ShoppingCart, color: "text-orange-500" },
+    { name: "Revenue", icon: TrendingUp, color: "text-blue-500" }
+    { name: "Profit Margin", icon: Percent, color: "text-green-500" }
+    { name: "Customer Count", icon: Users, color: "text-purple-500" }
+    { name: "Avg Order Value", icon: ShoppingCart, color: "text-orange-500" }
   ];
   // Fetch ARIMA forecasting data from backend
   const { data: forecastData } = useQuery({ queryKey: ["/api/analytics/forecast-advanced"] });
@@ -27,33 +27,33 @@ export default function Analytics() {
 
   // Use backend forecast data or mock as fallback
   const dashboardData = (forecastData as any)?.timeSeries || [
-    { month: "Jan", revenue: 65000, expenses: 42000 },
-    { month: "Feb", revenue: 72000, expenses: 45000 },
-    { month: "Mar", revenue: 68000, expenses: 43000 },
-    { month: "Apr", revenue: 78000, expenses: 48000 },
-    { month: "May", revenue: 82000, expenses: 50000 },
-    { month: "Jun", revenue: 88000, expenses: 52000 },
+    { month: "Jan", revenue: 65000, expenses: 42000 }
+    { month: "Feb", revenue: 72000, expenses: 45000 }
+    { month: "Mar", revenue: 68000, expenses: 43000 }
+    { month: "Apr", revenue: 78000, expenses: 48000 }
+    { month: "May", revenue: 82000, expenses: 50000 }
+    { month: "Jun", revenue: 88000, expenses: 52000 }
   ];
 
   const departmentData = [
-    { name: "Sales", value: 35 },
-    { name: "Engineering", value: 25 },
-    { name: "Marketing", value: 20 },
-    { name: "Operations", value: 15 },
-    { name: "Other", value: 5 },
+    { name: "Sales", value: 35 }
+    { name: "Engineering", value: 25 }
+    { name: "Marketing", value: 20 }
+    { name: "Operations", value: 15 }
+    { name: "Other", value: 5 }
   ];
 
   const kpis = [
-    { name: "Revenue", value: "$453K", trend: "+12%" },
-    { name: "Profit Margin", value: "42%", trend: "+3%" },
-    { name: "Customer Count", value: "1,245", trend: "+8%" },
-    { name: "Avg Order Value", value: "$362", trend: "-2%" },
+    { name: "Revenue", value: "$453K", trend: "+12%" }
+    { name: "Profit Margin", value: "42%", trend: "+3%" }
+    { name: "Customer Count", value: "1,245", trend: "+8%" }
+    { name: "Avg Order Value", value: "$362", trend: "-2%" }
   ];
 
   const reports = [
-    { name: "Quarterly Revenue", date: "Generated today", format: "PDF" },
-    { name: "Expense Analysis", date: "Generated yesterday", format: "Excel" },
-    { name: "Customer Metrics", date: "Generated 3 days ago", format: "HTML" },
+    { name: "Quarterly Revenue", date: "Generated today", format: "PDF" }
+    { name: "Expense Analysis", date: "Generated yesterday", format: "Excel" }
+    { name: "Customer Metrics", date: "Generated 3 days ago", format: "HTML" }
   ];
 
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];

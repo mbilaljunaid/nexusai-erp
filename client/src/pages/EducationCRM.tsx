@@ -5,8 +5,8 @@ import { Plus, MessageSquare } from "lucide-react";
 
 export default function EducationCRM() {
   const interactions = [
-    { id: "INT001", student: "Rajesh Kumar", type: "Inquiry", status: "RESOLVED", date: "2025-01-20" },
-    { id: "INT002", student: "Priya Singh", type: "Complaint", status: "OPEN", date: "2025-01-21" },
+    { id: "INT001", student: "Rajesh Kumar", type: "Inquiry", status: "RESOLVED", date: "2025-01-20" }
+    { id: "INT002", student: "Priya Singh", type: "Complaint", status: "OPEN", date: "2025-01-21" }
   ];
   return (
     <div className="space-y-6 p-6">

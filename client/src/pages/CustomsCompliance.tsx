@@ -13,25 +13,25 @@ export default function CustomsCompliance() {
   const [newDecl, setNewDecl] = useState({ declarationId: "", shipmentId: "", hsCode: "", country: "", status: "pending" });
 
   const { data: declarations = [], isLoading } = useQuery({
-    queryKey: ["/api/tl-customs"],
-    queryFn: () => fetch("/api/tl-customs").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/tl-customs"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tl-customs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/tl-customs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-customs"] });
       setNewDecl({ declarationId: "", shipmentId: "", hsCode: "", country: "", status: "pending" });
       toast({ title: "Declaration created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tl-customs/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/tl-customs/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-customs"] });
       toast({ title: "Declaration deleted" });
-    },
+    }
   });
 
   const cleared = declarations.filter((d: any) => d.status === "cleared").length;

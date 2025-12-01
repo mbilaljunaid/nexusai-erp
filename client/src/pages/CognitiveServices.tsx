@@ -4,9 +4,9 @@ import { Brain } from "lucide-react";
 
 export default function CognitiveServices() {
   const services = [
-    { id: "s1", name: "Text Analytics", type: "NLP", status: "active", calls: "2.5K/day" },
-    { id: "s2", name: "Sentiment Analysis", type: "NLP", status: "active", calls: "1.8K/day" },
-    { id: "s3", name: "Entity Recognition", type: "NLP", status: "active", calls: "3.2K/day" },
+    { id: "s1", name: "Text Analytics", type: "NLP", status: "active", calls: "2.5K/day" }
+    { id: "s2", name: "Sentiment Analysis", type: "NLP", status: "active", calls: "1.8K/day" }
+    { id: "s3", name: "Entity Recognition", type: "NLP", status: "active", calls: "3.2K/day" }
   ];
   return (
     <div className="space-y-6 p-4">

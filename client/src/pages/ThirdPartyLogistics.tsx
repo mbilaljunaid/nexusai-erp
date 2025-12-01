@@ -14,25 +14,25 @@ export default function ThirdPartyLogistics() {
   const [new3PL, setNew3PL] = useState({ partner: "3PL-001", storageRate: "10", status: "active", vmiEnabled: false });
 
   const { data: partners = [], isLoading } = useQuery({
-    queryKey: ["/api/3pl"],
-    queryFn: () => fetch("/api/3pl").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/3pl"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/3pl", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/3pl", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/3pl"] });
       setNew3PL({ partner: "3PL-001", storageRate: "10", status: "active", vmiEnabled: false });
       toast({ title: "3PL partner created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/3pl/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/3pl/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/3pl"] });
       toast({ title: "Partner deleted" });
-    },
+    }
   });
 
   const vmiCount = partners.filter((p: any) => p.vmiEnabled).length;

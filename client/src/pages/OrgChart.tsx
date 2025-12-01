@@ -9,7 +9,7 @@ export default function OrgChart() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredOrg, setFilteredOrg] = useState<any[]>([]);
   const { data: orgData = [] } = useQuery<any[]>({
-    queryKey: ["/api/org"],
+    queryKey: ["/api/org"]
   });
   const formMetadata = getFormMetadata("orgChart");
 
@@ -35,16 +35,16 @@ export default function OrgChart() {
         <CardContent>
           <div className="space-y-4 font-mono text-sm">
             {[
-              { name: "CEO - John Doe", level: 0 },
-              { name: "├─ VP Sales - Alice Johnson", level: 1 },
-              { name: "│  ├─ Sales Manager - Tom", level: 2 },
-              { name: "│  └─ Sales Manager - Jane", level: 2 },
-              { name: "├─ VP Engineering - Bob Smith", level: 1 },
-              { name: "│  ├─ Tech Lead - Mike", level: 2 },
-              { name: "│  └─ Tech Lead - Sarah", level: 2 },
-              { name: "└─ VP Operations - Eve Martinez", level: 1 },
-              { name: "   ├─ Manager - Frank", level: 2 },
-              { name: "   └─ Manager - Grace", level: 2 },
+              { name: "CEO - John Doe", level: 0 }
+              { name: "├─ VP Sales - Alice Johnson", level: 1 }
+              { name: "│  ├─ Sales Manager - Tom", level: 2 }
+              { name: "│  └─ Sales Manager - Jane", level: 2 }
+              { name: "├─ VP Engineering - Bob Smith", level: 1 }
+              { name: "│  ├─ Tech Lead - Mike", level: 2 }
+              { name: "│  └─ Tech Lead - Sarah", level: 2 }
+              { name: "└─ VP Operations - Eve Martinez", level: 1 }
+              { name: "   ├─ Manager - Frank", level: 2 }
+              { name: "   └─ Manager - Grace", level: 2 }
             ].map((item, idx) => (
               <div key={idx} className="p-2 border rounded bg-muted/50">{item.name}</div>
             ))}

@@ -9,8 +9,8 @@ export default function DataGovernance() {
       </div>
       <div className="grid gap-4">
         {[
-          { policy: "Data Retention", days: 365, status: "Active" },
-          { policy: "PII Protection", status: "Active" },
+          { policy: "Data Retention", days: 365, status: "Active" }
+          { policy: "PII Protection", status: "Active" }
         ].map((p) => (
           <Card key={p.policy}>
             <CardContent className="pt-6">

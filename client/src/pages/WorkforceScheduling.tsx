@@ -14,25 +14,25 @@ export default function WorkforceScheduling() {
   const [newSchedule, setNewSchedule] = useState({ employeeId: "", storeId: "", date: "", shift: "day", status: "scheduled" });
 
   const { data: schedules = [], isLoading } = useQuery({
-    queryKey: ["/api/workforce-schedule"],
-    queryFn: () => fetch("/api/workforce-schedule").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/workforce-schedule"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/workforce-schedule", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/workforce-schedule", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workforce-schedule"] });
       setNewSchedule({ employeeId: "", storeId: "", date: "", shift: "day", status: "scheduled" });
       toast({ title: "Schedule created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/workforce-schedule/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/workforce-schedule/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workforce-schedule"] });
       toast({ title: "Schedule deleted" });
-    },
+    }
   });
 
   const scheduled = schedules.filter((s: any) => s.status === "scheduled").length;

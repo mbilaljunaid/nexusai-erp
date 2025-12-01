@@ -13,25 +13,25 @@ export default function CarrierProcurement() {
   const [newRate, setNewRate] = useState({ rateId: "", lane: "", rate: "100", effectiveFrom: "", status: "active" });
 
   const { data: rates = [], isLoading } = useQuery({
-    queryKey: ["/api/tl-rates"],
-    queryFn: () => fetch("/api/tl-rates").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/tl-rates"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tl-rates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/tl-rates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-rates"] });
       setNewRate({ rateId: "", lane: "", rate: "100", effectiveFrom: "", status: "active" });
       toast({ title: "Rate card created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tl-rates/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/tl-rates/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-rates"] });
       toast({ title: "Rate deleted" });
-    },
+    }
   });
 
   const active = rates.filter((r: any) => r.status === "active").length;

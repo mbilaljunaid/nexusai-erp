@@ -15,42 +15,42 @@ export default function ForecastDashboard() {
   const [newForecast, setNewForecast] = useState({ forecastName: "", period: "Q1", value: "", confidence: "medium" });
 
   const { data: forecasts = [], isLoading } = useQuery({
-    queryKey: ["/api/forecasts"],
-    queryFn: () => fetch("/api/forecasts").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/forecasts"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/forecasts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/forecasts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/forecasts"] });
       setNewForecast({ forecastName: "", period: "Q1", value: "", confidence: "medium" });
       toast({ title: "Forecast created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/forecasts/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/forecasts/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/forecasts"] });
       toast({ title: "Forecast deleted" });
-    },
+    }
   });
 
   const forecastData = [
-    { month: "Jan", forecast: 450, actual: 380 },
-    { month: "Feb", forecast: 520, actual: 480 },
-    { month: "Mar", forecast: 680, actual: 650 },
-    { month: "Apr", forecast: 720, actual: null },
-    { month: "May", forecast: 850, actual: null },
-    { month: "Jun", forecast: 920, actual: null },
+    { month: "Jan", forecast: 450, actual: 380 }
+    { month: "Feb", forecast: 520, actual: 480 }
+    { month: "Mar", forecast: 680, actual: 650 }
+    { month: "Apr", forecast: 720, actual: null }
+    { month: "May", forecast: 850, actual: null }
+    { month: "Jun", forecast: 920, actual: null }
   ];
 
   const stageWiseData = [
-    { stage: "Prospecting", forecast: 120 },
-    { stage: "Qualification", forecast: 180 },
-    { stage: "Needs Analysis", forecast: 320 },
-    { stage: "Proposal", forecast: 750 },
-    { stage: "Negotiation", forecast: 540 },
+    { stage: "Prospecting", forecast: 120 }
+    { stage: "Qualification", forecast: 180 }
+    { stage: "Needs Analysis", forecast: 320 }
+    { stage: "Proposal", forecast: 750 }
+    { stage: "Negotiation", forecast: 540 }
   ];
 
   return (

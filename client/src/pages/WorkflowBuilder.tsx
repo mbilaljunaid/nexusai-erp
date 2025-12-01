@@ -13,25 +13,25 @@ export default function WorkflowBuilder() {
   const [newWorkflow, setNewWorkflow] = useState({ name: "", trigger: "manual", status: "active" });
 
   const { data: workflows = [], isLoading } = useQuery({
-    queryKey: ["/api/workflows"],
-    queryFn: () => fetch("/api/workflows").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/workflows"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/workflows", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/workflows", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workflows"] });
       setNewWorkflow({ name: "", trigger: "manual", status: "active" });
       toast({ title: "Workflow created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/workflows/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/workflows/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workflows"] });
       toast({ title: "Workflow deleted" });
-    },
+    }
   });
 
   return (

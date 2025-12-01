@@ -14,25 +14,25 @@ export default function ShipmentOrderManagement() {
   const [newShipment, setNewShipment] = useState({ shipmentId: "", origin: "", destination: "", weight: "0", service: "standard", status: "pending" });
 
   const { data: shipments = [], isLoading } = useQuery({
-    queryKey: ["/api/tl-shipments"],
-    queryFn: () => fetch("/api/tl-shipments").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/tl-shipments"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tl-shipments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/tl-shipments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-shipments"] });
       setNewShipment({ shipmentId: "", origin: "", destination: "", weight: "0", service: "standard", status: "pending" });
       toast({ title: "Shipment created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tl-shipments/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/tl-shipments/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-shipments"] });
       toast({ title: "Shipment deleted" });
-    },
+    }
   });
 
   const active = shipments.filter((s: any) => s.status === "in-transit").length;

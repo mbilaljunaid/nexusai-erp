@@ -13,25 +13,25 @@ export default function SupplierCarrierManagement() {
   const [newSupplier, setNewSupplier] = useState({ supplierId: "", name: "", type: "carrier", rating: "4.5" });
 
   const { data: suppliers = [], isLoading } = useQuery({
-    queryKey: ["/api/suppliers-carriers"],
-    queryFn: () => fetch("/api/suppliers-carriers").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/suppliers-carriers"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/suppliers-carriers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/suppliers-carriers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/suppliers-carriers"] });
       setNewSupplier({ supplierId: "", name: "", type: "carrier", rating: "4.5" });
       toast({ title: "Supplier added" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/suppliers-carriers/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/suppliers-carriers/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/suppliers-carriers"] });
       toast({ title: "Supplier deleted" });
-    },
+    }
   });
 
   const carriers = suppliers.filter((s: any) => s.type === "carrier").length;

@@ -24,38 +24,38 @@ export default function ConsolidationEngine() {
   const [newRun, setNewRun] = useState({ runName: "", period: "Q1", entityCount: "5" });
 
   const { data: consolidations = [], isLoading } = useQuery<Consolidation[]>({
-    queryKey: ["/api/consolidation-runs"],
-    queryFn: () => fetch("/api/consolidation-runs").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/consolidation-runs"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/consolidation-runs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/consolidation-runs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/consolidation-runs"] });
       setNewRun({ runName: "", period: "Q1", entityCount: "5" });
       toast({ title: "Consolidation run created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/consolidation-runs/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/consolidation-runs/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/consolidation-runs"] });
       toast({ title: "Run deleted" });
-    },
+    }
   });
 
   const stats = {
-    total: consolidations.length,
-    inProgress: consolidations.filter((c: any) => c.status === "in_progress").length,
-    completed: consolidations.filter((c: any) => c.status === "completed").length,
-    entities: consolidations.reduce((sum: number, c: any) => sum + (c.entityCount || 0), 0),
+    total: consolidations.length
+    inProgress: consolidations.filter((c: any) => c.status === "in_progress").length
+    completed: consolidations.filter((c: any) => c.status === "completed").length
+    entities: consolidations.reduce((sum: number, c: any) => sum + (c.entityCount || 0), 0)
   };
 
   const navItems = [
-    { id: "consolidations", label: "Consolidations", icon: GitMerge, color: "text-blue-500" },
-    { id: "eliminations", label: "Eliminations", icon: Trash2, color: "text-red-500" },
-    { id: "mappings", label: "Mappings", icon: MappingIcon, color: "text-purple-500" },
+    { id: "consolidations", label: "Consolidations", icon: GitMerge, color: "text-blue-500" }
+    { id: "eliminations", label: "Eliminations", icon: Trash2, color: "text-red-500" }
+    { id: "mappings", label: "Mappings", icon: MappingIcon, color: "text-purple-500" }
   ];
 
   return (

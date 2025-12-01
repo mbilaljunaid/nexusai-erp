@@ -5,8 +5,8 @@ import { Network, TrendingDown, BarChart3 } from "lucide-react";
 
 export default function SupplyNetworkOptimization() {
   const { data: plans = [], isLoading } = useQuery({
-    queryKey: ["/api/network-plan"],
-    queryFn: () => fetch("/api/network-plan").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/network-plan"]
+    
   });
 
   const nodes = plans.filter((p: any) => p.type === "node").length;

@@ -7,13 +7,13 @@ import { Input } from "@/components/ui/input";
 
 export default function CRMModule() {
   const [accounts] = useState([
-    { id: "1", name: "Tech Corp", industry: "Technology", revenue: "50M", status: "active" },
-    { id: "2", name: "Finance Inc", industry: "Finance", revenue: "75M", status: "active" },
+    { id: "1", name: "Tech Corp", industry: "Technology", revenue: "50M", status: "active" }
+    { id: "2", name: "Finance Inc", industry: "Finance", revenue: "75M", status: "active" }
   ]);
 
   const [opportunities] = useState([
-    { id: "1", name: "Enterprise License", amount: "$500K", stage: "negotiation", probability: 75 },
-    { id: "2", name: "Implementation Services", amount: "$150K", stage: "proposal", probability: 50 },
+    { id: "1", name: "Enterprise License", amount: "$500K", stage: "negotiation", probability: 75 }
+    { id: "2", name: "Implementation Services", amount: "$150K", stage: "proposal", probability: 50 }
   ]);
 
   return (

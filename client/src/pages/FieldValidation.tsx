@@ -9,8 +9,8 @@ export default function FieldValidation() {
       </div>
       <div className="grid gap-4">
         {[
-          { field: "Email", rule: "Valid email format", status: "Active" },
-          { field: "Phone", rule: "Valid phone format", status: "Active" },
+          { field: "Email", rule: "Valid email format", status: "Active" }
+          { field: "Phone", rule: "Valid phone format", status: "Active" }
         ].map((rule) => (
           <Card key={rule.field}>
             <CardContent className="pt-6">

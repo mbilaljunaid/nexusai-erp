@@ -22,8 +22,8 @@ export default function AlertsAndNotifications() {
       </div>
       <div className="grid gap-4">
         {[
-          { alert: "High CPU Usage", threshold: ">80%", enabled: true },
-          { alert: "Low Disk Space", threshold: "<10%", enabled: true },
+          { alert: "High CPU Usage", threshold: ">80%", enabled: true }
+          { alert: "Low Disk Space", threshold: "<10%", enabled: true }
         ].map((a) => (
           <Card key={a.alert}>
             <CardContent className="pt-6">

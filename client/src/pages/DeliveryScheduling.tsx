@@ -14,25 +14,25 @@ export default function DeliveryScheduling() {
   const [newDelivery, setNewDelivery] = useState({ shipment: "SHP-001", date: "", time: "09:00", customer: "Cust-A", status: "scheduled" });
 
   const { data: deliveries = [], isLoading } = useQuery({
-    queryKey: ["/api/delivery-scheduling"],
-    queryFn: () => fetch("/api/delivery-scheduling").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/delivery-scheduling"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/delivery-scheduling", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/delivery-scheduling", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/delivery-scheduling"] });
       setNewDelivery({ shipment: "SHP-001", date: "", time: "09:00", customer: "Cust-A", status: "scheduled" });
       toast({ title: "Delivery scheduled" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/delivery-scheduling/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/delivery-scheduling/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/delivery-scheduling"] });
       toast({ title: "Delivery deleted" });
-    },
+    }
   });
 
   const deliveredCount = deliveries.filter((d: any) => d.status === "delivered").length;

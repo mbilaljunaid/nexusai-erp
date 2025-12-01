@@ -68,9 +68,9 @@ export default function MarketingModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { name: "Q1 Product Launch", channel: "Email", reach: "50K" },
-              { name: "Social Media Push", channel: "Social", reach: "75K" },
-              { name: "Partner Program", channel: "Direct", reach: "15K" },
+              { name: "Q1 Product Launch", channel: "Email", reach: "50K" }
+              { name: "Social Media Push", channel: "Social", reach: "75K" }
+              { name: "Partner Program", channel: "Direct", reach: "15K" }
             ].map((camp) => (
               <div key={camp.name} className="p-3 border rounded">
                 <div className="flex justify-between items-start">
@@ -91,9 +91,9 @@ export default function MarketingModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { segment: "Enterprise Buyers", size: "1.2K" },
-              { segment: "SMB Prospects", size: "2.8K" },
-              { segment: "Engaged Users", size: "3.5K" },
+              { segment: "Enterprise Buyers", size: "1.2K" }
+              { segment: "SMB Prospects", size: "2.8K" }
+              { segment: "Engaged Users", size: "3.5K" }
             ].map((seg) => (
               <div key={seg.segment} className="p-3 border rounded">
                 <div className="flex justify-between items-center">

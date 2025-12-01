@@ -5,8 +5,8 @@ import { Plus, Users2 } from "lucide-react";
 
 export default function EducationHR() {
   const employees = [
-    { id: "EMP001", name: "Dr. Sharma", role: "Faculty", dept: "CSE", status: "ACTIVE" },
-    { id: "EMP002", name: "Ananya Patel", role: "Admin Staff", dept: "Admin", status: "ACTIVE" },
+    { id: "EMP001", name: "Dr. Sharma", role: "Faculty", dept: "CSE", status: "ACTIVE" }
+    { id: "EMP002", name: "Ananya Patel", role: "Admin Staff", dept: "Admin", status: "ACTIVE" }
   ];
   return (
     <div className="space-y-6 p-6">

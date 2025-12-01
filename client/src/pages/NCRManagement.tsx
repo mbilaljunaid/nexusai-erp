@@ -14,25 +14,25 @@ export default function NCRManagement() {
   const [newNCR, setNewNCR] = useState({ product: "Product-A", defectCode: "DEF-001", severity: "medium", status: "open" });
 
   const { data: ncrs = [], isLoading } = useQuery({
-    queryKey: ["/api/ncr"],
-    queryFn: () => fetch("/api/ncr").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/ncr"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/ncr", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/ncr", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ncr"] });
       setNewNCR({ product: "Product-A", defectCode: "DEF-001", severity: "medium", status: "open" });
       toast({ title: "NCR created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/ncr/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/ncr/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ncr"] });
       toast({ title: "NCR deleted" });
-    },
+    }
   });
 
   const criticalCount = ncrs.filter((n: any) => n.severity === "critical").length;

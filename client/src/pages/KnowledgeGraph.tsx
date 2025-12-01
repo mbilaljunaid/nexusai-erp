@@ -17,23 +17,23 @@ interface KnowledgeEntity {
 export default function KnowledgeGraph() {
   const [activeNav, setActiveNav] = useState("entities");
   const { data: entities = [] } = useQuery<KnowledgeEntity[]>({
-    queryKey: ["/api/knowledge-graph/entities"],
-    retry: false,
+    queryKey: ["/api/knowledge-graph/entities"]
+    retry: false
   });
 
   const stats = {
-    total: (entities || []).length,
-    relationships: (entities || []).reduce((sum: number, e: any) => sum + (e.relationships || 0), 0),
+    total: (entities || []).length
+    relationships: (entities || []).reduce((sum: number, e: any) => sum + (e.relationships || 0), 0)
     avgConfidence: (entities || []).length > 0
       ? (((entities || []).reduce((sum: number, e: any) => sum + (e.confidence || 0), 0) / (entities || []).length) * 100).toFixed(0)
-      : 0,
+      : 0
   };
 
   const navItems = [
-    { id: "entities", label: "Entities", icon: Database, color: "text-blue-500" },
-    { id: "graph", label: "Visualization", icon: Network, color: "text-green-500" },
-    { id: "relationships", label: "Relationships", icon: TrendingUp, color: "text-purple-500" },
-    { id: "config", label: "Configuration", icon: Settings, color: "text-orange-500" },
+    { id: "entities", label: "Entities", icon: Database, color: "text-blue-500" }
+    { id: "graph", label: "Visualization", icon: Network, color: "text-green-500" }
+    { id: "relationships", label: "Relationships", icon: TrendingUp, color: "text-purple-500" }
+    { id: "config", label: "Configuration", icon: Settings, color: "text-orange-500" }
   ];
 
   return (

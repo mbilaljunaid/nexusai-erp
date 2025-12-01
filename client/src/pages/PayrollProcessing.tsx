@@ -13,25 +13,25 @@ export default function PayrollProcessing() {
   const [newPayroll, setNewPayroll] = useState({ month: "", year: "2025", amount: "" });
 
   const { data: payrolls = [], isLoading } = useQuery({
-    queryKey: ["/api/payroll/runs"],
-    queryFn: () => fetch("/api/payroll/runs").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/payroll/runs"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/payroll/runs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/payroll/runs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/payroll/runs"] });
       setNewPayroll({ month: "", year: "2025", amount: "" });
       toast({ title: "Payroll run created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/payroll/runs/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/payroll/runs/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/payroll/runs"] });
       toast({ title: "Payroll deleted" });
-    },
+    }
   });
 
   return (

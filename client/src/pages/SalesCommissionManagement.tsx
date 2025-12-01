@@ -14,25 +14,25 @@ export default function SalesCommissionManagement() {
   const [newComm, setNewComm] = useState({ salesRep: "", territory: "", commissionRate: "5", period: "monthly", status: "accrued" });
 
   const { data: commissions = [], isLoading } = useQuery({
-    queryKey: ["/api/commissions"],
-    queryFn: () => fetch("/api/commissions").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/commissions"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/commissions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/commissions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/commissions"] });
       setNewComm({ salesRep: "", territory: "", commissionRate: "5", period: "monthly", status: "accrued" });
       toast({ title: "Commission created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/commissions/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/commissions/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/commissions"] });
       toast({ title: "Commission deleted" });
-    },
+    }
   });
 
   const paid = commissions.filter((c: any) => c.status === "paid").length;

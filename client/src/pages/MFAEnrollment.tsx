@@ -6,10 +6,10 @@ import { Smartphone, Mail, Key, CheckCircle } from "lucide-react";
 
 export default function MFAEnrollment() {
   const [enrolled] = useState({
-    email: true,
-    authenticator: false,
-    sms: false,
-    hardware: false,
+    email: true
+    authenticator: false
+    sms: false
+    hardware: false
   });
 
   return (

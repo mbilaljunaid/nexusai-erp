@@ -5,9 +5,9 @@ import { CheckSquare, Plus } from "lucide-react";
 
 export default function SalesActivities() {
   const activities = [
-    { id: "sa1", type: "Call", customer: "Acme Corp", subject: "Follow-up on proposal", owner: "Alice", dueDate: "2025-11-28", priority: "high", completed: false },
-    { id: "sa2", type: "Email", customer: "Global Industries", subject: "Send contract for review", owner: "Bob", dueDate: "2025-11-27", priority: "high", completed: false },
-    { id: "sa3", type: "Meeting", customer: "StartUp Labs", subject: "Demo scheduled", owner: "Carol", dueDate: "2025-11-26", priority: "normal", completed: true },
+    { id: "sa1", type: "Call", customer: "Acme Corp", subject: "Follow-up on proposal", owner: "Alice", dueDate: "2025-11-28", priority: "high", completed: false }
+    { id: "sa2", type: "Email", customer: "Global Industries", subject: "Send contract for review", owner: "Bob", dueDate: "2025-11-27", priority: "high", completed: false }
+    { id: "sa3", type: "Meeting", customer: "StartUp Labs", subject: "Demo scheduled", owner: "Carol", dueDate: "2025-11-26", priority: "normal", completed: true }
   ];
 
   return (

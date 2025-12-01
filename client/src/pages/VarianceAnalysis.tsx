@@ -16,21 +16,21 @@ interface Variance {
 export default function VarianceAnalysis() {
   const [activeNav, setActiveNav] = useState("analysis");
   const { data: variances = [] } = useQuery<Variance[]>({
-    queryKey: ["/api/variance-analysis"],
-    retry: false,
+    queryKey: ["/api/variance-analysis"]
+    retry: false
   });
 
   const stats = {
-    total: variances.length,
-    favorable: variances.filter((v: any) => v.variance > 0).length,
-    unfavorable: variances.filter((v: any) => v.variance < 0).length,
-    avgVariance: ((variances.reduce((sum: number, v: any) => sum + (v.variance || 0), 0) / (variances.length || 1))).toFixed(2),
+    total: variances.length
+    favorable: variances.filter((v: any) => v.variance > 0).length
+    unfavorable: variances.filter((v: any) => v.variance < 0).length
+    avgVariance: ((variances.reduce((sum: number, v: any) => sum + (v.variance || 0), 0) / (variances.length || 1))).toFixed(2)
   };
 
   const navItems = [
-    { id: "analysis", label: "Analysis", icon: LineChart, color: "text-blue-500" },
-    { id: "trending", label: "Trending", icon: TrendingUpIcon, color: "text-green-500" },
-    { id: "root-cause", label: "Root Cause", icon: Lightbulb, color: "text-orange-500" },
+    { id: "analysis", label: "Analysis", icon: LineChart, color: "text-blue-500" }
+    { id: "trending", label: "Trending", icon: TrendingUpIcon, color: "text-green-500" }
+    { id: "root-cause", label: "Root Cause", icon: Lightbulb, color: "text-orange-500" }
   ];
 
   return (

@@ -14,25 +14,25 @@ export default function EDIMarketplaceConnectors() {
   const [newConn, setNewConn] = useState({ partner: "", type: "edi", status: "active" });
 
   const { data: connections = [], isLoading } = useQuery({
-    queryKey: ["/api/edi-connectors"],
-    queryFn: () => fetch("/api/edi-connectors").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/edi-connectors"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/edi-connectors", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/edi-connectors", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/edi-connectors"] });
       setNewConn({ partner: "", type: "edi", status: "active" });
       toast({ title: "Connector created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/edi-connectors/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/edi-connectors/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/edi-connectors"] });
       toast({ title: "Connector deleted" });
-    },
+    }
   });
 
   const active = connections.filter((c: any) => c.status === "active").length;

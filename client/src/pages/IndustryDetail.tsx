@@ -6,62 +6,62 @@ import { ArrowRight, CheckCircle } from "lucide-react";
 
 const industryData: Record<string, { name: string; description: string; modules: string[]; features: string[] }> = {
   "automotive": {
-    name: "Automotive",
-    description: "Comprehensive ERP solutions for automotive manufacturing, dealers, and supply chain",
-    modules: ["Production Planning", "Dealer Inventory", "Sales CRM", "After-Sales Service", "Finance", "HR", "Supply Chain"],
+    name: "Automotive"
+    description: "Comprehensive ERP solutions for automotive manufacturing, dealers, and supply chain"
+    modules: ["Production Planning", "Dealer Inventory", "Sales CRM", "After-Sales Service", "Finance", "HR", "Supply Chain"]
     features: ["Quality Control", "Compliance Tracking", "Dealer Management", "Service Scheduling"]
-  },
+  }
   "banking": {
-    name: "Banking",
-    description: "Enterprise banking and financial services platform",
-    modules: ["Risk Management", "Portfolio Management", "Compliance", "Lending", "Finance", "Analytics"],
+    name: "Banking"
+    description: "Enterprise banking and financial services platform"
+    modules: ["Risk Management", "Portfolio Management", "Compliance", "Lending", "Finance", "Analytics"]
     features: ["Fraud Detection", "Regulatory Compliance", "Real-time Analytics", "Multi-currency Support"]
-  },
+  }
   "healthcare": {
-    name: "Healthcare",
-    description: "Healthcare provider and hospital management system",
-    modules: ["Patient Management", "Clinical Data", "Billing", "Inventory", "HR", "Compliance"],
+    name: "Healthcare"
+    description: "Healthcare provider and hospital management system"
+    modules: ["Patient Management", "Clinical Data", "Billing", "Inventory", "HR", "Compliance"]
     features: ["HIPAA Compliance", "Medical Records", "Insurance Integration", "Appointment Scheduling"]
-  },
+  }
   "retail": {
-    name: "Retail & E-Commerce",
-    description: "Omni-channel retail and e-commerce management",
-    modules: ["POS", "Inventory", "E-Commerce", "CRM", "Finance", "Analytics"],
+    name: "Retail & E-Commerce"
+    description: "Omni-channel retail and e-commerce management"
+    modules: ["POS", "Inventory", "E-Commerce", "CRM", "Finance", "Analytics"]
     features: ["Omni-channel Integration", "Loyalty Programs", "Real-time Inventory", "Sales Analytics"]
-  },
+  }
   "manufacturing": {
-    name: "Manufacturing",
-    description: "Advanced manufacturing and production management",
-    modules: ["MRP", "Production", "Quality", "Maintenance", "Supply Chain", "Finance"],
+    name: "Manufacturing"
+    description: "Advanced manufacturing and production management"
+    modules: ["MRP", "Production", "Quality", "Maintenance", "Supply Chain", "Finance"]
     features: ["Production Scheduling", "Quality Assurance", "Equipment Maintenance", "Supply Optimization"]
-  },
+  }
   "logistics": {
-    name: "Logistics",
-    description: "Supply chain and logistics optimization",
-    modules: ["Warehouse", "Transportation", "Tracking", "Procurement", "Finance", "Analytics"],
+    name: "Logistics"
+    description: "Supply chain and logistics optimization"
+    modules: ["Warehouse", "Transportation", "Tracking", "Procurement", "Finance", "Analytics"]
     features: ["Real-time Tracking", "Route Optimization", "Warehouse Management", "Predictive Analytics"]
-  },
+  }
   "education": {
-    name: "Education",
-    description: "Educational institution and learning management",
-    modules: ["Student Management", "Curriculum", "Assessments", "Finance", "HR", "Analytics"],
+    name: "Education"
+    description: "Educational institution and learning management"
+    modules: ["Student Management", "Curriculum", "Assessments", "Finance", "HR", "Analytics"]
     features: ["Online Learning", "Grading System", "Parent Portal", "Alumni Management"]
-  },
+  }
   "government": {
-    name: "Government",
-    description: "Public sector and government agency solutions",
-    modules: ["Finance", "HR", "Compliance", "Citizen Services", "Analytics", "Reporting"],
+    name: "Government"
+    description: "Public sector and government agency solutions"
+    modules: ["Finance", "HR", "Compliance", "Citizen Services", "Analytics", "Reporting"]
     features: ["Budget Management", "Audit Trails", "Compliance Reporting", "Citizen Engagement"]
-  },
+  }
 };
 
 export default function IndustryDetail() {
   const params = useParams();
   const slug = (params.slug || "").toLowerCase();
   const industry = industryData[slug] || {
-    name: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " "),
-    description: "Industry-specific ERP solutions",
-    modules: ["Core ERP", "CRM", "Finance", "HR", "Analytics", "Compliance"],
+    name: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " ")
+    description: "Industry-specific ERP solutions"
+    modules: ["Core ERP", "CRM", "Finance", "HR", "Analytics", "Compliance"]
     features: ["Pre-configured", "AI-Powered", "Multi-tenant", "Scalable"]
   };
 

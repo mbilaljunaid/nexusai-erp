@@ -10,8 +10,8 @@ export default function NotificationCenter() {
       </div>
       <div className="grid gap-4">
         {[
-          { msg: "New lead assigned to you", time: "10 min ago", read: false },
-          { msg: "Deal closed: Acme Corp", time: "1 hour ago", read: true },
+          { msg: "New lead assigned to you", time: "10 min ago", read: false }
+          { msg: "Deal closed: Acme Corp", time: "1 hour ago", read: true }
         ].map((n, idx) => (
           <Card key={idx}>
             <CardContent className="pt-6">

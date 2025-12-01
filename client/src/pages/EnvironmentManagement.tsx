@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select
+  SelectContent
+  SelectItem
+  SelectTrigger
+  SelectValue
 } from "@/components/ui/select";
 import { Plus, Edit, Trash2, Copy, Check, AlertCircle } from "lucide-react";
 
@@ -51,18 +51,18 @@ export default function EnvironmentManagement() {
     setLoading(true);
     try {
       const newVar: EnvironmentVariable = {
-        id: `var-${Date.now()}`,
-        key: newKey,
-        value: isSecret ? "•••••••" : newValue,
-        environment: selectedEnv,
-        isSecret,
-        createdAt: new Date().toISOString(),
+        id: `var-${Date.now()}`
+        key: newKey
+        value: isSecret ? "•••••••" : newValue
+        environment: selectedEnv
+        isSecret
+        createdAt: new Date().toISOString()
       };
 
       const res = await fetch("/api/environment-vars", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newVar),
+        method: "POST"
+        headers: { "Content-Type": "application/json" }
+        body: JSON.stringify(newVar)
       });
 
       if (res.ok) {

@@ -14,229 +14,229 @@ export default function UseCasesPage() {
   const useCases = [
     // Core Modules (15)
     {
-      title: "Accelerate Sales Pipeline",
-      description: "Use AI-powered lead scoring and predictive analytics to identify high-value opportunities, prioritize deals, and forecast revenue accurately.",
-      icon: TrendingUp,
-      metrics: ["3x faster deal closure", "45% higher conversion", "Real-time pipeline visibility"],
-      module: "CRM & Customer Management",
+      title: "Accelerate Sales Pipeline"
+      description: "Use AI-powered lead scoring and predictive analytics to identify high-value opportunities, prioritize deals, and forecast revenue accurately."
+      icon: TrendingUp
+      metrics: ["3x faster deal closure", "45% higher conversion", "Real-time pipeline visibility"]
+      module: "CRM & Customer Management"
       category: "Core"
-    },
+    }
     {
-      title: "Optimize Supply Chain",
-      description: "Automate procurement, inventory management, and logistics with real-time visibility and predictive demand forecasting.",
-      icon: Workflow,
-      metrics: ["40% reduction in lead times", "25% inventory optimization", "Supplier collaboration"],
-      module: "Inventory & Procurement",
+      title: "Optimize Supply Chain"
+      description: "Automate procurement, inventory management, and logistics with real-time visibility and predictive demand forecasting."
+      icon: Workflow
+      metrics: ["40% reduction in lead times", "25% inventory optimization", "Supplier collaboration"]
+      module: "Inventory & Procurement"
       category: "Core"
-    },
+    }
     {
-      title: "Improve Financial Reporting",
-      description: "Consolidate financial data from multiple entities with real-time dashboards, automated reconciliation, and compliance reporting.",
-      icon: Coins,
-      metrics: ["90% faster close", "99.9% accuracy", "Multi-entity support"],
-      module: "Financial Management & ERP",
+      title: "Improve Financial Reporting"
+      description: "Consolidate financial data from multiple entities with real-time dashboards, automated reconciliation, and compliance reporting."
+      icon: Coins
+      metrics: ["90% faster close", "99.9% accuracy", "Multi-entity support"]
+      module: "Financial Management & ERP"
       category: "Core"
-    },
+    }
     {
-      title: "Enhance Customer Experience",
-      description: "360-degree customer view with omnichannel engagement, personalized interactions, and predictive customer service.",
-      icon: Users,
-      metrics: ["35% higher retention", "50% faster resolution", "Personalized engagement"],
-      module: "CRM & Customer Management",
+      title: "Enhance Customer Experience"
+      description: "360-degree customer view with omnichannel engagement, personalized interactions, and predictive customer service."
+      icon: Users
+      metrics: ["35% higher retention", "50% faster resolution", "Personalized engagement"]
+      module: "CRM & Customer Management"
       category: "Core"
-    },
+    }
     {
-      title: "Drive Data-Driven Decisions",
-      description: "Transform raw data into actionable insights with advanced analytics, BI dashboards, and AI-powered recommendations.",
-      icon: BarChart3,
-      metrics: ["Real-time insights", "Predictive analytics", "Custom dashboards"],
-      module: "Business Intelligence & Analytics",
+      title: "Drive Data-Driven Decisions"
+      description: "Transform raw data into actionable insights with advanced analytics, BI dashboards, and AI-powered recommendations."
+      icon: BarChart3
+      metrics: ["Real-time insights", "Predictive analytics", "Custom dashboards"]
+      module: "Business Intelligence & Analytics"
       category: "Core"
-    },
+    }
     {
-      title: "Automate Compliance & Governance",
-      description: "Maintain regulatory compliance across multiple jurisdictions with automated controls, audit trails, and risk management.",
-      icon: Lock,
-      metrics: ["Zero compliance gaps", "Audit-ready reports", "Risk mitigation"],
-      module: "Compliance & Governance",
+      title: "Automate Compliance & Governance"
+      description: "Maintain regulatory compliance across multiple jurisdictions with automated controls, audit trails, and risk management."
+      icon: Lock
+      metrics: ["Zero compliance gaps", "Audit-ready reports", "Risk mitigation"]
+      module: "Compliance & Governance"
       category: "Core"
-    },
+    }
     {
-      title: "Streamline HR Operations",
-      description: "Automate recruitment, onboarding, payroll, and performance management with AI-driven talent insights.",
-      icon: Zap,
-      metrics: ["50% faster hiring", "30% reduction in HR costs", "Better talent retention"],
-      module: "HR & Payroll Management",
+      title: "Streamline HR Operations"
+      description: "Automate recruitment, onboarding, payroll, and performance management with AI-driven talent insights."
+      icon: Zap
+      metrics: ["50% faster hiring", "30% reduction in HR costs", "Better talent retention"]
+      module: "HR & Payroll Management"
       category: "Core"
-    },
+    }
     {
-      title: "Accelerate Project Delivery",
-      description: "Manage complex projects with AI scheduling, resource optimization, and real-time collaboration tools.",
-      icon: Target,
-      metrics: ["25% faster delivery", "Budget control", "Team alignment"],
-      module: "Projects & Task Management",
+      title: "Accelerate Project Delivery"
+      description: "Manage complex projects with AI scheduling, resource optimization, and real-time collaboration tools."
+      icon: Target
+      metrics: ["25% faster delivery", "Budget control", "Team alignment"]
+      module: "Projects & Task Management"
       category: "Core"
-    },
+    }
     {
-      title: "Intelligent AI Copilot Assistance",
-      description: "Empower employees with AI-driven insights for smarter decision-making, document generation, and workflow optimization.",
-      icon: Brain,
-      metrics: ["60% faster task completion", "AI-generated reports", "Intelligent recommendations"],
-      module: "AI & Cognitive Services",
+      title: "Intelligent AI Copilot Assistance"
+      description: "Empower employees with AI-driven insights for smarter decision-making, document generation, and workflow optimization."
+      icon: Brain
+      metrics: ["60% faster task completion", "AI-generated reports", "Intelligent recommendations"]
+      module: "AI & Cognitive Services"
       category: "Core"
-    },
+    }
     {
-      title: "Automate Business Workflows",
-      description: "Design and execute complex business processes with low-code automation, reducing manual work and errors.",
-      icon: Workflow,
-      metrics: ["80% reduction in manual tasks", "Higher accuracy", "Scalable workflows"],
-      module: "Automations & Workflows",
+      title: "Automate Business Workflows"
+      description: "Design and execute complex business processes with low-code automation, reducing manual work and errors."
+      icon: Workflow
+      metrics: ["80% reduction in manual tasks", "Higher accuracy", "Scalable workflows"]
+      module: "Automations & Workflows"
       category: "Core"
-    },
+    }
     {
-      title: "Enforce Enterprise Security",
-      description: "Implement granular role-based and attribute-based access controls with real-time audit logging and threat detection.",
-      icon: Shield,
-      metrics: ["Zero unauthorized access", "Complete audit trails", "Multi-layer security"],
-      module: "Security & RBAC",
+      title: "Enforce Enterprise Security"
+      description: "Implement granular role-based and attribute-based access controls with real-time audit logging and threat detection."
+      icon: Shield
+      metrics: ["Zero unauthorized access", "Complete audit trails", "Multi-layer security"]
+      module: "Security & RBAC"
       category: "Core"
-    },
+    }
     {
-      title: "Accelerate Month/Year End Close",
-      description: "Consolidate multi-entity financials, auto-reconcile accounts, and streamline audit processes for faster closing cycles.",
-      icon: FileCheck,
-      metrics: ["70% faster close cycle", "Reduced errors", "Complete transparency"],
-      module: "Financial Close & Consolidation",
+      title: "Accelerate Month/Year End Close"
+      description: "Consolidate multi-entity financials, auto-reconcile accounts, and streamline audit processes for faster closing cycles."
+      icon: FileCheck
+      metrics: ["70% faster close cycle", "Reduced errors", "Complete transparency"]
+      module: "Financial Close & Consolidation"
       category: "Core"
-    },
+    }
     {
-      title: "Support Multi-Tenant Operations",
-      description: "Manage multiple business units, subsidiaries, or franchises with complete data isolation and unified reporting.",
-      icon: Layers,
-      metrics: ["Complete isolation", "Unified reporting", "Independent operations"],
-      module: "Multi-Tenant Architecture",
+      title: "Support Multi-Tenant Operations"
+      description: "Manage multiple business units, subsidiaries, or franchises with complete data isolation and unified reporting."
+      icon: Layers
+      metrics: ["Complete isolation", "Unified reporting", "Independent operations"]
+      module: "Multi-Tenant Architecture"
       category: "Core"
-    },
+    }
     {
-      title: "Engage via Omnichannel Communications",
-      description: "Reach customers across email, SMS, portals, and web with unified messaging and personalized campaigns.",
-      icon: Megaphone,
-      metrics: ["Higher engagement rates", "Unified messaging", "Better customer reach"],
-      module: "Communications & Portal",
+      title: "Engage via Omnichannel Communications"
+      description: "Reach customers across email, SMS, portals, and web with unified messaging and personalized campaigns."
+      icon: Megaphone
+      metrics: ["Higher engagement rates", "Unified messaging", "Better customer reach"]
+      module: "Communications & Portal"
       category: "Core"
-    },
+    }
     {
-      title: "Track User Activity & Audit",
-      description: "Maintain complete audit trails of all user actions with role-based visibility and compliance-ready reports.",
-      icon: Gauge,
-      metrics: ["100% action tracking", "Compliance ready", "Forensic analysis"],
-      module: "Audit & Activity Logging",
+      title: "Track User Activity & Audit"
+      description: "Maintain complete audit trails of all user actions with role-based visibility and compliance-ready reports."
+      icon: Gauge
+      metrics: ["100% action tracking", "Compliance ready", "Forensic analysis"]
+      module: "Audit & Activity Logging"
       category: "Core"
-    },
+    }
 
     // Industry-Specific Modules (13+)
     {
-      title: "Optimize Manufacturing Operations",
-      description: "Manage production orders, quality control, equipment scheduling, and supply chain integration for efficient manufacturing.",
-      icon: Factory,
-      metrics: ["20% increase in efficiency", "Reduced defects", "Better asset utilization"],
-      module: "Manufacturing & Operations",
+      title: "Optimize Manufacturing Operations"
+      description: "Manage production orders, quality control, equipment scheduling, and supply chain integration for efficient manufacturing."
+      icon: Factory
+      metrics: ["20% increase in efficiency", "Reduced defects", "Better asset utilization"]
+      module: "Manufacturing & Operations"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Drive Marketing Campaign ROI",
-      description: "Plan, execute, and measure marketing campaigns with attribution tracking, audience segmentation, and performance analytics.",
-      icon: Megaphone,
-      metrics: ["35% higher ROI", "Better targeting", "Automated workflows"],
-      module: "Marketing & Campaigns",
+      title: "Drive Marketing Campaign ROI"
+      description: "Plan, execute, and measure marketing campaigns with attribution tracking, audience segmentation, and performance analytics."
+      icon: Megaphone
+      metrics: ["35% higher ROI", "Better targeting", "Automated workflows"]
+      module: "Marketing & Campaigns"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Deliver Exceptional Service",
-      description: "Manage service requests, technician scheduling, field service operations, and customer satisfaction tracking.",
-      icon: HeartHandshake,
-      metrics: ["30% faster resolution", "Higher CSAT", "Reduced downtime"],
-      module: "Service & Support",
+      title: "Deliver Exceptional Service"
+      description: "Manage service requests, technician scheduling, field service operations, and customer satisfaction tracking."
+      icon: HeartHandshake
+      metrics: ["30% faster resolution", "Higher CSAT", "Reduced downtime"]
+      module: "Service & Support"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Optimize Cash Flow Management",
-      description: "Forecast cash needs, manage working capital, optimize payment schedules, and improve liquidity.",
-      icon: Banknote,
-      metrics: ["Improved cash position", "Better forecasting", "Optimized payments"],
-      module: "Cash Management",
+      title: "Optimize Cash Flow Management"
+      description: "Forecast cash needs, manage working capital, optimize payment schedules, and improve liquidity."
+      icon: Banknote
+      metrics: ["Improved cash position", "Better forecasting", "Optimized payments"]
+      module: "Cash Management"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Streamline Demand Planning",
-      description: "Use predictive analytics to forecast demand, optimize inventory, and reduce stockouts and overstock situations.",
-      icon: TrendingUp,
-      metrics: ["20% inventory reduction", "Better accuracy", "Faster response"],
-      module: "Demand Forecasting",
+      title: "Streamline Demand Planning"
+      description: "Use predictive analytics to forecast demand, optimize inventory, and reduce stockouts and overstock situations."
+      icon: TrendingUp
+      metrics: ["20% inventory reduction", "Better accuracy", "Faster response"]
+      module: "Demand Forecasting"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Maintain Data Governance",
-      description: "Define data policies, enforce data quality, manage master data, and ensure regulatory compliance.",
-      icon: Database,
-      metrics: ["Single source of truth", "Higher data quality", "Full compliance"],
-      module: "Data Governance",
+      title: "Maintain Data Governance"
+      description: "Define data policies, enforce data quality, manage master data, and ensure regulatory compliance."
+      icon: Database
+      metrics: ["Single source of truth", "Higher data quality", "Full compliance"]
+      module: "Data Governance"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Track Goods Receipt & Inspection",
-      description: "Automate receiving processes, quality inspection, and supplier performance tracking.",
-      icon: ClipboardList,
-      metrics: ["Faster processing", "Better quality", "Supplier insights"],
-      module: "Goods Receipt & QA",
+      title: "Track Goods Receipt & Inspection"
+      description: "Automate receiving processes, quality inspection, and supplier performance tracking."
+      icon: ClipboardList
+      metrics: ["Faster processing", "Better quality", "Supplier insights"]
+      module: "Goods Receipt & QA"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Manage Logistics & Transportation",
-      description: "Optimize delivery routes, track shipments, manage fleet operations, and reduce transportation costs.",
-      icon: Truck,
-      metrics: ["20% cost reduction", "Faster delivery", "Real-time tracking"],
-      module: "Logistics & Transport",
+      title: "Manage Logistics & Transportation"
+      description: "Optimize delivery routes, track shipments, manage fleet operations, and reduce transportation costs."
+      icon: Truck
+      metrics: ["20% cost reduction", "Faster delivery", "Real-time tracking"]
+      module: "Logistics & Transport"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Centralize System Administration",
-      description: "Monitor system health, manage user access, configure integrations, and maintain operational excellence.",
-      icon: Settings,
-      metrics: ["99.9% uptime", "Reduced incidents", "Better governance"],
-      module: "Admin Console & Monitoring",
+      title: "Centralize System Administration"
+      description: "Monitor system health, manage user access, configure integrations, and maintain operational excellence."
+      icon: Settings
+      metrics: ["99.9% uptime", "Reduced incidents", "Better governance"]
+      module: "Admin Console & Monitoring"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Generate Business Intelligence",
-      description: "Create custom reports, dashboards, and visualizations to uncover trends and drive strategic decisions.",
-      icon: PieChart,
-      metrics: ["Faster insights", "Custom reports", "Data-driven culture"],
-      module: "Advanced BI & Reporting",
+      title: "Generate Business Intelligence"
+      description: "Create custom reports, dashboards, and visualizations to uncover trends and drive strategic decisions."
+      icon: PieChart
+      metrics: ["Faster insights", "Custom reports", "Data-driven culture"]
+      module: "Advanced BI & Reporting"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Manage Training & Development",
-      description: "Track employee training, certifications, skill development, and create learning pathways.",
-      icon: BookOpen,
-      metrics: ["Better skill tracking", "Career paths", "Compliance training"],
-      module: "Learning & Development",
+      title: "Manage Training & Development"
+      description: "Track employee training, certifications, skill development, and create learning pathways."
+      icon: BookOpen
+      metrics: ["Better skill tracking", "Career paths", "Compliance training"]
+      module: "Learning & Development"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Monitor Compliance Alerts",
-      description: "Real-time monitoring of regulatory requirements, risk indicators, and compliance violations.",
-      icon: AlertCircle,
-      metrics: ["Zero missed alerts", "Proactive mitigation", "Complete visibility"],
-      module: "Compliance Monitoring",
+      title: "Monitor Compliance Alerts"
+      description: "Real-time monitoring of regulatory requirements, risk indicators, and compliance violations."
+      icon: AlertCircle
+      metrics: ["Zero missed alerts", "Proactive mitigation", "Complete visibility"]
+      module: "Compliance Monitoring"
       category: "Industry Pack"
-    },
+    }
     {
-      title: "Manage Release Cycles",
-      description: "Plan, coordinate, and track software/product releases with automated deployments and rollback capabilities.",
-      icon: GitBranch,
-      metrics: ["Faster releases", "Zero downtime", "Better coordination"],
-      module: "Release Management",
+      title: "Manage Release Cycles"
+      description: "Plan, coordinate, and track software/product releases with automated deployments and rollback capabilities."
+      icon: GitBranch
+      metrics: ["Faster releases", "Zero downtime", "Better coordination"]
+      module: "Release Management"
       category: "Industry Pack"
     }
   ];

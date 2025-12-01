@@ -13,25 +13,25 @@ export default function HospitalityHRRostering() {
   const [newShift, setNewShift] = useState({ employeeId: "", name: "", role: "housekeeping", date: "", status: "scheduled" });
 
   const { data: shifts = [], isLoading } = useQuery({
-    queryKey: ["/api/hospitality-rostering"],
-    queryFn: () => fetch("/api/hospitality-rostering").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/hospitality-rostering"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hospitality-rostering", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/hospitality-rostering", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-rostering"] });
       setNewShift({ employeeId: "", name: "", role: "housekeeping", date: "", status: "scheduled" });
       toast({ title: "Shift scheduled" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hospitality-rostering/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/hospitality-rostering/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-rostering"] });
       toast({ title: "Shift deleted" });
-    },
+    }
   });
 
   const scheduled = shifts.filter((s: any) => s.status === "scheduled").length;

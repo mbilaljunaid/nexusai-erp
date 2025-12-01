@@ -30,7 +30,7 @@ export default function DemoManagement() {
   const fetchDemos = async () => {
     try {
       const res = await fetch("/api/demos/list", {
-        headers: { "x-user-role": "admin" },
+        headers: { "x-user-role": "admin" }
       });
       const data = await res.json();
       setDemos(Array.isArray(data) ? data : []);
@@ -51,17 +51,17 @@ export default function DemoManagement() {
       // First seed the data if requested
       if (seedData) {
         const seedRes = await fetch(`/api/demos/seed/${selectedIndustry}`, {
-          method: "POST",
-          headers: { "x-user-role": "admin" },
+          method: "POST"
+          headers: { "x-user-role": "admin" }
         });
         const seedData = await seedRes.json();
         console.log(`Seeded ${seedData.recordsSeeded} records for ${selectedIndustry}`);
       }
 
       const res = await fetch("/api/demos/request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, company: selectedIndustry, industry: selectedIndustry }),
+        method: "POST"
+        headers: { "Content-Type": "application/json" }
+        body: JSON.stringify({ email, company: selectedIndustry, industry: selectedIndustry })
       });
       const data = await res.json();
       if (res.ok) {
@@ -72,15 +72,15 @@ export default function DemoManagement() {
         
         // Send credentials
         await fetch("/api/demos/send-credentials", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST"
+          headers: { "Content-Type": "application/json" }
           body: JSON.stringify({
-            email,
-            industry: selectedIndustry,
-            demoLink: `${window.location.origin}/demo-access/${data.id}`,
-            username,
-            password,
-          }),
+            email
+            industry: selectedIndustry
+            demoLink: `${window.location.origin}/demo-access/${data.id}`
+            username
+            password
+          })
         });
         
         fetchDemos();
@@ -98,8 +98,8 @@ export default function DemoManagement() {
     if (!confirm("Reset this demo environment?")) return;
     try {
       await fetch(`/api/demos/${demoId}/reset`, {
-        method: "POST",
-        headers: { "x-user-role": "admin" },
+        method: "POST"
+        headers: { "x-user-role": "admin" }
       });
       fetchDemos();
     } catch (e) {

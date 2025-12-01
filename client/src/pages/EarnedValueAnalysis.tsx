@@ -5,8 +5,8 @@ import { TrendingUp } from "lucide-react";
 
 export default function EarnedValueAnalysis() {
   const { data: evas = [], isLoading } = useQuery({
-    queryKey: ["/api/eva"],
-    queryFn: () => fetch("/api/eva").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/eva"]
+    
   });
 
   const onTrack = evas.filter((e: any) => e.spi >= 1 && e.cpi >= 1).length;

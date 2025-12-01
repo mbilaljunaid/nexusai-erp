@@ -20,22 +20,22 @@ interface APInvoice {
 export default function VendorInvoiceEntry() {
   const [activeNav, setActiveNav] = useState("invoices");
   const { data: invoices = [] } = useQuery<APInvoice[]>({
-    queryKey: ["/api/ap-invoices"],
-    retry: false,
+    queryKey: ["/api/ap-invoices"]
+    retry: false
   });
 
   const stats = {
-    total: (invoices || []).length,
-    unmatched: (invoices || []).filter(i => i.matchStatus === "unmatched").length,
-    matched: (invoices || []).filter(i => i.matchStatus === "3way").length,
-    totalAmount: (invoices || []).reduce((sum, i) => sum + parseFloat(i.amount || "0"), 0),
+    total: (invoices || []).length
+    unmatched: (invoices || []).filter(i => i.matchStatus === "unmatched").length
+    matched: (invoices || []).filter(i => i.matchStatus === "3way").length
+    totalAmount: (invoices || []).reduce((sum, i) => sum + parseFloat(i.amount || "0"), 0)
   };
 
   const navItems = [
-    { id: "invoices", label: "Invoices", icon: FileText, color: "text-blue-500" },
-    { id: "unmatched", label: "Unmatched", icon: AlertCircle, color: "text-red-500" },
-    { id: "matched", label: "Matched", icon: Check, color: "text-green-500" },
-    { id: "analytics", label: "Analytics", icon: DollarSign, color: "text-orange-500" },
+    { id: "invoices", label: "Invoices", icon: FileText, color: "text-blue-500" }
+    { id: "unmatched", label: "Unmatched", icon: AlertCircle, color: "text-red-500" }
+    { id: "matched", label: "Matched", icon: Check, color: "text-green-500" }
+    { id: "analytics", label: "Analytics", icon: DollarSign, color: "text-orange-500" }
   ];
 
   return (

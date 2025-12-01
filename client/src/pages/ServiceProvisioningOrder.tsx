@@ -14,25 +14,25 @@ export default function ServiceProvisioningOrder() {
   const [newOrder, setNewOrder] = useState({ orderId: "", subscriberId: "", serviceId: "", deviceId: "", status: "pending" });
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["/api/service-orders"],
-    queryFn: () => fetch("/api/service-orders").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/service-orders"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/service-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/service-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/service-orders"] });
       setNewOrder({ orderId: "", subscriberId: "", serviceId: "", deviceId: "", status: "pending" });
       toast({ title: "Service order created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/service-orders/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/service-orders/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/service-orders"] });
       toast({ title: "Order deleted" });
-    },
+    }
   });
 
   const activated = orders.filter((o: any) => o.status === "activated").length;

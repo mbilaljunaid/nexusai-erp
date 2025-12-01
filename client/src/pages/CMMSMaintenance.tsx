@@ -14,25 +14,25 @@ export default function CMMSMaintenance() {
   const [newMWO, setNewMWO] = useState({ equipmentId: "", maintenanceType: "preventive", priority: "normal", estimatedHours: "2", status: "scheduled" });
 
   const { data: workOrders = [], isLoading } = useQuery({
-    queryKey: ["/api/maintenance-wo"],
-    queryFn: () => fetch("/api/maintenance-wo").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/maintenance-wo"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/maintenance-wo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/maintenance-wo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/maintenance-wo"] });
       setNewMWO({ equipmentId: "", maintenanceType: "preventive", priority: "normal", estimatedHours: "2", status: "scheduled" });
       toast({ title: "Maintenance WO created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/maintenance-wo/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/maintenance-wo/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/maintenance-wo"] });
       toast({ title: "WO deleted" });
-    },
+    }
   });
 
   const completed = workOrders.filter((w: any) => w.status === "completed").length;

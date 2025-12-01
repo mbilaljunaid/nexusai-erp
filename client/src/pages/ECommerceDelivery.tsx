@@ -13,25 +13,25 @@ export default function ECommerceDelivery() {
   const [newOrder, setNewOrder] = useState({ orderId: "", customerEmail: "", total: "0", status: "pending" });
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-ecommerce"],
-    queryFn: () => fetch("/api/fb-ecommerce").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/fb-ecommerce"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/fb-ecommerce", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/fb-ecommerce", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-ecommerce"] });
       setNewOrder({ orderId: "", customerEmail: "", total: "0", status: "pending" });
       toast({ title: "Order created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/fb-ecommerce/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/fb-ecommerce/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-ecommerce"] });
       toast({ title: "Order deleted" });
-    },
+    }
   });
 
   const delivered = orders.filter((o: any) => o.status === "delivered").length;

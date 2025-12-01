@@ -15,16 +15,16 @@ export default function LeadDetail() {
   const leadId = "1";
 
   const { data: lead = {} } = useQuery<any>({
-    queryKey: ["/api/leads", leadId],
-    enabled: !!leadId,
-    retry: false,
+    queryKey: ["/api/leads", leadId]
+    enabled: !!leadId
+    retry: false
   });
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
-    { id: "contact", label: "Contact", icon: Phone, color: "text-green-500" },
-    { id: "activity", label: "Activity", icon: Activity, color: "text-purple-500" },
-    { id: "scoring", label: "Scoring", icon: Star, color: "text-orange-500" },
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
+    { id: "contact", label: "Contact", icon: Phone, color: "text-green-500" }
+    { id: "activity", label: "Activity", icon: Activity, color: "text-purple-500" }
+    { id: "scoring", label: "Scoring", icon: Star, color: "text-orange-500" }
   ];
 
   return (

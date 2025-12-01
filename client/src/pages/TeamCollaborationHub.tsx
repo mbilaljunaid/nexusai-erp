@@ -5,9 +5,9 @@ import { MessageSquare, Plus, Paperclip } from "lucide-react";
 
 export default function TeamCollaborationHub() {
   const discussions = [
-    { id: "tc1", project: "Project Alpha", title: "Design Review - Homepage", author: "Alice", comments: 12, attachments: 2, status: "active" },
-    { id: "tc2", project: "Project Beta", title: "API Integration Progress", author: "Bob", comments: 8, attachments: 1, status: "active" },
-    { id: "tc3", project: "Project Gamma", title: "Budget Discussion - Resolved", author: "Carol", comments: 5, attachments: 0, status: "resolved" },
+    { id: "tc1", project: "Project Alpha", title: "Design Review - Homepage", author: "Alice", comments: 12, attachments: 2, status: "active" }
+    { id: "tc2", project: "Project Beta", title: "API Integration Progress", author: "Bob", comments: 8, attachments: 1, status: "active" }
+    { id: "tc3", project: "Project Gamma", title: "Budget Discussion - Resolved", author: "Carol", comments: 5, attachments: 0, status: "resolved" }
   ];
 
   return (

@@ -5,9 +5,9 @@ import { Database, Plus } from "lucide-react";
 
 export default function DataSourceConfiguration() {
   const dataSources = [
-    { id: "ds1", name: "ERP System", type: "ERP", status: "active", lastSync: "2025-11-30 06:12 AM", frequency: "Every 1 hour" },
-    { id: "ds2", name: "CRM Database", type: "CRM", status: "active", lastSync: "2025-11-30 06:10 AM", frequency: "Every 30 minutes" },
-    { id: "ds3", name: "Finance API", type: "API", status: "active", lastSync: "2025-11-30 05:45 AM", frequency: "Every 2 hours" },
+    { id: "ds1", name: "ERP System", type: "ERP", status: "active", lastSync: "2025-11-30 06:12 AM", frequency: "Every 1 hour" }
+    { id: "ds2", name: "CRM Database", type: "CRM", status: "active", lastSync: "2025-11-30 06:10 AM", frequency: "Every 30 minutes" }
+    { id: "ds3", name: "Finance API", type: "API", status: "active", lastSync: "2025-11-30 05:45 AM", frequency: "Every 2 hours" }
   ];
 
   return (

@@ -14,25 +14,25 @@ export default function NCRCAMAManagement() {
   const [newNCR, setNewNCR] = useState({ ncrId: "", description: "", severity: "major", status: "open" });
 
   const { data: records = [], isLoading } = useQuery({
-    queryKey: ["/api/ncr-cama"],
-    queryFn: () => fetch("/api/ncr-cama").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/ncr-cama"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/ncr-cama", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/ncr-cama", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ncr-cama"] });
       setNewNCR({ ncrId: "", description: "", severity: "major", status: "open" });
       toast({ title: "NCR created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/ncr-cama/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/ncr-cama/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ncr-cama"] });
       toast({ title: "NCR deleted" });
-    },
+    }
   });
 
   const closed = records.filter((r: any) => r.status === "closed").length;

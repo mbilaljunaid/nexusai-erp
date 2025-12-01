@@ -14,25 +14,25 @@ export default function PharmacyManagement() {
   const [newOrder, setNewOrder] = useState({ orderId: "", patientId: "", medicationId: "", dose: "", status: "pending" });
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["/api/healthcare-pharmacy"],
-    queryFn: () => fetch("/api/healthcare-pharmacy").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/healthcare-pharmacy"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/healthcare-pharmacy", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/healthcare-pharmacy", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-pharmacy"] });
       setNewOrder({ orderId: "", patientId: "", medicationId: "", dose: "", status: "pending" });
       toast({ title: "Medication order created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/healthcare-pharmacy/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/healthcare-pharmacy/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-pharmacy"] });
       toast({ title: "Order deleted" });
-    },
+    }
   });
 
   const dispensed = orders.filter((o: any) => o.status === "dispensed").length;

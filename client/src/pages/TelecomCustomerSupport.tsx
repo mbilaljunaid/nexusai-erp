@@ -14,25 +14,25 @@ export default function TelecomCustomerSupport() {
   const [newTicket, setNewTicket] = useState({ ticketId: "", subscriberId: "", category: "billing", priority: "normal", status: "open" });
 
   const { data: tickets = [], isLoading } = useQuery({
-    queryKey: ["/api/telecom-tickets"],
-    queryFn: () => fetch("/api/telecom-tickets").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/telecom-tickets"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/telecom-tickets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/telecom-tickets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/telecom-tickets"] });
       setNewTicket({ ticketId: "", subscriberId: "", category: "billing", priority: "normal", status: "open" });
       toast({ title: "Support ticket created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/telecom-tickets/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/telecom-tickets/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/telecom-tickets"] });
       toast({ title: "Ticket deleted" });
-    },
+    }
   });
 
   const resolved = tickets.filter((t: any) => t.status === "resolved").length;

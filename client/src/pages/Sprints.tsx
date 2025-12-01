@@ -10,15 +10,15 @@ export default function Sprints() {
   const { data: sprints = [] } = useQuery<any[]>({ queryKey: ["/api/projects/sprints"] });
 
   const navigationItems = [
-    { id: "list", label: "All Sprints", icon: Flame, badge: sprints.length, color: "blue" as const },
-    { id: "active", label: "Active", icon: Flame, badge: sprints.filter((s: any) => s.status === "active").length, color: "orange" as const },
-    { id: "planning", label: "Planning", icon: Flame, badge: sprints.filter((s: any) => s.status === "planning").length, color: "purple" as const },
+    { id: "list", label: "All Sprints", icon: Flame, badge: sprints.length, color: "blue" as const }
+    { id: "active", label: "Active", icon: Flame, badge: sprints.filter((s: any) => s.status === "active").length, color: "orange" as const }
+    { id: "planning", label: "Planning", icon: Flame, badge: sprints.filter((s: any) => s.status === "planning").length, color: "purple" as const }
   ];
 
   const filteredSprints = {
-    list: sprints,
-    active: sprints.filter((s: any) => s.status === "active"),
-    planning: sprints.filter((s: any) => s.status === "planning"),
+    list: sprints
+    active: sprints.filter((s: any) => s.status === "active")
+    planning: sprints.filter((s: any) => s.status === "planning")
   }[activeNav] || sprints;
 
   return (

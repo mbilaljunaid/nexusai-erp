@@ -5,8 +5,8 @@ import { Zap } from "lucide-react";
 
 export default function OmniChannelFulfillment() {
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["/api/omni-fulfillment"],
-    queryFn: () => fetch("/api/omni-fulfillment").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/omni-fulfillment"]
+    
   });
 
   const fulfilled = orders.filter((o: any) => o.status === "fulfilled").length;

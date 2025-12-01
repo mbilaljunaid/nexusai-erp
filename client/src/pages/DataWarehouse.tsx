@@ -9,19 +9,19 @@ import { Database, Zap, BarChart3, Briefcase } from "lucide-react";
 export default function DataWarehouse() {
   const formMetadata = getFormMetadata("data-warehouse");
   const { data: lakes = [] } = useQuery({
-    queryKey: ["/api/data-warehouse/lakes"],
+    queryKey: ["/api/data-warehouse/lakes"]
   }) as { data: any[] };
 
   const { data: pipelines = [] } = useQuery({
-    queryKey: ["/api/etl/pipelines"],
+    queryKey: ["/api/etl/pipelines"]
   }) as { data: any[] };
 
   const { data: dashboards = [] } = useQuery({
-    queryKey: ["/api/bi/dashboards"],
+    queryKey: ["/api/bi/dashboards"]
   }) as { data: any[] };
 
   const { data: jobs = [] } = useQuery({
-    queryKey: ["/api/field-service/jobs"],
+    queryKey: ["/api/field-service/jobs"]
   }) as { data: any[] };
 
   return (

@@ -6,9 +6,9 @@ import { GitBranch, Plus } from "lucide-react";
 
 export default function RoleHierarchy() {
   const [hierarchy] = useState([
-    { id: "h1", parent: "System Admin", children: ["Tenant Admin", "Security Officer"], status: "active" },
-    { id: "h2", parent: "Tenant Admin", children: ["Manager", "Supervisor"], status: "active" },
-    { id: "h3", parent: "Manager", children: ["Employee", "Operator"], status: "active" },
+    { id: "h1", parent: "System Admin", children: ["Tenant Admin", "Security Officer"], status: "active" }
+    { id: "h2", parent: "Tenant Admin", children: ["Manager", "Supervisor"], status: "active" }
+    { id: "h3", parent: "Manager", children: ["Employee", "Operator"], status: "active" }
   ]);
 
   return (

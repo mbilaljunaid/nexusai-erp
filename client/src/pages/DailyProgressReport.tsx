@@ -14,25 +14,25 @@ export default function DailyProgressReport() {
   const [newDPR, setNewDPR] = useState({ date: new Date().toISOString().split('T')[0], progress: "50", manHours: "100", materialUsed: "500", status: "submitted" });
 
   const { data: dprs = [], isLoading } = useQuery({
-    queryKey: ["/api/dpr"],
-    queryFn: () => fetch("/api/dpr").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/dpr"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/dpr", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/dpr", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/dpr"] });
       setNewDPR({ date: new Date().toISOString().split('T')[0], progress: "50", manHours: "100", materialUsed: "500", status: "submitted" });
       toast({ title: "DPR submitted" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/dpr/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/dpr/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/dpr"] });
       toast({ title: "DPR deleted" });
-    },
+    }
   });
 
   const approved = dprs.filter((d: any) => d.status === "approved").length;

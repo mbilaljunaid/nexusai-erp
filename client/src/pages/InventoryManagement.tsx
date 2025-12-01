@@ -16,36 +16,33 @@ export default function InventoryManagement() {
   const [activeNav, setActiveNav] = useState("stock-levels");
   const [newItem, setNewItem] = useState({ itemName: "", sku: "", quantity: "", category: "Raw Materials" });
 
-  const { data: inventory = [], isLoading } = useQuery({ queryKey: ["/api/inventory/items"], queryFn: () => fetch("/api/inventory/items").then(r => r.json()) });
-
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+  const { data: inventory = [], isLoading } = useQuery({ queryKey: ["/api/inventory/items"],  { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
       setNewItem({ itemName: "", sku: "", quantity: "", category: "Raw Materials" });
       toast({ title: "Item added to inventory" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/inventory/items/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/inventory/items/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
       toast({ title: "Item removed" });
-    },
+    }
   });
 
   const navItems = [
-    { id: "stock-levels", label: "Stock Levels", icon: Package, color: "text-blue-500" },
-    { id: "reorder-points", label: "Reorder Points", icon: AlertTriangle, color: "text-orange-500" },
-    { id: "warehouses", label: "Warehouses", icon: Warehouse, color: "text-purple-500" },
+    { id: "stock-levels", label: "Stock Levels", icon: Package, color: "text-blue-500" }
+    { id: "reorder-points", label: "Reorder Points", icon: AlertTriangle, color: "text-orange-500" }
+    { id: "warehouses", label: "Warehouses", icon: Warehouse, color: "text-purple-500" }
   ];
 
   const inventoryMetrics = [
-    { title: "Total SKUs", value: "2,847", icon: Package, change: "+5%" },
-    { title: "Low Stock Items", value: "34", icon: AlertTriangle, change: "-12%" },
-    { title: "Stockout Risk", value: "8", icon: TrendingDown, change: "+2%" },
-    { title: "Inventory Value", value: "$847K", icon: BarChart3, change: "+8.2%" },
+    { title: "Total SKUs", value: "2,847", icon: Package, change: "+5%" }
+    { title: "Low Stock Items", value: "34", icon: AlertTriangle, change: "-12%" }
+    { title: "Stockout Risk", value: "8", icon: TrendingDown, change: "+2%" }
+    { title: "Inventory Value", value: "$847K", icon: BarChart3, change: "+8.2%" }
   ];
 
   return (

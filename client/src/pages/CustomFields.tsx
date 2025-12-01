@@ -14,8 +14,8 @@ export default function CustomFields() {
       </div>
       <div className="grid gap-4">
         {[
-          { name: "Company Size", type: "Select", entity: "Lead" },
-          { name: "Industry", type: "Text", entity: "Account" },
+          { name: "Company Size", type: "Select", entity: "Lead" }
+          { name: "Industry", type: "Text", entity: "Account" }
         ].map((field) => (
           <Card key={field.name}>
             <CardContent className="pt-6">

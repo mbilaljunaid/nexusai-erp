@@ -13,25 +13,25 @@ export default function POSCashReconciliation() {
   const [newRecon, setNewRecon] = useState({ terminalId: "", dateOfDay: new Date().toISOString().split('T')[0], expectedCash: "0", actualCash: "0" });
 
   const { data: reconciliations = [], isLoading } = useQuery({
-    queryKey: ["/api/cash-reconciliation"],
-    queryFn: () => fetch("/api/cash-reconciliation").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/cash-reconciliation"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/cash-reconciliation", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/cash-reconciliation", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cash-reconciliation"] });
       setNewRecon({ terminalId: "", dateOfDay: new Date().toISOString().split('T')[0], expectedCash: "0", actualCash: "0" });
       toast({ title: "Reconciliation recorded" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/cash-reconciliation/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/cash-reconciliation/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cash-reconciliation"] });
       toast({ title: "Reconciliation deleted" });
-    },
+    }
   });
 
   const balanced = reconciliations.filter((r: any) => Math.abs((parseFloat(r.expectedCash) || 0) - (parseFloat(r.actualCash) || 0)) < 0.01).length;

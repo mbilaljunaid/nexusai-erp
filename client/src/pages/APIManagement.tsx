@@ -14,8 +14,8 @@ export default function APIManagement() {
       </div>
       <div className="grid gap-4">
         {[
-          { name: "Production Key", created: "Jan 15", lastUsed: "Today" },
-          { name: "Development Key", created: "Jan 20", lastUsed: "2 days ago" },
+          { name: "Production Key", created: "Jan 15", lastUsed: "Today" }
+          { name: "Development Key", created: "Jan 20", lastUsed: "2 days ago" }
         ].map((k) => (
           <Card key={k.name}>
             <CardContent className="pt-6">

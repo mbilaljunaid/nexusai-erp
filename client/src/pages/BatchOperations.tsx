@@ -9,8 +9,8 @@ export default function BatchOperations() {
       </div>
       <div className="grid gap-4">
         {[
-          { job: "Bulk Update Leads", status: "Completed", records: "5,420" },
-          { job: "Batch Email Send", status: "In Progress", records: "1,245" },
+          { job: "Bulk Update Leads", status: "Completed", records: "5,420" }
+          { job: "Batch Email Send", status: "In Progress", records: "1,245" }
         ].map((j) => (
           <Card key={j.job}>
             <CardContent className="pt-6">

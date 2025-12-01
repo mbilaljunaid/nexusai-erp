@@ -13,25 +13,25 @@ export default function WorkshopServiceOrders() {
   const [newRO, setNewRO] = useState({ roId: "", vin: "", complaint: "", status: "booked" });
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["/api/auto-service-orders"],
-    queryFn: () => fetch("/api/auto-service-orders").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/auto-service-orders"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/auto-service-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/auto-service-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-service-orders"] });
       setNewRO({ roId: "", vin: "", complaint: "", status: "booked" });
       toast({ title: "Service order created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/auto-service-orders/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/auto-service-orders/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-service-orders"] });
       toast({ title: "Service order deleted" });
-    },
+    }
   });
 
   const inService = orders.filter((o: any) => o.status === "in-service").length;

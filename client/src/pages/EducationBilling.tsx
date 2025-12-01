@@ -5,8 +5,8 @@ import { Plus, IndianRupee } from "lucide-react";
 
 export default function EducationBilling() {
   const invoices = [
-    { id: "INV001", student: "Rajesh Kumar", amount: "₹150,000", dueDate: "2025-02-15", status: "PAID" },
-    { id: "INV002", student: "Priya Singh", amount: "₹150,000", dueDate: "2025-02-15", status: "PENDING" },
+    { id: "INV001", student: "Rajesh Kumar", amount: "₹150,000", dueDate: "2025-02-15", status: "PAID" }
+    { id: "INV002", student: "Priya Singh", amount: "₹150,000", dueDate: "2025-02-15", status: "PENDING" }
   ];
   return (
     <div className="space-y-6 p-6">

@@ -55,9 +55,9 @@ export default function AdminConsoleModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { action: "User Created", user: "admin@company.com", time: "2 mins ago" },
-              { action: "Role Updated", user: "admin@company.com", time: "1 hour ago" },
-              { action: "Permission Granted", user: "manager@company.com", time: "3 hours ago" },
+              { action: "User Created", user: "admin@company.com", time: "2 mins ago" }
+              { action: "Role Updated", user: "admin@company.com", time: "1 hour ago" }
+              { action: "Permission Granted", user: "manager@company.com", time: "3 hours ago" }
             ].map((log, i) => (
               <div key={i} className="p-3 border rounded text-sm">
                 <div className="flex justify-between items-start">
@@ -78,10 +78,10 @@ export default function AdminConsoleModule() {
           </CardHeader>
           <CardContent className="space-y-2">
             {[
-              { key: "API Rate Limit", value: "10K/min" },
-              { key: "Session Timeout", value: "30 mins" },
-              { key: "Max Upload Size", value: "100MB" },
-              { key: "Data Retention", value: "90 days" },
+              { key: "API Rate Limit", value: "10K/min" }
+              { key: "Session Timeout", value: "30 mins" }
+              { key: "Max Upload Size", value: "100MB" }
+              { key: "Data Retention", value: "90 days" }
             ].map((setting) => (
               <div key={setting.key} className="flex justify-between p-2 rounded hover:bg-muted text-sm">
                 <span>{setting.key}</span>

@@ -14,25 +14,25 @@ export default function ProcurementManagement() {
   const [newPO, setNewPO] = useState({ poNumber: "", supplier: "", amount: "", status: "pending" });
 
   const { data: pos = [], isLoading } = useQuery({
-    queryKey: ["/api/procurement/purchase-orders"],
-    queryFn: () => fetch("/api/procurement/purchase-orders").then(r => r.json()),
+    queryKey: ["/api/procurement/purchase-orders"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/procurement/purchase-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/procurement/purchase-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/procurement/purchase-orders"] });
       setNewPO({ poNumber: "", supplier: "", amount: "", status: "pending" });
       toast({ title: "PO created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/procurement/purchase-orders/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/procurement/purchase-orders/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/procurement/purchase-orders"] });
       toast({ title: "PO deleted" });
-    },
+    }
   });
 
   return (

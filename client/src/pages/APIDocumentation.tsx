@@ -22,8 +22,8 @@ export default function APIDocumentation() {
       </div>
       <div className="grid gap-4">
         {[
-          { endpoint: "GET /api/leads", version: "v1" },
-          { endpoint: "POST /api/deals", version: "v1" },
+          { endpoint: "GET /api/leads", version: "v1" }
+          { endpoint: "POST /api/deals", version: "v1" }
         ].map((ep) => (
           <Card key={ep.endpoint}>
             <CardContent className="pt-6">

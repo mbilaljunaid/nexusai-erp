@@ -12,12 +12,12 @@ export default function FinancialReports() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { name: "Income Statement", period: "Q1 2025", date: "Jan 31" },
-          { name: "Balance Sheet", period: "Q1 2025", date: "Jan 31" },
-          { name: "Cash Flow Statement", period: "Q1 2025", date: "Jan 31" },
-          { name: "Trial Balance", period: "Jan 2025", date: "Jan 31" },
-          { name: "Profit & Loss", period: "YTD 2025", date: "Jan 31" },
-          { name: "Budget Variance", period: "Q1 2025", date: "Jan 31" },
+          { name: "Income Statement", period: "Q1 2025", date: "Jan 31" }
+          { name: "Balance Sheet", period: "Q1 2025", date: "Jan 31" }
+          { name: "Cash Flow Statement", period: "Q1 2025", date: "Jan 31" }
+          { name: "Trial Balance", period: "Jan 2025", date: "Jan 31" }
+          { name: "Profit & Loss", period: "YTD 2025", date: "Jan 31" }
+          { name: "Budget Variance", period: "Q1 2025", date: "Jan 31" }
         ].map((report) => (
           <Card key={report.name} className="hover:shadow-lg transition">
             <CardContent className="pt-6">

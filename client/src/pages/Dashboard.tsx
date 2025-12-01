@@ -5,18 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRBAC } from "@/components/RBACContext";
 import {
-  Users,
-  DollarSign,
-  TrendingUp,
-  Zap,
-  BarChart3,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Settings,
-  Key,
-  Building,
-  FileText,
+  Users
+  DollarSign
+  TrendingUp
+  Zap
+  BarChart3
+  Clock
+  CheckCircle2
+  AlertCircle
+  Settings
+  Key
+  Building
+  FileText
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -31,69 +31,69 @@ export default function Dashboard() {
 
   const metrics = [
     {
-      label: "Active Users",
-      value: "2,847",
-      change: "+12.5%",
-      icon: Users,
-      color: "text-blue-600",
-    },
+      label: "Active Users"
+      value: "2,847"
+      change: "+12.5%"
+      icon: Users
+      color: "text-blue-600"
+    }
     {
-      label: "Total Revenue",
-      value: "$128.5K",
-      change: "+8.2%",
-      icon: DollarSign,
-      color: "text-green-600",
-    },
+      label: "Total Revenue"
+      value: "$128.5K"
+      change: "+8.2%"
+      icon: DollarSign
+      color: "text-green-600"
+    }
     {
-      label: "Growth Rate",
-      value: "24.8%",
-      change: "-2.1%",
-      icon: TrendingUp,
-      color: "text-purple-600",
-    },
+      label: "Growth Rate"
+      value: "24.8%"
+      change: "-2.1%"
+      icon: TrendingUp
+      color: "text-purple-600"
+    }
     {
-      label: "Performance",
-      value: "95%",
-      change: "+5%",
-      icon: Zap,
-      color: "text-orange-600",
-    },
+      label: "Performance"
+      value: "95%"
+      change: "+5%"
+      icon: Zap
+      color: "text-orange-600"
+    }
   ];
 
   const recentActivities = [
     {
-      title: "Invoice Generated",
-      description: "INV-2025-001234 created",
-      time: "2 hours ago",
-      status: "completed",
-    },
+      title: "Invoice Generated"
+      description: "INV-2025-001234 created"
+      time: "2 hours ago"
+      status: "completed"
+    }
     {
-      title: "Order Received",
-      description: "Order ORD-789456 from Acme Corp",
-      time: "4 hours ago",
-      status: "completed",
-    },
+      title: "Order Received"
+      description: "Order ORD-789456 from Acme Corp"
+      time: "4 hours ago"
+      status: "completed"
+    }
     {
-      title: "System Update",
-      description: "Platform updated to v2.5.1",
-      time: "1 day ago",
-      status: "completed",
-    },
+      title: "System Update"
+      description: "Platform updated to v2.5.1"
+      time: "1 day ago"
+      status: "completed"
+    }
     {
-      title: "Low Inventory Alert",
-      description: "Product SKU-2847 below threshold",
-      time: "3 days ago",
-      status: "alert",
-    },
+      title: "Low Inventory Alert"
+      description: "Product SKU-2847 below threshold"
+      time: "3 days ago"
+      status: "alert"
+    }
   ];
 
   const topModules = [
-    { name: "CRM", description: "Customer Management", path: "/crm", color: "from-blue-500 to-cyan-500" },
-    { name: "Finance", description: "Accounting & Billing", path: "/finance", color: "from-green-500 to-emerald-500" },
-    { name: "HR", description: "Human Resources", path: "/hr", color: "from-purple-500 to-pink-500" },
-    { name: "Projects", description: "Project Management", path: "/projects", color: "from-orange-500 to-red-500" },
-    { name: "Analytics", description: "Business Intelligence", path: "/analytics", color: "from-indigo-500 to-blue-500" },
-    { name: "Logistics", description: "Supply Chain", path: "/industry/logistics", color: "from-cyan-500 to-blue-500" },
+    { name: "CRM", description: "Customer Management", path: "/crm", color: "from-blue-500 to-cyan-500" }
+    { name: "Finance", description: "Accounting & Billing", path: "/finance", color: "from-green-500 to-emerald-500" }
+    { name: "HR", description: "Human Resources", path: "/hr", color: "from-purple-500 to-pink-500" }
+    { name: "Projects", description: "Project Management", path: "/projects", color: "from-orange-500 to-red-500" }
+    { name: "Analytics", description: "Business Intelligence", path: "/analytics", color: "from-indigo-500 to-blue-500" }
+    { name: "Logistics", description: "Supply Chain", path: "/industry/logistics", color: "from-cyan-500 to-blue-500" }
   ];
 
   return (

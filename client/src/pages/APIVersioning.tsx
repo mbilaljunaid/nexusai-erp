@@ -9,8 +9,8 @@ export default function APIVersioning() {
       </div>
       <div className="grid gap-4">
         {[
-          { version: "v3.0", status: "Current", adoption: "75%" },
-          { version: "v2.0", status: "Deprecated", adoption: "20%" },
+          { version: "v3.0", status: "Current", adoption: "75%" }
+          { version: "v2.0", status: "Deprecated", adoption: "20%" }
         ].map((v) => (
           <Card key={v.version}>
             <CardContent className="pt-6">

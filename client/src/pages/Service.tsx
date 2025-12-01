@@ -10,14 +10,14 @@ export default function Service() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
-    { id: "tickets", label: "Tickets", icon: AlertCircle, color: "text-green-500" },
-    { id: "customers", label: "Customers", icon: Users, color: "text-purple-500" },
-    { id: "knowledge", label: "Knowledge Base", icon: FileText, color: "text-orange-500" },
-    { id: "sla", label: "SLA Tracking", icon: Clock, color: "text-pink-500" },
-    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-cyan-500" },
-    { id: "queue", label: "Queue Manager", icon: Zap, color: "text-indigo-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
+    { id: "tickets", label: "Tickets", icon: AlertCircle, color: "text-green-500" }
+    { id: "customers", label: "Customers", icon: Users, color: "text-purple-500" }
+    { id: "knowledge", label: "Knowledge Base", icon: FileText, color: "text-orange-500" }
+    { id: "sla", label: "SLA Tracking", icon: Clock, color: "text-pink-500" }
+    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-cyan-500" }
+    { id: "queue", label: "Queue Manager", icon: Zap, color: "text-indigo-500" }
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" }
   ];
 
   return (

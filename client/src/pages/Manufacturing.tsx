@@ -18,10 +18,10 @@ export default function Manufacturing() {
   const workOrderFormMetadata = getFormMetadata("workorder");
 
   const navItems = [
-    { id: "bom", label: "Bill of Materials", icon: Package, color: "text-blue-500" },
-    { id: "workorders", label: "Work Orders", icon: Zap, color: "text-orange-500" },
-    { id: "production", label: "Production", icon: Factory, color: "text-purple-500" },
-    { id: "quality", label: "Quality Control", icon: QrCode, color: "text-green-500" },
+    { id: "bom", label: "Bill of Materials", icon: Package, color: "text-blue-500" }
+    { id: "workorders", label: "Work Orders", icon: Zap, color: "text-orange-500" }
+    { id: "production", label: "Production", icon: Factory, color: "text-purple-500" }
+    { id: "quality", label: "Quality Control", icon: QrCode, color: "text-green-500" }
   ];
 
   return (

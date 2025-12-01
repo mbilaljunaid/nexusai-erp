@@ -4,9 +4,9 @@ import { BarChart3 } from "lucide-react";
 
 export default function SupplierPerformance() {
   const suppliers = [
-    { id: "sp1", name: "Acme Corp", onTime: "98%", quality: "96%", cost: "92%", rating: "4.9", status: "excellent" },
-    { id: "sp2", name: "Global Supplies", onTime: "94%", quality: "89%", cost: "85%", rating: "4.2", status: "good" },
-    { id: "sp3", name: "TechVendor Ltd", onTime: "87%", quality: "91%", cost: "78%", rating: "3.9", status: "fair" },
+    { id: "sp1", name: "Acme Corp", onTime: "98%", quality: "96%", cost: "92%", rating: "4.9", status: "excellent" }
+    { id: "sp2", name: "Global Supplies", onTime: "94%", quality: "89%", cost: "85%", rating: "4.2", status: "good" }
+    { id: "sp3", name: "TechVendor Ltd", onTime: "87%", quality: "91%", cost: "78%", rating: "3.9", status: "fair" }
   ];
 
   return (

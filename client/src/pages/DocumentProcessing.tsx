@@ -4,9 +4,9 @@ import { FileText } from "lucide-react";
 
 export default function DocumentProcessing() {
   const documents = [
-    { id: "d1", name: "Invoice_OCT2025.pdf", type: "Invoice", status: "completed", accuracy: "98%" },
-    { id: "d2", name: "Contract_ABC.pdf", type: "Contract", status: "processing", accuracy: "—" },
-    { id: "d3", name: "Receipt_XYZ.jpg", type: "Receipt", status: "completed", accuracy: "96%" },
+    { id: "d1", name: "Invoice_OCT2025.pdf", type: "Invoice", status: "completed", accuracy: "98%" }
+    { id: "d2", name: "Contract_ABC.pdf", type: "Contract", status: "processing", accuracy: "—" }
+    { id: "d3", name: "Receipt_XYZ.jpg", type: "Receipt", status: "completed", accuracy: "96%" }
   ];
   return (
     <div className="space-y-6 p-4">

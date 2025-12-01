@@ -13,25 +13,25 @@ export default function ProcurementSourcing() {
   const [newPO, setNewPO] = useState({ poId: "", supplierId: "", itemId: "", quantity: "0", status: "draft" });
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-procurement"],
-    queryFn: () => fetch("/api/fb-procurement").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/fb-procurement"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/fb-procurement", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/fb-procurement", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-procurement"] });
       setNewPO({ poId: "", supplierId: "", itemId: "", quantity: "0", status: "draft" });
       toast({ title: "PO created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/fb-procurement/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/fb-procurement/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-procurement"] });
       toast({ title: "PO deleted" });
-    },
+    }
   });
 
   const completed = orders.filter((o: any) => o.status === "completed").length;

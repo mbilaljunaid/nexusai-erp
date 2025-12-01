@@ -14,41 +14,41 @@ export default function PeriodClose() {
   const [newTask, setNewTask] = useState({ closeTask: "", module: "Finance", dueDate: "" });
 
   const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ["/api/period-close"],
-    queryFn: () => fetch("/api/period-close").then(r => r.json()),
+    queryKey: ["/api/period-close"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/period-close", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/period-close", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/period-close"] });
       setNewTask({ closeTask: "", module: "Finance", dueDate: "" });
       toast({ title: "Close task created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fetch(`/api/period-close/${id}`, { method: "DELETE" }),
+    mutationFn: (id) => fetch(`/api/period-close/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/period-close"] });
       toast({ title: "Task deleted" });
-    },
+    }
   });
 
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) =>
-      fetch(`/api/period-close/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) }),
+      fetch(`/api/period-close/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/period-close"] });
       toast({ title: "Task status updated" });
-    },
+    }
   });
 
   const metrics = {
-    total: tasks.length,
-    completed: tasks.filter((t: any) => t.status === "completed").length,
-    inProgress: tasks.filter((t: any) => t.status === "in-progress").length,
-    notStarted: tasks.filter((t: any) => t.status === "not_started").length,
+    total: tasks.length
+    completed: tasks.filter((t: any) => t.status === "completed").length
+    inProgress: tasks.filter((t: any) => t.status === "in-progress").length
+    notStarted: tasks.filter((t: any) => t.status === "not_started").length
   };
 
   return (

@@ -14,25 +14,25 @@ export default function SupplierManagement() {
   const [newSupplier, setNewSupplier] = useState({ supplierName: "", category: "Electronics", rating: "3" });
 
   const { data: suppliers = [], isLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/procurement/suppliers"],
-    queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json()),
+    queryKey: ["/api/procurement/suppliers"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/procurement/suppliers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/procurement/suppliers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/procurement/suppliers"] });
       setNewSupplier({ supplierName: "", category: "Electronics", rating: "3" });
       toast({ title: "Supplier added" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/procurement/suppliers/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/procurement/suppliers/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/procurement/suppliers"] });
       toast({ title: "Supplier removed" });
-    },
+    }
   });
 
   const active = suppliers.filter((s: any) => s.status === "active").length;

@@ -5,8 +5,8 @@ import { TrendingUp } from "lucide-react";
 
 export default function FBDemandPlanning() {
   const { data: forecasts = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-planning"],
-    queryFn: () => fetch("/api/fb-planning").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/fb-planning"]
+    
   });
 
   const avgForecast = forecasts.length > 0 ? (forecasts.reduce((sum: number, f: any) => sum + (parseInt(f.forecastQty) || 0), 0) / forecasts.length).toFixed(0) : 0;

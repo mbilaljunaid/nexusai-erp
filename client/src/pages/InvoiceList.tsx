@@ -13,17 +13,17 @@ export default function InvoiceList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const { data: invoices = [] } = useQuery<any[]>({
-    queryKey: ["/api/invoices"],
+    queryKey: ["/api/invoices"]
   });
   const invoiceFormMetadata = getFormMetadata("invoice");
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      "Paid": "bg-green-100 text-green-800",
-      "Pending": "bg-amber-100 text-amber-800",
-      "Overdue": "bg-red-100 text-red-800",
-      "Draft": "bg-gray-100 text-gray-800",
-      "sent": "bg-blue-100 text-blue-800",
+      "Paid": "bg-green-100 text-green-800"
+      "Pending": "bg-amber-100 text-amber-800"
+      "Overdue": "bg-red-100 text-red-800"
+      "Draft": "bg-gray-100 text-gray-800"
+      "sent": "bg-blue-100 text-blue-800"
     };
     return colors[status] || "bg-gray-100 text-gray-800";
   };

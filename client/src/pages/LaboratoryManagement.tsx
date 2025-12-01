@@ -14,25 +14,25 @@ export default function LaboratoryManagement() {
   const [newTest, setNewTest] = useState({ testId: "", specimenId: "", testType: "blood", status: "pending" });
 
   const { data: tests = [], isLoading } = useQuery({
-    queryKey: ["/api/healthcare-labs"],
-    queryFn: () => fetch("/api/healthcare-labs").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/healthcare-labs"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/healthcare-labs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/healthcare-labs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-labs"] });
       setNewTest({ testId: "", specimenId: "", testType: "blood", status: "pending" });
       toast({ title: "Lab test created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/healthcare-labs/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/healthcare-labs/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-labs"] });
       toast({ title: "Test deleted" });
-    },
+    }
   });
 
   const completed = tests.filter((t: any) => t.status === "completed").length;

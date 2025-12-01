@@ -9,8 +9,8 @@ export default function WebhookEvents() {
       </div>
       <div className="grid gap-4">
         {[
-          { event: "lead.created", resource: "Lead", actions: 245 },
-          { event: "deal.updated", resource: "Deal", actions: 156 },
+          { event: "lead.created", resource: "Lead", actions: 245 }
+          { event: "deal.updated", resource: "Deal", actions: 156 }
         ].map((evt) => (
           <Card key={evt.event}>
             <CardContent className="pt-6">

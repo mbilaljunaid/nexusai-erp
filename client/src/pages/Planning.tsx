@@ -12,18 +12,18 @@ import { z } from "zod";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const revenueForecastSchema = z.object({
-  name: z.string().min(1),
-  forecastPeriod: z.string().min(1),
-  baselineRevenue: z.coerce.number().min(0),
-  forecastRevenue: z.coerce.number().min(0),
-  product: z.string().optional(),
-  region: z.string().optional(),
+  name: z.string().min(1)
+  forecastPeriod: z.string().min(1)
+  baselineRevenue: z.coerce.number().min(0)
+  forecastRevenue: z.coerce.number().min(0)
+  product: z.string().optional()
+  region: z.string().optional()
 });
 
 const budgetSchema = z.object({
-  department: z.string().min(1),
-  year: z.coerce.number().int(),
-  budgetAmount: z.coerce.number().min(0),
+  department: z.string().min(1)
+  year: z.coerce.number().int()
+  budgetAmount: z.coerce.number().min(0)
 });
 
 type RevenueForecastForm = z.infer<typeof revenueForecastSchema>;
@@ -33,54 +33,54 @@ export default function Planning() {
   const [activeTab, setActiveTab] = useState<"revenue" | "budget" | "scenarios">("revenue");
 
   const { data: forecasts = [] } = useQuery({
-    queryKey: ["/api/planning/revenue-forecasts"],
+    queryKey: ["/api/planning/revenue-forecasts"]
   }) as { data: any[] };
 
   const { data: budgets = [] } = useQuery({
-    queryKey: ["/api/planning/budgets"],
+    queryKey: ["/api/planning/budgets"]
   }) as { data: any[] };
 
   const { data: scenarios = [] } = useQuery({
-    queryKey: ["/api/planning/scenarios"],
+    queryKey: ["/api/planning/scenarios"]
   }) as { data: any[] };
 
   const forecastForm = useForm<RevenueForecastForm>({
-    resolver: zodResolver(revenueForecastSchema),
-    defaultValues: { name: "", forecastPeriod: "", baselineRevenue: 0, forecastRevenue: 0, product: "", region: "" },
+    resolver: zodResolver(revenueForecastSchema)
+    defaultValues: { name: "", forecastPeriod: "", baselineRevenue: 0, forecastRevenue: 0, product: "", region: "" }
   });
 
   const budgetForm = useForm<BudgetForm>({
-    resolver: zodResolver(budgetSchema),
-    defaultValues: { department: "", year: new Date().getFullYear(), budgetAmount: 0 },
+    resolver: zodResolver(budgetSchema)
+    defaultValues: { department: "", year: new Date().getFullYear(), budgetAmount: 0 }
   });
 
   const createForecastMutation = useMutation({
-    mutationFn: (data: RevenueForecastForm) => apiRequest("POST", "/api/planning/revenue-forecasts", data),
+    mutationFn: (data: RevenueForecastForm) => apiRequest("POST", "/api/planning/revenue-forecasts", data)
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/planning/revenue-forecasts"] });
       forecastForm.reset();
-    },
+    }
   });
 
   const createBudgetMutation = useMutation({
-    mutationFn: (data: BudgetForm) => apiRequest("POST", "/api/planning/budgets", data),
+    mutationFn: (data: BudgetForm) => apiRequest("POST", "/api/planning/budgets", data)
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/planning/budgets"] });
       budgetForm.reset();
-    },
+    }
   });
 
   const forecastChartData = forecasts.map((f: any) => ({
-    name: f.name,
-    baseline: Number(f.baselineRevenue),
-    forecast: Number(f.forecastRevenue),
+    name: f.name
+    baseline: Number(f.baselineRevenue)
+    forecast: Number(f.forecastRevenue)
   }));
 
   const budgetChartData = budgets.map((b: any) => ({
-    name: b.department,
-    budget: Number(b.budgetAmount),
-    allocated: Number(b.allocated),
-    spent: Number(b.spent),
+    name: b.department
+    budget: Number(b.budgetAmount)
+    allocated: Number(b.allocated)
+    spent: Number(b.spent)
   }));
 
   return (

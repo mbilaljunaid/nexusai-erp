@@ -15,41 +15,40 @@ export default function Inventory() {
   const [newItem, setNewItem] = useState({ itemName: "", sku: "", quantity: "" });
   const [newWarehouse, setNewWarehouse] = useState({ warehouseName: "", location: "" });
 
-  const { data: items = [], isLoading: itemsLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/items"], queryFn: () => fetch("/api/inventory/items").then(r => r.json()).catch(() => []) });
-  const { data: warehouses = [], isLoading: whLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/warehouses"], queryFn: () => fetch("/api/inventory/warehouses").then(r => r.json()).catch(() => []) });
+  const { data: items = [], isLoading: itemsLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/items"],  isLoading: whLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/warehouses"], queryFn: () => fetch("/api/inventory/warehouses").then(r => r.json()).catch(() => []) });
 
   const createItemMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
       setNewItem({ itemName: "", sku: "", quantity: "" });
       toast({ title: "Item created" });
-    },
+    }
   });
 
   const deleteItemMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/inventory/items/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/inventory/items/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
       toast({ title: "Item deleted" });
-    },
+    }
   });
 
   const createWhMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/inventory/warehouses", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/inventory/warehouses", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory/warehouses"] });
       setNewWarehouse({ warehouseName: "", location: "" });
       toast({ title: "Warehouse created" });
-    },
+    }
   });
 
   const deleteWhMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/inventory/warehouses/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/inventory/warehouses/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory/warehouses"] });
       toast({ title: "Warehouse deleted" });
-    },
+    }
   });
 
   const lowStockItems = items.filter((item: any) => item.quantity <= item.reorderLevel);

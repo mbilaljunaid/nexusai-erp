@@ -12,25 +12,25 @@ export default function CompensationManagement() {
   const [newComp, setNewComp] = useState({ employee: "", baseSalary: "", bonus: "", benefits: "" });
 
   const { data: compensations = [], isLoading } = useQuery({
-    queryKey: ["/api/compensation"],
-    queryFn: () => fetch("/api/compensation").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/compensation"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/compensation", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/compensation", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compensation"] });
       setNewComp({ employee: "", baseSalary: "", bonus: "", benefits: "" });
       toast({ title: "Compensation added" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/compensation/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/compensation/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compensation"] });
       toast({ title: "Compensation deleted" });
-    },
+    }
   });
 
   return (

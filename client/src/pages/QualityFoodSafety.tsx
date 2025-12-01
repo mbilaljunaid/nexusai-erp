@@ -13,25 +13,25 @@ export default function QualityFoodSafety() {
   const [newTest, setNewTest] = useState({ testId: "", batchId: "", testType: "microbial", result: "pass" });
 
   const { data: tests = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-quality"],
-    queryFn: () => fetch("/api/fb-quality").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/fb-quality"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/fb-quality", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/fb-quality", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-quality"] });
       setNewTest({ testId: "", batchId: "", testType: "microbial", result: "pass" });
       toast({ title: "QC test recorded" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/fb-quality/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/fb-quality/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-quality"] });
       toast({ title: "Test deleted" });
-    },
+    }
   });
 
   const passed = tests.filter((t: any) => t.result === "pass").length;

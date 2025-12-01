@@ -14,25 +14,25 @@ export default function ToolingManagement() {
   const [newTool, setNewTool] = useState({ toolId: "", toolType: "cutting", status: "calibrated", usageCount: "0" });
 
   const { data: tools = [], isLoading } = useQuery({
-    queryKey: ["/api/tooling"],
-    queryFn: () => fetch("/api/tooling").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/tooling"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tooling", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/tooling", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tooling"] });
       setNewTool({ toolId: "", toolType: "cutting", status: "calibrated", usageCount: "0" });
       toast({ title: "Tool created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tooling/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/tooling/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tooling"] });
       toast({ title: "Tool deleted" });
-    },
+    }
   });
 
   const calibrated = tools.filter((t: any) => t.status === "calibrated").length;

@@ -17,21 +17,21 @@ interface HRInsight {
 export default function HRCopilot() {
   const [activeNav, setActiveNav] = useState("insights");
   const { data: insights = [] } = useQuery<HRInsight[]>({
-    queryKey: ["/api/copilot/hr"],
-    retry: false,
+    queryKey: ["/api/copilot/hr"]
+    retry: false
   });
 
   const navItems = [
-    { id: "insights", label: "Insights", icon: AlertCircle, color: "text-red-500" },
-    { id: "actions", label: "Actions", icon: CheckCircle2, color: "text-green-500" },
-    { id: "outcomes", label: "Outcomes", icon: TrendingUp, color: "text-blue-500" },
+    { id: "insights", label: "Insights", icon: AlertCircle, color: "text-red-500" }
+    { id: "actions", label: "Actions", icon: CheckCircle2, color: "text-green-500" }
+    { id: "outcomes", label: "Outcomes", icon: TrendingUp, color: "text-blue-500" }
   ];
 
   const stats = {
-    total: insights.length,
-    retention: insights.filter((i: any) => i.category === "retention").length,
-    development: insights.filter((i: any) => i.category === "development").length,
-    succession: insights.filter((i: any) => i.category === "succession").length,
+    total: insights.length
+    retention: insights.filter((i: any) => i.category === "retention").length
+    development: insights.filter((i: any) => i.category === "development").length
+    succession: insights.filter((i: any) => i.category === "succession").length
   };
 
   return (

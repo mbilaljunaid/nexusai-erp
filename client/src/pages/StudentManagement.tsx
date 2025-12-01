@@ -8,9 +8,9 @@ import { Users, Plus, Search } from "lucide-react";
 export default function StudentManagement() {
   const [search, setSearch] = useState("");
   const students = [
-    { id: "STU001", name: "Rajesh Kumar", email: "rajesh@school.edu", status: "ACTIVE", program: "B.Tech CS" },
-    { id: "STU002", name: "Priya Singh", email: "priya@school.edu", status: "ACTIVE", program: "B.Tech ECE" },
-    { id: "STU003", name: "Arjun Patel", email: "arjun@school.edu", status: "INACTIVE", program: "B.Tech ME" },
+    { id: "STU001", name: "Rajesh Kumar", email: "rajesh@school.edu", status: "ACTIVE", program: "B.Tech CS" }
+    { id: "STU002", name: "Priya Singh", email: "priya@school.edu", status: "ACTIVE", program: "B.Tech ECE" }
+    { id: "STU003", name: "Arjun Patel", email: "arjun@school.edu", status: "INACTIVE", program: "B.Tech ME" }
   ];
   return (
     <div className="space-y-6 p-6">

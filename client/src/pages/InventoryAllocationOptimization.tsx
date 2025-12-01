@@ -5,8 +5,8 @@ import { Lightbulb } from "lucide-react";
 
 export default function InventoryAllocationOptimization() {
   const { data: allocations = [], isLoading } = useQuery({
-    queryKey: ["/api/inventory-allocation"],
-    queryFn: () => fetch("/api/inventory-allocation").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/inventory-allocation"]
+    
   });
 
   const optimized = allocations.filter((a: any) => a.status === "optimized").length;

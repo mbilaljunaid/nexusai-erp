@@ -5,8 +5,8 @@ import { TrendingUp } from "lucide-react";
 
 export default function TelecomBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/telecom-bi"],
-    queryFn: () => fetch("/api/telecom-bi").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/telecom-bi"]
+    
   });
 
   const totalRevenue = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.revenue) || 0), 0);

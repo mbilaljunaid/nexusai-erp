@@ -9,10 +9,10 @@ export default function Integrations() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: Plug, color: "text-blue-500" },
-    { id: "connectors", label: "Connectors", icon: Link2, color: "text-purple-500" },
-    { id: "flows", label: "Data Flows", icon: Database, color: "text-green-500" },
-    { id: "api", label: "API & Webhooks", icon: Code, color: "text-orange-500" },
+    { id: "overview", label: "Overview", icon: Plug, color: "text-blue-500" }
+    { id: "connectors", label: "Connectors", icon: Link2, color: "text-purple-500" }
+    { id: "flows", label: "Data Flows", icon: Database, color: "text-green-500" }
+    { id: "api", label: "API & Webhooks", icon: Code, color: "text-orange-500" }
   ];
 
   return (
@@ -36,12 +36,12 @@ export default function Integrations() {
             <CardHeader><CardTitle className="text-base">Available Integrations</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {[
-                { name: "Salesforce", category: "CRM" },
-                { name: "NetSuite", category: "ERP" },
-                { name: "SAP", category: "ERP" },
-                { name: "Slack", category: "Communication" },
-                { name: "Microsoft Teams", category: "Communication" },
-                { name: "Quickbooks", category: "Accounting" },
+                { name: "Salesforce", category: "CRM" }
+                { name: "NetSuite", category: "ERP" }
+                { name: "SAP", category: "ERP" }
+                { name: "Slack", category: "Communication" }
+                { name: "Microsoft Teams", category: "Communication" }
+                { name: "Quickbooks", category: "Accounting" }
               ].map((integration) => (
                 <div key={integration.name} className="flex items-center justify-between p-3 rounded-md border hover-elevate">
                   <div>
@@ -61,10 +61,10 @@ export default function Integrations() {
           <CardHeader><CardTitle className="text-base">Active Connectors</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {[
-              { id: "C001", name: "Salesforce CRM", category: "CRM", status: "connected", lastSync: "2 min ago" },
-              { id: "C002", name: "NetSuite ERP", category: "ERP", status: "connected", lastSync: "5 min ago" },
-              { id: "C003", name: "Slack", category: "Communication", status: "connected", lastSync: "1 min ago" },
-              { id: "C004", name: "Stripe Payments", category: "Payment", status: "connected", lastSync: "3 min ago" },
+              { id: "C001", name: "Salesforce CRM", category: "CRM", status: "connected", lastSync: "2 min ago" }
+              { id: "C002", name: "NetSuite ERP", category: "ERP", status: "connected", lastSync: "5 min ago" }
+              { id: "C003", name: "Slack", category: "Communication", status: "connected", lastSync: "1 min ago" }
+              { id: "C004", name: "Stripe Payments", category: "Payment", status: "connected", lastSync: "3 min ago" }
             ].map((connector) => (
               <div key={connector.id} className="border rounded-lg p-3 hover-elevate cursor-pointer">
                 <div className="flex justify-between items-start">

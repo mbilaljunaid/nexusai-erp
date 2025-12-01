@@ -14,25 +14,25 @@ export default function IntercompanyReconciliation() {
   const [newMatch, setNewMatch] = useState({ entity: "Entity A", partner: "Entity B", amount: "", status: "unmatched" });
 
   const { data: matches = [], isLoading } = useQuery({
-    queryKey: ["/api/intercompany-reconciliation"],
-    queryFn: () => fetch("/api/intercompany-reconciliation").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/intercompany-reconciliation"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/intercompany-reconciliation", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/intercompany-reconciliation", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/intercompany-reconciliation"] });
       setNewMatch({ entity: "Entity A", partner: "Entity B", amount: "", status: "unmatched" });
       toast({ title: "Reconciliation entry created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/intercompany-reconciliation/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/intercompany-reconciliation/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/intercompany-reconciliation"] });
       toast({ title: "Entry deleted" });
-    },
+    }
   });
 
   const matchedCount = matches.filter((m: any) => m.status === "matched").length;

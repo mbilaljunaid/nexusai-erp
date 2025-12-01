@@ -14,25 +14,25 @@ export default function AIAutomation() {
   const [newWorkflow, setNewWorkflow] = useState({ name: "", trigger: "created", status: "active" });
 
   const { data: workflows = [], isLoading } = useQuery({
-    queryKey: ["/api/ai-automations"],
-    queryFn: () => fetch("/api/ai-automations").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/ai-automations"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/ai-automations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/ai-automations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ai-automations"] });
       setNewWorkflow({ name: "", trigger: "created", status: "active" });
       toast({ title: "Automation workflow created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/ai-automations/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/ai-automations/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ai-automations"] });
       toast({ title: "Workflow deleted" });
-    },
+    }
   });
 
   const active = workflows.filter((w: any) => w.status === "active").length;

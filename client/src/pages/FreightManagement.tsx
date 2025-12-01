@@ -14,25 +14,25 @@ export default function FreightManagement() {
   const [newShipment, setNewShipment] = useState({ shipmentId: "", carrier: "UPS", mode: "road", cost: "500", status: "booked" });
 
   const { data: shipments = [], isLoading } = useQuery({
-    queryKey: ["/api/freight"],
-    queryFn: () => fetch("/api/freight").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/freight"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/freight", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/freight", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/freight"] });
       setNewShipment({ shipmentId: "", carrier: "UPS", mode: "road", cost: "500", status: "booked" });
       toast({ title: "Shipment created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/freight/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/freight/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/freight"] });
       toast({ title: "Shipment deleted" });
-    },
+    }
   });
 
   const delivered = shipments.filter((s: any) => s.status === "delivered").length;

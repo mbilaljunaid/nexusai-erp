@@ -7,9 +7,9 @@ import { Users, Plus } from "lucide-react";
 
 export default function RoleAssignment() {
   const [assignments] = useState([
-    { id: "a1", user: "Alice Admin", role: "System Admin", status: "active", startDate: "2025-01-15", endDate: null },
-    { id: "a2", user: "Bob Manager", role: "Manager", status: "active", startDate: "2025-06-01", endDate: "2025-12-31" },
-    { id: "a3", user: "Carol Operator", role: "Operator", status: "active", startDate: "2025-03-10", endDate: null },
+    { id: "a1", user: "Alice Admin", role: "System Admin", status: "active", startDate: "2025-01-15", endDate: null }
+    { id: "a2", user: "Bob Manager", role: "Manager", status: "active", startDate: "2025-06-01", endDate: "2025-12-31" }
+    { id: "a3", user: "Carol Operator", role: "Operator", status: "active", startDate: "2025-03-10", endDate: null }
   ]);
 
   return (

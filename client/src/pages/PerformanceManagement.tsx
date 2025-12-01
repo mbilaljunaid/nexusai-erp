@@ -16,22 +16,22 @@ interface Review {
 export default function PerformanceManagement() {
   const [activeNav, setActiveNav] = useState("reviews");
   const { data: reviews = [] } = useQuery<Review[]>({
-    queryKey: ["/api/performance-reviews"],
-    retry: false,
+    queryKey: ["/api/performance-reviews"]
+    retry: false
   });
 
   const stats = {
-    total: (reviews || []).length,
-    inProgress: (reviews || []).filter((r: any) => r.status === "in_progress").length,
-    completed: (reviews || []).filter((r: any) => r.status === "completed").length,
-    avgScore: (reviews || []).length > 0 ? (((reviews || []).reduce((sum: number, r: any) => sum + (r.score || 0), 0) / (reviews || []).length) * 100).toFixed(0) : 0,
+    total: (reviews || []).length
+    inProgress: (reviews || []).filter((r: any) => r.status === "in_progress").length
+    completed: (reviews || []).filter((r: any) => r.status === "completed").length
+    avgScore: (reviews || []).length > 0 ? (((reviews || []).reduce((sum: number, r: any) => sum + (r.score || 0), 0) / (reviews || []).length) * 100).toFixed(0) : 0
   };
 
   const navItems = [
-    { id: "reviews", label: "Reviews", icon: Target, color: "text-blue-500" },
-    { id: "goals", label: "Goals", icon: TrendingUp, color: "text-green-500" },
-    { id: "feedback", label: "Feedback", icon: Star, color: "text-purple-500" },
-    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-orange-500" },
+    { id: "reviews", label: "Reviews", icon: Target, color: "text-blue-500" }
+    { id: "goals", label: "Goals", icon: TrendingUp, color: "text-green-500" }
+    { id: "feedback", label: "Feedback", icon: Star, color: "text-purple-500" }
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-orange-500" }
   ];
 
   return (

@@ -5,9 +5,9 @@ import { Target, Plus } from "lucide-react";
 
 export default function OpportunitiesPage() {
   const opportunities = [
-    { id: "op1", name: "Acme Cloud Migration", customer: "Acme Corp", stage: "proposal", value: "$250,000", probability: "70%", owner: "Alice", closeDate: "2025-12-15" },
-    { id: "op2", name: "Global ERP Implementation", customer: "Global Industries", stage: "negotiation", value: "$500,000", probability: "60%", owner: "Bob", closeDate: "2025-11-30" },
-    { id: "op3", name: "StartUp Platform Upgrade", customer: "StartUp Labs", stage: "qualification", value: "$75,000", probability: "40%", owner: "Carol", closeDate: "2026-01-15" },
+    { id: "op1", name: "Acme Cloud Migration", customer: "Acme Corp", stage: "proposal", value: "$250,000", probability: "70%", owner: "Alice", closeDate: "2025-12-15" }
+    { id: "op2", name: "Global ERP Implementation", customer: "Global Industries", stage: "negotiation", value: "$500,000", probability: "60%", owner: "Bob", closeDate: "2025-11-30" }
+    { id: "op3", name: "StartUp Platform Upgrade", customer: "StartUp Labs", stage: "qualification", value: "$75,000", probability: "40%", owner: "Carol", closeDate: "2026-01-15" }
   ];
 
   return (

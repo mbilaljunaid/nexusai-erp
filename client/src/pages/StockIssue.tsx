@@ -14,25 +14,25 @@ export default function StockIssue() {
   const [newIssue, setNewIssue] = useState({ item: "Item A", quantity: "", location: "Bin-01", reason: "sales" });
 
   const { data: issues = [], isLoading } = useQuery({
-    queryKey: ["/api/stock-issue"],
-    queryFn: () => fetch("/api/stock-issue").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/stock-issue"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/stock-issue", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/stock-issue", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/stock-issue"] });
       setNewIssue({ item: "Item A", quantity: "", location: "Bin-01", reason: "sales" });
       toast({ title: "Stock issue created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/stock-issue/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/stock-issue/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/stock-issue"] });
       toast({ title: "Issue deleted" });
-    },
+    }
   });
 
   const totalIssued = issues.reduce((sum: number, i: any) => sum + (parseFloat(i.quantity) || 0), 0);

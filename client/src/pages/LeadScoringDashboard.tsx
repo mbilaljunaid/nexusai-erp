@@ -15,40 +15,40 @@ export default function LeadScoringDashboard() {
   const [newLead, setNewLead] = useState({ name: "", email: "", company: "", score: "", status: "new" });
 
   const { data: leads = [], isLoading } = useQuery({
-    queryKey: ["/api/crm/leads"],
-    queryFn: () => fetch("/api/crm/leads").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/crm/leads"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/crm/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/crm/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/leads"] });
       setNewLead({ name: "", email: "", company: "", score: "", status: "new" });
       toast({ title: "Lead created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/crm/leads/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/crm/leads/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/leads"] });
       toast({ title: "Lead deleted" });
-    },
+    }
   });
   const scoreDistribution = [
-    { range: "0-20", count: 45 },
-    { range: "21-40", count: 32 },
-    { range: "41-60", count: 28 },
-    { range: "61-80", count: 18 },
-    { range: "81-100", count: 12 },
+    { range: "0-20", count: 45 }
+    { range: "21-40", count: 32 }
+    { range: "41-60", count: 28 }
+    { range: "61-80", count: 18 }
+    { range: "81-100", count: 12 }
   ];
 
   const scoreFactors = [
-    { factor: "Email Engagement", weight: 25, impact: "High" },
-    { factor: "Website Activity", weight: 20, impact: "High" },
-    { factor: "Company Size", weight: 15, impact: "Medium" },
-    { factor: "Industry Match", weight: 20, impact: "High" },
-    { factor: "Job Title", weight: 20, impact: "Medium" },
+    { factor: "Email Engagement", weight: 25, impact: "High" }
+    { factor: "Website Activity", weight: 20, impact: "High" }
+    { factor: "Company Size", weight: 15, impact: "Medium" }
+    { factor: "Industry Match", weight: 20, impact: "High" }
+    { factor: "Job Title", weight: 20, impact: "Medium" }
   ];
 
   const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444"];

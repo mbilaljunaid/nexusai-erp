@@ -14,25 +14,25 @@ export default function BOQManagementConstruction() {
   const [newBOQ, setNewBOQ] = useState({ project: "Project-A", item: "Excavation", qty: "1000", uom: "m3", rate: "50", costCode: "CC-001", status: "active" });
 
   const { data: boqs = [], isLoading } = useQuery({
-    queryKey: ["/api/boq-construction"],
-    queryFn: () => fetch("/api/boq-construction").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/boq-construction"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/boq-construction", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/boq-construction", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/boq-construction"] });
       setNewBOQ({ project: "Project-A", item: "Excavation", qty: "1000", uom: "m3", rate: "50", costCode: "CC-001", status: "active" });
       toast({ title: "BOQ line added" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/boq-construction/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/boq-construction/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/boq-construction"] });
       toast({ title: "BOQ line deleted" });
-    },
+    }
   });
 
   const totalAmount = boqs.reduce((sum: number, b: any) => sum + ((parseFloat(b.qty) || 0) * (parseFloat(b.rate) || 0)), 0);

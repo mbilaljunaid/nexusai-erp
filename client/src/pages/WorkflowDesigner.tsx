@@ -19,22 +19,22 @@ interface Workflow {
 export default function WorkflowDesigner() {
   const [activeNav, setActiveNav] = useState("workflows");
   const { data: workflows = [] } = useQuery<Workflow[]>({
-    queryKey: ["/api/workflows"],
-    retry: false,
+    queryKey: ["/api/workflows"]
+    retry: false
   });
 
   const stats = {
-    total: (workflows || []).length,
-    active: (workflows || []).filter(w => w.active).length,
-    totalStates: (workflows || []).reduce((sum, w) => sum + (w.states?.length || 0), 0),
-    totalRules: (workflows || []).reduce((sum, w) => sum + (w.automationRules?.length || 0), 0),
+    total: (workflows || []).length
+    active: (workflows || []).filter(w => w.active).length
+    totalStates: (workflows || []).reduce((sum, w) => sum + (w.states?.length || 0), 0)
+    totalRules: (workflows || []).reduce((sum, w) => sum + (w.automationRules?.length || 0), 0)
   };
 
   const navItems = [
-    { id: "workflows", label: "Workflows", icon: GitBranch, color: "text-blue-500" },
-    { id: "active", label: "Active", icon: Zap, color: "text-green-500" },
-    { id: "rules", label: "Automation", icon: Settings, color: "text-purple-500" },
-    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-orange-500" },
+    { id: "workflows", label: "Workflows", icon: GitBranch, color: "text-blue-500" }
+    { id: "active", label: "Active", icon: Zap, color: "text-green-500" }
+    { id: "rules", label: "Automation", icon: Settings, color: "text-purple-500" }
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-orange-500" }
   ];
 
   return (

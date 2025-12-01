@@ -3,9 +3,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 export default function MRPDashboard() {
   const demandData = [
-    { product: "Widget A", demand: 500, capacity: 600 },
-    { product: "Gadget B", demand: 200, capacity: 300 },
-    { product: "Component X", demand: 1000, capacity: 1200 },
+    { product: "Widget A", demand: 500, capacity: 600 }
+    { product: "Gadget B", demand: 200, capacity: 300 }
+    { product: "Component X", demand: 1000, capacity: 1200 }
   ];
 
   return (

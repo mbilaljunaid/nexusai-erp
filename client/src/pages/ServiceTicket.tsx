@@ -27,9 +27,9 @@ export default function ServiceTicket() {
 
       <div className="grid gap-4">
         {[
-          { id: "TK-001", title: "Login issue", customer: "Acme Corp", status: "Open", priority: "High" },
-          { id: "TK-002", title: "Report generation", customer: "Global Inc", status: "In Progress", priority: "Medium" },
-          { id: "TK-003", title: "Feature request", customer: "TechStart", status: "Resolved", priority: "Low" },
+          { id: "TK-001", title: "Login issue", customer: "Acme Corp", status: "Open", priority: "High" }
+          { id: "TK-002", title: "Report generation", customer: "Global Inc", status: "In Progress", priority: "Medium" }
+          { id: "TK-003", title: "Feature request", customer: "TechStart", status: "Resolved", priority: "Low" }
         ].map((ticket) => (
           <Card key={ticket.id} className="hover:bg-muted/50 transition">
             <CardContent className="pt-6">

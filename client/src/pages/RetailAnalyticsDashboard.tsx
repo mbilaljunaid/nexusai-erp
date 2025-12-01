@@ -4,8 +4,8 @@ import { BarChart3, TrendingUp, Users, DollarSign } from "lucide-react";
 
 export default function RetailAnalyticsDashboard() {
   const { data: analytics = [], isLoading } = useQuery({
-    queryKey: ["/api/retail-analytics"],
-    queryFn: () => fetch("/api/retail-analytics").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/retail-analytics"]
+    
   });
 
   const totalRevenue = analytics.reduce((sum: number, a: any) => sum + (parseFloat(a.revenue) || 0), 0);

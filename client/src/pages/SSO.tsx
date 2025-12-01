@@ -10,8 +10,8 @@ export default function SSO() {
       </div>
       <div className="grid gap-4">
         {[
-          { provider: "Azure AD", status: "Configured" },
-          { provider: "Google Workspace", status: "Configured" },
+          { provider: "Azure AD", status: "Configured" }
+          { provider: "Google Workspace", status: "Configured" }
         ].map((sso) => (
           <Card key={sso.provider}>
             <CardContent className="pt-6">

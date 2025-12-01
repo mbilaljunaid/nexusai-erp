@@ -19,9 +19,9 @@ export default function LandingPage() {
   const handleDemo = async () => {
     try {
       const res = await fetch("/api/demos/request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, company, industry: "General" }),
+        method: "POST"
+        headers: { "Content-Type": "application/json" }
+        body: JSON.stringify({ email, company, industry: "General" })
       });
       if (res.ok) setSubmitted(true);
     } catch (e) {
@@ -30,26 +30,26 @@ export default function LandingPage() {
   };
 
   const industries = [
-    "Automotive", "Banking", "Healthcare", "Education", "Retail", "Manufacturing",
+    "Automotive", "Banking", "Healthcare", "Education", "Retail", "Manufacturing"
     "Logistics", "Telecom", "Insurance", "Fashion", "Government", "Hospitality"
   ];
 
   const modules = [
-    { title: "ERP Core", icon: Package, href: "/module/erp-core" },
-    { title: "CRM", icon: Users, href: "/module/crm" },
-    { title: "HR & Payroll", icon: Briefcase, href: "/module/hr" },
-    { title: "Projects", icon: BarChart3, href: "/module/projects" },
-    { title: "EPM", icon: TrendingUp, href: "/module/epm" },
-    { title: "Finance", icon: DollarSign, href: "/module/finance" },
-    { title: "Inventory", icon: Factory, href: "/module/inventory" },
-    { title: "Compliance", icon: CheckCircle, href: "/module/compliance" },
-    { title: "BPM", icon: Settings, href: "/module/bpm" },
-    { title: "Website", icon: Globe, href: "/module/website" },
-    { title: "Email", icon: Mail, href: "/module/email" },
-    { title: "BI & Analytics", icon: BarChart3, href: "/module/analytics" },
-    { title: "AI Copilot", icon: Bot, href: "/module/ai-copilot" },
-    { title: "Consolidation", icon: Layers, href: "/module/consolidation" },
-    { title: "Financial Close", icon: Sparkles, href: "/module/financial-close" },
+    { title: "ERP Core", icon: Package, href: "/module/erp-core" }
+    { title: "CRM", icon: Users, href: "/module/crm" }
+    { title: "HR & Payroll", icon: Briefcase, href: "/module/hr" }
+    { title: "Projects", icon: BarChart3, href: "/module/projects" }
+    { title: "EPM", icon: TrendingUp, href: "/module/epm" }
+    { title: "Finance", icon: DollarSign, href: "/module/finance" }
+    { title: "Inventory", icon: Factory, href: "/module/inventory" }
+    { title: "Compliance", icon: CheckCircle, href: "/module/compliance" }
+    { title: "BPM", icon: Settings, href: "/module/bpm" }
+    { title: "Website", icon: Globe, href: "/module/website" }
+    { title: "Email", icon: Mail, href: "/module/email" }
+    { title: "BI & Analytics", icon: BarChart3, href: "/module/analytics" }
+    { title: "AI Copilot", icon: Bot, href: "/module/ai-copilot" }
+    { title: "Consolidation", icon: Layers, href: "/module/consolidation" }
+    { title: "Financial Close", icon: Sparkles, href: "/module/financial-close" }
   ];
 
   return (
@@ -122,12 +122,12 @@ export default function LandingPage() {
         <h2 className="text-4xl font-bold text-center mb-12">Why Choose NexusAI</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            { icon: Sparkles, title: "AI-Driven Automation", desc: "Real-time recommendations & predictive insights" },
-            { icon: Zap, title: "Pre-Configured Workflows", desc: "Industry-specific templates ready to use" },
-            { icon: Globe, title: "All-in-One Platform", desc: "No need for multiple disconnected systems" },
-            { icon: Shield, title: "Enterprise Security", desc: "RBAC, multi-tenant isolation, audit logging" },
-            { icon: TrendingUp, title: "Faster Implementation", desc: "50% faster deployment vs traditional ERP" },
-            { icon: ArrowRight, title: "Scalable Architecture", desc: "From SMB to Fortune 500 ready" },
+            { icon: Sparkles, title: "AI-Driven Automation", desc: "Real-time recommendations & predictive insights" }
+            { icon: Zap, title: "Pre-Configured Workflows", desc: "Industry-specific templates ready to use" }
+            { icon: Globe, title: "All-in-One Platform", desc: "No need for multiple disconnected systems" }
+            { icon: Shield, title: "Enterprise Security", desc: "RBAC, multi-tenant isolation, audit logging" }
+            { icon: TrendingUp, title: "Faster Implementation", desc: "50% faster deployment vs traditional ERP" }
+            { icon: ArrowRight, title: "Scalable Architecture", desc: "From SMB to Fortune 500 ready" }
           ].map((item, i) => (
             <Card key={i} className="landing-card p-6">
               <item.icon className="w-8 h-8" style={{ color: `hsl(var(--primary))` }} />
@@ -156,12 +156,12 @@ export default function LandingPage() {
               </thead>
               <tbody>
                 {[
-                  ["AI-Powered Insights", "✅", "❌", "⚠️", "❌", "❌"],
-                  ["Fast Implementation", "✅", "❌", "⚠️", "⚠️", "✅"],
-                  ["Pre-configured Workflows", "✅", "❌", "⚠️", "⚠️", "✅"],
-                  ["40+ Industries", "✅", "❌", "❌", "❌", "❌"],
-                  ["Transparent Pricing", "✅", "❌", "❌", "✅", "✅"],
-                  ["Multi-tenant Ready", "✅", "⚠️", "✅", "✅", "✅"],
+                  ["AI-Powered Insights", "✅", "❌", "⚠️", "❌", "❌"]
+                  ["Fast Implementation", "✅", "❌", "⚠️", "⚠️", "✅"]
+                  ["Pre-configured Workflows", "✅", "❌", "⚠️", "⚠️", "✅"]
+                  ["40+ Industries", "✅", "❌", "❌", "❌", "❌"]
+                  ["Transparent Pricing", "✅", "❌", "❌", "✅", "✅"]
+                  ["Multi-tenant Ready", "✅", "⚠️", "✅", "✅", "✅"]
                 ].map((row, i) => (
                   <tr key={i} className="border-b hover:bg-[hsl(var(--muted)/0.3)]" style={{ borderColor: `hsl(var(--border))` }}>
                     <td className="p-3 font-semibold">{row[0]}</td>

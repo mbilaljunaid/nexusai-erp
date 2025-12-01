@@ -21,33 +21,33 @@ export default function AdvancedAnalytics() {
   const [newDash, setNewDash] = useState({ name: "", owner: "" });
 
   const { data: dashboards = [], isLoading: dashLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/analytics/advanced-dashboards"],
-    queryFn: () => fetch("/api/analytics/advanced-dashboards").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/analytics/advanced-dashboards"]
+    
   });
   const { data: models = [], isLoading: modelsLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/analytics/models"],
-    queryFn: () => fetch("/api/analytics/models").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/analytics/models"]
+    
   });
   const { data: forecasts = [], isLoading: forecastsLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/analytics/forecast"],
-    queryFn: () => fetch("/api/analytics/forecast").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/analytics/forecast"]
+    
   });
 
   const createDashMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/analytics/advanced-dashboards", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/analytics/advanced-dashboards", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/advanced-dashboards"] });
       setNewDash({ name: "", owner: "" });
       toast({ title: "Dashboard created" });
-    },
+    }
   });
 
   const deleteDashMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/analytics/advanced-dashboards/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/analytics/advanced-dashboards/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/advanced-dashboards"] });
       toast({ title: "Dashboard deleted" });
-    },
+    }
   });
 
   return (

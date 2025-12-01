@@ -10,7 +10,7 @@ export default function Marketplace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredExtensions, setFilteredExtensions] = useState<any[]>([]);
   const { data: extensions = [] } = useQuery<any[]>({
-    queryKey: ["/api/marketplace/extensions"],
+    queryKey: ["/api/marketplace/extensions"]
   });
   const formMetadata = getFormMetadata("marketplace");
 
@@ -35,8 +35,8 @@ export default function Marketplace() {
       />
       <div className="grid gap-4">
         {[
-          { ext: "Custom Integration", downloads: 142, rating: "4.8" },
-          { ext: "Advanced Reports", downloads: 89, rating: "4.6" },
+          { ext: "Custom Integration", downloads: 142, rating: "4.8" }
+          { ext: "Advanced Reports", downloads: 89, rating: "4.6" }
         ].map((ext) => (
           <Card key={ext.ext}>
             <CardContent className="pt-6">

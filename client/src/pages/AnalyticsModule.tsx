@@ -5,12 +5,12 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
-  { name: "Jan", value: 4000 },
-  { name: "Feb", value: 3000 },
-  { name: "Mar", value: 2000 },
-  { name: "Apr", value: 2780 },
-  { name: "May", value: 1890 },
-  { name: "Jun", value: 2390 },
+  { name: "Jan", value: 4000 }
+  { name: "Feb", value: 3000 }
+  { name: "Mar", value: 2000 }
+  { name: "Apr", value: 2780 }
+  { name: "May", value: 1890 }
+  { name: "Jun", value: 2390 }
 ];
 
 export default function AnalyticsModule() {
@@ -88,9 +88,9 @@ export default function AnalyticsModule() {
           </CardHeader>
           <CardContent className="space-y-2">
             {[
-              { name: "Product A", sales: "$950K" },
-              { name: "Product B", sales: "$750K" },
-              { name: "Product C", sales: "$550K" },
+              { name: "Product A", sales: "$950K" }
+              { name: "Product B", sales: "$750K" }
+              { name: "Product C", sales: "$550K" }
             ].map((p) => (
               <div key={p.name} className="flex justify-between p-2 rounded hover:bg-muted">
                 <span className="text-sm">{p.name}</span>
@@ -106,9 +106,9 @@ export default function AnalyticsModule() {
           </CardHeader>
           <CardContent className="space-y-2">
             {[
-              { source: "Direct", pct: "45%" },
-              { source: "Search", pct: "35%" },
-              { source: "Social", pct: "20%" },
+              { source: "Direct", pct: "45%" }
+              { source: "Search", pct: "35%" }
+              { source: "Social", pct: "20%" }
             ].map((s) => (
               <div key={s.source} className="flex justify-between p-2 rounded hover:bg-muted">
                 <span className="text-sm">{s.source}</span>

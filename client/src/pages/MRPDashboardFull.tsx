@@ -5,8 +5,8 @@ import { AlertCircle, TrendingDown, TrendingUp, Clock } from "lucide-react";
 
 export default function MRPDashboardFull() {
   const { data: recommendations = [], isLoading } = useQuery({
-    queryKey: ["/api/mrp"],
-    queryFn: () => fetch("/api/mrp").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/mrp"]
+    
   });
 
   const buyRecs = recommendations.filter((r: any) => r.type === "buy").length;

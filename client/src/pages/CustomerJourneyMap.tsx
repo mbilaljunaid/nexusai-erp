@@ -13,25 +13,25 @@ export default function CustomerJourneyMap() {
   const [newStage, setNewStage] = useState({ stage: "", count: "", conversion: "" });
 
   const { data: stages = [], isLoading } = useQuery({
-    queryKey: ["/api/journey-stages"],
-    queryFn: () => fetch("/api/journey-stages").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/journey-stages"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/journey-stages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/journey-stages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/journey-stages"] });
       setNewStage({ stage: "", count: "", conversion: "" });
       toast({ title: "Journey stage added" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/journey-stages/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/journey-stages/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/journey-stages"] });
       toast({ title: "Journey stage deleted" });
-    },
+    }
   });
 
   return (

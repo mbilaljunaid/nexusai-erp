@@ -59,9 +59,9 @@ export default function ProjectsModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { name: "Platform Migration", progress: 75, status: "in-progress" },
-              { name: "Mobile App", progress: 45, status: "in-progress" },
-              { name: "API Redesign", progress: 90, status: "in-progress" },
+              { name: "Platform Migration", progress: 75, status: "in-progress" }
+              { name: "Mobile App", progress: 45, status: "in-progress" }
+              { name: "API Redesign", progress: 90, status: "in-progress" }
             ].map((proj) => (
               <div key={proj.name} className="p-3 border rounded">
                 <div className="flex justify-between items-center mb-2">
@@ -82,8 +82,8 @@ export default function ProjectsModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { sprint: "Sprint 25", completed: 32, remaining: 8, status: "active" },
-              { sprint: "Sprint 26", completed: 0, remaining: 40, status: "planned" },
+              { sprint: "Sprint 25", completed: 32, remaining: 8, status: "active" }
+              { sprint: "Sprint 26", completed: 0, remaining: 40, status: "planned" }
             ].map((s) => (
               <div key={s.sprint} className="p-3 border rounded">
                 <div className="flex justify-between items-center">

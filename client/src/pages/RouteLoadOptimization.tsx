@@ -5,8 +5,8 @@ import { Navigation } from "lucide-react";
 
 export default function RouteLoadOptimization() {
   const { data: routes = [], isLoading } = useQuery({
-    queryKey: ["/api/tl-routes"],
-    queryFn: () => fetch("/api/tl-routes").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/tl-routes"]
+    
   });
 
   const avgUtilization = routes.length > 0 ? (routes.reduce((sum: number, r: any) => sum + (parseFloat(r.utilization) || 0), 0) / routes.length).toFixed(1) : 0;

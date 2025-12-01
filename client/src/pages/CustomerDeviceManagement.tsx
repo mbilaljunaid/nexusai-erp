@@ -13,25 +13,25 @@ export default function CustomerDeviceManagement() {
   const [newDevice, setNewDevice] = useState({ deviceId: "", subscriberId: "", imei: "", simId: "", status: "active" });
 
   const { data: devices = [], isLoading } = useQuery({
-    queryKey: ["/api/devices-sims"],
-    queryFn: () => fetch("/api/devices-sims").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/devices-sims"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/devices-sims", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/devices-sims", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/devices-sims"] });
       setNewDevice({ deviceId: "", subscriberId: "", imei: "", simId: "", status: "active" });
       toast({ title: "Device added" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/devices-sims/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/devices-sims/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/devices-sims"] });
       toast({ title: "Device deleted" });
-    },
+    }
   });
 
   const active = devices.filter((d: any) => d.status === "active").length;

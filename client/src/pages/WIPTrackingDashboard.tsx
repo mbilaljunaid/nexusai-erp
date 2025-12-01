@@ -5,8 +5,8 @@ import { TrendingUp, Clock } from "lucide-react";
 
 export default function WIPTrackingDashboard() {
   const { data: wipData = [], isLoading } = useQuery({
-    queryKey: ["/api/wip-tracking"],
-    queryFn: () => fetch("/api/wip-tracking").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/wip-tracking"]
+    
   });
 
   const totalWIP = wipData.reduce((sum: number, w: any) => sum + (parseFloat(w.quantity) || 0), 0);

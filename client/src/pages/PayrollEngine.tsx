@@ -17,21 +17,21 @@ interface PayrollRun {
 export default function PayrollEngine() {
   const [activeNav, setActiveNav] = useState("runs");
   const { data: payrolls = [] } = useQuery<PayrollRun[]>({
-    queryKey: ["/api/payroll/runs"],
-    retry: false,
+    queryKey: ["/api/payroll/runs"]
+    retry: false
   });
 
   const navItems = [
-    { id: "runs", label: "Payroll Runs", icon: Calculator, color: "text-blue-500" },
-    { id: "taxes", label: "Tax Config", icon: AlertCircle, color: "text-orange-500" },
-    { id: "deductions", label: "Deductions", icon: Settings, color: "text-green-500" },
+    { id: "runs", label: "Payroll Runs", icon: Calculator, color: "text-blue-500" }
+    { id: "taxes", label: "Tax Config", icon: AlertCircle, color: "text-orange-500" }
+    { id: "deductions", label: "Deductions", icon: Settings, color: "text-green-500" }
   ];
 
   const stats = {
-    total: payrolls?.length || 0,
-    processed: (payrolls || []).filter((p: PayrollRun) => p.status === "processed").length,
-    pending: (payrolls || []).filter((p: PayrollRun) => p.status === "pending").length,
-    totalAmount: (payrolls || []).reduce((sum: number, p: PayrollRun) => sum + parseFloat(p.totalAmount || "0"), 0),
+    total: payrolls?.length || 0
+    processed: (payrolls || []).filter((p: PayrollRun) => p.status === "processed").length
+    pending: (payrolls || []).filter((p: PayrollRun) => p.status === "pending").length
+    totalAmount: (payrolls || []).reduce((sum: number, p: PayrollRun) => sum + parseFloat(p.totalAmount || "0"), 0)
   };
 
   return (

@@ -13,25 +13,25 @@ export default function ClinicalDocumentation() {
   const [newNote, setNewNote] = useState({ noteId: "", encounterId: "", providerId: "", chiefComplaint: "", status: "draft" });
 
   const { data: notes = [], isLoading } = useQuery({
-    queryKey: ["/api/healthcare-notes"],
-    queryFn: () => fetch("/api/healthcare-notes").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/healthcare-notes"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/healthcare-notes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/healthcare-notes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-notes"] });
       setNewNote({ noteId: "", encounterId: "", providerId: "", chiefComplaint: "", status: "draft" });
       toast({ title: "Clinical note created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/healthcare-notes/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/healthcare-notes/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-notes"] });
       toast({ title: "Note deleted" });
-    },
+    }
   });
 
   const finalized = notes.filter((n: any) => n.status === "finalized").length;

@@ -4,16 +4,16 @@ import { Lock, AlertTriangle } from "lucide-react";
 
 export default function PasswordPolicies() {
   const policy = {
-    minLength: 8,
-    maxLength: 128,
-    uppercase: true,
-    lowercase: true,
-    numbers: true,
-    specialChars: true,
-    expiryDays: 90,
-    reuseRestriction: 5,
-    lockoutAttempts: 5,
-    lockoutDuration: 30,
+    minLength: 8
+    maxLength: 128
+    uppercase: true
+    lowercase: true
+    numbers: true
+    specialChars: true
+    expiryDays: 90
+    reuseRestriction: 5
+    lockoutAttempts: 5
+    lockoutDuration: 30
   };
 
   return (

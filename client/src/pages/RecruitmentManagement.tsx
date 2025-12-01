@@ -14,25 +14,25 @@ export default function RecruitmentManagement() {
   const [newJob, setNewJob] = useState({ title: "", department: "Engineering", stage: "open" });
 
   const { data: jobs = [], isLoading } = useQuery({
-    queryKey: ["/api/recruitment/jobs"],
-    queryFn: () => fetch("/api/recruitment/jobs").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/recruitment/jobs"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/recruitment/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/recruitment/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/recruitment/jobs"] });
       setNewJob({ title: "", department: "Engineering", stage: "open" });
       toast({ title: "Job posted" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/recruitment/jobs/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/recruitment/jobs/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/recruitment/jobs"] });
       toast({ title: "Job deleted" });
-    },
+    }
   });
 
   return (

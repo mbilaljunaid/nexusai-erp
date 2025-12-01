@@ -16,43 +16,43 @@ export default function EmailManagement() {
   const [newCampaign, setNewCampaign] = useState({ name: "", status: "active", recipients: "" });
 
   const navItems = [
-    { id: "campaigns", label: "Campaigns", icon: Send, color: "text-blue-500" },
-    { id: "templates", label: "Templates", icon: Mail, color: "text-purple-500" },
-    { id: "subscribers", label: "Subscribers", icon: Users, color: "text-green-500" },
+    { id: "campaigns", label: "Campaigns", icon: Send, color: "text-blue-500" }
+    { id: "templates", label: "Templates", icon: Mail, color: "text-purple-500" }
+    { id: "subscribers", label: "Subscribers", icon: Users, color: "text-green-500" }
   ];
 
   const { data: campaigns = [], isLoading } = useQuery({
-    queryKey: ["/api/email-campaigns"],
-    queryFn: () => fetch("/api/email-campaigns").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/email-campaigns"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/email-campaigns", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/email-campaigns", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/email-campaigns"] });
       setNewCampaign({ name: "", status: "active", recipients: "" });
       toast({ title: "Campaign created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/email-campaigns/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/email-campaigns/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/email-campaigns"] });
       toast({ title: "Campaign deleted" });
-    },
+    }
   });
 
   const calculateStats = (sent: number, opens: number, clicks: number) => ({
-    openRate: ((opens / sent) * 100).toFixed(1),
-    clickRate: ((clicks / opens) * 100).toFixed(1),
+    openRate: ((opens / sent) * 100).toFixed(1)
+    clickRate: ((clicks / opens) * 100).toFixed(1)
   });
 
   const templates = [
-    { name: "Welcome Email", category: "Onboarding", uses: 324 },
-    { name: "Product Update", category: "Product", uses: 156 },
-    { name: "Special Offer", category: "Promotion", uses: 89 },
-    { name: "Monthly Newsletter", category: "Newsletter", uses: 245 },
+    { name: "Welcome Email", category: "Onboarding", uses: 324 }
+    { name: "Product Update", category: "Product", uses: 156 }
+    { name: "Special Offer", category: "Promotion", uses: 89 }
+    { name: "Monthly Newsletter", category: "Newsletter", uses: 245 }
   ];
 
   return (

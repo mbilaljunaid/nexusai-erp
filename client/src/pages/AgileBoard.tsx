@@ -34,8 +34,8 @@ export default function AgileBoard() {
   const [filtered, setFiltered] = useState<any[]>([]);
   const formMetadata = getFormMetadata("agileBoard");
   const { data: sprints = [] } = useQuery<Sprint[]>({
-    queryKey: ["/api/sprints"],
-    retry: false,
+    queryKey: ["/api/sprints"]
+    retry: false
   });
 
   const activeSprint = sprints.find(s => s.status === "active") || sprints[0];
@@ -46,11 +46,11 @@ export default function AgileBoard() {
   const done = tasks.filter(t => t.status === "done");
 
   const stats = {
-    velocity: activeSprint?.velocity || 0,
-    completed: done.length,
-    inProgress: inProgress.length,
-    remaining: todo.length,
-    totalPoints: tasks.reduce((sum, t) => sum + t.points, 0),
+    velocity: activeSprint?.velocity || 0
+    completed: done.length
+    inProgress: inProgress.length
+    remaining: todo.length
+    totalPoints: tasks.reduce((sum, t) => sum + t.points, 0)
   };
 
   return (

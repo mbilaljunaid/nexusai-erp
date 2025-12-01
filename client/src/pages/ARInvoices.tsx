@@ -14,25 +14,25 @@ export default function ARInvoices() {
   const [newInvoice, setNewInvoice] = useState({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
 
   const { data: invoices = [], isLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/finance/ar-invoices"],
-    queryFn: () => fetch("/api/finance/ar-invoices").then(r => r.json()),
+    queryKey: ["/api/finance/ar-invoices"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/finance/ar-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/finance/ar-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/ar-invoices"] });
       setNewInvoice({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
       toast({ title: "Invoice created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/ar-invoices/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/finance/ar-invoices/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/ar-invoices"] });
       toast({ title: "Invoice deleted" });
-    },
+    }
   });
 
   const total = invoices.reduce((sum, i: any) => sum + parseFloat(i.invoiceAmount || 0), 0);
@@ -40,11 +40,11 @@ export default function ARInvoices() {
   const outstanding = total - received;
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    draft: "secondary",
-    issued: "default",
-    overdue: "destructive",
-    paid: "outline",
-    cancelled: "secondary",
+    draft: "secondary"
+    issued: "default"
+    overdue: "destructive"
+    paid: "outline"
+    cancelled: "secondary"
   };
 
   return (

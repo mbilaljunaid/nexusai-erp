@@ -13,9 +13,9 @@ export default function IoT() {
   const { data: jobs = [] } = useQuery<any[]>({ queryKey: ["/api/field-service/jobs"] });
 
   const tabs = [
-    { id: "devices", label: "IoT Devices", icon: Activity, count: devices.length },
-    { id: "sensors", label: "Sensor Readings", icon: Gauge, count: sensors.length },
-    { id: "jobs", label: "Field Service", icon: Zap, count: jobs.length },
+    { id: "devices", label: "IoT Devices", icon: Activity, count: devices.length }
+    { id: "sensors", label: "Sensor Readings", icon: Gauge, count: sensors.length }
+    { id: "jobs", label: "Field Service", icon: Zap, count: jobs.length }
   ];
 
   return (

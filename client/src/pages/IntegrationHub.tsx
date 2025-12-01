@@ -9,25 +9,25 @@ export default function IntegrationHub() {
   const [activeNav, setActiveNav] = useState("integrations");
 
   const navItems = [
-    { id: "integrations", label: "Integrations", icon: Plug, color: "text-blue-500" },
-    { id: "workflows", label: "Workflows", icon: Zap, color: "text-purple-500" },
-    { id: "webhooks", label: "Webhooks", icon: Webhook, color: "text-green-500" },
-    { id: "marketplace", label: "Marketplace", icon: Code, color: "text-orange-500" },
+    { id: "integrations", label: "Integrations", icon: Plug, color: "text-blue-500" }
+    { id: "workflows", label: "Workflows", icon: Zap, color: "text-purple-500" }
+    { id: "webhooks", label: "Webhooks", icon: Webhook, color: "text-green-500" }
+    { id: "marketplace", label: "Marketplace", icon: Code, color: "text-orange-500" }
   ];
 
   const integrations = [
-    { name: "Salesforce", status: "active", lastSync: "2 hours ago", type: "CRM" },
-    { name: "HubSpot", status: "active", lastSync: "15 minutes ago", type: "Marketing" },
-    { name: "Stripe", status: "active", lastSync: "1 hour ago", type: "Payments" },
-    { name: "Slack", status: "error", lastSync: "3 days ago", type: "Communication" },
-    { name: "Zapier", status: "active", lastSync: "30 minutes ago", type: "Automation" },
-    { name: "Mailchimp", status: "inactive", lastSync: "1 week ago", type: "Email" },
+    { name: "Salesforce", status: "active", lastSync: "2 hours ago", type: "CRM" }
+    { name: "HubSpot", status: "active", lastSync: "15 minutes ago", type: "Marketing" }
+    { name: "Stripe", status: "active", lastSync: "1 hour ago", type: "Payments" }
+    { name: "Slack", status: "error", lastSync: "3 days ago", type: "Communication" }
+    { name: "Zapier", status: "active", lastSync: "30 minutes ago", type: "Automation" }
+    { name: "Mailchimp", status: "inactive", lastSync: "1 week ago", type: "Email" }
   ];
 
   const workflows = [
-    { id: "WF-001", name: "Lead to Contact Sync", status: "active", trigger: "New Lead Created", actions: 2 },
-    { id: "WF-002", name: "Order Notification", status: "active", trigger: "Order Completed", actions: 3 },
-    { id: "WF-003", name: "Customer Lifecycle", status: "inactive", trigger: "Customer Status Changed", actions: 4 },
+    { id: "WF-001", name: "Lead to Contact Sync", status: "active", trigger: "New Lead Created", actions: 2 }
+    { id: "WF-002", name: "Order Notification", status: "active", trigger: "Order Completed", actions: 3 }
+    { id: "WF-003", name: "Customer Lifecycle", status: "inactive", trigger: "Customer Status Changed", actions: 4 }
   ];
 
   const getStatusColor = (status: string) => {

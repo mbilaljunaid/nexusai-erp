@@ -13,25 +13,25 @@ export default function RecipeFormulation() {
   const [newRecipe, setNewRecipe] = useState({ recipeId: "", name: "", yield: "100", status: "draft" });
 
   const { data: recipes = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-recipes"],
-    queryFn: () => fetch("/api/fb-recipes").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/fb-recipes"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/fb-recipes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/fb-recipes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-recipes"] });
       setNewRecipe({ recipeId: "", name: "", yield: "100", status: "draft" });
       toast({ title: "Recipe created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/fb-recipes/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/fb-recipes/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-recipes"] });
       toast({ title: "Recipe deleted" });
-    },
+    }
   });
 
   const approved = recipes.filter((r: any) => r.status === "approved").length;

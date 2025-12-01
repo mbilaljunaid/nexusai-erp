@@ -4,10 +4,10 @@ import { Clock, MapPin, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function LoginHistory() {
   const loginHistory = [
-    { id: "l1", date: "Nov 30, 10:15 AM", ip: "192.168.1.100", device: "Chrome/MacOS", location: "New York, USA", status: "success", mfaUsed: true },
-    { id: "l2", date: "Nov 30, 9:30 AM", ip: "192.168.1.101", device: "Safari/iPhone", location: "New York, USA", status: "success", mfaUsed: true },
-    { id: "l3", date: "Nov 29, 3:45 PM", ip: "192.168.2.50", device: "Firefox/Windows", location: "New York, USA", status: "success", mfaUsed: false },
-    { id: "l4", date: "Nov 29, 2:20 PM", ip: "192.168.3.75", device: "Unknown", location: "Unknown", status: "failed", mfaUsed: false },
+    { id: "l1", date: "Nov 30, 10:15 AM", ip: "192.168.1.100", device: "Chrome/MacOS", location: "New York, USA", status: "success", mfaUsed: true }
+    { id: "l2", date: "Nov 30, 9:30 AM", ip: "192.168.1.101", device: "Safari/iPhone", location: "New York, USA", status: "success", mfaUsed: true }
+    { id: "l3", date: "Nov 29, 3:45 PM", ip: "192.168.2.50", device: "Firefox/Windows", location: "New York, USA", status: "success", mfaUsed: false }
+    { id: "l4", date: "Nov 29, 2:20 PM", ip: "192.168.3.75", device: "Unknown", location: "Unknown", status: "failed", mfaUsed: false }
   ];
 
   return (

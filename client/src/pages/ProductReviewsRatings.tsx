@@ -14,25 +14,25 @@ export default function ProductReviewsRatings() {
   const [newReview, setNewReview] = useState({ productId: "", customerName: "", rating: "5", status: "pending" });
 
   const { data: reviews = [], isLoading } = useQuery({
-    queryKey: ["/api/product-reviews"],
-    queryFn: () => fetch("/api/product-reviews").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/product-reviews"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/product-reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/product-reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-reviews"] });
       setNewReview({ productId: "", customerName: "", rating: "5", status: "pending" });
       toast({ title: "Review submitted" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/product-reviews/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/product-reviews/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-reviews"] });
       toast({ title: "Review deleted" });
-    },
+    }
   });
 
   const approved = reviews.filter((r: any) => r.status === "approved").length;

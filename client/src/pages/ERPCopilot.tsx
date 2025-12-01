@@ -17,21 +17,21 @@ interface ERPAnalysis {
 export default function ERPCopilot() {
   const [activeNav, setActiveNav] = useState("findings");
   const { data: analyses = [] } = useQuery<ERPAnalysis[]>({
-    queryKey: ["/api/copilot/erp"],
-    retry: false,
+    queryKey: ["/api/copilot/erp"]
+    retry: false
   });
 
   const navItems = [
-    { id: "findings", label: "Findings", icon: AlertTriangle, color: "text-red-500" },
-    { id: "recommendations", label: "Recommendations", icon: Zap, color: "text-yellow-500" },
-    { id: "impact", label: "Impact", icon: TrendingDown, color: "text-green-500" },
+    { id: "findings", label: "Findings", icon: AlertTriangle, color: "text-red-500" }
+    { id: "recommendations", label: "Recommendations", icon: Zap, color: "text-yellow-500" }
+    { id: "impact", label: "Impact", icon: TrendingDown, color: "text-green-500" }
   ];
 
   const stats = {
-    total: analyses.length,
-    critical: analyses.filter((a: any) => a.severity === "critical").length,
-    warnings: analyses.filter((a: any) => a.severity === "warning").length,
-    costSavings: analyses.length * 15000,
+    total: analyses.length
+    critical: analyses.filter((a: any) => a.severity === "critical").length
+    warnings: analyses.filter((a: any) => a.severity === "warning").length
+    costSavings: analyses.length * 15000
   };
 
   return (

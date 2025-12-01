@@ -13,23 +13,20 @@ export default function EmployeesList() {
   const { toast } = useToast();
   const [newEmp, setNewEmp] = useState({ firstName: "", lastName: "", department: "", designation: "" });
 
-  const { data: employees = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/hr/employees"], queryFn: () => fetch("/api/hr/employees").then(r => r.json()).catch(() => []) });
-
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hr/employees", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+  const { data: employees = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/hr/employees"],  { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hr/employees"] });
       setNewEmp({ firstName: "", lastName: "", department: "", designation: "" });
       toast({ title: "Employee added" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hr/employees/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/hr/employees/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hr/employees"] });
       toast({ title: "Employee deleted" });
-    },
+    }
   });
 
   const activeCount = employees.filter((e: any) => e.status === "active").length;

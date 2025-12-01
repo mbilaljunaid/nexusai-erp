@@ -13,25 +13,25 @@ export default function VehicleSalesDeals() {
   const [newDeal, setNewDeal] = useState({ dealId: "", customerId: "", vin: "", salePrice: "0", status: "pending" });
 
   const { data: deals = [], isLoading } = useQuery({
-    queryKey: ["/api/auto-deals"],
-    queryFn: () => fetch("/api/auto-deals").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/auto-deals"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/auto-deals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/auto-deals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-deals"] });
       setNewDeal({ dealId: "", customerId: "", vin: "", salePrice: "0", status: "pending" });
       toast({ title: "Deal created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/auto-deals/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/auto-deals/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-deals"] });
       toast({ title: "Deal deleted" });
-    },
+    }
   });
 
   const completed = deals.filter((d: any) => d.status === "completed").length;

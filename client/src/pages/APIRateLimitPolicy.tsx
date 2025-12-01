@@ -9,8 +9,8 @@ export default function APIRateLimitPolicy() {
       </div>
       <div className="grid gap-4">
         {[
-          { tier: "Free", rpm: "100", rph: "1000" },
-          { tier: "Pro", rpm: "1000", rph: "10000" },
+          { tier: "Free", rpm: "100", rph: "1000" }
+          { tier: "Pro", rpm: "1000", rph: "10000" }
         ].map((t) => (
           <Card key={t.tier}>
             <CardContent className="pt-6">

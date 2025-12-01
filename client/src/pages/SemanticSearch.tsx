@@ -17,26 +17,26 @@ interface SearchResult {
 export default function SemanticSearch() {
   const [activeNav, setActiveNav] = useState("searches");
   const { data: searches = [] } = useQuery<SearchResult[]>({
-    queryKey: ["/api/search/semantic"],
-    retry: false,
+    queryKey: ["/api/search/semantic"]
+    retry: false
   });
 
   const stats = {
-    total: (searches || []).length,
+    total: (searches || []).length
     avgRelevance: (searches || []).length > 0 
       ? (((searches || []).reduce((sum: number, s: any) => sum + (s.avgRelevance || 0), 0) / (searches || []).length) * 100).toFixed(0)
-      : 0,
-    totalResults: (searches || []).reduce((sum: number, s: any) => sum + (s.resultCount || 0), 0),
+      : 0
+    totalResults: (searches || []).reduce((sum: number, s: any) => sum + (s.resultCount || 0), 0)
     avgTime: (searches || []).length > 0
       ? (((searches || []).reduce((sum: number, s: any) => sum + (s.executionTime || 0), 0) / (searches || []).length)).toFixed(0)
-      : 0,
+      : 0
   };
 
   const navItems = [
-    { id: "searches", label: "Searches", icon: Search, color: "text-blue-500" },
-    { id: "performance", label: "Performance", icon: TrendingUp, color: "text-green-500" },
-    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-purple-500" },
-    { id: "config", label: "Configuration", icon: Settings, color: "text-orange-500" },
+    { id: "searches", label: "Searches", icon: Search, color: "text-blue-500" }
+    { id: "performance", label: "Performance", icon: TrendingUp, color: "text-green-500" }
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-purple-500" }
+    { id: "config", label: "Configuration", icon: Settings, color: "text-orange-500" }
   ];
 
   return (

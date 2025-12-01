@@ -5,8 +5,8 @@ import { BarChart3, AlertTriangle } from "lucide-react";
 
 export default function YieldVarianceTracking() {
   const { data: records = [], isLoading } = useQuery({
-    queryKey: ["/api/yield-tracking"],
-    queryFn: () => fetch("/api/yield-tracking").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/yield-tracking"]
+    
   });
 
   const avgYield = records.length > 0 ? (records.reduce((sum: number, r: any) => sum + (parseFloat(r.yieldPct) || 0), 0) / records.length).toFixed(1) : 0;

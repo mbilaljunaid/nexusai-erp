@@ -17,22 +17,22 @@ interface Onboarding {
 export default function OnboardingAutomation() {
   const [activeNav, setActiveNav] = useState("workflows");
   const { data: onboardings = [] } = useQuery<Onboarding[]>({
-    queryKey: ["/api/onboarding/workflows"],
-    retry: false,
+    queryKey: ["/api/onboarding/workflows"]
+    retry: false
   });
 
   const stats = {
-    total: (onboardings || []).length,
-    inProgress: (onboardings || []).filter((o: any) => o.status === "in_progress").length,
-    completed: (onboardings || []).filter((o: any) => o.status === "completed").length,
-    docs: (onboardings || []).reduce((sum: number, o: any) => sum + (o.documentsCount || 0), 0),
+    total: (onboardings || []).length
+    inProgress: (onboardings || []).filter((o: any) => o.status === "in_progress").length
+    completed: (onboardings || []).filter((o: any) => o.status === "completed").length
+    docs: (onboardings || []).reduce((sum: number, o: any) => sum + (o.documentsCount || 0), 0)
   };
 
   const navItems = [
-    { id: "workflows", label: "Workflows", icon: Users, color: "text-blue-500" },
-    { id: "documents", label: "Documents", icon: FileText, color: "text-green-500" },
-    { id: "templates", label: "Templates", icon: CheckCircle2, color: "text-purple-500" },
-    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-orange-500" },
+    { id: "workflows", label: "Workflows", icon: Users, color: "text-blue-500" }
+    { id: "documents", label: "Documents", icon: FileText, color: "text-green-500" }
+    { id: "templates", label: "Templates", icon: CheckCircle2, color: "text-purple-500" }
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-orange-500" }
   ];
 
   return (

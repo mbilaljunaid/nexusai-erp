@@ -14,25 +14,25 @@ export default function MRPMPSPlanning() {
   const [newPlan, setNewPlan] = useState({ sku: "", demand: "1000", onHand: "500", planType: "buy", status: "suggested" });
 
   const { data: plans = [], isLoading } = useQuery({
-    queryKey: ["/api/mrp-plans"],
-    queryFn: () => fetch("/api/mrp-plans").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/mrp-plans"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/mrp-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/mrp-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/mrp-plans"] });
       setNewPlan({ sku: "", demand: "1000", onHand: "500", planType: "buy", status: "suggested" });
       toast({ title: "Plan created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/mrp-plans/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/mrp-plans/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/mrp-plans"] });
       toast({ title: "Plan deleted" });
-    },
+    }
   });
 
   const approved = plans.filter((p: any) => p.status === "approved").length;

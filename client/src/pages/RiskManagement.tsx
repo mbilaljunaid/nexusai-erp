@@ -14,25 +14,25 @@ export default function RiskManagement() {
   const [newRisk, setNewRisk] = useState({ riskDescription: "", likelihood: "medium", impact: "medium", riskCategory: "operational" });
 
   const { data: risks = [], isLoading } = useQuery({
-    queryKey: ["/api/risk-register"],
-    queryFn: () => fetch("/api/risk-register").then(r => r.json()),
+    queryKey: ["/api/risk-register"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/risk-register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/risk-register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/risk-register"] });
       setNewRisk({ riskDescription: "", likelihood: "medium", impact: "medium", riskCategory: "operational" });
       toast({ title: "Risk created successfully" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/risk-register/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/risk-register/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/risk-register"] });
       toast({ title: "Risk deleted" });
-    },
+    }
   });
 
   const calculateRiskScore = (likelihood: string, impact: string) => {
@@ -41,10 +41,10 @@ export default function RiskManagement() {
   };
 
   const metrics = {
-    total: risks.length,
-    open: risks.filter((r: any) => r.status === "open").length,
-    mitigated: risks.filter((r: any) => r.status === "mitigated").length,
-    avgScore: risks.length > 0 ? (risks.reduce((sum: number, r: any) => sum + parseFloat(r.riskScore || 0), 0) / risks.length).toFixed(1) : "0",
+    total: risks.length
+    open: risks.filter((r: any) => r.status === "open").length
+    mitigated: risks.filter((r: any) => r.status === "mitigated").length
+    avgScore: risks.length > 0 ? (risks.reduce((sum: number, r: any) => sum + parseFloat(r.riskScore || 0), 0) / risks.length).toFixed(1) : "0"
   };
 
   return (

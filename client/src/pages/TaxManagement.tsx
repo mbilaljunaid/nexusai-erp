@@ -14,25 +14,25 @@ export default function TaxManagement() {
   const [newTax, setNewTax] = useState({ name: "", type: "Sales Tax", rate: "", jurisdiction: "" });
 
   const { data: taxCodes = [], isLoading } = useQuery({
-    queryKey: ["/api/finance/tax-codes"],
-    queryFn: () => fetch("/api/finance/tax-codes").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/finance/tax-codes"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/finance/tax-codes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/finance/tax-codes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/tax-codes"] });
       setNewTax({ name: "", type: "Sales Tax", rate: "", jurisdiction: "" });
       toast({ title: "Tax code created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/tax-codes/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/finance/tax-codes/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/tax-codes"] });
       toast({ title: "Tax code deleted" });
-    },
+    }
   });
 
   return (

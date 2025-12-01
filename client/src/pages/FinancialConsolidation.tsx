@@ -14,32 +14,32 @@ export default function FinancialConsolidation() {
   const [newEntity, setNewEntity] = useState({ entityName: "", parentEntity: "Group", consolidationMethod: "full", currency: "USD" });
 
   const { data: entities = [], isLoading } = useQuery({
-    queryKey: ["/api/consolidations"],
-    queryFn: () => fetch("/api/consolidations").then(r => r.json()),
+    queryKey: ["/api/consolidations"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/consolidations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/consolidations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/consolidations"] });
       setNewEntity({ entityName: "", parentEntity: "Group", consolidationMethod: "full", currency: "USD" });
       toast({ title: "Entity created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fetch(`/api/consolidations/${id}`, { method: "DELETE" }),
+    mutationFn: (id) => fetch(`/api/consolidations/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/consolidations"] });
       toast({ title: "Entity deleted" });
-    },
+    }
   });
 
   const metrics = {
-    total: entities.length,
-    consolidated: entities.filter((e: any) => e.status === "consolidated").length,
-    pending: entities.filter((e: any) => e.status === "pending").length,
-    percentage: entities.length > 0 ? Math.round((entities.filter((e: any) => e.status === "consolidated").length / entities.length) * 100) : 0,
+    total: entities.length
+    consolidated: entities.filter((e: any) => e.status === "consolidated").length
+    pending: entities.filter((e: any) => e.status === "pending").length
+    percentage: entities.length > 0 ? Math.round((entities.filter((e: any) => e.status === "consolidated").length / entities.length) * 100) : 0
   };
 
   return (

@@ -14,24 +14,24 @@ export default function RFQs() {
 
   const { data: rfqs = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/rfqs"] });
   const createMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("POST", "/api/procurement/rfqs", data),
+    mutationFn: (data: any) => apiRequest("POST", "/api/procurement/rfqs", data)
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/procurement/rfqs"] });
       setNewRfq({ rfqNumber: "", title: "", description: "", vendorId: "" });
-    },
+    }
   });
 
   const navigationItems = [
-    { id: "list", label: "RFQ List", icon: FileText, badge: rfqs.length, color: "blue" as const },
-    { id: "create", label: "Create RFQ", icon: Plus, color: "green" as const },
-    { id: "analytics", label: "Analytics", icon: FileText, color: "purple" as const },
-    { id: "templates", label: "Templates", icon: FileText, color: "orange" as const },
+    { id: "list", label: "RFQ List", icon: FileText, badge: rfqs.length, color: "blue" as const }
+    { id: "create", label: "Create RFQ", icon: Plus, color: "green" as const }
+    { id: "analytics", label: "Analytics", icon: FileText, color: "purple" as const }
+    { id: "templates", label: "Templates", icon: FileText, color: "orange" as const }
   ];
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = { 
-    draft: "default", 
-    sent: "secondary", 
-    quoted: "destructive", 
+    draft: "default"
+    sent: "secondary"
+    quoted: "destructive"
     closed: "outline" 
   };
 

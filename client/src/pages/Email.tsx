@@ -15,33 +15,33 @@ export default function Email() {
   const [newTemplate, setNewTemplate] = useState({ name: "", category: "general", subject: "" });
 
   const { data: templates = [], isLoading } = useQuery({
-    queryKey: ["/api/email-templates"],
-    queryFn: () => fetch("/api/email-templates").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/email-templates"]
+    
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/email-templates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/email-templates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/email-templates"] });
       setNewTemplate({ name: "", category: "general", subject: "" });
       toast({ title: "Email template created" });
-    },
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/email-templates/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/email-templates/${id}`, { method: "DELETE" })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/email-templates"] });
       toast({ title: "Template deleted" });
-    },
+    }
   });
 
   const navItems = [
-    { id: "inbox", label: "Inbox", icon: Mail, color: "text-blue-500" },
-    { id: "accounts", label: "Accounts", icon: Users, color: "text-purple-500" },
-    { id: "campaigns", label: "Campaigns", icon: Send, color: "text-green-500" },
-    { id: "templates", label: "Templates", icon: Settings, color: "text-orange-500" },
-    { id: "automation", label: "Automation", icon: Zap, color: "text-red-500" },
+    { id: "inbox", label: "Inbox", icon: Mail, color: "text-blue-500" }
+    { id: "accounts", label: "Accounts", icon: Users, color: "text-purple-500" }
+    { id: "campaigns", label: "Campaigns", icon: Send, color: "text-green-500" }
+    { id: "templates", label: "Templates", icon: Settings, color: "text-orange-500" }
+    { id: "automation", label: "Automation", icon: Zap, color: "text-red-500" }
   ];
 
   return (
@@ -72,12 +72,12 @@ export default function Email() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { name: "Unified Inbox", description: "Manage all emails in one place" },
-                  { name: "Team Collaboration", description: "Assign, comment, and share emails" },
-                  { name: "CRM Integration", description: "Link emails to contacts and deals" },
-                  { name: "Email Tracking", description: "Track opens, clicks, and replies" },
-                  { name: "Templates", description: "Save and reuse email templates" },
-                  { name: "Automation", description: "Auto-responders and workflows" },
+                  { name: "Unified Inbox", description: "Manage all emails in one place" }
+                  { name: "Team Collaboration", description: "Assign, comment, and share emails" }
+                  { name: "CRM Integration", description: "Link emails to contacts and deals" }
+                  { name: "Email Tracking", description: "Track opens, clicks, and replies" }
+                  { name: "Templates", description: "Save and reuse email templates" }
+                  { name: "Automation", description: "Auto-responders and workflows" }
                 ].map((capability) => (
                   <Button key={capability.name} variant="outline" className="h-auto flex flex-col items-start justify-start p-4">
                     <span className="font-medium">{capability.name}</span>

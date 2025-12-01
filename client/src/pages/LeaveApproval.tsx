@@ -15,9 +15,9 @@ export default function LeaveApproval() {
         <CardHeader><CardTitle className="text-base">Pending Requests (3)</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           {[
-            { emp: "Alice Johnson", type: "Annual Leave", days: 5, from: "Mar 1", to: "Mar 5" },
-            { emp: "Bob Smith", type: "Sick Leave", days: 2, from: "Mar 8", to: "Mar 9" },
-            { emp: "Carol Davis", type: "Casual Leave", days: 3, from: "Mar 15", to: "Mar 17" },
+            { emp: "Alice Johnson", type: "Annual Leave", days: 5, from: "Mar 1", to: "Mar 5" }
+            { emp: "Bob Smith", type: "Sick Leave", days: 2, from: "Mar 8", to: "Mar 9" }
+            { emp: "Carol Davis", type: "Casual Leave", days: 3, from: "Mar 15", to: "Mar 17" }
           ].map((req, idx) => (
             <div key={idx} className="p-3 border rounded">
               <p className="font-semibold">{req.emp} - {req.type}</p>
