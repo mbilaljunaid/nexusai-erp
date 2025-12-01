@@ -11,6 +11,9 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { RBACProvider } from "@/components/RBACContext";
 import NotFound from "@/pages/not-found";
 
+// Landing Page
+const LandingPage = lazy(() => import("@/pages/LandingPage"));
+
 // Core pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const CRM = lazy(() => import("@/pages/CRM"));
@@ -405,6 +408,7 @@ const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
 function Router() {
   return (
     <Switch>
+      <Route path="/" component={LandingPage} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/crm" component={CRM} />
       <Route path="/erp" component={ERP} />
