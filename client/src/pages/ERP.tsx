@@ -270,7 +270,6 @@ export default function ERP() {
         </div>
       )}
 
-
       {activeNav === "quality" && <div className="space-y-4"><AdjustmentEntryForm /></div>}
 
       {activeNav === "suppliers" && (

@@ -12059,22 +12059,50 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
   purchaseRequisitions: {
     id: "purchaseRequisitions",
     name: "Purchase Requisitions",
-    apiEndpoint: "/api/purchaserequisitions",
+    apiEndpoint: "/api/procurement/requisitions",
     fields: [
-      { name: "name", label: "Name", type: "text", required: true, searchable: true },
+      { name: "requisitionNumber", label: "Requisition Number", type: "text", required: true, searchable: true },
+      { name: "department", label: "Department", type: "text", required: true, searchable: true },
+      { name: "requestDate", label: "Request Date", type: "date", required: true, searchable: false },
+      { name: "requiredDate", label: "Required Date", type: "date", required: true, searchable: false },
+      { name: "justification", label: "Justification", type: "textarea", required: true, searchable: true },
       { name: "status", label: "Status", type: "select", required: false, searchable: true }
     ],
-    searchFields: ["name", "status"],
-    displayField: "name",
-    createButtonText: "Create Purchase Requisitions",
+    searchFields: ["requisitionNumber", "department", "justification"],
+    displayField: "requisitionNumber",
+    createButtonText: "Create Purchase Requisition",
     module: "Procurement",
-    page: "/procurement/purchaserequisitions",
+    page: "/erp/requisitions",
     allowCreate: true,
     showSearch: true,
     breadcrumbs: [
       { label: "Dashboard", path: "/" },
-      { label: "Procurement", path: "/procurement" },
-      { label: "Purchase Requisitions", path: "/procurement/purchaserequisitions" }
+      { label: "ERP", path: "/erp" },
+      { label: "Requisitions", path: "/erp/requisitions" }
+    ]
+  },
+  requestForQuotations: {
+    id: "requestForQuotations",
+    name: "Request For Quotations",
+    apiEndpoint: "/api/procurement/rfqs",
+    fields: [
+      { name: "rfqNumber", label: "RFQ Number", type: "text", required: true, searchable: true },
+      { name: "createdDate", label: "Created Date", type: "date", required: true, searchable: false },
+      { name: "dueDate", label: "Quote Due Date", type: "date", required: true, searchable: false },
+      { name: "scope", label: "Scope of Request", type: "textarea", required: true, searchable: true },
+      { name: "status", label: "Status", type: "select", required: false, searchable: true }
+    ],
+    searchFields: ["rfqNumber", "scope"],
+    displayField: "rfqNumber",
+    createButtonText: "Create RFQ",
+    module: "Procurement",
+    page: "/erp/rfqs",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "ERP", path: "/erp" },
+      { label: "RFQs", path: "/erp/rfqs" }
     ]
   },
   qMSCAPA: {
