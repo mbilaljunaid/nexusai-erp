@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Download, Refresh, Trash2, Copy, Zap } from "lucide-react";
+import { Plus, Download, RefreshCw, Trash2, Copy, Zap } from "lucide-react";
 import { Header, Footer } from "@/components/Navigation";
 
 export default function DemoManagement() {

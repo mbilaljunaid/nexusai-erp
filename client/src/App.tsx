@@ -21,6 +21,7 @@ const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const DemoManagement = lazy(() => import("@/pages/DemoManagement"));
 const UseCases = lazy(() => import("@/pages/UseCases"));
 const IndustriesPage = lazy(() => import("@/pages/Industries"));
+const IndustryDetail = lazy(() => import("@/pages/IndustryDetail"));
 
 // Core pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -428,7 +429,7 @@ function Router() {
       <Route path="/erp" component={ERP} />
       <Route path="/hr" component={HR} />
       <Route path="/projects" component={Projects} />
-      <Route path="/industry/logistics" component={LogisticsDashboard} />
+      <Route path="/industry/:slug" component={IndustryDetail} />
       <Route component={NotFound} />
     </Switch>
   );
