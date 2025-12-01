@@ -68,7 +68,7 @@ export class MetadataRegistry {
    */
   getByModule(module: string): FormMetadataAdvanced[] {
     const result: FormMetadataAdvanced[] = [];
-    for (const meta of this.metadata.values()) {
+    for (const meta of Array.from(this.metadata.values())) {
       if (meta.module === module) {
         result.push(meta);
       }
@@ -81,7 +81,7 @@ export class MetadataRegistry {
    */
   getByCategory(category: string): FormMetadataAdvanced[] {
     const result: FormMetadataAdvanced[] = [];
-    for (const meta of this.metadata.values()) {
+    for (const meta of Array.from(this.metadata.values())) {
       if (meta.category === category) {
         result.push(meta);
       }
@@ -108,9 +108,9 @@ export class MetadataRegistry {
     const schema = formSchemaGenerator.generateZodSchema(metadata);
     const cacheEntry: FormSchemaCache = {
       formId,
-      schema,
-      insertSchema: formSchemaGenerator.generateInsertSchema(metadata),
-      selectSchema: formSchemaGenerator.generateSelectSchema(metadata),
+      schema: schema as any,
+      insertSchema: formSchemaGenerator.generateInsertSchema(metadata) as any,
+      selectSchema: formSchemaGenerator.generateSelectSchema(metadata) as any,
       createdAt: new Date(),
       ttl: this.cacheTTL,
     };
@@ -226,7 +226,7 @@ export class MetadataRegistry {
    */
   exportMetadata(): Record<string, FormMetadataAdvanced> {
     const result: Record<string, FormMetadataAdvanced> = {};
-    for (const [key, meta] of this.metadata) {
+    for (const [key, meta] of Array.from(this.metadata.entries())) {
       result[key] = meta;
     }
     return result;
@@ -270,7 +270,7 @@ export class MetadataRegistry {
    */
   getByStatus(status: "draft" | "active" | "deprecated"): FormMetadataAdvanced[] {
     const result: FormMetadataAdvanced[] = [];
-    for (const meta of this.metadata.values()) {
+    for (const meta of Array.from(this.metadata.values())) {
       if (meta.status === status) {
         result.push(meta);
       }
@@ -284,7 +284,7 @@ export class MetadataRegistry {
   searchByName(query: string): FormMetadataAdvanced[] {
     const lowerQuery = query.toLowerCase();
     const result: FormMetadataAdvanced[] = [];
-    for (const meta of this.metadata.values()) {
+    for (const meta of Array.from(this.metadata.values())) {
       if (meta.name.toLowerCase().includes(lowerQuery) || meta.id.toLowerCase().includes(lowerQuery)) {
         result.push(meta);
       }
@@ -297,7 +297,7 @@ export class MetadataRegistry {
    */
   getFormsWithGLConfig(): FormMetadataAdvanced[] {
     const result: FormMetadataAdvanced[] = [];
-    for (const meta of this.metadata.values()) {
+    for (const meta of Array.from(this.metadata.values())) {
       if (meta.glConfig && meta.glConfig.glMappings.length > 0) {
         result.push(meta);
       }
@@ -310,7 +310,7 @@ export class MetadataRegistry {
    */
   getFormsWithWorkflow(): FormMetadataAdvanced[] {
     const result: FormMetadataAdvanced[] = [];
-    for (const meta of this.metadata.values()) {
+    for (const meta of Array.from(this.metadata.values())) {
       if (meta.statusWorkflow && meta.statusWorkflow.length > 0) {
         result.push(meta);
       }
