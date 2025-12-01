@@ -5,12 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 import { Calendar, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AppointmentScheduling() {
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const formMetadata = getFormMetadata("appointmentScheduling");
   const [newAppt, setNewAppt] = useState({ appointmentId: "", patientId: "", providerId: "", date: "", visitType: "OPD", status: "scheduled" });
 
   const { data: appointments = [], isLoading } = useQuery({

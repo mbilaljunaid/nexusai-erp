@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 import { Plus, Zap, TrendingUp, Users, Calendar } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -27,6 +30,9 @@ interface Sprint {
 }
 
 export default function AgileBoard() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const formMetadata = getFormMetadata("agileBoard");
   const { data: sprints = [] } = useQuery<Sprint[]>({
     queryKey: ["/api/sprints"],
     retry: false,
