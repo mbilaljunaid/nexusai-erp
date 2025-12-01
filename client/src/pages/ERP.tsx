@@ -87,7 +87,7 @@ export default function ERP() {
               value={searchQuery}
               onChange={setSearchQuery}
               searchFields={['accountCode', 'description', 'accountType']}
-              data={glEntries}
+              data={glEntries as any[]}
               onFilter={setFilteredGLEntries}
             />
             <Button data-testid="button-add-gl-entry">+ Add GL Entry</Button>
@@ -113,7 +113,7 @@ export default function ERP() {
               value={searchQuery}
               onChange={setSearchQuery}
               searchFields={['invoiceNumber', 'customerId', 'amount']}
-              data={invoices}
+              data={invoices as any[]}
               onFilter={setFilteredInvoices}
             />
             <Button data-testid="button-add-invoice">+ Add Invoice</Button>
@@ -139,7 +139,7 @@ export default function ERP() {
               value={searchQuery}
               onChange={setSearchQuery}
               searchFields={['customerId', 'invoiceNumber']}
-              data={invoices}
+              data={invoices as any[]}
               onFilter={setFilteredInvoices}
             />
             <Button data-testid="button-new-invoice">+ New Invoice</Button>
@@ -191,7 +191,7 @@ export default function ERP() {
               value={searchQuery}
               onChange={setSearchQuery}
               searchFields={['id', 'vendor']}
-              data={pos}
+              data={pos as any[]}
               onFilter={(filtered) => setFilteredInvoices(filtered)}
             />
             <Button data-testid="button-new-po">+ New PO</Button>
@@ -219,7 +219,7 @@ export default function ERP() {
               value={searchQuery}
               onChange={setSearchQuery}
               searchFields={['vendorName', 'email']}
-              data={vendors}
+              data={vendors as any[]}
               onFilter={setFilteredVendors}
             />
             <Button data-testid="button-new-supplier">+ New Supplier</Button>
