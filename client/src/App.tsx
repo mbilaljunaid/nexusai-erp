@@ -352,7 +352,6 @@ const TelecomFinanceCompliance = lazy(() => import("@/pages/TelecomFinanceCompli
 const TelecomBIDashboard = lazy(() => import("@/pages/TelecomBIDashboard"));
 const CustomerDeviceManagement = lazy(() => import("@/pages/CustomerDeviceManagement"));
 const SLAServiceTierManagement = lazy(() => import("@/pages/SLAServiceTierManagement"));
-const SubscriptionLifecycle = lazy(() => import("@/pages/SubscriptionLifecycle"));
 const TelecomCustomerSupport = lazy(() => import("@/pages/TelecomCustomerSupport"));
 const PatientManagement = lazy(() => import("@/pages/PatientManagement"));
 const AppointmentScheduling = lazy(() => import("@/pages/AppointmentScheduling"));
