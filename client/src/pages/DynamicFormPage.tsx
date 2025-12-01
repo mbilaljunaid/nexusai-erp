@@ -143,9 +143,9 @@ export default function DynamicFormPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item, idx) => (
+                {filteredData.map((item: any, idx: number) => (
                   <tr key={item.id || idx} className="border-b hover:bg-muted/50 transition-colors" data-testid={`row-${formMetadata.id}-${idx}`}>
-                    {formMetadata.fields.map(field => (
+                    {formMetadata.fields.map((field: any) => (
                       <td key={field.name} className="px-4 py-3">
                         <span className="text-foreground">
                           {item[field.name] ?? "—"}
