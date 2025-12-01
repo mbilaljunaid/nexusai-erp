@@ -329,3 +329,45 @@
 .slide-in-from-top-2 {
   animation: slideInFromTop 0.3s ease-in-out;
 }
+
+/* Landing Page Theme Variables */
+.landing-page {
+  background: linear-gradient(to bottom, hsl(var(--background)), hsl(var(--muted)));
+  color: hsl(var(--foreground));
+}
+
+.landing-hero-badge {
+  background-color: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+  border-color: hsl(var(--primary) / 0.4);
+}
+
+.landing-hero-title {
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--ring) / 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.landing-hero-subtitle {
+  color: hsl(var(--muted-foreground));
+}
+
+.landing-cta-gradient {
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--ring)));
+  border: 1px solid hsl(var(--primary));
+}
+
+.landing-section {
+  color: hsl(var(--foreground));
+}
+
+.landing-card {
+  background-color: hsl(var(--card));
+  border-color: hsl(var(--card-border));
+  color: hsl(var(--card-foreground));
+}
+
+.landing-card:hover {
+  background-color: hsl(var(--primary) / 0.1);
+}
