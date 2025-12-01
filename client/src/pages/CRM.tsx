@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { LeadEntryForm } from "@/components/forms/LeadEntryForm";
 import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity, Badge as BadgeIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -14,6 +15,7 @@ export default function CRM() {
   const [activeNav, setActiveNav] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
+  const [showLeadForm, setShowLeadForm] = useState(false);
   const leadsMetadata = getFormMetadata("leads");
 
   useEffect(() => {
@@ -80,7 +82,7 @@ export default function CRM() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-1">
               <CardTitle>Leads</CardTitle>
-              <SmartAddButton formMetadata={leadsMetadata} onClick={() => {}} />
+              <SmartAddButton formMetadata={leadsMetadata} onClick={() => setShowLeadForm(!showLeadForm)} />
             </CardHeader>
             <CardContent className="space-y-4">
               <FormSearchWithMetadata
@@ -111,6 +113,7 @@ export default function CRM() {
               </div>
             </CardContent>
           </Card>
+          {showLeadForm && <LeadEntryForm />}
         </div>
       )}
 
