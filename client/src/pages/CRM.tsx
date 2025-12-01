@@ -1,21 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LeadCard } from "@/components/LeadCard";
-import { AddLeadDialog } from "@/components/AddLeadDialog";
-import { LeadEntryForm } from "@/components/forms/LeadEntryForm";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { SmartAddButton } from "@/components/SmartAddButton";
-import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
-import { getFormMetadata } from "@/lib/formMetadata";
 import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 
 export default function CRM() {
   const [match, params] = useRoute("/crm/:page");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
   const [activeNav, setActiveNav] = useState("overview");
 
   useEffect(() => {
@@ -23,10 +14,8 @@ export default function CRM() {
       setActiveNav(params.page);
     }
   }, [params?.page]);
+
   const { data: leads = [] } = useQuery<any[]>({ queryKey: ["/api/leads"], retry: false });
-  
-  // Get lead form metadata for search parameters, button text, breadcrumbs
-  const leadFormMetadata = getFormMetadata("lead");
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
@@ -42,12 +31,9 @@ export default function CRM() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2"><Target className="h-8 w-8" />CRM & Sales</h1>
-          <p className="text-muted-foreground text-sm">Manage leads, opportunities, accounts, contacts, and campaigns</p>
-        </div>
-        <AddLeadDialog />
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2"><Target className="h-8 w-8" />CRM & Sales</h1>
+        <p className="text-muted-foreground text-sm">Manage leads, opportunities, accounts, contacts, and campaigns</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -77,34 +63,18 @@ export default function CRM() {
 
       {activeNav === "leads" && (
         <div className="space-y-4">
-          <Breadcrumb items={leadFormMetadata?.breadcrumbs?.slice(1) || []} />
-          
-          <div className="flex gap-2 items-center">
-            <FormSearchWithMetadata
-              formMetadata={leadFormMetadata}
-              value={searchQuery}
-              onChange={setSearchQuery}
-              data={leads}
-              onFilter={setFilteredLeads}
-            />
-            <SmartAddButton
-              formMetadata={leadFormMetadata}
-              onClick={() => {}}
-            />
-          </div>
-          
+          <Breadcrumb items={[{ label: "Leads", path: "/crm/leads" }]} />
+          <Card><CardHeader><CardTitle>Leads</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Manage your sales leads</p></CardContent></Card>
           <div className="space-y-2">
-            {filteredLeads.length > 0 ? (
-              filteredLeads.map((lead: any, idx: number) => (
+            {leads.length > 0 ? (
+              leads.map((lead: any, idx: number) => (
                 <Card key={lead.id || idx} className="hover-elevate cursor-pointer">
                   <CardContent className="p-4">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <div>
-                        <p className="font-semibold">{lead.name}</p>
+                        <p className="font-semibold">{lead.name || 'Unknown'}</p>
                         <p className="text-sm text-muted-foreground">{lead.email}</p>
-                        <p className="text-xs text-muted-foreground">{lead.company}</p>
                       </div>
-                      <Badge variant="secondary">{lead.status}</Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -113,7 +83,6 @@ export default function CRM() {
               <Card><CardContent className="p-4"><p className="text-muted-foreground">No leads found</p></CardContent></Card>
             )}
           </div>
-          <LeadEntryForm />
         </div>
       )}
 
