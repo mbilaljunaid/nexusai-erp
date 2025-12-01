@@ -31,17 +31,17 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             {navItems.map(item => (
-              <Link key={item.path} href={item.path}>
-                <a
-                  className={`text-sm font-medium transition-colors ${
-                    isActive(item.path)
-                      ? "text-blue-400"
-                      : "text-slate-300 hover:text-white"
-                  }`}
-                  data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                >
-                  {item.label}
-                </a>
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`text-sm font-medium transition-colors ${
+                  isActive(item.path)
+                    ? "text-blue-400"
+                    : "text-slate-300 hover:text-white"
+                }`}
+                data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                {item.label}
               </Link>
             ))}
           </nav>
@@ -74,18 +74,18 @@ export function Header() {
         {menuOpen && (
           <nav className="md:hidden mt-4 pb-4 space-y-2">
             {navItems.map(item => (
-              <Link key={item.path} href={item.path}>
-                <a
-                  onClick={() => setMenuOpen(false)}
-                  className={`block px-4 py-2 rounded text-sm ${
-                    isActive(item.path)
-                      ? "bg-blue-600 text-white"
-                      : "text-slate-300 hover:bg-slate-800"
-                  }`}
-                  data-testid={`link-mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                >
-                  {item.label}
-                </a>
+              <Link
+                key={item.path}
+                href={item.path}
+                onClick={() => setMenuOpen(false)}
+                className={`block px-4 py-2 rounded text-sm ${
+                  isActive(item.path)
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-300 hover:bg-slate-800"
+                }`}
+                data-testid={`link-mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                {item.label}
               </Link>
             ))}
             <Link href="/login">
