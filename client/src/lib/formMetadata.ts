@@ -254,6 +254,115 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
       { label: "Settings", path: "/finance/settings" },
     ],
   },
+
+  // Sales Pipeline
+  salesPipeline: {
+    id: "opportunity",
+    name: "Sales Pipeline",
+    apiEndpoint: "/api/crm/opportunities",
+    fields: [
+      { name: "title", label: "Opportunity Title", type: "text", required: true, searchable: true },
+      { name: "stage", label: "Stage", type: "select", required: true, searchable: true },
+      { name: "value", label: "Value", type: "number", required: false, searchable: false },
+      { name: "probability", label: "Probability", type: "number", required: false, searchable: false },
+    ],
+    searchFields: ["title", "stage"],
+    displayField: "title",
+    createButtonText: "Add Opportunity",
+    module: "CRM",
+    page: "/crm/sales-pipeline",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Sales Pipeline", path: "/crm/sales-pipeline" },
+    ],
+  },
+
+  // Marketplace
+  marketplace: {
+    id: "marketplace",
+    name: "Marketplace Extensions",
+    apiEndpoint: "/api/marketplace/extensions",
+    fields: [
+      { name: "name", label: "Extension Name", type: "text", required: true, searchable: true },
+      { name: "category", label: "Category", type: "select", required: true, searchable: true },
+      { name: "version", label: "Version", type: "text", required: false, searchable: false },
+      { name: "description", label: "Description", type: "textarea", required: false, searchable: false },
+    ],
+    searchFields: ["name", "category"],
+    displayField: "name",
+    createButtonText: "Publish Extension",
+    module: "Marketplace",
+    page: "/marketplace",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Marketplace", path: "/marketplace" },
+    ],
+  },
+
+  // System Health (monitoring dashboard - no create/search)
+  systemHealth: {
+    id: "system-health",
+    name: "System Health",
+    apiEndpoint: "/api/system/health",
+    fields: [],
+    searchFields: [],
+    displayField: "name",
+    createButtonText: "",
+    module: "Admin",
+    page: "/admin/system-health",
+    allowCreate: false,
+    showSearch: false,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Admin", path: "/admin" },
+      { label: "System Health", path: "/admin/system-health" },
+    ],
+  },
+
+  // Data Warehouse (analytics/monitoring - no create/search)
+  dataWarehouse: {
+    id: "data-warehouse",
+    name: "Data Warehouse",
+    apiEndpoint: "/api/data-warehouse",
+    fields: [],
+    searchFields: [],
+    displayField: "name",
+    createButtonText: "",
+    module: "Analytics",
+    page: "/analytics/data-warehouse",
+    allowCreate: false,
+    showSearch: false,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Analytics", path: "/analytics" },
+      { label: "Data Warehouse", path: "/analytics/data-warehouse" },
+    ],
+  },
+
+  // Compliance (monitoring dashboard - no create/search)
+  compliance: {
+    id: "compliance",
+    name: "Compliance Dashboard",
+    apiEndpoint: "/api/compliance",
+    fields: [],
+    searchFields: [],
+    displayField: "name",
+    createButtonText: "",
+    module: "Governance",
+    page: "/governance/compliance",
+    allowCreate: false,
+    showSearch: false,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Governance", path: "/governance" },
+      { label: "Compliance", path: "/governance/compliance" },
+    ],
+  },
 };
 
 export function getFormMetadata(formId: string): FormMetadata | undefined {

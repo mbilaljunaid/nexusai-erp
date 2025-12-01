@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { getFormMetadata } from "@/lib/formMetadata";
 import { AlertCircle, CheckCircle, Clock } from "lucide-react";
 
 interface ComplianceRule {
@@ -23,6 +25,8 @@ interface ComplianceViolation {
 }
 
 export default function ComplianceDashboard() {
+  const formMetadata = getFormMetadata("compliance");
+  
   const { data: rules = [] } = useQuery<ComplianceRule[]>({
     queryKey: ["/api/compliance/rules"],
     queryFn: () =>
@@ -58,6 +62,8 @@ export default function ComplianceDashboard() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
       <div>
         <h1 className="text-3xl font-bold">Compliance Dashboard</h1>
         <p className="text-muted-foreground mt-2">Monitor regulatory compliance across your organization</p>

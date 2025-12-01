@@ -1,7 +1,20 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function SalesPipeline() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredOpportunities, setFilteredOpportunities] = useState<any[]>([]);
+  const { data: opportunities = [] } = useQuery<any[]>({
+    queryKey: ["/api/crm/opportunities"],
+  });
+  const formMetadata = getFormMetadata("opportunity");
+
   const stages = [
     { name: "Prospecting", opportunities: 8, value: "$120K" },
     { name: "Qualification", opportunities: 5, value: "$180K" },
@@ -13,10 +26,23 @@ export default function SalesPipeline() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Sales Pipeline</h1>
-        <p className="text-muted-foreground mt-1">Kanban view of your opportunities across stages</p>
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Sales Pipeline</h1>
+          <p className="text-muted-foreground mt-1">Kanban view of your opportunities across stages</p>
+        </div>
+        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
       </div>
+
+      <FormSearchWithMetadata
+        formMetadata={formMetadata}
+        value={searchQuery}
+        onChange={setSearchQuery}
+        data={opportunities}
+        onFilter={setFilteredOpportunities}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto pb-4">
         {stages.map((stage) => (

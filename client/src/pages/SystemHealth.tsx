@@ -1,8 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function SystemHealth() {
+  const formMetadata = getFormMetadata("system-health");
+
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
       <div>
         <h1 className="text-3xl font-bold">System Health</h1>
         <p className="text-muted-foreground mt-1">Monitor system status and performance</p>

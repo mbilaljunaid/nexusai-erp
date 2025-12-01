@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { getFormMetadata } from "@/lib/formMetadata";
 import { Database, Zap, BarChart3, Briefcase } from "lucide-react";
 
 export default function DataWarehouse() {
+  const formMetadata = getFormMetadata("data-warehouse");
   const { data: lakes = [] } = useQuery({
     queryKey: ["/api/data-warehouse/lakes"],
   }) as { data: any[] };
@@ -23,6 +26,8 @@ export default function DataWarehouse() {
 
   return (
     <div className="space-y-6 p-4">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-2" data-testid="title-data-warehouse">
           <Database className="h-8 w-8" />
