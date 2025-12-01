@@ -13,11 +13,15 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
+  Settings,
+  Key,
+  Building,
+  FileText,
 } from "lucide-react";
 
 export default function Dashboard() {
   const [, navigate] = useLocation();
-  const { isAuthenticated } = useRBAC();
+  const { isAuthenticated, userRole } = useRBAC();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -201,6 +205,58 @@ export default function Dashboard() {
           ))}
         </div>
       </Card>
+
+      {/* Admin Features - Only for Admin Role */}
+      {userRole === "admin" && (
+        <Card className="p-8 mt-8 border-blue-200 dark:border-blue-900">
+          <div className="flex items-center gap-3 mb-6">
+            <Settings className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Admin Features</h2>
+            <Badge variant="default" className="bg-blue-600">Admin Only</Badge>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <button
+              onClick={() => navigate("/demo")}
+              data-testid="button-admin-demo-management"
+              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+            >
+              <FileText className="w-8 h-8 text-amber-600 dark:text-amber-400 mb-2" />
+              <h3 className="font-bold text-slate-900 dark:text-white">Demo Management</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Manage demo instances</p>
+            </button>
+
+            <button
+              onClick={() => navigate("/tenant-admin")}
+              data-testid="button-admin-tenant-management"
+              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+            >
+              <Building className="w-8 h-8 text-green-600 dark:text-green-400 mb-2" />
+              <h3 className="font-bold text-slate-900 dark:text-white">Tenant Management</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Manage tenants and organizations</p>
+            </button>
+
+            <button
+              onClick={() => navigate("/user-management")}
+              data-testid="button-admin-user-management"
+              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+            >
+              <Users className="w-8 h-8 text-purple-600 dark:text-purple-400 mb-2" />
+              <h3 className="font-bold text-slate-900 dark:text-white">User Management</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Manage users and permissions</p>
+            </button>
+
+            <button
+              onClick={() => navigate("/admin-roles")}
+              data-testid="button-admin-roles"
+              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+            >
+              <Key className="w-8 h-8 text-red-600 dark:text-red-400 mb-2" />
+              <h3 className="font-bold text-slate-900 dark:text-white">Role Management</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Configure user roles</p>
+            </button>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<"admin" | "editor" | "viewer">("viewer");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -34,8 +35,8 @@ export default function LoginPage() {
       });
 
       if (res.ok) {
-        // Set authentication state
-        login(email, "admin");
+        // Set authentication state with selected role
+        login(email, selectedRole);
         setSuccess(true);
         setTimeout(() => {
           navigate("/dashboard");
@@ -119,6 +120,26 @@ export default function LoginPage() {
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
+                </div>
+
+                {/* Role Selection */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">User Role</label>
+                  <select
+                    value={selectedRole}
+                    onChange={(e) => setSelectedRole(e.target.value as "admin" | "editor" | "viewer")}
+                    className="w-full px-4 py-2 bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] rounded text-[hsl(var(--foreground))] focus:outline-none focus:border-[hsl(var(--primary))]"
+                    data-testid="select-user-role"
+                  >
+                    <option value="admin">Admin (Full Access)</option>
+                    <option value="editor">Editor (Can Edit)</option>
+                    <option value="viewer">Viewer (Read Only)</option>
+                  </select>
+                  <p className="text-xs text-slate-400 mt-1">
+                    {selectedRole === "admin" && "Access all admin features and management tools"}
+                    {selectedRole === "editor" && "Can create, edit, and delete content"}
+                    {selectedRole === "viewer" && "Can only view content, no editing"}
+                  </p>
                 </div>
 
                 {/* Remember & Forgot Password */}
