@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { useRBAC } from "@/components/RBACContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [, navigate] = useLocation();
+  const { login } = useRBAC();
 
   useEffect(() => {
     document.title = "Login | NexusAI";
@@ -31,9 +34,11 @@ export default function LoginPage() {
       });
 
       if (res.ok) {
+        // Set authentication state
+        login(email, "admin");
         setSuccess(true);
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          navigate("/dashboard");
         }, 1500);
       } else {
         const data = await res.json();
