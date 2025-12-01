@@ -88,13 +88,9 @@ const educationModules = [
   { title: "Marketing", icon: TrendingUp, href: "/marketing" },
 ];
 
-const industryNavItems = [
-  { title: "Manufacturing", href: "/industry/manufacturing" },
-  { title: "Retail & E-Commerce", href: "/industry/retail" },
-  { title: "Financial Services", href: "/industry/finservices" },
-  { title: "Healthcare", href: "/industry/healthcare" },
-  { title: "Construction", href: "/industry/construction" },
-  { title: "View All Industries →", href: "/industries" },
+const industrySetupItems = [
+  { title: "Deploy Industry", href: "/industry-setup" },
+  { title: "View Deployments", href: "/industry-deployments" },
 ];
 
 export function AppSidebar() {
@@ -106,7 +102,7 @@ export function AppSidebar() {
   const [opModExpanded, setOpModExpanded] = useState(true);
   const [autoExpanded, setAutoExpanded] = useState(false);
   const [eduExpanded, setEduExpanded] = useState(false);
-  const [industriesExpanded, setIndustriesExpanded] = useState(false);
+  const [industrySetupExpanded, setIndustrySetupExpanded] = useState(false);
 
   const renderMenuGroup = (title: string, items: any[], expanded: boolean, setExpanded: any) => (
     <SidebarGroup>
@@ -168,40 +164,7 @@ export function AppSidebar() {
         {renderMenuGroup("Workflow & Automation", automationModules, autoExpanded, setAutoExpanded)}
         {renderMenuGroup("Education & Marketing", educationModules, eduExpanded, setEduExpanded)}
 
-        <SidebarGroup>
-          <div className="flex items-center justify-between px-2">
-            <SidebarGroupLabel className="text-xs uppercase tracking-wide">Industries</SidebarGroupLabel>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-5 w-5"
-              onClick={() => setIndustriesExpanded(!industriesExpanded)}
-              data-testid="button-expand-industries"
-            >
-              <ChevronDown className={`h-3 w-3 transition-transform ${industriesExpanded ? 'rotate-180' : ''}`} />
-            </Button>
-          </div>
-          {industriesExpanded && (
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {industryNavItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton 
-                      asChild 
-                      isActive={location === item.href}
-                      className="text-xs"
-                      data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      <Link href={item.href}>
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          )}
-        </SidebarGroup>
+        {renderMenuGroup("Industry Setup", industrySetupItems, industrySetupExpanded, setIndustrySetupExpanded)}
       </SidebarContent>
 
       <SidebarFooter className="p-4">

@@ -23,6 +23,7 @@ const UseCases = lazy(() => import("@/pages/UseCases"));
 const IndustriesPage = lazy(() => import("@/pages/Industries"));
 const IndustryDetail = lazy(() => import("@/pages/IndustryDetail"));
 const ModuleDetail = lazy(() => import("@/pages/ModuleDetail"));
+const IndustrySetup = lazy(() => import("@/pages/IndustrySetup"));
 
 // Core pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -434,6 +435,8 @@ function Router() {
       <Route path="/hr/:page" component={HR} />
       <Route path="/projects" component={Projects} />
       <Route path="/projects/:page" component={Projects} />
+      <Route path="/industry-setup" component={IndustrySetup} />
+      <Route path="/industry-deployments" component={IndustrySetup} />
       <Route path="/industry/:slug" component={IndustryDetail} />
       <Route path="/module/:slug" component={ModuleDetail} />
       <Route component={NotFound} />
@@ -480,6 +483,9 @@ export default function App() {
   const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
+  
+  // Industry setup routes should show authenticated layout
+  const isIndustrySetup = location === "/industry-setup" || location === "/industry-deployments";
 
   return (
     <RBACProvider>
@@ -487,7 +493,7 @@ export default function App() {
         <ThemeProvider>
           <TooltipProvider>
             <SidebarProvider style={style}>
-              {isPublicRoute ? <PublicLayout /> : <AuthenticatedLayout />}
+              {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <AuthenticatedLayout />}
               <Toaster />
             </SidebarProvider>
           </TooltipProvider>
