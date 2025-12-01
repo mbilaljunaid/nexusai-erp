@@ -50,7 +50,7 @@ export default function PurchaseOrder() {
                   <Badge>{po.status}</Badge>
                 </div>
               </div>
-            )) : <p className="text-muted-foreground">No purchase orders found</p>
+            )) : <p className="text-muted-foreground">No purchase orders found</p>}
           </div>
         </CardContent>
       </Card>
