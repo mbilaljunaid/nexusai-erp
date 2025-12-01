@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useState } from "react";
+import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 
 interface RBACContextType {
   tenantId: string;
@@ -13,9 +13,15 @@ interface RBACContextType {
 const RBACContext = createContext<RBACContextType | undefined>(undefined);
 
 export function RBACProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userId, setUserId] = useState("");
-  const [userRole, setUserRole] = useState<"admin" | "editor" | "viewer">("viewer");
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("isAuthenticated") === "true";
+  });
+  const [userId, setUserId] = useState(() => {
+    return localStorage.getItem("userId") || "";
+  });
+  const [userRole, setUserRole] = useState<"admin" | "editor" | "viewer">(() => {
+    return (localStorage.getItem("userRole") as "admin" | "editor" | "viewer") || "viewer";
+  });
 
   const login = (id: string, role: "admin" | "editor" | "viewer") => {
     setUserId(id);
