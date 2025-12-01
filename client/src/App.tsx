@@ -423,6 +423,7 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/admin" component={AdminConsole} />
       <Route path="/demo" component={DemoManagement} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/crm" component={CRM} />
