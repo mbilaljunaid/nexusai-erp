@@ -88,7 +88,7 @@ export default function LandingPage() {
         <h2 className="text-4xl font-bold text-center mb-12">Industry Coverage</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {industries.map((ind, i) => (
-            <Link key={i} href={`/industry/${ind.toLowerCase().replace(/ /g, "-")}`}>
+            <Link key={i} to={`/industry/${ind.toLowerCase().replace(/ /g, "-")}`}>
               <Card className="landing-card cursor-pointer p-4 text-center transition-all hover-elevate" data-testid={`card-industry-${ind.toLowerCase()}`}>
                 <p className="font-semibold">{ind}</p>
               </Card>
@@ -105,7 +105,7 @@ export default function LandingPage() {
             {modules.map((mod, i) => {
               const ModuleIcon = mod.icon;
               return (
-                <Link key={i} href={mod.href}>
+                <Link key={i} to={mod.href}>
                   <Card className="landing-card p-4 text-center hover-elevate cursor-pointer transition-all" data-testid={`card-module-${mod.title.toLowerCase().replace(/\s+/g, '-')}`}>
                     <ModuleIcon className="w-8 h-8 mx-auto mb-2" style={{ color: `hsl(var(--primary))` }} />
                     <p className="font-semibold">{mod.title}</p>
