@@ -3,11 +3,18 @@ import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
+import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity, Badge as BadgeIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function CRM() {
   const [match, params] = useRoute("/crm/:page?");
   const [activeNav, setActiveNav] = useState("overview");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
+  const leadsMetadata = getFormMetadata("leads");
 
   useEffect(() => {
     if (params?.page) {
@@ -70,25 +77,40 @@ export default function CRM() {
       {activeNav === "leads" && (
         <div className="space-y-4">
           <Breadcrumb items={[{ label: "Leads", path: "/crm/leads" }]} />
-          <Card><CardHeader><CardTitle>Leads</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Manage your sales leads</p></CardContent></Card>
-          <div className="space-y-2">
-            {leads.length > 0 ? (
-              leads.map((lead: any, idx: number) => (
-                <Card key={lead.id || idx} className="hover-elevate cursor-pointer">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-semibold">{lead.name || 'Unknown'}</p>
-                        <p className="text-sm text-muted-foreground">{lead.email}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <Card><CardContent className="p-4"><p className="text-muted-foreground">No leads found</p></CardContent></Card>
-            )}
-          </div>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-1">
+              <CardTitle>Leads</CardTitle>
+              <SmartAddButton formMetadata={leadsMetadata} onClick={() => {}} />
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormSearchWithMetadata
+                formMetadata={leadsMetadata}
+                value={searchQuery}
+                onChange={setSearchQuery}
+                data={leads}
+                onFilter={setFilteredLeads}
+              />
+              <div className="space-y-2">
+                {filteredLeads.length > 0 ? (
+                  filteredLeads.map((lead: any, idx: number) => (
+                    <Card key={lead.id || idx} className="hover-elevate cursor-pointer">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-semibold">{lead.name || 'Unknown'}</p>
+                            <p className="text-sm text-muted-foreground">{lead.email}</p>
+                          </div>
+                          <Badge>{lead.status || 'New'}</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-muted-foreground text-center py-4">No leads found</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 

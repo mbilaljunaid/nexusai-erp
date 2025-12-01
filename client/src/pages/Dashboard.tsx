@@ -1,9 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRBAC } from "@/components/RBACContext";
+import { useQuery } from "@tanstack/react-query";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 import {
   Users,
   DollarSign,
@@ -17,17 +22,26 @@ import {
   Key,
   Building,
   FileText,
+  Plus,
 } from "lucide-react";
 
 export default function Dashboard() {
   const [, navigate] = useLocation();
   const { isAuthenticated, userRole } = useRBAC();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
+  const formMetadata = getFormMetadata("leads");
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
     }
   }, [isAuthenticated, navigate]);
+
+  const { data: leads = [] } = useQuery({
+    queryKey: ["/api/leads"],
+    retry: false
+  });
 
   const metrics = [
     {
@@ -125,29 +139,41 @@ export default function Dashboard() {
         })}
       </div>
 
-      {/* Recent Activity & Quick Actions */}
+      {/* Recent Leads & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Recent Activities */}
-        <Card className="lg:col-span-2 p-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Recent Activity</h2>
-          <div className="space-y-4">
-            {recentActivities.map((activity, idx) => (
-              <div key={idx} className="flex items-start gap-4 pb-4 border-b border-slate-200 dark:border-slate-700 last:border-0">
-                <div>
-                  {activity.status === "completed" ? (
+        {/* Recent Leads */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex justify-between items-center">
+              <span>Recent Leads</span>
+              <SmartAddButton formMetadata={formMetadata} onClick={() => navigate("/crm/leads")} />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <FormSearchWithMetadata
+              formMetadata={formMetadata}
+              value={searchQuery}
+              onChange={setSearchQuery}
+              data={leads}
+              onFilter={setFilteredLeads}
+            />
+            {filteredLeads.length > 0 ? (
+              filteredLeads.slice(0, 5).map((lead: any, idx: number) => (
+                <div key={lead.id || idx} className="flex items-start gap-4 pb-4 border-b border-slate-200 dark:border-slate-700 last:border-0">
+                  <div>
                     <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-1" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-400 mt-1" />
-                  )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-slate-900 dark:text-white">{lead.name || 'Unknown'}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{lead.email}</p>
+                  </div>
+                  <Badge variant="secondary">{lead.status || 'New'}</Badge>
                 </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900 dark:text-white">{activity.title}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{activity.description}</p>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-500 whitespace-nowrap">{activity.time}</p>
-              </div>
-            ))}
-          </div>
+              ))
+            ) : (
+              <p className="text-muted-foreground text-center py-4">No leads found</p>
+            )}
+          </CardContent>
         </Card>
 
         {/* Quick Stats */}

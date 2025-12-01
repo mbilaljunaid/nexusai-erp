@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
 import { IconNavigation } from "@/components/IconNavigation";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { ExpenseEntryForm } from "@/components/forms/ExpenseEntryForm";
@@ -12,6 +16,14 @@ import { Link } from "wouter";
 
 export default function Finance() {
   const [activeNav, setActiveNav] = useState("overview");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
+  const invoicesMetadata = getFormMetadata("invoices");
+  
+  const { data: invoices = [] } = useQuery({
+    queryKey: ["/api/invoices"],
+    retry: false
+  });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
@@ -56,7 +68,45 @@ export default function Finance() {
         </div>
       )}
 
-      {activeNav === "invoices" && <div className="space-y-4"><InvoiceEntryForm /></div>}
+      {activeNav === "invoices" && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-1">
+              <CardTitle>Invoices</CardTitle>
+              <SmartAddButton formMetadata={invoicesMetadata} onClick={() => {}} />
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormSearchWithMetadata
+                formMetadata={invoicesMetadata}
+                value={searchQuery}
+                onChange={setSearchQuery}
+                data={invoices}
+                onFilter={setFilteredInvoices}
+              />
+              <div className="space-y-2">
+                {filteredInvoices.length > 0 ? (
+                  filteredInvoices.map((inv: any, idx: number) => (
+                    <Card key={inv.id || idx} className="hover-elevate cursor-pointer">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-semibold">{inv.invoiceNumber || `Invoice ${idx + 1}`}</p>
+                            <p className="text-sm text-muted-foreground">{inv.customerId || 'Customer'}</p>
+                          </div>
+                          <Badge>${Number(inv.amount || 0).toLocaleString()}</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-muted-foreground text-center py-4">No invoices found</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+          <InvoiceEntryForm />
+        </div>
+      )}
 
       {activeNav === "expenses" && <div className="space-y-4"><ExpenseEntryForm /></div>}
 
