@@ -20,22 +20,22 @@ export default function QuoteBuilder() {
   const [activeNav, setActiveNav] = useState("all");
 
   const { data: quotes = [] } = useQuery<Quote[]>({
-    queryKey: ["/api/quotes"]
-    retry: false
+    queryKey: ["/api/quotes"],
+    retry: false,
   });
 
   const stats = {
-    total: (quotes || []).length
-    sent: (quotes || []).filter(q => q.status === "sent").length
-    accepted: (quotes || []).filter(q => q.status === "accepted").length
-    totalValue: (quotes || []).reduce((sum, q) => sum + parseFloat(q.total || "0"), 0)
+    total: (quotes || []).length,
+    sent: (quotes || []).filter(q => q.status === "sent").length,
+    accepted: (quotes || []).filter(q => q.status === "accepted").length,
+    totalValue: (quotes || []).reduce((sum, q) => sum + parseFloat(q.total || "0"), 0),
   };
 
   const navItems = [
-    { id: "all", label: "All Quotes", icon: FileText, color: "text-blue-500" }
-    { id: "sent", label: "Sent", icon: Send, color: "text-green-500" }
-    { id: "accepted", label: "Accepted", icon: CheckCircle2, color: "text-purple-500" }
-    { id: "value", label: "Value", icon: DollarSign, color: "text-orange-500" }
+    { id: "all", label: "All Quotes", icon: FileText, color: "text-blue-500" },
+    { id: "sent", label: "Sent", icon: Send, color: "text-green-500" },
+    { id: "accepted", label: "Accepted", icon: CheckCircle2, color: "text-purple-500" },
+    { id: "value", label: "Value", icon: DollarSign, color: "text-orange-500" },
   ];
 
   return (

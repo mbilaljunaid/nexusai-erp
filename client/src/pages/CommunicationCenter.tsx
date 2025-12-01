@@ -14,32 +14,32 @@ export default function CommunicationCenter() {
   const [newComm, setNewComm] = useState({ commType: "Email", recipient: "", subject: "" });
 
   const { data: communications = [], isLoading } = useQuery({
-    queryKey: ["/api/communications"]
-    
+    queryKey: ["/api/communications"],
+    queryFn: () => fetch("/api/communications").then(r => r.json()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/communications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/communications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/communications"] });
       setNewComm({ commType: "Email", recipient: "", subject: "" });
       toast({ title: "Message sent" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/communications/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/communications/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/communications"] });
       toast({ title: "Message deleted" });
-    }
+    },
   });
 
   const metrics = {
-    total: communications.length
-    sent: communications.filter((c: any) => c.status === "sent").length
-    pending: communications.filter((c: any) => c.status === "pending").length
-    deliveryRate: communications.length > 0 ? Math.round((communications.filter((c: any) => c.status === "sent").length / communications.length) * 100) : 0
+    total: communications.length,
+    sent: communications.filter((c: any) => c.status === "sent").length,
+    pending: communications.filter((c: any) => c.status === "pending").length,
+    deliveryRate: communications.length > 0 ? Math.round((communications.filter((c: any) => c.status === "sent").length / communications.length) * 100) : 0,
   };
 
   return (

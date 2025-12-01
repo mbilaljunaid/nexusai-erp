@@ -3,11 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Select
-  SelectContent
-  SelectItem
-  SelectTrigger
-  SelectValue
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { CheckCircle2, AlertCircle, Zap } from "lucide-react";
 import { INDUSTRIES, INDUSTRY_MODULE_MAPPING, type TenantDeployment } from "@/lib/industryConfig";
@@ -20,9 +20,9 @@ interface Tenant {
 export default function IndustrySetup() {
   const [selectedTenant, setSelectedTenant] = useState<string>("");
   const [tenants, setTenants] = useState<Tenant[]>([
-    { id: "tenant-1", name: "Acme Corporation" }
-    { id: "tenant-2", name: "Global Industries" }
-    { id: "tenant-3", name: "Tech Solutions Inc" }
+    { id: "tenant-1", name: "Acme Corporation" },
+    { id: "tenant-2", name: "Global Industries" },
+    { id: "tenant-3", name: "Tech Solutions Inc" },
   ]);
   const [deployments, setDeployments] = useState<TenantDeployment[]>([]);
   const [selectedIndustry, setSelectedIndustry] = useState<string>("");
@@ -51,14 +51,14 @@ export default function IndustrySetup() {
       const enabledModules = INDUSTRY_MODULE_MAPPING[selectedIndustry] || [];
 
       const newDeployment: TenantDeployment = {
-        id: `deployment-${Date.now()}`
-        tenantId: selectedTenant
-        tenantName: tenant?.name || "Unknown"
-        industryId: selectedIndustry
-        industryName: industry?.name || "Unknown"
-        enabledModules
-        deployedAt: new Date().toISOString()
-        status: "active"
+        id: `deployment-${Date.now()}`,
+        tenantId: selectedTenant,
+        tenantName: tenant?.name || "Unknown",
+        industryId: selectedIndustry,
+        industryName: industry?.name || "Unknown",
+        enabledModules,
+        deployedAt: new Date().toISOString(),
+        status: "active",
       };
 
       // Check if already deployed

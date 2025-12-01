@@ -14,25 +14,25 @@ export default function VehicleInventoryManagement() {
   const [newVehicle, setNewVehicle] = useState({ vin: "", model: "", year: "2024", status: "available", price: "0" });
 
   const { data: vehicles = [], isLoading } = useQuery({
-    queryKey: ["/api/auto-inventory"]
-    
+    queryKey: ["/api/auto-inventory"],
+    queryFn: () => fetch("/api/auto-inventory").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/auto-inventory", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/auto-inventory", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-inventory"] });
       setNewVehicle({ vin: "", model: "", year: "2024", status: "available", price: "0" });
       toast({ title: "Vehicle added to inventory" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/auto-inventory/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/auto-inventory/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-inventory"] });
       toast({ title: "Vehicle removed" });
-    }
+    },
   });
 
   const available = vehicles.filter((v: any) => v.status === "available").length;

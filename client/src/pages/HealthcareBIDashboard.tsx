@@ -5,8 +5,8 @@ import { BarChart3 } from "lucide-react";
 
 export default function HealthcareBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/healthcare-bi"]
-    
+    queryKey: ["/api/healthcare-bi"],
+    queryFn: () => fetch("/api/healthcare-bi").then(r => r.json()).catch(() => []),
   });
 
   const avgWait = metrics.length > 0 ? (metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.waitTime) || 0), 0) / metrics.length).toFixed(1) : 0;

@@ -14,25 +14,25 @@ export default function HSESafety() {
   const [newHSE, setNewHSE] = useState({ incidentType: "Near Miss", severity: "low", location: "Site-A", status: "open" });
 
   const { data: incidents = [], isLoading } = useQuery({
-    queryKey: ["/api/hse"]
-    
+    queryKey: ["/api/hse"],
+    queryFn: () => fetch("/api/hse").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hse", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/hse", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hse"] });
       setNewHSE({ incidentType: "Near Miss", severity: "low", location: "Site-A", status: "open" });
       toast({ title: "HSE incident logged" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hse/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/hse/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hse"] });
       toast({ title: "Incident deleted" });
-    }
+    },
   });
 
   const critical = incidents.filter((i: any) => i.severity === "critical").length;

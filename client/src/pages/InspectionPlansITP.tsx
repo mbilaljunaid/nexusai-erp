@@ -14,25 +14,25 @@ export default function InspectionPlansITP() {
   const [newITP, setNewITP] = useState({ partNumber: "", itpType: "incoming", sampleSize: "5", status: "active" });
 
   const { data: plans = [], isLoading } = useQuery({
-    queryKey: ["/api/inspection-plans"]
-    
+    queryKey: ["/api/inspection-plans"],
+    queryFn: () => fetch("/api/inspection-plans").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/inspection-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/inspection-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inspection-plans"] });
       setNewITP({ partNumber: "", itpType: "incoming", sampleSize: "5", status: "active" });
       toast({ title: "Inspection plan created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/inspection-plans/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/inspection-plans/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inspection-plans"] });
       toast({ title: "Plan deleted" });
-    }
+    },
   });
 
   const active = plans.filter((p: any) => p.status === "active").length;

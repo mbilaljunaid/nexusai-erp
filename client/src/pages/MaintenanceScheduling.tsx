@@ -14,25 +14,25 @@ export default function MaintenanceScheduling() {
   const [newMaint, setNewMaint] = useState({ vehicleId: "", maintenanceType: "oil-change", scheduledDate: "", status: "scheduled" });
 
   const { data: maintenance = [], isLoading } = useQuery({
-    queryKey: ["/api/maintenance-schedule"]
-    
+    queryKey: ["/api/maintenance-schedule"],
+    queryFn: () => fetch("/api/maintenance-schedule").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/maintenance-schedule", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/maintenance-schedule", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/maintenance-schedule"] });
       setNewMaint({ vehicleId: "", maintenanceType: "oil-change", scheduledDate: "", status: "scheduled" });
       toast({ title: "Maintenance scheduled" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/maintenance-schedule/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/maintenance-schedule/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/maintenance-schedule"] });
       toast({ title: "Maintenance deleted" });
-    }
+    },
   });
 
   const completed = maintenance.filter((m: any) => m.status === "completed").length;

@@ -14,25 +14,25 @@ export default function PromotionDiscountCodes() {
   const [newPromo, setNewPromo] = useState({ code: "", discountPercent: "10", usageLimit: "100", status: "active" });
 
   const { data: promos = [], isLoading } = useQuery({
-    queryKey: ["/api/promotions"]
-    
+    queryKey: ["/api/promotions"],
+    queryFn: () => fetch("/api/promotions").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/promotions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/promotions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/promotions"] });
       setNewPromo({ code: "", discountPercent: "10", usageLimit: "100", status: "active" });
       toast({ title: "Promotion created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/promotions/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/promotions/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/promotions"] });
       toast({ title: "Promotion deleted" });
-    }
+    },
   });
 
   const active = promos.filter((p: any) => p.status === "active").length;

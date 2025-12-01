@@ -10,11 +10,11 @@ export default function OpportunitiesNew() {
   const wonCount = opportunities.filter((o: any) => o.status === "won").length;
 
   const stageColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    qualified: "default"
-    proposal: "default"
-    negotiation: "secondary"
-    won: "outline"
-    lost: "destructive"
+    qualified: "default",
+    proposal: "default",
+    negotiation: "secondary",
+    won: "outline",
+    lost: "destructive",
   };
 
   return (

@@ -14,25 +14,25 @@ export default function ResourceAllocation() {
   const [newResource, setNewResource] = useState({ resourceName: "", role: "Developer", allocation: "" });
 
   const { data: resources = [], isLoading } = useQuery({
-    queryKey: ["/api/resources"]
-    
+    queryKey: ["/api/resources"],
+    queryFn: () => fetch("/api/resources").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/resources", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/resources", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/resources"] });
       setNewResource({ resourceName: "", role: "Developer", allocation: "" });
       toast({ title: "Resource added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/resources/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/resources/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/resources"] });
       toast({ title: "Resource deleted" });
-    }
+    },
   });
 
   return (

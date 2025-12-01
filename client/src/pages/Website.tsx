@@ -8,10 +8,10 @@ export default function Website() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
-    { id: "websites", label: "Websites", icon: Globe, color: "text-purple-500" }
-    { id: "pages", label: "Pages", icon: FileText, color: "text-green-500" }
-    { id: "analytics", label: "Analytics", icon: Layers, color: "text-orange-500" }
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "websites", label: "Websites", icon: Globe, color: "text-purple-500" },
+    { id: "pages", label: "Pages", icon: FileText, color: "text-green-500" },
+    { id: "analytics", label: "Analytics", icon: Layers, color: "text-orange-500" },
   ];
 
   return (
@@ -42,12 +42,12 @@ export default function Website() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { name: "Drag & Drop Builder", description: "No-code website designer" }
-                  { name: "Templates", description: "Pre-designed website templates" }
-                  { name: "Forms & CRM Integration", description: "Capture leads and integrate with CRM" }
-                  { name: "E-Commerce", description: "Built-in shopping cart and payments" }
-                  { name: "SEO Optimization", description: "SEO tools and analytics" }
-                  { name: "Domain & Hosting", description: "Domain management and hosting" }
+                  { name: "Drag & Drop Builder", description: "No-code website designer" },
+                  { name: "Templates", description: "Pre-designed website templates" },
+                  { name: "Forms & CRM Integration", description: "Capture leads and integrate with CRM" },
+                  { name: "E-Commerce", description: "Built-in shopping cart and payments" },
+                  { name: "SEO Optimization", description: "SEO tools and analytics" },
+                  { name: "Domain & Hosting", description: "Domain management and hosting" },
                 ].map((capability) => (
                   <Button key={capability.name} variant="outline" className="h-auto flex flex-col items-start justify-start p-4">
                     <span className="font-medium">{capability.name}</span>

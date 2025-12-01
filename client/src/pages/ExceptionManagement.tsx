@@ -14,25 +14,25 @@ export default function ExceptionManagement() {
   const [newException, setNewException] = useState({ module: "Finance", variance: "", status: "pending", severity: "medium" });
 
   const { data: exceptions = [], isLoading } = useQuery({
-    queryKey: ["/api/exceptions"]
-    
+    queryKey: ["/api/exceptions"],
+    queryFn: () => fetch("/api/exceptions").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/exceptions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/exceptions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/exceptions"] });
       setNewException({ module: "Finance", variance: "", status: "pending", severity: "medium" });
       toast({ title: "Exception created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/exceptions/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/exceptions/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/exceptions"] });
       toast({ title: "Exception deleted" });
-    }
+    },
   });
 
   const criticalCount = exceptions.filter((e: any) => e.severity === "critical").length;

@@ -14,25 +14,25 @@ export default function FormulationRecipeManagement() {
   const [newFormula, setNewFormula] = useState({ formulaId: "", productName: "", batchSize: "100", yieldPct: "95", status: "draft" });
 
   const { data: formulas = [], isLoading } = useQuery({
-    queryKey: ["/api/formulations"]
-    
+    queryKey: ["/api/formulations"],
+    queryFn: () => fetch("/api/formulations").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/formulations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/formulations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/formulations"] });
       setNewFormula({ formulaId: "", productName: "", batchSize: "100", yieldPct: "95", status: "draft" });
       toast({ title: "Formulation created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/formulations/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/formulations/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/formulations"] });
       toast({ title: "Formulation deleted" });
-    }
+    },
   });
 
   const approved = formulas.filter((f: any) => f.status === "approved").length;

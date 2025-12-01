@@ -11,10 +11,10 @@ export default function ShopFloor() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { line: "Assembly Line 1", status: "Running", wos: 3, efficiency: "92%" }
-          { line: "Assembly Line 2", status: "Running", wos: 2, efficiency: "88%" }
-          { line: "Packaging Line", status: "Idle", wos: 0, efficiency: "0%" }
-          { line: "Quality Check", status: "Running", wos: 1, efficiency: "100%" }
+          { line: "Assembly Line 1", status: "Running", wos: 3, efficiency: "92%" },
+          { line: "Assembly Line 2", status: "Running", wos: 2, efficiency: "88%" },
+          { line: "Packaging Line", status: "Idle", wos: 0, efficiency: "0%" },
+          { line: "Quality Check", status: "Running", wos: 1, efficiency: "100%" },
         ].map((line) => (
           <Card key={line.line} className="hover:shadow-lg transition">
             <CardContent className="pt-6">

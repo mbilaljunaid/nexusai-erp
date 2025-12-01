@@ -4,10 +4,10 @@ import { Activity, TrendingUp } from "lucide-react";
 
 export default function UserActivityDashboard() {
   const activities = [
-    { id: "a1", user: "alice@company.com", action: "Update", module: "CRM", record: "Lead #12345", timestamp: "2025-11-30 10:15 AM", status: "success" }
-    { id: "a2", user: "bob@company.com", action: "Create", module: "Finance", record: "Invoice #INV-001", timestamp: "2025-11-30 09:45 AM", status: "success" }
-    { id: "a3", user: "carol@company.com", action: "Delete", module: "HR", record: "Leave Request #LR-123", timestamp: "2025-11-30 09:30 AM", status: "success" }
-    { id: "a4", user: "david@company.com", action: "Export", module: "Analytics", record: "Report Export", timestamp: "2025-11-30 08:50 AM", status: "failed" }
+    { id: "a1", user: "alice@company.com", action: "Update", module: "CRM", record: "Lead #12345", timestamp: "2025-11-30 10:15 AM", status: "success" },
+    { id: "a2", user: "bob@company.com", action: "Create", module: "Finance", record: "Invoice #INV-001", timestamp: "2025-11-30 09:45 AM", status: "success" },
+    { id: "a3", user: "carol@company.com", action: "Delete", module: "HR", record: "Leave Request #LR-123", timestamp: "2025-11-30 09:30 AM", status: "success" },
+    { id: "a4", user: "david@company.com", action: "Export", module: "Analytics", record: "Report Export", timestamp: "2025-11-30 08:50 AM", status: "failed" },
   ];
 
   return (

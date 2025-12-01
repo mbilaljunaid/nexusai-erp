@@ -14,25 +14,25 @@ export default function LogisticsComplianceSafety() {
   const [newIncident, setNewIncident] = useState({ incidentId: "", type: "near-miss", severity: "medium", location: "", status: "open" });
 
   const { data: incidents = [], isLoading } = useQuery({
-    queryKey: ["/api/compliance-incidents"]
-    
+    queryKey: ["/api/compliance-incidents"],
+    queryFn: () => fetch("/api/compliance-incidents").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/compliance-incidents", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/compliance-incidents", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance-incidents"] });
       setNewIncident({ incidentId: "", type: "near-miss", severity: "medium", location: "", status: "open" });
       toast({ title: "Incident recorded" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/compliance-incidents/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/compliance-incidents/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance-incidents"] });
       toast({ title: "Incident deleted" });
-    }
+    },
   });
 
   const critical = incidents.filter((i: any) => i.severity === "critical").length;

@@ -5,8 +5,8 @@ import { BarChart3 } from "lucide-react";
 
 export default function RetailBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/retail-bi"]
-    
+    queryKey: ["/api/retail-bi"],
+    queryFn: () => fetch("/api/retail-bi").then(r => r.json()).catch(() => []),
   });
 
   const totalRevenue = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.revenue) || 0), 0);

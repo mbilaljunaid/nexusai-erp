@@ -14,25 +14,25 @@ export default function FreightRateCalculation() {
   const [newRate, setNewRate] = useState({ carrier: "UPS", weight: "50", origin: "US", destination: "US", rate: "25.00" });
 
   const { data: rates = [], isLoading } = useQuery({
-    queryKey: ["/api/freight-rates"]
-    
+    queryKey: ["/api/freight-rates"],
+    queryFn: () => fetch("/api/freight-rates").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/freight-rates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/freight-rates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/freight-rates"] });
       setNewRate({ carrier: "UPS", weight: "50", origin: "US", destination: "US", rate: "25.00" });
       toast({ title: "Rate added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/freight-rates/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/freight-rates/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/freight-rates"] });
       toast({ title: "Rate deleted" });
-    }
+    },
   });
 
   const totalRevenue = rates.reduce((sum: number, r: any) => sum + (parseFloat(r.rate) || 0), 0);

@@ -4,10 +4,10 @@ import { Key, Globe } from "lucide-react";
 
 export default function AuthenticationMethods() {
   const methods = [
-    { id: "m1", name: "Password", enabled: true, description: "Standard username/password authentication", users: 1247 }
-    { id: "m2", name: "SSO (Okta)", enabled: true, description: "Single Sign-On via Okta identity provider", users: 892 }
-    { id: "m3", name: "OAuth (Google)", enabled: true, description: "OAuth authentication via Google", users: 456 }
-    { id: "m4", name: "SAML 2.0", enabled: false, description: "SAML 2.0 enterprise federation", users: 0 }
+    { id: "m1", name: "Password", enabled: true, description: "Standard username/password authentication", users: 1247 },
+    { id: "m2", name: "SSO (Okta)", enabled: true, description: "Single Sign-On via Okta identity provider", users: 892 },
+    { id: "m3", name: "OAuth (Google)", enabled: true, description: "OAuth authentication via Google", users: 456 },
+    { id: "m4", name: "SAML 2.0", enabled: false, description: "SAML 2.0 enterprise federation", users: 0 },
   ];
 
   return (

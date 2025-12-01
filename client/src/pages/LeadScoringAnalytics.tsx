@@ -13,25 +13,25 @@ export default function LeadScoringAnalytics() {
   const [newInsight, setNewInsight] = useState({ metric: "", value: "" });
 
   const { data: insights = [], isLoading } = useQuery({
-    queryKey: ["/api/lead-scoring-insights"]
-    
+    queryKey: ["/api/lead-scoring-insights"],
+    queryFn: () => fetch("/api/lead-scoring-insights").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/lead-scoring-insights", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/lead-scoring-insights", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/lead-scoring-insights"] });
       setNewInsight({ metric: "", value: "" });
       toast({ title: "Insight added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/lead-scoring-insights/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/lead-scoring-insights/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/lead-scoring-insights"] });
       toast({ title: "Insight deleted" });
-    }
+    },
   });
 
   const avgScore = insights.length > 0 ? (insights.reduce((sum: number, i: any) => sum + parseFloat(i.value || 0), 0) / insights.length).toFixed(1) : "0";

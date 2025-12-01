@@ -14,25 +14,25 @@ export default function DemandForecastingPage() {
   const [newForecast, setNewForecast] = useState({ item: "", period: "Q1", quantity: "", method: "Time Series" });
 
   const { data: forecasts = [], isLoading } = useQuery({
-    queryKey: ["/api/demand-forecasts"]
-    
+    queryKey: ["/api/demand-forecasts"],
+    queryFn: () => fetch("/api/demand-forecasts").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/demand-forecasts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/demand-forecasts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/demand-forecasts"] });
       setNewForecast({ item: "", period: "Q1", quantity: "", method: "Time Series" });
       toast({ title: "Forecast created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/demand-forecasts/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/demand-forecasts/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/demand-forecasts"] });
       toast({ title: "Forecast deleted" });
-    }
+    },
   });
 
   return (

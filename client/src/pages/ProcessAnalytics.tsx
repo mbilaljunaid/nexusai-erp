@@ -14,25 +14,25 @@ export default function ProcessAnalytics() {
   const [newKPI, setNewKPI] = useState({ process: "Order to Cash", metric: "Avg Cycle Time", target: "5 days", status: "on-track" });
 
   const { data: kpis = [], isLoading } = useQuery({
-    queryKey: ["/api/process-kpis"]
-    
+    queryKey: ["/api/process-kpis"],
+    queryFn: () => fetch("/api/process-kpis").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/process-kpis", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/process-kpis", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/process-kpis"] });
       setNewKPI({ process: "Order to Cash", metric: "Avg Cycle Time", target: "5 days", status: "on-track" });
       toast({ title: "Process KPI created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/process-kpis/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/process-kpis/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/process-kpis"] });
       toast({ title: "Process KPI deleted" });
-    }
+    },
   });
 
   return (

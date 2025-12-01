@@ -8,9 +8,9 @@ import { BarChart3, Plus, Download } from "lucide-react";
 
 export default function Reporting() {
   const [reports, setReports] = useState<any[]>([
-    { id: "r1", name: "Monthly Sales Report", type: "sales", metrics: ["Revenue", "Conversion Rate", "Average Order Value"], schedule: "monthly" }
-    { id: "r2", name: "Customer Churn Analysis", type: "churn", metrics: ["Churn Rate", "At-Risk Customers", "Retention Trend"], schedule: "weekly" }
-    { id: "r3", name: "Operational Efficiency", type: "operations", metrics: ["Uptime", "Response Time", "Error Rate"], schedule: "daily" }
+    { id: "r1", name: "Monthly Sales Report", type: "sales", metrics: ["Revenue", "Conversion Rate", "Average Order Value"], schedule: "monthly" },
+    { id: "r2", name: "Customer Churn Analysis", type: "churn", metrics: ["Churn Rate", "At-Risk Customers", "Retention Trend"], schedule: "weekly" },
+    { id: "r3", name: "Operational Efficiency", type: "operations", metrics: ["Uptime", "Response Time", "Error Rate"], schedule: "daily" },
   ]);
 
   return (

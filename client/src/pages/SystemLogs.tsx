@@ -15,8 +15,8 @@ export default function SystemLogs() {
         <CardHeader><CardTitle className="text-base">Recent Logs</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {[
-            { level: "INFO", msg: "System started", time: "10:00 AM" }
-            { level: "WARN", msg: "High memory usage", time: "10:15 AM" }
+            { level: "INFO", msg: "System started", time: "10:00 AM" },
+            { level: "WARN", msg: "High memory usage", time: "10:15 AM" },
           ].map((log, idx) => (
             <div key={idx} className="p-2 border rounded font-mono text-xs flex justify-between">
               <span>{log.level}: {log.msg}</span>

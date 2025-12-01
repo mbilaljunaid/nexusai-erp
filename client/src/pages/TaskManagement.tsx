@@ -25,40 +25,40 @@ export default function TaskManagement() {
   const [newTask, setNewTask] = useState({ title: "", status: "open", priority: "medium", assignee: "" });
 
   const { data: tasks = [], isLoading } = useQuery<Task[]>({
-    queryKey: ["/api/tasks"]
-    
+    queryKey: ["/api/tasks"],
+    queryFn: () => fetch("/api/tasks").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
       setNewTask({ title: "", status: "open", priority: "medium", assignee: "" });
       toast({ title: "Task created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tasks/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/tasks/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
       toast({ title: "Task deleted" });
-    }
+    },
   });
 
   const stats = {
-    total: (tasks || []).length
-    open: (tasks || []).filter(t => t.status === "open").length
-    inProgress: (tasks || []).filter(t => t.status === "in_progress").length
-    completed: (tasks || []).filter(t => t.status === "completed").length
+    total: (tasks || []).length,
+    open: (tasks || []).filter(t => t.status === "open").length,
+    inProgress: (tasks || []).filter(t => t.status === "in_progress").length,
+    completed: (tasks || []).filter(t => t.status === "completed").length,
   };
 
   const navItems = [
-    { id: "all", label: "All Tasks", icon: GitBranch, color: "text-blue-500" }
-    { id: "open", label: "Open", icon: AlertCircle, color: "text-red-500" }
-    { id: "progress", label: "In Progress", icon: Clock, color: "text-orange-500" }
-    { id: "completed", label: "Completed", icon: CheckCircle2, color: "text-green-500" }
-    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-purple-500" }
+    { id: "all", label: "All Tasks", icon: GitBranch, color: "text-blue-500" },
+    { id: "open", label: "Open", icon: AlertCircle, color: "text-red-500" },
+    { id: "progress", label: "In Progress", icon: Clock, color: "text-orange-500" },
+    { id: "completed", label: "Completed", icon: CheckCircle2, color: "text-green-500" },
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-purple-500" },
   ];
 
   return (

@@ -6,21 +6,21 @@ import { Check, AlertCircle } from "lucide-react";
 export default function BackendIntegration() {
   // Test all major backend endpoints
   const endpoints = [
-    { name: "Leads", url: "/api/leads", icon: "👥" }
-    { name: "AI Lead Scoring", url: "/api/ai/score-leads", icon: "🤖" }
-    { name: "Revenue Forecasting", url: "/api/ai/forecast-revenue", icon: "📈" }
-    { name: "ARIMA Analytics", url: "/api/analytics/forecast-advanced", icon: "📊" }
-    { name: "Dashboard Summary", url: "/api/analytics/dashboard/summary", icon: "💾" }
-    { name: "BI Dashboards", url: "/api/bi/dashboards", icon: "📱" }
-    { name: "Data Warehouse", url: "/api/data-warehouse/analytics", icon: "🏢" }
-    { name: "ETL Pipelines", url: "/api/etl/pipelines", icon: "⚙️" }
-    { name: "Marketplace Apps", url: "/api/marketplace/apps", icon: "🛍️" }
-    { name: "Localization", url: "/api/i18n/languages", icon: "🌍" }
-    { name: "Security Headers", url: "/api/security/headers", icon: "🔒" }
-    { name: "System Performance", url: "/api/system/performance", icon: "⚡" }
-    { name: "Observability Metrics", url: "/api/observability/metrics", icon: "📡" }
-    { name: "Mobile Sync", url: "/api/mobile/sync-queue", icon: "📲" }
-    { name: "Copilot Conversations", url: "/api/copilot/conversations", icon: "💬" }
+    { name: "Leads", url: "/api/leads", icon: "👥" },
+    { name: "AI Lead Scoring", url: "/api/ai/score-leads", icon: "🤖" },
+    { name: "Revenue Forecasting", url: "/api/ai/forecast-revenue", icon: "📈" },
+    { name: "ARIMA Analytics", url: "/api/analytics/forecast-advanced", icon: "📊" },
+    { name: "Dashboard Summary", url: "/api/analytics/dashboard/summary", icon: "💾" },
+    { name: "BI Dashboards", url: "/api/bi/dashboards", icon: "📱" },
+    { name: "Data Warehouse", url: "/api/data-warehouse/analytics", icon: "🏢" },
+    { name: "ETL Pipelines", url: "/api/etl/pipelines", icon: "⚙️" },
+    { name: "Marketplace Apps", url: "/api/marketplace/apps", icon: "🛍️" },
+    { name: "Localization", url: "/api/i18n/languages", icon: "🌍" },
+    { name: "Security Headers", url: "/api/security/headers", icon: "🔒" },
+    { name: "System Performance", url: "/api/system/performance", icon: "⚡" },
+    { name: "Observability Metrics", url: "/api/observability/metrics", icon: "📡" },
+    { name: "Mobile Sync", url: "/api/mobile/sync-queue", icon: "📲" },
+    { name: "Copilot Conversations", url: "/api/copilot/conversations", icon: "💬" },
   ];
 
   return (

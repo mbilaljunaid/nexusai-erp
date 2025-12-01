@@ -5,8 +5,8 @@ import { Map, Truck, CheckCircle, Clock } from "lucide-react";
 
 export default function TrackingDashboard() {
   const { data: shipments = [], isLoading } = useQuery({
-    queryKey: ["/api/shipment-planning"]
-    
+    queryKey: ["/api/shipment-planning"],
+    queryFn: () => fetch("/api/shipment-planning").then(r => r.json()).catch(() => []),
   });
 
   const inTransit = shipments.filter((s: any) => s.status === "shipped").length;

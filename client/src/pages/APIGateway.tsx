@@ -18,16 +18,17 @@ export default function APIGateway() {
   const formMetadata = getFormMetadata("apiGateway");
 
   const { data: apiKeys = [] } = useQuery({
-    queryKey: ["/api/api-keys", tenantId]
+    queryKey: ["/api/api-keys", tenantId],
+    queryFn: () => fetch(`/api/api-keys?tenantId=${tenantId}`).then(r => r.json())
   });
 
   const createMutation = useMutation({
     mutationFn: (data: any) => 
       fetch("/api/api-keys", { 
-        method: "POST"
-        headers: { "Content-Type": "application/json" }
+        method: "POST", 
+        headers: { "Content-Type": "application/json" }, 
         body: JSON.stringify({ ...data, tenantId, permissions: ["read", "write"] })
-      }).then(r => r.json())
+      }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/api-keys", tenantId] });
       setNewKey({ name: "" });
@@ -35,7 +36,7 @@ export default function APIGateway() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/api-keys/${id}`, { method: "DELETE" }).then(r => r.json())
+    mutationFn: (id: string) => fetch(`/api/api-keys/${id}`, { method: "DELETE" }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/api-keys", tenantId] });
     }

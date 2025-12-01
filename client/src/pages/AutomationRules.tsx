@@ -14,25 +14,25 @@ export default function AutomationRules() {
   const [newRule, setNewRule] = useState({ name: "", module: "CRM", trigger: "created", priority: "80" });
 
   const { data: rules = [], isLoading } = useQuery({
-    queryKey: ["/api/automation-rules"]
-    
+    queryKey: ["/api/automation-rules"],
+    queryFn: () => fetch("/api/automation-rules").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/automation-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/automation-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/automation-rules"] });
       setNewRule({ name: "", module: "CRM", trigger: "created", priority: "80" });
       toast({ title: "Rule created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/automation-rules/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/automation-rules/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/automation-rules"] });
       toast({ title: "Rule deleted" });
-    }
+    },
   });
 
   return (

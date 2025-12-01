@@ -10,8 +10,8 @@ export default function DataExport() {
       </div>
       <div className="grid gap-4">
         {[
-          { format: "CSV Export", size: "12 MB" }
-          { format: "Excel Export", size: "8 MB" }
+          { format: "CSV Export", size: "12 MB" },
+          { format: "Excel Export", size: "8 MB" },
         ].map((exp) => (
           <Card key={exp.format}>
             <CardContent className="pt-6">

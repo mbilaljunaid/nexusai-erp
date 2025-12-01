@@ -14,59 +14,59 @@ export default function BlogPage() {
 
   const posts = [
     {
-      id: 1
-      title: "10 Ways AI is Transforming Enterprise ERP"
-      category: "AI"
-      author: "Sarah Chen"
-      date: "Nov 28, 2025"
-      excerpt: "Discover how artificial intelligence is revolutionizing enterprise resource planning and automating complex workflows."
-      image: "🤖"
-    }
+      id: 1,
+      title: "10 Ways AI is Transforming Enterprise ERP",
+      category: "AI",
+      author: "Sarah Chen",
+      date: "Nov 28, 2025",
+      excerpt: "Discover how artificial intelligence is revolutionizing enterprise resource planning and automating complex workflows.",
+      image: "🤖",
+    },
     {
-      id: 2
-      title: "Implementing ERP in Retail: Best Practices"
-      category: "Industry"
-      author: "Mike Johnson"
-      date: "Nov 25, 2025"
-      excerpt: "Learn the proven strategies for successful ERP implementation in retail businesses, from planning to execution."
-      image: "🛒"
-    }
+      id: 2,
+      title: "Implementing ERP in Retail: Best Practices",
+      category: "Industry",
+      author: "Mike Johnson",
+      date: "Nov 25, 2025",
+      excerpt: "Learn the proven strategies for successful ERP implementation in retail businesses, from planning to execution.",
+      image: "🛒",
+    },
     {
-      id: 3
-      title: "Financial Close Automation: A Complete Guide"
-      category: "Finance"
-      author: "Emily Rodriguez"
-      date: "Nov 22, 2025"
-      excerpt: "Streamline your month-end close process with automated workflows and real-time reconciliation."
-      image: "💰"
-    }
+      id: 3,
+      title: "Financial Close Automation: A Complete Guide",
+      category: "Finance",
+      author: "Emily Rodriguez",
+      date: "Nov 22, 2025",
+      excerpt: "Streamline your month-end close process with automated workflows and real-time reconciliation.",
+      image: "💰",
+    },
     {
-      id: 4
-      title: "Multi-Tenant Architecture in SaaS ERP"
-      category: "Technical"
-      author: "David Lee"
-      date: "Nov 20, 2025"
-      excerpt: "Deep dive into how NexusAI ensures data isolation and security in a multi-tenant SaaS environment."
-      image: "🔐"
-    }
+      id: 4,
+      title: "Multi-Tenant Architecture in SaaS ERP",
+      category: "Technical",
+      author: "David Lee",
+      date: "Nov 20, 2025",
+      excerpt: "Deep dive into how NexusAI ensures data isolation and security in a multi-tenant SaaS environment.",
+      image: "🔐",
+    },
     {
-      id: 5
-      title: "Supply Chain Optimization with Predictive Analytics"
-      category: "Analytics"
-      author: "Lisa Wang"
-      date: "Nov 18, 2025"
-      excerpt: "Use machine learning to forecast demand, optimize inventory, and reduce supply chain costs."
-      image: "📊"
-    }
+      id: 5,
+      title: "Supply Chain Optimization with Predictive Analytics",
+      category: "Analytics",
+      author: "Lisa Wang",
+      date: "Nov 18, 2025",
+      excerpt: "Use machine learning to forecast demand, optimize inventory, and reduce supply chain costs.",
+      image: "📊",
+    },
     {
-      id: 6
-      title: "HR Workflows: From Recruitment to Retirement"
-      category: "HR"
-      author: "James Wilson"
-      date: "Nov 15, 2025"
-      excerpt: "Complete HR lifecycle management with automated workflows, compliance tracking, and analytics."
-      image: "👥"
-    }
+      id: 6,
+      title: "HR Workflows: From Recruitment to Retirement",
+      category: "HR",
+      author: "James Wilson",
+      date: "Nov 15, 2025",
+      excerpt: "Complete HR lifecycle management with automated workflows, compliance tracking, and analytics.",
+      image: "👥",
+    },
   ];
 
   const categories = ["all", "AI", "Industry", "Finance", "Technical", "Analytics", "HR"];

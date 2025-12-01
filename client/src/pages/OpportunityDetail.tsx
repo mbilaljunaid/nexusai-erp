@@ -12,9 +12,9 @@ export default function OpportunityDetail() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
-    { id: "activity", label: "Activity", icon: TrendingUp, color: "text-green-500" }
-    { id: "notes", label: "Notes", icon: FileText, color: "text-purple-500" }
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "activity", label: "Activity", icon: TrendingUp, color: "text-green-500" },
+    { id: "notes", label: "Notes", icon: FileText, color: "text-purple-500" },
   ];
 
   return (

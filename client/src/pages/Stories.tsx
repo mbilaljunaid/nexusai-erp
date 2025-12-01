@@ -11,17 +11,17 @@ export default function Stories() {
   const stories = issues.filter((i: any) => i.issueType === "story");
 
   const navigationItems = [
-    { id: "list", label: "Stories", icon: Zap, badge: stories.length, color: "blue" as const }
-    { id: "todo", label: "Todo", icon: Zap, badge: stories.filter((s: any) => s.status === "todo").length, color: "gray" as const }
-    { id: "in_progress", label: "In Progress", icon: Zap, badge: stories.filter((s: any) => s.status === "in_progress").length, color: "orange" as const }
-    { id: "done", label: "Done", icon: Zap, badge: stories.filter((s: any) => s.status === "done").length, color: "green" as const }
+    { id: "list", label: "Stories", icon: Zap, badge: stories.length, color: "blue" as const },
+    { id: "todo", label: "Todo", icon: Zap, badge: stories.filter((s: any) => s.status === "todo").length, color: "gray" as const },
+    { id: "in_progress", label: "In Progress", icon: Zap, badge: stories.filter((s: any) => s.status === "in_progress").length, color: "orange" as const },
+    { id: "done", label: "Done", icon: Zap, badge: stories.filter((s: any) => s.status === "done").length, color: "green" as const },
   ];
 
   const filteredStories = {
-    list: stories
-    todo: stories.filter((s: any) => s.status === "todo")
-    in_progress: stories.filter((s: any) => s.status === "in_progress")
-    done: stories.filter((s: any) => s.status === "done")
+    list: stories,
+    todo: stories.filter((s: any) => s.status === "todo"),
+    in_progress: stories.filter((s: any) => s.status === "in_progress"),
+    done: stories.filter((s: any) => s.status === "done"),
   }[activeNav] || stories;
 
   return (

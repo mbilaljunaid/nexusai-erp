@@ -14,25 +14,25 @@ export default function TelecomBillingRevenue() {
   const [newInvoice, setNewInvoice] = useState({ invoiceId: "", subscriberId: "", amount: "50.00", usageType: "data", status: "pending" });
 
   const { data: invoices = [], isLoading } = useQuery({
-    queryKey: ["/api/telecom-invoices"]
-    
+    queryKey: ["/api/telecom-invoices"],
+    queryFn: () => fetch("/api/telecom-invoices").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/telecom-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/telecom-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/telecom-invoices"] });
       setNewInvoice({ invoiceId: "", subscriberId: "", amount: "50.00", usageType: "data", status: "pending" });
       toast({ title: "Invoice created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/telecom-invoices/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/telecom-invoices/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/telecom-invoices"] });
       toast({ title: "Invoice deleted" });
-    }
+    },
   });
 
   const paid = invoices.filter((i: any) => i.status === "paid").length;

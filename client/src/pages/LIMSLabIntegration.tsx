@@ -14,25 +14,25 @@ export default function LIMSLabIntegration() {
   const [newTest, setNewTest] = useState({ sampleId: "", testType: "chemical", result: "pending", status: "active" });
 
   const { data: tests = [], isLoading } = useQuery({
-    queryKey: ["/api/lab-tests"]
-    
+    queryKey: ["/api/lab-tests"],
+    queryFn: () => fetch("/api/lab-tests").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/lab-tests", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/lab-tests", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/lab-tests"] });
       setNewTest({ sampleId: "", testType: "chemical", result: "pending", status: "active" });
       toast({ title: "Test created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/lab-tests/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/lab-tests/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/lab-tests"] });
       toast({ title: "Test deleted" });
-    }
+    },
   });
 
   const passed = tests.filter((t: any) => t.result === "pass").length;

@@ -14,25 +14,25 @@ export default function OmniChannelOrders() {
   const [newOrder, setNewOrder] = useState({ orderId: "", channel: "web", fulfillmentType: "ship", status: "pending" });
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["/api/omni-orders"]
-    
+    queryKey: ["/api/omni-orders"],
+    queryFn: () => fetch("/api/omni-orders").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/omni-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/omni-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/omni-orders"] });
       setNewOrder({ orderId: "", channel: "web", fulfillmentType: "ship", status: "pending" });
       toast({ title: "Order created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/omni-orders/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/omni-orders/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/omni-orders"] });
       toast({ title: "Order deleted" });
-    }
+    },
   });
 
   const fulfilled = orders.filter((o: any) => o.status === "fulfilled").length;

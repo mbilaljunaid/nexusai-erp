@@ -22,42 +22,42 @@ export default function AIAssistant() {
   const [isRecording, setIsRecording] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: "1"
-      role: "assistant"
-      content: "Hello! I'm your NexusAI Copilot. How can I help you today? I can assist with budgeting, forecasting, process automation, and more."
-      timestamp: new Date()
-    }
+      id: "1",
+      role: "assistant",
+      content: "Hello! I'm your NexusAI Copilot. How can I help you today? I can assist with budgeting, forecasting, process automation, and more.",
+      timestamp: new Date(),
+    },
   ]);
 
   const { data: conversations = [] } = useQuery({
-    queryKey: ["/api/ai/conversations"]
-    
+    queryKey: ["/api/ai/conversations"],
+    queryFn: () => fetch("/api/ai/conversations").then(r => r.json()),
   });
 
   const createConversationMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/ai/conversations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/ai/conversations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ai/conversations"] });
       toast({ title: "Conversation saved" });
-    }
+    },
   });
 
   const deleteConversationMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/ai/conversations/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/ai/conversations/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ai/conversations"] });
       toast({ title: "Conversation deleted" });
-    }
+    },
   });
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
 
     const userMsg: Message = {
-      id: Date.now().toString()
-      role: "user"
-      content: input
-      timestamp: new Date()
+      id: Date.now().toString(),
+      role: "user",
+      content: input,
+      timestamp: new Date(),
     };
 
     setMessages([...messages, userMsg]);
@@ -67,20 +67,20 @@ export default function AIAssistant() {
     // Simulate AI response
     setTimeout(() => {
       const assistantMsg: Message = {
-        id: (Date.now() + 1).toString()
-        role: "assistant"
-        content: `I understand you want to: "${userInput}". Let me help you with that. Based on your request, I recommend the following actions...`
-        timestamp: new Date()
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: `I understand you want to: "${userInput}". Let me help you with that. Based on your request, I recommend the following actions...`,
+        timestamp: new Date(),
       };
       setMessages((prev) => [...prev, assistantMsg]);
     }, 500);
   };
 
   const suggestions = [
-    "Create budget forecast for Q2"
-    "Analyze spending variance"
-    "Suggest cost optimizations"
-    "Generate compliance report"
+    "Create budget forecast for Q2",
+    "Analyze spending variance",
+    "Suggest cost optimizations",
+    "Generate compliance report",
   ];
 
   return (

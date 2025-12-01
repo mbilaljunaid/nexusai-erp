@@ -5,8 +5,8 @@ import { Activity } from "lucide-react";
 
 export default function TelematicsVehicleData() {
   const { data: telemetry = [], isLoading } = useQuery({
-    queryKey: ["/api/auto-telematics"]
-    
+    queryKey: ["/api/auto-telematics"],
+    queryFn: () => fetch("/api/auto-telematics").then(r => r.json()).catch(() => []),
   });
 
   const avgMileage = telemetry.length > 0 ? (telemetry.reduce((sum: number, t: any) => sum + (parseFloat(t.mileage) || 0), 0) / telemetry.length).toFixed(0) : 0;

@@ -14,25 +14,25 @@ export default function MerchandisePlanning() {
   const [newPlan, setNewPlan] = useState({ sku: "", season: "spring", targetQty: "100", status: "draft" });
 
   const { data: plans = [], isLoading } = useQuery({
-    queryKey: ["/api/merch-plans"]
-    
+    queryKey: ["/api/merch-plans"],
+    queryFn: () => fetch("/api/merch-plans").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/merch-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/merch-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/merch-plans"] });
       setNewPlan({ sku: "", season: "spring", targetQty: "100", status: "draft" });
       toast({ title: "Merchandise plan created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/merch-plans/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/merch-plans/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/merch-plans"] });
       toast({ title: "Plan deleted" });
-    }
+    },
   });
 
   const active = plans.filter((p: any) => p.status === "active").length;

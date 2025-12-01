@@ -17,23 +17,23 @@ interface PerformanceMetric {
 export default function PerformanceTuning() {
   const [activeNav, setActiveNav] = useState("metrics");
   const { data: metrics = [] } = useQuery<PerformanceMetric[]>({
-    queryKey: ["/api/performance/metrics"]
-    retry: false
+    queryKey: ["/api/performance/metrics"],
+    retry: false,
   });
 
   const stats = {
-    total: (metrics || []).length
-    improved: (metrics || []).filter((m: any) => m.after < m.before).length
+    total: (metrics || []).length,
+    improved: (metrics || []).filter((m: any) => m.after < m.before).length,
     avgImprovement: (metrics || []).length > 0 
       ? (((metrics || []).reduce((sum: number, m: any) => sum + ((m.before - m.after) / m.before * 100), 0) / (metrics || []).length)).toFixed(1)
-      : 0
+      : 0,
   };
 
   const navItems = [
-    { id: "metrics", label: "Metrics", icon: BarChart3, color: "text-blue-500" }
-    { id: "bundle", label: "Bundle", icon: Zap, color: "text-green-500" }
-    { id: "improvements", label: "Improvements", icon: TrendingUp, color: "text-purple-500" }
-    { id: "uptime", label: "Uptime", icon: Clock, color: "text-orange-500" }
+    { id: "metrics", label: "Metrics", icon: BarChart3, color: "text-blue-500" },
+    { id: "bundle", label: "Bundle", icon: Zap, color: "text-green-500" },
+    { id: "improvements", label: "Improvements", icon: TrendingUp, color: "text-purple-500" },
+    { id: "uptime", label: "Uptime", icon: Clock, color: "text-orange-500" },
   ];
 
   return (

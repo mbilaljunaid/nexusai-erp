@@ -13,25 +13,25 @@ export default function FreightCostingBilling() {
   const [newInvoice, setNewInvoice] = useState({ invoiceId: "", shipmentId: "", freightCharge: "0", status: "pending" });
 
   const { data: invoices = [], isLoading } = useQuery({
-    queryKey: ["/api/tl-invoices"]
-    
+    queryKey: ["/api/tl-invoices"],
+    queryFn: () => fetch("/api/tl-invoices").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tl-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/tl-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-invoices"] });
       setNewInvoice({ invoiceId: "", shipmentId: "", freightCharge: "0", status: "pending" });
       toast({ title: "Invoice created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tl-invoices/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/tl-invoices/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-invoices"] });
       toast({ title: "Invoice deleted" });
-    }
+    },
   });
 
   const paid = invoices.filter((i: any) => i.status === "paid").length;

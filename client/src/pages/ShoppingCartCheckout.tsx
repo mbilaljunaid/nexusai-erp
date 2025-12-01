@@ -13,25 +13,25 @@ export default function ShoppingCartCheckout() {
   const [newItem, setNewItem] = useState({ productId: "", quantity: "1", price: "29.99" });
 
   const { data: cartItems = [], isLoading } = useQuery({
-    queryKey: ["/api/shopping-cart"]
-    
+    queryKey: ["/api/shopping-cart"],
+    queryFn: () => fetch("/api/shopping-cart").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/shopping-cart", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/shopping-cart", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/shopping-cart"] });
       setNewItem({ productId: "", quantity: "1", price: "29.99" });
       toast({ title: "Item added to cart" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/shopping-cart/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/shopping-cart/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/shopping-cart"] });
       toast({ title: "Item removed from cart" });
-    }
+    },
   });
 
   const subtotal = cartItems.reduce((sum: number, item: any) => sum + ((parseFloat(item.price) || 0) * (parseFloat(item.quantity) || 0)), 0);

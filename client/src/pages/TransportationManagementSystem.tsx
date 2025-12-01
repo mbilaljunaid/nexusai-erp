@@ -14,25 +14,25 @@ export default function TransportationManagementSystem() {
   const [newShip, setNewShip] = useState({ shipmentId: "", carrier: "FedEx", loadType: "FTL", distance: "500", status: "planned" });
 
   const { data: shipments = [], isLoading } = useQuery({
-    queryKey: ["/api/tms"]
-    
+    queryKey: ["/api/tms"],
+    queryFn: () => fetch("/api/tms").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tms", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/tms", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tms"] });
       setNewShip({ shipmentId: "", carrier: "FedEx", loadType: "FTL", distance: "500", status: "planned" });
       toast({ title: "TMS shipment created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tms/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/tms/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tms"] });
       toast({ title: "Shipment deleted" });
-    }
+    },
   });
 
   const delivered = shipments.filter((s: any) => s.status === "delivered").length;

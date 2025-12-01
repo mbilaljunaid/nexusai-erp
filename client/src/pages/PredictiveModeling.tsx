@@ -14,25 +14,25 @@ export default function PredictiveModeling() {
   const [newModel, setNewModel] = useState({ name: "", module: "Finance", algorithm: "linear", status: "active" });
 
   const { data: models = [], isLoading } = useQuery({
-    queryKey: ["/api/predictive-models"]
-    
+    queryKey: ["/api/predictive-models"],
+    queryFn: () => fetch("/api/predictive-models").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/predictive-models", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/predictive-models", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/predictive-models"] });
       setNewModel({ name: "", module: "Finance", algorithm: "linear", status: "active" });
       toast({ title: "Predictive model created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/predictive-models/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/predictive-models/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/predictive-models"] });
       toast({ title: "Predictive model deleted" });
-    }
+    },
   });
 
   const activeModels = models.filter((m: any) => m.status === "active");

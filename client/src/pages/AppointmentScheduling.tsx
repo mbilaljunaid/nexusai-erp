@@ -20,25 +20,25 @@ export default function AppointmentScheduling() {
   const [newAppt, setNewAppt] = useState({ appointmentId: "", patientId: "", providerId: "", date: "", visitType: "OPD", status: "scheduled" });
 
   const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ["/api/healthcare-appointments"]
-    
+    queryKey: ["/api/healthcare-appointments"],
+    queryFn: () => fetch("/api/healthcare-appointments").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/healthcare-appointments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/healthcare-appointments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-appointments"] });
       setNewAppt({ appointmentId: "", patientId: "", providerId: "", date: "", visitType: "OPD", status: "scheduled" });
       toast({ title: "Appointment scheduled" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/healthcare-appointments/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/healthcare-appointments/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-appointments"] });
       toast({ title: "Appointment cancelled" });
-    }
+    },
   });
 
   const confirmed = appointments.filter((a: any) => a.status === "checked-in").length;

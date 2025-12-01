@@ -14,25 +14,25 @@ export default function PointOfSale() {
   const [newSale, setNewSale] = useState({ saleId: "", items: "1", amount: "0", tender: "card", status: "completed" });
 
   const { data: sales = [], isLoading } = useQuery({
-    queryKey: ["/api/pos-sales"]
-    
+    queryKey: ["/api/pos-sales"],
+    queryFn: () => fetch("/api/pos-sales").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/pos-sales", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/pos-sales", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/pos-sales"] });
       setNewSale({ saleId: "", items: "1", amount: "0", tender: "card", status: "completed" });
       toast({ title: "Sale recorded" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/pos-sales/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/pos-sales/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/pos-sales"] });
       toast({ title: "Sale deleted" });
-    }
+    },
   });
 
   const totalSales = sales.reduce((sum: number, s: any) => sum + (parseFloat(s.amount) || 0), 0);

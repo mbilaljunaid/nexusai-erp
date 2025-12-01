@@ -11,9 +11,9 @@ import { queryClient } from "@/lib/queryClient";
 import { Plus, Trash2 } from "lucide-react";
 
 const PERMISSIONS = [
-  { id: "read", label: "Read" }
-  { id: "write", label: "Write" }
-  { id: "delete", label: "Delete" }
+  { id: "read", label: "Read" },
+  { id: "write", label: "Write" },
+  { id: "delete", label: "Delete" },
   { id: "admin", label: "Admin" }
 ];
 
@@ -25,16 +25,17 @@ export default function AdminRoles() {
   const formMetadata = getFormMetadata("adminRoles");
 
   const { data: roles = [] } = useQuery({
-    queryKey: ["/api/roles", tenantId]
+    queryKey: ["/api/roles", tenantId],
+    queryFn: () => fetch(`/api/roles?tenantId=${tenantId}`).then(r => r.json())
   });
 
   const createMutation = useMutation({
     mutationFn: (data: any) => 
       fetch("/api/roles", { 
-        method: "POST"
-        headers: { "Content-Type": "application/json" }
+        method: "POST", 
+        headers: { "Content-Type": "application/json" }, 
         body: JSON.stringify({ ...data, tenantId })
-      }).then(r => r.json())
+      }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/roles", tenantId] });
       setNewRole({ name: "", permissions: [] });
@@ -43,7 +44,7 @@ export default function AdminRoles() {
 
   const togglePermission = (perm: string) => {
     setNewRole(prev => ({
-      ...prev
+      ...prev,
       permissions: prev.permissions.includes(perm)
         ? prev.permissions.filter(p => p !== perm)
         : [...prev.permissions, perm]

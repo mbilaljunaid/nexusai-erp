@@ -10,8 +10,8 @@ export default function OAuthManagement() {
       </div>
       <div className="grid gap-4">
         {[
-          { app: "Mobile App", scope: "read,write", status: "Active" }
-          { app: "Third-party Service", scope: "read", status: "Active" }
+          { app: "Mobile App", scope: "read,write", status: "Active" },
+          { app: "Third-party Service", scope: "read", status: "Active" },
         ].map((oauth) => (
           <Card key={oauth.app}>
             <CardContent className="pt-6">

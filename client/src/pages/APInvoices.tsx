@@ -14,25 +14,25 @@ export default function APInvoices() {
   const [newInvoice, setNewInvoice] = useState({ invoiceNumber: "", vendorId: "", invoiceAmount: "", status: "draft" });
 
   const { data: invoices = [], isLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/finance/ap-invoices"]
-    
+    queryKey: ["/api/finance/ap-invoices"],
+    queryFn: () => fetch("/api/finance/ap-invoices").then(r => r.json()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/finance/ap-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/finance/ap-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/ap-invoices"] });
       setNewInvoice({ invoiceNumber: "", vendorId: "", invoiceAmount: "", status: "draft" });
       toast({ title: "Invoice created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/ap-invoices/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/finance/ap-invoices/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/ap-invoices"] });
       toast({ title: "Invoice deleted" });
-    }
+    },
   });
 
   const total = invoices.reduce((sum, i: any) => sum + parseFloat(i.invoiceAmount || 0), 0);
@@ -40,11 +40,11 @@ export default function APInvoices() {
   const pending = total - paid;
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    draft: "secondary"
-    submitted: "default"
-    approved: "default"
-    paid: "outline"
-    rejected: "destructive"
+    draft: "secondary",
+    submitted: "default",
+    approved: "default",
+    paid: "outline",
+    rejected: "destructive",
   };
 
   return (

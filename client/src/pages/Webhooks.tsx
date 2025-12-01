@@ -14,8 +14,8 @@ export default function Webhooks() {
       </div>
       <div className="grid gap-4">
         {[
-          { url: "https://example.com/api", events: "lead.*", status: "Active" }
-          { url: "https://app.company.com", events: "deal.*", status: "Active" }
+          { url: "https://example.com/api", events: "lead.*", status: "Active" },
+          { url: "https://app.company.com", events: "deal.*", status: "Active" },
         ].map((w, idx) => (
           <Card key={idx}>
             <CardContent className="pt-6">

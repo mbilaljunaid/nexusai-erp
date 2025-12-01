@@ -9,9 +9,9 @@ export default function HealthCheckDashboard() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { component: "Database", status: "Healthy" }
-          { component: "Cache", status: "Healthy" }
-          { component: "API", status: "Healthy" }
+          { component: "Database", status: "Healthy" },
+          { component: "Cache", status: "Healthy" },
+          { component: "API", status: "Healthy" },
         ].map((c) => (
           <Card key={c.component}>
             <CardContent className="pt-6 text-center">

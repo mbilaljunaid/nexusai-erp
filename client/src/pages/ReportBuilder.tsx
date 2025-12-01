@@ -13,25 +13,25 @@ export default function ReportBuilder() {
   const [newReport, setNewReport] = useState({ name: "", type: "Sales", frequency: "Monthly" });
 
   const { data: reports = [], isLoading } = useQuery({
-    queryKey: ["/api/analytics/reports"]
-    
+    queryKey: ["/api/analytics/reports"],
+    queryFn: () => fetch("/api/analytics/reports").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/analytics/reports", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/analytics/reports", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/reports"] });
       setNewReport({ name: "", type: "Sales", frequency: "Monthly" });
       toast({ title: "Report created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/analytics/reports/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/analytics/reports/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/reports"] });
       toast({ title: "Report deleted" });
-    }
+    },
   });
 
   return (

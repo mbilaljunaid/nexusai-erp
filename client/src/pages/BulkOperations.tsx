@@ -9,8 +9,8 @@ export default function BulkOperations() {
       </div>
       <div className="grid gap-4">
         {[
-          { op: "Bulk Email Send", status: "Queued", records: "1,200" }
-          { op: "Bulk Status Update", status: "Completed", records: "850" }
+          { op: "Bulk Email Send", status: "Queued", records: "1,200" },
+          { op: "Bulk Status Update", status: "Completed", records: "850" },
         ].map((b) => (
           <Card key={b.op}>
             <CardContent className="pt-6">

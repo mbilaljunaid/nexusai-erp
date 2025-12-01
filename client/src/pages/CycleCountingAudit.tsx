@@ -13,25 +13,25 @@ export default function CycleCountingAudit() {
   const [newCount, setNewCount] = useState({ productId: "", binId: "", systemQty: "100", countedQty: "100", variance: "0" });
 
   const { data: counts = [], isLoading } = useQuery({
-    queryKey: ["/api/cycle-count"]
-    
+    queryKey: ["/api/cycle-count"],
+    queryFn: () => fetch("/api/cycle-count").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/cycle-count", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/cycle-count", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cycle-count"] });
       setNewCount({ productId: "", binId: "", systemQty: "100", countedQty: "100", variance: "0" });
       toast({ title: "Count recorded" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/cycle-count/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/cycle-count/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cycle-count"] });
       toast({ title: "Count deleted" });
-    }
+    },
   });
 
   const accurate = counts.filter((c: any) => Math.abs((parseFloat(c.variance) || 0)) === 0).length;

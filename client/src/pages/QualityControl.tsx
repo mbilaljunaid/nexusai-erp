@@ -11,7 +11,7 @@ export default function QualityControl() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredQC, setFilteredQC] = useState<any[]>([]);
   const { data: qcData = [] } = useQuery<any[]>({
-    queryKey: ["/api/quality"]
+    queryKey: ["/api/quality"],
   });
   const formMetadata = getFormMetadata("qualityControl");
 

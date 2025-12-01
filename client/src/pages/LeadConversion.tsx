@@ -14,25 +14,25 @@ export default function LeadConversion() {
   const [newLead, setNewLead] = useState({ name: "", email: "", company: "", status: "new" });
 
   const { data: leads = [], isLoading } = useQuery({
-    queryKey: ["/api/crm/leads"]
-    
+    queryKey: ["/api/crm/leads"],
+    queryFn: () => fetch("/api/crm/leads").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/crm/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/crm/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/leads"] });
       setNewLead({ name: "", email: "", company: "", status: "new" });
       toast({ title: "Lead created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/crm/leads/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/crm/leads/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/leads"] });
       toast({ title: "Lead deleted" });
-    }
+    },
   });
 
   return (

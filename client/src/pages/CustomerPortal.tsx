@@ -35,9 +35,9 @@ export default function CustomerPortal() {
         <CardHeader><CardTitle className="text-base">Recent Activity</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {[
-            { action: "Submitted ticket TK-045", time: "2 hours ago" }
-            { action: "Viewed article: API guide", time: "1 day ago" }
-            { action: "Ticket TK-041 resolved", time: "2 days ago" }
+            { action: "Submitted ticket TK-045", time: "2 hours ago" },
+            { action: "Viewed article: API guide", time: "1 day ago" },
+            { action: "Ticket TK-041 resolved", time: "2 days ago" },
           ].map((activity, idx) => (
             <div key={idx} className="flex justify-between p-2 border rounded text-sm">
               <span>{activity.action}</span>

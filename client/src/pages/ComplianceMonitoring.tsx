@@ -4,10 +4,10 @@ import { AlertTriangle, CheckCircle } from "lucide-react";
 
 export default function ComplianceMonitoring() {
   const rules = [
-    { id: "r1", name: "SoD - Approver cannot be Requestor", module: "Finance", status: "active", violations: 0, lastChecked: "Nov 30, 10:15 AM" }
-    { id: "r2", name: "Field Access - Salary restricted to HR", module: "HR", status: "active", violations: 2, lastChecked: "Nov 30, 10:10 AM" }
-    { id: "r3", name: "Data Export - Audit trail required", module: "Analytics", status: "active", violations: 0, lastChecked: "Nov 30, 10:05 AM" }
-    { id: "r4", name: "Role Change - Manager approval required", module: "Admin", status: "inactive", violations: 0, lastChecked: "Nov 29, 08:00 PM" }
+    { id: "r1", name: "SoD - Approver cannot be Requestor", module: "Finance", status: "active", violations: 0, lastChecked: "Nov 30, 10:15 AM" },
+    { id: "r2", name: "Field Access - Salary restricted to HR", module: "HR", status: "active", violations: 2, lastChecked: "Nov 30, 10:10 AM" },
+    { id: "r3", name: "Data Export - Audit trail required", module: "Analytics", status: "active", violations: 0, lastChecked: "Nov 30, 10:05 AM" },
+    { id: "r4", name: "Role Change - Manager approval required", module: "Admin", status: "inactive", violations: 0, lastChecked: "Nov 29, 08:00 PM" },
   ];
 
   return (

@@ -12,8 +12,8 @@ export default function AppStore() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { name: "Slack Integration", category: "Integration", rating: "4.8" }
-          { name: "Salesforce Sync", category: "Sync", rating: "4.9" }
+          { name: "Slack Integration", category: "Integration", rating: "4.8" },
+          { name: "Salesforce Sync", category: "Sync", rating: "4.9" },
         ].map((app) => (
           <Card key={app.name}>
             <CardContent className="pt-6">

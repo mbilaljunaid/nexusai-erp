@@ -68,9 +68,9 @@ export default function ERPModule() {
           </CardHeader>
           <CardContent className="space-y-2">
             {[
-              { sku: "SKU-001", name: "Widget A", quantity: 5 }
-              { sku: "SKU-045", name: "Component B", quantity: 8 }
-              { sku: "SKU-103", name: "Part C", quantity: 3 }
+              { sku: "SKU-001", name: "Widget A", quantity: 5 },
+              { sku: "SKU-045", name: "Component B", quantity: 8 },
+              { sku: "SKU-103", name: "Part C", quantity: 3 },
             ].map((item) => (
               <div key={item.sku} className="flex justify-between p-2 rounded hover:bg-muted">
                 <div>
@@ -89,9 +89,9 @@ export default function ERPModule() {
           </CardHeader>
           <CardContent className="space-y-2">
             {[
-              { so: "SO-001", amount: "$15,000", status: "shipped" }
-              { so: "SO-002", amount: "$22,500", status: "processing" }
-              { so: "SO-003", amount: "$8,750", status: "pending" }
+              { so: "SO-001", amount: "$15,000", status: "shipped" },
+              { so: "SO-002", amount: "$22,500", status: "processing" },
+              { so: "SO-003", amount: "$8,750", status: "pending" },
             ].map((order) => (
               <div key={order.so} className="flex justify-between p-2 rounded hover:bg-muted">
                 <div>

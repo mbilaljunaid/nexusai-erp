@@ -48,44 +48,44 @@ export default function Ecommerce() {
   const [selectedTab, setSelectedTab] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: ShoppingCart, color: "text-blue-500" }
-    { id: "products", label: "Products", icon: Package, color: "text-purple-500" }
-    { id: "orders", label: "Orders", icon: Truck, color: "text-green-500" }
-    { id: "customers", label: "Customers", icon: Users, color: "text-orange-500" }
-    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-pink-500" }
+    { id: "overview", label: "Overview", icon: ShoppingCart, color: "text-blue-500" },
+    { id: "products", label: "Products", icon: Package, color: "text-purple-500" },
+    { id: "orders", label: "Orders", icon: Truck, color: "text-green-500" },
+    { id: "customers", label: "Customers", icon: Users, color: "text-orange-500" },
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-pink-500" },
   ];
 
   // todo: remove mock functionality
   const products: Product[] = [
-    { id: "1", name: "Premium Widget", sku: "WID-001", category: "Widgets", price: 29.99, cost: 12, stock: 245, rating: 4.8, sales: 1250, status: "active", image: "" }
-    { id: "2", name: "Deluxe Gadget", sku: "GAD-002", category: "Gadgets", price: 49.99, cost: 20, stock: 89, rating: 4.6, sales: 856, status: "active", image: "" }
-    { id: "3", name: "Standard Component", sku: "COM-003", category: "Components", price: 19.99, cost: 8, stock: 542, rating: 4.2, sales: 2100, status: "active", image: "" }
-    { id: "4", name: "Premium Bundle", sku: "BUN-001", category: "Bundles", price: 89.99, cost: 35, stock: 45, rating: 4.9, sales: 420, status: "active", image: "" }
-    { id: "5", name: "Limited Edition", sku: "LIM-001", category: "Special", price: 199.99, cost: 80, stock: 12, rating: 5, sales: 89, status: "active", image: "" }
+    { id: "1", name: "Premium Widget", sku: "WID-001", category: "Widgets", price: 29.99, cost: 12, stock: 245, rating: 4.8, sales: 1250, status: "active", image: "" },
+    { id: "2", name: "Deluxe Gadget", sku: "GAD-002", category: "Gadgets", price: 49.99, cost: 20, stock: 89, rating: 4.6, sales: 856, status: "active", image: "" },
+    { id: "3", name: "Standard Component", sku: "COM-003", category: "Components", price: 19.99, cost: 8, stock: 542, rating: 4.2, sales: 2100, status: "active", image: "" },
+    { id: "4", name: "Premium Bundle", sku: "BUN-001", category: "Bundles", price: 89.99, cost: 35, stock: 45, rating: 4.9, sales: 420, status: "active", image: "" },
+    { id: "5", name: "Limited Edition", sku: "LIM-001", category: "Special", price: 199.99, cost: 80, stock: 12, rating: 5, sales: 89, status: "active", image: "" },
   ];
 
   const orders: Order[] = [
-    { id: "1", orderNumber: "ORD-10001", customer: "John Smith", total: 129.97, items: 3, status: "delivered", date: "2024-12-08", paymentStatus: "completed", shippingStatus: "delivered" }
-    { id: "2", orderNumber: "ORD-10002", customer: "Sarah Johnson", total: 79.99, items: 2, status: "shipped", date: "2024-12-09", paymentStatus: "completed", shippingStatus: "shipped" }
-    { id: "3", orderNumber: "ORD-10003", customer: "Michael Brown", total: 199.99, items: 1, status: "processing", date: "2024-12-10", paymentStatus: "completed", shippingStatus: "processing" }
-    { id: "4", orderNumber: "ORD-10004", customer: "Emily Davis", total: 59.99, items: 2, status: "pending", date: "2024-12-10", paymentStatus: "pending", shippingStatus: "pending" }
-    { id: "5", orderNumber: "ORD-10005", customer: "James Wilson", total: 349.97, items: 5, status: "shipped", date: "2024-12-09", paymentStatus: "completed", shippingStatus: "shipped" }
+    { id: "1", orderNumber: "ORD-10001", customer: "John Smith", total: 129.97, items: 3, status: "delivered", date: "2024-12-08", paymentStatus: "completed", shippingStatus: "delivered" },
+    { id: "2", orderNumber: "ORD-10002", customer: "Sarah Johnson", total: 79.99, items: 2, status: "shipped", date: "2024-12-09", paymentStatus: "completed", shippingStatus: "shipped" },
+    { id: "3", orderNumber: "ORD-10003", customer: "Michael Brown", total: 199.99, items: 1, status: "processing", date: "2024-12-10", paymentStatus: "completed", shippingStatus: "processing" },
+    { id: "4", orderNumber: "ORD-10004", customer: "Emily Davis", total: 59.99, items: 2, status: "pending", date: "2024-12-10", paymentStatus: "pending", shippingStatus: "pending" },
+    { id: "5", orderNumber: "ORD-10005", customer: "James Wilson", total: 349.97, items: 5, status: "shipped", date: "2024-12-09", paymentStatus: "completed", shippingStatus: "shipped" },
   ];
 
   const customers: Customer[] = [
-    { id: "1", name: "John Smith", email: "john@example.com", phone: "+1-555-0101", totalOrders: 12, totalSpent: 1240, lastOrder: "2024-12-08", status: "active" }
-    { id: "2", name: "Sarah Johnson", email: "sarah@example.com", phone: "+1-555-0102", totalOrders: 8, totalSpent: 890, lastOrder: "2024-12-09", status: "active" }
-    { id: "3", name: "Michael Brown", email: "michael@example.com", phone: "+1-555-0103", totalOrders: 15, totalSpent: 2100, lastOrder: "2024-12-10", status: "active" }
-    { id: "4", name: "Emily Davis", email: "emily@example.com", phone: "+1-555-0104", totalOrders: 3, totalSpent: 240, lastOrder: "2024-12-10", status: "inactive" }
+    { id: "1", name: "John Smith", email: "john@example.com", phone: "+1-555-0101", totalOrders: 12, totalSpent: 1240, lastOrder: "2024-12-08", status: "active" },
+    { id: "2", name: "Sarah Johnson", email: "sarah@example.com", phone: "+1-555-0102", totalOrders: 8, totalSpent: 890, lastOrder: "2024-12-09", status: "active" },
+    { id: "3", name: "Michael Brown", email: "michael@example.com", phone: "+1-555-0103", totalOrders: 15, totalSpent: 2100, lastOrder: "2024-12-10", status: "active" },
+    { id: "4", name: "Emily Davis", email: "emily@example.com", phone: "+1-555-0104", totalOrders: 3, totalSpent: 240, lastOrder: "2024-12-10", status: "inactive" },
   ];
 
   const stats = {
-    revenue: 4250
-    orders: 125
-    customers: 342
-    avgOrderValue: 34
-    conversionRate: 3.8
-    cartAbandonmentRate: 68
+    revenue: 4250,
+    orders: 125,
+    customers: 342,
+    avgOrderValue: 34,
+    conversionRate: 3.8,
+    cartAbandonmentRate: 68,
   };
 
   const filteredProducts = products.filter(p => 
@@ -94,16 +94,16 @@ export default function Ecommerce() {
   );
 
   const statusConfig = {
-    active: "bg-green-500/10 text-green-600"
-    draft: "bg-yellow-500/10 text-yellow-600"
-    archived: "bg-gray-500/10 text-gray-600"
-    pending: "bg-blue-500/10 text-blue-600"
-    processing: "bg-yellow-500/10 text-yellow-600"
-    shipped: "bg-purple-500/10 text-purple-600"
-    delivered: "bg-green-500/10 text-green-600"
-    cancelled: "bg-red-500/10 text-red-600"
-    completed: "bg-green-500/10 text-green-600"
-    failed: "bg-red-500/10 text-red-600"
+    active: "bg-green-500/10 text-green-600",
+    draft: "bg-yellow-500/10 text-yellow-600",
+    archived: "bg-gray-500/10 text-gray-600",
+    pending: "bg-blue-500/10 text-blue-600",
+    processing: "bg-yellow-500/10 text-yellow-600",
+    shipped: "bg-purple-500/10 text-purple-600",
+    delivered: "bg-green-500/10 text-green-600",
+    cancelled: "bg-red-500/10 text-red-600",
+    completed: "bg-green-500/10 text-green-600",
+    failed: "bg-red-500/10 text-red-600",
   } as const;
 
   return (

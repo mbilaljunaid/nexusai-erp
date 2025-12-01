@@ -9,8 +9,8 @@ export default function TemplateLibrary() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { template: "Email Templates", count: "24" }
-          { template: "Document Templates", count: "18" }
+          { template: "Email Templates", count: "24" },
+          { template: "Document Templates", count: "18" },
         ].map((t) => (
           <Card key={t.template}>
             <CardContent className="pt-6">

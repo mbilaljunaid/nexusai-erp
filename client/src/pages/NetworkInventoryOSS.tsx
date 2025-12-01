@@ -13,25 +13,25 @@ export default function NetworkInventoryOSS() {
   const [newNode, setNewNode] = useState({ nodeId: "", nodeType: "cell-tower", location: "", capacity: "1000", utilization: "0" });
 
   const { data: nodes = [], isLoading } = useQuery({
-    queryKey: ["/api/network-nodes"]
-    
+    queryKey: ["/api/network-nodes"],
+    queryFn: () => fetch("/api/network-nodes").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/network-nodes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/network-nodes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/network-nodes"] });
       setNewNode({ nodeId: "", nodeType: "cell-tower", location: "", capacity: "1000", utilization: "0" });
       toast({ title: "Network node added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/network-nodes/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/network-nodes/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/network-nodes"] });
       toast({ title: "Node deleted" });
-    }
+    },
   });
 
   const active = nodes.filter((n: any) => n.status === "active").length;

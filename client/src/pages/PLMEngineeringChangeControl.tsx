@@ -14,25 +14,25 @@ export default function PLMEngineeringChangeControl() {
   const [newCR, setNewCR] = useState({ crId: "", title: "", changeType: "design", impactedParts: "", status: "submitted" });
 
   const { data: changes = [], isLoading } = useQuery({
-    queryKey: ["/api/engineering-changes"]
-    
+    queryKey: ["/api/engineering-changes"],
+    queryFn: () => fetch("/api/engineering-changes").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/engineering-changes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/engineering-changes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/engineering-changes"] });
       setNewCR({ crId: "", title: "", changeType: "design", impactedParts: "", status: "submitted" });
       toast({ title: "Change request created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/engineering-changes/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/engineering-changes/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/engineering-changes"] });
       toast({ title: "CR deleted" });
-    }
+    },
   });
 
   const approved = changes.filter((c: any) => c.status === "approved").length;

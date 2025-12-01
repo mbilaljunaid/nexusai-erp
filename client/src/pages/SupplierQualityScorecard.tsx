@@ -5,8 +5,8 @@ import { Award } from "lucide-react";
 
 export default function SupplierQualityScorecard() {
   const { data: scorecards = [], isLoading } = useQuery({
-    queryKey: ["/api/supplier-scorecards"]
-    
+    queryKey: ["/api/supplier-scorecards"],
+    queryFn: () => fetch("/api/supplier-scorecards").then(r => r.json()).catch(() => []),
   });
 
   const excellent = scorecards.filter((s: any) => (parseFloat(s.score) || 0) >= 90).length;

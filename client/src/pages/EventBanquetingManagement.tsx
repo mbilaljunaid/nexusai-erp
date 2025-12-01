@@ -13,25 +13,25 @@ export default function EventBanquetingManagement() {
   const [newEvent, setNewEvent] = useState({ eventId: "", eventName: "", venue: "", pax: "100", status: "proposal" });
 
   const { data: events = [], isLoading } = useQuery({
-    queryKey: ["/api/hospitality-events"]
-    
+    queryKey: ["/api/hospitality-events"],
+    queryFn: () => fetch("/api/hospitality-events").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hospitality-events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/hospitality-events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-events"] });
       setNewEvent({ eventId: "", eventName: "", venue: "", pax: "100", status: "proposal" });
       toast({ title: "Event created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hospitality-events/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/hospitality-events/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-events"] });
       toast({ title: "Event deleted" });
-    }
+    },
   });
 
   const confirmed = events.filter((e: any) => e.status === "confirmed").length;

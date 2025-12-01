@@ -9,10 +9,10 @@ export default function Compliance() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: Shield, color: "text-blue-500" }
-    { id: "standards", label: "Standards", icon: CheckCircle, color: "text-green-500" }
-    { id: "audits", label: "Audits", icon: AlertTriangle, color: "text-yellow-500" }
-    { id: "risks", label: "Risk Assessment", icon: TrendingUp, color: "text-red-500" }
+    { id: "overview", label: "Overview", icon: Shield, color: "text-blue-500" },
+    { id: "standards", label: "Standards", icon: CheckCircle, color: "text-green-500" },
+    { id: "audits", label: "Audits", icon: AlertTriangle, color: "text-yellow-500" },
+    { id: "risks", label: "Risk Assessment", icon: TrendingUp, color: "text-red-500" },
   ];
 
   return (
@@ -67,10 +67,10 @@ export default function Compliance() {
             </CardHeader>
             <CardContent className="space-y-3">
               {[
-                { name: "SOC 2 Type II", status: "compliant" }
-                { name: "GDPR", status: "compliant" }
-                { name: "HIPAA", status: "compliant" }
-                { name: "ISO 27001", status: "in_progress" }
+                { name: "SOC 2 Type II", status: "compliant" },
+                { name: "GDPR", status: "compliant" },
+                { name: "HIPAA", status: "compliant" },
+                { name: "ISO 27001", status: "in_progress" },
               ].map((standard) => (
                 <div key={standard.name} className="flex items-center justify-between p-3 rounded-md border">
                   <span className="font-medium text-sm">{standard.name}</span>
@@ -91,11 +91,11 @@ export default function Compliance() {
             </CardHeader>
             <CardContent className="space-y-3">
               {[
-                { name: "SOC 2 Type II", framework: "Security", status: "compliant", expiry: "2025-06-15", coverage: "98%" }
-                { name: "GDPR", framework: "Data Privacy", status: "compliant", expiry: "Ongoing", coverage: "100%" }
-                { name: "HIPAA", framework: "Healthcare", status: "compliant", expiry: "2025-12-31", coverage: "97%" }
-                { name: "ISO 27001", framework: "Security", status: "in_progress", expiry: "2025-03-30", coverage: "82%" }
-                { name: "PCI DSS", framework: "Payment", status: "compliant", expiry: "2025-08-20", coverage: "99%" }
+                { name: "SOC 2 Type II", framework: "Security", status: "compliant", expiry: "2025-06-15", coverage: "98%" },
+                { name: "GDPR", framework: "Data Privacy", status: "compliant", expiry: "Ongoing", coverage: "100%" },
+                { name: "HIPAA", framework: "Healthcare", status: "compliant", expiry: "2025-12-31", coverage: "97%" },
+                { name: "ISO 27001", framework: "Security", status: "in_progress", expiry: "2025-03-30", coverage: "82%" },
+                { name: "PCI DSS", framework: "Payment", status: "compliant", expiry: "2025-08-20", coverage: "99%" },
               ].map((standard) => (
                 <div key={standard.name} className="border rounded-lg p-3">
                   <div className="flex justify-between items-start mb-2">
@@ -124,10 +124,10 @@ export default function Compliance() {
             </CardHeader>
             <CardContent className="space-y-3">
               {[
-                { id: "A001", name: "Internal Security Audit", type: "Internal", date: "2024-12-15", status: "scheduled", findings: 0 }
-                { id: "A002", name: "GDPR Compliance Review", type: "External", date: "2024-11-30", status: "in_progress", findings: 2 }
-                { id: "A003", name: "Financial Controls Test", type: "Internal", date: "2024-11-20", status: "completed", findings: 1 }
-                { id: "A004", name: "Data Privacy Assessment", type: "Internal", date: "2024-11-10", status: "completed", findings: 0 }
+                { id: "A001", name: "Internal Security Audit", type: "Internal", date: "2024-12-15", status: "scheduled", findings: 0 },
+                { id: "A002", name: "GDPR Compliance Review", type: "External", date: "2024-11-30", status: "in_progress", findings: 2 },
+                { id: "A003", name: "Financial Controls Test", type: "Internal", date: "2024-11-20", status: "completed", findings: 1 },
+                { id: "A004", name: "Data Privacy Assessment", type: "Internal", date: "2024-11-10", status: "completed", findings: 0 },
               ].map((audit) => (
                 <div key={audit.id} className="border rounded-lg p-3">
                   <div className="flex justify-between items-start mb-2">
@@ -153,10 +153,10 @@ export default function Compliance() {
             </CardHeader>
             <CardContent className="space-y-3">
               {[
-                { id: "R001", name: "Data Breach Risk", severity: "high", probability: "15%", impact: "Critical", status: "active", controls: 4 }
-                { id: "R002", name: "Access Control Gap", severity: "medium", probability: "25%", impact: "High", status: "active", controls: 2 }
-                { id: "R003", name: "Backup Failure", severity: "medium", probability: "8%", impact: "High", status: "active", controls: 3 }
-                { id: "R004", name: "Regulatory Change", severity: "low", probability: "40%", impact: "Medium", status: "monitoring", controls: 1 }
+                { id: "R001", name: "Data Breach Risk", severity: "high", probability: "15%", impact: "Critical", status: "active", controls: 4 },
+                { id: "R002", name: "Access Control Gap", severity: "medium", probability: "25%", impact: "High", status: "active", controls: 2 },
+                { id: "R003", name: "Backup Failure", severity: "medium", probability: "8%", impact: "High", status: "active", controls: 3 },
+                { id: "R004", name: "Regulatory Change", severity: "low", probability: "40%", impact: "Medium", status: "monitoring", controls: 1 },
               ].map((risk) => (
                 <div key={risk.id} className="border rounded-lg p-3">
                   <div className="flex justify-between items-start mb-2">

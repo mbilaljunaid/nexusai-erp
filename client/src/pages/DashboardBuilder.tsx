@@ -13,25 +13,25 @@ export default function DashboardBuilder() {
   const [newDash, setNewDash] = useState({ name: "", type: "sales", owner: "" });
 
   const { data: dashboards = [], isLoading } = useQuery({
-    queryKey: ["/api/analytics/dashboards"]
-    
+    queryKey: ["/api/analytics/dashboards"],
+    queryFn: () => fetch("/api/analytics/dashboards").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/analytics/dashboards", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/analytics/dashboards", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/dashboards"] });
       setNewDash({ name: "", type: "sales", owner: "" });
       toast({ title: "Dashboard created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/analytics/dashboards/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/analytics/dashboards/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/dashboards"] });
       toast({ title: "Dashboard deleted" });
-    }
+    },
   });
 
   return (

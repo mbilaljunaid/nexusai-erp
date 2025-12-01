@@ -28,17 +28,19 @@ export default function ComplianceDashboard() {
   const formMetadata = getFormMetadata("compliance");
   
   const { data: rules = [] } = useQuery<ComplianceRule[]>({
-    queryKey: ["/api/compliance/rules"]
+    queryKey: ["/api/compliance/rules"],
+    queryFn: () =>
       fetch("http://localhost:3001/api/compliance/rules", { credentials: "include" }).then((r) =>
         r.json()
-      )
+      ),
   });
 
   const { data: violations = [] } = useQuery<ComplianceViolation[]>({
-    queryKey: ["/api/compliance/violations"]
+    queryKey: ["/api/compliance/violations"],
+    queryFn: () =>
       fetch("http://localhost:3001/api/compliance/violations", { credentials: "include" }).then((r) =>
         r.json()
-      )
+      ),
   });
 
   const openViolations = violations.filter((v) => v.status === "open");

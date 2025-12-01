@@ -5,13 +5,13 @@ import { Building2, Users, Clock, TrendingUp } from "lucide-react";
 
 export default function StoreOperationsDashboard() {
   const { data: stores = [], isLoading } = useQuery({
-    queryKey: ["/api/stores"]
-    
+    queryKey: ["/api/stores"],
+    queryFn: () => fetch("/api/stores").then(r => r.json()).catch(() => []),
   });
 
   const { data: staffing = [], isLoading: staffingLoading } = useQuery({
-    queryKey: ["/api/store-staffing"]
-    
+    queryKey: ["/api/store-staffing"],
+    queryFn: () => fetch("/api/store-staffing").then(r => r.json()).catch(() => []),
   });
 
   const openStores = stores.filter((s: any) => s.status === "open").length;

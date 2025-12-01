@@ -6,8 +6,8 @@ import { BookOpen, Plus } from "lucide-react";
 
 export default function FacultyManagement() {
   const faculty = [
-    { id: "FAC001", name: "Dr. Sharma", dept: "Computer Science", courses: 3, status: "ACTIVE" }
-    { id: "FAC002", name: "Prof. Gupta", dept: "Electronics", courses: 2, status: "ACTIVE" }
+    { id: "FAC001", name: "Dr. Sharma", dept: "Computer Science", courses: 3, status: "ACTIVE" },
+    { id: "FAC002", name: "Prof. Gupta", dept: "Electronics", courses: 2, status: "ACTIVE" },
   ];
   return (
     <div className="space-y-6 p-6">

@@ -5,8 +5,8 @@ import { Leaf } from "lucide-react";
 
 export default function SustainabilityTraceability() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-sustainability"]
-    
+    queryKey: ["/api/fb-sustainability"],
+    queryFn: () => fetch("/api/fb-sustainability").then(r => r.json()).catch(() => []),
   });
 
   const totalCO2 = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.co2kg) || 0), 0);

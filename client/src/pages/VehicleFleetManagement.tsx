@@ -14,25 +14,25 @@ export default function VehicleFleetManagement() {
   const [newVehicle, setNewVehicle] = useState({ vehicleId: "", type: "box-truck", capacity: "5000", status: "available", mileage: "0" });
 
   const { data: vehicles = [], isLoading } = useQuery({
-    queryKey: ["/api/fleet-vehicles"]
-    
+    queryKey: ["/api/fleet-vehicles"],
+    queryFn: () => fetch("/api/fleet-vehicles").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/fleet-vehicles", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/fleet-vehicles", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fleet-vehicles"] });
       setNewVehicle({ vehicleId: "", type: "box-truck", capacity: "5000", status: "available", mileage: "0" });
       toast({ title: "Vehicle added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/fleet-vehicles/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/fleet-vehicles/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fleet-vehicles"] });
       toast({ title: "Vehicle deleted" });
-    }
+    },
   });
 
   const available = vehicles.filter((v: any) => v.status === "available").length;

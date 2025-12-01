@@ -12,7 +12,7 @@ export default function ContactDirectory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredContacts, setFilteredContacts] = useState<any[]>([]);
   const { data: contacts = [] } = useQuery<any[]>({
-    queryKey: ["/api/contacts"]
+    queryKey: ["/api/contacts"],
   });
   const formMetadata = getFormMetadata("contact");
 

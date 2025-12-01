@@ -5,9 +5,9 @@ import { Bell, Plus } from "lucide-react";
 
 export default function EventTriggers() {
   const triggers = [
-    { id: "et1", event: "User login", module: "Core", type: "System", recipients: "Admin", notifications: 342 }
-    { id: "et2", event: "Invoice approved", module: "Finance", type: "User", recipients: "Finance Team", notifications: 156 }
-    { id: "et3", event: "Lead converted", module: "CRM", type: "System", recipients: "Sales Manager", notifications: 89 }
+    { id: "et1", event: "User login", module: "Core", type: "System", recipients: "Admin", notifications: 342 },
+    { id: "et2", event: "Invoice approved", module: "Finance", type: "User", recipients: "Finance Team", notifications: 156 },
+    { id: "et3", event: "Lead converted", module: "CRM", type: "System", recipients: "Sales Manager", notifications: 89 },
   ];
 
   return (

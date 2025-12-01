@@ -10,8 +10,8 @@ export default function FeatureFlags() {
       </div>
       <div className="grid gap-4">
         {[
-          { flag: "New Dashboard", status: "Enabled", rollout: "100%" }
-          { flag: "AI Predictions", status: "Enabled", rollout: "50%" }
+          { flag: "New Dashboard", status: "Enabled", rollout: "100%" },
+          { flag: "AI Predictions", status: "Enabled", rollout: "50%" },
         ].map((flag) => (
           <Card key={flag.flag}>
             <CardContent className="pt-6">

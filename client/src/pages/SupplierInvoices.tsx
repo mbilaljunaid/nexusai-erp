@@ -11,19 +11,19 @@ export default function SupplierInvoices() {
   const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/supplier-invoices"] });
 
   const navigationItems = [
-    { id: "list", label: "Invoices", icon: FileText, badge: invoices.length, color: "blue" as const }
-    { id: "create", label: "Create Invoice", icon: Plus, color: "green" as const }
-    { id: "exceptions", label: "Exceptions", icon: AlertCircle, badge: invoices.filter((i: any) => i.status === "exception").length, color: "red" as const }
-    { id: "paid", label: "Paid", icon: FileText, badge: invoices.filter((i: any) => i.status === "paid").length, color: "purple" as const }
+    { id: "list", label: "Invoices", icon: FileText, badge: invoices.length, color: "blue" as const },
+    { id: "create", label: "Create Invoice", icon: Plus, color: "green" as const },
+    { id: "exceptions", label: "Exceptions", icon: AlertCircle, badge: invoices.filter((i: any) => i.status === "exception").length, color: "red" as const },
+    { id: "paid", label: "Paid", icon: FileText, badge: invoices.filter((i: any) => i.status === "paid").length, color: "purple" as const },
   ];
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    received: "secondary"
-    validated: "default"
-    matched_po_grn: "default"
-    exception: "destructive"
-    approved: "secondary"
-    paid: "outline"
+    received: "secondary",
+    validated: "default",
+    matched_po_grn: "default",
+    exception: "destructive",
+    approved: "secondary",
+    paid: "outline",
   };
 
   return (

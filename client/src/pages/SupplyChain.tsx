@@ -15,45 +15,46 @@ export default function SupplyChain() {
   const [newPartner, setNewPartner] = useState({ name: "", type: "Supplier", location: "" });
   const [newShipment, setNewShipment] = useState({ number: "", status: "pending", destination: "" });
 
-  const { data: partners = [], isLoading: partnersLoading } = useQuery<any[]>({ queryKey: ["/api/supply-chain/partners"],  isLoading: shipmentsLoading } = useQuery<any[]>({ queryKey: ["/api/supply-chain/shipments"], queryFn: () => fetch("/api/supply-chain/shipments").then(r => r.json()).catch(() => []) });
+  const { data: partners = [], isLoading: partnersLoading } = useQuery<any[]>({ queryKey: ["/api/supply-chain/partners"], queryFn: () => fetch("/api/supply-chain/partners").then(r => r.json()).catch(() => []) });
+  const { data: shipments = [], isLoading: shipmentsLoading } = useQuery<any[]>({ queryKey: ["/api/supply-chain/shipments"], queryFn: () => fetch("/api/supply-chain/shipments").then(r => r.json()).catch(() => []) });
 
   const createPartnerMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/supply-chain/partners", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/supply-chain/partners", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/supply-chain/partners"] });
       setNewPartner({ name: "", type: "Supplier", location: "" });
       toast({ title: "Partner created" });
-    }
+    },
   });
 
   const deletePartnerMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/supply-chain/partners/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/supply-chain/partners/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/supply-chain/partners"] });
       toast({ title: "Partner deleted" });
-    }
+    },
   });
 
   const createShipmentMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/supply-chain/shipments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/supply-chain/shipments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/supply-chain/shipments"] });
       setNewShipment({ number: "", status: "pending", destination: "" });
       toast({ title: "Shipment created" });
-    }
+    },
   });
 
   const deleteShipmentMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/supply-chain/shipments/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/supply-chain/shipments/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/supply-chain/shipments"] });
       toast({ title: "Shipment deleted" });
-    }
+    },
   });
 
   const tabs = [
-    { id: "partners", label: "Partners", icon: Users, count: partners.length }
-    { id: "shipments", label: "Shipments", icon: Truck, count: shipments.length }
+    { id: "partners", label: "Partners", icon: Users, count: partners.length },
+    { id: "shipments", label: "Shipments", icon: Truck, count: shipments.length },
   ];
 
   return (

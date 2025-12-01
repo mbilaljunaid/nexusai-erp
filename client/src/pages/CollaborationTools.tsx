@@ -9,8 +9,8 @@ export default function CollaborationTools() {
       </div>
       <div className="grid gap-4">
         {[
-          { tool: "Shared Workspaces", count: "8", active: "5" }
-          { tool: "Document Sharing", files: "145", shared: "89" }
+          { tool: "Shared Workspaces", count: "8", active: "5" },
+          { tool: "Document Sharing", files: "145", shared: "89" },
         ].map((t) => (
           <Card key={t.tool}>
             <CardContent className="pt-6">

@@ -14,34 +14,34 @@ export default function BudgetPlanning() {
   const [newBudget, setNewBudget] = useState({ planName: "", department: "Finance", budgetAmount: "", forecastAmount: "" });
 
   const { data: budgets = [], isLoading } = useQuery({
-    queryKey: ["/api/budgets"]
-    
+    queryKey: ["/api/budgets"],
+    queryFn: () => fetch("/api/budgets").then(r => r.json()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/budgets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/budgets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/budgets"] });
       setNewBudget({ planName: "", department: "Finance", budgetAmount: "", forecastAmount: "" });
       toast({ title: "Budget plan created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fetch(`/api/budgets/${id}`, { method: "DELETE" })
+    mutationFn: (id) => fetch(`/api/budgets/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/budgets"] });
       toast({ title: "Budget deleted" });
-    }
+    },
   });
 
   const totalBudgeted = budgets.reduce((sum: number, b: any) => sum + parseFloat(b.budgetAmount || "0"), 0);
   const totalForecasted = budgets.reduce((sum: number, b: any) => sum + parseFloat(b.forecastAmount || "0"), 0);
   const stats = {
-    total: budgets.length
-    active: budgets.filter((b: any) => b.status === "active").length
-    totalBudgeted
-    avgVariance: budgets.length > 0 && totalBudgeted > 0 ? ((totalForecasted / totalBudgeted) * 100).toFixed(1) : "0"
+    total: budgets.length,
+    active: budgets.filter((b: any) => b.status === "active").length,
+    totalBudgeted,
+    avgVariance: budgets.length > 0 && totalBudgeted > 0 ? ((totalForecasted / totalBudgeted) * 100).toFixed(1) : "0",
   };
 
   return (

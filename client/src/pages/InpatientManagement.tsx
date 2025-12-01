@@ -13,25 +13,25 @@ export default function InpatientManagement() {
   const [newAdmit, setNewAdmit] = useState({ admissionId: "", patientId: "", bedId: "", status: "admitted" });
 
   const { data: admissions = [], isLoading } = useQuery({
-    queryKey: ["/api/healthcare-admissions"]
-    
+    queryKey: ["/api/healthcare-admissions"],
+    queryFn: () => fetch("/api/healthcare-admissions").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/healthcare-admissions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/healthcare-admissions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-admissions"] });
       setNewAdmit({ admissionId: "", patientId: "", bedId: "", status: "admitted" });
       toast({ title: "Admission recorded" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/healthcare-admissions/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/healthcare-admissions/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-admissions"] });
       toast({ title: "Admission deleted" });
-    }
+    },
   });
 
   const active = admissions.filter((a: any) => a.status === "admitted").length;

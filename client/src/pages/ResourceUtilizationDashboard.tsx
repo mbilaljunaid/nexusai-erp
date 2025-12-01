@@ -4,10 +4,10 @@ import { BarChart3 } from "lucide-react";
 
 export default function ResourceUtilizationDashboard() {
   const resources = [
-    { id: "ru1", name: "Alice (Developer)", allocated: "100%", scheduled: "40h", used: "38h", utilization: "95%", status: "optimal" }
-    { id: "ru2", name: "Bob (Designer)", allocated: "75%", scheduled: "30h", used: "25h", utilization: "83%", status: "optimal" }
-    { id: "ru3", name: "Carol (Manager)", allocated: "50%", scheduled: "20h", used: "18h", utilization: "90%", status: "optimal" }
-    { id: "ru4", name: "David (Developer)", allocated: "120%", scheduled: "48h", used: "45h", utilization: "94%", status: "over-allocated" }
+    { id: "ru1", name: "Alice (Developer)", allocated: "100%", scheduled: "40h", used: "38h", utilization: "95%", status: "optimal" },
+    { id: "ru2", name: "Bob (Designer)", allocated: "75%", scheduled: "30h", used: "25h", utilization: "83%", status: "optimal" },
+    { id: "ru3", name: "Carol (Manager)", allocated: "50%", scheduled: "20h", used: "18h", utilization: "90%", status: "optimal" },
+    { id: "ru4", name: "David (Developer)", allocated: "120%", scheduled: "48h", used: "45h", utilization: "94%", status: "over-allocated" },
   ];
 
   return (

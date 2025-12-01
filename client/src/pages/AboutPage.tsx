@@ -44,12 +44,12 @@ export default function AboutPage() {
         <h2 className="text-4xl font-bold mb-12 text-center">Why Choose NexusAI?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
-            { title: "Built for Speed", desc: "Implement in weeks, not months. Pre-configured for your industry." }
-            { title: "AI at Core", desc: "Real-time insights, predictive analytics, and intelligent automation." }
-            { title: "40+ Industries", desc: "Specialized modules for Automotive, Banking, Healthcare, Retail, and more." }
-            { title: "One Platform", desc: "ERP, CRM, HR, Finance, Projects, and more - all in one place." }
-            { title: "Transparent Pricing", desc: "No hidden fees. Scale-as-you-grow pricing model." }
-            { title: "Enterprise Security", desc: "RBAC, multi-tenant isolation, audit logging, SOC 2 compliant." }
+            { title: "Built for Speed", desc: "Implement in weeks, not months. Pre-configured for your industry." },
+            { title: "AI at Core", desc: "Real-time insights, predictive analytics, and intelligent automation." },
+            { title: "40+ Industries", desc: "Specialized modules for Automotive, Banking, Healthcare, Retail, and more." },
+            { title: "One Platform", desc: "ERP, CRM, HR, Finance, Projects, and more - all in one place." },
+            { title: "Transparent Pricing", desc: "No hidden fees. Scale-as-you-grow pricing model." },
+            { title: "Enterprise Security", desc: "RBAC, multi-tenant isolation, audit logging, SOC 2 compliant." },
           ].map((item, i) => (
             <div key={i} className="public-accent-border border-l-4 pl-6">
               <h3 className="text-xl font-bold mb-2">{item.title}</h3>

@@ -6,20 +6,22 @@ import { Check } from "lucide-react";
 
 export default function BillingPlans() {
   const { data: plans = [] } = useQuery({
-    queryKey: ["/api/plans"]
+    queryKey: ["/api/plans"],
+    queryFn: () => fetch("/api/plans").then(r => r.json())
   });
 
   const { data: currentSub = [] } = useQuery({
-    queryKey: ["/api/subscriptions/tenant1"]
+    queryKey: ["/api/subscriptions/tenant1"],
+    queryFn: () => fetch("/api/subscriptions/tenant1").then(r => r.json())
   });
 
   const subscribeMutation = useMutation({
     mutationFn: (planId: string) => 
       fetch("/api/subscriptions", { 
-        method: "POST"
-        headers: { "Content-Type": "application/json" }
+        method: "POST", 
+        headers: { "Content-Type": "application/json" }, 
         body: JSON.stringify({ tenantId: "tenant1", planId })
-      }).then(r => r.json())
+      }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/subscriptions/tenant1"] });
     }

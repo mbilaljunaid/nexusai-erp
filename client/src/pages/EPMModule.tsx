@@ -12,10 +12,10 @@ export default function EPMModule() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
-    { id: "budget", label: "Budget", icon: DollarSign, color: "text-green-500" }
-    { id: "forecast", label: "Forecast", icon: TrendingUp, color: "text-purple-500" }
-    { id: "scenario", label: "Scenario", icon: Target, color: "text-orange-500" }
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "budget", label: "Budget", icon: DollarSign, color: "text-green-500" },
+    { id: "forecast", label: "Forecast", icon: TrendingUp, color: "text-purple-500" },
+    { id: "scenario", label: "Scenario", icon: Target, color: "text-orange-500" },
   ];
 
   return (

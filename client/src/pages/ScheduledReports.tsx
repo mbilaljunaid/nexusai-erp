@@ -11,9 +11,9 @@ export default function ScheduledReports() {
 
       <div className="grid gap-4">
         {[
-          { name: "Daily Sales Report", frequency: "Daily", time: "9:00 AM", recipients: "sales@company.com", status: "Active" }
-          { name: "Weekly Analytics", frequency: "Weekly", time: "Monday 8:00 AM", recipients: "team@company.com", status: "Active" }
-          { name: "Monthly Summary", frequency: "Monthly", time: "1st of month 10:00 AM", recipients: "exec@company.com", status: "Active" }
+          { name: "Daily Sales Report", frequency: "Daily", time: "9:00 AM", recipients: "sales@company.com", status: "Active" },
+          { name: "Weekly Analytics", frequency: "Weekly", time: "Monday 8:00 AM", recipients: "team@company.com", status: "Active" },
+          { name: "Monthly Summary", frequency: "Monthly", time: "1st of month 10:00 AM", recipients: "exec@company.com", status: "Active" },
         ].map((report) => (
           <Card key={report.name}>
             <CardContent className="pt-6">

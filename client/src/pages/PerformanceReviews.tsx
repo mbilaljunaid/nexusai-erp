@@ -14,25 +14,25 @@ export default function PerformanceReviews() {
   const [newReview, setNewReview] = useState({ employee: "", rating: "4.0", status: "In Progress" });
 
   const { data: reviews = [], isLoading } = useQuery({
-    queryKey: ["/api/hr/performance-reviews"]
-    
+    queryKey: ["/api/hr/performance-reviews"],
+    queryFn: () => fetch("/api/hr/performance-reviews").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hr/performance-reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/hr/performance-reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hr/performance-reviews"] });
       setNewReview({ employee: "", rating: "4.0", status: "In Progress" });
       toast({ title: "Performance review created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hr/performance-reviews/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/hr/performance-reviews/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hr/performance-reviews"] });
       toast({ title: "Review deleted" });
-    }
+    },
   });
 
   return (

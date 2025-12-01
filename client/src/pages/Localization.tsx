@@ -10,8 +10,8 @@ export default function Localization() {
       </div>
       <div className="grid gap-4">
         {[
-          { lang: "English", coverage: "100%", status: "Active" }
-          { lang: "Spanish", coverage: "95%", status: "Active" }
+          { lang: "English", coverage: "100%", status: "Active" },
+          { lang: "Spanish", coverage: "95%", status: "Active" },
         ].map((l) => (
           <Card key={l.lang}>
             <CardContent className="pt-6">

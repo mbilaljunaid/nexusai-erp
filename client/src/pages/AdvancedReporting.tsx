@@ -9,8 +9,8 @@ export default function AdvancedReporting() {
       </div>
       <div className="grid gap-4">
         {[
-          { report: "Executive Summary", frequency: "Monthly", status: "Active" }
-          { report: "Sales Deep-Dive", frequency: "Weekly", status: "Active" }
+          { report: "Executive Summary", frequency: "Monthly", status: "Active" },
+          { report: "Sales Deep-Dive", frequency: "Weekly", status: "Active" },
         ].map((r) => (
           <Card key={r.report}>
             <CardContent className="pt-6">

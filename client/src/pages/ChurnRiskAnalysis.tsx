@@ -14,25 +14,25 @@ export default function ChurnRiskAnalysis() {
   const [newRisk, setNewRisk] = useState({ customer: "", risk: "Medium", score: "" });
 
   const { data: risks = [], isLoading } = useQuery({
-    queryKey: ["/api/churn-risks"]
-    
+    queryKey: ["/api/churn-risks"],
+    queryFn: () => fetch("/api/churn-risks").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/churn-risks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/churn-risks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/churn-risks"] });
       setNewRisk({ customer: "", risk: "Medium", score: "" });
       toast({ title: "Churn risk added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/churn-risks/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/churn-risks/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/churn-risks"] });
       toast({ title: "Churn risk deleted" });
-    }
+    },
   });
 
   return (

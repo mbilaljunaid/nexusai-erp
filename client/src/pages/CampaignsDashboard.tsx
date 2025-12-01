@@ -14,25 +14,25 @@ export default function CampaignsDashboard() {
   const [newCampaign, setNewCampaign] = useState({ name: "", type: "Email", budget: "", status: "active" });
 
   const { data: campaigns = [], isLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/marketing/campaigns"]
-    
+    queryKey: ["/api/marketing/campaigns"],
+    queryFn: () => fetch("/api/marketing/campaigns").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/marketing/campaigns", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/marketing/campaigns", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/marketing/campaigns"] });
       setNewCampaign({ name: "", type: "Email", budget: "", status: "active" });
       toast({ title: "Campaign created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/marketing/campaigns/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/marketing/campaigns/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/marketing/campaigns"] });
       toast({ title: "Campaign deleted" });
-    }
+    },
   });
 
   const active = campaigns.filter((c: any) => c.status === "active").length;

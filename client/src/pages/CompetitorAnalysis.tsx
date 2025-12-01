@@ -9,8 +9,8 @@ export default function CompetitorAnalysis() {
       </div>
       <div className="grid gap-4">
         {[
-          { competitor: "Competitor A", marketShare: "28%", trend: "↑" }
-          { competitor: "Competitor B", marketShare: "22%", trend: "↓" }
+          { competitor: "Competitor A", marketShare: "28%", trend: "↑" },
+          { competitor: "Competitor B", marketShare: "22%", trend: "↓" },
         ].map((c) => (
           <Card key={c.competitor}>
             <CardContent className="pt-6">

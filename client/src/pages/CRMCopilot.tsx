@@ -17,21 +17,21 @@ interface CopilotChat {
 export default function CRMCopilot() {
   const [activeNav, setActiveNav] = useState("chat");
   const { data: chats = [] } = useQuery<CopilotChat[]>({
-    queryKey: ["/api/copilot/crm"]
-    retry: false
+    queryKey: ["/api/copilot/crm"],
+    retry: false,
   });
 
   const navItems = [
-    { id: "chat", label: "Chat", icon: MessageSquare, color: "text-blue-500" }
-    { id: "suggestions", label: "Suggestions", icon: Sparkles, color: "text-purple-500" }
-    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-green-500" }
+    { id: "chat", label: "Chat", icon: MessageSquare, color: "text-blue-500" },
+    { id: "suggestions", label: "Suggestions", icon: Sparkles, color: "text-purple-500" },
+    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-green-500" },
   ];
 
   const stats = {
-    total: chats.length
-    insights: chats.filter((c: any) => c.type === "insight").length
-    recommendations: chats.filter((c: any) => c.type === "recommendation").length
-    alerts: chats.filter((c: any) => c.type === "alert").length
+    total: chats.length,
+    insights: chats.filter((c: any) => c.type === "insight").length,
+    recommendations: chats.filter((c: any) => c.type === "recommendation").length,
+    alerts: chats.filter((c: any) => c.type === "alert").length,
   };
 
   return (

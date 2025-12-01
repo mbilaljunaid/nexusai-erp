@@ -5,18 +5,18 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { SystemHealth } from "@/components/SystemHealth";
 import { 
-  Activity
-  Database
-  Cpu
-  HardDrive
-  Wifi
-  Shield
-  RefreshCw
-  CheckCircle2
-  AlertTriangle
-  XCircle
-  Sparkles
-  Clock
+  Activity, 
+  Database, 
+  Cpu, 
+  HardDrive,
+  Wifi,
+  Shield,
+  RefreshCw,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Sparkles,
+  Clock,
   Zap
 } from "lucide-react";
 
@@ -41,33 +41,33 @@ export default function Health() {
 
   // todo: remove mock functionality
   const services: ServiceStatus[] = [
-    { name: "API Gateway", status: "operational", latency: 45, uptime: 99.99, lastChecked: "1 min ago" }
-    { name: "Database", status: "operational", latency: 23, uptime: 99.95, lastChecked: "1 min ago" }
-    { name: "AI Engine", status: "operational", latency: 156, uptime: 99.87, lastChecked: "1 min ago" }
-    { name: "File Storage", status: "degraded", latency: 320, uptime: 98.5, lastChecked: "1 min ago" }
-    { name: "Email Service", status: "operational", latency: 89, uptime: 99.92, lastChecked: "2 min ago" }
-    { name: "Cache Layer", status: "operational", latency: 12, uptime: 99.99, lastChecked: "1 min ago" }
+    { name: "API Gateway", status: "operational", latency: 45, uptime: 99.99, lastChecked: "1 min ago" },
+    { name: "Database", status: "operational", latency: 23, uptime: 99.95, lastChecked: "1 min ago" },
+    { name: "AI Engine", status: "operational", latency: 156, uptime: 99.87, lastChecked: "1 min ago" },
+    { name: "File Storage", status: "degraded", latency: 320, uptime: 98.5, lastChecked: "1 min ago" },
+    { name: "Email Service", status: "operational", latency: 89, uptime: 99.92, lastChecked: "2 min ago" },
+    { name: "Cache Layer", status: "operational", latency: 12, uptime: 99.99, lastChecked: "1 min ago" },
   ];
 
   const diagnosticLogs: DiagnosticLog[] = [
-    { id: "1", timestamp: "2024-11-29 14:32:15", type: "success", message: "All critical services operational" }
-    { id: "2", timestamp: "2024-11-29 14:30:00", type: "warning", message: "File Storage latency elevated", details: "Latency increased to 320ms, threshold is 200ms" }
-    { id: "3", timestamp: "2024-11-29 14:25:00", type: "info", message: "Automatic cache cleanup completed", details: "Freed 2.3GB of cached data" }
-    { id: "4", timestamp: "2024-11-29 14:00:00", type: "success", message: "Daily health check passed" }
-    { id: "5", timestamp: "2024-11-29 13:45:00", type: "info", message: "AI model updated to version 2.4.1" }
+    { id: "1", timestamp: "2024-11-29 14:32:15", type: "success", message: "All critical services operational" },
+    { id: "2", timestamp: "2024-11-29 14:30:00", type: "warning", message: "File Storage latency elevated", details: "Latency increased to 320ms, threshold is 200ms" },
+    { id: "3", timestamp: "2024-11-29 14:25:00", type: "info", message: "Automatic cache cleanup completed", details: "Freed 2.3GB of cached data" },
+    { id: "4", timestamp: "2024-11-29 14:00:00", type: "success", message: "Daily health check passed" },
+    { id: "5", timestamp: "2024-11-29 13:45:00", type: "info", message: "AI model updated to version 2.4.1" },
   ];
 
   const statusConfig = {
-    operational: { icon: CheckCircle2, color: "text-green-500", bg: "bg-green-500/10" }
-    degraded: { icon: AlertTriangle, color: "text-yellow-500", bg: "bg-yellow-500/10" }
-    down: { icon: XCircle, color: "text-red-500", bg: "bg-red-500/10" }
+    operational: { icon: CheckCircle2, color: "text-green-500", bg: "bg-green-500/10" },
+    degraded: { icon: AlertTriangle, color: "text-yellow-500", bg: "bg-yellow-500/10" },
+    down: { icon: XCircle, color: "text-red-500", bg: "bg-red-500/10" },
   };
 
   const logTypeConfig = {
-    info: { color: "text-blue-500", bg: "bg-blue-500/10" }
-    warning: { color: "text-yellow-500", bg: "bg-yellow-500/10" }
-    error: { color: "text-red-500", bg: "bg-red-500/10" }
-    success: { color: "text-green-500", bg: "bg-green-500/10" }
+    info: { color: "text-blue-500", bg: "bg-blue-500/10" },
+    warning: { color: "text-yellow-500", bg: "bg-yellow-500/10" },
+    error: { color: "text-red-500", bg: "bg-red-500/10" },
+    success: { color: "text-green-500", bg: "bg-green-500/10" },
   };
 
   const runDiagnostics = () => {

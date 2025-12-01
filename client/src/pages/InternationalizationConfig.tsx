@@ -9,9 +9,9 @@ export default function InternationalizationConfig() {
       </div>
       <div className="grid gap-4">
         {[
-          { lang: "English", region: "US", coverage: "100%" }
-          { lang: "Spanish", region: "ES", coverage: "100%" }
-          { lang: "French", region: "FR", coverage: "95%" }
+          { lang: "English", region: "US", coverage: "100%" },
+          { lang: "Spanish", region: "ES", coverage: "100%" },
+          { lang: "French", region: "FR", coverage: "95%" },
         ].map((l) => (
           <Card key={l.lang}>
             <CardContent className="pt-6">

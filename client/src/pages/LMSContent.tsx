@@ -5,8 +5,8 @@ import { Plus, BookMarked } from "lucide-react";
 
 export default function LMSContent() {
   const modules = [
-    { id: "MOD001", name: "Introduction to Data Structures", course: "CSE101", lessons: 12, status: "PUBLISHED" }
-    { id: "MOD002", name: "HTML & CSS Basics", course: "CSE102", lessons: 8, status: "DRAFT" }
+    { id: "MOD001", name: "Introduction to Data Structures", course: "CSE101", lessons: 12, status: "PUBLISHED" },
+    { id: "MOD002", name: "HTML & CSS Basics", course: "CSE102", lessons: 8, status: "DRAFT" },
   ];
   return (
     <div className="space-y-6 p-6">

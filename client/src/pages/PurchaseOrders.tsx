@@ -13,23 +13,23 @@ export default function PurchaseOrders() {
   const { data: pos = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/purchase-orders"] });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("POST", "/api/procurement/purchase-orders", data)
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/procurement/purchase-orders"] })
+    mutationFn: (data: any) => apiRequest("POST", "/api/procurement/purchase-orders", data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/procurement/purchase-orders"] }),
   });
 
   const navigationItems = [
-    { id: "list", label: "POs", icon: ShoppingCart, badge: pos.length, color: "blue" as const }
-    { id: "create", label: "Create PO", icon: Plus, color: "green" as const }
-    { id: "approvals", label: "For Approval", icon: FileText, badge: pos.filter((p: any) => p.status === "draft").length, color: "orange" as const }
-    { id: "analytics", label: "Analytics", icon: FileText, color: "purple" as const }
+    { id: "list", label: "POs", icon: ShoppingCart, badge: pos.length, color: "blue" as const },
+    { id: "create", label: "Create PO", icon: Plus, color: "green" as const },
+    { id: "approvals", label: "For Approval", icon: FileText, badge: pos.filter((p: any) => p.status === "draft").length, color: "orange" as const },
+    { id: "analytics", label: "Analytics", icon: FileText, color: "purple" as const },
   ];
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    draft: "default"
-    approved: "secondary"
-    sent: "secondary"
-    received: "default"
-    closed: "outline"
+    draft: "default",
+    approved: "secondary",
+    sent: "secondary",
+    received: "default",
+    closed: "outline",
   };
 
   return (

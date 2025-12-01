@@ -8,19 +8,19 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import {
-  Select
-  SelectContent
-  SelectItem
-  SelectTrigger
-  SelectValue
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { 
-  User
-  Bell
-  Shield
-  Sparkles
-  Palette
-  Save
+  User, 
+  Bell, 
+  Shield, 
+  Sparkles, 
+  Palette,
+  Save,
   Mail
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
@@ -29,25 +29,25 @@ export default function Settings() {
   const { theme, setTheme } = useTheme();
   const [activeNav, setActiveNav] = useState("profile");
   const [notifications, setNotifications] = useState({
-    email: true
-    push: true
-    aiInsights: true
-    taskReminders: true
-    leadAlerts: true
+    email: true,
+    push: true,
+    aiInsights: true,
+    taskReminders: true,
+    leadAlerts: true,
   });
 
   const [aiSettings, setAiSettings] = useState({
-    autoScoring: true
-    taskSuggestions: true
-    emailDrafts: true
-    analyticsInsights: true
+    autoScoring: true,
+    taskSuggestions: true,
+    emailDrafts: true,
+    analyticsInsights: true,
   });
 
   const navItems = [
-    { id: "profile", label: "Profile", icon: User, color: "text-blue-500" }
-    { id: "notifications", label: "Notifications", icon: Bell, color: "text-green-500" }
-    { id: "ai", label: "AI Settings", icon: Sparkles, color: "text-yellow-500" }
-    { id: "appearance", label: "Appearance", icon: Palette, color: "text-purple-500" }
+    { id: "profile", label: "Profile", icon: User, color: "text-blue-500" },
+    { id: "notifications", label: "Notifications", icon: Bell, color: "text-green-500" },
+    { id: "ai", label: "AI Settings", icon: Sparkles, color: "text-yellow-500" },
+    { id: "appearance", label: "Appearance", icon: Palette, color: "text-purple-500" },
   ];
 
   return (

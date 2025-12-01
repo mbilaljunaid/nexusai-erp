@@ -14,25 +14,25 @@ export default function BulkInventoryManagement() {
   const [newItem, setNewItem] = useState({ materialId: "", containerType: "tank", quantity: "1000", status: "available" });
 
   const { data: items = [], isLoading } = useQuery({
-    queryKey: ["/api/bulk-inventory"]
-    
+    queryKey: ["/api/bulk-inventory"],
+    queryFn: () => fetch("/api/bulk-inventory").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/bulk-inventory", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/bulk-inventory", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/bulk-inventory"] });
       setNewItem({ materialId: "", containerType: "tank", quantity: "1000", status: "available" });
       toast({ title: "Inventory created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/bulk-inventory/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/bulk-inventory/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/bulk-inventory"] });
       toast({ title: "Item deleted" });
-    }
+    },
   });
 
   const available = items.filter((i: any) => i.status === "available").length;

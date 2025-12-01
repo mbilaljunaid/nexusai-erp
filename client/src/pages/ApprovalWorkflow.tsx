@@ -22,31 +22,31 @@ interface ApprovalRequest {
 export default function ApprovalWorkflow() {
   const [activeNav, setActiveNav] = useState("pending");
   const { data: requests = [] } = useQuery<ApprovalRequest[]>({
-    queryKey: ["/api/approvals"]
-    retry: false
+    queryKey: ["/api/approvals"],
+    retry: false,
   });
 
   const approveMutation = useMutation({
-    mutationFn: (id: string) => apiRequest("POST", `/api/approvals/${id}/approve`, {})
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/approvals"] })
+    mutationFn: (id: string) => apiRequest("POST", `/api/approvals/${id}/approve`, {}),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/approvals"] }),
   });
 
   const rejectMutation = useMutation({
-    mutationFn: (id: string) => apiRequest("POST", `/api/approvals/${id}/reject`, {})
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/approvals"] })
+    mutationFn: (id: string) => apiRequest("POST", `/api/approvals/${id}/reject`, {}),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/approvals"] }),
   });
 
   const stats = {
-    pending: requests.filter(r => r.status === "pending").length
-    approved: requests.filter(r => r.status === "approved").length
-    rejected: requests.filter(r => r.status === "rejected").length
-    totalAmount: requests.reduce((sum, r) => sum + parseFloat(r.amount || "0"), 0)
+    pending: requests.filter(r => r.status === "pending").length,
+    approved: requests.filter(r => r.status === "approved").length,
+    rejected: requests.filter(r => r.status === "rejected").length,
+    totalAmount: requests.reduce((sum, r) => sum + parseFloat(r.amount || "0"), 0),
   };
 
   const navItems = [
-    { id: "pending", label: `Pending (${stats.pending})`, icon: Clock, color: "text-yellow-500" }
-    { id: "approved", label: `Approved (${stats.approved})`, icon: CheckCircle2, color: "text-green-500" }
-    { id: "rejected", label: `Rejected (${stats.rejected})`, icon: XCircle, color: "text-red-500" }
+    { id: "pending", label: `Pending (${stats.pending})`, icon: Clock, color: "text-yellow-500" },
+    { id: "approved", label: `Approved (${stats.approved})`, icon: CheckCircle2, color: "text-green-500" },
+    { id: "rejected", label: `Rejected (${stats.rejected})`, icon: XCircle, color: "text-red-500" },
   ];
 
   const getIcon = (type: string) => {

@@ -5,8 +5,8 @@ import { Plus, Clock } from "lucide-react";
 
 export default function EducationAttendance() {
   const attendance = [
-    { id: "ATT001", student: "Rajesh Kumar", course: "CSE101", date: "2025-01-21", status: "PRESENT" }
-    { id: "ATT002", student: "Priya Singh", course: "CSE101", date: "2025-01-21", status: "ABSENT" }
+    { id: "ATT001", student: "Rajesh Kumar", course: "CSE101", date: "2025-01-21", status: "PRESENT" },
+    { id: "ATT002", student: "Priya Singh", course: "CSE101", date: "2025-01-21", status: "ABSENT" },
   ];
   return (
     <div className="space-y-6 p-6">

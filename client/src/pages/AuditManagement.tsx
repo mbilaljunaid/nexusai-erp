@@ -14,41 +14,41 @@ export default function AuditManagement() {
   const [newAudit, setNewAudit] = useState({ auditType: "Financial", module: "Finance", findings: "", severity: "medium" });
 
   const { data: audits = [], isLoading } = useQuery({
-    queryKey: ["/api/audits"]
-    
+    queryKey: ["/api/audits"],
+    queryFn: () => fetch("/api/audits").then(r => r.json()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/audits", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/audits", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/audits"] });
       setNewAudit({ auditType: "Financial", module: "Finance", findings: "", severity: "medium" });
       toast({ title: "Audit record created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/audits/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/audits/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/audits"] });
       toast({ title: "Audit deleted" });
-    }
+    },
   });
 
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) =>
-      fetch(`/api/audits/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) })
+      fetch(`/api/audits/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/audits"] });
       toast({ title: "Audit status updated" });
-    }
+    },
   });
 
   const metrics = {
-    total: audits.length
-    closed: audits.filter((a: any) => a.status === "closed").length
-    inProgress: audits.filter((a: any) => a.status === "in-progress").length
-    open: audits.filter((a: any) => a.status === "open").length
+    total: audits.length,
+    closed: audits.filter((a: any) => a.status === "closed").length,
+    inProgress: audits.filter((a: any) => a.status === "in-progress").length,
+    open: audits.filter((a: any) => a.status === "open").length,
   };
 
   return (

@@ -21,25 +21,25 @@ export default function AssetManagement() {
   const [newAsset, setNewAsset] = useState({ assetName: "", category: "Equipment", cost: "", status: "active" });
 
   const { data: assets = [], isLoading } = useQuery({
-    queryKey: ["/api/finance/fixed-assets"]
-    
+    queryKey: ["/api/finance/fixed-assets"],
+    queryFn: () => fetch("/api/finance/fixed-assets").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/finance/fixed-assets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/finance/fixed-assets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/fixed-assets"] });
       setNewAsset({ assetName: "", category: "Equipment", cost: "", status: "active" });
       toast({ title: "Asset created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/fixed-assets/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/finance/fixed-assets/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/fixed-assets"] });
       toast({ title: "Asset deleted" });
-    }
+    },
   });
 
   const totalValue = assets.reduce((sum: number, a: any) => sum + parseFloat(a.cost || 0), 0);

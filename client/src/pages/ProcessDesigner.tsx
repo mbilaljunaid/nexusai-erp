@@ -14,25 +14,25 @@ export default function ProcessDesigner() {
   const [newProcess, setNewProcess] = useState({ name: "", module: "Finance", status: "draft", owner: "" });
 
   const { data: processes = [], isLoading } = useQuery({
-    queryKey: ["/api/processes"]
-    
+    queryKey: ["/api/processes"],
+    queryFn: () => fetch("/api/processes").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/processes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/processes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/processes"] });
       setNewProcess({ name: "", module: "Finance", status: "draft", owner: "" });
       toast({ title: "Process created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/processes/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/processes/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/processes"] });
       toast({ title: "Process deleted" });
-    }
+    },
   });
 
   return (

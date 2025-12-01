@@ -10,8 +10,8 @@ export default function Migrations() {
       </div>
       <div className="grid gap-4">
         {[
-          { source: "Legacy System", target: "NexusAI", status: "Completed", pct: "100%" }
-          { source: "Salesforce", target: "NexusAI", status: "In Progress", pct: "67%" }
+          { source: "Legacy System", target: "NexusAI", status: "Completed", pct: "100%" },
+          { source: "Salesforce", target: "NexusAI", status: "In Progress", pct: "67%" },
         ].map((m) => (
           <Card key={m.source}>
             <CardContent className="pt-6">

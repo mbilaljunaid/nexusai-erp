@@ -11,25 +11,25 @@ export default function ThreeWayMatch() {
   const { data: matches = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/three-way-matches"] });
 
   const navigationItems = [
-    { id: "all", label: "All Matches", icon: FileCheck, badge: matches.length, color: "blue" as const }
-    { id: "matched", label: "Matched", icon: CheckCircle, badge: matches.filter((m: any) => m.matchStatus === "matched").length, color: "green" as const }
-    { id: "exceptions", label: "Exceptions", icon: AlertTriangle, badge: matches.filter((m: any) => m.matchStatus !== "matched").length, color: "red" as const }
-    { id: "pending", label: "Pending Approval", icon: FileCheck, badge: matches.filter((m: any) => m.approvalRequired).length, color: "orange" as const }
+    { id: "all", label: "All Matches", icon: FileCheck, badge: matches.length, color: "blue" as const },
+    { id: "matched", label: "Matched", icon: CheckCircle, badge: matches.filter((m: any) => m.matchStatus === "matched").length, color: "green" as const },
+    { id: "exceptions", label: "Exceptions", icon: AlertTriangle, badge: matches.filter((m: any) => m.matchStatus !== "matched").length, color: "red" as const },
+    { id: "pending", label: "Pending Approval", icon: FileCheck, badge: matches.filter((m: any) => m.approvalRequired).length, color: "orange" as const },
   ];
 
   const matchStatusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    matched: "default"
-    variance_qty: "secondary"
-    variance_price: "secondary"
-    variance_both: "destructive"
-    exception: "destructive"
+    matched: "default",
+    variance_qty: "secondary",
+    variance_price: "secondary",
+    variance_both: "destructive",
+    exception: "destructive",
   };
 
   const filteredMatches = {
-    all: matches
-    matched: matches.filter((m: any) => m.matchStatus === "matched")
-    exceptions: matches.filter((m: any) => m.matchStatus !== "matched")
-    pending: matches.filter((m: any) => m.approvalRequired)
+    all: matches,
+    matched: matches.filter((m: any) => m.matchStatus === "matched"),
+    exceptions: matches.filter((m: any) => m.matchStatus !== "matched"),
+    pending: matches.filter((m: any) => m.approvalRequired),
   }[activeNav] || [];
 
   return (

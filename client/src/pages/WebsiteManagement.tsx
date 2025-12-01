@@ -14,32 +14,32 @@ export default function WebsiteManagement() {
   const [newPage, setNewPage] = useState({ pageName: "", pageUrl: "", status: "draft" });
 
   const { data: pages = [], isLoading } = useQuery({
-    queryKey: ["/api/website-pages"]
-    
+    queryKey: ["/api/website-pages"],
+    queryFn: () => fetch("/api/website-pages").then(r => r.json()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/website-pages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/website-pages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/website-pages"] });
       setNewPage({ pageName: "", pageUrl: "", status: "draft" });
       toast({ title: "Page created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/website-pages/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/website-pages/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/website-pages"] });
       toast({ title: "Page deleted" });
-    }
+    },
   });
 
   const metrics = {
-    total: pages.length
-    published: pages.filter((p: any) => p.status === "published").length
-    draft: pages.filter((p: any) => p.status === "draft").length
-    traffic: "12.5K"
+    total: pages.length,
+    published: pages.filter((p: any) => p.status === "published").length,
+    draft: pages.filter((p: any) => p.status === "draft").length,
+    traffic: "12.5K",
   };
 
   return (

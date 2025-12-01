@@ -58,9 +58,9 @@ export default function ComplianceModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { framework: "SOC 2 Type II", status: "compliant", lastAudit: "Q3 2023" }
-              { framework: "ISO 27001", status: "in-progress", lastAudit: "Q4 2023" }
-              { framework: "GDPR", status: "compliant", lastAudit: "Q1 2024" }
+              { framework: "SOC 2 Type II", status: "compliant", lastAudit: "Q3 2023" },
+              { framework: "ISO 27001", status: "in-progress", lastAudit: "Q4 2023" },
+              { framework: "GDPR", status: "compliant", lastAudit: "Q1 2024" },
             ].map((f) => (
               <div key={f.framework} className="p-3 border rounded">
                 <div className="flex justify-between items-start mb-1">
@@ -81,9 +81,9 @@ export default function ComplianceModule() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { risk: "Data Breach", likelihood: "Medium", impact: "Critical" }
-              { risk: "System Downtime", likelihood: "Low", impact: "High" }
-              { risk: "Compliance Violation", likelihood: "Low", impact: "Critical" }
+              { risk: "Data Breach", likelihood: "Medium", impact: "Critical" },
+              { risk: "System Downtime", likelihood: "Low", impact: "High" },
+              { risk: "Compliance Violation", likelihood: "Low", impact: "Critical" },
             ].map((r) => (
               <div key={r.risk} className="p-3 border rounded">
                 <p className="font-medium text-sm">{r.risk}</p>

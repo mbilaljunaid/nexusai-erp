@@ -13,25 +13,25 @@ export default function FBInventoryColdChain() {
   const [newItem, setNewItem] = useState({ itemId: "", itemName: "", quantity: "0", tempZone: "chilled" });
 
   const { data: items = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-inventory"]
-    
+    queryKey: ["/api/fb-inventory"],
+    queryFn: () => fetch("/api/fb-inventory").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/fb-inventory", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/fb-inventory", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-inventory"] });
       setNewItem({ itemId: "", itemName: "", quantity: "0", tempZone: "chilled" });
       toast({ title: "Inventory item added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/fb-inventory/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/fb-inventory/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/fb-inventory"] });
       toast({ title: "Item deleted" });
-    }
+    },
   });
 
   const chilled = items.filter((i: any) => i.tempZone === "chilled").length;

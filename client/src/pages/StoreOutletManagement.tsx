@@ -13,25 +13,25 @@ export default function StoreOutletManagement() {
   const [newStore, setNewStore] = useState({ storeCode: "", storeName: "", city: "", country: "" });
 
   const { data: stores = [], isLoading } = useQuery({
-    queryKey: ["/api/stores"]
-    
+    queryKey: ["/api/stores"],
+    queryFn: () => fetch("/api/stores").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/stores", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/stores", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/stores"] });
       setNewStore({ storeCode: "", storeName: "", city: "", country: "" });
       toast({ title: "Store created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/stores/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/stores/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/stores"] });
       toast({ title: "Store deleted" });
-    }
+    },
   });
 
   return (

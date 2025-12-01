@@ -14,25 +14,25 @@ export default function SupplierCollaborationPortal() {
   const [newInteraction, setNewInteraction] = useState({ supplier: "", type: "po-confirm", referenceId: "", status: "pending" });
 
   const { data: interactions = [], isLoading } = useQuery({
-    queryKey: ["/api/supplier-collab"]
-    
+    queryKey: ["/api/supplier-collab"],
+    queryFn: () => fetch("/api/supplier-collab").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/supplier-collab", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/supplier-collab", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/supplier-collab"] });
       setNewInteraction({ supplier: "", type: "po-confirm", referenceId: "", status: "pending" });
       toast({ title: "Interaction logged" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/supplier-collab/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/supplier-collab/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/supplier-collab"] });
       toast({ title: "Interaction deleted" });
-    }
+    },
   });
 
   const completed = interactions.filter((i: any) => i.status === "completed").length;

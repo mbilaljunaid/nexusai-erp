@@ -5,8 +5,8 @@ import { BarChart3 } from "lucide-react";
 
 export default function FoodBeverageBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-analytics"]
-    
+    queryKey: ["/api/fb-analytics"],
+    queryFn: () => fetch("/api/fb-analytics").then(r => r.json()).catch(() => []),
   });
 
   const totalSales = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.sales) || 0), 0);

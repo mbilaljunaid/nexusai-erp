@@ -14,31 +14,31 @@ export default function ComplianceGovernance() {
   const [newRule, setNewRule] = useState({ ruleName: "", jurisdiction: "", riskLevel: "medium" });
 
   const { data: rules = [], isLoading } = useQuery({
-    queryKey: ["/api/compliance-rules"]
-    
+    queryKey: ["/api/compliance-rules"],
+    queryFn: () => fetch("/api/compliance-rules").then(r => r.json()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => fetch("/api/compliance-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data) => fetch("/api/compliance-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance-rules"] });
       setNewRule({ ruleName: "", jurisdiction: "", riskLevel: "medium" });
       toast({ title: "Compliance rule created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fetch(`/api/compliance-rules/${id}`, { method: "DELETE" })
+    mutationFn: (id) => fetch(`/api/compliance-rules/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance-rules"] });
       toast({ title: "Rule deleted" });
-    }
+    },
   });
 
   const metrics = {
-    active: rules.filter((r: any) => r.status === "active").length
-    highRisk: rules.filter((r: any) => r.riskLevel === "high").length
-    compliance: rules.length > 0 ? Math.round(((rules.length - rules.filter((r: any) => r.riskLevel === "high").length) / rules.length) * 100) : 100
+    active: rules.filter((r: any) => r.status === "active").length,
+    highRisk: rules.filter((r: any) => r.riskLevel === "high").length,
+    compliance: rules.length > 0 ? Math.round(((rules.length - rules.filter((r: any) => r.riskLevel === "high").length) / rules.length) * 100) : 100,
   };
 
   return (

@@ -10,16 +10,16 @@ export default function Marketing() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
-    { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-purple-500" }
-    { id: "email", label: "Email", icon: Mail, color: "text-green-500" }
-    { id: "social", label: "Social Media", icon: Share2, color: "text-pink-500" }
-    { id: "leads", label: "Lead Scoring", icon: Target, color: "text-orange-500" }
-    { id: "segments", label: "Segmentation", icon: Users, color: "text-cyan-500" }
-    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-indigo-500" }
-    { id: "automation", label: "Automation", icon: Zap, color: "text-yellow-500" }
-    { id: "budget", label: "Budget", icon: PieChart, color: "text-red-500" }
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" }
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-purple-500" },
+    { id: "email", label: "Email", icon: Mail, color: "text-green-500" },
+    { id: "social", label: "Social Media", icon: Share2, color: "text-pink-500" },
+    { id: "leads", label: "Lead Scoring", icon: Target, color: "text-orange-500" },
+    { id: "segments", label: "Segmentation", icon: Users, color: "text-cyan-500" },
+    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-indigo-500" },
+    { id: "automation", label: "Automation", icon: Zap, color: "text-yellow-500" },
+    { id: "budget", label: "Budget", icon: PieChart, color: "text-red-500" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
   ];
 
   return (

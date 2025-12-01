@@ -25,38 +25,38 @@ export default function PredictiveAnalytics() {
   const [newPrediction, setNewPrediction] = useState({ modelName: "", algorithm: "regression", confidence: "0.85" });
 
   const { data: predictions = [], isLoading } = useQuery<Prediction[]>({
-    queryKey: ["/api/predictions"]
-    
+    queryKey: ["/api/predictions"],
+    queryFn: () => fetch("/api/predictions").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/predictions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/predictions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/predictions"] });
       setNewPrediction({ modelName: "", algorithm: "regression", confidence: "0.85" });
       toast({ title: "Model created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/predictions/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/predictions/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/predictions"] });
       toast({ title: "Model deleted" });
-    }
+    },
   });
 
   const stats = {
-    total: predictions.length
-    highConfidence: predictions.filter((p: any) => p.confidence >= 0.8).length
-    anomalies: predictions.filter((p: any) => p.hasAnomaly).length
-    accuracy: ((predictions.reduce((sum: number, p: any) => sum + (p.accuracy || 0), 0) / (predictions.length || 1)) * 100).toFixed(0)
+    total: predictions.length,
+    highConfidence: predictions.filter((p: any) => p.confidence >= 0.8).length,
+    anomalies: predictions.filter((p: any) => p.hasAnomaly).length,
+    accuracy: ((predictions.reduce((sum: number, p: any) => sum + (p.accuracy || 0), 0) / (predictions.length || 1)) * 100).toFixed(0),
   };
 
   const navItems = [
-    { id: "forecasts", label: "Forecasts", icon: TrendingUp, color: "text-green-500" }
-    { id: "anomalies", label: "Anomalies", icon: AlertCircle, color: "text-red-500" }
-    { id: "models", label: "Models", icon: Brain, color: "text-purple-500" }
+    { id: "forecasts", label: "Forecasts", icon: TrendingUp, color: "text-green-500" },
+    { id: "anomalies", label: "Anomalies", icon: AlertCircle, color: "text-red-500" },
+    { id: "models", label: "Models", icon: Brain, color: "text-purple-500" },
   ];
 
   return (

@@ -14,25 +14,25 @@ export default function StockPickingPacking() {
   const [newTask, setNewTask] = useState({ orderId: "", productId: "", quantity: "1", status: "pending", taskType: "pick" });
 
   const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ["/api/pick-pack-tasks"]
-    
+    queryKey: ["/api/pick-pack-tasks"],
+    queryFn: () => fetch("/api/pick-pack-tasks").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/pick-pack-tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/pick-pack-tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/pick-pack-tasks"] });
       setNewTask({ orderId: "", productId: "", quantity: "1", status: "pending", taskType: "pick" });
       toast({ title: "Task created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/pick-pack-tasks/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/pick-pack-tasks/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/pick-pack-tasks"] });
       toast({ title: "Task deleted" });
-    }
+    },
   });
 
   const completed = tasks.filter((t: any) => t.status === "completed").length;

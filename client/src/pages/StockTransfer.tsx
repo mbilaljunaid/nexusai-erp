@@ -14,25 +14,25 @@ export default function StockTransfer() {
   const [newTransfer, setNewTransfer] = useState({ item: "Item A", quantity: "", fromLocation: "Bin-01", toLocation: "Bin-02", status: "pending" });
 
   const { data: transfers = [], isLoading } = useQuery({
-    queryKey: ["/api/stock-transfer"]
-    
+    queryKey: ["/api/stock-transfer"],
+    queryFn: () => fetch("/api/stock-transfer").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/stock-transfer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/stock-transfer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/stock-transfer"] });
       setNewTransfer({ item: "Item A", quantity: "", fromLocation: "Bin-01", toLocation: "Bin-02", status: "pending" });
       toast({ title: "Transfer created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/stock-transfer/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/stock-transfer/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/stock-transfer"] });
       toast({ title: "Transfer deleted" });
-    }
+    },
   });
 
   const completedCount = transfers.filter((t: any) => t.status === "completed").length;

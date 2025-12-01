@@ -9,8 +9,8 @@ export default function AdvancedPermissions() {
       </div>
       <div className="grid gap-4">
         {[
-          { role: "Admin", permissions: "All", scope: "Organization" }
-          { role: "Manager", permissions: "Read/Write", scope: "Team" }
+          { role: "Admin", permissions: "All", scope: "Organization" },
+          { role: "Manager", permissions: "Read/Write", scope: "Team" },
         ].map((p) => (
           <Card key={p.role}>
             <CardContent className="pt-6">

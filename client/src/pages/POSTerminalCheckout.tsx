@@ -14,25 +14,25 @@ export default function POSTerminalCheckout() {
   const [newSale, setNewSale] = useState({ terminalId: "T001", productId: "", quantity: "1", paymentType: "card" });
 
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ["/api/pos-transactions"]
-    
+    queryKey: ["/api/pos-transactions"],
+    queryFn: () => fetch("/api/pos-transactions").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/pos-transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/pos-transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/pos-transactions"] });
       setNewSale({ terminalId: "T001", productId: "", quantity: "1", paymentType: "card" });
       toast({ title: "Transaction processed" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/pos-transactions/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/pos-transactions/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/pos-transactions"] });
       toast({ title: "Transaction voided" });
-    }
+    },
   });
 
   const totalSales = transactions.reduce((sum: number, t: any) => sum + (parseFloat(t.amount) || 0), 0);

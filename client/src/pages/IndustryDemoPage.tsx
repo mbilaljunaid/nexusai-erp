@@ -29,9 +29,9 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
     setLoading(true);
     try {
       const res = await fetch("/api/demos/request", {
-        method: "POST"
-        headers: { "Content-Type": "application/json" }
-        body: JSON.stringify({ email, company: industry, industry })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, company: industry, industry }),
       });
 
       if (res.ok) {
@@ -42,15 +42,15 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
 
         // Send credentials email
         await fetch("/api/demos/send-credentials", {
-          method: "POST"
-          headers: { "Content-Type": "application/json" }
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            email
-            industry
-            demoLink: demoURL
-            username: `demo_${industry.toLowerCase().replace(/\s+/g, "_")}`
-            password: `Demo@${new Date().getFullYear()}`
-          })
+            email,
+            industry,
+            demoLink: demoURL,
+            username: `demo_${industry.toLowerCase().replace(/\s+/g, "_")}`,
+            password: `Demo@${new Date().getFullYear()}`,
+          }),
         });
       }
     } catch (e) {

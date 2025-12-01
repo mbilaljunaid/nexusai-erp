@@ -14,25 +14,25 @@ export default function GoodsReceiptPutaway() {
   const [newReceipt, setNewReceipt] = useState({ poId: "", productId: "", quantity: "100", warehouseId: "WH-001", status: "received" });
 
   const { data: receipts = [], isLoading } = useQuery({
-    queryKey: ["/api/goods-receipt"]
-    
+    queryKey: ["/api/goods-receipt"],
+    queryFn: () => fetch("/api/goods-receipt").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/goods-receipt", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/goods-receipt", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/goods-receipt"] });
       setNewReceipt({ poId: "", productId: "", quantity: "100", warehouseId: "WH-001", status: "received" });
       toast({ title: "Receipt created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/goods-receipt/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/goods-receipt/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/goods-receipt"] });
       toast({ title: "Receipt deleted" });
-    }
+    },
   });
 
   const putaway = receipts.filter((r: any) => r.status === "putaway").length;

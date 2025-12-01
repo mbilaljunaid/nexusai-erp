@@ -13,25 +13,25 @@ export default function YardDockManagement() {
   const [newAppt, setNewAppt] = useState({ appointmentId: "", carrierId: "", dockId: "", arrivalTime: "", status: "scheduled" });
 
   const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ["/api/tl-dock-appointments"]
-    
+    queryKey: ["/api/tl-dock-appointments"],
+    queryFn: () => fetch("/api/tl-dock-appointments").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tl-dock-appointments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/tl-dock-appointments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-dock-appointments"] });
       setNewAppt({ appointmentId: "", carrierId: "", dockId: "", arrivalTime: "", status: "scheduled" });
       toast({ title: "Appointment scheduled" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tl-dock-appointments/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/tl-dock-appointments/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-dock-appointments"] });
       toast({ title: "Appointment deleted" });
-    }
+    },
   });
 
   const completed = appointments.filter((a: any) => a.status === "completed").length;

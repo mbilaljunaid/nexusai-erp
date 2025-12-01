@@ -5,8 +5,8 @@ import { TrendingUp } from "lucide-react";
 
 export default function TransportationBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/tl-analytics"]
-    
+    queryKey: ["/api/tl-analytics"],
+    queryFn: () => fetch("/api/tl-analytics").then(r => r.json()).catch(() => []),
   });
 
   const totalShipments = metrics.reduce((sum: number, m: any) => sum + (parseInt(m.shipments) || 0), 0);

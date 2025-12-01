@@ -24,12 +24,12 @@ export default function FormShowcase() {
   const [activeNav, setActiveNav] = useState("epm");
 
   const navItems = [
-    { id: "epm", label: "EPM", icon: DollarSign, color: "text-blue-500" }
-    { id: "crm", label: "CRM", icon: Users, color: "text-purple-500" }
-    { id: "hr", label: "HR", icon: Briefcase, color: "text-green-500" }
-    { id: "erp", label: "ERP", icon: TrendingUp, color: "text-orange-500" }
-    { id: "finance", label: "Finance", icon: FileText, color: "text-yellow-500" }
-    { id: "all", label: "All Forms", icon: BarChart3, color: "text-indigo-500" }
+    { id: "epm", label: "EPM", icon: DollarSign, color: "text-blue-500" },
+    { id: "crm", label: "CRM", icon: Users, color: "text-purple-500" },
+    { id: "hr", label: "HR", icon: Briefcase, color: "text-green-500" },
+    { id: "erp", label: "ERP", icon: TrendingUp, color: "text-orange-500" },
+    { id: "finance", label: "Finance", icon: FileText, color: "text-yellow-500" },
+    { id: "all", label: "All Forms", icon: BarChart3, color: "text-indigo-500" },
   ];
 
   return (

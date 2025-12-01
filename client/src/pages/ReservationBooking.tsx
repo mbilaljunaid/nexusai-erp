@@ -14,25 +14,25 @@ export default function ReservationBooking() {
   const [newRes, setNewRes] = useState({ reservationId: "", guestName: "", checkIn: "", checkOut: "", roomType: "standard", status: "confirmed" });
 
   const { data: reservations = [], isLoading } = useQuery({
-    queryKey: ["/api/hospitality-reservations"]
-    
+    queryKey: ["/api/hospitality-reservations"],
+    queryFn: () => fetch("/api/hospitality-reservations").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hospitality-reservations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/hospitality-reservations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-reservations"] });
       setNewRes({ reservationId: "", guestName: "", checkIn: "", checkOut: "", roomType: "standard", status: "confirmed" });
       toast({ title: "Reservation created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hospitality-reservations/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/hospitality-reservations/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-reservations"] });
       toast({ title: "Reservation deleted" });
-    }
+    },
   });
 
   const confirmed = reservations.filter((r: any) => r.status === "confirmed").length;

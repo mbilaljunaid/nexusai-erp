@@ -23,32 +23,32 @@ export default function InvoiceGenerator() {
   const [activeNav, setActiveNav] = useState("list");
   
   const { data: invoices = [] } = useQuery<Invoice[]>({
-    queryKey: ["/api/invoices"]
-    retry: false
+    queryKey: ["/api/invoices"],
+    retry: false,
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: Partial<Invoice>) => apiRequest("POST", "/api/invoices", data)
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/invoices"] })
+    mutationFn: (data: Partial<Invoice>) => apiRequest("POST", "/api/invoices", data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/invoices"] }),
   });
 
   const sendMutation = useMutation({
-    mutationFn: (invoiceId: string) => apiRequest("POST", `/api/invoices/${invoiceId}/send`, {})
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/invoices"] })
+    mutationFn: (invoiceId: string) => apiRequest("POST", `/api/invoices/${invoiceId}/send`, {}),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/invoices"] }),
   });
 
   const navItems = [
-    { id: "list", label: "Invoices", icon: FileText, color: "text-blue-500" }
-    { id: "templates", label: "Templates", icon: Download, color: "text-purple-500" }
-    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-green-500" }
-    { id: "settings", label: "Settings", icon: DollarSign, color: "text-orange-500" }
+    { id: "list", label: "Invoices", icon: FileText, color: "text-blue-500" },
+    { id: "templates", label: "Templates", icon: Download, color: "text-purple-500" },
+    { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-green-500" },
+    { id: "settings", label: "Settings", icon: DollarSign, color: "text-orange-500" },
   ];
 
   const stats = {
-    total: invoices.length
-    sent: invoices.filter(i => i.status === "sent" || i.status === "paid").length
-    overdue: invoices.filter(i => i.status === "overdue").length
-    totalAmount: invoices.reduce((sum, i) => sum + parseFloat(i.amount || "0"), 0)
+    total: invoices.length,
+    sent: invoices.filter(i => i.status === "sent" || i.status === "paid").length,
+    overdue: invoices.filter(i => i.status === "overdue").length,
+    totalAmount: invoices.reduce((sum, i) => sum + parseFloat(i.amount || "0"), 0),
   };
 
   return (

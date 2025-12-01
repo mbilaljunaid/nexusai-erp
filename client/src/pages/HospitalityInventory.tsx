@@ -13,25 +13,25 @@ export default function HospitalityInventory() {
   const [newItem, setNewItem] = useState({ itemId: "", itemName: "", category: "F&B", quantity: "0", reorder: "50" });
 
   const { data: items = [], isLoading } = useQuery({
-    queryKey: ["/api/hospitality-inventory"]
-    
+    queryKey: ["/api/hospitality-inventory"],
+    queryFn: () => fetch("/api/hospitality-inventory").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hospitality-inventory", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/hospitality-inventory", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-inventory"] });
       setNewItem({ itemId: "", itemName: "", category: "F&B", quantity: "0", reorder: "50" });
       toast({ title: "Item added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hospitality-inventory/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/hospitality-inventory/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-inventory"] });
       toast({ title: "Item deleted" });
-    }
+    },
   });
 
   const lowStock = items.filter((i: any) => (parseInt(i.quantity) || 0) < (parseInt(i.reorder) || 50)).length;

@@ -14,25 +14,25 @@ export default function ShopFloorDataCollection() {
   const [newEvent, setNewEvent] = useState({ woId: "", operation: "", eventType: "start", qty: "100", status: "recorded" });
 
   const { data: events = [], isLoading } = useQuery({
-    queryKey: ["/api/shop-floor-events"]
-    
+    queryKey: ["/api/shop-floor-events"],
+    queryFn: () => fetch("/api/shop-floor-events").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/shop-floor-events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/shop-floor-events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/shop-floor-events"] });
       setNewEvent({ woId: "", operation: "", eventType: "start", qty: "100", status: "recorded" });
       toast({ title: "Event recorded" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/shop-floor-events/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/shop-floor-events/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/shop-floor-events"] });
       toast({ title: "Event deleted" });
-    }
+    },
   });
 
   const completed = events.filter((e: any) => e.eventType === "complete").length;

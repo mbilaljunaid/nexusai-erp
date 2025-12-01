@@ -3,10 +3,10 @@ import { BarChart3, TrendingUp } from "lucide-react";
 
 export default function EducationAnalytics() {
   const metrics = [
-    { label: "Total Students", value: "2,450", trend: "+5%" }
-    { label: "Course Enrollment", value: "1,890", trend: "+12%" }
-    { label: "Average Grade", value: "7.8", trend: "+0.3" }
-    { label: "Fee Collection", value: "₹3.67 Cr", trend: "+8%" }
+    { label: "Total Students", value: "2,450", trend: "+5%" },
+    { label: "Course Enrollment", value: "1,890", trend: "+12%" },
+    { label: "Average Grade", value: "7.8", trend: "+0.3" },
+    { label: "Fee Collection", value: "₹3.67 Cr", trend: "+8%" },
   ];
   return (
     <div className="space-y-6 p-6">

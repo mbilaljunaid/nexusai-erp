@@ -13,9 +13,9 @@ export default function SLATracking() {
         <CardHeader><CardTitle className="text-base">Active SLAs</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           {[
-            { tier: "Premium", response: "1 hour", resolution: "4 hours", current: "0.5h", status: "On Track" }
-            { tier: "Standard", response: "2 hours", resolution: "8 hours", current: "1.2h", status: "On Track" }
-            { tier: "Basic", response: "4 hours", resolution: "24 hours", current: "2h", status: "Warning" }
+            { tier: "Premium", response: "1 hour", resolution: "4 hours", current: "0.5h", status: "On Track" },
+            { tier: "Standard", response: "2 hours", resolution: "8 hours", current: "1.2h", status: "On Track" },
+            { tier: "Basic", response: "4 hours", resolution: "24 hours", current: "2h", status: "Warning" },
           ].map((sla, idx) => (
             <div key={idx} className="p-3 border rounded">
               <p className="font-semibold">{sla.tier}</p>

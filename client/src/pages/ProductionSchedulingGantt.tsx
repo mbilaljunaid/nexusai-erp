@@ -5,8 +5,8 @@ import { Calendar, AlertTriangle } from "lucide-react";
 
 export default function ProductionSchedulingGantt() {
   const { data: schedules = [], isLoading } = useQuery({
-    queryKey: ["/api/production-schedule"]
-    
+    queryKey: ["/api/production-schedule"],
+    queryFn: () => fetch("/api/production-schedule").then(r => r.json()).catch(() => []),
   });
 
   const onTime = schedules.filter((s: any) => s.status === "on-track").length;

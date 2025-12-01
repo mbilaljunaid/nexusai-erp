@@ -14,25 +14,25 @@ export default function SalesOrderManagement() {
   const [newOrder, setNewOrder] = useState({ orderId: "", customer: "", qty: "100", contractPrice: "50", status: "pending" });
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["/api/sales-orders"]
-    
+    queryKey: ["/api/sales-orders"],
+    queryFn: () => fetch("/api/sales-orders").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/sales-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/sales-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sales-orders"] });
       setNewOrder({ orderId: "", customer: "", qty: "100", contractPrice: "50", status: "pending" });
       toast({ title: "Sales order created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/sales-orders/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/sales-orders/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sales-orders"] });
       toast({ title: "Order deleted" });
-    }
+    },
   });
 
   const confirmed = orders.filter((o: any) => o.status === "confirmed").length;

@@ -14,25 +14,25 @@ export default function StandardCosting() {
   const [newCost, setNewCost] = useState({ product: "Product-A", materialCost: "50", laborCost: "20", overheadPct: "15", status: "active" });
 
   const { data: costs = [], isLoading } = useQuery({
-    queryKey: ["/api/costing"]
-    
+    queryKey: ["/api/costing"],
+    queryFn: () => fetch("/api/costing").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/costing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/costing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/costing"] });
       setNewCost({ product: "Product-A", materialCost: "50", laborCost: "20", overheadPct: "15", status: "active" });
       toast({ title: "Cost created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/costing/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/costing/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/costing"] });
       toast({ title: "Cost deleted" });
-    }
+    },
   });
 
   const totalMaterialCost = costs.reduce((sum: number, c: any) => sum + (parseFloat(c.materialCost) || 0), 0);

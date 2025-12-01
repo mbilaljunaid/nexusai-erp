@@ -14,25 +14,25 @@ export default function EquipmentManagement() {
   const [newEq, setNewEq] = useState({ equipmentId: "", type: "Excavator", location: "Site-A", hourMeter: "0", status: "operational", fuelCost: "50" });
 
   const { data: equipment = [], isLoading } = useQuery({
-    queryKey: ["/api/equipment"]
-    
+    queryKey: ["/api/equipment"],
+    queryFn: () => fetch("/api/equipment").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/equipment", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/equipment", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/equipment"] });
       setNewEq({ equipmentId: "", type: "Excavator", location: "Site-A", hourMeter: "0", status: "operational", fuelCost: "50" });
       toast({ title: "Equipment added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/equipment/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/equipment/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/equipment"] });
       toast({ title: "Equipment deleted" });
-    }
+    },
   });
 
   const operational = equipment.filter((e: any) => e.status === "operational").length;

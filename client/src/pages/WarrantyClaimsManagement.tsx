@@ -13,25 +13,25 @@ export default function WarrantyClaimsManagement() {
   const [newClaim, setNewClaim] = useState({ claimId: "", vin: "", claimAmount: "0", status: "pending" });
 
   const { data: claims = [], isLoading } = useQuery({
-    queryKey: ["/api/auto-warranty"]
-    
+    queryKey: ["/api/auto-warranty"],
+    queryFn: () => fetch("/api/auto-warranty").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/auto-warranty", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/auto-warranty", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-warranty"] });
       setNewClaim({ claimId: "", vin: "", claimAmount: "0", status: "pending" });
       toast({ title: "Warranty claim created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/auto-warranty/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/auto-warranty/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-warranty"] });
       toast({ title: "Claim deleted" });
-    }
+    },
   });
 
   const approved = claims.filter((c: any) => c.status === "approved").length;

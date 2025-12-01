@@ -14,25 +14,25 @@ export default function RoutingMaster() {
   const [newRouting, setNewRouting] = useState({ product: "Product-A", operation: "Assembly", workCenter: "WC-01", cycleTime: "30", status: "active" });
 
   const { data: routings = [], isLoading } = useQuery({
-    queryKey: ["/api/routing"]
-    
+    queryKey: ["/api/routing"],
+    queryFn: () => fetch("/api/routing").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/routing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/routing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/routing"] });
       setNewRouting({ product: "Product-A", operation: "Assembly", workCenter: "WC-01", cycleTime: "30", status: "active" });
       toast({ title: "Routing created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/routing/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/routing/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/routing"] });
       toast({ title: "Routing deleted" });
-    }
+    },
   });
 
   const totalCycleTime = routings.reduce((sum: number, r: any) => sum + (parseFloat(r.cycleTime) || 0), 0);

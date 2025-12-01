@@ -16,21 +16,21 @@ interface EmbeddingJob {
 export default function RAGEmbeddingsPipeline() {
   const [activeNav, setActiveNav] = useState("jobs");
   const { data: jobs = [] } = useQuery<EmbeddingJob[]>({
-    queryKey: ["/api/rag/embeddings"]
-    retry: false
+    queryKey: ["/api/rag/embeddings"],
+    retry: false,
   });
 
   const stats = {
-    total: jobs.length
-    processing: jobs.filter((j: any) => j.status === "processing").length
-    completed: jobs.filter((j: any) => j.status === "completed").length
-    vectors: jobs.reduce((sum: number, j: any) => sum + (j.vectors || 0), 0)
+    total: jobs.length,
+    processing: jobs.filter((j: any) => j.status === "processing").length,
+    completed: jobs.filter((j: any) => j.status === "completed").length,
+    vectors: jobs.reduce((sum: number, j: any) => sum + (j.vectors || 0), 0),
   };
 
   const navItems = [
-    { id: "jobs", label: "Jobs", icon: Database, color: "text-blue-500" }
-    { id: "vectors", label: "Vector Index", icon: Grid3x3, color: "text-purple-500" }
-    { id: "config", label: "Config", icon: Settings, color: "text-gray-500" }
+    { id: "jobs", label: "Jobs", icon: Database, color: "text-blue-500" },
+    { id: "vectors", label: "Vector Index", icon: Grid3x3, color: "text-purple-500" },
+    { id: "config", label: "Config", icon: Settings, color: "text-gray-500" },
   ];
 
   return (

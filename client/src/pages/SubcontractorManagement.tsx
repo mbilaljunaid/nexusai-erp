@@ -14,25 +14,25 @@ export default function SubcontractorManagement() {
   const [newSub, setNewSub] = useState({ name: "", scope: "Concrete", contractValue: "100000", retentionPct: "10", status: "active" });
 
   const { data: subs = [], isLoading } = useQuery({
-    queryKey: ["/api/subcontractors"]
-    
+    queryKey: ["/api/subcontractors"],
+    queryFn: () => fetch("/api/subcontractors").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/subcontractors", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/subcontractors", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/subcontractors"] });
       setNewSub({ name: "", scope: "Concrete", contractValue: "100000", retentionPct: "10", status: "active" });
       toast({ title: "Subcontractor added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/subcontractors/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/subcontractors/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/subcontractors"] });
       toast({ title: "Subcontractor deleted" });
-    }
+    },
   });
 
   const active = subs.filter((s: any) => s.status === "active").length;

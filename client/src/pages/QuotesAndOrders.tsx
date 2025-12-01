@@ -14,25 +14,25 @@ export default function QuotesAndOrders() {
   const [newQuote, setNewQuote] = useState({ number: "", customer: "", amount: "", type: "quote", status: "draft" });
 
   const { data: items = [], isLoading } = useQuery({
-    queryKey: ["/api/crm/quotes"]
-    
+    queryKey: ["/api/crm/quotes"],
+    queryFn: () => fetch("/api/crm/quotes").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/crm/quotes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/crm/quotes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/quotes"] });
       setNewQuote({ number: "", customer: "", amount: "", type: "quote", status: "draft" });
       toast({ title: "Quote created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/crm/quotes/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/crm/quotes/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/quotes"] });
       toast({ title: "Quote deleted" });
-    }
+    },
   });
 
   const totalQuotes = items.filter((i: any) => i.type === "quote").length;

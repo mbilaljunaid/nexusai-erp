@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Select
-  SelectContent
-  SelectItem
-  SelectTrigger
-  SelectValue
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Download, Eye, Send, Plus, TrendingUp } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
@@ -26,35 +26,35 @@ interface Invoice {
 export default function BillingManagement() {
   const [invoices, setInvoices] = useState<Invoice[]>([
     {
-      id: "INV-001"
-      tenantId: "tenant-1"
-      tenantName: "Acme Corporation"
-      amount: 5000
-      status: "paid"
-      dueDate: "2024-12-15"
-      issuedDate: "2024-11-15"
-      description: "Enterprise Plan - Monthly"
-    }
+      id: "INV-001",
+      tenantId: "tenant-1",
+      tenantName: "Acme Corporation",
+      amount: 5000,
+      status: "paid",
+      dueDate: "2024-12-15",
+      issuedDate: "2024-11-15",
+      description: "Enterprise Plan - Monthly",
+    },
     {
-      id: "INV-002"
-      tenantId: "tenant-2"
-      tenantName: "Global Industries"
-      amount: 1500
-      status: "pending"
-      dueDate: "2024-12-20"
-      issuedDate: "2024-11-20"
-      description: "Professional Plan - Monthly"
-    }
+      id: "INV-002",
+      tenantId: "tenant-2",
+      tenantName: "Global Industries",
+      amount: 1500,
+      status: "pending",
+      dueDate: "2024-12-20",
+      issuedDate: "2024-11-20",
+      description: "Professional Plan - Monthly",
+    },
     {
-      id: "INV-003"
-      tenantId: "tenant-3"
-      tenantName: "Tech Solutions"
-      amount: 300
-      status: "overdue"
-      dueDate: "2024-11-20"
-      issuedDate: "2024-10-20"
-      description: "Starter Plan - Monthly"
-    }
+      id: "INV-003",
+      tenantId: "tenant-3",
+      tenantName: "Tech Solutions",
+      amount: 300,
+      status: "overdue",
+      dueDate: "2024-11-20",
+      issuedDate: "2024-10-20",
+      description: "Starter Plan - Monthly",
+    },
   ]);
 
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -67,10 +67,10 @@ export default function BillingManagement() {
   const stats = {
     totalRevenue: invoices
       .filter((i) => i.status !== "refunded")
-      .reduce((sum, i) => sum + i.amount, 0)
-    paid: invoices.filter((i) => i.status === "paid").reduce((sum, i) => sum + i.amount, 0)
-    pending: invoices.filter((i) => i.status === "pending").reduce((sum, i) => sum + i.amount, 0)
-    overdue: invoices.filter((i) => i.status === "overdue").reduce((sum, i) => sum + i.amount, 0)
+      .reduce((sum, i) => sum + i.amount, 0),
+    paid: invoices.filter((i) => i.status === "paid").reduce((sum, i) => sum + i.amount, 0),
+    pending: invoices.filter((i) => i.status === "pending").reduce((sum, i) => sum + i.amount, 0),
+    overdue: invoices.filter((i) => i.status === "overdue").reduce((sum, i) => sum + i.amount, 0),
   };
 
   const filtered = invoices.filter((inv) => filterStatus === "all" || inv.status === filterStatus);
@@ -99,11 +99,11 @@ export default function BillingManagement() {
   };
 
   const chartData = [
-    { month: "Aug", revenue: 12000, paid: 11500, pending: 500 }
-    { month: "Sep", revenue: 15000, paid: 14800, pending: 200 }
-    { month: "Oct", revenue: 13500, paid: 13000, pending: 500 }
-    { month: "Nov", revenue: 14200, paid: 13500, pending: 700 }
-    { month: "Dec", revenue: 16800, paid: 15000, pending: 1800 }
+    { month: "Aug", revenue: 12000, paid: 11500, pending: 500 },
+    { month: "Sep", revenue: 15000, paid: 14800, pending: 200 },
+    { month: "Oct", revenue: 13500, paid: 13000, pending: 500 },
+    { month: "Nov", revenue: 14200, paid: 13500, pending: 700 },
+    { month: "Dec", revenue: 16800, paid: 15000, pending: 1800 },
   ];
 
   return (

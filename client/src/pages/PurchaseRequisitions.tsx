@@ -5,9 +5,9 @@ import { FileText, Plus } from "lucide-react";
 
 export default function PurchaseRequisitions() {
   const requisitions = [
-    { id: "pr1", number: "PR-2025-001", department: "Operations", items: 5, amount: "$25,000", status: "approved", date: "Nov 30, 2025" }
-    { id: "pr2", number: "PR-2025-002", department: "Manufacturing", items: 12, amount: "$45,000", status: "pending", date: "Nov 29, 2025" }
-    { id: "pr3", number: "PR-2025-003", department: "Logistics", items: 8, amount: "$18,500", status: "approved", date: "Nov 28, 2025" }
+    { id: "pr1", number: "PR-2025-001", department: "Operations", items: 5, amount: "$25,000", status: "approved", date: "Nov 30, 2025" },
+    { id: "pr2", number: "PR-2025-002", department: "Manufacturing", items: 12, amount: "$45,000", status: "pending", date: "Nov 29, 2025" },
+    { id: "pr3", number: "PR-2025-003", department: "Logistics", items: 8, amount: "$18,500", status: "approved", date: "Nov 28, 2025" },
   ];
 
   return (

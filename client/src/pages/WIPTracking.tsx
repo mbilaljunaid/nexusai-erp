@@ -13,25 +13,25 @@ export default function WIPTracking() {
   const [newWIP, setNewWIP] = useState({ workOrder: "WO-001", operation: "Assembly", status: "queued" });
 
   const { data: wipItems = [], isLoading } = useQuery({
-    queryKey: ["/api/wip"]
-    
+    queryKey: ["/api/wip"],
+    queryFn: () => fetch("/api/wip").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/wip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/wip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/wip"] });
       setNewWIP({ workOrder: "WO-001", operation: "Assembly", status: "queued" });
       toast({ title: "WIP item created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/wip/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/wip/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/wip"] });
       toast({ title: "WIP item deleted" });
-    }
+    },
   });
 
   const completed = wipItems.filter((w: any) => w.status === "completed").length;

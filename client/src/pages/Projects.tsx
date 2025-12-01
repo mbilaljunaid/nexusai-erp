@@ -39,30 +39,30 @@ export default function Projects() {
   }, [params?.page]);
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: LayoutGrid, color: "text-blue-500" }
-    { id: "kanban", label: "Kanban", icon: FolderKanban, color: "text-purple-500" }
-    { id: "tasks", label: "Tasks", icon: ListTodo, color: "text-green-500" }
-    { id: "resources", label: "Resources", icon: Users, color: "text-orange-500" }
-    { id: "sprints", label: "Sprints", icon: Zap, color: "text-pink-500" }
-    { id: "timeline", label: "Timeline", icon: Clock, color: "text-cyan-500" }
-    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-indigo-500" }
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" }
+    { id: "overview", label: "Overview", icon: LayoutGrid, color: "text-blue-500" },
+    { id: "kanban", label: "Kanban", icon: FolderKanban, color: "text-purple-500" },
+    { id: "tasks", label: "Tasks", icon: ListTodo, color: "text-green-500" },
+    { id: "resources", label: "Resources", icon: Users, color: "text-orange-500" },
+    { id: "sprints", label: "Sprints", icon: Zap, color: "text-pink-500" },
+    { id: "timeline", label: "Timeline", icon: Clock, color: "text-cyan-500" },
+    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-indigo-500" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
   ];
 
   const projects: Project[] = [
-    { id: "1", name: "Website Redesign", description: "Complete overhaul of the company website with new branding", status: "on_track", progress: 65, tasks: { total: 24, completed: 16 }, team: [{ name: "Alex Chen", initials: "AC" }, { name: "Maria Garcia", initials: "MG" }], dueDate: "Dec 30, 2024" }
-    { id: "2", name: "Mobile App Development", description: "Native mobile app for iOS and Android platforms", status: "at_risk", progress: 40, tasks: { total: 48, completed: 19 }, team: [{ name: "James Wilson", initials: "JW" }], dueDate: "Jan 15, 2025" }
+    { id: "1", name: "Website Redesign", description: "Complete overhaul of the company website with new branding", status: "on_track", progress: 65, tasks: { total: 24, completed: 16 }, team: [{ name: "Alex Chen", initials: "AC" }, { name: "Maria Garcia", initials: "MG" }], dueDate: "Dec 30, 2024" },
+    { id: "2", name: "Mobile App Development", description: "Native mobile app for iOS and Android platforms", status: "at_risk", progress: 40, tasks: { total: 48, completed: 19 }, team: [{ name: "James Wilson", initials: "JW" }], dueDate: "Jan 15, 2025" },
   ];
 
   const tasks: Task[] = [
-    { id: "1", title: "Design homepage mockups", status: "done", priority: "high", assignee: { name: "Maria Garcia", initials: "MG" }, project: "Website Redesign" }
-    { id: "2", title: "Implement user authentication", status: "in_progress", priority: "urgent", assignee: { name: "James Wilson", initials: "JW" }, dueDate: "Dec 14", project: "Mobile App" }
+    { id: "1", title: "Design homepage mockups", status: "done", priority: "high", assignee: { name: "Maria Garcia", initials: "MG" }, project: "Website Redesign" },
+    { id: "2", title: "Implement user authentication", status: "in_progress", priority: "urgent", assignee: { name: "James Wilson", initials: "JW" }, dueDate: "Dec 14", project: "Mobile App" },
   ];
 
   const statusConfig = {
-    on_track: { label: "On Track", color: "bg-green-500/10 text-green-600 dark:text-green-400", icon: CheckCircle2 }
-    at_risk: { label: "At Risk", color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400", icon: AlertTriangle }
-    delayed: { label: "Delayed", color: "bg-red-500/10 text-red-600 dark:text-red-400", icon: Clock }
+    on_track: { label: "On Track", color: "bg-green-500/10 text-green-600 dark:text-green-400", icon: CheckCircle2 },
+    at_risk: { label: "At Risk", color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400", icon: AlertTriangle },
+    delayed: { label: "Delayed", color: "bg-red-500/10 text-red-600 dark:text-red-400", icon: Clock },
   };
 
   const filteredProjects = projects.filter(project => {

@@ -13,25 +13,25 @@ export default function DigitalRetailLeads() {
   const [newLead, setNewLead] = useState({ leadId: "", name: "", email: "", source: "website", status: "new" });
 
   const { data: leads = [], isLoading } = useQuery({
-    queryKey: ["/api/auto-leads"]
-    
+    queryKey: ["/api/auto-leads"],
+    queryFn: () => fetch("/api/auto-leads").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/auto-leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/auto-leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-leads"] });
       setNewLead({ leadId: "", name: "", email: "", source: "website", status: "new" });
       toast({ title: "Lead captured" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/auto-leads/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/auto-leads/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-leads"] });
       toast({ title: "Lead deleted" });
-    }
+    },
   });
 
   const qualified = leads.filter((l: any) => l.status === "qualified").length;

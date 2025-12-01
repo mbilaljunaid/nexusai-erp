@@ -12,8 +12,12 @@ export default function AIChat() {
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { data: conversations = [] } = useQuery({ queryKey: ["/api/copilot/conversations"],  activeConvId]
-    enabled: !!activeConvId
+  const { data: conversations = [] } = useQuery({ queryKey: ["/api/copilot/conversations"], queryFn: () => fetch("/api/copilot/conversations").then(r => r.json()) }) as { data: any[] };
+  
+  const { data: currentMessages = [] } = useQuery({ 
+    queryKey: ["/api/copilot/messages", activeConvId], 
+    enabled: !!activeConvId,
+    queryFn: () => fetch(`/api/copilot/messages/${activeConvId}`).then(r => r.json())
   }) as { data: any[] };
 
   useEffect(() => {
@@ -23,67 +27,67 @@ export default function AIChat() {
 
   // Default RBAC context for demo
   const rbacHeaders = {
-    "x-tenant-id": "tenant1"
-    "x-user-id": "user1"
-    "x-user-role": "admin"
+    "x-tenant-id": "tenant1",
+    "x-user-id": "user1",
+    "x-user-role": "admin",
   };
 
   const createConvMutation = useMutation({
     mutationFn: async () => {
       const resp = await fetch("/api/copilot/conversations", {
-        method: "POST"
-        headers: { "Content-Type": "application/json", ...rbacHeaders }
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...rbacHeaders },
         body: JSON.stringify({
-          title: `Conversation ${new Date().toLocaleTimeString()}`
-          context: "general"
-        })
+          title: `Conversation ${new Date().toLocaleTimeString()}`,
+          context: "general",
+        }),
       });
       return resp.json() as Promise<any>;
-    }
+    },
     onSuccess: (conv: any) => {
       setActiveConvId(conv.id);
       queryClient.invalidateQueries({ queryKey: ["/api/copilot/conversations"] });
-    }
+    },
   });
 
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
       if (!activeConvId) {
         const resp = await fetch("/api/copilot/conversations", {
-          method: "POST"
-          headers: { "Content-Type": "application/json", ...rbacHeaders }
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...rbacHeaders },
           body: JSON.stringify({
-            title: `Conversation ${new Date().toLocaleTimeString()}`
-            context: "general"
-          })
+            title: `Conversation ${new Date().toLocaleTimeString()}`,
+            context: "general",
+          }),
         });
         const conv = (await resp.json()) as any;
         setActiveConvId(conv.id);
         await fetch("/api/copilot/messages", {
-          method: "POST"
-          headers: { "Content-Type": "application/json", ...rbacHeaders }
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...rbacHeaders },
           body: JSON.stringify({
-            conversationId: conv.id
-            role: "user"
-            content
-          })
+            conversationId: conv.id,
+            role: "user",
+            content,
+          }),
         });
       } else {
         await fetch("/api/copilot/messages", {
-          method: "POST"
-          headers: { "Content-Type": "application/json", ...rbacHeaders }
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...rbacHeaders },
           body: JSON.stringify({
-            conversationId: activeConvId
-            role: "user"
-            content
-          })
+            conversationId: activeConvId,
+            role: "user",
+            content,
+          }),
         });
       }
-    }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/copilot/messages", activeConvId] });
       setInput("");
-    }
+    },
   });
 
   const handleSend = async () => {

@@ -9,8 +9,8 @@ export default function CustomerSuccessPanel() {
       </div>
       <div className="grid gap-4">
         {[
-          { customer: "Acme Corp", health: "Healthy", nlr: "110%" }
-          { customer: "TechStart Inc", health: "At Risk", nlr: "95%" }
+          { customer: "Acme Corp", health: "Healthy", nlr: "110%" },
+          { customer: "TechStart Inc", health: "At Risk", nlr: "95%" },
         ].map((c) => (
           <Card key={c.customer}>
             <CardContent className="pt-6">

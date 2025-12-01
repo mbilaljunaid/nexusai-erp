@@ -11,7 +11,7 @@ export default function PurchaseOrder() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredPOs, setFilteredPOs] = useState<any[]>([]);
   const { data: purchaseOrders = [] } = useQuery<any[]>({
-    queryKey: ["/api/purchase-orders"]
+    queryKey: ["/api/purchase-orders"],
   });
   const formMetadata = getFormMetadata("purchaseOrder");
 

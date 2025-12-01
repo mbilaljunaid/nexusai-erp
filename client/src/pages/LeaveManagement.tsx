@@ -14,25 +14,25 @@ export default function LeaveManagement() {
   const [newLeave, setNewLeave] = useState({ employee: "", type: "Vacation", status: "pending" });
 
   const { data: leaves = [], isLoading } = useQuery({
-    queryKey: ["/api/hr/leaves"]
-    
+    queryKey: ["/api/hr/leaves"],
+    queryFn: () => fetch("/api/hr/leaves").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hr/leaves", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/hr/leaves", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hr/leaves"] });
       setNewLeave({ employee: "", type: "Vacation", status: "pending" });
       toast({ title: "Leave request created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hr/leaves/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/hr/leaves/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hr/leaves"] });
       toast({ title: "Leave deleted" });
-    }
+    },
   });
 
   return (

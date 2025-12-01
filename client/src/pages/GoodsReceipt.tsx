@@ -12,18 +12,18 @@ export default function GoodsReceipt() {
   const { data: grns = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/goods-receipts"] });
 
   const navigationItems = [
-    { id: "list", label: "GRNs", icon: Package, badge: grns.length, color: "blue" as const }
-    { id: "create", label: "Create GRN", icon: Plus, color: "green" as const }
-    { id: "inspection", label: "For Inspection", icon: FileCheck, badge: grns.filter((g: any) => g.status === "received").length, color: "orange" as const }
-    { id: "analytics", label: "Analytics", icon: Package, color: "purple" as const }
+    { id: "list", label: "GRNs", icon: Package, badge: grns.length, color: "blue" as const },
+    { id: "create", label: "Create GRN", icon: Plus, color: "green" as const },
+    { id: "inspection", label: "For Inspection", icon: FileCheck, badge: grns.filter((g: any) => g.status === "received").length, color: "orange" as const },
+    { id: "analytics", label: "Analytics", icon: Package, color: "purple" as const },
   ];
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    received: "secondary"
-    inspected: "default"
-    accepted: "default"
-    rejected: "destructive"
-    partial: "secondary"
+    received: "secondary",
+    inspected: "default",
+    accepted: "default",
+    rejected: "destructive",
+    partial: "secondary",
   };
 
   return (

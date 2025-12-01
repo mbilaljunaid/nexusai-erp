@@ -14,30 +14,30 @@ export default function AnomalyDetection() {
   const [newRule, setNewRule] = useState({ metric: "Revenue", threshold: "20", frequency: "daily", recipients: "" });
 
   const { data: rules = [], isLoading } = useQuery({
-    queryKey: ["/api/anomaly-rules"]
-    
+    queryKey: ["/api/anomaly-rules"],
+    queryFn: () => fetch("/api/anomaly-rules").then(r => r.json()).catch(() => []),
   });
 
   const { data: anomalies = [] } = useQuery({
-    queryKey: ["/api/anomalies"]
-    
+    queryKey: ["/api/anomalies"],
+    queryFn: () => fetch("/api/anomalies").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/anomaly-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/anomaly-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/anomaly-rules"] });
       setNewRule({ metric: "Revenue", threshold: "20", frequency: "daily", recipients: "" });
       toast({ title: "Anomaly rule created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/anomaly-rules/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/anomaly-rules/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/anomaly-rules"] });
       toast({ title: "Anomaly rule deleted" });
-    }
+    },
   });
 
   const detectedAnomalies = anomalies.filter((a: any) => a.status === "detected");

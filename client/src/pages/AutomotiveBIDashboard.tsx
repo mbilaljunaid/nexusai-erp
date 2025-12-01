@@ -5,8 +5,8 @@ import { BarChart3 } from "lucide-react";
 
 export default function AutomotiveBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/auto-analytics"]
-    
+    queryKey: ["/api/auto-analytics"],
+    queryFn: () => fetch("/api/auto-analytics").then(r => r.json()).catch(() => []),
   });
 
   const totalSales = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.salesAmount) || 0), 0);

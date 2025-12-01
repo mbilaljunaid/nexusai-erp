@@ -21,30 +21,30 @@ export default function TeamCollaboration() {
   const [activeNav, setActiveNav] = useState("comments");
   const [newComment, setNewComment] = useState("");
   const { data: collaborations = [] } = useQuery<Collaboration[]>({
-    queryKey: ["/api/collaborations"]
-    retry: false
+    queryKey: ["/api/collaborations"],
+    retry: false,
   });
 
   const addCommentMutation = useMutation({
     mutationFn: (data: { taskId: string; content: string }) =>
-      apiRequest("POST", "/api/collaborations/comments", data)
+      apiRequest("POST", "/api/collaborations/comments", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/collaborations"] });
       setNewComment("");
-    }
+    },
   });
 
   const stats = {
-    comments: (collaborations || []).reduce((sum, c) => sum + (c.comments?.length || 0), 0)
-    members: 5
-    activities: (collaborations || []).reduce((sum, c) => sum + (c.activity?.length || 0), 0)
+    comments: (collaborations || []).reduce((sum, c) => sum + (c.comments?.length || 0), 0),
+    members: 5,
+    activities: (collaborations || []).reduce((sum, c) => sum + (c.activity?.length || 0), 0),
   };
 
   const navItems = [
-    { id: "comments", label: "Comments", icon: MessageSquare, color: "text-blue-500" }
-    { id: "activity", label: "Activity", icon: Activity, color: "text-green-500" }
-    { id: "team", label: "Team Members", icon: Users, color: "text-purple-500" }
-    { id: "timeline", label: "Timeline", icon: TrendingUp, color: "text-orange-500" }
+    { id: "comments", label: "Comments", icon: MessageSquare, color: "text-blue-500" },
+    { id: "activity", label: "Activity", icon: Activity, color: "text-green-500" },
+    { id: "team", label: "Team Members", icon: Users, color: "text-purple-500" },
+    { id: "timeline", label: "Timeline", icon: TrendingUp, color: "text-orange-500" },
   ];
 
   return (

@@ -4,9 +4,9 @@ import { CheckCircle, AlertCircle } from "lucide-react";
 
 export default function GoodsReceiptPage() {
   const receipts = [
-    { id: "gr1", number: "GR-2025-001", po: "PO-001", vendor: "Acme Supplies", items: 50, status: "received", inspection: "passed", date: "Nov 30, 2025" }
-    { id: "gr2", number: "GR-2025-002", po: "PO-002", vendor: "Global Parts", items: 120, status: "received", inspection: "in-progress", date: "Nov 29, 2025" }
-    { id: "gr3", number: "GR-2025-003", po: "PO-003", vendor: "TechVendor", items: 35, status: "partial", inspection: "failed", date: "Nov 28, 2025" }
+    { id: "gr1", number: "GR-2025-001", po: "PO-001", vendor: "Acme Supplies", items: 50, status: "received", inspection: "passed", date: "Nov 30, 2025" },
+    { id: "gr2", number: "GR-2025-002", po: "PO-002", vendor: "Global Parts", items: 120, status: "received", inspection: "in-progress", date: "Nov 29, 2025" },
+    { id: "gr3", number: "GR-2025-003", po: "PO-003", vendor: "TechVendor", items: 35, status: "partial", inspection: "failed", date: "Nov 28, 2025" },
   ];
 
   return (

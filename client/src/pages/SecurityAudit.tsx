@@ -9,8 +9,8 @@ export default function SecurityAudit() {
       </div>
       <div className="grid gap-4">
         {[
-          { category: "Authentication", findings: 0, status: "Pass" }
-          { category: "Data Encryption", findings: 0, status: "Pass" }
+          { category: "Authentication", findings: 0, status: "Pass" },
+          { category: "Data Encryption", findings: 0, status: "Pass" },
         ].map((audit) => (
           <Card key={audit.category}>
             <CardContent className="pt-6">

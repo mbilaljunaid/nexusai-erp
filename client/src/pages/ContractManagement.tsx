@@ -9,8 +9,8 @@ export default function ContractManagement() {
       </div>
       <div className="grid gap-4">
         {[
-          { contract: "Microsoft Agreement", renewal: "45 days", value: "$250K" }
-          { contract: "Salesforce License", renewal: "120 days", value: "$180K" }
+          { contract: "Microsoft Agreement", renewal: "45 days", value: "$250K" },
+          { contract: "Salesforce License", renewal: "120 days", value: "$180K" },
         ].map((c) => (
           <Card key={c.contract}>
             <CardContent className="pt-6">

@@ -5,9 +5,9 @@ import { BookOpen, Plus } from "lucide-react";
 
 export default function JournalEntries() {
   const entries = [
-    { id: "je1", date: "Nov 30, 2025", description: "Sales revenue", debit: "$0", credit: "$50,000", account: "4000", status: "approved" }
-    { id: "je2", date: "Nov 29, 2025", description: "Expense entry", debit: "$15,000", credit: "$0", account: "6100", status: "pending" }
-    { id: "je3", date: "Nov 28, 2025", description: "Asset acquisition", debit: "$25,000", credit: "$25,000", account: "1500", status: "approved" }
+    { id: "je1", date: "Nov 30, 2025", description: "Sales revenue", debit: "$0", credit: "$50,000", account: "4000", status: "approved" },
+    { id: "je2", date: "Nov 29, 2025", description: "Expense entry", debit: "$15,000", credit: "$0", account: "6100", status: "pending" },
+    { id: "je3", date: "Nov 28, 2025", description: "Asset acquisition", debit: "$25,000", credit: "$25,000", account: "1500", status: "approved" },
   ];
 
   return (

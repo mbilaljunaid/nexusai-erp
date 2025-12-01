@@ -23,8 +23,8 @@ export default function AuditLogs() {
         <CardHeader><CardTitle className="text-base">Recent Activities</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {[
-            { action: "User login", user: "Alice", time: "10:30 AM" }
-            { action: "Record updated", user: "Bob", time: "10:15 AM" }
+            { action: "User login", user: "Alice", time: "10:30 AM" },
+            { action: "Record updated", user: "Bob", time: "10:15 AM" },
           ].map((log, idx) => (
             <div key={idx} className="p-2 border rounded text-sm flex justify-between">
               <span>{log.action} by {log.user}</span>

@@ -14,25 +14,25 @@ export default function ReplenishmentPlanning() {
   const [newReplen, setNewReplen] = useState({ productId: "", supplierId: "", quantity: "100", status: "suggested" });
 
   const { data: replenishments = [], isLoading } = useQuery({
-    queryKey: ["/api/replenishment-plan"]
-    
+    queryKey: ["/api/replenishment-plan"],
+    queryFn: () => fetch("/api/replenishment-plan").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/replenishment-plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/replenishment-plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/replenishment-plan"] });
       setNewReplen({ productId: "", supplierId: "", quantity: "100", status: "suggested" });
       toast({ title: "Replenishment planned" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/replenishment-plan/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/replenishment-plan/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/replenishment-plan"] });
       toast({ title: "Plan deleted" });
-    }
+    },
   });
 
   const ordered = replenishments.filter((r: any) => r.status === "ordered").length;

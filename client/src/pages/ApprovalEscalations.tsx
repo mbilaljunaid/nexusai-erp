@@ -14,25 +14,25 @@ export default function ApprovalEscalations() {
   const [newEscalation, setNewEscalation] = useState({ rule: "", trigger: "overdue", action: "notify_manager", days: "2" });
 
   const { data: escalations = [], isLoading } = useQuery({
-    queryKey: ["/api/escalation-rules"]
-    
+    queryKey: ["/api/escalation-rules"],
+    queryFn: () => fetch("/api/escalation-rules").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/escalation-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/escalation-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/escalation-rules"] });
       setNewEscalation({ rule: "", trigger: "overdue", action: "notify_manager", days: "2" });
       toast({ title: "Escalation rule created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/escalation-rules/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/escalation-rules/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/escalation-rules"] });
       toast({ title: "Escalation rule deleted" });
-    }
+    },
   });
 
   return (

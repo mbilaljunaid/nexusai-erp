@@ -13,36 +13,39 @@ export default function ChartOfAccounts() {
   const { toast } = useToast();
   const [newAccount, setNewAccount] = useState({ accountCode: "", accountName: "", accountType: "Asset", description: "" });
 
-  const { data: accounts = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/finance/chart-of-accounts"],  { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+  const { data: accounts = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/finance/chart-of-accounts"], queryFn: () => fetch("/api/finance/chart-of-accounts").then(r => r.json()).catch(() => []) });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/finance/chart-of-accounts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/chart-of-accounts"] });
       setNewAccount({ accountCode: "", accountName: "", accountType: "Asset", description: "" });
       toast({ title: "Account created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/chart-of-accounts/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/finance/chart-of-accounts/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/finance/chart-of-accounts"] });
       toast({ title: "Account deleted" });
-    }
+    },
   });
 
   const accountTypeColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    Asset: "default"
-    Liability: "secondary"
-    Equity: "destructive"
-    Revenue: "default"
-    Expense: "secondary"
+    Asset: "default",
+    Liability: "secondary",
+    Equity: "destructive",
+    Revenue: "default",
+    Expense: "secondary",
   };
 
   const groupedAccounts = {
-    Asset: accounts.filter((a: any) => a.accountType === "Asset")
-    Liability: accounts.filter((a: any) => a.accountType === "Liability")
-    Equity: accounts.filter((a: any) => a.accountType === "Equity")
-    Revenue: accounts.filter((a: any) => a.accountType === "Revenue")
-    Expense: accounts.filter((a: any) => a.accountType === "Expense")
+    Asset: accounts.filter((a: any) => a.accountType === "Asset"),
+    Liability: accounts.filter((a: any) => a.accountType === "Liability"),
+    Equity: accounts.filter((a: any) => a.accountType === "Equity"),
+    Revenue: accounts.filter((a: any) => a.accountType === "Revenue"),
+    Expense: accounts.filter((a: any) => a.accountType === "Expense"),
   };
 
   return (

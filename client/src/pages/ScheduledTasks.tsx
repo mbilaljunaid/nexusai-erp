@@ -14,25 +14,25 @@ export default function ScheduledTasks() {
   const [newTask, setNewTask] = useState({ taskName: "", schedule: "", frequency: "daily", status: "active" });
 
   const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ["/api/scheduled-tasks"]
-    
+    queryKey: ["/api/scheduled-tasks"],
+    queryFn: () => fetch("/api/scheduled-tasks").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/scheduled-tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/scheduled-tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/scheduled-tasks"] });
       setNewTask({ taskName: "", schedule: "", frequency: "daily", status: "active" });
       toast({ title: "Scheduled task created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/scheduled-tasks/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/scheduled-tasks/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/scheduled-tasks"] });
       toast({ title: "Scheduled task deleted" });
-    }
+    },
   });
 
   return (

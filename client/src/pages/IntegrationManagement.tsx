@@ -10,8 +10,8 @@ export default function IntegrationManagement() {
       </div>
       <div className="grid gap-4">
         {[
-          { name: "Slack", status: "Connected" }
-          { name: "Salesforce", status: "Connected" }
+          { name: "Slack", status: "Connected" },
+          { name: "Salesforce", status: "Connected" },
         ].map((int) => (
           <Card key={int.name}>
             <CardContent className="pt-6">

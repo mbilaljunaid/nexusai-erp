@@ -14,25 +14,25 @@ export default function PatientManagement() {
   const [newPatient, setNewPatient] = useState({ mrn: "", name: "", dob: "", gender: "M", status: "active" });
 
   const { data: patients = [], isLoading } = useQuery({
-    queryKey: ["/api/healthcare-patients"]
-    
+    queryKey: ["/api/healthcare-patients"],
+    queryFn: () => fetch("/api/healthcare-patients").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/healthcare-patients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/healthcare-patients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-patients"] });
       setNewPatient({ mrn: "", name: "", dob: "", gender: "M", status: "active" });
       toast({ title: "Patient registered" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/healthcare-patients/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/healthcare-patients/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-patients"] });
       toast({ title: "Patient deleted" });
-    }
+    },
   });
 
   const active = patients.filter((p: any) => p.status === "active").length;

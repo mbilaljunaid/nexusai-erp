@@ -14,25 +14,25 @@ export default function BatchOrdersManagement() {
   const [newBatch, setNewBatch] = useState({ batchId: "", formulaId: "", quantity: "100", status: "planned" });
 
   const { data: batches = [], isLoading } = useQuery({
-    queryKey: ["/api/batch-orders"]
-    
+    queryKey: ["/api/batch-orders"],
+    queryFn: () => fetch("/api/batch-orders").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/batch-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/batch-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/batch-orders"] });
       setNewBatch({ batchId: "", formulaId: "", quantity: "100", status: "planned" });
       toast({ title: "Batch order created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/batch-orders/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/batch-orders/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/batch-orders"] });
       toast({ title: "Batch deleted" });
-    }
+    },
   });
 
   const completed = batches.filter((b: any) => b.status === "completed").length;

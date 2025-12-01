@@ -13,16 +13,16 @@ export default function HRAnalyticsDashboard() {
   const formMetadata = getFormMetadata("hrAnalytics");
   
   const turnoverData = [
-    { month: "Jan", turnover: 2 }
-    { month: "Feb", turnover: 1 }
-    { month: "Mar", turnover: 3 }
+    { month: "Jan", turnover: 2 },
+    { month: "Feb", turnover: 1 },
+    { month: "Mar", turnover: 3 },
   ];
   const depData = [
-    { name: "Sales", value: 25 }
-    { name: "Engineering", value: 35 }
-    { name: "HR", value: 8 }
-    { name: "Finance", value: 12 }
-    { name: "Operations", value: 20 }
+    { name: "Sales", value: 25 },
+    { name: "Engineering", value: 35 },
+    { name: "HR", value: 8 },
+    { name: "Finance", value: 12 },
+    { name: "Operations", value: 20 },
   ];
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 

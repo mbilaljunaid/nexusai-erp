@@ -14,25 +14,25 @@ export default function RevenueForecasting() {
   const [newForecast, setNewForecast] = useState({ period: "Q2", baseline: "", confidence: "85" });
 
   const { data: forecasts = [], isLoading } = useQuery({
-    queryKey: ["/api/analytics/forecast"]
-    
+    queryKey: ["/api/analytics/forecast"],
+    queryFn: () => fetch("/api/analytics/forecast").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/analytics/forecast", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/analytics/forecast", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/forecast"] });
       setNewForecast({ period: "Q2", baseline: "", confidence: "85" });
       toast({ title: "Forecast created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/analytics/forecast/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/analytics/forecast/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/forecast"] });
       toast({ title: "Forecast deleted" });
-    }
+    },
   });
 
   return (

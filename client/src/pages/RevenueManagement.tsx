@@ -5,8 +5,8 @@ import { TrendingUp } from "lucide-react";
 
 export default function RevenueManagement() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/hospitality-revenue"]
-    
+    queryKey: ["/api/hospitality-revenue"],
+    queryFn: () => fetch("/api/hospitality-revenue").then(r => r.json()).catch(() => []),
   });
 
   const totalRevenue = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.revenue) || 0), 0);

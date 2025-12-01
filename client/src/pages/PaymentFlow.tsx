@@ -20,23 +20,23 @@ export default function PaymentFlow() {
   const [activeNav, setActiveNav] = useState("all");
 
   const { data: payments = [] } = useQuery<Payment[]>({
-    queryKey: ["/api/payments"]
-    retry: false
+    queryKey: ["/api/payments"],
+    retry: false,
   });
 
   const stats = {
-    total: (payments || []).length
-    pending: (payments || []).filter(p => p.status === "pending").length
-    completed: (payments || []).filter(p => p.status === "completed").length
-    failed: (payments || []).filter(p => p.status === "failed").length
-    totalProcessed: (payments || []).filter(p => p.status === "completed").reduce((sum, p) => sum + parseFloat(p.amount || "0"), 0)
+    total: (payments || []).length,
+    pending: (payments || []).filter(p => p.status === "pending").length,
+    completed: (payments || []).filter(p => p.status === "completed").length,
+    failed: (payments || []).filter(p => p.status === "failed").length,
+    totalProcessed: (payments || []).filter(p => p.status === "completed").reduce((sum, p) => sum + parseFloat(p.amount || "0"), 0),
   };
 
   const navItems = [
-    { id: "all", label: "All", icon: CreditCard, color: "text-blue-500" }
-    { id: "pending", label: "Pending", icon: Clock, color: "text-yellow-500" }
-    { id: "completed", label: "Completed", icon: CheckCircle2, color: "text-green-500" }
-    { id: "failed", label: "Failed", icon: AlertCircle, color: "text-red-500" }
+    { id: "all", label: "All", icon: CreditCard, color: "text-blue-500" },
+    { id: "pending", label: "Pending", icon: Clock, color: "text-yellow-500" },
+    { id: "completed", label: "Completed", icon: CheckCircle2, color: "text-green-500" },
+    { id: "failed", label: "Failed", icon: AlertCircle, color: "text-red-500" },
   ];
 
   return (

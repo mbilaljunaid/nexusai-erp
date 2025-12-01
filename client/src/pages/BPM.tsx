@@ -9,10 +9,10 @@ export default function BPM() {
   const [activeNav, setActiveNav] = useState("overview");
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
-    { id: "processes", label: "Processes", icon: Workflow, color: "text-purple-500" }
-    { id: "workflows", label: "Workflows", icon: Zap, color: "text-green-500" }
-    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-orange-500" }
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "processes", label: "Processes", icon: Workflow, color: "text-purple-500" },
+    { id: "workflows", label: "Workflows", icon: Zap, color: "text-green-500" },
+    { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-orange-500" },
   ];
 
   return (
@@ -37,12 +37,12 @@ export default function BPM() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { name: "Process Mapping", description: "Visualize and design business processes" }
-                  { name: "Workflow Automation", description: "Automate repetitive tasks and approvals" }
-                  { name: "Optimization", description: "Identify bottlenecks and improvements" }
-                  { name: "Monitoring", description: "Track process performance and metrics" }
-                  { name: "Compliance", description: "Enforce rules and compliance checks" }
-                  { name: "Analytics", description: "Analyze process efficiency and ROI" }
+                  { name: "Process Mapping", description: "Visualize and design business processes" },
+                  { name: "Workflow Automation", description: "Automate repetitive tasks and approvals" },
+                  { name: "Optimization", description: "Identify bottlenecks and improvements" },
+                  { name: "Monitoring", description: "Track process performance and metrics" },
+                  { name: "Compliance", description: "Enforce rules and compliance checks" },
+                  { name: "Analytics", description: "Analyze process efficiency and ROI" },
                 ].map((capability) => (
                   <Button key={capability.name} variant="outline" className="h-auto flex flex-col items-start justify-start p-4">
                     <span className="font-medium">{capability.name}</span>

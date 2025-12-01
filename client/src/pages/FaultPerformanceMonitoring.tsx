@@ -14,25 +14,25 @@ export default function FaultPerformanceMonitoring() {
   const [newFault, setNewFault] = useState({ eventId: "", nodeId: "", severity: "medium", status: "open" });
 
   const { data: faults = [], isLoading } = useQuery({
-    queryKey: ["/api/network-faults"]
-    
+    queryKey: ["/api/network-faults"],
+    queryFn: () => fetch("/api/network-faults").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/network-faults", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/network-faults", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/network-faults"] });
       setNewFault({ eventId: "", nodeId: "", severity: "medium", status: "open" });
       toast({ title: "Fault logged" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/network-faults/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/network-faults/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/network-faults"] });
       toast({ title: "Fault deleted" });
-    }
+    },
   });
 
   const critical = faults.filter((f: any) => f.severity === "critical").length;

@@ -13,25 +13,25 @@ export default function PartsInventory() {
   const [newPart, setNewPart] = useState({ partId: "", partName: "", quantity: "0", reorder: "50" });
 
   const { data: parts = [], isLoading } = useQuery({
-    queryKey: ["/api/auto-parts"]
-    
+    queryKey: ["/api/auto-parts"],
+    queryFn: () => fetch("/api/auto-parts").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/auto-parts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/auto-parts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-parts"] });
       setNewPart({ partId: "", partName: "", quantity: "0", reorder: "50" });
       toast({ title: "Part added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/auto-parts/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/auto-parts/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auto-parts"] });
       toast({ title: "Part deleted" });
-    }
+    },
   });
 
   const lowStock = parts.filter((p: any) => (parseInt(p.quantity) || 0) < (parseInt(p.reorder) || 50)).length;

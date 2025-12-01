@@ -5,8 +5,8 @@ import { Truck } from "lucide-react";
 
 export default function ColdChainLogistics() {
   const { data: shipments = [], isLoading } = useQuery({
-    queryKey: ["/api/fb-coldchain"]
-    
+    queryKey: ["/api/fb-coldchain"],
+    queryFn: () => fetch("/api/fb-coldchain").then(r => r.json()).catch(() => []),
   });
 
   const onTime = shipments.filter((s: any) => s.tempBreach === false).length;

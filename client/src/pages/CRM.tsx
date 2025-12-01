@@ -20,15 +20,15 @@ export default function CRM() {
   const { data: leads = [] } = useQuery<any[]>({ queryKey: ["/api/leads"], retry: false });
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
-    { id: "leads", label: "Leads", icon: Users, color: "text-green-500" }
-    { id: "opportunities", label: "Opportunities", icon: Target, color: "text-purple-500" }
-    { id: "accounts", label: "Accounts", icon: FileText, color: "text-orange-500" }
-    { id: "contacts", label: "Contacts", icon: Phone, color: "text-pink-500" }
-    { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-cyan-500" }
-    { id: "pipeline", label: "Pipeline", icon: TrendingUp, color: "text-indigo-500" }
-    { id: "analytics", label: "Analytics", icon: Activity, color: "text-yellow-500" }
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" }
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "leads", label: "Leads", icon: Users, color: "text-green-500" },
+    { id: "opportunities", label: "Opportunities", icon: Target, color: "text-purple-500" },
+    { id: "accounts", label: "Accounts", icon: FileText, color: "text-orange-500" },
+    { id: "contacts", label: "Contacts", icon: Phone, color: "text-pink-500" },
+    { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-cyan-500" },
+    { id: "pipeline", label: "Pipeline", icon: TrendingUp, color: "text-indigo-500" },
+    { id: "analytics", label: "Analytics", icon: Activity, color: "text-yellow-500" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
   ];
 
   return (
@@ -95,8 +95,8 @@ export default function CRM() {
       {activeNav === "opportunities" && (
         <div className="space-y-4">
           <Breadcrumb items={[
-            { label: "CRM", path: "/crm" }
-            { label: "Opportunities", path: "/crm/opportunities" }
+            { label: "CRM", path: "/crm" },
+            { label: "Opportunities", path: "/crm/opportunities" },
           ]} />
           <Card><CardHeader><CardTitle>Sales Opportunities</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Track and manage sales opportunities and deals</p></CardContent></Card>
         </div>
@@ -105,8 +105,8 @@ export default function CRM() {
       {activeNav === "customers" && (
         <div className="space-y-4">
           <Breadcrumb items={[
-            { label: "CRM", path: "/crm" }
-            { label: "Customers", path: "/crm/customers" }
+            { label: "CRM", path: "/crm" },
+            { label: "Customers", path: "/crm/customers" },
           ]} />
           <Card><CardHeader><CardTitle>Accounts & Contacts</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Manage customer accounts and contact information</p></CardContent></Card>
         </div>
@@ -115,8 +115,8 @@ export default function CRM() {
       {activeNav === "campaigns" && (
         <div className="space-y-4">
           <Breadcrumb items={[
-            { label: "CRM", path: "/crm" }
-            { label: "Campaigns", path: "/crm/campaigns" }
+            { label: "CRM", path: "/crm" },
+            { label: "Campaigns", path: "/crm/campaigns" },
           ]} />
           <Card><CardHeader><CardTitle>Marketing Campaigns</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Create and manage marketing campaigns</p></CardContent></Card>
         </div>
@@ -125,8 +125,8 @@ export default function CRM() {
       {activeNav === "pipeline" && (
         <div className="space-y-4">
           <Breadcrumb items={[
-            { label: "CRM", path: "/crm" }
-            { label: "Pipeline", path: "/crm/pipeline" }
+            { label: "CRM", path: "/crm" },
+            { label: "Pipeline", path: "/crm/pipeline" },
           ]} />
           <Card><CardHeader><CardTitle>Sales Pipeline</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Visualize your sales pipeline by stage</p></CardContent></Card>
         </div>
@@ -135,8 +135,8 @@ export default function CRM() {
       {activeNav === "analytics" && (
         <div className="space-y-4">
           <Breadcrumb items={[
-            { label: "CRM", path: "/crm" }
-            { label: "Analytics", path: "/crm/analytics" }
+            { label: "CRM", path: "/crm" },
+            { label: "Analytics", path: "/crm/analytics" },
           ]} />
           <Card><CardHeader><CardTitle>CRM Analytics</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Reports, forecasts, and performance metrics</p></CardContent></Card>
         </div>
@@ -145,8 +145,8 @@ export default function CRM() {
       {activeNav === "settings" && (
         <div className="space-y-4">
           <Breadcrumb items={[
-            { label: "CRM", path: "/crm" }
-            { label: "Settings", path: "/crm/settings" }
+            { label: "CRM", path: "/crm" },
+            { label: "Settings", path: "/crm/settings" },
           ]} />
           <Card><CardHeader><CardTitle>CRM Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure CRM workflows and customizations</p></CardContent></Card>
         </div>

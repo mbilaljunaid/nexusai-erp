@@ -14,25 +14,25 @@ export default function EstimationWorkbook() {
   const [newEst, setNewEst] = useState({ project: "Project-A", description: "", qty: "100", rate: "500", margin: "15", status: "draft" });
 
   const { data: estimates = [], isLoading } = useQuery({
-    queryKey: ["/api/estimations"]
-    
+    queryKey: ["/api/estimations"],
+    queryFn: () => fetch("/api/estimations").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/estimations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/estimations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/estimations"] });
       setNewEst({ project: "Project-A", description: "", qty: "100", rate: "500", margin: "15", status: "draft" });
       toast({ title: "Estimate created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/estimations/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/estimations/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/estimations"] });
       toast({ title: "Estimate deleted" });
-    }
+    },
   });
 
   const totalAmount = estimates.reduce((sum: number, e: any) => sum + ((parseFloat(e.qty) || 0) * (parseFloat(e.rate) || 0)), 0);

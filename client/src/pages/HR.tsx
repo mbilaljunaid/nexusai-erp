@@ -33,20 +33,20 @@ export default function HR() {
   });
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" }
-    { id: "employees", label: "Employees", icon: Users, color: "text-green-500" }
-    { id: "recruitment", label: "Recruitment", icon: Briefcase, color: "text-purple-500" }
-    { id: "payroll", label: "Payroll", icon: DollarSign, color: "text-orange-500" }
-    { id: "performance", label: "Performance", icon: TrendingUp, color: "text-red-500" }
-    { id: "leave", label: "Leave Mgmt", icon: Calendar, color: "text-cyan-500" }
-    { id: "training", label: "Training", icon: BookOpen, color: "text-indigo-500" }
-    { id: "succession", label: "Succession", icon: Target, color: "text-pink-500" }
-    { id: "engagement", label: "Engagement", icon: Heart, color: "text-rose-500" }
-    { id: "compensation", label: "Compensation", icon: Award, color: "text-amber-500" }
-    { id: "attendance", label: "Attendance", icon: Clock, color: "text-teal-500" }
-    { id: "analytics", label: "Analytics", icon: PieChart, color: "text-violet-500" }
-    { id: "policies", label: "Policies", icon: Settings, color: "text-slate-500" }
-    { id: "onboarding", label: "Onboarding", icon: Zap, color: "text-lime-500" }
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
+    { id: "employees", label: "Employees", icon: Users, color: "text-green-500" },
+    { id: "recruitment", label: "Recruitment", icon: Briefcase, color: "text-purple-500" },
+    { id: "payroll", label: "Payroll", icon: DollarSign, color: "text-orange-500" },
+    { id: "performance", label: "Performance", icon: TrendingUp, color: "text-red-500" },
+    { id: "leave", label: "Leave Mgmt", icon: Calendar, color: "text-cyan-500" },
+    { id: "training", label: "Training", icon: BookOpen, color: "text-indigo-500" },
+    { id: "succession", label: "Succession", icon: Target, color: "text-pink-500" },
+    { id: "engagement", label: "Engagement", icon: Heart, color: "text-rose-500" },
+    { id: "compensation", label: "Compensation", icon: Award, color: "text-amber-500" },
+    { id: "attendance", label: "Attendance", icon: Clock, color: "text-teal-500" },
+    { id: "analytics", label: "Analytics", icon: PieChart, color: "text-violet-500" },
+    { id: "policies", label: "Policies", icon: Settings, color: "text-slate-500" },
+    { id: "onboarding", label: "Onboarding", icon: Zap, color: "text-lime-500" },
   ];
 
   return (

@@ -14,25 +14,25 @@ export default function ShipmentPlanning() {
   const [newShipment, setNewShipment] = useState({ order: "SO-001", carrier: "FedEx", items: "", destination: "City", status: "planning" });
 
   const { data: shipments = [], isLoading } = useQuery({
-    queryKey: ["/api/shipment-planning"]
-    
+    queryKey: ["/api/shipment-planning"],
+    queryFn: () => fetch("/api/shipment-planning").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/shipment-planning", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/shipment-planning", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/shipment-planning"] });
       setNewShipment({ order: "SO-001", carrier: "FedEx", items: "", destination: "City", status: "planning" });
       toast({ title: "Shipment created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/shipment-planning/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/shipment-planning/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/shipment-planning"] });
       toast({ title: "Shipment deleted" });
-    }
+    },
   });
 
   const shippedCount = shipments.filter((s: any) => s.status === "shipped").length;

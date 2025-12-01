@@ -13,25 +13,25 @@ export default function AccountDirectory() {
   const [newAccount, setNewAccount] = useState({ name: "", industry: "", employees: "", revenue: "" });
 
   const { data: accounts = [], isLoading } = useQuery({
-    queryKey: ["/api/crm/accounts"]
-    
+    queryKey: ["/api/crm/accounts"],
+    queryFn: () => fetch("/api/crm/accounts").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/crm/accounts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/crm/accounts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/accounts"] });
       setNewAccount({ name: "", industry: "", employees: "", revenue: "" });
       toast({ title: "Account created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/crm/accounts/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/crm/accounts/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/accounts"] });
       toast({ title: "Account deleted" });
-    }
+    },
   });
 
   return (

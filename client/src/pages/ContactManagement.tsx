@@ -13,25 +13,25 @@ export default function ContactManagement() {
   const [newContact, setNewContact] = useState({ name: "", company: "", title: "", email: "", phone: "" });
 
   const { data: contacts = [], isLoading } = useQuery({
-    queryKey: ["/api/crm/contacts"]
-    
+    queryKey: ["/api/crm/contacts"],
+    queryFn: () => fetch("/api/crm/contacts").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/crm/contacts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/crm/contacts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/contacts"] });
       setNewContact({ name: "", company: "", title: "", email: "", phone: "" });
       toast({ title: "Contact added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/crm/contacts/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/crm/contacts/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/crm/contacts"] });
       toast({ title: "Contact deleted" });
-    }
+    },
   });
 
   return (

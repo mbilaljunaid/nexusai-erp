@@ -5,8 +5,8 @@ import { TrendingUp } from "lucide-react";
 
 export default function LogisticsBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/logistics-bi"]
-    
+    queryKey: ["/api/logistics-bi"],
+    queryFn: () => fetch("/api/logistics-bi").then(r => r.json()).catch(() => []),
   });
 
   const totalCost = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.cost) || 0), 0);

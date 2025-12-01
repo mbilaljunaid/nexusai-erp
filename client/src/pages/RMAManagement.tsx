@@ -14,25 +14,25 @@ export default function RMAManagement() {
   const [newRMA, setNewRMA] = useState({ rmaId: "", reason: "defective", status: "open", disposition: "replace", refundAmount: "0" });
 
   const { data: rmas = [], isLoading } = useQuery({
-    queryKey: ["/api/rma"]
-    
+    queryKey: ["/api/rma"],
+    queryFn: () => fetch("/api/rma").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/rma", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/rma", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/rma"] });
       setNewRMA({ rmaId: "", reason: "defective", status: "open", disposition: "replace", refundAmount: "0" });
       toast({ title: "RMA created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/rma/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/rma/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/rma"] });
       toast({ title: "RMA deleted" });
-    }
+    },
   });
 
   const closed = rmas.filter((r: any) => r.status === "closed").length;

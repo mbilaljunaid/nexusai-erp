@@ -5,8 +5,8 @@ import { Brain, TrendingUp } from "lucide-react";
 
 export default function DemandForecastingAI() {
   const { data: forecasts = [], isLoading } = useQuery({
-    queryKey: ["/api/demand-forecast"]
-    
+    queryKey: ["/api/demand-forecast"],
+    queryFn: () => fetch("/api/demand-forecast").then(r => r.json()).catch(() => []),
   });
 
   const highConfidence = forecasts.filter((f: any) => f.confidenceScore >= 0.8).length;

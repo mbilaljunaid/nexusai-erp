@@ -10,8 +10,8 @@ export default function ThirdPartyApps() {
       </div>
       <div className="grid gap-4">
         {[
-          { app: "Slack", connected: true, users: 125 }
-          { app: "Salesforce", connected: true, users: 50 }
+          { app: "Slack", connected: true, users: 125 },
+          { app: "Salesforce", connected: true, users: 50 },
         ].map((app) => (
           <Card key={app.app}>
             <CardContent className="pt-6">

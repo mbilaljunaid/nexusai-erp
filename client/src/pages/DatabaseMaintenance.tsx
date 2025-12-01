@@ -10,8 +10,8 @@ export default function DatabaseMaintenance() {
       </div>
       <div className="grid gap-4">
         {[
-          { task: "Optimize Tables", lastRun: "Yesterday" }
-          { task: "Index Maintenance", lastRun: "2 days ago" }
+          { task: "Optimize Tables", lastRun: "Yesterday" },
+          { task: "Index Maintenance", lastRun: "2 days ago" },
         ].map((t) => (
           <Card key={t.task}>
             <CardContent className="pt-6">

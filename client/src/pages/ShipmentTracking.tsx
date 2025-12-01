@@ -5,8 +5,8 @@ import { MapPin } from "lucide-react";
 
 export default function ShipmentTracking() {
   const { data: events = [], isLoading } = useQuery({
-    queryKey: ["/api/tl-tracking"]
-    
+    queryKey: ["/api/tl-tracking"],
+    queryFn: () => fetch("/api/tl-tracking").then(r => r.json()).catch(() => []),
   });
 
   const inTransit = events.filter((e: any) => e.status === "in-transit").length;

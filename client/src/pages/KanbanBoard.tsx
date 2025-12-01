@@ -10,17 +10,17 @@ export default function KanbanBoard() {
 
   const columns = board?.columns || ["Todo", "In Progress", "Review", "Done"];
   const statusMap: Record<string, string> = {
-    "Todo": "todo"
-    "In Progress": "in_progress"
-    "Review": "review"
-    "Done": "done"
+    "Todo": "todo",
+    "In Progress": "in_progress",
+    "Review": "review",
+    "Done": "done",
   };
 
   const columnColors: Record<string, string> = {
-    "Todo": "bg-gray-50 dark:bg-gray-900"
-    "In Progress": "bg-blue-50 dark:bg-blue-950"
-    "Review": "bg-purple-50 dark:bg-purple-950"
-    "Done": "bg-green-50 dark:bg-green-950"
+    "Todo": "bg-gray-50 dark:bg-gray-900",
+    "In Progress": "bg-blue-50 dark:bg-blue-950",
+    "Review": "bg-purple-50 dark:bg-purple-950",
+    "Done": "bg-green-50 dark:bg-green-950",
   };
 
   const tasksByStatus: Record<string, any[]> = {};

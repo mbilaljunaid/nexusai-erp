@@ -13,25 +13,25 @@ export default function ComplianceReports() {
   const [newReport, setNewReport] = useState({ name: "", framework: "GDPR", format: "PDF" });
 
   const { data: reports = [], isLoading } = useQuery({
-    queryKey: ["/api/compliance/reports"]
-    
+    queryKey: ["/api/compliance/reports"],
+    queryFn: () => fetch("/api/compliance/reports").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/compliance/reports", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/compliance/reports", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance/reports"] });
       setNewReport({ name: "", framework: "GDPR", format: "PDF" });
       toast({ title: "Report created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/compliance/reports/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/compliance/reports/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance/reports"] });
       toast({ title: "Report deleted" });
-    }
+    },
   });
 
   return (

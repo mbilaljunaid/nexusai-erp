@@ -4,10 +4,10 @@ import { Activity, AlertCircle, CheckCircle, Lock } from "lucide-react";
 
 export default function SecurityEventLog() {
   const events = [
-    { id: "e1", type: "login", user: "alice@company.com", status: "success", device: "Chrome/macOS", ip: "192.168.1.100", time: "2025-11-30 10:15 AM" }
-    { id: "e2", type: "mfa", user: "bob@company.com", status: "success", device: "Authenticator App", ip: "192.168.1.101", time: "2025-11-30 09:45 AM" }
-    { id: "e3", type: "password_change", user: "carol@company.com", status: "success", device: "Chrome/Windows", ip: "192.168.1.102", time: "2025-11-30 09:30 AM" }
-    { id: "e4", type: "failed_login", user: "david@company.com", status: "failed", device: "Safari/iPhone", ip: "192.168.1.103", time: "2025-11-30 08:50 AM" }
+    { id: "e1", type: "login", user: "alice@company.com", status: "success", device: "Chrome/macOS", ip: "192.168.1.100", time: "2025-11-30 10:15 AM" },
+    { id: "e2", type: "mfa", user: "bob@company.com", status: "success", device: "Authenticator App", ip: "192.168.1.101", time: "2025-11-30 09:45 AM" },
+    { id: "e3", type: "password_change", user: "carol@company.com", status: "success", device: "Chrome/Windows", ip: "192.168.1.102", time: "2025-11-30 09:30 AM" },
+    { id: "e4", type: "failed_login", user: "david@company.com", status: "failed", device: "Safari/iPhone", ip: "192.168.1.103", time: "2025-11-30 08:50 AM" },
   ];
 
   const getIcon = (type: string) => {

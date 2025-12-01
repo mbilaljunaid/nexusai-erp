@@ -9,8 +9,8 @@ export default function ServiceLevelConfig() {
       </div>
       <div className="grid gap-4">
         {[
-          { level: "Premium", response: "1h", resolution: "4h" }
-          { level: "Standard", response: "4h", resolution: "24h" }
+          { level: "Premium", response: "1h", resolution: "4h" },
+          { level: "Standard", response: "4h", resolution: "24h" },
         ].map((sla) => (
           <Card key={sla.level}>
             <CardContent className="pt-6">

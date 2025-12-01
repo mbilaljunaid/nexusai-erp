@@ -5,8 +5,8 @@ import { TrendingUp, TrendingDown } from "lucide-react";
 
 export default function EcommerceBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
-    queryKey: ["/api/ecommerce-metrics"]
-    
+    queryKey: ["/api/ecommerce-metrics"],
+    queryFn: () => fetch("/api/ecommerce-metrics").then(r => r.json()).catch(() => []),
   });
 
   const totalRevenue = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.revenue) || 0), 0);

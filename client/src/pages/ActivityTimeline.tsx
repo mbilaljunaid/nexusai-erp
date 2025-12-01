@@ -12,7 +12,7 @@ export default function ActivityTimeline() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredActivities, setFilteredActivities] = useState<any[]>([]);
   const { data: activities = [] } = useQuery<any[]>({
-    queryKey: ["/api/activities"]
+    queryKey: ["/api/activities"],
   });
   const formMetadata = getFormMetadata("activity");
 

@@ -10,8 +10,8 @@ export default function NotificationSettings() {
       </div>
       <div className="grid gap-4">
         {[
-          { notif: "Email Notifications", enabled: true }
-          { notif: "SMS Alerts", enabled: false }
+          { notif: "Email Notifications", enabled: true },
+          { notif: "SMS Alerts", enabled: false },
         ].map((n) => (
           <Card key={n.notif}>
             <CardContent className="pt-6">

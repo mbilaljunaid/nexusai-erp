@@ -10,29 +10,29 @@ export default function EPMPage() {
   const [activeNav, setActiveNav] = useState("budget");
 
   const budgetData = [
-    { month: "Jan", budgeted: 100000, actual: 98000, variance: -2000 }
-    { month: "Feb", budgeted: 105000, actual: 107500, variance: 2500 }
-    { month: "Mar", budgeted: 110000, actual: 109000, variance: -1000 }
+    { month: "Jan", budgeted: 100000, actual: 98000, variance: -2000 },
+    { month: "Feb", budgeted: 105000, actual: 107500, variance: 2500 },
+    { month: "Mar", budgeted: 110000, actual: 109000, variance: -1000 },
   ];
 
   const forecastData = [
-    { period: "Q1", revenue: 450000, expenses: 320000, profit: 130000 }
-    { period: "Q2", revenue: 520000, expenses: 350000, profit: 170000 }
-    { period: "Q3", revenue: 580000, expenses: 380000, profit: 200000 }
-    { period: "Q4", revenue: 620000, expenses: 400000, profit: 220000 }
+    { period: "Q1", revenue: 450000, expenses: 320000, profit: 130000 },
+    { period: "Q2", revenue: 520000, expenses: 350000, profit: 170000 },
+    { period: "Q3", revenue: 580000, expenses: 380000, profit: 200000 },
+    { period: "Q4", revenue: 620000, expenses: 400000, profit: 220000 },
   ];
 
   const scenarios = [
-    { name: "Base Case", revenue: 2170000, expenses: 1450000, profit: 720000, probability: 0.6 }
-    { name: "Optimistic", revenue: 2500000, expenses: 1350000, profit: 1150000, probability: 0.25 }
-    { name: "Pessimistic", revenue: 1800000, expenses: 1600000, profit: 200000, probability: 0.15 }
+    { name: "Base Case", revenue: 2170000, expenses: 1450000, profit: 720000, probability: 0.6 },
+    { name: "Optimistic", revenue: 2500000, expenses: 1350000, profit: 1150000, probability: 0.25 },
+    { name: "Pessimistic", revenue: 1800000, expenses: 1600000, profit: 200000, probability: 0.15 },
   ];
 
   const navItems = [
-    { id: "budget", label: "Budget", icon: DollarSign, color: "text-blue-500" }
-    { id: "forecast", label: "Forecast", icon: TrendingUp, color: "text-green-500" }
-    { id: "scenarios", label: "Scenarios", icon: Zap, color: "text-purple-500" }
-    { id: "allocation", label: "Allocation", icon: PieChart, color: "text-orange-500" }
+    { id: "budget", label: "Budget", icon: DollarSign, color: "text-blue-500" },
+    { id: "forecast", label: "Forecast", icon: TrendingUp, color: "text-green-500" },
+    { id: "scenarios", label: "Scenarios", icon: Zap, color: "text-purple-500" },
+    { id: "allocation", label: "Allocation", icon: PieChart, color: "text-orange-500" },
   ];
 
   return (
@@ -118,9 +118,9 @@ export default function EPMPage() {
           <CardContent>
             <div className="space-y-2">
               {[
-                { dept: "Sales", allocated: 250000, utilized: 235000 }
-                { dept: "Engineering", allocated: 300000, utilized: 298000 }
-                { dept: "Marketing", allocated: 150000, utilized: 142000 }
+                { dept: "Sales", allocated: 250000, utilized: 235000 },
+                { dept: "Engineering", allocated: 300000, utilized: 298000 },
+                { dept: "Marketing", allocated: 150000, utilized: 142000 },
               ].map((item) => (
                 <div key={item.dept} className="flex justify-between items-center p-2 border rounded">
                   <p className="text-sm font-medium">{item.dept}</p>

@@ -5,8 +5,8 @@ import { Boxes, AlertCircle } from "lucide-react";
 
 export default function InventoryOptimization() {
   const { data: inventory = [], isLoading } = useQuery({
-    queryKey: ["/api/inventory-optimization"]
-    
+    queryKey: ["/api/inventory-optimization"],
+    queryFn: () => fetch("/api/inventory-optimization").then(r => r.json()).catch(() => []),
   });
 
   const overstock = inventory.filter((i: any) => i.daysOfSupply > 90).length;

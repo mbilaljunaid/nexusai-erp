@@ -11,7 +11,7 @@ export default function VendorManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredVendors, setFilteredVendors] = useState<any[]>([]);
   const { data: vendors = [] } = useQuery<any[]>({
-    queryKey: ["/api/vendors"]
+    queryKey: ["/api/vendors"],
   });
   const formMetadata = getFormMetadata("vendor");
 

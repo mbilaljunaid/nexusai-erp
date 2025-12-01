@@ -14,25 +14,25 @@ export default function ReturnsRefundsManagement() {
   const [newReturn, setNewReturn] = useState({ orderId: "", reason: "defective", status: "pending", refundAmount: "0" });
 
   const { data: returns = [], isLoading } = useQuery({
-    queryKey: ["/api/returns-refunds"]
-    
+    queryKey: ["/api/returns-refunds"],
+    queryFn: () => fetch("/api/returns-refunds").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/returns-refunds", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/returns-refunds", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/returns-refunds"] });
       setNewReturn({ orderId: "", reason: "defective", status: "pending", refundAmount: "0" });
       toast({ title: "Return created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/returns-refunds/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/returns-refunds/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/returns-refunds"] });
       toast({ title: "Return deleted" });
-    }
+    },
   });
 
   const processed = returns.filter((r: any) => r.status === "processed").length;

@@ -14,25 +14,25 @@ export default function HousekeepingManagement() {
   const [newTask, setNewTask] = useState({ taskId: "", roomId: "", housekeeper: "", status: "pending" });
 
   const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ["/api/hospitality-housekeeping"]
-    
+    queryKey: ["/api/hospitality-housekeeping"],
+    queryFn: () => fetch("/api/hospitality-housekeeping").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/hospitality-housekeeping", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/hospitality-housekeeping", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-housekeeping"] });
       setNewTask({ taskId: "", roomId: "", housekeeper: "", status: "pending" });
       toast({ title: "Task created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/hospitality-housekeeping/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/hospitality-housekeeping/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hospitality-housekeeping"] });
       toast({ title: "Task deleted" });
-    }
+    },
   });
 
   const completed = tasks.filter((t: any) => t.status === "completed").length;

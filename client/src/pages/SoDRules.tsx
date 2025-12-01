@@ -6,9 +6,9 @@ import { AlertTriangle, Plus } from "lucide-react";
 
 export default function SoDRules() {
   const [rules] = useState([
-    { id: "sod1", role1: "Approver", role2: "Requestor", description: "Cannot approve own requests", mitigation: "Manager approval required", status: "active" }
-    { id: "sod2", role1: "Operator", role2: "Auditor", description: "Cannot audit own operations", mitigation: "Independent audit team", status: "active" }
-    { id: "sod3", role1: "Preparer", role2: "Authorizer", description: "Different persons for different stages", mitigation: "Workflow routing", status: "active" }
+    { id: "sod1", role1: "Approver", role2: "Requestor", description: "Cannot approve own requests", mitigation: "Manager approval required", status: "active" },
+    { id: "sod2", role1: "Operator", role2: "Auditor", description: "Cannot audit own operations", mitigation: "Independent audit team", status: "active" },
+    { id: "sod3", role1: "Preparer", role2: "Authorizer", description: "Different persons for different stages", mitigation: "Workflow routing", status: "active" },
   ]);
 
   return (

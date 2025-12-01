@@ -4,10 +4,10 @@ import { GitBranch, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function IntegrationStatus() {
   const integrations = [
-    { id: "i1", name: "Salesforce CRM", type: "Real-time", status: "connected", lastSync: "Nov 30, 10:15 AM", records: 5432 }
-    { id: "i2", name: "QuickBooks", type: "Scheduled", status: "connected", lastSync: "Nov 30, 09:00 AM", records: 2156 }
-    { id: "i3", name: "Stripe Payments", type: "Real-time", status: "disconnected", lastSync: "Nov 30, 08:30 AM", records: 0 }
-    { id: "i4", name: "Google Workspace", type: "Batch", status: "connected", lastSync: "Nov 29, 06:00 PM", records: 8934 }
+    { id: "i1", name: "Salesforce CRM", type: "Real-time", status: "connected", lastSync: "Nov 30, 10:15 AM", records: 5432 },
+    { id: "i2", name: "QuickBooks", type: "Scheduled", status: "connected", lastSync: "Nov 30, 09:00 AM", records: 2156 },
+    { id: "i3", name: "Stripe Payments", type: "Real-time", status: "disconnected", lastSync: "Nov 30, 08:30 AM", records: 0 },
+    { id: "i4", name: "Google Workspace", type: "Batch", status: "connected", lastSync: "Nov 29, 06:00 PM", records: 8934 },
   ];
 
   return (

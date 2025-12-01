@@ -16,32 +16,32 @@ export default function WebsiteBuilder() {
   const [newPage, setNewPage] = useState({ name: "", status: "draft", template: "blank" });
 
   const { data: pages = [], isLoading } = useQuery({
-    queryKey: ["/api/website-pages-builder"]
-    
+    queryKey: ["/api/website-pages-builder"],
+    queryFn: () => fetch("/api/website-pages-builder").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/website-pages-builder", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/website-pages-builder", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/website-pages-builder"] });
       setNewPage({ name: "", status: "draft", template: "blank" });
       toast({ title: "Page created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/website-pages-builder/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/website-pages-builder/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/website-pages-builder"] });
       toast({ title: "Page deleted" });
-    }
+    },
   });
 
   const navItems = [
-    { id: "pages", label: "Pages", icon: Layout, color: "text-blue-500" }
-    { id: "templates", label: "Templates", icon: Palette, color: "text-purple-500" }
-    { id: "design", label: "Design", icon: Eye, color: "text-green-500" }
-    { id: "publish", label: "Publish", icon: Zap, color: "text-orange-500" }
+    { id: "pages", label: "Pages", icon: Layout, color: "text-blue-500" },
+    { id: "templates", label: "Templates", icon: Palette, color: "text-purple-500" },
+    { id: "design", label: "Design", icon: Eye, color: "text-green-500" },
+    { id: "publish", label: "Publish", icon: Zap, color: "text-orange-500" },
   ];
 
   return (

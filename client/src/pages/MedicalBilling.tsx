@@ -14,25 +14,25 @@ export default function MedicalBilling() {
   const [newClaim, setNewClaim] = useState({ claimId: "", encounterId: "", amount: "1000", status: "pending" });
 
   const { data: claims = [], isLoading } = useQuery({
-    queryKey: ["/api/healthcare-billing"]
-    
+    queryKey: ["/api/healthcare-billing"],
+    queryFn: () => fetch("/api/healthcare-billing").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/healthcare-billing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/healthcare-billing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-billing"] });
       setNewClaim({ claimId: "", encounterId: "", amount: "1000", status: "pending" });
       toast({ title: "Claim created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/healthcare-billing/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/healthcare-billing/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/healthcare-billing"] });
       toast({ title: "Claim deleted" });
-    }
+    },
   });
 
   const approved = claims.filter((c: any) => c.status === "approved").length;

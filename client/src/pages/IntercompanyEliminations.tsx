@@ -14,25 +14,25 @@ export default function IntercompanyEliminations() {
   const [newTx, setNewTx] = useState({ entity: "Entity A", partner: "Entity B", amount: "", currency: "USD", status: "pending" });
 
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ["/api/intercompany-transactions"]
-    
+    queryKey: ["/api/intercompany-transactions"],
+    queryFn: () => fetch("/api/intercompany-transactions").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/intercompany-transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/intercompany-transactions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/intercompany-transactions"] });
       setNewTx({ entity: "Entity A", partner: "Entity B", amount: "", currency: "USD", status: "pending" });
       toast({ title: "Intercompany transaction created" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/intercompany-transactions/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/intercompany-transactions/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/intercompany-transactions"] });
       toast({ title: "Transaction deleted" });
-    }
+    },
   });
 
   const processedTx = transactions.filter((t: any) => t.status === "processed");

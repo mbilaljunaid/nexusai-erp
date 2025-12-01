@@ -13,10 +13,10 @@ export default function TeamUtilization() {
         <CardHeader><CardTitle className="text-base">Team Members</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           {[
-            { agent: "John Support", tickets: 12, utilization: "95%" }
-            { agent: "Sarah Help", tickets: 8, utilization: "64%" }
-            { agent: "Mike Assistant", tickets: 10, utilization: "80%" }
-            { agent: "Lisa Support", tickets: 6, utilization: "48%" }
+            { agent: "John Support", tickets: 12, utilization: "95%" },
+            { agent: "Sarah Help", tickets: 8, utilization: "64%" },
+            { agent: "Mike Assistant", tickets: 10, utilization: "80%" },
+            { agent: "Lisa Support", tickets: 6, utilization: "48%" },
           ].map((member, idx) => (
             <div key={idx} className="flex items-center justify-between p-2 border rounded">
               <div>

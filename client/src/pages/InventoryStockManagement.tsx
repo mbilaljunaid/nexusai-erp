@@ -13,25 +13,25 @@ export default function InventoryStockManagement() {
   const [newStock, setNewStock] = useState({ productId: "", quantity: "100", reorderPoint: "20", supplierLeadTime: "5" });
 
   const { data: stocks = [], isLoading } = useQuery({
-    queryKey: ["/api/inventory-stock"]
-    
+    queryKey: ["/api/inventory-stock"],
+    queryFn: () => fetch("/api/inventory-stock").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/inventory-stock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json())
+    mutationFn: (data: any) => fetch("/api/inventory-stock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory-stock"] });
       setNewStock({ productId: "", quantity: "100", reorderPoint: "20", supplierLeadTime: "5" });
       toast({ title: "Stock added" });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/inventory-stock/${id}`, { method: "DELETE" })
+    mutationFn: (id: string) => fetch(`/api/inventory-stock/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory-stock"] });
       toast({ title: "Stock deleted" });
-    }
+    },
   });
 
   const lowStock = stocks.filter((s: any) => (parseFloat(s.quantity) || 0) <= (parseFloat(s.reorderPoint) || 0)).length;

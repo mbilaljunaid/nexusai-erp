@@ -11,17 +11,17 @@ export default function SalesPipeline() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredOpportunities, setFilteredOpportunities] = useState<any[]>([]);
   const { data: opportunities = [] } = useQuery<any[]>({
-    queryKey: ["/api/crm/opportunities"]
+    queryKey: ["/api/crm/opportunities"],
   });
   const formMetadata = getFormMetadata("opportunity");
 
   const stages = [
-    { name: "Prospecting", opportunities: 8, value: "$120K" }
-    { name: "Qualification", opportunities: 5, value: "$180K" }
-    { name: "Needs Analysis", opportunities: 4, value: "$320K" }
-    { name: "Proposal", opportunities: 3, value: "$750K" }
-    { name: "Negotiation", opportunities: 2, value: "$540K" }
-    { name: "Closed Won", opportunities: 6, value: "$1.2M" }
+    { name: "Prospecting", opportunities: 8, value: "$120K" },
+    { name: "Qualification", opportunities: 5, value: "$180K" },
+    { name: "Needs Analysis", opportunities: 4, value: "$320K" },
+    { name: "Proposal", opportunities: 3, value: "$750K" },
+    { name: "Negotiation", opportunities: 2, value: "$540K" },
+    { name: "Closed Won", opportunities: 6, value: "$1.2M" },
   ];
 
   return (
