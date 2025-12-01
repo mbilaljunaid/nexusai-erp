@@ -5,12 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { PurchaseOrderForm } from "@/components/forms/PurchaseOrderForm";
+import { PurchaseRequisitionForm } from "@/components/forms/PurchaseRequisitionForm";
+import { RFQForm } from "@/components/forms/RFQForm";
 import AdjustmentEntryForm from "@/components/forms/AdjustmentEntryForm";
 import VendorEntryForm from "@/components/forms/VendorEntryForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { FormSearch } from "@/components/FormSearch";
 import { useQuery } from "@tanstack/react-query";
-import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users } from "lucide-react";
+import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users, Mail, ClipboardList } from "lucide-react";
 import { Link, useRoute } from "wouter";
 
 export default function ERP() {
@@ -31,14 +33,18 @@ export default function ERP() {
   const { data: invoices = [] } = useQuery({ queryKey: ["/api/invoices"], retry: false });
   const { data: pos = [] } = useQuery({ queryKey: ["/api/purchase-orders"], retry: false });
   const { data: vendors = [] } = useQuery({ queryKey: ["/api/vendors"], retry: false });
+  const { data: requisitions = [] } = useQuery({ queryKey: ["/api/procurement/requisitions"], retry: false });
+  const { data: rfqs = [] } = useQuery({ queryKey: ["/api/procurement/rfqs"], retry: false });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
     { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500" },
     { id: "ap", label: "Accounts Payable", icon: FileText, color: "text-orange-500" },
     { id: "ar", label: "Accounts Receivable", icon: TrendingUp, color: "text-purple-500" },
-    { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500" },
+    { id: "requisitions", label: "Requisitions", icon: ClipboardList, color: "text-blue-600" },
+    { id: "rfqs", label: "RFQs", icon: Mail, color: "text-teal-500" },
     { id: "po", label: "Purchase Orders", icon: ShoppingCart, color: "text-pink-500" },
+    { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500" },
     { id: "quality", label: "Quality Control", icon: Zap, color: "text-cyan-500" },
     { id: "suppliers", label: "Suppliers", icon: Users, color: "text-indigo-500" },
     { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
@@ -157,6 +163,87 @@ export default function ERP() {
         </div>
       )}
 
+      {activeNav === "requisitions" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <FormSearch
+              placeholder="Search requisitions by number or department..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['requisitionNumber', 'department']}
+              data={requisitions as any[]}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-new-requisition">+ New Requisition</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((r: any, idx: number) => (
+                <Card key={r.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{r.requisitionNumber}</p><p className="text-sm text-muted-foreground">{r.department}</p></div><Badge>{r.status || 'PENDING'}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No requisitions found</p></CardContent></Card>
+            )}
+          </div>
+          <PurchaseRequisitionForm />
+        </div>
+      )}
+
+      {activeNav === "rfqs" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <FormSearch
+              placeholder="Search RFQs by number or scope..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['rfqNumber', 'scope']}
+              data={rfqs as any[]}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-new-rfq">+ New RFQ</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((r: any, idx: number) => (
+                <Card key={r.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{r.rfqNumber}</p><p className="text-sm text-muted-foreground">{r.scope?.substring(0, 50)}</p></div><Badge>{r.status || 'SENT'}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No RFQs found</p></CardContent></Card>
+            )}
+          </div>
+          <RFQForm />
+        </div>
+      )}
+
+      {activeNav === "po" && (
+        <div className="space-y-4">
+          <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4">
+            <p className="text-sm font-medium text-blue-900 dark:text-blue-100">PO Workflow: Create a requisition → Send RFQ to vendors → Convert to Purchase Order → Invoice linked to PO</p>
+          </Card>
+          <div className="flex gap-2 items-center">
+            <FormSearch
+              placeholder="Search POs by ID or vendor..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['id', 'vendor']}
+              data={pos as any[]}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-new-po">+ New PO</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((p: any, idx: number) => (
+                <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-start"><div className="flex-1"><p className="font-semibold">PO {p.id}</p><p className="text-sm text-muted-foreground">{p.vendor}</p><p className="text-xs text-muted-foreground mt-1">Linked Invoices: {Math.floor(Math.random() * 5)}</p></div><Badge>${(p.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No purchase orders found</p></CardContent></Card>
+            )}
+          </div>
+          <PurchaseOrderForm />
+        </div>
+      )}
+
       {activeNav === "inventory" && (
         <div className="space-y-4">
           <div className="flex gap-2 items-center">
@@ -183,31 +270,6 @@ export default function ERP() {
         </div>
       )}
 
-      {activeNav === "po" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <FormSearch
-              placeholder="Search POs by ID or vendor..."
-              value={searchQuery}
-              onChange={setSearchQuery}
-              searchFields={['id', 'vendor']}
-              data={pos as any[]}
-              onFilter={(filtered) => setFilteredInvoices(filtered)}
-            />
-            <Button data-testid="button-new-po">+ New PO</Button>
-          </div>
-          <div className="space-y-2">
-            {filteredInvoices.length > 0 ? (
-              filteredInvoices.map((p: any, idx: number) => (
-                <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">PO {p.id}</p><p className="text-sm text-muted-foreground">{p.vendor}</p></div><Badge>${(p.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
-              ))
-            ) : (
-              <Card><CardContent className="p-4"><p className="text-muted-foreground">No purchase orders found</p></CardContent></Card>
-            )}
-          </div>
-          <PurchaseOrderForm />
-        </div>
-      )}
 
       {activeNav === "quality" && <div className="space-y-4"><AdjustmentEntryForm /></div>}
 
