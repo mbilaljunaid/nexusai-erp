@@ -53,24 +53,24 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-900 dark:text-white flex flex-col">
       <Header />
       
       <main className="flex-1">
       {/* Hero Section */}
       <section className="px-4 py-24 text-center">
-        <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">NOW AVAILABLE</Badge>
-        <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+        <Badge className="mb-4 bg-blue-600/20 dark:bg-blue-600/30 text-blue-700 dark:text-blue-300 border-blue-400 dark:border-blue-500/50">NOW AVAILABLE</Badge>
+        <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 dark:from-blue-400 to-blue-500 dark:to-cyan-400 bg-clip-text text-transparent">
           Nexus AI — Your All-in-One AI-Powered ERP
         </h1>
-        <p className="text-2xl text-slate-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+        <p className="text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-4xl mx-auto leading-relaxed">
           Transforming Enterprises Across 40+ Industries with AI, Automation & End-to-End Modules
         </p>
         <div className="flex gap-4 justify-center">
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg" data-testid="button-request-demo">
+          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg" data-testid="button-request-demo">
             Request a Demo <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
-          <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
+          <Button size="lg" variant="outline" className="text-slate-900 dark:text-white border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
             Explore Modules
           </Button>
         </div>
@@ -78,12 +78,12 @@ export default function LandingPage() {
 
       {/* Industry Coverage */}
       <section className="px-4 py-20 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12">Industry Coverage</h2>
+        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">Industry Coverage</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {industries.map((ind, i) => (
             <Link key={i} href={`/industry/${ind.toLowerCase().replace(/ /g, "-")}`}>
-              <Card className="bg-slate-800 hover:bg-blue-700 border-slate-700 cursor-pointer p-4 text-center transition-all hover-elevate" data-testid={`card-industry-${ind.toLowerCase()}`}>
-                <p className="font-semibold">{ind}</p>
+              <Card className="bg-slate-100 dark:bg-slate-800 hover:bg-blue-100 dark:hover:bg-blue-700 border-slate-200 dark:border-slate-700 cursor-pointer p-4 text-center transition-all hover-elevate" data-testid={`card-industry-${ind.toLowerCase()}`}>
+                <p className="font-semibold text-slate-900 dark:text-white">{ind}</p>
               </Card>
             </Link>
           ))}
@@ -91,14 +91,14 @@ export default function LandingPage() {
       </section>
 
       {/* Modules Overview */}
-      <section className="px-4 py-20 bg-slate-800/50">
+      <section className="px-4 py-20 bg-slate-100 dark:bg-slate-800/50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">15 Enterprise Modules</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">15 Enterprise Modules</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {modules.map((mod, i) => (
-              <Card key={i} className="bg-slate-700 border-slate-600 p-4 text-center hover-elevate">
+              <Card key={i} className="bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 p-4 text-center hover-elevate">
                 <p className="text-3xl mb-2">{mod.icon}</p>
-                <p className="font-semibold">{mod.title}</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{mod.title}</p>
               </Card>
             ))}
           </div>
@@ -107,7 +107,7 @@ export default function LandingPage() {
 
       {/* Advantages */}
       <section className="px-4 py-20 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12">Why Choose NexusAI</h2>
+        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">Why Choose NexusAI</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
             { icon: Sparkles, title: "AI-Driven Automation", desc: "Real-time recommendations & predictive insights" },
@@ -117,29 +117,29 @@ export default function LandingPage() {
             { icon: TrendingUp, title: "Faster Implementation", desc: "50% faster deployment vs traditional ERP" },
             { icon: ArrowRight, title: "Scalable Architecture", desc: "From SMB to Fortune 500 ready" },
           ].map((item, i) => (
-            <Card key={i} className="bg-slate-800 border-slate-700 p-6">
-              <item.icon className="w-8 h-8 text-blue-400 mb-4" />
-              <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-              <p className="text-slate-300 text-sm">{item.desc}</p>
+            <Card key={i} className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 p-6">
+              <item.icon className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-slate-900 dark:text-white">{item.title}</h3>
+              <p className="text-slate-600 dark:text-slate-300 text-sm">{item.desc}</p>
             </Card>
           ))}
         </div>
       </section>
 
       {/* Competitor Comparison */}
-      <section className="px-4 py-20 bg-slate-800/50">
+      <section className="px-4 py-20 bg-slate-100 dark:bg-slate-800/50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">vs Competitors</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">vs Competitors</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-600">
-                  <th className="text-left p-3">Feature</th>
-                  <th className="text-center p-3">NexusAI</th>
-                  <th className="text-center p-3">Oracle</th>
-                  <th className="text-center p-3">Salesforce</th>
-                  <th className="text-center p-3">Odoo</th>
-                  <th className="text-center p-3">Jira</th>
+                <tr className="border-b border-slate-300 dark:border-slate-600">
+                  <th className="text-left p-3 text-slate-900 dark:text-white">Feature</th>
+                  <th className="text-center p-3 text-slate-900 dark:text-white">NexusAI</th>
+                  <th className="text-center p-3 text-slate-900 dark:text-white">Oracle</th>
+                  <th className="text-center p-3 text-slate-900 dark:text-white">Salesforce</th>
+                  <th className="text-center p-3 text-slate-900 dark:text-white">Odoo</th>
+                  <th className="text-center p-3 text-slate-900 dark:text-white">Jira</th>
                 </tr>
               </thead>
               <tbody>
@@ -151,10 +151,10 @@ export default function LandingPage() {
                   ["Transparent Pricing", "✅", "❌", "❌", "✅", "✅"],
                   ["Multi-tenant Ready", "✅", "⚠️", "✅", "✅", "✅"],
                 ].map((row, i) => (
-                  <tr key={i} className="border-b border-slate-600/50 hover:bg-slate-700/30">
-                    <td className="p-3 font-semibold">{row[0]}</td>
+                  <tr key={i} className="border-b border-slate-200 dark:border-slate-600/50 hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                    <td className="p-3 font-semibold text-slate-900 dark:text-white">{row[0]}</td>
                     {row.slice(1).map((cell, j) => (
-                      <td key={j} className="text-center p-3">{cell}</td>
+                      <td key={j} className="text-center p-3 text-slate-900 dark:text-white">{cell}</td>
                     ))}
                   </tr>
                 ))}
@@ -167,7 +167,7 @@ export default function LandingPage() {
       {/* Demo CTA */}
       <section className="px-4 py-20 max-w-2xl mx-auto">
         <Card className="bg-gradient-to-r from-blue-600 to-blue-700 border-0 p-8">
-          <h2 className="text-3xl font-bold mb-4">Ready to Transform?</h2>
+          <h2 className="text-3xl font-bold mb-4 text-white">Ready to Transform?</h2>
           <p className="text-blue-100 mb-6">Get instant access to a fully seeded demo environment for your industry.</p>
           <div className="space-y-4">
             <input
