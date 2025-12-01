@@ -5935,5 +5935,67 @@ export async function registerRoutes(
     }
   });
 
+  // Generic endpoint handler for all 809 forms
+  app.get("/api/:formId", (req, res) => {
+    const { formId } = req.params;
+    try {
+      const items = storage.get(formId, []);
+      res.json(items);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to retrieve items" });
+    }
+  });
+
+  app.post("/api/:formId", (req, res) => {
+    const { formId } = req.params;
+    try {
+      const item = { ...req.body, id: Date.now().toString(), createdAt: new Date().toISOString() };
+      const items = storage.get(formId, []);
+      items.push(item);
+      storage.set(formId, items);
+      res.status(201).json(item);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create item" });
+    }
+  });
+
+  app.get("/api/:formId/:id", (req, res) => {
+    const { formId, id } = req.params;
+    try {
+      const items = storage.get(formId, []);
+      const item = items.find((i: any) => i.id === id);
+      if (!item) return res.status(404).json({ error: "Not found" });
+      res.json(item);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to retrieve item" });
+    }
+  });
+
+  app.patch("/api/:formId/:id", (req, res) => {
+    const { formId, id } = req.params;
+    try {
+      const items = storage.get(formId, []);
+      const index = items.findIndex((i: any) => i.id === id);
+      if (index === -1) return res.status(404).json({ error: "Not found" });
+      items[index] = { ...items[index], ...req.body };
+      storage.set(formId, items);
+      res.json(items[index]);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update item" });
+    }
+  });
+
+  app.delete("/api/:formId/:id", (req, res) => {
+    const { formId, id } = req.params;
+    try {
+      const items = storage.get(formId, []);
+      const filtered = items.filter((i: any) => i.id !== id);
+      storage.set(formId, filtered);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete item" });
+    }
+  });
+
   return httpServer;
 }
