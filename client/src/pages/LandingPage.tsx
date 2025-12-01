@@ -67,12 +67,12 @@ export default function LandingPage() {
           Transforming Enterprises Across 40+ Industries with AI, Automation & End-to-End Modules
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <Link href="/login">
+          <Link to="/login">
             <Button size="lg" className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white text-lg" data-testid="button-login">
               Sign In <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
-          <Link href="/signup">
+          <Link to="/signup">
             <Button size="lg" variant="outline" data-testid="button-signup">
               Sign Up <ArrowRight className="ml-2 w-5 h-5" />
             </Button>

@@ -202,7 +202,7 @@ export default function SignupPage() {
                 {/* Login Link */}
                 <p className="text-center text-slate-400 text-sm">
                   Already have an account?{" "}
-                  <Link href="/login">
+                  <Link to="/login">
                     <a className="text-blue-400 hover:text-blue-300 font-medium">Sign in</a>
                   </Link>
                 </p>
@@ -212,7 +212,7 @@ export default function SignupPage() {
 
           {/* Back to Home */}
           <div className="text-center mt-8">
-            <Link href="/">
+            <Link to="/">
               <a className="text-slate-400 hover:text-slate-300 text-sm">← Back to home</a>
             </Link>
           </div>

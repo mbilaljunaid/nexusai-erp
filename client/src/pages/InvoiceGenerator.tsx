@@ -65,7 +65,7 @@ export default function InvoiceGenerator() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Link href="/invoice-list">
+        <Link to="/invoice-list">
           <Card className="cursor-pointer hover-elevate">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">

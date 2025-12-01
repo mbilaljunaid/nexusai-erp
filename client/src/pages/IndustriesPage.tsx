@@ -119,7 +119,7 @@ export default function IndustriesPage() {
               >
                 <h3 className="text-lg font-bold text-white mb-2">{industry.name}</h3>
                 <p className="text-sm text-slate-300 mb-4">{industry.description}</p>
-                <Link href={`/demo?industry=${industry.name}`}>
+                <Link to={`/demo?industry=${industry.name}`}>
                   <Button size="sm" variant="outline" className="w-full text-blue-400 border-blue-500 hover:bg-blue-500/10" data-testid={`button-demo-${industry.name.replace(/\s+/g, '-').toLowerCase()}`}>
                     Request Demo
                   </Button>
@@ -156,7 +156,7 @@ export default function IndustriesPage() {
               <p className="text-slate-300 mb-6">
                 Select your industry to see how NexusAI transforms operations, reduces costs, and drives growth
               </p>
-              <Link href="/demo">
+              <Link to="/demo">
                 <Button className="w-full bg-blue-600 hover:bg-blue-700" data-testid="button-request-demo-industries">
                   Request Demo <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>

@@ -232,7 +232,7 @@ export default function ForgotPasswordPage() {
 
           {/* Back to Login */}
           <div className="text-center mt-8">
-            <Link href="/login">
+            <Link to="/login">
               <a className="text-slate-400 hover:text-slate-300 text-sm">← Back to login</a>
             </Link>
           </div>

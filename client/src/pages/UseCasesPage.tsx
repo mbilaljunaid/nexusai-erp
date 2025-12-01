@@ -370,12 +370,12 @@ export default function UseCasesPage() {
               Let our experts show you how NexusAI can solve your specific challenges and drive measurable results
             </p>
             <div className="flex gap-4 justify-center">
-              <Link href="/demo">
+              <Link to="/demo">
                 <Button className="bg-blue-600 hover:bg-blue-700" data-testid="button-request-demo-usecases">
                   Request a Demo <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
-              <Link href="/industries">
+              <Link to="/industries">
                 <Button variant="outline" className="text-white border-white hover:bg-white/10" data-testid="button-explore-industries">
                   Explore Industries
                 </Button>

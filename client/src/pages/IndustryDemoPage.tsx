@@ -161,7 +161,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
                       <li>✓ Direct access link</li>
                       <li>✓ Complete walkthrough guide</li>
                     </ul>
-                    <Link href="/industries">
+                    <Link to="/industries">
                       <Button variant="outline" className="w-full text-white border-white hover:bg-white/10">
                         Back to Industries
                       </Button>
@@ -180,7 +180,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
             <p className="text-slate-300 mb-8">
               Our experts can help you implement NexusAI for your specific needs
             </p>
-            <Link href="/about">
+            <Link to="/about">
               <Button className="bg-blue-600 hover:bg-blue-700" data-testid="button-contact-sales">
                 Contact Sales <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
