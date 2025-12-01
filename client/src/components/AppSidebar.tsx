@@ -33,7 +33,7 @@ import {
 
 // MAIN MODULES - Clean sidebar navigation
 const mainModules = [
-  { title: "Dashboard", icon: LayoutDashboard, href: "/" },
+  { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { title: "CRM & Sales", icon: Users, href: "/crm", badge: "9 pages" },
   { title: "ERP & Finance", icon: DollarSign, href: "/erp", badge: "9 pages" },
   { title: "Projects", icon: Zap, href: "/projects", badge: "4 pages" },
