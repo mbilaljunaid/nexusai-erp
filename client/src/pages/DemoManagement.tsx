@@ -214,7 +214,7 @@ export default function DemoManagement() {
                             <Copy className="w-4 h-4" />
                           </Button>
                           <Button variant="outline" size="sm" onClick={() => resetDemo(demo.id)} data-testid={`button-reset-demo-${demo.id}`}>
-                            <Refresh className="w-4 h-4" />
+                            <RefreshCw className="w-4 h-4" />
                           </Button>
                           <Button variant="outline" size="sm" className="text-red-400" data-testid={`button-delete-demo-${demo.id}`}>
                             <Trash2 className="w-4 h-4" />
