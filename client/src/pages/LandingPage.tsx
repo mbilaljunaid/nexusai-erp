@@ -1,202 +1,132 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Header, Footer } from "@/components/Navigation";
+import { ArrowRight, Zap, Lock, Cpu, BarChart3, Workflow } from "lucide-react";
+import { useEffect } from "react";
 
 export default function LandingPage() {
-  const [email, setEmail] = useState("");
-  const [company, setCompany] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  // Set page title
   useEffect(() => {
-    document.title = "NexusAI - AI-Powered ERP for Enterprise | 40+ Industries";
+    document.title = "NexusAI - Enterprise AI Platform";
   }, []);
 
-  const handleDemo = async () => {
-    try {
-      const res = await fetch("/api/demos/request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, company, industry: "General" }),
-      });
-      if (res.ok) setSubmitted(true);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const industries = [
-    "Automotive", "Banking", "Healthcare", "Education", "Retail", "Manufacturing",
-    "Logistics", "Telecom", "Insurance", "Fashion", "Government", "Hospitality"
-  ];
-
-  const modules = [
-    { title: "ERP Core", icon: "📦" },
-    { title: "CRM", icon: "👥" },
-    { title: "HR & Payroll", icon: "👔" },
-    { title: "Projects", icon: "📊" },
-    { title: "EPM", icon: "📈" },
-    { title: "Finance", icon: "💰" },
-    { title: "Inventory", icon: "🏭" },
-    { title: "Compliance", icon: "✅" },
-    { title: "BPM", icon: "⚙️" },
-    { title: "Website", icon: "🌐" },
-    { title: "Email", icon: "📧" },
-    { title: "BI & Analytics", icon: "📉" },
-    { title: "AI Copilot", icon: "🤖" },
-    { title: "Consolidation", icon: "🔗" },
-    { title: "Financial Close", icon: "✨" },
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-900 dark:text-white flex flex-col">
-      <Header />
-      
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
+            NexusAI
+          </div>
+          <Link href="/dashboard">
+            <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+              Access Dashboard <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Content */}
       <main className="flex-1">
-      {/* Hero Section */}
-      <section className="px-4 py-24 text-center">
-        <Badge className="mb-4 bg-blue-600/20 dark:bg-blue-600/30 text-blue-700 dark:text-blue-300 border-blue-400 dark:border-blue-500/50">NOW AVAILABLE</Badge>
-        <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 dark:from-blue-400 to-blue-500 dark:to-cyan-400 bg-clip-text text-transparent">
-          Nexus AI — Your All-in-One AI-Powered ERP
-        </h1>
-        <p className="text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-4xl mx-auto leading-relaxed">
-          Transforming Enterprises Across 40+ Industries with AI, Automation & End-to-End Modules
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg" data-testid="button-request-demo">
-            Request a Demo <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
-          <Button size="lg" variant="outline" className="text-slate-900 dark:text-white border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
-            Explore Modules
-          </Button>
-        </div>
-      </section>
+        {/* Hero */}
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+              Enterprise AI Platform for <span className="bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">Every Industry</span>
+            </h1>
+            <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto">
+              Manage your entire enterprise with AI-powered automation across 40+ industries. 809 pre-built applications covering CRM, ERP, HR, Finance, and more.
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Link href="/dashboard">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                  Get Started <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Button size="lg" variant="outline">
+                Learn More
+              </Button>
+            </div>
+          </div>
+        </section>
 
-      {/* Industry Coverage */}
-      <section className="px-4 py-20 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">Industry Coverage</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {industries.map((ind, i) => (
-            <Link key={i} href={`/industry/${ind.toLowerCase().replace(/ /g, "-")}`}>
-              <Card className="bg-slate-100 dark:bg-slate-800 hover:bg-blue-100 dark:hover:bg-blue-700 border-slate-200 dark:border-slate-700 cursor-pointer p-4 text-center transition-all hover-elevate" data-testid={`card-industry-${ind.toLowerCase()}`}>
-                <p className="font-semibold text-slate-900 dark:text-white">{ind}</p>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
+        {/* Features */}
+        <section className="bg-slate-50 dark:bg-slate-900/50 py-20">
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-3xl font-bold text-center mb-12">Powerful Features</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: <Cpu className="w-8 h-8 text-blue-600 dark:text-blue-400" />,
+                  title: "AI-Powered Automation",
+                  description: "Automate workflows with intelligent AI assistance and real-time insights"
+                },
+                {
+                  icon: <Lock className="w-8 h-8 text-blue-600 dark:text-blue-400" />,
+                  title: "Enterprise Security",
+                  description: "Role-based access control, multi-tenant isolation, and compliance standards"
+                },
+                {
+                  icon: <BarChart3 className="w-8 h-8 text-blue-600 dark:text-blue-400" />,
+                  title: "Advanced Analytics",
+                  description: "Real-time dashboards and predictive analytics for data-driven decisions"
+                },
+                {
+                  icon: <Workflow className="w-8 h-8 text-blue-600 dark:text-blue-400" />,
+                  title: "800+ Pre-Built Forms",
+                  description: "Ready-to-use applications for sales, finance, HR, supply chain, and more"
+                },
+                {
+                  icon: <Zap className="w-8 h-8 text-blue-600 dark:text-blue-400" />,
+                  title: "Lightning Fast",
+                  description: "Optimized performance with PostgreSQL backend and real-time updates"
+                },
+                {
+                  icon: <ArrowRight className="w-8 h-8 text-blue-600 dark:text-blue-400" />,
+                  title: "Easy Integration",
+                  description: "Connect with your existing tools and systems seamlessly"
+                }
+              ].map((feature, i) => (
+                <div key={i} className="p-6 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800">
+                  {feature.icon}
+                  <h3 className="text-xl font-semibold mt-4 mb-2">{feature.title}</h3>
+                  <p className="text-slate-600 dark:text-slate-400">{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      {/* Modules Overview */}
-      <section className="px-4 py-20 bg-slate-100 dark:bg-slate-800/50">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">15 Enterprise Modules</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {modules.map((mod, i) => (
-              <Card key={i} className="bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 p-4 text-center hover-elevate">
-                <p className="text-3xl mb-2">{mod.icon}</p>
-                <p className="font-semibold text-slate-900 dark:text-white">{mod.title}</p>
-              </Card>
+        {/* Industries */}
+        <section className="max-w-7xl mx-auto px-6 py-20">
+          <h2 className="text-3xl font-bold text-center mb-12">Trusted Across Industries</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {["Manufacturing", "Finance", "Healthcare", "Retail", "Logistics", "Technology", "Education", "Government", "Automotive", "Telecom", "Energy", "Construction"].map((industry, i) => (
+              <div key={i} className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 text-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
+                <p className="font-medium text-sm">{industry}</p>
+              </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Advantages */}
-      <section className="px-4 py-20 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">Why Choose NexusAI</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { icon: Sparkles, title: "AI-Driven Automation", desc: "Real-time recommendations & predictive insights" },
-            { icon: Zap, title: "Pre-Configured Workflows", desc: "Industry-specific templates ready to use" },
-            { icon: Globe, title: "All-in-One Platform", desc: "No need for multiple disconnected systems" },
-            { icon: Shield, title: "Enterprise Security", desc: "RBAC, multi-tenant isolation, audit logging" },
-            { icon: TrendingUp, title: "Faster Implementation", desc: "50% faster deployment vs traditional ERP" },
-            { icon: ArrowRight, title: "Scalable Architecture", desc: "From SMB to Fortune 500 ready" },
-          ].map((item, i) => (
-            <Card key={i} className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 p-6">
-              <item.icon className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-4" />
-              <h3 className="font-bold text-lg mb-2 text-slate-900 dark:text-white">{item.title}</h3>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">{item.desc}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Competitor Comparison */}
-      <section className="px-4 py-20 bg-slate-100 dark:bg-slate-800/50">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">vs Competitors</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-300 dark:border-slate-600">
-                  <th className="text-left p-3 text-slate-900 dark:text-white">Feature</th>
-                  <th className="text-center p-3 text-slate-900 dark:text-white">NexusAI</th>
-                  <th className="text-center p-3 text-slate-900 dark:text-white">Oracle</th>
-                  <th className="text-center p-3 text-slate-900 dark:text-white">Salesforce</th>
-                  <th className="text-center p-3 text-slate-900 dark:text-white">Odoo</th>
-                  <th className="text-center p-3 text-slate-900 dark:text-white">Jira</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["AI-Powered Insights", "✅", "❌", "⚠️", "❌", "❌"],
-                  ["Fast Implementation", "✅", "❌", "⚠️", "⚠️", "✅"],
-                  ["Pre-configured Workflows", "✅", "❌", "⚠️", "⚠️", "✅"],
-                  ["40+ Industries", "✅", "❌", "❌", "❌", "❌"],
-                  ["Transparent Pricing", "✅", "❌", "❌", "✅", "✅"],
-                  ["Multi-tenant Ready", "✅", "⚠️", "✅", "✅", "✅"],
-                ].map((row, i) => (
-                  <tr key={i} className="border-b border-slate-200 dark:border-slate-600/50 hover:bg-slate-50 dark:hover:bg-slate-700/30">
-                    <td className="p-3 font-semibold text-slate-900 dark:text-white">{row[0]}</td>
-                    {row.slice(1).map((cell, j) => (
-                      <td key={j} className="text-center p-3 text-slate-900 dark:text-white">{cell}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* CTA */}
+        <section className="bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-700 dark:to-cyan-700 py-16">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">Ready to Transform Your Enterprise?</h2>
+            <p className="text-blue-100 mb-8 text-lg">Access the complete NexusAI dashboard with 809 pre-built applications.</p>
+            <Link href="/dashboard">
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-100">
+                Launch Dashboard <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Demo CTA */}
-      <section className="px-4 py-20 max-w-2xl mx-auto">
-        <Card className="bg-gradient-to-r from-blue-600 to-blue-700 border-0 p-8">
-          <h2 className="text-3xl font-bold mb-4 text-white">Ready to Transform?</h2>
-          <p className="text-blue-100 mb-6">Get instant access to a fully seeded demo environment for your industry.</p>
-          <div className="space-y-4">
-            <input
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-blue-200"
-              data-testid="input-demo-email"
-            />
-            <input
-              type="text"
-              placeholder="Your Company"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-blue-200"
-              data-testid="input-demo-company"
-            />
-            <Button onClick={handleDemo} className="w-full bg-white text-blue-600 hover:bg-blue-50 font-bold text-lg" data-testid="button-demo-cta">
-              {submitted ? "Demo Request Sent!" : "Click Here to See Demo"}
-            </Button>
-            {submitted && <p className="text-center text-blue-100">Check your email for access details!</p>}
-          </div>
-        </Card>
-      </section>
-
+        </section>
       </main>
 
-      <Footer />
+      {/* Footer */}
+      <footer className="border-t border-slate-200 dark:border-slate-800 py-8 bg-slate-50 dark:bg-slate-900">
+        <div className="max-w-7xl mx-auto px-6 text-center text-slate-600 dark:text-slate-400 text-sm">
+          <p>&copy; 2025 NexusAI. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
