@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { EmployeeEntryForm } from "@/components/forms/EmployeeEntryForm";
+import { EmployeeToPayrollForm } from "@/components/forms/EmployeeToPayrollForm";
 import PayrollForm from "@/components/forms/PayrollForm";
 import PerformanceRatingForm from "@/components/forms/PerformanceRatingForm";
 import { LeaveRequestForm } from "@/components/forms/LeaveRequestForm";
@@ -19,6 +20,7 @@ export default function HR() {
   const [activeNav, setActiveNav] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
+  const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
   const employeesMetadata = getFormMetadata("employees");
 
   useEffect(() => {
@@ -114,7 +116,45 @@ export default function HR() {
         </div>
       )}
 
-      {activeNav === "payroll" && <div className="space-y-4"><PayrollForm /></div>}
+      {activeNav === "payroll" && (
+        <div className="space-y-4">
+          {selectedEmployee ? (
+            <EmployeeToPayrollForm 
+              employee={selectedEmployee}
+              onClose={() => setSelectedEmployee(null)}
+            />
+          ) : (
+            <div className="space-y-4">
+              <PayrollForm />
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Create Payroll from Employee</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground">Select an employee to generate payroll entry</p>
+                  <div className="space-y-2">
+                    {[
+                      { id: "1", name: "John Smith", employeeId: "E-001", salary: 85000, department: "Engineering", status: "Active" },
+                      { id: "2", name: "Sarah Johnson", employeeId: "E-002", salary: 92000, department: "Finance", status: "Active" },
+                      { id: "3", name: "Michael Chen", employeeId: "E-003", salary: 78000, department: "Operations", status: "Active" },
+                    ].map((emp) => (
+                      <div key={emp.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold">{emp.name}</p>
+                          <p className="text-sm text-muted-foreground">{emp.employeeId} • {emp.department} • ${emp.salary.toLocaleString()}</p>
+                        </div>
+                        <Button size="sm" onClick={() => setSelectedEmployee(emp)} data-testid={`button-payroll-${emp.id}`}>
+                          Create Payroll
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
+      )}
 
       {activeNav === "performance" && <div className="space-y-4"><PerformanceRatingForm /></div>}
 

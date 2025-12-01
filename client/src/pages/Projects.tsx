@@ -10,6 +10,7 @@ import { TaskCard, type Task } from "@/components/TaskCard";
 import { ResourceAllocation } from "@/components/ResourceAllocation";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
 import { TaskEntryForm } from "@/components/forms/TaskEntryForm";
+import { ProjectToGLForm } from "@/components/forms/ProjectToGLForm";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Search, Filter, FolderKanban, CheckCircle2, Clock, AlertTriangle, Sparkles, LayoutGrid, ListTodo, Users, Settings, Zap, BarChart3, TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -31,6 +32,7 @@ export default function Projects() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [activeNav, setActiveNav] = useState("overview");
+  const [selectedProject, setSelectedProject] = useState<any>(null);
 
   useEffect(() => {
     if (params?.page) {
@@ -184,7 +186,49 @@ export default function Projects() {
 
       {activeNav === "analytics" && (
         <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Project Analytics</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Reports and insights on project performance</p><Button size="sm" className="mt-4">+ View Reports</Button></CardContent></Card>
+          {selectedProject ? (
+            <ProjectToGLForm 
+              project={selectedProject}
+              onClose={() => setSelectedProject(null)}
+            />
+          ) : (
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Project Analytics & Costing</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">Select a project to record costs in general ledger</p>
+                </CardContent>
+              </Card>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { id: "1", name: "Website Redesign", budget: 250000, spent: 185000, status: "In Progress", department: "Product" },
+                  { id: "2", name: "Mobile App Development", budget: 500000, spent: 320000, status: "In Progress", department: "Engineering" },
+                  { id: "3", name: "Cloud Migration", budget: 150000, spent: 145000, status: "Completed", department: "Infrastructure" },
+                ].map((proj) => (
+                  <Card key={proj.id} className="hover-elevate">
+                    <CardContent className="pt-6">
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <p className="font-semibold">{proj.name}</p>
+                          <Badge>{proj.status}</Badge>
+                        </div>
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>Budget: ${proj.budget.toLocaleString()}</span>
+                          <span>Spent: ${proj.spent.toLocaleString()}</span>
+                        </div>
+                        <Progress value={(proj.spent / proj.budget) * 100} className="h-2" />
+                        <Button size="sm" onClick={() => setSelectedProject(proj)} className="w-full" data-testid={`button-gl-${proj.id}`}>
+                          Record GL Entry
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
