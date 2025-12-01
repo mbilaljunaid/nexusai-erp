@@ -26,10 +26,8 @@ export function Breadcrumb({ items = [] }: BreadcrumbProps) {
               {item.label}
             </span>
           ) : (
-            <Link to={item.path}>
-              <a className="text-muted-foreground hover:text-foreground transition-colors" data-testid={`breadcrumb-link-${item.label}`}>
-                {item.label}
-              </a>
+            <Link to={item.path} className="text-muted-foreground hover:text-foreground transition-colors" data-testid={`breadcrumb-link-${item.label}`}>
+              {item.label}
             </Link>
           )}
         </div>
