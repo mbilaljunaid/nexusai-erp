@@ -148,8 +148,8 @@ export default function LoginPage() {
                     <input type="checkbox" className="rounded" />
                     <span>Remember me</span>
                   </label>
-                  <Link href="/forgot-password">
-                    <a style={{ color: `hsl(var(--primary))` }} className="hover:opacity-80">Forgot password?</a>
+                  <Link to="/forgot-password" style={{ color: `hsl(var(--primary))` }} className="hover:opacity-80">
+                    Forgot password?
                   </Link>
                 </div>
 
@@ -180,8 +180,8 @@ export default function LoginPage() {
                 {/* Sign Up Link */}
                 <p className="text-center text-slate-400 text-sm">
                   Don't have an account?{" "}
-                  <Link href="/signup">
-                    <a className="text-blue-400 hover:text-blue-300 font-medium">Sign up</a>
+                  <Link to="/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+                    Sign up
                   </Link>
                 </p>
               </form>
@@ -190,8 +190,8 @@ export default function LoginPage() {
 
           {/* Back to Home */}
           <div className="text-center mt-8">
-            <Link href="/">
-              <a className="text-slate-400 hover:text-slate-300 text-sm">← Back to home</a>
+            <Link to="/" className="text-slate-400 hover:text-slate-300 text-sm">
+              ← Back to home
             </Link>
           </div>
         </div>
