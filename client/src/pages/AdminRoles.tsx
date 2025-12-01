@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 import { queryClient } from "@/lib/queryClient";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -16,7 +19,10 @@ const PERMISSIONS = [
 
 export default function AdminRoles() {
   const [newRole, setNewRole] = useState({ name: "", permissions: [] as string[] });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
   const tenantId = "tenant1";
+  const formMetadata = getFormMetadata("adminRoles");
 
   const { data: roles = [] } = useQuery({
     queryKey: ["/api/roles", tenantId],
