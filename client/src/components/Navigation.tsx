@@ -34,14 +34,18 @@ export function Header() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`text-sm font-medium transition-colors ${
-                  isActive(item.path)
-                    ? "text-blue-400"
-                    : "text-slate-300 hover:text-white"
-                }`}
-                data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                asChild
               >
-                {item.label}
+                <span
+                  className={`text-sm font-medium transition-colors cursor-pointer ${
+                    isActive(item.path)
+                      ? "text-blue-400"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                  data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  {item.label}
+                </span>
               </Link>
             ))}
           </nav>
@@ -77,15 +81,19 @@ export function Header() {
               <Link
                 key={item.path}
                 href={item.path}
-                onClick={() => setMenuOpen(false)}
-                className={`block px-4 py-2 rounded text-sm ${
-                  isActive(item.path)
-                    ? "bg-blue-600 text-white"
-                    : "text-slate-300 hover:bg-slate-800"
-                }`}
-                data-testid={`link-mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                asChild
               >
-                {item.label}
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className={`block w-full text-left px-4 py-2 rounded text-sm ${
+                    isActive(item.path)
+                      ? "bg-blue-600 text-white"
+                      : "text-slate-300 hover:bg-slate-800"
+                  }`}
+                  data-testid={`link-mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  {item.label}
+                </button>
               </Link>
             ))}
             <Link href="/login">
