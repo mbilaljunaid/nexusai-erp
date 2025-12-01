@@ -52,9 +52,9 @@ export function Header() {
 
           {/* CTA & Mobile Menu */}
           <div className="flex items-center gap-3">
-            <Link href="/login">
-              <Button variant="outline" className="hidden md:flex text-white border-slate-600 hover:bg-slate-800" size="sm" data-testid="button-header-login">
-                Login
+            <Link href="/dashboard">
+              <Button variant="outline" className="hidden md:flex text-white border-slate-600 hover:bg-slate-800" size="sm" data-testid="button-header-dashboard">
+                Dashboard
               </Button>
             </Link>
             <Link href="/demo">
