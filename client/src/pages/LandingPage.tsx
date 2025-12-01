@@ -66,15 +66,20 @@ export default function LandingPage() {
         <p className="landing-hero-subtitle text-2xl mb-8 max-w-4xl mx-auto leading-relaxed">
           Transforming Enterprises Across 40+ Industries with AI, Automation & End-to-End Modules
         </p>
-        <div className="flex gap-4 justify-center">
-          <Button size="lg" className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white text-lg" data-testid="button-request-demo">
-            Request a Demo <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
-          <Link href="/dashboard">
-            <Button size="lg" variant="outline" data-testid="button-explore-modules">
-              Explore Modules <ArrowRight className="ml-2 w-5 h-5" />
+        <div className="flex gap-4 justify-center flex-wrap">
+          <Link href="/login">
+            <Button size="lg" className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white text-lg" data-testid="button-login">
+              Sign In <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
+          <Link href="/signup">
+            <Button size="lg" variant="outline" data-testid="button-signup">
+              Sign Up <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
+          <Button size="lg" variant="secondary" data-testid="button-request-demo">
+            Request a Demo <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
         </div>
       </section>
 

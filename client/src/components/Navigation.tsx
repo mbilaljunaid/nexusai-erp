@@ -54,12 +54,17 @@ export function Header() {
           <div className="flex items-center gap-3">
             <Link href="/login">
               <Button variant="outline" className="hidden md:flex text-white border-slate-600 hover:bg-slate-800" size="sm" data-testid="button-header-login">
-                Login
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button className="hidden md:flex bg-blue-600 hover:bg-blue-700" size="sm" data-testid="button-header-signup">
+                Sign Up
               </Button>
             </Link>
             <Link href="/demo">
-              <Button className="hidden md:flex bg-blue-600 hover:bg-blue-700" size="sm" data-testid="button-header-demo">
-                Request Demo
+              <Button className="hidden md:flex bg-slate-700 hover:bg-slate-600" size="sm" data-testid="button-header-demo">
+                Demo
               </Button>
             </Link>
 
@@ -98,12 +103,17 @@ export function Header() {
             ))}
             <Link href="/login">
               <Button variant="outline" className="w-full text-white border-slate-600 hover:bg-slate-800" data-testid="button-mobile-login">
-                Login
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button className="w-full bg-blue-600 hover:bg-blue-700" data-testid="button-mobile-signup">
+                Sign Up
               </Button>
             </Link>
             <Link href="/demo">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700" data-testid="button-mobile-demo">
-                Request Demo
+              <Button className="w-full bg-slate-700 hover:bg-slate-600" data-testid="button-mobile-demo">
+                Demo
               </Button>
             </Link>
           </nav>
