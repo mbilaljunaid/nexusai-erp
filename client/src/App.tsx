@@ -340,7 +340,6 @@ const SupplyChainLogistics = lazy(() => import("@/pages/SupplyChainLogistics"));
 const OrdersLogistics = lazy(() => import("@/pages/OrdersLogistics"));
 const WarehouseInventoryLogistics = lazy(() => import("@/pages/WarehouseInventoryLogistics"));
 const BillingLogistics = lazy(() => import("@/pages/BillingLogistics"));
-const ThirdPartyLogistics = lazy(() => import("@/pages/ThirdPartyLogistics"));
 const CustomerSubscriberManagement = lazy(() => import("@/pages/CustomerSubscriberManagement"));
 const ServiceProvisioningOrder = lazy(() => import("@/pages/ServiceProvisioningOrder"));
 const NetworkInventoryOSS = lazy(() => import("@/pages/NetworkInventoryOSS"));
