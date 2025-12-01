@@ -10,6 +10,9 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { ExpenseEntryForm } from "@/components/forms/ExpenseEntryForm";
 import { BudgetEntryForm } from "@/components/forms/BudgetEntryForm";
+import { BudgetToVarianceReportForm } from "@/components/forms/BudgetToVarianceReportForm";
+import { InvoiceToPaymentForm } from "@/components/forms/InvoiceToPaymentForm";
+import { ExpenseToGLForm } from "@/components/forms/ExpenseToGLForm";
 import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard } from "lucide-react";
 import { Link } from "wouter";
 
@@ -17,6 +20,9 @@ export default function Finance() {
   const [activeNav, setActiveNav] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
+  const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+  const [selectedExpense, setSelectedExpense] = useState<any>(null);
+  const [selectedBudget, setSelectedBudget] = useState<any>(null);
   const invoicesMetadata = getFormMetadata("invoices");
   
   const { data: invoices = [] } = useQuery<any[]>({
