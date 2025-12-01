@@ -1,126 +1,159 @@
-import { MetricCard } from "@/components/MetricCard";
-import { ActivityFeed } from "@/components/ActivityFeed";
-import { AnalyticsChart } from "@/components/AnalyticsChart";
-import { SystemHealth } from "@/components/SystemHealth";
-import { ResourceAllocation } from "@/components/ResourceAllocation";
-import { LeadCard, type Lead } from "@/components/LeadCard";
-import { TaskCard, type Task } from "@/components/TaskCard";
-import { IndustriesWidget } from "@/components/IndustriesWidget";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Users, 
-  DollarSign, 
-  Target, 
-  FolderKanban,
-  ArrowRight,
-  Sparkles
-} from "lucide-react";
-import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
+import { ArrowRight, Zap, BarChart3, Users, Settings, Building2, Briefcase } from "lucide-react";
 
 export default function Dashboard() {
-  // Fetch real data from backend APIs
-  const { data: leads = [], isLoading: leadsLoading } = useQuery<any[]>({ queryKey: ["/api/leads"], retry: false });
-  const { data: invoices = [], isLoading: invoicesLoading } = useQuery<any[]>({ queryKey: ["/api/invoices"], retry: false });
+  const [, navigate] = useLocation();
 
-  // Transform leads to display format
-  const topLeads: Lead[] = leads.slice(0, 3).map((lead: any, idx: number) => ({
-    id: lead.id || `${idx}`,
-    name: lead.name || "Unknown",
-    email: lead.email || "",
-    company: lead.company || "",
-    status: (lead.status || "new") as Lead["status"],
-    score: Number(lead.score) || 75,
-    value: 45000
-  }));
-
-  const urgentTasks: Task[] = [
-    { id: "1", title: "Follow up with sales leads", status: "todo", priority: "urgent", dueDate: "Today", aiGenerated: true },
-    { id: "2", title: "Review quarterly performance", status: "in_progress", priority: "high", dueDate: "Tomorrow", assignee: { name: "System", initials: "SYS" } },
-    { id: "3", title: "Process pending invoices", status: "todo", priority: "high", dueDate: "Dec 15", aiGenerated: true },
+  const modules = [
+    {
+      name: "CRM",
+      description: "Customer Relationship Management",
+      icon: Users,
+      path: "/crm",
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      name: "ERP",
+      description: "Enterprise Resource Planning",
+      icon: Building2,
+      path: "/erp",
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      name: "HR",
+      description: "Human Resources",
+      icon: Users,
+      path: "/hr",
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      name: "Projects",
+      description: "Project Management",
+      icon: Briefcase,
+      path: "/projects",
+      color: "from-orange-500 to-red-500",
+    },
+    {
+      name: "Analytics",
+      description: "Business Intelligence",
+      icon: BarChart3,
+      path: "/analytics",
+      color: "from-indigo-500 to-blue-500",
+    },
+    {
+      name: "Logistics",
+      description: "Supply Chain & Logistics",
+      icon: Zap,
+      path: "/industry/logistics",
+      color: "from-cyan-500 to-blue-500",
+    },
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-semibold">Dashboard</h1>
-          <p className="text-muted-foreground text-sm">Welcome back! Here's your business overview.</p>
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+      {/* Header */}
+      <div className="border-b bg-white/50 dark:bg-slate-900/50 backdrop-blur">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-white">NexusAI</h1>
+              <p className="text-slate-600 dark:text-slate-400">Enterprise AI-First Platform</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/settings")}
+              data-testid="button-settings"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </Button>
+          </div>
         </div>
-        <Badge variant="secondary" className="bg-primary/10 text-primary">
-          <Sparkles className="h-3 w-3 mr-1" />
-          AI Insights Active
-        </Badge>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Total Leads" value={`${leads.length}`} change={12.5} icon={Users} />
-        <MetricCard title="Total Revenue" value={`$${invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0).toLocaleString()}`} change={8.2} icon={DollarSign} />
-        <MetricCard title="Conversion Rate" value="24.8%" change={-2.1} icon={Target} />
-        <MetricCard title="Forecast Accuracy" value="95%" change={5} icon={FolderKanban} />
-      </div>
+      {/* Hero Section */}
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            Welcome to Your Enterprise Platform
+          </h2>
+          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
+            Manage your entire business with 809+ integrated applications. Choose a module below to get started.
+          </p>
+        </div>
 
-      <div className="space-y-6">
-        <IndustriesWidget />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <AnalyticsChart title="Revenue Trend" type="area" dataKey="value" />
-          
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-4 pb-3">
-              <div className="flex items-center gap-2">
-                <CardTitle className="text-base">AI-Scored Leads (ML Ranking)</CardTitle>
-                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  Live from /api/ai/score-leads
-                </Badge>
-              </div>
-              <Link href="/crm">
-                <Button variant="ghost" size="sm" data-testid="link-view-all-leads">
-                  View All
-                  <ArrowRight className="h-4 w-4 ml-1" />
-                </Button>
-              </Link>
-            </CardHeader>
-            <CardContent>
-              {topLeads.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {topLeads.map((lead) => (
-                    <LeadCard key={lead.id} lead={lead} />
-                  ))}
+        {/* Module Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {modules.map((module) => {
+            const Icon = module.icon;
+            return (
+              <Card
+                key={module.path}
+                className="group hover-elevate cursor-pointer overflow-hidden transition-all"
+                onClick={() => navigate(module.path)}
+                data-testid={`card-module-${module.name.toLowerCase()}`}
+              >
+                <div className={`h-24 bg-gradient-to-r ${module.color} opacity-80 group-hover:opacity-100 transition-opacity`} />
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                        {module.name}
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        {module.description}
+                      </p>
+                    </div>
+                    <Icon className="w-6 h-6 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" />
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-between"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(module.path);
+                    }}
+                    data-testid={`button-enter-${module.name.toLowerCase()}`}
+                  >
+                    Enter Module
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">Loading AI-scored leads from backend...</p>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-4 pb-3">
-              <CardTitle className="text-base">Urgent Tasks</CardTitle>
-              <Link href="/projects">
-                <Button variant="ghost" size="sm" data-testid="link-view-all-tasks">
-                  View All
-                  <ArrowRight className="h-4 w-4 ml-1" />
-                </Button>
-              </Link>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {urgentTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))}
-            </CardContent>
-          </Card>
+              </Card>
+            );
+          })}
         </div>
 
-        <div className="space-y-6">
-          <SystemHealth />
-          <ActivityFeed maxHeight="250px" />
-          <ResourceAllocation />
+        {/* Stats Section */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+          {[
+            { label: "Pages", value: "809+" },
+            { label: "Forms", value: "809+" },
+            { label: "Industries", value: "43+" },
+            { label: "Modules", value: "17+" },
+          ].map((stat) => (
+            <Card key={stat.label} className="p-6 text-center">
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                {stat.value}
+              </p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                {stat.label}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="border-t bg-white/50 dark:bg-slate-900/50 backdrop-blur mt-16">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <p className="text-center text-slate-600 dark:text-slate-400">
+            NexusAI © 2025 • Enterprise AI Platform • All Rights Reserved
+          </p>
         </div>
       </div>
     </div>
