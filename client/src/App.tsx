@@ -428,6 +428,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/crm/:page?" component={CRM} />
       <Route path="/erp/:page?" component={ERP} />
+      <Route path="/finance/:page?" component={Finance} />
       <Route path="/hr/:page?" component={HR} />
       <Route path="/projects/:page?" component={Projects} />
       <Route path="/industry-setup" component={IndustrySetup} />
