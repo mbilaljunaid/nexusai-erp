@@ -117,8 +117,42 @@ export default function CRM() {
         </div>
       )}
 
+      {activeNav === "opportunities" && (
+        <div className="space-y-4">
+          <Breadcrumb items={[
+            { label: "CRM", path: "/crm" },
+            { label: "Opportunities", path: "/crm/opportunities" },
+          ]} />
+          <Card><CardHeader><CardTitle>Sales Opportunities</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Track and manage sales opportunities and deals</p></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "customers" && (
+        <div className="space-y-4">
+          <Breadcrumb items={[
+            { label: "CRM", path: "/crm" },
+            { label: "Customers", path: "/crm/customers" },
+          ]} />
+          <Card><CardHeader><CardTitle>Accounts & Contacts</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Manage customer accounts and contact information</p></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "campaigns" && (
+        <div className="space-y-4">
+          <Breadcrumb items={[
+            { label: "CRM", path: "/crm" },
+            { label: "Campaigns", path: "/crm/campaigns" },
+          ]} />
+          <Card><CardHeader><CardTitle>Marketing Campaigns</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Create and manage marketing campaigns</p></CardContent></Card>
+        </div>
+      )}
+
       {activeNav === "pipeline" && (
         <div className="space-y-4">
+          <Breadcrumb items={[
+            { label: "CRM", path: "/crm" },
+            { label: "Pipeline", path: "/crm/pipeline" },
+          ]} />
           <Card><CardHeader><CardTitle>Sales Pipeline</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Visualize your sales pipeline by stage</p></CardContent></Card>
         </div>
       )}
