@@ -22,7 +22,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/">
+          <Link to="/">
             <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent cursor-pointer" data-testid="link-logo">
               NexusAI
             </div>
@@ -33,8 +33,7 @@ export function Header() {
             {navItems.map(item => (
               <Link
                 key={item.path}
-                href={item.path}
-                asChild
+                to={item.path}
               >
                 <span
                   className={`text-sm font-medium transition-colors cursor-pointer ${
@@ -52,17 +51,17 @@ export function Header() {
 
           {/* CTA & Mobile Menu */}
           <div className="flex items-center gap-3">
-            <Link href="/login">
+            <Link to="/login">
               <Button variant="outline" className="hidden md:flex text-white border-slate-600 hover:bg-slate-800" size="sm" data-testid="button-header-login">
                 Sign In
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link to="/signup">
               <Button className="hidden md:flex bg-blue-600 hover:bg-blue-700" size="sm" data-testid="button-header-signup">
                 Sign Up
               </Button>
             </Link>
-            <Link href="/demo">
+            <Link to="/demo">
               <Button className="hidden md:flex bg-slate-700 hover:bg-slate-600" size="sm" data-testid="button-header-demo">
                 Demo
               </Button>
@@ -85,8 +84,7 @@ export function Header() {
             {navItems.map(item => (
               <Link
                 key={item.path}
-                href={item.path}
-                asChild
+                to={item.path}
               >
                 <button
                   onClick={() => setMenuOpen(false)}
@@ -101,17 +99,17 @@ export function Header() {
                 </button>
               </Link>
             ))}
-            <Link href="/login">
+            <Link to="/login">
               <Button variant="outline" className="w-full text-white border-slate-600 hover:bg-slate-800" data-testid="button-mobile-login">
                 Sign In
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link to="/signup">
               <Button className="w-full bg-blue-600 hover:bg-blue-700" data-testid="button-mobile-signup">
                 Sign Up
               </Button>
             </Link>
-            <Link href="/demo">
+            <Link to="/demo">
               <Button className="w-full bg-slate-700 hover:bg-slate-600" data-testid="button-mobile-demo">
                 Demo
               </Button>
