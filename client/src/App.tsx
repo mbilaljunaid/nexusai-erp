@@ -408,7 +408,7 @@ const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={LandingPage} />
+      <Route path="/" component={Dashboard} />
       <Route path="/crm" component={CRM} />
       <Route path="/erp" component={ERP} />
       <Route path="/hr" component={HR} />
