@@ -363,6 +363,223 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
       { label: "Compliance", path: "/governance/compliance" },
     ],
   },
+
+  // Procurement & Supply Chain
+  vendor: {
+    id: "vendor",
+    name: "Vendor",
+    apiEndpoint: "/api/vendors",
+    fields: [
+      { name: "name", label: "Vendor Name", type: "text", required: true, searchable: true },
+      { name: "category", label: "Category", type: "select", required: true, searchable: true },
+      { name: "rating", label: "Rating", type: "number", required: false, searchable: false },
+    ],
+    searchFields: ["name", "category"],
+    displayField: "name",
+    createButtonText: "Add Vendor",
+    module: "Procurement",
+    page: "/procurement/vendors",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Procurement", path: "/procurement" },
+      { label: "Vendors", path: "/procurement/vendors" },
+    ],
+  },
+
+  purchaseOrder: {
+    id: "purchaseOrder",
+    name: "Purchase Order",
+    apiEndpoint: "/api/purchase-orders",
+    fields: [
+      { name: "id", label: "PO Number", type: "text", required: true, searchable: true },
+      { name: "vendor", label: "Vendor", type: "text", required: true, searchable: true },
+      { name: "amount", label: "Amount", type: "number", required: true, searchable: false },
+      { name: "status", label: "Status", type: "select", required: true, searchable: true },
+    ],
+    searchFields: ["id", "vendor", "status"],
+    displayField: "id",
+    createButtonText: "Create PO",
+    module: "Procurement",
+    page: "/procurement/purchase-orders",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Procurement", path: "/procurement" },
+      { label: "Purchase Orders", path: "/procurement/purchase-orders" },
+    ],
+  },
+
+  // CRM & Contacts
+  contact: {
+    id: "contact",
+    name: "Contact",
+    apiEndpoint: "/api/contacts",
+    fields: [
+      { name: "name", label: "Name", type: "text", required: true, searchable: true },
+      { name: "email", label: "Email", type: "email", required: true, searchable: true },
+      { name: "company", label: "Company", type: "text", required: false, searchable: true },
+      { name: "phone", label: "Phone", type: "text", required: false, searchable: false },
+    ],
+    searchFields: ["name", "email", "company"],
+    displayField: "name",
+    createButtonText: "Add Contact",
+    module: "CRM",
+    page: "/crm/contacts",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Contacts", path: "/crm/contacts" },
+    ],
+  },
+
+  // Service Desk
+  serviceTicket: {
+    id: "serviceTicket",
+    name: "Service Ticket",
+    apiEndpoint: "/api/service-tickets",
+    fields: [
+      { name: "id", label: "Ticket ID", type: "text", required: true, searchable: true },
+      { name: "title", label: "Title", type: "text", required: true, searchable: true },
+      { name: "status", label: "Status", type: "select", required: true, searchable: true },
+      { name: "priority", label: "Priority", type: "select", required: false, searchable: false },
+    ],
+    searchFields: ["id", "title", "status"],
+    displayField: "title",
+    createButtonText: "Create Ticket",
+    module: "ServiceDesk",
+    page: "/service/tickets",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Service Desk", path: "/service" },
+      { label: "Tickets", path: "/service/tickets" },
+    ],
+  },
+
+  // HR
+  leaveRequest: {
+    id: "leaveRequest",
+    name: "Leave Request",
+    apiEndpoint: "/api/hr/leave-requests",
+    fields: [
+      { name: "employee", label: "Employee", type: "text", required: true, searchable: true },
+      { name: "type", label: "Leave Type", type: "select", required: true, searchable: true },
+      { name: "status", label: "Status", type: "select", required: false, searchable: true },
+      { name: "startDate", label: "Start Date", type: "date", required: true, searchable: false },
+    ],
+    searchFields: ["employee", "type", "status"],
+    displayField: "employee",
+    createButtonText: "Request Leave",
+    module: "HR",
+    page: "/hr/leave-requests",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "HR", path: "/hr" },
+      { label: "Leave Requests", path: "/hr/leave-requests" },
+    ],
+  },
+
+  // Workflow & Automation
+  approval: {
+    id: "approval",
+    name: "Approval Workflow",
+    apiEndpoint: "/api/approvals",
+    fields: [
+      { name: "title", label: "Title", type: "text", required: true, searchable: true },
+      { name: "status", label: "Status", type: "select", required: false, searchable: true },
+      { name: "assignee", label: "Assignee", type: "text", required: false, searchable: true },
+    ],
+    searchFields: ["title", "status", "assignee"],
+    displayField: "title",
+    createButtonText: "",
+    module: "Workflow",
+    page: "/workflow/approvals",
+    allowCreate: false,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Workflow", path: "/workflow" },
+      { label: "Approvals", path: "/workflow/approvals" },
+    ],
+  },
+
+  // Developer & APIs
+  apiManagement: {
+    id: "apiManagement",
+    name: "API Management",
+    apiEndpoint: "/api/apis",
+    fields: [
+      { name: "name", label: "API Name", type: "text", required: true, searchable: true },
+      { name: "version", label: "Version", type: "text", required: true, searchable: true },
+      { name: "status", label: "Status", type: "select", required: false, searchable: true },
+    ],
+    searchFields: ["name", "version", "status"],
+    displayField: "name",
+    createButtonText: "Add API",
+    module: "Developer",
+    page: "/developer/apis",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Developer", path: "/developer" },
+      { label: "APIs", path: "/developer/apis" },
+    ],
+  },
+
+  webhook: {
+    id: "webhook",
+    name: "Webhook Management",
+    apiEndpoint: "/api/webhooks",
+    fields: [
+      { name: "name", label: "Webhook Name", type: "text", required: true, searchable: true },
+      { name: "event", label: "Event", type: "select", required: true, searchable: true },
+      { name: "status", label: "Status", type: "select", required: false, searchable: true },
+    ],
+    searchFields: ["name", "event", "status"],
+    displayField: "name",
+    createButtonText: "Add Webhook",
+    module: "Developer",
+    page: "/developer/webhooks",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Developer", path: "/developer" },
+      { label: "Webhooks", path: "/developer/webhooks" },
+    ],
+  },
+
+  automation: {
+    id: "automation",
+    name: "Automation Rules",
+    apiEndpoint: "/api/automation",
+    fields: [
+      { name: "name", label: "Rule Name", type: "text", required: true, searchable: true },
+      { name: "trigger", label: "Trigger", type: "select", required: true, searchable: true },
+      { name: "status", label: "Status", type: "select", required: false, searchable: true },
+    ],
+    searchFields: ["name", "trigger", "status"],
+    displayField: "name",
+    createButtonText: "Create Rule",
+    module: "Automation",
+    page: "/automation/rules",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "Automation", path: "/automation" },
+      { label: "Rules", path: "/automation/rules" },
+    ],
+  },
 };
 
 export function getFormMetadata(formId: string): FormMetadata | undefined {
