@@ -52,6 +52,34 @@ export default function LoginPage() {
     }
   };
 
+  const handleQuickAdminLogin = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "admin@nexusai.com", password: "Admin@2025!" }),
+      });
+
+      if (res.ok) {
+        login("admin@nexusai.com", "admin");
+        setSuccess(true);
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
+      } else {
+        const data = await res.json();
+        setError(data.message || "Login failed");
+      }
+    } catch (e) {
+      setError("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="public-page min-h-screen flex flex-col">
       <Header />
@@ -161,6 +189,18 @@ export default function LoginPage() {
                   data-testid="button-login"
                 >
                   {loading ? "Signing in..." : "Sign In"} <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+
+                {/* Quick Admin Login */}
+                <Button
+                  type="button"
+                  onClick={handleQuickAdminLogin}
+                  disabled={loading}
+                  variant="outline"
+                  className="w-full"
+                  data-testid="button-quick-admin-login"
+                >
+                  Quick Login as Admin
                 </Button>
 
                 {/* Credentials */}
