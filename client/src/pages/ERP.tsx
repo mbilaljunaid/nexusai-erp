@@ -9,6 +9,7 @@ import { PurchaseRequisitionForm } from "@/components/forms/PurchaseRequisitionF
 import { RFQForm } from "@/components/forms/RFQForm";
 import AdjustmentEntryForm from "@/components/forms/AdjustmentEntryForm";
 import VendorEntryForm from "@/components/forms/VendorEntryForm";
+import { VendorToInvoiceForm } from "@/components/forms/VendorToInvoiceForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { FormSearch } from "@/components/FormSearch";
 import { useQuery } from "@tanstack/react-query";
@@ -18,6 +19,7 @@ import { Link, useRoute } from "wouter";
 export default function ERP() {
   const [match, params] = useRoute("/erp/:page");
   const [activeNav, setActiveNav] = useState("overview");
+  const [selectedVendor, setSelectedVendor] = useState<any>(null);
 
   useEffect(() => {
     if (params?.page) {
@@ -274,27 +276,52 @@ export default function ERP() {
 
       {activeNav === "suppliers" && (
         <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <FormSearch
-              placeholder="Search suppliers by name or location..."
-              value={searchQuery}
-              onChange={setSearchQuery}
-              searchFields={['vendorName', 'email']}
-              data={vendors as any[]}
-              onFilter={setFilteredVendors}
-            />
-            <Button data-testid="button-new-supplier">+ New Supplier</Button>
-          </div>
-          <div className="space-y-2">
-            {filteredVendors.length > 0 ? (
-              filteredVendors.map((v: any, idx: number) => (
-                <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{v.vendorName}</p><p className="text-sm text-muted-foreground">{v.email}</p></div><Badge>Active</Badge></div></CardContent></Card>
-              ))
-            ) : (
-              <Card><CardContent className="p-4"><p className="text-muted-foreground">No suppliers found</p></CardContent></Card>
-            )}
-          </div>
-          <VendorEntryForm />
+          {selectedVendor ? (
+            <VendorToInvoiceForm vendor={selectedVendor} onClose={() => setSelectedVendor(null)} />
+          ) : (
+            <>
+              <div className="flex gap-2 items-center">
+                <FormSearch
+                  placeholder="Search suppliers by name or location..."
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  searchFields={['vendorName', 'email']}
+                  data={vendors as any[]}
+                  onFilter={setFilteredVendors}
+                />
+                <Button data-testid="button-new-supplier">+ New Supplier</Button>
+              </div>
+              <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-blue-900 dark:text-blue-100">
+                    Click "Create Invoice" to generate a supplier invoice with AP GL entries (2100) for complete vendor invoice processing.
+                  </p>
+                </CardContent>
+              </Card>
+              <div className="space-y-2">
+                {[
+                  { id: "1", vendorName: "ABC Manufacturing", vendorCode: "V-001", paymentTerms: "Net 30", status: "Active", category: "Materials" },
+                  { id: "2", vendorName: "Tech Components Ltd", vendorCode: "V-002", paymentTerms: "Net 45", status: "Active", category: "Technology" },
+                  { id: "3", vendorName: "Global Logistics", vendorCode: "V-003", paymentTerms: "Net 15", status: "Active", category: "Services" },
+                ].map((v: any) => (
+                  <Card key={v.id} className="hover-elevate">
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-semibold">{v.vendorName}</p>
+                          <p className="text-sm text-muted-foreground">{v.vendorCode} • {v.category} • {v.paymentTerms}</p>
+                        </div>
+                        <Button size="sm" onClick={() => setSelectedVendor(v)} data-testid={`button-invoice-${v.id}`}>
+                          Create Invoice
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <VendorEntryForm />
+            </>
+          )}
         </div>
       )}
 

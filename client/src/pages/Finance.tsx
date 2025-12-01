@@ -73,47 +73,138 @@ export default function Finance() {
 
       {activeNav === "invoices" && (
         <div className="space-y-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-1">
-              <CardTitle>Invoices</CardTitle>
-              <SmartAddButton formMetadata={invoicesMetadata} onClick={() => {}} />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormSearchWithMetadata
-                formMetadata={invoicesMetadata}
-                value={searchQuery}
-                onChange={setSearchQuery}
-                data={invoices}
-                onFilter={setFilteredInvoices}
-              />
-              <div className="space-y-2">
-                {filteredInvoices.length > 0 ? (
-                  filteredInvoices.map((inv: any, idx: number) => (
-                    <Card key={inv.id || idx} className="hover-elevate cursor-pointer">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-semibold">{inv.invoiceNumber || `Invoice ${idx + 1}`}</p>
-                            <p className="text-sm text-muted-foreground">{inv.customerId || 'Customer'}</p>
+          {selectedInvoice ? (
+            <InvoiceToPaymentForm invoice={selectedInvoice} onClose={() => setSelectedInvoice(null)} />
+          ) : (
+            <>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between gap-1">
+                  <CardTitle>Invoices</CardTitle>
+                  <SmartAddButton formMetadata={invoicesMetadata} onClick={() => {}} />
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <FormSearchWithMetadata
+                    formMetadata={invoicesMetadata}
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    data={invoices}
+                    onFilter={setFilteredInvoices}
+                  />
+                  <div className="space-y-2">
+                    {[
+                      { id: "1", invoiceNumber: "INV-2024-001", customer: "Acme Corp", amount: 45000, dueDate: "2024-12-15", status: "Open" },
+                      { id: "2", invoiceNumber: "INV-2024-002", customer: "Tech Solutions", amount: 32500, dueDate: "2024-12-10", status: "Open" },
+                    ].map((inv: any) => (
+                      <Card key={inv.id} className="hover-elevate">
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-semibold">{inv.invoiceNumber}</p>
+                              <p className="text-sm text-muted-foreground">{inv.customer} • Due: {inv.dueDate}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge>${inv.amount.toLocaleString()}</Badge>
+                              {inv.status === "Open" && (
+                                <Button size="sm" onClick={() => setSelectedInvoice(inv)} data-testid={`button-payment-${inv.id}`}>
+                                  Record Payment
+                                </Button>
+                              )}
+                            </div>
                           </div>
-                          <Badge>${Number(inv.amount || 0).toLocaleString()}</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : (
-                  <p className="text-muted-foreground text-center py-4">No invoices found</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-          <InvoiceEntryForm />
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              <InvoiceEntryForm />
+            </>
+          )}
         </div>
       )}
 
-      {activeNav === "expenses" && <div className="space-y-4"><ExpenseEntryForm /></div>}
+      {activeNav === "expenses" && (
+        <div className="space-y-4">
+          {selectedExpense ? (
+            <ExpenseToGLForm expense={selectedExpense} onClose={() => setSelectedExpense(null)} />
+          ) : (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Post Expense to GL</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground">Select an expense to post to general ledger</p>
+                  <div className="space-y-2">
+                    {[
+                      { id: "1", expenseId: "EXP-001", description: "Conference Travel", amount: 3500, category: "Travel", date: "2024-12-01", status: "Approved" },
+                      { id: "2", expenseId: "EXP-002", description: "Office Supplies", amount: 850, category: "Office Supplies", date: "2024-11-28", status: "Approved" },
+                      { id: "3", expenseId: "EXP-003", description: "Cloud Services", amount: 2400, category: "Technology", date: "2024-11-25", status: "Approved" },
+                    ].map((exp: any) => (
+                      <div key={exp.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold">{exp.expenseId}</p>
+                          <p className="text-sm text-muted-foreground">{exp.description} • ${exp.amount.toLocaleString()}</p>
+                        </div>
+                        <Button size="sm" onClick={() => setSelectedExpense(exp)} data-testid={`button-gl-expense-${exp.id}`}>
+                          Post to GL
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              <ExpenseEntryForm />
+            </>
+          )}
+        </div>
+      )}
 
-      {activeNav === "budgets" && <div className="space-y-4"><BudgetEntryForm /></div>}
+      {activeNav === "budgets" && (
+        <div className="space-y-4">
+          {selectedBudget ? (
+            <BudgetToVarianceReportForm budget={selectedBudget} onClose={() => setSelectedBudget(null)} />
+          ) : (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Budget Variance Analysis</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground">Select a budget to generate variance report</p>
+                  <div className="space-y-2">
+                    {[
+                      { id: "1", name: "Engineering", amount: 500000, spent: 480000, department: "Engineering", period: "Q4 2024" },
+                      { id: "2", name: "Marketing", amount: 200000, spent: 215000, department: "Marketing", period: "Q4 2024" },
+                      { id: "3", name: "Operations", amount: 350000, spent: 340000, department: "Operations", period: "Q4 2024" },
+                    ].map((budget: any) => {
+                      const variance = budget.spent - budget.amount;
+                      return (
+                        <div key={budget.id} className="p-3 border rounded-lg hover-elevate">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="font-semibold">{budget.name}</p>
+                            <Badge variant={variance > 0 ? "destructive" : "default"}>
+                              {variance > 0 ? "+" : ""}{variance.toLocaleString()}
+                            </Badge>
+                          </div>
+                          <div className="flex justify-between text-xs text-muted-foreground mb-2">
+                            <span>Budget: ${budget.amount.toLocaleString()}</span>
+                            <span>Spent: ${budget.spent.toLocaleString()}</span>
+                          </div>
+                          <Button size="sm" onClick={() => setSelectedBudget(budget)} className="w-full" data-testid={`button-variance-${budget.id}`}>
+                            Generate Report
+                          </Button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+              <BudgetEntryForm />
+            </>
+          )}
+        </div>
+      )}
 
       {activeNav === "reports" && (
         <div className="space-y-4">
