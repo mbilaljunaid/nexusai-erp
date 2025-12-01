@@ -7,11 +7,10 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { ExpenseEntryForm } from "@/components/forms/ExpenseEntryForm";
 import { BudgetEntryForm } from "@/components/forms/BudgetEntryForm";
-import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, Settings, Zap, Users, CreditCard } from "lucide-react";
+import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Finance() {
@@ -32,8 +31,6 @@ export default function Finance() {
     { id: "budgets", label: "Budgets", icon: PieChart, color: "text-purple-500" },
     { id: "reports", label: "Reports", icon: TrendingUp, color: "text-pink-500" },
     { id: "payments", label: "Payments", icon: CreditCard, color: "text-cyan-500" },
-    { id: "ledger", label: "General Ledger", icon: Zap, color: "text-indigo-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
   ];
 
   return (
@@ -121,14 +118,6 @@ export default function Finance() {
       {activeNav === "payments" && (
         <div className="space-y-4">
           <Card><CardHeader><CardTitle>Payment Processing</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Pending: 12 | Processed: 234 | Failed: 2</p><Button size="sm" className="mt-4">+ Process Payment</Button></CardContent></Card>
-        </div>
-      )}
-
-      {activeNav === "ledger" && <div className="space-y-4"><GLEntryForm /></div>}
-
-      {activeNav === "settings" && (
-        <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Finance Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure accounting policies and reporting standards</p></CardContent></Card>
         </div>
       )}
     </div>
