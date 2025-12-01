@@ -1,15 +1,24 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function APIDocumentation() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const { data: docs = [] } = useQuery<any[]>({ queryKey: ["/api/docs"] });
+  const formMetadata = getFormMetadata("apiDocumentation");
+
   return (
     <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={docs} onFilter={setFiltered} />
+      
       <div>
         <h1 className="text-3xl font-bold">API Documentation</h1>
         <p className="text-muted-foreground mt-1">View and manage API documentation</p>
-      </div>
-      <div className="flex gap-2 mb-4">
-        <Input placeholder="Search endpoints..." data-testid="input-search-api" className="flex-1" />
       </div>
       <div className="grid gap-4">
         {[

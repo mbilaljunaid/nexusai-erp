@@ -1,26 +1,40 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { SmartAddButton } from "@/components/SmartAddButton";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function BackupRestore() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const { data: backups = [] } = useQuery<any[]>({ queryKey: ["/api/backup"] });
+  const formMetadata = getFormMetadata("backupRestore");
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Backup & Restore</h1>
-        <p className="text-muted-foreground mt-1">Manage system backups and restoration</p>
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Backup & Restore</h1>
+          <p className="text-muted-foreground mt-1">Manage system backups and restoration</p>
+        </div>
+        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
       </div>
+
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={backups} onFilter={setFiltered} />
+
       <div className="grid gap-4">
-        {[
-          { backup: "Daily Backup 2025-02-29", size: "2.4 GB", status: "Completed" },
-          { backup: "Daily Backup 2025-02-28", size: "2.3 GB", status: "Completed" },
-        ].map((b) => (
-          <Card key={b.backup}>
+        {filtered.length > 0 ? filtered.map((b: any) => (
+          <Card key={b.name}>
             <CardContent className="pt-6">
-              <h3 className="font-semibold">{b.backup}</h3>
+              <h3 className="font-semibold">{b.name}</h3>
               <p className="text-sm text-muted-foreground">{b.size} • {b.status}</p>
-              <Button size="sm" className="mt-3" data-testid={`button-restore-${b.backup.toLowerCase()}`}>Restore</Button>
             </CardContent>
           </Card>
-        ))}
+        )) : <p className="text-muted-foreground text-center py-4">No backups found</p>
       </div>
     </div>
   );

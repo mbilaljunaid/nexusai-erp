@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { queryClient } from "@/lib/queryClient";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
+import { getFormMetadata } from "@/lib/formMetadata";
 import { Plus, Copy, Trash2, Eye, EyeOff } from "lucide-react";
 
 export default function APIGateway() {
   const [newKey, setNewKey] = useState({ name: "" });
   const [showSecrets, setShowSecrets] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filtered, setFiltered] = useState<any[]>([]);
   const tenantId = "tenant1";
+  const formMetadata = getFormMetadata("apiGateway");
 
   const { data: apiKeys = [] } = useQuery({
     queryKey: ["/api/api-keys", tenantId],
@@ -48,6 +53,9 @@ export default function APIGateway() {
 
   return (
     <div className="p-6 space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={apiKeys} onFilter={setFiltered} />
+      
       <div>
         <h1 className="text-3xl font-bold">API Gateway</h1>
         <p className="text-gray-600">Manage API keys and authentication tokens</p>
