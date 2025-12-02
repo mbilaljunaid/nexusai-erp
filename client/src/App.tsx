@@ -52,6 +52,7 @@ const ComplianceModule = lazy(() => import("@/pages/ComplianceModule"));
 
 // Reports & Analytics
 const Reports = lazy(() => import("@/pages/Reports"));
+const FeaturesComparison = lazy(() => import("@/pages/FeaturesComparison"));
 
 // Phase 1: Enterprise Foundation (8 pages)
 const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
@@ -572,6 +573,7 @@ function Router() {
       <Route path="/subscription-management" component={SubscriptionManagement} />
               <Route path="/reports/:module" component={Reports} />
               <Route path="/reports" component={Reports} />
+              <Route path="/features" component={FeaturesComparison} />
       <Route path="/billing-management" component={BillingManagement} />
       <Route path="/industry/:slug" component={IndustryDetail} />
       <Route path="/module/:slug" component={ModuleDetail} />

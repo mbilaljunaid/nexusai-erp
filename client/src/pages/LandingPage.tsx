@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles, Package, Users, Briefcase, BarChart3, DollarSign, Factory, CheckCircle, Settings, Mail, Bot, Layers } from "lucide-react";
+import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles, Package, Users, Briefcase, BarChart3, DollarSign, Factory, CheckCircle, Settings, Mail, Bot, Layers, Filter, FileUp } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 
@@ -113,6 +113,28 @@ export default function LandingPage() {
                 </Link>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Reports & Analytics Section */}
+      <section className="landing-section px-4 py-20" style={{ background: `hsl(var(--muted) / 0.5)` }}>
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4">Advanced Reports & Analytics</h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg">Build custom reports, create smart views, analyze data, and export insights</p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[
+              { icon: BarChart3, title: "50+ Pre-built Reports", desc: "Transactional & periodical reports across all modules" },
+              { icon: Filter, title: "SmartViews", desc: "Save custom filtered views with advanced filtering" },
+              { icon: FileUp, title: "Excel Integration", desc: "Import/export data with full Excel compatibility" },
+              { icon: Layers, title: "Pivot Tables & Charts", desc: "Interactive spreadsheets with visualizations" },
+            ].map((item, i) => (
+              <Card key={i} className="landing-card p-6 hover-elevate">
+                <item.icon className="w-8 h-8" style={{ color: `hsl(var(--primary))` }} />
+                <h3 className="font-bold text-lg mb-2 mt-4">{item.title}</h3>
+                <p className="text-sm" style={{ color: `hsl(var(--muted-foreground))` }}>{item.desc}</p>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
