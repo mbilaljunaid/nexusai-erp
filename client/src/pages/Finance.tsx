@@ -20,15 +20,10 @@ import { Link } from "wouter";
 export default function Finance() {
   const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [activeNav, setActiveNav] = useState("overview");
-  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
-  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
-  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<any>(null);
-  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<any>(null);
   const invoicesMetadata = getFormMetadata("invoices");
   
@@ -47,6 +42,7 @@ export default function Finance() {
   ];
 
   return (
+      <FormDialog isOpen={showInvoiceForm} onOpenChange={setShowInvoiceForm} formId="invoice" formTitle="Add Invoice" formDescription="Create a new invoice" />
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold flex items-center gap-2"><DollarSign className="w-8 h-8" />Finance & Accounting</h1>

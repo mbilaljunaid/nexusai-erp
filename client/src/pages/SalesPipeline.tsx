@@ -9,13 +9,10 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { FormDialog } from "@/components/FormDialog";
 
 export default function SalesPipeline() {
-  const [showSalesForm, setShowSalesForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSalesForm, setShowSalesForm] = useState(false);
   const [filteredOpportunities, setFilteredOpportunities] = useState<any[]>([]);
-  const { data: opportunities = [] } = useQuery<any[]>({
-    queryKey: ["/api/crm/opportunities"],
-  });
+  const { data: opportunities = [] } = useQuery<any[]>({ queryKey: ["/api/crm/opportunities"] });
   const formMetadata = getFormMetadata("opportunity");
 
   const stages = [
@@ -36,7 +33,7 @@ export default function SalesPipeline() {
           <h1 className="text-3xl font-bold">Sales Pipeline</h1>
           <p className="text-muted-foreground mt-1">Kanban view of your opportunities across stages</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowSalesForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
       </div>
 
       <FormSearchWithMetadata
@@ -73,6 +70,8 @@ export default function SalesPipeline() {
           </Card>
         ))}
       </div>
+
+      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="opportunity" formTitle="Create Opportunity" formDescription="Add a new sales opportunity" />
     </div>
   );
 }

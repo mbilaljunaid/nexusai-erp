@@ -9,13 +9,10 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { FormDialog } from "@/components/FormDialog";
 
 export default function PurchaseOrder() {
-  const [showPOForm, setShowPOForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showPOForm, setShowPOForm] = useState(false);
   const [filteredPOs, setFilteredPOs] = useState<any[]>([]);
-  const { data: purchaseOrders = [] } = useQuery<any[]>({
-    queryKey: ["/api/purchase-orders"],
-  });
+  const { data: purchaseOrders = [] } = useQuery<any[]>({ queryKey: ["/api/purchase-orders"] });
   const formMetadata = getFormMetadata("purchaseOrder");
 
   return (
@@ -27,7 +24,7 @@ export default function PurchaseOrder() {
           <h1 className="text-3xl font-bold">Purchase Orders</h1>
           <p className="text-muted-foreground mt-1">Manage purchase orders and vendor management</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowPOForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
       </div>
 
       <FormSearchWithMetadata
@@ -57,6 +54,8 @@ export default function PurchaseOrder() {
           </div>
         </CardContent>
       </Card>
+
+      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="purchaseOrder" formTitle="Create Purchase Order" formDescription="Create a new purchase order" />
     </div>
   );
 }

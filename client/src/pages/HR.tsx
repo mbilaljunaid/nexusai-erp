@@ -19,13 +19,9 @@ import { useQuery } from "@tanstack/react-query";
 export default function HR() {
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [match, params] = useRoute("/hr/:page");
-  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [activeNav, setActiveNav] = useState("overview");
-  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
-  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
   const employeesMetadata = getFormMetadata("employees");
 
@@ -55,6 +51,7 @@ export default function HR() {
   ];
 
   return (
+      <FormDialog isOpen={showEmployeeForm} onOpenChange={setShowEmployeeForm} formId="employee" formTitle="Add Employee" formDescription="Create a new employee record" />
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold flex items-center gap-2"><Users className="w-8 h-8" />HR & Talent Management</h1>

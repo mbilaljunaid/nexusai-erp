@@ -8,13 +8,10 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { FormDialog } from "@/components/FormDialog";
 
 export default function Marketplace() {
-  const [showMarketplaceForm, setShowMarketplaceForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showMarketplaceForm, setShowMarketplaceForm] = useState(false);
   const [filteredExtensions, setFilteredExtensions] = useState<any[]>([]);
-  const { data: extensions = [] } = useQuery<any[]>({
-    queryKey: ["/api/marketplace/extensions"],
-  });
+  const { data: extensions = [] } = useQuery<any[]>({ queryKey: ["/api/marketplace/extensions"] });
   const formMetadata = getFormMetadata("marketplace");
 
   return (
@@ -26,7 +23,7 @@ export default function Marketplace() {
           <h1 className="text-3xl font-bold">Marketplace</h1>
           <p className="text-muted-foreground mt-1">Publish and manage marketplace extensions</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowMarketplaceForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
       </div>
 
       <FormSearchWithMetadata
@@ -37,18 +34,17 @@ export default function Marketplace() {
         onFilter={setFilteredExtensions}
       />
       <div className="grid gap-4">
-        {[
-          { ext: "Custom Integration", downloads: 142, rating: "4.8" },
-          { ext: "Advanced Reports", downloads: 89, rating: "4.6" },
-        ].map((ext) => (
-          <Card key={ext.ext}>
+        {filteredExtensions.length > 0 ? filteredExtensions.map((ext: any) => (
+          <Card key={ext.id}>
             <CardContent className="pt-6">
-              <h3 className="font-semibold">{ext.ext}</h3>
-              <p className="text-sm text-muted-foreground">{ext.downloads} downloads • ⭐ {ext.rating}</p>
+              <h3 className="font-semibold">{ext.name}</h3>
+              <p className="text-sm text-muted-foreground">{ext.downloads || 0} downloads • {ext.rating || 0}</p>
             </CardContent>
           </Card>
-        ))}
+        )) : <p className="text-muted-foreground text-center py-4">No extensions found</p>}
       </div>
+
+      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="marketplace" formTitle="Publish Extension" formDescription="Publish a new marketplace extension" />
     </div>
   );
 }
