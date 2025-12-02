@@ -6097,14 +6097,99 @@ export async function registerRoutes(
     }
   });
 
+  // ========== EXCEL EXPORT/IMPORT & SMARTVIEWS ==========
+  app.get("/api/export/:formId", async (req, res) => {
+    try {
+      const { formId } = req.params;
+      const records = await db.query.formData.findMany({
+        where: (formData) => eq(formData.formId, formId),
+      });
+      const flatRecords = records.map((record: any) => ({
+        id: record.id,
+        ...(record.data as Record<string, any>),
+        status: record.status,
+        submittedAt: record.submittedAt,
+        submittedBy: record.submittedBy,
+      }));
+      const ws = XLSX.utils.json_to_sheet(flatRecords);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Data");
+      const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      res.setHeader("Content-Disposition", `attachment; filename="${formId}-export.xlsx"`);
+      res.send(buffer);
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Export failed", undefined, (req as any).id));
+    }
+  });
+
+  app.post("/api/import/:formId", async (req, res) => {
+    try {
+      const { formId } = req.params;
+      const { records } = req.body;
+      if (!Array.isArray(records) || records.length === 0) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "No records to import", undefined, (req as any).id));
+      }
+      const imported = [];
+      for (const record of records) {
+        const result = await db.insert(formDataTable).values({
+          formId,
+          data: record,
+          status: "draft",
+          submittedBy: req.userId,
+        }).returning();
+        imported.push(result[0]);
+      }
+      res.status(201).json({ success: true, imported: imported.length, data: imported });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Import failed", undefined, (req as any).id));
+    }
+  });
+
+  app.get("/api/smartviews", async (req, res) => {
+    try {
+      const formId = req.query.formId as string;
+      if (!formId) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "formId required", undefined, (req as any).id));
+      }
+      const views = await db.query.smartViews.findMany({
+        where: (smartViews) => eq(smartViews.formId, formId),
+      });
+      res.json(views);
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to fetch SmartViews", undefined, (req as any).id));
+    }
+  });
+
+  app.post("/api/smartviews", async (req, res) => {
+    try {
+      const data = sanitizeInput(req.body);
+      const view = await db.insert(smartViews).values({
+        formId: data.formId,
+        name: data.name,
+        description: data.description,
+        filters: data.filters || [],
+        sortBy: data.sortBy || [],
+        visibleColumns: data.visibleColumns,
+      }).returning();
+      res.status(201).json(view[0]);
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create SmartView", undefined, (req as any).id));
+    }
+  });
+
+  app.delete("/api/smartviews/:viewId", async (req, res) => {
+    try {
+      const { viewId } = req.params;
+      await db.delete(smartViews).where(eq(smartViews.id, viewId));
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to delete SmartView", undefined, (req as any).id));
+    }
+  });
+
   return httpServer;
 }
-
-// ========== EXCEL EXPORT/IMPORT & SMARTVIEWS ==========
-import * as XLSX from "xlsx";
-
-// Export form data to Excel
-app.get("/api/export/:formId", async (req, res) => {
   try {
     const { formId } = req.params;
     const records = await db.query.formData.findMany({
