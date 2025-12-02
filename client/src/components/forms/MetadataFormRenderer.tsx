@@ -65,9 +65,9 @@ export function MetadataFormRenderer({
     name: formId.replace(/([A-Z])/g, " $1").trim(),
     description: `Fill out the ${formId} form`,
     fields: [
-      { name: "id", label: "ID", type: "text", disabled: true },
-      { name: "status", label: "Status", type: "text" },
-      { name: "notes", label: "Notes", type: "text" },
+      { name: "id", label: "ID", type: "text", required: false, searchable: true },
+      { name: "status", label: "Status", type: "text", required: false, searchable: true },
+      { name: "notes", label: "Notes", type: "textarea", required: false, searchable: false },
     ],
     createButtonText: initialData ? "Update" : "Submit",
   };
@@ -184,7 +184,7 @@ export function MetadataFormRenderer({
                         key={field.name}
                         field={field}
                         formMethods={formMethods}
-                        readOnly={readOnly || field.disabled}
+                        readOnly={readOnly}
                         formData={formData}
                         validationEngine={validationEngine}
                         logicEngine={logicEngine}
