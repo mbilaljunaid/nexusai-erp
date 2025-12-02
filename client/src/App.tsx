@@ -101,6 +101,15 @@ const PublicCustomerReturnsProcess = lazy(() => import("@/pages/public/processes
 const PublicVendorPerformanceProcess = lazy(() => import("@/pages/public/processes/pages/PublicVendorPerformanceProcess"));
 const PublicSubscriptionBillingProcess = lazy(() => import("@/pages/public/processes/pages/PublicSubscriptionBillingProcess"));
 
+// Public Documentation Pages
+const ProcessFlowsPage = lazy(() => import("@/pages/public/documentation/ProcessFlowsPage"));
+const TrainingGuidesPage = lazy(() => import("@/pages/public/documentation/TrainingGuidesPage"));
+const TechnicalDocumentationPage = lazy(() => import("@/pages/public/documentation/TechnicalDocumentationPage"));
+const ImplementationGuidelinesPage = lazy(() => import("@/pages/public/documentation/ImplementationGuidelinesPage"));
+const TrainingGuideCRM = lazy(() => import("@/pages/public/documentation/TrainingGuideCRM"));
+const TechnicalAPIReference = lazy(() => import("@/pages/public/documentation/TechnicalAPIReference"));
+const ImplementationSystemSetup = lazy(() => import("@/pages/public/documentation/ImplementationSystemSetup"));
+
 // Phase 2: ERP Workflows (4 pages)
 const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
 const BankReconciliation = lazy(() => import("@/pages/BankReconciliation"));
@@ -532,6 +541,15 @@ function Router() {
       <Route path="/public/processes/vendor-performance" component={PublicVendorPerformanceProcess} />
       <Route path="/public/processes/subscription-billing" component={PublicSubscriptionBillingProcess} />
       
+      {/* Public Documentation Routes */}
+      <Route path="/docs/process-flows" component={ProcessFlowsPage} />
+      <Route path="/docs/training-guides" component={TrainingGuidesPage} />
+      <Route path="/docs/training-guides/crm" component={TrainingGuideCRM} />
+      <Route path="/docs/technical" component={TechnicalDocumentationPage} />
+      <Route path="/docs/technical/api-reference" component={TechnicalAPIReference} />
+      <Route path="/docs/implementation" component={ImplementationGuidelinesPage} />
+      <Route path="/docs/implementation/system-setup" component={ImplementationSystemSetup} />
+      
       <Route path="/mrp-dashboard" component={MRPDashboard} />
       <Route path="/attendance-dashboard" component={AttendanceDashboard} />
       <Route path="/ticket-dashboard" component={TicketDashboard} />
@@ -591,7 +609,7 @@ export default function App() {
   
   // Public routes don't show sidebar - includes dynamic routes
   const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo"];
-  const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/");
+  const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
   
   // Industry setup routes should show authenticated layout

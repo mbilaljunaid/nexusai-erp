@@ -1,11 +1,12 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
   const [location] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [docsOpen, setDocsOpen] = useState(false);
 
   const isActive = (path: string) => location === path;
 
@@ -47,6 +48,67 @@ export function Header() {
                 </span>
               </Link>
             ))}
+
+            {/* Documentation Menu */}
+            <div className="relative group">
+              <button
+                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
+                onMouseEnter={() => setDocsOpen(true)}
+                onMouseLeave={() => setDocsOpen(false)}
+                data-testid="button-documentation-menu"
+              >
+                Documentation
+                <ChevronDown className="w-4 h-4" />
+              </button>
+
+              {docsOpen && (
+                <div
+                  className="absolute left-0 mt-2 w-64 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2"
+                  onMouseEnter={() => setDocsOpen(true)}
+                  onMouseLeave={() => setDocsOpen(false)}
+                >
+                  <Link to="/docs/process-flows" className="block">
+                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <Compass className="w-4 h-4 text-blue-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">Process Flows</div>
+                        <div className="text-xs text-slate-400">All 18 end-to-end processes</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link to="/docs/training-guides" className="block">
+                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <BookOpen className="w-4 h-4 text-green-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">Training Guides</div>
+                        <div className="text-xs text-slate-400">Module training materials</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link to="/docs/technical" className="block">
+                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <Code2 className="w-4 h-4 text-purple-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">Technical Docs</div>
+                        <div className="text-xs text-slate-400">API & developer guides</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link to="/docs/implementation" className="block">
+                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <Zap className="w-4 h-4 text-orange-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">Implementation</div>
+                        <div className="text-xs text-slate-400">Go-live preparation</div>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* CTA & Mobile Menu */}
@@ -99,6 +161,28 @@ export function Header() {
                 </button>
               </Link>
             ))}
+            <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
+              <Link to="/docs/process-flows">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  Process Flows
+                </button>
+              </Link>
+              <Link to="/docs/training-guides">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  Training Guides
+                </button>
+              </Link>
+              <Link to="/docs/technical">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  Technical Docs
+                </button>
+              </Link>
+              <Link to="/docs/implementation">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  Implementation
+                </button>
+              </Link>
+            </div>
             <Link to="/login">
               <Button variant="outline" className="w-full text-white border-slate-600 hover:bg-slate-800" data-testid="button-mobile-login">
                 Sign In
@@ -152,9 +236,10 @@ export function Footer() {
             <h4 className="text-white font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm text-slate-400">
               <li><Link to="/blog" className="hover:text-white transition" data-testid="link-footer-blog">Blog</Link></li>
-              <li><a href="#" className="hover:text-white transition">Documentation</a></li>
-              <li><a href="#" className="hover:text-white transition">API Docs</a></li>
-              <li><a href="#" className="hover:text-white transition">Support</a></li>
+              <li><Link to="/docs/process-flows" className="hover:text-white transition">Process Flows</Link></li>
+              <li><Link to="/docs/training-guides" className="hover:text-white transition">Training Guides</Link></li>
+              <li><Link to="/docs/technical" className="hover:text-white transition">Technical Docs</Link></li>
+              <li><Link to="/docs/implementation" className="hover:text-white transition">Implementation</Link></li>
             </ul>
           </div>
 
