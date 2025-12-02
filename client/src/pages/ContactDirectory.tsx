@@ -50,4 +50,6 @@ export default function ContactDirectory() {
           </Card>
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No contacts found</p></CardContent></Card>}
       </div>
-
+    </div>
+  );
+}

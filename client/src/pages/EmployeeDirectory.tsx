@@ -45,4 +45,6 @@ export default function EmployeeDirectory() {
           </Card>
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No employees found</p></CardContent></Card>}
       </div>
-
+    </div>
+  );
+}

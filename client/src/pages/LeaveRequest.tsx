@@ -50,4 +50,6 @@ export default function LeaveRequest() {
           )) : <p className="text-muted-foreground text-center py-4">No leave requests found</p>}
         </CardContent>
       </Card>
-
+    </div>
+  );
+}

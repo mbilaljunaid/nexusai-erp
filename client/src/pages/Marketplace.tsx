@@ -41,4 +41,6 @@ export default function Marketplace() {
           </Card>
         )) : <p className="text-muted-foreground text-center py-4">No extensions found</p>}
       </div>
-
+    </div>
+  );
+}

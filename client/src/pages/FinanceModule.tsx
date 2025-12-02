@@ -83,4 +83,6 @@ export default function FinanceModule() {
           </CardContent>
         </Card>
       </div>
-
+    </div>
+  );
+}

@@ -62,4 +62,6 @@ export default function InvoiceList() {
           </Card>
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No invoices found</p></CardContent></Card>}
       </div>
-
+    </div>
+  );
+}

@@ -51,4 +51,6 @@ export default function HRModule() {
           </Card>
         )) : <p className="text-muted-foreground text-center py-4">No employees found</p>}
       </div>
-
+    </div>
+  );
+}
