@@ -7,8 +7,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity, Badge as BadgeIcon } from "lucide-react";
-import { IconNavigation } from "@/components/IconNavigation";
+import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function CRM() {
@@ -16,7 +15,6 @@ export default function CRM() {
   const [activeNav, setActiveNav] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
-  const [selectedOpportunity, setSelectedOpportunity] = useState<any>(null);
   const leadsMetadata = getFormMetadata("leads");
 
   useEffect(() => {
@@ -128,28 +126,28 @@ export default function CRM() {
               <CardTitle>Sales Opportunities</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-                <p className="text-muted-foreground">Track and manage sales opportunities and deals</p>
-                <div className="space-y-2">
-                  {[
-                    { id: "1", name: "Enterprise License", account: "Tech Corp", amount: 500000, stage: "Won", prob: 100 },
-                    { id: "2", name: "Implementation Services", account: "Finance Inc", amount: 150000, stage: "Proposal", prob: 50 },
-                    { id: "3", name: "Support Contract", account: "Tech Corp", amount: 50000, stage: "Negotiation", prob: 75 },
-                  ].map((opp) => (
-                    <div key={opp.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold">{opp.name}</p>
-                        <p className="text-sm text-muted-foreground">{opp.account} • ${opp.amount.toLocaleString()} • {opp.stage}</p>
-                      </div>
-                      {opp.stage === "Won" && (
-                        <Button size="sm" onClick={() => setSelectedOpportunity(opp)} data-testid={`button-convert-${opp.id}`}>
-                          Convert to Invoice
-                        </Button>
-                      )}
+              <p className="text-muted-foreground">Track and manage sales opportunities and deals</p>
+              <div className="space-y-2">
+                {[
+                  { id: "1", name: "Enterprise License", account: "Tech Corp", amount: 500000, stage: "Won", prob: 100 },
+                  { id: "2", name: "Implementation Services", account: "Finance Inc", amount: 150000, stage: "Proposal", prob: 50 },
+                  { id: "3", name: "Support Contract", account: "Tech Corp", amount: 50000, stage: "Negotiation", prob: 75 },
+                ].map((opp) => (
+                  <div key={opp.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">{opp.name}</p>
+                      <p className="text-sm text-muted-foreground">{opp.account} • ${opp.amount.toLocaleString()} • {opp.stage}</p>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    {opp.stage === "Won" && (
+                      <Button size="sm" data-testid={`button-convert-${opp.id}`}>
+                        Convert to Invoice
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 
