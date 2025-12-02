@@ -6008,22 +6008,30 @@ export async function registerRoutes(
   app.post("/api/:formId", async (req, res) => {
     const { formId } = req.params;
     try {
-      const item = { ...req.body, id: Date.now().toString(), createdAt: new Date().toISOString() };
-      const items = formDataStore.get(formId) || [];
-      items.push(item);
-      formDataStore.set(formId, items);
+      let savedId = Date.now().toString();
+      const createdAt = new Date().toISOString();
       
-      // Also save to database for persistence
+      // Save to database for persistent ID
       try {
-        await db.insert(formDataTable).values({
+        const result = await db.insert(formDataTable).values({
           formId,
-          data: item,
+          data: req.body,
           status: "submitted",
           submittedAt: new Date(),
-        }).execute();
+        }).returning({ id: formDataTable.id }).execute();
+        
+        if (result && result.length > 0) {
+          savedId = result[0].id;
+        }
       } catch (dbError) {
         console.warn("Database save failed, using memory storage:", dbError);
       }
+      
+      // Store in memory with the same ID for consistency
+      const item = { ...req.body, id: savedId, createdAt };
+      const items = formDataStore.get(formId) || [];
+      items.push(item);
+      formDataStore.set(formId, items);
       
       res.status(201).json(item);
     } catch (error) {
