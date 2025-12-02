@@ -2,6 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { dbStorage } from "./storage-db";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 import { 
   insertProjectSchema, insertInvoiceSchema, insertLeadSchema, insertWorkOrderSchema, insertEmployeeSchema,
   insertMobileDeviceSchema, insertOfflineSyncSchema,
@@ -11,7 +13,7 @@ import {
   insertAppSchema, insertAppReviewSchema, insertAppInstallationSchema, insertConnectorSchema, insertConnectorInstanceSchema, insertWebhookEventSchema,
   insertAbacRuleSchema, insertEncryptedFieldSchema, insertComplianceConfigSchema, insertSprintSchema, insertIssueSchema,
   insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
-  insertDemoSchema,
+  insertDemoSchema, formData as formDataTable,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
