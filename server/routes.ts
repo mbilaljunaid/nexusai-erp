@@ -18,6 +18,7 @@ import { generateDemoData } from "./demoSeeds";
 import analyticsRoutes from "./routes/analyticsRoutes";
 import templateRoutes from "./routes/templateRoutes";
 import migrationRoutes from "./routes/migrationRoutes";
+import { validateRequest, errorResponse, ErrorCode, sanitizeInput } from "./security";
 
 // Generic form data storage (in-memory)
 const formDataStore: Map<string, any[]> = new Map();
@@ -123,22 +124,23 @@ export async function registerRoutes(
     res.json(invoicesStore);
   });
 
-  app.post("/api/invoices", async (req, res) => {
+  app.post("/api/invoices", validateRequest(insertInvoiceSchema), async (req, res) => {
     try {
+      const data = sanitizeInput((req as any).validatedData);
       const invoice = {
         id: `inv-${Date.now()}`,
-        invoiceNumber: req.body.invoiceNumber || `INV-${Math.random().toString(36).substr(2, 9)}`,
-        customerId: req.body.customerId || "CUST-001",
-        amount: req.body.amount || "0",
-        dueDate: req.body.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        status: req.body.status || "draft",
-        items: req.body.items || [],
+        invoiceNumber: data.invoiceNumber || `INV-${Math.random().toString(36).substr(2, 9)}`,
+        customerId: data.customerId || "CUST-001",
+        amount: data.amount || "0",
+        dueDate: data.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        status: data.status || "draft",
+        items: data.items || [],
         createdAt: new Date().toISOString(),
       };
       invoicesStore.push(invoice);
-      res.status(201).json(invoice);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create invoice" });
+      res.status(201).json({ success: true, data: invoice });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create invoice", undefined, (req as any).id));
     }
   });
 
@@ -156,20 +158,21 @@ export async function registerRoutes(
 
   app.post("/api/quotes", async (req, res) => {
     try {
+      const data = sanitizeInput(req.body);
       const quote = {
         id: `quote-${Date.now()}`,
-        opportunityId: req.body.opportunityId || "OPP-001",
-        lineItems: req.body.lineItems || [],
-        discountAmount: req.body.discountAmount || "0",
-        total: req.body.total || "0",
+        opportunityId: data.opportunityId || "OPP-001",
+        lineItems: data.lineItems || [],
+        discountAmount: data.discountAmount || "0",
+        total: data.total || "0",
         status: "draft",
         validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         createdAt: new Date().toISOString(),
       };
       quotesStore.push(quote);
-      res.status(201).json(quote);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create quote" });
+      res.status(201).json({ success: true, data: quote });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create quote", undefined, (req as any).id));
     }
   });
 
@@ -187,12 +190,13 @@ export async function registerRoutes(
 
   app.post("/api/payments", async (req, res) => {
     try {
+      const data = sanitizeInput(req.body);
       const payment = {
         id: `pay-${Date.now()}`,
-        invoiceId: req.body.invoiceId || "",
-        amount: req.body.amount || "0",
-        method: req.body.method || "card",
-        status: req.body.status || "pending",
+        invoiceId: data.invoiceId || "",
+        amount: data.amount || "0",
+        method: data.method || "card",
+        status: data.status || "pending",
         transactionId: `TXN-${Math.random().toString(36).substr(2, 9)}`,
         createdAt: new Date().toISOString(),
       };
@@ -202,9 +206,9 @@ export async function registerRoutes(
         const p = paymentsStore.find(x => x.id === payment.id);
         if (p) p.status = "completed";
       }, 2000);
-      res.status(201).json(payment);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create payment" });
+      res.status(201).json({ success: true, data: payment });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create payment", undefined, (req as any).id));
     }
   });
 
@@ -760,16 +764,13 @@ export async function registerRoutes(
     res.json(leads);
   });
 
-  app.post("/api/leads", async (req, res) => {
+  app.post("/api/leads", validateRequest(insertLeadSchema), async (req, res) => {
     try {
-      const data = insertLeadSchema.parse(req.body);
+      const data = sanitizeInput((req as any).validatedData);
       const lead = await storage.createLead(data);
-      res.status(201).json(lead);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: error.errors });
-      }
-      res.status(500).json({ error: "Failed to create lead" });
+      res.status(201).json({ success: true, data: lead });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create lead", undefined, (req as any).id));
     }
   });
 
