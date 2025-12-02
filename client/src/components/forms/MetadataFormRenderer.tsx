@@ -12,6 +12,7 @@ import { MetadataFieldRenderer } from "./MetadataFieldRenderer";
 import { Loader2 } from "lucide-react";
 
 interface MetadataField {
+  searchable?: boolean;
   name: string;
   label: string;
   type: string;
