@@ -7,11 +7,10 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { FormDialog } from "@/components/FormDialog";
 import { Download } from "lucide-react";
 
 export default function InvoiceList() {
-  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const { data: invoices = [] } = useQuery<any[]>({

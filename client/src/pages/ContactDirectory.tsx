@@ -7,12 +7,12 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { FormDialog } from "@/components/FormDialog";
 
 export default function ContactDirectory() {
   const [showContactForm, setShowContactForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showContactForm, setShowContactForm] = useState(false);
-  const [filteredContacts, setFilteredContacts] = useState<any[]>([]);
   const { data: contacts = [] } = useQuery<any[]>({
     queryKey: ["/api/contacts"],
   });

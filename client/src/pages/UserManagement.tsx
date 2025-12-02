@@ -6,11 +6,11 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { FormDialog } from "@/components/FormDialog";
 
 export default function UserManagement() {
   const [showUserForm, setShowUserForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showUserForm, setShowUserForm] = useState(false);
   const [filtered, setFiltered] = useState<any[]>([]);
   const { data: users = [] } = useQuery<any[]>({ queryKey: ["/api/users"] });
   const formMetadata = getFormMetadata("userManagement");

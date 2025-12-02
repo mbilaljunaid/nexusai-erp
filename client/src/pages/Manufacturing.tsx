@@ -7,6 +7,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { FormDialog } from "@/components/FormDialog";
 import { Factory, Package, Zap, QrCode } from "lucide-react";
 import { Link } from "wouter";
 

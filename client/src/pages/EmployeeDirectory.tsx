@@ -6,16 +6,17 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { FormDialog } from "@/components/FormDialog";
 import { Mail, Phone } from "lucide-react";
 
 export default function EmployeeDirectory() {
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
   const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"] });
   const employeeFormMetadata = getFormMetadata("employee");
 
+  const handleFormClose = () => setShowEmployeeForm(false);
   return (
     <div className="space-y-6">
       <Breadcrumb items={employeeFormMetadata?.breadcrumbs?.slice(1) || []} />
@@ -24,9 +25,31 @@ export default function EmployeeDirectory() {
         <div>
           <h1 className="text-3xl font-bold">Employee Directory</h1>
           <p className="text-muted-foreground mt-1">Find and manage employee information</p>
-        </div>
+              </div>
+
+      <FormDialog
+        isOpen={showEmployeeForm}
+        onOpenChange={setShowEmployeeForm}
+        formId="employeeForm"
+        formTitle="Add Employee"
+        formDescription="Create a new employee record"
+      />
+    </div>
+  );
+}
         <SmartAddButton formMetadata={employeeFormMetadata} onClick={() => setShowEmployeeForm(true)} />
-      </div>
+            </div>
+
+      <FormDialog
+        isOpen={showEmployeeForm}
+        onOpenChange={setShowEmployeeForm}
+        formId="employeeForm"
+        formTitle="Add Employee"
+        formDescription="Create a new employee record"
+      />
+    </div>
+  );
+}
 
       <FormSearchWithMetadata
         formMetadata={employeeFormMetadata}
@@ -45,9 +68,42 @@ export default function EmployeeDirectory() {
                 <p className="text-sm text-muted-foreground">{emp.role}</p>
                 <p className="text-xs text-muted-foreground">{emp.department}</p>
                 <div className="mt-3 space-y-1 text-sm">
-                  <div className="flex items-center gap-2"><Mail className="h-4 w-4" />{emp.email || 'N/A'}</div>
-                  <div className="flex items-center gap-2"><Phone className="h-4 w-4" />N/A</div>
-                </div>
+                  <div className="flex items-center gap-2"><Mail className="h-4 w-4" />{emp.email || 'N/A'}      </div>
+
+      <FormDialog
+        isOpen={showEmployeeForm}
+        onOpenChange={setShowEmployeeForm}
+        formId="employeeForm"
+        formTitle="Add Employee"
+        formDescription="Create a new employee record"
+      />
+    </div>
+  );
+}
+                  <div className="flex items-center gap-2"><Phone className="h-4 w-4" />N/A      </div>
+
+      <FormDialog
+        isOpen={showEmployeeForm}
+        onOpenChange={setShowEmployeeForm}
+        formId="employeeForm"
+        formTitle="Add Employee"
+        formDescription="Create a new employee record"
+      />
+    </div>
+  );
+}
+                      </div>
+
+      <FormDialog
+        isOpen={showEmployeeForm}
+        onOpenChange={setShowEmployeeForm}
+        formId="employeeForm"
+        formTitle="Add Employee"
+        formDescription="Create a new employee record"
+      />
+    </div>
+  );
+}
                 <Badge className="mt-3">Active</Badge>
               </CardContent>
             </Card>
@@ -55,7 +111,29 @@ export default function EmployeeDirectory() {
         ) : (
           <Card><CardContent className="p-4"><p className="text-muted-foreground">No employees found</p></CardContent></Card>
         )}
-      </div>
+            </div>
+
+      <FormDialog
+        isOpen={showEmployeeForm}
+        onOpenChange={setShowEmployeeForm}
+        formId="employeeForm"
+        formTitle="Add Employee"
+        formDescription="Create a new employee record"
+      />
     </div>
+  );
+}
+          </div>
+
+      <FormDialog
+        isOpen={showEmployeeForm}
+        onOpenChange={setShowEmployeeForm}
+        formId="employeeForm"
+        formTitle="Add Employee"
+        formDescription="Create a new employee record"
+      />
+    </div>
+  );
+}
   );
 }

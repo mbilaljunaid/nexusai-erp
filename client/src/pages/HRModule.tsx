@@ -6,12 +6,12 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { FormDialog } from "@/components/FormDialog";
 import { Users, Briefcase } from "lucide-react";
 
 export default function HRModule() {
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
   const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"], retry: false });
   const employeeFormMetadata = getFormMetadata("employee");

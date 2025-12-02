@@ -7,6 +7,7 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { FormDialog } from "@/components/FormDialog";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 import { ExpenseEntryForm } from "@/components/forms/ExpenseEntryForm";
 import { BudgetEntryForm } from "@/components/forms/BudgetEntryForm";
