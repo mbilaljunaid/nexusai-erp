@@ -7,7 +7,6 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { ConvertOpportunityToInvoiceForm } from "@/components/forms/ConvertOpportunityToInvoiceForm";
 import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity, Badge as BadgeIcon } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +16,6 @@ export default function CRM() {
   const [activeNav, setActiveNav] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
-  const [showLeadForm, setShowLeadForm] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState<any>(null);
   const leadsMetadata = getFormMetadata("leads");
 
@@ -116,7 +114,6 @@ export default function CRM() {
               </div>
             </CardContent>
           </Card>
-          {showLeadForm && <LeadEntryForm />}
         </div>
       )}
 
