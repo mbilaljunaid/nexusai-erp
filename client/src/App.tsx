@@ -59,7 +59,7 @@ const QuoteBuilder = lazy(() => import("@/pages/QuoteBuilder"));
 const ApprovalWorkflow = lazy(() => import("@/pages/ApprovalWorkflow"));
 const PaymentFlow = lazy(() => import("@/pages/PaymentFlow"));
 
-// Process Pages - Phase 1
+// Process Pages - Phase 1 & 2
 const ProcessHub = lazy(() => import("@/pages/processes/ProcessHub"));
 const ProcureToPayProcess = lazy(() => import("@/pages/processes/pages/ProcureToPayProcess"));
 const OrderToCashProcess = lazy(() => import("@/pages/processes/pages/OrderToCashProcess"));
@@ -67,6 +67,9 @@ const HireToRetireProcess = lazy(() => import("@/pages/processes/pages/HireToRet
 const MonthEndConsolidationProcess = lazy(() => import("@/pages/processes/pages/MonthEndConsolidationProcess"));
 const ComplianceRiskProcess = lazy(() => import("@/pages/processes/pages/ComplianceRiskProcess"));
 const InventoryManagementProcess = lazy(() => import("@/pages/processes/pages/InventoryManagementProcess"));
+const FixedAssetLifecycleProcess = lazy(() => import("@/pages/processes/pages/FixedAssetLifecycleProcess"));
+const ProductionPlanningProcess = lazy(() => import("@/pages/processes/pages/ProductionPlanningProcess"));
+const MRPProcess = lazy(() => import("@/pages/processes/pages/MRPProcess"));
 
 // Phase 2: ERP Workflows (4 pages)
 const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
@@ -465,6 +468,9 @@ function Router() {
       <Route path="/processes/month-end-consolidation" component={MonthEndConsolidationProcess} />
       <Route path="/processes/compliance-risk" component={ComplianceRiskProcess} />
       <Route path="/processes/inventory-management" component={InventoryManagementProcess} />
+      <Route path="/processes/fixed-asset-lifecycle" component={FixedAssetLifecycleProcess} />
+      <Route path="/processes/production-planning" component={ProductionPlanningProcess} />
+      <Route path="/processes/mrp" component={MRPProcess} />
       <Route path="/mrp-dashboard" component={MRPDashboard} />
       <Route path="/attendance-dashboard" component={AttendanceDashboard} />
       <Route path="/ticket-dashboard" component={TicketDashboard} />

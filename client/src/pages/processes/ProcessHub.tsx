@@ -85,6 +85,39 @@ const processes: ProcessCard[] = [
     formsCount: 8,
     glCount: 5,
     status: 'Active'
+  },
+  {
+    id: 'fixed-asset-lifecycle',
+    number: 7,
+    name: 'Fixed Asset Lifecycle',
+    category: 'Finance',
+    criticality: 'HIGH',
+    cycleTime: 'Lifecycle',
+    formsCount: 7,
+    glCount: 5,
+    status: 'Active'
+  },
+  {
+    id: 'production-planning',
+    number: 8,
+    name: 'Production Planning',
+    category: 'Manufacturing',
+    criticality: 'HIGH',
+    cycleTime: 'Varies',
+    formsCount: 10,
+    glCount: 5,
+    status: 'Active'
+  },
+  {
+    id: 'mrp',
+    number: 9,
+    name: 'Material Requirements Planning',
+    category: 'Manufacturing',
+    criticality: 'HIGH',
+    cycleTime: 'Weekly',
+    formsCount: 6,
+    glCount: 3,
+    status: 'Active'
   }
 ];
 
