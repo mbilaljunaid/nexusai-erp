@@ -88,7 +88,7 @@ router.post("/templates/:templateId/apply", (req, res) => {
     }
 
     // Register new form in metadata registry
-    metadataRegistry.registerMetadata(newMetadata);
+    metadataRegistry.registerMetadata(newFormId, newMetadata);
 
     res.status(201).json({
       formId: newFormId,
