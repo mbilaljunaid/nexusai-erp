@@ -5,15 +5,41 @@
 
 import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import type { FormMetadataAdvanced } from "@shared/types/metadata";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { metadataRegistry } from "@/server/metadata";
-import { ValidationEngine } from "@/lib/validationEngine";
-import { ConditionalLogicEngine } from "@/lib/conditionalLogicEngine";
 import { MetadataFieldRenderer } from "./MetadataFieldRenderer";
 import { Loader2 } from "lucide-react";
+
+interface MetadataField {
+  name: string;
+  label: string;
+  type: string;
+  required?: boolean;
+  disabled?: boolean;
+}
+
+interface MetadataSection {
+  name: string;
+  title: string;
+  description?: string;
+  fields: string[];
+}
+
+interface FormMetadata {
+  id: string;
+  name: string;
+  description?: string;
+  fields: MetadataField[];
+  sections?: MetadataSection[];
+  createButtonText?: string;
+  theme?: {
+    layout?: string;
+    showHeader?: boolean;
+    showBreadcrumbs?: boolean;
+  };
+  breadcrumbs?: Array<{ label: string }>;
+}
 
 interface MetadataFormRendererProps {
   formId: string;
