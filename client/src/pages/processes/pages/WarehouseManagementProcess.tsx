@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function WarehouseManagementProcess() {
+export default function WarehouseManagementProcess() {
   const flowSteps = [
     { id: 1, label: 'Receipt', type: 'input' as const },
     { id: 2, label: 'Putaway', type: 'input' as const },

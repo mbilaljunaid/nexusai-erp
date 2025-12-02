@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function VendorPerformanceProcess() {
+export default function VendorPerformanceProcess() {
   const flowSteps = [
     { id: 1, label: 'Scorecard', type: 'input' as const },
     { id: 2, label: 'Metrics', type: 'input' as const },

@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function OrderToCashProcess() {
+export default function OrderToCashProcess() {
   const flowSteps = [
     { id: 1, label: 'Lead Creation', type: 'input' as const },
     { id: 2, label: 'Sales Order', type: 'approval' as const },

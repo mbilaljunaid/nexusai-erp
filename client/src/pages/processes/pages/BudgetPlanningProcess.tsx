@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function BudgetPlanningProcess() {
+export default function BudgetPlanningProcess() {
   const flowSteps = [
     { id: 1, label: 'Assumptions', type: 'input' as const },
     { id: 2, label: 'Department Budgets', type: 'input' as const },

@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function MRPProcess() {
+export default function MRPProcess() {
   const flowSteps = [
     { id: 1, label: 'MPS', type: 'input' as const },
     { id: 2, label: 'BOM Explosion', type: 'input' as const },

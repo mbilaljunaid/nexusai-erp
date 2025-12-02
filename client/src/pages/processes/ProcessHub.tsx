@@ -227,7 +227,7 @@ const criticalityStyles = {
   LOW: 'bg-green-100 text-green-800'
 };
 
-export function ProcessHub() {
+export default function ProcessHub() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCriticality, setSelectedCriticality] = useState<string | null>(null);

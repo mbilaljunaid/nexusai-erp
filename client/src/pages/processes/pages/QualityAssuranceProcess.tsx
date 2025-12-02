@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function QualityAssuranceProcess() {
+export default function QualityAssuranceProcess() {
   const flowSteps = [
     { id: 1, label: 'Incoming QC', type: 'input' as const },
     { id: 2, label: 'Inspection', type: 'approval' as const },

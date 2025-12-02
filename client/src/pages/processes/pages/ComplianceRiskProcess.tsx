@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function ComplianceRiskProcess() {
+export default function ComplianceRiskProcess() {
   const flowSteps = [
     { id: 1, label: 'Audit Trail', type: 'input' as const },
     { id: 2, label: 'Risk Assess', type: 'approval' as const },

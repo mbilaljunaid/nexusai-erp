@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function HireToRetireProcess() {
+export default function HireToRetireProcess() {
   const flowSteps = [
     { id: 1, label: 'Job Opening', type: 'input' as const },
     { id: 2, label: 'Applicant', type: 'input' as const },

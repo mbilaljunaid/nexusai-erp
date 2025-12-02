@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function ProductionPlanningProcess() {
+export default function ProductionPlanningProcess() {
   const flowSteps = [
     { id: 1, label: 'Forecast', type: 'input' as const },
     { id: 2, label: 'MPS', type: 'approval' as const },

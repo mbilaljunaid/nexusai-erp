@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function MonthEndConsolidationProcess() {
+export default function MonthEndConsolidationProcess() {
   const flowSteps = [
     { id: 1, label: 'GL Close', type: 'input' as const },
     { id: 2, label: 'Reconcile', type: 'approval' as const },

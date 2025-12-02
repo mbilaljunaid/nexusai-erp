@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function SubscriptionBillingProcess() {
+export default function SubscriptionBillingProcess() {
   const flowSteps = [
     { id: 1, label: 'Order', type: 'input' as const },
     { id: 2, label: 'Activation', type: 'approval' as const },

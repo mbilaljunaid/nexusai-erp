@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function ContractManagementProcess() {
+export default function ContractManagementProcess() {
   const flowSteps = [
     { id: 1, label: 'Requirement', type: 'input' as const },
     { id: 2, label: 'Draft', type: 'input' as const },

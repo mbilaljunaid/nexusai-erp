@@ -7,7 +7,7 @@ import { GLMappingPanel } from '../components/GLMappingPanel';
 import { KPIMetrics } from '../components/KPIMetrics';
 import { Card } from '@/components/ui/card';
 
-export function InventoryManagementProcess() {
+export default function InventoryManagementProcess() {
   const flowSteps = [
     { id: 1, label: 'Item Master', type: 'input' as const },
     { id: 2, label: 'GR Receipt', type: 'approval' as const },
