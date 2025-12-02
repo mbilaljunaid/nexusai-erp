@@ -11,12 +11,11 @@ import { FormDialog } from "@/components/FormDialog";
 import { Download } from "lucide-react";
 
 export default function InvoiceList() {
-  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
-  const { data: invoices = [] } = useQuery<any[]>({
-    queryKey: ["/api/invoices"],
-  });
-  const invoiceFormMetadata = getFormMetadata("invoice");
+  const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"] });
+  const formMetadata = getFormMetadata("invoice");
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -31,19 +30,19 @@ export default function InvoiceList() {
 
   return (
     <div className="space-y-6">
-      <Breadcrumb items={invoiceFormMetadata?.breadcrumbs?.slice(1) || []} />
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
       
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Invoices</h1>
           <p className="text-muted-foreground mt-1">Manage customer invoices and payments</p>
         </div>
-        <SmartAddButton formMetadata={invoiceFormMetadata} onClick={() => setShowInvoiceForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
       </div>
 
       <div className="flex gap-2">
         <FormSearchWithMetadata
-          formMetadata={invoiceFormMetadata}
+          formMetadata={formMetadata}
           value={searchQuery}
           onChange={setSearchQuery}
           data={invoices}
@@ -53,27 +52,19 @@ export default function InvoiceList() {
       </div>
 
       <div className="grid gap-4">
-        {filteredInvoices.length > 0 ? (
-          filteredInvoices.map((inv: any) => (
-            <Card key={inv.id} className="hover:bg-muted/50 transition">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">{inv.invoiceNumber} - {inv.customerId}</p>
-                    <p className="text-sm text-muted-foreground">Amount: ${inv.amount}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-lg">${inv.amount}</p>
-                    <Badge className={getStatusColor(inv.status)}>{inv.status}</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <Card><CardContent className="p-4"><p className="text-muted-foreground">No invoices found</p></CardContent></Card>
-        )}
+        {filteredInvoices.length > 0 ? filteredInvoices.map((inv: any) => (
+          <Card key={inv.id} className="hover:bg-muted/50 transition">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div><p className="font-semibold">{inv.invoiceNumber} - {inv.customerId}</p><p className="text-sm text-muted-foreground">Amount: ${inv.amount}</p></div>
+                <div className="text-right"><p className="font-bold text-lg">${inv.amount}</p><Badge className={getStatusColor(inv.status)}>{inv.status}</Badge></div>
+              </div>
+            </CardContent>
+          </Card>
+        )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No invoices found</p></CardContent></Card>}
       </div>
+
+      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="invoice" formTitle="Add Invoice" formDescription="Create a new invoice" />
     </div>
   );
 }

@@ -12,14 +12,12 @@ import { Factory, Package, Zap, QrCode } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Manufacturing() {
-  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [activeNav, setActiveNav] = useState("workorders");
-  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
   const [filteredWorkOrders, setFilteredWorkOrders] = useState<any[]>([]);
   const { data: workOrders = [] } = useQuery<any[]>({ queryKey: ["/api/manufacturing/work-orders"], retry: false });
-  const workOrderFormMetadata = getFormMetadata("workorder");
+  const formMetadata = getFormMetadata("workorder");
 
   const navItems = [
     { id: "bom", label: "Bill of Materials", icon: Package, color: "text-blue-500" },
@@ -30,7 +28,7 @@ export default function Manufacturing() {
 
   return (
     <div className="space-y-6 p-6">
-      <Breadcrumb items={workOrderFormMetadata?.breadcrumbs?.slice(1) || []} />
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
       
       <div className="flex items-center justify-between">
         <div>
@@ -42,7 +40,7 @@ export default function Manufacturing() {
             Manage BOMs, work orders, production planning, and quality control
           </p>
         </div>
-        <SmartAddButton formMetadata={workOrderFormMetadata} onClick={() => setShowWorkOrderForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -56,86 +54,28 @@ export default function Manufacturing() {
         ))}
       </div>
 
-      {activeNav === "bom" && (
-        <div className="space-y-6">
-          <BomForm />
-          <Card>
-            <CardHeader>
-              <CardTitle>BOMs</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">No BOMs created yet. Create one above to get started.</p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
       {activeNav === "workorders" && (
         <div className="space-y-6">
-          <div className="flex gap-2 items-center">
-            <FormSearchWithMetadata
-              formMetadata={workOrderFormMetadata}
-              value={searchQuery}
-              onChange={setSearchQuery}
-              data={workOrders}
-              onFilter={setFilteredWorkOrders}
-            />
-          </div>
-          
-          <div className="space-y-2">
-            {filteredWorkOrders.length > 0 ? (
-              filteredWorkOrders.map((wo: any, idx: number) => (
-                <Card key={wo.id || idx} className="hover-elevate cursor-pointer">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <p className="font-semibold">{wo.title}</p>
-                        <p className="text-sm text-muted-foreground">{wo.description}</p>
-                        <p className="text-xs text-muted-foreground mt-1">Assigned to: {wo.assignedTo || 'Unassigned'}</p>
-                      </div>
-                      <div className="text-right">
-                        <Badge variant="secondary">{wo.status || 'pending'}</Badge>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <Card><CardContent className="p-4"><p className="text-muted-foreground">No work orders found</p></CardContent></Card>
-            )}
+          <FormSearchWithMetadata
+            formMetadata={formMetadata}
+            value={searchQuery}
+            onChange={setSearchQuery}
+            data={workOrders}
+            onFilter={setFilteredWorkOrders}
+          />
+          <div className="grid gap-4">
+            {filteredWorkOrders.length > 0 ? filteredWorkOrders.map((wo: any) => (
+              <Card key={wo.id} className="hover:bg-muted/50 transition">
+                <CardContent className="pt-6">
+                  <div className="flex justify-between"><div><p className="font-semibold">{wo.workOrderNumber}</p><p className="text-sm text-muted-foreground">{wo.description}</p></div><Badge>{wo.status}</Badge></div>
+                </CardContent>
+              </Card>
+            )) : <p className="text-muted-foreground text-center py-4">No work orders found</p>}
           </div>
         </div>
       )}
 
-      {activeNav === "production" && (
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Production Orders <Badge variant="secondary">Coming Soon</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Production order management will be available soon.</p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {activeNav === "quality" && (
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Quality Checks <Badge variant="secondary">Coming Soon</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Quality control management will be available soon.</p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="workorder" formTitle="Create Work Order" formDescription="Create a new manufacturing work order" />
     </div>
   );
 }

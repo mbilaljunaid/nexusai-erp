@@ -10,12 +10,10 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { FormDialog } from "@/components/FormDialog";
 
 export default function ContactDirectory() {
-  const [showContactForm, setShowContactForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showContactForm, setShowContactForm] = useState(false);
-  const { data: contacts = [] } = useQuery<any[]>({
-    queryKey: ["/api/contacts"],
-  });
+  const [filteredContacts, setFilteredContacts] = useState<any[]>([]);
+  const { data: contacts = [] } = useQuery<any[]>({ queryKey: ["/api/contacts"] });
   const formMetadata = getFormMetadata("contact");
 
   return (
@@ -27,7 +25,7 @@ export default function ContactDirectory() {
           <h1 className="text-3xl font-bold">Contacts</h1>
           <p className="text-muted-foreground mt-1">Manage all contacts and relationships</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowContactForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
       </div>
 
       <FormSearchWithMetadata
@@ -45,15 +43,16 @@ export default function ContactDirectory() {
               <h3 className="font-semibold text-lg">{contact.name}</h3>
               <p className="text-sm text-muted-foreground">{contact.company || "—"}</p>
               <div className="mt-3 space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <Mail className="h-4 w-4" />{contact.email}
-                </div>
+                <div className="flex items-center gap-2 text-sm"><Mail className="h-4 w-4" />{contact.email}</div>
+                <div className="flex items-center gap-2 text-sm"><Phone className="h-4 w-4" />{contact.phone || "—"}</div>
               </div>
               <Badge className="mt-3">Active</Badge>
             </CardContent>
           </Card>
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No contacts found</p></CardContent></Card>}
       </div>
+
+      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="contact" formTitle="Add Contact" formDescription="Create a new contact" />
     </div>
   );
 }
