@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicBudgetProcess() {
+export default function PublicBudgetProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Budget Planning & Variance Analysis"

@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicDemandProcess() {
+export default function PublicDemandProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Demand Planning & Forecasting"

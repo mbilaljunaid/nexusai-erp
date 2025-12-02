@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicHireToRetireProcess() {
+export default function PublicHireToRetireProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Hire-to-Retire"

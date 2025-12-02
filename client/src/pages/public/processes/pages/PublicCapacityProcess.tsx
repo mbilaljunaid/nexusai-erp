@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicCapacityProcess() {
+export default function PublicCapacityProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Capacity Planning"

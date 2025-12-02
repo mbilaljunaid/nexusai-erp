@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicWarehouseProcess() {
+export default function PublicWarehouseProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Warehouse Management"

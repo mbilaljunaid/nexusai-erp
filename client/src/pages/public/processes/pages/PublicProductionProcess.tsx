@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicProductionProcess() {
+export default function PublicProductionProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Production Planning & Execution"

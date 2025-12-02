@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicVendorPerformanceProcess() {
+export default function PublicVendorPerformanceProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Vendor Performance Management"

@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicQualityProcess() {
+export default function PublicQualityProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Quality Assurance & Control"

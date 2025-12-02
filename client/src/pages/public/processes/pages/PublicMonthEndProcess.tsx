@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicMonthEndProcess() {
+export default function PublicMonthEndProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Month-End Consolidation"

@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicProcureToPayProcess() {
+export default function PublicProcureToPayProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Procure-to-Pay"

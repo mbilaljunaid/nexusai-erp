@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicComplianceProcess() {
+export default function PublicComplianceProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Compliance & Risk Management"

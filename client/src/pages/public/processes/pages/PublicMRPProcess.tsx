@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicMRPProcess() {
+export default function PublicMRPProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Material Requirements Planning"

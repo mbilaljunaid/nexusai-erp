@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicContractProcess() {
+export default function PublicContractProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Contract Management"

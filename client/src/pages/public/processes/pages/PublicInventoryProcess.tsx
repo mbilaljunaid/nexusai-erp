@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicInventoryProcess() {
+export default function PublicInventoryProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Inventory Management"

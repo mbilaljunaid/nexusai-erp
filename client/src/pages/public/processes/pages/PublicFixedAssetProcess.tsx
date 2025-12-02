@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicFixedAssetProcess() {
+export default function PublicFixedAssetProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Fixed Asset Lifecycle"

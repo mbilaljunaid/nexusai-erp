@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicCustomerReturnsProcess() {
+export default function PublicCustomerReturnsProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Customer Returns & RMA"

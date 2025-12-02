@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicOrderToCashProcess() {
+export default function PublicOrderToCashProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Order-to-Cash"
