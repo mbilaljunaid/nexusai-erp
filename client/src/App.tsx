@@ -503,6 +503,7 @@ function Router() {
       <Route path="/settings" component={Settings} />
       <Route path="/integrations" component={Integrations} />
       <Route path="/processes" component={ProcessHub} />
+      <Route path="/process-hub" component={ProcessHub} />
       <Route path="/processes/procure-to-pay" component={ProcureToPayProcess} />
       <Route path="/processes/order-to-cash" component={OrderToCashProcess} />
       <Route path="/processes/hire-to-retire" component={HireToRetireProcess} />
