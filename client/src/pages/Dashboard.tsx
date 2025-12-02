@@ -1,6 +1,8 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { useState } from "react";
 import {
   BarChart3,
   Users,
@@ -23,6 +25,7 @@ import {
   Code,
   Workflow,
   Home,
+  Plus,
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -47,8 +50,10 @@ export default function Dashboard() {
     { title: "API", url: "/api-management", icon: Code, color: "text-purple-600" },
     { title: "Admin", url: "/user-management", icon: Settings, color: "text-gray-600" },
     { title: "Database", url: "/data-explorer", icon: Database, color: "text-orange-600" },
-    { title: "Reports", url: "/report-builder", icon: FileText, color: "text-red-600" },
+    { title: "Reports", url: "/reports", icon: FileText, color: "text-red-600" },
   ];
+
+  const [selectedReportModule, setSelectedReportModule] = useState("crm");
 
   return (
     <div className="space-y-8">
@@ -124,6 +129,39 @@ export default function Dashboard() {
                 <CardContent className="p-4 flex flex-col items-center justify-center gap-2 text-center">
                   <link.icon className={`w-6 h-6 ${link.color}`} />
                   <p className="text-sm font-medium">{link.title}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">Reports & Analytics</h2>
+          <Link to="/reports">
+            <Button size="sm" variant="outline" data-testid="button-view-all-reports">
+              View All Reports
+            </Button>
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { module: "crm", title: "CRM Reports", color: "bg-blue-50 dark:bg-blue-950", icon: Target },
+            { module: "finance", title: "Finance Reports", color: "bg-yellow-50 dark:bg-yellow-950", icon: DollarSign },
+            { module: "supply_chain", title: "Supply Chain Reports", color: "bg-cyan-50 dark:bg-cyan-950", icon: Package },
+          ].map(({ module, title, color, icon: Icon }) => (
+            <Link key={module} to={`/reports/${module}`}>
+              <Card className="hover:shadow-lg hover:border-primary transition-all cursor-pointer h-full">
+                <CardContent className="p-6">
+                  <div className={`p-4 rounded-lg ${color} mb-4 w-fit`}>
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{title}</h3>
+                  <p className="text-sm text-muted-foreground">Access and build custom reports</p>
+                  <Button size="sm" variant="ghost" className="mt-4" data-testid={`button-reports-${module}`}>
+                    Explore →
+                  </Button>
                 </CardContent>
               </Card>
             </Link>
