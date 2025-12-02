@@ -1,318 +1,147 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useRBAC } from "@/components/RBACContext";
-import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { SmartAddButton } from "@/components/SmartAddButton";
-import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
-import { getFormMetadata } from "@/lib/formMetadata";
 import {
-  Users,
-  DollarSign,
-  TrendingUp,
-  Zap,
   BarChart3,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
+  Users,
+  ShoppingCart,
+  Briefcase,
   Settings,
-  Key,
-  Building,
   FileText,
-  Plus,
+  Zap,
+  Brain,
+  Layers,
+  TrendingUp,
+  Package,
+  DollarSign,
+  Factory,
+  Truck,
+  Headphones,
+  Target,
+  Lock,
+  Database,
+  Code,
+  Workflow,
+  Home,
 } from "lucide-react";
 
 export default function Dashboard() {
-  const [, navigate] = useLocation();
-  const { isAuthenticated, userRole } = useRBAC();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
-  const formMetadata = getFormMetadata("leads");
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
-
-  const { data: leads = [] } = useQuery<any[]>({
-    queryKey: ["/api/leads"],
-    retry: false
-  });
-
-  const metrics = [
-    {
-      label: "Active Users",
-      value: "2,847",
-      change: "+12.5%",
-      icon: Users,
-      color: "text-blue-600",
-    },
-    {
-      label: "Total Revenue",
-      value: "$128.5K",
-      change: "+8.2%",
-      icon: DollarSign,
-      color: "text-green-600",
-    },
-    {
-      label: "Growth Rate",
-      value: "24.8%",
-      change: "-2.1%",
-      icon: TrendingUp,
-      color: "text-purple-600",
-    },
-    {
-      label: "Performance",
-      value: "95%",
-      change: "+5%",
-      icon: Zap,
-      color: "text-orange-600",
-    },
+  const modules = [
+    { title: "CRM", url: "/crm", icon: Target, color: "text-blue-500", description: "Customer Relationship Management" },
+    { title: "Projects", url: "/projects", icon: Briefcase, color: "text-purple-500", description: "Project Management" },
+    { title: "ERP", url: "/erp", icon: Layers, color: "text-green-500", description: "Enterprise Resource Planning" },
+    { title: "HR", url: "/hr", icon: Users, color: "text-orange-500", description: "Human Resources" },
+    { title: "Finance", url: "/finance", icon: DollarSign, color: "text-yellow-500", description: "Finance & Accounting" },
+    { title: "Manufacturing", url: "/manufacturing", icon: Factory, color: "text-red-500", description: "Manufacturing & Production" },
+    { title: "Supply Chain", url: "/inventory", icon: Package, color: "text-cyan-500", description: "Supply Chain & Logistics" },
+    { title: "Sales", url: "/opportunities", icon: TrendingUp, color: "text-lime-500", description: "Sales Pipeline" },
+    { title: "Service", url: "/service-tickets", icon: Headphones, color: "text-pink-500", description: "Service & Support" },
+    { title: "Analytics", url: "/business-intelligence", icon: BarChart3, color: "text-indigo-500", description: "Analytics & BI" },
+    { title: "Compliance", url: "/compliance-dashboard", icon: Lock, color: "text-rose-500", description: "Governance & Compliance" },
+    { title: "AI Assistant", url: "/ai-assistant-advanced", icon: Brain, color: "text-violet-500", description: "AI & Automation" },
   ];
 
-  const recentActivities = [
-    {
-      title: "Invoice Generated",
-      description: "INV-2025-001234 created",
-      time: "2 hours ago",
-      status: "completed",
-    },
-    {
-      title: "Order Received",
-      description: "Order ORD-789456 from Acme Corp",
-      time: "4 hours ago",
-      status: "completed",
-    },
-    {
-      title: "System Update",
-      description: "Platform updated to v2.5.1",
-      time: "1 day ago",
-      status: "completed",
-    },
-    {
-      title: "Low Inventory Alert",
-      description: "Product SKU-2847 below threshold",
-      time: "3 days ago",
-      status: "alert",
-    },
-  ];
-
-  const topModules = [
-    { name: "CRM", description: "Customer Management", path: "/crm", color: "from-blue-500 to-cyan-500" },
-    { name: "Finance", description: "Accounting & Billing", path: "/finance", color: "from-green-500 to-emerald-500" },
-    { name: "HR", description: "Human Resources", path: "/hr", color: "from-purple-500 to-pink-500" },
-    { name: "Projects", description: "Project Management", path: "/projects", color: "from-orange-500 to-red-500" },
-    { name: "Analytics", description: "Business Intelligence", path: "/analytics", color: "from-indigo-500 to-blue-500" },
-    { name: "Logistics", description: "Supply Chain", path: "/industry/logistics", color: "from-cyan-500 to-blue-500" },
+  const quickLinks = [
+    { title: "Processes", url: "/process-hub", icon: Workflow, color: "text-blue-600" },
+    { title: "Integrations", url: "/integration-hub", icon: Code, color: "text-green-600" },
+    { title: "API", url: "/api-management", icon: Code, color: "text-purple-600" },
+    { title: "Admin", url: "/user-management", icon: Settings, color: "text-gray-600" },
+    { title: "Database", url: "/data-explorer", icon: Database, color: "text-orange-600" },
+    { title: "Reports", url: "/report-builder", icon: FileText, color: "text-red-600" },
   ];
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Dashboard</h1>
-        <p className="text-slate-600 dark:text-slate-400">Welcome back! Here's your business overview.</p>
+    <div className="space-y-8">
+      <Breadcrumb items={[{ label: "Home", href: "/" }]} />
+
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold flex items-center gap-3">
+          <Home className="w-10 h-10 text-primary" />
+          Welcome to NexusAI
+        </h1>
+        <p className="text-muted-foreground text-lg">Enterprise ERP Platform - Manage all your business operations in one place</p>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {metrics.map((metric) => {
-          const Icon = metric.icon;
-          return (
-            <Card key={metric.label} className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">{metric.label}</p>
-                  <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{metric.value}</p>
-                </div>
-                <Icon className={`w-8 h-8 ${metric.color}`} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card className="md:col-span-2 lg:col-span-3">
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Quick Stats</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-4 rounded-lg bg-muted">
+                <p className="text-sm text-muted-foreground">Active Users</p>
+                <p className="text-2xl font-bold">245</p>
               </div>
-              <Badge variant="secondary" className="text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/30">
-                {metric.change}
-              </Badge>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Recent Leads & Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Recent Leads */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Recent Leads</span>
-              <SmartAddButton formMetadata={formMetadata} onClick={() => navigate("/crm/leads")} />
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <FormSearchWithMetadata
-              formMetadata={formMetadata}
-              value={searchQuery}
-              onChange={setSearchQuery}
-              data={leads}
-              onFilter={setFilteredLeads}
-            />
-            {filteredLeads.length > 0 ? (
-              filteredLeads.slice(0, 5).map((lead: any, idx: number) => (
-                <div key={lead.id || idx} className="flex items-start gap-4 pb-4 border-b border-slate-200 dark:border-slate-700 last:border-0">
-                  <div>
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-1" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-slate-900 dark:text-white">{lead.name || 'Unknown'}</p>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">{lead.email}</p>
-                  </div>
-                  <Badge variant="secondary">{lead.status || 'New'}</Badge>
-                </div>
-              ))
-            ) : (
-              <p className="text-muted-foreground text-center py-4">No leads found</p>
-            )}
+              <div className="p-4 rounded-lg bg-muted">
+                <p className="text-sm text-muted-foreground">Active Processes</p>
+                <p className="text-2xl font-bold">18</p>
+              </div>
+              <div className="p-4 rounded-lg bg-muted">
+                <p className="text-sm text-muted-foreground">Pending Tasks</p>
+                <p className="text-2xl font-bold">42</p>
+              </div>
+              <div className="p-4 rounded-lg bg-muted">
+                <p className="text-sm text-muted-foreground">System Health</p>
+                <p className="text-2xl font-bold">99.9%</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
-
-        {/* Quick Stats */}
-        <Card className="p-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Quick Stats</h2>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">System Health</span>
-                <span className="text-sm font-bold text-green-600 dark:text-green-400">99.9%</span>
-              </div>
-              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                <div className="bg-green-600 dark:bg-green-500 h-2 rounded-full" style={{ width: "99.9%" }}></div>
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">API Usage</span>
-                <span className="text-sm font-bold text-blue-600 dark:text-blue-400">64%</span>
-              </div>
-              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                <div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{ width: "64%" }}></div>
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Storage</span>
-                <span className="text-sm font-bold text-purple-600 dark:text-purple-400">42%</span>
-              </div>
-              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                <div className="bg-purple-600 dark:bg-purple-500 h-2 rounded-full" style={{ width: "42%" }}></div>
-              </div>
-            </div>
-          </div>
-        </Card>
       </div>
 
-      {/* Module Navigation */}
-      <Card className="p-8">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Access Modules</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {topModules.map((module) => (
-            <button
-              key={module.name}
-              onClick={() => navigate(module.path)}
-              data-testid={`button-module-${module.name.toLowerCase()}`}
-              className="text-left group hover-elevate rounded-lg overflow-hidden transition-all"
-            >
-              <div className={`h-20 bg-gradient-to-r ${module.color} opacity-80 group-hover:opacity-100 transition-opacity`} />
-              <div className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-lg text-slate-900 dark:text-white">{module.name}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{module.description}</p>
-              </div>
-            </button>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Core Modules</h2>
+          <p className="text-muted-foreground mb-4">Access all major business modules and processes</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {modules.map((module) => (
+            <Link key={module.url} to={module.url}>
+              <Card className="hover:shadow-lg hover:border-primary transition-all cursor-pointer h-full">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className={`p-3 rounded-lg bg-muted`}>
+                      <module.icon className={`w-6 h-6 ${module.color}`} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">{module.title}</h3>
+                      <p className="text-sm text-muted-foreground">{module.description}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold">Quick Links</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {quickLinks.map((link) => (
+            <Link key={link.url} to={link.url}>
+              <Card className="hover:shadow-md hover:border-primary transition-all cursor-pointer h-full">
+                <CardContent className="p-4 flex flex-col items-center justify-center gap-2 text-center">
+                  <link.icon className={`w-6 h-6 ${link.color}`} />
+                  <p className="text-sm font-medium">{link.title}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <Card className="bg-muted/50">
+        <CardContent className="p-6">
+          <h3 className="font-semibold mb-2">Getting Started</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            New to NexusAI? Start with the Process Hub to understand our 18 end-to-end business processes, then navigate to specific modules using the menu on the left.
+          </p>
+          <Link to="/process-hub">
+            <button className="text-sm font-medium text-primary hover:underline">Explore Processes →</button>
+          </Link>
+        </CardContent>
       </Card>
-
-      {/* Admin Features - Only for Admin Role */}
-      {userRole === "admin" && (
-        <Card className="p-8 mt-8 border-blue-200 dark:border-blue-900">
-          <div className="flex items-center gap-3 mb-6">
-            <Settings className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Admin Features</h2>
-            <Badge variant="default" className="bg-blue-600">Admin Only</Badge>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <button
-              onClick={() => navigate("/demo")}
-              data-testid="button-admin-demo-management"
-              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-            >
-              <FileText className="w-8 h-8 text-amber-600 dark:text-amber-400 mb-2" />
-              <h3 className="font-bold text-slate-900 dark:text-white">Demo Management</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Manage demo instances</p>
-            </button>
-
-            <button
-              onClick={() => navigate("/tenant-admin")}
-              data-testid="button-admin-tenant-management"
-              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-            >
-              <Building className="w-8 h-8 text-green-600 dark:text-green-400 mb-2" />
-              <h3 className="font-bold text-slate-900 dark:text-white">Tenant Management</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Manage tenants and organizations</p>
-            </button>
-
-            <button
-              onClick={() => navigate("/user-management")}
-              data-testid="button-admin-user-management"
-              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-            >
-              <Users className="w-8 h-8 text-purple-600 dark:text-purple-400 mb-2" />
-              <h3 className="font-bold text-slate-900 dark:text-white">User Management</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Manage users and permissions</p>
-            </button>
-
-            <button
-              onClick={() => navigate("/admin-roles")}
-              data-testid="button-admin-roles"
-              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-            >
-              <Key className="w-8 h-8 text-red-600 dark:text-red-400 mb-2" />
-              <h3 className="font-bold text-slate-900 dark:text-white">Role Management</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Configure user roles</p>
-            </button>
-
-            <button
-              onClick={() => navigate("/environment-management")}
-              data-testid="button-admin-environment"
-              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-            >
-              <Settings className="w-8 h-8 text-cyan-600 dark:text-cyan-400 mb-2" />
-              <h3 className="font-bold text-slate-900 dark:text-white">Environment Vars</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Manage configurations</p>
-            </button>
-
-            <button
-              onClick={() => navigate("/subscription-management")}
-              data-testid="button-admin-subscriptions"
-              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-            >
-              <DollarSign className="w-8 h-8 text-indigo-600 dark:text-indigo-400 mb-2" />
-              <h3 className="font-bold text-slate-900 dark:text-white">Subscriptions</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Manage plans & billing</p>
-            </button>
-
-            <button
-              onClick={() => navigate("/billing-management")}
-              data-testid="button-admin-billing"
-              className="text-left group hover-elevate p-4 border rounded-lg transition-all bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-            >
-              <BarChart3 className="w-8 h-8 text-pink-600 dark:text-pink-400 mb-2" />
-              <h3 className="font-bold text-slate-900 dark:text-white">Billing</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Invoices & payments</p>
-            </button>
-          </div>
-        </Card>
-      )}
     </div>
   );
 }
