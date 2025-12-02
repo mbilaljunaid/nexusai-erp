@@ -8,6 +8,9 @@ import { PurchaseRequisitionForm } from "@/components/forms/PurchaseRequisitionF
 import { RFQForm } from "@/components/forms/RFQForm";
 import { VendorToInvoiceForm } from "@/components/forms/VendorToInvoiceForm";
 import { GLEntryForm } from "@/components/forms/GLEntryForm";
+import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
+import { AdjustmentEntryForm } from "@/components/forms/AdjustmentEntryForm";
+import { VendorEntryForm } from "@/components/forms/VendorEntryForm";
 import { FormSearch } from "@/components/FormSearch";
 import { useQuery } from "@tanstack/react-query";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users, Mail, ClipboardList } from "lucide-react";
