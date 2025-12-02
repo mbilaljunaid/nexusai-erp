@@ -9,7 +9,9 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { Mail, Phone } from "lucide-react";
 
 export default function EmployeeDirectory() {
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
   const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"] });
   const employeeFormMetadata = getFormMetadata("employee");
@@ -23,7 +25,7 @@ export default function EmployeeDirectory() {
           <h1 className="text-3xl font-bold">Employee Directory</h1>
           <p className="text-muted-foreground mt-1">Find and manage employee information</p>
         </div>
-        <SmartAddButton formMetadata={employeeFormMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={employeeFormMetadata} onClick={() => setShowEmployeeForm(true)} />
       </div>
 
       <FormSearchWithMetadata

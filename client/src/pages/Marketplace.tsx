@@ -7,7 +7,9 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function Marketplace() {
+  const [showMarketplaceForm, setShowMarketplaceForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showMarketplaceForm, setShowMarketplaceForm] = useState(false);
   const [filteredExtensions, setFilteredExtensions] = useState<any[]>([]);
   const { data: extensions = [] } = useQuery<any[]>({
     queryKey: ["/api/marketplace/extensions"],
@@ -23,7 +25,7 @@ export default function Marketplace() {
           <h1 className="text-3xl font-bold">Marketplace</h1>
           <p className="text-muted-foreground mt-1">Publish and manage marketplace extensions</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowMarketplaceForm(true)} />
       </div>
 
       <FormSearchWithMetadata

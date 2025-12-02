@@ -9,7 +9,9 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
 export default function FinanceModule() {
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"], retry: false });
   const invoiceFormMetadata = getFormMetadata("invoice");
@@ -23,7 +25,7 @@ export default function FinanceModule() {
           <h1 className="text-3xl font-bold">Finance Module</h1>
           <p className="text-muted-foreground">Track expenses, revenue, and financial forecasts</p>
         </div>
-        <SmartAddButton formMetadata={invoiceFormMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={invoiceFormMetadata} onClick={() => setShowInvoiceForm(true)} />
       </div>
 
       <div className="grid grid-cols-4 gap-4">

@@ -8,7 +8,9 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function PurchaseOrder() {
+  const [showPOForm, setShowPOForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showPOForm, setShowPOForm] = useState(false);
   const [filteredPOs, setFilteredPOs] = useState<any[]>([]);
   const { data: purchaseOrders = [] } = useQuery<any[]>({
     queryKey: ["/api/purchase-orders"],
@@ -24,7 +26,7 @@ export default function PurchaseOrder() {
           <h1 className="text-3xl font-bold">Purchase Orders</h1>
           <p className="text-muted-foreground mt-1">Manage purchase orders and vendor management</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowPOForm(true)} />
       </div>
 
       <FormSearchWithMetadata

@@ -9,7 +9,9 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function ContactDirectory() {
+  const [showContactForm, setShowContactForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showContactForm, setShowContactForm] = useState(false);
   const [filteredContacts, setFilteredContacts] = useState<any[]>([]);
   const { data: contacts = [] } = useQuery<any[]>({
     queryKey: ["/api/contacts"],
@@ -25,7 +27,7 @@ export default function ContactDirectory() {
           <h1 className="text-3xl font-bold">Contacts</h1>
           <p className="text-muted-foreground mt-1">Manage all contacts and relationships</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowContactForm(true)} />
       </div>
 
       <FormSearchWithMetadata

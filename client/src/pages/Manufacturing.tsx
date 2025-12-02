@@ -11,8 +11,11 @@ import { Factory, Package, Zap, QrCode } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Manufacturing() {
+  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
   const [activeNav, setActiveNav] = useState("workorders");
+  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
   const [filteredWorkOrders, setFilteredWorkOrders] = useState<any[]>([]);
   const { data: workOrders = [] } = useQuery<any[]>({ queryKey: ["/api/manufacturing/work-orders"], retry: false });
   const workOrderFormMetadata = getFormMetadata("workorder");
@@ -38,7 +41,7 @@ export default function Manufacturing() {
             Manage BOMs, work orders, production planning, and quality control
           </p>
         </div>
-        <SmartAddButton formMetadata={workOrderFormMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={workOrderFormMetadata} onClick={() => setShowWorkOrderForm(true)} />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">

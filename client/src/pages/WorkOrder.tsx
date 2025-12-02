@@ -8,7 +8,9 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function WorkOrder() {
+  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
   const [filteredWorkOrders, setFilteredWorkOrders] = useState<any[]>([]);
   const { data: workOrders = [] } = useQuery<any[]>({
     queryKey: ["/api/work-orders"],
@@ -24,7 +26,7 @@ export default function WorkOrder() {
           <h1 className="text-3xl font-bold">Work Orders</h1>
           <p className="text-muted-foreground mt-1">Track production work orders and status</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowWorkOrderForm(true)} />
       </div>
 
       <FormSearchWithMetadata

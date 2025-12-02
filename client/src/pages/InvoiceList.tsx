@@ -10,7 +10,9 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { Download } from "lucide-react";
 
 export default function InvoiceList() {
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const { data: invoices = [] } = useQuery<any[]>({
     queryKey: ["/api/invoices"],
@@ -37,7 +39,7 @@ export default function InvoiceList() {
           <h1 className="text-3xl font-bold">Invoices</h1>
           <p className="text-muted-foreground mt-1">Manage customer invoices and payments</p>
         </div>
-        <SmartAddButton formMetadata={invoiceFormMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={invoiceFormMetadata} onClick={() => setShowInvoiceForm(true)} />
       </div>
 
       <div className="flex gap-2">

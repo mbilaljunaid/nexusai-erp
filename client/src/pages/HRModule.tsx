@@ -9,7 +9,9 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { Users, Briefcase } from "lucide-react";
 
 export default function HRModule() {
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
   const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"], retry: false });
   const employeeFormMetadata = getFormMetadata("employee");
@@ -23,7 +25,7 @@ export default function HRModule() {
           <h1 className="text-3xl font-bold">HR Module</h1>
           <p className="text-muted-foreground">Manage recruitment, employees, and training programs</p>
         </div>
-        <SmartAddButton formMetadata={employeeFormMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={employeeFormMetadata} onClick={() => setShowEmployeeForm(true)} />
       </div>
 
       <div className="grid grid-cols-4 gap-4">

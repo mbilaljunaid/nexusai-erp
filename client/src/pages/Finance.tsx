@@ -17,11 +17,17 @@ import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard } fro
 import { Link } from "wouter";
 
 export default function Finance() {
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [activeNav, setActiveNav] = useState("overview");
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<any>(null);
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<any>(null);
   const invoicesMetadata = getFormMetadata("invoices");
   
@@ -80,7 +86,7 @@ export default function Finance() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between gap-1">
                   <CardTitle>Invoices</CardTitle>
-                  <SmartAddButton formMetadata={invoicesMetadata} onClick={() => {}} />
+                  <SmartAddButton formMetadata={invoicesMetadata} onClick={() => setShowInvoiceForm(true)} />
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <FormSearchWithMetadata

@@ -8,7 +8,9 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function SalesPipeline() {
+  const [showSalesForm, setShowSalesForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSalesForm, setShowSalesForm] = useState(false);
   const [filteredOpportunities, setFilteredOpportunities] = useState<any[]>([]);
   const { data: opportunities = [] } = useQuery<any[]>({
     queryKey: ["/api/crm/opportunities"],
@@ -33,7 +35,7 @@ export default function SalesPipeline() {
           <h1 className="text-3xl font-bold">Sales Pipeline</h1>
           <p className="text-muted-foreground mt-1">Kanban view of your opportunities across stages</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowSalesForm(true)} />
       </div>
 
       <FormSearchWithMetadata

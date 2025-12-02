@@ -16,10 +16,15 @@ import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 
 export default function HR() {
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [match, params] = useRoute("/hr/:page");
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [activeNav, setActiveNav] = useState("overview");
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
   const employeesMetadata = getFormMetadata("employees");
 
@@ -85,7 +90,7 @@ export default function HR() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-1">
               <CardTitle>Employees</CardTitle>
-              <SmartAddButton formMetadata={employeesMetadata} onClick={() => {}} />
+              <SmartAddButton formMetadata={employeesMetadata} onClick={() => setShowEmployeeForm(true)} />
             </CardHeader>
             <CardContent className="space-y-4">
               <FormSearchWithMetadata

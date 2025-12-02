@@ -8,7 +8,9 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function LeaveRequest() {
+  const [showLeaveForm, setShowLeaveForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showLeaveForm, setShowLeaveForm] = useState(false);
   const [filteredLeaves, setFilteredLeaves] = useState<any[]>([]);
   const { data: leaves = [] } = useQuery<any[]>({
     queryKey: ["/api/hr/leave-requests"],
@@ -24,7 +26,7 @@ export default function LeaveRequest() {
           <h1 className="text-3xl font-bold">Leave Requests</h1>
           <p className="text-muted-foreground mt-1">Manage and track employee leave requests</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => {}} />
+        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowLeaveForm(true)} />
       </div>
 
       <FormSearchWithMetadata
