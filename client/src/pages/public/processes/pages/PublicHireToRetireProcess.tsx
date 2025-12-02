@@ -1,3 +1,4 @@
+import { Header, Footer } from "@/components/Navigation";
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
 export default function PublicHireToRetireProcess() {

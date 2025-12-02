@@ -1,6 +1,7 @@
 import { Link } from 'wouter';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, Code2 } from 'lucide-react';
+import { Header, Footer } from "@/components/Navigation";
 
 const docs = [
   { name: 'API Reference', slug: 'api-reference', description: 'Complete REST API documentation' },
@@ -19,7 +20,9 @@ const docs = [
 
 export default function TechnicalDocumentationPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-900 dark:to-purple-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
@@ -45,6 +48,8 @@ export default function TechnicalDocumentationPage() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

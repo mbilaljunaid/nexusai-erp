@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Briefcase, TrendingUp, ShoppingCart, Users } from 'lucide-react';
+import { Header, Footer } from "@/components/Navigation";
 
 interface ProcessCard {
   id: string;
@@ -201,7 +202,9 @@ export function PublicProcessHub() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-16">
         <div className="max-w-6xl mx-auto px-4">
@@ -285,6 +288,8 @@ export function PublicProcessHub() {
           </Button>
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

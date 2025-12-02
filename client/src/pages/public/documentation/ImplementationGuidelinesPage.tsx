@@ -1,6 +1,7 @@
 import { Link } from 'wouter';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, Zap } from 'lucide-react';
+import { Header, Footer } from "@/components/Navigation";
 
 const guides = [
   { name: 'Pre-Implementation Checklist', slug: 'pre-implementation', description: 'Requirements and preparation' },
@@ -21,7 +22,9 @@ const guides = [
 
 export default function ImplementationGuidelinesPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-900 dark:to-orange-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
@@ -47,6 +50,8 @@ export default function ImplementationGuidelinesPage() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

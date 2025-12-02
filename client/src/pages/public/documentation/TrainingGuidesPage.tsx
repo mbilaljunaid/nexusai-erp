@@ -1,6 +1,7 @@
 import { Link } from 'wouter';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, BookOpen } from 'lucide-react';
+import { Header, Footer } from "@/components/Navigation";
 
 const modules = [
   { name: 'CRM', slug: 'crm', icon: '👥', description: 'Customer Relationship Management' },
@@ -19,7 +20,9 @@ const modules = [
 
 export default function TrainingGuidesPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-green-600 to-green-700 dark:from-green-900 dark:to-green-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
@@ -46,6 +49,8 @@ export default function TrainingGuidesPage() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

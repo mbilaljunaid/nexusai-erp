@@ -1,9 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Zap, CheckCircle } from 'lucide-react';
+import { Header, Footer } from "@/components/Navigation";
 
 export default function ImplementationSystemSetup() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-900 dark:to-orange-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
@@ -76,6 +79,8 @@ export default function ImplementationSystemSetup() {
           </div>
         </Card>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

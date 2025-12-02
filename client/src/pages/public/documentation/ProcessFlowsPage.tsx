@@ -1,6 +1,7 @@
 import { Link } from 'wouter';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, BookOpen } from 'lucide-react';
+import { Header, Footer } from "@/components/Navigation";
 
 const processes = [
   { name: 'Procure-to-Pay', href: '/public/processes/procure-to-pay', category: 'Supply Chain' },
@@ -25,7 +26,9 @@ const processes = [
 
 export default function ProcessFlowsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
@@ -55,6 +58,8 @@ export default function ProcessFlowsPage() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }
