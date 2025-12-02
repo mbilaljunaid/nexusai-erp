@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { dbStorage } from "./storage-db";
 import { 
   insertProjectSchema, insertInvoiceSchema, insertLeadSchema, insertWorkOrderSchema, insertEmployeeSchema,
   insertMobileDeviceSchema, insertOfflineSyncSchema,
@@ -121,23 +122,20 @@ export async function registerRoutes(
 
   // PHASE 1: Invoices
   app.get("/api/invoices", async (req, res) => {
-    res.json(invoicesStore);
+    const invoices = await dbStorage.listInvoices();
+    res.json(invoices);
   });
 
   app.post("/api/invoices", validateRequest(insertInvoiceSchema), async (req, res) => {
     try {
       const data = sanitizeInput((req as any).validatedData);
-      const invoice = {
-        id: `inv-${Date.now()}`,
+      const invoice = await dbStorage.createInvoice({
         invoiceNumber: data.invoiceNumber || `INV-${Math.random().toString(36).substr(2, 9)}`,
         customerId: data.customerId || "CUST-001",
         amount: data.amount || "0",
-        dueDate: data.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        dueDate: data.dueDate ? new Date(data.dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         status: data.status || "draft",
-        items: data.items || [],
-        createdAt: new Date().toISOString(),
-      };
-      invoicesStore.push(invoice);
+      });
       res.status(201).json({ success: true, data: invoice });
     } catch (error: any) {
       res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create invoice", undefined, (req as any).id));
@@ -760,14 +758,14 @@ export async function registerRoutes(
 
   // ========== CRM: LEADS ==========
   app.get("/api/leads", async (req, res) => {
-    const leads = await storage.listLeads();
+    const leads = await dbStorage.listLeads();
     res.json(leads);
   });
 
   app.post("/api/leads", validateRequest(insertLeadSchema), async (req, res) => {
     try {
       const data = sanitizeInput((req as any).validatedData);
-      const lead = await storage.createLead(data);
+      const lead = await dbStorage.createLead(data);
       res.status(201).json({ success: true, data: lead });
     } catch (error: any) {
       res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create lead", undefined, (req as any).id));
