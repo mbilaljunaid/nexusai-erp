@@ -123,15 +123,11 @@ export default function CRM() {
             { label: "CRM", path: "/crm" },
             { label: "Opportunities", path: "/crm/opportunities" },
           ]} />
-          {selectedOpportunity ? (
-            <ConvertOpportunityToInvoiceForm 
-              opportunity={selectedOpportunity} 
-              onClose={() => setSelectedOpportunity(null)} 
-            />
-          ) : (
-            <Card>
-              <CardHeader><CardTitle>Sales Opportunities</CardTitle></CardHeader>
-              <CardContent className="space-y-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>Sales Opportunities</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
                 <p className="text-muted-foreground">Track and manage sales opportunities and deals</p>
                 <div className="space-y-2">
                   {[
