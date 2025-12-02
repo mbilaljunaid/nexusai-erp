@@ -129,3 +129,6 @@
     "bufferutil": "^4.0.8"
   }
 }
+  "test": "jest --passWithNoTests",
+  "test:coverage": "jest --coverage --passWithNoTests",
+  "test:watch": "jest --watch --passWithNoTests"
