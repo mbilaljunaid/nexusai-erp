@@ -1,55 +1,20 @@
-import { Header, Footer } from "@/components/Navigation";
-import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
+import { PublicProcessTemplate } from "./PublicProcessTemplate";
 
 export default function PublicOrderToCashProcess() {
-  return (
-    <PublicProcessPageTemplate
-      processName="Order-to-Cash"
-      processCode="P002"
-      criticality="CRITICAL"
-      category="Sales"
-      cycletime="30 days"
-      description="Complete sales cycle from lead management through revenue recognition and payment collection"
-      flowSteps={[
-        { label: 'Lead', description: 'Sales team captures lead from marketing or inbound inquiry' },
-        { label: 'Opportunity', description: 'Qualify and develop sales opportunity with probability' },
-        { label: 'Quote', description: 'Generate and send sales quote with pricing and terms' },
-        { label: 'Order', description: 'Customer places order, credit check performed' },
-        { label: 'Shipment', description: 'Goods picked, packed, shipped, and tracked' },
-        { label: 'Invoice', description: 'Invoice generated and sent to customer' },
-        { label: 'Payment', description: 'Customer payment received and applied' }
-      ]}
-      moduleMappings={[
-        {
-          module: 'CRM',
-          forms: ['Lead', 'Opportunity', 'Account', 'Contact', 'Activity'],
-          impact: 'Customer relationship tracking from initial contact to close'
-        },
-        {
-          module: 'Sales',
-          forms: ['Quote', 'Sales Order', 'Order Line Item', 'Discount Matrix'],
-          impact: 'Quote-to-order conversion with pricing and discounts'
-        },
-        {
-          module: 'Warehouse',
-          forms: ['Pick List', 'Pack Slip', 'Shipment', 'Delivery Confirmation'],
-          impact: 'Fulfillment and shipment with tracking'
-        },
-        {
-          module: 'Finance',
-          forms: ['Sales Invoice', 'Accounts Receivable', 'Payment', 'Revenue Recognition'],
-          impact: 'Invoicing, collections, and revenue accounting'
-        }
-      ]}
-      keyBenefits={[
-        'Sales cycle time reduced by 30% through automation',
-        '98%+ order accuracy with automated validation',
-        'Real-time revenue visibility and forecasting',
-        'Improved cash flow with automated AR management',
-        'Enhanced customer service with order tracking',
-        'ASC 606 compliant revenue recognition'
-      ]}
-      glAccounts={['GL-4000', 'GL-1100', 'GL-1000', 'GL-4100']}
-    />
-  );
+  const steps = [
+    { name: "Lead Creation", description: "Sales captures new prospect information", glAccounts: ["GL-4000"] },
+    { name: "Opportunity", description: "Sales qualifies and estimates opportunity value", glAccounts: ["GL-4100"] },
+    { name: "Quote Generation", description: "Create and send quote to customer", glAccounts: ["GL-4200"] },
+    { name: "Sales Order", description: "Customer approves and order is booked", glAccounts: ["GL-4300"] },
+    { name: "Shipment & Invoice", description: "Goods shipped and invoice generated", glAccounts: ["GL-1100", "GL-4400"] },
+    { name: "Payment Collection", description: "Payment received and reconciled", glAccounts: ["GL-1000"] },
+  ];
+
+  const kpis = [
+    { metric: "Sales Cycle", target: "30 days", current: "28 days" },
+    { metric: "Quote Conversion", target: "25%", current: "26.5%" },
+    { metric: "Days Sales Outstanding", target: "45 days", current: "42 days" },
+  ];
+
+  return <PublicProcessTemplate title="Order-to-Cash" description="End-to-end sales process from lead to revenue recognition" steps={steps} kpis={kpis} />;
 }

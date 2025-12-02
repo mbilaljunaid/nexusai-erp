@@ -1,54 +1,20 @@
-import { Header, Footer } from "@/components/Navigation";
-import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
+import { PublicProcessTemplate } from "./PublicProcessTemplate";
 
 export default function PublicMonthEndProcess() {
-  return (
-    <PublicProcessPageTemplate
-      processName="Month-End Consolidation"
-      processCode="P004"
-      criticality="CRITICAL"
-      category="Finance"
-      cycletime="Monthly"
-      description="Complete financial close from GL reconciliation through consolidated financial statements"
-      flowSteps={[
-        { label: 'GL Reconciliation', description: 'Reconcile all GL accounts to source systems' },
-        { label: 'Accruals', description: 'Record period-end accruals and adjustments' },
-        { label: 'Intercompany', description: 'Eliminate intercompany transactions' },
-        { label: 'Consolidation', description: 'Consolidate subsidiary results to corporate' },
-        { label: 'Statements', description: 'Generate balance sheet, income statement, cash flow' },
-        { label: 'Audit', description: 'External audit and compliance review' }
-      ]}
-      moduleMappings={[
-        {
-          module: 'General Ledger',
-          forms: ['GL Reconciliation', 'Journal Entry', 'Accrual Entry', 'Adjustment'],
-          impact: 'Core accounting with reconciliations and adjustments'
-        },
-        {
-          module: 'Finance',
-          forms: ['Balance Sheet', 'Income Statement', 'Cash Flow', 'Trial Balance'],
-          impact: 'Financial statement preparation'
-        },
-        {
-          module: 'Consolidation',
-          forms: ['Intercompany Elimination', 'Consolidation Entry', 'Currency Translation'],
-          impact: 'Multi-entity consolidation and eliminations'
-        },
-        {
-          module: 'Reporting',
-          forms: ['Financial Report', 'Audit Trail', 'Disclosure', 'Management Report'],
-          impact: 'External and internal financial reporting'
-        }
-      ]}
-      keyBenefits={[
-        'Financial close completed in 5 business days (vs. 15 days)',
-        '100% GL account reconciliation and variance analysis',
-        'Automated journal entry creation and posting',
-        'Real-time financial visibility during close',
-        'Enhanced audit trail and compliance documentation',
-        'Improved accuracy with reduced manual errors'
-      ]}
-      glAccounts={['GL-1000', 'GL-2000', 'GL-3000', 'GL-4000']}
-    />
-  );
+  const steps = [
+    { name: "GL Transactions", description: "All operational transactions posted to GL", glAccounts: ["GL-1000"] },
+    { name: "GL Reconciliation", description: "Bank, account, and subledger reconciliations", glAccounts: ["GL-2100"] },
+    { name: "Accruals & Adjustments", description: "Month-end accruals and audit adjustments", glAccounts: ["GL-3000"] },
+    { name: "Intercompany Elimination", description: "Eliminate intercompany transactions", glAccounts: ["GL-3500"] },
+    { name: "Financial Statements", description: "Generate balance sheet, P&L, cash flow", glAccounts: ["GL-5000"] },
+    { name: "Audit Review", description: "Internal/external audit and sign-off", glAccounts: ["GL-9000"] },
+  ];
+
+  const kpis = [
+    { metric: "Close Days", target: "5 days", current: "4 days" },
+    { metric: "Reconciliation Variance", target: "$0", current: "$0" },
+    { metric: "Audit Issues", target: "0", current: "0" },
+  ];
+
+  return <PublicProcessTemplate title="Month-End Consolidation" description="Financial period close and consolidation" steps={steps} kpis={kpis} />;
 }
