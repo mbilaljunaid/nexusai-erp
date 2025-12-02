@@ -567,6 +567,8 @@ function Router() {
       <Route path="/industry-deployments" component={IndustrySetup} />
       <Route path="/environment-management" component={EnvironmentManagement} />
       <Route path="/subscription-management" component={SubscriptionManagement} />
+              <Route path="/reports/:module" component={Reports} />
+              <Route path="/reports" component={Reports} />
       <Route path="/billing-management" component={BillingManagement} />
       <Route path="/industry/:slug" component={IndustryDetail} />
       <Route path="/module/:slug" component={ModuleDetail} />

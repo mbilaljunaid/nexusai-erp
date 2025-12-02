@@ -520,3 +520,32 @@ export const insertSmartViewSchema = createInsertSchema(smartViews).omit({ id: t
 
 export type InsertSmartView = z.infer<typeof insertSmartViewSchema>;
 export type SmartView = typeof smartViews.$inferSelect;
+
+// ========== REPORTS & REPORTING ==========
+export const reports = pgTable("reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  module: varchar("module").notNull(), // crm, finance, supply_chain, manufacturing, hr, projects, admin
+  type: varchar("type").notNull(), // transactional, periodical
+  category: varchar("category"), // e.g., sales, accounting, operations
+  description: text("description"),
+  config: jsonb("config").notNull(), // { columns, filters, sorting, grouping, calculations }
+  layout: jsonb("layout"), // drag/drop layout configuration
+  template: boolean("template").default(false), // Is this a template?
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertReportSchema = createInsertSchema(reports).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  module: z.string().min(1),
+  type: z.string().min(1),
+  category: z.string().optional(),
+  description: z.string().optional(),
+  config: z.record(z.any()),
+  layout: z.record(z.any()).optional(),
+  template: z.boolean().optional(),
+});
+
+export type InsertReport = z.infer<typeof insertReportSchema>;
+export type Report = typeof reports.$inferSelect;

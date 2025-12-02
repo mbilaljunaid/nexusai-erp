@@ -5,6 +5,9 @@ import { dbStorage } from "./storage-db";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import * as XLSX from "xlsx";
+import PDFDocument from "pdfkit";
+import { Packer, Document, Paragraph } from "docx";
+import Papa from "papaparse";
 import { 
   insertProjectSchema, insertInvoiceSchema, insertLeadSchema, insertWorkOrderSchema, insertEmployeeSchema,
   insertMobileDeviceSchema, insertOfflineSyncSchema,
@@ -14,7 +17,7 @@ import {
   insertAppSchema, insertAppReviewSchema, insertAppInstallationSchema, insertConnectorSchema, insertConnectorInstanceSchema, insertWebhookEventSchema,
   insertAbacRuleSchema, insertEncryptedFieldSchema, insertComplianceConfigSchema, insertSprintSchema, insertIssueSchema,
   insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
-  insertDemoSchema, formData as formDataTable, smartViews,
+  insertDemoSchema, formData as formDataTable, smartViews, reports,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -350,6 +353,98 @@ export async function registerRoutes(
       res.json({ success: true });
     } catch (error: any) {
       res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to delete SmartView", undefined, (req as any).id));
+    }
+  });
+
+  // ========== REPORTS ==========
+  app.get("/api/reports", async (req, res) => {
+    try {
+      const module = req.query.module as string;
+      const reportsData = await db.query.reports.findMany({
+        where: (reports) => eq(reports.module, module),
+      });
+      res.json(reportsData);
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to fetch reports", undefined, (req as any).id));
+    }
+  });
+
+  app.post("/api/reports", async (req, res) => {
+    try {
+      const data = sanitizeInput(req.body);
+      const report = await db.insert(reports).values({
+        name: data.name,
+        module: data.module,
+        type: data.type,
+        config: data.config,
+        layout: data.layout,
+        template: data.template || false,
+      }).returning();
+      res.status(201).json(report[0]);
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create report", undefined, (req as any).id));
+    }
+  });
+
+  app.delete("/api/reports/:reportId", async (req, res) => {
+    try {
+      const { reportId } = req.params;
+      await db.delete(reports).where(eq(reports.id, reportId));
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to delete report", undefined, (req as any).id));
+    }
+  });
+
+  app.get("/api/reports/:reportId/export", async (req, res) => {
+    try {
+      const { reportId } = req.params;
+      const format = req.query.format as string || "pdf";
+      
+      const report = await db.query.reports.findFirst({
+        where: (reports) => eq(reports.id, reportId),
+      });
+
+      if (!report) return res.status(404).json({ error: "Report not found" });
+
+      const columns = (report.config as any)?.columns || [];
+      
+      if (format === "csv") {
+        const headers = columns.map((c: any) => c.label);
+        const csv = Papa.unparse([headers]);
+        res.setHeader("Content-Type", "text/csv");
+        res.setHeader("Content-Disposition", `attachment; filename="${report.name}.csv"`);
+        res.send(csv);
+      } else if (format === "pdf") {
+        const doc = new PDFDocument();
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename="${report.name}.pdf"`);
+        doc.pipe(res);
+        doc.fontSize(16).text(report.name, { underline: true });
+        doc.fontSize(12).text(`Type: ${report.type} | Module: ${report.module}`, { margin: [10, 0] });
+        doc.moveDown();
+        doc.fontSize(11).text("Columns:");
+        columns.forEach((col: any) => {
+          doc.text(`  • ${col.label} (${col.type})`);
+        });
+        doc.end();
+      } else if (format === "docx") {
+        const docContent = [
+          new Paragraph({ text: report.name, bold: true, size: 32 }),
+          new Paragraph({ text: `Type: ${report.type} | Module: ${report.module}`, size: 22 }),
+          new Paragraph({ text: "Columns:", bold: true, size: 24 }),
+          ...columns.map((col: any) => new Paragraph({ text: `${col.label} (${col.type})`, size: 22 })),
+        ];
+        const doc = new Document({ sections: [{ children: docContent }] });
+        const blob = await Packer.toBlob(doc);
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        res.setHeader("Content-Disposition", `attachment; filename="${report.name}.docx"`);
+        res.send(Buffer.from(await blob.arrayBuffer()));
+      } else {
+        res.status(400).json({ error: "Invalid format" });
+      }
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Export failed", undefined, (req as any).id));
     }
   });
 
