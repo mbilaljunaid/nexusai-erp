@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { requestIdMiddleware, securityHeaders } from "./security";
 
 const app = express();
 const httpServer = createServer(app);
@@ -9,28 +10,40 @@ const httpServer = createServer(app);
 declare module "http" {
   interface IncomingMessage {
     rawBody: unknown;
+    id?: string;
   }
 }
 
+// Security headers first
+app.use(securityHeaders);
+
+// Request ID tracking
+app.use(requestIdMiddleware);
+
+// JSON parsing with size limits
 app.use(
   express.json({
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
+    limit: "10mb",
   }),
 );
 
-app.use(express.urlencoded({ extended: false }));
+// URL-encoded with size limits
+app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 
+// Structured logging (console.log only in development)
 export function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-
-  console.log(`${formattedTime} [${source}] ${message}`);
+  if (process.env.NODE_ENV === "development") {
+    const formattedTime = new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+    console.log(`${formattedTime} [${source}] ${message}`);
+  }
 }
 
 app.use((req, res, next) => {

@@ -734,8 +734,11 @@ export async function registerRoutes(
           role: "assistant",
           content: aiResponse,
         });
-      } catch (aiError) {
-        console.error("OpenAI API error:", aiError);
+      } catch (aiError: any) {
+        // Log error only in development
+        if (process.env.NODE_ENV === "development") {
+          console.error("OpenAI API error:", aiError?.message);
+        }
         // Fallback response if API fails
         await storage.createCopilotMessage({
           conversationId: data.conversationId,
@@ -5844,7 +5847,10 @@ export async function registerRoutes(
         <p>Complete Guide: <a href="${demoLink}/guide">View Complete Guide</a></p>
       `;
       
-      console.log(`Email sent to ${email}:\n${emailContent}`);
+      // Log email in development only
+      if (process.env.NODE_ENV === "development") {
+        console.log(`Email sent to ${email}`);
+      }
       
       res.json({ 
         success: true, 
