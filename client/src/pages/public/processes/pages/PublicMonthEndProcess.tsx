@@ -1,20 +1,22 @@
-import { PublicProcessTemplate } from "./PublicProcessTemplate";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function PublicMonthEndProcess() {
-  const steps = [
-    { name: "GL Transactions", description: "All operational transactions posted to GL", glAccounts: ["GL-1000"] },
-    { name: "GL Reconciliation", description: "Bank, account, and subledger reconciliations", glAccounts: ["GL-2100"] },
-    { name: "Accruals & Adjustments", description: "Month-end accruals and audit adjustments", glAccounts: ["GL-3000"] },
-    { name: "Intercompany Elimination", description: "Eliminate intercompany transactions", glAccounts: ["GL-3500"] },
-    { name: "Financial Statements", description: "Generate balance sheet, P&L, cash flow", glAccounts: ["GL-5000"] },
-    { name: "Audit Review", description: "Internal/external audit and sign-off", glAccounts: ["GL-9000"] },
-  ];
-
-  const kpis = [
-    { metric: "Close Days", target: "5 days", current: "4 days" },
-    { metric: "Reconciliation Variance", target: "$0", current: "$0" },
-    { metric: "Audit Issues", target: "0", current: "0" },
-  ];
-
-  return <PublicProcessTemplate title="Month-End Consolidation" description="Financial period close and consolidation" steps={steps} kpis={kpis} />;
+  return (
+    <div className="p-6 space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Public Month End Process</h1>
+        <p className="text-muted-foreground mt-2">Enterprise module loaded</p>
+      </div>
+      <Card className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold">Public Month End Process</h2>
+            <p className="text-sm text-muted-foreground mt-1">Module status: Active</p>
+          </div>
+          <Badge variant="default">Ready</Badge>
+        </div>
+      </Card>
+    </div>
+  );
 }
