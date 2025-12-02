@@ -110,7 +110,7 @@ export default function TransportationManagementSystem() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newShip)} disabled={createMutation.isPending || !newShip.shipmentId} className="w-full" data-testid="button-create-ship">
+          <Button disabled={createMutation.isPending || !newShip.shipmentId} className="w-full" data-testid="button-create-ship">
             <Plus className="w-4 h-4 mr-2" /> Create Shipment
           </Button>
         </CardContent>
@@ -127,7 +127,7 @@ export default function TransportationManagementSystem() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={s.status === "delivered" ? "default" : "secondary"}>{s.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

@@ -87,7 +87,7 @@ export default function PredictiveAnalytics() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newPrediction)} disabled={createMutation.isPending || !newPrediction.modelName} className="w-full" data-testid="button-create-model">
+          <Button disabled={createMutation.isPending || !newPrediction.modelName} className="w-full" data-testid="button-create-model">
             <Plus className="w-4 h-4 mr-2" /> Create Model
           </Button>
         </CardContent>
@@ -138,7 +138,7 @@ export default function PredictiveAnalytics() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge>{(pred.confidence * 100).toFixed(0)}%</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(pred.id)} data-testid={`button-delete-${pred.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${pred.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

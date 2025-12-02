@@ -105,7 +105,7 @@ export default function OmniChannelOrders() {
                 <SelectItem value="fulfilled">Fulfilled</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newOrder)} disabled={createMutation.isPending || !newOrder.orderId} size="sm" data-testid="button-create-order">
+            <Button disabled={createMutation.isPending || !newOrder.orderId} size="sm" data-testid="button-create-order">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -123,7 +123,7 @@ export default function OmniChannelOrders() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant="default" className="text-xs">{o.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(o.id)} data-testid={`button-delete-${o.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

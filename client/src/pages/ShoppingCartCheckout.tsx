@@ -82,7 +82,7 @@ export default function ShoppingCartCheckout() {
             <Input placeholder="Product ID" value={newItem.productId} onChange={(e) => setNewItem({ ...newItem, productId: e.target.value })} data-testid="input-prodid" className="text-sm" />
             <Input placeholder="Quantity" type="number" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} data-testid="input-qty" className="text-sm" />
             <Input placeholder="Price" type="number" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} data-testid="input-price" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newItem)} disabled={createMutation.isPending || !newItem.productId} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newItem.productId} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -98,7 +98,7 @@ export default function ShoppingCartCheckout() {
                 <p className="font-semibold">{item.productId}</p>
                 <p className="text-xs text-muted-foreground">{item.quantity} x ${item.price} = ${(item.quantity * item.price).toFixed(2)}</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`} className="h-7 w-7">
+              <Button size="icon" variant="ghost" data-testid={`button-delete-${item.id}`} className="h-7 w-7">
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>

@@ -83,7 +83,7 @@ export default function SalesOrderManagement() {
             <Input placeholder="Customer" value={newOrder.customer} onChange={(e) => setNewOrder({ ...newOrder, customer: e.target.value })} data-testid="input-customer" className="text-sm" />
             <Input placeholder="Qty" type="number" value={newOrder.qty} onChange={(e) => setNewOrder({ ...newOrder, qty: e.target.value })} data-testid="input-qty" className="text-sm" />
             <Input placeholder="Contract Price" type="number" value={newOrder.contractPrice} onChange={(e) => setNewOrder({ ...newOrder, contractPrice: e.target.value })} data-testid="input-price" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newOrder)} disabled={createMutation.isPending || !newOrder.orderId} size="sm" data-testid="button-create-order">
+            <Button disabled={createMutation.isPending || !newOrder.orderId} size="sm" data-testid="button-create-order">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -101,7 +101,7 @@ export default function SalesOrderManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={o.status === "confirmed" ? "default" : "secondary"} className="text-xs">{o.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(o.id)} data-testid={`button-delete-${o.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

@@ -68,7 +68,7 @@ export default function LeaveManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newLeave)} disabled={createMutation.isPending || !newLeave.employee} className="w-full" data-testid="button-create-leave">
+          <Button disabled={createMutation.isPending || !newLeave.employee} className="w-full" data-testid="button-create-leave">
             <Plus className="w-4 h-4 mr-2" /> Request Leave
           </Button>
         </CardContent>
@@ -92,7 +92,7 @@ export default function LeaveManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={leave.status === "approved" ? "default" : "secondary"}>{leave.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(leave.id)} data-testid={`button-delete-${leave.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${leave.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

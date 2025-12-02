@@ -54,8 +54,8 @@ export default function PagesIndex() {
             <Input placeholder="Search pages..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" data-testid="input-search-pages" />
           </div>
           <div className="flex gap-1">
-            <button onClick={() => setViewMode("grid")} className={`p-2 rounded ${viewMode === "grid" ? "bg-accent" : "bg-secondary"}`} data-testid="button-view-grid"><Grid3x3 className="h-4 w-4" /></button>
-            <button onClick={() => setViewMode("list")} className={`p-2 rounded ${viewMode === "list" ? "bg-accent" : "bg-secondary"}`} data-testid="button-view-list"><List className="h-4 w-4" /></button>
+            <button className={`p-2 rounded ${viewMode === "grid" ? "bg-accent" : "bg-secondary"}`} data-testid="button-view-grid"><Grid3x3 className="h-4 w-4" /></button>
+            <button className={`p-2 rounded ${viewMode === "list" ? "bg-accent" : "bg-secondary"}`} data-testid="button-view-list"><List className="h-4 w-4" /></button>
           </div>
         </div>
 

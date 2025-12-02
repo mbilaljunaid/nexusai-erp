@@ -56,7 +56,7 @@ export default function WorkflowTemplates() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newTemplate)} disabled={createMutation.isPending || !newTemplate.name} className="w-full" data-testid="button-create-template">
+          <Button disabled={createMutation.isPending || !newTemplate.name} className="w-full" data-testid="button-create-template">
             <Plus className="w-4 h-4 mr-2" /> Create Template
           </Button>
         </CardContent>
@@ -71,7 +71,7 @@ export default function WorkflowTemplates() {
                   <h3 className="font-semibold">{t.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{t.category}</p>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-delete-${t.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

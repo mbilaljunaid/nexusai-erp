@@ -61,7 +61,7 @@ export default function ProcessAnalytics() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newKPI)} disabled={createMutation.isPending || !newKPI.process} className="w-full" data-testid="button-add-kpi">
+          <Button disabled={createMutation.isPending || !newKPI.process} className="w-full" data-testid="button-add-kpi">
             <Plus className="w-4 h-4 mr-2" /> Add KPI
           </Button>
         </CardContent>
@@ -105,7 +105,7 @@ export default function ProcessAnalytics() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={k.status === "on-track" ? "default" : k.status === "warning" ? "secondary" : "destructive"}>{k.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(k.id)} data-testid={`button-delete-${k.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${k.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

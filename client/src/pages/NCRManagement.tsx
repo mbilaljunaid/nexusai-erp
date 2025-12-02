@@ -99,7 +99,7 @@ export default function NCRManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newNCR)} disabled={createMutation.isPending} className="w-full" data-testid="button-create-ncr">
+          <Button disabled={createMutation.isPending} className="w-full" data-testid="button-create-ncr">
             <Plus className="w-4 h-4 mr-2" /> Create NCR
           </Button>
         </CardContent>
@@ -116,7 +116,7 @@ export default function NCRManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={n.severity === "critical" ? "destructive" : "secondary"}>{n.severity}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(n.id)} data-testid={`button-delete-${n.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${n.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

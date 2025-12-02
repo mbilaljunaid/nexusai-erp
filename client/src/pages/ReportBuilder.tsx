@@ -65,7 +65,7 @@ export default function ReportBuilder() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newReport)} disabled={createMutation.isPending || !newReport.name} className="w-full" data-testid="button-new-report">
+          <Button disabled={createMutation.isPending || !newReport.name} className="w-full" data-testid="button-new-report">
             <Plus className="w-4 h-4 mr-2" /> Create Report
           </Button>
         </CardContent>
@@ -80,7 +80,7 @@ export default function ReportBuilder() {
                   <h3 className="font-semibold">{rep.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{rep.type} • {rep.frequency}</p>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(rep.id)} data-testid={`button-delete-${rep.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${rep.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

@@ -90,7 +90,7 @@ export default function PortalManagement() {
             </Select>
             <Input placeholder="User count" type="number" value={newPortal.userCount} onChange={(e) => setNewPortal({ ...newPortal, userCount: e.target.value })} data-testid="input-user-count" />
           </div>
-          <Button onClick={() => createMutation.mutate(newPortal)} disabled={createMutation.isPending || !newPortal.portalName} className="w-full" data-testid="button-create-portal">
+          <Button disabled={createMutation.isPending || !newPortal.portalName} className="w-full" data-testid="button-create-portal">
             <Plus className="w-4 h-4 mr-2" /> Create Portal
           </Button>
         </CardContent>
@@ -114,7 +114,7 @@ export default function PortalManagement() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge>{p.portalType}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

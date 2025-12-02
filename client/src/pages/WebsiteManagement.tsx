@@ -94,7 +94,7 @@ export default function WebsiteManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newPage)} disabled={createMutation.isPending || !newPage.pageName} className="w-full" data-testid="button-create-page">
+          <Button disabled={createMutation.isPending || !newPage.pageName} className="w-full" data-testid="button-create-page">
             <Plus className="w-4 h-4 mr-2" /> Create Page
           </Button>
         </CardContent>
@@ -118,7 +118,7 @@ export default function WebsiteManagement() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={p.status === "published" ? "default" : "secondary"}>{p.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

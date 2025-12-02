@@ -81,7 +81,7 @@ export default function HospitalityInventory() {
             <Input placeholder="Name" value={newItem.itemName} onChange={(e) => setNewItem({ ...newItem, itemName: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Qty" type="number" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} data-testid="input-qty" className="text-sm" />
             <Input placeholder="Reorder" type="number" value={newItem.reorder} onChange={(e) => setNewItem({ ...newItem, reorder: e.target.value })} data-testid="input-reorder" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newItem)} disabled={createMutation.isPending || !newItem.itemId} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newItem.itemId} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -99,7 +99,7 @@ export default function HospitalityInventory() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={(parseInt(i.quantity) || 0) < (parseInt(i.reorder) || 50) ? "destructive" : "default"} className="text-xs">{i.category}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(i.id)} data-testid={`button-delete-${i.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

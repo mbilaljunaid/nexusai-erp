@@ -82,7 +82,7 @@ export default function HospitalityHRRostering() {
             <Input placeholder="Name" value={newShift.name} onChange={(e) => setNewShift({ ...newShift, name: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Role" value={newShift.role} onChange={(e) => setNewShift({ ...newShift, role: e.target.value })} data-testid="input-role" className="text-sm" />
             <Input placeholder="Date" type="date" value={newShift.date} onChange={(e) => setNewShift({ ...newShift, date: e.target.value })} data-testid="input-date" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newShift)} disabled={createMutation.isPending || !newShift.employeeId} size="sm" data-testid="button-schedule">
+            <Button disabled={createMutation.isPending || !newShift.employeeId} size="sm" data-testid="button-schedule">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function HospitalityHRRostering() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={s.status === "completed" ? "default" : "secondary"} className="text-xs">{s.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

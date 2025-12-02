@@ -107,7 +107,7 @@ export default function PredictiveModeling() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newModel)} disabled={createMutation.isPending || !newModel.name} className="w-full" data-testid="button-create-model">
+          <Button disabled={createMutation.isPending || !newModel.name} className="w-full" data-testid="button-create-model">
             <Plus className="w-4 h-4 mr-2" /> Create Model
           </Button>
         </CardContent>
@@ -124,7 +124,7 @@ export default function PredictiveModeling() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={m.status === "active" ? "default" : m.status === "training" ? "secondary" : "outline"}>{m.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(m.id)} data-testid={`button-delete-${m.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

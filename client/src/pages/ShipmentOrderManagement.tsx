@@ -83,7 +83,7 @@ export default function ShipmentOrderManagement() {
             <Input placeholder="Origin" value={newShipment.origin} onChange={(e) => setNewShipment({ ...newShipment, origin: e.target.value })} data-testid="input-origin" className="text-sm" />
             <Input placeholder="Destination" value={newShipment.destination} onChange={(e) => setNewShipment({ ...newShipment, destination: e.target.value })} data-testid="input-dest" className="text-sm" />
             <Input placeholder="Weight (kg)" type="number" value={newShipment.weight} onChange={(e) => setNewShipment({ ...newShipment, weight: e.target.value })} data-testid="input-weight" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newShipment)} disabled={createMutation.isPending || !newShipment.shipmentId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newShipment.shipmentId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -101,7 +101,7 @@ export default function ShipmentOrderManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={s.status === "delivered" ? "default" : "secondary"} className="text-xs">{s.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

@@ -108,7 +108,7 @@ export default function PeriodClose() {
             </Select>
             <Input placeholder="Due date" type="date" value={newTask.dueDate} onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })} data-testid="input-due-date" />
           </div>
-          <Button onClick={() => createMutation.mutate(newTask)} disabled={createMutation.isPending || !newTask.closeTask} className="w-full" data-testid="button-create-task">
+          <Button disabled={createMutation.isPending || !newTask.closeTask} className="w-full" data-testid="button-create-task">
             <Plus className="w-4 h-4 mr-2" /> Create Task
           </Button>
         </CardContent>
@@ -142,7 +142,7 @@ export default function PeriodClose() {
                       Complete
                     </Button>
                   )}
-                  <Button size="sm" variant="ghost" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-delete-${t.id}`}>
+                  <Button size="sm" variant="ghost" data-testid={`button-delete-${t.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

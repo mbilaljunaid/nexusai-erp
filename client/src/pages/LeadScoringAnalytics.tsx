@@ -50,7 +50,7 @@ export default function LeadScoringAnalytics() {
             <Input placeholder="Metric" value={newInsight.metric} onChange={(e) => setNewInsight({ ...newInsight, metric: e.target.value })} data-testid="input-metric" />
             <Input placeholder="Value" value={newInsight.value} onChange={(e) => setNewInsight({ ...newInsight, value: e.target.value })} data-testid="input-value" />
           </div>
-          <Button onClick={() => createMutation.mutate(newInsight)} disabled={createMutation.isPending || !newInsight.metric} className="w-full" data-testid="button-add-insight">
+          <Button disabled={createMutation.isPending || !newInsight.metric} className="w-full" data-testid="button-add-insight">
             <Plus className="w-4 h-4 mr-2" /> Add Insight
           </Button>
         </CardContent>
@@ -86,7 +86,7 @@ export default function LeadScoringAnalytics() {
                 <p className="font-semibold text-sm">{i.metric}</p>
                 <p className="text-xs text-muted-foreground">{i.value}</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(i.id)} data-testid={`button-delete-${i.id}`}>
+              <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`}>
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>

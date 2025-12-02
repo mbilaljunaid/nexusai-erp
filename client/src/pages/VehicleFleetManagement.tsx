@@ -90,7 +90,7 @@ export default function VehicleFleetManagement() {
             </Select>
             <Input placeholder="Capacity (lbs)" type="number" value={newVehicle.capacity} onChange={(e) => setNewVehicle({ ...newVehicle, capacity: e.target.value })} data-testid="input-cap" className="text-sm" />
             <Input placeholder="Mileage" type="number" value={newVehicle.mileage} onChange={(e) => setNewVehicle({ ...newVehicle, mileage: e.target.value })} data-testid="input-mileage" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newVehicle)} disabled={createMutation.isPending || !newVehicle.vehicleId} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newVehicle.vehicleId} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -108,7 +108,7 @@ export default function VehicleFleetManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={v.status === "available" ? "default" : "secondary"} className="text-xs">{v.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(v.id)} data-testid={`button-delete-${v.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${v.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

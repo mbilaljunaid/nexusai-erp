@@ -90,7 +90,7 @@ export default function HSESafety() {
               </SelectContent>
             </Select>
             <Input placeholder="Location" value={newHSE.location} onChange={(e) => setNewHSE({ ...newHSE, location: e.target.value })} data-testid="input-loc" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newHSE)} disabled={createMutation.isPending} size="sm" data-testid="button-log-hse">
+            <Button disabled={createMutation.isPending} size="sm" data-testid="button-log-hse">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -108,7 +108,7 @@ export default function HSESafety() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={i.severity === "critical" ? "destructive" : i.severity === "high" ? "destructive" : "secondary"} className="text-xs">{i.severity}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(i.id)} data-testid={`button-delete-${i.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

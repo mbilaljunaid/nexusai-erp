@@ -97,7 +97,7 @@ export default function LogisticsComplianceSafety() {
               </SelectContent>
             </Select>
             <Input placeholder="Location" value={newIncident.location} onChange={(e) => setNewIncident({ ...newIncident, location: e.target.value })} data-testid="input-location" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newIncident)} disabled={createMutation.isPending || !newIncident.incidentId} size="sm" data-testid="button-report">
+            <Button disabled={createMutation.isPending || !newIncident.incidentId} size="sm" data-testid="button-report">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -115,7 +115,7 @@ export default function LogisticsComplianceSafety() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={i.severity === "critical" ? "destructive" : i.severity === "medium" ? "secondary" : "default"} className="text-xs">{i.severity}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(i.id)} data-testid={`button-delete-${i.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

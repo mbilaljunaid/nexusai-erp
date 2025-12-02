@@ -90,7 +90,7 @@ export default function ReplenishmentPlanning() {
                 <SelectItem value="received">Received</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newReplen)} disabled={createMutation.isPending || !newReplen.productId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newReplen.productId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -108,7 +108,7 @@ export default function ReplenishmentPlanning() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={r.status === "ordered" ? "default" : "secondary"} className="text-xs">{r.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

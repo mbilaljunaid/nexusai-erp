@@ -91,7 +91,7 @@ export default function StockTransfer() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newTransfer)} disabled={createMutation.isPending || !newTransfer.quantity} className="w-full" data-testid="button-create-transfer">
+          <Button disabled={createMutation.isPending || !newTransfer.quantity} className="w-full" data-testid="button-create-transfer">
             <Plus className="w-4 h-4 mr-2" /> Create Transfer
           </Button>
         </CardContent>
@@ -108,7 +108,7 @@ export default function StockTransfer() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={t.status === "completed" ? "default" : "secondary"}>{t.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-delete-${t.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

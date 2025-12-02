@@ -61,7 +61,7 @@ export default function KPIDashboard() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newKPI)} disabled={createMutation.isPending || !newKPI.name} className="w-full" data-testid="button-create-kpi">
+          <Button disabled={createMutation.isPending || !newKPI.name} className="w-full" data-testid="button-create-kpi">
             <Plus className="w-4 h-4 mr-2" /> Create KPI
           </Button>
         </CardContent>
@@ -77,7 +77,7 @@ export default function KPIDashboard() {
                   <Badge variant={kpi.status === "on-track" ? "default" : kpi.status === "warning" ? "secondary" : "destructive"}>
                     {kpi.status}
                   </Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(kpi.id)} data-testid={`button-delete-${kpi.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${kpi.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

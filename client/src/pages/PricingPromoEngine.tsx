@@ -91,7 +91,7 @@ export default function PricingPromoEngine() {
             <Input placeholder="Discount %" type="number" value={newPromo.discountPct} onChange={(e) => setNewPromo({ ...newPromo, discountPct: e.target.value })} data-testid="input-discount" className="text-sm" />
             <Input type="date" value={newPromo.startDate} onChange={(e) => setNewPromo({ ...newPromo, startDate: e.target.value })} data-testid="input-start" className="text-sm" />
             <Input type="date" value={newPromo.endDate} onChange={(e) => setNewPromo({ ...newPromo, endDate: e.target.value })} data-testid="input-end" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newPromo)} disabled={createMutation.isPending || !newPromo.name} size="sm" data-testid="button-add-promo">
+            <Button disabled={createMutation.isPending || !newPromo.name} size="sm" data-testid="button-add-promo">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -109,7 +109,7 @@ export default function PricingPromoEngine() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={p.status === "active" ? "default" : "secondary"} className="text-xs">{p.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

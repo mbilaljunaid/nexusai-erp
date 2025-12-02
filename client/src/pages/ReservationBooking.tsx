@@ -83,7 +83,7 @@ export default function ReservationBooking() {
             <Input placeholder="Guest Name" value={newRes.guestName} onChange={(e) => setNewRes({ ...newRes, guestName: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Check-in" type="date" value={newRes.checkIn} onChange={(e) => setNewRes({ ...newRes, checkIn: e.target.value })} data-testid="input-checkin" className="text-sm" />
             <Input placeholder="Check-out" type="date" value={newRes.checkOut} onChange={(e) => setNewRes({ ...newRes, checkOut: e.target.value })} data-testid="input-checkout" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newRes)} disabled={createMutation.isPending || !newRes.reservationId} size="sm" data-testid="button-book">
+            <Button disabled={createMutation.isPending || !newRes.reservationId} size="sm" data-testid="button-book">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -101,7 +101,7 @@ export default function ReservationBooking() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={r.status === "confirmed" ? "default" : "secondary"} className="text-xs">{r.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

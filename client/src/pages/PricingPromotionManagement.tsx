@@ -90,7 +90,7 @@ export default function PricingPromotionManagement() {
                 <SelectItem value="expired">Expired</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newPrice)} disabled={createMutation.isPending || !newPrice.productId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newPrice.productId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -110,7 +110,7 @@ export default function PricingPromotionManagement() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={p.status === "active" ? "default" : "secondary"} className="text-xs">{p.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`} className="h-7 w-7">
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} className="h-7 w-7">
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>

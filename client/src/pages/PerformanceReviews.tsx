@@ -65,7 +65,7 @@ export default function PerformanceReviews() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newReview)} disabled={createMutation.isPending || !newReview.employee} className="w-full" data-testid="button-create-review">
+          <Button disabled={createMutation.isPending || !newReview.employee} className="w-full" data-testid="button-create-review">
             <Plus className="w-4 h-4 mr-2" /> Create Review
           </Button>
         </CardContent>
@@ -82,7 +82,7 @@ export default function PerformanceReviews() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge>{rev.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(rev.id)} data-testid={`button-delete-${rev.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${rev.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

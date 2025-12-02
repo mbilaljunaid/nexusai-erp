@@ -90,7 +90,7 @@ export default function PLMEngineeringChangeControl() {
               </SelectContent>
             </Select>
             <Input placeholder="Impacted Parts" value={newCR.impactedParts} onChange={(e) => setNewCR({ ...newCR, impactedParts: e.target.value })} data-testid="input-parts" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newCR)} disabled={createMutation.isPending || !newCR.crId} size="sm" data-testid="button-submit-cr">
+            <Button disabled={createMutation.isPending || !newCR.crId} size="sm" data-testid="button-submit-cr">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -108,7 +108,7 @@ export default function PLMEngineeringChangeControl() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={c.status === "approved" ? "default" : "secondary"} className="text-xs">{c.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${c.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

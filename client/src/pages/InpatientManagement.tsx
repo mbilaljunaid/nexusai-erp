@@ -82,7 +82,7 @@ export default function InpatientManagement() {
             <Input placeholder="Patient ID" value={newAdmit.patientId} onChange={(e) => setNewAdmit({ ...newAdmit, patientId: e.target.value })} data-testid="input-pid" className="text-sm" />
             <Input placeholder="Bed ID" value={newAdmit.bedId} onChange={(e) => setNewAdmit({ ...newAdmit, bedId: e.target.value })} data-testid="input-bid" className="text-sm" />
             <Input placeholder="Ward" disabled className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newAdmit)} disabled={createMutation.isPending || !newAdmit.admissionId} size="sm" data-testid="button-admit">
+            <Button disabled={createMutation.isPending || !newAdmit.admissionId} size="sm" data-testid="button-admit">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function InpatientManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={a.status === "admitted" ? "default" : "secondary"} className="text-xs">{a.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(a.id)} data-testid={`button-delete-${a.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${a.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

@@ -83,7 +83,7 @@ export default function ServiceProvisioningOrder() {
             <Input placeholder="Subscriber ID" value={newOrder.subscriberId} onChange={(e) => setNewOrder({ ...newOrder, subscriberId: e.target.value })} data-testid="input-subid" className="text-sm" />
             <Input placeholder="Service ID" value={newOrder.serviceId} onChange={(e) => setNewOrder({ ...newOrder, serviceId: e.target.value })} data-testid="input-svcid" className="text-sm" />
             <Input placeholder="Device ID" value={newOrder.deviceId} onChange={(e) => setNewOrder({ ...newOrder, deviceId: e.target.value })} data-testid="input-devid" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newOrder)} disabled={createMutation.isPending || !newOrder.orderId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newOrder.orderId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -101,7 +101,7 @@ export default function ServiceProvisioningOrder() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={o.status === "activated" ? "default" : "secondary"} className="text-xs">{o.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(o.id)} data-testid={`button-delete-${o.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

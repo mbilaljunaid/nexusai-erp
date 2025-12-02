@@ -88,7 +88,7 @@ export default function ProjectBudgetManagement() {
             <Input placeholder="Allocated" type="number" value={newBudget.allocated} onChange={(e) => setNewBudget({ ...newBudget, allocated: e.target.value })} data-testid="input-allocated" />
             <Input placeholder="Actual" type="number" value={newBudget.actual} onChange={(e) => setNewBudget({ ...newBudget, actual: e.target.value })} data-testid="input-actual" />
           </div>
-          <Button onClick={() => createMutation.mutate(newBudget)} disabled={createMutation.isPending || !newBudget.project} className="w-full" data-testid="button-create-budget">
+          <Button disabled={createMutation.isPending || !newBudget.project} className="w-full" data-testid="button-create-budget">
             <Plus className="w-4 h-4 mr-2" /> Add Budget
           </Button>
         </CardContent>
@@ -113,7 +113,7 @@ export default function ProjectBudgetManagement() {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Badge variant={status === "on-track" ? "default" : "destructive"}>{status}</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(budget.id)} data-testid={`button-delete-${budget.id}`}>
+                    <Button size="icon" variant="ghost" data-testid={`button-delete-${budget.id}`}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

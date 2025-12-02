@@ -32,11 +32,11 @@ export default function ExpenseManagement() {
       </Card>
 
       <div className="flex gap-2">
-        <Button variant={viewType === "reports" ? "default" : "outline"} onClick={() => setViewType("reports")} data-testid="button-view-reports">
+        <Button variant={viewType === "reports" ? "default" : "outline"} data-testid="button-view-reports">
           <Receipt className="h-4 w-4 mr-2" />
           Reports ({reports.length})
         </Button>
-        <Button variant={viewType === "items" ? "default" : "outline"} onClick={() => setViewType("items")} data-testid="button-view-items">
+        <Button variant={viewType === "items" ? "default" : "outline"} data-testid="button-view-items">
           <TrendingUp className="h-4 w-4 mr-2" />
           Items ({items.length})
         </Button>

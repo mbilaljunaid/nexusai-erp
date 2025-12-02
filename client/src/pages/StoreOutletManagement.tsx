@@ -79,7 +79,7 @@ export default function StoreOutletManagement() {
             <Input placeholder="Store Name" value={newStore.storeName} onChange={(e) => setNewStore({ ...newStore, storeName: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="City" value={newStore.city} onChange={(e) => setNewStore({ ...newStore, city: e.target.value })} data-testid="input-city" className="text-sm" />
             <Input placeholder="Country" value={newStore.country} onChange={(e) => setNewStore({ ...newStore, country: e.target.value })} data-testid="input-country" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newStore)} disabled={createMutation.isPending || !newStore.storeCode} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newStore.storeCode} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -97,7 +97,7 @@ export default function StoreOutletManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant="default" className="text-xs">{s.status || "active"}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

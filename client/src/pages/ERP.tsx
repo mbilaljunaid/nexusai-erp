@@ -307,7 +307,7 @@ export default function ERP() {
                           <p className="font-semibold">{v.vendorName}</p>
                           <p className="text-sm text-muted-foreground">{v.vendorCode} • {v.category} • {v.paymentTerms}</p>
                         </div>
-                        <Button size="sm" onClick={() => setSelectedVendor(v)} data-testid={`button-invoice-${v.id}`}>
+                        <Button size="sm" data-testid={`button-invoice-${v.id}`}>
                           Create Invoice
                         </Button>
                       </div>

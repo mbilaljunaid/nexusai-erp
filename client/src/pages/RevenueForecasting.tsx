@@ -66,7 +66,7 @@ export default function RevenueForecasting() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newForecast)} disabled={createMutation.isPending || !newForecast.baseline} className="w-full" data-testid="button-create-forecast">
+          <Button disabled={createMutation.isPending || !newForecast.baseline} className="w-full" data-testid="button-create-forecast">
             <Plus className="w-4 h-4 mr-2" /> Create Forecast
           </Button>
         </CardContent>
@@ -82,7 +82,7 @@ export default function RevenueForecasting() {
                   <p className="text-3xl font-bold mt-1">${(f.baseline / 1000000).toFixed(1)}M</p>
                   <Badge className="mt-2" variant="secondary">{f.confidence || 85}% confidence</Badge>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(f.id)} data-testid={`button-delete-${f.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${f.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

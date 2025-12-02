@@ -82,7 +82,7 @@ export default function QualityFoodSafety() {
             <Input placeholder="Batch ID" value={newTest.batchId} onChange={(e) => setNewTest({ ...newTest, batchId: e.target.value })} data-testid="input-bid" className="text-sm" />
             <Input placeholder="Test Type" value={newTest.testType} onChange={(e) => setNewTest({ ...newTest, testType: e.target.value })} data-testid="input-type" className="text-sm" />
             <Input placeholder="Result" disabled value={newTest.result} data-testid="input-result" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newTest)} disabled={createMutation.isPending || !newTest.testId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newTest.testId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function QualityFoodSafety() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={t.result === "pass" ? "default" : "destructive"} className="text-xs">{t.result}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-delete-${t.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

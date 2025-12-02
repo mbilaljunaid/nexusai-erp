@@ -57,7 +57,7 @@ export default function Page() {
             </CardContent>
             {order.status === "Fulfilled" && (
               <CardContent className="pt-3 border-t">
-                <Button size="sm" onClick={() => setSelectedOrder(order)} className="w-full" data-testid={`button-convert-${order.id}`}>
+                <Button size="sm" className="w-full" data-testid={`button-convert-${order.id}`}>
                   Convert to Invoice
                 </Button>
               </CardContent>

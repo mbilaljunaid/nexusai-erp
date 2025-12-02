@@ -82,7 +82,7 @@ export default function WorkshopServiceOrders() {
             <Input placeholder="VIN" value={newRO.vin} onChange={(e) => setNewRO({ ...newRO, vin: e.target.value })} data-testid="input-vin" className="text-sm" />
             <Input placeholder="Complaint" value={newRO.complaint} onChange={(e) => setNewRO({ ...newRO, complaint: e.target.value })} data-testid="input-complaint" className="text-sm" />
             <Input placeholder="Status" disabled value={newRO.status} data-testid="input-status" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newRO)} disabled={createMutation.isPending || !newRO.roId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newRO.roId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function WorkshopServiceOrders() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={o.status === "completed" ? "default" : "secondary"} className="text-xs">{o.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(o.id)} data-testid={`button-delete-${o.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

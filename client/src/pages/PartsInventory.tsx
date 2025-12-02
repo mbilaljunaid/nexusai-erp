@@ -81,7 +81,7 @@ export default function PartsInventory() {
             <Input placeholder="Part Name" value={newPart.partName} onChange={(e) => setNewPart({ ...newPart, partName: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Qty" type="number" value={newPart.quantity} onChange={(e) => setNewPart({ ...newPart, quantity: e.target.value })} data-testid="input-qty" className="text-sm" />
             <Input placeholder="Reorder" type="number" value={newPart.reorder} onChange={(e) => setNewPart({ ...newPart, reorder: e.target.value })} data-testid="input-reorder" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newPart)} disabled={createMutation.isPending || !newPart.partId} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newPart.partId} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -99,7 +99,7 @@ export default function PartsInventory() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={(parseInt(p.quantity) || 0) < (parseInt(p.reorder) || 50) ? "destructive" : "default"} className="text-xs">Qty</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

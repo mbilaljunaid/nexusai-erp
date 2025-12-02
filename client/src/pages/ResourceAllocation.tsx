@@ -63,7 +63,7 @@ export default function ResourceAllocation() {
             </Select>
             <Input placeholder="Allocation %" type="number" value={newResource.allocation} onChange={(e) => setNewResource({ ...newResource, allocation: e.target.value })} data-testid="input-allocation" />
           </div>
-          <Button onClick={() => createMutation.mutate(newResource)} disabled={createMutation.isPending || !newResource.resourceName} className="w-full" data-testid="button-create-resource">
+          <Button disabled={createMutation.isPending || !newResource.resourceName} className="w-full" data-testid="button-create-resource">
             <Plus className="w-4 h-4 mr-2" /> Add Resource
           </Button>
         </CardContent>
@@ -85,7 +85,7 @@ export default function ResourceAllocation() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge>{res.allocation}%</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(res.id)} data-testid={`button-delete-${res.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${res.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

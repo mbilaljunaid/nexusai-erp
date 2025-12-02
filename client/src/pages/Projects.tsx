@@ -218,7 +218,7 @@ export default function Projects() {
                           <span>Spent: ${proj.spent.toLocaleString()}</span>
                         </div>
                         <Progress value={(proj.spent / proj.budget) * 100} className="h-2" />
-                        <Button size="sm" onClick={() => setSelectedProject(proj)} className="w-full" data-testid={`button-gl-${proj.id}`}>
+                        <Button size="sm" className="w-full" data-testid={`button-gl-${proj.id}`}>
                           Record GL Entry
                         </Button>
                       </div>

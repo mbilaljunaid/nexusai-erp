@@ -97,7 +97,7 @@ export default function ReturnsRefundsManagement() {
                 <SelectItem value="processed">Processed</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newReturn)} disabled={createMutation.isPending || !newReturn.orderId} size="sm" data-testid="button-create-return">
+            <Button disabled={createMutation.isPending || !newReturn.orderId} size="sm" data-testid="button-create-return">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -115,7 +115,7 @@ export default function ReturnsRefundsManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={r.status === "processed" ? "default" : "secondary"} className="text-xs">{r.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

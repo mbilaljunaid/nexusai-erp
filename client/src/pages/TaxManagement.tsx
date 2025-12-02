@@ -61,7 +61,7 @@ export default function TaxManagement() {
             <Input placeholder="Rate %" value={newTax.rate} onChange={(e) => setNewTax({ ...newTax, rate: e.target.value })} data-testid="input-rate" />
             <Input placeholder="Jurisdiction" value={newTax.jurisdiction} onChange={(e) => setNewTax({ ...newTax, jurisdiction: e.target.value })} data-testid="input-jurisdiction" />
           </div>
-          <Button onClick={() => createMutation.mutate(newTax)} disabled={createMutation.isPending || !newTax.name} className="w-full" data-testid="button-create-tax">
+          <Button disabled={createMutation.isPending || !newTax.name} className="w-full" data-testid="button-create-tax">
             <Plus className="h-4 w-4 mr-2" /> Add Tax Code
           </Button>
         </CardContent>
@@ -104,7 +104,7 @@ export default function TaxManagement() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant="default">{tax.rate || tax.rate}%</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(tax.id)} data-testid={`button-delete-${tax.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${tax.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

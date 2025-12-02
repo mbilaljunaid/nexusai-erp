@@ -90,7 +90,7 @@ export default function MRPMPSPlanning() {
                 <SelectItem value="transfer">Transfer</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newPlan)} disabled={createMutation.isPending || !newPlan.sku} size="sm" data-testid="button-create-plan">
+            <Button disabled={createMutation.isPending || !newPlan.sku} size="sm" data-testid="button-create-plan">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -110,7 +110,7 @@ export default function MRPMPSPlanning() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={p.status === "approved" ? "default" : "secondary"} className="text-xs">{p.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`} className="h-7 w-7">
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} className="h-7 w-7">
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>

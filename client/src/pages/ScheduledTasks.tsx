@@ -64,7 +64,7 @@ export default function ScheduledTasks() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newTask)} disabled={createMutation.isPending || !newTask.taskName} className="w-full" data-testid="button-create-scheduled-task">
+          <Button disabled={createMutation.isPending || !newTask.taskName} className="w-full" data-testid="button-create-scheduled-task">
             <Plus className="w-4 h-4 mr-2" /> Create Task
           </Button>
         </CardContent>
@@ -81,7 +81,7 @@ export default function ScheduledTasks() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge className={task.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>{task.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(task.id)} data-testid={`button-delete-${task.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${task.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

@@ -65,7 +65,7 @@ export default function RecommendationEngine() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newRec)} disabled={createMutation.isPending || !newRec.recommendation} className="w-full" data-testid="button-create-recommendation">
+          <Button disabled={createMutation.isPending || !newRec.recommendation} className="w-full" data-testid="button-create-recommendation">
             <Plus className="w-4 h-4 mr-2" /> Create Recommendation
           </Button>
         </CardContent>
@@ -82,7 +82,7 @@ export default function RecommendationEngine() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge>{(r.confidence * 100).toFixed(0)}%</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

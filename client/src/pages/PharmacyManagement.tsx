@@ -83,7 +83,7 @@ export default function PharmacyManagement() {
             <Input placeholder="Patient ID" value={newOrder.patientId} onChange={(e) => setNewOrder({ ...newOrder, patientId: e.target.value })} data-testid="input-pid" className="text-sm" />
             <Input placeholder="Medication ID" value={newOrder.medicationId} onChange={(e) => setNewOrder({ ...newOrder, medicationId: e.target.value })} data-testid="input-medid" className="text-sm" />
             <Input placeholder="Dose" value={newOrder.dose} onChange={(e) => setNewOrder({ ...newOrder, dose: e.target.value })} data-testid="input-dose" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newOrder)} disabled={createMutation.isPending || !newOrder.orderId} size="sm" data-testid="button-order">
+            <Button disabled={createMutation.isPending || !newOrder.orderId} size="sm" data-testid="button-order">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -101,7 +101,7 @@ export default function PharmacyManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={o.status === "administered" ? "default" : "secondary"} className="text-xs">{o.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(o.id)} data-testid={`button-delete-${o.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

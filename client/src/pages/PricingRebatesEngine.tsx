@@ -97,7 +97,7 @@ export default function PricingRebatesEngine() {
                 <SelectItem value="active">Active</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newRebate)} disabled={createMutation.isPending || !newRebate.customer} size="sm" data-testid="button-add-rebate">
+            <Button disabled={createMutation.isPending || !newRebate.customer} size="sm" data-testid="button-add-rebate">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -115,7 +115,7 @@ export default function PricingRebatesEngine() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={r.status === "active" ? "default" : "secondary"} className="text-xs">{r.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

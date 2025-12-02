@@ -82,7 +82,7 @@ export default function ThirdPartyLogistics() {
                 <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(new3PL)} disabled={createMutation.isPending || !new3PL.partner} className="w-full" data-testid="button-add-3pl">
+            <Button disabled={createMutation.isPending || !new3PL.partner} className="w-full" data-testid="button-add-3pl">
               <Plus className="w-4 h-4" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function ThirdPartyLogistics() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant="default">{p.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

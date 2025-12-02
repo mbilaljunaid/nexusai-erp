@@ -90,7 +90,7 @@ export default function POSTerminalCheckout() {
                 <SelectItem value="wallet">Wallet</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newSale)} disabled={createMutation.isPending || !newSale.productId} size="sm" data-testid="button-process">
+            <Button disabled={createMutation.isPending || !newSale.productId} size="sm" data-testid="button-process">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -106,7 +106,7 @@ export default function POSTerminalCheckout() {
                 <p className="font-semibold">{t.productId}</p>
                 <p className="text-xs text-muted-foreground">{t.quantity} × ${(t.amount / t.quantity).toFixed(2)} = ${t.amount.toFixed(2)} ({t.paymentType})</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-void-${t.id}`} className="h-7 w-7">
+              <Button size="icon" variant="ghost" data-testid={`button-void-${t.id}`} className="h-7 w-7">
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>

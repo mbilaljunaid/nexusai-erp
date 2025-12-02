@@ -101,7 +101,7 @@ export default function InventoryManagement() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={() => createMutation.mutate(newItem)} disabled={createMutation.isPending || !newItem.itemName} className="w-full" data-testid="button-add-item">
+              <Button disabled={createMutation.isPending || !newItem.itemName} className="w-full" data-testid="button-add-item">
                 <Plus className="w-4 h-4 mr-2" /> Add Item
               </Button>
             </CardContent>
@@ -129,7 +129,7 @@ export default function InventoryManagement() {
                       <p className="font-semibold">{item.itemName}</p>
                       <p className="text-sm text-muted-foreground">SKU: {item.sku} • Qty: {item.quantity}</p>
                     </div>
-                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`}>
+                    <Button size="icon" variant="ghost" data-testid={`button-delete-${item.id}`}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

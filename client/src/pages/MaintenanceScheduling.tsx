@@ -97,7 +97,7 @@ export default function MaintenanceScheduling() {
                 <SelectItem value="completed">Completed</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newMaint)} disabled={createMutation.isPending || !newMaint.vehicleId} size="sm" data-testid="button-schedule">
+            <Button disabled={createMutation.isPending || !newMaint.vehicleId} size="sm" data-testid="button-schedule">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -115,7 +115,7 @@ export default function MaintenanceScheduling() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={m.status === "completed" ? "default" : m.status === "overdue" ? "destructive" : "secondary"} className="text-xs">{m.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(m.id)} data-testid={`button-delete-${m.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

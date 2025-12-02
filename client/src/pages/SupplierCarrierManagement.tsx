@@ -82,7 +82,7 @@ export default function SupplierCarrierManagement() {
             <Input placeholder="Name" value={newSupplier.name} onChange={(e) => setNewSupplier({ ...newSupplier, name: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Rating" type="number" min="0" max="5" step="0.1" value={newSupplier.rating} onChange={(e) => setNewSupplier({ ...newSupplier, rating: e.target.value })} data-testid="input-rating" className="text-sm" />
             <Input placeholder="Type" value={newSupplier.type} disabled data-testid="input-type" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newSupplier)} disabled={createMutation.isPending || !newSupplier.supplierId} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newSupplier.supplierId} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function SupplierCarrierManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant="default" className="text-xs">{s.type}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

@@ -82,7 +82,7 @@ export default function ProcurementSourcing() {
             <Input placeholder="Supplier ID" value={newPO.supplierId} onChange={(e) => setNewPO({ ...newPO, supplierId: e.target.value })} data-testid="input-sid" className="text-sm" />
             <Input placeholder="Item ID" value={newPO.itemId} onChange={(e) => setNewPO({ ...newPO, itemId: e.target.value })} data-testid="input-iid" className="text-sm" />
             <Input placeholder="Qty" type="number" value={newPO.quantity} onChange={(e) => setNewPO({ ...newPO, quantity: e.target.value })} data-testid="input-qty" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newPO)} disabled={createMutation.isPending || !newPO.poId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newPO.poId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function ProcurementSourcing() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={o.status === "completed" ? "default" : "secondary"} className="text-xs">{o.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(o.id)} data-testid={`button-delete-${o.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

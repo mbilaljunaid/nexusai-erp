@@ -74,7 +74,7 @@ export default function SupplierManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newSupplier)} disabled={createMutation.isPending || !newSupplier.supplierName} className="w-full" data-testid="button-add-supplier">
+          <Button disabled={createMutation.isPending || !newSupplier.supplierName} className="w-full" data-testid="button-add-supplier">
             <Plus className="w-4 h-4 mr-2" /> Add Supplier
           </Button>
         </CardContent>
@@ -97,7 +97,7 @@ export default function SupplierManagement() {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Badge variant={s.status === "active" ? "default" : "secondary"}>{s.status || "active"}</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`}>
+                    <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

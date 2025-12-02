@@ -70,7 +70,7 @@ export default function ProcessDesigner() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newProcess)} disabled={createMutation.isPending || !newProcess.name} className="w-full" data-testid="button-create-process">
+          <Button disabled={createMutation.isPending || !newProcess.name} className="w-full" data-testid="button-create-process">
             <Plus className="w-4 h-4 mr-2" /> Create Process
           </Button>
         </CardContent>
@@ -114,7 +114,7 @@ export default function ProcessDesigner() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={p.status === "active" ? "default" : p.status === "draft" ? "secondary" : "outline"}>{p.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

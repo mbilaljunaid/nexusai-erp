@@ -96,7 +96,7 @@ export default function TradeComplianceDashboard() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newTrade)} disabled={createMutation.isPending} className="w-full" data-testid="button-add-trade">
+          <Button disabled={createMutation.isPending} className="w-full" data-testid="button-add-trade">
             <Plus className="w-4 h-4 mr-2" /> Add Record
           </Button>
         </CardContent>
@@ -113,7 +113,7 @@ export default function TradeComplianceDashboard() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={t.status === "cleared" ? "default" : t.status === "held" ? "destructive" : "secondary"}>{t.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-delete-${t.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

@@ -82,7 +82,7 @@ export default function MenuPOSOperations() {
             <Input placeholder="Item Name" value={newItem.itemName} onChange={(e) => setNewItem({ ...newItem, itemName: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Price" type="number" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} data-testid="input-price" className="text-sm" />
             <Input placeholder="Status" disabled value={newItem.status} data-testid="input-status" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newItem)} disabled={createMutation.isPending || !newItem.menuId} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newItem.menuId} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function MenuPOSOperations() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={i.status === "active" ? "default" : "secondary"} className="text-xs">{i.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(i.id)} data-testid={`button-delete-${i.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

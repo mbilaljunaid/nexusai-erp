@@ -111,7 +111,7 @@ export default function RMAManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newRMA)} disabled={createMutation.isPending || !newRMA.rmaId} className="w-full" data-testid="button-create-rma">
+          <Button disabled={createMutation.isPending || !newRMA.rmaId} className="w-full" data-testid="button-create-rma">
             <Plus className="w-4 h-4 mr-2" /> Create RMA
           </Button>
         </CardContent>
@@ -128,7 +128,7 @@ export default function RMAManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={r.status === "closed" ? "default" : "secondary"}>{r.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

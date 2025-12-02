@@ -62,7 +62,7 @@ export default function TimesheetManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newTimesheet)} disabled={createMutation.isPending || !newTimesheet.user} className="w-full" data-testid="button-submit-timesheet">
+          <Button disabled={createMutation.isPending || !newTimesheet.user} className="w-full" data-testid="button-submit-timesheet">
             <Plus className="h-4 w-4 mr-2" /> Submit Timesheet
           </Button>
         </CardContent>
@@ -106,7 +106,7 @@ export default function TimesheetManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={ts.approval === "approved" ? "default" : "secondary"}>{ts.approval}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(ts.id)} data-testid={`button-delete-${ts.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${ts.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

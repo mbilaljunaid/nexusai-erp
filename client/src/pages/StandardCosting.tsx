@@ -97,7 +97,7 @@ export default function StandardCosting() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newCost)} disabled={createMutation.isPending} className="w-full" data-testid="button-create-cost">
+          <Button disabled={createMutation.isPending} className="w-full" data-testid="button-create-cost">
             <Plus className="w-4 h-4 mr-2" /> Create Cost
           </Button>
         </CardContent>
@@ -116,7 +116,7 @@ export default function StandardCosting() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant="default">{c.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${c.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

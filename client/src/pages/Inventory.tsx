@@ -124,7 +124,7 @@ export default function Inventory() {
                 <Input placeholder="SKU" value={newItem.sku} onChange={(e) => setNewItem({ ...newItem, sku: e.target.value })} data-testid="input-sku" />
                 <Input placeholder="Quantity" type="number" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} data-testid="input-quantity" />
               </div>
-              <Button onClick={() => createItemMutation.mutate(newItem)} disabled={createItemMutation.isPending || !newItem.itemName} className="w-full" data-testid="button-add-item">
+              <Button disabled={createItemMutation.isPending || !newItem.itemName} className="w-full" data-testid="button-add-item">
                 <Plus className="w-4 h-4 mr-2" /> Add Item
               </Button>
             </CardContent>
@@ -140,7 +140,7 @@ export default function Inventory() {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Badge>{item.quantity} units</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => deleteItemMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`}>
+                    <Button size="icon" variant="ghost" data-testid={`button-delete-${item.id}`}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -160,7 +160,7 @@ export default function Inventory() {
                 <Input placeholder="Warehouse name" value={newWarehouse.warehouseName} onChange={(e) => setNewWarehouse({ ...newWarehouse, warehouseName: e.target.value })} data-testid="input-wh-name" />
                 <Input placeholder="Location" value={newWarehouse.location} onChange={(e) => setNewWarehouse({ ...newWarehouse, location: e.target.value })} data-testid="input-location" />
               </div>
-              <Button onClick={() => createWhMutation.mutate(newWarehouse)} disabled={createWhMutation.isPending || !newWarehouse.warehouseName} className="w-full" data-testid="button-add-warehouse">
+              <Button disabled={createWhMutation.isPending || !newWarehouse.warehouseName} className="w-full" data-testid="button-add-warehouse">
                 <Plus className="w-4 h-4 mr-2" /> Add Warehouse
               </Button>
             </CardContent>
@@ -171,7 +171,7 @@ export default function Inventory() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center justify-between">
                     <span className="flex items-center gap-2"><Warehouse className="h-5 w-5 text-green-600" />{wh.warehouseName}</span>
-                    <Button size="icon" variant="ghost" onClick={() => deleteWhMutation.mutate(wh.id)} data-testid={`button-delete-wh-${wh.id}`}>
+                    <Button size="icon" variant="ghost" data-testid={`button-delete-wh-${wh.id}`}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </CardTitle>

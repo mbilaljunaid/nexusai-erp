@@ -82,7 +82,7 @@ export default function InventoryStockManagement() {
             <Input placeholder="Quantity" type="number" value={newStock.quantity} onChange={(e) => setNewStock({ ...newStock, quantity: e.target.value })} data-testid="input-qty" className="text-sm" />
             <Input placeholder="Reorder Point" type="number" value={newStock.reorderPoint} onChange={(e) => setNewStock({ ...newStock, reorderPoint: e.target.value })} data-testid="input-reorder" className="text-sm" />
             <Input placeholder="Lead Time (days)" type="number" value={newStock.supplierLeadTime} onChange={(e) => setNewStock({ ...newStock, supplierLeadTime: e.target.value })} data-testid="input-leadtime" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newStock)} disabled={createMutation.isPending || !newStock.productId} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newStock.productId} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -102,7 +102,7 @@ export default function InventoryStockManagement() {
                 </div>
                 <div className="flex gap-2 items-center">
                   {isLow && <Badge variant="destructive" className="text-xs">LOW</Badge>}
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`} className="h-7 w-7">
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7">
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>

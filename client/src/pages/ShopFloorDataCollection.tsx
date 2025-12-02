@@ -90,7 +90,7 @@ export default function ShopFloorDataCollection() {
               </SelectContent>
             </Select>
             <Input placeholder="Qty Produced" type="number" value={newEvent.qty} onChange={(e) => setNewEvent({ ...newEvent, qty: e.target.value })} data-testid="input-qty" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newEvent)} disabled={createMutation.isPending || !newEvent.woId} size="sm" data-testid="button-record-event">
+            <Button disabled={createMutation.isPending || !newEvent.woId} size="sm" data-testid="button-record-event">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -108,7 +108,7 @@ export default function ShopFloorDataCollection() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={e.eventType === "complete" ? "default" : "secondary"} className="text-xs">{e.eventType}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(e.id)} data-testid={`button-delete-${e.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${e.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

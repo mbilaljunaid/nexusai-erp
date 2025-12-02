@@ -64,7 +64,7 @@ export default function LeadConversion() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newLead)} disabled={createMutation.isPending || !newLead.name} className="w-full" data-testid="button-create-lead">
+          <Button disabled={createMutation.isPending || !newLead.name} className="w-full" data-testid="button-create-lead">
             <Plus className="w-4 h-4 mr-2" /> Add Lead
           </Button>
         </CardContent>
@@ -82,7 +82,7 @@ export default function LeadConversion() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge>{lead.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(lead.id)} data-testid={`button-delete-${lead.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${lead.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

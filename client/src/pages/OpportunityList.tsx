@@ -79,7 +79,7 @@ export default function OpportunityList() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newOpp)} disabled={createMutation.isPending || !newOpp.name} className="w-full" data-testid="button-create-opportunity">
+          <Button disabled={createMutation.isPending || !newOpp.name} className="w-full" data-testid="button-create-opportunity">
             <Plus className="w-4 h-4 mr-2" /> Create Opportunity
           </Button>
         </CardContent>
@@ -104,7 +104,7 @@ export default function OpportunityList() {
                 <div className="flex gap-2 items-center">
                   <p className="text-xl font-bold">${opp.value}</p>
                   <Badge className={getStageColor(opp.stage)}>{opp.stage}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(opp.id)} data-testid={`button-delete-${opp.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${opp.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

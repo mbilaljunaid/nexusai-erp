@@ -105,7 +105,7 @@ export default function IntercompanyReconciliation() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newMatch)} disabled={createMutation.isPending || !newMatch.amount} className="w-full" data-testid="button-create-entry">
+          <Button disabled={createMutation.isPending || !newMatch.amount} className="w-full" data-testid="button-create-entry">
             <Plus className="w-4 h-4 mr-2" /> Create Entry
           </Button>
         </CardContent>
@@ -125,7 +125,7 @@ export default function IntercompanyReconciliation() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={m.status === "matched" ? "default" : m.status === "pending" ? "secondary" : "outline"}>{m.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(m.id)} data-testid={`button-delete-${m.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

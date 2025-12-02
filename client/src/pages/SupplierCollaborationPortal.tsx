@@ -97,7 +97,7 @@ export default function SupplierCollaborationPortal() {
                 <SelectItem value="completed">Completed</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newInteraction)} disabled={createMutation.isPending || !newInteraction.supplier} size="sm" data-testid="button-log-int">
+            <Button disabled={createMutation.isPending || !newInteraction.supplier} size="sm" data-testid="button-log-int">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -115,7 +115,7 @@ export default function SupplierCollaborationPortal() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={i.status === "completed" ? "default" : "secondary"} className="text-xs">{i.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(i.id)} data-testid={`button-delete-${i.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

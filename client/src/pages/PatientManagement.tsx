@@ -88,7 +88,7 @@ export default function PatientManagement() {
                 <SelectItem value="O">Other</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newPatient)} disabled={createMutation.isPending || !newPatient.mrn} size="sm" data-testid="button-register">
+            <Button disabled={createMutation.isPending || !newPatient.mrn} size="sm" data-testid="button-register">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -106,7 +106,7 @@ export default function PatientManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={p.status === "active" ? "default" : "secondary"} className="text-xs">{p.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-${p.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

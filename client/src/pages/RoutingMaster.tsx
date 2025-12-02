@@ -91,7 +91,7 @@ export default function RoutingMaster() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newRouting)} disabled={createMutation.isPending || !newRouting.operation} className="w-full" data-testid="button-create-routing">
+          <Button disabled={createMutation.isPending || !newRouting.operation} className="w-full" data-testid="button-create-routing">
             <Plus className="w-4 h-4 mr-2" /> Create Routing
           </Button>
         </CardContent>
@@ -108,7 +108,7 @@ export default function RoutingMaster() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant="default">{r.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

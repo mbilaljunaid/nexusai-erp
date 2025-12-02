@@ -102,7 +102,7 @@ export default function TaskManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newTask)} disabled={createMutation.isPending || !newTask.title} className="w-full" data-testid="button-create-task">
+          <Button disabled={createMutation.isPending || !newTask.title} className="w-full" data-testid="button-create-task">
             <Plus className="w-4 h-4 mr-2" /> Create Task
           </Button>
         </CardContent>
@@ -124,7 +124,7 @@ export default function TaskManagement() {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Badge variant={task.priority === "high" ? "destructive" : "secondary"}>{task.priority}</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(task.id)} data-testid={`button-delete-${task.id}`}>
+                    <Button size="icon" variant="ghost" data-testid={`button-delete-${task.id}`}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

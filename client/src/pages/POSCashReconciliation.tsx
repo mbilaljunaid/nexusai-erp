@@ -82,7 +82,7 @@ export default function POSCashReconciliation() {
             <Input placeholder="Date" type="date" value={newRecon.dateOfDay} onChange={(e) => setNewRecon({ ...newRecon, dateOfDay: e.target.value })} data-testid="input-date" className="text-sm" />
             <Input placeholder="Expected" type="number" value={newRecon.expectedCash} onChange={(e) => setNewRecon({ ...newRecon, expectedCash: e.target.value })} data-testid="input-expected" className="text-sm" />
             <Input placeholder="Actual" type="number" value={newRecon.actualCash} onChange={(e) => setNewRecon({ ...newRecon, actualCash: e.target.value })} data-testid="input-actual" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newRecon)} disabled={createMutation.isPending || !newRecon.terminalId} size="sm" data-testid="button-record">
+            <Button disabled={createMutation.isPending || !newRecon.terminalId} size="sm" data-testid="button-record">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -102,7 +102,7 @@ export default function POSCashReconciliation() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={Math.abs(variance) < 0.01 ? "default" : "destructive"} className="text-xs">{Math.abs(variance) < 0.01 ? "Balanced" : "Discrepancy"}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} className="h-7 w-7">
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} className="h-7 w-7">
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>

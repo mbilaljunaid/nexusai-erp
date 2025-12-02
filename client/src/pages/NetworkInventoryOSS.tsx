@@ -82,7 +82,7 @@ export default function NetworkInventoryOSS() {
             <Input placeholder="Node Type" value={newNode.nodeType} disabled data-testid="input-type" className="text-sm" />
             <Input placeholder="Location" value={newNode.location} onChange={(e) => setNewNode({ ...newNode, location: e.target.value })} data-testid="input-location" className="text-sm" />
             <Input placeholder="Capacity" type="number" value={newNode.capacity} onChange={(e) => setNewNode({ ...newNode, capacity: e.target.value })} data-testid="input-cap" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newNode)} disabled={createMutation.isPending || !newNode.nodeId} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newNode.nodeId} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function NetworkInventoryOSS() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={n.status === "active" ? "default" : "secondary"} className="text-xs">{n.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(n.id)} data-testid={`button-delete-${n.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${n.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

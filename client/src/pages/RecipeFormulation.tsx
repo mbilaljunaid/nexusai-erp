@@ -82,7 +82,7 @@ export default function RecipeFormulation() {
             <Input placeholder="Recipe Name" value={newRecipe.name} onChange={(e) => setNewRecipe({ ...newRecipe, name: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Yield %" type="number" value={newRecipe.yield} onChange={(e) => setNewRecipe({ ...newRecipe, yield: e.target.value })} data-testid="input-yield" className="text-sm" />
             <Input placeholder="Status" disabled value="draft" data-testid="input-status" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newRecipe)} disabled={createMutation.isPending || !newRecipe.recipeId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newRecipe.recipeId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function RecipeFormulation() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={r.status === "approved" ? "default" : "secondary"} className="text-xs">{r.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

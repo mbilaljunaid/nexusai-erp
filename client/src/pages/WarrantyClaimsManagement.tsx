@@ -82,7 +82,7 @@ export default function WarrantyClaimsManagement() {
             <Input placeholder="VIN" value={newClaim.vin} onChange={(e) => setNewClaim({ ...newClaim, vin: e.target.value })} data-testid="input-vin" className="text-sm" />
             <Input placeholder="Claim Amount" type="number" value={newClaim.claimAmount} onChange={(e) => setNewClaim({ ...newClaim, claimAmount: e.target.value })} data-testid="input-amt" className="text-sm" />
             <Input placeholder="Status" disabled value={newClaim.status} data-testid="input-status" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newClaim)} disabled={createMutation.isPending || !newClaim.claimId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newClaim.claimId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function WarrantyClaimsManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={c.status === "approved" ? "default" : "secondary"} className="text-xs">{c.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${c.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

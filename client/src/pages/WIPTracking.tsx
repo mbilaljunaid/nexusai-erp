@@ -88,7 +88,7 @@ export default function WIPTracking() {
                 <SelectItem value="completed">Completed</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newWIP)} disabled={createMutation.isPending} className="w-full" data-testid="button-add-wip">
+            <Button disabled={createMutation.isPending} className="w-full" data-testid="button-add-wip">
               <Plus className="w-4 h-4" />
             </Button>
           </div>
@@ -109,7 +109,7 @@ export default function WIPTracking() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={w.status === "completed" ? "default" : "secondary"}>{w.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(w.id)} data-testid={`button-delete-${w.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${w.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

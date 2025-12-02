@@ -56,7 +56,7 @@ export default function WarehouseManagement() {
             <Input placeholder="Location" value={newWarehouse.location} onChange={(e) => setNewWarehouse({ ...newWarehouse, location: e.target.value })} data-testid="input-location" />
             <Input placeholder="Capacity" type="number" value={newWarehouse.capacity} onChange={(e) => setNewWarehouse({ ...newWarehouse, capacity: e.target.value })} data-testid="input-capacity" />
           </div>
-          <Button onClick={() => createMutation.mutate(newWarehouse)} disabled={createMutation.isPending || !newWarehouse.warehouseName} className="w-full" data-testid="button-create-warehouse">
+          <Button disabled={createMutation.isPending || !newWarehouse.warehouseName} className="w-full" data-testid="button-create-warehouse">
             <Plus className="w-4 h-4 mr-2" /> Add Warehouse
           </Button>
         </CardContent>
@@ -79,7 +79,7 @@ export default function WarehouseManagement() {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Badge>{w.status || "active"}</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(w.id)} data-testid={`button-delete-${w.id}`}>
+                    <Button size="icon" variant="ghost" data-testid={`button-delete-${w.id}`}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

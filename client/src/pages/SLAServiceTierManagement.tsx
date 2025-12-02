@@ -89,7 +89,7 @@ export default function SLAServiceTierManagement() {
             </Select>
             <Input placeholder="Uptime %" type="number" value={newSLA.uptime} onChange={(e) => setNewSLA({ ...newSLA, uptime: e.target.value })} data-testid="input-uptime" className="text-sm" />
             <Input placeholder="Response Time (h)" type="number" value={newSLA.responseTime} onChange={(e) => setNewSLA({ ...newSLA, responseTime: e.target.value })} data-testid="input-rtime" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newSLA)} disabled={createMutation.isPending || !newSLA.slaId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newSLA.slaId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -107,7 +107,7 @@ export default function SLAServiceTierManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={s.compliance === "met" ? "default" : "destructive"} className="text-xs">{s.compliance}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

@@ -18,11 +18,11 @@ export default function DocumentManagement() {
       </div>
 
       <div className="flex gap-2">
-        <Button variant={viewType === "documents" ? "default" : "outline"} onClick={() => setViewType("documents")} data-testid="button-view-documents">
+        <Button variant={viewType === "documents" ? "default" : "outline"} data-testid="button-view-documents">
           <FileText className="h-4 w-4 mr-2" />
           Documents ({documents.length})
         </Button>
-        <Button variant={viewType === "approvals" ? "default" : "outline"} onClick={() => setViewType("approvals")} data-testid="button-view-approvals">
+        <Button variant={viewType === "approvals" ? "default" : "outline"} data-testid="button-view-approvals">
           <FileCheck className="h-4 w-4 mr-2" />
           Approvals ({approvals.length})
         </Button>

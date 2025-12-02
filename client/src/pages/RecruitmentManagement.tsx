@@ -68,7 +68,7 @@ export default function RecruitmentManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newJob)} disabled={createMutation.isPending || !newJob.title} className="w-full" data-testid="button-create-job">
+          <Button disabled={createMutation.isPending || !newJob.title} className="w-full" data-testid="button-create-job">
             <Plus className="w-4 h-4 mr-2" /> Post Job
           </Button>
         </CardContent>
@@ -92,7 +92,7 @@ export default function RecruitmentManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant="outline">{job.stage}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(job.id)} data-testid={`button-delete-${job.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${job.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

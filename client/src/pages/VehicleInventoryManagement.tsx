@@ -83,7 +83,7 @@ export default function VehicleInventoryManagement() {
             <Input placeholder="Model" value={newVehicle.model} onChange={(e) => setNewVehicle({ ...newVehicle, model: e.target.value })} data-testid="input-model" className="text-sm" />
             <Input placeholder="Year" type="number" value={newVehicle.year} onChange={(e) => setNewVehicle({ ...newVehicle, year: e.target.value })} data-testid="input-year" className="text-sm" />
             <Input placeholder="Price" type="number" value={newVehicle.price} onChange={(e) => setNewVehicle({ ...newVehicle, price: e.target.value })} data-testid="input-price" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newVehicle)} disabled={createMutation.isPending || !newVehicle.vin} size="sm" data-testid="button-add">
+            <Button disabled={createMutation.isPending || !newVehicle.vin} size="sm" data-testid="button-add">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -101,7 +101,7 @@ export default function VehicleInventoryManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={v.status === "available" ? "default" : "secondary"} className="text-xs">{v.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(v.id)} data-testid={`button-delete-${v.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${v.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

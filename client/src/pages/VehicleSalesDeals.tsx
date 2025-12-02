@@ -82,7 +82,7 @@ export default function VehicleSalesDeals() {
             <Input placeholder="Customer ID" value={newDeal.customerId} onChange={(e) => setNewDeal({ ...newDeal, customerId: e.target.value })} data-testid="input-cid" className="text-sm" />
             <Input placeholder="VIN" value={newDeal.vin} onChange={(e) => setNewDeal({ ...newDeal, vin: e.target.value })} data-testid="input-vin" className="text-sm" />
             <Input placeholder="Sale Price" type="number" value={newDeal.salePrice} onChange={(e) => setNewDeal({ ...newDeal, salePrice: e.target.value })} data-testid="input-price" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newDeal)} disabled={createMutation.isPending || !newDeal.dealId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newDeal.dealId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export default function VehicleSalesDeals() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={d.status === "completed" ? "default" : "secondary"} className="text-xs">{d.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(d.id)} data-testid={`button-delete-${d.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${d.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

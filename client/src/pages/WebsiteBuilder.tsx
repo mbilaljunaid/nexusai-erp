@@ -79,7 +79,7 @@ export default function WebsiteBuilder() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newPage)} disabled={createMutation.isPending || !newPage.name} className="w-full" data-testid="button-create-page">
+          <Button disabled={createMutation.isPending || !newPage.name} className="w-full" data-testid="button-create-page">
             <Plus className="w-4 h-4 mr-2" /> Create Page
           </Button>
         </CardContent>
@@ -106,7 +106,7 @@ export default function WebsiteBuilder() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={page.status === "published" ? "default" : "secondary"}>{page.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(page.id)} data-testid={`button-delete-${page.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${page.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

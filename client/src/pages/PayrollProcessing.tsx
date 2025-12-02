@@ -51,7 +51,7 @@ export default function PayrollProcessing() {
             <Input placeholder="Year" value={newPayroll.year} onChange={(e) => setNewPayroll({ ...newPayroll, year: e.target.value })} data-testid="input-year" />
             <Input placeholder="Amount" type="number" value={newPayroll.amount} onChange={(e) => setNewPayroll({ ...newPayroll, amount: e.target.value })} data-testid="input-amount" />
           </div>
-          <Button onClick={() => createMutation.mutate(newPayroll)} disabled={createMutation.isPending || !newPayroll.month} className="w-full" data-testid="button-process-payroll">
+          <Button disabled={createMutation.isPending || !newPayroll.month} className="w-full" data-testid="button-process-payroll">
             <Plus className="w-4 h-4 mr-2" /> Process Payroll
           </Button>
         </CardContent>
@@ -89,7 +89,7 @@ export default function PayrollProcessing() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge className="bg-green-100 text-green-800">Processed</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(run.id)} data-testid={`button-delete-${run.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${run.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

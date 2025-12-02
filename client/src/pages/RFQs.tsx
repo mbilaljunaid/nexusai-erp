@@ -96,7 +96,7 @@ export default function RFQs() {
               <label className="text-sm font-semibold mb-1 block">Description</label>
               <textarea className="w-full border rounded p-2 text-sm" rows={4} value={newRfq.description} onChange={(e) => setNewRfq({ ...newRfq, description: e.target.value })} placeholder="Detailed requirements..." />
             </div>
-            <Button onClick={() => createMutation.mutate(newRfq)} disabled={!newRfq.rfqNumber || !newRfq.title} className="w-full">
+            <Button disabled={!newRfq.rfqNumber || !newRfq.title} className="w-full">
               <Plus className="w-4 h-4 mr-2" /> Create RFQ
             </Button>
           </CardContent>

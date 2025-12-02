@@ -79,7 +79,7 @@ export default function ProcurementManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newPO)} disabled={createMutation.isPending || !newPO.poNumber} className="w-full" data-testid="button-create-po">
+          <Button disabled={createMutation.isPending || !newPO.poNumber} className="w-full" data-testid="button-create-po">
             <Plus className="w-4 h-4 mr-2" /> Create PO
           </Button>
         </CardContent>
@@ -101,7 +101,7 @@ export default function ProcurementManagement() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge>{po.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(po.id)} data-testid={`button-delete-${po.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${po.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

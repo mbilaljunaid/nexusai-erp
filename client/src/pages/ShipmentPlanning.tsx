@@ -92,7 +92,7 @@ export default function ShipmentPlanning() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newShipment)} disabled={createMutation.isPending || !newShipment.items} className="w-full" data-testid="button-create-shipment">
+          <Button disabled={createMutation.isPending || !newShipment.items} className="w-full" data-testid="button-create-shipment">
             <Plus className="w-4 h-4 mr-2" /> Create Shipment
           </Button>
         </CardContent>
@@ -109,7 +109,7 @@ export default function ShipmentPlanning() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={s.status === "shipped" ? "default" : "secondary"}>{s.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

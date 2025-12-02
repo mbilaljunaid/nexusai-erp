@@ -68,7 +68,7 @@ export default function QuotesAndOrders() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newQuote)} disabled={createMutation.isPending || !newQuote.number} className="w-full" data-testid="button-create-quote">
+          <Button disabled={createMutation.isPending || !newQuote.number} className="w-full" data-testid="button-create-quote">
             <Plus className="h-4 w-4 mr-2" /> Create Quote/Order
           </Button>
         </CardContent>
@@ -93,7 +93,7 @@ export default function QuotesAndOrders() {
               <div className="flex gap-2 items-center">
                 <Badge variant="outline">{item.type}</Badge>
                 <Badge variant={item.status === "approved" ? "default" : "secondary"}>{item.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${item.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

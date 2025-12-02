@@ -60,7 +60,7 @@ const ApprovalWorkflow = lazy(() => import("@/pages/ApprovalWorkflow"));
 const PaymentFlow = lazy(() => import("@/pages/PaymentFlow"));
 
 // Authenticated Process Pages - Phase 1, 2, 3
-const ProcessHub = lazy(() => import("@/pages/ProcessHub"));
+const ProcessHub = lazy(() => import("@/pages/processes/ProcessHub"));
 const ProcureToPayProcess = lazy(() => import("@/pages/processes/pages/ProcureToPayProcess"));
 const OrderToCashProcess = lazy(() => import("@/pages/processes/pages/OrderToCashProcess"));
 const HireToRetireProcess = lazy(() => import("@/pages/processes/pages/HireToRetireProcess"));

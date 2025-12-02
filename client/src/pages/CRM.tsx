@@ -85,7 +85,7 @@ export default function CRM() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-1">
               <CardTitle>Leads</CardTitle>
-              <SmartAddButton formId="leads" formMetadata={leadsMetadata} onClick={() => setShowLeadForm(!showLeadForm)} />
+              <SmartAddButton formId="leads" formMetadata={leadsMetadata} />
             </CardHeader>
             <CardContent className="space-y-4">
               <FormSearchWithMetadata

@@ -122,7 +122,7 @@ export default function RiskManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newRisk)} disabled={createMutation.isPending || !newRisk.riskDescription} className="w-full" data-testid="button-create-risk">
+          <Button disabled={createMutation.isPending || !newRisk.riskDescription} className="w-full" data-testid="button-create-risk">
             <Plus className="w-4 h-4 mr-2" /> Register Risk
           </Button>
         </CardContent>
@@ -147,7 +147,7 @@ export default function RiskManagement() {
                     <Badge variant={r.status === "open" ? "destructive" : "default"}>{r.status}</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mb-2">Likelihood: {r.likelihood} • Impact: {r.impact} • Score: {score}</p>
-                  <Button size="sm" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`}>
+                  <Button size="sm" variant="ghost" data-testid={`button-delete-${r.id}`}>
                     <Trash2 className="w-4 h-4" /> Delete
                   </Button>
                 </div>

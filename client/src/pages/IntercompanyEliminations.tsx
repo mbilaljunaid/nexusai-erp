@@ -105,7 +105,7 @@ export default function IntercompanyEliminations() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => createMutation.mutate(newTx)} disabled={createMutation.isPending || !newTx.amount} className="w-full" data-testid="button-create-tx">
+          <Button disabled={createMutation.isPending || !newTx.amount} className="w-full" data-testid="button-create-tx">
             <Plus className="w-4 h-4 mr-2" /> Create Transaction
           </Button>
         </CardContent>
@@ -126,7 +126,7 @@ export default function IntercompanyEliminations() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={t.status === "processed" ? "default" : "secondary"}>{t.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-delete-${t.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

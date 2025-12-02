@@ -97,7 +97,7 @@ export default function SupplyChain() {
                 </Select>
                 <Input placeholder="Location" value={newPartner.location} onChange={(e) => setNewPartner({ ...newPartner, location: e.target.value })} data-testid="input-location" />
               </div>
-              <Button onClick={() => createPartnerMutation.mutate(newPartner)} disabled={createPartnerMutation.isPending || !newPartner.name} className="w-full" data-testid="button-add-partner">
+              <Button disabled={createPartnerMutation.isPending || !newPartner.name} className="w-full" data-testid="button-add-partner">
                 <Plus className="w-4 h-4 mr-2" /> Add Partner
               </Button>
             </CardContent>
@@ -108,7 +108,7 @@ export default function SupplyChain() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center justify-between">
                     <span className="flex items-center gap-2"><Users className="h-5 w-5 text-blue-600" />{partner.name || partner.partnerName}</span>
-                    <Button size="icon" variant="ghost" onClick={() => deletePartnerMutation.mutate(partner.id)} data-testid={`button-delete-${partner.id}`}>
+                    <Button size="icon" variant="ghost" data-testid={`button-delete-${partner.id}`}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </CardTitle>
@@ -143,7 +143,7 @@ export default function SupplyChain() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={() => createShipmentMutation.mutate(newShipment)} disabled={createShipmentMutation.isPending || !newShipment.number} className="w-full" data-testid="button-add-shipment">
+              <Button disabled={createShipmentMutation.isPending || !newShipment.number} className="w-full" data-testid="button-add-shipment">
                 <Plus className="w-4 h-4 mr-2" /> Create Shipment
               </Button>
             </CardContent>
@@ -162,7 +162,7 @@ export default function SupplyChain() {
                     </div>
                     <div className="flex gap-2 items-center">
                       <Badge variant={shipment.status === "in-transit" ? "default" : "secondary"}>{shipment.status}</Badge>
-                      <Button size="icon" variant="ghost" onClick={() => deleteShipmentMutation.mutate(shipment.id)} data-testid={`button-delete-${shipment.id}`}>
+                      <Button size="icon" variant="ghost" data-testid={`button-delete-${shipment.id}`}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>

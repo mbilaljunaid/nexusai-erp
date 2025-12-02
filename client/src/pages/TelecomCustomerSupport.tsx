@@ -97,7 +97,7 @@ export default function TelecomCustomerSupport() {
                 <SelectItem value="critical">Critical</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => createMutation.mutate(newTicket)} disabled={createMutation.isPending || !newTicket.ticketId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newTicket.ticketId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -115,7 +115,7 @@ export default function TelecomCustomerSupport() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={t.priority === "critical" ? "destructive" : "secondary"} className="text-xs">{t.priority}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-delete-${t.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`} className="h-7 w-7">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>
