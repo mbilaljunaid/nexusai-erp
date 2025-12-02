@@ -59,7 +59,7 @@ const QuoteBuilder = lazy(() => import("@/pages/QuoteBuilder"));
 const ApprovalWorkflow = lazy(() => import("@/pages/ApprovalWorkflow"));
 const PaymentFlow = lazy(() => import("@/pages/PaymentFlow"));
 
-// Process Pages - Phase 1 & 2
+// Authenticated Process Pages - Phase 1, 2, 3
 const ProcessHub = lazy(() => import("@/pages/processes/ProcessHub"));
 const ProcureToPayProcess = lazy(() => import("@/pages/processes/pages/ProcureToPayProcess"));
 const OrderToCashProcess = lazy(() => import("@/pages/processes/pages/OrderToCashProcess"));
@@ -79,6 +79,27 @@ const WarehouseManagementProcess = lazy(() => import("@/pages/processes/pages/Wa
 const CustomerReturnsProcess = lazy(() => import("@/pages/processes/pages/CustomerReturnsProcess"));
 const VendorPerformanceProcess = lazy(() => import("@/pages/processes/pages/VendorPerformanceProcess"));
 const SubscriptionBillingProcess = lazy(() => import("@/pages/processes/pages/SubscriptionBillingProcess"));
+
+// Public Process Pages
+const PublicProcessHub = lazy(() => import("@/pages/public/processes/PublicProcessHub"));
+const PublicProcureToPayProcess = lazy(() => import("@/pages/public/processes/pages/PublicProcureToPayProcess"));
+const PublicOrderToCashProcess = lazy(() => import("@/pages/public/processes/pages/PublicOrderToCashProcess"));
+const PublicHireToRetireProcess = lazy(() => import("@/pages/public/processes/pages/PublicHireToRetireProcess"));
+const PublicMonthEndProcess = lazy(() => import("@/pages/public/processes/pages/PublicMonthEndProcess"));
+const PublicComplianceProcess = lazy(() => import("@/pages/public/processes/pages/PublicComplianceProcess"));
+const PublicInventoryProcess = lazy(() => import("@/pages/public/processes/pages/PublicInventoryProcess"));
+const PublicFixedAssetProcess = lazy(() => import("@/pages/public/processes/pages/PublicFixedAssetProcess"));
+const PublicProductionProcess = lazy(() => import("@/pages/public/processes/pages/PublicProductionProcess"));
+const PublicMRPProcess = lazy(() => import("@/pages/public/processes/pages/PublicMRPProcess"));
+const PublicQualityProcess = lazy(() => import("@/pages/public/processes/pages/PublicQualityProcess"));
+const PublicContractProcess = lazy(() => import("@/pages/public/processes/pages/PublicContractProcess"));
+const PublicBudgetProcess = lazy(() => import("@/pages/public/processes/pages/PublicBudgetProcess"));
+const PublicDemandProcess = lazy(() => import("@/pages/public/processes/pages/PublicDemandProcess"));
+const PublicCapacityProcess = lazy(() => import("@/pages/public/processes/pages/PublicCapacityProcess"));
+const PublicWarehouseProcess = lazy(() => import("@/pages/public/processes/pages/PublicWarehouseProcess"));
+const PublicCustomerReturnsProcess = lazy(() => import("@/pages/public/processes/pages/PublicCustomerReturnsProcess"));
+const PublicVendorPerformanceProcess = lazy(() => import("@/pages/public/processes/pages/PublicVendorPerformanceProcess"));
+const PublicSubscriptionBillingProcess = lazy(() => import("@/pages/public/processes/pages/PublicSubscriptionBillingProcess"));
 
 // Phase 2: ERP Workflows (4 pages)
 const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
@@ -489,6 +510,28 @@ function Router() {
       <Route path="/processes/customer-returns" component={CustomerReturnsProcess} />
       <Route path="/processes/vendor-performance" component={VendorPerformanceProcess} />
       <Route path="/processes/subscription-billing" component={SubscriptionBillingProcess} />
+      
+      {/* Public Process Pages */}
+      <Route path="/public/processes" component={PublicProcessHub} />
+      <Route path="/public/processes/procure-to-pay" component={PublicProcureToPayProcess} />
+      <Route path="/public/processes/order-to-cash" component={PublicOrderToCashProcess} />
+      <Route path="/public/processes/hire-to-retire" component={PublicHireToRetireProcess} />
+      <Route path="/public/processes/month-end-consolidation" component={PublicMonthEndProcess} />
+      <Route path="/public/processes/compliance-risk" component={PublicComplianceProcess} />
+      <Route path="/public/processes/inventory-management" component={PublicInventoryProcess} />
+      <Route path="/public/processes/fixed-asset-lifecycle" component={PublicFixedAssetProcess} />
+      <Route path="/public/processes/production-planning" component={PublicProductionProcess} />
+      <Route path="/public/processes/mrp" component={PublicMRPProcess} />
+      <Route path="/public/processes/quality-assurance" component={PublicQualityProcess} />
+      <Route path="/public/processes/contract-management" component={PublicContractProcess} />
+      <Route path="/public/processes/budget-planning" component={PublicBudgetProcess} />
+      <Route path="/public/processes/demand-planning" component={PublicDemandProcess} />
+      <Route path="/public/processes/capacity-planning" component={PublicCapacityProcess} />
+      <Route path="/public/processes/warehouse-management" component={PublicWarehouseProcess} />
+      <Route path="/public/processes/customer-returns" component={PublicCustomerReturnsProcess} />
+      <Route path="/public/processes/vendor-performance" component={PublicVendorPerformanceProcess} />
+      <Route path="/public/processes/subscription-billing" component={PublicSubscriptionBillingProcess} />
+      
       <Route path="/mrp-dashboard" component={MRPDashboard} />
       <Route path="/attendance-dashboard" component={AttendanceDashboard} />
       <Route path="/ticket-dashboard" component={TicketDashboard} />
