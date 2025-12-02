@@ -157,13 +157,16 @@ export async function registerRoutes(
   app.post("/api/quotes", async (req, res) => {
     try {
       const data = sanitizeInput(req.body);
+      if (!data.opportunityId || !data.total) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "Missing required fields: opportunityId, total", undefined, (req as any).id));
+      }
       const quote = {
         id: `quote-${Date.now()}`,
-        opportunityId: data.opportunityId || "OPP-001",
+        opportunityId: data.opportunityId,
         lineItems: data.lineItems || [],
         discountAmount: data.discountAmount || "0",
-        total: data.total || "0",
-        status: "draft",
+        total: data.total,
+        status: data.status || "draft",
         validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         createdAt: new Date().toISOString(),
       };
@@ -189,10 +192,13 @@ export async function registerRoutes(
   app.post("/api/payments", async (req, res) => {
     try {
       const data = sanitizeInput(req.body);
+      if (!data.invoiceId || !data.amount) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "Missing required fields: invoiceId, amount", undefined, (req as any).id));
+      }
       const payment = {
         id: `pay-${Date.now()}`,
-        invoiceId: data.invoiceId || "",
-        amount: data.amount || "0",
+        invoiceId: data.invoiceId,
+        amount: data.amount,
         method: data.method || "card",
         status: data.status || "pending",
         transactionId: `TXN-${Math.random().toString(36).substr(2, 9)}`,
@@ -253,18 +259,26 @@ export async function registerRoutes(
   });
 
   app.post("/api/ap-invoices", async (req, res) => {
-    const invoice = {
-      id: `api-${Date.now()}`,
-      invoiceNumber: req.body.invoiceNumber,
-      vendorId: req.body.vendorId,
-      poId: req.body.poId,
-      amount: req.body.amount || "0",
-      matchStatus: "unmatched",
-      status: "submitted",
-      createdAt: new Date().toISOString(),
-    };
-    apInvoicesStore.push(invoice);
-    res.status(201).json(invoice);
+    try {
+      const data = sanitizeInput(req.body);
+      if (!data.invoiceNumber || !data.vendorId || !data.amount) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "Missing required fields: invoiceNumber, vendorId, amount", undefined, (req as any).id));
+      }
+      const invoice = {
+        id: `api-${Date.now()}`,
+        invoiceNumber: data.invoiceNumber,
+        vendorId: data.vendorId,
+        poId: data.poId,
+        amount: data.amount,
+        matchStatus: "unmatched",
+        status: "submitted",
+        createdAt: new Date().toISOString(),
+      };
+      apInvoicesStore.push(invoice);
+      res.status(201).json({ success: true, data: invoice });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create AP invoice", undefined, (req as any).id));
+    }
   });
 
   app.post("/api/ap-invoices/:id/match", async (req, res) => {
@@ -289,17 +303,21 @@ export async function registerRoutes(
   });
 
   app.post("/api/bank-reconciliation/run", async (req, res) => {
-    const run = {
-      id: `recon-${Date.now()}`,
-      bankBalance: (Math.random() * 100000 + 50000).toString(),
-      glBalance: (Math.random() * 100000 + 50000).toString(),
-      difference: (Math.random() * 100 - 50).toString(),
-      matchedCount: Math.floor(Math.random() * 50 + 100),
-      status: "complete",
-      createdAt: new Date().toISOString(),
-    };
-    agingDataStore.push(run);
-    res.status(201).json(run);
+    try {
+      const run = {
+        id: `recon-${Date.now()}`,
+        bankBalance: (Math.random() * 100000 + 50000).toString(),
+        glBalance: (Math.random() * 100000 + 50000).toString(),
+        difference: (Math.random() * 100 - 50).toString(),
+        matchedCount: Math.floor(Math.random() * 50 + 100),
+        status: "complete",
+        createdAt: new Date().toISOString(),
+      };
+      agingDataStore.push(run);
+      res.status(201).json({ success: true, data: run });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to run reconciliation", undefined, (req as any).id));
+    }
   });
 
   app.get("/api/bank-transactions", async (req, res) => {
@@ -331,18 +349,26 @@ export async function registerRoutes(
   });
 
   app.post("/api/payment-schedules", async (req, res) => {
-    const schedule = {
-      id: `ps-${Date.now()}`,
-      vendorId: req.body.vendorId,
-      invoiceId: req.body.invoiceId,
-      amount: req.body.amount,
-      dueDate: req.body.dueDate,
-      scheduledDate: req.body.scheduledDate || new Date().toISOString(),
-      status: "pending",
-      createdAt: new Date().toISOString(),
-    };
-    paymentSchedulesStore.push(schedule);
-    res.status(201).json(schedule);
+    try {
+      const data = sanitizeInput(req.body);
+      if (!data.vendorId || !data.invoiceId || !data.amount) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "Missing required fields: vendorId, invoiceId, amount", undefined, (req as any).id));
+      }
+      const schedule = {
+        id: `ps-${Date.now()}`,
+        vendorId: data.vendorId,
+        invoiceId: data.invoiceId,
+        amount: data.amount,
+        dueDate: data.dueDate,
+        scheduledDate: data.scheduledDate || new Date().toISOString(),
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      };
+      paymentSchedulesStore.push(schedule);
+      res.status(201).json({ success: true, data: schedule });
+    } catch (error: any) {
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create payment schedule", undefined, (req as any).id));
+    }
   });
 
   app.post("/api/payment-schedules/:id/process", async (req, res) => {
@@ -699,9 +725,13 @@ export async function registerRoutes(
 
   app.post("/api/copilot/messages", async (req, res) => {
     try {
-      const data = insertCopilotMessageSchema.parse(req.body);
+      const parsed = insertCopilotMessageSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "Invalid message data", parsed.error.flatten().fieldErrors, (req as any).id));
+      }
+      const data = sanitizeInput(parsed.data);
       const msg = await storage.createCopilotMessage(data);
-      res.status(201).json(msg);
+      res.status(201).json({ success: true, data: msg });
       
       const conv = await storage.getCopilotConversation(data.conversationId);
       const context = (conv as any)?.context || "general";
@@ -5873,7 +5903,12 @@ export async function registerRoutes(
   // ========== AUTHENTICATION ==========
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const data = sanitizeInput(req.body);
+      const { email, password } = data;
+      
+      if (!email || !password) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "Missing required fields: email, password", undefined, (req as any).id));
+      }
 
       // Super Admin Credentials
       if (email === "admin@nexusai.com" && password === "Admin@2025!") {
@@ -5905,15 +5940,21 @@ export async function registerRoutes(
         });
       }
 
-      res.status(401).json({ error: "Invalid email or password" });
+      res.status(401).json(errorResponse(ErrorCode.UNAUTHORIZED, "Invalid email or password", undefined, (req as any).id));
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Login failed", undefined, (req as any).id));
     }
   });
 
   app.post("/api/auth/signup", async (req, res) => {
     try {
-      const { name, email, password } = req.body;
+      const data = sanitizeInput(req.body);
+      const { name, email, password } = data;
+      
+      if (!name || !email || !password) {
+        return res.status(400).json(errorResponse(ErrorCode.VALIDATION_ERROR, "Missing required fields: name, email, password", undefined, (req as any).id));
+      }
+      
       res.json({
         success: true,
         user: {
@@ -5924,7 +5965,7 @@ export async function registerRoutes(
         }
       });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Signup failed", undefined, (req as any).id));
     }
   });
 
