@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useRoute } from "wouter";
+import { useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { openFormInNewWindow } from "@/lib/formUtils";
 import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -28,16 +28,24 @@ export default function CRM() {
   const { data: leads = [] } = useQuery<any[]>({ queryKey: ["/api/leads"], retry: false });
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
-    { id: "leads", label: "Leads", icon: Users, color: "text-green-500" },
-    { id: "opportunities", label: "Opportunities", icon: Target, color: "text-purple-500" },
-    { id: "accounts", label: "Accounts", icon: FileText, color: "text-orange-500" },
-    { id: "contacts", label: "Contacts", icon: Phone, color: "text-pink-500" },
-    { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-cyan-500" },
-    { id: "pipeline", label: "Pipeline", icon: TrendingUp, color: "text-indigo-500" },
-    { id: "analytics", label: "Analytics", icon: Activity, color: "text-yellow-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500", formId: null },
+    { id: "leads", label: "Leads", icon: Users, color: "text-green-500", formId: "leads" },
+    { id: "opportunities", label: "Opportunities", icon: Target, color: "text-purple-500", formId: "opportunities" },
+    { id: "accounts", label: "Accounts", icon: FileText, color: "text-orange-500", formId: "accounts" },
+    { id: "contacts", label: "Contacts", icon: Phone, color: "text-pink-500", formId: "contacts" },
+    { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-cyan-500", formId: "campaigns" },
+    { id: "pipeline", label: "Pipeline", icon: TrendingUp, color: "text-indigo-500", formId: null },
+    { id: "analytics", label: "Analytics", icon: Activity, color: "text-yellow-500", formId: null },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500", formId: null },
   ];
+
+  const handleIconClick = (formId: string | null) => {
+    if (formId) {
+      openFormInNewWindow(formId, `${formId.charAt(0).toUpperCase() + formId.slice(1)} Form`);
+    } else {
+      setActiveNav("overview");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -47,23 +55,19 @@ export default function CRM() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {navItems.map((item) => {
-          let routePath = item.id === "overview" ? "/crm" : `/crm/${item.id}`;
-          if (item.id === "accounts") routePath = "/crm/customers";
-          if (item.id === "contacts") routePath = "/crm/customers";
-          const isActive = (item.id === "overview" && activeNav === "overview") || 
-                          (item.id !== "overview" && activeNav === item.id);
-          return (
-            <Link key={item.id} to={routePath}>
-              <div className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${
-                isActive ? "border-primary bg-primary/5" : "hover:border-primary hover-elevate"
-              }`}>
-                <item.icon className={`w-6 h-6 ${item.color}`} />
-                <span className="text-sm font-medium text-center">{item.label}</span>
-              </div>
-            </Link>
-          );
-        })}
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => handleIconClick(item.formId)}
+            className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${
+              !item.formId ? "hover:border-primary hover-elevate" : "hover:bg-primary/10 hover:border-primary hover-elevate"
+            }`}
+            data-testid={`button-icon-${item.id}`}
+          >
+            <item.icon className={`w-6 h-6 ${item.color}`} />
+            <span className="text-sm font-medium text-center">{item.label}</span>
+          </button>
+        ))}
       </div>
 
       {activeNav === "overview" && (
@@ -81,7 +85,9 @@ export default function CRM() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-1">
               <CardTitle>Leads</CardTitle>
-              <SmartAddButton formId="leads" formMetadata={leadsMetadata} />
+              <Button onClick={() => openFormInNewWindow("leads", "Leads Form")} data-testid="button-add-leads">
+                + Add New
+              </Button>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormSearchWithMetadata
@@ -129,20 +135,15 @@ export default function CRM() {
               <p className="text-muted-foreground">Track and manage sales opportunities and deals</p>
               <div className="space-y-2">
                 {[
-                  { id: "1", name: "Enterprise License", account: "Tech Corp", amount: 500000, stage: "Won", prob: 100 },
-                  { id: "2", name: "Implementation Services", account: "Finance Inc", amount: 150000, stage: "Proposal", prob: 50 },
-                  { id: "3", name: "Support Contract", account: "Tech Corp", amount: 50000, stage: "Negotiation", prob: 75 },
+                  { id: "1", name: "Enterprise License", account: "Tech Corp", amount: 500000, stage: "Won" },
+                  { id: "2", name: "Implementation Services", account: "Finance Inc", amount: 150000, stage: "Proposal" },
+                  { id: "3", name: "Support Contract", account: "Tech Corp", amount: 50000, stage: "Negotiation" },
                 ].map((opp) => (
                   <div key={opp.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between">
                     <div>
                       <p className="font-semibold">{opp.name}</p>
                       <p className="text-sm text-muted-foreground">{opp.account} • ${opp.amount.toLocaleString()} • {opp.stage}</p>
                     </div>
-                    {opp.stage === "Won" && (
-                      <Button size="sm" data-testid={`button-convert-${opp.id}`}>
-                        Convert to Invoice
-                      </Button>
-                    )}
                   </div>
                 ))}
               </div>
