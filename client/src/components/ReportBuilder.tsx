@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, GripVertical, Trash2, Download, Save } from "lucide-react";
+import { Plus, GripVertical, Trash2, Download, Save, Eye } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { ReportSpreadsheet } from "./ReportSpreadsheet";
 
 interface ReportBuilderProps {
   module: string;
@@ -89,6 +90,7 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
   const [reportType, setReportType] = useState<"transactional" | "periodical">("transactional");
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [fields, setFields] = useState<ReportField[]>([]);
+  const [viewingReportId, setViewingReportId] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -254,6 +256,24 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
                     </p>
                   </div>
                   <div className="flex gap-2">
+                    <Dialog open={viewingReportId === report.id} onOpenChange={(isOpen) => setViewingReportId(isOpen ? report.id : null)}>
+                      <DialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          data-testid={`button-view-report-${report.id}`}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-6xl max-h-screen overflow-auto">
+                        <DialogHeader>
+                          <DialogTitle>{report.name}</DialogTitle>
+                        </DialogHeader>
+                        <ReportSpreadsheet data={[]} columns={report.config?.columns || []} />
+                      </DialogContent>
+                    </Dialog>
                     <Button
                       size="sm"
                       variant="outline"
@@ -300,6 +320,13 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
           </Card>
         )}
       </div>
+
+      {/* Spreadsheet View Dialog */}
+      {viewingReportId && (
+        <div className="hidden">
+          {/* Dialog is handled above */}
+        </div>
+      )}
     </div>
   );
 }

@@ -50,6 +50,9 @@ const AnalyticsModule = lazy(() => import("@/pages/AnalyticsModule"));
 const AdminConsoleModule = lazy(() => import("@/pages/AdminConsoleModule"));
 const ComplianceModule = lazy(() => import("@/pages/ComplianceModule"));
 
+// Reports & Analytics
+const Reports = lazy(() => import("@/pages/Reports"));
+
 // Phase 1: Enterprise Foundation (8 pages)
 const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
 const AdminRoles = lazy(() => import("@/pages/AdminRoles"));
