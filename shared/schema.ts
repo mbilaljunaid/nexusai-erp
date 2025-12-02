@@ -495,3 +495,28 @@ export const insertCopilotMessageSchema = createInsertSchema(copilotMessages).om
 
 export type InsertCopilotMessage = z.infer<typeof insertCopilotMessageSchema>;
 export type CopilotMessage = typeof copilotMessages.$inferSelect;
+
+// ========== SMARTVIEWS & EXPORT/IMPORT ==========
+export const smartViews = pgTable("smart_views", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  formId: varchar("form_id").notNull(),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  filters: jsonb("filters").default(sql`'[]'::jsonb`), // Array of {field, operator, value}
+  sortBy: jsonb("sort_by").default(sql`'[]'::jsonb`), // Array of {field, direction}
+  visibleColumns: text("visible_columns").array(),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertSmartViewSchema = createInsertSchema(smartViews).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  formId: z.string().min(1),
+  name: z.string().min(1),
+  description: z.string().optional(),
+  filters: z.array(z.record(z.any())).optional(),
+  sortBy: z.array(z.record(z.any())).optional(),
+  visibleColumns: z.array(z.string()).optional(),
+});
+
+export type InsertSmartView = z.infer<typeof insertSmartViewSchema>;
+export type SmartView = typeof smartViews.$inferSelect;
