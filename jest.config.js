@@ -8,15 +8,9 @@ export default {
     '^@server/(.*)$': '<rootDir>/server/$1',
   },
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: { lib: ['es2020'] } }],
   },
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        jsx: 'react',
-      },
-    },
-  },
+  setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
   collectCoverageFrom: [
     'server/**/*.ts',
     'shared/**/*.ts',
