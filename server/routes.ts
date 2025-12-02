@@ -5992,7 +5992,7 @@ export async function registerRoutes(
   app.use(templateRoutes);
   app.use(migrationRoutes);
 
-  // Generic endpoint handler for all 809 forms
+  // Generic endpoint handler for all forms - Hybrid storage (Memory + Database fallback)
   app.get("/api/:formId", (req, res) => {
     const { formId } = req.params;
     try {
@@ -6003,13 +6003,26 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/:formId", (req, res) => {
+  app.post("/api/:formId", async (req, res) => {
     const { formId } = req.params;
     try {
       const item = { ...req.body, id: Date.now().toString(), createdAt: new Date().toISOString() };
       const items = formDataStore.get(formId) || [];
       items.push(item);
       formDataStore.set(formId, items);
+      
+      // Also save to database for persistence
+      try {
+        await db.insert(formDataTable).values({
+          formId,
+          data: item,
+          status: "submitted",
+          submittedAt: new Date(),
+        }).execute();
+      } catch (dbError) {
+        console.warn("Database save failed, using memory storage:", dbError);
+      }
+      
       res.status(201).json(item);
     } catch (error) {
       res.status(500).json({ error: "Failed to create item" });
@@ -6028,7 +6041,7 @@ export async function registerRoutes(
     }
   });
 
-  app.patch("/api/:formId/:id", (req, res) => {
+  app.patch("/api/:formId/:id", async (req, res) => {
     const { formId, id } = req.params;
     try {
       const items = formDataStore.get(formId) || [];
@@ -6036,18 +6049,37 @@ export async function registerRoutes(
       if (index === -1) return res.status(404).json({ error: "Not found" });
       items[index] = { ...items[index], ...req.body };
       formDataStore.set(formId, items);
+      
+      // Also update in database if available
+      try {
+        await db.update(formDataTable).set({
+          data: items[index],
+          updatedAt: new Date(),
+        }).where(eq(formDataTable.id, id)).execute();
+      } catch (dbError) {
+        console.warn("Database update failed, using memory storage:", dbError);
+      }
+      
       res.json(items[index]);
     } catch (error) {
       res.status(500).json({ error: "Failed to update item" });
     }
   });
 
-  app.delete("/api/:formId/:id", (req, res) => {
+  app.delete("/api/:formId/:id", async (req, res) => {
     const { formId, id } = req.params;
     try {
       const items = formDataStore.get(formId) || [];
       const filtered = items.filter((i: any) => i.id !== id);
       formDataStore.set(formId, filtered);
+      
+      // Also delete from database if available
+      try {
+        await db.delete(formDataTable).where(eq(formDataTable.id, id)).execute();
+      } catch (dbError) {
+        console.warn("Database delete failed, using memory storage:", dbError);
+      }
+      
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete item" });
