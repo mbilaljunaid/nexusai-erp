@@ -70,6 +70,15 @@ const InventoryManagementProcess = lazy(() => import("@/pages/processes/pages/In
 const FixedAssetLifecycleProcess = lazy(() => import("@/pages/processes/pages/FixedAssetLifecycleProcess"));
 const ProductionPlanningProcess = lazy(() => import("@/pages/processes/pages/ProductionPlanningProcess"));
 const MRPProcess = lazy(() => import("@/pages/processes/pages/MRPProcess"));
+const QualityAssuranceProcess = lazy(() => import("@/pages/processes/pages/QualityAssuranceProcess"));
+const ContractManagementProcess = lazy(() => import("@/pages/processes/pages/ContractManagementProcess"));
+const BudgetPlanningProcess = lazy(() => import("@/pages/processes/pages/BudgetPlanningProcess"));
+const DemandPlanningProcess = lazy(() => import("@/pages/processes/pages/DemandPlanningProcess"));
+const CapacityPlanningProcess = lazy(() => import("@/pages/processes/pages/CapacityPlanningProcess"));
+const WarehouseManagementProcess = lazy(() => import("@/pages/processes/pages/WarehouseManagementProcess"));
+const CustomerReturnsProcess = lazy(() => import("@/pages/processes/pages/CustomerReturnsProcess"));
+const VendorPerformanceProcess = lazy(() => import("@/pages/processes/pages/VendorPerformanceProcess"));
+const SubscriptionBillingProcess = lazy(() => import("@/pages/processes/pages/SubscriptionBillingProcess"));
 
 // Phase 2: ERP Workflows (4 pages)
 const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
@@ -471,6 +480,15 @@ function Router() {
       <Route path="/processes/fixed-asset-lifecycle" component={FixedAssetLifecycleProcess} />
       <Route path="/processes/production-planning" component={ProductionPlanningProcess} />
       <Route path="/processes/mrp" component={MRPProcess} />
+      <Route path="/processes/quality-assurance" component={QualityAssuranceProcess} />
+      <Route path="/processes/contract-management" component={ContractManagementProcess} />
+      <Route path="/processes/budget-planning" component={BudgetPlanningProcess} />
+      <Route path="/processes/demand-planning" component={DemandPlanningProcess} />
+      <Route path="/processes/capacity-planning" component={CapacityPlanningProcess} />
+      <Route path="/processes/warehouse-management" component={WarehouseManagementProcess} />
+      <Route path="/processes/customer-returns" component={CustomerReturnsProcess} />
+      <Route path="/processes/vendor-performance" component={VendorPerformanceProcess} />
+      <Route path="/processes/subscription-billing" component={SubscriptionBillingProcess} />
       <Route path="/mrp-dashboard" component={MRPDashboard} />
       <Route path="/attendance-dashboard" component={AttendanceDashboard} />
       <Route path="/ticket-dashboard" component={TicketDashboard} />

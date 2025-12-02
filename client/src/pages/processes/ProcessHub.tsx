@@ -118,6 +118,105 @@ const processes: ProcessCard[] = [
     formsCount: 6,
     glCount: 3,
     status: 'Active'
+  },
+  {
+    id: 'quality-assurance',
+    number: 10,
+    name: 'Quality Assurance & Control',
+    category: 'Manufacturing',
+    criticality: 'CRITICAL',
+    cycleTime: 'Ongoing',
+    formsCount: 5,
+    glCount: 3,
+    status: 'Active'
+  },
+  {
+    id: 'contract-management',
+    number: 11,
+    name: 'Contract Management',
+    category: 'Finance',
+    criticality: 'HIGH',
+    cycleTime: '18-30 days',
+    formsCount: 6,
+    glCount: 2,
+    status: 'Active'
+  },
+  {
+    id: 'budget-planning',
+    number: 12,
+    name: 'Budget Planning & Variance',
+    category: 'Finance',
+    criticality: 'CRITICAL',
+    cycleTime: 'Annual',
+    formsCount: 6,
+    glCount: 2,
+    status: 'Active'
+  },
+  {
+    id: 'demand-planning',
+    number: 13,
+    name: 'Demand Planning & Forecasting',
+    category: 'Supply Chain',
+    criticality: 'HIGH',
+    cycleTime: 'Monthly',
+    formsCount: 6,
+    glCount: 2,
+    status: 'Active'
+  },
+  {
+    id: 'capacity-planning',
+    number: 14,
+    name: 'Capacity Planning',
+    category: 'Manufacturing',
+    criticality: 'HIGH',
+    cycleTime: 'Quarterly',
+    formsCount: 6,
+    glCount: 3,
+    status: 'Active'
+  },
+  {
+    id: 'warehouse-management',
+    number: 15,
+    name: 'Warehouse Management',
+    category: 'Operations',
+    criticality: 'HIGH',
+    cycleTime: 'Continuous',
+    formsCount: 6,
+    glCount: 3,
+    status: 'Active'
+  },
+  {
+    id: 'customer-returns',
+    number: 16,
+    name: 'Customer Returns & RMA',
+    category: 'Sales & Service',
+    criticality: 'HIGH',
+    cycleTime: '7 days',
+    formsCount: 6,
+    glCount: 5,
+    status: 'Active'
+  },
+  {
+    id: 'vendor-performance',
+    number: 17,
+    name: 'Vendor Performance Management',
+    category: 'Procurement',
+    criticality: 'HIGH',
+    cycleTime: 'Quarterly',
+    formsCount: 6,
+    glCount: 1,
+    status: 'Active'
+  },
+  {
+    id: 'subscription-billing',
+    number: 18,
+    name: 'Subscription Billing',
+    category: 'Sales & Service',
+    criticality: 'HIGH',
+    cycleTime: 'Varies',
+    formsCount: 6,
+    glCount: 4,
+    status: 'Active'
   }
 ];
 
