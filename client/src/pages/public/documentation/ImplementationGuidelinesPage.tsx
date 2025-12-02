@@ -2,6 +2,7 @@ import { Link } from 'wouter';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, Zap } from 'lucide-react';
 import { Header, Footer } from "@/components/Navigation";
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const guides = [
   { name: 'Pre-Implementation Checklist', slug: 'pre-implementation', description: 'Requirements and preparation' },
@@ -22,10 +23,12 @@ const guides = [
 
 export default function ImplementationGuidelinesPage() {
   return (
-    
       <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <div className="max-w-6xl mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: 'Documentation', path: '/documentation' }, { label: 'Implementation Guidelines', path: '' }]} />
+      </div>
       <div className="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-900 dark:to-orange-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">

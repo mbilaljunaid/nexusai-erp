@@ -2,6 +2,7 @@ import { Link } from 'wouter';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, Code2 } from 'lucide-react';
 import { Header, Footer } from "@/components/Navigation";
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const docs = [
   { name: 'API Reference', slug: 'api-reference', description: 'Complete REST API documentation' },
@@ -20,10 +21,12 @@ const docs = [
 
 export default function TechnicalDocumentationPage() {
   return (
-    
       <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <div className="max-w-6xl mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: 'Documentation', path: '/documentation' }, { label: 'Technical Documentation', path: '' }]} />
+      </div>
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-900 dark:to-purple-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
