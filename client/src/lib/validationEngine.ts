@@ -3,34 +3,26 @@
  * Validates form data against metadata configurations
  */
 
-import { z } from "zod";
-import type { FormMetadataAdvanced, FormFieldConfig, ValidationResult } from "@shared/types/metadata";
-import { formSchemaGenerator } from "@/server/metadata/schemaGenerator";
+import type { FormFieldConfig } from "@shared/types/metadata";
 
 export class ValidationEngine {
   /**
    * Validate form data against metadata
    */
   validateFormData(
-    metadata: FormMetadataAdvanced,
+    fields: FormFieldConfig[],
     formData: Record<string, any>
   ): { valid: boolean; errors: Record<string, string> } {
-    try {
-      const schema = formSchemaGenerator.generateZodSchema(metadata);
-      schema.parse(formData);
-      return { valid: true, errors: {} };
-    } catch (error: any) {
-      const errors: Record<string, string> = {};
+    const errors: Record<string, string> = {};
 
-      if (error.errors && Array.isArray(error.errors)) {
-        for (const err of error.errors) {
-          const path = err.path?.[0] || "root";
-          errors[path] = err.message;
-        }
+    for (const field of fields) {
+      const validation = this.validateField(field, formData[field.name]);
+      if (!validation.valid && validation.error) {
+        errors[field.name] = validation.error;
       }
-
-      return { valid: false, errors };
     }
+
+    return { valid: Object.keys(errors).length === 0, errors };
   }
 
   /**

@@ -11,16 +11,8 @@ import { Card } from "@/components/ui/card";
 import { MetadataFieldRenderer } from "./MetadataFieldRenderer";
 import { ValidationEngine } from "@/lib/validationEngine";
 import { ConditionalLogicEngine } from "@/lib/conditionalLogicEngine";
+import type { FormFieldConfig } from "@shared/types/metadata";
 import { Loader2 } from "lucide-react";
-
-interface MetadataField {
-  searchable?: boolean;
-  name: string;
-  label: string;
-  type: string;
-  required?: boolean;
-  disabled?: boolean;
-}
 
 interface MetadataSection {
   name: string;
@@ -33,7 +25,7 @@ interface FormMetadata {
   id: string;
   name: string;
   description?: string;
-  fields: MetadataField[];
+  fields: FormFieldConfig[];
   sections?: MetadataSection[];
   createButtonText?: string;
   theme?: {
@@ -125,7 +117,7 @@ export function MetadataFormRenderer({
 
   // Get visible fields
   const visibleFields = useMemo(() => {
-    return metadata.fields.filter((field: MetadataField) => {
+    return metadata.fields.filter((field: FormFieldConfig) => {
       if (hideFields.includes(field.name)) return false;
       return true;
     });
@@ -184,7 +176,7 @@ export function MetadataFormRenderer({
                   }`}
                 >
                   {section.fields.map((fieldName: string) => {
-                    const field = metadata.fields.find((f: MetadataField) => f.name === fieldName);
+                    const field = metadata.fields.find((f: FormFieldConfig) => f.name === fieldName);
                     if (!field) return null;
 
                     return (
@@ -209,7 +201,7 @@ export function MetadataFormRenderer({
                 metadata.theme?.layout === "two-column" ? "md:grid-cols-2" : "grid-cols-1"
               }`}
             >
-              {visibleFields.map((field: MetadataField) => (
+              {visibleFields.map((field: FormFieldConfig) => (
                 <MetadataFieldRenderer
                   key={field.name}
                   field={field}
