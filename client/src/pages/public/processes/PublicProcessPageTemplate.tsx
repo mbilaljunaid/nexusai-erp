@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowRight, Users, Package, TrendingUp, Database } from 'lucide-react';
 import { Header, Footer } from "@/components/Navigation";
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 interface ProcessFlowStep {
   label: string;
@@ -48,6 +49,9 @@ export function PublicProcessPageTemplate({
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+        <div className="max-w-6xl mx-auto px-4 pt-4">
+          <Breadcrumbs items={[{ label: 'Processes', path: '/public/processes' }, { label: processName, path: '' }]} />
+        </div>
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-12">
           <div className="max-w-6xl mx-auto px-4">

@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Briefcase, TrendingUp, ShoppingCart, Users } from 'lucide-react';
 import { Header, Footer } from "@/components/Navigation";
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 interface ProcessCard {
   id: string;
@@ -205,6 +206,9 @@ export default function PublicProcessHub() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+        <div className="max-w-6xl mx-auto px-4 pt-4">
+          <Breadcrumbs items={[{ label: 'Processes', path: '' }]} />
+        </div>
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-16">
           <div className="max-w-6xl mx-auto px-4">

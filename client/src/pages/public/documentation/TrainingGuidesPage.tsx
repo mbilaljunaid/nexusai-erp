@@ -2,6 +2,7 @@ import { Link } from 'wouter';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { Header, Footer } from "@/components/Navigation";
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const modules = [
   { name: 'CRM', slug: 'crm', icon: '👥', description: 'Customer Relationship Management' },
@@ -20,10 +21,12 @@ const modules = [
 
 export default function TrainingGuidesPage() {
   return (
-    
       <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <div className="max-w-6xl mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: 'Documentation', path: '/documentation' }, { label: 'Training Guides', path: '' }]} />
+      </div>
       <div className="bg-gradient-to-r from-green-600 to-green-700 dark:from-green-900 dark:to-green-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
