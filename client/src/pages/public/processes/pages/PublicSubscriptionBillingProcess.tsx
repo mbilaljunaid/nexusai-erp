@@ -1,6 +1,6 @@
 import { PublicProcessPageTemplate } from '../PublicProcessPageTemplate';
 
-export function PublicSubscriptionBillingProcess() {
+export default function PublicSubscriptionBillingProcess() {
   return (
     <PublicProcessPageTemplate
       processName="Subscription Billing"
