@@ -180,7 +180,7 @@ const processes: ProcessCard[] = [
   }
 ];
 
-export function PublicProcessHub() {
+export default function PublicProcessHub() {
   const [, navigate] = useLocation();
 
   const criticalProcesses = processes.filter(p => p.criticality === 'CRITICAL').length;
@@ -202,95 +202,93 @@ export function PublicProcessHub() {
   };
 
   return (
-    
-      <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-5xl font-bold mb-4">18 End-to-End ERP Processes</h1>
-          <p className="text-xl text-blue-100 mb-6">
-            Comprehensive enterprise resource planning covering all critical business cycles
-          </p>
-          
-          <div className="grid grid-cols-3 gap-4">
-            <Card className="bg-white/10 border-white/20 p-4 backdrop-blur">
-              <div className="text-blue-100 text-sm">Total Processes</div>
-              <div className="text-3xl font-bold text-white">18</div>
-            </Card>
-            <Card className="bg-white/10 border-white/20 p-4 backdrop-blur">
-              <div className="text-blue-100 text-sm">Critical Processes</div>
-              <div className="text-3xl font-bold text-white">{criticalProcesses}</div>
-            </Card>
-            <Card className="bg-white/10 border-white/20 p-4 backdrop-blur">
-              <div className="text-blue-100 text-sm">High Priority</div>
-              <div className="text-3xl font-bold text-white">{highProcesses}</div>
-            </Card>
+        {/* Hero Section */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-16">
+          <div className="max-w-6xl mx-auto px-4">
+            <h1 className="text-5xl font-bold mb-4">18 End-to-End ERP Processes</h1>
+            <p className="text-xl text-blue-100 mb-6">
+              Comprehensive enterprise resource planning covering all critical business cycles
+            </p>
+            
+            <div className="grid grid-cols-3 gap-4">
+              <Card className="bg-white/10 border-white/20 p-4 backdrop-blur">
+                <div className="text-blue-100 text-sm">Total Processes</div>
+                <div className="text-3xl font-bold text-white">18</div>
+              </Card>
+              <Card className="bg-white/10 border-white/20 p-4 backdrop-blur">
+                <div className="text-blue-100 text-sm">Critical Processes</div>
+                <div className="text-3xl font-bold text-white">{criticalProcesses}</div>
+              </Card>
+              <Card className="bg-white/10 border-white/20 p-4 backdrop-blur">
+                <div className="text-blue-100 text-sm">High Priority</div>
+                <div className="text-3xl font-bold text-white">{highProcesses}</div>
+              </Card>
+            </div>
           </div>
         </div>
-        </div>
-      </div>
 
-      {/* Process Grid */}
-      <div className="max-w-6xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {processes.map((process) => (
-            <Card
-              key={process.id}
-              className="p-6 hover:shadow-lg transition-all cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
-              onClick={() => navigate(`/public/processes/${process.id}`)}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  {getCategoryIcon(process.category)}
-                  <span className="text-xs font-mono bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">
-                    P{String(process.number).padStart(3, '0')}
-                  </span>
-                </div>
-                <span className={`text-xs font-semibold px-2 py-1 rounded ${
-                  process.criticality === 'CRITICAL' 
-                    ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200' 
-                    : 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200'
-                }`}>
-                  {process.criticality}
-                </span>
-              </div>
-              
-              <h3 className="text-lg font-bold text-foreground mb-2">{process.name}</h3>
-              <p className="text-sm text-muted-foreground mb-4">{process.description}</p>
-              
-              <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
-                <span className="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded">{process.category}</span>
-                <span className="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded">{process.cycleTime}</span>
-              </div>
-              
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="w-full"
+        {/* Process Grid */}
+        <div className="max-w-6xl mx-auto px-4 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {processes.map((process) => (
+              <Card
+                key={process.id}
+                className="p-6 hover:shadow-lg transition-all cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
                 onClick={() => navigate(`/public/processes/${process.id}`)}
               >
-                Learn More <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Card>
-          ))}
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    {getCategoryIcon(process.category)}
+                    <span className="text-xs font-mono bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">
+                      P{String(process.number).padStart(3, '0')}
+                    </span>
+                  </div>
+                  <span className={`text-xs font-semibold px-2 py-1 rounded ${
+                    process.criticality === 'CRITICAL' 
+                      ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200' 
+                      : 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200'
+                  }`}>
+                    {process.criticality}
+                  </span>
+                </div>
+                
+                <h3 className="text-lg font-bold text-foreground mb-2">{process.name}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{process.description}</p>
+                
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                  <span className="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded">{process.category}</span>
+                  <span className="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded">{process.cycleTime}</span>
+                </div>
+                
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => navigate(`/public/processes/${process.id}`)}
+                >
+                  Learn More <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Card>
+            ))}
+          </div>
         </div>
-        </div>
-      </div>
 
-      {/* Footer CTA */}
-      <div className="bg-slate-100 dark:bg-slate-900 py-12">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">Ready to Explore Enterprise ERP?</h2>
-          <p className="text-muted-foreground mb-6 text-lg">
-            Learn how NexusAI transforms your business with comprehensive process automation
-          </p>
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-            Sign Up for Demo <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+        {/* Footer CTA */}
+        <div className="bg-slate-100 dark:bg-slate-900 py-12">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Ready to Explore Enterprise ERP?</h2>
+            <p className="text-muted-foreground mb-6 text-lg">
+              Learn how NexusAI transforms your business with comprehensive process automation
+            </p>
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+              Sign Up for Demo <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
         </div>
-            </main>
+      </main>
       <Footer />
     </div>
   );
