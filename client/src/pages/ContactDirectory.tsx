@@ -23,7 +23,7 @@ export default function ContactDirectory() {
           <h1 className="text-3xl font-bold">Contacts</h1>
           <p className="text-muted-foreground mt-1">Manage all contacts and relationships</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} formId="contact" />
+        <SmartAddButton formId="contact" formMetadata={formMetadata} formId="contact" />
       </div>
 
       <FormSearchWithMetadata

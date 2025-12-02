@@ -22,7 +22,7 @@ export default function PurchaseOrder() {
           <h1 className="text-3xl font-bold">Purchase Orders</h1>
           <p className="text-muted-foreground mt-1">Manage purchase orders and vendor management</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} formId="purchaseOrder" />
+        <SmartAddButton formId="purchaseOrder" formMetadata={formMetadata} formId="purchaseOrder" />
       </div>
 
       <FormSearchWithMetadata

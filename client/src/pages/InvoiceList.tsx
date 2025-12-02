@@ -35,7 +35,7 @@ export default function InvoiceList() {
           <h1 className="text-3xl font-bold">Invoices</h1>
           <p className="text-muted-foreground mt-1">Manage customer invoices and payments</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} formId="invoice" />
+        <SmartAddButton formId="invoice" formMetadata={formMetadata} formId="invoice" />
       </div>
 
       <div className="flex gap-2">

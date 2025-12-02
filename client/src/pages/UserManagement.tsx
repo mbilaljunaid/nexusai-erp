@@ -22,7 +22,7 @@ export default function UserManagement() {
           <h1 className="text-3xl font-bold">User Master</h1>
           <p className="text-muted-foreground mt-2">Manage employees, system identities, and access control</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} formId="userManagement" />
+        <SmartAddButton formId="userManagement" formMetadata={formMetadata} formId="userManagement" />
       </div>
 
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={users} onFilter={setFiltered} />

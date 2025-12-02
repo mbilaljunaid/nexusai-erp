@@ -31,7 +31,7 @@ export default function SalesPipeline() {
           <h1 className="text-3xl font-bold">Sales Pipeline</h1>
           <p className="text-muted-foreground mt-1">Kanban view of your opportunities across stages</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} formId="opportunity" />
+        <SmartAddButton formId="opportunity" formMetadata={formMetadata} formId="opportunity" />
       </div>
 
       <FormSearchWithMetadata

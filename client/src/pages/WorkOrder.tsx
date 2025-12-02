@@ -24,7 +24,7 @@ export default function WorkOrder() {
           <h1 className="text-3xl font-bold">Work Orders</h1>
           <p className="text-muted-foreground mt-1">Track production work orders and status</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} formId="workOrder" />
+        <SmartAddButton formId="workOrder" formMetadata={formMetadata} formId="workOrder" />
       </div>
 
       <FormSearchWithMetadata

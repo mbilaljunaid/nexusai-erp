@@ -23,7 +23,7 @@ export default function HRModule() {
           <h1 className="text-3xl font-bold">HR Module</h1>
           <p className="text-muted-foreground">Manage recruitment, employees, and training programs</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} formId="employee" />
+        <SmartAddButton formId="employee" formMetadata={formMetadata} formId="employee" />
       </div>
 
       <div className="grid grid-cols-4 gap-4">

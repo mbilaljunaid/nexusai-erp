@@ -38,7 +38,7 @@ export default function Manufacturing() {
             Manage BOMs, work orders, production planning, and quality control
           </p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} formId="workorder" />
+        <SmartAddButton formId="workorder" formMetadata={formMetadata} formId="workorder" />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">

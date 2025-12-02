@@ -424,7 +424,7 @@ const HospitalityInventory = lazy(() => import("@/pages/HospitalityInventory"));
 const HospitalityHRRostering = lazy(() => import("@/pages/HospitalityHRRostering"));
 const HospitalityBIDashboard = lazy(() => import("@/pages/HospitalityBIDashboard"));
 const ShipmentOrderManagement = lazy(() => import("@/pages/ShipmentOrderManagement"));
-const FormPage = lazy(() => import("@/pages/FormPage"));
+const FormPage = lazy(() => import("@/pages/FormPage")) as any;
 const RouteLoadOptimization = lazy(() => import("@/pages/RouteLoadOptimization"));
 const YardDockManagement = lazy(() => import("@/pages/YardDockManagement"));
 const CarrierProcurement = lazy(() => import("@/pages/CarrierProcurement"));
