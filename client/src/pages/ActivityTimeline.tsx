@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, FileText, User, Calendar } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 
