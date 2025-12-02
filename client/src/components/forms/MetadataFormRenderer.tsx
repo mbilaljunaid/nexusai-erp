@@ -9,6 +9,8 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MetadataFieldRenderer } from "./MetadataFieldRenderer";
+import { ValidationEngine } from "@/lib/validationEngine";
+import { ConditionalLogicEngine } from "@/lib/conditionalLogicEngine";
 import { Loader2 } from "lucide-react";
 
 interface MetadataField {
@@ -60,6 +62,10 @@ export function MetadataFormRenderer({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  
+  // Create engine instances
+  const validationEngine = useMemo(() => new ValidationEngine(), []);
+  const logicEngine = useMemo(() => new ConditionalLogicEngine(), []);
 
   // Mock metadata for form rendering
   const metadata: FormMetadata = {
@@ -188,6 +194,8 @@ export function MetadataFormRenderer({
                         formMethods={formMethods}
                         readOnly={readOnly || field.disabled}
                         formData={formData}
+                        validationEngine={validationEngine}
+                        logicEngine={logicEngine}
                       />
                     );
                   })}
@@ -208,6 +216,8 @@ export function MetadataFormRenderer({
                   formMethods={formMethods}
                   readOnly={readOnly}
                   formData={formData}
+                  validationEngine={validationEngine}
+                  logicEngine={logicEngine}
                 />
               ))}
             </div>
