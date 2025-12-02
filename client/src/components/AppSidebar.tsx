@@ -42,11 +42,13 @@ import {
   Lock,
   Radio,
   Truck,
+  GitFlow,
 } from "lucide-react";
 
 // MAIN MODULES - All 22 modules
 const coreBusinessModules = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { title: "Processes", icon: GitFlow, href: "/processes" },
   { title: "CRM", icon: Users, href: "/crm" },
   { title: "ERP", icon: DollarSign, href: "/erp" },
   { title: "HR", icon: Briefcase, href: "/hr" },
