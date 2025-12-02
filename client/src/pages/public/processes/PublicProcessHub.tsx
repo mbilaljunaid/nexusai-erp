@@ -202,9 +202,10 @@ export function PublicProcessHub() {
   };
 
   return (
-    <>
+    
+      <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-16">
         <div className="max-w-6xl mx-auto px-4">
@@ -227,6 +228,7 @@ export function PublicProcessHub() {
               <div className="text-3xl font-bold text-white">{highProcesses}</div>
             </Card>
           </div>
+        </div>
         </div>
       </div>
 
@@ -274,6 +276,7 @@ export function PublicProcessHub() {
             </Card>
           ))}
         </div>
+        </div>
       </div>
 
       {/* Footer CTA */}
@@ -287,9 +290,8 @@ export function PublicProcessHub() {
             Sign Up for Demo <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
-      </div>
-      </div>
+            </main>
       <Footer />
-    </>
+    </div>
   );
 }

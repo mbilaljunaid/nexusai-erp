@@ -4,9 +4,10 @@ import { Header, Footer } from "@/components/Navigation";
 
 export default function TechnicalAPIReference() {
   return (
-    <>
+    
+      <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-900 dark:to-purple-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
@@ -14,6 +15,7 @@ export default function TechnicalAPIReference() {
             <h1 className="text-4xl font-bold">REST API Reference</h1>
           </div>
           <p className="text-purple-100 text-lg">Complete API documentation for NexusAI ERP</p>
+        </div>
         </div>
       </div>
 
@@ -61,9 +63,8 @@ export default function TechnicalAPIReference() {
             </div>
           </div>
         </Card>
-      </div>
-      </div>
+            </main>
       <Footer />
-    </>
+    </div>
   );
 }

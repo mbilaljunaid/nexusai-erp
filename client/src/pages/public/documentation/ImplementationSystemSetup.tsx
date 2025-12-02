@@ -4,9 +4,10 @@ import { Header, Footer } from "@/components/Navigation";
 
 export default function ImplementationSystemSetup() {
   return (
-    <>
+    
+      <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-900 dark:to-orange-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
@@ -14,6 +15,7 @@ export default function ImplementationSystemSetup() {
             <h1 className="text-4xl font-bold">System Setup Guide</h1>
           </div>
           <p className="text-orange-100 text-lg">Initial configuration and setup for NexusAI ERP implementation</p>
+        </div>
         </div>
       </div>
 
@@ -78,9 +80,8 @@ export default function ImplementationSystemSetup() {
             </div>
           </div>
         </Card>
-      </div>
-      </div>
+            </main>
       <Footer />
-    </>
+    </div>
   );
 }

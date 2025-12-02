@@ -26,9 +26,10 @@ const processes = [
 
 export default function ProcessFlowsPage() {
   return (
-    <>
+    
+      <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-4">
@@ -57,9 +58,9 @@ export default function ProcessFlowsPage() {
             </Link>
           ))}
         </div>
-      </div>
-      </div>
+        </div>
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }
