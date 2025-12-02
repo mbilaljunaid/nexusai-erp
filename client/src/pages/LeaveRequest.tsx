@@ -6,10 +6,8 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { FormDialog } from "@/components/FormDialog";
 
 export default function LeaveRequest() {
-  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredLeaves, setFilteredLeaves] = useState<any[]>([]);
   const { data: leaves = [] } = useQuery<any[]>({ queryKey: ["/api/hr/leave-requests"] });
@@ -24,7 +22,7 @@ export default function LeaveRequest() {
           <h1 className="text-3xl font-bold">Leave Requests</h1>
           <p className="text-muted-foreground mt-1">Manage and track employee leave requests</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="leaveRequest" />
       </div>
 
       <FormSearchWithMetadata
@@ -53,7 +51,3 @@ export default function LeaveRequest() {
         </CardContent>
       </Card>
 
-      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="leaveRequest" formTitle="Request Leave" formDescription="Submit a new leave request" />
-    </div>
-  );
-}

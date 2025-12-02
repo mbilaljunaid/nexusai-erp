@@ -5,12 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
-import { FormDialog } from "@/components/FormDialog";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Mail, Phone } from "lucide-react";
 
 export default function EmployeeDirectory() {
-  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filtered, setFiltered] = useState<any[]>([]);
   const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"] });
@@ -25,7 +23,7 @@ export default function EmployeeDirectory() {
           <h1 className="text-3xl font-bold">Employee Directory</h1>
           <p className="text-muted-foreground mt-1">Find and manage employee information</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="employee" />
       </div>
 
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={employees} onFilter={setFiltered} />
@@ -47,13 +45,3 @@ export default function EmployeeDirectory() {
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No employees found</p></CardContent></Card>}
       </div>
 
-      <FormDialog
-        isOpen={showForm}
-        onOpenChange={setShowForm}
-        formId="employee"
-        formTitle="Add Employee"
-        formDescription="Create a new employee record"
-      />
-    </div>
-  );
-}

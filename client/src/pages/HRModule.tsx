@@ -6,11 +6,9 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { FormDialog } from "@/components/FormDialog";
 import { Users, Briefcase } from "lucide-react";
 
 export default function HRModule() {
-  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
   const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"], retry: false });
@@ -25,7 +23,7 @@ export default function HRModule() {
           <h1 className="text-3xl font-bold">HR Module</h1>
           <p className="text-muted-foreground">Manage recruitment, employees, and training programs</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="employee" />
       </div>
 
       <div className="grid grid-cols-4 gap-4">
@@ -53,7 +51,3 @@ export default function HRModule() {
         )) : <p className="text-muted-foreground text-center py-4">No employees found</p>}
       </div>
 
-      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="employee" formTitle="Add Employee" formDescription="Create a new employee record" />
-    </div>
-  );
-}

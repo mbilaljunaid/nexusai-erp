@@ -424,6 +424,7 @@ const HospitalityInventory = lazy(() => import("@/pages/HospitalityInventory"));
 const HospitalityHRRostering = lazy(() => import("@/pages/HospitalityHRRostering"));
 const HospitalityBIDashboard = lazy(() => import("@/pages/HospitalityBIDashboard"));
 const ShipmentOrderManagement = lazy(() => import("@/pages/ShipmentOrderManagement"));
+const FormPage = lazy(() => import("@/pages/FormPage"));
 const RouteLoadOptimization = lazy(() => import("@/pages/RouteLoadOptimization"));
 const YardDockManagement = lazy(() => import("@/pages/YardDockManagement"));
 const CarrierProcurement = lazy(() => import("@/pages/CarrierProcurement"));
@@ -468,6 +469,7 @@ const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
 function Router() {
   return (
     <Switch>
+      <Route path="/form" component={FormPage} />
       <Route path="/" component={LandingPage} />
       <Route path="/use-cases" component={UseCases} />
       <Route path="/industries" component={IndustriesPage} />

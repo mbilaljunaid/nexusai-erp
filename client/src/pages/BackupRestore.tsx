@@ -4,11 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
-import { FormDialog } from "@/components/FormDialog";
 import { getFormMetadata } from "@/lib/formMetadata";
 
 export default function BackupRestore() {
-  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filtered, setFiltered] = useState<any[]>([]);
   const { data: backups = [] } = useQuery<any[]>({ queryKey: ["/api/backup"] });
@@ -23,7 +21,7 @@ export default function BackupRestore() {
           <h1 className="text-3xl font-bold">Backup & Restore</h1>
           <p className="text-muted-foreground mt-1">Manage system backups and restoration</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="backupRestore" />
       </div>
 
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={backups} onFilter={setFiltered} />
@@ -39,13 +37,3 @@ export default function BackupRestore() {
         )) : <p className="text-muted-foreground text-center py-4">No backups found</p>}
       </div>
 
-      <FormDialog
-        isOpen={showForm}
-        onOpenChange={setShowForm}
-        formId="backupRestore"
-        formTitle="Create Backup"
-        formDescription="Create a new system backup"
-      />
-    </div>
-  );
-}

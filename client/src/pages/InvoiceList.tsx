@@ -7,11 +7,9 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { FormDialog } from "@/components/FormDialog";
 import { Download } from "lucide-react";
 
 export default function InvoiceList() {
-  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"] });
@@ -37,7 +35,7 @@ export default function InvoiceList() {
           <h1 className="text-3xl font-bold">Invoices</h1>
           <p className="text-muted-foreground mt-1">Manage customer invoices and payments</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="invoice" />
       </div>
 
       <div className="flex gap-2">
@@ -64,7 +62,3 @@ export default function InvoiceList() {
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No invoices found</p></CardContent></Card>}
       </div>
 
-      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="invoice" formTitle="Add Invoice" formDescription="Create a new invoice" />
-    </div>
-  );
-}

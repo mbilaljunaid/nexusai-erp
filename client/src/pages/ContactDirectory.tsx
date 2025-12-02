@@ -7,10 +7,8 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { FormDialog } from "@/components/FormDialog";
 
 export default function ContactDirectory() {
-  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredContacts, setFilteredContacts] = useState<any[]>([]);
   const { data: contacts = [] } = useQuery<any[]>({ queryKey: ["/api/contacts"] });
@@ -25,7 +23,7 @@ export default function ContactDirectory() {
           <h1 className="text-3xl font-bold">Contacts</h1>
           <p className="text-muted-foreground mt-1">Manage all contacts and relationships</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="contact" />
       </div>
 
       <FormSearchWithMetadata
@@ -52,7 +50,3 @@ export default function ContactDirectory() {
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No contacts found</p></CardContent></Card>}
       </div>
 
-      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="contact" formTitle="Add Contact" formDescription="Create a new contact" />
-    </div>
-  );
-}

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useLocation } from "wouter";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { MetadataFormRenderer } from "@/components/forms/MetadataFormRenderer";
@@ -12,8 +11,6 @@ interface FormPageProps {
 }
 
 export default function FormPage({ formId: propFormId }: FormPageProps) {
-  const [location] = useLocation();
-  
   // Extract formId from URL search params or use prop
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const formId = propFormId || searchParams.get('formId') || 'default';
@@ -42,8 +39,8 @@ export default function FormPage({ formId: propFormId }: FormPageProps) {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold">{formMetadata?.label || 'Form'}</h1>
-              <p className="text-sm text-muted-foreground">{formMetadata?.description || 'Enter your information'}</p>
+              <h1 className="text-xl font-bold">{formMetadata?.name || 'Form'}</h1>
+              <p className="text-sm text-muted-foreground">{formMetadata?.breadcrumbs?.[0]?.label || 'Enter your information'}</p>
             </div>
           </div>
           <SidebarTrigger data-testid="button-sidebar-toggle" />

@@ -5,10 +5,8 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { FormDialog } from "@/components/FormDialog";
 
 export default function Marketplace() {
-  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredExtensions, setFilteredExtensions] = useState<any[]>([]);
   const { data: extensions = [] } = useQuery<any[]>({ queryKey: ["/api/marketplace/extensions"] });
@@ -23,7 +21,7 @@ export default function Marketplace() {
           <h1 className="text-3xl font-bold">Marketplace</h1>
           <p className="text-muted-foreground mt-1">Publish and manage marketplace extensions</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="marketplace" />
       </div>
 
       <FormSearchWithMetadata
@@ -44,7 +42,3 @@ export default function Marketplace() {
         )) : <p className="text-muted-foreground text-center py-4">No extensions found</p>}
       </div>
 
-      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="marketplace" formTitle="Publish Extension" formDescription="Publish a new marketplace extension" />
-    </div>
-  );
-}

@@ -6,10 +6,8 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { FormDialog } from "@/components/FormDialog";
 
 export default function UserManagement() {
-  const [showUserForm, setShowUserForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filtered, setFiltered] = useState<any[]>([]);
   const { data: users = [] } = useQuery<any[]>({ queryKey: ["/api/users"] });
@@ -24,7 +22,7 @@ export default function UserManagement() {
           <h1 className="text-3xl font-bold">User Master</h1>
           <p className="text-muted-foreground mt-2">Manage employees, system identities, and access control</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowUserForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="userManagement" />
       </div>
 
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={users} onFilter={setFiltered} />

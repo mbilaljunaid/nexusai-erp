@@ -7,12 +7,10 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { FormDialog } from "@/components/FormDialog";
 import { Factory, Package, Zap, QrCode } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Manufacturing() {
-  const [showForm, setShowForm] = useState(false);
   const [activeNav, setActiveNav] = useState("workorders");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredWorkOrders, setFilteredWorkOrders] = useState<any[]>([]);
@@ -40,7 +38,7 @@ export default function Manufacturing() {
             Manage BOMs, work orders, production planning, and quality control
           </p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="workorder" />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -75,7 +73,3 @@ export default function Manufacturing() {
         </div>
       )}
 
-      <FormDialog isOpen={showForm} onOpenChange={setShowForm} formId="workorder" formTitle="Create Work Order" formDescription="Create a new manufacturing work order" />
-    </div>
-  );
-}

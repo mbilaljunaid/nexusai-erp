@@ -6,12 +6,9 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { FormDialog } from "@/components/FormDialog";
 
 export default function VendorManagement() {
-  const [showVendorForm, setShowVendorForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showVendorForm, setShowVendorForm] = useState(false);
   const [filteredVendors, setFilteredVendors] = useState<any[]>([]);
   const { data: vendors = [] } = useQuery<any[]>({
     queryKey: ["/api/vendors"],
@@ -27,7 +24,7 @@ export default function VendorManagement() {
           <h1 className="text-3xl font-bold">Vendors</h1>
           <p className="text-muted-foreground mt-1">Manage supplier relationships and performance</p>
         </div>
-        <SmartAddButton formMetadata={formMetadata} onClick={() => setShowVendorForm(true)} />
+        <SmartAddButton formMetadata={formMetadata} formId="vendor" />
       </div>
 
       <FormSearchWithMetadata
