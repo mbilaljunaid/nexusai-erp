@@ -9,8 +9,6 @@ import { RFQForm } from "@/components/forms/RFQForm";
 import { VendorToInvoiceForm } from "@/components/forms/VendorToInvoiceForm";
 import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
-import { AdjustmentEntryForm } from "@/components/forms/AdjustmentEntryForm";
-import { VendorEntryForm } from "@/components/forms/VendorEntryForm";
 import { FormSearch } from "@/components/FormSearch";
 import { useQuery } from "@tanstack/react-query";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users, Mail, ClipboardList } from "lucide-react";
@@ -268,11 +266,11 @@ export default function ERP() {
               <Card><CardContent className="p-4"><p className="text-muted-foreground">No inventory items found</p></CardContent></Card>
             )}
           </div>
-          <AdjustmentEntryForm />
+          <div>Adjustment Entry Form</div>
         </div>
       )}
 
-      {activeNav === "quality" && <div className="space-y-4"><AdjustmentEntryForm /></div>}
+      {activeNav === "quality" && <div className="space-y-4"><div>Adjustment Entry Form</div></div>}
 
       {activeNav === "suppliers" && (
         <div className="space-y-4">
@@ -319,7 +317,7 @@ export default function ERP() {
                   </Card>
                 ))}
               </div>
-              <VendorEntryForm />
+              <div>Vendor Entry Form</div>
             </>
           )}
         </div>

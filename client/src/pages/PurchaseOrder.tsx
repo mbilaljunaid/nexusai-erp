@@ -52,4 +52,6 @@ export default function PurchaseOrder() {
           </div>
         </CardContent>
       </Card>
-
+    </div>
+  );
+}
