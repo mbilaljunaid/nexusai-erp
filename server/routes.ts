@@ -15,6 +15,12 @@ import {
 import { z } from "zod";
 import OpenAI from "openai";
 import { generateDemoData } from "./demoSeeds";
+import analyticsRoutes from "./routes/analyticsRoutes";
+import templateRoutes from "./routes/templateRoutes";
+import migrationRoutes from "./routes/migrationRoutes";
+
+// Generic form data storage (in-memory)
+const formDataStore: Map<string, any[]> = new Map();
 
 // Using Replit AI Integrations for OpenAI (no API key needed, billed to credits)
 const openai = new OpenAI({
@@ -5935,11 +5941,16 @@ export async function registerRoutes(
     }
   });
 
+  // Phase 5 Integrations - Analytics, Templates, Data Migration
+  app.use(analyticsRoutes);
+  app.use(templateRoutes);
+  app.use(migrationRoutes);
+
   // Generic endpoint handler for all 809 forms
   app.get("/api/:formId", (req, res) => {
     const { formId } = req.params;
     try {
-      const items = storage.get(formId, []);
+      const items = formDataStore.get(formId) || [];
       res.json(items);
     } catch (error) {
       res.status(500).json({ error: "Failed to retrieve items" });
@@ -5950,9 +5961,9 @@ export async function registerRoutes(
     const { formId } = req.params;
     try {
       const item = { ...req.body, id: Date.now().toString(), createdAt: new Date().toISOString() };
-      const items = storage.get(formId, []);
+      const items = formDataStore.get(formId) || [];
       items.push(item);
-      storage.set(formId, items);
+      formDataStore.set(formId, items);
       res.status(201).json(item);
     } catch (error) {
       res.status(500).json({ error: "Failed to create item" });
@@ -5962,7 +5973,7 @@ export async function registerRoutes(
   app.get("/api/:formId/:id", (req, res) => {
     const { formId, id } = req.params;
     try {
-      const items = storage.get(formId, []);
+      const items = formDataStore.get(formId) || [];
       const item = items.find((i: any) => i.id === id);
       if (!item) return res.status(404).json({ error: "Not found" });
       res.json(item);
@@ -5974,11 +5985,11 @@ export async function registerRoutes(
   app.patch("/api/:formId/:id", (req, res) => {
     const { formId, id } = req.params;
     try {
-      const items = storage.get(formId, []);
+      const items = formDataStore.get(formId) || [];
       const index = items.findIndex((i: any) => i.id === id);
       if (index === -1) return res.status(404).json({ error: "Not found" });
       items[index] = { ...items[index], ...req.body };
-      storage.set(formId, items);
+      formDataStore.set(formId, items);
       res.json(items[index]);
     } catch (error) {
       res.status(500).json({ error: "Failed to update item" });
@@ -5988,9 +5999,9 @@ export async function registerRoutes(
   app.delete("/api/:formId/:id", (req, res) => {
     const { formId, id } = req.params;
     try {
-      const items = storage.get(formId, []);
+      const items = formDataStore.get(formId) || [];
       const filtered = items.filter((i: any) => i.id !== id);
-      storage.set(formId, filtered);
+      formDataStore.set(formId, filtered);
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete item" });
