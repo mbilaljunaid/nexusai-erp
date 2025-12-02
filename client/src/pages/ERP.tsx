@@ -7,6 +7,7 @@ import { PurchaseOrderForm } from "@/components/forms/PurchaseOrderForm";
 import { PurchaseRequisitionForm } from "@/components/forms/PurchaseRequisitionForm";
 import { RFQForm } from "@/components/forms/RFQForm";
 import { VendorToInvoiceForm } from "@/components/forms/VendorToInvoiceForm";
+import { GLEntryForm } from "@/components/forms/GLEntryForm";
 import { FormSearch } from "@/components/FormSearch";
 import { useQuery } from "@tanstack/react-query";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users, Mail, ClipboardList } from "lucide-react";

@@ -38,6 +38,7 @@ interface FormMetadata {
 
 interface MetadataFormRendererProps {
   formId: string;
+  formMetadata?: any;
   initialData?: Record<string, any>;
   onSubmit?: (data: Record<string, any>) => Promise<void>;
   readOnly?: boolean;
@@ -46,6 +47,7 @@ interface MetadataFormRendererProps {
 
 export function MetadataFormRenderer({
   formId,
+  formMetadata: providedMetadata,
   initialData,
   onSubmit,
   readOnly = false,
@@ -59,8 +61,8 @@ export function MetadataFormRenderer({
   const validationEngine = useMemo(() => new ValidationEngine(), []);
   const logicEngine = useMemo(() => new ConditionalLogicEngine(), []);
 
-  // Mock metadata for form rendering
-  const metadata: FormMetadata = {
+  // Use provided metadata or fallback to mock
+  const metadata: FormMetadata = providedMetadata || {
     id: formId,
     name: formId.replace(/([A-Z])/g, " $1").trim(),
     description: `Fill out the ${formId} form`,

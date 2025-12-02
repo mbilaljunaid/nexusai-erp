@@ -58,6 +58,7 @@ export default function FormPage({ formId: propFormId }: FormPageProps) {
           <div className="bg-card rounded-lg border p-6">
             <MetadataFormRenderer
               formId={formId}
+              formMetadata={formMetadata}
               onSubmit={async (data) => {
                 // Form submission is handled by MetadataFormRenderer
                 // Close window after successful submission
