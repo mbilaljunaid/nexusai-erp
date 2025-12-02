@@ -23,7 +23,7 @@ const processes = [
   { name: 'Subscription Billing', href: '/public/processes/subscription-billing', category: 'Sales' }
 ];
 
-export function ProcessFlowsPage() {
+export default function ProcessFlowsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800 text-white py-12">

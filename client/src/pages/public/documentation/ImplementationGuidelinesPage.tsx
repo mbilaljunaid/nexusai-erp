@@ -19,7 +19,7 @@ const guides = [
   { name: 'Post-Go-Live', slug: 'post-go-live', description: 'Support and stabilization' }
 ];
 
-export function ImplementationGuidelinesPage() {
+export default function ImplementationGuidelinesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-900 dark:to-orange-800 text-white py-12">

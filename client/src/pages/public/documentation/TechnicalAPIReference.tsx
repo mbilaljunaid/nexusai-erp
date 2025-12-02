@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Code2 } from 'lucide-react';
 
-export function TechnicalAPIReference() {
+export default function TechnicalAPIReference() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-900 dark:to-purple-800 text-white py-12">

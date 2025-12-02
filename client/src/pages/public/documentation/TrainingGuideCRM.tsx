@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { BookOpen } from 'lucide-react';
 
-export function TrainingGuideCRM() {
+export default function TrainingGuideCRM() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="bg-gradient-to-r from-green-600 to-green-700 dark:from-green-900 dark:to-green-800 text-white py-12">
