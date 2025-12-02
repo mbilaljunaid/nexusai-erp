@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import { EmployeeEntryForm } from "@/components/forms/EmployeeEntryForm";
 
 export default function EmployeesDetail() {
   const [searchQuery, setSearchQuery] = useState("");

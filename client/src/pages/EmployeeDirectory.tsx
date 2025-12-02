@@ -7,6 +7,7 @@ import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Mail, Phone } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
 
 export default function EmployeeDirectory() {
   const [searchQuery, setSearchQuery] = useState("");

@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import { CampaignEntryForm } from "@/components/forms/CampaignEntryForm";
 
 export default function CampaignsDetail() {
   const [searchQuery, setSearchQuery] = useState("");

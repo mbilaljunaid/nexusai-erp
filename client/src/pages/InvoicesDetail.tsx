@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
 
 export default function InvoicesDetail() {
   const [searchQuery, setSearchQuery] = useState("");

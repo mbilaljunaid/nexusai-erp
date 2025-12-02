@@ -7,9 +7,9 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { LeadEntryForm } from "@/components/forms/LeadEntryForm";
 import { ConvertOpportunityToInvoiceForm } from "@/components/forms/ConvertOpportunityToInvoiceForm";
 import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity, Badge as BadgeIcon } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
 import { Badge } from "@/components/ui/badge";
 
 export default function CRM() {

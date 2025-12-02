@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import VendorEntryForm from "@/components/forms/VendorEntryForm";
 
 export default function VendorsDetail() {
   const [searchQuery, setSearchQuery] = useState("");

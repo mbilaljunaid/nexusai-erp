@@ -7,6 +7,7 @@ import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Users, Briefcase } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
 
 export default function HRModule() {
   const [searchQuery, setSearchQuery] = useState("");

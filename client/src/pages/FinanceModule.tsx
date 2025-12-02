@@ -7,6 +7,7 @@ import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
 
 export default function FinanceModule() {
   const [searchQuery, setSearchQuery] = useState("");

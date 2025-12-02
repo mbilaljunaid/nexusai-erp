@@ -9,7 +9,6 @@ import { KanbanBoard } from "@/components/KanbanBoard";
 import { TaskCard, type Task } from "@/components/TaskCard";
 import { ResourceAllocation } from "@/components/ResourceAllocation";
 import { AddTaskDialog } from "@/components/AddTaskDialog";
-import { TaskEntryForm } from "@/components/forms/TaskEntryForm";
 import { ProjectToGLForm } from "@/components/forms/ProjectToGLForm";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Search, Filter, FolderKanban, CheckCircle2, Clock, AlertTriangle, Sparkles, LayoutGrid, ListTodo, Users, Settings, Zap, BarChart3, TrendingUp } from "lucide-react";

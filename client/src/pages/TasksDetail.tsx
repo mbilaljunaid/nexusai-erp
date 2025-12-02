@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import { TaskEntryForm } from "@/components/forms/TaskEntryForm";
 
 export default function TasksDetail() {
   const [searchQuery, setSearchQuery] = useState("");

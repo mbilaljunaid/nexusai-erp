@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { IconNavigation } from "@/components/IconNavigation";
-import { CampaignEntryForm } from "@/components/forms/CampaignEntryForm";
 import { useState } from "react";
 import { BarChart3, Mail, Share2, TrendingUp, Users, Settings, Zap, PieChart, Target, Activity } from "lucide-react";
 import { Link } from "wouter";

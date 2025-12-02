@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import { GLEntryForm } from "@/components/forms/GLEntryForm";
 
 export default function GeneralLedgerDetail() {
   const [searchQuery, setSearchQuery] = useState("");

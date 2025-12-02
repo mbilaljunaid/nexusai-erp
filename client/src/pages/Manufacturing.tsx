@@ -8,6 +8,7 @@ import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Factory, Package, Zap, QrCode } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
 import { Link } from "wouter";
 
 export default function Manufacturing() {

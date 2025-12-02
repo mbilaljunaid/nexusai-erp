@@ -7,12 +7,6 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
-import { ExpenseEntryForm } from "@/components/forms/ExpenseEntryForm";
-import { BudgetEntryForm } from "@/components/forms/BudgetEntryForm";
-import { BudgetToVarianceReportForm } from "@/components/forms/BudgetToVarianceReportForm";
-import { InvoiceToPaymentForm } from "@/components/forms/InvoiceToPaymentForm";
-import { ExpenseToGLForm } from "@/components/forms/ExpenseToGLForm";
 import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard } from "lucide-react";
 import { Link } from "wouter";
 

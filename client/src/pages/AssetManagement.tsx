@@ -10,6 +10,7 @@ import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Package, Plus, Trash2 } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 

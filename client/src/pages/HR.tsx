@@ -3,15 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { EmployeeEntryForm } from "@/components/forms/EmployeeEntryForm";
-import { EmployeeToPayrollForm } from "@/components/forms/EmployeeToPayrollForm";
-import PayrollForm from "@/components/forms/PayrollForm";
-import PerformanceRatingForm from "@/components/forms/PerformanceRatingForm";
-import { LeaveRequestForm } from "@/components/forms/LeaveRequestForm";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Users, BarChart3, Briefcase, DollarSign, TrendingUp, Calendar, BookOpen, Target, Heart, Award, Clock, PieChart, Settings, Zap, Search } from "lucide-react";
+import { IconNavigation } from "@/components/IconNavigation";
 import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 
