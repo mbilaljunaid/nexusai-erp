@@ -53,8 +53,6 @@ export default function Dashboard() {
     { title: "Reports", url: "/reports", icon: FileText, color: "text-red-600" },
   ];
 
-  const [selectedReportModule, setSelectedReportModule] = useState("crm");
-
   return (
     <div className="space-y-8">
       <Breadcrumb items={[{ label: "Home", href: "/" }]} />
