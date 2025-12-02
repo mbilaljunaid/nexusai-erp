@@ -23,13 +23,19 @@ export class CacheManager {
   private cache: Map<string, CacheEntry<any>> = new Map();
   private totalHits: number = 0;
   private totalMisses: number = 0;
-  private maxSize: number = 1000; // Max entries
-  private ttl: number = 3600000; // 1 hour default
+  private readonly maxSize: number = 1000; // Max entries
+  private readonly defaultTtl: number = 3600000; // 1 hour default
 
   /**
    * Set cache entry
    */
-  set<T>(key: string, value: T, ttlMs: number = this.ttl): void {
+  set<T>(key: string, value: T, ttlMs?: number): void {
+    if (!key) {
+      throw new Error("Cache key is required");
+    }
+
+    const ttl = ttlMs ?? this.defaultTtl;
+
     // Evict oldest if at max size
     if (this.cache.size >= this.maxSize) {
       const oldest = Array.from(this.cache.values()).sort((a, b) =>
@@ -43,7 +49,7 @@ export class CacheManager {
     this.cache.set(key, {
       key,
       value,
-      expiresAt: new Date(Date.now() + ttlMs),
+      expiresAt: new Date(Date.now() + ttl),
       hits: 0,
       createdAt: new Date(),
     });
@@ -53,6 +59,10 @@ export class CacheManager {
    * Get cache entry
    */
   get<T>(key: string): T | null {
+    if (!key) {
+      throw new Error("Cache key is required");
+    }
+
     const entry = this.cache.get(key);
 
     if (!entry) {
@@ -76,6 +86,10 @@ export class CacheManager {
    * Delete cache entry
    */
   delete(key: string): boolean {
+    if (!key) {
+      throw new Error("Cache key is required");
+    }
+
     return this.cache.delete(key);
   }
 
@@ -84,6 +98,8 @@ export class CacheManager {
    */
   clear(): void {
     this.cache.clear();
+    this.totalHits = 0;
+    this.totalMisses = 0;
   }
 
   /**
@@ -107,7 +123,8 @@ export class CacheManager {
     let count = 0;
     const now = new Date();
 
-    for (const [key, entry] of this.cache) {
+    const entries = Array.from(this.cache.entries());
+    for (const [key, entry] of entries) {
       if (now > entry.expiresAt) {
         this.cache.delete(key);
         count++;
@@ -115,6 +132,16 @@ export class CacheManager {
     }
 
     return count;
+  }
+
+  /**
+   * Get entry by key
+   */
+  has(key: string): boolean {
+    if (!key) {
+      return false;
+    }
+    return this.cache.has(key);
   }
 }
 

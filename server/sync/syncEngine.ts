@@ -26,11 +26,16 @@ export class SyncEngine {
   private syncQueue: Map<string, SyncQueue> = new Map();
   private syncStates: Map<string, SyncState> = new Map();
   private queueCounter: number = 0;
+  private readonly MAX_ATTEMPTS = 3;
 
   /**
    * Add to sync queue (offline submission)
    */
   addToQueue(userId: string, formId: string, data: any): SyncQueue {
+    if (!userId || !formId || !data) {
+      throw new Error("userId, formId, and data are required");
+    }
+
     const item: SyncQueue = {
       id: `SYNC-${Date.now()}-${++this.queueCounter}`,
       userId,
@@ -53,10 +58,15 @@ export class SyncEngine {
    * Sync pending items
    */
   async syncPending(userId: string): Promise<{ synced: number; failed: number }> {
+    if (!userId) {
+      throw new Error("userId is required");
+    }
+
     let synced = 0;
     let failed = 0;
 
-    for (const item of this.syncQueue.values()) {
+    const items = Array.from(this.syncQueue.values());
+    for (const item of items) {
       if (item.userId !== userId || item.status !== "pending") continue;
 
       item.status = "syncing";
@@ -67,12 +77,12 @@ export class SyncEngine {
         synced++;
       } catch (error: any) {
         item.status = "failed";
-        item.error = error.message;
+        item.error = error instanceof Error ? error.message : String(error);
         item.attempts++;
         failed++;
 
-        // Remove after 3 failed attempts
-        if (item.attempts >= 3) {
+        // Remove after max attempts
+        if (item.attempts >= this.MAX_ATTEMPTS) {
           this.syncQueue.delete(item.id);
         }
       }
@@ -86,6 +96,10 @@ export class SyncEngine {
    * Get sync state
    */
   getSyncState(userId: string): SyncState {
+    if (!userId) {
+      throw new Error("userId is required");
+    }
+
     return (
       this.syncStates.get(userId) || {
         userId,
@@ -101,6 +115,10 @@ export class SyncEngine {
    * Get pending items
    */
   getPendingItems(userId: string): SyncQueue[] {
+    if (!userId) {
+      throw new Error("userId is required");
+    }
+
     return Array.from(this.syncQueue.values()).filter(
       (item) => item.userId === userId && item.status !== "synced"
     );
@@ -110,13 +128,25 @@ export class SyncEngine {
    * Clear synced items
    */
   clearSyncedItems(userId: string): number {
+    if (!userId) {
+      throw new Error("userId is required");
+    }
+
     let count = 0;
-    for (const [key, item] of this.syncQueue) {
+    const keysToDelete: string[] = [];
+
+    const entries = Array.from(this.syncQueue.entries());
+    for (const [key, item] of entries) {
       if (item.userId === userId && item.status === "synced") {
-        this.syncQueue.delete(key);
-        count++;
+        keysToDelete.push(key);
       }
     }
+
+    for (const key of keysToDelete) {
+      this.syncQueue.delete(key);
+      count++;
+    }
+
     return count;
   }
 
@@ -124,6 +154,10 @@ export class SyncEngine {
    * Perform sync (would call actual API)
    */
   private async performSync(item: SyncQueue): Promise<void> {
+    if (!item || !item.id) {
+      throw new Error("Invalid sync item");
+    }
+
     // In production, would POST to API endpoint
     // Simulate network delay
     return new Promise((resolve) => setTimeout(resolve, 100));

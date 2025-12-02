@@ -32,15 +32,16 @@ export class BackupManager {
   /**
    * Create backup
    */
-  createBackup(type: string, dataSize: number, itemCount: number): Backup {
+  createBackup(type: "full" | "incremental" | "differential", dataSize: number, itemCount: number): Backup {
+    const backupId = `BACKUP-${Date.now()}-${++this.backupCounter}`;
     const backup: Backup = {
-      id: `BACKUP-${Date.now()}-${++this.backupCounter}`,
-      type: type as any,
+      id: backupId,
+      type,
       status: "pending",
       startedAt: new Date(),
       dataSize,
       itemCount,
-      location: `s3://nexusai-backups/${backup.id}`,
+      location: `s3://nexusai-backups/${backupId}`,
     };
 
     this.backups.set(backup.id, backup);

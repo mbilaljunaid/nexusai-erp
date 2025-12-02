@@ -15,20 +15,26 @@ export interface SyncRequest {
   deltaOnly?: boolean;
 }
 
+export interface MinimalForm {
+  id: string;
+  name: string;
+  icon?: string;
+  lastModified?: Date;
+}
+
 export class MobileAPI {
   /**
    * Fetch forms for mobile (minimal payload)
    */
-  fetchFormsMobile(userId: string, filters?: any): MobileResponse<any[]> {
+  fetchFormsMobile(userId: string, filters?: Record<string, any>): MobileResponse<MinimalForm[]> {
+    if (!userId) {
+      throw new Error("userId is required");
+    }
+
     // Return minimal form data for mobile
-    const forms = []; // Would fetch actual forms
+    const forms: MinimalForm[] = [];
     return {
-      data: forms.map((f) => ({
-        id: f.id,
-        name: f.name,
-        icon: f.icon,
-        lastModified: f.updatedAt,
-      })),
+      data: forms,
       metadata: { timestamp: new Date(), version: "v1" },
       sync: { version: 1, deltaSync: false },
     };
@@ -37,9 +43,13 @@ export class MobileAPI {
   /**
    * Fetch form for mobile (optimized)
    */
-  fetchFormMobile(formId: string, recordId?: string): MobileResponse<any> {
+  fetchFormMobile(formId: string, recordId?: string): MobileResponse<Record<string, any>> {
+    if (!formId) {
+      throw new Error("formId is required");
+    }
+
     // Return only essential fields
-    const form = {}; // Would fetch actual form
+    const form: Record<string, any> = {};
 
     return {
       data: form,
@@ -51,8 +61,12 @@ export class MobileAPI {
    * Submit form mobile (minimal upload)
    */
   submitFormMobile(formId: string, data: any, userId: string): MobileResponse<{ recordId: string; synced: boolean }> {
+    if (!formId || !userId || !data) {
+      throw new Error("formId, userId, and data are required");
+    }
+
     return {
-      data: { recordId: `REC-${Date.now()}`, synced: true },
+      data: { recordId: `REC-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, synced: true },
       metadata: { timestamp: new Date(), version: "v1" },
     };
   }
@@ -60,12 +74,19 @@ export class MobileAPI {
   /**
    * Get sync data (delta sync)
    */
-  getSyncData(userId: string, requests: SyncRequest[]): MobileResponse<{ [formId: string]: any[] }> {
-    const syncData: { [key: string]: any[] } = {};
+  getSyncData(userId: string, requests: SyncRequest[]): MobileResponse<Record<string, any[]>> {
+    if (!userId || !requests || requests.length === 0) {
+      throw new Error("userId and requests are required");
+    }
+
+    const syncData: Record<string, any[]> = {};
 
     for (const req of requests) {
+      if (!req.formId) {
+        throw new Error("Each request must have a formId");
+      }
       syncData[req.formId] = [];
-      // Would fetch actual delta data
+      // Would fetch actual delta data based on lastSync
     }
 
     return {
@@ -78,11 +99,18 @@ export class MobileAPI {
   /**
    * Get offline data package (minimal)
    */
-  getOfflinePackage(userId: string, formIds: string[]): MobileResponse<{
-    forms: any[];
-    validationRules: any;
-    glAccounts: any[];
+  getOfflinePackage(
+    userId: string,
+    formIds: string[]
+  ): MobileResponse<{
+    forms: Record<string, any>[];
+    validationRules: Record<string, any>;
+    glAccounts: Record<string, any>[];
   }> {
+    if (!userId || !formIds || formIds.length === 0) {
+      throw new Error("userId and formIds are required");
+    }
+
     return {
       data: {
         forms: [],
@@ -99,12 +127,19 @@ export class MobileAPI {
   batchSyncMobile(
     userId: string,
     submissions: { formId: string; data: any }[]
-  ): MobileResponse<{ synced: number; failed: number; records: any[] }> {
+  ): MobileResponse<{ synced: number; failed: number; records: Array<{ formId: string; recordId: string }> }> {
+    if (!userId || !submissions || submissions.length === 0) {
+      throw new Error("userId and submissions are required");
+    }
+
     return {
       data: {
         synced: submissions.length,
         failed: 0,
-        records: submissions.map((s) => ({ formId: s.formId, recordId: `REC-${Date.now()}` })),
+        records: submissions.map((s) => ({
+          formId: s.formId,
+          recordId: `REC-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        })),
       },
       metadata: { timestamp: new Date(), version: "v1" },
     };
