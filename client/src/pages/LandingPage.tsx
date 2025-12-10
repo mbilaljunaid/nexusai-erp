@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles, Package, Users, Briefcase, BarChart3, DollarSign, Factory, CheckCircle, Settings, Mail, Bot, Layers, Filter, FileUp } from "lucide-react";
+import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles, Package, Users, Briefcase, BarChart3, DollarSign, Factory, CheckCircle, Settings, Mail, Bot, Layers, Filter, FileUp, Github, Star, GitFork, Scale, Heart, Code2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 
@@ -11,9 +11,8 @@ export default function LandingPage() {
   const [company, setCompany] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  // Set page title
   useEffect(() => {
-    document.title = "NexusAI - AI-Powered ERP for Enterprise | 40+ Industries";
+    document.title = "NexusAI - Open Source AI-Powered ERP | AGPL-3.0 Licensed";
   }, []);
 
   const handleDemo = async () => {
@@ -59,27 +58,74 @@ export default function LandingPage() {
       <main className="flex-1">
       {/* Hero Section */}
       <section className="px-4 py-24 text-center">
-        <Badge className="landing-hero-badge mb-4">NOW AVAILABLE</Badge>
+        <div className="flex gap-2 justify-center flex-wrap mb-4">
+          <Badge className="bg-green-600 text-white">OPEN SOURCE</Badge>
+          <Badge className="landing-hero-badge">AGPL-3.0 LICENSED</Badge>
+        </div>
         <h1 className="landing-hero-title text-6xl font-bold mb-6">
-          Nexus AI — Your All-in-One AI-Powered ERP
+          NexusAI — The Open Source AI-Powered ERP
         </h1>
         <p className="landing-hero-subtitle text-2xl mb-8 max-w-4xl mx-auto leading-relaxed">
-          Transforming Enterprises Across 40+ Industries with AI, Automation & End-to-End Modules
+          Enterprise-grade ERP platform for 40+ industries. Free to use, modify, and distribute under AGPL-3.0.
         </p>
-        <div className="flex gap-4 justify-center flex-wrap">
+        <div className="flex gap-4 justify-center flex-wrap mb-8">
+          <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" className="bg-slate-800 hover:bg-slate-700 text-white text-lg" data-testid="button-github-hero">
+              <Github className="mr-2 w-5 h-5" /> View on GitHub
+            </Button>
+          </a>
           <Link to="/login">
             <Button size="lg" className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white text-lg" data-testid="button-login">
               Sign In <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
-          <Link to="/signup">
-            <Button size="lg" variant="outline" data-testid="button-signup">
-              Sign Up <ArrowRight className="ml-2 w-5 h-5" />
+          <Link to="/open-source">
+            <Button size="lg" variant="outline" data-testid="button-open-source">
+              <Scale className="mr-2 w-5 h-5" /> Open Source
             </Button>
           </Link>
-          <Button size="lg" variant="secondary" data-testid="button-request-demo">
-            Request a Demo <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
+        </div>
+        {/* GitHub Badges */}
+        <div className="flex gap-3 justify-center flex-wrap">
+          <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm transition-colors">
+            <Star className="w-4 h-4" /> Star
+          </a>
+          <a href="https://github.com/nexusai/nexusai-erp/fork" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm transition-colors">
+            <GitFork className="w-4 h-4" /> Fork
+          </a>
+          <Link to="/docs/contributing">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-sm transition-colors cursor-pointer">
+              <Heart className="w-4 h-4" /> Contribute
+            </span>
+          </Link>
+        </div>
+      </section>
+
+      {/* Open Source Banner */}
+      <section className="px-4 py-12 bg-gradient-to-r from-green-600 to-blue-600 text-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <Code2 className="w-10 h-10 mx-auto mb-3" />
+              <h3 className="font-bold text-lg mb-1">100% Open Source</h3>
+              <p className="text-white/80 text-sm">Full source code access</p>
+            </div>
+            <div>
+              <Scale className="w-10 h-10 mx-auto mb-3" />
+              <h3 className="font-bold text-lg mb-1">AGPL-3.0 License</h3>
+              <p className="text-white/80 text-sm">Free to use & modify</p>
+            </div>
+            <div>
+              <Users className="w-10 h-10 mx-auto mb-3" />
+              <h3 className="font-bold text-lg mb-1">Community Driven</h3>
+              <p className="text-white/80 text-sm">Built by developers</p>
+            </div>
+            <div>
+              <Shield className="w-10 h-10 mx-auto mb-3" />
+              <h3 className="font-bold text-lg mb-1">No Vendor Lock-in</h3>
+              <p className="text-white/80 text-sm">Self-host anywhere</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -139,17 +185,20 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Advantages */}
+      {/* Why Open Source */}
       <section className="landing-section px-4 py-20 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12">Why Choose NexusAI</h2>
+        <h2 className="text-4xl font-bold text-center mb-4">Why Choose Open Source ERP?</h2>
+        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+          Unlike proprietary solutions, NexusAI gives you complete control over your enterprise software
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            { icon: Sparkles, title: "AI-Driven Automation", desc: "Real-time recommendations & predictive insights" },
-            { icon: Zap, title: "Pre-Configured Workflows", desc: "Industry-specific templates ready to use" },
-            { icon: Globe, title: "All-in-One Platform", desc: "No need for multiple disconnected systems" },
-            { icon: Shield, title: "Enterprise Security", desc: "RBAC, multi-tenant isolation, audit logging" },
-            { icon: TrendingUp, title: "Faster Implementation", desc: "50% faster deployment vs traditional ERP" },
-            { icon: ArrowRight, title: "Scalable Architecture", desc: "From SMB to Fortune 500 ready" },
+            { icon: Code2, title: "Full Source Access", desc: "Inspect, audit, and understand every line of code running your business" },
+            { icon: Shield, title: "Security & Privacy", desc: "Self-host on your infrastructure. Your data never leaves your control" },
+            { icon: Heart, title: "Community Support", desc: "Get help from a global community of developers and enterprises" },
+            { icon: Sparkles, title: "AI-Driven Automation", desc: "Real-time recommendations & predictive insights powered by AI" },
+            { icon: Zap, title: "Rapid Deployment", desc: "Pre-configured workflows get you running in days, not months" },
+            { icon: Globe, title: "No Vendor Lock-in", desc: "Fork, customize, or switch providers without losing your investment" },
           ].map((item, i) => (
             <Card key={i} className="landing-card p-6">
               <item.icon className="w-8 h-8" style={{ color: `hsl(var(--primary))` }} />
@@ -171,19 +220,20 @@ export default function LandingPage() {
                   <th className="text-left p-3">Feature</th>
                   <th className="text-center p-3">NexusAI</th>
                   <th className="text-center p-3">Oracle</th>
-                  <th className="text-center p-3">Salesforce</th>
+                  <th className="text-center p-3">SAP</th>
                   <th className="text-center p-3">Odoo</th>
-                  <th className="text-center p-3">Jira</th>
+                  <th className="text-center p-3">ERPNext</th>
                 </tr>
               </thead>
               <tbody>
                 {[
-                  ["AI-Powered Insights", "✅", "❌", "⚠️", "❌", "❌"],
-                  ["Fast Implementation", "✅", "❌", "⚠️", "⚠️", "✅"],
-                  ["Pre-configured Workflows", "✅", "❌", "⚠️", "⚠️", "✅"],
-                  ["40+ Industries", "✅", "❌", "❌", "❌", "❌"],
-                  ["Transparent Pricing", "✅", "❌", "❌", "✅", "✅"],
-                  ["Multi-tenant Ready", "✅", "⚠️", "✅", "✅", "✅"],
+                  ["Open Source (AGPL-3.0)", "✅", "❌", "❌", "⚠️", "✅"],
+                  ["AI-Powered Insights", "✅", "⚠️", "⚠️", "❌", "❌"],
+                  ["40+ Industries", "✅", "✅", "✅", "❌", "❌"],
+                  ["Self-Hosting Option", "✅", "❌", "❌", "✅", "✅"],
+                  ["No Vendor Lock-in", "✅", "❌", "❌", "⚠️", "✅"],
+                  ["Community Contributions", "✅", "❌", "❌", "✅", "✅"],
+                  ["Enterprise Security", "✅", "✅", "✅", "⚠️", "⚠️"],
                 ].map((row, i) => (
                   <tr key={i} className="border-b hover:bg-[hsl(var(--muted)/0.3)]" style={{ borderColor: `hsl(var(--border))` }}>
                     <td className="p-3 font-semibold">{row[0]}</td>
@@ -198,11 +248,37 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* GitHub CTA */}
+      <section className="px-4 py-20">
+        <div className="max-w-4xl mx-auto">
+          <Card className="p-12 bg-gradient-to-br from-slate-800 to-slate-900 text-white text-center">
+            <Github className="w-16 h-16 mx-auto mb-6" />
+            <h2 className="text-3xl font-bold mb-4">Join the Open Source Movement</h2>
+            <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">
+              Star our repository, fork it for your organization, or contribute code. 
+              Every contribution helps make enterprise software accessible to everyone.
+            </p>
+            <div className="flex gap-4 justify-center flex-wrap">
+              <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer">
+                <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100" data-testid="button-star-github">
+                  <Star className="mr-2 w-5 h-5" /> Star on GitHub
+                </Button>
+              </a>
+              <a href="https://github.com/nexusai/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-fork-github">
+                  <GitFork className="mr-2 w-5 h-5" /> Fork Repository
+                </Button>
+              </a>
+            </div>
+          </Card>
+        </div>
+      </section>
+
       {/* Demo CTA */}
       <section className="px-4 py-20 max-w-2xl mx-auto">
         <Card className="landing-cta-gradient p-8">
-          <h2 className="text-3xl font-bold mb-4 text-white">Ready to Transform?</h2>
-          <p className="mb-6" style={{ color: `hsl(var(--primary) / 0.2)` }}>Get instant access to a fully seeded demo environment for your industry.</p>
+          <h2 className="text-3xl font-bold mb-4 text-white">Try NexusAI Today</h2>
+          <p className="mb-6 text-white/70">Get instant access to a fully seeded demo environment for your industry.</p>
           <div className="space-y-4">
             <input
               type="email"
@@ -223,7 +299,7 @@ export default function LandingPage() {
               data-testid="input-demo-company"
             />
             <Button onClick={handleDemo} className="w-full bg-white text-[hsl(var(--primary))] hover:bg-white/90 font-bold text-lg" data-testid="button-demo-cta">
-              {submitted ? "Demo Request Sent!" : "Click Here to See Demo"}
+              {submitted ? "Demo Request Sent!" : "Request Demo Access"}
             </Button>
             {submitted && <p className="text-center text-white/70">Check your email for access details!</p>}
           </div>

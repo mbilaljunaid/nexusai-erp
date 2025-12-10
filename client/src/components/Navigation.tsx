@@ -209,7 +209,7 @@ export function Footer() {
   return (
     <footer className="bg-slate-900 border-t border-slate-700">
       <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
+        <div className="grid md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div>
             <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
@@ -253,15 +253,28 @@ export function Footer() {
               <li><a href="#" className="hover:text-white transition">Legal</a></li>
             </ul>
           </div>
+
+          {/* Open Source */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Open Source</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              <li><a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer" className="hover:text-white transition" data-testid="link-footer-github">GitHub</a></li>
+              <li><Link to="/open-source" className="hover:text-white transition" data-testid="link-footer-opensource">About Open Source</Link></li>
+              <li><Link to="/license" className="hover:text-white transition" data-testid="link-footer-license">License (AGPL-3.0)</Link></li>
+              <li><Link to="/docs/contributing" className="hover:text-white transition" data-testid="link-footer-contributing">Contributing</Link></li>
+              <li><Link to="/security" className="hover:text-white transition" data-testid="link-footer-security">Security Policy</Link></li>
+            </ul>
+          </div>
         </div>
 
         {/* Bottom */}
         <div className="pt-8 border-t border-slate-700 flex flex-col md:flex-row justify-between items-center text-slate-400 text-sm">
-          <p>&copy; 2025 NexusAI. All rights reserved.</p>
+          <p>&copy; 2025 NexusAI Contributors. Licensed under AGPL-3.0.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a href="#" className="hover:text-white transition">Privacy</a>
             <a href="#" className="hover:text-white transition">Terms</a>
-            <a href="#" className="hover:text-white transition">Security</a>
+            <Link to="/security" className="hover:text-white transition">Security</Link>
+            <Link to="/license" className="hover:text-white transition">License</Link>
           </div>
         </div>
       </div>

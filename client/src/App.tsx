@@ -114,6 +114,12 @@ const TrainingGuideCRM = lazy(() => import("@/pages/public/documentation/Trainin
 const TechnicalAPIReference = lazy(() => import("@/pages/public/documentation/TechnicalAPIReference"));
 const ImplementationSystemSetup = lazy(() => import("@/pages/public/documentation/ImplementationSystemSetup"));
 
+// Open Source Pages
+const OpenSourcePage = lazy(() => import("@/pages/OpenSourcePage"));
+const LicensePage = lazy(() => import("@/pages/LicensePage"));
+const ContributingPage = lazy(() => import("@/pages/ContributingPage"));
+const SecurityPolicyPage = lazy(() => import("@/pages/SecurityPolicyPage"));
+
 // Phase 2: ERP Workflows (4 pages)
 const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
 const BankReconciliation = lazy(() => import("@/pages/BankReconciliation"));
@@ -479,6 +485,10 @@ function Router() {
       <Route path="/industries" component={IndustriesPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/blog" component={BlogPage} />
+      <Route path="/open-source" component={OpenSourcePage} />
+      <Route path="/license" component={LicensePage} />
+      <Route path="/docs/contributing" component={ContributingPage} />
+      <Route path="/security" component={SecurityPolicyPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin" component={AdminConsole} />
       <Route path="/admin-roles" component={AdminRoles} />
