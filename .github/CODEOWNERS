@@ -1,0 +1,21 @@
+# NexusAI ERP Code Owners
+# These owners will be requested for review when someone opens a PR
+
+# Global owners (default for everything)
+* @mbilaljunaid
+
+# Frontend
+/client/ @mbilaljunaid
+
+# Backend
+/server/ @mbilaljunaid
+
+# Shared types and schemas
+/shared/ @mbilaljunaid
+
+# Documentation
+/docs/ @mbilaljunaid
+*.md @mbilaljunaid
+
+# GitHub configuration
+/.github/ @mbilaljunaid

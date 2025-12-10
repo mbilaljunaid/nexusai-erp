@@ -1,10 +1,28 @@
-# NexusAI - Enterprise AI-First Platform v2.0
+# NexusAI ERP - Enterprise AI-First Platform
 
-## 🚀 Production-Ready Enterprise Platform
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![GitHub Stars](https://img.shields.io/github/stars/mbilaljunaid/nexusai-erp)](https://github.com/mbilaljunaid/nexusai-erp/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/mbilaljunaid/nexusai-erp)](https://github.com/mbilaljunaid/nexusai-erp/issues)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+
+**Open Source AI-Powered Enterprise Resource Planning Platform**
 
 A comprehensive, self-hosted enterprise platform combining ERP, EPM, CRM, HRMS, and 40+ business modules with AI-powered features, multi-language support (12 languages), and industry-specific solutions for 15+ sectors.
 
-## ✨ Key Features
+## Features
+
+### 12 Core Modules
+- **CRM** - Customer Relationship Management
+- **Projects** - Project & Task Management
+- **Finance** - Financial Management & GL
+- **HR** - Human Resource Management
+- **Manufacturing** - Production Management
+- **Supply Chain** - Logistics & Inventory
+- **Sales** - Sales Operations
+- **Service** - Customer Service
+- **Analytics** - Business Intelligence
+- **Compliance** - Regulatory Compliance
+- **AI Assistant** - AI-Powered Features
 
 ### 30 Complete Pages
 - **Core Modules**: Dashboard, ERP, EPM, CRM, Projects, HR, Service, Marketing, Finance, Inventory, Procurement
@@ -13,11 +31,11 @@ A comprehensive, self-hosted enterprise platform combining ERP, EPM, CRM, HRMS, 
 - **System Management**: BPM, Integration Hub, System Health, Settings
 - **Administration**: Platform Admin, Tenant Admin, Industry Configuration, UAT Automation
 
-### 16 Production Forms
-GL Entry, Invoice, Budget Entry, Lead Entry, Employee, Task, Service Ticket, Expense Report, Project, Vendor, Customer, Product, Purchase Order, Leave Request, Opportunity, Timesheet
+### 812 Dynamic Forms
+GL Entry, Invoice, Budget Entry, Lead Entry, Employee, Task, Service Ticket, Expense Report, Project, Vendor, Customer, Product, Purchase Order, Leave Request, Opportunity, Timesheet, and many more.
 
 ### 30+ Advanced Features
-- **ERP**: Bank Reconciliation (AI-powered fuzzy matching), Multi-Entity Consolidation, Tax Engine, Auto-Reconciliation
+- **ERP**: Bank Reconciliation (AI-powered fuzzy matching), Multi-Entity Consolidation, Tax Engine
 - **Finance**: Period Close Automation, FX Translation, Intercompany Eliminations
 - **CRM**: Territory Management, CPQ (Configure-Price-Quote), Partner Portal
 - **HRMS**: Recruitment (with AI scoring), Learning Management
@@ -26,83 +44,59 @@ GL Entry, Invoice, Budget Entry, Lead Entry, Employee, Task, Service Ticket, Exp
 - **Analytics**: Dashboard Widgets, Report Generation, KPI Tracking
 - **Integration**: API Gateway, Workflow Automation, Webhook Processing
 - **Compliance**: Multi-framework enforcement (GDPR, HIPAA, SOX, ISO9001, PCI-DSS)
-- **UAT**: AI-generated test scripts with coverage analysis
-- **BPM**: Process Analytics, Bottleneck Detection
 
-### Industry-Specific Solutions (15+ Industries)
-Manufacturing, Retail, Finance, Healthcare, Construction, Wholesale, Telecommunications, Energy, Hospitality, Professional Services, Government, Technology, Media, Agriculture, Education
+### Industry-Specific Solutions (40+ Industries)
+Manufacturing, Retail, Finance, Healthcare, Construction, Wholesale, Telecommunications, Energy, Hospitality, Professional Services, Government, Technology, Media, Agriculture, Education, and more.
 
 ### 12-Language Support
 English, Spanish, French, German, Chinese, Japanese, Arabic, Portuguese, Hindi, Russian, Thai, Indonesian
 
-## 🏗️ Architecture
+## Quick Start
 
-### Technology Stack
+```bash
+# Clone the repository
+git clone https://github.com/mbilaljunaid/nexusai-erp.git
+cd nexusai-erp
+
+# Set up dependencies
+npm i
+
+# Configure environment
+cp .env.example .env
+
+# Initialize database
+npm run db:push
+
+# Start development server
+npm run dev
+```
+
+Visit `http://localhost:5000` to access the application.
+
+## Tech Stack
+
 - **Frontend**: React 18 + TypeScript + TailwindCSS + Shadcn/UI + Vite
-- **Backend**: NestJS + PostgreSQL + Redis + TypeORM
+- **Backend**: Node.js + Express.js + PostgreSQL + Drizzle ORM
 - **Authentication**: Passport (JWT + Local)
 - **AI Integration**: OpenAI for intelligent features
-- **Real-time**: WebSockets + Bull Queue
+- **State Management**: TanStack Query
 
 ### System Requirements
 - Node.js 18+
 - PostgreSQL 12+
-- Redis 6+
 - 2GB RAM minimum
 
-## 🚀 Quick Start
+## Documentation
 
-### Development
-```bash
-npm run dev
-# Frontend: http://localhost:5000
-# Backend: http://localhost:3001/api
-```
+| Document | Description |
+|----------|-------------|
+| [Getting Started](./docs/getting-started/README.md) | Quick start guide |
+| [Architecture](./docs/architecture/README.md) | System architecture overview |
+| [Contributing](./CONTRIBUTING.md) | How to contribute |
+| [Security](./SECURITY.md) | Security policy |
+| [Code of Conduct](./CODE_OF_CONDUCT.md) | Community guidelines |
 
-### Build for Production
-```bash
-cd client && npm run build
-cd backend && npm run build
-```
-
-### Docker Deployment
-```bash
-docker-compose up -d
-```
-
-## 📋 Environment Configuration
-
-Copy `.env.example` to `.env`:
-```bash
-# Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=nexusai
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# Security
-SESSION_SECRET=your-secret-here
-JWT_SECRET=your-jwt-secret-here
-
-# AI Features
-OPENAI_API_KEY=your-openai-key
-
-# Email
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
-
-# Payments (Optional)
-STRIPE_API_KEY=your-stripe-key
-```
-
-## 📊 API Endpoints
+## API Endpoints
 
 ### ERP Advanced
 - `POST /api/erp/advanced/bank-reconciliation/reconcile`
@@ -121,53 +115,45 @@ STRIPE_API_KEY=your-stripe-key
 - `POST /api/hr/advanced/recruitment/create-opening`
 - `POST /api/hr/advanced/learning/create-course`
 
-### Analytics
+### Analytics & Compliance
 - `GET /api/analytics/kpi/:kpiName`
-- `POST /api/analytics/report`
-
-### Compliance
-- `GET /api/compliance/rules`
 - `POST /api/compliance/check/:industryId`
 
-### Integration
-- `POST /api/integration/register`
-- `POST /api/integration/workflow/create`
-
-## 🔐 Security
+## Security
 
 ### Implemented
-✅ JWT Authentication
-✅ Password Hashing (bcrypt)
-✅ Session Management
-✅ CORS Protection
-✅ Input Validation (Zod schemas)
-✅ Rate Limiting Ready
-✅ Audit Trail Framework
+- JWT Authentication
+- Password Hashing (bcrypt)
+- Session Management
+- CORS Protection
+- Input Validation (Zod schemas)
+- Rate Limiting Ready
+- Audit Trail Framework
 
-### Recommended for Production
+### Production Recommendations
 - Enable HTTPS/TLS
 - Configure firewall rules
 - Set up intrusion detection
-- Implement DDoS protection
 - Regular security audits
 - Database encryption
 
-## 📈 Monitoring
+## Contributing
 
-### Available Dashboards
-- **System Health**: Infrastructure monitoring
-- **Analytics**: Business metrics & KPIs
-- **Compliance**: Regulatory status
-- **Performance**: API response times
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
 
-## 🌍 Multi-Tenant Support
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Commit (`git commit -m 'Add amazing feature'`)
+5. Push (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
-- Tenant-aware routing
-- Industry-specific configurations
-- Isolated data per tenant
-- Custom branding per tenant
+## Community
 
-## 🚀 Deployment
+- [GitHub Issues](https://github.com/mbilaljunaid/nexusai-erp/issues) - Bug reports and feature requests
+- [GitHub Discussions](https://github.com/mbilaljunaid/nexusai-erp/discussions) - Questions and ideas
+
+## Deployment
 
 ### Replit (Native)
 - Integrated PostgreSQL
@@ -184,42 +170,30 @@ docker-compose up -d
 ### Kubernetes
 - Stateless backend services
 - Horizontal scaling ready
-- Redis for session management
 - PostgreSQL replication ready
 
-## 📖 Documentation
+## License
 
-- **Deployment Guide**: See `DEPLOYMENT_GUIDE.md`
-- **API Documentation**: Available in Integration Hub
-- **Industry Guides**: Per-industry configuration
-- **User Guide**: Available in app
+NexusAI ERP is licensed under the [GNU Affero General Public License v3.0](./LICENSE).
 
-## 🆘 Support
+This means you can:
+- Use the software for any purpose
+- Modify and distribute the source code
+- Run the software as a network service
 
-### Resources
-- In-app help system
-- Industry-specific templates
-- API documentation
-- Code examples
+With the requirement that you:
+- Disclose source code of modifications
+- License modifications under AGPL-3.0
+- Provide network users access to source code
 
-### Troubleshooting
-- Check System Health dashboard
-- Review application logs
-- Check database connection
-- Verify environment variables
-
-## 📄 License
-
-Self-hosted, fully open-source. Zero vendor lock-in.
-
-## 🎯 Roadmap
+## Roadmap
 
 ### Current (v2.0)
-✅ All core modules
-✅ Advanced features
-✅ Compliance & UAT
-✅ Multi-language support
-✅ Industry configurations
+- All core modules
+- Advanced features
+- Compliance & UAT
+- Multi-language support
+- Industry configurations
 
 ### Future (v2.1)
 - Mobile native apps
@@ -228,14 +202,11 @@ Self-hosted, fully open-source. Zero vendor lock-in.
 - Blockchain integration
 - IoT capabilities
 
-## 📞 Contact & Support
-
-For deployment support or feature requests, contact your account manager or visit the documentation portal.
-
 ---
 
-**Platform**: NexusAI Enterprise
-**Version**: 2.0.0
-**Status**: Production Ready ✅
-**Last Updated**: November 29, 2024
-**License**: Open Source, Self-Hosted
+**Platform**: NexusAI ERP  
+**Version**: 2.0.0  
+**Status**: Production Ready  
+**License**: [AGPL-3.0](./LICENSE)
+
+Made with care by the NexusAI community
