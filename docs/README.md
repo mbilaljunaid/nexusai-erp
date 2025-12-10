@@ -7,21 +7,35 @@ Welcome to the NexusAI ERP documentation. This directory contains comprehensive 
 ```
 docs/
 ├── getting-started/     # Quick start guides
-├── user-guide/          # End-user documentation
-├── developer-guide/     # Developer documentation
-├── api-reference/       # API documentation
+│   └── README.md
 ├── architecture/        # System architecture docs
-└── deployment/          # Deployment guides
+│   ├── README.md
+│   └── diagrams/
+├── api/                 # API documentation
+│   └── README.md
+└── README.md
 ```
 
 ## Quick Links
 
 - [Getting Started](./getting-started/README.md)
-- [User Guide](./user-guide/README.md)
-- [Developer Guide](./developer-guide/README.md)
-- [API Reference](./api-reference/README.md)
 - [Architecture](./architecture/README.md)
-- [Deployment](./deployment/README.md)
+- [API Reference](./api/README.md)
+
+## Root Documentation
+
+Additional documentation is available in the repository root:
+
+| Document | Description |
+|----------|-------------|
+| [README.md](../README.md) | Project overview |
+| [INSTALL.md](../INSTALL.md) | Installation guide |
+| [CONFIGURATION.md](../CONFIGURATION.md) | Configuration options |
+| [CONTRIBUTING.md](../CONTRIBUTING.md) | How to contribute |
+| [CHANGELOG.md](../CHANGELOG.md) | Version history |
+| [ROADMAP.md](../ROADMAP.md) | Future plans |
+| [SECURITY.md](../SECURITY.md) | Security policy |
+| [SUPPORT.md](../SUPPORT.md) | Getting help |
 
 ## Platform Overview
 
