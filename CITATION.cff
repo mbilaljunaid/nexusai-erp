@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use NexusAI ERP in your research, please cite it as below."
+type: software
+title: "NexusAI ERP"
+abstract: "An open-source, AI-powered enterprise resource planning platform with 12 core modules, 812 dynamic forms, and support for 40+ industries."
+authors:
+  - family-names: "Junaid"
+    given-names: "M. Bilal"
+    orcid: ""
+repository-code: "https://github.com/mbilaljunaid/nexusai-erp"
+url: "https://github.com/mbilaljunaid/nexusai-erp"
+license: AGPL-3.0
+version: "2.0.0"
+date-released: "2024-12-01"
+keywords:
+  - erp
+  - enterprise-resource-planning
+  - crm
+  - finance
+  - hr
+  - manufacturing
+  - supply-chain
+  - ai
+  - open-source
+  - typescript
+  - react
+  - nodejs

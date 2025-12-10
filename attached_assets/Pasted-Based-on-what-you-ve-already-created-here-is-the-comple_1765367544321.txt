@@ -1,0 +1,116 @@
+Based on what you’ve already created, here is the complete list of recommended root documentation files and exactly which ones are still missing.
+
+⸻
+
+✅ Files You Already Have
+	1.	LICENSE – AGPL-3.0
+	2.	CONTRIBUTING.md
+	3.	CODE_OF_CONDUCT.md
+	4.	SECURITY.md
+	5.	GOVERNANCE.md
+	6.	MAINTAINERS.md
+
+These cover legal, governance, and contribution processes.
+
+⸻
+
+📌 Essential Files Still Missing
+
+⭐ 1. README.md (Critical – Must Have)
+
+The main landing document for the repository.
+Explains: overview, features, setup, usage, architecture, screenshots, roadmap, etc.
+
+⸻
+
+⭐ 2. CHANGELOG.md (Highly Recommended)
+
+Tracks version history, releases, enhancements, fixes.
+Follows Keep a Changelog or Semantic Versioning.
+
+⸻
+
+⭐ 3. ROADMAP.md
+
+Outlines what’s coming next: features, milestones, release phases.
+
+⸻
+
+⭐ 4. ARCHITECTURE.md
+
+Explains how the system works internally:
+	•	Architecture diagram
+	•	Modules
+	•	Data flow
+	•	Tech stack
+	•	Integration layers
+
+⸻
+
+⭐ 5. INSTALL.md or SETUP.md
+
+Step-by-step installation:
+	•	Local development setup
+	•	Prerequisites
+	•	Environment variables
+	•	Commands
+
+If you prefer, this can be inside README.
+
+⸻
+
+⭐ 6. API.md or API_DOCUMENTATION.md
+
+Documents your backend APIs:
+	•	Endpoints
+	•	Payloads
+	•	Authentication
+	•	Error responses
+
+⸻
+
+📄 Optional but Recommended Files
+
+➕ 7. CONFIGURATION.md
+
+Env variables, config files, deployment settings.
+
+➕ 8. FAQ.md
+
+Frequently asked questions.
+
+➕ 9. SUPPORT.md
+
+How users can get help.
+
+➕ 10. CODEOWNERS
+
+Defines who owns which parts of the code (GitHub uses this for auto-review assignment).
+
+➕ 11. CITATION.cff
+
+If your project will be cited academically.
+
+⸻
+
+📌 Summary — Missing Files Checklist
+
+File	Required?	Purpose
+README.md	⭐ Must Have	Main documentation
+CHANGELOG.md	⭐ Yes	Track version changes
+ROADMAP.md	⭐ Yes	Future plans
+ARCHITECTURE.md	⭐ Yes	System design
+INSTALL.md	⭐ Yes	Setup & install instructions
+API.md	⭐ Yes	Document API
+CONFIGURATION.md	Optional	Env configs
+FAQ.md	Optional	Help users
+SUPPORT.md	Optional	Support channels
+CODEOWNERS	Optional	Auto-assign PR reviewers
+CITATION.cff	Optional	For research citation
+
+
+⸻
+
+If you want, I can generate all missing files now, with content tailored to your NexusAI open-source ERP project.
+
+Which ones should I generate?
