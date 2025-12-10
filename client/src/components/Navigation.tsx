@@ -258,7 +258,7 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Open Source</h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              <li><a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer" className="hover:text-white transition" data-testid="link-footer-github">GitHub</a></li>
+              <li><a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer" className="hover:text-white transition" data-testid="link-footer-github">GitHub</a></li>
               <li><Link to="/open-source" className="hover:text-white transition" data-testid="link-footer-opensource">About Open Source</Link></li>
               <li><Link to="/license" className="hover:text-white transition" data-testid="link-footer-license">License (AGPL-3.0)</Link></li>
               <li><Link to="/docs/contributing" className="hover:text-white transition" data-testid="link-footer-contributing">Contributing</Link></li>

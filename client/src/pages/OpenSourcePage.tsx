@@ -40,7 +40,7 @@ export default function OpenSourcePage() {
   ];
 
   const resources = [
-    { icon: Github, title: "GitHub Repository", desc: "Source code, issues, and pull requests", href: "https://github.com/nexusai/nexusai-erp" },
+    { icon: Github, title: "GitHub Repository", desc: "Source code, issues, and pull requests", href: "https://github.com/mbilaljunaid/nexusai-erp" },
     { icon: BookOpen, title: "Contributing Guide", desc: "How to contribute to NexusAI", href: "/docs/contributing" },
     { icon: Scale, title: "License (AGPL-3.0)", desc: "Full license text and terms", href: "/license" },
     { icon: Shield, title: "Security Policy", desc: "How to report vulnerabilities", href: "/security" },
@@ -63,7 +63,7 @@ export default function OpenSourcePage() {
             modify, and share.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="bg-slate-800 hover:bg-slate-700 text-white" data-testid="button-github">
                 <Github className="mr-2 w-5 h-5" /> View on GitHub
               </Button>
@@ -243,12 +243,12 @@ export default function OpenSourcePage() {
                 Every contribution helps make NexusAI better for everyone.
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
-                <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100" data-testid="button-star-github">
                     <Star className="mr-2 w-5 h-5" /> Star on GitHub
                   </Button>
                 </a>
-                <a href="https://github.com/nexusai/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mbilaljunaid/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-fork-github">
                     <GitFork className="mr-2 w-5 h-5" /> Fork Repository
                   </Button>

@@ -52,7 +52,7 @@ export default function ContributingPage() {
             Thank you for your interest in contributing! This guide will help you get started 
             with contributing to NexusAI.
           </p>
-          <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
             <Button size="lg" data-testid="button-view-repo">
               <Github className="mr-2 w-5 h-5" /> View Repository
             </Button>
@@ -190,12 +190,12 @@ export default function ContributingPage() {
               Join our growing community of contributors and help shape the future of enterprise ERP.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
-              <a href="https://github.com/nexusai/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/mbilaljunaid/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-100" data-testid="button-fork-repo">
                   Fork Repository
                 </Button>
               </a>
-              <a href="https://github.com/nexusai/nexusai-erp/issues" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/mbilaljunaid/nexusai-erp/issues" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-view-issues">
                   View Open Issues
                 </Button>

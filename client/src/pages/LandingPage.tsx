@@ -69,7 +69,7 @@ export default function LandingPage() {
           Enterprise-grade ERP platform for 40+ industries. Free to use, modify, and distribute under AGPL-3.0.
         </p>
         <div className="flex gap-4 justify-center flex-wrap mb-8">
-          <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="bg-slate-800 hover:bg-slate-700 text-white text-lg" data-testid="button-github-hero">
               <Github className="mr-2 w-5 h-5" /> View on GitHub
             </Button>
@@ -87,10 +87,10 @@ export default function LandingPage() {
         </div>
         {/* GitHub Badges */}
         <div className="flex gap-3 justify-center flex-wrap">
-          <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm transition-colors">
+          <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm transition-colors">
             <Star className="w-4 h-4" /> Star
           </a>
-          <a href="https://github.com/nexusai/nexusai-erp/fork" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm transition-colors">
+          <a href="https://github.com/mbilaljunaid/nexusai-erp/fork" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-full text-sm transition-colors">
             <GitFork className="w-4 h-4" /> Fork
           </a>
           <Link to="/docs/contributing">
@@ -259,12 +259,12 @@ export default function LandingPage() {
               Every contribution helps make enterprise software accessible to everyone.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
-              <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100" data-testid="button-star-github">
                   <Star className="mr-2 w-5 h-5" /> Star on GitHub
                 </Button>
               </a>
-              <a href="https://github.com/nexusai/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/mbilaljunaid/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-fork-github">
                   <GitFork className="mr-2 w-5 h-5" /> Fork Repository
                 </Button>

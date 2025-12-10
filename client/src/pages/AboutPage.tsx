@@ -72,12 +72,12 @@ export default function AboutPage() {
             </Card>
           </div>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100" data-testid="button-github-about">
                 <Star className="mr-2 w-5 h-5" /> Star on GitHub
               </Button>
             </a>
-            <a href="https://github.com/nexusai/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/mbilaljunaid/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-fork-about">
                 <GitFork className="mr-2 w-5 h-5" /> Fork Repository
               </Button>
@@ -149,8 +149,8 @@ export default function AboutPage() {
                   <Github className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" />
                   <div>
                     <p className="font-semibold">GitHub</p>
-                    <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
-                      github.com/nexusai/nexusai-erp
+                    <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                      github.com/mbilaljunaid/nexusai-erp
                     </a>
                   </div>
                 </div>
@@ -182,7 +182,7 @@ export default function AboutPage() {
         <h3 className="text-2xl font-bold mb-8">Follow Us</h3>
         <div className="flex justify-center gap-8">
           <a href="#linkedin" className="text-muted-foreground hover:text-blue-400 transition" data-testid="link-linkedin"><Linkedin className="w-8 h-8" /></a>
-          <a href="https://github.com/nexusai/nexusai-erp" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-blue-400 transition" data-testid="link-github"><Github className="w-8 h-8" /></a>
+          <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-blue-400 transition" data-testid="link-github"><Github className="w-8 h-8" /></a>
           <a href="#twitter" className="text-muted-foreground hover:text-blue-400 transition" data-testid="link-twitter"><Twitter className="w-8 h-8" /></a>
         </div>
       </section>

@@ -20,7 +20,7 @@ const BlogPage = lazy(() => import("@/pages/BlogPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const DemoManagement = lazy(() => import("@/pages/DemoManagement"));
 const UseCases = lazy(() => import("@/pages/UseCases"));
-const IndustriesPage = lazy(() => import("@/pages/Industries"));
+const IndustriesPage = lazy(() => import("@/pages/IndustriesPage"));
 const IndustryDetail = lazy(() => import("@/pages/IndustryDetail"));
 const ModuleDetail = lazy(() => import("@/pages/ModuleDetail"));
 const IndustrySetup = lazy(() => import("@/pages/IndustrySetup"));
