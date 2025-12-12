@@ -1,6 +1,30 @@
 version: '3.9'
 
 services:
+  # NexusAI ERP Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: nexusai-app
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DATABASE_URL: postgresql://nexusai:nexusai_dev@postgres:5432/nexusai
+      REDIS_URL: redis://redis:6379
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - nexusai_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   # PostgreSQL
   postgres:
     image: postgres:16-alpine
