@@ -1,0 +1,19 @@
+- identifier: AGPL-3.0
+  name: GNU Affero General Public License v3.0
+  url: https://www.gnu.org/licenses/agpl-3.0.en.html
+
+- identifier: MIT
+  name: MIT License
+  url: https://opensource.org/licenses/MIT
+
+- identifier: Apache-2.0
+  name: Apache License 2.0
+  url: https://www.apache.org/licenses/LICENSE-2.0
+
+- identifier: GPL-3.0
+  name: GNU General Public License v3.0
+  url: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+- identifier: BSD-3-Clause
+  name: BSD 3-Clause License
+  url: https://opensource.org/licenses/BSD-3-Clause
