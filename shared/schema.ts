@@ -9,6 +9,8 @@ export const users = pgTable("users", {
   email: varchar("email").unique(),
   password: varchar("password"),
   name: varchar("name"),
+  role: varchar("role").default("user"),
+  permissions: jsonb("permissions"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -16,6 +18,8 @@ export const insertUserSchema = createInsertSchema(users).omit({ id: true, creat
   email: z.string().email().optional(),
   password: z.string().optional(),
   name: z.string().optional(),
+  role: z.string().optional(),
+  permissions: z.record(z.any()).optional(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
