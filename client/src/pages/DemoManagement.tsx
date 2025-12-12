@@ -21,9 +21,10 @@ export default function DemoManagement() {
     try {
       const res = await fetch("/api/demos/industries");
       const data = await res.json();
-      setIndustries(data);
+      setIndustries(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);
+      setIndustries([]);
     }
   };
 
