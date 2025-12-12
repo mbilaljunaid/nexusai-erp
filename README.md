@@ -7,7 +7,7 @@
 
 **Open Source AI-Powered Enterprise Resource Planning Platform**
 
-A comprehensive, self-hosted enterprise platform combining ERP, EPM, CRM, HRMS, and 40+ business modules with AI-powered features, multi-language support (12 languages), and industry-specific solutions for 15+ sectors.
+A comprehensive, self-hosted enterprise platform combining ERP, EPM, CRM, HRMS, and 40+ business modules with AI-powered features, multi-language support (12 languages), and industry-specific solutions for 40+ sectors.
 
 ## Features
 
