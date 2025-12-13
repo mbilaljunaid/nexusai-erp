@@ -602,7 +602,7 @@ export default function Marketplace() {
   });
 
   const { data: apps = [], isLoading: loadingApps } = useQuery<MarketplaceApp[]>({
-    queryKey: ["/api/marketplace/apps", { category: selectedCategory, search: searchQuery, pricing: pricingFilter }],
+    queryKey: ["/api/marketplace/apps", selectedCategory, searchQuery, pricingFilter],
   });
 
   const { data: installedApps = [] } = useQuery<any[]>({
