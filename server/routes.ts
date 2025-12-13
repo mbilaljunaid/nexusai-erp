@@ -2180,18 +2180,23 @@ export async function registerRoutes(
         developerIds = existingDevs.map(d => d.id);
       }
 
-      // Check if apps already exist
+      // Check if apps already exist and only insert new ones
       const existingApps = await db.select().from(marketplaceApps);
-      if (existingApps.length > 0) {
+      const existingSlugs = new Set(existingApps.map(app => app.slug));
+
+      // Filter to only new apps
+      const newAppSeeds = marketplaceAppSeeds.filter(appSeed => !existingSlugs.has(appSeed.slug));
+
+      if (newAppSeeds.length === 0) {
         return res.json({ 
-          message: "Marketplace already seeded",
+          message: "All apps already seeded",
           developers: developerIds.length,
           apps: existingApps.length
         });
       }
 
-      // Insert apps
-      const appsToInsert = marketplaceAppSeeds.map(appSeed => ({
+      // Insert only new apps
+      const appsToInsert = newAppSeeds.map(appSeed => ({
         developerId: developerIds[appSeed.developerIndex] || developerIds[0],
         name: appSeed.name,
         slug: appSeed.slug,
@@ -2216,9 +2221,11 @@ export async function registerRoutes(
         .returning();
 
       res.json({
-        message: "Marketplace seeded successfully",
+        message: `Marketplace seeded successfully with ${insertedApps.length} new apps`,
         developers: developerIds.length,
-        apps: insertedApps.length
+        existingApps: existingApps.length,
+        newApps: insertedApps.length,
+        totalApps: existingApps.length + insertedApps.length
       });
     } catch (error: any) {
       console.error("Error seeding marketplace:", error);
