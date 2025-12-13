@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
-import { GraduationCap, ArrowLeft, DollarSign, FileText, Calculator, PieChart, CreditCard, TrendingUp } from "lucide-react";
+import { GraduationCap, ArrowLeft, ArrowRight, DollarSign, FileText, Calculator, PieChart, CreditCard, TrendingUp } from "lucide-react";
 
 export default function TrainingGuideFinance() {
   useEffect(() => {
@@ -12,12 +12,12 @@ export default function TrainingGuideFinance() {
   }, []);
 
   const modules = [
-    { icon: FileText, title: "General Ledger", desc: "Chart of accounts, journal entries, and period close", duration: "60 min" },
-    { icon: CreditCard, title: "Accounts Payable", desc: "Vendor invoices, payments, and reconciliation", duration: "45 min" },
-    { icon: DollarSign, title: "Accounts Receivable", desc: "Customer invoicing, collections, and aging", duration: "45 min" },
-    { icon: Calculator, title: "Budgeting", desc: "Budget creation, variance analysis, and forecasting", duration: "50 min" },
-    { icon: PieChart, title: "Financial Reporting", desc: "Balance sheet, income statement, and custom reports", duration: "40 min" },
-    { icon: TrendingUp, title: "Cash Management", desc: "Cash flow, bank reconciliation, and treasury", duration: "40 min" },
+    { icon: FileText, title: "General Ledger", desc: "Chart of accounts, journal entries, and period close", duration: "60 min", href: "/docs/training-guides/finance/general-ledger" },
+    { icon: CreditCard, title: "Accounts Payable", desc: "Vendor invoices, payments, and reconciliation", duration: "45 min", href: "/docs/training-guides/finance/accounts-payable" },
+    { icon: DollarSign, title: "Accounts Receivable", desc: "Customer invoicing, collections, and aging", duration: "45 min", href: "/docs/training-guides/finance/accounts-receivable" },
+    { icon: Calculator, title: "Budgeting", desc: "Budget creation, variance analysis, and forecasting", duration: "50 min", href: "/docs/training-guides/finance/budgeting" },
+    { icon: PieChart, title: "Financial Reporting", desc: "Balance sheet, income statement, and custom reports", duration: "40 min", href: "/docs/training-guides/finance/financial-reporting" },
+    { icon: TrendingUp, title: "Cash Management", desc: "Cash flow, bank reconciliation, and treasury", duration: "40 min", href: "/docs/training-guides/finance/cash-management" },
   ];
 
   return (
@@ -49,18 +49,21 @@ export default function TrainingGuideFinance() {
           <h2 className="text-2xl font-bold mb-6">Training Modules</h2>
           <div className="space-y-4">
             {modules.map((item, index) => (
-              <Card key={index} data-testid={`card-module-${index}`}>
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <div className="p-2 rounded-lg bg-muted">
-                    <item.icon className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-lg">{item.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                  <Badge variant="outline">{item.duration}</Badge>
-                </CardHeader>
-              </Card>
+              <Link key={index} to={item.href} className="block">
+                <Card className="transition-all duration-200 hover:shadow-lg hover:border-green-300 dark:hover:border-green-700 cursor-pointer" data-testid={`card-module-${index}`}>
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    <div className="p-2 rounded-lg bg-muted">
+                      <item.icon className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{item.title}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                    <Badge variant="outline">{item.duration}</Badge>
+                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
@@ -72,9 +75,11 @@ export default function TrainingGuideFinance() {
               Total training time: approximately 6 hours
             </p>
             <div className="flex justify-center gap-4">
-              <Button size="lg" data-testid="button-start-training">
-                Start Training
-              </Button>
+              <Link to={modules[0].href}>
+                <Button size="lg" data-testid="button-start-training">
+                  Start Training
+                </Button>
+              </Link>
               <Link to="/docs/training-guides">
                 <Button size="lg" variant="outline" data-testid="button-view-all">
                   View All Guides

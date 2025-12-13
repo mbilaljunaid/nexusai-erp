@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
-import { GraduationCap, ArrowLeft, Users, Calendar, DollarSign, Award, Clock, FileText } from "lucide-react";
+import { GraduationCap, ArrowLeft, ArrowRight, Users, Calendar, DollarSign, Award, Clock, FileText } from "lucide-react";
 
 export default function TrainingGuideHR() {
   useEffect(() => {
@@ -12,12 +12,12 @@ export default function TrainingGuideHR() {
   }, []);
 
   const modules = [
-    { icon: Users, title: "Employee Management", desc: "Employee records, org structure, and directory", duration: "40 min" },
-    { icon: Calendar, title: "Time & Attendance", desc: "Time tracking, schedules, and leave management", duration: "45 min" },
-    { icon: DollarSign, title: "Payroll Processing", desc: "Pay runs, deductions, and tax calculations", duration: "55 min" },
-    { icon: Award, title: "Performance Reviews", desc: "Goals, reviews, and development plans", duration: "35 min" },
-    { icon: Clock, title: "Leave Management", desc: "Leave requests, approvals, and balances", duration: "30 min" },
-    { icon: FileText, title: "HR Reporting", desc: "Headcount, turnover, and compliance reports", duration: "30 min" },
+    { icon: Users, title: "Employee Management", desc: "Employee records, org structure, and directory", duration: "40 min", href: "/docs/training-guides/hr/employee-management" },
+    { icon: Calendar, title: "Time & Attendance", desc: "Time tracking, schedules, and leave management", duration: "45 min", href: "/docs/training-guides/hr/time-attendance" },
+    { icon: DollarSign, title: "Payroll Processing", desc: "Pay runs, deductions, and tax calculations", duration: "55 min", href: "/docs/training-guides/hr/payroll-processing" },
+    { icon: Award, title: "Performance Reviews", desc: "Goals, reviews, and development plans", duration: "35 min", href: "/docs/training-guides/hr/performance-reviews" },
+    { icon: Clock, title: "Leave Management", desc: "Leave requests, approvals, and balances", duration: "30 min", href: "/docs/training-guides/hr/leave-management" },
+    { icon: FileText, title: "HR Reporting", desc: "Headcount, turnover, and compliance reports", duration: "30 min", href: "/docs/training-guides/hr/hr-reporting" },
   ];
 
   return (
@@ -49,18 +49,21 @@ export default function TrainingGuideHR() {
           <h2 className="text-2xl font-bold mb-6">Training Modules</h2>
           <div className="space-y-4">
             {modules.map((item, index) => (
-              <Card key={index} data-testid={`card-module-${index}`}>
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <div className="p-2 rounded-lg bg-muted">
-                    <item.icon className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-lg">{item.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                  <Badge variant="outline">{item.duration}</Badge>
-                </CardHeader>
-              </Card>
+              <Link key={index} to={item.href} className="block">
+                <Card className="transition-all duration-200 hover:shadow-lg hover:border-teal-300 dark:hover:border-teal-700 cursor-pointer" data-testid={`card-module-${index}`}>
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    <div className="p-2 rounded-lg bg-muted">
+                      <item.icon className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{item.title}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                    <Badge variant="outline">{item.duration}</Badge>
+                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
@@ -72,9 +75,11 @@ export default function TrainingGuideHR() {
               Total training time: approximately 4 hours
             </p>
             <div className="flex justify-center gap-4">
-              <Button size="lg" data-testid="button-start-training">
-                Start Training
-              </Button>
+              <Link to={modules[0].href}>
+                <Button size="lg" data-testid="button-start-training">
+                  Start Training
+                </Button>
+              </Link>
               <Link to="/docs/training-guides">
                 <Button size="lg" variant="outline" data-testid="button-view-all">
                   View All Guides

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
-import { GraduationCap, ArrowLeft, Users, Target, BarChart3, Mail } from "lucide-react";
+import { GraduationCap, ArrowLeft, ArrowRight, Users, Target, BarChart3, Mail } from "lucide-react";
 
 export default function TrainingGuideCRM() {
   useEffect(() => {
@@ -12,10 +12,10 @@ export default function TrainingGuideCRM() {
   }, []);
 
   const modules = [
-    { icon: Users, title: "Customer Management", desc: "Create and manage customer records, contacts, and hierarchies", duration: "45 min" },
-    { icon: Target, title: "Lead & Opportunity", desc: "Track sales pipeline from lead to closed deal", duration: "60 min" },
-    { icon: BarChart3, title: "Sales Analytics", desc: "Dashboards, reports, and forecasting tools", duration: "30 min" },
-    { icon: Mail, title: "Communication Tools", desc: "Email integration, activity logging, and follow-ups", duration: "30 min" },
+    { icon: Users, title: "Customer Management", desc: "Create and manage customer records, contacts, and hierarchies", duration: "45 min", href: "/docs/training-guides/crm/customer-management" },
+    { icon: Target, title: "Lead & Opportunity", desc: "Track sales pipeline from lead to closed deal", duration: "60 min", href: "/docs/training-guides/crm/lead-opportunity" },
+    { icon: BarChart3, title: "Sales Analytics", desc: "Dashboards, reports, and forecasting tools", duration: "30 min", href: "/docs/training-guides/crm/sales-analytics" },
+    { icon: Mail, title: "Communication Tools", desc: "Email integration, activity logging, and follow-ups", duration: "30 min", href: "/docs/training-guides/crm/communication-tools" },
   ];
 
   return (
@@ -29,8 +29,8 @@ export default function TrainingGuideCRM() {
             </Button>
           </Link>
           <div className="flex items-center gap-4 mb-6">
-            <div className="p-3 rounded-lg bg-green-100 dark:bg-green-900">
-              <GraduationCap className="w-8 h-8 text-green-600" />
+            <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900">
+              <GraduationCap className="w-8 h-8 text-blue-600" />
             </div>
             <div>
               <Badge className="mb-2">TRAINING</Badge>
@@ -47,18 +47,21 @@ export default function TrainingGuideCRM() {
           <h2 className="text-2xl font-bold mb-6">Training Modules</h2>
           <div className="space-y-4">
             {modules.map((item, index) => (
-              <Card key={index} data-testid={`card-module-${index}`}>
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <div className="p-2 rounded-lg bg-muted">
-                    <item.icon className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-lg">{item.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                  <Badge variant="outline">{item.duration}</Badge>
-                </CardHeader>
-              </Card>
+              <Link key={index} to={item.href} className="block">
+                <Card className="transition-all duration-200 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-700 cursor-pointer" data-testid={`card-module-${index}`}>
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    <div className="p-2 rounded-lg bg-muted">
+                      <item.icon className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{item.title}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                    <Badge variant="outline">{item.duration}</Badge>
+                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
@@ -70,9 +73,11 @@ export default function TrainingGuideCRM() {
               Total training time: approximately 2.75 hours
             </p>
             <div className="flex justify-center gap-4">
-              <Button size="lg" data-testid="button-start-training">
-                Start Training
-              </Button>
+              <Link to={modules[0].href}>
+                <Button size="lg" data-testid="button-start-training">
+                  Start Training
+                </Button>
+              </Link>
               <Link to="/demo">
                 <Button variant="outline" size="lg" data-testid="button-request-demo">
                   Request Live Demo

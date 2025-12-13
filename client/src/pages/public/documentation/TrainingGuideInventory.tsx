@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
-import { GraduationCap, ArrowLeft, Package, Warehouse, Truck, ClipboardList, BarChart3, Settings } from "lucide-react";
+import { GraduationCap, ArrowLeft, ArrowRight, Package, Warehouse, Truck, ClipboardList, BarChart3 } from "lucide-react";
 
 export default function TrainingGuideInventory() {
   useEffect(() => {
@@ -12,11 +12,11 @@ export default function TrainingGuideInventory() {
   }, []);
 
   const modules = [
-    { icon: Package, title: "Stock Management", desc: "Item master, stock levels, and reorder points", duration: "40 min" },
-    { icon: Warehouse, title: "Warehouse Operations", desc: "Receiving, put-away, picking, and shipping", duration: "50 min" },
-    { icon: Truck, title: "Goods Movement", desc: "Transfers, adjustments, and cycle counts", duration: "35 min" },
-    { icon: ClipboardList, title: "Inventory Valuation", desc: "Costing methods, valuation reports", duration: "30 min" },
-    { icon: BarChart3, title: "Inventory Analytics", desc: "Turnover, aging, and optimization reports", duration: "25 min" },
+    { icon: Package, title: "Stock Management", desc: "Item master, stock levels, and reorder points", duration: "40 min", href: "/docs/training-guides/inventory/stock-management" },
+    { icon: Warehouse, title: "Warehouse Operations", desc: "Receiving, put-away, picking, and shipping", duration: "50 min", href: "/docs/training-guides/inventory/warehouse-operations" },
+    { icon: Truck, title: "Goods Movement", desc: "Transfers, adjustments, and cycle counts", duration: "35 min", href: "/docs/training-guides/inventory/goods-movement" },
+    { icon: ClipboardList, title: "Inventory Valuation", desc: "Costing methods, valuation reports", duration: "30 min", href: "/docs/training-guides/inventory/inventory-valuation" },
+    { icon: BarChart3, title: "Inventory Analytics", desc: "Turnover, aging, and optimization reports", duration: "25 min", href: "/docs/training-guides/inventory/inventory-analytics" },
   ];
 
   return (
@@ -48,18 +48,21 @@ export default function TrainingGuideInventory() {
           <h2 className="text-2xl font-bold mb-6">Training Modules</h2>
           <div className="space-y-4">
             {modules.map((item, index) => (
-              <Card key={index} data-testid={`card-module-${index}`}>
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <div className="p-2 rounded-lg bg-muted">
-                    <item.icon className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-lg">{item.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                  <Badge variant="outline">{item.duration}</Badge>
-                </CardHeader>
-              </Card>
+              <Link key={index} to={item.href} className="block">
+                <Card className="transition-all duration-200 hover:shadow-lg hover:border-orange-300 dark:hover:border-orange-700 cursor-pointer" data-testid={`card-module-${index}`}>
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    <div className="p-2 rounded-lg bg-muted">
+                      <item.icon className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{item.title}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                    <Badge variant="outline">{item.duration}</Badge>
+                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
@@ -71,9 +74,11 @@ export default function TrainingGuideInventory() {
               Total training time: approximately 3 hours
             </p>
             <div className="flex justify-center gap-4">
-              <Button size="lg" data-testid="button-start-training">
-                Start Training
-              </Button>
+              <Link to={modules[0].href}>
+                <Button size="lg" data-testid="button-start-training">
+                  Start Training
+                </Button>
+              </Link>
               <Link to="/docs/training-guides">
                 <Button size="lg" variant="outline" data-testid="button-view-all">
                   View All Guides
