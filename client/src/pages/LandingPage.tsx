@@ -3,30 +3,13 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { ArrowRight, Zap, Shield, Globe, TrendingUp, Sparkles, Package, Users, Briefcase, BarChart3, DollarSign, Factory, CheckCircle, Settings, Mail, Bot, Layers, Filter, FileUp, Github, Star, GitFork, Scale, Heart, Code2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 
 export default function LandingPage() {
-  const [email, setEmail] = useState("");
-  const [company, setCompany] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
   useEffect(() => {
     document.title = "NexusAI - Open Source AI-Powered ERP | AGPL-3.0 Licensed";
   }, []);
-
-  const handleDemo = async () => {
-    try {
-      const res = await fetch("/api/demos/request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, company, industry: "General" }),
-      });
-      if (res.ok) setSubmitted(true);
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const industries = [
     "Automotive", "Banking", "Healthcare", "Education", "Retail", "Manufacturing",
@@ -98,12 +81,6 @@ export default function LandingPage() {
               <Heart className="w-4 h-4" /> Contribute
             </span>
           </Link>
-        </div>
-        {/* Featured Badge */}
-        <div className="mt-6 flex justify-center">
-          <a href="https://startupfa.me/s/nexusai?utm_source=nexusaifirst.cloud" target="_blank" rel="noopener noreferrer" data-testid="link-startup-fame">
-            <img src="https://startupfa.me/badges/featured-badge.webp" alt="Nexus AI First ERP - Featured on Startup Fame" width="171" height="54" />
-          </a>
         </div>
       </section>
 
@@ -280,36 +257,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Demo CTA */}
-      <section className="px-4 py-20 max-w-2xl mx-auto">
-        <Card className="landing-cta-gradient p-8">
-          <h2 className="text-3xl font-bold mb-4 text-white">Try NexusAI Today</h2>
-          <p className="mb-6 text-white/70">Get instant access to a fully seeded demo environment for your industry.</p>
-          <div className="space-y-4">
-            <input
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded border text-white placeholder-white/50"
-              style={{ backgroundColor: `hsl(var(--primary) / 0.2)`, borderColor: `hsl(var(--primary) / 0.4)`, color: 'white' }}
-              data-testid="input-demo-email"
-            />
-            <input
-              type="text"
-              placeholder="Your Company"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              className="w-full px-4 py-2 rounded border text-white placeholder-white/50"
-              style={{ backgroundColor: `hsl(var(--primary) / 0.2)`, borderColor: `hsl(var(--primary) / 0.4)`, color: 'white' }}
-              data-testid="input-demo-company"
-            />
-            <Button onClick={handleDemo} className="w-full bg-white text-[hsl(var(--primary))] hover:bg-white/90 font-bold text-lg" data-testid="button-demo-cta">
-              {submitted ? "Demo Request Sent!" : "Request Demo Access"}
-            </Button>
-            {submitted && <p className="text-center text-white/70">Check your email for access details!</p>}
-          </div>
-        </Card>
+      {/* Featured Section */}
+      <section className="px-4 py-20 max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-8">Featured</h2>
+        <div className="flex justify-center">
+          <a href="https://startupfa.me/s/nexusai?utm_source=nexusaifirst.cloud" target="_blank" rel="noopener noreferrer" data-testid="link-startup-fame">
+            <img src="https://startupfa.me/badges/featured-badge.webp" alt="Nexus AI First ERP - Featured on Startup Fame" width="171" height="54" />
+          </a>
+        </div>
       </section>
 
       </main>
