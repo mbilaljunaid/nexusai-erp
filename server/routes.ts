@@ -143,7 +143,31 @@ export async function registerRoutes(
     if (req.path === "/demos/list") return next();
     if (req.path.startsWith("/copilot")) return next();
     if (req.path === "/feedback") return next();
+    if (req.path === "/auth/user") return next();
+    if (req.path === "/marketplace/categories") return next();
+    if (req.path === "/marketplace/apps") return next();
+    if (req.path.match(/^\/marketplace\/apps\/[^/]+$/)) return next();
+    if (req.path.match(/^\/marketplace\/apps\/[^/]+\/reviews$/)) return next();
+    if (req.path.match(/^\/marketplace\/apps\/[^/]+\/dependencies$/)) return next();
     enforceRBAC()(req, res, next);
+  });
+
+  // ========== AUTH USER ENDPOINT (for frontend auth check) ==========
+  app.get("/api/auth/user", (req: any, res) => {
+    if (req.isAuthenticated && req.isAuthenticated() && req.user) {
+      const claims = req.user.claims || {};
+      return res.json({
+        isAuthenticated: true,
+        user: {
+          id: claims.sub || req.user.id,
+          email: claims.email,
+          firstName: claims.first_name,
+          lastName: claims.last_name,
+          profileImageUrl: claims.profile_image_url,
+        }
+      });
+    }
+    return res.json({ isAuthenticated: false, user: null });
   });
 
   // ========== USER FEEDBACK ROUTE ==========

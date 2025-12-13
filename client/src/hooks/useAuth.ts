@@ -1,16 +1,42 @@
 import { useQuery } from "@tanstack/react-query";
-import type { User } from "@shared/schema";
+
+interface AuthUser {
+  id: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  profileImageUrl?: string;
+}
+
+interface AuthState {
+  isAuthenticated: boolean;
+  user: AuthUser | null;
+}
 
 export function useAuth() {
-  const { data: user, isLoading, error } = useQuery<User>({
-    queryKey: ["/api/auth/user"],
+  const { data, isLoading, error } = useQuery<AuthState>({
+    queryKey: ['/api/auth/user'],
+    staleTime: 1000 * 60 * 5,
     retry: false,
   });
 
   return {
-    user,
+    isAuthenticated: data?.isAuthenticated ?? false,
+    user: data?.user ?? null,
     isLoading,
-    isAuthenticated: !!user,
     error,
+  };
+}
+
+export function useRequireAuth() {
+  const auth = useAuth();
+  
+  const login = () => {
+    window.location.href = '/api/login';
+  };
+
+  return {
+    ...auth,
+    login,
   };
 }
