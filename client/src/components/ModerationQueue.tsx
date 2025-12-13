@@ -338,7 +338,7 @@ export function ModerationQueue() {
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedFlag(null)}>
+            <Button variant="outline" onClick={() => setSelectedFlag(null)} data-testid="button-cancel-moderation">
               Cancel
             </Button>
             <Button 

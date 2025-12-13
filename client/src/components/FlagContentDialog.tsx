@@ -107,7 +107,7 @@ export function FlagContentDialog({ open, onOpenChange, targetType, targetId }: 
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-flag">
             Cancel
           </Button>
           <Button 
