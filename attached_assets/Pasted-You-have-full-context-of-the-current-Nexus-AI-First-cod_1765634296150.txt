@@ -1,0 +1,96 @@
+You have full context of the current Nexus AI First codebase, repository structure, and history.
+
+I want you to design a COMPLETE repository, licensing, and governance strategy to convert and MAINTAIN Nexus AI First as a proper OPEN-CORE project.
+
+BUSINESS INTENT (NON-NEGOTIABLE):
+- Nexus AI First must be open source ONLY at the core functionality level.
+- Public-facing pages, UI layers, documentation portals, blogs, marketplaces (apps & services), billing, payments, community features, moderation tools, recommendation logic, and branding must remain PROPRIETARY.
+- Contributors must be able to fork the core and build their own products without access to my commercial platform.
+- My proprietary platform must never be accidentally open-sourced now or in the future.
+
+CURRENT STATE:
+- The existing GitHub repository already contains a mix of core logic and proprietary files.
+- The project is currently public.
+- I want to safely restructure without breaking ongoing development.
+
+TARGET STATE:
+- One PUBLIC GitHub repository for open-source core
+- One PRIVATE GitHub repository for proprietary platform
+- Clear, enforceable boundaries between the two
+- Clean contributor experience
+- Long-term monetization safety
+- Investor-grade governance
+
+YOUR TASK:
+Provide a COMPLETE STRATEGY covering ALL of the following:
+
+1. CODEBASE CLASSIFICATION
+   - Analyze the current folders and files
+   - Classify each as:
+     a) Open-source core
+     b) Proprietary platform
+   - Identify ambiguous areas and propose refactoring where needed
+
+2. REPOSITORY RESTRUCTURING PLAN
+   - Step-by-step instructions to:
+     - Extract core code into a new public repository
+     - Move proprietary code into a private repository
+     - Handle git history safely
+     - Archive or deprecate the existing mixed repository
+   - Recommend final folder structures for BOTH repositories
+
+3. LICENSE & LEGAL BOUNDARIES
+   - Recommend an appropriate open-source license for the core
+   - Specify where licensing notices must exist
+   - Draft clear README scope statements
+   - Prevent contributors from assuming UI, docs portals, or marketplaces are open source
+
+4. ARCHITECTURAL ENFORCEMENT
+   - Define strict interaction rules between open-source core and proprietary platform
+   - API, SDK, or package-based integration patterns
+   - Explicit rules preventing circular or reverse dependencies
+   - Extension and plugin mechanisms that remain safe for open source
+
+5. GITHUB GOVERNANCE
+   - Branch strategy and protection rules
+   - Pull request and review workflows
+   - CODEOWNERS setup
+   - Contributor permissions and limitations
+   - Internal team workflow for proprietary repos
+
+6. FUTURE DEVELOPMENT & CHANGE CONTROL (CRITICAL)
+   - Define a permanent decision framework to classify ALL future features as either:
+     a) Core (open source)
+     b) Platform (proprietary)
+   - Specify architectural and repository checks to prevent accidental leakage of proprietary code
+   - Recommend policies, checklists, or automation (CI checks, folder rules, repo linting)
+   - Define how future refactors, new modules, or marketplaces must respect this open-core boundary
+   - Ensure this strategy is treated as a LONG-TERM RULE, not a one-time migration
+
+7. VERSIONING & DEPENDENCY MANAGEMENT
+   - How proprietary repos consume open-source core versions
+   - Release cadence alignment
+   - Backward compatibility strategy
+   - Breaking-change policy
+
+8. CONTRIBUTOR & ECOSYSTEM MODEL
+   - What contributors can and cannot build
+   - How external developers can fork the core and build their own UI or marketplaces
+   - What Nexus AI will and will not support
+
+9. MIGRATION RISK & MITIGATION
+   - Risks during restructuring
+   - How to avoid broken builds
+   - How to communicate changes to early contributors or users
+
+OUTPUT REQUIREMENTS:
+- Structured sections with clear headings
+- Decision tables where useful
+- Explicit DO / DO NOT lists
+- No marketing or promotional language
+- Founder-level clarity suitable for long-term governance
+
+STRICT CONSTRAINTS:
+- Do NOT suggest keeping proprietary code in branches of a public repository
+- Do NOT mix UI, billing, marketplace, docs UI, or branding into open-source code
+- Assume this strategy must be enforced for ALL FUTURE UPDATES AND DEVELOPMENTS
