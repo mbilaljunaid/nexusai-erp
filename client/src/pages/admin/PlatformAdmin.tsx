@@ -30,6 +30,15 @@ import {
   EyeOff,
   Loader2,
   CheckCircle,
+  Mail,
+  Server,
+  Receipt,
+  RefreshCw,
+  UserCog,
+  Send,
+  Play,
+  Trash2,
+  Edit,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -86,11 +95,22 @@ export default function PlatformAdmin() {
     setIsSavingPayments(false);
   };
   
+  const [emailSettings, setEmailSettings] = useState({
+    smtp: { host: "", port: "587", username: "", password: "", encryption: "tls" },
+    imap: { host: "", port: "993", username: "", password: "", encryption: "ssl" },
+  });
+  const [isRefreshingDemo, setIsRefreshingDemo] = useState(false);
+  const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
+
   const navItems = [
     { id: "overview", label: "Overview", icon: Building2, color: "text-blue-500" },
-    { id: "tenants", label: "Tenants", icon: Users, color: "text-green-500" },
-    { id: "features", label: "Features & Licensing", icon: Zap, color: "text-yellow-500" },
+    { id: "tenants", label: "Tenant & Hosting", icon: Server, color: "text-green-500" },
+    { id: "users", label: "Users", icon: UserCog, color: "text-indigo-500" },
+    { id: "email", label: "Email Management", icon: Mail, color: "text-cyan-500" },
+    { id: "billing", label: "Services Billing", icon: Receipt, color: "text-orange-500" },
+    { id: "demos", label: "Demo Management", icon: RefreshCw, color: "text-pink-500" },
     { id: "payments", label: "Payment Settings", icon: CreditCard, color: "text-emerald-500" },
+    { id: "features", label: "Features & Licensing", icon: Zap, color: "text-yellow-500" },
     { id: "system", label: "System Config", icon: Settings, color: "text-purple-500" },
     { id: "security", label: "Security & Compliance", icon: Shield, color: "text-red-500" },
   ];
@@ -303,6 +323,445 @@ export default function PlatformAdmin() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {activeNav === "users" && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <Input placeholder="Search users..." className="max-w-sm" data-testid="input-search-users" />
+            <div className="flex gap-2">
+              <Select defaultValue="all">
+                <SelectTrigger className="w-40" data-testid="select-user-type">
+                  <SelectValue placeholder="User Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Users</SelectItem>
+                  <SelectItem value="tenant-admin">Tenant Admins</SelectItem>
+                  <SelectItem value="tenant-user">Tenant Users</SelectItem>
+                  <SelectItem value="individual">Individual Users</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button data-testid="button-add-user">
+                <Plus className="h-4 w-4 mr-2" />
+                Add User
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Tenant Administrators</CardTitle>
+                <CardDescription>Users with full admin access to their tenant</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b bg-muted/50">
+                        <th className="px-4 py-2 text-left font-medium">User</th>
+                        <th className="px-4 py-2 text-left font-medium">Tenant</th>
+                        <th className="px-4 py-2 text-left font-medium">Role</th>
+                        <th className="px-4 py-2 text-left font-medium">Last Login</th>
+                        <th className="px-4 py-2 text-right font-medium">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { name: "John Smith", email: "john@acme.com", tenant: "Acme Corp", role: "Super Admin", lastLogin: "2 hours ago" },
+                        { name: "Sarah Connor", email: "sarah@techstart.com", tenant: "TechStart Inc", role: "Admin", lastLogin: "1 day ago" },
+                        { name: "Mike Johnson", email: "mike@global.com", tenant: "Global Solutions", role: "Admin", lastLogin: "3 days ago" },
+                      ].map((user, i) => (
+                        <tr key={i} className="border-b hover:bg-muted/50">
+                          <td className="px-4 py-3">
+                            <div>
+                              <p className="font-medium">{user.name}</p>
+                              <p className="text-xs text-muted-foreground">{user.email}</p>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-sm">{user.tenant}</td>
+                          <td className="px-4 py-3">
+                            <Badge variant="secondary">{user.role}</Badge>
+                          </td>
+                          <td className="px-4 py-3 text-xs text-muted-foreground">{user.lastLogin}</td>
+                          <td className="px-4 py-3 text-right">
+                            <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Individual Users</CardTitle>
+                <CardDescription>Users without tenant association (free tier)</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm text-muted-foreground text-center py-8">
+                  <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>127 individual users registered</p>
+                  <Button variant="outline" size="sm" className="mt-3">View All</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {activeNav === "email" && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Mail className="h-4 w-4 text-cyan-500" />
+                SMTP Configuration (Outgoing Mail)
+              </CardTitle>
+              <CardDescription>Configure SMTP settings for sending transactional emails</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>SMTP Host</Label>
+                  <Input 
+                    placeholder="smtp.example.com"
+                    value={emailSettings.smtp.host}
+                    onChange={(e) => setEmailSettings(prev => ({
+                      ...prev,
+                      smtp: { ...prev.smtp, host: e.target.value }
+                    }))}
+                    data-testid="input-smtp-host"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Port</Label>
+                  <Input 
+                    placeholder="587"
+                    value={emailSettings.smtp.port}
+                    onChange={(e) => setEmailSettings(prev => ({
+                      ...prev,
+                      smtp: { ...prev.smtp, port: e.target.value }
+                    }))}
+                    data-testid="input-smtp-port"
+                  />
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Username</Label>
+                  <Input 
+                    placeholder="noreply@example.com"
+                    value={emailSettings.smtp.username}
+                    onChange={(e) => setEmailSettings(prev => ({
+                      ...prev,
+                      smtp: { ...prev.smtp, username: e.target.value }
+                    }))}
+                    data-testid="input-smtp-username"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Password</Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      type={showApiKeys.smtpPass ? "text" : "password"}
+                      placeholder="SMTP Password"
+                      value={emailSettings.smtp.password}
+                      onChange={(e) => setEmailSettings(prev => ({
+                        ...prev,
+                        smtp: { ...prev.smtp, password: e.target.value }
+                      }))}
+                      data-testid="input-smtp-password"
+                    />
+                    <Button variant="outline" size="icon" onClick={() => toggleShowKey("smtpPass")}>
+                      {showApiKeys.smtpPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Encryption</Label>
+                <Select 
+                  value={emailSettings.smtp.encryption}
+                  onValueChange={(v) => setEmailSettings(prev => ({
+                    ...prev,
+                    smtp: { ...prev.smtp, encryption: v }
+                  }))}
+                >
+                  <SelectTrigger data-testid="select-smtp-encryption">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    <SelectItem value="tls">TLS</SelectItem>
+                    <SelectItem value="ssl">SSL</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setIsSendingTestEmail(true);
+                    setTimeout(() => {
+                      toast({ title: "Test Email Sent", description: "Check your inbox for the test message." });
+                      setIsSendingTestEmail(false);
+                    }, 1500);
+                  }}
+                  disabled={isSendingTestEmail}
+                  data-testid="button-test-smtp"
+                >
+                  {isSendingTestEmail ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+                  Send Test Email
+                </Button>
+                <Button data-testid="button-save-smtp">
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Save SMTP Settings
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Mail className="h-4 w-4 text-blue-500" />
+                IMAP Configuration (Incoming Mail)
+              </CardTitle>
+              <CardDescription>Configure IMAP for receiving and processing incoming emails</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>IMAP Host</Label>
+                  <Input 
+                    placeholder="imap.example.com"
+                    value={emailSettings.imap.host}
+                    onChange={(e) => setEmailSettings(prev => ({
+                      ...prev,
+                      imap: { ...prev.imap, host: e.target.value }
+                    }))}
+                    data-testid="input-imap-host"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Port</Label>
+                  <Input 
+                    placeholder="993"
+                    value={emailSettings.imap.port}
+                    onChange={(e) => setEmailSettings(prev => ({
+                      ...prev,
+                      imap: { ...prev.imap, port: e.target.value }
+                    }))}
+                    data-testid="input-imap-port"
+                  />
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Username</Label>
+                  <Input 
+                    placeholder="support@example.com"
+                    value={emailSettings.imap.username}
+                    onChange={(e) => setEmailSettings(prev => ({
+                      ...prev,
+                      imap: { ...prev.imap, username: e.target.value }
+                    }))}
+                    data-testid="input-imap-username"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Password</Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      type={showApiKeys.imapPass ? "text" : "password"}
+                      placeholder="IMAP Password"
+                      value={emailSettings.imap.password}
+                      onChange={(e) => setEmailSettings(prev => ({
+                        ...prev,
+                        imap: { ...prev.imap, password: e.target.value }
+                      }))}
+                      data-testid="input-imap-password"
+                    />
+                    <Button variant="outline" size="icon" onClick={() => toggleShowKey("imapPass")}>
+                      {showApiKeys.imapPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <Button data-testid="button-save-imap">
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Save IMAP Settings
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeNav === "billing" && (
+        <div className="space-y-4">
+          <div className="grid md:grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md bg-green-500/10">
+                    <Receipt className="h-4 w-4 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold">$45,230</p>
+                    <p className="text-xs text-muted-foreground">Services Revenue (MTD)</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md bg-blue-500/10">
+                    <Users className="h-4 w-4 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold">23</p>
+                    <p className="text-xs text-muted-foreground">Active Service Contracts</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md bg-orange-500/10">
+                    <AlertTriangle className="h-4 w-4 text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold">5</p>
+                    <p className="text-xs text-muted-foreground">Pending Invoices</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Service Contracts</CardTitle>
+              <CardDescription>Active implementation and support contracts</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="border rounded-lg overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b bg-muted/50">
+                      <th className="px-4 py-2 text-left font-medium">Client</th>
+                      <th className="px-4 py-2 text-left font-medium">Service Type</th>
+                      <th className="px-4 py-2 text-left font-medium">Value</th>
+                      <th className="px-4 py-2 text-left font-medium">Status</th>
+                      <th className="px-4 py-2 text-left font-medium">Renewal</th>
+                      <th className="px-4 py-2 text-right font-medium">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { client: "Acme Corp", service: "Implementation + Support", value: "$125,000", status: "Active", renewal: "2025-06-15" },
+                      { client: "TechStart Inc", service: "Annual Support", value: "$24,000", status: "Active", renewal: "2025-03-20" },
+                      { client: "Global Solutions", service: "Training Package", value: "$8,500", status: "In Progress", renewal: "N/A" },
+                    ].map((contract, i) => (
+                      <tr key={i} className="border-b hover:bg-muted/50">
+                        <td className="px-4 py-3 font-medium">{contract.client}</td>
+                        <td className="px-4 py-3">{contract.service}</td>
+                        <td className="px-4 py-3 font-mono">{contract.value}</td>
+                        <td className="px-4 py-3">
+                          <Badge variant="secondary" className={contract.status === "Active" ? "bg-green-500/10 text-green-600" : "bg-blue-500/10 text-blue-600"}>
+                            {contract.status}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-xs">{contract.renewal}</td>
+                        <td className="px-4 py-3 text-right">
+                          <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeNav === "demos" && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <RefreshCw className="h-4 w-4 text-pink-500" />
+                Demo Environment Management
+              </CardTitle>
+              <CardDescription>Manage and refresh demo instances on demand</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 border rounded-lg bg-muted/30">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="font-medium">Main Demo Instance</p>
+                    <p className="text-xs text-muted-foreground">Public demo available at /demo</p>
+                  </div>
+                  <Badge variant="secondary" className="bg-green-500/10 text-green-600">Running</Badge>
+                </div>
+                <div className="grid md:grid-cols-3 gap-4 text-sm mb-4">
+                  <div>
+                    <p className="text-muted-foreground">Last Refreshed</p>
+                    <p className="font-medium">Dec 12, 2025 - 10:30 AM</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Demo Users</p>
+                    <p className="font-medium">342 sessions today</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Data Reset Schedule</p>
+                    <p className="font-medium">Every 24 hours</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => {
+                      setIsRefreshingDemo(true);
+                      setTimeout(() => {
+                        toast({ title: "Demo Refreshed", description: "Demo data has been reset to default state." });
+                        setIsRefreshingDemo(false);
+                      }, 2000);
+                    }}
+                    disabled={isRefreshingDemo}
+                    data-testid="button-refresh-demo"
+                  >
+                    {isRefreshingDemo ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+                    Refresh Demo Now
+                  </Button>
+                  <Button variant="outline" data-testid="button-demo-settings">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Demo Settings
+                  </Button>
+                </div>
+              </div>
+
+              <Card className="border-dashed">
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <Database className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                    <p className="font-medium mb-1">Industry-Specific Demos</p>
+                    <p className="text-sm text-muted-foreground mb-4">Create additional demo instances with industry-specific data</p>
+                    <Button variant="outline" data-testid="button-create-demo">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create New Demo Instance
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
         </div>
       )}
 
