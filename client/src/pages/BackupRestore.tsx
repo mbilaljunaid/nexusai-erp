@@ -21,7 +21,7 @@ export default function BackupRestore() {
           <h1 className="text-3xl font-bold">Backup & Restore</h1>
           <p className="text-muted-foreground mt-1">Manage system backups and restoration</p>
         </div>
-        <SmartAddButton formId="backupRestore" formMetadata={formMetadata} formId="backupRestore" />
+        <SmartAddButton formId="backupRestore" formMetadata={formMetadata} />
       </div>
 
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={backups} onFilter={setFiltered} />
@@ -36,4 +36,6 @@ export default function BackupRestore() {
           </Card>
         )) : <p className="text-muted-foreground text-center py-4">No backups found</p>}
       </div>
-
+    </div>
+  );
+}

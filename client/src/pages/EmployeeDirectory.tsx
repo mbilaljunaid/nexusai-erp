@@ -24,7 +24,7 @@ export default function EmployeeDirectory() {
           <h1 className="text-3xl font-bold">Employee Directory</h1>
           <p className="text-muted-foreground mt-1">Find and manage employee information</p>
         </div>
-        <SmartAddButton formId="employee" formMetadata={formMetadata} formId="employee" />
+        <SmartAddButton formId="employee" formMetadata={formMetadata} />
       </div>
 
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={employees} onFilter={setFiltered} />

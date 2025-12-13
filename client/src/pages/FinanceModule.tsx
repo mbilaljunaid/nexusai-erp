@@ -24,7 +24,7 @@ export default function FinanceModule() {
           <h1 className="text-3xl font-bold">Finance Module</h1>
           <p className="text-muted-foreground">Track expenses, revenue, and financial forecasts</p>
         </div>
-        <SmartAddButton formId="invoice" formMetadata={formMetadata} formId="invoice" />
+        <SmartAddButton formId="invoice" formMetadata={formMetadata} />
       </div>
 
       <div className="grid grid-cols-4 gap-4">

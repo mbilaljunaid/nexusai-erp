@@ -22,7 +22,7 @@ export default function LeaveRequest() {
           <h1 className="text-3xl font-bold">Leave Requests</h1>
           <p className="text-muted-foreground mt-1">Manage and track employee leave requests</p>
         </div>
-        <SmartAddButton formId="leaveRequest" formMetadata={formMetadata} formId="leaveRequest" />
+        <SmartAddButton formId="leaveRequest" formMetadata={formMetadata} />
       </div>
 
       <FormSearchWithMetadata

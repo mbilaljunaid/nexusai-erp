@@ -24,7 +24,7 @@ export default function VendorManagement() {
           <h1 className="text-3xl font-bold">Vendors</h1>
           <p className="text-muted-foreground mt-1">Manage supplier relationships and performance</p>
         </div>
-        <SmartAddButton formId="vendor" formMetadata={formMetadata} formId="vendor" />
+        <SmartAddButton formId="vendor" formMetadata={formMetadata} />
       </div>
 
       <FormSearchWithMetadata
