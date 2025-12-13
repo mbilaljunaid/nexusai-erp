@@ -24,6 +24,13 @@ on:
       - 'server/operations/**'
       - 'docs/API.md'
       - 'docs/ARCHITECTURE.md'
+workflow_dispatch:
+on:
+  push:
+    branches: [main]
+    paths:
+      # ... existing paths
+  workflow_dispatch:  #
 
 jobs:
   sync:
@@ -86,3 +93,4 @@ jobs:
           git add -A
           git diff --staged --quiet || git commit -m "chore: sync from private repo [skip ci]"
           git push
+
