@@ -9,6 +9,8 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { RBACProvider } from "@/components/RBACContext";
+import { TourProvider } from "@/hooks/use-tour";
+import { GuidedTourOverlay } from "@/components/GuidedTour";
 import NotFound from "@/pages/not-found";
 
 // Landing Page
@@ -640,10 +642,13 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <TooltipProvider>
-            <SidebarProvider style={style}>
-              {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <AuthenticatedLayout />}
-              <Toaster />
-            </SidebarProvider>
+            <TourProvider>
+              <SidebarProvider style={style}>
+                {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <AuthenticatedLayout />}
+                <GuidedTourOverlay />
+                <Toaster />
+              </SidebarProvider>
+            </TourProvider>
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>

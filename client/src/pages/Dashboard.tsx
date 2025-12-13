@@ -65,7 +65,7 @@ export default function Dashboard() {
         <p className="text-muted-foreground text-lg">Enterprise ERP Platform - Manage all your business operations in one place</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-tour="quick-stats">
         <Card className="md:col-span-2 lg:col-span-3">
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4">Quick Stats</h2>
@@ -91,7 +91,7 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4" data-tour="core-modules">
         <div>
           <h2 className="text-2xl font-bold mb-4">Core Modules</h2>
           <p className="text-muted-foreground mb-4">Access all major business modules and processes</p>
@@ -118,7 +118,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4" data-tour="quick-links">
         <h2 className="text-2xl font-bold">Quick Links</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {quickLinks.map((link) => (
@@ -167,7 +167,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <Card className="bg-muted/50">
+      <Card className="bg-muted/50" data-tour="getting-started">
         <CardContent className="p-6">
           <h3 className="font-semibold mb-2">Getting Started</h3>
           <p className="text-sm text-muted-foreground mb-4">
