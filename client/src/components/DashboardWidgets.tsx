@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   GripVertical,
   Plus,
@@ -39,7 +41,17 @@ import {
   Target,
   Zap,
   RotateCcw,
+  Package,
+  Star,
+  ExternalLink,
+  Pin,
+  Award,
+  Trophy,
+  Medal,
+  Crown,
 } from "lucide-react";
+import { Link } from "wouter";
+import type { MarketplaceApp } from "@shared/schema";
 
 interface Widget {
   id: string;
@@ -59,7 +71,11 @@ type WidgetType =
   | "alerts"
   | "activity"
   | "goals"
-  | "reports";
+  | "reports"
+  | "pinnedApps"
+  | "badges"
+  | "leaderboard"
+  | "developerSpotlight";
 
 const STORAGE_KEY = "nexusai-dashboard-widgets";
 
@@ -74,7 +90,360 @@ const widgetDefinitions: Record<WidgetType, { title: string; icon: typeof BarCha
   activity: { title: "Recent Activity", icon: Activity, description: "Latest system activity" },
   goals: { title: "Goals Progress", icon: Target, description: "Track goal completion" },
   reports: { title: "Quick Reports", icon: FileText, description: "Access frequent reports" },
+  pinnedApps: { title: "Pinned Apps", icon: Pin, description: "Quick access to your pinned marketplace apps" },
+  badges: { title: "My Badges", icon: Award, description: "View your earned badges and achievements" },
+  leaderboard: { title: "Leaderboard", icon: Trophy, description: "Top users by activity points" },
+  developerSpotlight: { title: "Developer Spotlight", icon: Star, description: "Featured developers and their apps" },
 };
+
+interface PinnedApp {
+  id: string;
+  appId: string;
+  app: MarketplaceApp;
+  installedAt: string;
+}
+
+function PinnedAppsWidget() {
+  const { data: installedApps, isLoading } = useQuery<PinnedApp[]>({
+    queryKey: ['/api/marketplace/my-installs'],
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center gap-3 p-2 rounded-lg">
+            <Skeleton className="w-8 h-8 rounded-lg" />
+            <div className="flex-1 space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!installedApps || installedApps.length === 0) {
+    return (
+      <div className="text-center py-4">
+        <Package className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+        <p className="text-sm text-muted-foreground">No apps installed yet</p>
+        <Link href="/marketplace">
+          <Button variant="ghost" size="sm" className="mt-1" data-testid="link-browse-apps">
+            Browse Marketplace
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      {installedApps.slice(0, 5).map((installed) => (
+        <div 
+          key={installed.id} 
+          className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors cursor-pointer"
+          data-testid={`pinned-app-${installed.appId}`}
+        >
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            {installed.app?.icon ? (
+              <img src={installed.app.icon} alt={installed.app.name} className="w-6 h-6 rounded" />
+            ) : (
+              <Package className="w-4 h-4" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">{installed.app?.name || 'Unknown App'}</p>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+              <span>{installed.app?.averageRating ? parseFloat(installed.app.averageRating).toFixed(1) : '0.0'}</span>
+            </div>
+          </div>
+          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Button>
+        </div>
+      ))}
+      {installedApps.length > 5 && (
+        <Link href="/marketplace?tab=installed">
+          <Button variant="ghost" size="sm" className="w-full text-xs" data-testid="link-view-all-apps">
+            View all {installedApps.length} apps
+          </Button>
+        </Link>
+      )}
+    </div>
+  );
+}
+
+interface BadgeDefinition {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  category: string;
+  pointsRequired: number;
+  isActive: boolean;
+}
+
+interface UserBadge {
+  id: number;
+  badgeId: number;
+  earnedAt: string;
+  badge?: BadgeDefinition;
+}
+
+interface LeaderboardEntry {
+  rank: number;
+  userId: number;
+  username: string;
+  points: number;
+  level: number;
+}
+
+const badgeIcons: Record<string, typeof Award> = {
+  award: Award,
+  trophy: Trophy,
+  medal: Medal,
+  crown: Crown,
+  star: Star,
+};
+
+const badgeColorClasses: Record<string, { bg: string; border: string; text: string }> = {
+  primary: { bg: "bg-primary/10", border: "border-primary/30", text: "text-primary" },
+  blue: { bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-500" },
+  green: { bg: "bg-green-500/10", border: "border-green-500/30", text: "text-green-500" },
+  yellow: { bg: "bg-yellow-500/10", border: "border-yellow-500/30", text: "text-yellow-500" },
+  red: { bg: "bg-red-500/10", border: "border-red-500/30", text: "text-red-500" },
+  purple: { bg: "bg-purple-500/10", border: "border-purple-500/30", text: "text-purple-500" },
+  orange: { bg: "bg-orange-500/10", border: "border-orange-500/30", text: "text-orange-500" },
+  pink: { bg: "bg-pink-500/10", border: "border-pink-500/30", text: "text-pink-500" },
+  amber: { bg: "bg-amber-500/10", border: "border-amber-500/30", text: "text-amber-500" },
+  gold: { bg: "bg-yellow-500/10", border: "border-yellow-500/30", text: "text-yellow-500" },
+  silver: { bg: "bg-gray-400/10", border: "border-gray-400/30", text: "text-gray-400" },
+  bronze: { bg: "bg-amber-600/10", border: "border-amber-600/30", text: "text-amber-600" },
+};
+
+function BadgesWidget() {
+  const { data: badges, isLoading } = useQuery<UserBadge[]>({
+    queryKey: ['/api/gamification/badges'],
+  });
+
+  const { data: badgeDefs } = useQuery<BadgeDefinition[]>({
+    queryKey: ['/api/gamification/badge-definitions'],
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex gap-2 flex-wrap">
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} className="w-12 h-12 rounded-full" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!badges || badges.length === 0) {
+    return (
+      <div className="text-center py-4">
+        <Award className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+        <p className="text-sm text-muted-foreground">No badges earned yet</p>
+        <p className="text-xs text-muted-foreground mt-1">Complete activities to earn badges</p>
+      </div>
+    );
+  }
+
+  const badgesWithDefs = badges.map(badge => ({
+    ...badge,
+    definition: badgeDefs?.find(d => d.id === badge.badgeId)
+  }));
+
+  return (
+    <div className="space-y-3">
+      <div className="flex gap-2 flex-wrap">
+        {badgesWithDefs.slice(0, 6).map((badge) => {
+          const IconComponent = badgeIcons[badge.definition?.icon || 'award'] || Award;
+          const colorKey = badge.definition?.color || 'primary';
+          const colors = badgeColorClasses[colorKey] || badgeColorClasses.primary;
+          return (
+            <div
+              key={badge.id}
+              className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${colors.bg} ${colors.border}`}
+              title={badge.definition?.name || 'Badge'}
+              data-testid={`badge-${badge.badgeId}`}
+            >
+              <IconComponent className={`w-5 h-5 ${colors.text}`} />
+            </div>
+          );
+        })}
+      </div>
+      {badges.length > 6 && (
+        <p className="text-xs text-muted-foreground text-center">
+          +{badges.length - 6} more badges
+        </p>
+      )}
+      <div className="flex items-center justify-between pt-2 border-t">
+        <span className="text-sm text-muted-foreground">Total Badges</span>
+        <Badge variant="secondary">{badges.length}</Badge>
+      </div>
+    </div>
+  );
+}
+
+interface DeveloperSpotlightEntry {
+  id: number;
+  developerId: number;
+  featuredSince: string;
+  badgeText: string | null;
+  displayOrder: number;
+  developer?: {
+    id: number;
+    name: string;
+    bio: string;
+    avatarUrl: string | null;
+    totalApps: number;
+    totalDownloads: number;
+    averageRating: string;
+  };
+}
+
+function DeveloperSpotlightWidget() {
+  const { data: spotlight, isLoading } = useQuery<DeveloperSpotlightEntry[]>({
+    queryKey: ['/api/developers/spotlight'],
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2].map((i) => (
+          <div key={i} className="flex items-center gap-3">
+            <Skeleton className="w-10 h-10 rounded-full" />
+            <div className="flex-1 space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-32" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!spotlight || spotlight.length === 0) {
+    return (
+      <div className="text-center py-4">
+        <Star className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+        <p className="text-sm text-muted-foreground">No featured developers yet</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {spotlight.slice(0, 3).map((entry) => (
+        <div
+          key={entry.id}
+          className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors"
+          data-testid={`developer-spotlight-${entry.developerId}`}
+        >
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary shrink-0 overflow-hidden">
+            {entry.developer?.avatarUrl ? (
+              <img 
+                src={entry.developer.avatarUrl} 
+                alt={entry.developer.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Users className="w-5 h-5" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium truncate">{entry.developer?.name || 'Developer'}</p>
+              {entry.badgeText && (
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                  {entry.badgeText}
+                </Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span>{entry.developer?.totalApps || 0} apps</span>
+              <div className="flex items-center gap-0.5">
+                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                <span>{entry.developer?.averageRating ? parseFloat(entry.developer.averageRating).toFixed(1) : '0.0'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+      <Link href="/marketplace?tab=developers">
+        <Button variant="ghost" size="sm" className="w-full text-xs" data-testid="link-view-all-developers">
+          View all developers
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+function LeaderboardWidget() {
+  const { data: leaderboard, isLoading } = useQuery<LeaderboardEntry[]>({
+    queryKey: ['/api/gamification/leaderboard'],
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center gap-3">
+            <Skeleton className="w-6 h-6 rounded-full" />
+            <Skeleton className="flex-1 h-4" />
+            <Skeleton className="w-12 h-4" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!leaderboard || leaderboard.length === 0) {
+    return (
+      <div className="text-center py-4">
+        <Trophy className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+        <p className="text-sm text-muted-foreground">No leaderboard data yet</p>
+      </div>
+    );
+  }
+
+  const getRankIcon = (rank: number) => {
+    if (rank === 1) return <Crown className="w-4 h-4 text-yellow-500" />;
+    if (rank === 2) return <Medal className="w-4 h-4 text-gray-400" />;
+    if (rank === 3) return <Medal className="w-4 h-4 text-amber-600" />;
+    return <span className="w-4 text-center text-xs text-muted-foreground font-medium">{rank}</span>;
+  };
+
+  return (
+    <div className="space-y-2">
+      {leaderboard.slice(0, 5).map((entry) => (
+        <div
+          key={entry.userId}
+          className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors"
+          data-testid={`leaderboard-entry-${entry.userId}`}
+        >
+          <div className="w-6 flex items-center justify-center">
+            {getRankIcon(entry.rank)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">{entry.username}</p>
+            <p className="text-xs text-muted-foreground">Level {entry.level}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-semibold">{entry.points.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">pts</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const defaultWidgets: Widget[] = [
   { id: "w1", type: "revenue", title: "Revenue Overview", size: "medium", enabled: true },
@@ -83,6 +452,10 @@ const defaultWidgets: Widget[] = [
   { id: "w4", type: "performance", title: "Performance", size: "small", enabled: true },
   { id: "w5", type: "alerts", title: "System Alerts", size: "small", enabled: true },
   { id: "w6", type: "activity", title: "Recent Activity", size: "medium", enabled: true },
+  { id: "w7", type: "pinnedApps", title: "Pinned Apps", size: "medium", enabled: true },
+  { id: "w8", type: "badges", title: "My Badges", size: "medium", enabled: true },
+  { id: "w9", type: "leaderboard", title: "Leaderboard", size: "medium", enabled: true },
+  { id: "w10", type: "developerSpotlight", title: "Developer Spotlight", size: "medium", enabled: true },
 ];
 
 function WidgetContent({ type }: { type: WidgetType }) {
@@ -291,6 +664,14 @@ function WidgetContent({ type }: { type: WidgetType }) {
           ))}
         </div>
       );
+    case "pinnedApps":
+      return <PinnedAppsWidget />;
+    case "badges":
+      return <BadgesWidget />;
+    case "leaderboard":
+      return <LeaderboardWidget />;
+    case "developerSpotlight":
+      return <DeveloperSpotlightWidget />;
     default:
       return <p className="text-muted-foreground">Widget content</p>;
   }

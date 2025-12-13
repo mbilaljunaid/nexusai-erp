@@ -1,25 +1,40 @@
 import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Bell, X, CheckCheck, Trash2, AlertCircle, Info, Star, Sparkles, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { apiRequest } from "@/lib/queryClient";
 
 interface Notification {
-  id: string;
+  id: string | number;
   title: string;
   message: string;
   type: "alert" | "update" | "recommendation" | "info";
-  timestamp: string;
+  timestamp?: string;
+  createdAt?: string;
   read: boolean;
+  isRead?: boolean;
   actionUrl?: string;
 }
 
-const STORAGE_KEY_READ = "nexusai-notifications-read";
+interface APINotification {
+  id: number;
+  userId: number;
+  title: string;
+  message: string;
+  type: string;
+  isRead: boolean;
+  actionUrl: string | null;
+  metadata: any;
+  createdAt: string;
+}
+
 const STORAGE_KEY_DISMISSED = "nexusai-notifications-dismissed";
 
-const initialNotifications: Notification[] = [
+const fallbackNotifications: Notification[] = [
   {
     id: "n1",
     title: "System Maintenance",
@@ -64,105 +79,118 @@ const initialNotifications: Notification[] = [
     read: true,
     actionUrl: "/lead-scoring",
   },
-  {
-    id: "n6",
-    title: "Try Advanced Analytics",
-    message: "Unlock deeper insights with our advanced analytics features",
-    type: "recommendation",
-    timestamp: "4 days ago",
-    read: true,
-    actionUrl: "/analytics",
-  },
-  {
-    id: "n7",
-    title: "Welcome to NexusAI",
-    message: "Complete your profile setup to get personalized recommendations",
-    type: "info",
-    timestamp: "5 days ago",
-    read: true,
-    actionUrl: "/settings/profile",
-  },
 ];
 
+function formatTimestamp(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString();
+}
+
+function normalizeNotification(n: APINotification): Notification {
+  return {
+    id: n.id,
+    title: n.title,
+    message: n.message,
+    type: (n.type as Notification["type"]) || "info",
+    timestamp: formatTimestamp(n.createdAt),
+    read: n.isRead,
+    actionUrl: n.actionUrl || undefined,
+  };
+}
+
 export function NotificationCenter() {
-  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [dismissedIds, setDismissedIds] = useState<(string | number)[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
+
+  const { data: apiNotifications, isLoading } = useQuery<APINotification[]>({
+    queryKey: ['/api/notifications'],
+    retry: false,
+  });
+
+  const { data: unreadCountData } = useQuery<{ count: number }>({
+    queryKey: ['/api/notifications/unread-count'],
+    retry: false,
+    refetchInterval: 30000,
+  });
+
+  const markReadMutation = useMutation({
+    mutationFn: async (id: string | number) => {
+      await apiRequest('PATCH', `/api/notifications/${id}/read`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications/unread-count'] });
+    },
+  });
+
+  const markAllReadMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest('POST', '/api/notifications/mark-all-read');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications/unread-count'] });
+    },
+  });
 
   useEffect(() => {
     setIsHydrated(true);
     if (typeof window !== "undefined") {
       const storedDismissed = localStorage.getItem(STORAGE_KEY_DISMISSED);
-      const dismissedIds: string[] = storedDismissed ? JSON.parse(storedDismissed) : [];
-      
-      const storedRead = localStorage.getItem(STORAGE_KEY_READ);
-      const readIds: string[] = storedRead ? JSON.parse(storedRead) : [];
-      
-      setNotifications(
-        initialNotifications
-          .filter(n => !dismissedIds.includes(n.id))
-          .map(n => ({
-            ...n,
-            read: readIds.includes(n.id) || n.read
-          }))
-      );
+      if (storedDismissed) {
+        setDismissedIds(JSON.parse(storedDismissed));
+      }
     }
   }, []);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const notifications: Notification[] = apiNotifications
+    ? apiNotifications.map(normalizeNotification).filter(n => !dismissedIds.includes(n.id))
+    : fallbackNotifications.filter(n => !dismissedIds.includes(n.id));
+
+  const unreadCount = unreadCountData?.count ?? notifications.filter(n => !n.read).length;
   const alertNotifications = notifications.filter(n => n.type === "alert");
   const updateNotifications = notifications.filter(n => n.type === "update");
   const recommendationNotifications = notifications.filter(n => n.type === "recommendation" || n.type === "info");
 
-  const saveReadState = (notifs: Notification[]) => {
+  const saveDismissedState = (dismissedId: string | number) => {
     if (typeof window !== "undefined") {
-      const readIds = notifs.filter(n => n.read).map(n => n.id);
-      localStorage.setItem(STORAGE_KEY_READ, JSON.stringify(readIds));
+      const newDismissedIds = [...dismissedIds, dismissedId];
+      setDismissedIds(newDismissedIds);
+      localStorage.setItem(STORAGE_KEY_DISMISSED, JSON.stringify(newDismissedIds));
     }
   };
 
-  const saveDismissedState = (dismissedId: string) => {
-    if (typeof window !== "undefined") {
-      const storedDismissed = localStorage.getItem(STORAGE_KEY_DISMISSED);
-      const dismissedIds: string[] = storedDismissed ? JSON.parse(storedDismissed) : [];
-      if (!dismissedIds.includes(dismissedId)) {
-        dismissedIds.push(dismissedId);
-        localStorage.setItem(STORAGE_KEY_DISMISSED, JSON.stringify(dismissedIds));
-      }
-    }
-  };
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev => {
-      const updated = prev.map(n => n.id === id ? { ...n, read: true } : n);
-      saveReadState(updated);
-      return updated;
-    });
+  const markAsRead = (id: string | number) => {
+    markReadMutation.mutate(id);
   };
 
   const markAllAsRead = () => {
-    setNotifications(prev => {
-      const updated = prev.map(n => ({ ...n, read: true }));
-      saveReadState(updated);
-      return updated;
-    });
+    markAllReadMutation.mutate();
   };
 
-  const dismissNotification = (id: string) => {
+  const dismissNotification = (id: string | number) => {
     saveDismissedState(id);
-    setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
   const clearAll = () => {
     if (typeof window !== "undefined") {
-      const storedDismissed = localStorage.getItem(STORAGE_KEY_DISMISSED);
-      const existingDismissedIds: string[] = storedDismissed ? JSON.parse(storedDismissed) : [];
       const currentIds = notifications.map(n => n.id);
-      const mergedDismissedIds = [...new Set([...existingDismissedIds, ...currentIds])];
+      const mergedDismissedIds = [...new Set([...dismissedIds, ...currentIds])];
+      setDismissedIds(mergedDismissedIds);
       localStorage.setItem(STORAGE_KEY_DISMISSED, JSON.stringify(mergedDismissedIds));
     }
-    setNotifications([]);
   };
 
   const getTypeIcon = (type: Notification["type"]) => {

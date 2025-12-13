@@ -26,6 +26,9 @@ import {
   marketplacePayouts, marketplaceCommissionSettings, marketplaceAuditLogs, marketplaceLicenses, marketplaceAppDependencies,
   insertMarketplaceDeveloperSchema, insertMarketplaceAppSchema, insertMarketplaceInstallationSchema,
   insertMarketplaceReviewSchema, insertMarketplaceCommissionSettingSchema,
+  userDashboardWidgets, insertUserDashboardWidgetSchema,
+  userBadges, badgeDefinitions, userActivityPoints,
+  developerSpotlight, userNotifications, insertUserNotificationSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -2322,6 +2325,240 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("Error fetching tenant deployments:", error);
       res.status(500).json({ error: "Failed to fetch tenant deployments" });
+    }
+  });
+
+  // ========== DASHBOARD WIDGETS API ==========
+
+  // GET /api/dashboard/widgets - Get user's dashboard widgets
+  app.get("/api/dashboard/widgets", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const widgets = await db.select().from(userDashboardWidgets)
+        .where(eq(userDashboardWidgets.userId, userId))
+        .orderBy(userDashboardWidgets.position);
+      res.json(widgets);
+    } catch (error: any) {
+      console.error("Error fetching dashboard widgets:", error);
+      res.status(500).json({ error: "Failed to fetch widgets" });
+    }
+  });
+
+  // POST /api/dashboard/widgets - Add a widget to dashboard
+  app.post("/api/dashboard/widgets", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const parsed = insertUserDashboardWidgetSchema.safeParse({ ...req.body, userId });
+      if (!parsed.success) {
+        return res.status(400).json({ error: parsed.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const [widget] = await db.insert(userDashboardWidgets).values(parsed.data).returning();
+      res.status(201).json(widget);
+    } catch (error: any) {
+      console.error("Error creating dashboard widget:", error);
+      res.status(500).json({ error: "Failed to create widget" });
+    }
+  });
+
+  // PATCH /api/dashboard/widgets/:id - Update a widget
+  app.patch("/api/dashboard/widgets/:id", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const [existing] = await db.select().from(userDashboardWidgets)
+        .where(and(eq(userDashboardWidgets.id, req.params.id), eq(userDashboardWidgets.userId, userId)));
+      if (!existing) return res.status(404).json({ error: "Widget not found" });
+
+      const updateData: any = { updatedAt: new Date() };
+      if (req.body.position !== undefined) updateData.position = req.body.position;
+      if (req.body.size !== undefined) updateData.size = req.body.size;
+      if (req.body.isVisible !== undefined) updateData.isVisible = req.body.isVisible;
+      if (req.body.config !== undefined) updateData.config = req.body.config;
+
+      const [updated] = await db.update(userDashboardWidgets).set(updateData)
+        .where(eq(userDashboardWidgets.id, req.params.id)).returning();
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating dashboard widget:", error);
+      res.status(500).json({ error: "Failed to update widget" });
+    }
+  });
+
+  // DELETE /api/dashboard/widgets/:id - Remove a widget
+  app.delete("/api/dashboard/widgets/:id", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const [existing] = await db.select().from(userDashboardWidgets)
+        .where(and(eq(userDashboardWidgets.id, req.params.id), eq(userDashboardWidgets.userId, userId)));
+      if (!existing) return res.status(404).json({ error: "Widget not found" });
+
+      await db.delete(userDashboardWidgets).where(eq(userDashboardWidgets.id, req.params.id));
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting dashboard widget:", error);
+      res.status(500).json({ error: "Failed to delete widget" });
+    }
+  });
+
+  // PUT /api/dashboard/widgets/reorder - Reorder all widgets
+  app.put("/api/dashboard/widgets/reorder", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const { widgetIds } = req.body;
+      if (!Array.isArray(widgetIds)) return res.status(400).json({ error: "widgetIds array required" });
+
+      for (let i = 0; i < widgetIds.length; i++) {
+        await db.update(userDashboardWidgets).set({ position: i, updatedAt: new Date() })
+          .where(and(eq(userDashboardWidgets.id, widgetIds[i]), eq(userDashboardWidgets.userId, userId)));
+      }
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error reordering widgets:", error);
+      res.status(500).json({ error: "Failed to reorder widgets" });
+    }
+  });
+
+  // ========== GAMIFICATION API ==========
+
+  // GET /api/gamification/badges - Get user's badges
+  app.get("/api/gamification/badges", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const badges = await db.select().from(userBadges).where(eq(userBadges.userId, userId));
+      res.json(badges);
+    } catch (error: any) {
+      console.error("Error fetching badges:", error);
+      res.status(500).json({ error: "Failed to fetch badges" });
+    }
+  });
+
+  // GET /api/gamification/leaderboard - Get leaderboard
+  app.get("/api/gamification/leaderboard", async (req, res) => {
+    try {
+      const points = await db.select().from(userActivityPoints);
+      const userPoints: Record<string, number> = {};
+      for (const p of points) {
+        userPoints[p.userId] = (userPoints[p.userId] || 0) + (p.points || 0);
+      }
+      const leaderboard = Object.entries(userPoints)
+        .map(([userId, totalPoints]) => ({ userId, totalPoints }))
+        .sort((a, b) => b.totalPoints - a.totalPoints)
+        .slice(0, 20);
+      res.json(leaderboard);
+    } catch (error: any) {
+      console.error("Error fetching leaderboard:", error);
+      res.status(500).json({ error: "Failed to fetch leaderboard" });
+    }
+  });
+
+  // GET /api/gamification/badge-definitions - Get available badges
+  app.get("/api/gamification/badge-definitions", async (req, res) => {
+    try {
+      const badges = await db.select().from(badgeDefinitions).where(eq(badgeDefinitions.isActive, true));
+      res.json(badges);
+    } catch (error: any) {
+      console.error("Error fetching badge definitions:", error);
+      res.status(500).json({ error: "Failed to fetch badge definitions" });
+    }
+  });
+
+  // ========== DEVELOPER SPOTLIGHT API ==========
+
+  // GET /api/developers/spotlight - Get featured developers
+  app.get("/api/developers/spotlight", async (req, res) => {
+    try {
+      const spotlight = await db.select().from(developerSpotlight)
+        .orderBy(developerSpotlight.displayOrder);
+      const developerIds = spotlight.map(s => s.developerId);
+      const developers = developerIds.length > 0 
+        ? await db.select().from(marketplaceDevelopers)
+        : [];
+      const result = spotlight.map(s => ({
+        ...s,
+        developer: developers.find(d => d.id === s.developerId)
+      }));
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error fetching developer spotlight:", error);
+      res.status(500).json({ error: "Failed to fetch spotlight" });
+    }
+  });
+
+  // ========== NOTIFICATIONS API ==========
+
+  // GET /api/notifications - Get user's notifications
+  app.get("/api/notifications", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const notifications = await db.select().from(userNotifications)
+        .where(and(eq(userNotifications.userId, userId), eq(userNotifications.isArchived, false)))
+        .orderBy(desc(userNotifications.createdAt));
+      res.json(notifications);
+    } catch (error: any) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ error: "Failed to fetch notifications" });
+    }
+  });
+
+  // PATCH /api/notifications/:id/read - Mark notification as read
+  app.patch("/api/notifications/:id/read", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const [updated] = await db.update(userNotifications)
+        .set({ isRead: true, readAt: new Date() })
+        .where(and(eq(userNotifications.id, req.params.id), eq(userNotifications.userId, userId)))
+        .returning();
+      res.json(updated || { success: true });
+    } catch (error: any) {
+      console.error("Error marking notification read:", error);
+      res.status(500).json({ error: "Failed to mark notification read" });
+    }
+  });
+
+  // POST /api/notifications/mark-all-read - Mark all as read
+  app.post("/api/notifications/mark-all-read", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      await db.update(userNotifications)
+        .set({ isRead: true, readAt: new Date() })
+        .where(and(eq(userNotifications.userId, userId), eq(userNotifications.isRead, false)));
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error marking all notifications read:", error);
+      res.status(500).json({ error: "Failed to mark all read" });
+    }
+  });
+
+  // GET /api/notifications/unread-count - Get unread count
+  app.get("/api/notifications/unread-count", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const notifications = await db.select().from(userNotifications)
+        .where(and(eq(userNotifications.userId, userId), eq(userNotifications.isRead, false)));
+      res.json({ count: notifications.length });
+    } catch (error: any) {
+      console.error("Error fetching unread count:", error);
+      res.status(500).json({ error: "Failed to fetch unread count" });
     }
   });
 
