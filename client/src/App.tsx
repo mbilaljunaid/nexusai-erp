@@ -123,6 +123,7 @@ const TrainingGuideAnalytics = lazy(() => import("@/pages/public/documentation/T
 const TrainingGuideHR = lazy(() => import("@/pages/public/documentation/TrainingGuideHR"));
 const TrainingLessonPage = lazy(() => import("@/pages/public/documentation/TrainingLessonPage"));
 const TechnicalAPIReference = lazy(() => import("@/pages/public/documentation/TechnicalAPIReference"));
+const CareersPage = lazy(() => import("@/pages/public/CareersPage"));
 const ImplementationSystemSetup = lazy(() => import("@/pages/public/documentation/ImplementationSystemSetup"));
 
 // Open Source Pages
@@ -513,6 +514,7 @@ function Router() {
       <Route path="/legal" component={LegalPage} />
       <Route path="/pricing" component={PricingPage} />
       <Route path="/partners" component={PartnersPage} />
+      <Route path="/careers" component={CareersPage} />
       <Route path="/modules" component={ModulesPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin" component={AdminConsole} />
