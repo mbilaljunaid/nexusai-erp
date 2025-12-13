@@ -916,9 +916,9 @@ export default function Marketplace() {
             </div>
           ) : filteredApps.length === 0 ? (
             <div className="text-center py-12">
-              <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium">No apps found</h3>
-              <p className="text-muted-foreground mt-1">Try adjusting your search or filters</p>
+              <Package className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h3 className="text-lg font-medium">Discover Amazing Apps</h3>
+              <p className="text-muted-foreground mt-1">Adjust your filters to explore our growing collection of powerful integrations</p>
             </div>
           ) : (
             <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
@@ -942,9 +942,9 @@ export default function Marketplace() {
         <TabsContent value="featured" className="mt-6">
           {featuredApps.length === 0 ? (
             <div className="text-center py-12">
-              <Star className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium">No featured apps</h3>
-              <p className="text-muted-foreground mt-1">Check back later for featured applications</p>
+              <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium">Featured Apps Coming Soon</h3>
+              <p className="text-muted-foreground mt-1">Our team is handpicking the best apps for you - stay tuned for curated recommendations!</p>
             </div>
           ) : (
             <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
