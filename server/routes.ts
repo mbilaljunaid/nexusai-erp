@@ -19,6 +19,8 @@ import {
   insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
   insertDemoSchema, formData as formDataTable, smartViews, reports, contactSubmissions, insertContactSubmissionSchema,
   insertPartnerSchema, partners as partnersTable, insertUserFeedbackSchema,
+  industries as industriesTable, industryDeployments as industryDeploymentsTable,
+  insertIndustrySchema, insertIndustryDeploymentSchema, tenants as tenantsTable,
   marketplaceDevelopers, marketplaceCategories, marketplaceApps, marketplaceAppVersions,
   marketplaceInstallations, marketplaceTransactions, marketplaceSubscriptions, marketplaceReviews,
   marketplacePayouts, marketplaceCommissionSettings, marketplaceAuditLogs, marketplaceLicenses, marketplaceAppDependencies,
@@ -2146,6 +2148,180 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("Error archiving:", error);
       res.status(500).json({ error: "Failed to archive" });
+    }
+  });
+
+  // ========== INDUSTRY & TENANT MANAGEMENT ==========
+
+  // GET /api/industries - List all industries
+  app.get("/api/industries", async (req, res) => {
+    try {
+      const industriesList = await db.select().from(industriesTable).orderBy(industriesTable.name);
+      res.json(industriesList);
+    } catch (error: any) {
+      console.error("Error fetching industries:", error);
+      res.status(500).json({ error: "Failed to fetch industries" });
+    }
+  });
+
+  // GET /api/industries/:id - Get a specific industry
+  app.get("/api/industries/:id", async (req, res) => {
+    try {
+      const [industry] = await db.select().from(industriesTable)
+        .where(eq(industriesTable.id, req.params.id));
+      if (!industry) {
+        return res.status(404).json({ error: "Industry not found" });
+      }
+      res.json(industry);
+    } catch (error: any) {
+      console.error("Error fetching industry:", error);
+      res.status(500).json({ error: "Failed to fetch industry" });
+    }
+  });
+
+  // GET /api/tenants - List all tenants
+  app.get("/api/tenants", async (req, res) => {
+    try {
+      const tenantsList = await db.select().from(tenantsTable).orderBy(tenantsTable.name);
+      res.json(tenantsList);
+    } catch (error: any) {
+      console.error("Error fetching tenants:", error);
+      res.status(500).json({ error: "Failed to fetch tenants" });
+    }
+  });
+
+  // GET /api/tenants/:id - Get a specific tenant
+  app.get("/api/tenants/:id", async (req, res) => {
+    try {
+      const [tenant] = await db.select().from(tenantsTable)
+        .where(eq(tenantsTable.id, req.params.id));
+      if (!tenant) {
+        return res.status(404).json({ error: "Tenant not found" });
+      }
+      res.json(tenant);
+    } catch (error: any) {
+      console.error("Error fetching tenant:", error);
+      res.status(500).json({ error: "Failed to fetch tenant" });
+    }
+  });
+
+  // POST /api/tenants - Create a new tenant
+  app.post("/api/tenants", async (req, res) => {
+    try {
+      const [newTenant] = await db.insert(tenantsTable).values({
+        name: req.body.name,
+        slug: req.body.slug || req.body.name.toLowerCase().replace(/\s+/g, '-'),
+        description: req.body.description || null,
+        logoUrl: req.body.logoUrl || null,
+        status: req.body.status || 'active',
+        settings: req.body.settings || {},
+      }).returning();
+      res.status(201).json(newTenant);
+    } catch (error: any) {
+      console.error("Error creating tenant:", error);
+      res.status(500).json({ error: "Failed to create tenant" });
+    }
+  });
+
+  // GET /api/industry-deployments - List all industry deployments
+  app.get("/api/industry-deployments", async (req, res) => {
+    try {
+      const tenantId = req.query.tenantId as string | undefined;
+      let query = db.select().from(industryDeploymentsTable);
+      if (tenantId) {
+        query = query.where(eq(industryDeploymentsTable.tenantId, tenantId)) as any;
+      }
+      const deployments = await query;
+      res.json(deployments);
+    } catch (error: any) {
+      console.error("Error fetching industry deployments:", error);
+      res.status(500).json({ error: "Failed to fetch industry deployments" });
+    }
+  });
+
+  // GET /api/industry-deployments/:id - Get a specific deployment
+  app.get("/api/industry-deployments/:id", async (req, res) => {
+    try {
+      const [deployment] = await db.select().from(industryDeploymentsTable)
+        .where(eq(industryDeploymentsTable.id, req.params.id));
+      if (!deployment) {
+        return res.status(404).json({ error: "Industry deployment not found" });
+      }
+      res.json(deployment);
+    } catch (error: any) {
+      console.error("Error fetching industry deployment:", error);
+      res.status(500).json({ error: "Failed to fetch industry deployment" });
+    }
+  });
+
+  // POST /api/industry-deployments - Create a new industry deployment
+  app.post("/api/industry-deployments", async (req, res) => {
+    try {
+      const [newDeployment] = await db.insert(industryDeploymentsTable).values({
+        tenantId: req.body.tenantId,
+        industryId: req.body.industryId,
+        enabledModules: req.body.enabledModules || [],
+        customConfig: req.body.customConfig || {},
+        status: req.body.status || 'active',
+      }).returning();
+      res.status(201).json(newDeployment);
+    } catch (error: any) {
+      console.error("Error creating industry deployment:", error);
+      res.status(500).json({ error: "Failed to create industry deployment" });
+    }
+  });
+
+  // PATCH /api/industry-deployments/:id - Update an industry deployment
+  app.patch("/api/industry-deployments/:id", async (req, res) => {
+    try {
+      const [existing] = await db.select().from(industryDeploymentsTable)
+        .where(eq(industryDeploymentsTable.id, req.params.id));
+      if (!existing) {
+        return res.status(404).json({ error: "Industry deployment not found" });
+      }
+      
+      const updateData: any = { updatedAt: new Date() };
+      if (req.body.enabledModules !== undefined) updateData.enabledModules = req.body.enabledModules;
+      if (req.body.customConfig !== undefined) updateData.customConfig = req.body.customConfig;
+      if (req.body.status !== undefined) updateData.status = req.body.status;
+      
+      const [updated] = await db.update(industryDeploymentsTable)
+        .set(updateData)
+        .where(eq(industryDeploymentsTable.id, req.params.id))
+        .returning();
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating industry deployment:", error);
+      res.status(500).json({ error: "Failed to update industry deployment" });
+    }
+  });
+
+  // DELETE /api/industry-deployments/:id - Delete an industry deployment
+  app.delete("/api/industry-deployments/:id", async (req, res) => {
+    try {
+      const [existing] = await db.select().from(industryDeploymentsTable)
+        .where(eq(industryDeploymentsTable.id, req.params.id));
+      if (!existing) {
+        return res.status(404).json({ error: "Industry deployment not found" });
+      }
+      await db.delete(industryDeploymentsTable)
+        .where(eq(industryDeploymentsTable.id, req.params.id));
+      res.json({ success: true, message: "Industry deployment deleted" });
+    } catch (error: any) {
+      console.error("Error deleting industry deployment:", error);
+      res.status(500).json({ error: "Failed to delete industry deployment" });
+    }
+  });
+
+  // GET /api/tenants/:id/deployments - Get all deployments for a tenant
+  app.get("/api/tenants/:id/deployments", async (req, res) => {
+    try {
+      const deployments = await db.select().from(industryDeploymentsTable)
+        .where(eq(industryDeploymentsTable.tenantId, req.params.id));
+      res.json(deployments);
+    } catch (error: any) {
+      console.error("Error fetching tenant deployments:", error);
+      res.status(500).json({ error: "Failed to fetch tenant deployments" });
     }
   });
 
