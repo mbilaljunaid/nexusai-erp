@@ -108,16 +108,19 @@ export default function TrainingGuidesPage() {
             {trainingModules.map((module, i) => {
               const IconComponent = module.icon;
               return (
-                <Link key={i} to={module.href}>
-                  <Card className="p-6 h-full hover-elevate cursor-pointer" data-testid={`card-module-${i}`}>
+                <Link key={i} to={module.href} className="block h-full">
+                  <Card className="p-6 h-full transition-all duration-200 hover:shadow-lg hover:border-orange-300 dark:hover:border-orange-700 cursor-pointer" data-testid={`card-module-${i}`}>
                     <IconComponent className="w-10 h-10 mb-4 text-orange-500" />
                     <h3 className="font-bold text-lg mb-2">{module.title}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{module.desc}</p>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-sm gap-2 flex-wrap">
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <Clock className="w-4 h-4" /> {module.duration}
                       </div>
                       <Badge variant="secondary">{module.lessons} lessons</Badge>
+                    </div>
+                    <div className="mt-4 flex items-center text-orange-500 text-sm font-medium">
+                      Start Learning <ArrowRight className="w-4 h-4 ml-1" />
                     </div>
                   </Card>
                 </Link>
