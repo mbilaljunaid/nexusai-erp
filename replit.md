@@ -1,74 +1,35 @@
 # NexusAI - Enterprise ERP Platform
 
 ## Overview
-NexusAI is a production-ready Enterprise Resource Planning (ERP) platform designed to manage and automate core business processes. It features 18 end-to-end business processes, 812 configurable forms, and over 50 API endpoints. The platform aims to provide a comprehensive, integrated solution for financial management, supply chain, manufacturing, HR, and sales operations, ensuring compliance, automation, and real-time analytics. Its primary purpose is to streamline enterprise operations, improve efficiency, and provide robust control and visibility across all business functions.
+NexusAI is a production-ready Enterprise Resource Planning (ERP) platform designed to manage and automate core business processes. It offers 18 end-to-end business processes, 812 configurable forms, and over 50 API endpoints. The platform provides a comprehensive, integrated solution for financial management, supply chain, manufacturing, HR, and sales operations, ensuring compliance, automation, and real-time analytics. NexusAI targets diverse industries with specialized modules for Healthcare, Manufacturing, Retail & E-Commerce, Banking & Finance, and more.
 
 ## User Preferences
-I want iterative development.
-I prefer detailed explanations.
-Ask before making major changes.
-Do not make changes to folder Z.
-Do not make changes to file Y.
+- Iterative development approach
+- Detailed explanations preferred
+- Ask before making major changes
+- Do not make changes to folder Z
+- Do not make changes to file Y
 
 ## System Architecture
-The NexusAI platform is built with a layered architecture:
--   **User Interface**: Comprises 812 dynamic forms. The frontend includes a `PublicProcessHub` dashboard, 18 public process pages, and a universal 5-tab template with reusable components and full navigation.
--   **API Gateway**: Provides generic endpoints for all forms, managing integrations and rate limiting.
--   **Business Logic Engines**: Eight core engines handle functionalities such as GL Posting, Workflow, Approval, Notification, Rules, Analytics, Template generation, and Data Migration.
--   **Data Persistence**: Utilizes `formDataStore` (in-memory Map) for dynamic data, with critical data migrated to PostgreSQL using Drizzle ORM.
--   **Audit & Compliance**: Features full transaction logging and audit trails.
 
-**Technical Implementations and Design Choices:**
--   **Route Files**: Organized into `glRoutes.ts`, `workflowRoutes.ts`, `analyticsRoutes.ts`, `templateRoutes.ts`, `migrationRoutes.ts`, `mobileRoutes.ts`, `apiGatewayRoutes.ts`, and `productionRoutes.ts` to manage specific functionalities.
--   **Process Coverage**: The system encompasses 18 major end-to-end processes, including Procure-to-Pay, Order-to-Cash, Hire-to-Retire, and Month-End Consolidation, each with defined GL account mappings and approval workflows.
--   **Automation**: Implements workflow automation, rule-based logic, automated GL posting, and notification systems.
--   **Integration**: Features generic form API endpoints, cross-form dependencies, real-time data synchronization, and mobile sync capabilities.
--   **Security**: Includes Role-Based Access Control (RBAC), segregation of duties, and encrypted sensitive data.
+### UI/UX Decisions
+The frontend uses React with TypeScript, styled with Shadcn/UI and Tailwind CSS for a modern and consistent user interface. Wouter handles client-side routing, and React Hook Form with Zod provides robust form management and validation.
+
+### Technical Implementations
+- **Frontend**: React, TypeScript, Wouter, TanStack Query, Shadcn/UI, Tailwind CSS, React Hook Form, Zod.
+- **Backend**: Node.js with Express for RESTful API endpoints.
+- **Database**: PostgreSQL with Drizzle ORM.
+- **Authentication**: Replit Auth integration.
+- **Development Tools**: Vite for building, TypeScript for full-stack language consistency, Lucide React for icons.
+- **Security**: Implements Role-Based Access Control (RBAC), multi-tenant architecture, session management, audit logging, and data encryption.
+
+### Feature Specifications
+NexusAI is built around 18 core end-to-end business processes, including Procure-to-Pay, Order-to-Cash, Hire-to-Retire, Month-End Consolidation, and more. Key modules include CRM & Sales, Finance & Accounting, Human Resources & Payroll, Manufacturing & Production, Supply Chain & Logistics, Project Management, Service & Support, Analytics & BI, AI & Automation, Workflow & Automation, Integration & API, Administration & Security, Marketing & Campaigns, E-Commerce & Retail, and Compliance & Governance. Each module offers a rich set of features to support its respective domain. The platform also includes an AI Copilot and various AI-powered features for insights, automation, and predictive modeling.
+
+### System Design Choices
+The system utilizes a modular design to support extensive configurability and scalability. It features a robust API Gateway for managing and securing external integrations. Data governance and compliance monitoring are integrated throughout the platform. The architecture supports multi-tenancy and is designed for high performance, with browser testing confirming fast page loads and API response times.
 
 ## External Dependencies
--   **Database**: PostgreSQL (with Drizzle ORM for persistence of critical endpoints).
--   **Frontend Framework**: (Implied, but not explicitly stated, likely React/Vue/Angular given "App.tsx routing").
--   **Development Tools**: Language Server Protocol (LSP) for code quality checks.
----
-
-## 🧪 BROWSER TESTING COMPLETE - ALL MODULES VALIDATED
-
-**Date**: December 2, 2025  
-**Tests Executed**: 109/109 ✅ ALL PASSING
-**Success Rate**: 100%
-**Deployment Status**: PRODUCTION READY
-
-### Browser Testing Results
-- ✅ Public pages (5 tests)
-- ✅ Authentication (3 tests)
-- ✅ CRM module (8 tests)
-- ✅ Finance (8 tests)
-- ✅ Supply chain (6 tests)
-- ✅ Manufacturing (6 tests)
-- ✅ HR & Payroll (8 tests)
-- ✅ Projects (6 tests)
-- ✅ Analytics (6 tests)
-- ✅ Admin (8 tests)
-- ✅ All 18 processes (20 tests)
-- ✅ AI & Copilot (5 tests)
-- ✅ Integration (5 tests)
-
-### Browser Compatibility
-- ✅ Chrome/Chromium, Firefox, Safari, Edge
-- ✅ Mobile browsers (iOS/Android)
-- ✅ All viewport sizes (375px - 1920px)
-
-### Performance
-- Page load: 1.2s (target: <2s) ✅
-- API response: 45ms (target: <100ms) ✅
-- Memory usage: 50MB (target: <200MB) ✅
-
-### Accessibility
-- WCAG 2.1 AA compliant ✅
-- Accessibility score: A+ (96/100) ✅
-
-### Documentation Created
-- BROWSER_TESTING_SUITE.md - Complete test coverage
-- FINAL_DEPLOYMENT_REPORT.md - Deployment validation
-
-**Next Step**: Click "Publish" to deploy to production
+- **Database**: PostgreSQL
+- **Authentication**: Replit Auth
+- **AI Integrations**: OpenAI (via `AI_INTEGRATIONS_OPENAI_BASE_URL` and `AI_INTEGRATIONS_OPENAI_API_KEY`)

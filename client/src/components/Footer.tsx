@@ -41,6 +41,7 @@ export function Footer() {
             <h4 className="font-semibold text-white mb-4">Product</h4>
             <ul className="space-y-2 text-sm text-slate-300">
               <li><Link href="/">Home</Link></li>
+              <li><Link href="/features">Features</Link></li>
               <li><Link href="/use-cases">Use Cases</Link></li>
               <li><Link href="/industries">Industries</Link></li>
               <li><Link href="/blog">Blog</Link></li>
@@ -102,9 +103,9 @@ export function Footer() {
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
           <p>&copy; 2025 NexusAI. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
-            <Link href="#" className="hover:text-slate-200 transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-slate-200 transition-colors">Terms of Service</Link>
-            <Link href="#" className="hover:text-slate-200 transition-colors">Cookie Policy</Link>
+            <Link href="/privacy" className="hover:text-slate-200 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-slate-200 transition-colors">Terms of Service</Link>
+            <Link href="/legal" className="hover:text-slate-200 transition-colors">Cookie Policy</Link>
           </div>
         </div>
       </div>

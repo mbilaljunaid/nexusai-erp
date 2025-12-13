@@ -138,6 +138,7 @@ const LegalPage = lazy(() => import("@/pages/LegalPage"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const PartnersPage = lazy(() => import("@/pages/PartnersPage"));
 const ModulesPage = lazy(() => import("@/pages/ModulesPage"));
+const FeaturesPage = lazy(() => import("@/pages/FeaturesPage"));
 
 // Phase 2: ERP Workflows (4 pages)
 const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
@@ -503,6 +504,7 @@ function Router() {
       <Route path="/use-cases" component={UseCases} />
       <Route path="/industries" component={IndustriesPage} />
       <Route path="/about" component={AboutPage} />
+      <Route path="/features" component={FeaturesPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/open-source" component={OpenSourcePage} />
       <Route path="/license" component={LicensePage} />
