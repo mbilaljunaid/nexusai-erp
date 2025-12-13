@@ -21,7 +21,7 @@ export default function Marketplace() {
           <h1 className="text-3xl font-bold">Marketplace</h1>
           <p className="text-muted-foreground mt-1">Publish and manage marketplace extensions</p>
         </div>
-        <SmartAddButton formId="marketplace" formMetadata={formMetadata} formId="marketplace" />
+        <SmartAddButton formId="marketplace" formMetadata={formMetadata} />
       </div>
 
       <FormSearchWithMetadata

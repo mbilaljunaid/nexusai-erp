@@ -672,3 +672,376 @@ export const insertUserFeedbackSchema = createInsertSchema(userFeedback).omit({ 
 
 export type InsertUserFeedback = z.infer<typeof insertUserFeedbackSchema>;
 export type UserFeedback = typeof userFeedback.$inferSelect;
+
+// ========== APP MARKETPLACE ==========
+
+// Marketplace Developers (Publishers)
+export const marketplaceDevelopers = pgTable("marketplace_developers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  companyName: varchar("company_name").notNull(),
+  displayName: varchar("display_name").notNull(),
+  email: varchar("email").notNull(),
+  website: varchar("website"),
+  description: text("description"),
+  logo: varchar("logo"),
+  status: varchar("status").default("pending"), // pending, approved, suspended
+  payoutMethod: varchar("payout_method"), // bank_transfer, paypal, stripe
+  payoutDetails: jsonb("payout_details"),
+  totalRevenue: numeric("total_revenue", { precision: 18, scale: 2 }).default("0"),
+  totalPayouts: numeric("total_payouts", { precision: 18, scale: 2 }).default("0"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertMarketplaceDeveloperSchema = createInsertSchema(marketplaceDevelopers).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  userId: z.string().min(1),
+  companyName: z.string().min(1, "Company name is required"),
+  displayName: z.string().min(1, "Display name is required"),
+  email: z.string().email(),
+  website: z.string().url().optional().nullable(),
+  description: z.string().optional(),
+  logo: z.string().optional(),
+  status: z.enum(["pending", "approved", "suspended"]).optional(),
+  payoutMethod: z.string().optional(),
+  payoutDetails: z.record(z.any()).optional(),
+});
+
+export type InsertMarketplaceDeveloper = z.infer<typeof insertMarketplaceDeveloperSchema>;
+export type MarketplaceDeveloper = typeof marketplaceDevelopers.$inferSelect;
+
+// App Categories
+export const marketplaceCategories = pgTable("marketplace_categories", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull().unique(),
+  slug: varchar("slug").notNull().unique(),
+  description: text("description"),
+  icon: varchar("icon"),
+  parentId: varchar("parent_id"),
+  sortOrder: integer("sort_order").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertMarketplaceCategorySchema = createInsertSchema(marketplaceCategories).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  slug: z.string().min(1),
+  description: z.string().optional(),
+  icon: z.string().optional(),
+  parentId: z.string().optional().nullable(),
+  sortOrder: z.number().optional(),
+  isActive: z.boolean().optional(),
+});
+
+export type InsertMarketplaceCategory = z.infer<typeof insertMarketplaceCategorySchema>;
+export type MarketplaceCategory = typeof marketplaceCategories.$inferSelect;
+
+// Marketplace Apps
+export const marketplaceApps = pgTable("marketplace_apps", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  developerId: varchar("developer_id").notNull(),
+  name: varchar("name").notNull(),
+  slug: varchar("slug").notNull().unique(),
+  shortDescription: varchar("short_description"),
+  longDescription: text("long_description"),
+  categoryId: varchar("category_id"),
+  tags: text("tags").array(),
+  icon: varchar("icon"),
+  screenshots: text("screenshots").array(),
+  demoUrl: varchar("demo_url"),
+  documentationUrl: varchar("documentation_url"),
+  supportEmail: varchar("support_email"),
+  supportUrl: varchar("support_url"),
+  pricingModel: varchar("pricing_model").default("free"), // free, one_time, subscription, freemium
+  price: numeric("price", { precision: 18, scale: 2 }).default("0"),
+  subscriptionPriceMonthly: numeric("subscription_price_monthly", { precision: 18, scale: 2 }),
+  subscriptionPriceYearly: numeric("subscription_price_yearly", { precision: 18, scale: 2 }),
+  currency: varchar("currency").default("USD"),
+  licenseType: varchar("license_type").default("commercial"), // open_source, commercial, dual
+  githubUrl: varchar("github_url"),
+  deploymentType: varchar("deployment_type").default("saas"), // saas, self_hosted
+  compatibility: jsonb("compatibility"), // ERP version, modules
+  permissions: text("permissions").array(),
+  status: varchar("status").default("draft"), // draft, submitted, approved, rejected, suspended
+  rejectionReason: text("rejection_reason"),
+  featuredOrder: integer("featured_order"),
+  totalInstalls: integer("total_installs").default(0),
+  totalRevenue: numeric("total_revenue", { precision: 18, scale: 2 }).default("0"),
+  averageRating: numeric("average_rating", { precision: 3, scale: 2 }).default("0"),
+  totalReviews: integer("total_reviews").default(0),
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertMarketplaceAppSchema = createInsertSchema(marketplaceApps).omit({ id: true, createdAt: true, updatedAt: true, publishedAt: true }).extend({
+  developerId: z.string().min(1),
+  name: z.string().min(1, "App name is required"),
+  slug: z.string().min(1),
+  shortDescription: z.string().max(200).optional(),
+  longDescription: z.string().optional(),
+  categoryId: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  icon: z.string().optional(),
+  screenshots: z.array(z.string()).optional(),
+  demoUrl: z.string().url().optional().nullable(),
+  documentationUrl: z.string().url().optional().nullable(),
+  supportEmail: z.string().email().optional().nullable(),
+  supportUrl: z.string().url().optional().nullable(),
+  pricingModel: z.enum(["free", "one_time", "subscription", "freemium"]).optional(),
+  price: z.string().optional(),
+  subscriptionPriceMonthly: z.string().optional().nullable(),
+  subscriptionPriceYearly: z.string().optional().nullable(),
+  currency: z.string().optional(),
+  licenseType: z.enum(["open_source", "commercial", "dual"]).optional(),
+  githubUrl: z.string().url().optional().nullable(),
+  deploymentType: z.enum(["saas", "self_hosted"]).optional(),
+  compatibility: z.record(z.any()).optional(),
+  permissions: z.array(z.string()).optional(),
+  status: z.enum(["draft", "submitted", "approved", "rejected", "suspended"]).optional(),
+});
+
+export type InsertMarketplaceApp = z.infer<typeof insertMarketplaceAppSchema>;
+export type MarketplaceApp = typeof marketplaceApps.$inferSelect;
+
+// App Versions
+export const marketplaceAppVersions = pgTable("marketplace_app_versions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  version: varchar("version").notNull(),
+  changelog: text("changelog"),
+  releaseNotes: text("release_notes"),
+  minErpVersion: varchar("min_erp_version"),
+  maxErpVersion: varchar("max_erp_version"),
+  downloadUrl: varchar("download_url"),
+  fileSize: integer("file_size"),
+  checksum: varchar("checksum"),
+  isLatest: boolean("is_latest").default(false),
+  status: varchar("status").default("pending"), // pending, approved, rejected
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertMarketplaceAppVersionSchema = createInsertSchema(marketplaceAppVersions).omit({ id: true, createdAt: true, publishedAt: true }).extend({
+  appId: z.string().min(1),
+  version: z.string().min(1),
+  changelog: z.string().optional(),
+  releaseNotes: z.string().optional(),
+  minErpVersion: z.string().optional(),
+  maxErpVersion: z.string().optional(),
+  downloadUrl: z.string().optional(),
+  fileSize: z.number().optional(),
+  checksum: z.string().optional(),
+  isLatest: z.boolean().optional(),
+  status: z.enum(["pending", "approved", "rejected"]).optional(),
+});
+
+export type InsertMarketplaceAppVersion = z.infer<typeof insertMarketplaceAppVersionSchema>;
+export type MarketplaceAppVersion = typeof marketplaceAppVersions.$inferSelect;
+
+// App Installations (per tenant)
+export const marketplaceInstallations = pgTable("marketplace_installations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  appVersionId: varchar("app_version_id"),
+  tenantId: varchar("tenant_id").notNull(),
+  installedBy: varchar("installed_by").notNull(),
+  status: varchar("status").default("active"), // active, suspended, uninstalled
+  installedAt: timestamp("installed_at").default(sql`now()`),
+  uninstalledAt: timestamp("uninstalled_at"),
+  settings: jsonb("settings"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertMarketplaceInstallationSchema = createInsertSchema(marketplaceInstallations).omit({ id: true, createdAt: true, updatedAt: true, installedAt: true }).extend({
+  appId: z.string().min(1),
+  appVersionId: z.string().optional(),
+  tenantId: z.string().min(1),
+  installedBy: z.string().min(1),
+  status: z.enum(["active", "suspended", "uninstalled"]).optional(),
+  settings: z.record(z.any()).optional(),
+});
+
+export type InsertMarketplaceInstallation = z.infer<typeof insertMarketplaceInstallationSchema>;
+export type MarketplaceInstallation = typeof marketplaceInstallations.$inferSelect;
+
+// App Transactions (purchases)
+export const marketplaceTransactions = pgTable("marketplace_transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  developerId: varchar("developer_id").notNull(),
+  tenantId: varchar("tenant_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  type: varchar("type").notNull(), // purchase, subscription, renewal, refund
+  grossAmount: numeric("gross_amount", { precision: 18, scale: 2 }).notNull(),
+  platformCommissionRate: numeric("platform_commission_rate", { precision: 5, scale: 2 }).default("0"),
+  platformCommission: numeric("platform_commission", { precision: 18, scale: 2 }).default("0"),
+  developerRevenue: numeric("developer_revenue", { precision: 18, scale: 2 }).notNull(),
+  tax: numeric("tax", { precision: 18, scale: 2 }).default("0"),
+  currency: varchar("currency").default("USD"),
+  paymentMethod: varchar("payment_method"),
+  paymentReference: varchar("payment_reference"),
+  status: varchar("status").default("completed"), // pending, completed, failed, refunded
+  invoiceUrl: varchar("invoice_url"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertMarketplaceTransactionSchema = createInsertSchema(marketplaceTransactions).omit({ id: true, createdAt: true }).extend({
+  appId: z.string().min(1),
+  developerId: z.string().min(1),
+  tenantId: z.string().min(1),
+  userId: z.string().min(1),
+  type: z.enum(["purchase", "subscription", "renewal", "refund"]),
+  grossAmount: z.string().min(1),
+  platformCommissionRate: z.string().optional(),
+  platformCommission: z.string().optional(),
+  developerRevenue: z.string().min(1),
+  tax: z.string().optional(),
+  currency: z.string().optional(),
+  paymentMethod: z.string().optional(),
+  paymentReference: z.string().optional(),
+  status: z.enum(["pending", "completed", "failed", "refunded"]).optional(),
+  invoiceUrl: z.string().optional(),
+});
+
+export type InsertMarketplaceTransaction = z.infer<typeof insertMarketplaceTransactionSchema>;
+export type MarketplaceTransaction = typeof marketplaceTransactions.$inferSelect;
+
+// App Subscriptions
+export const marketplaceSubscriptions = pgTable("marketplace_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  tenantId: varchar("tenant_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  plan: varchar("plan").notNull(), // monthly, yearly
+  status: varchar("status").default("active"), // active, cancelled, expired, paused
+  amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+  currency: varchar("currency").default("USD"),
+  currentPeriodStart: timestamp("current_period_start").notNull(),
+  currentPeriodEnd: timestamp("current_period_end").notNull(),
+  cancelledAt: timestamp("cancelled_at"),
+  cancelReason: text("cancel_reason"),
+  autoRenew: boolean("auto_renew").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertMarketplaceSubscriptionSchema = createInsertSchema(marketplaceSubscriptions).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  appId: z.string().min(1),
+  tenantId: z.string().min(1),
+  userId: z.string().min(1),
+  plan: z.enum(["monthly", "yearly"]),
+  status: z.enum(["active", "cancelled", "expired", "paused"]).optional(),
+  amount: z.string().min(1),
+  currency: z.string().optional(),
+  currentPeriodStart: z.date(),
+  currentPeriodEnd: z.date(),
+  cancelledAt: z.date().optional().nullable(),
+  cancelReason: z.string().optional(),
+  autoRenew: z.boolean().optional(),
+});
+
+export type InsertMarketplaceSubscription = z.infer<typeof insertMarketplaceSubscriptionSchema>;
+export type MarketplaceSubscription = typeof marketplaceSubscriptions.$inferSelect;
+
+// App Reviews
+export const marketplaceReviews = pgTable("marketplace_reviews", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  appVersionId: varchar("app_version_id"),
+  userId: varchar("user_id").notNull(),
+  tenantId: varchar("tenant_id").notNull(),
+  rating: integer("rating").notNull(),
+  title: varchar("title"),
+  content: text("content"),
+  developerResponse: text("developer_response"),
+  developerResponseAt: timestamp("developer_response_at"),
+  status: varchar("status").default("published"), // pending, published, hidden, flagged
+  helpfulCount: integer("helpful_count").default(0),
+  reportedCount: integer("reported_count").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertMarketplaceReviewSchema = createInsertSchema(marketplaceReviews).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  appId: z.string().min(1),
+  appVersionId: z.string().optional(),
+  userId: z.string().min(1),
+  tenantId: z.string().min(1),
+  rating: z.number().min(1).max(5),
+  title: z.string().optional(),
+  content: z.string().optional(),
+  developerResponse: z.string().optional(),
+  status: z.enum(["pending", "published", "hidden", "flagged"]).optional(),
+});
+
+export type InsertMarketplaceReview = z.infer<typeof insertMarketplaceReviewSchema>;
+export type MarketplaceReview = typeof marketplaceReviews.$inferSelect;
+
+// Developer Payouts
+export const marketplacePayouts = pgTable("marketplace_payouts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  developerId: varchar("developer_id").notNull(),
+  amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+  currency: varchar("currency").default("USD"),
+  periodStart: timestamp("period_start").notNull(),
+  periodEnd: timestamp("period_end").notNull(),
+  status: varchar("status").default("pending"), // pending, processing, paid, failed
+  paymentMethod: varchar("payment_method"),
+  paymentReference: varchar("payment_reference"),
+  paidAt: timestamp("paid_at"),
+  statementUrl: varchar("statement_url"),
+  transactionCount: integer("transaction_count").default(0),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertMarketplacePayoutSchema = createInsertSchema(marketplacePayouts).omit({ id: true, createdAt: true }).extend({
+  developerId: z.string().min(1),
+  amount: z.string().min(1),
+  currency: z.string().optional(),
+  periodStart: z.date(),
+  periodEnd: z.date(),
+  status: z.enum(["pending", "processing", "paid", "failed"]).optional(),
+  paymentMethod: z.string().optional(),
+  paymentReference: z.string().optional(),
+  paidAt: z.date().optional().nullable(),
+  statementUrl: z.string().optional(),
+  transactionCount: z.number().optional(),
+  notes: z.string().optional(),
+});
+
+export type InsertMarketplacePayout = z.infer<typeof insertMarketplacePayoutSchema>;
+export type MarketplacePayout = typeof marketplacePayouts.$inferSelect;
+
+// Platform Commission Settings
+export const marketplaceCommissionSettings = pgTable("marketplace_commission_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  type: varchar("type").default("global"), // global, category, developer
+  targetId: varchar("target_id"), // category_id or developer_id for specific rates
+  commissionRate: numeric("commission_rate", { precision: 5, scale: 2 }).default("0"), // percentage
+  minCommission: numeric("min_commission", { precision: 18, scale: 2 }),
+  maxCommission: numeric("max_commission", { precision: 18, scale: 2 }),
+  isActive: boolean("is_active").default(true),
+  effectiveFrom: timestamp("effective_from").default(sql`now()`),
+  effectiveTo: timestamp("effective_to"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertMarketplaceCommissionSettingSchema = createInsertSchema(marketplaceCommissionSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  type: z.enum(["global", "category", "developer"]).optional(),
+  targetId: z.string().optional(),
+  commissionRate: z.string().optional(),
+  minCommission: z.string().optional().nullable(),
+  maxCommission: z.string().optional().nullable(),
+  isActive: z.boolean().optional(),
+  effectiveFrom: z.date().optional(),
+  effectiveTo: z.date().optional().nullable(),
+});
+
+export type InsertMarketplaceCommissionSetting = z.infer<typeof insertMarketplaceCommissionSettingSchema>;
+export type MarketplaceCommissionSetting = typeof marketplaceCommissionSettings.$inferSelect;

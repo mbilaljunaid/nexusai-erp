@@ -1,0 +1,333 @@
+Below is the **cleaned and final version of the comprehensive Replit prompt**, with **all references to “Odoo” completely removed**, while **retaining the exact same behavior, constraints, and parity principles**.
+
+You can paste this **directly into Replit**.
+
+---
+
+# 🔧 REPLIT MASTER TASK PROMPT
+
+## Build App Marketplace with Approval, Licensing & Payout Workflows
+
+---
+
+## ⚠️ GLOBAL CONSTRAINTS (READ FIRST)
+
+1. This task is to **enhance the existing Nexus AI First ERP marketplace**.
+2. **DO NOT create new product concepts**, pricing models, or roles.
+3. The marketplace must follow a **strict, curated app store model** with admin approval and controlled monetization.
+4. Enhancements beyond the core marketplace are **optional, disabled by default**, and must not change baseline behavior.
+5. Reuse **existing users, tenants, apps, roles, transactions, and permissions**.
+6. All financial and approval actions **must be auditable**.
+
+---
+
+## 🎯 OBJECTIVE
+
+Implement a **complete App Marketplace** that supports:
+
+* App submission & approval
+* Licensing & installation
+* Pricing & platform commission
+* Transactions & invoicing
+* Developer payouts
+* Reviews & governance
+* Optional future-ready enhancements (feature-flagged)
+
+---
+
+## 1️⃣ ROLES & ACCESS CONTROL (DO NOT ADD NEW ROLES)
+
+### Platform Admin
+
+* Approves/rejects apps and app versions
+* Sets global platform commission (default **0%**)
+* Manages developer payouts
+* Moderates reviews
+* Views all marketplace transactions and audit logs
+
+### Developer / Publisher
+
+* Registers as a developer
+* Submits apps and app versions
+* Defines pricing
+* Views revenue and payout history
+* Manages app metadata, documentation, and support details
+
+### Tenant Admin (Customer)
+
+* Purchases apps for a tenant
+* Installs/uninstalls apps
+* Manages subscriptions and licenses
+* Views invoices and spend history
+
+### End User
+
+* Uses installed apps only
+* Can submit ratings and reviews
+
+---
+
+## 2️⃣ APP STRUCTURE (MODULE-BASED)
+
+Each app must include:
+
+* App name
+* Technical module identifier
+* Category
+* Short and long descriptions
+* Screenshots
+* Version number
+* ERP compatibility version
+* Dependency list (mandatory enforcement)
+* License type (open-source, commercial, or dual)
+* Documentation URL
+* Support contact details
+
+Apps are **installed modules**, not standalone services.
+
+---
+
+## 3️⃣ APP SUBMISSION & APPROVAL WORKFLOW
+
+### App Version States
+
+* Draft
+* Submitted
+* Approved
+* Rejected
+* Archived
+
+### Rules
+
+* Approval applies **per version**
+* Only **Approved versions**:
+
+  * Appear in the marketplace
+  * Can be purchased
+  * Can be installed
+* Platform Admin can:
+
+  * Approve
+  * Reject with comments
+  * Archive apps or versions
+
+### Audit Logging (Mandatory)
+
+* Submission events
+* Approval actions
+* Rejection actions
+* Archival actions
+
+---
+
+## 4️⃣ PRICING & PLATFORM COMMISSION
+
+### Supported Pricing Models
+
+* Free
+* One-time purchase
+* Annual subscription
+
+⚠️ No additional pricing models by default
+
+### Platform Commission
+
+* Global commission percentage
+* Default value: **0%**
+* Commission rate must be **snapshotted per transaction**
+* Changes apply only to future transactions
+
+---
+
+## 5️⃣ PURCHASE, LICENSING & INSTALLATION FLOW
+
+### Purchase Flow
+
+1. Tenant purchases an app
+2. Transaction is recorded
+3. License is issued
+4. App becomes installable
+5. Dependency checks are enforced
+6. App is installed into the tenant ERP instance
+
+### Licensing Rules
+
+* License is tied to:
+
+  * Tenant
+  * App
+  * App version
+* Subscription expiry tracked
+* Grace period supported
+* App is disabled if license expires
+
+---
+
+## 6️⃣ VERSIONING & UPDATES
+
+* Each app version:
+
+  * Uploaded independently
+  * Reviewed independently
+* Tenants:
+
+  * Can view available updates
+  * Manually upgrade versions
+* Rollback supported if a prior approved version exists
+
+---
+
+## 7️⃣ TRANSACTIONS & FINANCIAL RECORDS
+
+For every successful purchase, persist:
+
+* App ID
+* App version
+* Tenant ID
+* Developer ID
+* Gross amount
+* Platform commission percentage
+* Platform commission amount
+* Developer net amount
+* Currency
+* Timestamp
+* Refund status
+
+### Visibility Rules
+
+* Developers: revenue per app, payout history
+* Tenants: invoices, active subscriptions
+* Platform Admin: total revenue, commissions, refunds, disputes
+
+---
+
+## 8️⃣ DEVELOPER PAYOUT WORKFLOW
+
+### Payout Rules
+
+* Default payout cycle: **Monthly**
+* Refunds reduce payable balance
+* Transactions already paid out must not be reprocessed
+
+### Payout States
+
+* Pending
+* Processing
+* Paid
+* Failed
+
+### Developer Views
+
+* Earnings summary
+* Pending payout balance
+* Paid payout history
+* Downloadable payout statements
+
+### Platform Admin Views
+
+* Developer payout queue
+* Ability to mark payouts as Processing or Paid
+* Full payout audit trail
+
+---
+
+## 9️⃣ REVIEWS & RATINGS
+
+* One review per purchase
+* Star rating with written feedback
+* Admin moderation
+* Developer responses allowed
+
+---
+
+## 🔒 10️⃣ SECURITY, GOVERNANCE & AUDIT
+
+* Dependency enforcement before installation
+* Permission scopes per app/module
+* Admin takedown and suspension capability
+* Full audit logs for:
+
+  * App approvals
+  * Pricing changes
+  * Commission changes
+  * Payout state transitions
+
+---
+
+## 🚀 11️⃣ OPTIONAL ENHANCEMENTS (FEATURE-FLAGGED)
+
+⚠️ Disabled by default
+
+### Revenue Enhancements
+
+* Trial licenses
+* Freemium models
+* Usage-based pricing (future-ready)
+
+### Developer Experience
+
+* Install analytics
+* Version adoption metrics
+
+### Marketplace UX
+
+* Advanced filters
+* App comparison
+* Wishlist
+
+### Open-Source Enhancements
+
+* Git repository linking
+* Open-source badges
+
+### Platform Controls
+
+* Category-based commission (future)
+* Developer-specific commission overrides
+
+---
+
+## ❌ 12️⃣ EXPLICIT NON-GOALS
+
+* No automatic app publishing
+* No bypassing admin approval
+* No automated payouts
+* No new pricing models beyond those listed
+* No new user roles
+
+---
+
+## 📦 13️⃣ EXPECTED DELIVERABLES
+
+* Required database schema updates
+* App approval workflow
+* Licensing and installation enforcement
+* Transaction and payout logic
+* Admin and developer views
+* Audit logging
+* Clear inline documentation
+
+---
+
+## ✅ SUCCESS CRITERIA
+
+* Marketplace follows a controlled, approval-based app distribution model
+* Platform commission defaults to 0% and is future-adjustable
+* All financial and approval actions are fully auditable
+* No breaking changes to the existing ERP system
+
+---
+
+### END OF TASK
+
+---
+
+If you want, next I can:
+
+* Produce a **database schema**
+* Define **API contracts**
+* Create **admin / developer UI flows**
+* Generate **test cases & acceptance criteria**
+* Split this into **Replit-sized subtasks**
+
+Just tell me the next step.
