@@ -44,6 +44,13 @@ import {
   type UserFeedback, type InsertUserFeedback,
   type Industry, type InsertIndustry,
   type IndustryDeployment, type InsertIndustryDeployment,
+  type CommunitySpace, type InsertCommunitySpace,
+  type CommunityPost, type InsertCommunityPost,
+  type CommunityComment, type InsertCommunityComment,
+  type CommunityVote, type InsertCommunityVote,
+  type UserTrustLevel, type InsertUserTrustLevel,
+  type ReputationEvent, type InsertReputationEvent,
+  type CommunityBadgeProgress, type InsertCommunityBadgeProgress,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -244,6 +251,43 @@ export interface IStorage {
   createIndustryDeployment(deployment: InsertIndustryDeployment): Promise<IndustryDeployment>;
   updateIndustryDeployment(id: string, deployment: Partial<InsertIndustryDeployment>): Promise<IndustryDeployment | undefined>;
   deleteIndustryDeployment(id: string): Promise<boolean>;
+
+  // Community Space operations
+  getCommunitySpace(id: string): Promise<CommunitySpace | undefined>;
+  getCommunitySpaceBySlug(slug: string): Promise<CommunitySpace | undefined>;
+  listCommunitySpaces(): Promise<CommunitySpace[]>;
+  createCommunitySpace(space: InsertCommunitySpace): Promise<CommunitySpace>;
+
+  // Community Post operations
+  getCommunityPost(id: string): Promise<CommunityPost | undefined>;
+  listCommunityPosts(spaceId?: string): Promise<CommunityPost[]>;
+  createCommunityPost(post: InsertCommunityPost): Promise<CommunityPost>;
+  updateCommunityPost(id: string, post: Partial<InsertCommunityPost>): Promise<CommunityPost | undefined>;
+
+  // Community Comment operations
+  getCommunityComment(id: string): Promise<CommunityComment | undefined>;
+  listCommunityComments(postId: string): Promise<CommunityComment[]>;
+  createCommunityComment(comment: InsertCommunityComment): Promise<CommunityComment>;
+
+  // Community Vote operations
+  getCommunityVote(userId: string, targetType: string, targetId: string): Promise<CommunityVote | undefined>;
+  createCommunityVote(vote: InsertCommunityVote): Promise<CommunityVote>;
+  deleteCommunityVote(userId: string, targetType: string, targetId: string): Promise<boolean>;
+
+  // User Trust Level operations
+  getUserTrustLevel(userId: string): Promise<UserTrustLevel | undefined>;
+  createUserTrustLevel(trust: InsertUserTrustLevel): Promise<UserTrustLevel>;
+  updateUserTrustLevel(userId: string, trust: Partial<InsertUserTrustLevel>): Promise<UserTrustLevel | undefined>;
+
+  // Reputation Event operations
+  listReputationEvents(userId: string): Promise<ReputationEvent[]>;
+  createReputationEvent(event: InsertReputationEvent): Promise<ReputationEvent>;
+
+  // Community Badge Progress operations
+  getCommunityBadgeProgress(userId: string, badgeCategory: string): Promise<CommunityBadgeProgress | undefined>;
+  listCommunityBadgeProgress(userId: string): Promise<CommunityBadgeProgress[]>;
+  createCommunityBadgeProgress(progress: InsertCommunityBadgeProgress): Promise<CommunityBadgeProgress>;
+  updateCommunityBadgeProgress(userId: string, badgeCategory: string, progress: Partial<InsertCommunityBadgeProgress>): Promise<CommunityBadgeProgress | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -600,6 +644,169 @@ export class MemStorage implements IStorage {
   }
   async deleteIndustryDeployment(id: string) { 
     return this.industryDeployments.delete(id); 
+  }
+
+  // Community Space Management
+  private communitySpaces = new Map<string, CommunitySpace>();
+  private communityPosts = new Map<string, CommunityPost>();
+  private communityComments = new Map<string, CommunityComment>();
+  private communityVotes = new Map<string, CommunityVote>();
+  private userTrustLevels = new Map<string, UserTrustLevel>();
+  private reputationEventsStore = new Map<string, ReputationEvent>();
+  private communityBadgeProgressStore = new Map<string, CommunityBadgeProgress>();
+
+  async getCommunitySpace(id: string) { return this.communitySpaces.get(id); }
+  async getCommunitySpaceBySlug(slug: string) { 
+    return Array.from(this.communitySpaces.values()).find(s => s.slug === slug); 
+  }
+  async listCommunitySpaces() { 
+    return Array.from(this.communitySpaces.values()).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)); 
+  }
+  async createCommunitySpace(s: InsertCommunitySpace) { 
+    const id = randomUUID(); 
+    const space: CommunitySpace = { id, ...s as any, createdAt: new Date() }; 
+    this.communitySpaces.set(id, space); 
+    return space; 
+  }
+
+  async getCommunityPost(id: string) { return this.communityPosts.get(id); }
+  async listCommunityPosts(spaceId?: string) { 
+    const list = Array.from(this.communityPosts.values()); 
+    const filtered = spaceId ? list.filter(p => p.spaceId === spaceId) : list;
+    return filtered.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+  async createCommunityPost(p: InsertCommunityPost) { 
+    const id = randomUUID(); 
+    const post: CommunityPost = { 
+      id, 
+      ...p as any, 
+      upvotes: 0, 
+      downvotes: 0, 
+      viewCount: 0, 
+      answerCount: 0,
+      isPinned: false,
+      isLocked: false,
+      createdAt: new Date(), 
+      updatedAt: new Date() 
+    }; 
+    this.communityPosts.set(id, post); 
+    return post; 
+  }
+  async updateCommunityPost(id: string, p: Partial<InsertCommunityPost>) { 
+    const post = this.communityPosts.get(id);
+    if (!post) return undefined;
+    const updated: CommunityPost = { ...post, ...p as any, updatedAt: new Date() };
+    this.communityPosts.set(id, updated);
+    return updated;
+  }
+
+  async getCommunityComment(id: string) { return this.communityComments.get(id); }
+  async listCommunityComments(postId: string) { 
+    return Array.from(this.communityComments.values())
+      .filter(c => c.postId === postId)
+      .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
+  }
+  async createCommunityComment(c: InsertCommunityComment) { 
+    const id = randomUUID(); 
+    const comment: CommunityComment = { 
+      id, 
+      ...c as any, 
+      upvotes: 0, 
+      downvotes: 0, 
+      isAccepted: false,
+      createdAt: new Date(), 
+      updatedAt: new Date() 
+    }; 
+    this.communityComments.set(id, comment); 
+    return comment; 
+  }
+
+  async getCommunityVote(userId: string, targetType: string, targetId: string) { 
+    return Array.from(this.communityVotes.values()).find(
+      v => v.userId === userId && v.targetType === targetType && v.targetId === targetId
+    ); 
+  }
+  async createCommunityVote(v: InsertCommunityVote) { 
+    const id = randomUUID(); 
+    const vote: CommunityVote = { id, ...v as any, createdAt: new Date() }; 
+    this.communityVotes.set(id, vote); 
+    return vote; 
+  }
+  async deleteCommunityVote(userId: string, targetType: string, targetId: string) { 
+    const vote = await this.getCommunityVote(userId, targetType, targetId);
+    if (vote) {
+      this.communityVotes.delete(vote.id);
+      return true;
+    }
+    return false;
+  }
+
+  async getUserTrustLevel(userId: string) { 
+    return Array.from(this.userTrustLevels.values()).find(t => t.userId === userId); 
+  }
+  async createUserTrustLevel(t: InsertUserTrustLevel) { 
+    const id = randomUUID(); 
+    const trust: UserTrustLevel = { 
+      id, 
+      ...t as any, 
+      trustLevel: 0,
+      totalReputation: 0,
+      postsToday: 0,
+      answersToday: 0,
+      spacesJoinedToday: 0,
+      isShadowBanned: false,
+      createdAt: new Date(), 
+      updatedAt: new Date() 
+    }; 
+    this.userTrustLevels.set(id, trust); 
+    return trust; 
+  }
+  async updateUserTrustLevel(userId: string, t: Partial<InsertUserTrustLevel>) { 
+    const trust = await this.getUserTrustLevel(userId);
+    if (!trust) return undefined;
+    const updated: UserTrustLevel = { ...trust, ...t as any, updatedAt: new Date() };
+    this.userTrustLevels.set(trust.id, updated);
+    return updated;
+  }
+
+  async listReputationEvents(userId: string) { 
+    return Array.from(this.reputationEventsStore.values())
+      .filter(e => e.userId === userId)
+      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+  async createReputationEvent(e: InsertReputationEvent) { 
+    const id = randomUUID(); 
+    const event: ReputationEvent = { id, ...e as any, createdAt: new Date() }; 
+    this.reputationEventsStore.set(id, event); 
+    return event; 
+  }
+
+  async getCommunityBadgeProgress(userId: string, badgeCategory: string) { 
+    return Array.from(this.communityBadgeProgressStore.values()).find(
+      b => b.userId === userId && b.badgeCategory === badgeCategory
+    ); 
+  }
+  async listCommunityBadgeProgress(userId: string) { 
+    return Array.from(this.communityBadgeProgressStore.values()).filter(b => b.userId === userId);
+  }
+  async createCommunityBadgeProgress(p: InsertCommunityBadgeProgress) { 
+    const id = randomUUID(); 
+    const progress: CommunityBadgeProgress = { 
+      id, 
+      ...p as any, 
+      currentCount: 0,
+      currentLevel: "none",
+      updatedAt: new Date() 
+    }; 
+    this.communityBadgeProgressStore.set(id, progress); 
+    return progress; 
+  }
+  async updateCommunityBadgeProgress(userId: string, badgeCategory: string, p: Partial<InsertCommunityBadgeProgress>) { 
+    const progress = await this.getCommunityBadgeProgress(userId, badgeCategory);
+    if (!progress) return undefined;
+    const updated: CommunityBadgeProgress = { ...progress, ...p as any, updatedAt: new Date() };
+    this.communityBadgeProgressStore.set(progress.id, updated);
+    return updated;
   }
 }
 

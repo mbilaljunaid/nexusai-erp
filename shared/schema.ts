@@ -1418,3 +1418,296 @@ export const insertUserNotificationSchema = createInsertSchema(userNotifications
 
 export type InsertUserNotification = z.infer<typeof insertUserNotificationSchema>;
 export type UserNotification = typeof userNotifications.$inferSelect;
+
+// ============================================
+// COMMUNITY & REPUTATION SYSTEM
+// ============================================
+
+// Community Spaces - Discussion categories/forums
+export const communitySpaces = pgTable("community_spaces", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  slug: varchar("slug").notNull().unique(),
+  description: text("description"),
+  icon: varchar("icon"),
+  postingGuidelines: text("posting_guidelines"),
+  allowedPostTypes: text("allowed_post_types").array(), // question, answer, discussion, how-to, bug, feature, show-tell, announcement
+  reputationWeight: numeric("reputation_weight", { precision: 3, scale: 2 }).default("1.0"), // multiplier for rep earned in this space
+  isActive: boolean("is_active").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCommunitySpaceSchema = createInsertSchema(communitySpaces).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1),
+  slug: z.string().min(1),
+  description: z.string().optional(),
+  icon: z.string().optional(),
+  postingGuidelines: z.string().optional(),
+  allowedPostTypes: z.array(z.string()).optional(),
+  reputationWeight: z.string().optional(),
+  isActive: z.boolean().optional(),
+  sortOrder: z.number().optional(),
+});
+
+export type InsertCommunitySpace = z.infer<typeof insertCommunitySpaceSchema>;
+export type CommunitySpace = typeof communitySpaces.$inferSelect;
+
+// Community Posts - Questions, discussions, guides, etc.
+export const communityPosts = pgTable("community_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  spaceId: varchar("space_id").notNull(),
+  authorId: varchar("author_id").notNull(),
+  postType: varchar("post_type").notNull(), // question, discussion, how-to, bug, feature, show-tell, announcement
+  title: varchar("title").notNull(),
+  content: text("content").notNull(),
+  isPinned: boolean("is_pinned").default(false),
+  isLocked: boolean("is_locked").default(false),
+  upvotes: integer("upvotes").default(0),
+  downvotes: integer("downvotes").default(0),
+  viewCount: integer("view_count").default(0),
+  answerCount: integer("answer_count").default(0),
+  acceptedAnswerId: varchar("accepted_answer_id"),
+  tags: text("tags").array(),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertCommunityPostSchema = createInsertSchema(communityPosts).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  spaceId: z.string().min(1),
+  authorId: z.string().min(1),
+  postType: z.enum(["question", "discussion", "how-to", "bug", "feature", "show-tell", "announcement"]),
+  title: z.string().min(1),
+  content: z.string().min(1),
+  isPinned: z.boolean().optional(),
+  isLocked: z.boolean().optional(),
+  upvotes: z.number().optional(),
+  downvotes: z.number().optional(),
+  viewCount: z.number().optional(),
+  answerCount: z.number().optional(),
+  acceptedAnswerId: z.string().optional().nullable(),
+  tags: z.array(z.string()).optional(),
+});
+
+export type InsertCommunityPost = z.infer<typeof insertCommunityPostSchema>;
+export type CommunityPost = typeof communityPosts.$inferSelect;
+
+// Community Comments/Answers - Replies to posts
+export const communityComments = pgTable("community_comments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  postId: varchar("post_id").notNull(),
+  parentId: varchar("parent_id"), // For nested replies
+  authorId: varchar("author_id").notNull(),
+  content: text("content").notNull(),
+  upvotes: integer("upvotes").default(0),
+  downvotes: integer("downvotes").default(0),
+  isAccepted: boolean("is_accepted").default(false), // Marked as accepted answer
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertCommunityCommentSchema = createInsertSchema(communityComments).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  postId: z.string().min(1),
+  parentId: z.string().optional().nullable(),
+  authorId: z.string().min(1),
+  content: z.string().min(1),
+  upvotes: z.number().optional(),
+  downvotes: z.number().optional(),
+  isAccepted: z.boolean().optional(),
+});
+
+export type InsertCommunityComment = z.infer<typeof insertCommunityCommentSchema>;
+export type CommunityComment = typeof communityComments.$inferSelect;
+
+// Community Votes - Upvotes/downvotes on posts and comments
+export const communityVotes = pgTable("community_votes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  targetType: varchar("target_type").notNull(), // post, comment
+  targetId: varchar("target_id").notNull(),
+  voteType: varchar("vote_type").notNull(), // upvote, downvote
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCommunityVoteSchema = createInsertSchema(communityVotes).omit({ id: true, createdAt: true }).extend({
+  userId: z.string().min(1),
+  targetType: z.enum(["post", "comment"]),
+  targetId: z.string().min(1),
+  voteType: z.enum(["upvote", "downvote"]),
+});
+
+export type InsertCommunityVote = z.infer<typeof insertCommunityVoteSchema>;
+export type CommunityVote = typeof communityVotes.$inferSelect;
+
+// User Trust Levels - Determines posting limits and privileges
+export const userTrustLevels = pgTable("user_trust_levels", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique(),
+  trustLevel: integer("trust_level").default(0), // 0=New, 1=Contributor, 2=Trusted, 3=Leader
+  totalReputation: integer("total_reputation").default(0),
+  postsToday: integer("posts_today").default(0),
+  answersToday: integer("answers_today").default(0),
+  spacesJoinedToday: integer("spaces_joined_today").default(0),
+  lastResetAt: timestamp("last_reset_at").default(sql`now()`),
+  lastCalculatedAt: timestamp("last_calculated_at").default(sql`now()`),
+  isShadowBanned: boolean("is_shadow_banned").default(false),
+  banExpiresAt: timestamp("ban_expires_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertUserTrustLevelSchema = createInsertSchema(userTrustLevels).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  userId: z.string().min(1),
+  trustLevel: z.number().optional(),
+  totalReputation: z.number().optional(),
+  postsToday: z.number().optional(),
+  answersToday: z.number().optional(),
+  spacesJoinedToday: z.number().optional(),
+  lastResetAt: z.date().optional(),
+  lastCalculatedAt: z.date().optional(),
+  isShadowBanned: z.boolean().optional(),
+  banExpiresAt: z.date().optional().nullable(),
+});
+
+export type InsertUserTrustLevel = z.infer<typeof insertUserTrustLevelSchema>;
+export type UserTrustLevel = typeof userTrustLevels.$inferSelect;
+
+// Reputation Events - Log of all reputation changes
+export const reputationEvents = pgTable("reputation_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  actionType: varchar("action_type").notNull(), // question_posted, answer_posted, answer_upvoted, accepted_answer, downvoted, etc.
+  points: integer("points").notNull(),
+  sourceType: varchar("source_type"), // post, comment, app, form, bug, video, docs, service
+  sourceId: varchar("source_id"),
+  description: text("description"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertReputationEventSchema = createInsertSchema(reputationEvents).omit({ id: true, createdAt: true }).extend({
+  userId: z.string().min(1),
+  actionType: z.string().min(1),
+  points: z.number(),
+  sourceType: z.string().optional(),
+  sourceId: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export type InsertReputationEvent = z.infer<typeof insertReputationEventSchema>;
+export type ReputationEvent = typeof reputationEvents.$inferSelect;
+
+// Reputation Dimensions - Multi-dimensional reputation tracking
+export const reputationDimensions = pgTable("reputation_dimensions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique(),
+  technicalSkill: integer("technical_skill").default(0),
+  knowledgeSharing: integer("knowledge_sharing").default(0),
+  qualityAccuracy: integer("quality_accuracy").default(0),
+  consistency: integer("consistency").default(0),
+  communityTrust: integer("community_trust").default(0),
+  serviceReliability: integer("service_reliability").default(0),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertReputationDimensionSchema = createInsertSchema(reputationDimensions).omit({ id: true, updatedAt: true }).extend({
+  userId: z.string().min(1),
+  technicalSkill: z.number().optional(),
+  knowledgeSharing: z.number().optional(),
+  qualityAccuracy: z.number().optional(),
+  consistency: z.number().optional(),
+  communityTrust: z.number().optional(),
+  serviceReliability: z.number().optional(),
+});
+
+export type InsertReputationDimension = z.infer<typeof insertReputationDimensionSchema>;
+export type ReputationDimension = typeof reputationDimensions.$inferSelect;
+
+// Community Badge Progress - Tracks progress toward tiered badges
+export const communityBadgeProgress = pgTable("community_badge_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  badgeCategory: varchar("badge_category").notNull(), // problem_solver, form_builder, app_builder, educator, bug_resolver
+  currentCount: integer("current_count").default(0),
+  currentLevel: varchar("current_level").default("none"), // none, bronze, silver, gold, platinum, legendary
+  unlockedAt: timestamp("unlocked_at"),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertCommunityBadgeProgressSchema = createInsertSchema(communityBadgeProgress).omit({ id: true, updatedAt: true }).extend({
+  userId: z.string().min(1),
+  badgeCategory: z.string().min(1),
+  currentCount: z.number().optional(),
+  currentLevel: z.enum(["none", "bronze", "silver", "gold", "platinum", "legendary"]).optional(),
+  unlockedAt: z.date().optional().nullable(),
+});
+
+export type InsertCommunityBadgeProgress = z.infer<typeof insertCommunityBadgeProgressSchema>;
+export type CommunityBadgeProgress = typeof communityBadgeProgress.$inferSelect;
+
+// Moderation Actions - Track all moderation activities
+export const communityModerationActions = pgTable("community_moderation_actions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  moderatorId: varchar("moderator_id").notNull(),
+  targetUserId: varchar("target_user_id"),
+  actionType: varchar("action_type").notNull(), // warn, mute, ban, unban, delete_post, lock_post, flag
+  reason: text("reason"),
+  targetType: varchar("target_type"), // user, post, comment
+  targetId: varchar("target_id"),
+  duration: integer("duration"), // in hours, for temporary actions
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCommunityModerationActionSchema = createInsertSchema(communityModerationActions).omit({ id: true, createdAt: true }).extend({
+  moderatorId: z.string().min(1),
+  targetUserId: z.string().optional(),
+  actionType: z.enum(["warn", "mute", "ban", "unban", "delete_post", "lock_post", "flag"]),
+  reason: z.string().optional(),
+  targetType: z.enum(["user", "post", "comment"]).optional(),
+  targetId: z.string().optional(),
+  duration: z.number().optional(),
+});
+
+export type InsertCommunityModerationAction = z.infer<typeof insertCommunityModerationActionSchema>;
+export type CommunityModerationAction = typeof communityModerationActions.$inferSelect;
+
+// Rate Limit Tracking - Anti-spam burst detection
+export const communityRateLimits = pgTable("community_rate_limits", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  actionType: varchar("action_type").notNull(), // post, answer, space_join, link_post
+  actionCount: integer("action_count").default(0),
+  windowStart: timestamp("window_start").default(sql`now()`),
+  isThrottled: boolean("is_throttled").default(false),
+  throttleExpiresAt: timestamp("throttle_expires_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCommunityRateLimitSchema = createInsertSchema(communityRateLimits).omit({ id: true, createdAt: true }).extend({
+  userId: z.string().min(1),
+  actionType: z.string().min(1),
+  actionCount: z.number().optional(),
+  windowStart: z.date().optional(),
+  isThrottled: z.boolean().optional(),
+  throttleExpiresAt: z.date().optional().nullable(),
+});
+
+export type InsertCommunityRateLimit = z.infer<typeof insertCommunityRateLimitSchema>;
+export type CommunityRateLimit = typeof communityRateLimits.$inferSelect;
+
+// User Space Memberships - Track which spaces users have joined
+export const communitySpaceMemberships = pgTable("community_space_memberships", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  spaceId: varchar("space_id").notNull(),
+  role: varchar("role").default("member"), // member, moderator
+  joinedAt: timestamp("joined_at").default(sql`now()`),
+});
+
+export const insertCommunitySpaceMembershipSchema = createInsertSchema(communitySpaceMemberships).omit({ id: true, joinedAt: true }).extend({
+  userId: z.string().min(1),
+  spaceId: z.string().min(1),
+  role: z.enum(["member", "moderator"]).optional(),
+});
+
+export type InsertCommunitySpaceMembership = z.infer<typeof insertCommunitySpaceMembershipSchema>;
+export type CommunitySpaceMembership = typeof communitySpaceMemberships.$inferSelect;

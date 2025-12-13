@@ -29,6 +29,9 @@ import {
   userDashboardWidgets, insertUserDashboardWidgetSchema,
   userBadges, badgeDefinitions, userActivityPoints,
   developerSpotlight, userNotifications, insertUserNotificationSchema,
+  communitySpaces, communityPosts, communityComments, communityVotes,
+  userTrustLevels, reputationEvents, communityBadgeProgress,
+  insertCommunityPostSchema, insertCommunityCommentSchema, insertCommunityVoteSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -154,6 +157,7 @@ export async function registerRoutes(
     if (req.path.match(/^\/marketplace\/apps\/[^/]+$/)) return next();
     if (req.path.match(/^\/marketplace\/apps\/[^/]+\/reviews$/)) return next();
     if (req.path.match(/^\/marketplace\/apps\/[^/]+\/dependencies$/)) return next();
+    if (req.path.startsWith("/community")) return next();
     enforceRBAC()(req, res, next);
   });
 
@@ -2638,6 +2642,413 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("Error fetching unread count:", error);
       res.status(500).json({ error: "Failed to fetch unread count" });
+    }
+  });
+
+  // ========== COMMUNITY & REPUTATION API ==========
+
+  // GET /api/community/spaces - List all community spaces
+  app.get("/api/community/spaces", async (req, res) => {
+    try {
+      const spaces = await db.select().from(communitySpaces)
+        .where(eq(communitySpaces.isActive, true))
+        .orderBy(communitySpaces.sortOrder);
+      res.json(spaces);
+    } catch (error: any) {
+      console.error("Error fetching community spaces:", error);
+      res.status(500).json({ error: "Failed to fetch community spaces" });
+    }
+  });
+
+  // GET /api/community/spaces/:slug - Get space by slug
+  app.get("/api/community/spaces/:slug", async (req, res) => {
+    try {
+      const [space] = await db.select().from(communitySpaces)
+        .where(eq(communitySpaces.slug, req.params.slug));
+      if (!space) return res.status(404).json({ error: "Space not found" });
+      res.json(space);
+    } catch (error: any) {
+      console.error("Error fetching community space:", error);
+      res.status(500).json({ error: "Failed to fetch community space" });
+    }
+  });
+
+  // GET /api/community/spaces/:spaceId/posts - List posts in a space
+  app.get("/api/community/spaces/:spaceId/posts", async (req, res) => {
+    try {
+      const posts = await db.select().from(communityPosts)
+        .where(eq(communityPosts.spaceId, req.params.spaceId))
+        .orderBy(desc(communityPosts.createdAt));
+      res.json(posts);
+    } catch (error: any) {
+      console.error("Error fetching posts:", error);
+      res.status(500).json({ error: "Failed to fetch posts" });
+    }
+  });
+
+  // GET /api/community/posts - List all posts (with optional spaceId filter)
+  app.get("/api/community/posts", async (req, res) => {
+    try {
+      const spaceId = req.query.spaceId as string;
+      let posts;
+      if (spaceId) {
+        posts = await db.select().from(communityPosts)
+          .where(eq(communityPosts.spaceId, spaceId))
+          .orderBy(desc(communityPosts.createdAt));
+      } else {
+        posts = await db.select().from(communityPosts)
+          .orderBy(desc(communityPosts.createdAt));
+      }
+      res.json(posts);
+    } catch (error: any) {
+      console.error("Error fetching posts:", error);
+      res.status(500).json({ error: "Failed to fetch posts" });
+    }
+  });
+
+  // GET /api/community/posts/:id - Get single post with comments
+  app.get("/api/community/posts/:id", async (req, res) => {
+    try {
+      const [post] = await db.select().from(communityPosts)
+        .where(eq(communityPosts.id, req.params.id));
+      if (!post) return res.status(404).json({ error: "Post not found" });
+
+      const comments = await db.select().from(communityComments)
+        .where(eq(communityComments.postId, req.params.id))
+        .orderBy(communityComments.createdAt);
+
+      // Increment view count
+      await db.update(communityPosts)
+        .set({ viewCount: (post.viewCount || 0) + 1 })
+        .where(eq(communityPosts.id, req.params.id));
+
+      res.json({ ...post, comments });
+    } catch (error: any) {
+      console.error("Error fetching post:", error);
+      res.status(500).json({ error: "Failed to fetch post" });
+    }
+  });
+
+  // POST /api/community/posts - Create new post
+  app.post("/api/community/posts", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const parseResult = insertCommunityPostSchema.safeParse({ ...req.body, authorId: userId });
+      if (!parseResult.success) {
+        return res.status(400).json({ error: parseResult.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const [post] = await db.insert(communityPosts).values(parseResult.data).returning();
+
+      // Award reputation for creating a post (+2 for question/discussion)
+      await db.insert(reputationEvents).values({
+        userId,
+        actionType: "post_created",
+        points: 2,
+        sourceType: "post",
+        sourceId: post.id,
+        description: `Created post: ${post.title}`,
+      });
+
+      // Update user trust level total reputation
+      const [existingTrust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      if (existingTrust) {
+        await db.update(userTrustLevels)
+          .set({ 
+            totalReputation: (existingTrust.totalReputation || 0) + 2,
+            postsToday: (existingTrust.postsToday || 0) + 1,
+            updatedAt: new Date()
+          })
+          .where(eq(userTrustLevels.userId, userId));
+      } else {
+        await db.insert(userTrustLevels).values({
+          userId,
+          trustLevel: 0,
+          totalReputation: 2,
+          postsToday: 1,
+        });
+      }
+
+      res.status(201).json(post);
+    } catch (error: any) {
+      console.error("Error creating post:", error);
+      res.status(500).json({ error: "Failed to create post" });
+    }
+  });
+
+  // POST /api/community/posts/:id/comments - Add comment to a post
+  app.post("/api/community/posts/:id/comments", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const parseResult = insertCommunityCommentSchema.safeParse({
+        ...req.body,
+        postId: req.params.id,
+        authorId: userId,
+      });
+      if (!parseResult.success) {
+        return res.status(400).json({ error: parseResult.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const [comment] = await db.insert(communityComments).values(parseResult.data).returning();
+
+      // Update post's answer count
+      const [post] = await db.select().from(communityPosts).where(eq(communityPosts.id, req.params.id));
+      if (post) {
+        await db.update(communityPosts)
+          .set({ answerCount: (post.answerCount || 0) + 1, updatedAt: new Date() })
+          .where(eq(communityPosts.id, req.params.id));
+      }
+
+      // Award reputation for answering (+5)
+      await db.insert(reputationEvents).values({
+        userId,
+        actionType: "answer_posted",
+        points: 5,
+        sourceType: "comment",
+        sourceId: comment.id,
+        description: "Posted an answer",
+      });
+
+      // Update trust level
+      const [existingTrust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      if (existingTrust) {
+        await db.update(userTrustLevels)
+          .set({ 
+            totalReputation: (existingTrust.totalReputation || 0) + 5,
+            answersToday: (existingTrust.answersToday || 0) + 1,
+            updatedAt: new Date()
+          })
+          .where(eq(userTrustLevels.userId, userId));
+      } else {
+        await db.insert(userTrustLevels).values({
+          userId,
+          trustLevel: 0,
+          totalReputation: 5,
+          answersToday: 1,
+        });
+      }
+
+      res.status(201).json(comment);
+    } catch (error: any) {
+      console.error("Error creating comment:", error);
+      res.status(500).json({ error: "Failed to create comment" });
+    }
+  });
+
+  // POST /api/community/vote - Upvote/downvote a post or comment
+  app.post("/api/community/vote", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const parseResult = insertCommunityVoteSchema.safeParse({ ...req.body, userId });
+      if (!parseResult.success) {
+        return res.status(400).json({ error: parseResult.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const { targetType, targetId, voteType } = parseResult.data;
+
+      // Check for existing vote
+      const [existingVote] = await db.select().from(communityVotes)
+        .where(and(
+          eq(communityVotes.userId, userId),
+          eq(communityVotes.targetType, targetType),
+          eq(communityVotes.targetId, targetId)
+        ));
+
+      if (existingVote) {
+        // If same vote type, remove it (toggle off)
+        if (existingVote.voteType === voteType) {
+          await db.delete(communityVotes).where(eq(communityVotes.id, existingVote.id));
+          
+          // Update target's vote count
+          if (targetType === "post") {
+            const [post] = await db.select().from(communityPosts).where(eq(communityPosts.id, targetId));
+            if (post) {
+              const update = voteType === "upvote" 
+                ? { upvotes: Math.max(0, (post.upvotes || 0) - 1) }
+                : { downvotes: Math.max(0, (post.downvotes || 0) - 1) };
+              await db.update(communityPosts).set(update).where(eq(communityPosts.id, targetId));
+            }
+          } else {
+            const [comment] = await db.select().from(communityComments).where(eq(communityComments.id, targetId));
+            if (comment) {
+              const update = voteType === "upvote"
+                ? { upvotes: Math.max(0, (comment.upvotes || 0) - 1) }
+                : { downvotes: Math.max(0, (comment.downvotes || 0) - 1) };
+              await db.update(communityComments).set(update).where(eq(communityComments.id, targetId));
+            }
+          }
+          return res.json({ action: "removed", voteType });
+        }
+        
+        // Change vote type
+        await db.update(communityVotes)
+          .set({ voteType })
+          .where(eq(communityVotes.id, existingVote.id));
+        
+        // Update both vote counts on target
+        if (targetType === "post") {
+          const [post] = await db.select().from(communityPosts).where(eq(communityPosts.id, targetId));
+          if (post) {
+            const update = voteType === "upvote"
+              ? { upvotes: (post.upvotes || 0) + 1, downvotes: Math.max(0, (post.downvotes || 0) - 1) }
+              : { upvotes: Math.max(0, (post.upvotes || 0) - 1), downvotes: (post.downvotes || 0) + 1 };
+            await db.update(communityPosts).set(update).where(eq(communityPosts.id, targetId));
+          }
+        } else {
+          const [comment] = await db.select().from(communityComments).where(eq(communityComments.id, targetId));
+          if (comment) {
+            const update = voteType === "upvote"
+              ? { upvotes: (comment.upvotes || 0) + 1, downvotes: Math.max(0, (comment.downvotes || 0) - 1) }
+              : { upvotes: Math.max(0, (comment.upvotes || 0) - 1), downvotes: (comment.downvotes || 0) + 1 };
+            await db.update(communityComments).set(update).where(eq(communityComments.id, targetId));
+          }
+        }
+        return res.json({ action: "changed", voteType });
+      }
+
+      // Create new vote
+      const [vote] = await db.insert(communityVotes).values(parseResult.data).returning();
+
+      // Update target's vote count
+      if (targetType === "post") {
+        const [post] = await db.select().from(communityPosts).where(eq(communityPosts.id, targetId));
+        if (post) {
+          const update = voteType === "upvote"
+            ? { upvotes: (post.upvotes || 0) + 1 }
+            : { downvotes: (post.downvotes || 0) + 1 };
+          await db.update(communityPosts).set(update).where(eq(communityPosts.id, targetId));
+
+          // Award/deduct reputation for post author
+          const repPoints = voteType === "upvote" ? 2 : -5;
+          await db.insert(reputationEvents).values({
+            userId: post.authorId,
+            actionType: voteType === "upvote" ? "post_upvoted" : "post_downvoted",
+            points: repPoints,
+            sourceType: "post",
+            sourceId: targetId,
+            description: `Post ${voteType === "upvote" ? "upvoted" : "downvoted"}`,
+          });
+        }
+      } else {
+        const [comment] = await db.select().from(communityComments).where(eq(communityComments.id, targetId));
+        if (comment) {
+          const update = voteType === "upvote"
+            ? { upvotes: (comment.upvotes || 0) + 1 }
+            : { downvotes: (comment.downvotes || 0) + 1 };
+          await db.update(communityComments).set(update).where(eq(communityComments.id, targetId));
+
+          // Award/deduct reputation for comment author
+          const repPoints = voteType === "upvote" ? 2 : -5;
+          await db.insert(reputationEvents).values({
+            userId: comment.authorId,
+            actionType: voteType === "upvote" ? "answer_upvoted" : "answer_downvoted",
+            points: repPoints,
+            sourceType: "comment",
+            sourceId: targetId,
+            description: `Answer ${voteType === "upvote" ? "upvoted" : "downvoted"}`,
+          });
+        }
+      }
+
+      res.status(201).json({ action: "created", vote });
+    } catch (error: any) {
+      console.error("Error processing vote:", error);
+      res.status(500).json({ error: "Failed to process vote" });
+    }
+  });
+
+  // POST /api/community/posts/:id/accept-answer - Accept an answer
+  app.post("/api/community/posts/:id/accept-answer", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const { commentId } = req.body;
+      if (!commentId) return res.status(400).json({ error: "commentId required" });
+
+      // Verify user owns the post
+      const [post] = await db.select().from(communityPosts).where(eq(communityPosts.id, req.params.id));
+      if (!post) return res.status(404).json({ error: "Post not found" });
+      if (post.authorId !== userId) return res.status(403).json({ error: "Only post author can accept answers" });
+
+      // Get the comment
+      const [comment] = await db.select().from(communityComments).where(eq(communityComments.id, commentId));
+      if (!comment) return res.status(404).json({ error: "Comment not found" });
+
+      // Mark comment as accepted
+      await db.update(communityComments)
+        .set({ isAccepted: true })
+        .where(eq(communityComments.id, commentId));
+
+      // Update post with accepted answer
+      await db.update(communityPosts)
+        .set({ acceptedAnswerId: commentId })
+        .where(eq(communityPosts.id, req.params.id));
+
+      // Award +15 reputation to answer author
+      await db.insert(reputationEvents).values({
+        userId: comment.authorId,
+        actionType: "accepted_answer",
+        points: 15,
+        sourceType: "comment",
+        sourceId: commentId,
+        description: "Answer accepted as solution",
+      });
+
+      // Update trust level
+      const [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, comment.authorId));
+      if (trust) {
+        await db.update(userTrustLevels)
+          .set({ totalReputation: (trust.totalReputation || 0) + 15, updatedAt: new Date() })
+          .where(eq(userTrustLevels.userId, comment.authorId));
+      }
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error accepting answer:", error);
+      res.status(500).json({ error: "Failed to accept answer" });
+    }
+  });
+
+  // GET /api/community/reputation/:userId - Get user's reputation and stats
+  app.get("/api/community/reputation/:userId", async (req, res) => {
+    try {
+      const [trust] = await db.select().from(userTrustLevels)
+        .where(eq(userTrustLevels.userId, req.params.userId));
+
+      const events = await db.select().from(reputationEvents)
+        .where(eq(reputationEvents.userId, req.params.userId))
+        .orderBy(desc(reputationEvents.createdAt));
+
+      const badges = await db.select().from(communityBadgeProgress)
+        .where(eq(communityBadgeProgress.userId, req.params.userId));
+
+      res.json({
+        trustLevel: trust || { userId: req.params.userId, trustLevel: 0, totalReputation: 0 },
+        recentEvents: events.slice(0, 20),
+        badges,
+      });
+    } catch (error: any) {
+      console.error("Error fetching reputation:", error);
+      res.status(500).json({ error: "Failed to fetch reputation" });
+    }
+  });
+
+  // GET /api/community/leaderboard - Get top contributors
+  app.get("/api/community/leaderboard", async (req, res) => {
+    try {
+      const leaders = await db.select().from(userTrustLevels)
+        .orderBy(desc(userTrustLevels.totalReputation));
+      res.json(leaders.slice(0, 25));
+    } catch (error: any) {
+      console.error("Error fetching leaderboard:", error);
+      res.status(500).json({ error: "Failed to fetch leaderboard" });
     }
   });
 
