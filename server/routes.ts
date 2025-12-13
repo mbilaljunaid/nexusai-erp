@@ -36,6 +36,10 @@ import {
   communityModerationActions, insertCommunityModerationActionSchema,
   userEarnedBadges, insertUserEarnedBadgeSchema,
   users,
+  serviceCategories, servicePackages, serviceOrders, serviceReviews,
+  insertServiceCategorySchema, insertServicePackageSchema, insertServiceOrderSchema, insertServiceReviewSchema,
+  communityVoteEvents, communityVoteAnomalies, communityAIRecommendations,
+  insertCommunityVoteEventSchema, insertCommunityVoteAnomalySchema, insertCommunityAIRecommendationSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -3480,6 +3484,628 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("Error fetching user badges:", error);
       res.status(500).json({ error: "Failed to fetch user badges" });
+    }
+  });
+
+  // ========== SERVICE MARKETPLACE API ==========
+
+  // GET /api/community/marketplace/categories - List all service categories
+  app.get("/api/community/marketplace/categories", async (req, res) => {
+    try {
+      const categories = await db.select().from(serviceCategories)
+        .orderBy(serviceCategories.sortOrder);
+      res.json(categories);
+    } catch (error: any) {
+      console.error("Error fetching service categories:", error);
+      res.status(500).json({ error: "Failed to fetch service categories" });
+    }
+  });
+
+  // POST /api/community/marketplace/categories - Create category (admin only)
+  app.post("/api/community/marketplace/categories", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      // Check if user is admin
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ error: "Admin access required" });
+      }
+
+      const parseResult = insertServiceCategorySchema.safeParse(req.body);
+      if (!parseResult.success) {
+        return res.status(400).json({ error: parseResult.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const [category] = await db.insert(serviceCategories).values(parseResult.data).returning();
+      res.status(201).json(category);
+    } catch (error: any) {
+      console.error("Error creating service category:", error);
+      res.status(500).json({ error: "Failed to create service category" });
+    }
+  });
+
+  // GET /api/community/marketplace/packages - List service packages
+  app.get("/api/community/marketplace/packages", async (req, res) => {
+    try {
+      const categoryId = req.query.categoryId as string;
+      const providerId = req.query.providerId as string;
+
+      let packages;
+      if (categoryId) {
+        packages = await db.select().from(servicePackages)
+          .where(and(eq(servicePackages.categoryId, categoryId), eq(servicePackages.status, "active")))
+          .orderBy(desc(servicePackages.createdAt));
+      } else if (providerId) {
+        packages = await db.select().from(servicePackages)
+          .where(eq(servicePackages.providerId, providerId))
+          .orderBy(desc(servicePackages.createdAt));
+      } else {
+        packages = await db.select().from(servicePackages)
+          .where(eq(servicePackages.status, "active"))
+          .orderBy(desc(servicePackages.createdAt));
+      }
+      res.json(packages);
+    } catch (error: any) {
+      console.error("Error fetching service packages:", error);
+      res.status(500).json({ error: "Failed to fetch service packages" });
+    }
+  });
+
+  // GET /api/community/marketplace/packages/:id - Get package details with reviews
+  app.get("/api/community/marketplace/packages/:id", async (req, res) => {
+    try {
+      const [pkg] = await db.select().from(servicePackages)
+        .where(eq(servicePackages.id, req.params.id));
+      if (!pkg) return res.status(404).json({ error: "Package not found" });
+
+      // Get reviews for this provider
+      const reviews = await db.select().from(serviceReviews)
+        .where(eq(serviceReviews.providerId, pkg.providerId))
+        .orderBy(desc(serviceReviews.createdAt))
+        .limit(20);
+
+      res.json({ ...pkg, reviews });
+    } catch (error: any) {
+      console.error("Error fetching package details:", error);
+      res.status(500).json({ error: "Failed to fetch package details" });
+    }
+  });
+
+  // POST /api/community/marketplace/packages - Create service package (trust level >= 3)
+  app.post("/api/community/marketplace/packages", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      // Check trust level >= 3
+      const [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      if (!trust || (trust.trustLevel || 0) < 3) {
+        return res.status(403).json({ error: "Trust level 3 (Leader) required to offer services" });
+      }
+
+      const parseResult = insertServicePackageSchema.safeParse({ ...req.body, providerId: userId });
+      if (!parseResult.success) {
+        return res.status(400).json({ error: parseResult.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const [pkg] = await db.insert(servicePackages).values(parseResult.data).returning();
+      res.status(201).json(pkg);
+    } catch (error: any) {
+      console.error("Error creating service package:", error);
+      res.status(500).json({ error: "Failed to create service package" });
+    }
+  });
+
+  // PATCH /api/community/marketplace/packages/:id - Update service package
+  app.patch("/api/community/marketplace/packages/:id", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const [pkg] = await db.select().from(servicePackages).where(eq(servicePackages.id, req.params.id));
+      if (!pkg) return res.status(404).json({ error: "Package not found" });
+      if (pkg.providerId !== userId) return res.status(403).json({ error: "Not authorized to edit this package" });
+
+      const { title, description, price, deliveryDays, status } = req.body;
+      const updates: any = { updatedAt: new Date() };
+      if (title) updates.title = title;
+      if (description !== undefined) updates.description = description;
+      if (price) updates.price = price;
+      if (deliveryDays) updates.deliveryDays = deliveryDays;
+      if (status) updates.status = status;
+
+      const [updated] = await db.update(servicePackages)
+        .set(updates)
+        .where(eq(servicePackages.id, req.params.id))
+        .returning();
+
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating service package:", error);
+      res.status(500).json({ error: "Failed to update service package" });
+    }
+  });
+
+  // POST /api/community/marketplace/orders - Create service order
+  app.post("/api/community/marketplace/orders", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const { packageId, requirements } = req.body;
+      if (!packageId) return res.status(400).json({ error: "Package ID required" });
+
+      // Get package details
+      const [pkg] = await db.select().from(servicePackages).where(eq(servicePackages.id, packageId));
+      if (!pkg) return res.status(404).json({ error: "Package not found" });
+      if (pkg.status !== "active") return res.status(400).json({ error: "Package not available" });
+      if (pkg.providerId === userId) return res.status(400).json({ error: "Cannot order your own service" });
+
+      const [order] = await db.insert(serviceOrders).values({
+        packageId,
+        buyerId: userId,
+        providerId: pkg.providerId,
+        price: pkg.price,
+        requirements: requirements || "",
+        status: "pending",
+      }).returning();
+
+      // Update package total orders
+      await db.update(servicePackages)
+        .set({ totalOrders: (pkg.totalOrders || 0) + 1, updatedAt: new Date() })
+        .where(eq(servicePackages.id, packageId));
+
+      res.status(201).json(order);
+    } catch (error: any) {
+      console.error("Error creating service order:", error);
+      res.status(500).json({ error: "Failed to create service order" });
+    }
+  });
+
+  // GET /api/community/marketplace/orders - Get user's orders (as buyer or provider)
+  app.get("/api/community/marketplace/orders", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const role = req.query.role as string; // buyer or provider
+
+      let orders;
+      if (role === "provider") {
+        orders = await db.select().from(serviceOrders)
+          .where(eq(serviceOrders.providerId, userId))
+          .orderBy(desc(serviceOrders.createdAt));
+      } else {
+        orders = await db.select().from(serviceOrders)
+          .where(eq(serviceOrders.buyerId, userId))
+          .orderBy(desc(serviceOrders.createdAt));
+      }
+
+      res.json(orders);
+    } catch (error: any) {
+      console.error("Error fetching orders:", error);
+      res.status(500).json({ error: "Failed to fetch orders" });
+    }
+  });
+
+  // GET /api/community/marketplace/orders/:id - Get order details
+  app.get("/api/community/marketplace/orders/:id", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const [order] = await db.select().from(serviceOrders).where(eq(serviceOrders.id, req.params.id));
+      if (!order) return res.status(404).json({ error: "Order not found" });
+      if (order.buyerId !== userId && order.providerId !== userId) {
+        return res.status(403).json({ error: "Not authorized to view this order" });
+      }
+
+      // Get package details
+      const [pkg] = await db.select().from(servicePackages).where(eq(servicePackages.id, order.packageId));
+
+      // Check if review exists
+      const existingReview = await db.select().from(serviceReviews)
+        .where(eq(serviceReviews.orderId, order.id));
+
+      res.json({ ...order, package: pkg, hasReview: existingReview.length > 0 });
+    } catch (error: any) {
+      console.error("Error fetching order details:", error);
+      res.status(500).json({ error: "Failed to fetch order details" });
+    }
+  });
+
+  // PATCH /api/community/marketplace/orders/:id - Update order status
+  app.patch("/api/community/marketplace/orders/:id", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const [order] = await db.select().from(serviceOrders).where(eq(serviceOrders.id, req.params.id));
+      if (!order) return res.status(404).json({ error: "Order not found" });
+
+      const { status, deliveryNotes } = req.body;
+      const updates: any = {};
+
+      // Validate status transitions
+      if (status === "in_progress" && order.providerId === userId) {
+        updates.status = "in_progress";
+      } else if (status === "delivered" && order.providerId === userId) {
+        updates.status = "delivered";
+        updates.deliveredAt = new Date();
+        if (deliveryNotes) updates.deliveryNotes = deliveryNotes;
+      } else if (status === "completed" && order.buyerId === userId) {
+        updates.status = "completed";
+        updates.completedAt = new Date();
+      } else if (status === "cancelled") {
+        if (order.buyerId !== userId && order.providerId !== userId) {
+          return res.status(403).json({ error: "Not authorized" });
+        }
+        if (order.status === "completed") {
+          return res.status(400).json({ error: "Cannot cancel completed order" });
+        }
+        updates.status = "cancelled";
+      } else if (status === "disputed" && order.buyerId === userId) {
+        updates.status = "disputed";
+      } else {
+        return res.status(400).json({ error: "Invalid status transition" });
+      }
+
+      const [updated] = await db.update(serviceOrders)
+        .set(updates)
+        .where(eq(serviceOrders.id, req.params.id))
+        .returning();
+
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating order:", error);
+      res.status(500).json({ error: "Failed to update order" });
+    }
+  });
+
+  // POST /api/community/marketplace/orders/:id/review - Add review for completed order
+  app.post("/api/community/marketplace/orders/:id/review", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const [order] = await db.select().from(serviceOrders).where(eq(serviceOrders.id, req.params.id));
+      if (!order) return res.status(404).json({ error: "Order not found" });
+      if (order.buyerId !== userId) return res.status(403).json({ error: "Only buyer can review" });
+      if (order.status !== "completed") return res.status(400).json({ error: "Can only review completed orders" });
+
+      // Check if already reviewed
+      const existing = await db.select().from(serviceReviews).where(eq(serviceReviews.orderId, order.id));
+      if (existing.length > 0) return res.status(400).json({ error: "Order already reviewed" });
+
+      const { rating, comment } = req.body;
+      if (!rating || rating < 1 || rating > 5) {
+        return res.status(400).json({ error: "Rating must be between 1 and 5" });
+      }
+
+      const [review] = await db.insert(serviceReviews).values({
+        orderId: order.id,
+        reviewerId: userId,
+        providerId: order.providerId,
+        rating,
+        comment: comment || "",
+      }).returning();
+
+      // Update provider's average rating
+      const allReviews = await db.select().from(serviceReviews)
+        .where(eq(serviceReviews.providerId, order.providerId));
+      const avgRating = allReviews.reduce((sum, r) => sum + (r.rating || 0), 0) / allReviews.length;
+
+      // Update all packages by this provider with new average
+      await db.update(servicePackages)
+        .set({ averageRating: avgRating.toFixed(2), updatedAt: new Date() })
+        .where(eq(servicePackages.providerId, order.providerId));
+
+      res.status(201).json(review);
+    } catch (error: any) {
+      console.error("Error creating review:", error);
+      res.status(500).json({ error: "Failed to create review" });
+    }
+  });
+
+  // GET /api/community/marketplace/providers/:id/reviews - Get provider reviews
+  app.get("/api/community/marketplace/providers/:id/reviews", async (req, res) => {
+    try {
+      const reviews = await db.select().from(serviceReviews)
+        .where(eq(serviceReviews.providerId, req.params.id))
+        .orderBy(desc(serviceReviews.createdAt))
+        .limit(50);
+      res.json(reviews);
+    } catch (error: any) {
+      console.error("Error fetching provider reviews:", error);
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+
+  // ========== ABUSE DETECTION API ==========
+
+  // GET /api/community/moderation/anomalies - List vote anomalies (moderator only)
+  app.get("/api/community/moderation/anomalies", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Must be logged in" });
+
+      // Check if user is moderator
+      const [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      const isModerator = (trust && (trust.trustLevel || 0) >= 3) || user?.role === "admin";
+      if (!isModerator) return res.status(403).json({ error: "Moderator access required" });
+
+      const status = req.query.status as string;
+      let anomalies;
+      if (status) {
+        anomalies = await db.select().from(communityVoteAnomalies)
+          .where(eq(communityVoteAnomalies.status, status))
+          .orderBy(desc(communityVoteAnomalies.createdAt))
+          .limit(100);
+      } else {
+        anomalies = await db.select().from(communityVoteAnomalies)
+          .orderBy(desc(communityVoteAnomalies.createdAt))
+          .limit(100);
+      }
+      res.json(anomalies);
+    } catch (error: any) {
+      console.error("Error fetching anomalies:", error);
+      res.status(500).json({ error: "Failed to fetch anomalies" });
+    }
+  });
+
+  // POST /api/community/moderation/anomalies/:id/action - Take action on anomaly
+  app.post("/api/community/moderation/anomalies/:id/action", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Must be logged in" });
+
+      // Check if user is moderator
+      const [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      const isModerator = (trust && (trust.trustLevel || 0) >= 3) || user?.role === "admin";
+      if (!isModerator) return res.status(403).json({ error: "Moderator access required" });
+
+      const [anomaly] = await db.select().from(communityVoteAnomalies)
+        .where(eq(communityVoteAnomalies.id, req.params.id));
+      if (!anomaly) return res.status(404).json({ error: "Anomaly not found" });
+
+      const { action, status } = req.body;
+      const updates: any = {
+        reviewedBy: userId,
+        reviewedAt: new Date(),
+      };
+      if (status) updates.status = status;
+      if (action) updates.actionTaken = action;
+
+      const [updated] = await db.update(communityVoteAnomalies)
+        .set(updates)
+        .where(eq(communityVoteAnomalies.id, req.params.id))
+        .returning();
+
+      // Log the moderation action
+      await db.insert(communityModerationActions).values({
+        moderatorId: userId,
+        actionType: `anomaly_${action || status}`,
+        reason: `Reviewed anomaly: ${anomaly.anomalyType}`,
+        targetType: anomaly.targetType || "system",
+        targetId: anomaly.targetId || anomaly.id,
+      });
+
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating anomaly:", error);
+      res.status(500).json({ error: "Failed to update anomaly" });
+    }
+  });
+
+  // POST /api/community/moderation/detect-anomalies - Run anomaly detection (admin only)
+  app.post("/api/community/moderation/detect-anomalies", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Must be logged in" });
+
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ error: "Admin access required" });
+      }
+
+      // Get recent vote events for analysis
+      const recentVotes = await db.select().from(communityVoteEvents)
+        .orderBy(desc(communityVoteEvents.createdAt))
+        .limit(1000);
+
+      const anomaliesDetected: any[] = [];
+
+      // Detection 1: Rapid voting (same user voting many times quickly)
+      const voterCounts = new Map<string, { count: number; firstVote: Date; lastVote: Date }>();
+      for (const vote of recentVotes) {
+        const voter = vote.voterId;
+        if (!voterCounts.has(voter)) {
+          voterCounts.set(voter, { count: 0, firstVote: vote.createdAt!, lastVote: vote.createdAt! });
+        }
+        const data = voterCounts.get(voter)!;
+        data.count++;
+        if (vote.createdAt! < data.firstVote) data.firstVote = vote.createdAt!;
+        if (vote.createdAt! > data.lastVote) data.lastVote = vote.createdAt!;
+      }
+
+      for (const [voterId, data] of voterCounts) {
+        if (data.count >= 20) {
+          const timeDiff = (data.lastVote.getTime() - data.firstVote.getTime()) / 1000 / 60; // minutes
+          if (timeDiff < 30 && data.count / timeDiff > 1) { // More than 1 vote per minute
+            anomaliesDetected.push({
+              anomalyType: "rapid_voting",
+              userId: voterId,
+              severity: data.count > 50 ? "critical" : data.count > 30 ? "high" : "medium",
+              evidence: { voteCount: data.count, timeMinutes: timeDiff.toFixed(2), votesPerMinute: (data.count / timeDiff).toFixed(2) },
+              status: "pending",
+            });
+          }
+        }
+      }
+
+      // Detection 2: Vote rings (same users always voting for each other's content)
+      const votePatterns = new Map<string, Set<string>>(); // voter -> targets they voted for
+      for (const vote of recentVotes) {
+        if (!votePatterns.has(vote.voterId)) {
+          votePatterns.set(vote.voterId, new Set());
+        }
+        votePatterns.get(vote.voterId)!.add(vote.targetId);
+      }
+
+      // Insert detected anomalies
+      for (const anomaly of anomaliesDetected) {
+        await db.insert(communityVoteAnomalies).values(anomaly);
+      }
+
+      res.json({ detected: anomaliesDetected.length, anomalies: anomaliesDetected });
+    } catch (error: any) {
+      console.error("Error detecting anomalies:", error);
+      res.status(500).json({ error: "Failed to detect anomalies" });
+    }
+  });
+
+  // ========== AI MODERATION API ==========
+
+  // POST /api/community/moderation/ai-analyze/:flagId - AI analysis of flagged content
+  app.post("/api/community/moderation/ai-analyze/:flagId", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Must be logged in" });
+
+      // Check if user is moderator
+      const [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      const isModerator = (trust && (trust.trustLevel || 0) >= 3) || user?.role === "admin";
+      if (!isModerator) return res.status(403).json({ error: "Moderator access required" });
+
+      const [flag] = await db.select().from(communityFlags)
+        .where(eq(communityFlags.id, req.params.flagId));
+      if (!flag) return res.status(404).json({ error: "Flag not found" });
+
+      // Check if already analyzed
+      const existing = await db.select().from(communityAIRecommendations)
+        .where(eq(communityAIRecommendations.flagId, flag.id));
+      if (existing.length > 0) {
+        return res.json(existing[0]);
+      }
+
+      // Get the flagged content
+      let content = "";
+      if (flag.targetType === "post") {
+        const [post] = await db.select().from(communityPosts)
+          .where(eq(communityPosts.id, flag.targetId));
+        if (post) content = `Title: ${post.title}\n\nContent: ${post.content}`;
+      } else if (flag.targetType === "comment") {
+        const [comment] = await db.select().from(communityComments)
+          .where(eq(communityComments.id, flag.targetId));
+        if (comment) content = comment.content || "";
+      }
+
+      if (!content) {
+        return res.status(400).json({ error: "Content not found for analysis" });
+      }
+
+      const startTime = Date.now();
+
+      // Call OpenAI for content analysis
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: `You are a content moderation AI. Analyze the following content that was flagged by a user.
+Reason for flag: ${flag.reason}
+${flag.details ? `Additional details: ${flag.details}` : ""}
+
+Provide your analysis in JSON format with these fields:
+- severityScore: number from 0 to 1 (0 = not harmful, 1 = severely harmful)
+- suggestedAction: one of "dismiss", "warn", "hide", "delete", "escalate"
+- confidence: number from 0 to 1 (how confident you are)
+- categories: array of detected categories (spam, harassment, hate_speech, misinformation, inappropriate, off_topic, other)
+- reasoning: brief explanation of your analysis
+
+Be fair and consider context. Not all controversial content is harmful.`
+          },
+          {
+            role: "user",
+            content: content
+          }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 500,
+      });
+
+      const processingTime = Date.now() - startTime;
+      const aiResponse = JSON.parse(completion.choices[0]?.message?.content || "{}");
+
+      const [recommendation] = await db.insert(communityAIRecommendations).values({
+        flagId: flag.id,
+        contentAnalysis: { content: content.substring(0, 500), flagReason: flag.reason },
+        severityScore: String(aiResponse.severityScore || 0),
+        suggestedAction: aiResponse.suggestedAction || "dismiss",
+        confidence: String(aiResponse.confidence || 0),
+        reasoning: aiResponse.reasoning || "",
+        categories: aiResponse.categories || [],
+        processingTime,
+      }).returning();
+
+      res.json(recommendation);
+    } catch (error: any) {
+      console.error("Error analyzing content:", error);
+      res.status(500).json({ error: "Failed to analyze content" });
+    }
+  });
+
+  // GET /api/community/moderation/ai-recommendations - List AI recommendations
+  app.get("/api/community/moderation/ai-recommendations", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Must be logged in" });
+
+      // Check if user is moderator
+      const [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      const isModerator = (trust && (trust.trustLevel || 0) >= 3) || user?.role === "admin";
+      if (!isModerator) return res.status(403).json({ error: "Moderator access required" });
+
+      const recommendations = await db.select().from(communityAIRecommendations)
+        .orderBy(desc(communityAIRecommendations.createdAt))
+        .limit(100);
+
+      res.json(recommendations);
+    } catch (error: any) {
+      console.error("Error fetching AI recommendations:", error);
+      res.status(500).json({ error: "Failed to fetch AI recommendations" });
+    }
+  });
+
+  // GET /api/community/moderation/flags/:id/ai-recommendation - Get AI recommendation for a flag
+  app.get("/api/community/moderation/flags/:id/ai-recommendation", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Must be logged in" });
+
+      // Check if user is moderator
+      const [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      const isModerator = (trust && (trust.trustLevel || 0) >= 3) || user?.role === "admin";
+      if (!isModerator) return res.status(403).json({ error: "Moderator access required" });
+
+      const [recommendation] = await db.select().from(communityAIRecommendations)
+        .where(eq(communityAIRecommendations.flagId, req.params.id));
+
+      if (!recommendation) {
+        return res.status(404).json({ error: "No AI recommendation found for this flag" });
+      }
+
+      res.json(recommendation);
+    } catch (error: any) {
+      console.error("Error fetching AI recommendation:", error);
+      res.status(500).json({ error: "Failed to fetch AI recommendation" });
     }
   });
 
