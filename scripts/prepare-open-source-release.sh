@@ -55,15 +55,13 @@ echo -e "${YELLOW}Cleaning previous release directory...${NC}"
 rm -rf "$PUBLIC_REPO_DIR"
 mkdir -p "$PUBLIC_REPO_DIR"
 
-# Create directory structure
+# Create directory structure (only parent directories, not leaf directories that will receive copied content)
 echo -e "${YELLOW}Creating directory structure...${NC}"
 mkdir -p "$PUBLIC_REPO_DIR/src/schema"
 mkdir -p "$PUBLIC_REPO_DIR/src/constants"
 mkdir -p "$PUBLIC_REPO_DIR/src/engines"
-mkdir -p "$PUBLIC_REPO_DIR/src/metadata"
 mkdir -p "$PUBLIC_REPO_DIR/src/storage"
 mkdir -p "$PUBLIC_REPO_DIR/src/utils"
-mkdir -p "$PUBLIC_REPO_DIR/src/operations"
 mkdir -p "$PUBLIC_REPO_DIR/docs"
 
 # Copy open source components
@@ -82,7 +80,8 @@ for item in "${OPEN_SOURCE_COMPONENTS[@]}"; do
                 cp -r "$item" "$PUBLIC_REPO_DIR/src/engines/$dirname"
                 ;;
             "server/metadata")
-                cp -r "$item" "$PUBLIC_REPO_DIR/src/metadata"
+                mkdir -p "$PUBLIC_REPO_DIR/src/metadata"
+                cp -r "$item"/* "$PUBLIC_REPO_DIR/src/metadata/" 2>/dev/null || cp -r "$item" "$PUBLIC_REPO_DIR/src/"
                 ;;
             "server/storage.ts")
                 cp "$item" "$PUBLIC_REPO_DIR/src/storage/interface.ts"
@@ -98,7 +97,8 @@ for item in "${OPEN_SOURCE_COMPONENTS[@]}"; do
                 cp -r "$item" "$PUBLIC_REPO_DIR/src/utils/$dirname"
                 ;;
             "server/operations")
-                cp -r "$item" "$PUBLIC_REPO_DIR/src/operations"
+                mkdir -p "$PUBLIC_REPO_DIR/src/operations"
+                cp -r "$item"/* "$PUBLIC_REPO_DIR/src/operations/" 2>/dev/null || cp -r "$item" "$PUBLIC_REPO_DIR/src/"
                 ;;
             "docs/"*)
                 cp "$item" "$PUBLIC_REPO_DIR/docs/"
