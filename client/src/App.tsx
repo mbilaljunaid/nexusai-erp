@@ -115,6 +115,11 @@ const TrainingGuidesPage = lazy(() => import("@/pages/public/documentation/Train
 const TechnicalDocumentationPage = lazy(() => import("@/pages/public/documentation/TechnicalDocumentationPage"));
 const ImplementationGuidelinesPage = lazy(() => import("@/pages/public/documentation/ImplementationGuidelinesPage"));
 const TrainingGuideCRM = lazy(() => import("@/pages/public/documentation/TrainingGuideCRM"));
+const TrainingGuideFinance = lazy(() => import("@/pages/public/documentation/TrainingGuideFinance"));
+const TrainingGuideInventory = lazy(() => import("@/pages/public/documentation/TrainingGuideInventory"));
+const TrainingGuideManufacturing = lazy(() => import("@/pages/public/documentation/TrainingGuideManufacturing"));
+const TrainingGuideAnalytics = lazy(() => import("@/pages/public/documentation/TrainingGuideAnalytics"));
+const TrainingGuideHR = lazy(() => import("@/pages/public/documentation/TrainingGuideHR"));
 const TechnicalAPIReference = lazy(() => import("@/pages/public/documentation/TechnicalAPIReference"));
 const ImplementationSystemSetup = lazy(() => import("@/pages/public/documentation/ImplementationSystemSetup"));
 
@@ -124,6 +129,7 @@ const LicensePage = lazy(() => import("@/pages/LicensePage"));
 const ContributingPage = lazy(() => import("@/pages/ContributingPage"));
 const SecurityPolicyPage = lazy(() => import("@/pages/SecurityPolicyPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
+const LegalPage = lazy(() => import("@/pages/LegalPage"));
 
 // Phase 2: ERP Workflows (4 pages)
 const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
@@ -495,6 +501,7 @@ function Router() {
       <Route path="/docs/contributing" component={ContributingPage} />
       <Route path="/security" component={SecurityPolicyPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/legal" component={LegalPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin" component={AdminConsole} />
       <Route path="/admin-roles" component={AdminRoles} />
@@ -568,6 +575,11 @@ function Router() {
       <Route path="/docs/process-flows" component={ProcessFlowsPage} />
       <Route path="/docs/training-guides" component={TrainingGuidesPage} />
       <Route path="/docs/training-guides/crm" component={TrainingGuideCRM} />
+      <Route path="/docs/training-guides/finance" component={TrainingGuideFinance} />
+      <Route path="/docs/training-guides/inventory" component={TrainingGuideInventory} />
+      <Route path="/docs/training-guides/manufacturing" component={TrainingGuideManufacturing} />
+      <Route path="/docs/training-guides/analytics" component={TrainingGuideAnalytics} />
+      <Route path="/docs/training-guides/hr" component={TrainingGuideHR} />
       <Route path="/docs/technical" component={TechnicalDocumentationPage} />
       <Route path="/docs/technical/api-reference" component={TechnicalAPIReference} />
       <Route path="/docs/implementation" component={ImplementationGuidelinesPage} />
@@ -637,7 +649,7 @@ export default function App() {
   const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
   
   // Public routes don't show sidebar - includes dynamic routes
-  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact"];
+  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
   

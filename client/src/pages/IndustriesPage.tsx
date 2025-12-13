@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { ArrowRight, Building2, Package, Headphones, Briefcase } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Header, Footer } from "@/components/Navigation";
 
 export default function IndustriesPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -71,8 +72,10 @@ export default function IndustriesPage() {
     : industries.filter(ind => ind.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
-      {/* Header */}
+    <div className="public-page min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
+      {/* Hero */}
       <section className="px-4 py-16 border-b border-slate-700">
         <div className="max-w-6xl mx-auto">
           <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">INDUSTRIES</Badge>
@@ -166,12 +169,8 @@ export default function IndustriesPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <section className="px-4 py-12 border-t border-slate-700 bg-slate-900/50">
-        <div className="max-w-6xl mx-auto text-center text-slate-400">
-          <p>&copy; 2025 NexusAI. All rights reserved.</p>
-        </div>
-      </section>
+      </main>
+      <Footer />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Phone, MapPin, Linkedin, Github, Twitter, Scale, Heart, Users, Shield, Code2, GitFork, Star } from "lucide-react";
+import { Linkedin, Github, Twitter, Scale, Heart, Users, Shield, Code2, GitFork, Star } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
@@ -136,15 +136,8 @@ export default function AboutPage() {
           <h2 className="text-4xl font-bold mb-12 text-center">Get in Touch</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
+              <h3 className="text-2xl font-bold mb-6">Connect With Us</h3>
               <div className="space-y-4">
-                <div className="flex gap-4">
-                  <Mail className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <p className="font-semibold">Email</p>
-                    <p className="text-muted-foreground">hello@nexusai.com</p>
-                  </div>
-                </div>
                 <div className="flex gap-4">
                   <Github className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" />
                   <div>
@@ -152,26 +145,48 @@ export default function AboutPage() {
                     <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
                       github.com/mbilaljunaid/nexusai-erp
                     </a>
+                    <p className="text-muted-foreground text-sm mt-1">Star the repo, open issues, or submit pull requests</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <Shield className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" />
+                  <GitFork className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="font-semibold">Contribute</p>
+                    <Link to="/docs/contributing" className="text-blue-400 hover:underline">
+                      View Contributing Guidelines
+                    </Link>
+                    <p className="text-muted-foreground text-sm mt-1">Learn how to contribute to NexusAI</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <Shield className="w-6 h-6 text-purple-400 flex-shrink-0 mt-1" />
                   <div>
                     <p className="font-semibold">Security</p>
-                    <p className="text-muted-foreground">security@nexusai.com</p>
+                    <Link to="/security" className="text-blue-400 hover:underline">
+                      View Security Policy
+                    </Link>
+                    <p className="text-muted-foreground text-sm mt-1">Report vulnerabilities via GitHub Security Advisories</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <Card className="p-6">
-              <h3 className="font-bold text-lg mb-4">Send us a Message</h3>
-              <form className="space-y-4">
-                <input type="text" placeholder="Your Name" className="w-full px-4 py-2 rounded bg-muted border text-foreground placeholder-muted-foreground" data-testid="input-contact-name" />
-                <input type="email" placeholder="Your Email" className="w-full px-4 py-2 rounded bg-muted border text-foreground placeholder-muted-foreground" data-testid="input-contact-email" />
-                <textarea placeholder="Message" className="w-full px-4 py-2 rounded bg-muted border text-foreground placeholder-muted-foreground h-24" data-testid="input-contact-message"></textarea>
-                <Button className="w-full" data-testid="button-send-message">Send Message</Button>
-              </form>
+              <h3 className="font-bold text-lg mb-4">Quick Links</h3>
+              <div className="space-y-3">
+                <a href="https://github.com/mbilaljunaid/nexusai-erp/issues" target="_blank" rel="noopener noreferrer" className="block p-3 rounded bg-muted hover:bg-muted/80 transition">
+                  <p className="font-semibold">Report an Issue</p>
+                  <p className="text-sm text-muted-foreground">Found a bug? Let us know on GitHub</p>
+                </a>
+                <a href="https://github.com/mbilaljunaid/nexusai-erp/discussions" target="_blank" rel="noopener noreferrer" className="block p-3 rounded bg-muted hover:bg-muted/80 transition">
+                  <p className="font-semibold">Discussions</p>
+                  <p className="text-sm text-muted-foreground">Ask questions and share ideas</p>
+                </a>
+                <a href="https://github.com/mbilaljunaid/nexusai-erp/releases" target="_blank" rel="noopener noreferrer" className="block p-3 rounded bg-muted hover:bg-muted/80 transition">
+                  <p className="font-semibold">Releases</p>
+                  <p className="text-sm text-muted-foreground">Download the latest version</p>
+                </a>
+              </div>
             </Card>
           </div>
         </div>

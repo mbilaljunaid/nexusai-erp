@@ -227,7 +227,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-slate-400">
               <li><Link to="/use-cases" className="hover:text-white transition" data-testid="link-footer-usecases">Use Cases</Link></li>
               <li><Link to="/industries" className="hover:text-white transition" data-testid="link-footer-industries">Industries</Link></li>
-              <li><a href="#" className="hover:text-white transition">Modules</a></li>
+              <li><Link to="/dashboard" className="hover:text-white transition" data-testid="link-footer-modules">Modules</Link></li>
               <li><a href="#" className="hover:text-white transition">Pricing</a></li>
             </ul>
           </div>
@@ -251,7 +251,7 @@ export function Footer() {
               <li><Link to="/about" className="hover:text-white transition" data-testid="link-footer-about">About</Link></li>
               <li><a href="#" className="hover:text-white transition">Careers</a></li>
               <li><Link to="/contact" className="hover:text-white transition" data-testid="link-footer-contact">Contact</Link></li>
-              <li><a href="#" className="hover:text-white transition">Legal</a></li>
+              <li><Link to="/legal" className="hover:text-white transition" data-testid="link-footer-legal">Legal</Link></li>
             </ul>
           </div>
 
