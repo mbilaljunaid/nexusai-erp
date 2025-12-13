@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { dbStorage } from "./storage-db";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and, like, desc, sql } from "drizzle-orm";
 import * as XLSX from "xlsx";
 import PDFDocument from "pdfkit";
 import { Packer, Document, Paragraph } from "docx";
@@ -19,6 +19,11 @@ import {
   insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
   insertDemoSchema, formData as formDataTable, smartViews, reports, contactSubmissions, insertContactSubmissionSchema,
   insertPartnerSchema, partners as partnersTable, insertUserFeedbackSchema,
+  marketplaceDevelopers, marketplaceCategories, marketplaceApps, marketplaceAppVersions,
+  marketplaceInstallations, marketplaceTransactions, marketplaceSubscriptions, marketplaceReviews,
+  marketplacePayouts, marketplaceCommissionSettings,
+  insertMarketplaceDeveloperSchema, insertMarketplaceAppSchema, insertMarketplaceInstallationSchema,
+  insertMarketplaceReviewSchema, insertMarketplaceCommissionSettingSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -926,6 +931,534 @@ export async function registerRoutes(
       });
     } catch (error: any) {
       res.json({ configured: false, provider: "lemonsqueezy" });
+    }
+  });
+
+  // ========== MARKETPLACE API ROUTES ==========
+
+  // 1. GET /api/marketplace/categories - List all active categories
+  app.get("/api/marketplace/categories", async (req, res) => {
+    try {
+      const categories = await db.select().from(marketplaceCategories)
+        .where(eq(marketplaceCategories.isActive, true))
+        .orderBy(marketplaceCategories.sortOrder);
+      res.json(categories);
+    } catch (error: any) {
+      console.error("Error fetching marketplace categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  // 2. GET /api/marketplace/apps - List approved apps with filters
+  app.get("/api/marketplace/apps", async (req, res) => {
+    try {
+      const { category, search, pricing } = req.query;
+      let query = db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.status, "approved"));
+      
+      const apps = await query.orderBy(desc(marketplaceApps.totalInstalls));
+      
+      let filteredApps = apps;
+      if (category) {
+        filteredApps = filteredApps.filter(app => app.categoryId === category);
+      }
+      if (search) {
+        const searchLower = (search as string).toLowerCase();
+        filteredApps = filteredApps.filter(app => 
+          app.name.toLowerCase().includes(searchLower) ||
+          (app.shortDescription && app.shortDescription.toLowerCase().includes(searchLower))
+        );
+      }
+      if (pricing) {
+        filteredApps = filteredApps.filter(app => app.pricingModel === pricing);
+      }
+      
+      res.json(filteredApps);
+    } catch (error: any) {
+      console.error("Error fetching marketplace apps:", error);
+      res.status(500).json({ error: "Failed to fetch apps" });
+    }
+  });
+
+  // 3. GET /api/marketplace/apps/:id - Get single app details
+  app.get("/api/marketplace/apps/:id", async (req, res) => {
+    try {
+      const [app] = await db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.id, req.params.id));
+      
+      if (!app) {
+        return res.status(404).json({ error: "App not found" });
+      }
+      
+      const versions = await db.select().from(marketplaceAppVersions)
+        .where(eq(marketplaceAppVersions.appId, req.params.id))
+        .orderBy(desc(marketplaceAppVersions.createdAt));
+      
+      const [developer] = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.id, app.developerId));
+      
+      res.json({ ...app, versions, developer });
+    } catch (error: any) {
+      console.error("Error fetching app details:", error);
+      res.status(500).json({ error: "Failed to fetch app details" });
+    }
+  });
+
+  // 4. POST /api/marketplace/developers/register - Register as developer
+  app.post("/api/marketplace/developers/register", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const existingDeveloper = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.userId, userId));
+      
+      if (existingDeveloper.length > 0) {
+        return res.status(400).json({ error: "Developer profile already exists" });
+      }
+
+      const parsed = insertMarketplaceDeveloperSchema.safeParse({ ...req.body, userId });
+      if (!parsed.success) {
+        return res.status(400).json({ error: parsed.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const [developer] = await db.insert(marketplaceDevelopers)
+        .values(parsed.data)
+        .returning();
+      
+      res.status(201).json(developer);
+    } catch (error: any) {
+      console.error("Error registering developer:", error);
+      res.status(500).json({ error: "Failed to register as developer" });
+    }
+  });
+
+  // 5. GET /api/marketplace/my-developer - Get current user's developer profile
+  app.get("/api/marketplace/my-developer", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const [developer] = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.userId, userId));
+      
+      if (!developer) {
+        return res.status(404).json({ error: "Developer profile not found" });
+      }
+      
+      res.json(developer);
+    } catch (error: any) {
+      console.error("Error fetching developer profile:", error);
+      res.status(500).json({ error: "Failed to fetch developer profile" });
+    }
+  });
+
+  // 6. POST /api/marketplace/apps - Create new app (developer only)
+  app.post("/api/marketplace/apps", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const [developer] = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.userId, userId));
+      
+      if (!developer) {
+        return res.status(403).json({ error: "Must be a registered developer to create apps" });
+      }
+
+      const parsed = insertMarketplaceAppSchema.safeParse({ ...req.body, developerId: developer.id });
+      if (!parsed.success) {
+        return res.status(400).json({ error: parsed.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const [app] = await db.insert(marketplaceApps)
+        .values(parsed.data)
+        .returning();
+      
+      res.status(201).json(app);
+    } catch (error: any) {
+      console.error("Error creating app:", error);
+      res.status(500).json({ error: "Failed to create app" });
+    }
+  });
+
+  // 7. PUT /api/marketplace/apps/:id - Update app (developer only)
+  app.put("/api/marketplace/apps/:id", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const [developer] = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.userId, userId));
+      
+      if (!developer) {
+        return res.status(403).json({ error: "Must be a registered developer" });
+      }
+
+      const [existingApp] = await db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.id, req.params.id));
+      
+      if (!existingApp) {
+        return res.status(404).json({ error: "App not found" });
+      }
+      
+      if (existingApp.developerId !== developer.id) {
+        return res.status(403).json({ error: "Not authorized to update this app" });
+      }
+
+      const [updatedApp] = await db.update(marketplaceApps)
+        .set({ ...req.body, updatedAt: new Date() })
+        .where(eq(marketplaceApps.id, req.params.id))
+        .returning();
+      
+      res.json(updatedApp);
+    } catch (error: any) {
+      console.error("Error updating app:", error);
+      res.status(500).json({ error: "Failed to update app" });
+    }
+  });
+
+  // 8. POST /api/marketplace/apps/:id/submit - Submit app for review
+  app.post("/api/marketplace/apps/:id/submit", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const [developer] = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.userId, userId));
+      
+      if (!developer) {
+        return res.status(403).json({ error: "Must be a registered developer" });
+      }
+
+      const [app] = await db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.id, req.params.id));
+      
+      if (!app) {
+        return res.status(404).json({ error: "App not found" });
+      }
+      
+      if (app.developerId !== developer.id) {
+        return res.status(403).json({ error: "Not authorized to submit this app" });
+      }
+
+      const [updatedApp] = await db.update(marketplaceApps)
+        .set({ status: "submitted", updatedAt: new Date() })
+        .where(eq(marketplaceApps.id, req.params.id))
+        .returning();
+      
+      res.json(updatedApp);
+    } catch (error: any) {
+      console.error("Error submitting app:", error);
+      res.status(500).json({ error: "Failed to submit app for review" });
+    }
+  });
+
+  // 9. POST /api/marketplace/apps/:id/approve - Approve app (admin only)
+  app.post("/api/marketplace/apps/:id/approve", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const [app] = await db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.id, req.params.id));
+      
+      if (!app) {
+        return res.status(404).json({ error: "App not found" });
+      }
+
+      const [updatedApp] = await db.update(marketplaceApps)
+        .set({ status: "approved", publishedAt: new Date(), updatedAt: new Date() })
+        .where(eq(marketplaceApps.id, req.params.id))
+        .returning();
+      
+      res.json(updatedApp);
+    } catch (error: any) {
+      console.error("Error approving app:", error);
+      res.status(500).json({ error: "Failed to approve app" });
+    }
+  });
+
+  // 10. POST /api/marketplace/apps/:id/reject - Reject app (admin only)
+  app.post("/api/marketplace/apps/:id/reject", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const { reason } = req.body;
+      
+      const [app] = await db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.id, req.params.id));
+      
+      if (!app) {
+        return res.status(404).json({ error: "App not found" });
+      }
+
+      const [updatedApp] = await db.update(marketplaceApps)
+        .set({ status: "rejected", rejectionReason: reason, updatedAt: new Date() })
+        .where(eq(marketplaceApps.id, req.params.id))
+        .returning();
+      
+      res.json(updatedApp);
+    } catch (error: any) {
+      console.error("Error rejecting app:", error);
+      res.status(500).json({ error: "Failed to reject app" });
+    }
+  });
+
+  // 11. POST /api/marketplace/apps/:id/install - Install app for tenant
+  app.post("/api/marketplace/apps/:id/install", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      const tenantId = req.tenantId || req.headers["x-tenant-id"] || "default";
+      
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const [app] = await db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.id, req.params.id));
+      
+      if (!app || app.status !== "approved") {
+        return res.status(404).json({ error: "App not found or not available" });
+      }
+
+      const existingInstall = await db.select().from(marketplaceInstallations)
+        .where(and(
+          eq(marketplaceInstallations.appId, req.params.id),
+          eq(marketplaceInstallations.tenantId, tenantId),
+          eq(marketplaceInstallations.status, "active")
+        ));
+      
+      if (existingInstall.length > 0) {
+        return res.status(400).json({ error: "App is already installed" });
+      }
+
+      const [installation] = await db.insert(marketplaceInstallations)
+        .values({
+          appId: req.params.id,
+          tenantId,
+          installedBy: userId,
+          status: "active",
+        })
+        .returning();
+      
+      await db.update(marketplaceApps)
+        .set({ totalInstalls: (app.totalInstalls || 0) + 1 })
+        .where(eq(marketplaceApps.id, req.params.id));
+      
+      res.status(201).json(installation);
+    } catch (error: any) {
+      console.error("Error installing app:", error);
+      res.status(500).json({ error: "Failed to install app" });
+    }
+  });
+
+  // 12. DELETE /api/marketplace/apps/:id/uninstall - Uninstall app
+  app.delete("/api/marketplace/apps/:id/uninstall", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const tenantId = req.tenantId || req.headers["x-tenant-id"] || "default";
+      
+      const installations = await db.select().from(marketplaceInstallations)
+        .where(and(
+          eq(marketplaceInstallations.appId, req.params.id),
+          eq(marketplaceInstallations.tenantId, tenantId),
+          eq(marketplaceInstallations.status, "active")
+        ));
+      
+      if (installations.length === 0) {
+        return res.status(404).json({ error: "Installation not found" });
+      }
+
+      await db.update(marketplaceInstallations)
+        .set({ status: "uninstalled", uninstalledAt: new Date(), updatedAt: new Date() })
+        .where(eq(marketplaceInstallations.id, installations[0].id));
+      
+      res.json({ success: true, message: "App uninstalled successfully" });
+    } catch (error: any) {
+      console.error("Error uninstalling app:", error);
+      res.status(500).json({ error: "Failed to uninstall app" });
+    }
+  });
+
+  // 13. GET /api/marketplace/my-apps - Developer's apps
+  app.get("/api/marketplace/my-apps", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const [developer] = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.userId, userId));
+      
+      if (!developer) {
+        return res.status(404).json({ error: "Developer profile not found" });
+      }
+
+      const apps = await db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.developerId, developer.id))
+        .orderBy(desc(marketplaceApps.createdAt));
+      
+      res.json(apps);
+    } catch (error: any) {
+      console.error("Error fetching developer apps:", error);
+      res.status(500).json({ error: "Failed to fetch apps" });
+    }
+  });
+
+  // 14. GET /api/marketplace/my-installs - Tenant's installed apps
+  app.get("/api/marketplace/my-installs", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const tenantId = req.tenantId || req.headers["x-tenant-id"] || "default";
+      
+      const installations = await db.select().from(marketplaceInstallations)
+        .where(and(
+          eq(marketplaceInstallations.tenantId, tenantId),
+          eq(marketplaceInstallations.status, "active")
+        ))
+        .orderBy(desc(marketplaceInstallations.installedAt));
+      
+      const appIds = installations.map(i => i.appId);
+      const apps = appIds.length > 0 
+        ? await db.select().from(marketplaceApps).where(sql`${marketplaceApps.id} = ANY(${appIds})`)
+        : [];
+      
+      const result = installations.map(install => ({
+        ...install,
+        app: apps.find(a => a.id === install.appId)
+      }));
+      
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error fetching installed apps:", error);
+      res.status(500).json({ error: "Failed to fetch installed apps" });
+    }
+  });
+
+  // 15. GET /api/marketplace/apps/:id/reviews - Get app reviews
+  app.get("/api/marketplace/apps/:id/reviews", async (req, res) => {
+    try {
+      const reviews = await db.select().from(marketplaceReviews)
+        .where(and(
+          eq(marketplaceReviews.appId, req.params.id),
+          eq(marketplaceReviews.status, "published")
+        ))
+        .orderBy(desc(marketplaceReviews.createdAt));
+      
+      res.json(reviews);
+    } catch (error: any) {
+      console.error("Error fetching app reviews:", error);
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+
+  // 16. POST /api/marketplace/apps/:id/reviews - Add review
+  app.post("/api/marketplace/apps/:id/reviews", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      const tenantId = req.tenantId || req.headers["x-tenant-id"] || "default";
+      
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      const existingReview = await db.select().from(marketplaceReviews)
+        .where(and(
+          eq(marketplaceReviews.appId, req.params.id),
+          eq(marketplaceReviews.userId, userId)
+        ));
+      
+      if (existingReview.length > 0) {
+        return res.status(400).json({ error: "You have already reviewed this app" });
+      }
+
+      const parsed = insertMarketplaceReviewSchema.safeParse({
+        ...req.body,
+        appId: req.params.id,
+        userId,
+        tenantId,
+      });
+      
+      if (!parsed.success) {
+        return res.status(400).json({ error: parsed.error.errors.map(e => e.message).join(", ") });
+      }
+
+      const [review] = await db.insert(marketplaceReviews)
+        .values(parsed.data)
+        .returning();
+      
+      const allReviews = await db.select().from(marketplaceReviews)
+        .where(eq(marketplaceReviews.appId, req.params.id));
+      
+      const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+      
+      await db.update(marketplaceApps)
+        .set({ 
+          averageRating: avgRating.toFixed(2),
+          totalReviews: allReviews.length,
+          updatedAt: new Date()
+        })
+        .where(eq(marketplaceApps.id, req.params.id));
+      
+      res.status(201).json(review);
+    } catch (error: any) {
+      console.error("Error creating review:", error);
+      res.status(500).json({ error: "Failed to create review" });
+    }
+  });
+
+  // 17. GET /api/marketplace/admin/pending-apps - Apps pending approval (admin)
+  app.get("/api/marketplace/admin/pending-apps", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const apps = await db.select().from(marketplaceApps)
+        .where(eq(marketplaceApps.status, "submitted"))
+        .orderBy(marketplaceApps.createdAt);
+      
+      res.json(apps);
+    } catch (error: any) {
+      console.error("Error fetching pending apps:", error);
+      res.status(500).json({ error: "Failed to fetch pending apps" });
+    }
+  });
+
+  // 18. GET /api/marketplace/commission-settings - Get commission settings (admin)
+  app.get("/api/marketplace/commission-settings", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const settings = await db.select().from(marketplaceCommissionSettings)
+        .where(eq(marketplaceCommissionSettings.isActive, true))
+        .orderBy(marketplaceCommissionSettings.createdAt);
+      
+      res.json(settings);
+    } catch (error: any) {
+      console.error("Error fetching commission settings:", error);
+      res.status(500).json({ error: "Failed to fetch commission settings" });
+    }
+  });
+
+  // 19. PUT /api/marketplace/commission-settings/:id - Update commission (admin)
+  app.put("/api/marketplace/commission-settings/:id", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const [existing] = await db.select().from(marketplaceCommissionSettings)
+        .where(eq(marketplaceCommissionSettings.id, req.params.id));
+      
+      if (!existing) {
+        return res.status(404).json({ error: "Commission setting not found" });
+      }
+
+      const [updated] = await db.update(marketplaceCommissionSettings)
+        .set({ ...req.body, updatedAt: new Date() })
+        .where(eq(marketplaceCommissionSettings.id, req.params.id))
+        .returning();
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating commission setting:", error);
+      res.status(500).json({ error: "Failed to update commission setting" });
     }
   });
 
