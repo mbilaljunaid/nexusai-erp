@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Download, FileSpreadsheet, FileText, File, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 interface ExportButtonProps {
   data: any[];
@@ -31,14 +31,29 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
     });
   };
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     setIsExporting(true);
     try {
       const exportData = getExportData();
-      const ws = XLSX.utils.json_to_sheet(exportData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Data");
-      XLSX.writeFile(wb, `${filename}.xlsx`);
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Data");
+
+      if (exportData.length > 0) {
+        const headers = Object.keys(exportData[0]);
+        worksheet.addRow(headers);
+        exportData.forEach((record: any) => {
+          worksheet.addRow(headers.map(h => record[h]));
+        });
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${filename}.xlsx`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+
       toast({
         title: "Export successful",
         description: `Exported ${data.length} records to Excel`,
@@ -54,12 +69,37 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
     }
   };
 
-  const exportToCSV = () => {
+  const exportToCSV = async () => {
     setIsExporting(true);
     try {
       const exportData = getExportData();
-      const ws = XLSX.utils.json_to_sheet(exportData);
-      const csv = XLSX.utils.sheet_to_csv(ws);
+      
+      if (exportData.length === 0) {
+        toast({
+          title: "No data to export",
+          description: "There are no records to export",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const headers = Object.keys(exportData[0]);
+      const csvRows = [
+        headers.join(","),
+        ...exportData.map((row: any) => 
+          headers.map(h => {
+            const value = row[h];
+            if (value === null || value === undefined) return "";
+            const stringValue = String(value);
+            if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n")) {
+              return `"${stringValue.replace(/"/g, '""')}"`;
+            }
+            return stringValue;
+          }).join(",")
+        )
+      ];
+      const csv = csvRows.join("\n");
+
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);

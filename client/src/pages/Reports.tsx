@@ -15,7 +15,7 @@ import {
   Settings,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 const MODULES = [
   { id: "crm", label: "CRM", icon: "Target" },
@@ -33,32 +33,59 @@ export default function Reports() {
   const [importData, setImportData] = useState<any[]>([]);
   const { toast } = useToast();
 
-  const handleExcelImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleExcelImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const bstr = event.target?.result;
-        const wb = XLSX.read(bstr, { type: "binary" });
-        const wsname = wb.SheetNames[0];
-        const ws = wb.Sheets[wsname];
-        const data = XLSX.utils.sheet_to_json(ws);
-        setImportData(data);
-        toast({
-          title: "Import successful",
-          description: `Loaded ${data.length} records from Excel`,
-        });
-      } catch (error) {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(arrayBuffer);
+      const worksheet = workbook.worksheets[0];
+      
+      if (!worksheet) {
         toast({
           title: "Import failed",
-          description: "Could not parse Excel file",
+          description: "No worksheet found in the Excel file",
           variant: "destructive",
         });
+        return;
       }
-    };
-    reader.readAsBinaryString(file);
+
+      const data: any[] = [];
+      const headers: string[] = [];
+      
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) {
+          row.eachCell((cell) => {
+            headers.push(String(cell.value || ""));
+          });
+        } else {
+          const record: any = {};
+          row.eachCell((cell, colNumber) => {
+            const header = headers[colNumber - 1];
+            if (header) {
+              record[header] = cell.value;
+            }
+          });
+          if (Object.keys(record).length > 0) {
+            data.push(record);
+          }
+        }
+      });
+
+      setImportData(data);
+      toast({
+        title: "Import successful",
+        description: `Loaded ${data.length} records from Excel`,
+      });
+    } catch (error) {
+      toast({
+        title: "Import failed",
+        description: "Could not parse Excel file",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -80,7 +107,6 @@ export default function Reports() {
         </p>
       </div>
 
-      {/* Main Features Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
           <CardContent className="p-6">
@@ -97,7 +123,7 @@ export default function Reports() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-3">
               <Filter className="w-8 h-8 text-green-600 dark:text-green-400" />
-              <span className="text-2xl font-bold text-green-600 dark:text-green-400">∞</span>
+              <span className="text-2xl font-bold text-green-600 dark:text-green-400">Unlimited</span>
             </div>
             <p className="text-sm font-medium">SmartViews</p>
             <p className="text-xs text-muted-foreground mt-1">Custom filtered views</p>
@@ -108,7 +134,7 @@ export default function Reports() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-3">
               <FileUp className="w-8 h-8 text-purple-600 dark:text-purple-400" />
-              <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">📊</span>
+              <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">Excel</span>
             </div>
             <p className="text-sm font-medium">Excel Support</p>
             <p className="text-xs text-muted-foreground mt-1">Import & export data</p>
@@ -127,7 +153,6 @@ export default function Reports() {
         </Card>
       </div>
 
-      {/* Main Tabs */}
       <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="reports" data-testid="tab-main-reports">
@@ -148,7 +173,6 @@ export default function Reports() {
           </TabsTrigger>
         </TabsList>
 
-        {/* REPORTS TAB */}
         <TabsContent value="reports" className="mt-6 space-y-6">
           <Tabs value={selectedModule} onValueChange={setSelectedModule} className="w-full">
             <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
@@ -167,7 +191,6 @@ export default function Reports() {
           </Tabs>
         </TabsContent>
 
-        {/* SMARTVIEWS TAB */}
         <TabsContent value="smartviews" className="mt-6 space-y-6">
           <Card>
             <CardHeader>
@@ -194,10 +217,8 @@ export default function Reports() {
           </Card>
         </TabsContent>
 
-        {/* EXCEL TAB */}
         <TabsContent value="excel" className="mt-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Export Card */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -220,7 +241,6 @@ export default function Reports() {
               </CardContent>
             </Card>
 
-            {/* Import Card */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -263,7 +283,6 @@ export default function Reports() {
           </div>
         </TabsContent>
 
-        {/* SETTINGS TAB */}
         <TabsContent value="settings" className="mt-6 space-y-6">
           <Card>
             <CardHeader>
@@ -306,16 +325,15 @@ export default function Reports() {
         </TabsContent>
       </Tabs>
 
-      {/* Quick Tips */}
       <Card className="bg-muted/50 border-dashed">
         <CardContent className="p-6">
           <h3 className="font-semibold mb-3">Quick Tips</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>✓ Create SmartViews to save your favorite filtered views and reuse them</li>
-            <li>✓ Export reports in multiple formats (PDF, CSV, DOCX) for sharing with stakeholders</li>
-            <li>✓ Use Excel import to bulk load data into the system</li>
-            <li>✓ Combine reports with spreadsheet pivot tables for deeper analysis</li>
-            <li>✓ SmartViews are personal - customize them for your workflow</li>
+            <li>Create SmartViews to save your favorite filtered views and reuse them</li>
+            <li>Export reports in multiple formats (PDF, CSV, DOCX) for sharing with stakeholders</li>
+            <li>Use Excel import to bulk load data into the system</li>
+            <li>Combine reports with spreadsheet pivot tables for deeper analysis</li>
+            <li>SmartViews are personal - customize them for your workflow</li>
           </ul>
         </CardContent>
       </Card>

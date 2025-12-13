@@ -5,7 +5,7 @@ import { Upload, Download, FileSpreadsheet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 interface ExcelImportModalProps {
   formId: string;
@@ -17,13 +17,21 @@ export function ExcelImportModal({ formId, templateColumns }: ExcelImportModalPr
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const downloadTemplate = () => {
+  const downloadTemplate = async () => {
     try {
       const columns = templateColumns || ["column1", "column2", "column3"];
-      const ws = XLSX.utils.aoa_to_sheet([columns]);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Template");
-      XLSX.writeFile(wb, `${formId}_template.xlsx`);
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Template");
+      worksheet.addRow(columns);
+      
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${formId}_template.xlsx`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      
       toast({
         title: "Template downloaded",
         description: "Fill in the template and upload it to import data.",
@@ -67,9 +75,40 @@ export function ExcelImportModal({ formId, templateColumns }: ExcelImportModalPr
 
     try {
       const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, { type: "array" });
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      const records = XLSX.utils.sheet_to_json(worksheet);
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(data);
+      const worksheet = workbook.worksheets[0];
+      
+      if (!worksheet) {
+        toast({
+          title: "No data found",
+          description: "The Excel file contains no worksheets",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const records: any[] = [];
+      const headers: string[] = [];
+      
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) {
+          row.eachCell((cell) => {
+            headers.push(String(cell.value || ""));
+          });
+        } else {
+          const record: any = {};
+          row.eachCell((cell, colNumber) => {
+            const header = headers[colNumber - 1];
+            if (header) {
+              record[header] = cell.value;
+            }
+          });
+          if (Object.keys(record).length > 0) {
+            records.push(record);
+          }
+        }
+      });
 
       if (records.length === 0) {
         toast({

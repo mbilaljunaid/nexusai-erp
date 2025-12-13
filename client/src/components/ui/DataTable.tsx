@@ -221,7 +221,7 @@ export function DataTable<T extends Record<string, any>>({
                           size="icon"
                           className="h-6 w-6"
                           onClick={() => handleSort(column.key as string)}
-                          data-testid={`button-sort-${column.key}`}
+                          data-testid={`button-sort-${String(column.key)}`}
                         >
                           {getSortIcon(column.key as string)}
                         </Button>
@@ -235,7 +235,7 @@ export function DataTable<T extends Record<string, any>>({
                           handleColumnFilterChange(column.key as string, e.target.value)
                         }
                         className="h-7 text-xs"
-                        data-testid={`input-filter-${column.key}`}
+                        data-testid={`input-filter-${String(column.key)}`}
                       />
                     )}
                   </div>

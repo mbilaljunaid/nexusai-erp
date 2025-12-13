@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { useToast } from "@/hooks/use-toast";
 
 interface ExcelExportButtonProps {
@@ -11,7 +11,7 @@ interface ExcelExportButtonProps {
 
 export function ExcelExportButton({ formId, fileName = "export" }: ExcelExportButtonProps) {
   const { toast } = useToast();
-  const { data: formRecords = [] } = useQuery({
+  const { data: formRecords = [] } = useQuery<any[]>({
     queryKey: ["/api", formId],
   });
 
@@ -26,7 +26,6 @@ export function ExcelExportButton({ formId, fileName = "export" }: ExcelExportBu
         return;
       }
 
-      // Transform records: flatten nested data objects
       const flatRecords = formRecords.map((record: any) => {
         const flat: any = { id: record.id };
         if (record.data && typeof record.data === "object") {
@@ -39,14 +38,25 @@ export function ExcelExportButton({ formId, fileName = "export" }: ExcelExportBu
         return flat;
       });
 
-      // Create workbook
-      const ws = XLSX.utils.json_to_sheet(flatRecords);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Data");
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Data");
 
-      // Export
+      if (flatRecords.length > 0) {
+        const headers = Object.keys(flatRecords[0]);
+        worksheet.addRow(headers);
+        flatRecords.forEach((record: any) => {
+          worksheet.addRow(headers.map(h => record[h]));
+        });
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
       const timestamp = new Date().toISOString().slice(0, 10);
-      XLSX.writeFile(wb, `${fileName}-${timestamp}.xlsx`);
+      link.download = `${fileName}-${timestamp}.xlsx`;
+      link.click();
+      URL.revokeObjectURL(link.href);
 
       toast({
         title: "Export successful",

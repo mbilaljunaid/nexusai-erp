@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { dbStorage } from "./storage-db";
 import { db } from "./db";
 import { eq, and, like, desc, sql } from "drizzle-orm";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import PDFDocument from "pdfkit";
 import { Packer, Document, Paragraph } from "docx";
 import Papa from "papaparse";
@@ -465,10 +465,19 @@ export async function registerRoutes(
         submittedAt: record.submittedAt,
         submittedBy: record.submittedBy,
       }));
-      const ws = XLSX.utils.json_to_sheet(flatRecords);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Data");
-      const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+      
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Data");
+      
+      if (flatRecords.length > 0) {
+        const headers = Object.keys(flatRecords[0]);
+        worksheet.addRow(headers);
+        flatRecords.forEach((record: any) => {
+          worksheet.addRow(headers.map(h => record[h]));
+        });
+      }
+      
+      const buffer = await workbook.xlsx.writeBuffer();
       res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
       res.setHeader("Content-Disposition", `attachment; filename="${formId}-export.xlsx"`);
       res.send(buffer);
