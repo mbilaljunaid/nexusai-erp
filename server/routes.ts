@@ -119,11 +119,42 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  // Apply RBAC middleware to all /api routes (except health check and auth)
+  // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {
     if (req.path === "/health") return next();
     if (req.path.startsWith("/auth")) return next();
+    if (req.path === "/demos/industries") return next();
+    if (req.path === "/demos/request") return next();
+    if (req.path === "/demos/list") return next();
     enforceRBAC()(req, res, next);
+  });
+
+  // ========== PUBLIC DEMO ROUTES ==========
+  app.get("/api/demos/industries", (req, res) => {
+    const industries = [
+      "Audit & Compliance", "Automotive", "Banking & Finance", "Business Services",
+      "Carrier & Shipping", "Clinical & Healthcare", "Credit & Lending", "Education",
+      "Energy & Utilities", "Equipment & Manufacturing", "Events & Conferences", "Export & Import",
+      "Fashion & Apparel", "Finance & Investment", "Food & Beverage", "Freight & Logistics",
+      "Government & Public Sector", "Healthcare & Life Sciences", "Hospitality & Travel",
+      "Insurance", "Laboratory Services", "Laboratory Technology", "Logistics & Transportation",
+      "Manufacturing & Operations", "Marketing & Advertising", "Media & Entertainment",
+      "Pharmacy & Pharmaceuticals", "Portal & Digital Services", "Property & Real Estate",
+      "Real Estate & Construction", "Retail & E-Commerce", "Security & Defense",
+      "Shipment Management", "Shipping & Maritime", "Telecom & Technology",
+      "Training & Development", "Transportation & Mobility", "Travel & Tourism",
+      "Vehicle & Automotive", "Warehouse & Storage", "Wholesale & Distribution"
+    ];
+    res.json(industries);
+  });
+
+  app.get("/api/demos/list", async (req, res) => {
+    try {
+      const demos = await dbStorage.listDemos();
+      res.json(demos);
+    } catch (error) {
+      res.json([]);
+    }
   });
 
   // PHASE 1: Invoices
