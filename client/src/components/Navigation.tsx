@@ -56,7 +56,7 @@ export function Header() {
               onMouseLeave={() => setDocsOpen(false)}
             >
               <button
-                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
+                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1 py-2"
                 onClick={() => setDocsOpen(!docsOpen)}
                 data-testid="button-documentation-menu"
               >
@@ -66,8 +66,9 @@ export function Header() {
 
               {docsOpen && (
                 <div
-                  className="absolute left-0 mt-2 w-64 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2"
+                  className="absolute left-0 top-full pt-1 w-64"
                 >
+                  <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2">
                   <Link to="/docs/process-flows" className="block">
                     <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
                       <Compass className="w-4 h-4 text-blue-400" />
@@ -107,6 +108,7 @@ export function Header() {
                       </div>
                     </div>
                   </Link>
+                  </div>
                 </div>
               )}
             </div>
