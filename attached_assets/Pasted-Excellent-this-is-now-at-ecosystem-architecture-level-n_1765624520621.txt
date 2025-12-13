@@ -1,0 +1,405 @@
+Excellent — this is now at ecosystem-architecture level, not just features.
+Below is a complete, consolidated, Replit-ready master write-up that includes ALL previously mentioned points, PLUS a very detailed moderation, anti-spam, and abuse-prevention framework.
+
+This is written so that:
+	•	Replit can build the full system
+	•	Abuse is designed out by architecture, not just rules
+	•	Open-source spirit is protected
+	•	Service marketplace credibility is not diluted
+
+You can paste this as a single prompt into Replit.
+
+⸻
+
+📌 MASTER REPLIT PROMPT
+
+Nexus AI First – Community, Gamification, Reputation, Services & Moderation System
+
+⸻
+
+⚠️ GLOBAL CONSTRAINTS (NON-NEGOTIABLE)
+	•	Extend existing Nexus AI First platform only
+	•	No parallel or disconnected systems
+	•	One user identity, one reputation engine
+	•	Community must remain free, open, and non-commercial
+	•	Services must remain optional, paid, and trust-based
+	•	Anti-spam and abuse prevention must be system-enforced, not manual-heavy
+
+⸻
+
+1️⃣ PLATFORM PHILOSOPHY
+
+Nexus AI First is an open-source platform built by the community for the community, where:
+	•	Knowledge sharing is encouraged
+	•	Contributions are measurable
+	•	Reputation is earned, not claimed
+	•	Monetization is a by-product of trust, not the driver
+
+⸻
+
+2️⃣ REDDIT-STYLE COMMUNITY SYSTEM
+
+2.1 Community Spaces (Subreddit Equivalent)
+
+Spaces are topic-based discussion areas.
+
+Examples:
+	•	Core Platform
+	•	App Marketplace
+	•	Form Builder
+	•	Integrations
+	•	Accounting & Finance
+	•	Construction ERP
+	•	Bugs & Issues
+	•	Feature Requests
+	•	Training & Learning
+	•	General Discussion
+
+Space Rules
+
+Each space has:
+	•	Posting guidelines
+	•	Allowed post types
+	•	Reputation relevance weight
+	•	Earned moderators only
+
+⸻
+
+2.2 Post Types
+	•	Question
+	•	Answer
+	•	Discussion
+	•	How-To / Guide
+	•	Bug / Issue
+	•	Feature Request
+	•	Show & Tell
+	•	Announcement (restricted)
+
+⸻
+
+3️⃣ COMMUNITY INTERACTION RULES
+
+Allowed
+	•	Plain text
+	•	Code snippets
+	•	Images (optional)
+	•	Platform-internal references
+
+Restricted
+	•	External links (see moderation rules)
+	•	Promotional content
+	•	Service solicitation
+	•	Affiliate content
+
+⸻
+
+4️⃣ GAMIFICATION & BADGE SYSTEM
+
+4.1 Badge Categories
+
+Knowledge & Training
+	•	Training Video Contributor
+	•	Course Creator
+	•	Educator
+
+Build & Create
+	•	App Builder
+	•	Form Builder
+	•	Workflow Designer
+
+Quality & Trust
+	•	QA Contributor
+	•	Bug Resolver
+	•	Release Validator
+
+Community
+	•	Problem Solver
+	•	Top Answerer
+	•	Community Mentor
+	•	Space Specialist
+
+Leadership
+	•	Maintainer
+	•	Open Source Champion
+	•	Ecosystem Builder
+
+⸻
+
+4.2 Badge Levels
+
+Each badge has:
+	•	Bronze
+	•	Silver
+	•	Gold
+	•	Platinum
+	•	Legendary
+
+Unlocked via system-tracked actions only.
+
+⸻
+
+5️⃣ REPUTATION ENGINE (MULTI-DIMENSIONAL)
+
+Reputation Dimensions
+	•	Technical Skill
+	•	Knowledge Sharing
+	•	Quality & Accuracy
+	•	Consistency
+	•	Community Trust
+	•	Service Reliability
+
+Key Rules
+	•	Time-decay weighting
+	•	Caps per activity type
+	•	Diminishing returns
+	•	Anti-burst detection
+
+⸻
+
+6️⃣ SERVICE MARKETPLACE (UPWORK-STYLE)
+
+Services
+	•	App development
+	•	Customization
+	•	Training
+	•	Implementation
+	•	Support
+
+Ranking Based On
+	•	Relevant badges
+	•	Contribution history
+	•	Community trust score
+	•	Past service outcomes
+
+Explicit Rule
+
+🚫 Services must NOT be promoted inside community threads.
+
+⸻
+
+7️⃣ COMMUNITY → SERVICE BRIDGE (CONTROLLED)
+
+Allowed:
+	•	“View Profile”
+	•	“Hire Contributor” button on profile
+	•	“Request Paid Help” after thread resolution
+
+Not Allowed:
+	•	Paid answers
+	•	Links to service listings inside posts
+	•	Direct solicitation in comments
+
+⸻
+
+8️⃣ MODERATION & ANTI-SPAM SYSTEM (CRITICAL)
+
+8.1 ACCOUNT TRUST LEVELS
+
+Users progress through Trust Levels:
+
+Level 0 – New User
+	•	Limited posts/day
+	•	No external links
+	•	No voting power
+	•	Cannot join many spaces quickly
+
+Level 1 – Contributor
+	•	Posting allowed
+	•	Limited answers/day
+	•	Limited space joins
+
+Level 2 – Trusted Contributor
+	•	Increased limits
+	•	Voting weight increased
+	•	Can flag content
+
+Level 3 – Community Leader
+	•	Moderation rights
+	•	Thread management
+	•	Conflict resolution
+
+Trust levels are earned, not time-based alone.
+
+⸻
+
+8.2 RATE LIMITING (ANTI-SPAM)
+
+System must enforce:
+
+Posting Limits
+	•	Max posts/day
+	•	Max answers/day
+	•	Cooldown between actions
+
+Burst Detection
+	•	Sudden spike in answers → throttling
+	•	Repetitive content → shadow limit
+	•	Copy-paste similarity detection
+
+⸻
+
+8.3 SPACE JOIN LIMITS
+	•	Max number of spaces joinable per day
+	•	Progressive unlock based on trust
+	•	Rapid joining triggers cooldown
+
+⸻
+
+8.4 LINK CONTROL (VERY IMPORTANT)
+
+Default Rules
+	•	External links blocked for new users
+	•	Whitelisted domains only (docs, GitHub)
+	•	No shortened URLs
+	•	No referral links
+
+Enforcement
+	•	Auto-remove posts with links
+	•	Flag repeated attempts
+	•	Reputation penalty
+
+⸻
+
+8.5 CONTENT QUALITY CONTROLS
+	•	Downvotes reduce reputation
+	•	Accepted answers boost trust
+	•	Low-quality answers flagged automatically
+	•	Repeated low-quality content triggers review
+
+⸻
+
+8.6 GAMING & ABUSE PREVENTION
+
+Detect:
+	•	Answer spamming
+	•	Self-upvoting rings
+	•	Mutual voting abuse
+	•	Low-effort replies
+
+Actions:
+	•	Shadow bans
+	•	Temporary posting freezes
+	•	Reputation rollback
+	•	Badge revocation
+
+⸻
+
+9️⃣ MODERATION GOVERNANCE
+
+9.1 Earned Moderation
+
+Moderators are:
+	•	High-trust contributors
+	•	Domain specialists
+	•	Transparent in actions
+
+No permanent unchecked power.
+
+⸻
+
+9.2 Admin Controls
+
+Platform admins can:
+	•	Override moderation
+	•	Audit user behavior
+	•	Adjust thresholds
+	•	Ban abusive actors
+	•	Freeze services for offenders
+
+⸻
+
+🔟 DATA MODEL REQUIREMENTS
+
+Key entities:
+	•	User
+	•	Trust Level
+	•	Contribution Event
+	•	Badge
+	•	Reputation Dimension
+	•	Community Space
+	•	Post
+	•	Moderation Action
+	•	Service Listing
+
+All actions must be:
+	•	Logged
+	•	Auditable
+	•	Reversible (by admins)
+
+⸻
+
+1️⃣1️⃣ UX REQUIREMENTS
+
+Required Screens:
+	•	Community Feed
+	•	Space View
+	•	Contributor Profile
+	•	Badge Progress
+	•	Reputation Breakdown
+	•	Moderation Dashboard
+	•	Service Marketplace
+
+⸻
+
+1️⃣2️⃣ SEARCH & KNOWLEDGE DISCOVERY
+
+Unified search across:
+	•	Community
+	•	Apps
+	•	Training
+	•	Docs
+	•	Services
+
+Community becomes living documentation.
+
+⸻
+
+1️⃣3️⃣ DELIVERABLES REQUIRED FROM REPLIT
+
+Replit must:
+	1.	Implement full system
+	2.	Integrate with existing Nexus AI First architecture
+	3.	Document:
+	•	Reputation logic
+	•	Badge thresholds
+	•	Anti-spam rules
+	4.	List:
+	•	Anything not implemented
+	•	Any assumptions made
+
+⸻
+
+✅ END OF MASTER PROMPT
+
+⸻
+
+🔑 FINAL STRATEGIC SUMMARY (FOR YOU)
+
+What you are building is not:
+	•	Just a forum
+	•	Just a marketplace
+	•	Just open source
+
+You are building:
+
+A trust engine where contribution converts into opportunity
+
+This design:
+	•	Prevents spam by design
+	•	Rewards real work
+	•	Keeps community clean
+	•	Makes services credible
+	•	Scales organically
+
+⸻
+
+🔜 Next (Highly Recommended)
+
+I can now:
+	1.	Define exact numeric thresholds
+	2.	Design MVP vs Phase-2 rollout
+	3.	Create DB schema
+	4.	Write API contracts
+	5.	Create UI wireframe descriptions
+
+Just tell me what you want next.

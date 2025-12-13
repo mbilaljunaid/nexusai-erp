@@ -553,7 +553,6 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/copilot" component={Copilot} />
       <Route path="/marketplace" component={Marketplace} />
-      <Route path="/community" component={CommunityForum} />
       <Route path="/developer-portal" component={DeveloperPortal} />
       <Route path="/marketplace-admin" component={MarketplaceAdmin} />
       <Route path="/settings" component={Settings} />
@@ -686,7 +685,7 @@ export default function App() {
   const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
   
   // Public routes don't show sidebar - includes dynamic routes
-  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/community", "/contribution"];
+  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/modules", "/public/processes", "/careers", "/features", "/marketplace"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/") || location.startsWith("/blog/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
   

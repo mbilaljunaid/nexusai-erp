@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import type { CommunitySpace, CommunityPost, UserTrustLevel } from "@shared/schema";
 import { UserProfile } from "@/components/UserProfile";
-import { Header, Footer } from "@/components/Navigation";
 import { FlagContentDialog } from "@/components/FlagContentDialog";
 import { ModerationQueue } from "@/components/ModerationQueue";
 import { ServiceMarketplace } from "@/components/ServiceMarketplace";
@@ -407,15 +406,12 @@ export default function CommunityForum() {
   }
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 p-6">
-        <div className="max-w-6xl mx-auto space-y-6">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <h1 className="text-3xl font-bold" data-testid="text-page-title">Community Forum</h1>
-              <p className="text-muted-foreground mt-1">Ask questions, share knowledge, earn reputation</p>
-            </div>
+    <div className="space-y-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-3xl font-bold" data-testid="text-page-title">Community Forum</h1>
+          <p className="text-muted-foreground mt-1">Ask questions, share knowledge, earn reputation</p>
+        </div>
         <div className="flex gap-2 flex-wrap">
           <Button 
             variant="outline" 
@@ -621,16 +617,13 @@ export default function CommunityForum() {
             />
           </TabsContent>
         ))}
-          </Tabs>
-          <FlagContentDialog
-            open={!!flagTarget}
-            onOpenChange={(open) => !open && setFlagTarget(null)}
-            targetType={flagTarget?.type || "post"}
-            targetId={flagTarget?.id || ""}
-          />
-        </div>
-      </main>
-      <Footer />
+      </Tabs>
+      <FlagContentDialog
+        open={!!flagTarget}
+        onOpenChange={(open) => !open && setFlagTarget(null)}
+        targetType={flagTarget?.type || "post"}
+        targetId={flagTarget?.id || ""}
+      />
     </div>
   );
 }

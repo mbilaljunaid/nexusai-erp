@@ -1,0 +1,356 @@
+1. Marketplace Overview
+
+Build an App Marketplace where:
+
+Third-party developers can build, publish, and sell apps/modules.
+
+Tenants (customers) can browse, purchase, install, subscribe, upgrade, or uninstall apps.
+
+Platform Admin controls governance, approvals, and revenue sharing.
+
+Revenue sharing is configurable (default 0% platform fee, adjustable later).
+
+The marketplace supports:
+
+One-time purchases
+
+Subscriptions (monthly / yearly)
+
+Free apps
+
+Trial versions
+
+Open-source & commercial apps
+
+2. Core Roles & Permissions
+2.1 Platform Admin
+
+Approve / reject apps
+
+Set and modify platform commission percentage (default = 0%)
+
+Suspend apps or developers
+
+View global transactions & revenue
+
+Manage categories, tags, pricing models
+
+Configure tax, currency, payment gateways
+
+Access full audit logs
+
+2.2 Developer / Publisher
+
+Register as a developer
+
+Create and manage apps
+
+Upload versions and updates
+
+Define pricing models
+
+View:
+
+Sales history
+
+Revenue earned
+
+Platform commission deducted
+
+Payout status
+
+Manage:
+
+App documentation
+
+Screenshots
+
+Changelog
+
+Support contact
+
+Respond to reviews & issues
+
+2.3 Tenant Admin (Customer Company)
+
+Browse and install apps for their tenant
+
+Manage subscriptions and licenses
+
+View:
+
+App spend history
+
+Invoices
+
+Usage per app
+
+Assign app access to users
+
+2.4 End Users
+
+Use installed apps (as per assigned permissions)
+
+View app details & documentation
+
+Submit reviews, ratings, bug reports
+
+3. App Lifecycle Management
+3.1 App Submission
+
+Each app must include:
+
+App name
+
+Description (short + long)
+
+Category & tags
+
+Pricing model
+
+Compatibility (ERP version, modules)
+
+Deployment type:
+
+SaaS
+
+Self-hosted
+
+License type:
+
+Open source
+
+Commercial
+
+Dual license
+
+Versioning & changelog
+
+Demo URL (optional)
+
+Documentation URL
+
+Support & contact details
+
+3.2 Approval Workflow
+
+Developer submits app
+
+Platform Admin:
+
+Reviews security
+
+Checks compatibility
+
+Validates metadata
+
+Status:
+
+Draft
+
+Submitted
+
+Approved
+
+Rejected
+
+Suspended
+
+Only approved apps are visible in marketplace
+
+4. Pricing & Revenue Model
+4.1 Pricing Types
+
+Free
+
+One-time purchase
+
+Subscription (monthly / yearly)
+
+Usage-based (future-ready)
+
+Freemium (free + paid features)
+
+4.2 Platform Commission
+
+Configurable global percentage
+
+Default: 0%
+
+Stored per transaction (important for future changes)
+
+Can support:
+
+Global rate
+
+Category-based rate (future)
+
+Developer-specific overrides (future)
+
+5. Transaction & Financial Management
+5.1 Transaction Flow
+
+Tenant purchases/subscribes to an app
+
+Payment processed via gateway
+
+Transaction recorded with:
+
+Gross amount
+
+Platform commission
+
+Developer net revenue
+
+Taxes (if applicable)
+
+App installed/activated automatically
+
+5.2 Transaction History Visibility
+Developer
+
+App-wise revenue
+
+Monthly / yearly earnings
+
+Commission deducted
+
+Pending vs paid out
+
+Exportable reports
+
+Tenant Admin
+
+App purchase history
+
+Active subscriptions
+
+Invoices & receipts
+
+Renewal dates
+
+Platform Admin
+
+Marketplace GMV
+
+Platform revenue
+
+Developer payouts
+
+Failed payments
+
+Refunds & chargebacks
+
+End Users
+
+Read-only view of app access (no financials)
+
+6. Payout & Billing (Developer Side)
+
+Payout schedule:
+
+Monthly (default)
+
+Minimum payout threshold
+
+Payout methods:
+
+Bank transfer
+
+Stripe / PayPal (future)
+
+Payout status:
+
+Pending
+
+Processing
+
+Paid
+
+Downloadable payout statements
+
+7. Reviews, Ratings & Quality Control
+
+App ratings (1–5 stars)
+
+Written reviews
+
+Version-specific feedback
+
+Abuse reporting
+
+Admin moderation
+
+App quality score (future)
+
+8. App Installation & Dependency Management
+
+One-click install
+
+Dependency checks before install
+
+Version compatibility validation
+
+Upgrade / downgrade support
+
+Rollback to previous version
+
+Uninstall with data-retention option
+
+9. Security, Compliance & Audit
+
+App sandboxing & permission scopes
+
+API access control per app
+
+Mandatory security checklist on submission
+
+Activity logs:
+
+App install/uninstall
+
+Purchases
+
+Revenue changes
+
+Admin actions
+
+Full audit trail for compliance
+
+10. Marketplace UX Features
+
+App categories & filters
+
+Featured apps
+
+Trending / most installed
+
+Search by:
+
+Name
+
+Category
+
+Price
+
+Rating
+
+Compare apps
+
+Save apps to wishlist
+
+11. Open-Source Alignment (Important)
+
+Clear label for:
+
+Open source apps
+
+Commercial apps
+
+Link to GitHub repository (if open source)
+
+Contribution guidelines
+
+Issue tracking integration
+
+Fork-friendly metadata

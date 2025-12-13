@@ -17,7 +17,6 @@ This document outlines the complete open-core strategy for NexusAI, enabling com
 7. [Versioning & Dependency Management](#7-versioning--dependency-management)
 8. [Contributor Model](#8-contributor-model)
 9. [Migration Risk Mitigation](#9-migration-risk-mitigation)
-10. [GitHub Repository Migration Strategy](#10-github-repository-migration-strategy)
 
 ---
 
@@ -44,24 +43,24 @@ This document outlines the complete open-core strategy for NexusAI, enabling com
 | **server/logging/** | OPEN SOURCE | nexusai-core | Logging infrastructure |
 | **server/operations/** | OPEN SOURCE | nexusai-core | Bulk operations |
 | **server/sync/** | OPEN SOURCE | nexusai-core | Data sync engine |
-| **client/src/** | PROPRIETARY | nexusai-private | Entire frontend UI |
-| **server/replitAuth.ts** | PROPRIETARY | nexusai-private | Platform authentication |
-| **server/platformAuth.ts** | PROPRIETARY | nexusai-private | Platform-specific auth |
-| **server/reputationService.ts** | PROPRIETARY | nexusai-private | Community reputation logic |
-| **server/DEMO_*.ts** | PROPRIETARY | nexusai-private | Demo management |
-| **server/demoSeeds.ts** | PROPRIETARY | nexusai-private | Demo data |
-| **server/api/apiGateway.ts** | PROPRIETARY | nexusai-private | API Gateway with rate limiting |
-| **server/integrations/** | PROPRIETARY | nexusai-private | Third-party integrations |
-| **server/webhooks/** | PROPRIETARY | nexusai-private | Webhook management |
-| **server/mobile/** | PROPRIETARY | nexusai-private | Mobile API layer |
-| **server/security/** | PROPRIETARY | nexusai-private | Security hardening |
-| **server/backup/** | PROPRIETARY | nexusai-private | Backup management |
-| **server/migration/** | PROPRIETARY | nexusai-private | Data migration tools |
-| **server/monitoring/** | PROPRIETARY | nexusai-private | Health checks |
-| **server/performance/** | PROPRIETARY | nexusai-private | Performance optimization |
+| **client/src/** | PROPRIETARY | nexusai-platform | Entire frontend UI |
+| **server/replitAuth.ts** | PROPRIETARY | nexusai-platform | Platform authentication |
+| **server/platformAuth.ts** | PROPRIETARY | nexusai-platform | Platform-specific auth |
+| **server/reputationService.ts** | PROPRIETARY | nexusai-platform | Community reputation logic |
+| **server/DEMO_*.ts** | PROPRIETARY | nexusai-platform | Demo management |
+| **server/demoSeeds.ts** | PROPRIETARY | nexusai-platform | Demo data |
+| **server/api/apiGateway.ts** | PROPRIETARY | nexusai-platform | API Gateway with rate limiting |
+| **server/integrations/** | PROPRIETARY | nexusai-platform | Third-party integrations |
+| **server/webhooks/** | PROPRIETARY | nexusai-platform | Webhook management |
+| **server/mobile/** | PROPRIETARY | nexusai-platform | Mobile API layer |
+| **server/security/** | PROPRIETARY | nexusai-platform | Security hardening |
+| **server/backup/** | PROPRIETARY | nexusai-platform | Backup management |
+| **server/migration/** | PROPRIETARY | nexusai-platform | Data migration tools |
+| **server/monitoring/** | PROPRIETARY | nexusai-platform | Health checks |
+| **server/performance/** | PROPRIETARY | nexusai-platform | Performance optimization |
 | **docs/** | MIXED | Both | API docs open, guides proprietary |
-| **infrastructure/** | PROPRIETARY | nexusai-private | Deployment configs |
-| **platforms/** | PROPRIETARY | nexusai-private | Platform configs |
+| **infrastructure/** | PROPRIETARY | nexusai-platform | Deployment configs |
+| **platforms/** | PROPRIETARY | nexusai-platform | Platform configs |
 
 ### Classification Decision Tree
 
@@ -153,9 +152,9 @@ nexusai-core/
 └── tsconfig.json
 ```
 
-#### nexusai-private (PRIVATE)
+#### nexusai-platform (PRIVATE)
 ```
-nexusai-private/
+nexusai-platform/
 ├── client/                   # Full React frontend
 │   └── src/
 │       ├── components/
@@ -207,9 +206,9 @@ nexusai-private/
 ```
 
 ```json
-// nexusai-private/package.json
+// nexusai-platform/package.json
 {
-  "name": "nexusai-private",
+  "name": "nexusai-platform",
   "private": true,
   "dependencies": {
     "@nexusai/core": "^1.0.0"
@@ -226,7 +225,7 @@ nexusai-private/
 | Repository | License | Rationale |
 |------------|---------|-----------|
 | nexusai-core | **AGPL-3.0** | Strong copyleft prevents proprietary forks from competing without contributing back |
-| nexusai-private | **Proprietary** | Full commercial control |
+| nexusai-platform | **Proprietary** | Full commercial control |
 
 ### AGPL-3.0 Benefits for Open Core
 
@@ -346,7 +345,7 @@ export { Logger } from './utils/logging';
 ### Import Rules (Enforced via ESLint)
 
 ```javascript
-// nexusai-private/.eslintrc.js
+// nexusai-platform/.eslintrc.js
 module.exports = {
   rules: {
     'no-restricted-imports': ['error', {
@@ -609,7 +608,7 @@ Before developing ANY new feature, complete this checklist:
           │                                  │
           ▼                                  ▼
 4a. Implementation in             4b. Implementation in
-    nexusai-core                       nexusai-private
+    nexusai-core                       nexusai-platform
           │                                  │
           ▼                                  ▼
 5a. Public PR review              5b. Internal PR review
@@ -656,7 +655,7 @@ PATCH: Bug fixes
 ### Platform Dependency Pinning
 
 ```json
-// nexusai-private/package.json
+// nexusai-platform/package.json
 {
   "dependencies": {
     "@nexusai/core": "~1.2.0"  // Accept patches only
@@ -968,481 +967,6 @@ async function rollback() {
 
 ---
 
-## 10. GitHub Repository Migration Strategy
-
-### Current State
-
-**Public Repository**: https://github.com/mbilaljunaid/nexusai-erp  
-**Branch**: `main` (publicly shared, must remain public)
-
-The `main` branch has been shared publicly at multiple locations and must remain accessible. This section outlines the strategy to separate proprietary UI and platform features while maintaining the public core.
-
-### Migration Strategy Overview
-
-```
-CURRENT STATE                          FUTURE STATE
-─────────────────                      ─────────────────
-mbilaljunaid/nexusai-erp               mbilaljunaid/nexusai-erp (PUBLIC)
-└── main (mixed code)                  └── main (open-source core only)
-                                       
-                                       mbilaljunaid/nexusai-private (PRIVATE)
-                                       └── main (proprietary + imports core)
-```
-
-### Step-by-Step Migration Process
-
-#### Phase 1: Prepare the Split (Week 1)
-
-```bash
-# 1. Create a backup branch of current state
-git checkout main
-git checkout -b archive/full-platform-backup
-git push origin archive/full-platform-backup
-
-# 2. Create the proprietary platform repository (PRIVATE)
-# On GitHub: Create new private repo "nexusai-private"
-
-# 3. Clone the full codebase to the new private repo
-git clone https://github.com/mbilaljunaid/nexusai-erp.git nexusai-private
-cd nexusai-private
-git remote set-url origin https://github.com/mbilaljunaid/nexusai-private.git
-git push -u origin main
-```
-
-#### Phase 2: Clean the Public Repository (Week 2)
-
-**Files/Directories to REMOVE from `main` branch:**
-
-```bash
-# Remove from mbilaljunaid/nexusai-erp main branch:
-
-# 1. Entire frontend UI (proprietary)
-client/
-
-# 2. Platform-specific authentication
-server/replitAuth.ts
-server/platformAuth.ts
-server/auth/
-
-# 3. Demo and seeding functionality
-server/DEMO_*.ts
-server/demoSeeds.ts
-server/demo/
-
-# 4. Community/reputation features
-server/reputationService.ts
-server/communityRoutes.ts
-
-# 5. API Gateway and integrations
-server/api/apiGateway.ts
-server/integrations/
-server/webhooks/
-
-# 6. Platform services
-server/mobile/
-server/security/
-server/backup/
-server/migration/
-server/monitoring/
-server/performance/
-
-# 7. Infrastructure and deployment configs
-infrastructure/
-platforms/
-.replit
-replit.nix
-
-# 8. Development-specific files
-attached_assets/
-.local/
-*.log
-```
-
-**Removal Script:**
-
-```bash
-#!/bin/bash
-# scripts/prepare-open-source-release.sh
-
-# Navigate to repository
-cd /path/to/nexusai-erp
-
-# Create the open-source preparation branch
-git checkout main
-git checkout -b open-source-preparation
-
-# Remove proprietary directories
-rm -rf client/
-rm -rf server/auth/
-rm -rf server/demo/
-rm -rf server/integrations/
-rm -rf server/webhooks/
-rm -rf server/mobile/
-rm -rf server/security/
-rm -rf server/backup/
-rm -rf server/migration/
-rm -rf server/monitoring/
-rm -rf server/performance/
-rm -rf infrastructure/
-rm -rf platforms/
-rm -rf attached_assets/
-rm -rf .local/
-
-# Remove proprietary files
-rm -f server/replitAuth.ts
-rm -f server/platformAuth.ts
-rm -f server/reputationService.ts
-rm -f server/communityRoutes.ts
-rm -f server/DEMO_*.ts
-rm -f server/demoSeeds.ts
-rm -f server/api/apiGateway.ts
-rm -f .replit
-rm -f replit.nix
-
-# Remove any environment-specific files
-rm -f .env*
-rm -f *.log
-
-# Stage changes
-git add -A
-git commit -m "chore: prepare open-source core release
-
-- Remove proprietary UI components
-- Remove platform-specific authentication
-- Remove demo/seeding functionality
-- Remove third-party integrations
-- Remove infrastructure configs
-- Retain core ERP engines and business logic"
-
-# Verify what remains
-echo "Remaining files (should be open-source core only):"
-find . -type f -name "*.ts" | head -50
-```
-
-#### Phase 3: Restructure for Core-Only Release (Week 3)
-
-**Target structure for `main` branch after cleanup:**
-
-```
-nexusai-erp/
-├── src/                          # Renamed from mixed server/shared
-│   ├── schema/
-│   │   ├── index.ts
-│   │   ├── schema.ts             # From shared/schema.ts
-│   │   └── types.ts
-│   ├── constants/
-│   │   └── community.ts          # From shared/communityConstants.ts
-│   ├── engines/
-│   │   ├── gl/                   # From server/gl/
-│   │   ├── workflow/             # From server/workflow/
-│   │   ├── rules/                # From server/rules/
-│   │   ├── analytics/            # From server/analytics/
-│   │   └── templates/            # From server/templates/
-│   ├── storage/
-│   │   ├── interface.ts          # From server/storage.ts
-│   │   ├── postgres.ts           # From server/storage-db.ts
-│   │   └── db.ts                 # From server/db.ts
-│   ├── metadata/                 # From server/metadata/
-│   ├── utils/
-│   │   ├── cache/                # From server/cache/
-│   │   ├── logging/              # From server/logging/
-│   │   └── sync/                 # From server/sync/
-│   └── index.ts                  # Main exports
-├── tests/
-├── docs/
-│   ├── API.md
-│   ├── ARCHITECTURE.md
-│   └── CONTRIBUTING.md
-├── examples/
-│   ├── basic-erp/
-│   └── custom-module/
-├── LICENSE                       # AGPL-3.0
-├── README.md                     # Updated for open-source
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-├── SECURITY.md
-├── package.json
-└── tsconfig.json
-```
-
-#### Phase 4: Update the Private Platform Repository (Week 4)
-
-**In `nexusai-private` (private repo):**
-
-```json
-// package.json
-{
-  "name": "nexusai-private",
-  "private": true,
-  "dependencies": {
-    "@mbilaljunaid/nexusai-core": "^1.0.0"
-  }
-}
-```
-
-**Update imports in private codebase:**
-
-```typescript
-// Before (direct imports)
-import { users, accounts } from '../../shared/schema';
-import { GLPostingEngine } from '../server/gl/postingEngine';
-
-// After (package imports)
-import { users, accounts, GLPostingEngine } from '@mbilaljunaid/nexusai-core';
-```
-
-### Git History Preservation
-
-To preserve full history while removing proprietary code:
-
-```bash
-# Option 1: Use git filter-repo (recommended)
-pip install git-filter-repo
-
-git filter-repo --path server/gl/ --path server/workflow/ \
-  --path server/rules/ --path shared/schema.ts \
-  --path shared/communityConstants.ts --path docs/API.md
-
-# Option 2: Use BFG Repo Cleaner
-# This removes large files and sensitive data from history
-java -jar bfg.jar --delete-folders client --delete-folders infrastructure \
-  --delete-files replitAuth.ts nexusai-erp.git
-```
-
-### Communication Strategy
-
-**Public Announcement Template:**
-
-```markdown
-## NexusAI Goes Open Source! 🎉
-
-We're excited to announce that the core ERP engine of NexusAI is now 
-open source under the AGPL-3.0 license!
-
-### What's Open Source:
-- General Ledger engine
-- Workflow automation engine
-- Rules engine
-- Analytics engine
-- Data schemas and type definitions
-- Storage abstractions
-
-### What Remains Commercial:
-- Pre-built UI components
-- Platform authentication
-- Third-party integrations
-- Enterprise support
-- Managed hosting
-
-### Getting Started
-```bash
-npm install @mbilaljunaid/nexusai-core
-```
-
-See our [documentation](link) for integration guides.
-
-### Contributing
-We welcome contributions! See [CONTRIBUTING.md](link) for guidelines.
-```
-
-### URL Redirect Strategy
-
-Maintain backward compatibility for shared links:
-
-```yaml
-# .github/redirects.yml or via GitHub Pages
-redirects:
-  - from: /client/*
-    to: https://platform.nexusai.com/docs/ui
-    status: 301
-    
-  - from: /server/auth/*
-    to: https://platform.nexusai.com/docs/authentication
-    status: 301
-```
-
-### Automatic Sync to Public Repository (GitHub Action)
-
-This workflow automatically syncs open-source files from `nexusai-private` to `nexusai-erp` on every push:
-
-```yaml
-# .github/workflows/sync-to-public.yml
-name: Sync to Public Repository
-
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'shared/schema.ts'
-      - 'shared/communityConstants.ts'
-      - 'server/gl/**'
-      - 'server/workflow/**'
-      - 'server/rules/**'
-      - 'server/analytics/**'
-      - 'server/templates/**'
-      - 'server/metadata/**'
-      - 'server/storage.ts'
-      - 'server/storage-db.ts'
-      - 'server/db.ts'
-      - 'server/cache/**'
-      - 'server/logging/**'
-      - 'server/sync/**'
-      - 'docs/API.md'
-      - 'docs/ARCHITECTURE.md'
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout private repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          
-      - name: Checkout public repo
-        uses: actions/checkout@v4
-        with:
-          repository: mbilaljunaid/nexusai-erp
-          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
-          path: public-repo
-          
-      - name: Sync open-source files
-        run: |
-          # Define source directories/files to sync
-          SYNC_ITEMS=(
-            "shared/schema.ts:src/schema/schema.ts"
-            "shared/communityConstants.ts:src/constants/community.ts"
-            "server/gl:src/engines/gl"
-            "server/workflow:src/engines/workflow"
-            "server/rules:src/engines/rules"
-            "server/analytics:src/engines/analytics"
-            "server/templates:src/engines/templates"
-            "server/metadata:src/metadata"
-            "server/storage.ts:src/storage/interface.ts"
-            "server/storage-db.ts:src/storage/postgres.ts"
-            "server/db.ts:src/storage/db.ts"
-            "server/cache:src/utils/cache"
-            "server/logging:src/utils/logging"
-            "server/sync:src/utils/sync"
-            "docs/API.md:docs/API.md"
-          )
-          
-          for item in "${SYNC_ITEMS[@]}"; do
-            SRC="${item%%:*}"
-            DEST="${item##*:}"
-            
-            if [ -e "$SRC" ]; then
-              mkdir -p "public-repo/$(dirname $DEST)"
-              if [ -d "$SRC" ]; then
-                cp -r "$SRC"/* "public-repo/$DEST/" 2>/dev/null || cp -r "$SRC" "public-repo/$(dirname $DEST)/"
-              else
-                cp "$SRC" "public-repo/$DEST"
-              fi
-              echo "Synced: $SRC -> $DEST"
-            fi
-          done
-          
-      - name: Add license headers
-        run: |
-          cd public-repo
-          find src -name "*.ts" -exec sed -i '1i\/**\n * NexusAI Core - Open Source ERP Engine\n * SPDX-License-Identifier: AGPL-3.0-only\n */' {} \;
-          
-      - name: Commit and push to public repo
-        run: |
-          cd public-repo
-          git config user.name "NexusAI Bot"
-          git config user.email "bot@nexusai.com"
-          git add -A
-          git diff --staged --quiet || git commit -m "chore: sync from private repo [skip ci]"
-          git push
-```
-
-**Required Setup:**
-
-1. Create a GitHub Personal Access Token (PAT) with `repo` scope
-2. Add it as a secret named `PUBLIC_REPO_TOKEN` in the private repo settings
-3. The workflow triggers only when open-source files change
-
-**Benefits:**
-
-- Single Replit project (connected to `nexusai-private`)
-- Automatic sync of open-source code to public repo
-- License headers automatically added
-- Proprietary code never touches public repo
-
----
-
-### NPM Package Publishing
-
-```yaml
-# .github/workflows/publish.yml
-name: Publish to NPM
-
-on:
-  release:
-    types: [created]
-
-jobs:
-  publish:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
-
-### Migration Timeline
-
-| Week | Milestone | Owner |
-|------|-----------|-------|
-| 1 | Create backup branch, clone to private repo | DevOps |
-| 2 | Remove proprietary code from public main | Lead Dev |
-| 3 | Restructure public repo, add examples | Lead Dev |
-| 4 | Update private repo to import core package | Backend Team |
-| 5 | Testing and validation | QA Team |
-| 6 | Public announcement and npm publish | Marketing |
-
-### Rollback Plan
-
-If issues arise during migration:
-
-```bash
-# Restore from backup branch
-git checkout main
-git reset --hard origin/archive/full-platform-backup
-git push --force origin main
-
-# Re-evaluate and retry with fixes
-```
-
-### Ongoing Maintenance
-
-**Sync Strategy:**
-
-1. Core changes made in public `nexusai-erp` repo
-2. Platform imports core via npm package
-3. Platform-specific features stay in private repo
-4. No code flows from private → public (one-way dependency)
-
-**Version Coordination:**
-
-```
-Public Core: v1.0.0 → v1.1.0 → v1.2.0
-                ↓        ↓        ↓
-Private Platform: Depends on ~1.x (patches auto-update)
-```
-
----
-
-*Document Version: 1.1.0*
-*Last Updated: December 2024*
+*Document Version: 1.0.0*
+*Last Updated: 2024*
 *Approved by: NexusAI Technical Steering Committee*
