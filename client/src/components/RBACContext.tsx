@@ -26,7 +26,8 @@ interface RBACContextType {
   enterpriseRole: EnterpriseRole;
   headers: Record<string, string>;
   isAuthenticated: boolean;
-  login: (userId: string, userRole: "admin" | "editor" | "viewer", enterpriseRole?: EnterpriseRole) => void;
+  isLoading: boolean;
+  login: (userId: string, userRole: "admin" | "editor" | "viewer", enterpriseRole?: EnterpriseRole) => Promise<void>;
   logout: () => void;
   setEnterpriseRole: (role: EnterpriseRole) => void;
 }
@@ -55,6 +56,57 @@ export function RBACProvider({ children }: { children: ReactNode }) {
     return (localStorage.getItem("enterpriseRole") as EnterpriseRole) || "end_user";
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkBackendAuth = async () => {
+      try {
+        const response = await fetch("/api/auth/user", {
+          credentials: "include",
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          const id = userData.id || userData.email || "";
+          const backendRole = userData.role as "admin" | "editor" | "viewer" | undefined;
+          setUserId(id);
+          if (backendRole && ["admin", "editor", "viewer"].includes(backendRole)) {
+            setUserRole(backendRole);
+            localStorage.setItem("userRole", backendRole);
+          }
+          setIsAuthenticated(true);
+          localStorage.setItem("authToken", "true");
+          localStorage.setItem("userId", id);
+          localStorage.setItem("authTimestamp", Date.now().toString());
+        } else {
+          setIsAuthenticated(false);
+          setUserId("");
+          setUserRole("viewer");
+          setEnterpriseRoleState("end_user");
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("enterpriseRole");
+          localStorage.removeItem("authTimestamp");
+        }
+      } catch (error) {
+        setIsAuthenticated(false);
+        setUserId("");
+        setUserRole("viewer");
+        setEnterpriseRoleState("end_user");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("enterpriseRole");
+        localStorage.removeItem("authTimestamp");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkBackendAuth();
+  }, []);
+
   useEffect(() => {
     if (isAuthenticated && userId) {
       localStorage.setItem("authToken", "true");
@@ -66,16 +118,46 @@ export function RBACProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated, userId, userRole, enterpriseRole]);
 
   useEffect(() => {
-    const handleFocus = () => {
-      const authToken = localStorage.getItem("authToken");
-      const storedUserId = localStorage.getItem("userId");
-      if (!authToken || !storedUserId) {
+    const handleFocus = async () => {
+      try {
+        const response = await fetch("/api/auth/user", {
+          credentials: "include",
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          const id = userData.id || userData.email || "";
+          const backendRole = userData.role as "admin" | "editor" | "viewer" | undefined;
+          setUserId(id);
+          if (backendRole && ["admin", "editor", "viewer"].includes(backendRole)) {
+            setUserRole(backendRole);
+            localStorage.setItem("userRole", backendRole);
+          }
+          setIsAuthenticated(true);
+          localStorage.setItem("authToken", "true");
+          localStorage.setItem("userId", id);
+          localStorage.setItem("authTimestamp", Date.now().toString());
+        } else {
+          setIsAuthenticated(false);
+          setUserId("");
+          setUserRole("viewer");
+          setEnterpriseRoleState("end_user");
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("enterpriseRole");
+          localStorage.removeItem("authTimestamp");
+        }
+      } catch (error) {
         setIsAuthenticated(false);
-      } else {
-        setIsAuthenticated(true);
-        setUserId(storedUserId);
-        setUserRole((localStorage.getItem("userRole") as "admin" | "editor" | "viewer") || "viewer");
-        setEnterpriseRoleState((localStorage.getItem("enterpriseRole") as EnterpriseRole) || "end_user");
+        setUserId("");
+        setUserRole("viewer");
+        setEnterpriseRoleState("end_user");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("enterpriseRole");
+        localStorage.removeItem("authTimestamp");
       }
     };
 
@@ -83,20 +165,61 @@ export function RBACProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
-  const login = useCallback((id: string, role: "admin" | "editor" | "viewer", entRole?: EnterpriseRole) => {
-    setUserId(id);
-    setUserRole(role);
-    if (entRole) {
-      setEnterpriseRoleState(entRole);
+  const login = useCallback(async (id: string, role: "admin" | "editor" | "viewer", entRole?: EnterpriseRole) => {
+    try {
+      const response = await fetch("/api/auth/user", {
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        const backendId = userData.id || userData.email || id;
+        const backendRole = userData.role as "admin" | "editor" | "viewer" | undefined;
+        const finalRole = (backendRole && ["admin", "editor", "viewer"].includes(backendRole)) ? backendRole : role;
+        
+        setUserId(backendId);
+        setUserRole(finalRole);
+        if (entRole) {
+          setEnterpriseRoleState(entRole);
+        }
+        setIsAuthenticated(true);
+        localStorage.setItem("authToken", "true");
+        localStorage.setItem("userId", backendId);
+        localStorage.setItem("userRole", finalRole);
+        if (entRole) {
+          localStorage.setItem("enterpriseRole", entRole);
+        }
+        localStorage.setItem("authTimestamp", Date.now().toString());
+      } else {
+        setUserId(id);
+        setUserRole(role);
+        if (entRole) {
+          setEnterpriseRoleState(entRole);
+        }
+        setIsAuthenticated(true);
+        localStorage.setItem("authToken", "true");
+        localStorage.setItem("userId", id);
+        localStorage.setItem("userRole", role);
+        if (entRole) {
+          localStorage.setItem("enterpriseRole", entRole);
+        }
+        localStorage.setItem("authTimestamp", Date.now().toString());
+      }
+    } catch (error) {
+      setUserId(id);
+      setUserRole(role);
+      if (entRole) {
+        setEnterpriseRoleState(entRole);
+      }
+      setIsAuthenticated(true);
+      localStorage.setItem("authToken", "true");
+      localStorage.setItem("userId", id);
+      localStorage.setItem("userRole", role);
+      if (entRole) {
+        localStorage.setItem("enterpriseRole", entRole);
+      }
+      localStorage.setItem("authTimestamp", Date.now().toString());
     }
-    setIsAuthenticated(true);
-    localStorage.setItem("authToken", "true");
-    localStorage.setItem("userId", id);
-    localStorage.setItem("userRole", role);
-    if (entRole) {
-      localStorage.setItem("enterpriseRole", entRole);
-    }
-    localStorage.setItem("authTimestamp", Date.now().toString());
   }, []);
 
   const logout = useCallback(() => {
@@ -109,6 +232,7 @@ export function RBACProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("userRole");
     localStorage.removeItem("enterpriseRole");
     localStorage.removeItem("authTimestamp");
+    window.location.href = "/api/logout";
   }, []);
 
   const setEnterpriseRole = useCallback((role: EnterpriseRole) => {
@@ -128,6 +252,7 @@ export function RBACProvider({ children }: { children: ReactNode }) {
       "x-enterprise-role": enterpriseRole,
     },
     isAuthenticated,
+    isLoading,
     login,
     logout,
     setEnterpriseRole,

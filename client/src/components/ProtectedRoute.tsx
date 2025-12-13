@@ -10,11 +10,11 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { toast } = useToast();
-  const { isAuthenticated } = useRBAC();
+  const { isAuthenticated, isLoading } = useRBAC();
   const [, navigate] = useLocation();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       toast({
         title: "Authentication Required",
         description: "Please log in to access this page.",
@@ -22,7 +22,16 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       });
       navigate("/login");
     }
-  }, [isAuthenticated, toast, navigate]);
+  }, [isAuthenticated, isLoading, toast, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen" data-testid="loading-auth">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2">Checking authentication...</span>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
