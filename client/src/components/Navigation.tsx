@@ -225,6 +225,7 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Products</h4>
             <ul className="space-y-2 text-sm text-slate-400">
+              <li><Link to="/features" className="hover:text-white transition" data-testid="link-footer-features">Features</Link></li>
               <li><Link to="/use-cases" className="hover:text-white transition" data-testid="link-footer-usecases">Use Cases</Link></li>
               <li><Link to="/industries" className="hover:text-white transition" data-testid="link-footer-industries">Industries</Link></li>
               <li><Link to="/modules" className="hover:text-white transition" data-testid="link-footer-modules">Modules</Link></li>

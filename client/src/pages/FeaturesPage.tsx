@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+import { Header, Footer } from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -392,7 +391,7 @@ export default function FeaturesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      <Header />
       
       <main className="pt-20">
         {/* Hero Section */}
