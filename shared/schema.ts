@@ -746,6 +746,7 @@ export const marketplaceApps = pgTable("marketplace_apps", {
   longDescription: text("long_description"),
   categoryId: varchar("category_id"),
   tags: text("tags").array(),
+  supportedIndustries: text("supported_industries").array(),
   icon: varchar("icon"),
   screenshots: text("screenshots").array(),
   demoUrl: varchar("demo_url"),
@@ -782,6 +783,7 @@ export const insertMarketplaceAppSchema = createInsertSchema(marketplaceApps).om
   longDescription: z.string().optional(),
   categoryId: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  supportedIndustries: z.array(z.string()).optional(),
   icon: z.string().optional(),
   screenshots: z.array(z.string()).optional(),
   demoUrl: z.string().url().optional().nullable(),
@@ -1144,3 +1146,105 @@ export const insertMarketplaceAppDependencySchema = createInsertSchema(marketpla
 
 export type InsertMarketplaceAppDependency = z.infer<typeof insertMarketplaceAppDependencySchema>;
 export type MarketplaceAppDependency = typeof marketplaceAppDependencies.$inferSelect;
+
+// ============================================
+// TENANTS & INDUSTRY DEPLOYMENTS
+// ============================================
+
+// Tenants - Organizations using the platform
+export const tenants = pgTable("tenants", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  slug: varchar("slug").notNull().unique(),
+  description: text("description"),
+  logoUrl: varchar("logo_url"),
+  status: varchar("status").default("active"), // active, inactive, suspended
+  settings: jsonb("settings"), // tenant-specific settings
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertTenantSchema = createInsertSchema(tenants).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1, "Tenant name is required"),
+  slug: z.string().min(1),
+  description: z.string().optional(),
+  logoUrl: z.string().optional(),
+  status: z.enum(["active", "inactive", "suspended"]).optional(),
+  settings: z.record(z.any()).optional(),
+});
+
+export type InsertTenant = z.infer<typeof insertTenantSchema>;
+export type Tenant = typeof tenants.$inferSelect;
+
+// Industries - Reference table for industry templates
+export const industries = pgTable("industries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull().unique(),
+  slug: varchar("slug").notNull().unique(),
+  description: text("description"),
+  icon: varchar("icon"),
+  defaultModules: text("default_modules").array(), // modules enabled by default
+  configSchema: jsonb("config_schema"), // JSON schema for industry-specific config
+  isActive: boolean("is_active").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertIndustrySchema = createInsertSchema(industries).omit({ id: true, createdAt: true }).extend({
+  name: z.string().min(1, "Industry name is required"),
+  slug: z.string().min(1),
+  description: z.string().optional(),
+  icon: z.string().optional(),
+  defaultModules: z.array(z.string()).optional(),
+  configSchema: z.record(z.any()).optional(),
+  isActive: z.boolean().optional(),
+  sortOrder: z.number().optional(),
+});
+
+export type InsertIndustry = z.infer<typeof insertIndustrySchema>;
+export type Industry = typeof industries.$inferSelect;
+
+// Industry Deployments - Tracks which industries are deployed to which tenants
+export const industryDeployments = pgTable("industry_deployments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  industryId: varchar("industry_id").notNull(),
+  enabledModules: text("enabled_modules").array(), // can override default modules
+  customConfig: jsonb("custom_config"), // industry-specific customizations
+  status: varchar("status").default("active"), // active, inactive, pending
+  deployedBy: varchar("deployed_by"),
+  deployedAt: timestamp("deployed_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertIndustryDeploymentSchema = createInsertSchema(industryDeployments).omit({ id: true, deployedAt: true, updatedAt: true }).extend({
+  tenantId: z.string().min(1),
+  industryId: z.string().min(1),
+  enabledModules: z.array(z.string()).optional(),
+  customConfig: z.record(z.any()).optional(),
+  status: z.enum(["active", "inactive", "pending"]).optional(),
+  deployedBy: z.string().optional(),
+});
+
+export type InsertIndustryDeployment = z.infer<typeof insertIndustryDeploymentSchema>;
+export type IndustryDeployment = typeof industryDeployments.$inferSelect;
+
+// Industry App Recommendations - Curated apps for each industry
+export const industryAppRecommendations = pgTable("industry_app_recommendations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  industryId: varchar("industry_id").notNull(),
+  appId: varchar("app_id").notNull(),
+  ranking: integer("ranking").default(0),
+  reason: text("reason"), // Why this app is recommended
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertIndustryAppRecommendationSchema = createInsertSchema(industryAppRecommendations).omit({ id: true, createdAt: true }).extend({
+  industryId: z.string().min(1),
+  appId: z.string().min(1),
+  ranking: z.number().optional(),
+  reason: z.string().optional(),
+});
+
+export type InsertIndustryAppRecommendation = z.infer<typeof insertIndustryAppRecommendationSchema>;
+export type IndustryAppRecommendation = typeof industryAppRecommendations.$inferSelect;
