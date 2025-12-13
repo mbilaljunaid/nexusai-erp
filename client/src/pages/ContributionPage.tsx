@@ -114,12 +114,59 @@ export default function ContributionPage() {
     }
   ];
 
-  const contributorLevels = [
-    { level: "Explorer", points: "0-100", perks: "Community access, Basic badge", color: "bg-slate-600" },
-    { level: "Contributor", points: "100-500", perks: "Contributor badge, Forum privileges", color: "bg-blue-600" },
-    { level: "Expert", points: "500-2000", perks: "Expert badge, Marketplace seller access", color: "bg-purple-600" },
-    { level: "Champion", points: "2000-5000", perks: "Champion badge, Priority support", color: "bg-orange-600" },
-    { level: "Ambassador", points: "5000+", perks: "Ambassador status, Advisory council", color: "bg-yellow-600" }
+  const trustLevels = [
+    { 
+      level: "New User", 
+      trustLevel: 0,
+      requirements: "Account age < 7 days or Rep < 50", 
+      limits: "2 posts/day, 3 answers/day, 5 comments/day",
+      perks: "Community access, Learning mode", 
+      color: "bg-slate-600" 
+    },
+    { 
+      level: "Contributor", 
+      trustLevel: 1,
+      requirements: "Rep ≥ 50, Account ≥ 7 days", 
+      limits: "5 posts/day, 10 answers/day, Voting enabled",
+      perks: "Contributor badge, Can vote on content", 
+      color: "bg-blue-600" 
+    },
+    { 
+      level: "Trusted", 
+      trustLevel: 2,
+      requirements: "Rep ≥ 200, 10+ accepted answers", 
+      limits: "10 posts/day, 20 answers/day, 1.5x voting weight",
+      perks: "External links, Can flag content, Marketplace seller", 
+      color: "bg-purple-600" 
+    },
+    { 
+      level: "Leader", 
+      trustLevel: 3,
+      requirements: "Rep ≥ 1,000, 50+ accepted answers, 5+ artifacts", 
+      limits: "Unlimited posting, 2x voting weight",
+      perks: "Moderate spaces, Lock threads, Premium pricing", 
+      color: "bg-yellow-600" 
+    }
+  ];
+
+  const badgeThresholds = [
+    { name: "Problem Solver", description: "Accepted answers", bronze: 5, silver: 15, gold: 40, platinum: 80, legendary: 150 },
+    { name: "App Builder", description: "Apps published", bronze: 1, silver: 3, gold: 5, platinum: 10, legendary: 20 },
+    { name: "Educator", description: "Training videos", bronze: 2, silver: 5, gold: 10, platinum: 20, legendary: 40 },
+    { name: "Form Builder", description: "Forms created", bronze: 5, silver: 15, gold: 30, platinum: 60, legendary: 100 },
+    { name: "Bug Resolver", description: "Bugs resolved", bronze: 3, silver: 10, gold: 25, platinum: 50, legendary: 100 },
+  ];
+
+  const reputationPoints = [
+    { action: "Question posted", points: "+2" },
+    { action: "Answer posted", points: "+5" },
+    { action: "Answer upvoted", points: "+2" },
+    { action: "Accepted answer", points: "+15" },
+    { action: "Bug resolved", points: "+20" },
+    { action: "Form created", points: "+10" },
+    { action: "App published", points: "+50" },
+    { action: "Training video", points: "+20" },
+    { action: "Service completed", points: "+30" },
   ];
 
   return (
@@ -218,21 +265,94 @@ export default function ContributionPage() {
 
         <section className="px-4 py-20 max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Contributor Levels</h2>
+            <h2 className="text-4xl font-bold mb-4">Trust Levels</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Progress through levels as you contribute. Each level unlocks new perks and recognition.
+              Progress through trust levels as you contribute. Each level unlocks new privileges and recognition.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            {contributorLevels.map((levelInfo, index) => (
-              <Card key={index} className="p-6 text-center hover-elevate" data-testid={`card-level-${levelInfo.level.toLowerCase()}`}>
-                <div className={`w-16 h-16 rounded-full ${levelInfo.color} mx-auto mb-4 flex items-center justify-center`}>
-                  <Star className="w-8 h-8 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {trustLevels.map((levelInfo, index) => (
+              <Card key={index} className="p-6 hover-elevate" data-testid={`card-level-${levelInfo.level.toLowerCase().replace(/\s+/g, '-')}`}>
+                <div className={`w-12 h-12 rounded-full ${levelInfo.color} mx-auto mb-4 flex items-center justify-center`}>
+                  <span className="text-white font-bold text-lg">{levelInfo.trustLevel}</span>
                 </div>
-                <h3 className="text-lg font-bold mb-1">{levelInfo.level}</h3>
-                <p className="text-sm text-muted-foreground mb-2">{levelInfo.points} points</p>
-                <p className="text-xs text-muted-foreground">{levelInfo.perks}</p>
+                <h3 className="text-lg font-bold mb-2 text-center">{levelInfo.level}</h3>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <p className="text-muted-foreground font-medium">Requirements:</p>
+                    <p>{levelInfo.requirements}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground font-medium">Limits:</p>
+                    <p>{levelInfo.limits}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground font-medium">Perks:</p>
+                    <p>{levelInfo.perks}</p>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="px-4 py-20" style={{ background: `hsl(var(--muted) / 0.3)` }}>
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <Award className="w-12 h-12 mx-auto mb-4 text-purple-500" />
+              <h2 className="text-4xl font-bold mb-4">Badge Thresholds</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Earn badges as you contribute. Progress from Bronze to Legendary status.
+              </p>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b">
+                    <th className="p-4 font-bold">Badge</th>
+                    <th className="p-4 text-center text-orange-400">Bronze</th>
+                    <th className="p-4 text-center text-slate-400">Silver</th>
+                    <th className="p-4 text-center text-yellow-400">Gold</th>
+                    <th className="p-4 text-center text-purple-400">Platinum</th>
+                    <th className="p-4 text-center text-cyan-400">Legendary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {badgeThresholds.map((badge, index) => (
+                    <tr key={index} className="border-b" data-testid={`row-badge-${badge.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                      <td className="p-4">
+                        <div className="font-bold">{badge.name}</div>
+                        <div className="text-sm text-muted-foreground">{badge.description}</div>
+                      </td>
+                      <td className="p-4 text-center">{badge.bronze}</td>
+                      <td className="p-4 text-center">{badge.silver}</td>
+                      <td className="p-4 text-center">{badge.gold}</td>
+                      <td className="p-4 text-center">{badge.platinum}</td>
+                      <td className="p-4 text-center">{badge.legendary}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-4 py-20 max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <TrendingUp className="w-12 h-12 mx-auto mb-4 text-green-500" />
+            <h2 className="text-4xl font-bold mb-4">Reputation Points</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Earn points for your contributions. Points are capped at 5 per action type per day.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {reputationPoints.map((item, index) => (
+              <Card key={index} className="p-4 text-center hover-elevate" data-testid={`card-rep-${item.action.toLowerCase().replace(/\s+/g, '-')}`}>
+                <p className="text-2xl font-bold text-green-500 mb-2">{item.points}</p>
+                <p className="text-sm">{item.action}</p>
               </Card>
             ))}
           </div>
