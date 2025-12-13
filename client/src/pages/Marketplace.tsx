@@ -15,9 +15,16 @@ import { useAuth } from "@/hooks/useAuth";
 import { 
   Search, Star, Download, Package, Grid3X3, List, 
   ExternalLink, Check, Tag, Layers, Shield, Zap, 
-  Code, BookOpen, Mail, Globe, DollarSign, LogIn
+  Code, BookOpen, Mail, Globe, DollarSign, LogIn, Building2
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceCategory } from "@shared/schema";
+
+interface Industry {
+  id: string;
+  name: string;
+  slug: string;
+  isActive: boolean;
+}
 
 interface AppCardProps {
   app: MarketplaceApp;
@@ -265,6 +272,20 @@ function AppDetailDialog({
               </div>
             )}
 
+            {app.supportedIndustries && app.supportedIndustries.length > 0 && (
+              <div>
+                <h4 className="font-medium mb-2 flex items-center gap-2">
+                  <Building2 className="w-4 h-4" />
+                  Supported Industries
+                </h4>
+                <div className="flex flex-wrap gap-1">
+                  {app.supportedIndustries.map((industry, i) => (
+                    <Badge key={i} variant="outline" className="capitalize">{industry.replace(/-/g, ' ')}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-4 text-sm">
               {app.demoUrl && (
                 <a href={app.demoUrl} target="_blank" rel="noopener noreferrer" 
@@ -336,12 +357,17 @@ export default function Marketplace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [pricingFilter, setPricingFilter] = useState<string>("all");
+  const [industryFilter, setIndustryFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedApp, setSelectedApp] = useState<MarketplaceApp | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const { data: categories = [], isLoading: loadingCategories } = useQuery<MarketplaceCategory[]>({
     queryKey: ["/api/marketplace/categories"],
+  });
+
+  const { data: industries = [] } = useQuery<Industry[]>({
+    queryKey: ["/api/industries"],
   });
 
   const { data: apps = [], isLoading: loadingApps } = useQuery<MarketplaceApp[]>({
@@ -397,6 +423,22 @@ export default function Marketplace() {
     setSelectedApp(app);
     setDetailsOpen(true);
   };
+
+  const getIndustrySlug = (industryId: string) => {
+    return industries.find((i) => i.id === industryId)?.slug;
+  };
+
+  const selectedIndustrySlug = industryFilter !== "all" ? getIndustrySlug(industryFilter) : null;
+  const selectedIndustryName = industryFilter !== "all" 
+    ? industries.find((i) => i.id === industryFilter)?.name 
+    : null;
+
+  const industryRecommendedApps = industryFilter !== "all"
+    ? apps.filter((app) => 
+        app.status === "approved" && 
+        app.supportedIndustries?.includes(selectedIndustrySlug || industryFilter)
+      )
+    : [];
 
   const filteredApps = apps.filter((app) => {
     if (app.status !== "approved") return false;
@@ -462,7 +504,52 @@ export default function Marketplace() {
             <SelectItem value="subscription">Subscription</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={industryFilter} onValueChange={setIndustryFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]" data-testid="select-industry-filter">
+            <Building2 className="w-4 h-4 mr-2 text-muted-foreground" />
+            <SelectValue placeholder="Industry" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Industries</SelectItem>
+            {industries.filter((i) => i.isActive).map((industry) => (
+              <SelectItem key={industry.id} value={industry.id}>{industry.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
+
+      {industryFilter !== "all" && !loadingApps && industryRecommendedApps.length > 0 && (
+        <Card className="p-6 bg-primary/5 border-primary/20" data-testid="section-industry-recommendations">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Building2 className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">Recommended for {selectedIndustryName}</h2>
+              <p className="text-sm text-muted-foreground">
+                {industryRecommendedApps.length} app{industryRecommendedApps.length !== 1 ? 's' : ''} tailored for your industry
+              </p>
+            </div>
+          </div>
+          <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+            {industryRecommendedApps.slice(0, 6).map((app) => (
+              <AppCard
+                key={app.id}
+                app={app}
+                onViewDetails={handleViewDetails}
+                onInstall={handleInstall}
+                isInstalling={installMutation.isPending}
+                isInstalled={installedAppIds.has(app.id)}
+              />
+            ))}
+          </div>
+          {industryRecommendedApps.length > 6 && (
+            <p className="text-sm text-muted-foreground text-center mt-4">
+              Showing 6 of {industryRecommendedApps.length} recommended apps. Browse all apps below.
+            </p>
+          )}
+        </Card>
+      )}
 
       <Tabs defaultValue="all" className="w-full">
         <TabsList>
