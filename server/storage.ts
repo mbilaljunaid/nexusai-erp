@@ -40,6 +40,7 @@ import {
   type Subscription, type InsertSubscription,
   type Payment, type InsertPayment,
   type Demo, type InsertDemo,
+  type Partner, type InsertPartner,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -217,6 +218,12 @@ export interface IStorage {
   getPayrollConfig(id: string): Promise<PayrollConfig | undefined>;
   listPayrollConfigs(): Promise<PayrollConfig[]>;
   createPayrollConfig(config: InsertPayrollConfig): Promise<PayrollConfig>;
+
+  getPartner(id: string): Promise<Partner | undefined>;
+  listPartners(filters?: { type?: string; tier?: string; isApproved?: boolean; search?: string }): Promise<Partner[]>;
+  createPartner(partner: InsertPartner): Promise<Partner>;
+  updatePartner(id: string, partner: Partial<InsertPartner>): Promise<Partner | undefined>;
+  deletePartner(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -260,6 +267,7 @@ export class MemStorage implements IStorage {
   private biDashboards = new Map<string, BiDashboard>();
   private fieldServiceJobs = new Map<string, FieldServiceJob>();
   private payrollConfigs = new Map<string, PayrollConfig>();
+  private partners = new Map<string, Partner>();
 
   // PHASE 1 Methods
   async getTenant(id: string) { return this.tenants.get(id); }
@@ -478,6 +486,45 @@ export class MemStorage implements IStorage {
     const updated: Demo = { ...demo, ...d };
     this.demos.set(id, updated);
     return updated;
+  }
+
+  // Partner Management
+  async getPartner(id: string) { return this.partners.get(id); }
+  async listPartners(filters?: { type?: string; tier?: string; isApproved?: boolean; search?: string }) { 
+    let list = Array.from(this.partners.values());
+    if (filters?.type) list = list.filter(p => p.type === filters.type);
+    if (filters?.tier) list = list.filter(p => p.tier === filters.tier);
+    if (filters?.isApproved !== undefined) list = list.filter(p => p.isApproved === filters.isApproved);
+    if (filters?.search) {
+      const s = filters.search.toLowerCase();
+      list = list.filter(p => p.name.toLowerCase().includes(s) || p.company.toLowerCase().includes(s));
+    }
+    return list.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  async createPartner(p: InsertPartner) { 
+    const id = randomUUID(); 
+    const partner: Partner = { 
+      id, 
+      ...p, 
+      type: p.type || "partner",
+      tier: p.tier || "silver",
+      isActive: p.isActive ?? true,
+      isApproved: p.isApproved ?? false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }; 
+    this.partners.set(id, partner); 
+    return partner; 
+  }
+  async updatePartner(id: string, p: Partial<InsertPartner>) { 
+    const partner = this.partners.get(id);
+    if (!partner) return undefined;
+    const updated: Partner = { ...partner, ...p, updatedAt: new Date() };
+    this.partners.set(id, updated);
+    return updated;
+  }
+  async deletePartner(id: string) { 
+    return this.partners.delete(id); 
   }
 }
 

@@ -18,6 +18,7 @@ import {
   insertAbacRuleSchema, insertEncryptedFieldSchema, insertComplianceConfigSchema, insertSprintSchema, insertIssueSchema,
   insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
   insertDemoSchema, formData as formDataTable, smartViews, reports, contactSubmissions, insertContactSubmissionSchema,
+  insertPartnerSchema, partners as partnersTable,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -753,6 +754,98 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("[LemonSqueezy] Webhook error:", error);
       res.status(500).json({ error: "Webhook processing failed" });
+    }
+  });
+
+  // ========== PARTNERS & TRAINERS ==========
+  // Public route - list approved partners/trainers
+  app.get("/api/partners/public", async (req, res) => {
+    try {
+      const { type, tier, search, page = "1", limit = "20" } = req.query;
+      const partners = await storage.listPartners({
+        type: type as string,
+        tier: tier as string,
+        isApproved: true,
+        search: search as string
+      });
+      const pageNum = parseInt(page as string);
+      const limitNum = parseInt(limit as string);
+      const start = (pageNum - 1) * limitNum;
+      const paginated = partners.filter(p => p.isActive).slice(start, start + limitNum);
+      res.json({
+        partners: paginated,
+        total: partners.filter(p => p.isActive).length,
+        page: pageNum,
+        totalPages: Math.ceil(partners.filter(p => p.isActive).length / limitNum)
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch partners" });
+    }
+  });
+
+  // Public route - submit partner/trainer application
+  app.post("/api/partners/apply", async (req, res) => {
+    try {
+      const data = req.body;
+      const partner = await storage.createPartner({
+        ...data,
+        isApproved: false,
+        isActive: true
+      });
+      res.status(201).json({ success: true, id: partner.id, message: "Application submitted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to submit application" });
+    }
+  });
+
+  // Admin routes for partner management
+  app.get("/api/partners", async (req, res) => {
+    try {
+      const { type, tier, isApproved, search } = req.query;
+      const partners = await storage.listPartners({
+        type: type as string,
+        tier: tier as string,
+        isApproved: isApproved === "true" ? true : isApproved === "false" ? false : undefined,
+        search: search as string
+      });
+      res.json(partners);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch partners" });
+    }
+  });
+
+  app.get("/api/partners/:id", async (req, res) => {
+    const partner = await storage.getPartner(req.params.id);
+    if (!partner) return res.status(404).json({ error: "Partner not found" });
+    res.json(partner);
+  });
+
+  app.post("/api/partners", async (req, res) => {
+    try {
+      const partner = await storage.createPartner(req.body);
+      res.status(201).json(partner);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create partner" });
+    }
+  });
+
+  app.patch("/api/partners/:id", async (req, res) => {
+    try {
+      const partner = await storage.updatePartner(req.params.id, req.body);
+      if (!partner) return res.status(404).json({ error: "Partner not found" });
+      res.json(partner);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update partner" });
+    }
+  });
+
+  app.delete("/api/partners/:id", async (req, res) => {
+    try {
+      const success = await storage.deletePartner(req.params.id);
+      if (!success) return res.status(404).json({ error: "Partner not found" });
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete partner" });
     }
   });
 
