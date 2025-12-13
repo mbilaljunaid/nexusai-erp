@@ -28,21 +28,21 @@ export default function ProcessFlowsPage() {
   }, []);
 
   const coreProcesses = [
-    { icon: ShoppingCart, title: "Procure-to-Pay (P2P)", desc: "End-to-end procurement from requisition to payment", steps: 8, href: "/processes/procure-to-pay" },
-    { icon: Package, title: "Order-to-Cash (O2C)", desc: "Complete sales cycle from order to revenue recognition", steps: 10, href: "/processes/order-to-cash" },
-    { icon: Users, title: "Hire-to-Retire (H2R)", desc: "Full employee lifecycle management", steps: 12, href: "/processes/hire-to-retire" },
-    { icon: DollarSign, title: "Record-to-Report (R2R)", desc: "Financial close and reporting processes", steps: 9, href: "/processes/month-end" },
-    { icon: Factory, title: "Plan-to-Produce", desc: "Manufacturing planning and execution", steps: 7, href: "/processes/production" },
-    { icon: Truck, title: "Inventory Management", desc: "Stock control and warehouse operations", steps: 6, href: "/processes/inventory" },
+    { icon: ShoppingCart, title: "Procure-to-Pay (P2P)", desc: "End-to-end procurement from requisition to payment", steps: 8, href: "/public/processes/procure-to-pay" },
+    { icon: Package, title: "Order-to-Cash (O2C)", desc: "Complete sales cycle from order to revenue recognition", steps: 10, href: "/public/processes/order-to-cash" },
+    { icon: Users, title: "Hire-to-Retire (H2R)", desc: "Full employee lifecycle management", steps: 12, href: "/public/processes/hire-to-retire" },
+    { icon: DollarSign, title: "Record-to-Report (R2R)", desc: "Financial close and reporting processes", steps: 9, href: "/public/processes/month-end-consolidation" },
+    { icon: Factory, title: "Plan-to-Produce", desc: "Manufacturing planning and execution", steps: 7, href: "/public/processes/production-planning" },
+    { icon: Truck, title: "Inventory Management", desc: "Stock control and warehouse operations", steps: 6, href: "/public/processes/inventory-management" },
   ];
 
   const additionalProcesses = [
-    { title: "Budget Planning", icon: BarChart3, href: "/processes/budget" },
-    { title: "Fixed Assets", icon: Layers, href: "/processes/fixed-assets" },
-    { title: "Quality Management", icon: ClipboardCheck, href: "/processes/quality" },
-    { title: "Contract Management", icon: FileText, href: "/processes/contracts" },
-    { title: "Demand Planning", icon: Calendar, href: "/processes/demand" },
-    { title: "Vendor Performance", icon: Settings, href: "/processes/vendor-performance" },
+    { title: "Budget Planning", icon: BarChart3, href: "/public/processes/budget-planning" },
+    { title: "Fixed Assets", icon: Layers, href: "/public/processes/fixed-asset-lifecycle" },
+    { title: "Quality Management", icon: ClipboardCheck, href: "/public/processes/quality-assurance" },
+    { title: "Contract Management", icon: FileText, href: "/public/processes/contract-management" },
+    { title: "Demand Planning", icon: Calendar, href: "/public/processes/demand-planning" },
+    { title: "Vendor Performance", icon: Settings, href: "/public/processes/vendor-performance" },
   ];
 
   const processCategories = [
@@ -65,7 +65,7 @@ export default function ProcessFlowsPage() {
             Explore NexusAI's 18 end-to-end business processes designed to streamline 
             your enterprise operations across all departments.
           </p>
-          <Link to="/processes">
+          <Link to="/public/processes">
             <Button size="lg" data-testid="button-view-all-processes">
               View All Processes <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -200,7 +200,7 @@ export default function ProcessFlowsPage() {
             <p className="text-lg text-white/80 mb-8">
               Visit our Process Hub for detailed documentation and interactive flowcharts.
             </p>
-            <Link to="/processes">
+            <Link to="/public/processes">
               <Button size="lg" className="bg-white text-purple-600 hover:bg-slate-100" data-testid="button-process-hub">
                 Go to Process Hub <ExternalLink className="ml-2 w-4 h-4" />
               </Button>
