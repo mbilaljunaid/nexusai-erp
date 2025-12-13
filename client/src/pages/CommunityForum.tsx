@@ -21,6 +21,7 @@ import type { CommunitySpace, CommunityPost, UserTrustLevel } from "@shared/sche
 import { UserProfile } from "@/components/UserProfile";
 import { FlagContentDialog } from "@/components/FlagContentDialog";
 import { ModerationQueue } from "@/components/ModerationQueue";
+import { ServiceMarketplace } from "@/components/ServiceMarketplace";
 
 interface PostWithComments extends CommunityPost {
   comments?: Array<{
@@ -68,6 +69,7 @@ export default function CommunityForum() {
   const [profileUserId, setProfileUserId] = useState<string | null>(null);
   const [flagTarget, setFlagTarget] = useState<{ type: "post" | "comment"; id: string } | null>(null);
   const [showModeration, setShowModeration] = useState(false);
+  const [showMarketplace, setShowMarketplace] = useState(false);
 
   const { data: spaces, isLoading: spacesLoading } = useQuery<CommunitySpace[]>({
     queryKey: ["/api/community/spaces"],
@@ -198,6 +200,17 @@ export default function CommunityForum() {
     if (days < 7) return `${days}d ago`;
     return d.toLocaleDateString();
   };
+
+  if (showMarketplace) {
+    return (
+      <div className="space-y-6">
+        <Button variant="ghost" onClick={() => setShowMarketplace(false)} data-testid="button-back-from-marketplace">
+          Back to Forum
+        </Button>
+        <ServiceMarketplace />
+      </div>
+    );
+  }
 
   if (showModeration) {
     return (
@@ -400,6 +413,13 @@ export default function CommunityForum() {
           <p className="text-muted-foreground mt-1">Ask questions, share knowledge, earn reputation</p>
         </div>
         <div className="flex gap-2 flex-wrap">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowMarketplace(true)}
+            data-testid="button-marketplace"
+          >
+            <Award className="w-4 h-4 mr-2" /> Marketplace
+          </Button>
           <Button 
             variant="outline" 
             onClick={() => setShowModeration(true)}
