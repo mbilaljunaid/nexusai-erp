@@ -154,9 +154,9 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-slate-300">
-              <li>Email: info@nexusai.com</li>
+              <li>Email: info@nexusaifirst.cloud</li>
               <li>Phone: +1 (555) 123-4567</li>
-              <li>Support: support@nexusai.com</li>
+              <li>Support: support@nexusaifirst.cloud</li>
             </ul>
           </div>
         </div>

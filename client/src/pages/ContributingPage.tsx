@@ -260,7 +260,7 @@ export default function ContributingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">Report violations to maintainers@nexusai.com</p>
+                <p className="text-sm">Report violations to maintainers@nexusaifirst.cloud</p>
               </div>
             </div>
             <Button variant="outline" asChild data-testid="button-code-of-conduct">

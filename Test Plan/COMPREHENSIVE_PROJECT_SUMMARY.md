@@ -502,17 +502,17 @@ Steps:
 ### Sample Test Accounts
 ```
 Admin Account:
-  Email: admin@nexusai.com
+  Email: admin@nexusaifirst.cloud
   Password: Admin@123456
   Role: Administrator
 
 Finance Manager:
-  Email: finance@nexusai.com
+  Email: finance@nexusaifirst.cloud
   Password: Finance@123456
   Role: Finance Manager
 
 Sales Rep:
-  Email: sales@nexusai.com
+  Email: sales@nexusaifirst.cloud
   Password: Sales@123456
   Role: Sales Representative
 ```
@@ -529,7 +529,7 @@ POST /api/auth/login
 Content-Type: application/json
 
 {
-  "email": "user@nexusai.com",
+  "email": "user@nexusaifirst.cloud",
   "password": "password123"
 }
 ```

@@ -72,12 +72,12 @@ export default function TechnicalAPIReference() {
               <CardContent className="p-6">
                 <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm">
 {`# Authenticate and get access token
-curl -X POST https://api.nexusai.com/auth/token \\
+curl -X POST https://api.nexusaifirst.cloud/auth/token \\
   -H "Content-Type: application/json" \\
   -d '{"client_id": "YOUR_ID", "client_secret": "YOUR_SECRET"}'
 
 # Make an API request
-curl https://api.nexusai.com/v1/customers \\
+curl https://api.nexusaifirst.cloud/v1/customers \\
   -H "Authorization: Bearer YOUR_TOKEN"`}
                 </pre>
               </CardContent>

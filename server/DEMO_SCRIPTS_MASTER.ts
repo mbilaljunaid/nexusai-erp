@@ -255,7 +255,7 @@ async function generateEmployees(tenantId: string, industry: string, count: numb
       employeeId: `EMP-${String(i + 1).padStart(6, "0")}`,
       firstName: getRandomFirstName(),
       lastName: getRandomLastName(),
-      email: `emp${i}@nexusai.com`,
+      email: `emp${i}@nexusaifirst.cloud`,
       department: departments[Math.floor(Math.random() * departments.length)],
       salary: 30000 + Math.random() * 200000,
       status: "ACTIVE",

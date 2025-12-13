@@ -22,7 +22,7 @@ export default function SecurityPolicyPage() {
 
   const reportingSteps = [
     { num: 1, title: "Do Not Disclose Publicly", desc: "Please do not create public GitHub issues for security vulnerabilities" },
-    { num: 2, title: "Email Security Team", desc: "Send details to security@nexusai.com with 'SECURITY' in subject" },
+    { num: 2, title: "Email Security Team", desc: "Send details to security@nexusaifirst.cloud with 'SECURITY' in subject" },
     { num: 3, title: "Provide Details", desc: "Include reproduction steps, affected versions, and potential impact" },
     { num: 4, title: "Wait for Response", desc: "We aim to respond within 48 hours of receiving your report" },
   ];
@@ -66,8 +66,8 @@ export default function SecurityPolicyPage() {
                 <Mail className="w-6 h-6 text-blue-500" />
                 <div>
                   <p className="font-semibold">Security Contact</p>
-                  <a href="mailto:security@nexusai.com" className="text-blue-500 hover:underline" data-testid="link-security-contact">
-                    security@nexusai.com
+                  <a href="mailto:security@nexusaifirst.cloud" className="text-blue-500 hover:underline" data-testid="link-security-contact">
+                    security@nexusaifirst.cloud
                   </a>
                 </div>
               </div>
@@ -175,7 +175,7 @@ export default function SecurityPolicyPage() {
               Responsible disclosure reporters will be credited in our security acknowledgments.
             </p>
             <Button size="lg" className="bg-white text-green-600 hover:bg-slate-100" asChild data-testid="button-report-vulnerability">
-              <a href="mailto:security@nexusai.com">
+              <a href="mailto:security@nexusaifirst.cloud">
                 <Mail className="mr-2 w-5 h-5" /> Report a Vulnerability
               </a>
             </Button>

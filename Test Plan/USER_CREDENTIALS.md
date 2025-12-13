@@ -20,7 +20,7 @@
 
 ### Super Administrator
 ```
-Email: admin@nexusai.com
+Email: admin@nexusaifirst.cloud
 Password: Admin@123456
 Role: System Administrator
 Permissions: Full access to all modules, settings, user management
@@ -43,7 +43,7 @@ Created: 2025-12-02
 
 ### 1. CRM Module Manager
 ```
-Email: crm.manager@nexusai.com
+Email: crm.manager@nexusaifirst.cloud
 Password: CRM@Manager123
 Role: CRM Manager
 Permissions: Full CRM module access
@@ -59,7 +59,7 @@ Status: ACTIVE
 
 ### 2. Finance Module Manager
 ```
-Email: finance.manager@nexusai.com
+Email: finance.manager@nexusaifirst.cloud
 Password: Finance@Manager123
 Role: Finance Manager
 Permissions: Full Finance module access
@@ -76,7 +76,7 @@ Status: ACTIVE
 
 ### 3. HR Module Manager
 ```
-Email: hr.manager@nexusai.com
+Email: hr.manager@nexusaifirst.cloud
 Password: HR@Manager123
 Role: HR Manager
 Permissions: Full HR module access
@@ -94,7 +94,7 @@ Status: ACTIVE
 
 ### 4. Supply Chain Manager
 ```
-Email: supply.chain@nexusai.com
+Email: supply.chain@nexusaifirst.cloud
 Password: SupplyChain@123
 Role: Supply Chain Manager
 Permissions: Full Supply Chain module access
@@ -111,7 +111,7 @@ Status: ACTIVE
 
 ### 5. Manufacturing Manager
 ```
-Email: manufacturing@nexusai.com
+Email: manufacturing@nexusaifirst.cloud
 Password: Manufacturing@123
 Role: Manufacturing Manager
 Permissions: Full Manufacturing module access
@@ -128,7 +128,7 @@ Status: ACTIVE
 
 ### 6. Projects Manager
 ```
-Email: projects.manager@nexusai.com
+Email: projects.manager@nexusaifirst.cloud
 Password: Projects@Manager123
 Role: Projects Manager
 Permissions: Full Projects module access
@@ -145,7 +145,7 @@ Status: ACTIVE
 
 ### 7. Sales Manager
 ```
-Email: sales.manager@nexusai.com
+Email: sales.manager@nexusaifirst.cloud
 Password: Sales@Manager123
 Role: Sales Manager
 Permissions: Full Sales module access
@@ -162,7 +162,7 @@ Status: ACTIVE
 
 ### 8. Service Manager
 ```
-Email: service.manager@nexusai.com
+Email: service.manager@nexusaifirst.cloud
 Password: Service@Manager123
 Role: Service Manager
 Permissions: Full Service module access
@@ -178,7 +178,7 @@ Status: ACTIVE
 
 ### 9. Analytics Manager
 ```
-Email: analytics.manager@nexusai.com
+Email: analytics.manager@nexusaifirst.cloud
 Password: Analytics@Manager123
 Role: Analytics Manager
 Permissions: Full Analytics module access
@@ -194,7 +194,7 @@ Status: ACTIVE
 
 ### 10. Compliance Officer
 ```
-Email: compliance.officer@nexusai.com
+Email: compliance.officer@nexusaifirst.cloud
 Password: Compliance@Officer123
 Role: Compliance Officer
 Permissions: Full Compliance module access
@@ -215,7 +215,7 @@ Status: ACTIVE
 
 ### Standard User (Read/Write Access to Assigned Modules)
 ```
-Email: standarduser@nexusai.com
+Email: standarduser@nexusaifirst.cloud
 Password: Standard@User123
 Role: Standard User
 Permissions: Read, Create, Edit (limited modules)
@@ -225,7 +225,7 @@ Status: ACTIVE
 
 ### Viewer (Read-Only Access)
 ```
-Email: viewer@nexusai.com
+Email: viewer@nexusaifirst.cloud
 Password: Viewer@123456
 Role: Viewer
 Permissions: Read-only on all modules
@@ -241,7 +241,7 @@ Status: ACTIVE
 
 ### Finance Approver
 ```
-Email: finance.approver@nexusai.com
+Email: finance.approver@nexusaifirst.cloud
 Password: FinanceApprover@123
 Role: Finance Approver
 Permissions: Approve invoices, payments, expense reports
@@ -257,7 +257,7 @@ Status: ACTIVE
 
 ### Data Entry Operator
 ```
-Email: data.entry@nexusai.com
+Email: data.entry@nexusaifirst.cloud
 Password: DataEntry@123
 Role: Data Entry Operator
 Permissions: Create & edit records only
@@ -273,7 +273,7 @@ Status: ACTIVE
 
 ### Department Head
 ```
-Email: dept.head@nexusai.com
+Email: dept.head@nexusaifirst.cloud
 Password: DeptHead@123456
 Role: Department Head
 Permissions: Manage department data, approve workflows
@@ -287,7 +287,7 @@ Status: ACTIVE
 
 ### Automotive Industry User
 ```
-Email: automotive.user@nexusai.com
+Email: automotive.user@nexusaifirst.cloud
 Password: Automotive@User123
 Role: Industry-Specific User
 Industry: Automotive
@@ -297,7 +297,7 @@ Status: ACTIVE
 
 ### Healthcare Industry User
 ```
-Email: healthcare.user@nexusai.com
+Email: healthcare.user@nexusaifirst.cloud
 Password: Healthcare@User123
 Role: Industry-Specific User
 Industry: Healthcare
@@ -307,7 +307,7 @@ Status: ACTIVE
 
 ### Retail Industry User
 ```
-Email: retail.user@nexusai.com
+Email: retail.user@nexusaifirst.cloud
 Password: Retail@User123
 Role: Industry-Specific User
 Industry: Retail
@@ -317,7 +317,7 @@ Status: ACTIVE
 
 ### Manufacturing Industry User
 ```
-Email: manufacturing.user@nexusai.com
+Email: manufacturing.user@nexusaifirst.cloud
 Password: Manufacturing@User123
 Role: Industry-Specific User
 Industry: Manufacturing
@@ -385,7 +385,7 @@ Status: ACTIVE
 #### CRM Test Data
 ```
 Lead Record:
-  Created By: crm.manager@nexusai.com
+  Created By: crm.manager@nexusaifirst.cloud
   Company: Test Company Inc
   Lead Value: $100,000
   Status: Active
@@ -395,7 +395,7 @@ Lead Record:
 #### Finance Test Data
 ```
 Invoice Record:
-  Created By: finance.manager@nexusai.com
+  Created By: finance.manager@nexusaifirst.cloud
   Customer: Test Customer
   Amount: $50,000
   Due Date: 2025-12-31
@@ -405,7 +405,7 @@ Invoice Record:
 #### HR Test Data
 ```
 Employee Record:
-  Created By: hr.manager@nexusai.com
+  Created By: hr.manager@nexusaifirst.cloud
   Name: Test Employee
   Position: QA Tester
   Department: Engineering
@@ -478,25 +478,25 @@ Test Scenario: New user onboarding
 
 | User Type | Email | Password | Primary Module | Status |
 |-----------|-------|----------|-----------------|--------|
-| Admin | admin@nexusai.com | Admin@123456 | All | ✅ ACTIVE |
-| CRM Manager | crm.manager@nexusai.com | CRM@Manager123 | CRM | ✅ ACTIVE |
-| Finance Manager | finance.manager@nexusai.com | Finance@Manager123 | Finance | ✅ ACTIVE |
-| HR Manager | hr.manager@nexusai.com | HR@Manager123 | HR | ✅ ACTIVE |
-| Supply Chain | supply.chain@nexusai.com | SupplyChain@123 | Supply Chain | ✅ ACTIVE |
-| Manufacturing | manufacturing@nexusai.com | Manufacturing@123 | Manufacturing | ✅ ACTIVE |
-| Projects Manager | projects.manager@nexusai.com | Projects@Manager123 | Projects | ✅ ACTIVE |
-| Sales Manager | sales.manager@nexusai.com | Sales@Manager123 | Sales | ✅ ACTIVE |
-| Service Manager | service.manager@nexusai.com | Service@Manager123 | Service | ✅ ACTIVE |
-| Analytics Manager | analytics.manager@nexusai.com | Analytics@Manager123 | Analytics | ✅ ACTIVE |
-| Compliance Officer | compliance.officer@nexusai.com | Compliance@Officer123 | Compliance | ✅ ACTIVE |
-| Standard User | standarduser@nexusai.com | Standard@User123 | Limited | ✅ ACTIVE |
-| Viewer | viewer@nexusai.com | Viewer@123456 | All (Read-Only) | ✅ ACTIVE |
-| Finance Approver | finance.approver@nexusai.com | FinanceApprover@123 | Finance | ✅ ACTIVE |
-| Data Entry | data.entry@nexusai.com | DataEntry@123 | Limited | ✅ ACTIVE |
-| Automotive | automotive.user@nexusai.com | Automotive@User123 | Industry-Specific | ✅ ACTIVE |
-| Healthcare | healthcare.user@nexusai.com | Healthcare@User123 | Industry-Specific | ✅ ACTIVE |
-| Retail | retail.user@nexusai.com | Retail@User123 | Industry-Specific | ✅ ACTIVE |
-| Manufacturing | manufacturing.user@nexusai.com | Manufacturing@User123 | Industry-Specific | ✅ ACTIVE |
+| Admin | admin@nexusaifirst.cloud | Admin@123456 | All | ✅ ACTIVE |
+| CRM Manager | crm.manager@nexusaifirst.cloud | CRM@Manager123 | CRM | ✅ ACTIVE |
+| Finance Manager | finance.manager@nexusaifirst.cloud | Finance@Manager123 | Finance | ✅ ACTIVE |
+| HR Manager | hr.manager@nexusaifirst.cloud | HR@Manager123 | HR | ✅ ACTIVE |
+| Supply Chain | supply.chain@nexusaifirst.cloud | SupplyChain@123 | Supply Chain | ✅ ACTIVE |
+| Manufacturing | manufacturing@nexusaifirst.cloud | Manufacturing@123 | Manufacturing | ✅ ACTIVE |
+| Projects Manager | projects.manager@nexusaifirst.cloud | Projects@Manager123 | Projects | ✅ ACTIVE |
+| Sales Manager | sales.manager@nexusaifirst.cloud | Sales@Manager123 | Sales | ✅ ACTIVE |
+| Service Manager | service.manager@nexusaifirst.cloud | Service@Manager123 | Service | ✅ ACTIVE |
+| Analytics Manager | analytics.manager@nexusaifirst.cloud | Analytics@Manager123 | Analytics | ✅ ACTIVE |
+| Compliance Officer | compliance.officer@nexusaifirst.cloud | Compliance@Officer123 | Compliance | ✅ ACTIVE |
+| Standard User | standarduser@nexusaifirst.cloud | Standard@User123 | Limited | ✅ ACTIVE |
+| Viewer | viewer@nexusaifirst.cloud | Viewer@123456 | All (Read-Only) | ✅ ACTIVE |
+| Finance Approver | finance.approver@nexusaifirst.cloud | FinanceApprover@123 | Finance | ✅ ACTIVE |
+| Data Entry | data.entry@nexusaifirst.cloud | DataEntry@123 | Limited | ✅ ACTIVE |
+| Automotive | automotive.user@nexusaifirst.cloud | Automotive@User123 | Industry-Specific | ✅ ACTIVE |
+| Healthcare | healthcare.user@nexusaifirst.cloud | Healthcare@User123 | Industry-Specific | ✅ ACTIVE |
+| Retail | retail.user@nexusaifirst.cloud | Retail@User123 | Industry-Specific | ✅ ACTIVE |
+| Manufacturing | manufacturing.user@nexusaifirst.cloud | Manufacturing@User123 | Industry-Specific | ✅ ACTIVE |
 
 ---
 

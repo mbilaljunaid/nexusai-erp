@@ -5,7 +5,7 @@
 ### Access the Application
 ```
 URL: https://[replit-url].replit.dev
-Login: admin@nexusai.com / Admin@123456
+Login: admin@nexusaifirst.cloud / Admin@123456
 ```
 
 ---
@@ -74,7 +74,7 @@ Login: admin@nexusai.com / Admin@123456
 4. Click "Start Free Trial"
 
 ## ✅ Quick Smoke Tests
-- [ ] Login works (admin@nexusai.com / Admin@123456)
+- [ ] Login works (admin@nexusaifirst.cloud / Admin@123456)
 - [ ] Dashboard loads with 12 modules
 - [ ] All 12 modules are visible
 - [ ] Create report works
@@ -124,7 +124,7 @@ Login: admin@nexusai.com / Admin@123456
 
 **Can't login?**
 - Ensure you're on the authenticated version
-- Try: admin@nexusai.com / Admin@123456
+- Try: admin@nexusaifirst.cloud / Admin@123456
 
 **Reports not loading?**
 - Check browser console for errors

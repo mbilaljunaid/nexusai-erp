@@ -446,7 +446,7 @@ export const automationWorkflows = {
         },
         {
           type: "SEND_TO_COMPLIANCE_TEAM",
-          to: "compliance@nexusai.com",
+          to: "compliance@nexusaifirst.cloud",
         },
       ],
     },

@@ -79,7 +79,7 @@ This folder contains all necessary documentation and resources for comprehensive
 ### Step 2: Access the Application
 ```
 URL: https://[replit-url].replit.dev
-Login: admin@nexusai.com / Admin@123456
+Login: admin@nexusaifirst.cloud / Admin@123456
 ```
 
 ### Step 3: Run Quick Tests
@@ -104,7 +104,7 @@ Login: admin@nexusai.com / Admin@123456
 ## 📊 Test User Categories
 
 ### Master Admin (1 Account)
-- **Email**: admin@nexusai.com
+- **Email**: admin@nexusaifirst.cloud
 - **Use**: System configuration, troubleshooting, full access testing
 
 ### Module Managers (10 Accounts)
@@ -208,7 +208,7 @@ Login: admin@nexusai.com / Admin@123456
 ## 📋 Sample Test Scenarios
 
 ### Scenario 1: Order-to-Cash Process (30 min)
-1. Login as sales.manager@nexusai.com
+1. Login as sales.manager@nexusaifirst.cloud
 2. Create new lead in CRM
 3. Convert to opportunity
 4. Create quote
@@ -218,7 +218,7 @@ Login: admin@nexusai.com / Admin@123456
 8. View analytics
 
 ### Scenario 2: Multi-Module Data Flow (30 min)
-1. Login as supply.chain@nexusai.com
+1. Login as supply.chain@nexusaifirst.cloud
 2. Create purchase order
 3. Switch to finance.manager@
 4. Receive goods
@@ -227,7 +227,7 @@ Login: admin@nexusai.com / Admin@123456
 7. View in reports
 
 ### Scenario 3: RBAC Testing (20 min)
-1. Login as admin@nexusai.com
+1. Login as admin@nexusaifirst.cloud
 2. Create new user
 3. Assign limited role
 4. Login as new user

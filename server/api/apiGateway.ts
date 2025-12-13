@@ -68,7 +68,7 @@ export class APIGateway {
         rateLimit: r.rateLimit,
         deprecated: r.deprecated,
       })),
-      baseURL: "https://api.nexusai.com",
+      baseURL: "https://api.nexusaifirst.cloud",
       authentication: {
         type: "Bearer Token",
         header: "Authorization: Bearer <token>",

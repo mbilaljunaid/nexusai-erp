@@ -24,7 +24,7 @@
 🚀 GET STARTED IN 5 MINUTES:
 
 1. Read: PROJECT_TESTING_QUICK_START.md
-2. Login: admin@nexusai.com / Admin@123456
+2. Login: admin@nexusaifirst.cloud / Admin@123456
 3. Navigate: Dashboard → Reports → CRM module
 4. Create: New report from template
 5. Verify: Export to PDF works
@@ -33,7 +33,7 @@
 👥 20 TEST USER ACCOUNTS CREATED:
 
 MASTER ADMIN (1):
-  ✅ admin@nexusai.com / Admin@123456
+  ✅ admin@nexusaifirst.cloud / Admin@123456
 
 MODULE MANAGERS (10):
   ✅ crm.manager@ / CRM@Manager123
