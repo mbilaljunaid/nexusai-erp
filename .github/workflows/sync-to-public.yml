@@ -25,12 +25,6 @@ on:
       - 'docs/API.md'
       - 'docs/ARCHITECTURE.md'
 workflow_dispatch:
-on:
-  push:
-    branches: [main]
-    paths:
-      # ... existing paths
-  workflow_dispatch:  #
 
 jobs:
   sync:
