@@ -123,6 +123,7 @@ const OpenSourcePage = lazy(() => import("@/pages/OpenSourcePage"));
 const LicensePage = lazy(() => import("@/pages/LicensePage"));
 const ContributingPage = lazy(() => import("@/pages/ContributingPage"));
 const SecurityPolicyPage = lazy(() => import("@/pages/SecurityPolicyPage"));
+const ContactPage = lazy(() => import("@/pages/ContactPage"));
 
 // Phase 2: ERP Workflows (4 pages)
 const VendorInvoiceEntry = lazy(() => import("@/pages/VendorInvoiceEntry"));
@@ -493,6 +494,7 @@ function Router() {
       <Route path="/license" component={LicensePage} />
       <Route path="/docs/contributing" component={ContributingPage} />
       <Route path="/security" component={SecurityPolicyPage} />
+      <Route path="/contact" component={ContactPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin" component={AdminConsole} />
       <Route path="/admin-roles" component={AdminRoles} />
@@ -635,7 +637,7 @@ export default function App() {
   const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
   
   // Public routes don't show sidebar - includes dynamic routes
-  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo"];
+  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
   

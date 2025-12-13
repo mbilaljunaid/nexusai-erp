@@ -17,7 +17,7 @@ import {
   insertAppSchema, insertAppReviewSchema, insertAppInstallationSchema, insertConnectorSchema, insertConnectorInstanceSchema, insertWebhookEventSchema,
   insertAbacRuleSchema, insertEncryptedFieldSchema, insertComplianceConfigSchema, insertSprintSchema, insertIssueSchema,
   insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
-  insertDemoSchema, formData as formDataTable, smartViews, reports,
+  insertDemoSchema, formData as formDataTable, smartViews, reports, contactSubmissions, insertContactSubmissionSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -532,6 +532,58 @@ export async function registerRoutes(
       }
     } catch (error: any) {
       res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Export failed", undefined, (req as any).id));
+    }
+  });
+
+  // ========== CONTACT FORM SUBMISSION ==========
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const validation = insertContactSubmissionSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ 
+          error: "Validation failed", 
+          details: validation.error.errors 
+        });
+      }
+
+      const submission = validation.data;
+      
+      // Save to database
+      const [saved] = await db.insert(contactSubmissions).values({
+        name: submission.name,
+        email: submission.email,
+        company: submission.company || null,
+        subject: submission.subject,
+        message: submission.message,
+        status: "new",
+      }).returning();
+
+      // Send email notification (using environment variable for recipient)
+      const recipientEmail = process.env.CONTACT_EMAIL || "mbilaljum@gmail.com";
+      
+      // Log the contact submission (email sending would require SMTP setup)
+      console.log(`[Contact Form] New submission from ${submission.name} (${submission.email})`);
+      console.log(`[Contact Form] Subject: ${submission.subject}`);
+      console.log(`[Contact Form] Would send to: ${recipientEmail}`);
+
+      res.json({ 
+        success: true, 
+        message: "Thank you for your message. We'll get back to you soon!",
+        id: saved.id 
+      });
+    } catch (error: any) {
+      console.error("[Contact Form] Error:", error);
+      res.status(500).json({ error: "Failed to submit contact form" });
+    }
+  });
+
+  // Get contact submissions (admin only)
+  app.get("/api/contact/submissions", isAuthenticated, async (req, res) => {
+    try {
+      const submissions = await db.select().from(contactSubmissions).orderBy(contactSubmissions.createdAt);
+      res.json(submissions);
+    } catch (error: any) {
+      res.status(500).json({ error: "Failed to fetch submissions" });
     }
   });
 
