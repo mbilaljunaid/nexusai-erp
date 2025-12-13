@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useRBAC } from "@/components/RBACContext";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
@@ -9,28 +10,19 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { toast } = useToast();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useRBAC();
+  const [, navigate] = useLocation();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isAuthenticated) {
       toast({
         title: "Authentication Required",
-        description: "Please log in to access this page...",
+        description: "Please log in to access this page.",
         variant: "destructive",
       });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
+      navigate("/login");
     }
-  }, [isAuthenticated, isLoading, toast]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen" data-testid="loading-auth">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  }, [isAuthenticated, toast, navigate]);
 
   if (!isAuthenticated) {
     return (
