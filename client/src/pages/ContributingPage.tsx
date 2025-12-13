@@ -15,8 +15,15 @@ import {
   Code2,
   BookOpen,
   Heart,
-  ExternalLink
+  ExternalLink,
+  TestTube,
+  Wrench,
+  Handshake,
+  GraduationCap,
+  Users,
+  ArrowRight
 } from "lucide-react";
+import { Link } from "wouter";
 
 export default function ContributingPage() {
   useEffect(() => {
@@ -37,6 +44,41 @@ export default function ContributingPage() {
     { icon: FileText, title: "Documentation", items: ["Update README if needed", "Document new features", "Add JSDoc comments", "Include examples"] },
     { icon: Bug, title: "Testing", items: ["Write unit tests", "Test edge cases", "Run full test suite", "Add integration tests"] },
     { icon: MessageSquare, title: "Communication", items: ["Clear PR descriptions", "Respond to feedback", "Be respectful", "Ask questions"] },
+  ];
+
+  const contributorTypes = [
+    {
+      icon: TestTube,
+      title: "QA Contributors",
+      description: "Quality assurance specialists who test features, report bugs, and ensure our platform meets the highest standards.",
+      benefits: ["Access to early releases", "Direct communication with dev team", "QA badge on profile", "Contributor recognition"],
+      color: "text-purple-500",
+      bgColor: "bg-purple-500/10",
+    },
+    {
+      icon: Wrench,
+      title: "Development Contributors",
+      description: "Developers who contribute code, fix bugs, and build new features for the NexusAI platform.",
+      benefits: ["Contributor credits", "Priority support", "Dev community access", "Feature input voting"],
+      color: "text-blue-500",
+      bgColor: "bg-blue-500/10",
+    },
+    {
+      icon: Handshake,
+      title: "Implementation Partners",
+      description: "Certified partners who help organizations implement and customize NexusAI for their specific needs.",
+      benefits: ["Partner certification", "Revenue sharing", "Lead referrals", "Co-marketing opportunities"],
+      color: "text-teal-500",
+      bgColor: "bg-teal-500/10",
+    },
+    {
+      icon: GraduationCap,
+      title: "Certified Trainers",
+      description: "Experienced professionals who train users and administrators on how to effectively use NexusAI.",
+      benefits: ["Trainer certification", "Training materials", "Course marketplace", "Professional network"],
+      color: "text-amber-500",
+      bgColor: "bg-amber-500/10",
+    },
   ];
 
   return (
@@ -100,8 +142,55 @@ export default function ContributingPage() {
           </div>
         </section>
 
-        {/* Contribution Process */}
+        {/* Contributor Types Section */}
         <section className="px-4 py-20 max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-teal-600 text-white">JOIN OUR COMMUNITY</Badge>
+            <h2 className="text-3xl font-bold mb-4">Become a Contributor</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Whether you're a developer, QA specialist, implementation expert, or trainer, 
+              there's a place for you in the NexusAI community.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {contributorTypes.map((type, index) => {
+              const IconComponent = type.icon;
+              return (
+                <Card key={index} className="p-6" data-testid={`card-contributor-type-${index}`}>
+                  <div className="flex items-start gap-4">
+                    <div className={`p-3 rounded-lg ${type.bgColor}`}>
+                      <IconComponent className={`w-6 h-6 ${type.color}`} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg mb-2">{type.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{type.description}</p>
+                      <div className="space-y-2 mb-4">
+                        {type.benefits.map((benefit, i) => (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <span>{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+          <div className="mt-8 text-center">
+            <Link href="/partners">
+              <Button size="lg" data-testid="button-view-partners">
+                <Users className="mr-2 w-5 h-5" />
+                View Partners & Apply
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Contribution Process */}
+        <section className="px-4 py-20 max-w-6xl mx-auto bg-muted/30">
           <h2 className="text-3xl font-bold mb-12 text-center">Contribution Process</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {steps.map((step) => (

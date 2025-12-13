@@ -39,8 +39,337 @@ import {
   Play,
   Trash2,
   Edit,
+  Handshake,
+  Check,
+  X,
+  ExternalLink,
 } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import type { Partner } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
+
+function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToast>["toast"] }) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+
+  const { data: partners = [], isLoading } = useQuery<Partner[]>({
+    queryKey: ['/api/partners'],
+  });
+
+  const updatePartnerMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<Partner> }) => {
+      return apiRequest("PATCH", `/api/partners/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/partners'] });
+      toast({
+        title: "Partner Updated",
+        description: "Partner has been successfully updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update partner. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deletePartnerMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("DELETE", `/api/partners/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/partners'] });
+      toast({
+        title: "Partner Deleted",
+        description: "Partner has been removed from the system.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete partner. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const pendingPartners = partners.filter(p => !p.isApproved);
+  const approvedPartners = partners.filter(p => p.isApproved);
+
+  const filteredApprovedPartners = approvedPartners.filter(p => {
+    const matchesSearch = searchQuery === "" || 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = filterType === "all" || p.type === filterType;
+    const matchesStatus = filterStatus === "all" || 
+      (filterStatus === "active" && p.isActive) ||
+      (filterStatus === "inactive" && !p.isActive);
+    return matchesSearch && matchesType && matchesStatus;
+  });
+
+  const tierConfig = {
+    diamond: { bg: "bg-purple-500/10", text: "text-purple-600", label: "Diamond" },
+    platinum: { bg: "bg-slate-500/10", text: "text-slate-600", label: "Platinum" },
+    gold: { bg: "bg-yellow-500/10", text: "text-yellow-600", label: "Gold" },
+    silver: { bg: "bg-gray-500/10", text: "text-gray-600", label: "Silver" },
+  };
+
+  const handleApprove = (partner: Partner) => {
+    updatePartnerMutation.mutate({ id: partner.id, data: { isApproved: true, isActive: true } });
+  };
+
+  const handleReject = (partner: Partner) => {
+    deletePartnerMutation.mutate(partner.id);
+  };
+
+  const handleToggleActive = (partner: Partner) => {
+    updatePartnerMutation.mutate({ id: partner.id, data: { isActive: !partner.isActive } });
+  };
+
+  const handleChangeTier = (partner: Partner, newTier: Partner["tier"]) => {
+    updatePartnerMutation.mutate({ id: partner.id, data: { tier: newTier } });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {pendingPartners.length > 0 && (
+        <Card className="border-amber-500/30 bg-amber-500/5">
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              Pending Applications ({pendingPartners.length})
+            </CardTitle>
+            <CardDescription>Review and approve partner applications</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {pendingPartners.map((partner) => (
+                <div 
+                  key={partner.id} 
+                  className="flex items-center justify-between p-4 rounded-lg border bg-background"
+                  data-testid={`row-pending-partner-${partner.id}`}
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">{partner.name}</p>
+                      <Badge variant="secondary" className="text-xs capitalize">
+                        {partner.type}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{partner.company}</p>
+                    <p className="text-xs text-muted-foreground">{partner.email}</p>
+                    {partner.description && (
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{partner.description}</p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {partner.website && (
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => window.open(partner.website!, '_blank')}
+                        data-testid={`button-view-website-${partner.id}`}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <Select 
+                      defaultValue={partner.tier}
+                      onValueChange={(v) => handleChangeTier(partner, v as Partner["tier"])}
+                    >
+                      <SelectTrigger className="w-28" data-testid={`select-tier-${partner.id}`}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="silver">Silver</SelectItem>
+                        <SelectItem value="gold">Gold</SelectItem>
+                        <SelectItem value="platinum">Platinum</SelectItem>
+                        <SelectItem value="diamond">Diamond</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleReject(partner)}
+                      disabled={deletePartnerMutation.isPending}
+                      data-testid={`button-reject-${partner.id}`}
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Reject
+                    </Button>
+                    <Button 
+                      size="sm"
+                      onClick={() => handleApprove(partner)}
+                      disabled={updatePartnerMutation.isPending}
+                      data-testid={`button-approve-${partner.id}`}
+                    >
+                      <Check className="h-4 w-4 mr-1" />
+                      Approve
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Handshake className="h-4 w-4 text-teal-500" />
+            Approved Partners ({approvedPartners.length})
+          </CardTitle>
+          <CardDescription>Manage active partners and trainers</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <Input 
+              placeholder="Search partners..." 
+              className="max-w-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              data-testid="input-search-partners"
+            />
+            <div className="flex gap-2">
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-32" data-testid="select-filter-type">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="partner">Partners</SelectItem>
+                  <SelectItem value="trainer">Trainers</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-32" data-testid="select-filter-status">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {filteredApprovedPartners.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <Handshake className="h-8 w-8 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">No partners found</p>
+            </div>
+          ) : (
+            <div className="border rounded-lg overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="px-4 py-2 text-left font-medium">Partner</th>
+                    <th className="px-4 py-2 text-left font-medium">Type</th>
+                    <th className="px-4 py-2 text-left font-medium">Tier</th>
+                    <th className="px-4 py-2 text-left font-medium">Status</th>
+                    <th className="px-4 py-2 text-left font-medium">Joined</th>
+                    <th className="px-4 py-2 text-right font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredApprovedPartners.map((partner) => {
+                    const tier = tierConfig[partner.tier];
+                    return (
+                      <tr 
+                        key={partner.id} 
+                        className="border-b hover:bg-muted/50"
+                        data-testid={`row-partner-${partner.id}`}
+                      >
+                        <td className="px-4 py-3">
+                          <div>
+                            <p className="font-medium">{partner.name}</p>
+                            <p className="text-xs text-muted-foreground">{partner.company}</p>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Badge variant="secondary" className="text-xs capitalize">
+                            {partner.type}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Select 
+                            value={partner.tier}
+                            onValueChange={(v) => handleChangeTier(partner, v as Partner["tier"])}
+                          >
+                            <SelectTrigger className="w-28 h-8" data-testid={`select-tier-approved-${partner.id}`}>
+                              <Badge variant="secondary" className={`${tier.bg} ${tier.text}`}>
+                                {tier.label}
+                              </Badge>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="silver">Silver</SelectItem>
+                              <SelectItem value="gold">Gold</SelectItem>
+                              <SelectItem value="platinum">Platinum</SelectItem>
+                              <SelectItem value="diamond">Diamond</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Switch 
+                            checked={partner.isActive}
+                            onCheckedChange={() => handleToggleActive(partner)}
+                            data-testid={`switch-active-${partner.id}`}
+                          />
+                        </td>
+                        <td className="px-4 py-3 text-xs text-muted-foreground">
+                          {partner.createdAt ? new Date(partner.createdAt).toLocaleDateString() : 'N/A'}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-end gap-1">
+                            {partner.website && (
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                onClick={() => window.open(partner.website!, '_blank')}
+                                data-testid={`button-website-${partner.id}`}
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => handleReject(partner)}
+                              disabled={deletePartnerMutation.isPending}
+                              data-testid={`button-delete-${partner.id}`}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 interface Tenant {
   id: string;
@@ -106,6 +435,7 @@ export default function PlatformAdmin() {
     { id: "overview", label: "Overview", icon: Building2, color: "text-blue-500" },
     { id: "tenants", label: "Tenant & Hosting", icon: Server, color: "text-green-500" },
     { id: "users", label: "Users", icon: UserCog, color: "text-indigo-500" },
+    { id: "partners", label: "Partners", icon: Handshake, color: "text-teal-500" },
     { id: "email", label: "Email Management", icon: Mail, color: "text-cyan-500" },
     { id: "billing", label: "Services Billing", icon: Receipt, color: "text-orange-500" },
     { id: "demos", label: "Demo Management", icon: RefreshCw, color: "text-pink-500" },
@@ -412,6 +742,8 @@ export default function PlatformAdmin() {
           </div>
         </div>
       )}
+
+      {activeNav === "partners" && <PartnersManagementSection toast={toast} />}
 
       {activeNav === "email" && (
         <div className="space-y-4">
