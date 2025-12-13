@@ -502,7 +502,7 @@ jobs:
     needs: validate
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    steps:
+    steps: 
       - uses: actions/checkout@v4
       
       - name: Setup Node
