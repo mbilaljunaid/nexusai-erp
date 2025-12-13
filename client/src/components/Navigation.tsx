@@ -50,22 +50,23 @@ export function Header() {
             ))}
 
             {/* Documentation Menu */}
-            <div className="relative group">
+            <div 
+              className="relative"
+              onMouseEnter={() => setDocsOpen(true)}
+              onMouseLeave={() => setDocsOpen(false)}
+            >
               <button
                 className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
-                onMouseEnter={() => setDocsOpen(true)}
-                onMouseLeave={() => setDocsOpen(false)}
+                onClick={() => setDocsOpen(!docsOpen)}
                 data-testid="button-documentation-menu"
               >
                 Documentation
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className={`w-4 h-4 transition-transform ${docsOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {docsOpen && (
                 <div
                   className="absolute left-0 mt-2 w-64 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2"
-                  onMouseEnter={() => setDocsOpen(true)}
-                  onMouseLeave={() => setDocsOpen(false)}
                 >
                   <Link to="/docs/process-flows" className="block">
                     <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
