@@ -778,7 +778,6 @@ External developers can build commercial products using nexusai-core under these
 
 2. **Commercial License Available**
    - For those who cannot comply with AGPL
-   - Contact sales@nexusai.com
    - Enables proprietary forks
 
 3. **Plugin Architecture**

@@ -550,6 +550,7 @@ export default function CommunityForum() {
           </DialogContent>
         </Dialog>
       </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card><CardContent className="pt-6 flex items-center gap-3"><Users className="w-8 h-8 text-primary" /><div><p className="text-sm text-muted-foreground">Active Users</p><p className="text-2xl font-bold">4.2K</p></div></CardContent></Card>
