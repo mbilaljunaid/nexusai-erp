@@ -361,26 +361,24 @@ export default function PricingPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {serviceOptions.map((service) => {
                       const IconComponent = service.icon;
+                      const isChecked = selectedServices.includes(service.id);
                       return (
-                        <div 
+                        <label 
                           key={service.id}
+                          htmlFor={service.id}
                           className="flex items-center space-x-3 p-3 rounded-lg border hover-elevate cursor-pointer"
-                          onClick={() => toggleService(service.id)}
                           data-testid={`checkbox-service-${service.id}`}
                         >
                           <Checkbox 
                             id={service.id}
-                            checked={selectedServices.includes(service.id)}
+                            checked={isChecked}
                             onCheckedChange={() => toggleService(service.id)}
                           />
                           <IconComponent className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                          <label 
-                            htmlFor={service.id} 
-                            className="text-sm cursor-pointer flex-1"
-                          >
+                          <span className="text-sm flex-1">
                             {service.label}
-                          </label>
-                        </div>
+                          </span>
+                        </label>
                       );
                     })}
                   </div>
