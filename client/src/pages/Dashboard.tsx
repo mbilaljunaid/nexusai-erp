@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { useRBAC } from "@/components/RBACContext";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import {
   BarChart3,
   Users,
@@ -61,8 +62,10 @@ function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
-      <Breadcrumb items={[{ label: "Home", href: "/" }]} />
+    <div className="space-y-8 p-6">
+      <OnboardingChecklist />
+      
+      <Breadcrumb items={[]} />
 
       <div className="space-y-2">
         <div className="flex items-center gap-3">
@@ -218,8 +221,10 @@ function EditorDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
-      <Breadcrumb items={[{ label: "Home", href: "/" }]} />
+    <div className="space-y-8 p-6">
+      <OnboardingChecklist />
+      
+      <Breadcrumb items={[]} />
 
       <div className="space-y-2">
         <div className="flex items-center gap-3">
@@ -321,8 +326,10 @@ function ViewerDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
-      <Breadcrumb items={[{ label: "Home", href: "/" }]} />
+    <div className="space-y-8 p-6">
+      <OnboardingChecklist />
+      
+      <Breadcrumb items={[]} />
 
       <div className="space-y-2">
         <div className="flex items-center gap-3">

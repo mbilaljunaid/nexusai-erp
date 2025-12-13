@@ -13,6 +13,9 @@ import { TourProvider } from "@/hooks/use-tour";
 import { GuidedTourOverlay } from "@/components/GuidedTour";
 import { HelpButton } from "@/components/HelpButton";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { WhatsNew } from "@/components/WhatsNew";
+import { NotificationCenter as NotificationCenterWidget } from "@/components/NotificationCenter";
+import { QuickTipsProvider, TipsToggle } from "@/components/QuickTips";
 import NotFound from "@/pages/not-found";
 
 // Landing Page
@@ -636,23 +639,28 @@ function Router() {
 
 function AuthenticatedLayout() {
   return (
-    <div className="flex h-screen w-full">
-      <AppSidebar />
-      <div className="flex flex-col flex-1">
-        <header className="flex items-center justify-between p-2 border-b gap-2">
-          <SidebarTrigger data-testid="button-sidebar-toggle" />
-          <div className="flex items-center gap-1">
-            <HelpButton />
-            <ThemeToggle />
-          </div>
-        </header>
-        <main className="flex-1 overflow-auto">
-          <Suspense fallback={<div className="p-4">Loading...</div>}>
-            <Router />
-          </Suspense>
-        </main>
+    <QuickTipsProvider>
+      <div className="flex h-screen w-full">
+        <AppSidebar />
+        <div className="flex flex-col flex-1">
+          <header className="flex items-center justify-between p-2 border-b gap-2">
+            <SidebarTrigger data-testid="button-sidebar-toggle" />
+            <div className="flex items-center gap-1">
+              <NotificationCenterWidget />
+              <WhatsNew />
+              <TipsToggle />
+              <HelpButton />
+              <ThemeToggle />
+            </div>
+          </header>
+          <main className="flex-1 overflow-auto">
+            <Suspense fallback={<div className="p-4">Loading...</div>}>
+              <Router />
+            </Suspense>
+          </main>
+        </div>
       </div>
-    </div>
+    </QuickTipsProvider>
   );
 }
 
