@@ -1316,11 +1316,9 @@ export async function registerRoutes(
     try {
       const tenantId = req.tenantId || req.headers["x-tenant-id"] || "default";
       
+      // Return all installations (active, pending, suspended) for frontend filtering
       const installations = await db.select().from(marketplaceInstallations)
-        .where(and(
-          eq(marketplaceInstallations.tenantId, tenantId),
-          eq(marketplaceInstallations.status, "active")
-        ))
+        .where(eq(marketplaceInstallations.tenantId, tenantId))
         .orderBy(desc(marketplaceInstallations.installedAt));
       
       const appIds = installations.map(i => i.appId);
