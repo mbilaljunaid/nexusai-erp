@@ -34,7 +34,7 @@ import { z } from "zod";
 import OpenAI from "openai";
 import { lemonSqueezySetup, createCheckout, listProducts, getAuthenticatedUser } from "@lemonsqueezy/lemonsqueezy.js";
 import crypto from "crypto";
-import { generateDemoData } from "./demoSeeds";
+import { generateDemoData, marketplaceDeveloperSeeds, marketplaceAppSeeds } from "./demoSeeds";
 import analyticsRoutes from "./routes/analyticsRoutes";
 import templateRoutes from "./routes/templateRoutes";
 import migrationRoutes from "./routes/migrationRoutes";
@@ -2151,6 +2151,78 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("Error archiving:", error);
       res.status(500).json({ error: "Failed to archive" });
+    }
+  });
+
+  // ========== MARKETPLACE SEED DATA ==========
+
+  // POST /api/marketplace/seed - Seed marketplace with industry-specific apps
+  app.post("/api/marketplace/seed", async (req, res) => {
+    try {
+      // Get existing categories
+      const existingCategories = await db.select().from(marketplaceCategories);
+      const categoryMap: Record<string, string> = {};
+      existingCategories.forEach(c => {
+        categoryMap[c.slug] = c.id;
+      });
+
+      // Check if developers already exist
+      const existingDevs = await db.select().from(marketplaceDevelopers);
+      let developerIds: string[] = [];
+
+      if (existingDevs.length === 0) {
+        // Insert developers
+        const insertedDevs = await db.insert(marketplaceDevelopers)
+          .values(marketplaceDeveloperSeeds)
+          .returning();
+        developerIds = insertedDevs.map(d => d.id);
+      } else {
+        developerIds = existingDevs.map(d => d.id);
+      }
+
+      // Check if apps already exist
+      const existingApps = await db.select().from(marketplaceApps);
+      if (existingApps.length > 0) {
+        return res.json({ 
+          message: "Marketplace already seeded",
+          developers: developerIds.length,
+          apps: existingApps.length
+        });
+      }
+
+      // Insert apps
+      const appsToInsert = marketplaceAppSeeds.map(appSeed => ({
+        developerId: developerIds[appSeed.developerIndex] || developerIds[0],
+        name: appSeed.name,
+        slug: appSeed.slug,
+        shortDescription: appSeed.shortDescription,
+        longDescription: appSeed.longDescription,
+        categoryId: categoryMap[appSeed.categorySlug] || null,
+        tags: appSeed.tags,
+        supportedIndustries: appSeed.supportedIndustries,
+        pricingModel: appSeed.pricingModel,
+        price: appSeed.pricingModel === "free" ? "0" : undefined,
+        subscriptionPriceMonthly: appSeed.subscriptionPriceMonthly,
+        subscriptionPriceYearly: appSeed.subscriptionPriceYearly,
+        status: appSeed.status,
+        publishedAt: new Date(),
+        totalInstalls: Math.floor(Math.random() * 1000) + 100,
+        averageRating: (3.5 + Math.random() * 1.5).toFixed(2),
+        totalReviews: Math.floor(Math.random() * 200) + 10,
+      }));
+
+      const insertedApps = await db.insert(marketplaceApps)
+        .values(appsToInsert)
+        .returning();
+
+      res.json({
+        message: "Marketplace seeded successfully",
+        developers: developerIds.length,
+        apps: insertedApps.length
+      });
+    } catch (error: any) {
+      console.error("Error seeding marketplace:", error);
+      res.status(500).json({ error: "Failed to seed marketplace", details: error.message });
     }
   });
 
