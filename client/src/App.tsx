@@ -134,6 +134,7 @@ const ImplementationSystemSetup = lazy(() => import("@/pages/public/documentatio
 const OpenSourcePage = lazy(() => import("@/pages/OpenSourcePage"));
 const LicensePage = lazy(() => import("@/pages/LicensePage"));
 const ContributingPage = lazy(() => import("@/pages/ContributingPage"));
+const ContributionPage = lazy(() => import("@/pages/ContributionPage"));
 const SecurityPolicyPage = lazy(() => import("@/pages/SecurityPolicyPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
@@ -515,6 +516,7 @@ function Router() {
       <Route path="/blog" component={BlogPage} />
       <Route path="/blog/:id" component={BlogPostPage} />
       <Route path="/open-source" component={OpenSourcePage} />
+      <Route path="/contribution" component={ContributionPage} />
       <Route path="/license" component={LicensePage} />
       <Route path="/docs/contributing" component={ContributingPage} />
       <Route path="/security" component={SecurityPolicyPage} />

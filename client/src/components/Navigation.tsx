@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap } from "lucide-react";
+import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -8,6 +8,8 @@ export function Header() {
   const [location] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);
+  const [marketplaceOpen, setMarketplaceOpen] = useState(false);
+  const [communityOpen, setCommunityOpen] = useState(false);
 
   const isActive = (path: string) => location === path;
 
@@ -15,7 +17,6 @@ export function Header() {
     { label: "Home", path: "/" },
     { label: "Use Cases", path: "/use-cases" },
     { label: "Industries", path: "/industries" },
-    { label: "Marketplace", path: "/marketplace" },
     { label: "About", path: "/about" },
     { label: "Blog", path: "/blog" },
   ];
@@ -50,6 +51,99 @@ export function Header() {
                 </span>
               </Link>
             ))}
+
+            {/* Marketplace Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setMarketplaceOpen(true)}
+              onMouseLeave={() => setMarketplaceOpen(false)}
+            >
+              <button
+                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1 py-2"
+                onClick={() => setMarketplaceOpen(!marketplaceOpen)}
+                data-testid="button-marketplace-menu"
+              >
+                Marketplace
+                <ChevronDown className={`w-4 h-4 transition-transform ${marketplaceOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {marketplaceOpen && (
+                <div className="absolute left-0 top-full pt-1 w-64">
+                  <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2">
+                    <Link to="/marketplace/services" className="block" data-testid="link-marketplace-services">
+                      <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <Briefcase className="w-4 h-4 text-green-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Service Marketplace</div>
+                          <div className="text-xs text-slate-400">Expert consulting & services</div>
+                        </div>
+                      </div>
+                    </Link>
+                    <Link to="/marketplace/apps" className="block" data-testid="link-marketplace-apps">
+                      <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <ShoppingBag className="w-4 h-4 text-purple-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">App Marketplace</div>
+                          <div className="text-xs text-slate-400">Extensions & integrations</div>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Community Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setCommunityOpen(true)}
+              onMouseLeave={() => setCommunityOpen(false)}
+            >
+              <button
+                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1 py-2"
+                onClick={() => setCommunityOpen(!communityOpen)}
+                data-testid="button-community-menu"
+              >
+                Community
+                <ChevronDown className={`w-4 h-4 transition-transform ${communityOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {communityOpen && (
+                <div className="absolute left-0 top-full pt-1 w-64">
+                  <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2">
+                    <Link to="/community" className="block" data-testid="link-community-forum">
+                      <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <MessageSquare className="w-4 h-4 text-blue-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Community Forum</div>
+                          <div className="text-xs text-slate-400">Discuss & share ideas</div>
+                        </div>
+                      </div>
+                    </Link>
+                    <Link to="/community/industries" className="block" data-testid="link-community-industries">
+                      <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <Users className="w-4 h-4 text-cyan-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Industry Communities</div>
+                          <div className="text-xs text-slate-400">Connect with your industry</div>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Highlighted Contribution Link */}
+            <Link to="/contribution">
+              <span
+                className="text-sm font-medium px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-500 hover:to-pink-500 transition-all cursor-pointer flex items-center gap-1.5"
+                data-testid="link-nav-contribution"
+              >
+                <Heart className="w-4 h-4" />
+                Contribute
+              </span>
+            </Link>
 
             {/* Documentation Menu */}
             <div 
@@ -168,7 +262,47 @@ export function Header() {
                 </button>
               </Link>
             ))}
+            {/* Mobile Contribution Link - Highlighted */}
+            <Link to="/contribution">
+              <button 
+                onClick={() => setMenuOpen(false)} 
+                className="block w-full text-left px-4 py-2 rounded text-sm bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium"
+                data-testid="link-mobile-contribution"
+              >
+                Contribute
+              </button>
+            </Link>
+            {/* Mobile Marketplace */}
             <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
+              <p className="px-4 text-xs text-slate-500 uppercase">Marketplace</p>
+              <Link to="/marketplace/services">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-marketplace-services">
+                  Service Marketplace
+                </button>
+              </Link>
+              <Link to="/marketplace/apps">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-marketplace-apps">
+                  App Marketplace
+                </button>
+              </Link>
+            </div>
+            {/* Mobile Community */}
+            <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
+              <p className="px-4 text-xs text-slate-500 uppercase">Community</p>
+              <Link to="/community">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-community-forum">
+                  Community Forum
+                </button>
+              </Link>
+              <Link to="/community/industries">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-community-industries">
+                  Industry Communities
+                </button>
+              </Link>
+            </div>
+            {/* Mobile Documentation */}
+            <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
+              <p className="px-4 text-xs text-slate-500 uppercase">Documentation</p>
               <Link to="/docs/process-flows">
                 <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
                   Process Flows
@@ -245,10 +379,11 @@ export function Footer() {
             <h4 className="text-white font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm text-slate-400">
               <li><Link to="/blog" className="hover:text-white transition" data-testid="link-footer-blog">Blog</Link></li>
+              <li><Link to="/contribution" className="hover:text-white transition" data-testid="link-footer-contribution">Contribute</Link></li>
+              <li><Link to="/community" className="hover:text-white transition" data-testid="link-footer-community">Community</Link></li>
               <li><Link to="/docs/process-flows" className="hover:text-white transition">Process Flows</Link></li>
               <li><Link to="/docs/training-guides" className="hover:text-white transition">Training Guides</Link></li>
               <li><Link to="/docs/technical" className="hover:text-white transition">Technical Docs</Link></li>
-              <li><Link to="/docs/implementation" className="hover:text-white transition">Implementation</Link></li>
             </ul>
           </div>
 

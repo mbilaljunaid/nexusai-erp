@@ -84,6 +84,53 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Contributor Ecosystem Infographic */}
+      <section className="px-4 py-16" style={{ background: `hsl(var(--muted) / 0.3)` }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-purple-600 text-white mb-4">Join the Community</Badge>
+            <h2 className="text-3xl font-bold mb-4">Contribute & Grow Together</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Be part of building the world's most powerful open-source ERP. Your contributions help thousands while earning rewards.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <Card className="p-6 text-center hover-elevate" data-testid="card-contribute-community">
+              <Users className="w-10 h-10 mx-auto mb-3" style={{ color: `hsl(var(--primary))` }} />
+              <h3 className="font-bold mb-2">Build Communities</h3>
+              <p className="text-sm text-muted-foreground">Create and moderate industry communities</p>
+            </Card>
+            <Card className="p-6 text-center hover-elevate" data-testid="card-contribute-apps">
+              <Package className="w-10 h-10 mx-auto mb-3" style={{ color: `hsl(var(--primary))` }} />
+              <h3 className="font-bold mb-2">Develop Apps</h3>
+              <p className="text-sm text-muted-foreground">Build and share apps & integrations</p>
+            </Card>
+            <Card className="p-6 text-center hover-elevate" data-testid="card-contribute-training">
+              <Sparkles className="w-10 h-10 mx-auto mb-3" style={{ color: `hsl(var(--primary))` }} />
+              <h3 className="font-bold mb-2">Create Training</h3>
+              <p className="text-sm text-muted-foreground">Make tutorials and training videos</p>
+            </Card>
+            <Card className="p-6 text-center hover-elevate" data-testid="card-contribute-qa">
+              <CheckCircle className="w-10 h-10 mx-auto mb-3" style={{ color: `hsl(var(--primary))` }} />
+              <h3 className="font-bold mb-2">Quality Assurance</h3>
+              <p className="text-sm text-muted-foreground">Help test and improve the platform</p>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground mb-4">
+              <strong>Earn rewards:</strong> Sell services in marketplace, earn badges, get recognized
+            </p>
+            <Link to="/contribution">
+              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white" data-testid="button-learn-contribute">
+                Learn How to Contribute <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Open Source Banner */}
       <section className="px-4 py-12 bg-gradient-to-r from-green-600 to-blue-600 text-white">
         <div className="max-w-6xl mx-auto">
