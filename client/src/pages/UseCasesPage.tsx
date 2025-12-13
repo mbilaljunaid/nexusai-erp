@@ -304,7 +304,7 @@ export default function UseCasesPage() {
         <section className="px-4 py-20 border-b border-slate-700">
           <div className="max-w-6xl mx-auto">
             <div className="mb-12">
-              <Badge className="mb-4 bg-purple-600/20 text-purple-300 border-purple-500/50">13+ INDUSTRY PACKS</Badge>
+              <Badge className="mb-4 bg-purple-600/20 text-purple-300 border-purple-500/50">43+ INDUSTRY SOLUTIONS</Badge>
               <h2 className="text-3xl font-bold mb-2">Industry-Specific Capabilities</h2>
               <p className="text-slate-300">Specialized modules for unique business needs</p>
             </div>

@@ -45,7 +45,7 @@ export default function PagesIndex() {
       <div className="space-y-4">
         <div>
           <h1 className="text-4xl font-bold">Pages Explorer</h1>
-          <p className="text-muted-foreground mt-1">Browse all {PAGES_BY_PACK.reduce((sum, p) => sum + p.pages.length, 0)} pages across 8 industry packs</p>
+          <p className="text-muted-foreground mt-1">Browse all {PAGES_BY_PACK.reduce((sum, p) => sum + p.pages.length, 0)} pages across {PAGES_BY_PACK.length} industry packs</p>
         </div>
 
         <div className="flex gap-2 items-center">
