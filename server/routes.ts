@@ -21,7 +21,7 @@ import {
   insertPartnerSchema, partners as partnersTable, insertUserFeedbackSchema,
   marketplaceDevelopers, marketplaceCategories, marketplaceApps, marketplaceAppVersions,
   marketplaceInstallations, marketplaceTransactions, marketplaceSubscriptions, marketplaceReviews,
-  marketplacePayouts, marketplaceCommissionSettings,
+  marketplacePayouts, marketplaceCommissionSettings, marketplaceAuditLogs, marketplaceLicenses, marketplaceAppDependencies,
   insertMarketplaceDeveloperSchema, insertMarketplaceAppSchema, insertMarketplaceInstallationSchema,
   insertMarketplaceReviewSchema, insertMarketplaceCommissionSettingSchema,
 } from "@shared/schema";
@@ -1441,6 +1441,7 @@ export async function registerRoutes(
   // 19. PUT /api/marketplace/commission-settings/:id - Update commission (admin)
   app.put("/api/marketplace/commission-settings/:id", enforceRBAC("admin"), async (req: any, res) => {
     try {
+      const userId = req.user?.id || req.userId || "system";
       const [existing] = await db.select().from(marketplaceCommissionSettings)
         .where(eq(marketplaceCommissionSettings.id, req.params.id));
       
@@ -1453,10 +1454,651 @@ export async function registerRoutes(
         .where(eq(marketplaceCommissionSettings.id, req.params.id))
         .returning();
       
+      // Audit log for commission change
+      await db.insert(marketplaceAuditLogs).values({
+        entityType: "commission",
+        entityId: req.params.id,
+        action: "commission_changed",
+        actorId: userId,
+        actorRole: "admin",
+        previousState: existing,
+        newState: updated,
+        metadata: { changedFields: Object.keys(req.body) },
+      });
+      
       res.json(updated);
     } catch (error: any) {
       console.error("Error updating commission setting:", error);
       res.status(500).json({ error: "Failed to update commission setting" });
+    }
+  });
+
+  // ============ AUDIT LOGS API ============
+  
+  // 20. GET /api/marketplace/audit-logs - Get audit logs (admin)
+  app.get("/api/marketplace/audit-logs", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const { entityType, entityId, action, limit = 100, offset = 0 } = req.query;
+      
+      let query = db.select().from(marketplaceAuditLogs);
+      const conditions = [];
+      
+      if (entityType) conditions.push(eq(marketplaceAuditLogs.entityType, entityType as string));
+      if (entityId) conditions.push(eq(marketplaceAuditLogs.entityId, entityId as string));
+      if (action) conditions.push(eq(marketplaceAuditLogs.action, action as string));
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions)) as any;
+      }
+      
+      const logs = await query
+        .orderBy(desc(marketplaceAuditLogs.createdAt))
+        .limit(parseInt(limit as string))
+        .offset(parseInt(offset as string));
+      
+      res.json(logs);
+    } catch (error: any) {
+      console.error("Error fetching audit logs:", error);
+      res.status(500).json({ error: "Failed to fetch audit logs" });
+    }
+  });
+
+  // ============ LICENSE MANAGEMENT API ============
+
+  // 21. POST /api/marketplace/licenses - Issue a new license
+  app.post("/api/marketplace/licenses", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      const tenantId = req.tenantId || req.headers["x-tenant-id"] || "default";
+      
+      const { appId, appVersionId, licenseType, seats, validUntil, transactionId } = req.body;
+      
+      // Generate unique license key
+      const licenseKey = `LIC-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      
+      const validFrom = new Date();
+      let gracePeriodEnd = null;
+      if (validUntil) {
+        const graceDate = new Date(validUntil);
+        graceDate.setDate(graceDate.getDate() + 7); // 7 day grace period
+        gracePeriodEnd = graceDate;
+      }
+      
+      const [license] = await db.insert(marketplaceLicenses).values({
+        appId,
+        appVersionId,
+        tenantId,
+        userId,
+        transactionId,
+        licenseKey,
+        licenseType,
+        seats: seats || 0,
+        validFrom,
+        validUntil: validUntil ? new Date(validUntil) : null,
+        gracePeriodDays: 7,
+        gracePeriodEnd,
+        status: "active",
+      }).returning();
+      
+      // Audit log
+      await db.insert(marketplaceAuditLogs).values({
+        entityType: "license",
+        entityId: license.id,
+        action: "license_issued",
+        actorId: userId,
+        actorRole: "tenant_admin",
+        newState: license,
+        metadata: { appId, licenseType },
+      });
+      
+      res.status(201).json(license);
+    } catch (error: any) {
+      console.error("Error issuing license:", error);
+      res.status(500).json({ error: "Failed to issue license" });
+    }
+  });
+
+  // 22. GET /api/marketplace/licenses - Get licenses for tenant
+  app.get("/api/marketplace/licenses", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const tenantId = req.tenantId || req.headers["x-tenant-id"] || "default";
+      
+      const licenses = await db.select().from(marketplaceLicenses)
+        .where(eq(marketplaceLicenses.tenantId, tenantId))
+        .orderBy(desc(marketplaceLicenses.createdAt));
+      
+      res.json(licenses);
+    } catch (error: any) {
+      console.error("Error fetching licenses:", error);
+      res.status(500).json({ error: "Failed to fetch licenses" });
+    }
+  });
+
+  // 23. GET /api/marketplace/licenses/:id/validate - Validate a license
+  app.get("/api/marketplace/licenses/:id/validate", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const [license] = await db.select().from(marketplaceLicenses)
+        .where(eq(marketplaceLicenses.id, req.params.id));
+      
+      if (!license) {
+        return res.status(404).json({ valid: false, error: "License not found" });
+      }
+      
+      const now = new Date();
+      let isValid = license.status === "active";
+      let inGracePeriod = false;
+      let reason = "";
+      
+      // Check expiry
+      if (license.validUntil && now > license.validUntil) {
+        if (license.gracePeriodEnd && now <= license.gracePeriodEnd) {
+          inGracePeriod = true;
+          reason = "License expired but within grace period";
+        } else {
+          isValid = false;
+          reason = "License expired";
+          
+          // Auto-expire the license
+          await db.update(marketplaceLicenses)
+            .set({ status: "expired", updatedAt: now })
+            .where(eq(marketplaceLicenses.id, license.id));
+        }
+      }
+      
+      // Update last validated
+      await db.update(marketplaceLicenses)
+        .set({ lastValidatedAt: now })
+        .where(eq(marketplaceLicenses.id, license.id));
+      
+      res.json({
+        valid: isValid,
+        inGracePeriod,
+        reason,
+        license: { ...license, lastValidatedAt: now },
+      });
+    } catch (error: any) {
+      console.error("Error validating license:", error);
+      res.status(500).json({ error: "Failed to validate license" });
+    }
+  });
+
+  // 24. PUT /api/marketplace/licenses/:id/suspend - Suspend a license (admin)
+  app.put("/api/marketplace/licenses/:id/suspend", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId || "system";
+      
+      const [existing] = await db.select().from(marketplaceLicenses)
+        .where(eq(marketplaceLicenses.id, req.params.id));
+      
+      if (!existing) {
+        return res.status(404).json({ error: "License not found" });
+      }
+      
+      const [updated] = await db.update(marketplaceLicenses)
+        .set({ status: "suspended", updatedAt: new Date() })
+        .where(eq(marketplaceLicenses.id, req.params.id))
+        .returning();
+      
+      // Audit log
+      await db.insert(marketplaceAuditLogs).values({
+        entityType: "license",
+        entityId: req.params.id,
+        action: "license_suspended",
+        actorId: userId,
+        actorRole: "admin",
+        previousState: existing,
+        newState: updated,
+        metadata: { reason: req.body.reason },
+      });
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error suspending license:", error);
+      res.status(500).json({ error: "Failed to suspend license" });
+    }
+  });
+
+  // ============ PAYOUT WORKFLOW API ============
+
+  // 25. GET /api/marketplace/payouts - Get payouts (developer sees own, admin sees all)
+  app.get("/api/marketplace/payouts", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      const isAdmin = req.user?.role === "admin" || req.headers["x-user-role"] === "admin";
+      
+      let query;
+      if (isAdmin) {
+        // Admin sees all payouts
+        query = db.select().from(marketplacePayouts)
+          .orderBy(desc(marketplacePayouts.createdAt));
+      } else {
+        // Developer sees their own payouts
+        const [developer] = await db.select().from(marketplaceDevelopers)
+          .where(eq(marketplaceDevelopers.userId, userId));
+        
+        if (!developer) {
+          return res.json([]);
+        }
+        
+        query = db.select().from(marketplacePayouts)
+          .where(eq(marketplacePayouts.developerId, developer.id))
+          .orderBy(desc(marketplacePayouts.createdAt));
+      }
+      
+      const payouts = await query;
+      res.json(payouts);
+    } catch (error: any) {
+      console.error("Error fetching payouts:", error);
+      res.status(500).json({ error: "Failed to fetch payouts" });
+    }
+  });
+
+  // 26. POST /api/marketplace/payouts/generate - Generate pending payouts for all developers (admin)
+  app.post("/api/marketplace/payouts/generate", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId || "system";
+      const { periodStart, periodEnd } = req.body;
+      
+      if (!periodStart || !periodEnd) {
+        return res.status(400).json({ error: "Period start and end dates are required" });
+      }
+      
+      // Get all developers with completed transactions in the period
+      const transactions = await db.select().from(marketplaceTransactions)
+        .where(and(
+          eq(marketplaceTransactions.status, "completed"),
+          sql`${marketplaceTransactions.createdAt} >= ${new Date(periodStart)}`,
+          sql`${marketplaceTransactions.createdAt} <= ${new Date(periodEnd)}`
+        ));
+      
+      // Group by developer
+      const developerTotals: Record<string, { amount: number; count: number }> = {};
+      for (const tx of transactions) {
+        if (!developerTotals[tx.developerId]) {
+          developerTotals[tx.developerId] = { amount: 0, count: 0 };
+        }
+        developerTotals[tx.developerId].amount += parseFloat(tx.developerRevenue);
+        developerTotals[tx.developerId].count += 1;
+      }
+      
+      const createdPayouts = [];
+      for (const [developerId, { amount, count }] of Object.entries(developerTotals)) {
+        if (amount <= 0) continue;
+        
+        const [payout] = await db.insert(marketplacePayouts).values({
+          developerId,
+          amount: amount.toFixed(2),
+          currency: "USD",
+          periodStart: new Date(periodStart),
+          periodEnd: new Date(periodEnd),
+          status: "pending",
+          transactionCount: count,
+        }).returning();
+        
+        createdPayouts.push(payout);
+        
+        // Audit log
+        await db.insert(marketplaceAuditLogs).values({
+          entityType: "payout",
+          entityId: payout.id,
+          action: "payout_generated",
+          actorId: userId,
+          actorRole: "admin",
+          newState: payout,
+          metadata: { periodStart, periodEnd, transactionCount: count },
+        });
+      }
+      
+      res.json({ message: `Generated ${createdPayouts.length} payouts`, payouts: createdPayouts });
+    } catch (error: any) {
+      console.error("Error generating payouts:", error);
+      res.status(500).json({ error: "Failed to generate payouts" });
+    }
+  });
+
+  // 27. PUT /api/marketplace/payouts/:id/process - Mark payout as processing (admin)
+  app.put("/api/marketplace/payouts/:id/process", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId || "system";
+      
+      const [existing] = await db.select().from(marketplacePayouts)
+        .where(eq(marketplacePayouts.id, req.params.id));
+      
+      if (!existing) {
+        return res.status(404).json({ error: "Payout not found" });
+      }
+      
+      if (existing.status !== "pending") {
+        return res.status(400).json({ error: "Payout must be in pending status to process" });
+      }
+      
+      const [updated] = await db.update(marketplacePayouts)
+        .set({ status: "processing" })
+        .where(eq(marketplacePayouts.id, req.params.id))
+        .returning();
+      
+      // Audit log
+      await db.insert(marketplaceAuditLogs).values({
+        entityType: "payout",
+        entityId: req.params.id,
+        action: "payout_processing",
+        actorId: userId,
+        actorRole: "admin",
+        previousState: existing,
+        newState: updated,
+      });
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error processing payout:", error);
+      res.status(500).json({ error: "Failed to process payout" });
+    }
+  });
+
+  // 28. PUT /api/marketplace/payouts/:id/complete - Mark payout as paid (admin)
+  app.put("/api/marketplace/payouts/:id/complete", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId || "system";
+      const { paymentReference, paymentMethod } = req.body;
+      
+      const [existing] = await db.select().from(marketplacePayouts)
+        .where(eq(marketplacePayouts.id, req.params.id));
+      
+      if (!existing) {
+        return res.status(404).json({ error: "Payout not found" });
+      }
+      
+      if (existing.status !== "processing") {
+        return res.status(400).json({ error: "Payout must be in processing status to complete" });
+      }
+      
+      const [updated] = await db.update(marketplacePayouts)
+        .set({ 
+          status: "paid", 
+          paidAt: new Date(),
+          paymentReference,
+          paymentMethod,
+        })
+        .where(eq(marketplacePayouts.id, req.params.id))
+        .returning();
+      
+      // Update developer's total payouts
+      await db.update(marketplaceDevelopers)
+        .set({ 
+          totalPayouts: sql`${marketplaceDevelopers.totalPayouts} + ${existing.amount}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(marketplaceDevelopers.id, existing.developerId));
+      
+      // Audit log
+      await db.insert(marketplaceAuditLogs).values({
+        entityType: "payout",
+        entityId: req.params.id,
+        action: "payout_completed",
+        actorId: userId,
+        actorRole: "admin",
+        previousState: existing,
+        newState: updated,
+        metadata: { paymentReference, paymentMethod },
+      });
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error completing payout:", error);
+      res.status(500).json({ error: "Failed to complete payout" });
+    }
+  });
+
+  // 29. PUT /api/marketplace/payouts/:id/fail - Mark payout as failed (admin)
+  app.put("/api/marketplace/payouts/:id/fail", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId || "system";
+      const { reason } = req.body;
+      
+      const [existing] = await db.select().from(marketplacePayouts)
+        .where(eq(marketplacePayouts.id, req.params.id));
+      
+      if (!existing) {
+        return res.status(404).json({ error: "Payout not found" });
+      }
+      
+      const [updated] = await db.update(marketplacePayouts)
+        .set({ status: "failed", notes: reason })
+        .where(eq(marketplacePayouts.id, req.params.id))
+        .returning();
+      
+      // Audit log
+      await db.insert(marketplaceAuditLogs).values({
+        entityType: "payout",
+        entityId: req.params.id,
+        action: "payout_failed",
+        actorId: userId,
+        actorRole: "admin",
+        previousState: existing,
+        newState: updated,
+        metadata: { reason },
+      });
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error failing payout:", error);
+      res.status(500).json({ error: "Failed to update payout" });
+    }
+  });
+
+  // 30. GET /api/marketplace/developer/earnings - Developer earnings summary
+  app.get("/api/marketplace/developer/earnings", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      
+      const [developer] = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.userId, userId));
+      
+      if (!developer) {
+        return res.status(404).json({ error: "Developer profile not found" });
+      }
+      
+      // Get all transactions for this developer
+      const transactions = await db.select().from(marketplaceTransactions)
+        .where(and(
+          eq(marketplaceTransactions.developerId, developer.id),
+          eq(marketplaceTransactions.status, "completed")
+        ));
+      
+      // Get all payouts for this developer
+      const payouts = await db.select().from(marketplacePayouts)
+        .where(eq(marketplacePayouts.developerId, developer.id));
+      
+      const totalEarnings = transactions.reduce((sum, tx) => sum + parseFloat(tx.developerRevenue), 0);
+      const totalPaid = payouts
+        .filter(p => p.status === "paid")
+        .reduce((sum, p) => sum + parseFloat(p.amount), 0);
+      const pendingPayout = payouts
+        .filter(p => p.status === "pending" || p.status === "processing")
+        .reduce((sum, p) => sum + parseFloat(p.amount), 0);
+      
+      // Calculate unpaid balance (earnings not yet in a payout)
+      const totalInPayouts = payouts.reduce((sum, p) => sum + parseFloat(p.amount), 0);
+      const unpaidBalance = totalEarnings - totalInPayouts;
+      
+      res.json({
+        developerId: developer.id,
+        totalEarnings: totalEarnings.toFixed(2),
+        totalPaid: totalPaid.toFixed(2),
+        pendingPayout: pendingPayout.toFixed(2),
+        unpaidBalance: unpaidBalance.toFixed(2),
+        transactionCount: transactions.length,
+        payoutCount: payouts.filter(p => p.status === "paid").length,
+      });
+    } catch (error: any) {
+      console.error("Error fetching developer earnings:", error);
+      res.status(500).json({ error: "Failed to fetch earnings" });
+    }
+  });
+
+  // ============ APP DEPENDENCIES API ============
+
+  // 31. GET /api/marketplace/apps/:id/dependencies - Get app dependencies
+  app.get("/api/marketplace/apps/:id/dependencies", async (req, res) => {
+    try {
+      const dependencies = await db.select().from(marketplaceAppDependencies)
+        .where(eq(marketplaceAppDependencies.appId, req.params.id));
+      
+      // Get the dependency app details
+      const depAppIds = dependencies.map(d => d.dependsOnAppId);
+      const depApps = depAppIds.length > 0
+        ? await db.select().from(marketplaceApps).where(sql`${marketplaceApps.id} = ANY(${depAppIds})`)
+        : [];
+      
+      const result = dependencies.map(dep => ({
+        ...dep,
+        dependsOnApp: depApps.find(a => a.id === dep.dependsOnAppId),
+      }));
+      
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error fetching dependencies:", error);
+      res.status(500).json({ error: "Failed to fetch dependencies" });
+    }
+  });
+
+  // 32. POST /api/marketplace/apps/:id/dependencies - Add dependency (developer)
+  app.post("/api/marketplace/apps/:id/dependencies", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const { dependsOnAppId, minVersion, maxVersion, isRequired } = req.body;
+      
+      // Check for circular dependencies
+      if (dependsOnAppId === req.params.id) {
+        return res.status(400).json({ error: "App cannot depend on itself" });
+      }
+      
+      const [dependency] = await db.insert(marketplaceAppDependencies).values({
+        appId: req.params.id,
+        dependsOnAppId,
+        minVersion,
+        maxVersion,
+        isRequired: isRequired ?? true,
+      }).returning();
+      
+      res.status(201).json(dependency);
+    } catch (error: any) {
+      console.error("Error adding dependency:", error);
+      res.status(500).json({ error: "Failed to add dependency" });
+    }
+  });
+
+  // 33. POST /api/marketplace/apps/:id/check-dependencies - Check if dependencies are satisfied for install
+  app.post("/api/marketplace/apps/:id/check-dependencies", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const tenantId = req.tenantId || req.headers["x-tenant-id"] || "default";
+      
+      // Get app dependencies
+      const dependencies = await db.select().from(marketplaceAppDependencies)
+        .where(and(
+          eq(marketplaceAppDependencies.appId, req.params.id),
+          eq(marketplaceAppDependencies.isRequired, true)
+        ));
+      
+      if (dependencies.length === 0) {
+        return res.json({ satisfied: true, missing: [] });
+      }
+      
+      // Get tenant's installed apps
+      const installations = await db.select().from(marketplaceInstallations)
+        .where(and(
+          eq(marketplaceInstallations.tenantId, tenantId),
+          eq(marketplaceInstallations.status, "active")
+        ));
+      
+      const installedAppIds = installations.map(i => i.appId);
+      
+      // Check which dependencies are missing
+      const missing = [];
+      for (const dep of dependencies) {
+        if (!installedAppIds.includes(dep.dependsOnAppId)) {
+          const [depApp] = await db.select().from(marketplaceApps)
+            .where(eq(marketplaceApps.id, dep.dependsOnAppId));
+          missing.push({
+            dependencyId: dep.id,
+            appId: dep.dependsOnAppId,
+            appName: depApp?.name || "Unknown",
+            minVersion: dep.minVersion,
+          });
+        }
+      }
+      
+      res.json({
+        satisfied: missing.length === 0,
+        missing,
+      });
+    } catch (error: any) {
+      console.error("Error checking dependencies:", error);
+      res.status(500).json({ error: "Failed to check dependencies" });
+    }
+  });
+
+  // 34. POST /api/marketplace/apps/:id/archive - Archive an app version (admin)
+  app.post("/api/marketplace/apps/:id/archive", enforceRBAC("admin"), async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId || "system";
+      const { versionId, reason } = req.body;
+      
+      if (versionId) {
+        // Archive specific version
+        const [existing] = await db.select().from(marketplaceAppVersions)
+          .where(eq(marketplaceAppVersions.id, versionId));
+        
+        if (!existing) {
+          return res.status(404).json({ error: "Version not found" });
+        }
+        
+        const [updated] = await db.update(marketplaceAppVersions)
+          .set({ status: "archived" })
+          .where(eq(marketplaceAppVersions.id, versionId))
+          .returning();
+        
+        await db.insert(marketplaceAuditLogs).values({
+          entityType: "app_version",
+          entityId: versionId,
+          action: "archived",
+          actorId: userId,
+          actorRole: "admin",
+          previousState: existing,
+          newState: updated,
+          metadata: { reason },
+        });
+        
+        res.json(updated);
+      } else {
+        // Archive entire app
+        const [existing] = await db.select().from(marketplaceApps)
+          .where(eq(marketplaceApps.id, req.params.id));
+        
+        if (!existing) {
+          return res.status(404).json({ error: "App not found" });
+        }
+        
+        const [updated] = await db.update(marketplaceApps)
+          .set({ status: "suspended" })
+          .where(eq(marketplaceApps.id, req.params.id))
+          .returning();
+        
+        await db.insert(marketplaceAuditLogs).values({
+          entityType: "app",
+          entityId: req.params.id,
+          action: "archived",
+          actorId: userId,
+          actorRole: "admin",
+          previousState: existing,
+          newState: updated,
+          metadata: { reason },
+        });
+        
+        res.json(updated);
+      }
+    } catch (error: any) {
+      console.error("Error archiving:", error);
+      res.status(500).json({ error: "Failed to archive" });
     }
   });
 
