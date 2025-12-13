@@ -32,6 +32,10 @@ import {
   communitySpaces, communityPosts, communityComments, communityVotes,
   userTrustLevels, reputationEvents, communityBadgeProgress,
   insertCommunityPostSchema, insertCommunityCommentSchema, insertCommunityVoteSchema,
+  communityFlags, insertCommunityFlagSchema,
+  communityModerationActions, insertCommunityModerationActionSchema,
+  userEarnedBadges, insertUserEarnedBadgeSchema,
+  users,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -3126,6 +3130,356 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("Error fetching leaderboard:", error);
       res.status(500).json({ error: "Failed to fetch leaderboard" });
+    }
+  });
+
+  // ========== PHASE 2: BADGES, PROFILE, AND MODERATION ==========
+
+  // GET /api/community/badges - List all badge definitions
+  app.get("/api/community/badges", async (req, res) => {
+    try {
+      const badges = await db.select().from(badgeDefinitions).orderBy(badgeDefinitions.category);
+      res.json(badges);
+    } catch (error: any) {
+      console.error("Error fetching badges:", error);
+      res.status(500).json({ error: "Failed to fetch badges" });
+    }
+  });
+
+  // GET /api/community/user/:userId/profile - Get user profile with badges, reputation history
+  app.get("/api/community/user/:userId/profile", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+
+      // Get user basic info
+      const [user] = await db.select({
+        id: users.id,
+        name: users.name,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        email: users.email,
+        profileImageUrl: users.profileImageUrl,
+        createdAt: users.createdAt,
+      }).from(users).where(eq(users.id, userId));
+
+      // Get trust level and reputation
+      const [trust] = await db.select().from(userTrustLevels)
+        .where(eq(userTrustLevels.userId, userId));
+
+      // Get reputation events history
+      const reputationHistory = await db.select().from(reputationEvents)
+        .where(eq(reputationEvents.userId, userId))
+        .orderBy(desc(reputationEvents.createdAt))
+        .limit(50);
+
+      // Get badge progress
+      const badgeProgress = await db.select().from(communityBadgeProgress)
+        .where(eq(communityBadgeProgress.userId, userId));
+
+      // Get earned badges with definitions
+      const earnedBadges = await db.select({
+        id: userEarnedBadges.id,
+        badgeId: userEarnedBadges.badgeId,
+        earnedAt: userEarnedBadges.earnedAt,
+        badgeName: badgeDefinitions.name,
+        badgeDescription: badgeDefinitions.description,
+        badgeIcon: badgeDefinitions.icon,
+        badgeCategory: badgeDefinitions.category,
+        badgePoints: badgeDefinitions.points,
+      }).from(userEarnedBadges)
+        .leftJoin(badgeDefinitions, eq(userEarnedBadges.badgeId, badgeDefinitions.id))
+        .where(eq(userEarnedBadges.userId, userId))
+        .orderBy(desc(userEarnedBadges.earnedAt));
+
+      // Get activity stats (posts, comments count)
+      const posts = await db.select().from(communityPosts)
+        .where(eq(communityPosts.authorId, userId));
+      const comments = await db.select().from(communityComments)
+        .where(eq(communityComments.authorId, userId));
+
+      res.json({
+        user: user || { id: userId },
+        trustLevel: trust || { userId, trustLevel: 0, totalReputation: 0 },
+        reputationHistory,
+        badgeProgress,
+        earnedBadges,
+        stats: {
+          totalPosts: posts.length,
+          totalComments: comments.length,
+          acceptedAnswers: comments.filter(c => c.isAccepted).length,
+        },
+      });
+    } catch (error: any) {
+      console.error("Error fetching user profile:", error);
+      res.status(500).json({ error: "Failed to fetch user profile" });
+    }
+  });
+
+  // POST /api/community/flag - Flag/report content for moderation
+  app.post("/api/community/flag", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "Must be logged in to flag content" });
+      }
+
+      const parseResult = insertCommunityFlagSchema.safeParse({
+        ...req.body,
+        reporterId: userId,
+        status: "pending",
+      });
+
+      if (!parseResult.success) {
+        const errors = parseResult.error.errors.map(e => e.message).join(", ");
+        return res.status(400).json({ error: errors });
+      }
+
+      // Check if user already flagged this content
+      const existing = await db.select().from(communityFlags)
+        .where(and(
+          eq(communityFlags.reporterId, userId),
+          eq(communityFlags.targetType, parseResult.data.targetType),
+          eq(communityFlags.targetId, parseResult.data.targetId)
+        ));
+
+      if (existing.length > 0) {
+        return res.status(400).json({ error: "You have already reported this content" });
+      }
+
+      const [flag] = await db.insert(communityFlags).values(parseResult.data).returning();
+
+      res.status(201).json({ success: true, flag });
+    } catch (error: any) {
+      console.error("Error flagging content:", error);
+      res.status(500).json({ error: "Failed to flag content" });
+    }
+  });
+
+  // GET /api/community/moderation/queue - Get pending flags for moderators
+  app.get("/api/community/moderation/queue", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "Must be logged in" });
+      }
+
+      // Check if user is a moderator (trust level >= 3 or admin role)
+      const [trust] = await db.select().from(userTrustLevels)
+        .where(eq(userTrustLevels.userId, userId));
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+
+      const isModerator = (trust && (trust.trustLevel || 0) >= 3) || user?.role === "admin";
+      if (!isModerator) {
+        return res.status(403).json({ error: "Insufficient permissions - moderator access required" });
+      }
+
+      const status = (req.query.status as string) || "pending";
+
+      const flags = await db.select().from(communityFlags)
+        .where(eq(communityFlags.status, status))
+        .orderBy(desc(communityFlags.createdAt));
+
+      // Enrich flags with target content info
+      const enrichedFlags = await Promise.all(flags.map(async (flag) => {
+        let targetContent = null;
+        if (flag.targetType === "post") {
+          const [post] = await db.select().from(communityPosts)
+            .where(eq(communityPosts.id, flag.targetId));
+          targetContent = post;
+        } else if (flag.targetType === "comment") {
+          const [comment] = await db.select().from(communityComments)
+            .where(eq(communityComments.id, flag.targetId));
+          targetContent = comment;
+        }
+
+        // Get reporter info
+        const [reporter] = await db.select({
+          id: users.id,
+          name: users.name,
+          profileImageUrl: users.profileImageUrl,
+        }).from(users).where(eq(users.id, flag.reporterId));
+
+        return {
+          ...flag,
+          targetContent,
+          reporter,
+        };
+      }));
+
+      res.json(enrichedFlags);
+    } catch (error: any) {
+      console.error("Error fetching moderation queue:", error);
+      res.status(500).json({ error: "Failed to fetch moderation queue" });
+    }
+  });
+
+  // POST /api/community/moderation/action - Take moderation action on a flag
+  app.post("/api/community/moderation/action", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const moderatorId = req.user?.claims?.sub || req.user?.id;
+      if (!moderatorId) {
+        return res.status(401).json({ error: "Must be logged in" });
+      }
+
+      // Check if user is a moderator
+      const [trust] = await db.select().from(userTrustLevels)
+        .where(eq(userTrustLevels.userId, moderatorId));
+      const [user] = await db.select().from(users).where(eq(users.id, moderatorId));
+
+      const isModerator = (trust && (trust.trustLevel || 0) >= 3) || user?.role === "admin";
+      if (!isModerator) {
+        return res.status(403).json({ error: "Insufficient permissions - moderator access required" });
+      }
+
+      const { flagId, action, reason } = req.body;
+
+      if (!flagId || !action) {
+        return res.status(400).json({ error: "flagId and action are required" });
+      }
+
+      // Get the flag
+      const [flag] = await db.select().from(communityFlags)
+        .where(eq(communityFlags.id, flagId));
+
+      if (!flag) {
+        return res.status(404).json({ error: "Flag not found" });
+      }
+
+      // Update flag status
+      const actionStatus = action === "dismiss" ? "dismissed" : "actioned";
+      await db.update(communityFlags)
+        .set({
+          status: actionStatus,
+          reviewedBy: moderatorId,
+          reviewedAt: new Date(),
+          actionTaken: action,
+        })
+        .where(eq(communityFlags.id, flagId));
+
+      // Apply the action if not dismissed
+      if (action !== "dismiss" && action !== "none") {
+        // Handle different action types
+        if (action === "delete" && flag.targetType === "post") {
+          await db.update(communityPosts)
+            .set({ status: "deleted" })
+            .where(eq(communityPosts.id, flag.targetId));
+        } else if (action === "delete" && flag.targetType === "comment") {
+          await db.delete(communityComments)
+            .where(eq(communityComments.id, flag.targetId));
+        } else if (action === "hide" && flag.targetType === "post") {
+          await db.update(communityPosts)
+            .set({ status: "hidden" })
+            .where(eq(communityPosts.id, flag.targetId));
+        }
+      }
+
+      // Log the moderation action
+      await db.insert(communityModerationActions).values({
+        moderatorId,
+        actionType: action === "dismiss" ? "flag" : action === "delete" ? "delete_post" : action,
+        reason: reason || `Moderation action on flag ${flagId}`,
+        targetType: flag.targetType,
+        targetId: flag.targetId,
+      });
+
+      res.json({ success: true, action, flagId });
+    } catch (error: any) {
+      console.error("Error taking moderation action:", error);
+      res.status(500).json({ error: "Failed to take moderation action" });
+    }
+  });
+
+  // GET /api/community/moderation/history - Get moderation action history
+  app.get("/api/community/moderation/history", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "Must be logged in" });
+      }
+
+      // Check if user is a moderator
+      const [trust] = await db.select().from(userTrustLevels)
+        .where(eq(userTrustLevels.userId, userId));
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+
+      const isModerator = (trust && (trust.trustLevel || 0) >= 3) || user?.role === "admin";
+      if (!isModerator) {
+        return res.status(403).json({ error: "Insufficient permissions" });
+      }
+
+      const actions = await db.select().from(communityModerationActions)
+        .orderBy(desc(communityModerationActions.createdAt))
+        .limit(100);
+
+      res.json(actions);
+    } catch (error: any) {
+      console.error("Error fetching moderation history:", error);
+      res.status(500).json({ error: "Failed to fetch moderation history" });
+    }
+  });
+
+  // POST /api/community/badges/award - Award a badge to a user (admin only)
+  app.post("/api/community/badges/award", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const adminId = req.user?.claims?.sub || req.user?.id;
+      if (!adminId) {
+        return res.status(401).json({ error: "Must be logged in" });
+      }
+
+      const [admin] = await db.select().from(users).where(eq(users.id, adminId));
+      if (!admin || admin.role !== "admin") {
+        return res.status(403).json({ error: "Admin access required" });
+      }
+
+      const parseResult = insertUserEarnedBadgeSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        const errors = parseResult.error.errors.map(e => e.message).join(", ");
+        return res.status(400).json({ error: errors });
+      }
+
+      // Check if badge already awarded
+      const existing = await db.select().from(userEarnedBadges)
+        .where(and(
+          eq(userEarnedBadges.userId, parseResult.data.userId),
+          eq(userEarnedBadges.badgeId, parseResult.data.badgeId)
+        ));
+
+      if (existing.length > 0) {
+        return res.status(400).json({ error: "Badge already awarded to this user" });
+      }
+
+      const [earned] = await db.insert(userEarnedBadges).values(parseResult.data).returning();
+
+      res.status(201).json({ success: true, earned });
+    } catch (error: any) {
+      console.error("Error awarding badge:", error);
+      res.status(500).json({ error: "Failed to award badge" });
+    }
+  });
+
+  // GET /api/community/user/:userId/badges - Get user's earned badges
+  app.get("/api/community/user/:userId/badges", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+
+      const earnedBadges = await db.select({
+        id: userEarnedBadges.id,
+        badgeId: userEarnedBadges.badgeId,
+        earnedAt: userEarnedBadges.earnedAt,
+        badgeName: badgeDefinitions.name,
+        badgeDescription: badgeDefinitions.description,
+        badgeIcon: badgeDefinitions.icon,
+        badgeCategory: badgeDefinitions.category,
+        badgePoints: badgeDefinitions.points,
+      }).from(userEarnedBadges)
+        .leftJoin(badgeDefinitions, eq(userEarnedBadges.badgeId, badgeDefinitions.id))
+        .where(eq(userEarnedBadges.userId, userId))
+        .orderBy(desc(userEarnedBadges.earnedAt));
+
+      res.json(earnedBadges);
+    } catch (error: any) {
+      console.error("Error fetching user badges:", error);
+      res.status(500).json({ error: "Failed to fetch user badges" });
     }
   });
 

@@ -15,9 +15,12 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { 
   MessageSquare, ThumbsUp, ThumbsDown, Eye, CheckCircle, 
-  Plus, Search, TrendingUp, Clock, Award, Users, Hash, Trophy, Star, Shield
+  Plus, Search, TrendingUp, Clock, Award, Users, Hash, Trophy, Star, Shield, User, Flag, AlertTriangle
 } from "lucide-react";
 import type { CommunitySpace, CommunityPost, UserTrustLevel } from "@shared/schema";
+import { UserProfile } from "@/components/UserProfile";
+import { FlagContentDialog } from "@/components/FlagContentDialog";
+import { ModerationQueue } from "@/components/ModerationQueue";
 
 interface PostWithComments extends CommunityPost {
   comments?: Array<{
@@ -62,6 +65,9 @@ export default function CommunityForum() {
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [profileUserId, setProfileUserId] = useState<string | null>(null);
+  const [flagTarget, setFlagTarget] = useState<{ type: "post" | "comment"; id: string } | null>(null);
+  const [showModeration, setShowModeration] = useState(false);
 
   const { data: spaces, isLoading: spacesLoading } = useQuery<CommunitySpace[]>({
     queryKey: ["/api/community/spaces"],
@@ -193,12 +199,35 @@ export default function CommunityForum() {
     return d.toLocaleDateString();
   };
 
+  if (showModeration) {
+    return (
+      <div className="space-y-6">
+        <Button variant="ghost" onClick={() => setShowModeration(false)} data-testid="button-back-from-moderation">
+          Back to Forum
+        </Button>
+        <ModerationQueue />
+        <FlagContentDialog
+          open={!!flagTarget}
+          onOpenChange={(open) => !open && setFlagTarget(null)}
+          targetType={flagTarget?.type || "post"}
+          targetId={flagTarget?.id || ""}
+        />
+      </div>
+    );
+  }
+
   if (selectedPost && postDetail) {
     return (
       <div className="space-y-6">
         <Button variant="ghost" onClick={() => setSelectedPost(null)} data-testid="button-back">
           Back to Posts
         </Button>
+        <FlagContentDialog
+          open={!!flagTarget}
+          onOpenChange={(open) => !open && setFlagTarget(null)}
+          targetType={flagTarget?.type || "post"}
+          targetId={flagTarget?.id || ""}
+        />
 
         <Card>
           <CardHeader>
@@ -220,25 +249,36 @@ export default function CommunityForum() {
                   <span>{formatDate(postDetail.createdAt)}</span>
                 </div>
               </div>
-              <div className="flex flex-col items-center gap-1">
+              <div className="flex items-start gap-2">
+                <div className="flex flex-col items-center gap-1">
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => voteMutation.mutate({ targetType: "post", targetId: postDetail.id, voteType: "upvote" })}
+                    data-testid="button-upvote-post"
+                  >
+                    <ThumbsUp className="w-5 h-5" />
+                  </Button>
+                  <span className="font-bold text-lg" data-testid="text-post-score">
+                    {(postDetail.upvotes || 0) - (postDetail.downvotes || 0)}
+                  </span>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => voteMutation.mutate({ targetType: "post", targetId: postDetail.id, voteType: "downvote" })}
+                    data-testid="button-downvote-post"
+                  >
+                    <ThumbsDown className="w-5 h-5" />
+                  </Button>
+                </div>
                 <Button
                   size="icon"
                   variant="ghost"
-                  onClick={() => voteMutation.mutate({ targetType: "post", targetId: postDetail.id, voteType: "upvote" })}
-                  data-testid="button-upvote-post"
+                  className="text-muted-foreground hover:text-destructive"
+                  onClick={(e) => { e.stopPropagation(); setFlagTarget({ type: "post", id: postDetail.id }); }}
+                  data-testid="button-flag-post"
                 >
-                  <ThumbsUp className="w-5 h-5" />
-                </Button>
-                <span className="font-bold text-lg" data-testid="text-post-score">
-                  {(postDetail.upvotes || 0) - (postDetail.downvotes || 0)}
-                </span>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => voteMutation.mutate({ targetType: "post", targetId: postDetail.id, voteType: "downvote" })}
-                  data-testid="button-downvote-post"
-                >
-                  <ThumbsDown className="w-5 h-5" />
+                  <Flag className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -305,7 +345,19 @@ export default function CommunityForum() {
                   </div>
                   <div className="flex-1">
                     <p className="whitespace-pre-wrap">{comment.content}</p>
-                    <p className="text-sm text-muted-foreground mt-2">{formatDate(comment.createdAt)}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-sm text-muted-foreground">{formatDate(comment.createdAt)}</p>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => setFlagTarget({ type: "comment", id: comment.id })}
+                        data-testid={`button-flag-comment-${comment.id}`}
+                      >
+                        <Flag className="w-3 h-3 mr-1" />
+                        Report
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -347,7 +399,14 @@ export default function CommunityForum() {
           <h1 className="text-3xl font-bold" data-testid="text-page-title">Community Forum</h1>
           <p className="text-muted-foreground mt-1">Ask questions, share knowledge, earn reputation</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowModeration(true)}
+            data-testid="button-moderation"
+          >
+            <Shield className="w-4 h-4 mr-2" /> Moderation
+          </Button>
           <Dialog open={showLeaderboard} onOpenChange={setShowLeaderboard}>
             <DialogTrigger asChild>
               <Button variant="outline" data-testid="button-leaderboard">
@@ -368,7 +427,8 @@ export default function CommunityForum() {
                   return (
                     <div
                       key={user.id}
-                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 cursor-pointer hover-elevate"
+                      onClick={() => { setShowLeaderboard(false); setProfileUserId(user.userId); }}
                       data-testid={`leaderboard-user-${index}`}
                     >
                       <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold">
@@ -394,6 +454,17 @@ export default function CommunityForum() {
                   <p className="text-center text-muted-foreground py-4">No contributors yet. Be the first!</p>
                 )}
               </div>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={!!profileUserId} onOpenChange={(open) => !open && setProfileUserId(null)}>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  User Profile
+                </DialogTitle>
+              </DialogHeader>
+              {profileUserId && <UserProfile userId={profileUserId} />}
             </DialogContent>
           </Dialog>
           <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
@@ -526,6 +597,12 @@ export default function CommunityForum() {
           </TabsContent>
         ))}
       </Tabs>
+      <FlagContentDialog
+        open={!!flagTarget}
+        onOpenChange={(open) => !open && setFlagTarget(null)}
+        targetType={flagTarget?.type || "post"}
+        targetId={flagTarget?.id || ""}
+      />
     </div>
   );
 }
