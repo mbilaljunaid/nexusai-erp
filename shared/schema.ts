@@ -817,7 +817,7 @@ export const marketplaceAppVersions = pgTable("marketplace_app_versions", {
   fileSize: integer("file_size"),
   checksum: varchar("checksum"),
   isLatest: boolean("is_latest").default(false),
-  status: varchar("status").default("pending"), // pending, approved, rejected
+  status: varchar("status").default("pending"), // pending, approved, rejected, archived
   publishedAt: timestamp("published_at"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
@@ -833,7 +833,7 @@ export const insertMarketplaceAppVersionSchema = createInsertSchema(marketplaceA
   fileSize: z.number().optional(),
   checksum: z.string().optional(),
   isLatest: z.boolean().optional(),
-  status: z.enum(["pending", "approved", "rejected"]).optional(),
+  status: z.enum(["pending", "approved", "rejected", "archived"]).optional(),
 });
 
 export type InsertMarketplaceAppVersion = z.infer<typeof insertMarketplaceAppVersionSchema>;
@@ -1045,3 +1045,102 @@ export const insertMarketplaceCommissionSettingSchema = createInsertSchema(marke
 
 export type InsertMarketplaceCommissionSetting = z.infer<typeof insertMarketplaceCommissionSettingSchema>;
 export type MarketplaceCommissionSetting = typeof marketplaceCommissionSettings.$inferSelect;
+
+// Marketplace Audit Logs - Tracks all marketplace actions for compliance
+export const marketplaceAuditLogs = pgTable("marketplace_audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  entityType: varchar("entity_type").notNull(), // app, app_version, developer, payout, commission, license, review
+  entityId: varchar("entity_id").notNull(),
+  action: varchar("action").notNull(), // submitted, approved, rejected, archived, price_changed, commission_changed, payout_initiated, payout_completed, license_issued, license_expired
+  actorId: varchar("actor_id").notNull(), // User who performed the action
+  actorRole: varchar("actor_role"), // admin, developer, tenant_admin
+  previousState: jsonb("previous_state"), // State before action
+  newState: jsonb("new_state"), // State after action
+  metadata: jsonb("metadata"), // Additional context (rejection reason, etc.)
+  ipAddress: varchar("ip_address"),
+  userAgent: varchar("user_agent"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertMarketplaceAuditLogSchema = createInsertSchema(marketplaceAuditLogs).omit({ id: true, createdAt: true }).extend({
+  entityType: z.enum(["app", "app_version", "developer", "payout", "commission", "license", "review", "installation", "transaction"]),
+  entityId: z.string().min(1),
+  action: z.string().min(1),
+  actorId: z.string().min(1),
+  actorRole: z.string().optional(),
+  previousState: z.record(z.any()).optional(),
+  newState: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional(),
+  ipAddress: z.string().optional(),
+  userAgent: z.string().optional(),
+});
+
+export type InsertMarketplaceAuditLog = z.infer<typeof insertMarketplaceAuditLogSchema>;
+export type MarketplaceAuditLog = typeof marketplaceAuditLogs.$inferSelect;
+
+// Marketplace Licenses - Tracks app licenses per tenant with expiry and grace period
+export const marketplaceLicenses = pgTable("marketplace_licenses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  appVersionId: varchar("app_version_id"),
+  tenantId: varchar("tenant_id").notNull(),
+  userId: varchar("user_id").notNull(), // Who purchased the license
+  transactionId: varchar("transaction_id"), // Related purchase transaction
+  licenseKey: varchar("license_key").unique(),
+  licenseType: varchar("license_type").notNull(), // perpetual, subscription, trial
+  status: varchar("status").default("active"), // active, expired, suspended, revoked
+  seats: integer("seats").default(0), // 0 = unlimited
+  usedSeats: integer("used_seats").default(0),
+  validFrom: timestamp("valid_from").default(sql`now()`),
+  validUntil: timestamp("valid_until"), // null for perpetual
+  gracePeriodDays: integer("grace_period_days").default(7),
+  gracePeriodEnd: timestamp("grace_period_end"),
+  lastValidatedAt: timestamp("last_validated_at"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertMarketplaceLicenseSchema = createInsertSchema(marketplaceLicenses).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  appId: z.string().min(1),
+  appVersionId: z.string().optional(),
+  tenantId: z.string().min(1),
+  userId: z.string().min(1),
+  transactionId: z.string().optional(),
+  licenseKey: z.string().optional(),
+  licenseType: z.enum(["perpetual", "subscription", "trial"]),
+  status: z.enum(["active", "expired", "suspended", "revoked"]).optional(),
+  seats: z.number().optional(),
+  usedSeats: z.number().optional(),
+  validFrom: z.date().optional(),
+  validUntil: z.date().optional().nullable(),
+  gracePeriodDays: z.number().optional(),
+  gracePeriodEnd: z.date().optional().nullable(),
+  lastValidatedAt: z.date().optional().nullable(),
+  metadata: z.record(z.any()).optional(),
+});
+
+export type InsertMarketplaceLicense = z.infer<typeof insertMarketplaceLicenseSchema>;
+export type MarketplaceLicense = typeof marketplaceLicenses.$inferSelect;
+
+// App Dependencies - Tracks which apps depend on other apps
+export const marketplaceAppDependencies = pgTable("marketplace_app_dependencies", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  dependsOnAppId: varchar("depends_on_app_id").notNull(),
+  minVersion: varchar("min_version"),
+  maxVersion: varchar("max_version"),
+  isRequired: boolean("is_required").default(true), // required vs optional
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertMarketplaceAppDependencySchema = createInsertSchema(marketplaceAppDependencies).omit({ id: true, createdAt: true }).extend({
+  appId: z.string().min(1),
+  dependsOnAppId: z.string().min(1),
+  minVersion: z.string().optional(),
+  maxVersion: z.string().optional(),
+  isRequired: z.boolean().optional(),
+});
+
+export type InsertMarketplaceAppDependency = z.infer<typeof insertMarketplaceAppDependencySchema>;
+export type MarketplaceAppDependency = typeof marketplaceAppDependencies.$inferSelect;
