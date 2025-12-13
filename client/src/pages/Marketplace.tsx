@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Header, Footer } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -451,11 +452,17 @@ export default function Marketplace() {
   const featuredApps = filteredApps.filter(app => app.featuredOrder != null).sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
   const regularApps = filteredApps.filter(app => app.featuredOrder == null);
 
+  useEffect(() => {
+    document.title = "App Marketplace | NexusAI";
+  }, []);
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold" data-testid="text-marketplace-title">App Marketplace</h1>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 p-6 space-y-6">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-3xl font-bold" data-testid="text-marketplace-title">App Marketplace</h1>
           <p className="text-muted-foreground mt-1">
             Discover and install apps to extend your platform
           </p>
@@ -662,14 +669,16 @@ export default function Marketplace() {
         </TabsContent>
       </Tabs>
 
-      <AppDetailDialog
-        app={selectedApp}
-        open={detailsOpen}
-        onOpenChange={setDetailsOpen}
-        onInstall={handleInstall}
-        isInstalling={installMutation.isPending}
-        isInstalled={selectedApp ? installedAppIds.has(selectedApp.id) : false}
-      />
+        <AppDetailDialog
+          app={selectedApp}
+          open={detailsOpen}
+          onOpenChange={setDetailsOpen}
+          onInstall={handleInstall}
+          isInstalling={installMutation.isPending}
+          isInstalled={selectedApp ? installedAppIds.has(selectedApp.id) : false}
+        />
+      </main>
+      <Footer />
     </div>
   );
 }
