@@ -29,7 +29,7 @@ import analyticsRoutes from "./routes/analyticsRoutes";
 import templateRoutes from "./routes/templateRoutes";
 import migrationRoutes from "./routes/migrationRoutes";
 import { validateRequest, errorResponse, ErrorCode, sanitizeInput } from "./security";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupPlatformAuth, isPlatformAuthenticated } from "./platformAuth";
 
 // Generic form data storage (in-memory)
 const formDataStore: Map<string, any[]> = new Map();
@@ -123,23 +123,8 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  // Setup Replit Auth (IMPORTANT: must be before other routes)
-  await setupAuth(app);
-
-  // Auth user endpoint
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user?.claims?.sub;
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Setup Platform Auth (email/password authentication)
+  await setupPlatformAuth(app);
 
   // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {
@@ -646,7 +631,7 @@ export async function registerRoutes(
   });
 
   // Get contact submissions (admin only)
-  app.get("/api/contact/submissions", isAuthenticated, async (req, res) => {
+  app.get("/api/contact/submissions", isPlatformAuthenticated, async (req, res) => {
     try {
       const submissions = await db.select().from(contactSubmissions).orderBy(contactSubmissions.createdAt);
       res.json(submissions);
