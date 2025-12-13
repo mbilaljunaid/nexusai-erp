@@ -23,7 +23,10 @@ import {
   TrendingUp,
   ArrowRight,
   CheckCircle,
-  Cpu
+  Cpu,
+  Globe,
+  Mail,
+  Database
 } from "lucide-react";
 
 export default function ModulesPage() {
@@ -139,6 +142,42 @@ export default function ModulesPage() {
       aiCapability: "Smart Process Automation",
       aiDescription: "AI learns from historical workflow patterns to suggest automation opportunities and optimize approval routing. The system predicts bottlenecks, recommends process improvements, and automatically handles routine decisions based on learned patterns.",
       color: "amber"
+    },
+    {
+      icon: TrendingUp,
+      title: "EPM - Enterprise Performance Management",
+      description: "Comprehensive financial planning platform with budgeting, forecasting, scenario modeling, financial consolidation, and period-end close automation.",
+      features: ["Budget Planning", "Rolling Forecasts", "Scenario Modeling", "Multi-Entity Consolidation", "Financial Close", "Variance Analysis"],
+      aiCapability: "AI-Powered Financial Forecasting",
+      aiDescription: "Machine learning models analyze historical financial data, market trends, and business drivers to generate accurate forecasts. The system automatically identifies variance patterns, recommends budget adjustments, and predicts cash flow with high precision.",
+      color: "emerald"
+    },
+    {
+      icon: Globe,
+      title: "Website Builder",
+      description: "No-code website creation platform with drag-and-drop builder, templates, SEO optimization, forms integration, and e-commerce capabilities.",
+      features: ["Drag & Drop Builder", "Website Templates", "Landing Pages", "Forms & CRM Integration", "SEO Tools", "E-Commerce"],
+      aiCapability: "AI Content & Design Generation",
+      aiDescription: "AI generates website copy, suggests design layouts based on industry best practices, and optimizes content for search engines. The system automatically A/B tests variations and recommends improvements to increase conversion rates.",
+      color: "violet"
+    },
+    {
+      icon: Mail,
+      title: "Email & Communications",
+      description: "Unified email management with team collaboration, marketing campaigns, templates, automation workflows, and communication analytics.",
+      features: ["Unified Inbox", "Team Collaboration", "Email Campaigns", "Template Library", "Automation Rules", "Analytics"],
+      aiCapability: "Intelligent Email Automation",
+      aiDescription: "AI analyzes email content, sentiment, and urgency to prioritize messages and suggest responses. The system automatically categorizes emails, routes to appropriate team members, and optimizes send times for maximum engagement.",
+      color: "sky"
+    },
+    {
+      icon: Database,
+      title: "Data & Integration Hub",
+      description: "Enterprise data management with API gateway, webhooks, third-party integrations, data synchronization, and real-time event processing.",
+      features: ["API Management", "Webhook Management", "Third-Party Connectors", "Data Sync", "ETL Pipelines", "Event Streaming"],
+      aiCapability: "Smart Data Integration",
+      aiDescription: "AI monitors data flows, detects anomalies, and automatically maps fields between systems. The system suggests optimal integration patterns, identifies data quality issues, and recommends schema improvements.",
+      color: "gray"
     }
   ];
 
@@ -155,7 +194,11 @@ export default function ModulesPage() {
       rose: { bg: "bg-rose-100 dark:bg-rose-900/30", text: "text-rose-600 dark:text-rose-400", badge: "bg-rose-500" },
       red: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-600 dark:text-red-400", badge: "bg-red-500" },
       slate: { bg: "bg-slate-100 dark:bg-slate-900/30", text: "text-slate-600 dark:text-slate-400", badge: "bg-slate-500" },
-      amber: { bg: "bg-amber-100 dark:bg-amber-900/30", text: "text-amber-600 dark:text-amber-400", badge: "bg-amber-500" }
+      amber: { bg: "bg-amber-100 dark:bg-amber-900/30", text: "text-amber-600 dark:text-amber-400", badge: "bg-amber-500" },
+      emerald: { bg: "bg-emerald-100 dark:bg-emerald-900/30", text: "text-emerald-600 dark:text-emerald-400", badge: "bg-emerald-500" },
+      violet: { bg: "bg-violet-100 dark:bg-violet-900/30", text: "text-violet-600 dark:text-violet-400", badge: "bg-violet-500" },
+      sky: { bg: "bg-sky-100 dark:bg-sky-900/30", text: "text-sky-600 dark:text-sky-400", badge: "bg-sky-500" },
+      gray: { bg: "bg-gray-100 dark:bg-gray-900/30", text: "text-gray-600 dark:text-gray-400", badge: "bg-gray-500" }
     };
     return colors[color] || colors.blue;
   };
@@ -174,7 +217,7 @@ export default function ModulesPage() {
             Enterprise Modules Powered by AI
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            NexusAI delivers 12 comprehensive enterprise modules, each enhanced with artificial intelligence 
+            NexusAI delivers 16 comprehensive enterprise modules, each enhanced with artificial intelligence 
             to automate decisions, predict outcomes, and optimize operations across your entire organization.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">

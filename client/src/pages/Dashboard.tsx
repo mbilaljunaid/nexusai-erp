@@ -2,7 +2,8 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { useRBAC } from "@/components/RBACContext";
 import {
   BarChart3,
   Users,
@@ -25,32 +26,38 @@ import {
   Code,
   Workflow,
   Home,
-  Plus,
+  Shield,
+  Server,
+  Activity,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  Building,
+  UserCheck,
+  ClipboardList,
 } from "lucide-react";
 
-export default function Dashboard() {
-  const modules = [
-    { title: "CRM", url: "/crm", icon: Target, color: "text-blue-500", description: "Customer Relationship Management" },
-    { title: "Projects", url: "/projects", icon: Briefcase, color: "text-purple-500", description: "Project Management" },
-    { title: "ERP", url: "/erp", icon: Layers, color: "text-green-500", description: "Enterprise Resource Planning" },
-    { title: "HR", url: "/hr", icon: Users, color: "text-orange-500", description: "Human Resources" },
-    { title: "Finance", url: "/finance", icon: DollarSign, color: "text-yellow-500", description: "Finance & Accounting" },
-    { title: "Manufacturing", url: "/manufacturing", icon: Factory, color: "text-red-500", description: "Manufacturing & Production" },
-    { title: "Supply Chain", url: "/inventory", icon: Package, color: "text-cyan-500", description: "Supply Chain & Logistics" },
-    { title: "Sales", url: "/opportunities", icon: TrendingUp, color: "text-lime-500", description: "Sales Pipeline" },
-    { title: "Service", url: "/service-tickets", icon: Headphones, color: "text-pink-500", description: "Service & Support" },
-    { title: "Analytics", url: "/business-intelligence", icon: BarChart3, color: "text-indigo-500", description: "Analytics & BI" },
-    { title: "Compliance", url: "/compliance-dashboard", icon: Lock, color: "text-rose-500", description: "Governance & Compliance" },
-    { title: "AI Assistant", url: "/ai-assistant-advanced", icon: Brain, color: "text-violet-500", description: "AI & Automation" },
+function AdminDashboard() {
+  const platformStats = [
+    { label: "Total Tenants", value: "12", icon: Building, color: "text-blue-500" },
+    { label: "Active Users", value: "1,245", icon: Users, color: "text-green-500" },
+    { label: "System Uptime", value: "99.9%", icon: Server, color: "text-emerald-500" },
+    { label: "API Calls (24h)", value: "2.4M", icon: Activity, color: "text-purple-500" },
   ];
 
-  const quickLinks = [
-    { title: "Processes", url: "/process-hub", icon: Workflow, color: "text-blue-600" },
-    { title: "Integrations", url: "/integration-hub", icon: Code, color: "text-green-600" },
-    { title: "API", url: "/api-management", icon: Code, color: "text-purple-600" },
-    { title: "Admin", url: "/user-management", icon: Settings, color: "text-gray-600" },
-    { title: "Database", url: "/data-explorer", icon: Database, color: "text-orange-600" },
-    { title: "Reports", url: "/reports", icon: FileText, color: "text-red-600" },
+  const systemAlerts = [
+    { type: "warning", message: "High memory usage on Node 3", time: "5 min ago" },
+    { type: "info", message: "Scheduled maintenance in 2 days", time: "1 hour ago" },
+    { type: "success", message: "Database backup completed", time: "3 hours ago" },
+  ];
+
+  const adminQuickLinks = [
+    { title: "User Management", url: "/user-management", icon: Users, color: "text-blue-600" },
+    { title: "System Config", url: "/system-configuration", icon: Settings, color: "text-gray-600" },
+    { title: "Tenant Admin", url: "/tenant-admin", icon: Building, color: "text-purple-600" },
+    { title: "Security", url: "/security-settings", icon: Shield, color: "text-red-600" },
+    { title: "API Gateway", url: "/api-management", icon: Code, color: "text-green-600" },
+    { title: "Audit Logs", url: "/audit-logs", icon: FileText, color: "text-orange-600" },
   ];
 
   return (
@@ -58,43 +65,193 @@ export default function Dashboard() {
       <Breadcrumb items={[{ label: "Home", href: "/" }]} />
 
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold flex items-center gap-3">
-          <Home className="w-10 h-10 text-primary" />
-          Welcome to NexusAI
-        </h1>
-        <p className="text-muted-foreground text-lg">Enterprise ERP Platform - Manage all your business operations in one place</p>
+        <div className="flex items-center gap-3">
+          <h1 className="text-4xl font-bold flex items-center gap-3">
+            <Shield className="w-10 h-10 text-primary" />
+            Platform Administration
+          </h1>
+          <Badge variant="default" className="bg-red-500">Admin</Badge>
+        </div>
+        <p className="text-muted-foreground text-lg">Platform-wide management and system oversight</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-tour="quick-stats">
-        <Card className="md:col-span-2 lg:col-span-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" data-testid="admin-platform-stats">
+        {platformStats.map((stat) => (
+          <Card key={stat.label}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-3xl font-bold">{stat.value}</p>
+                </div>
+                <stat.icon className={`w-10 h-10 ${stat.color} opacity-80`} />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
           <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Quick Stats</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-4 rounded-lg bg-muted">
-                <p className="text-sm text-muted-foreground">Active Users</p>
-                <p className="text-2xl font-bold">245</p>
-              </div>
-              <div className="p-4 rounded-lg bg-muted">
-                <p className="text-sm text-muted-foreground">Active Processes</p>
-                <p className="text-2xl font-bold">18</p>
-              </div>
-              <div className="p-4 rounded-lg bg-muted">
-                <p className="text-sm text-muted-foreground">Pending Tasks</p>
-                <p className="text-2xl font-bold">42</p>
-              </div>
-              <div className="p-4 rounded-lg bg-muted">
-                <p className="text-sm text-muted-foreground">System Health</p>
-                <p className="text-2xl font-bold">99.9%</p>
-              </div>
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-500" />
+              System Alerts
+            </h2>
+            <div className="space-y-3">
+              {systemAlerts.map((alert, index) => (
+                <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted">
+                  {alert.type === "warning" && <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5" />}
+                  {alert.type === "info" && <Clock className="w-5 h-5 text-blue-500 mt-0.5" />}
+                  {alert.type === "success" && <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />}
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{alert.message}</p>
+                    <p className="text-xs text-muted-foreground">{alert.time}</p>
+                  </div>
+                </div>
+              ))}
             </div>
+            <Link to="/system-alerts">
+              <Button variant="outline" size="sm" className="mt-4" data-testid="button-view-all-alerts">
+                View All Alerts
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Building className="w-5 h-5 text-blue-500" />
+              Tenant Overview
+            </h2>
+            <div className="space-y-3">
+              {[
+                { name: "Acme Corp", users: 245, status: "active" },
+                { name: "TechStart Inc", users: 89, status: "active" },
+                { name: "Global Logistics", users: 312, status: "active" },
+              ].map((tenant) => (
+                <div key={tenant.name} className="flex items-center justify-between p-3 rounded-lg bg-muted">
+                  <div className="flex items-center gap-3">
+                    <Building className="w-5 h-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">{tenant.name}</p>
+                      <p className="text-xs text-muted-foreground">{tenant.users} users</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="text-green-600 border-green-600">{tenant.status}</Badge>
+                </div>
+              ))}
+            </div>
+            <Link to="/tenant-admin">
+              <Button variant="outline" size="sm" className="mt-4" data-testid="button-manage-tenants">
+                Manage Tenants
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
 
-      <div className="space-y-4" data-tour="core-modules">
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold">Admin Quick Access</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {adminQuickLinks.map((link) => (
+            <Link key={link.url} to={link.url}>
+              <Card className="hover:shadow-md hover:border-primary transition-all cursor-pointer h-full">
+                <CardContent className="p-4 flex flex-col items-center justify-center gap-2 text-center">
+                  <link.icon className={`w-6 h-6 ${link.color}`} />
+                  <p className="text-sm font-medium">{link.title}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <Card className="border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <Shield className="w-8 h-8 text-amber-600" />
+            <div>
+              <h3 className="font-semibold mb-2">Administrator Access</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                You have full platform access. All system configurations, user management, and tenant administration are available.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Link to="/user-management">
+                  <Button size="sm" data-testid="button-user-management">User Management</Button>
+                </Link>
+                <Link to="/system-configuration">
+                  <Button size="sm" variant="outline" data-testid="button-system-config">System Config</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function EditorDashboard() {
+  const tenantStats = [
+    { label: "Team Members", value: "28", icon: Users, color: "text-blue-500" },
+    { label: "Active Projects", value: "12", icon: Briefcase, color: "text-purple-500" },
+    { label: "Open Tasks", value: "47", icon: ClipboardList, color: "text-orange-500" },
+    { label: "Completed This Month", value: "156", icon: CheckCircle, color: "text-green-500" },
+  ];
+
+  const modules = [
+    { title: "CRM", url: "/crm", icon: Target, color: "text-blue-500", description: "Customer Relationship Management" },
+    { title: "Projects", url: "/projects", icon: Briefcase, color: "text-purple-500", description: "Project Management" },
+    { title: "HR", url: "/hr", icon: Users, color: "text-orange-500", description: "Human Resources" },
+    { title: "Finance", url: "/finance", icon: DollarSign, color: "text-yellow-500", description: "Finance & Accounting" },
+    { title: "Manufacturing", url: "/manufacturing", icon: Factory, color: "text-red-500", description: "Manufacturing & Production" },
+    { title: "Supply Chain", url: "/inventory", icon: Package, color: "text-cyan-500", description: "Supply Chain & Logistics" },
+  ];
+
+  const quickLinks = [
+    { title: "Processes", url: "/process-hub", icon: Workflow, color: "text-blue-600" },
+    { title: "Reports", url: "/reports", icon: FileText, color: "text-green-600" },
+    { title: "Analytics", url: "/business-intelligence", icon: BarChart3, color: "text-purple-600" },
+    { title: "Team", url: "/hr/employees", icon: Users, color: "text-orange-600" },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <Breadcrumb items={[{ label: "Home", href: "/" }]} />
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <h1 className="text-4xl font-bold flex items-center gap-3">
+            <UserCheck className="w-10 h-10 text-primary" />
+            Tenant Dashboard
+          </h1>
+          <Badge variant="default" className="bg-blue-500">Editor</Badge>
+        </div>
+        <p className="text-muted-foreground text-lg">Manage your organization's operations and team</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" data-testid="editor-tenant-stats">
+        {tenantStats.map((stat) => (
+          <Card key={stat.label}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-3xl font-bold">{stat.value}</p>
+                </div>
+                <stat.icon className={`w-10 h-10 ${stat.color} opacity-80`} />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="space-y-4">
         <div>
-          <h2 className="text-2xl font-bold mb-4">Core Modules</h2>
-          <p className="text-muted-foreground mb-4">Access all major business modules and processes</p>
+          <h2 className="text-2xl font-bold mb-4">Business Modules</h2>
+          <p className="text-muted-foreground mb-4">Access and manage your organization's core systems</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -103,7 +260,7 @@ export default function Dashboard() {
               <Card className="hover:shadow-lg hover:border-primary transition-all cursor-pointer h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-lg bg-muted`}>
+                    <div className="p-3 rounded-lg bg-muted">
                       <module.icon className={`w-6 h-6 ${module.color}`} />
                     </div>
                     <div className="flex-1">
@@ -118,9 +275,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="space-y-4" data-tour="quick-links">
+      <div className="space-y-4">
         <h2 className="text-2xl font-bold">Quick Links</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {quickLinks.map((link) => (
             <Link key={link.url} to={link.url}>
               <Card className="hover:shadow-md hover:border-primary transition-all cursor-pointer h-full">
@@ -134,32 +291,97 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Reports & Analytics</h2>
-          <Link to="/reports">
-            <Button size="sm" variant="outline" data-testid="button-view-all-reports">
-              View All Reports
+      <Card className="bg-muted/50">
+        <CardContent className="p-6">
+          <h3 className="font-semibold mb-2">Editor Access</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            You can create, edit, and manage content within your organization. For administrative actions, contact your platform administrator.
+          </p>
+          <Link to="/process-hub">
+            <Button size="sm" data-testid="button-explore-processes">Explore Processes</Button>
+          </Link>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function ViewerDashboard() {
+  const myTasks = [
+    { title: "Review Q4 Report", status: "pending", due: "Today" },
+    { title: "Submit Expense Claims", status: "pending", due: "Tomorrow" },
+    { title: "Complete Training Module", status: "in_progress", due: "Dec 20" },
+  ];
+
+  const quickModules = [
+    { title: "My Tasks", url: "/tasks", icon: ClipboardList, color: "text-blue-500", description: "View your pending tasks" },
+    { title: "HR Portal", url: "/hr/employee-self-service", icon: Users, color: "text-orange-500", description: "Self-service HR portal" },
+    { title: "Timesheets", url: "/hr/time-tracking", icon: Clock, color: "text-green-500", description: "Track your work hours" },
+    { title: "Reports", url: "/reports", icon: FileText, color: "text-purple-500", description: "View available reports" },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <Breadcrumb items={[{ label: "Home", href: "/" }]} />
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <h1 className="text-4xl font-bold flex items-center gap-3">
+            <Home className="w-10 h-10 text-primary" />
+            My Dashboard
+          </h1>
+          <Badge variant="secondary">Viewer</Badge>
+        </div>
+        <p className="text-muted-foreground text-lg">Your personal workspace and quick access to key features</p>
+      </div>
+
+      <Card>
+        <CardContent className="p-6">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <ClipboardList className="w-5 h-5 text-blue-500" />
+            My Tasks
+          </h2>
+          <div className="space-y-3">
+            {myTasks.map((task, index) => (
+              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted">
+                <div className="flex items-center gap-3">
+                  {task.status === "pending" && <Clock className="w-5 h-5 text-amber-500" />}
+                  {task.status === "in_progress" && <Activity className="w-5 h-5 text-blue-500" />}
+                  <div>
+                    <p className="text-sm font-medium">{task.title}</p>
+                    <p className="text-xs text-muted-foreground">Due: {task.due}</p>
+                  </div>
+                </div>
+                <Badge variant={task.status === "pending" ? "outline" : "default"}>
+                  {task.status === "pending" ? "Pending" : "In Progress"}
+                </Badge>
+              </div>
+            ))}
+          </div>
+          <Link to="/tasks">
+            <Button variant="outline" size="sm" className="mt-4" data-testid="button-view-all-tasks">
+              View All Tasks
             </Button>
           </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[
-            { module: "crm", title: "CRM Reports", color: "bg-blue-50 dark:bg-blue-950", icon: Target },
-            { module: "finance", title: "Finance Reports", color: "bg-yellow-50 dark:bg-yellow-950", icon: DollarSign },
-            { module: "supply_chain", title: "Supply Chain Reports", color: "bg-cyan-50 dark:bg-cyan-950", icon: Package },
-          ].map(({ module, title, color, icon: Icon }) => (
-            <Link key={module} to={`/reports/${module}`}>
+        </CardContent>
+      </Card>
+
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold">Quick Access</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {quickModules.map((module) => (
+            <Link key={module.url} to={module.url}>
               <Card className="hover:shadow-lg hover:border-primary transition-all cursor-pointer h-full">
                 <CardContent className="p-6">
-                  <div className={`p-4 rounded-lg ${color} mb-4 w-fit`}>
-                    <Icon className="w-6 h-6" />
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 rounded-lg bg-muted">
+                      <module.icon className={`w-6 h-6 ${module.color}`} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold">{module.title}</h3>
+                      <p className="text-sm text-muted-foreground">{module.description}</p>
+                    </div>
                   </div>
-                  <h3 className="font-semibold mb-2">{title}</h3>
-                  <p className="text-sm text-muted-foreground">Access and build custom reports</p>
-                  <Button size="sm" variant="ghost" className="mt-4" data-testid={`button-reports-${module}`}>
-                    Explore →
-                  </Button>
                 </CardContent>
               </Card>
             </Link>
@@ -167,17 +389,31 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <Card className="bg-muted/50" data-tour="getting-started">
+      <Card className="bg-muted/50">
         <CardContent className="p-6">
-          <h3 className="font-semibold mb-2">Getting Started</h3>
+          <h3 className="font-semibold mb-2">Need More Access?</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            New to NexusAI? Start with the Process Hub to understand our 18 end-to-end business processes, then navigate to specific modules using the menu on the left.
+            Contact your team administrator to request additional permissions or access to more modules.
           </p>
-          <Link to="/process-hub">
-            <button className="text-sm font-medium text-primary hover:underline">Explore Processes →</button>
+          <Link to="/help">
+            <Button size="sm" variant="outline" data-testid="button-get-help">Get Help</Button>
           </Link>
         </CardContent>
       </Card>
     </div>
   );
+}
+
+export default function Dashboard() {
+  const { userRole } = useRBAC();
+
+  if (userRole === "admin") {
+    return <AdminDashboard />;
+  }
+
+  if (userRole === "editor") {
+    return <EditorDashboard />;
+  }
+
+  return <ViewerDashboard />;
 }
