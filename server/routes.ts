@@ -2647,6 +2647,71 @@ export async function registerRoutes(
 
   // ========== COMMUNITY & REPUTATION API ==========
 
+  // Rate limiting for community actions based on trust level (persisted in DB)
+  const getTrustLevelLimits = (trustLevel: number) => {
+    const limits: Record<number, { postsPerDay: number; answersPerDay: number }> = {
+      0: { postsPerDay: 2, answersPerDay: 3 },      // New
+      1: { postsPerDay: 5, answersPerDay: 10 },     // Contributor
+      2: { postsPerDay: 10, answersPerDay: 20 },    // Trusted
+      3: { postsPerDay: Infinity, answersPerDay: Infinity }, // Leader (truly unlimited)
+    };
+    return limits[trustLevel] || limits[0];
+  };
+
+  const checkRateLimit = async (userId: string, actionType: "post" | "answer") => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    // Get user's trust level from database (persisted)
+    let [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+    
+    // Create trust record if doesn't exist
+    if (!trust) {
+      const [newTrust] = await db.insert(userTrustLevels).values({
+        userId,
+        trustLevel: 0,
+        totalReputation: 0,
+        postsToday: 0,
+        answersToday: 0,
+        lastResetAt: today,
+      }).returning();
+      trust = newTrust;
+    }
+    
+    // Reset daily counters if last reset was before today
+    const lastReset = trust.lastResetAt ? new Date(trust.lastResetAt) : new Date(0);
+    const lastResetDay = new Date(lastReset.getFullYear(), lastReset.getMonth(), lastReset.getDate());
+    
+    if (lastResetDay.getTime() < today.getTime()) {
+      await db.update(userTrustLevels)
+        .set({ postsToday: 0, answersToday: 0, lastResetAt: today })
+        .where(eq(userTrustLevels.userId, userId));
+      trust = { ...trust, postsToday: 0, answersToday: 0, lastResetAt: today };
+    }
+
+    const trustLevel = trust.trustLevel || 0;
+    const limits = getTrustLevelLimits(trustLevel);
+
+    // Leaders have unlimited access
+    if (trustLevel >= 3) {
+      return { allowed: true };
+    }
+
+    if (actionType === "post") {
+      const currentPosts = trust.postsToday || 0;
+      if (currentPosts >= limits.postsPerDay) {
+        return { allowed: false, message: `Daily post limit reached (${limits.postsPerDay}/day for your trust level). Earn more reputation to increase limits.` };
+      }
+    } else {
+      const currentAnswers = trust.answersToday || 0;
+      if (currentAnswers >= limits.answersPerDay) {
+        return { allowed: false, message: `Daily answer limit reached (${limits.answersPerDay}/day for your trust level). Earn more reputation to increase limits.` };
+      }
+    }
+    
+    return { allowed: true };
+  };
+
   // GET /api/community/spaces - List all community spaces
   app.get("/api/community/spaces", async (req, res) => {
     try {
@@ -2735,6 +2800,12 @@ export async function registerRoutes(
       const userId = req.user?.id || req.userId;
       if (!userId) return res.status(401).json({ error: "User not authenticated" });
 
+      // Check rate limit
+      const rateCheck = await checkRateLimit(userId, "post");
+      if (!rateCheck.allowed) {
+        return res.status(429).json({ error: rateCheck.message });
+      }
+
       const parseResult = insertCommunityPostSchema.safeParse({ ...req.body, authorId: userId });
       if (!parseResult.success) {
         return res.status(400).json({ error: parseResult.error.errors.map(e => e.message).join(", ") });
@@ -2783,6 +2854,12 @@ export async function registerRoutes(
     try {
       const userId = req.user?.id || req.userId;
       if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      // Check rate limit
+      const rateCheck = await checkRateLimit(userId, "answer");
+      if (!rateCheck.allowed) {
+        return res.status(429).json({ error: rateCheck.message });
+      }
 
       const parseResult = insertCommunityCommentSchema.safeParse({
         ...req.body,

@@ -10,13 +10,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { 
   MessageSquare, ThumbsUp, ThumbsDown, Eye, CheckCircle, 
-  Plus, Search, TrendingUp, Clock, Award, Users, Hash
+  Plus, Search, TrendingUp, Clock, Award, Users, Hash, Trophy, Star, Shield
 } from "lucide-react";
-import type { CommunitySpace, CommunityPost } from "@shared/schema";
+import type { CommunitySpace, CommunityPost, UserTrustLevel } from "@shared/schema";
 
 interface PostWithComments extends CommunityPost {
   comments?: Array<{
@@ -30,6 +31,28 @@ interface PostWithComments extends CommunityPost {
   }>;
 }
 
+interface LeaderboardUser extends UserTrustLevel {
+  // Extended for display
+}
+
+interface ReputationData {
+  trustLevel: UserTrustLevel;
+  recentEvents: Array<{
+    id: string;
+    actionType: string;
+    points: number;
+    description: string | null;
+    createdAt: Date | null;
+  }>;
+  badges: Array<{
+    id: string;
+    badgeType: string;
+    currentTier: string | null;
+    progress: number | null;
+    threshold: number | null;
+  }>;
+}
+
 export default function CommunityForum() {
   const { toast } = useToast();
   const [selectedSpace, setSelectedSpace] = useState<string | null>(null);
@@ -38,6 +61,7 @@ export default function CommunityForum() {
   const [newPost, setNewPost] = useState({ title: "", content: "", postType: "discussion", spaceId: "" });
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const { data: spaces, isLoading: spacesLoading } = useQuery<CommunitySpace[]>({
     queryKey: ["/api/community/spaces"],
@@ -108,6 +132,35 @@ export default function CommunityForum() {
       toast({ title: "Error", description: "Please log in to vote.", variant: "destructive" });
     },
   });
+
+  const acceptAnswerMutation = useMutation({
+    mutationFn: async ({ postId, commentId }: { postId: string; commentId: string }) => {
+      return apiRequest("POST", `/api/community/posts/${postId}/accept-answer`, { commentId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/community/posts", selectedPost] });
+      queryClient.invalidateQueries({ queryKey: ["/api/community/leaderboard"] });
+      toast({ title: "Answer accepted!", description: "The answerer earned +15 reputation points." });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Only the post author can accept answers.", variant: "destructive" });
+    },
+  });
+
+  const { data: leaderboard } = useQuery<LeaderboardUser[]>({
+    queryKey: ["/api/community/leaderboard"],
+    enabled: showLeaderboard,
+  });
+
+  const getTrustLevelInfo = (level: number) => {
+    const levels = [
+      { name: "New Member", color: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200", icon: Users },
+      { name: "Contributor", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200", icon: Star },
+      { name: "Trusted", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200", icon: Shield },
+      { name: "Leader", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200", icon: Trophy },
+    ];
+    return levels[level] || levels[0];
+  };
 
   const filteredPosts = posts?.filter(p => 
     p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -234,8 +287,20 @@ export default function CommunityForum() {
                     >
                       <ThumbsDown className="w-4 h-4" />
                     </Button>
-                    {comment.isAccepted && (
+                    {comment.isAccepted ? (
                       <CheckCircle className="w-6 h-6 text-green-600 mt-2" />
+                    ) : !postDetail.acceptedAnswerId && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="mt-2 text-xs"
+                        onClick={() => acceptAnswerMutation.mutate({ postId: postDetail.id, commentId: comment.id })}
+                        disabled={acceptAnswerMutation.isPending}
+                        data-testid={`button-accept-answer-${comment.id}`}
+                      >
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Accept
+                      </Button>
                     )}
                   </div>
                   <div className="flex-1">
@@ -282,12 +347,61 @@ export default function CommunityForum() {
           <h1 className="text-3xl font-bold" data-testid="text-page-title">Community Forum</h1>
           <p className="text-muted-foreground mt-1">Ask questions, share knowledge, earn reputation</p>
         </div>
-        <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
-          <DialogTrigger asChild>
-            <Button data-testid="button-new-post">
-              <Plus className="w-4 h-4 mr-2" /> New Post
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Dialog open={showLeaderboard} onOpenChange={setShowLeaderboard}>
+            <DialogTrigger asChild>
+              <Button variant="outline" data-testid="button-leaderboard">
+                <Trophy className="w-4 h-4 mr-2" /> Leaderboard
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-yellow-500" />
+                  Top Contributors
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                {leaderboard?.slice(0, 10).map((user, index) => {
+                  const trustInfo = getTrustLevelInfo(user.trustLevel || 0);
+                  const TrustIcon = trustInfo.icon;
+                  return (
+                    <div
+                      key={user.id}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
+                      data-testid={`leaderboard-user-${index}`}
+                    >
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold">
+                        {index + 1}
+                      </div>
+                      <Avatar>
+                        <AvatarFallback>
+                          <TrustIcon className="w-4 h-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{user.userId.slice(0, 8)}...</p>
+                        <Badge className={`${trustInfo.color} text-xs`}>{trustInfo.name}</Badge>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-lg">{user.totalReputation || 0}</p>
+                        <p className="text-xs text-muted-foreground">rep</p>
+                      </div>
+                    </div>
+                  );
+                })}
+                {!leaderboard?.length && (
+                  <p className="text-center text-muted-foreground py-4">No contributors yet. Be the first!</p>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
+            <DialogTrigger asChild>
+              <Button data-testid="button-new-post">
+                <Plus className="w-4 h-4 mr-2" /> New Post
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>Create New Post</DialogTitle>
