@@ -26,6 +26,7 @@ import analyticsRoutes from "./routes/analyticsRoutes";
 import templateRoutes from "./routes/templateRoutes";
 import migrationRoutes from "./routes/migrationRoutes";
 import { validateRequest, errorResponse, ErrorCode, sanitizeInput } from "./security";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Generic form data storage (in-memory)
 const formDataStore: Map<string, any[]> = new Map();
@@ -119,10 +120,31 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
+  // Setup Replit Auth (IMPORTANT: must be before other routes)
+  await setupAuth(app);
+
+  // Auth user endpoint
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
   // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {
     if (req.path === "/health") return next();
     if (req.path.startsWith("/auth")) return next();
+    if (req.path === "/login") return next();
+    if (req.path === "/logout") return next();
+    if (req.path === "/callback") return next();
     if (req.path === "/demos/industries") return next();
     if (req.path === "/demos/request") return next();
     if (req.path === "/demos/list") return next();

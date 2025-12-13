@@ -1,5 +1,5 @@
 import {
-  type User, type InsertUser,
+  type User, type InsertUser, type UpsertUser,
   type Project, type InsertProject,
   type Invoice, type InsertInvoice,
   type Lead, type InsertLead,
@@ -44,6 +44,8 @@ import {
 import { randomUUID } from "crypto";
 
 export interface IStorage {
+  // User operations (IMPORTANT: mandatory for Replit Auth)
+  upsertUser(user: UpsertUser): Promise<User>;
   getTenant(id: string): Promise<Tenant | undefined>;
   listTenants(): Promise<Tenant[]>;
   createTenant(tenant: InsertTenant): Promise<Tenant>;
@@ -284,6 +286,29 @@ export class MemStorage implements IStorage {
   async getUser(id: string) { return this.users.get(id); }
   async listUsers() { return Array.from(this.users.values()); }
   async createUser(u: InsertUser) { const id = randomUUID(); const user: User = { id, ...u as any, createdAt: new Date() }; this.users.set(id, user); return user; }
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const existing = this.users.get(userData.id);
+    if (existing) {
+      const updated: User = { ...existing, ...userData, updatedAt: new Date() };
+      this.users.set(userData.id, updated);
+      return updated;
+    }
+    const user: User = { 
+      id: userData.id, 
+      email: userData.email ?? null, 
+      password: null, 
+      name: userData.firstName && userData.lastName ? `${userData.firstName} ${userData.lastName}` : null,
+      firstName: userData.firstName ?? null,
+      lastName: userData.lastName ?? null,
+      profileImageUrl: userData.profileImageUrl ?? null,
+      role: "user", 
+      permissions: null, 
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.users.set(userData.id, user);
+    return user;
+  }
 
   async getProject(id: string) { return this.projects.get(id); }
   async listProjects(ownerId?: string) { const list = Array.from(this.projects.values()); return ownerId ? list.filter(p => p.ownerId === ownerId) : list; }
