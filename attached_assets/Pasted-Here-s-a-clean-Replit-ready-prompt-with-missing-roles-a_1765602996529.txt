@@ -1,0 +1,70 @@
+Here’s a clean, **Replit-ready prompt**, with **missing roles added** and the requirement clearly structured so it’s unambiguous for implementation.
+
+---
+
+## Additional user roles you missed (recommended)
+
+To make training access realistic and enterprise-grade, you should also include:
+
+* **End Users / Operational Users**
+  (day-to-day users who execute transactions but don’t configure the system)
+
+* **Super Admin (Global / System Owner)**
+  (higher than platform admin, for internal Nexus AI First team or core maintainers)
+
+* **Trainer / Content Author (optional but very useful)**
+  (users who create, update, and maintain training materials)
+
+You can keep these optional if you want minimal scope, but they are standard in ERP/LMS setups.
+
+---
+
+## Reworded Prompt for Replit (copy-paste ready)
+
+> **Objective:**
+> Implement a role-based training content management and access system.
+>
+> **Requirement:**
+> Training content must be **filterable, role-aware, and permission-controlled**, so that each user only sees training materials that are relevant to their role and responsibilities.
+>
+> **User Roles to Support:**
+>
+> * Implementation Partner
+> * Business User
+> * End User / Operational User
+> * Business Analyst
+> * Tenant Admin
+> * Platform Admin
+> * Super Admin (system owner / core team)
+> * Trainer / Content Author (if applicable)
+>
+> **Functional Expectations:**
+>
+> 1. Each training item (video, document, walkthrough, guide) must be tagged with one or more applicable user roles.
+> 2. Users must only be able to view training content mapped to their assigned role(s).
+> 3. Tenant Admins should be able to control which training content is visible within their tenant.
+> 4. Platform Admins / Super Admins should have visibility across all roles and tenants.
+> 5. Training content must support filtering by:
+>
+>    * User role
+>    * Module / feature
+>    * Skill level (basic, intermediate, advanced)
+> 6. Access rules must be enforced both in the UI and backend (not UI-only filtering).
+>
+> **Constraints:**
+>
+> * Enhance and reuse existing role management and permission structures.
+> * Do **not** introduce a separate training system; integrate within the current application framework.
+>
+> **Outcome:**
+> A scalable, secure, role-based training experience where each user sees only relevant learning content aligned with their role.
+
+---
+
+If you want, I can also:
+
+* Map **exact training types per role** (e.g., what Business Users vs Analysts see)
+* Convert this into **acceptance criteria / user stories**
+* Align it with your **ERP role management model** (since you’re building Nexus AI First ERP)
+
+Just tell me what format you want next.

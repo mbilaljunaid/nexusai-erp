@@ -18,6 +18,17 @@ interface LessonSection {
   content: string[];
 }
 
+export type EnterpriseRole = 
+  | "implementation_partner" 
+  | "business_user" 
+  | "end_user" 
+  | "business_analyst" 
+  | "tenant_admin" 
+  | "platform_admin" 
+  | "super_admin";
+
+export type SkillLevel = "basic" | "intermediate" | "advanced";
+
 interface LessonContent {
   title: string;
   category: string;
@@ -32,6 +43,9 @@ interface LessonContent {
   nextLesson?: { title: string; href: string };
   prevLesson?: { title: string; href: string };
   parentGuide: { title: string; href: string };
+  allowedRoles: EnterpriseRole[];
+  module: string;
+  skillLevel: SkillLevel;
 }
 
 const lessonContent: Record<string, LessonContent> = {
@@ -90,7 +104,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Generate a trial balance for the current period"
     ],
     nextLesson: { title: "Accounts Payable", href: "/docs/training-guides/finance/accounts-payable" },
-    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" }
+    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" },
+    allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "finance",
+    skillLevel: "intermediate"
   },
   "finance/accounts-payable": {
     title: "Accounts Payable",
@@ -148,7 +165,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "General Ledger", href: "/docs/training-guides/finance/general-ledger" },
     nextLesson: { title: "Accounts Receivable", href: "/docs/training-guides/finance/accounts-receivable" },
-    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" }
+    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" },
+    allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "finance",
+    skillLevel: "basic"
   },
   "finance/accounts-receivable": {
     title: "Accounts Receivable",
@@ -206,7 +226,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Accounts Payable", href: "/docs/training-guides/finance/accounts-payable" },
     nextLesson: { title: "Budgeting", href: "/docs/training-guides/finance/budgeting" },
-    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" }
+    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" },
+    allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "finance",
+    skillLevel: "basic"
   },
   "finance/budgeting": {
     title: "Budgeting",
@@ -264,7 +287,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Accounts Receivable", href: "/docs/training-guides/finance/accounts-receivable" },
     nextLesson: { title: "Financial Reporting", href: "/docs/training-guides/finance/financial-reporting" },
-    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" }
+    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" },
+    allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "finance",
+    skillLevel: "intermediate"
   },
   "finance/financial-reporting": {
     title: "Financial Reporting",
@@ -322,7 +348,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Budgeting", href: "/docs/training-guides/finance/budgeting" },
     nextLesson: { title: "Cash Management", href: "/docs/training-guides/finance/cash-management" },
-    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" }
+    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" },
+    allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "finance",
+    skillLevel: "advanced"
   },
   "finance/cash-management": {
     title: "Cash Management",
@@ -379,7 +408,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Process an intercompany cash transfer"
     ],
     prevLesson: { title: "Financial Reporting", href: "/docs/training-guides/finance/financial-reporting" },
-    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" }
+    parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" },
+    allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "finance",
+    skillLevel: "advanced"
   },
   "crm/customer-management": {
     title: "Customer Management",
@@ -436,7 +468,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Build a parent-child account hierarchy"
     ],
     nextLesson: { title: "Lead & Opportunity", href: "/docs/training-guides/crm/lead-opportunity" },
-    parentGuide: { title: "CRM Training Guide", href: "/docs/training-guides/crm" }
+    parentGuide: { title: "CRM Training Guide", href: "/docs/training-guides/crm" },
+    allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "crm",
+    skillLevel: "basic"
   },
   "crm/lead-opportunity": {
     title: "Lead & Opportunity",
@@ -494,7 +529,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Customer Management", href: "/docs/training-guides/crm/customer-management" },
     nextLesson: { title: "Sales Analytics", href: "/docs/training-guides/crm/sales-analytics" },
-    parentGuide: { title: "CRM Training Guide", href: "/docs/training-guides/crm" }
+    parentGuide: { title: "CRM Training Guide", href: "/docs/training-guides/crm" },
+    allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "crm",
+    skillLevel: "basic"
   },
   "crm/sales-analytics": {
     title: "Sales Analytics",
@@ -552,7 +590,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Lead & Opportunity", href: "/docs/training-guides/crm/lead-opportunity" },
     nextLesson: { title: "Communication Tools", href: "/docs/training-guides/crm/communication-tools" },
-    parentGuide: { title: "CRM Training Guide", href: "/docs/training-guides/crm" }
+    parentGuide: { title: "CRM Training Guide", href: "/docs/training-guides/crm" },
+    allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "crm",
+    skillLevel: "intermediate"
   },
   "crm/communication-tools": {
     title: "Communication Tools",
@@ -609,7 +650,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Create an email template with merge fields"
     ],
     prevLesson: { title: "Sales Analytics", href: "/docs/training-guides/crm/sales-analytics" },
-    parentGuide: { title: "CRM Training Guide", href: "/docs/training-guides/crm" }
+    parentGuide: { title: "CRM Training Guide", href: "/docs/training-guides/crm" },
+    allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "crm",
+    skillLevel: "basic"
   },
   "hr/employee-management": {
     title: "Employee Management",
@@ -666,7 +710,10 @@ const lessonContent: Record<string, LessonContent> = {
       "View and update your own profile in self-service"
     ],
     nextLesson: { title: "Time & Attendance", href: "/docs/training-guides/hr/time-attendance" },
-    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" }
+    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" },
+    allowedRoles: ["business_user", "end_user", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "hr",
+    skillLevel: "basic"
   },
   "hr/time-attendance": {
     title: "Time & Attendance",
@@ -724,7 +771,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Employee Management", href: "/docs/training-guides/hr/employee-management" },
     nextLesson: { title: "Payroll Processing", href: "/docs/training-guides/hr/payroll-processing" },
-    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" }
+    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" },
+    allowedRoles: ["end_user", "business_user", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "hr",
+    skillLevel: "basic"
   },
   "hr/payroll-processing": {
     title: "Payroll Processing",
@@ -782,7 +832,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Time & Attendance", href: "/docs/training-guides/hr/time-attendance" },
     nextLesson: { title: "Performance Reviews", href: "/docs/training-guides/hr/performance-reviews" },
-    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" }
+    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" },
+    allowedRoles: ["business_user", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "hr",
+    skillLevel: "intermediate"
   },
   "hr/performance-reviews": {
     title: "Performance Reviews",
@@ -840,7 +893,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Payroll Processing", href: "/docs/training-guides/hr/payroll-processing" },
     nextLesson: { title: "Leave Management", href: "/docs/training-guides/hr/leave-management" },
-    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" }
+    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" },
+    allowedRoles: ["business_user", "end_user", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "hr",
+    skillLevel: "basic"
   },
   "hr/leave-management": {
     title: "Leave Management",
@@ -898,7 +954,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Performance Reviews", href: "/docs/training-guides/hr/performance-reviews" },
     nextLesson: { title: "HR Reporting", href: "/docs/training-guides/hr/hr-reporting" },
-    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" }
+    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" },
+    allowedRoles: ["end_user", "business_user", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "hr",
+    skillLevel: "basic"
   },
   "hr/hr-reporting": {
     title: "HR Reporting",
@@ -955,7 +1014,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Schedule a monthly HR metrics report for distribution"
     ],
     prevLesson: { title: "Leave Management", href: "/docs/training-guides/hr/leave-management" },
-    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" }
+    parentGuide: { title: "HR & Payroll Training Guide", href: "/docs/training-guides/hr" },
+    allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "hr",
+    skillLevel: "intermediate"
   },
   "inventory/stock-management": {
     title: "Stock Management",
@@ -1012,7 +1074,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Adjust safety stock for a seasonal item"
     ],
     nextLesson: { title: "Warehouse Operations", href: "/docs/training-guides/inventory/warehouse-operations" },
-    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" }
+    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" },
+    allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "inventory",
+    skillLevel: "basic"
   },
   "inventory/warehouse-operations": {
     title: "Warehouse Operations",
@@ -1070,7 +1135,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Stock Management", href: "/docs/training-guides/inventory/stock-management" },
     nextLesson: { title: "Goods Movement", href: "/docs/training-guides/inventory/goods-movement" },
-    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" }
+    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" },
+    allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "inventory",
+    skillLevel: "intermediate"
   },
   "inventory/goods-movement": {
     title: "Goods Movement",
@@ -1128,7 +1196,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Warehouse Operations", href: "/docs/training-guides/inventory/warehouse-operations" },
     nextLesson: { title: "Inventory Valuation", href: "/docs/training-guides/inventory/inventory-valuation" },
-    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" }
+    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" },
+    allowedRoles: ["end_user", "business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "inventory",
+    skillLevel: "basic"
   },
   "inventory/inventory-valuation": {
     title: "Inventory Valuation",
@@ -1186,7 +1257,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Goods Movement", href: "/docs/training-guides/inventory/goods-movement" },
     nextLesson: { title: "Inventory Analytics", href: "/docs/training-guides/inventory/inventory-analytics" },
-    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" }
+    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" },
+    allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "inventory",
+    skillLevel: "advanced"
   },
   "inventory/inventory-analytics": {
     title: "Inventory Analytics",
@@ -1243,7 +1317,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Create a dashboard showing key inventory KPIs"
     ],
     prevLesson: { title: "Inventory Valuation", href: "/docs/training-guides/inventory/inventory-valuation" },
-    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" }
+    parentGuide: { title: "Inventory Training Guide", href: "/docs/training-guides/inventory" },
+    allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "inventory",
+    skillLevel: "intermediate"
   },
   "analytics/dashboard-builder": {
     title: "Dashboard Builder",
@@ -1300,7 +1377,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Apply a filter that affects multiple widgets"
     ],
     nextLesson: { title: "Report Designer", href: "/docs/training-guides/analytics/report-designer" },
-    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" }
+    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" },
+    allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "analytics",
+    skillLevel: "intermediate"
   },
   "analytics/report-designer": {
     title: "Report Designer",
@@ -1358,7 +1438,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Dashboard Builder", href: "/docs/training-guides/analytics/dashboard-builder" },
     nextLesson: { title: "Predictive Analytics", href: "/docs/training-guides/analytics/predictive-analytics" },
-    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" }
+    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" },
+    allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "analytics",
+    skillLevel: "advanced"
   },
   "analytics/predictive-analytics": {
     title: "Predictive Analytics",
@@ -1416,7 +1499,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Report Designer", href: "/docs/training-guides/analytics/report-designer" },
     nextLesson: { title: "KPI Management", href: "/docs/training-guides/analytics/kpi-management" },
-    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" }
+    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" },
+    allowedRoles: ["business_analyst", "platform_admin", "implementation_partner", "super_admin"],
+    module: "analytics",
+    skillLevel: "advanced"
   },
   "analytics/kpi-management": {
     title: "KPI Management",
@@ -1474,7 +1560,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Predictive Analytics", href: "/docs/training-guides/analytics/predictive-analytics" },
     nextLesson: { title: "Data Explorer", href: "/docs/training-guides/analytics/data-explorer" },
-    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" }
+    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" },
+    allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "analytics",
+    skillLevel: "intermediate"
   },
   "analytics/data-explorer": {
     title: "Data Explorer",
@@ -1531,7 +1620,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Create a pivot table summarizing sales by region and month"
     ],
     prevLesson: { title: "KPI Management", href: "/docs/training-guides/analytics/kpi-management" },
-    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" }
+    parentGuide: { title: "Analytics Training Guide", href: "/docs/training-guides/analytics" },
+    allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
+    module: "analytics",
+    skillLevel: "basic"
   },
   "manufacturing/bill-of-materials": {
     title: "Bill of Materials",
@@ -1588,7 +1680,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Calculate rolled-up cost for a BOM"
     ],
     nextLesson: { title: "Routing & Work Centers", href: "/docs/training-guides/manufacturing/routing-work-centers" },
-    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" }
+    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" },
+    allowedRoles: ["business_user", "business_analyst", "implementation_partner", "tenant_admin", "platform_admin", "super_admin"],
+    module: "manufacturing",
+    skillLevel: "intermediate"
   },
   "manufacturing/routing-work-centers": {
     title: "Routing & Work Centers",
@@ -1646,7 +1741,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Bill of Materials", href: "/docs/training-guides/manufacturing/bill-of-materials" },
     nextLesson: { title: "Work Orders", href: "/docs/training-guides/manufacturing/work-orders" },
-    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" }
+    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" },
+    allowedRoles: ["business_user", "implementation_partner", "tenant_admin", "platform_admin", "super_admin"],
+    module: "manufacturing",
+    skillLevel: "advanced"
   },
   "manufacturing/work-orders": {
     title: "Work Orders",
@@ -1704,7 +1802,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Routing & Work Centers", href: "/docs/training-guides/manufacturing/routing-work-centers" },
     nextLesson: { title: "MRP & Planning", href: "/docs/training-guides/manufacturing/mrp-planning" },
-    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" }
+    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" },
+    allowedRoles: ["end_user", "business_user", "implementation_partner", "tenant_admin", "platform_admin", "super_admin"],
+    module: "manufacturing",
+    skillLevel: "basic"
   },
   "manufacturing/mrp-planning": {
     title: "MRP & Planning",
@@ -1762,7 +1863,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "Work Orders", href: "/docs/training-guides/manufacturing/work-orders" },
     nextLesson: { title: "Quality Control", href: "/docs/training-guides/manufacturing/quality-control" },
-    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" }
+    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" },
+    allowedRoles: ["business_analyst", "implementation_partner", "tenant_admin", "platform_admin", "super_admin"],
+    module: "manufacturing",
+    skillLevel: "advanced"
   },
   "manufacturing/quality-control": {
     title: "Quality Control",
@@ -1820,7 +1924,10 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prevLesson: { title: "MRP & Planning", href: "/docs/training-guides/manufacturing/mrp-planning" },
     nextLesson: { title: "Maintenance", href: "/docs/training-guides/manufacturing/maintenance" },
-    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" }
+    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" },
+    allowedRoles: ["business_user", "end_user", "implementation_partner", "tenant_admin", "platform_admin", "super_admin"],
+    module: "manufacturing",
+    skillLevel: "intermediate"
   },
   "manufacturing/maintenance": {
     title: "Maintenance",
@@ -1877,7 +1984,10 @@ const lessonContent: Record<string, LessonContent> = {
       "Calculate OEE for a piece of equipment"
     ],
     prevLesson: { title: "Quality Control", href: "/docs/training-guides/manufacturing/quality-control" },
-    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" }
+    parentGuide: { title: "Manufacturing Training Guide", href: "/docs/training-guides/manufacturing" },
+    allowedRoles: ["end_user", "business_user", "implementation_partner", "tenant_admin", "platform_admin", "super_admin"],
+    module: "manufacturing",
+    skillLevel: "basic"
   }
 };
 
