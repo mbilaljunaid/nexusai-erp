@@ -2,22 +2,54 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { GraduationCap, ArrowLeft, ArrowRight, BarChart3, PieChart, TrendingUp, LineChart, Table } from "lucide-react";
+import { TrainingFilters, type SkillLevel, getSkillLevelBadgeColor } from "@/components/TrainingFilters";
+import { type EnterpriseRole } from "@/components/RBACContext";
+
+interface ModuleData {
+  icon: typeof BarChart3;
+  title: string;
+  desc: string;
+  duration: string;
+  href: string;
+  skillLevel: SkillLevel;
+  allowedRoles: EnterpriseRole[];
+}
 
 export default function TrainingGuideAnalytics() {
   useEffect(() => {
     document.title = "Analytics Training Guide | NexusAI ERP";
   }, []);
 
-  const modules = [
-    { icon: BarChart3, title: "Dashboard Builder", desc: "Create custom dashboards and visualizations", duration: "35 min", href: "/docs/training-guides/analytics/dashboard-builder" },
-    { icon: PieChart, title: "Report Designer", desc: "Build and customize reports", duration: "40 min", href: "/docs/training-guides/analytics/report-designer" },
-    { icon: TrendingUp, title: "Predictive Analytics", desc: "Forecasting and trend analysis", duration: "45 min", href: "/docs/training-guides/analytics/predictive-analytics" },
-    { icon: LineChart, title: "KPI Management", desc: "Define and track key performance indicators", duration: "30 min", href: "/docs/training-guides/analytics/kpi-management" },
-    { icon: Table, title: "Data Explorer", desc: "Ad-hoc queries and data analysis", duration: "25 min", href: "/docs/training-guides/analytics/data-explorer" },
+  const [selectedRole, setSelectedRole] = useState<EnterpriseRole | "all">("all");
+  const [selectedSkillLevel, setSelectedSkillLevel] = useState<SkillLevel | "all">("all");
+
+  const modules: ModuleData[] = [
+    { icon: BarChart3, title: "Dashboard Builder", desc: "Create custom dashboards and visualizations", duration: "35 min", href: "/docs/training-guides/analytics/dashboard-builder", skillLevel: "intermediate", allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
+    { icon: PieChart, title: "Report Designer", desc: "Build and customize reports", duration: "40 min", href: "/docs/training-guides/analytics/report-designer", skillLevel: "intermediate", allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
+    { icon: TrendingUp, title: "Predictive Analytics", desc: "Forecasting and trend analysis", duration: "45 min", href: "/docs/training-guides/analytics/predictive-analytics", skillLevel: "advanced", allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
+    { icon: LineChart, title: "KPI Management", desc: "Define and track key performance indicators", duration: "30 min", href: "/docs/training-guides/analytics/kpi-management", skillLevel: "intermediate", allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
+    { icon: Table, title: "Data Explorer", desc: "Ad-hoc queries and data analysis", duration: "25 min", href: "/docs/training-guides/analytics/data-explorer", skillLevel: "advanced", allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
   ];
+
+  const filteredModules = useMemo(() => {
+    return modules.filter((mod) => {
+      if (selectedSkillLevel !== "all" && mod.skillLevel !== selectedSkillLevel) {
+        return false;
+      }
+      if (selectedRole !== "all" && !mod.allowedRoles.includes(selectedRole)) {
+        return false;
+      }
+      return true;
+    });
+  }, [selectedRole, selectedSkillLevel]);
+
+  const clearFilters = () => {
+    setSelectedRole("all");
+    setSelectedSkillLevel("all");
+  };
 
   return (
     <div className="public-page min-h-screen flex flex-col">
@@ -46,25 +78,49 @@ export default function TrainingGuideAnalytics() {
 
         <section className="px-4 pb-16 max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold mb-6">Training Modules</h2>
-          <div className="space-y-4">
-            {modules.map((item, index) => (
-              <Link key={index} to={item.href} className="block">
-                <Card className="transition-all duration-200 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-700 cursor-pointer" data-testid={`card-module-${index}`}>
-                  <CardHeader className="flex flex-row items-center gap-4">
-                    <div className="p-2 rounded-lg bg-muted">
-                      <item.icon className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{item.title}</CardTitle>
-                      <p className="text-sm text-muted-foreground">{item.desc}</p>
-                    </div>
-                    <Badge variant="outline">{item.duration}</Badge>
-                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
-          </div>
+
+          <TrainingFilters
+            selectedRole={selectedRole}
+            selectedModule="all"
+            selectedSkillLevel={selectedSkillLevel}
+            onRoleChange={setSelectedRole}
+            onModuleChange={() => {}}
+            onSkillLevelChange={setSelectedSkillLevel}
+            onClearFilters={clearFilters}
+            showModuleFilter={false}
+          />
+
+          {filteredModules.length === 0 ? (
+            <Card className="p-8 text-center">
+              <p className="text-muted-foreground mb-4">No training modules match the selected filters.</p>
+              <Button variant="outline" onClick={clearFilters} data-testid="button-clear-filters-empty">
+                Clear Filters
+              </Button>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {filteredModules.map((item, index) => (
+                <Link key={index} to={item.href} className="block">
+                  <Card className="transition-all duration-200 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-700 cursor-pointer" data-testid={`card-module-${index}`}>
+                    <CardHeader className="flex flex-row items-center gap-4">
+                      <div className="p-2 rounded-lg bg-muted">
+                        <item.icon className="w-6 h-6" />
+                      </div>
+                      <div className="flex-1">
+                        <CardTitle className="text-lg">{item.title}</CardTitle>
+                        <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      </div>
+                      <Badge className={getSkillLevelBadgeColor(item.skillLevel)}>
+                        {item.skillLevel.charAt(0).toUpperCase() + item.skillLevel.slice(1)}
+                      </Badge>
+                      <Badge variant="outline">{item.duration}</Badge>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                    </CardHeader>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="px-4 py-16 bg-muted/30">
@@ -73,7 +129,7 @@ export default function TrainingGuideAnalytics() {
             <p className="text-muted-foreground mb-6">
               Total training time: approximately 3 hours
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-4 flex-wrap">
               <Link to={modules[0].href}>
                 <Button size="lg" data-testid="button-start-training">
                   Start Training

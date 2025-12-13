@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { 
   GraduationCap, 
@@ -20,27 +20,139 @@ import {
   Award,
   ArrowRight
 } from "lucide-react";
+import { TrainingFilters, type SkillLevel, type TrainingModule } from "@/components/TrainingFilters";
+import { type EnterpriseRole } from "@/components/RBACContext";
+
+interface TrainingModuleData {
+  icon: typeof Users;
+  title: string;
+  desc: string;
+  duration: string;
+  lessons: number;
+  href: string;
+  module: TrainingModule;
+  skillLevels: SkillLevel[];
+  allowedRoles: EnterpriseRole[];
+}
 
 export default function TrainingGuidesPage() {
   useEffect(() => {
     document.title = "Training Guides | NexusAI ERP Documentation";
   }, []);
 
-  const trainingModules = [
-    { icon: Users, title: "CRM Training", desc: "Master customer relationship management", duration: "4 hours", lessons: 12, href: "/docs/training-guides/crm" },
-    { icon: DollarSign, title: "Finance Training", desc: "Learn financial management and reporting", duration: "6 hours", lessons: 18, href: "/docs/training-guides/finance" },
-    { icon: Package, title: "Inventory Training", desc: "Stock management and warehouse operations", duration: "3 hours", lessons: 10, href: "/docs/training-guides/inventory" },
-    { icon: Factory, title: "Manufacturing Training", desc: "Production planning and execution", duration: "5 hours", lessons: 15, href: "/docs/training-guides/manufacturing" },
-    { icon: BarChart3, title: "Analytics Training", desc: "Business intelligence and reporting", duration: "3 hours", lessons: 8, href: "/docs/training-guides/analytics" },
-    { icon: Users, title: "HR & Payroll Training", desc: "Human resources management", duration: "4 hours", lessons: 14, href: "/docs/training-guides/hr" },
+  const [selectedRole, setSelectedRole] = useState<EnterpriseRole | "all">("all");
+  const [selectedModule, setSelectedModule] = useState<TrainingModule | "all">("all");
+  const [selectedSkillLevel, setSelectedSkillLevel] = useState<SkillLevel | "all">("all");
+
+  const trainingModules: TrainingModuleData[] = [
+    { 
+      icon: Users, 
+      title: "CRM Training", 
+      desc: "Master customer relationship management", 
+      duration: "4 hours", 
+      lessons: 12, 
+      href: "/docs/training-guides/crm",
+      module: "crm",
+      skillLevels: ["basic", "intermediate", "advanced"],
+      allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"]
+    },
+    { 
+      icon: DollarSign, 
+      title: "Finance Training", 
+      desc: "Learn financial management and reporting", 
+      duration: "6 hours", 
+      lessons: 18, 
+      href: "/docs/training-guides/finance",
+      module: "finance",
+      skillLevels: ["basic", "intermediate", "advanced"],
+      allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"]
+    },
+    { 
+      icon: Package, 
+      title: "Inventory Training", 
+      desc: "Stock management and warehouse operations", 
+      duration: "3 hours", 
+      lessons: 10, 
+      href: "/docs/training-guides/inventory",
+      module: "inventory",
+      skillLevels: ["basic", "intermediate", "advanced"],
+      allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"]
+    },
+    { 
+      icon: Factory, 
+      title: "Manufacturing Training", 
+      desc: "Production planning and execution", 
+      duration: "5 hours", 
+      lessons: 15, 
+      href: "/docs/training-guides/manufacturing",
+      module: "manufacturing",
+      skillLevels: ["intermediate", "advanced"],
+      allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"]
+    },
+    { 
+      icon: BarChart3, 
+      title: "Analytics Training", 
+      desc: "Business intelligence and reporting", 
+      duration: "3 hours", 
+      lessons: 8, 
+      href: "/docs/training-guides/analytics",
+      module: "analytics",
+      skillLevels: ["intermediate", "advanced"],
+      allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"]
+    },
+    { 
+      icon: Users, 
+      title: "HR & Payroll Training", 
+      desc: "Human resources management", 
+      duration: "4 hours", 
+      lessons: 14, 
+      href: "/docs/training-guides/hr",
+      module: "hr",
+      skillLevels: ["basic", "intermediate", "advanced"],
+      allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"]
+    },
   ];
 
+  const filteredModules = useMemo(() => {
+    return trainingModules.filter((mod) => {
+      if (selectedModule !== "all" && mod.module !== selectedModule) {
+        return false;
+      }
+      if (selectedSkillLevel !== "all" && !mod.skillLevels.includes(selectedSkillLevel)) {
+        return false;
+      }
+      if (selectedRole !== "all" && !mod.allowedRoles.includes(selectedRole)) {
+        return false;
+      }
+      return true;
+    });
+  }, [selectedRole, selectedModule, selectedSkillLevel]);
+
   const learningPaths = [
-    { title: "New User Onboarding", duration: "2 hours", level: "Beginner", modules: 5 },
-    { title: "Finance Professional", duration: "8 hours", level: "Intermediate", modules: 12 },
-    { title: "System Administrator", duration: "10 hours", level: "Advanced", modules: 15 },
-    { title: "Power User", duration: "6 hours", level: "Intermediate", modules: 10 },
+    { title: "New User Onboarding", duration: "2 hours", level: "Beginner", modules: 5, roles: ["end_user", "business_user"] },
+    { title: "Finance Professional", duration: "8 hours", level: "Intermediate", modules: 12, roles: ["business_user", "business_analyst"] },
+    { title: "System Administrator", duration: "10 hours", level: "Advanced", modules: 15, roles: ["tenant_admin", "platform_admin", "super_admin"] },
+    { title: "Power User", duration: "6 hours", level: "Intermediate", modules: 10, roles: ["business_user", "business_analyst"] },
   ];
+
+  const filteredPaths = useMemo(() => {
+    return learningPaths.filter((path) => {
+      if (selectedSkillLevel !== "all") {
+        const levelMap: Record<string, SkillLevel> = {
+          "Beginner": "basic",
+          "Intermediate": "intermediate",
+          "Advanced": "advanced"
+        };
+        if (levelMap[path.level] !== selectedSkillLevel) {
+          return false;
+        }
+      }
+      if (selectedRole !== "all" && !path.roles.includes(selectedRole)) {
+        return false;
+      }
+      return true;
+    });
+  }, [selectedRole, selectedSkillLevel]);
 
   const trainingFormats = [
     { icon: Video, title: "Video Tutorials", desc: "Step-by-step video walkthroughs" },
@@ -49,12 +161,17 @@ export default function TrainingGuidesPage() {
     { icon: Award, title: "Certifications", desc: "Validate your NexusAI expertise" },
   ];
 
+  const clearFilters = () => {
+    setSelectedRole("all");
+    setSelectedModule("all");
+    setSelectedSkillLevel("all");
+  };
+
   return (
     <div className="public-page min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1">
-        {/* Hero Section */}
         <section className="px-4 py-16 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-orange-600 text-white" data-testid="badge-training">TRAINING CENTER</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Training Guides</h1>
@@ -74,7 +191,6 @@ export default function TrainingGuidesPage() {
           </div>
         </section>
 
-        {/* Stats */}
         <section className="px-4 py-12 bg-muted/50">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -98,70 +214,93 @@ export default function TrainingGuidesPage() {
           </div>
         </section>
 
-        {/* Training Modules */}
         <section className="px-4 py-20 max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-4 text-center">Training Modules</h2>
-          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+          <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
             Choose a module to begin your training journey
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trainingModules.map((module, i) => {
-              const IconComponent = module.icon;
-              return (
-                <Link key={i} to={module.href} className="block h-full">
-                  <Card className="p-6 h-full transition-all duration-200 hover:shadow-lg hover:border-orange-300 dark:hover:border-orange-700 cursor-pointer" data-testid={`card-module-${i}`}>
-                    <IconComponent className="w-10 h-10 mb-4 text-orange-500" />
-                    <h3 className="font-bold text-lg mb-2">{module.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">{module.desc}</p>
-                    <div className="flex items-center justify-between text-sm gap-2 flex-wrap">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="w-4 h-4" /> {module.duration}
+
+          <TrainingFilters
+            selectedRole={selectedRole}
+            selectedModule={selectedModule}
+            selectedSkillLevel={selectedSkillLevel}
+            onRoleChange={setSelectedRole}
+            onModuleChange={setSelectedModule}
+            onSkillLevelChange={setSelectedSkillLevel}
+            onClearFilters={clearFilters}
+          />
+
+          {filteredModules.length === 0 ? (
+            <Card className="p-8 text-center">
+              <p className="text-muted-foreground mb-4">No training modules match the selected filters.</p>
+              <Button variant="outline" onClick={clearFilters} data-testid="button-clear-filters-empty">
+                Clear Filters
+              </Button>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredModules.map((module, i) => {
+                const IconComponent = module.icon;
+                return (
+                  <Link key={i} to={module.href} className="block h-full">
+                    <Card className="p-6 h-full transition-all duration-200 hover:shadow-lg hover:border-orange-300 dark:hover:border-orange-700 cursor-pointer" data-testid={`card-module-${i}`}>
+                      <IconComponent className="w-10 h-10 mb-4 text-orange-500" />
+                      <h3 className="font-bold text-lg mb-2">{module.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{module.desc}</p>
+                      <div className="flex items-center justify-between text-sm gap-2 flex-wrap">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-4 h-4" /> {module.duration}
+                        </div>
+                        <Badge variant="secondary">{module.lessons} lessons</Badge>
                       </div>
-                      <Badge variant="secondary">{module.lessons} lessons</Badge>
-                    </div>
-                    <div className="mt-4 flex items-center text-orange-500 text-sm font-medium">
-                      Start Learning <ArrowRight className="w-4 h-4 ml-1" />
-                    </div>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
+                      <div className="mt-4 flex items-center text-orange-500 text-sm font-medium">
+                        Start Learning <ArrowRight className="w-4 h-4 ml-1" />
+                      </div>
+                    </Card>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </section>
 
-        {/* Learning Paths */}
         <section className="px-4 py-16 bg-muted/50">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-4 text-center">Learning Paths</h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
               Structured learning journeys tailored to your role
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {learningPaths.map((path, i) => (
-                <Card key={i} className="p-6" data-testid={`card-path-${i}`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-lg">{path.title}</h3>
-                    <Badge className={
-                      path.level === "Beginner" ? "bg-green-500 text-white" :
-                      path.level === "Intermediate" ? "bg-blue-500 text-white" :
-                      "bg-purple-500 text-white"
-                    }>{path.level}</Badge>
-                  </div>
-                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" /> {path.duration}
+            {filteredPaths.length === 0 ? (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">No learning paths match the selected filters.</p>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredPaths.map((path, i) => (
+                  <Card key={i} className="p-6" data-testid={`card-path-${i}`}>
+                    <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+                      <h3 className="font-bold text-lg">{path.title}</h3>
+                      <Badge className={
+                        path.level === "Beginner" ? "bg-green-500 text-white" :
+                        path.level === "Intermediate" ? "bg-blue-500 text-white" :
+                        "bg-purple-500 text-white"
+                      }>{path.level}</Badge>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <BookOpen className="w-4 h-4" /> {path.modules} modules
+                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" /> {path.duration}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <BookOpen className="w-4 h-4" /> {path.modules} modules
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Training Formats */}
         <section className="px-4 py-20 max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Training Formats</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -178,7 +317,6 @@ export default function TrainingGuidesPage() {
           </div>
         </section>
 
-        {/* Quick Start */}
         <section className="px-4 py-16 bg-muted/50">
           <div className="max-w-4xl mx-auto">
             <Card className="p-8">
@@ -213,7 +351,6 @@ export default function TrainingGuidesPage() {
           </div>
         </section>
 
-        {/* CTA */}
         <section className="px-4 py-16 bg-gradient-to-br from-orange-600 to-red-600 text-white">
           <div className="max-w-4xl mx-auto text-center">
             <GraduationCap className="w-12 h-12 mx-auto mb-4" />
