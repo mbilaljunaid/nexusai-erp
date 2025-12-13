@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { Link } from "wouter";
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -177,29 +178,31 @@ export default function BlogPage() {
           {filtered.map((post) => {
             const IconComponent = post.icon;
             return (
-              <Card key={post.id} className="public-card overflow-hidden hover-elevate cursor-pointer" data-testid={`card-blog-post-${post.id}`}>
-                <div className="p-6 text-center bg-muted/50 flex items-center justify-center">
-                  <IconComponent className="w-12 h-12 text-blue-500" />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <Badge className="bg-blue-600/20 text-blue-300 border-blue-500/50">{post.category}</Badge>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Calendar className="w-3 h-3" /> {post.date}
-                    </span>
+              <Link key={post.id} to={`/blog/${post.id}`}>
+                <Card className="public-card overflow-hidden hover-elevate cursor-pointer h-full" data-testid={`card-blog-post-${post.id}`}>
+                  <div className="p-6 text-center bg-muted/50 flex items-center justify-center">
+                    <IconComponent className="w-12 h-12 text-blue-500" />
                   </div>
-                  <h3 className="text-lg font-bold mb-2 line-clamp-2">{post.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <User className="w-3 h-3" /> {post.author}
-                    </span>
-                    <Button variant="ghost" size="sm" data-testid={`button-read-more-${post.id}`}>
-                      Read <ArrowRight className="w-3 h-3 ml-1" />
-                    </Button>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <Badge className="bg-blue-600/20 text-blue-300 border-blue-500/50">{post.category}</Badge>
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> {post.date}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold mb-2 line-clamp-2">{post.title}</h3>
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{post.excerpt}</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <User className="w-3 h-3" /> {post.author}
+                      </span>
+                      <Button variant="ghost" size="sm" data-testid={`button-read-more-${post.id}`}>
+                        Read <ArrowRight className="w-3 h-3 ml-1" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             );
           })}
         </div>

@@ -24,6 +24,7 @@ const LandingPage = lazy(() => import("@/pages/LandingPage"));
 // Public Pages (resolve 404s)
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
+const BlogPostPage = lazy(() => import("@/pages/BlogPostPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const DemoManagement = lazy(() => import("@/pages/DemoManagement"));
 const UseCases = lazy(() => import("@/pages/UseCases"));
@@ -512,6 +513,7 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/features" component={FeaturesPage} />
       <Route path="/blog" component={BlogPage} />
+      <Route path="/blog/:id" component={BlogPostPage} />
       <Route path="/open-source" component={OpenSourcePage} />
       <Route path="/license" component={LicensePage} />
       <Route path="/docs/contributing" component={ContributingPage} />
