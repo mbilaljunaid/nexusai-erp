@@ -23,6 +23,7 @@ import {
   Sparkles, Share2, Twitter, Linkedin, Link2, GitCompare, X
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceCategory } from "@shared/schema";
+import { TutorialOverlay } from "@/components/TutorialOverlay";
 
 interface Industry {
   id: string;
@@ -1018,6 +1019,11 @@ export default function Marketplace() {
           apps={selectedForCompare}
           open={compareDialogOpen}
           onOpenChange={setCompareDialogOpen}
+        />
+
+        <TutorialOverlay 
+          storageKey="marketplace-tutorial-completed"
+          onComplete={() => console.log('Tutorial completed')}
         />
       </main>
       <Footer />
