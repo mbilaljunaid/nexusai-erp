@@ -643,3 +643,32 @@ export const insertPartnerSchema = createInsertSchema(partners).omit({ id: true,
 
 export type InsertPartner = z.infer<typeof insertPartnerSchema>;
 export type Partner = typeof partners.$inferSelect;
+
+// ========== USER FEEDBACK ==========
+export const userFeedback = pgTable("user_feedback", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  type: varchar("type").notNull(), // suggestion, bug, feature, other
+  category: varchar("category"), // ui, performance, functionality, other
+  title: varchar("title").notNull(),
+  description: text("description").notNull(),
+  priority: varchar("priority").default("medium"), // low, medium, high, critical
+  status: varchar("status").default("new"), // new, reviewed, in_progress, resolved, closed
+  attachmentUrl: varchar("attachment_url"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertUserFeedbackSchema = createInsertSchema(userFeedback).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  userId: z.string().optional(),
+  type: z.enum(["suggestion", "bug", "feature", "other"]),
+  category: z.string().optional(),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+  status: z.string().optional(),
+  attachmentUrl: z.string().optional(),
+});
+
+export type InsertUserFeedback = z.infer<typeof insertUserFeedbackSchema>;
+export type UserFeedback = typeof userFeedback.$inferSelect;

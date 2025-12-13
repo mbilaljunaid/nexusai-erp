@@ -41,6 +41,7 @@ import {
   type Payment, type InsertPayment,
   type Demo, type InsertDemo,
   type Partner, type InsertPartner,
+  type UserFeedback, type InsertUserFeedback,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -224,6 +225,10 @@ export interface IStorage {
   createPartner(partner: InsertPartner): Promise<Partner>;
   updatePartner(id: string, partner: Partial<InsertPartner>): Promise<Partner | undefined>;
   deletePartner(id: string): Promise<boolean>;
+
+  getUserFeedback(id: string): Promise<UserFeedback | undefined>;
+  listUserFeedback(): Promise<UserFeedback[]>;
+  createUserFeedback(feedback: InsertUserFeedback): Promise<UserFeedback>;
 }
 
 export class MemStorage implements IStorage {
@@ -268,6 +273,7 @@ export class MemStorage implements IStorage {
   private fieldServiceJobs = new Map<string, FieldServiceJob>();
   private payrollConfigs = new Map<string, PayrollConfig>();
   private partners = new Map<string, Partner>();
+  private userFeedbackStore = new Map<string, UserFeedback>();
 
   // PHASE 1 Methods
   async getTenant(id: string) { return this.tenants.get(id); }
@@ -525,6 +531,22 @@ export class MemStorage implements IStorage {
   }
   async deletePartner(id: string) { 
     return this.partners.delete(id); 
+  }
+
+  async getUserFeedback(id: string) { return this.userFeedbackStore.get(id); }
+  async listUserFeedback() { return Array.from(this.userFeedbackStore.values()).sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()); }
+  async createUserFeedback(f: InsertUserFeedback) { 
+    const id = randomUUID(); 
+    const feedback: UserFeedback = { 
+      id, 
+      ...f, 
+      status: f.status || "new",
+      priority: f.priority || "medium",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }; 
+    this.userFeedbackStore.set(id, feedback); 
+    return feedback; 
   }
 }
 

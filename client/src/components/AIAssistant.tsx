@@ -23,7 +23,6 @@ interface Message {
 interface AIAssistantProps {
   isOpen: boolean;
   onClose: () => void;
-  onSendMessage?: (message: string) => Promise<string>;
 }
 
 const quickActions = [
@@ -33,7 +32,7 @@ const quickActions = [
   "Suggest follow-ups",
 ];
 
-export function AIAssistant({ isOpen, onClose, onSendMessage }: AIAssistantProps) {
+export function AIAssistant({ isOpen, onClose }: AIAssistantProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -63,37 +62,45 @@ export function AIAssistant({ isOpen, onClose, onSendMessage }: AIAssistantProps
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const userInput = input;
     setInput("");
     setIsLoading(true);
 
-    // todo: remove mock functionality - integrate with actual AI
-    setTimeout(() => {
-      const response: Message = {
+    try {
+      const response = await fetch("/api/copilot/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          message: userInput,
+          context: "general"
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get AI response");
+      }
+
+      const data = await response.json();
+      const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: getAIResponse(input),
+        content: data.response,
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, response]);
+      setMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "I apologize, but I encountered an error processing your request. Please try again.",
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
-  };
-
-  const getAIResponse = (query: string): string => {
-    const q = query.toLowerCase();
-    if (q.includes("lead")) {
-      return "Based on your CRM data, you have 12 hot leads this week. Sarah Johnson from TechCorp has the highest AI score (87) and is ready for a proposal. I'd recommend scheduling a call with her today.";
     }
-    if (q.includes("task") || q.includes("overdue")) {
-      return "You have 3 overdue tasks: 1) Review Q4 marketing strategy (2 days overdue), 2) Send proposal to Acme Corp (1 day), 3) Update project timeline. Would you like me to reschedule these?";
-    }
-    if (q.includes("report") || q.includes("sales")) {
-      return "I can generate a sales report for you. This month's highlights: $128,450 in revenue (↑8.2%), 47 active deals, and 24.8% conversion rate. Want me to create a detailed PDF report?";
-    }
-    if (q.includes("follow")) {
-      return "I've identified 5 leads that need follow-up: 1) Mark from Acme (last contact 7 days ago), 2) Lisa from GlobalTech (proposal sent 5 days ago). Should I draft follow-up emails?";
-    }
-    return "I understand you're asking about " + query + ". Let me analyze your data and provide insights. Is there anything specific you'd like to focus on?";
   };
 
   const handleQuickAction = (action: string) => {

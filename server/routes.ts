@@ -18,7 +18,7 @@ import {
   insertAbacRuleSchema, insertEncryptedFieldSchema, insertComplianceConfigSchema, insertSprintSchema, insertIssueSchema,
   insertDataLakeSchema, insertEtlPipelineSchema, insertBiDashboardSchema, insertFieldServiceJobSchema, insertPayrollConfigSchema,
   insertDemoSchema, formData as formDataTable, smartViews, reports, contactSubmissions, insertContactSubmissionSchema,
-  insertPartnerSchema, partners as partnersTable,
+  insertPartnerSchema, partners as partnersTable, insertUserFeedbackSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -151,7 +151,72 @@ export async function registerRoutes(
     if (req.path === "/demos/industries") return next();
     if (req.path === "/demos/request") return next();
     if (req.path === "/demos/list") return next();
+    if (req.path.startsWith("/copilot")) return next();
+    if (req.path === "/feedback") return next();
     enforceRBAC()(req, res, next);
+  });
+
+  // ========== USER FEEDBACK ROUTE ==========
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const parseResult = insertUserFeedbackSchema.safeParse(req.body);
+      
+      if (!parseResult.success) {
+        const errors = parseResult.error.errors.map(e => e.message).join(", ");
+        return res.status(400).json({ error: errors });
+      }
+
+      const feedback = await storage.createUserFeedback(parseResult.data);
+      console.log(`Feedback submitted: ${feedback.id} - ${feedback.title}`);
+      
+      res.status(201).json({ success: true, feedback });
+    } catch (error: any) {
+      console.error("Feedback submission error:", error);
+      res.status(500).json({ error: "Failed to submit feedback" });
+    }
+  });
+
+  app.get("/api/feedback", async (req, res) => {
+    try {
+      const feedbackList = await storage.listUserFeedback();
+      res.json(feedbackList);
+    } catch (error) {
+      console.error("Error fetching feedback:", error);
+      res.status(500).json({ error: "Failed to fetch feedback" });
+    }
+  });
+
+  // ========== AI COPILOT CHAT ROUTE ==========
+  app.post("/api/copilot/chat", async (req, res) => {
+    try {
+      const { message, context = "general" } = req.body;
+      
+      if (!message || typeof message !== "string") {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      const systemPrompt = systemPrompts[context] || systemPrompts.general;
+      
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: message }
+        ],
+        max_tokens: 500,
+        temperature: 0.7,
+      });
+
+      const aiResponse = completion.choices[0]?.message?.content || "I apologize, but I couldn't generate a response. Please try again.";
+      
+      res.json({ response: aiResponse });
+    } catch (error: any) {
+      console.error("Copilot chat error:", error);
+      res.status(500).json({ 
+        error: "Failed to get AI response",
+        message: error.message || "Unknown error"
+      });
+    }
   });
 
   // ========== PUBLIC DEMO ROUTES ==========
