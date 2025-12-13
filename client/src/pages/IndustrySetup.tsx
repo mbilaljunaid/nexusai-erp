@@ -10,9 +10,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheckCircle2, Zap, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { CheckCircle2, Zap, Loader2, Settings, Save, Code } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { INDUSTRY_MODULE_MAPPING } from "@/lib/industryConfig";
+import { useToast } from "@/hooks/use-toast";
 
 interface Tenant {
   id: string;
@@ -35,14 +47,44 @@ interface IndustryDeployment {
   tenantId: string;
   industryId: string;
   enabledModules: string[] | null;
+  customConfig: Record<string, unknown> | null;
   status: string | null;
   deployedAt: string;
 }
+
+const ALL_AVAILABLE_MODULES = [
+  "ERP",
+  "CRM",
+  "Finance",
+  "HR",
+  "Manufacturing",
+  "Projects",
+  "Procurement",
+  "Analytics",
+  "Marketing",
+  "AI",
+  "Governance",
+  "Service",
+  "Compliance",
+  "Education",
+  "Communication",
+  "Admin",
+  "Logistics",
+  "Operations",
+  "Workflow",
+  "Developer",
+];
 
 export default function IndustrySetup() {
   const [selectedTenant, setSelectedTenant] = useState<string>("");
   const [selectedIndustry, setSelectedIndustry] = useState<string>("");
   const [deploymentSuccess, setDeploymentSuccess] = useState<string | null>(null);
+  const [customizeDialogOpen, setCustomizeDialogOpen] = useState(false);
+  const [selectedDeployment, setSelectedDeployment] = useState<IndustryDeployment | null>(null);
+  const [editedModules, setEditedModules] = useState<string[]>([]);
+  const [editedConfig, setEditedConfig] = useState<string>("");
+  const [configError, setConfigError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     document.title = "Industry Setup | NexusAI";
@@ -75,6 +117,32 @@ export default function IndustrySetup() {
     },
   });
 
+  const updateDeploymentMutation = useMutation({
+    mutationFn: async (data: { id: string; enabledModules: string[]; customConfig: Record<string, unknown> }) => {
+      const res = await apiRequest("PATCH", `/api/industry-deployments/${data.id}`, {
+        enabledModules: data.enabledModules,
+        customConfig: data.customConfig,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/industry-deployments"] });
+      setCustomizeDialogOpen(false);
+      setSelectedDeployment(null);
+      toast({
+        title: "Deployment Updated",
+        description: "Your customization changes have been saved successfully.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Update Failed",
+        description: error instanceof Error ? error.message : "Failed to update deployment",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleDeploy = async () => {
     if (!selectedTenant || !selectedIndustry) return;
 
@@ -88,6 +156,88 @@ export default function IndustrySetup() {
     });
   };
 
+  const handleOpenCustomize = (deployment: IndustryDeployment) => {
+    setSelectedDeployment(deployment);
+    setEditedModules(deployment.enabledModules || []);
+    setEditedConfig(deployment.customConfig ? JSON.stringify(deployment.customConfig, null, 2) : "{}");
+    setConfigError(null);
+    setCustomizeDialogOpen(true);
+  };
+
+  const handleToggleModule = (module: string) => {
+    setEditedModules((prev) =>
+      prev.includes(module)
+        ? prev.filter((m) => m !== module)
+        : [...prev, module]
+    );
+  };
+
+  const handleFormatJson = () => {
+    try {
+      const parsed = JSON.parse(editedConfig);
+      setEditedConfig(JSON.stringify(parsed, null, 2));
+      setConfigError(null);
+    } catch (e) {
+      const errorMessage = e instanceof SyntaxError ? e.message : "Invalid JSON";
+      setConfigError(`Cannot format: ${errorMessage}. Fix errors first.`);
+    }
+  };
+
+  const handleDialogOpenChange = (open: boolean) => {
+    if (updateDeploymentMutation.isPending) return;
+    setCustomizeDialogOpen(open);
+    if (!open) {
+      setSelectedDeployment(null);
+      setConfigError(null);
+    }
+  };
+
+  const handleSaveCustomization = () => {
+    if (!selectedDeployment || updateDeploymentMutation.isPending) return;
+
+    const trimmedConfig = editedConfig.trim();
+    if (!trimmedConfig) {
+      setConfigError("Configuration cannot be empty. Use {} for no custom settings.");
+      return;
+    }
+
+    let parsedConfig: Record<string, unknown> = {};
+    try {
+      parsedConfig = JSON.parse(trimmedConfig);
+      if (typeof parsedConfig !== "object" || parsedConfig === null || Array.isArray(parsedConfig)) {
+        setConfigError("Configuration must be a JSON object (not an array or primitive).");
+        return;
+      }
+      setConfigError(null);
+    } catch (e) {
+      const errorMessage = e instanceof SyntaxError ? e.message : "Invalid JSON format";
+      setConfigError(`JSON Error: ${errorMessage}. Check for missing quotes, trailing commas, or invalid syntax.`);
+      return;
+    }
+
+    updateDeploymentMutation.mutate({
+      id: selectedDeployment.id,
+      enabledModules: editedModules,
+      customConfig: parsedConfig,
+    });
+  };
+
+  const getIndustryModules = (industryId: string): string[] => {
+    const industry = industries.find((i) => i.id === industryId);
+    if (industry?.defaultModules && industry.defaultModules.length > 0) {
+      return industry.defaultModules;
+    }
+    const slug = industry?.slug || "";
+    return INDUSTRY_MODULE_MAPPING[slug] || [];
+  };
+
+  const getAvailableModulesForDeployment = (): string[] => {
+    if (!selectedDeployment) return ALL_AVAILABLE_MODULES;
+    const industryModules = getIndustryModules(selectedDeployment.industryId);
+    const combinedModules = new Set([...industryModules, ...ALL_AVAILABLE_MODULES]);
+    return Array.from(combinedModules).sort();
+  };
+
   const tenantDeployments = selectedTenant
     ? allDeployments.filter((d) => d.tenantId === selectedTenant)
     : [];
@@ -96,8 +246,8 @@ export default function IndustrySetup() {
     return industries.find((i) => i.id === industryId)?.name || "Unknown";
   };
 
-  const getTenantName = (tenantId: string) => {
-    return tenants.find((t) => t.id === tenantId)?.name || "Unknown";
+  const getIndustrySlug = (industryId: string) => {
+    return industries.find((i) => i.id === industryId)?.slug || "";
   };
 
   const selectedIndustryData = industries.find((i) => i.id === selectedIndustry);
@@ -207,7 +357,7 @@ export default function IndustrySetup() {
               tenantDeployments.map((deployment) => (
                 <div
                   key={deployment.id}
-                  className="p-4 border rounded-md space-y-2"
+                  className="p-4 border rounded-md space-y-3"
                   data-testid={`deployment-card-${deployment.industryId}`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -233,6 +383,15 @@ export default function IndustrySetup() {
                       </div>
                     </div>
                   )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenCustomize(deployment)}
+                    data-testid={`button-customize-${deployment.id}`}
+                  >
+                    <Settings className="w-4 h-4 mr-2" />
+                    Customize
+                  </Button>
                 </div>
               ))
             )}
@@ -263,6 +422,125 @@ export default function IndustrySetup() {
           })}
         </div>
       </Card>
+
+      <Dialog open={customizeDialogOpen} onOpenChange={handleDialogOpenChange}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Customize Deployment</DialogTitle>
+            <DialogDescription>
+              {selectedDeployment && (
+                <>Customize modules and settings for {getIndustryName(selectedDeployment.industryId)} deployment</>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold">Enabled Modules</h3>
+              <p className="text-xs text-muted-foreground">
+                Toggle modules on or off for this deployment. Default modules are pre-selected based on industry.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {getAvailableModulesForDeployment().map((module) => {
+                  const isEnabled = editedModules.includes(module);
+                  const industryDefaultModules = selectedDeployment
+                    ? getIndustryModules(selectedDeployment.industryId)
+                    : [];
+                  const isDefault = industryDefaultModules.includes(module);
+
+                  return (
+                    <div
+                      key={module}
+                      className="flex items-center justify-between p-3 border rounded-md"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor={`module-${module}`} className="text-sm cursor-pointer">
+                          {module}
+                        </Label>
+                        {isDefault && (
+                          <Badge variant="secondary" className="text-xs">
+                            Default
+                          </Badge>
+                        )}
+                      </div>
+                      <Switch
+                        id={`module-${module}`}
+                        checked={isEnabled}
+                        onCheckedChange={() => handleToggleModule(module)}
+                        disabled={updateDeploymentMutation.isPending}
+                        data-testid={`switch-module-${module}`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-sm font-semibold">Custom Configuration</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Add industry-specific settings as JSON. This can include custom parameters, feature flags, or integrations.
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleFormatJson}
+                  disabled={updateDeploymentMutation.isPending}
+                  data-testid="button-format-json"
+                >
+                  <Code className="w-4 h-4 mr-2" />
+                  Format
+                </Button>
+              </div>
+              <Textarea
+                value={editedConfig}
+                onChange={(e) => {
+                  setEditedConfig(e.target.value);
+                  setConfigError(null);
+                }}
+                className="font-mono text-sm min-h-[150px]"
+                placeholder='{"customSetting": "value"}'
+                disabled={updateDeploymentMutation.isPending}
+                data-testid="textarea-custom-config"
+              />
+              {configError && (
+                <p className="text-sm text-destructive">{configError}</p>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handleDialogOpenChange(false)}
+              disabled={updateDeploymentMutation.isPending}
+              data-testid="button-cancel-customize"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveCustomization}
+              disabled={updateDeploymentMutation.isPending}
+              data-testid="button-save-customize"
+            >
+              {updateDeploymentMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
