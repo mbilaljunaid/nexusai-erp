@@ -14,6 +14,7 @@ export function Header() {
     { label: "Home", path: "/" },
     { label: "Use Cases", path: "/use-cases" },
     { label: "Industries", path: "/industries" },
+    { label: "Marketplace", path: "/marketplace" },
     { label: "About", path: "/about" },
     { label: "Blog", path: "/blog" },
   ];
@@ -231,6 +232,7 @@ export function Footer() {
               <li><Link to="/use-cases" className="hover:text-white transition" data-testid="link-footer-usecases">Use Cases</Link></li>
               <li><Link to="/industries" className="hover:text-white transition" data-testid="link-footer-industries">Industries</Link></li>
               <li><Link to="/modules" className="hover:text-white transition" data-testid="link-footer-modules">Modules</Link></li>
+              <li><Link to="/marketplace" className="hover:text-white transition" data-testid="link-footer-marketplace">Marketplace</Link></li>
               <li><Link to="/pricing" className="hover:text-white transition" data-testid="link-footer-pricing">Pricing</Link></li>
             </ul>
           </div>
