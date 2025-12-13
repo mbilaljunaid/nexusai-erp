@@ -121,6 +121,7 @@ const TrainingGuideInventory = lazy(() => import("@/pages/public/documentation/T
 const TrainingGuideManufacturing = lazy(() => import("@/pages/public/documentation/TrainingGuideManufacturing"));
 const TrainingGuideAnalytics = lazy(() => import("@/pages/public/documentation/TrainingGuideAnalytics"));
 const TrainingGuideHR = lazy(() => import("@/pages/public/documentation/TrainingGuideHR"));
+const TrainingLessonPage = lazy(() => import("@/pages/public/documentation/TrainingLessonPage"));
 const TechnicalAPIReference = lazy(() => import("@/pages/public/documentation/TechnicalAPIReference"));
 const ImplementationSystemSetup = lazy(() => import("@/pages/public/documentation/ImplementationSystemSetup"));
 
@@ -585,6 +586,7 @@ function Router() {
       {/* Public Documentation Routes */}
       <Route path="/docs/process-flows" component={ProcessFlowsPage} />
       <Route path="/docs/training-guides" component={TrainingGuidesPage} />
+      <Route path="/docs/training-guides/:category/:lesson" component={TrainingLessonPage} />
       <Route path="/docs/training-guides/crm" component={TrainingGuideCRM} />
       <Route path="/docs/training-guides/finance" component={TrainingGuideFinance} />
       <Route path="/docs/training-guides/inventory" component={TrainingGuideInventory} />
