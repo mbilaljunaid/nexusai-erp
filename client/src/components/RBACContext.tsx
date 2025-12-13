@@ -28,7 +28,7 @@ interface RBACContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (userId: string, userRole: "admin" | "editor" | "viewer", enterpriseRole?: EnterpriseRole) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   setEnterpriseRole: (role: EnterpriseRole) => void;
 }
 
@@ -222,7 +222,15 @@ export function RBACProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
     setIsAuthenticated(false);
     setUserId("");
     setUserRole("viewer");
@@ -232,7 +240,7 @@ export function RBACProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("userRole");
     localStorage.removeItem("enterpriseRole");
     localStorage.removeItem("authTimestamp");
-    window.location.href = "/api/logout";
+    window.location.href = "/login";
   }, []);
 
   const setEnterpriseRole = useCallback((role: EnterpriseRole) => {
