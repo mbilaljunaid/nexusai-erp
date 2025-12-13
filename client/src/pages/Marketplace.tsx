@@ -20,7 +20,7 @@ import {
   Search, Star, Download, Package, Grid3X3, List, 
   ExternalLink, Check, Tag, Layers, Shield, Zap, 
   Code, BookOpen, Mail, Globe, DollarSign, LogIn, Building2,
-  Sparkles, Share2, Twitter, Linkedin, Link2, GitCompare, X
+  Sparkles, Share2, Twitter, Linkedin, Link2, GitCompare, X, Clock, Trash2
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceCategory } from "@shared/schema";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
@@ -592,6 +592,37 @@ export default function Marketplace() {
   const [compareMode, setCompareMode] = useState(false);
   const [selectedForCompare, setSelectedForCompare] = useState<MarketplaceApp[]>([]);
   const [compareDialogOpen, setCompareDialogOpen] = useState(false);
+  
+  const RECENTLY_VIEWED_KEY = "nexusai-recently-viewed-apps";
+  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const stored = localStorage.getItem(RECENTLY_VIEWED_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(recentlyViewedIds));
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [recentlyViewedIds]);
+
+  const addToRecentlyViewed = (appId: string) => {
+    setRecentlyViewedIds(prev => {
+      const filtered = prev.filter(id => id !== appId);
+      return [appId, ...filtered].slice(0, 10);
+    });
+  };
+
+  const clearRecentlyViewed = () => {
+    setRecentlyViewedIds([]);
+  };
 
   const { data: categories = [], isLoading: loadingCategories } = useQuery<MarketplaceCategory[]>({
     queryKey: ["/api/marketplace/categories"],
@@ -669,6 +700,7 @@ export default function Marketplace() {
   const handleViewDetails = (app: MarketplaceApp) => {
     setSelectedApp(app);
     setDetailsOpen(true);
+    addToRecentlyViewed(app.id);
   };
 
   const getIndustrySlug = (industryId: string) => {
@@ -735,6 +767,11 @@ export default function Marketplace() {
 
   const featuredApps = filteredApps.filter(app => app.featuredOrder != null).sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
   const regularApps = filteredApps.filter(app => app.featuredOrder == null);
+
+  const recentlyViewedApps = recentlyViewedIds
+    .map(id => apps.find(app => app.id === id))
+    .filter((app): app is MarketplaceApp => app !== undefined && app.status === "approved")
+    .slice(0, 6);
 
   useEffect(() => {
     document.title = "App Marketplace | NexusAI";
@@ -860,6 +897,49 @@ export default function Marketplace() {
             Compare ({selectedForCompare.length})
           </Button>
         </div>
+      )}
+
+      {!loadingApps && recentlyViewedApps.length > 0 && (
+        <Card className="p-6" data-testid="section-recently-viewed">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-muted rounded-lg">
+                <Clock className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold">Recently Viewed</h2>
+                <p className="text-sm text-muted-foreground">
+                  Quick access to apps you've explored
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearRecentlyViewed}
+              className="text-muted-foreground"
+              data-testid="button-clear-recently-viewed"
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Clear
+            </Button>
+          </div>
+          <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+            {recentlyViewedApps.map((app) => (
+              <AppCard
+                key={app.id}
+                app={app}
+                onViewDetails={handleViewDetails}
+                onInstall={handleInstall}
+                isInstalling={installMutation.isPending}
+                isInstalled={installedAppIds.has(app.id)}
+                compareMode={compareMode}
+                isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                onToggleCompare={toggleCompareApp}
+              />
+            ))}
+          </div>
+        </Card>
       )}
 
       {industryFilter !== "all" && !loadingApps && industryRecommendedApps.length > 0 && (
