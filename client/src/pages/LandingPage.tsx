@@ -99,6 +99,12 @@ export default function LandingPage() {
             </span>
           </Link>
         </div>
+        {/* Featured Badge */}
+        <div className="mt-6 flex justify-center">
+          <a href="https://startupfa.me/s/nexusai?utm_source=nexusaifirst.cloud" target="_blank" rel="noopener noreferrer" data-testid="link-startup-fame">
+            <img src="https://startupfa.me/badges/featured-badge.webp" alt="Nexus AI First ERP - Featured on Startup Fame" width="171" height="54" />
+          </a>
+        </div>
       </section>
 
       {/* Open Source Banner */}
