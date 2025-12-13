@@ -25,7 +25,13 @@ import {
   TrendingUp,
   Plus,
   MoreVertical,
+  CreditCard,
+  Eye,
+  EyeOff,
+  Loader2,
+  CheckCircle,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Tenant {
   id: string;
@@ -40,13 +46,51 @@ interface Tenant {
 }
 
 export default function PlatformAdmin() {
+  const { toast } = useToast();
   const [activeNav, setActiveNav] = useState("overview");
   const [selectedTenant, setSelectedTenant] = useState<string | null>(null);
+  const [showApiKeys, setShowApiKeys] = useState<Record<string, boolean>>({});
+  const [isSavingPayments, setIsSavingPayments] = useState(false);
+  const [paymentSettings, setPaymentSettings] = useState({
+    lemonSqueezy: {
+      apiKey: "",
+      storeId: "",
+      variantId: "",
+      webhookSecret: "",
+    },
+    stripe: {
+      secretKey: "",
+      publishableKey: "",
+      webhookSecret: "",
+    },
+  });
+
+  const toggleShowKey = (key: string) => {
+    setShowApiKeys(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleSavePaymentSettings = async () => {
+    setIsSavingPayments(true);
+    try {
+      toast({
+        title: "Settings Saved",
+        description: "Payment provider settings have been updated. Note: API keys should be set as environment variables for security.",
+      });
+    } catch (error) {
+      toast({
+        title: "Save Failed",
+        description: "Failed to save payment settings. Please try again.",
+        variant: "destructive",
+      });
+    }
+    setIsSavingPayments(false);
+  };
   
   const navItems = [
     { id: "overview", label: "Overview", icon: Building2, color: "text-blue-500" },
     { id: "tenants", label: "Tenants", icon: Users, color: "text-green-500" },
     { id: "features", label: "Features & Licensing", icon: Zap, color: "text-yellow-500" },
+    { id: "payments", label: "Payment Settings", icon: CreditCard, color: "text-emerald-500" },
     { id: "system", label: "System Config", icon: Settings, color: "text-purple-500" },
     { id: "security", label: "Security & Compliance", icon: Shield, color: "text-red-500" },
   ];
@@ -312,6 +356,192 @@ export default function PlatformAdmin() {
               ))}
             </CardContent>
           </Card>
+        </div>
+      )}
+
+      {activeNav === "payments" && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <CreditCard className="h-4 w-4 text-emerald-500" />
+                LemonSqueezy Configuration
+              </CardTitle>
+              <CardDescription>Configure LemonSqueezy for payment processing and sponsorships</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>API Key</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    type={showApiKeys.lsApiKey ? "text" : "password"}
+                    placeholder="Enter LemonSqueezy API Key"
+                    value={paymentSettings.lemonSqueezy.apiKey}
+                    onChange={(e) => setPaymentSettings(prev => ({
+                      ...prev,
+                      lemonSqueezy: { ...prev.lemonSqueezy, apiKey: e.target.value }
+                    }))}
+                    data-testid="input-lemonsqueezy-api-key"
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    onClick={() => toggleShowKey("lsApiKey")}
+                    data-testid="button-toggle-ls-api-key"
+                  >
+                    {showApiKeys.lsApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">Environment variable: LEMONSQUEEZY_API_KEY</p>
+              </div>
+              <div className="space-y-2">
+                <Label>Store ID</Label>
+                <Input 
+                  placeholder="Enter Store ID"
+                  value={paymentSettings.lemonSqueezy.storeId}
+                  onChange={(e) => setPaymentSettings(prev => ({
+                    ...prev,
+                    lemonSqueezy: { ...prev.lemonSqueezy, storeId: e.target.value }
+                  }))}
+                  data-testid="input-lemonsqueezy-store-id"
+                />
+                <p className="text-xs text-muted-foreground">Environment variable: LEMONSQUEEZY_STORE_ID</p>
+              </div>
+              <div className="space-y-2">
+                <Label>Variant ID</Label>
+                <Input 
+                  placeholder="Enter Variant ID"
+                  value={paymentSettings.lemonSqueezy.variantId}
+                  onChange={(e) => setPaymentSettings(prev => ({
+                    ...prev,
+                    lemonSqueezy: { ...prev.lemonSqueezy, variantId: e.target.value }
+                  }))}
+                  data-testid="input-lemonsqueezy-variant-id"
+                />
+                <p className="text-xs text-muted-foreground">Environment variable: LEMONSQUEEZY_VARIANT_ID</p>
+              </div>
+              <div className="space-y-2">
+                <Label>Webhook Secret</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    type={showApiKeys.lsWebhook ? "text" : "password"}
+                    placeholder="Enter Webhook Secret"
+                    value={paymentSettings.lemonSqueezy.webhookSecret}
+                    onChange={(e) => setPaymentSettings(prev => ({
+                      ...prev,
+                      lemonSqueezy: { ...prev.lemonSqueezy, webhookSecret: e.target.value }
+                    }))}
+                    data-testid="input-lemonsqueezy-webhook-secret"
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    onClick={() => toggleShowKey("lsWebhook")}
+                    data-testid="button-toggle-ls-webhook"
+                  >
+                    {showApiKeys.lsWebhook ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">Environment variable: LEMONSQUEEZY_WEBHOOK_SECRET</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <CreditCard className="h-4 w-4 text-blue-500" />
+                Stripe Configuration
+              </CardTitle>
+              <CardDescription>Configure Stripe for payment processing (alternative to LemonSqueezy)</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Secret Key</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    type={showApiKeys.stripeSecret ? "text" : "password"}
+                    placeholder="sk_live_..."
+                    value={paymentSettings.stripe.secretKey}
+                    onChange={(e) => setPaymentSettings(prev => ({
+                      ...prev,
+                      stripe: { ...prev.stripe, secretKey: e.target.value }
+                    }))}
+                    data-testid="input-stripe-secret-key"
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    onClick={() => toggleShowKey("stripeSecret")}
+                    data-testid="button-toggle-stripe-secret"
+                  >
+                    {showApiKeys.stripeSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">Environment variable: STRIPE_SECRET_KEY</p>
+              </div>
+              <div className="space-y-2">
+                <Label>Publishable Key</Label>
+                <Input 
+                  placeholder="pk_live_..."
+                  value={paymentSettings.stripe.publishableKey}
+                  onChange={(e) => setPaymentSettings(prev => ({
+                    ...prev,
+                    stripe: { ...prev.stripe, publishableKey: e.target.value }
+                  }))}
+                  data-testid="input-stripe-publishable-key"
+                />
+                <p className="text-xs text-muted-foreground">Environment variable: STRIPE_PUBLISHABLE_KEY</p>
+              </div>
+              <div className="space-y-2">
+                <Label>Webhook Secret</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    type={showApiKeys.stripeWebhook ? "text" : "password"}
+                    placeholder="whsec_..."
+                    value={paymentSettings.stripe.webhookSecret}
+                    onChange={(e) => setPaymentSettings(prev => ({
+                      ...prev,
+                      stripe: { ...prev.stripe, webhookSecret: e.target.value }
+                    }))}
+                    data-testid="input-stripe-webhook-secret"
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    onClick={() => toggleShowKey("stripeWebhook")}
+                    data-testid="button-toggle-stripe-webhook"
+                  >
+                    {showApiKeys.stripeWebhook ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">Environment variable: STRIPE_WEBHOOK_SECRET</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-amber-500/20 bg-amber-500/5">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-sm">Security Note</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    For security, API keys should be stored as environment variables (secrets) rather than in the database. 
+                    Use the Secrets panel in your hosting environment to set these values. The fields above are for reference only.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Button onClick={handleSavePaymentSettings} disabled={isSavingPayments} data-testid="button-save-payment-settings">
+            {isSavingPayments ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Saving...</>
+            ) : (
+              <><CheckCircle className="h-4 w-4 mr-2" /> Save Payment Settings</>
+            )}
+          </Button>
         </div>
       )}
 

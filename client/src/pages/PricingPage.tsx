@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { Header, Footer } from "@/components/Navigation";
@@ -20,7 +21,10 @@ import {
   Server,
   Users,
   ArrowRight,
-  Loader2
+  Loader2,
+  Cog,
+  Search,
+  ClipboardCheck
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -36,7 +40,26 @@ export default function PricingPage() {
     company: "",
     message: ""
   });
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const serviceOptions = [
+    { id: "hosting", label: "Hosting Setup", icon: Server },
+    { id: "implementation", label: "Implementation", icon: Users },
+    { id: "support", label: "Support", icon: Headphones },
+    { id: "training", label: "Training", icon: Shield },
+    { id: "optimization", label: "Process Optimization", icon: Cog },
+    { id: "erp-selection", label: "Selecting an ERP Service", icon: Search },
+    { id: "post-implementation", label: "Post ERP Implementation Review", icon: ClipboardCheck },
+  ];
+
+  const toggleService = (serviceId: string) => {
+    setSelectedServices(prev => 
+      prev.includes(serviceId) 
+        ? prev.filter(id => id !== serviceId)
+        : [...prev, serviceId]
+    );
+  };
 
   useEffect(() => {
     document.title = "Pricing | NexusAI - Free Open Source ERP";
@@ -109,9 +132,14 @@ export default function PricingPage() {
     setIsSubmitting(true);
     
     try {
+      const selectedServiceLabels = selectedServices
+        .map(id => serviceOptions.find(s => s.id === id)?.label)
+        .filter(Boolean);
+      
       const response = await apiRequest("POST", "/api/contact", {
         ...contactForm,
-        subject: "Implementation Services Request"
+        subject: "Services Request",
+        services: selectedServiceLabels
       });
       const data = await response.json();
       
@@ -121,6 +149,7 @@ export default function PricingPage() {
       });
       
       setContactForm({ name: "", email: "", company: "", message: "" });
+      setSelectedServices([]);
     } catch (error: any) {
       toast({
         title: "Submission Failed",
@@ -150,6 +179,9 @@ export default function PricingPage() {
     { icon: Users, title: "Implementation", desc: "Custom configuration and data migration" },
     { icon: Headphones, title: "Support", desc: "Post-implementation technical support" },
     { icon: Shield, title: "Training", desc: "User training and documentation" },
+    { icon: Cog, title: "Process Optimization", desc: "Streamline your business workflows" },
+    { icon: Search, title: "ERP Selection", desc: "Help choosing the right ERP solution" },
+    { icon: ClipboardCheck, title: "Post-Implementation Review", desc: "Assess and optimize your ERP usage" },
   ];
 
   return (
@@ -290,7 +322,7 @@ export default function PricingPage() {
 
             {/* Contact Form */}
             <Card className="p-8 max-w-2xl mx-auto">
-              <h3 className="text-xl font-bold mb-6 text-center">Request Implementation Services</h3>
+              <h3 className="text-xl font-bold mb-6 text-center">Request Services</h3>
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
@@ -325,9 +357,38 @@ export default function PricingPage() {
                   />
                 </div>
                 <div>
+                  <label className="text-sm font-medium mb-2 block">Services Needed (select all that apply)</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {serviceOptions.map((service) => {
+                      const IconComponent = service.icon;
+                      return (
+                        <div 
+                          key={service.id}
+                          className="flex items-center space-x-3 p-3 rounded-lg border hover-elevate cursor-pointer"
+                          onClick={() => toggleService(service.id)}
+                          data-testid={`checkbox-service-${service.id}`}
+                        >
+                          <Checkbox 
+                            id={service.id}
+                            checked={selectedServices.includes(service.id)}
+                            onCheckedChange={() => toggleService(service.id)}
+                          />
+                          <IconComponent className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                          <label 
+                            htmlFor={service.id} 
+                            className="text-sm cursor-pointer flex-1"
+                          >
+                            {service.label}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div>
                   <label className="text-sm font-medium mb-1 block">How can we help?</label>
                   <Textarea 
-                    placeholder="Tell us about your implementation needs, timeline, and any specific requirements..."
+                    placeholder="Tell us about your needs, timeline, and any specific requirements..."
                     value={contactForm.message}
                     onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
                     required

@@ -60,6 +60,7 @@ const FeaturesComparison = lazy(() => import("@/pages/FeaturesComparison"));
 
 // Phase 1: Enterprise Foundation (8 pages)
 const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
+const PlatformAdmin = lazy(() => import("@/pages/admin/PlatformAdmin"));
 const AdminRoles = lazy(() => import("@/pages/AdminRoles"));
 const APIGateway = lazy(() => import("@/pages/APIGateway"));
 const InvoiceGenerator = lazy(() => import("@/pages/InvoiceGenerator"));
@@ -596,6 +597,7 @@ function Router() {
       <Route path="/ticket-dashboard" component={TicketDashboard} />
       <Route path="/api-gateway" component={APIGateway} />
       <Route path="/tenant-admin" component={TenantAdmin} />
+      <Route path="/admin/platform" component={PlatformAdmin} />
       <Route path="/invoice-generator" component={InvoiceGenerator} />
       <Route path="/quote-builder" component={QuoteBuilder} />
       <Route path="/approval-workflow" component={ApprovalWorkflow} />
