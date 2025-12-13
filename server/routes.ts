@@ -21,6 +21,8 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
+import { lemonSqueezySetup, createCheckout, listProducts, getAuthenticatedUser } from "@lemonsqueezy/lemonsqueezy.js";
+import crypto from "crypto";
 import { generateDemoData } from "./demoSeeds";
 import analyticsRoutes from "./routes/analyticsRoutes";
 import templateRoutes from "./routes/templateRoutes";
@@ -584,6 +586,203 @@ export async function registerRoutes(
       res.json(submissions);
     } catch (error: any) {
       res.status(500).json({ error: "Failed to fetch submissions" });
+    }
+  });
+
+  // ========== LEMONSQUEEZY PAYMENT ROUTES ==========
+  
+  // Initialize LemonSqueezy (if API key is available)
+  const initLemonSqueezy = () => {
+    const apiKey = process.env.LEMONSQUEEZY_API_KEY;
+    if (apiKey) {
+      lemonSqueezySetup({
+        apiKey,
+        onError: (error) => console.error("[LemonSqueezy] Error:", error),
+      });
+      return true;
+    }
+    return false;
+  };
+
+  // Create checkout session for sponsorship
+  app.post("/api/payments/checkout", async (req, res) => {
+    try {
+      if (!initLemonSqueezy()) {
+        return res.status(503).json({ 
+          error: "Payment system not configured",
+          message: "LemonSqueezy API key not set. Please configure LEMONSQUEEZY_API_KEY."
+        });
+      }
+
+      const { amount, email, name } = req.body;
+      
+      if (!amount || amount < 1) {
+        return res.status(400).json({ error: "Invalid amount. Minimum is $1." });
+      }
+
+      const storeId = process.env.LEMONSQUEEZY_STORE_ID;
+      const variantId = process.env.LEMONSQUEEZY_VARIANT_ID;
+
+      if (!storeId || !variantId) {
+        return res.status(503).json({ 
+          error: "Payment configuration incomplete",
+          message: "LemonSqueezy store/variant IDs not configured."
+        });
+      }
+
+      const { data, error } = await createCheckout(storeId, variantId, {
+        checkoutData: {
+          email: email || undefined,
+          name: name || undefined,
+          custom: {
+            amount: amount.toString(),
+            type: "sponsorship",
+          },
+        },
+        productOptions: {
+          name: `NexusAI Sponsorship - $${amount}`,
+          description: "Thank you for supporting NexusAI open source development!",
+        },
+        checkoutOptions: {
+          embed: false,
+          media: false,
+        },
+      });
+
+      if (error) {
+        console.error("[LemonSqueezy] Checkout error:", error);
+        return res.status(500).json({ error: "Failed to create checkout session" });
+      }
+
+      res.json({ 
+        success: true, 
+        checkoutUrl: data?.data?.attributes?.url,
+        checkoutId: data?.data?.id
+      });
+    } catch (error: any) {
+      console.error("[LemonSqueezy] Error:", error);
+      res.status(500).json({ error: "Payment processing failed" });
+    }
+  });
+
+  // Get available products (for displaying pricing)
+  app.get("/api/payments/products", async (req, res) => {
+    try {
+      if (!initLemonSqueezy()) {
+        return res.json({ 
+          products: [],
+          configured: false,
+          message: "Payment system not configured"
+        });
+      }
+
+      const storeId = process.env.LEMONSQUEEZY_STORE_ID;
+      if (!storeId) {
+        return res.json({ products: [], configured: false });
+      }
+
+      const { data, error } = await listProducts({
+        filter: { storeId },
+        include: ["variants"],
+      });
+
+      if (error) {
+        console.error("[LemonSqueezy] Products error:", error);
+        return res.json({ products: [], configured: true });
+      }
+
+      res.json({ 
+        products: data?.data || [], 
+        configured: true 
+      });
+    } catch (error: any) {
+      console.error("[LemonSqueezy] Error:", error);
+      res.json({ products: [], configured: false });
+    }
+  });
+
+  // Webhook endpoint for LemonSqueezy events
+  app.post("/api/payments/webhook", async (req, res) => {
+    try {
+      const webhookSecret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
+      
+      if (!webhookSecret) {
+        console.warn("[LemonSqueezy] Webhook secret not configured");
+        return res.status(500).json({ error: "Webhook not configured" });
+      }
+
+      // Verify webhook signature
+      const signature = req.headers["x-signature"] as string;
+      const rawBody = JSON.stringify(req.body);
+      
+      const hash = crypto
+        .createHmac("sha256", webhookSecret)
+        .update(rawBody)
+        .digest("hex");
+
+      if (hash !== signature) {
+        console.warn("[LemonSqueezy] Invalid webhook signature");
+        return res.status(401).json({ error: "Invalid signature" });
+      }
+
+      const event = req.body;
+      const eventName = event?.meta?.event_name;
+
+      console.log(`[LemonSqueezy] Webhook received: ${eventName}`);
+
+      // Handle different event types
+      switch (eventName) {
+        case "order_created":
+          console.log("[LemonSqueezy] New order:", event.data?.id);
+          // Process the order - could save to database, send thank you email, etc.
+          break;
+        case "subscription_created":
+          console.log("[LemonSqueezy] New subscription:", event.data?.id);
+          break;
+        case "subscription_updated":
+          console.log("[LemonSqueezy] Subscription updated:", event.data?.id);
+          break;
+        case "subscription_cancelled":
+          console.log("[LemonSqueezy] Subscription cancelled:", event.data?.id);
+          break;
+        default:
+          console.log(`[LemonSqueezy] Unhandled event: ${eventName}`);
+      }
+
+      res.json({ received: true });
+    } catch (error: any) {
+      console.error("[LemonSqueezy] Webhook error:", error);
+      res.status(500).json({ error: "Webhook processing failed" });
+    }
+  });
+
+  // Check payment system status
+  app.get("/api/payments/status", async (req, res) => {
+    try {
+      const hasApiKey = !!process.env.LEMONSQUEEZY_API_KEY;
+      const hasStoreId = !!process.env.LEMONSQUEEZY_STORE_ID;
+      const hasVariantId = !!process.env.LEMONSQUEEZY_VARIANT_ID;
+      
+      if (!hasApiKey) {
+        return res.json({ 
+          configured: false, 
+          provider: "lemonsqueezy",
+          message: "Payment system not configured" 
+        });
+      }
+
+      // Test API connection
+      initLemonSqueezy();
+      const { data, error } = await getAuthenticatedUser();
+      
+      res.json({
+        configured: hasApiKey && hasStoreId && hasVariantId,
+        provider: "lemonsqueezy",
+        connected: !error,
+        user: data?.data?.attributes?.name || null,
+      });
+    } catch (error: any) {
+      res.json({ configured: false, provider: "lemonsqueezy" });
     }
   });
 

@@ -16,6 +16,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
+    "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
     "@neondatabase/serverless": "^0.10.4",
     "@nestjs/bull": "^11.0.4",
     "@nestjs/cli": "^11.0.14",

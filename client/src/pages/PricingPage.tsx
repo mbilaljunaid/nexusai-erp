@@ -13,22 +13,23 @@ import {
   CheckCircle, 
   Gift, 
   Building2, 
-  Mail, 
-  Phone, 
-  MessageSquare,
   Github,
   Scale,
   Shield,
   Headphones,
   Server,
   Users,
-  ArrowRight
+  ArrowRight,
+  Loader2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function PricingPage() {
   const { toast } = useToast();
   const [customAmount, setCustomAmount] = useState("");
+  const [sponsoringAmount, setSponsoringAmount] = useState<number | null>(null);
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -41,12 +42,53 @@ export default function PricingPage() {
     document.title = "Pricing | NexusAI - Free Open Source ERP";
   }, []);
 
+  // Check payment system status
+  const { data: paymentStatus } = useQuery<{ configured: boolean; provider: string }>({
+    queryKey: ["/api/payments/status"],
+  });
+
+  // Create checkout mutation
+  const checkoutMutation = useMutation({
+    mutationFn: async (amount: number) => {
+      const response = await apiRequest("POST", "/api/payments/checkout", { amount });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        toast({
+          title: "Checkout Created",
+          description: "Redirecting to payment page...",
+        });
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Payment Error",
+        description: error.message || "Unable to process payment. Please try again.",
+        variant: "destructive"
+      });
+      setSponsoringAmount(null);
+    }
+  });
+
   const handleSponsor = async (amount: number) => {
+    if (!paymentStatus?.configured) {
+      toast({
+        title: "Payment Not Available",
+        description: "Payment system is not configured yet. Please contact us directly.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setSponsoringAmount(amount);
     toast({
       title: "Thank you for your support!",
-      description: `Redirecting to payment for $${amount}...`,
+      description: `Preparing checkout for $${amount}...`,
     });
-    // Payment integration will be added here
+    checkoutMutation.mutate(amount);
   };
 
   const handleCustomSponsor = () => {
@@ -66,15 +108,27 @@ export default function PricingPage() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const response = await apiRequest("POST", "/api/contact", {
+        ...contactForm,
+        subject: "Implementation Services Request"
+      });
+      const data = await response.json();
+      
+      toast({
+        title: "Request Submitted",
+        description: data.message || "We'll get back to you within 24-48 hours.",
+      });
+      
+      setContactForm({ name: "", email: "", company: "", message: "" });
+    } catch (error: any) {
+      toast({
+        title: "Submission Failed",
+        description: "Please try again or contact us directly.",
+        variant: "destructive"
+      });
+    }
     
-    toast({
-      title: "Request Submitted",
-      description: "We'll get back to you within 24-48 hours.",
-    });
-    
-    setContactForm({ name: "", email: "", company: "", message: "" });
     setIsSubmitting(false);
   };
 
@@ -314,9 +368,12 @@ export default function PricingPage() {
                 <Button 
                   onClick={() => handleSponsor(10)} 
                   className="w-full bg-white text-orange-600 hover:bg-slate-100"
+                  disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-10"
                 >
-                  Sponsor $10
+                  {sponsoringAmount === 10 && checkoutMutation.isPending ? (
+                    <><Loader2 className="mr-2 w-4 h-4 animate-spin" /> Processing...</>
+                  ) : "Sponsor $10"}
                 </Button>
               </Card>
 
@@ -329,9 +386,12 @@ export default function PricingPage() {
                 <Button 
                   onClick={() => handleSponsor(25)} 
                   className="w-full bg-white text-orange-600 hover:bg-slate-100"
+                  disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-25"
                 >
-                  Sponsor $25
+                  {sponsoringAmount === 25 && checkoutMutation.isPending ? (
+                    <><Loader2 className="mr-2 w-4 h-4 animate-spin" /> Processing...</>
+                  ) : "Sponsor $25"}
                 </Button>
               </Card>
 
@@ -344,9 +404,12 @@ export default function PricingPage() {
                 <Button 
                   onClick={() => handleSponsor(50)} 
                   className="w-full bg-white text-orange-600 hover:bg-slate-100"
+                  disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-50"
                 >
-                  Sponsor $50
+                  {sponsoringAmount === 50 && checkoutMutation.isPending ? (
+                    <><Loader2 className="mr-2 w-4 h-4 animate-spin" /> Processing...</>
+                  ) : "Sponsor $50"}
                 </Button>
               </Card>
             </div>
@@ -370,15 +433,18 @@ export default function PricingPage() {
                 <Button 
                   onClick={handleCustomSponsor}
                   className="bg-white text-orange-600 hover:bg-slate-100"
+                  disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-custom"
                 >
-                  Sponsor
+                  {checkoutMutation.isPending && sponsoringAmount !== 10 && sponsoringAmount !== 25 && sponsoringAmount !== 50 ? (
+                    <><Loader2 className="mr-2 w-4 h-4 animate-spin" /></>
+                  ) : "Sponsor"}
                 </Button>
               </div>
             </Card>
 
             <p className="mt-8 text-sm text-white/60">
-              Payments securely processed via Stripe
+              Payments securely processed via LemonSqueezy
             </p>
           </div>
         </section>
