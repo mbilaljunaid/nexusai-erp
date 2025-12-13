@@ -5,6 +5,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { useRBAC } from "@/components/RBACContext";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
+import { DashboardWidgets } from "@/components/DashboardWidgets";
 import {
   BarChart3,
   Users,
@@ -295,6 +296,8 @@ function EditorDashboard() {
           ))}
         </div>
       </div>
+
+      <DashboardWidgets />
 
       <Card className="bg-muted/50">
         <CardContent className="p-6">
