@@ -12,6 +12,7 @@ import { RBACProvider } from "@/components/RBACContext";
 import { TourProvider } from "@/hooks/use-tour";
 import { GuidedTourOverlay } from "@/components/GuidedTour";
 import { HelpButton } from "@/components/HelpButton";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import NotFound from "@/pages/not-found";
 
 // Landing Page
@@ -648,7 +649,7 @@ export default function App() {
           <TooltipProvider>
             <TourProvider>
               <SidebarProvider style={style}>
-                {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <AuthenticatedLayout />}
+                {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <ProtectedRoute><AuthenticatedLayout /></ProtectedRoute>}
                 <GuidedTourOverlay />
                 <Toaster />
               </SidebarProvider>
