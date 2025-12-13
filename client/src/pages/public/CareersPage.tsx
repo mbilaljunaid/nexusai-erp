@@ -336,6 +336,11 @@ export default function CareersPage() {
                   Read Contribution Guide
                 </Button>
               </Link>
+              <Link to="/contact">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-contact-us">
+                  Contact Us
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
