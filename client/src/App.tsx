@@ -176,6 +176,8 @@ const Analytics = lazy(() => import("@/pages/Analytics"));
 const Copilot = lazy(() => import("@/pages/Copilot"));
 const AIChat = lazy(() => import("@/pages/AIChat"));
 const Marketplace = lazy(() => import("@/pages/Marketplace"));
+const DeveloperPortal = lazy(() => import("@/pages/DeveloperPortal"));
+const MarketplaceAdmin = lazy(() => import("@/pages/MarketplaceAdmin"));
 const IntegrationHub = lazy(() => import("@/pages/IntegrationHub"));
 const Settings = lazy(() => import("@/pages/Settings"));
 
@@ -544,6 +546,8 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/copilot" component={Copilot} />
       <Route path="/marketplace" component={Marketplace} />
+      <Route path="/developer-portal" component={DeveloperPortal} />
+      <Route path="/marketplace-admin" component={MarketplaceAdmin} />
       <Route path="/settings" component={Settings} />
       <Route path="/integrations" component={Integrations} />
       <Route path="/processes" component={ProcessHub} />
