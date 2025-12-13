@@ -1936,6 +1936,29 @@ export async function registerRoutes(
     }
   });
 
+  // 30b. GET /api/marketplace/developer/payouts - Developer's own payouts only
+  app.get("/api/marketplace/developer/payouts", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      
+      const [developer] = await db.select().from(marketplaceDevelopers)
+        .where(eq(marketplaceDevelopers.userId, userId));
+      
+      if (!developer) {
+        return res.json([]);
+      }
+      
+      const payouts = await db.select().from(marketplacePayouts)
+        .where(eq(marketplacePayouts.developerId, developer.id))
+        .orderBy(desc(marketplacePayouts.createdAt));
+      
+      res.json(payouts);
+    } catch (error: any) {
+      console.error("Error fetching developer payouts:", error);
+      res.status(500).json({ error: "Failed to fetch payouts" });
+    }
+  });
+
   // ============ APP DEPENDENCIES API ============
 
   // 31. GET /api/marketplace/apps/:id/dependencies - Get app dependencies

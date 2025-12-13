@@ -22,7 +22,20 @@ import {
   Edit, Trash2, Send, Eye, Star, Download, Clock,
   CheckCircle, XCircle, AlertCircle, Code, FileText, ExternalLink
 } from "lucide-react";
-import type { MarketplaceDeveloper, MarketplaceApp, MarketplaceCategory } from "@shared/schema";
+import type { MarketplaceDeveloper, MarketplaceApp, MarketplaceCategory, MarketplacePayout } from "@shared/schema";
+
+interface EarningsSummary {
+  totalEarnings: string;
+  pendingBalance: string;
+  totalPaidOut: string;
+  lastPayoutDate: string | null;
+  appEarnings: Array<{
+    appId: string;
+    appName: string;
+    totalRevenue: string;
+    developerShare: string;
+  }>;
+}
 
 const developerSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
@@ -593,6 +606,14 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
     queryKey: ["/api/marketplace/categories"],
   });
 
+  const { data: earnings, isLoading: loadingEarnings } = useQuery<EarningsSummary>({
+    queryKey: ["/api/marketplace/developer/earnings"],
+  });
+
+  const { data: payouts = [], isLoading: loadingPayouts } = useQuery<MarketplacePayout[]>({
+    queryKey: ["/api/marketplace/developer/payouts"],
+  });
+
   const submitMutation = useMutation({
     mutationFn: async (appId: string) => {
       return apiRequest("POST", `/api/marketplace/apps/${appId}/submit`);
@@ -702,6 +723,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
       <Tabs defaultValue="apps">
         <TabsList>
           <TabsTrigger value="apps" data-testid="tab-my-apps">My Apps</TabsTrigger>
+          <TabsTrigger value="earnings" data-testid="tab-earnings">Earnings</TabsTrigger>
           <TabsTrigger value="analytics" data-testid="tab-analytics">Analytics</TabsTrigger>
           <TabsTrigger value="settings" data-testid="tab-dev-settings">Settings</TabsTrigger>
         </TabsList>
@@ -798,6 +820,144 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
               </Table>
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="earnings" className="mt-6">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>Pending Balance</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-primary" data-testid="text-pending-balance">
+                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : `$${parseFloat(earnings?.pendingBalance || "0").toFixed(2)}`}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Available for next payout</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>Total Earned</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold" data-testid="text-total-earnings">
+                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : `$${parseFloat(earnings?.totalEarnings || "0").toFixed(2)}`}
+                  </div>
+                  <p className="text-xs text-muted-foreground">All time earnings</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>Total Paid Out</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-600" data-testid="text-total-paid">
+                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : `$${parseFloat(earnings?.totalPaidOut || "0").toFixed(2)}`}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {earnings?.lastPayoutDate ? `Last: ${new Date(earnings.lastPayoutDate).toLocaleDateString()}` : "No payouts yet"}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {earnings?.appEarnings && earnings.appEarnings.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Earnings by App</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="border rounded-lg">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>App</TableHead>
+                          <TableHead className="text-right">Total Revenue</TableHead>
+                          <TableHead className="text-right">Your Share</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {earnings.appEarnings.map((app) => (
+                          <TableRow key={app.appId}>
+                            <TableCell className="font-medium">{app.appName}</TableCell>
+                            <TableCell className="text-right">${parseFloat(app.totalRevenue).toFixed(2)}</TableCell>
+                            <TableCell className="text-right text-green-600">${parseFloat(app.developerShare).toFixed(2)}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between gap-2">
+                <div>
+                  <CardTitle className="text-lg">Payout History</CardTitle>
+                  <CardDescription>Your payout transactions</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {loadingPayouts ? (
+                  <div className="space-y-2">
+                    {[...Array(3)].map((_, i) => (
+                      <Skeleton key={i} className="h-12 w-full" />
+                    ))}
+                  </div>
+                ) : payouts.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <DollarSign className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                    <p>No payouts yet</p>
+                    <p className="text-sm">Payouts are processed when your pending balance reaches the minimum threshold</p>
+                  </div>
+                ) : (
+                  <div className="border rounded-lg">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Period</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                          <TableHead className="text-right">Date</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {payouts.map((payout) => (
+                          <TableRow key={payout.id} data-testid={`row-payout-${payout.id}`}>
+                            <TableCell>
+                              {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant={
+                                  payout.status === "paid" ? "default" : 
+                                  payout.status === "processing" ? "secondary" :
+                                  payout.status === "failed" ? "destructive" : "outline"
+                                }
+                                className={payout.status === "paid" ? "bg-green-500/10 text-green-600 border-green-200" : ""}
+                              >
+                                {payout.status === "paid" ? "Paid" :
+                                 payout.status === "processing" ? "Processing" :
+                                 payout.status === "failed" ? "Failed" : "Pending"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right font-medium">
+                              ${parseFloat(payout.amount).toFixed(2)}
+                            </TableCell>
+                            <TableCell className="text-right text-muted-foreground">
+                              {payout.paidAt ? new Date(payout.paidAt).toLocaleDateString() : "-"}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="analytics" className="mt-6">

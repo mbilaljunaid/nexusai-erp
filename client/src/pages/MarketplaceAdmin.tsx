@@ -15,9 +15,10 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   CheckCircle, XCircle, Package, Eye, Clock, DollarSign, 
-  TrendingUp, Users, Settings, Percent, Building2, ExternalLink
+  TrendingUp, Users, Settings, Percent, Building2, ExternalLink,
+  Play, CreditCard, AlertTriangle, FileText, RefreshCw
 } from "lucide-react";
-import type { MarketplaceApp, MarketplaceDeveloper } from "@shared/schema";
+import type { MarketplaceApp, MarketplaceDeveloper, MarketplacePayout, MarketplaceAuditLog } from "@shared/schema";
 
 interface AppReviewDialogProps {
   app: MarketplaceApp | null;
@@ -185,6 +186,11 @@ export default function MarketplaceAdmin() {
   const [selectedApp, setSelectedApp] = useState<MarketplaceApp | null>(null);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [commissionRate, setCommissionRate] = useState("");
+  const [completePayoutDialogOpen, setCompletePayoutDialogOpen] = useState(false);
+  const [selectedPayoutId, setSelectedPayoutId] = useState<string | null>(null);
+  const [transactionRef, setTransactionRef] = useState("");
+  const [failReason, setFailReason] = useState("");
+  const [failPayoutDialogOpen, setFailPayoutDialogOpen] = useState(false);
 
   const { data: pendingApps = [], isLoading: loadingPending } = useQuery<MarketplaceApp[]>({
     queryKey: ["/api/marketplace/admin/pending-apps"],
@@ -196,6 +202,14 @@ export default function MarketplaceAdmin() {
 
   const { data: commissionSettings } = useQuery<{ defaultCommissionRate: string }>({
     queryKey: ["/api/marketplace/commission-settings"],
+  });
+
+  const { data: payouts = [], isLoading: loadingPayouts } = useQuery<MarketplacePayout[]>({
+    queryKey: ["/api/marketplace/payouts"],
+  });
+
+  const { data: auditLogs = [], isLoading: loadingAuditLogs } = useQuery<MarketplaceAuditLog[]>({
+    queryKey: ["/api/marketplace/audit-logs"],
   });
 
   const approveMutation = useMutation({
@@ -250,6 +264,82 @@ export default function MarketplaceAdmin() {
       toast({ 
         title: "Error", 
         description: error.message || "Failed to update settings", 
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const generatePayoutsMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/marketplace/payouts/generate");
+    },
+    onSuccess: () => {
+      toast({ title: "Payouts Generated", description: "New payout entries created for eligible developers" });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/payouts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/developer/earnings"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/audit-logs"] });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to generate payouts", 
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const processPayoutMutation = useMutation({
+    mutationFn: async (payoutId: string) => {
+      return apiRequest("PUT", `/api/marketplace/payouts/${payoutId}/process`);
+    },
+    onSuccess: () => {
+      toast({ title: "Processing Started", description: "Payout is now being processed" });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/payouts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/audit-logs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/developer/earnings"] });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to process payout", 
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const completePayoutMutation = useMutation({
+    mutationFn: async ({ payoutId, transactionRef }: { payoutId: string; transactionRef?: string }) => {
+      return apiRequest("PUT", `/api/marketplace/payouts/${payoutId}/complete`, { transactionRef });
+    },
+    onSuccess: () => {
+      toast({ title: "Payout Completed", description: "Payment has been marked as paid successfully" });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/payouts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/audit-logs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/developer/earnings"] });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to complete payout", 
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const failPayoutMutation = useMutation({
+    mutationFn: async ({ payoutId, reason }: { payoutId: string; reason: string }) => {
+      return apiRequest("PUT", `/api/marketplace/payouts/${payoutId}/fail`, { reason });
+    },
+    onSuccess: () => {
+      toast({ title: "Payout Marked Failed", description: "Developer will be notified of the issue" });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/payouts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/audit-logs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/marketplace/developer/earnings"] });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to update payout", 
         variant: "destructive" 
       });
     },
@@ -336,6 +426,13 @@ export default function MarketplaceAdmin() {
             )}
           </TabsTrigger>
           <TabsTrigger value="all" data-testid="tab-all-apps-admin">All Apps</TabsTrigger>
+          <TabsTrigger value="payouts" data-testid="tab-payouts">
+            Payouts
+            {payouts.filter(p => p.status === "pending").length > 0 && (
+              <Badge variant="secondary" className="ml-2">{payouts.filter(p => p.status === "pending").length}</Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="audit" data-testid="tab-audit-logs">Audit Logs</TabsTrigger>
           <TabsTrigger value="settings" data-testid="tab-marketplace-settings">Settings</TabsTrigger>
         </TabsList>
 
@@ -470,6 +567,193 @@ export default function MarketplaceAdmin() {
           )}
         </TabsContent>
 
+        <TabsContent value="payouts" className="mt-6">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <h2 className="text-xl font-semibold">Payout Management</h2>
+                <p className="text-sm text-muted-foreground">Process developer payouts</p>
+              </div>
+              <Button 
+                onClick={() => generatePayoutsMutation.mutate()}
+                disabled={generatePayoutsMutation.isPending}
+                data-testid="button-generate-payouts"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${generatePayoutsMutation.isPending ? 'animate-spin' : ''}`} />
+                Generate Payouts
+              </Button>
+            </div>
+
+            {loadingPayouts ? (
+              <div className="space-y-2">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-16 w-full" />
+                ))}
+              </div>
+            ) : payouts.length === 0 ? (
+              <Card className="py-12">
+                <CardContent className="text-center">
+                  <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-medium">No payouts</h3>
+                  <p className="text-muted-foreground mt-1">Click "Generate Payouts" to create pending payouts for developers</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="border rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Developer</TableHead>
+                      <TableHead>Period</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Amount</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {payouts.map((payout) => (
+                      <TableRow key={payout.id} data-testid={`row-admin-payout-${payout.id}`}>
+                        <TableCell className="font-medium">{payout.developerId}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant={
+                              payout.status === "paid" ? "default" : 
+                              payout.status === "processing" ? "secondary" :
+                              payout.status === "failed" ? "destructive" : "outline"
+                            }
+                            className={payout.status === "paid" ? "bg-green-500/10 text-green-600 border-green-200" : ""}
+                          >
+                            {payout.status === "paid" ? "Paid" :
+                             payout.status === "processing" ? "Processing" :
+                             payout.status === "failed" ? "Failed" : "Pending"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          ${parseFloat(payout.amount).toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            {payout.status === "pending" && (
+                              <Button 
+                                size="sm"
+                                variant="outline"
+                                onClick={() => processPayoutMutation.mutate(payout.id)}
+                                disabled={processPayoutMutation.isPending}
+                                data-testid={`button-process-payout-${payout.id}`}
+                              >
+                                <Play className="w-3 h-3 mr-1" />
+                                Process
+                              </Button>
+                            )}
+                            {payout.status === "processing" && (
+                              <>
+                                <Button 
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedPayoutId(payout.id);
+                                    setTransactionRef("");
+                                    setCompletePayoutDialogOpen(true);
+                                  }}
+                                  disabled={completePayoutMutation.isPending}
+                                  data-testid={`button-complete-payout-${payout.id}`}
+                                >
+                                  <CreditCard className="w-3 h-3 mr-1" />
+                                  Mark Paid
+                                </Button>
+                                <Button 
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => {
+                                    setSelectedPayoutId(payout.id);
+                                    setFailReason("");
+                                    setFailPayoutDialogOpen(true);
+                                  }}
+                                  disabled={failPayoutMutation.isPending}
+                                  data-testid={`button-fail-payout-${payout.id}`}
+                                >
+                                  <AlertTriangle className="w-3 h-3 mr-1" />
+                                  Failed
+                                </Button>
+                              </>
+                            )}
+                            {payout.status === "paid" && (
+                              <span className="text-sm text-muted-foreground">
+                                {payout.paidAt ? new Date(payout.paidAt).toLocaleDateString() : ""}
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="audit" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Audit Trail
+              </CardTitle>
+              <CardDescription>All marketplace actions are logged for compliance</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingAuditLogs ? (
+                <div className="space-y-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-10 w-full" />
+                  ))}
+                </div>
+              ) : auditLogs.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <FileText className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                  <p>No audit logs yet</p>
+                </div>
+              ) : (
+                <div className="border rounded-lg">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Action</TableHead>
+                        <TableHead>Entity</TableHead>
+                        <TableHead>Actor</TableHead>
+                        <TableHead>Date</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {auditLogs.slice(0, 50).map((log) => (
+                        <TableRow key={log.id} data-testid={`row-audit-log-${log.id}`}>
+                          <TableCell>
+                            <Badge variant="outline" className="capitalize">
+                              {log.action.replace(/_/g, " ")}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            <span className="text-muted-foreground">{log.entityType}:</span> {log.entityId.slice(0, 8)}...
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {log.actorId || "System"}
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {log.createdAt ? new Date(log.createdAt).toLocaleString() : "-"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="settings" className="mt-6">
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
@@ -554,6 +838,95 @@ export default function MarketplaceAdmin() {
         onReject={(appId, reason) => rejectMutation.mutate({ appId, reason })}
         isPending={approveMutation.isPending || rejectMutation.isPending}
       />
+
+      <Dialog open={completePayoutDialogOpen} onOpenChange={setCompletePayoutDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Complete Payout</DialogTitle>
+            <DialogDescription>
+              Enter the payment transaction reference to confirm this payout has been sent.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Transaction Reference</Label>
+              <Input
+                placeholder="e.g., TXN-123456789"
+                value={transactionRef}
+                onChange={(e) => setTransactionRef(e.target.value)}
+                data-testid="input-transaction-ref"
+              />
+              <p className="text-sm text-muted-foreground">
+                Enter the bank transfer or payment processor reference ID
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCompletePayoutDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => {
+                if (selectedPayoutId) {
+                  completePayoutMutation.mutate({ 
+                    payoutId: selectedPayoutId, 
+                    transactionRef: transactionRef || undefined 
+                  });
+                  setCompletePayoutDialogOpen(false);
+                }
+              }}
+              disabled={completePayoutMutation.isPending}
+              data-testid="button-confirm-complete-payout"
+            >
+              {completePayoutMutation.isPending ? "Processing..." : "Confirm Payment"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={failPayoutDialogOpen} onOpenChange={setFailPayoutDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Mark Payout Failed</DialogTitle>
+            <DialogDescription>
+              Explain why this payout could not be processed.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Failure Reason</Label>
+              <Textarea
+                placeholder="e.g., Invalid bank details, Payment rejected..."
+                value={failReason}
+                onChange={(e) => setFailReason(e.target.value)}
+                className="min-h-[100px]"
+                data-testid="input-fail-reason"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setFailPayoutDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={() => {
+                if (selectedPayoutId && failReason.trim()) {
+                  failPayoutMutation.mutate({ 
+                    payoutId: selectedPayoutId, 
+                    reason: failReason 
+                  });
+                  setFailPayoutDialogOpen(false);
+                }
+              }}
+              disabled={!failReason.trim() || failPayoutMutation.isPending}
+              data-testid="button-confirm-fail-payout"
+            >
+              {failPayoutMutation.isPending ? "Processing..." : "Mark as Failed"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
