@@ -43,6 +43,7 @@ jobs:
           
       - name: Sync open-source files
         run: |
+          # Define source directories/files to sync (source:destination)
           SYNC_ITEMS=(
             "shared/schema.ts:src/schema/schema.ts"
             "shared/communityConstants.ts:src/constants/community.ts"
@@ -78,11 +79,34 @@ jobs:
             fi
           done
           
+      - name: Add license headers
+        run: |
+          cd public-repo
+          # Add AGPL-3.0 license headers to TypeScript files
+          find src -name "*.ts" -exec grep -L "SPDX-License-Identifier" {} \; | while read file; do
+            echo "Adding license header to: $file"
+            cat > temp_header.txt << 'EOF'
+/**
+ * NexusAI Core - Open Source ERP Engine
+ * Copyright (C) 2024 NexusAI Contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+EOF
+            cat temp_header.txt "$file" > temp_file.ts
+            mv temp_file.ts "$file"
+          done
+          rm -f temp_header.txt
+          
       - name: Commit and push to public repo
         run: |
           cd public-repo
           git config user.name "NexusAI Bot"
           git config user.email "bot@nexusai.com"
           git add -A
-          git diff --staged --quiet || git commit -m "chore: sync from private repo [skip ci]"
+          git diff --staged --quiet || git commit -m "chore: sync from private repo [skip ci]
+
+          Automated sync of open-source core components.
+          See CONTRIBUTING.md for contribution guidelines."
           git push
