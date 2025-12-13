@@ -9,6 +9,8 @@ import { Header, Footer } from "@/components/Navigation";
 export default function IndustriesPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
+  const createSlug = (name: string) => name.toLowerCase().replace(/[&\s]+/g, '-').replace(/[^a-z0-9-]/g, '');
+
   useEffect(() => {
     document.title = "Industries | NexusAI - Enterprise Solutions for 41+ Industries";
   }, []);
@@ -115,19 +117,18 @@ export default function IndustriesPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
             {filtered.map((industry, idx) => (
-              <Card
-                className="bg-slate-800/50 border-slate-700 hover:border-blue-500/50 transition-all p-4 cursor-pointer hover:shadow-lg hover:shadow-blue-500/10"
-                data-testid={`card-industry-${industry.name.replace(/\s+/g, '-').toLowerCase()}`}
-                key={idx}
-              >
-                <h3 className="text-lg font-bold text-white mb-2">{industry.name}</h3>
-                <p className="text-sm text-slate-300 mb-4">{industry.description}</p>
-                <Link to={`/demo?industry=${industry.name}`}>
-                  <Button size="sm" variant="outline" className="w-full text-blue-400 border-blue-500 hover:bg-blue-500/10" data-testid={`button-demo-${industry.name.replace(/\s+/g, '-').toLowerCase()}`}>
-                    Request Demo
+              <Link to={`/industry/${createSlug(industry.name)}`} key={idx}>
+                <Card
+                  className="bg-slate-800/50 border-slate-700 hover:border-blue-500/50 transition-all p-4 cursor-pointer hover:shadow-lg hover:shadow-blue-500/10 h-full"
+                  data-testid={`card-industry-${industry.name.replace(/\s+/g, '-').toLowerCase()}`}
+                >
+                  <h3 className="text-lg font-bold text-white mb-2">{industry.name}</h3>
+                  <p className="text-sm text-slate-300 mb-4">{industry.description}</p>
+                  <Button size="sm" variant="outline" className="w-full text-blue-400 border-blue-500 hover:bg-blue-500/10" data-testid={`button-view-${industry.name.replace(/\s+/g, '-').toLowerCase()}`}>
+                    View Details <ArrowRight className="ml-2 w-3 h-3" />
                   </Button>
-                </Link>
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
 
