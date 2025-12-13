@@ -129,6 +129,8 @@ const LicensePage = lazy(() => import("@/pages/LicensePage"));
 const ContributingPage = lazy(() => import("@/pages/ContributingPage"));
 const SecurityPolicyPage = lazy(() => import("@/pages/SecurityPolicyPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
+const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
+const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const LegalPage = lazy(() => import("@/pages/LegalPage"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
 
@@ -502,6 +504,8 @@ function Router() {
       <Route path="/docs/contributing" component={ContributingPage} />
       <Route path="/security" component={SecurityPolicyPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/privacy" component={PrivacyPage} />
+      <Route path="/terms" component={TermsPage} />
       <Route path="/legal" component={LegalPage} />
       <Route path="/pricing" component={PricingPage} />
       <Route path="/login" component={LoginPage} />
@@ -651,7 +655,7 @@ export default function App() {
   const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
   
   // Public routes don't show sidebar - includes dynamic routes
-  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing"];
+  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
   

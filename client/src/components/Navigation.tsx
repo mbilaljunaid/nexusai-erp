@@ -272,8 +272,8 @@ export function Footer() {
         <div className="pt-8 border-t border-slate-700 flex flex-col md:flex-row justify-between items-center text-slate-400 text-sm">
           <p>&copy; 2025 NexusAI Contributors. Licensed under AGPL-3.0.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-white transition">Privacy</a>
-            <a href="#" className="hover:text-white transition">Terms</a>
+            <Link to="/privacy" className="hover:text-white transition">Privacy</Link>
+            <Link to="/terms" className="hover:text-white transition">Terms</Link>
             <Link to="/security" className="hover:text-white transition">Security</Link>
             <Link to="/license" className="hover:text-white transition">License</Link>
           </div>

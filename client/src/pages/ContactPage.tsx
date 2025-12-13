@@ -10,9 +10,6 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { 
   Mail, 
-  MapPin, 
-  Phone, 
-  Clock, 
   Send,
   Building2,
   MessageSquare,
@@ -74,23 +71,6 @@ export default function ContactPage() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const contactInfo = [
-    {
-      icon: MapPin,
-      title: "Our Location",
-      details: ["123 Enterprise Way", "San Francisco, CA 94105"]
-    },
-    {
-      icon: Phone,
-      title: "Phone",
-      details: ["+1 (555) 123-4567", "+1 (555) 987-6543"]
-    },
-    {
-      icon: Clock,
-      title: "Business Hours",
-      details: ["Monday - Friday: 9AM - 6PM PST", "Weekend: Closed"]
-    }
-  ];
 
   return (
     <div className="public-page min-h-screen flex flex-col">
@@ -232,34 +212,6 @@ export default function ContactPage() {
                 </p>
               </Card>
 
-              {contactInfo.map((info, i) => {
-                const IconComponent = info.icon;
-                return (
-                  <Card key={i} className="p-6" data-testid={`card-contact-info-${i}`}>
-                    <div className="flex items-start gap-4">
-                      <div className="p-2 rounded-lg bg-blue-500/10">
-                        <IconComponent className="w-5 h-5 text-blue-500" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">{info.title}</h4>
-                        {info.details.map((detail, j) => (
-                          <p key={j} className="text-sm text-muted-foreground">{detail}</p>
-                        ))}
-                      </div>
-                    </div>
-                  </Card>
-                );
-              })}
-
-              <Card className="p-6 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
-                <h3 className="font-bold text-lg mb-2">Need Immediate Help?</h3>
-                <p className="text-sm text-blue-100 mb-4">
-                  For urgent inquiries, our support team is available via live chat during business hours.
-                </p>
-                <Button variant="secondary" size="sm" className="w-full" data-testid="button-start-chat">
-                  Start Live Chat
-                </Button>
-              </Card>
             </div>
           </div>
         </section>
