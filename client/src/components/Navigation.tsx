@@ -228,7 +228,7 @@ export function Footer() {
               <li><Link to="/use-cases" className="hover:text-white transition" data-testid="link-footer-usecases">Use Cases</Link></li>
               <li><Link to="/industries" className="hover:text-white transition" data-testid="link-footer-industries">Industries</Link></li>
               <li><Link to="/dashboard" className="hover:text-white transition" data-testid="link-footer-modules">Modules</Link></li>
-              <li><a href="#" className="hover:text-white transition">Pricing</a></li>
+              <li><Link to="/pricing" className="hover:text-white transition" data-testid="link-footer-pricing">Pricing</Link></li>
             </ul>
           </div>
 
