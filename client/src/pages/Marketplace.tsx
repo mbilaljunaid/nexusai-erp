@@ -13,10 +13,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Search, Star, Download, Package, Grid3X3, List, 
   ExternalLink, Check, Tag, Layers, Shield, Zap, 
-  Code, BookOpen, Mail, Globe, DollarSign, LogIn, Building2
+  Code, BookOpen, Mail, Globe, DollarSign, LogIn, Building2,
+  Sparkles, Share2, Twitter, Linkedin, Link2, GitCompare, X
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceCategory } from "@shared/schema";
 
@@ -33,9 +37,12 @@ interface AppCardProps {
   onInstall: (appId: string) => void;
   isInstalling: boolean;
   isInstalled: boolean;
+  compareMode?: boolean;
+  isSelectedForCompare?: boolean;
+  onToggleCompare?: (app: MarketplaceApp) => void;
 }
 
-function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled }: AppCardProps) {
+function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, compareMode, isSelectedForCompare, onToggleCompare }: AppCardProps) {
   const getPriceDisplay = () => {
     if (app.pricingModel === "free") return "Free";
     if (app.pricingModel === "freemium") return "Freemium";
@@ -57,10 +64,18 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled }: A
   };
 
   return (
-    <Card className="group hover-elevate transition-all">
+    <Card className={`group hover-elevate transition-all ${isSelectedForCompare ? 'ring-2 ring-primary' : ''}`}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
+          {compareMode && onToggleCompare && (
+            <Checkbox
+              checked={isSelectedForCompare}
+              onCheckedChange={() => onToggleCompare(app)}
+              className="mt-1"
+              data-testid={`checkbox-compare-${app.id}`}
+            />
+          )}
+          <div className="flex items-center gap-3 flex-1">
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
               {app.icon ? (
                 <img src={app.icon} alt={app.name} className="w-8 h-8 rounded" />
@@ -143,7 +158,8 @@ function AppDetailDialog({
   onOpenChange, 
   onInstall, 
   isInstalling, 
-  isInstalled 
+  isInstalled,
+  onShare
 }: { 
   app: MarketplaceApp | null; 
   open: boolean; 
@@ -151,6 +167,7 @@ function AppDetailDialog({
   onInstall: (appId: string) => void;
   isInstalling: boolean;
   isInstalled: boolean;
+  onShare?: (platform: string, app: MarketplaceApp) => void;
 }) {
   if (!app) return null;
 
@@ -329,6 +346,44 @@ function AppDetailDialog({
                 </a>
               )}
             </div>
+
+            {onShare && (
+              <div>
+                <h4 className="font-medium mb-2 flex items-center gap-2">
+                  <Share2 className="w-4 h-4" />
+                  Share This App
+                </h4>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onShare('twitter', app)}
+                    data-testid="button-share-twitter"
+                  >
+                    <Twitter className="w-4 h-4 mr-1" />
+                    Twitter
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onShare('linkedin', app)}
+                    data-testid="button-share-linkedin"
+                  >
+                    <Linkedin className="w-4 h-4 mr-1" />
+                    LinkedIn
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onShare('copy', app)}
+                    data-testid="button-share-copy"
+                  >
+                    <Link2 className="w-4 h-4 mr-1" />
+                    Copy Link
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </ScrollArea>
 
@@ -352,6 +407,176 @@ function AppDetailDialog({
   );
 }
 
+function CompareDialog({
+  apps,
+  open,
+  onOpenChange
+}: {
+  apps: MarketplaceApp[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  if (apps.length < 2) return null;
+
+  const getPriceDisplay = (app: MarketplaceApp) => {
+    if (app.pricingModel === "free") return "Free";
+    if (app.pricingModel === "freemium") return "Freemium";
+    if (app.pricingModel === "subscription") {
+      return app.subscriptionPriceMonthly ? `$${app.subscriptionPriceMonthly}/mo` : "Contact";
+    }
+    return app.price && parseFloat(app.price) > 0 ? `$${app.price}` : "Free";
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <GitCompare className="w-5 h-5" />
+            App Comparison
+          </DialogTitle>
+          <DialogDescription>
+            Compare features and details side by side
+          </DialogDescription>
+        </DialogHeader>
+
+        <ScrollArea className="flex-1 -mx-6 px-6">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr>
+                  <th className="text-left p-3 border-b font-medium text-muted-foreground w-32">Feature</th>
+                  {apps.map(app => (
+                    <th key={app.id} className="text-left p-3 border-b">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                          {app.icon ? (
+                            <img src={app.icon} alt={app.name} className="w-6 h-6 rounded" />
+                          ) : (
+                            <Package className="w-4 h-4" />
+                          )}
+                        </div>
+                        <span className="font-semibold">{app.name}</span>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="p-3 border-b text-sm text-muted-foreground">Rating</td>
+                  {apps.map(app => (
+                    <td key={app.id} className="p-3 border-b">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                        <span>{app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "0.0"}</span>
+                        <span className="text-xs text-muted-foreground">({app.totalReviews || 0})</span>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-3 border-b text-sm text-muted-foreground">Installs</td>
+                  {apps.map(app => (
+                    <td key={app.id} className="p-3 border-b">
+                      <div className="flex items-center gap-1">
+                        <Download className="w-4 h-4" />
+                        <span>{app.totalInstalls || 0}</span>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-3 border-b text-sm text-muted-foreground">Pricing</td>
+                  {apps.map(app => (
+                    <td key={app.id} className="p-3 border-b">
+                      <Badge variant="outline">{getPriceDisplay(app)}</Badge>
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-3 border-b text-sm text-muted-foreground">License</td>
+                  {apps.map(app => (
+                    <td key={app.id} className="p-3 border-b text-sm capitalize">
+                      {app.licenseType || "Commercial"}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-3 border-b text-sm text-muted-foreground">Description</td>
+                  {apps.map(app => (
+                    <td key={app.id} className="p-3 border-b text-sm text-muted-foreground">
+                      {app.shortDescription || "No description"}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-3 border-b text-sm text-muted-foreground">Tags</td>
+                  {apps.map(app => (
+                    <td key={app.id} className="p-3 border-b">
+                      <div className="flex flex-wrap gap-1">
+                        {app.tags?.slice(0, 4).map((tag, i) => (
+                          <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
+                        ))}
+                        {(app.tags?.length || 0) > 4 && (
+                          <Badge variant="secondary" className="text-xs">+{(app.tags?.length || 0) - 4}</Badge>
+                        )}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-3 border-b text-sm text-muted-foreground">Permissions</td>
+                  {apps.map(app => (
+                    <td key={app.id} className="p-3 border-b">
+                      <ul className="text-sm space-y-1">
+                        {app.permissions?.slice(0, 3).map((perm, i) => (
+                          <li key={i} className="flex items-center gap-1 text-xs">
+                            <Check className="w-3 h-3 text-green-500" />
+                            {perm}
+                          </li>
+                        ))}
+                        {(app.permissions?.length || 0) > 3 && (
+                          <li className="text-xs text-muted-foreground">+{(app.permissions?.length || 0) - 3} more</li>
+                        )}
+                      </ul>
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-3 border-b text-sm text-muted-foreground">Industries</td>
+                  {apps.map(app => (
+                    <td key={app.id} className="p-3 border-b">
+                      <div className="flex flex-wrap gap-1">
+                        {app.supportedIndustries?.slice(0, 3).map((ind, i) => (
+                          <Badge key={i} variant="outline" className="text-xs capitalize">
+                            {ind.replace(/-/g, ' ')}
+                          </Badge>
+                        ))}
+                        {(app.supportedIndustries?.length || 0) > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{(app.supportedIndustries?.length || 0) - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ScrollArea>
+
+        <DialogFooter className="border-t pt-4">
+          <Button variant="outline" onClick={() => onOpenChange(false)} data-testid="button-close-compare">
+            Close
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function Marketplace() {
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
@@ -362,6 +587,10 @@ export default function Marketplace() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedApp, setSelectedApp] = useState<MarketplaceApp | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [aiFilter, setAiFilter] = useState(false);
+  const [compareMode, setCompareMode] = useState(false);
+  const [selectedForCompare, setSelectedForCompare] = useState<MarketplaceApp[]>([]);
+  const [compareDialogOpen, setCompareDialogOpen] = useState(false);
 
   const { data: categories = [], isLoading: loadingCategories } = useQuery<MarketplaceCategory[]>({
     queryKey: ["/api/marketplace/categories"],
@@ -446,8 +675,46 @@ export default function Marketplace() {
     if (searchQuery && !app.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (selectedCategory !== "all" && app.categoryId !== selectedCategory) return false;
     if (pricingFilter !== "all" && app.pricingModel !== pricingFilter) return false;
+    if (aiFilter && !app.tags?.some(t => 
+      t.toLowerCase().includes('ai') || 
+      t.toLowerCase().includes('openai') || 
+      t.toLowerCase().includes('machine learning') ||
+      t.toLowerCase().includes('ml') ||
+      t.toLowerCase().includes('automation')
+    )) return false;
     return true;
   });
+
+  const toggleCompareApp = (app: MarketplaceApp) => {
+    setSelectedForCompare(prev => {
+      const isSelected = prev.some(a => a.id === app.id);
+      if (isSelected) {
+        return prev.filter(a => a.id !== app.id);
+      }
+      if (prev.length >= 3) {
+        return prev;
+      }
+      return [...prev, app];
+    });
+  };
+
+  const handleShare = (platform: string, app: MarketplaceApp) => {
+    const appUrl = `${window.location.origin}/marketplace?app=${app.id}`;
+    const text = `Check out ${app.name} on NexusAI Marketplace!`;
+    
+    switch (platform) {
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(appUrl)}`, '_blank');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(appUrl)}`, '_blank');
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(appUrl);
+        toast({ title: "Link Copied", description: "App link copied to clipboard!" });
+        break;
+    }
+  };
 
   const featuredApps = filteredApps.filter(app => app.featuredOrder != null).sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
   const regularApps = filteredApps.filter(app => app.featuredOrder == null);
@@ -523,7 +790,60 @@ export default function Marketplace() {
             ))}
           </SelectContent>
         </Select>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-background">
+          <Sparkles className="w-4 h-4 text-primary" />
+          <Label htmlFor="ai-filter" className="text-sm cursor-pointer whitespace-nowrap">AI-Powered</Label>
+          <Switch 
+            id="ai-filter" 
+            checked={aiFilter} 
+            onCheckedChange={setAiFilter} 
+            data-testid="switch-ai-filter"
+          />
+        </div>
+        <Button 
+          variant={compareMode ? "default" : "outline"} 
+          onClick={() => {
+            setCompareMode(!compareMode);
+            if (compareMode) {
+              setSelectedForCompare([]);
+            }
+          }}
+          className="gap-2"
+          data-testid="button-compare-mode"
+        >
+          <GitCompare className="w-4 h-4" />
+          {compareMode ? "Exit Compare" : "Compare Apps"}
+        </Button>
       </div>
+
+      {compareMode && selectedForCompare.length > 0 && (
+        <div className="flex items-center gap-4 p-4 rounded-lg border bg-muted/50" data-testid="compare-selection-bar">
+          <span className="text-sm font-medium">
+            {selectedForCompare.length} of 3 apps selected
+          </span>
+          <div className="flex gap-2 flex-1">
+            {selectedForCompare.map(app => (
+              <Badge key={app.id} variant="secondary" className="gap-1">
+                {app.name}
+                <button 
+                  onClick={() => toggleCompareApp(app)}
+                  className="ml-1 hover:text-destructive"
+                  data-testid={`button-remove-compare-${app.id}`}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+          <Button 
+            onClick={() => setCompareDialogOpen(true)} 
+            disabled={selectedForCompare.length < 2}
+            data-testid="button-open-compare"
+          >
+            Compare ({selectedForCompare.length})
+          </Button>
+        </div>
+      )}
 
       {industryFilter !== "all" && !loadingApps && industryRecommendedApps.length > 0 && (
         <Card className="p-6 bg-primary/5 border-primary/20" data-testid="section-industry-recommendations">
@@ -547,6 +867,9 @@ export default function Marketplace() {
                 onInstall={handleInstall}
                 isInstalling={installMutation.isPending}
                 isInstalled={installedAppIds.has(app.id)}
+                compareMode={compareMode}
+                isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                onToggleCompare={toggleCompareApp}
               />
             ))}
           </div>
@@ -606,6 +929,9 @@ export default function Marketplace() {
                   onInstall={handleInstall}
                   isInstalling={installMutation.isPending}
                   isInstalled={installedAppIds.has(app.id)}
+                  compareMode={compareMode}
+                  isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                  onToggleCompare={toggleCompareApp}
                 />
               ))}
             </div>
@@ -629,6 +955,9 @@ export default function Marketplace() {
                   onInstall={handleInstall}
                   isInstalling={installMutation.isPending}
                   isInstalled={installedAppIds.has(app.id)}
+                  compareMode={compareMode}
+                  isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                  onToggleCompare={toggleCompareApp}
                 />
               ))}
             </div>
@@ -645,6 +974,9 @@ export default function Marketplace() {
                 onInstall={handleInstall}
                 isInstalling={installMutation.isPending}
                 isInstalled={installedAppIds.has(app.id)}
+                compareMode={compareMode}
+                isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                onToggleCompare={toggleCompareApp}
               />
             ))}
           </div>
@@ -663,6 +995,9 @@ export default function Marketplace() {
                 onInstall={handleInstall}
                 isInstalling={installMutation.isPending}
                 isInstalled={installedAppIds.has(app.id)}
+                compareMode={compareMode}
+                isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                onToggleCompare={toggleCompareApp}
               />
             ))}
           </div>
@@ -676,6 +1011,13 @@ export default function Marketplace() {
           onInstall={handleInstall}
           isInstalling={installMutation.isPending}
           isInstalled={selectedApp ? installedAppIds.has(selectedApp.id) : false}
+          onShare={handleShare}
+        />
+
+        <CompareDialog
+          apps={selectedForCompare}
+          open={compareDialogOpen}
+          onOpenChange={setCompareDialogOpen}
         />
       </main>
       <Footer />
