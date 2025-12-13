@@ -42,6 +42,8 @@ import {
   type Demo, type InsertDemo,
   type Partner, type InsertPartner,
   type UserFeedback, type InsertUserFeedback,
+  type Industry, type InsertIndustry,
+  type IndustryDeployment, type InsertIndustryDeployment,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -230,6 +232,18 @@ export interface IStorage {
   getUserFeedback(id: string): Promise<UserFeedback | undefined>;
   listUserFeedback(): Promise<UserFeedback[]>;
   createUserFeedback(feedback: InsertUserFeedback): Promise<UserFeedback>;
+
+  // Industry operations
+  getIndustry(id: string): Promise<Industry | undefined>;
+  listIndustries(): Promise<Industry[]>;
+  createIndustry(industry: InsertIndustry): Promise<Industry>;
+
+  // Industry Deployment operations
+  getIndustryDeployment(id: string): Promise<IndustryDeployment | undefined>;
+  listIndustryDeployments(tenantId?: string): Promise<IndustryDeployment[]>;
+  createIndustryDeployment(deployment: InsertIndustryDeployment): Promise<IndustryDeployment>;
+  updateIndustryDeployment(id: string, deployment: Partial<InsertIndustryDeployment>): Promise<IndustryDeployment | undefined>;
+  deleteIndustryDeployment(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -275,6 +289,8 @@ export class MemStorage implements IStorage {
   private payrollConfigs = new Map<string, PayrollConfig>();
   private partners = new Map<string, Partner>();
   private userFeedbackStore = new Map<string, UserFeedback>();
+  private industries = new Map<string, Industry>();
+  private industryDeployments = new Map<string, IndustryDeployment>();
 
   // PHASE 1 Methods
   async getTenant(id: string) { return this.tenants.get(id); }
@@ -551,6 +567,39 @@ export class MemStorage implements IStorage {
     }; 
     this.userFeedbackStore.set(id, feedback); 
     return feedback; 
+  }
+
+  // Industry Management
+  async getIndustry(id: string) { return this.industries.get(id); }
+  async listIndustries() { return Array.from(this.industries.values()); }
+  async createIndustry(i: InsertIndustry) { 
+    const id = randomUUID(); 
+    const industry: Industry = { id, ...i as any, createdAt: new Date() }; 
+    this.industries.set(id, industry); 
+    return industry; 
+  }
+
+  // Industry Deployment Management
+  async getIndustryDeployment(id: string) { return this.industryDeployments.get(id); }
+  async listIndustryDeployments(tenantId?: string) { 
+    const list = Array.from(this.industryDeployments.values()); 
+    return tenantId ? list.filter(d => d.tenantId === tenantId) : list; 
+  }
+  async createIndustryDeployment(d: InsertIndustryDeployment) { 
+    const id = randomUUID(); 
+    const deployment: IndustryDeployment = { id, ...d as any, createdAt: new Date(), updatedAt: new Date() }; 
+    this.industryDeployments.set(id, deployment); 
+    return deployment; 
+  }
+  async updateIndustryDeployment(id: string, d: Partial<InsertIndustryDeployment>) { 
+    const deployment = this.industryDeployments.get(id);
+    if (!deployment) return undefined;
+    const updated: IndustryDeployment = { ...deployment, ...d as any, updatedAt: new Date() };
+    this.industryDeployments.set(id, updated);
+    return updated;
+  }
+  async deleteIndustryDeployment(id: string) { 
+    return this.industryDeployments.delete(id); 
   }
 }
 
