@@ -603,6 +603,22 @@ export default function Marketplace() {
 
   const { data: apps = [], isLoading: loadingApps } = useQuery<MarketplaceApp[]>({
     queryKey: ["/api/marketplace/apps", selectedCategory, searchQuery, pricingFilter],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (selectedCategory && selectedCategory !== "all") {
+        params.append("category", selectedCategory);
+      }
+      if (searchQuery) {
+        params.append("search", searchQuery);
+      }
+      if (pricingFilter && pricingFilter !== "all") {
+        params.append("pricing", pricingFilter);
+      }
+      const url = `/api/marketplace/apps${params.toString() ? `?${params.toString()}` : ""}`;
+      const res = await fetch(url, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch apps");
+      return res.json();
+    },
   });
 
   const { data: installedApps = [] } = useQuery<any[]>({
