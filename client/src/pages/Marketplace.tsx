@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -20,7 +22,7 @@ import {
   Search, Star, Download, Package, Grid3X3, List, 
   ExternalLink, Check, Tag, Layers, Shield, Zap, 
   Code, BookOpen, Mail, Globe, DollarSign, LogIn, Building2,
-  Sparkles, Share2, Twitter, Linkedin, Link2, GitCompare, X, Clock, Trash2
+  Sparkles, Share2, Twitter, Linkedin, Link2, GitCompare, X, Clock, Trash2, ChevronsUpDown
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceCategory } from "@shared/schema";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
@@ -592,6 +594,7 @@ export default function Marketplace() {
   const [compareMode, setCompareMode] = useState(false);
   const [selectedForCompare, setSelectedForCompare] = useState<MarketplaceApp[]>([]);
   const [compareDialogOpen, setCompareDialogOpen] = useState(false);
+  const [industryPopoverOpen, setIndustryPopoverOpen] = useState(false);
   
   const RECENTLY_VIEWED_KEY = "nexusai-recently-viewed-apps";
   const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
@@ -832,18 +835,62 @@ export default function Marketplace() {
             <SelectItem value="subscription">Subscription</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={industryFilter} onValueChange={setIndustryFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]" data-testid="select-industry-filter">
-            <Building2 className="w-4 h-4 mr-2 text-muted-foreground" />
-            <SelectValue placeholder="Industry" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Industries</SelectItem>
-            {industries.filter((i) => i.isActive).map((industry) => (
-              <SelectItem key={industry.id} value={industry.id}>{industry.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Popover open={industryPopoverOpen} onOpenChange={setIndustryPopoverOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={industryPopoverOpen}
+              className="w-full sm:w-[220px] justify-between"
+              data-testid="select-industry-filter"
+            >
+              <div className="flex items-center gap-2 truncate">
+                <Building2 className="w-4 h-4 text-muted-foreground shrink-0" />
+                <span className="truncate">
+                  {industryFilter === "all" 
+                    ? "All Industries" 
+                    : industries.find((i) => i.id === industryFilter)?.name || "Select industry..."}
+                </span>
+              </div>
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[280px] p-0" align="start">
+            <Command>
+              <CommandInput placeholder="Search industries..." data-testid="input-search-industry" />
+              <CommandList>
+                <CommandEmpty>No industry found.</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem
+                    value="all"
+                    onSelect={() => {
+                      setIndustryFilter("all");
+                      setIndustryPopoverOpen(false);
+                    }}
+                    data-testid="option-industry-all"
+                  >
+                    <Check className={`mr-2 h-4 w-4 ${industryFilter === "all" ? "opacity-100" : "opacity-0"}`} />
+                    All Industries
+                  </CommandItem>
+                  {industries.filter((i) => i.isActive).map((industry) => (
+                    <CommandItem
+                      key={industry.id}
+                      value={industry.name}
+                      onSelect={() => {
+                        setIndustryFilter(industry.id);
+                        setIndustryPopoverOpen(false);
+                      }}
+                      data-testid={`option-industry-${industry.id}`}
+                    >
+                      <Check className={`mr-2 h-4 w-4 ${industryFilter === industry.id ? "opacity-100" : "opacity-0"}`} />
+                      {industry.name}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
         <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-background">
           <Sparkles className="w-4 h-4 text-primary" />
           <Label htmlFor="ai-filter" className="text-sm cursor-pointer whitespace-nowrap">AI-Powered</Label>
