@@ -14,9 +14,8 @@ We take security vulnerabilities seriously. If you discover a security issue, pl
 ### How to Report
 
 1. **Do NOT** create a public GitHub issue for security vulnerabilities
-2. Email security concerns to: security@nexusai-erp.org
-3. Include detailed information about the vulnerability
-4. Provide steps to reproduce if possible
+2. Include detailed information about the vulnerability
+3. Provide steps to reproduce if possible
 
 ### What to Include
 
