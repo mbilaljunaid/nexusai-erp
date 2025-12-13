@@ -1711,3 +1711,49 @@ export const insertCommunitySpaceMembershipSchema = createInsertSchema(community
 
 export type InsertCommunitySpaceMembership = z.infer<typeof insertCommunitySpaceMembershipSchema>;
 export type CommunitySpaceMembership = typeof communitySpaceMemberships.$inferSelect;
+
+// Community Flags - Users can flag/report content for moderation
+export const communityFlags = pgTable("community_flags", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  reporterId: varchar("reporter_id").notNull(),
+  targetType: varchar("target_type").notNull(), // post, comment
+  targetId: varchar("target_id").notNull(),
+  reason: varchar("reason").notNull(), // spam, harassment, inappropriate, misleading, other
+  details: text("details"),
+  status: varchar("status").default("pending"), // pending, reviewed, dismissed, actioned
+  reviewedBy: varchar("reviewed_by"),
+  reviewedAt: timestamp("reviewed_at"),
+  actionTaken: varchar("action_taken"), // none, warning, hidden, deleted
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCommunityFlagSchema = createInsertSchema(communityFlags).omit({ id: true, createdAt: true }).extend({
+  reporterId: z.string().min(1),
+  targetType: z.enum(["post", "comment"]),
+  targetId: z.string().min(1),
+  reason: z.enum(["spam", "harassment", "inappropriate", "misleading", "other"]),
+  details: z.string().optional(),
+  status: z.enum(["pending", "reviewed", "dismissed", "actioned"]).optional(),
+  reviewedBy: z.string().optional(),
+  reviewedAt: z.date().optional(),
+  actionTaken: z.string().optional(),
+});
+
+export type InsertCommunityFlag = z.infer<typeof insertCommunityFlagSchema>;
+export type CommunityFlag = typeof communityFlags.$inferSelect;
+
+// User Earned Badges - Track which badges users have earned
+export const userEarnedBadges = pgTable("user_earned_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  badgeId: varchar("badge_id").notNull(),
+  earnedAt: timestamp("earned_at").default(sql`now()`),
+});
+
+export const insertUserEarnedBadgeSchema = createInsertSchema(userEarnedBadges).omit({ id: true, earnedAt: true }).extend({
+  userId: z.string().min(1),
+  badgeId: z.string().min(1),
+});
+
+export type InsertUserEarnedBadge = z.infer<typeof insertUserEarnedBadgeSchema>;
+export type UserEarnedBadge = typeof userEarnedBadges.$inferSelect;
