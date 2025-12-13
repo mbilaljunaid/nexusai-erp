@@ -1,0 +1,89 @@
+# .github/workflows/sync-to-public.yml
+name: Sync to Public Repository
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'shared/schema.ts'
+      - 'shared/communityConstants.ts'
+      - 'server/gl/**'
+      - 'server/workflow/**'
+      - 'server/rules/**'
+      - 'server/analytics/**'
+      - 'server/templates/**'
+      - 'server/metadata/**'
+      - 'server/storage.ts'
+      - 'server/storage-db.ts'
+      - 'server/db.ts'
+      - 'server/cache/**'
+      - 'server/logging/**'
+      - 'server/sync/**'
+      - 'docs/API.md'
+      - 'docs/ARCHITECTURE.md'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout private repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Checkout public repo
+        uses: actions/checkout@v4
+        with:
+          repository: mbilaljunaid/nexusai-erp
+          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
+          path: public-repo
+          
+      - name: Sync open-source files
+        run: |
+          # Define source directories/files to sync
+          SYNC_ITEMS=(
+            "shared/schema.ts:src/schema/schema.ts"
+            "shared/communityConstants.ts:src/constants/community.ts"
+            "server/gl:src/engines/gl"
+            "server/workflow:src/engines/workflow"
+            "server/rules:src/engines/rules"
+            "server/analytics:src/engines/analytics"
+            "server/templates:src/engines/templates"
+            "server/metadata:src/metadata"
+            "server/storage.ts:src/storage/interface.ts"
+            "server/storage-db.ts:src/storage/postgres.ts"
+            "server/db.ts:src/storage/db.ts"
+            "server/cache:src/utils/cache"
+            "server/logging:src/utils/logging"
+            "server/sync:src/utils/sync"
+            "docs/API.md:docs/API.md"
+          )
+          
+          for item in "${SYNC_ITEMS[@]}"; do
+            SRC="${item%%:*}"
+            DEST="${item##*:}"
+            
+            if [ -e "$SRC" ]; then
+              mkdir -p "public-repo/$(dirname $DEST)"
+              if [ -d "$SRC" ]; then
+                cp -r "$SRC"/* "public-repo/$DEST/" 2>/dev/null || cp -r "$SRC" "public-repo/$(dirname $DEST)/"
+              else
+                cp "$SRC" "public-repo/$DEST"
+              fi
+              echo "Synced: $SRC -> $DEST"
+            fi
+          done
+          
+      - name: Add license headers
+        run: |
+          cd public-repo
+          find src -name "*.ts" -exec sed -i '1i\/**\n * NexusAI Core - Open Source ERP Engine\n * SPDX-License-Identifier: AGPL-3.0-only\n */' {} \;
+          
+      - name: Commit and push to public repo
+        run: |
+          cd public-repo
+          git config user.name "NexusAI Bot"
+          git config user.email "bot@nexusai.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: sync from private repo [skip ci]"
+          git push
