@@ -684,7 +684,7 @@ export default function App() {
   
   // Public routes don't show sidebar - includes dynamic routes
   const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/modules", "/public/processes", "/careers", "/features", "/marketplace"];
-  const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/");
+  const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/") || location.startsWith("/blog/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
   
   // Industry setup routes should show authenticated layout
