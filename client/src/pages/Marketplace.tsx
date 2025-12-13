@@ -11,10 +11,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   Search, Star, Download, Package, Grid3X3, List, 
   ExternalLink, Check, Tag, Layers, Shield, Zap, 
-  Code, BookOpen, Mail, Globe, DollarSign
+  Code, BookOpen, Mail, Globe, DollarSign, LogIn
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceCategory } from "@shared/schema";
 
@@ -331,6 +332,7 @@ function AppDetailDialog({
 
 export default function Marketplace() {
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [pricingFilter, setPricingFilter] = useState<string>("all");
@@ -348,6 +350,7 @@ export default function Marketplace() {
 
   const { data: installedApps = [] } = useQuery<any[]>({
     queryKey: ["/api/marketplace/my-installs"],
+    enabled: isAuthenticated,
   });
 
   const installedAppIds = new Set(installedApps.map((i: any) => i.appId));
@@ -374,6 +377,19 @@ export default function Marketplace() {
   });
 
   const handleInstall = (appId: string) => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to install apps from the marketplace.",
+        action: (
+          <Button size="sm" onClick={() => window.location.href = '/api/login'} data-testid="button-toast-login">
+            <LogIn className="w-4 h-4 mr-1" />
+            Log In
+          </Button>
+        ),
+      });
+      return;
+    }
     installMutation.mutate(appId);
   };
 
