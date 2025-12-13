@@ -148,12 +148,46 @@ export async function registerRoutes(
     res.json(industries);
   });
 
+  // In-memory fallback for demos
+  const demosStore: any[] = [];
+
   app.get("/api/demos/list", async (req, res) => {
     try {
-      const demos = await dbStorage.listDemos();
-      res.json(demos);
+      const dbDemos = await dbStorage.listDemos();
+      // Combine DB demos with any in-memory fallback demos
+      const allDemos = [...dbDemos, ...demosStore];
+      res.json(allDemos);
     } catch (error) {
-      res.json([]);
+      // Return only in-memory fallback demos when DB unavailable
+      console.warn("Database unavailable for demos list, using in-memory fallback");
+      res.json(demosStore);
+    }
+  });
+  
+  app.post("/api/demos/request", validateRequest(insertDemoSchema.omit({ id: true, createdAt: true })), async (req, res) => {
+    try {
+      const data = sanitizeInput((req as any).validatedData);
+      const demoData = {
+        email: data.email,
+        industry: data.industry,
+        company: data.company || "Demo Company",
+        status: "active" as const,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      };
+      
+      try {
+        const demo = await dbStorage.createDemo(demoData);
+        res.status(201).json({ success: true, id: demo.id, message: "Demo created successfully" });
+      } catch (dbError) {
+        // Fallback to in-memory storage
+        console.warn("Database unavailable, using in-memory storage:", dbError);
+        const memDemo = { ...demoData, id: `demo-${Date.now()}`, createdAt: new Date() };
+        demosStore.push(memDemo);
+        res.status(201).json({ success: true, id: memDemo.id, message: "Demo created successfully" });
+      }
+    } catch (error: any) {
+      console.error("Demo creation error:", error);
+      res.status(500).json(errorResponse(ErrorCode.INTERNAL_ERROR, "Failed to create demo", undefined, (req as any).id));
     }
   });
 

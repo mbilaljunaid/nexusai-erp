@@ -174,7 +174,7 @@ export default function ContributingPage() {
                 <p className="text-sm">Report violations to maintainers@nexusai.com</p>
               </div>
             </div>
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild data-testid="button-code-of-conduct">
               <a href="/code-of-conduct">
                 Read Full Code of Conduct <ExternalLink className="ml-2 w-4 h-4" />
               </a>

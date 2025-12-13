@@ -66,7 +66,7 @@ export default function SecurityPolicyPage() {
                 <Mail className="w-6 h-6 text-blue-500" />
                 <div>
                   <p className="font-semibold">Security Contact</p>
-                  <a href="mailto:security@nexusai.com" className="text-blue-500 hover:underline">
+                  <a href="mailto:security@nexusai.com" className="text-blue-500 hover:underline" data-testid="link-security-contact">
                     security@nexusai.com
                   </a>
                 </div>
@@ -174,7 +174,7 @@ export default function SecurityPolicyPage() {
               We appreciate the work of security researchers who help keep NexusAI safe. 
               Responsible disclosure reporters will be credited in our security acknowledgments.
             </p>
-            <Button size="lg" className="bg-white text-green-600 hover:bg-slate-100" asChild>
+            <Button size="lg" className="bg-white text-green-600 hover:bg-slate-100" asChild data-testid="button-report-vulnerability">
               <a href="mailto:security@nexusai.com">
                 <Mail className="mr-2 w-5 h-5" /> Report a Vulnerability
               </a>
