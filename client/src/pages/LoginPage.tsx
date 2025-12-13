@@ -203,18 +203,9 @@ export default function LoginPage() {
                   Quick Login as Admin
                 </Button>
 
-                {/* Credentials */}
-                <div className="space-y-3">
-                  <div className="p-4 bg-red-600/20 border border-red-600/50 rounded-lg text-sm text-red-300">
-                    <p className="font-semibold mb-2">Super Admin:</p>
-                    <p className="text-xs">Email: admin@nexusaifirst.cloud</p>
-                    <p className="text-xs">Password: Admin@2025!</p>
-                  </div>
-                  <div className="p-4 bg-slate-700/50 rounded-lg text-sm text-slate-300">
-                    <p className="font-semibold mb-2">Demo User:</p>
-                    <p className="text-xs">Email: demo@nexusaifirst.cloud</p>
-                    <p className="text-xs">Password: Demo@2025</p>
-                  </div>
+                {/* Demo Access Info */}
+                <div className="p-4 bg-slate-700/50 rounded-lg text-sm text-slate-300 text-center">
+                  <p className="text-xs">Use the "Quick Login as Admin" button above for demo access</p>
                 </div>
 
                 {/* Sign Up Link */}
