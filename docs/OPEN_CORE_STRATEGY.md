@@ -44,24 +44,24 @@ This document outlines the complete open-core strategy for NexusAI, enabling com
 | **server/logging/** | OPEN SOURCE | nexusai-core | Logging infrastructure |
 | **server/operations/** | OPEN SOURCE | nexusai-core | Bulk operations |
 | **server/sync/** | OPEN SOURCE | nexusai-core | Data sync engine |
-| **client/src/** | PROPRIETARY | nexusai-platform | Entire frontend UI |
-| **server/replitAuth.ts** | PROPRIETARY | nexusai-platform | Platform authentication |
-| **server/platformAuth.ts** | PROPRIETARY | nexusai-platform | Platform-specific auth |
-| **server/reputationService.ts** | PROPRIETARY | nexusai-platform | Community reputation logic |
-| **server/DEMO_*.ts** | PROPRIETARY | nexusai-platform | Demo management |
-| **server/demoSeeds.ts** | PROPRIETARY | nexusai-platform | Demo data |
-| **server/api/apiGateway.ts** | PROPRIETARY | nexusai-platform | API Gateway with rate limiting |
-| **server/integrations/** | PROPRIETARY | nexusai-platform | Third-party integrations |
-| **server/webhooks/** | PROPRIETARY | nexusai-platform | Webhook management |
-| **server/mobile/** | PROPRIETARY | nexusai-platform | Mobile API layer |
-| **server/security/** | PROPRIETARY | nexusai-platform | Security hardening |
-| **server/backup/** | PROPRIETARY | nexusai-platform | Backup management |
-| **server/migration/** | PROPRIETARY | nexusai-platform | Data migration tools |
-| **server/monitoring/** | PROPRIETARY | nexusai-platform | Health checks |
-| **server/performance/** | PROPRIETARY | nexusai-platform | Performance optimization |
+| **client/src/** | PROPRIETARY | nexusai-private | Entire frontend UI |
+| **server/replitAuth.ts** | PROPRIETARY | nexusai-private | Platform authentication |
+| **server/platformAuth.ts** | PROPRIETARY | nexusai-private | Platform-specific auth |
+| **server/reputationService.ts** | PROPRIETARY | nexusai-private | Community reputation logic |
+| **server/DEMO_*.ts** | PROPRIETARY | nexusai-private | Demo management |
+| **server/demoSeeds.ts** | PROPRIETARY | nexusai-private | Demo data |
+| **server/api/apiGateway.ts** | PROPRIETARY | nexusai-private | API Gateway with rate limiting |
+| **server/integrations/** | PROPRIETARY | nexusai-private | Third-party integrations |
+| **server/webhooks/** | PROPRIETARY | nexusai-private | Webhook management |
+| **server/mobile/** | PROPRIETARY | nexusai-private | Mobile API layer |
+| **server/security/** | PROPRIETARY | nexusai-private | Security hardening |
+| **server/backup/** | PROPRIETARY | nexusai-private | Backup management |
+| **server/migration/** | PROPRIETARY | nexusai-private | Data migration tools |
+| **server/monitoring/** | PROPRIETARY | nexusai-private | Health checks |
+| **server/performance/** | PROPRIETARY | nexusai-private | Performance optimization |
 | **docs/** | MIXED | Both | API docs open, guides proprietary |
-| **infrastructure/** | PROPRIETARY | nexusai-platform | Deployment configs |
-| **platforms/** | PROPRIETARY | nexusai-platform | Platform configs |
+| **infrastructure/** | PROPRIETARY | nexusai-private | Deployment configs |
+| **platforms/** | PROPRIETARY | nexusai-private | Platform configs |
 
 ### Classification Decision Tree
 
@@ -153,9 +153,9 @@ nexusai-core/
 └── tsconfig.json
 ```
 
-#### nexusai-platform (PRIVATE)
+#### nexusai-private (PRIVATE)
 ```
-nexusai-platform/
+nexusai-private/
 ├── client/                   # Full React frontend
 │   └── src/
 │       ├── components/
@@ -207,9 +207,9 @@ nexusai-platform/
 ```
 
 ```json
-// nexusai-platform/package.json
+// nexusai-private/package.json
 {
-  "name": "nexusai-platform",
+  "name": "nexusai-private",
   "private": true,
   "dependencies": {
     "@nexusai/core": "^1.0.0"
@@ -226,7 +226,7 @@ nexusai-platform/
 | Repository | License | Rationale |
 |------------|---------|-----------|
 | nexusai-core | **AGPL-3.0** | Strong copyleft prevents proprietary forks from competing without contributing back |
-| nexusai-platform | **Proprietary** | Full commercial control |
+| nexusai-private | **Proprietary** | Full commercial control |
 
 ### AGPL-3.0 Benefits for Open Core
 
@@ -346,7 +346,7 @@ export { Logger } from './utils/logging';
 ### Import Rules (Enforced via ESLint)
 
 ```javascript
-// nexusai-platform/.eslintrc.js
+// nexusai-private/.eslintrc.js
 module.exports = {
   rules: {
     'no-restricted-imports': ['error', {
@@ -609,7 +609,7 @@ Before developing ANY new feature, complete this checklist:
           │                                  │
           ▼                                  ▼
 4a. Implementation in             4b. Implementation in
-    nexusai-core                       nexusai-platform
+    nexusai-core                       nexusai-private
           │                                  │
           ▼                                  ▼
 5a. Public PR review              5b. Internal PR review
@@ -656,7 +656,7 @@ PATCH: Bug fixes
 ### Platform Dependency Pinning
 
 ```json
-// nexusai-platform/package.json
+// nexusai-private/package.json
 {
   "dependencies": {
     "@nexusai/core": "~1.2.0"  // Accept patches only
@@ -985,7 +985,7 @@ CURRENT STATE                          FUTURE STATE
 mbilaljunaid/nexusai-erp               mbilaljunaid/nexusai-erp (PUBLIC)
 └── main (mixed code)                  └── main (open-source core only)
                                        
-                                       mbilaljunaid/nexusai-platform (PRIVATE)
+                                       mbilaljunaid/nexusai-private (PRIVATE)
                                        └── main (proprietary + imports core)
 ```
 
@@ -1000,12 +1000,12 @@ git checkout -b archive/full-platform-backup
 git push origin archive/full-platform-backup
 
 # 2. Create the proprietary platform repository (PRIVATE)
-# On GitHub: Create new private repo "nexusai-platform"
+# On GitHub: Create new private repo "nexusai-private"
 
 # 3. Clone the full codebase to the new private repo
-git clone https://github.com/mbilaljunaid/nexusai-erp.git nexusai-platform
-cd nexusai-platform
-git remote set-url origin https://github.com/mbilaljunaid/nexusai-platform.git
+git clone https://github.com/mbilaljunaid/nexusai-erp.git nexusai-private
+cd nexusai-private
+git remote set-url origin https://github.com/mbilaljunaid/nexusai-private.git
 git push -u origin main
 ```
 
@@ -1167,12 +1167,12 @@ nexusai-erp/
 
 #### Phase 4: Update the Private Platform Repository (Week 4)
 
-**In `nexusai-platform` (private repo):**
+**In `nexusai-private` (private repo):**
 
 ```json
 // package.json
 {
-  "name": "nexusai-platform",
+  "name": "nexusai-private",
   "private": true,
   "dependencies": {
     "@mbilaljunaid/nexusai-core": "^1.0.0"
