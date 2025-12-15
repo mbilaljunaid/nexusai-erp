@@ -10,6 +10,79 @@ import { openFormInNewWindow } from "@/lib/formUtils";
 import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+interface CRMMetrics {
+  totalLeads: number;
+  pipelineValue: string;
+  winRate: string;
+  avgSalesCycle: string;
+}
+
+interface Opportunity {
+  id: string;
+  name: string;
+  account: string;
+  amount: number;
+  stage: string;
+}
+
+function CRMOverview({ totalLeads }: { totalLeads: number }) {
+  const { data: metrics, isLoading } = useQuery<CRMMetrics>({
+    queryKey: ["/api/crm/metrics"],
+  });
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4" data-testid="crm-metrics">
+      <Card><CardContent className="p-4"><p className="text-2xl font-semibold" data-testid="text-total-leads">{isLoading ? "..." : (metrics?.totalLeads ?? totalLeads)}</p><p className="text-xs text-muted-foreground">Total Leads</p></CardContent></Card>
+      <Card><CardContent className="p-4"><p className="text-2xl font-semibold" data-testid="text-pipeline-value">{isLoading ? "..." : (metrics?.pipelineValue || "$4.2M")}</p><p className="text-xs text-muted-foreground">Pipeline Value</p></CardContent></Card>
+      <Card><CardContent className="p-4"><p className="text-2xl font-semibold" data-testid="text-win-rate">{isLoading ? "..." : (metrics?.winRate || "35%")}</p><p className="text-xs text-muted-foreground">Avg Win Rate</p></CardContent></Card>
+      <Card><CardContent className="p-4"><p className="text-2xl font-semibold" data-testid="text-sales-cycle">{isLoading ? "..." : (metrics?.avgSalesCycle || "18 days")}</p><p className="text-xs text-muted-foreground">Avg Sales Cycle</p></CardContent></Card>
+    </div>
+  );
+}
+
+function OpportunitiesSection() {
+  const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
+    queryKey: ["/api/crm/opportunities"],
+  });
+
+  const defaultOpportunities = [
+    { id: "1", name: "Enterprise License", account: "Tech Corp", amount: 500000, stage: "Won" },
+    { id: "2", name: "Implementation Services", account: "Finance Inc", amount: 150000, stage: "Proposal" },
+    { id: "3", name: "Support Contract", account: "Tech Corp", amount: 50000, stage: "Negotiation" },
+  ];
+
+  const displayOpportunities = opportunities.length > 0 ? opportunities : defaultOpportunities;
+
+  return (
+    <div className="space-y-4">
+      <Breadcrumb items={[
+        { label: "CRM", path: "/crm" },
+        { label: "Opportunities", path: "/crm/opportunities" },
+      ]} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Sales Opportunities</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-muted-foreground">Track and manage sales opportunities and deals</p>
+          <div className="space-y-2">
+            {isLoading ? (
+              <div className="p-3 text-muted-foreground">Loading opportunities...</div>
+            ) : displayOpportunities.map((opp) => (
+              <div key={opp.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between" data-testid={`card-opportunity-${opp.id}`}>
+                <div>
+                  <p className="font-semibold">{opp.name}</p>
+                  <p className="text-sm text-muted-foreground">{opp.account} - ${(opp.amount || 0).toLocaleString()} - {opp.stage}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function CRM() {
   const [match, params] = useRoute("/crm/:page?");
   const [activeNav, setActiveNav] = useState("overview");
@@ -70,14 +143,7 @@ export default function CRM() {
         ))}
       </div>
 
-      {activeNav === "overview" && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">{leads.length}</p><p className="text-xs text-muted-foreground">Total Leads</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$4.2M</p><p className="text-xs text-muted-foreground">Pipeline Value</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">35%</p><p className="text-xs text-muted-foreground">Avg Win Rate</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">18 days</p><p className="text-xs text-muted-foreground">Avg Sales Cycle</p></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "overview" && <CRMOverview totalLeads={leads.length} />}
 
       {activeNav === "leads" && (
         <div className="space-y-4">
@@ -121,36 +187,7 @@ export default function CRM() {
         </div>
       )}
 
-      {activeNav === "opportunities" && (
-        <div className="space-y-4">
-          <Breadcrumb items={[
-            { label: "CRM", path: "/crm" },
-            { label: "Opportunities", path: "/crm/opportunities" },
-          ]} />
-          <Card>
-            <CardHeader>
-              <CardTitle>Sales Opportunities</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <p className="text-muted-foreground">Track and manage sales opportunities and deals</p>
-              <div className="space-y-2">
-                {[
-                  { id: "1", name: "Enterprise License", account: "Tech Corp", amount: 500000, stage: "Won" },
-                  { id: "2", name: "Implementation Services", account: "Finance Inc", amount: 150000, stage: "Proposal" },
-                  { id: "3", name: "Support Contract", account: "Tech Corp", amount: 50000, stage: "Negotiation" },
-                ].map((opp) => (
-                  <div key={opp.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{opp.name}</p>
-                      <p className="text-sm text-muted-foreground">{opp.account} • ${opp.amount.toLocaleString()} • {opp.stage}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {activeNav === "opportunities" && <OpportunitiesSection />}
 
       {activeNav === "customers" && (
         <div className="space-y-4">

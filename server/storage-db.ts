@@ -15,6 +15,7 @@ import {
   demos as demosTable,
   users as usersTable,
   projects as projectsTable,
+  tenants as tenantsTable,
 } from "@shared/schema";
 import type {
   Invoice,
@@ -35,6 +36,7 @@ import type {
   InsertUser,
   Project,
   InsertProject,
+  Tenant,
 } from "@shared/schema";
 
 /**
@@ -283,5 +285,10 @@ export const dbStorage = {
       .values(project)
       .returning();
     return result[0];
+  },
+
+  // ========== TENANTS ==========
+  async listTenants(): Promise<Tenant[]> {
+    return await db.select().from(tenantsTable);
   },
 };

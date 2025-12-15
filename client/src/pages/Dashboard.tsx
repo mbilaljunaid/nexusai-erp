@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -39,19 +40,59 @@ import {
   ClipboardList,
 } from "lucide-react";
 
+interface AdminStats {
+  totalTenants: string;
+  activeUsers: string;
+  systemUptime: string;
+  apiCalls24h: string;
+}
+
+interface SystemAlert {
+  type: string;
+  message: string;
+  time: string;
+}
+
+interface TenantOverview {
+  name: string;
+  users: number;
+  status: string;
+}
+
 function AdminDashboard() {
+  const { data: adminStats, isLoading: statsLoading } = useQuery<AdminStats>({
+    queryKey: ["/api/dashboard/admin-stats"],
+  });
+
+  const { data: systemAlerts = [], isLoading: alertsLoading } = useQuery<SystemAlert[]>({
+    queryKey: ["/api/dashboard/system-alerts"],
+  });
+
+  const { data: tenantOverview = [], isLoading: tenantsLoading } = useQuery<TenantOverview[]>({
+    queryKey: ["/api/dashboard/tenant-overview"],
+  });
+
   const platformStats = [
-    { label: "Total Tenants", value: "12", icon: Building, color: "text-blue-500" },
-    { label: "Active Users", value: "1,245", icon: Users, color: "text-green-500" },
-    { label: "System Uptime", value: "99.9%", icon: Server, color: "text-emerald-500" },
-    { label: "API Calls (24h)", value: "2.4M", icon: Activity, color: "text-purple-500" },
+    { label: "Total Tenants", value: statsLoading ? "..." : (adminStats?.totalTenants || "12"), icon: Building, color: "text-blue-500" },
+    { label: "Active Users", value: statsLoading ? "..." : (adminStats?.activeUsers || "1,245"), icon: Users, color: "text-green-500" },
+    { label: "System Uptime", value: statsLoading ? "..." : (adminStats?.systemUptime || "99.9%"), icon: Server, color: "text-emerald-500" },
+    { label: "API Calls (24h)", value: statsLoading ? "..." : (adminStats?.apiCalls24h || "2.4M"), icon: Activity, color: "text-purple-500" },
   ];
 
-  const systemAlerts = [
+  const defaultAlerts = [
     { type: "warning", message: "High memory usage on Node 3", time: "5 min ago" },
     { type: "info", message: "Scheduled maintenance in 2 days", time: "1 hour ago" },
     { type: "success", message: "Database backup completed", time: "3 hours ago" },
   ];
+
+  const defaultTenants = [
+    { name: "Acme Corp", users: 245, status: "active" },
+    { name: "TechStart Inc", users: 89, status: "active" },
+    { name: "Global Logistics", users: 312, status: "active" },
+  ];
+
+  const displayAlerts = systemAlerts.length > 0 ? systemAlerts : defaultAlerts;
+  const displayTenants = tenantOverview.length > 0 ? tenantOverview : defaultTenants;
 
   const adminQuickLinks = [
     { title: "User Management", url: "/user-management", icon: Users, color: "text-blue-600" },
@@ -103,7 +144,7 @@ function AdminDashboard() {
               System Alerts
             </h2>
             <div className="space-y-3">
-              {systemAlerts.map((alert, index) => (
+              {displayAlerts.map((alert, index) => (
                 <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted">
                   {alert.type === "warning" && <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5" />}
                   {alert.type === "info" && <Clock className="w-5 h-5 text-blue-500 mt-0.5" />}
@@ -130,11 +171,7 @@ function AdminDashboard() {
               Tenant Overview
             </h2>
             <div className="space-y-3">
-              {[
-                { name: "Acme Corp", users: 245, status: "active" },
-                { name: "TechStart Inc", users: 89, status: "active" },
-                { name: "Global Logistics", users: 312, status: "active" },
-              ].map((tenant) => (
+              {displayTenants.map((tenant) => (
                 <div key={tenant.name} className="flex items-center justify-between p-3 rounded-lg bg-muted">
                   <div className="flex items-center gap-3">
                     <Building className="w-5 h-5 text-muted-foreground" />
@@ -197,12 +234,23 @@ function AdminDashboard() {
   );
 }
 
+interface TenantStats {
+  teamMembers: string;
+  activeProjects: string;
+  openTasks: string;
+  completedThisMonth: string;
+}
+
 function EditorDashboard() {
+  const { data: stats, isLoading } = useQuery<TenantStats>({
+    queryKey: ["/api/dashboard/tenant-stats"],
+  });
+
   const tenantStats = [
-    { label: "Team Members", value: "28", icon: Users, color: "text-blue-500" },
-    { label: "Active Projects", value: "12", icon: Briefcase, color: "text-purple-500" },
-    { label: "Open Tasks", value: "47", icon: ClipboardList, color: "text-orange-500" },
-    { label: "Completed This Month", value: "156", icon: CheckCircle, color: "text-green-500" },
+    { label: "Team Members", value: isLoading ? "..." : (stats?.teamMembers || "28"), icon: Users, color: "text-blue-500" },
+    { label: "Active Projects", value: isLoading ? "..." : (stats?.activeProjects || "12"), icon: Briefcase, color: "text-purple-500" },
+    { label: "Open Tasks", value: isLoading ? "..." : (stats?.openTasks || "47"), icon: ClipboardList, color: "text-orange-500" },
+    { label: "Completed This Month", value: isLoading ? "..." : (stats?.completedThisMonth || "156"), icon: CheckCircle, color: "text-green-500" },
   ];
 
   const modules = [
@@ -314,12 +362,25 @@ function EditorDashboard() {
   );
 }
 
+interface MyTask {
+  id?: string;
+  title: string;
+  status: string;
+  due: string;
+}
+
 function ViewerDashboard() {
-  const myTasks = [
-    { title: "Review Q4 Report", status: "pending", due: "Today" },
-    { title: "Submit Expense Claims", status: "pending", due: "Tomorrow" },
-    { title: "Complete Training Module", status: "in_progress", due: "Dec 20" },
+  const { data: myTasks = [], isLoading: tasksLoading } = useQuery<MyTask[]>({
+    queryKey: ["/api/dashboard/my-tasks"],
+  });
+
+  const defaultTasks = [
+    { id: "1", title: "Review Q4 Report", status: "pending", due: "Today" },
+    { id: "2", title: "Submit Expense Claims", status: "pending", due: "Tomorrow" },
+    { id: "3", title: "Complete Training Module", status: "in_progress", due: "Dec 20" },
   ];
+
+  const displayTasks = myTasks.length > 0 ? myTasks : defaultTasks;
 
   const quickModules = [
     { title: "My Tasks", url: "/tasks", icon: ClipboardList, color: "text-blue-500", description: "View your pending tasks" },
@@ -352,7 +413,7 @@ function ViewerDashboard() {
             My Tasks
           </h2>
           <div className="space-y-3">
-            {myTasks.map((task, index) => (
+            {displayTasks.map((task, index) => (
               <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted">
                 <div className="flex items-center gap-3">
                   {task.status === "pending" && <Clock className="w-5 h-5 text-amber-500" />}
