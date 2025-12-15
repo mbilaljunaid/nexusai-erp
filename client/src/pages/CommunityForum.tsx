@@ -18,8 +18,21 @@ import {
   MessageSquare, ThumbsUp, ThumbsDown, Eye, CheckCircle, 
   Plus, Search, TrendingUp, Clock, Award, Users, Hash, Trophy, Star, Shield, User, Flag,
   Flame, ArrowUp, Sparkles, ChevronDown, Bell, BellOff, Home, History, Bookmark,
-  LayoutGrid, Filter, X
+  LayoutGrid, Filter, X, Settings, Store, FileText, Plug, DollarSign, Building, Bug,
+  Lightbulb, GraduationCap, MessageCircle, type LucideIcon
 } from "lucide-react";
+
+const iconMap: Record<string, LucideIcon> = {
+  Settings, Store, FileText, Plug, DollarSign, Building, Bug, Lightbulb,
+  GraduationCap, MessageCircle, MessageSquare, Users, Star, Trophy,
+  TrendingUp, Clock, Award, Hash, Home, Bookmark, Flag, Shield
+};
+
+const getSpaceIcon = (iconName: string | null) => {
+  if (!iconName) return <MessageSquare className="w-4 h-4" />;
+  const Icon = iconMap[iconName];
+  return Icon ? <Icon className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />;
+};
 import type { CommunitySpace, CommunityPost, UserTrustLevel } from "@shared/schema";
 import { UserProfile } from "@/components/UserProfile";
 import { FlagContentDialog } from "@/components/FlagContentDialog";
@@ -364,7 +377,7 @@ export default function CommunityForum() {
           <CardContent className="pt-0 space-y-1">
             {spaces?.filter(s => subscribedSpaces.has(s.id)).map(space => (
               <Button key={space.id} variant={selectedSpace === space.id ? "secondary" : "ghost"} className="w-full justify-start text-sm" onClick={() => { setSelectedSpace(space.id); setFilterBySubscribed(false); addToRecent(space.id); }} data-testid={`button-subscribed-space-${space.slug}`}>
-                <span className="mr-2">{space.icon}</span> {space.name}
+                {getSpaceIcon(space.icon)} <span className="ml-2">{space.name}</span>
               </Button>
             ))}
           </CardContent>
@@ -377,7 +390,7 @@ export default function CommunityForum() {
           <CardContent className="pt-0 space-y-1">
             {spaces?.filter(s => recentSpaces.includes(s.id)).slice(0, 5).map(space => (
               <Button key={space.id} variant={selectedSpace === space.id ? "secondary" : "ghost"} className="w-full justify-start text-sm" onClick={() => { setSelectedSpace(space.id); setFilterBySubscribed(false); }} data-testid={`button-recent-space-${space.slug}`}>
-                <span className="mr-2">{space.icon}</span> {space.name}
+                {getSpaceIcon(space.icon)} <span className="ml-2">{space.name}</span>
               </Button>
             ))}
           </CardContent>
@@ -392,7 +405,7 @@ export default function CommunityForum() {
               {spacesLoading ? [1,2,3].map(i => <Skeleton key={i} className="h-8 w-full" />) : spaces?.map(space => (
                 <div key={space.id} className="flex items-center gap-1">
                   <Button variant={selectedSpace === space.id ? "secondary" : "ghost"} className="flex-1 justify-start text-sm" onClick={() => { setSelectedSpace(space.id); setFilterBySubscribed(false); addToRecent(space.id); }} data-testid={`button-space-${space.slug}`}>
-                    <span className="mr-2">{space.icon}</span> {space.name}
+                    {getSpaceIcon(space.icon)} <span className="ml-2">{space.name}</span>
                   </Button>
                   <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => saveSubscription(space.id, !subscribedSpaces.has(space.id))} data-testid={`button-subscribe-${space.slug}`}>
                     {subscribedSpaces.has(space.id) ? <BellOff className="w-3 h-3" /> : <Bell className="w-3 h-3" />}
