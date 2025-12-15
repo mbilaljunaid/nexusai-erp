@@ -19,13 +19,27 @@ import {
   Plus, Search, TrendingUp, Clock, Award, Users, Hash, Trophy, Star, Shield, User, Flag,
   Flame, ArrowUp, Sparkles, ChevronDown, Bell, BellOff, Home, History, Bookmark,
   LayoutGrid, Filter, X, Settings, Store, FileText, Plug, DollarSign, Building, Bug,
-  Lightbulb, GraduationCap, MessageCircle, type LucideIcon
+  Lightbulb, GraduationCap, MessageCircle, type LucideIcon,
+  UserCheck, Wallet, ShoppingCart, Package, Factory, Truck, FolderKanban, Wrench,
+  Headphones, Megaphone, BarChart3, Bot, Lock, Workflow, BadgeCheck, HardDrive,
+  CreditCard, Smartphone, Database, Heart, Pill, Dna, Landmark, ShieldCheck,
+  ShoppingBag, Boxes, Cog, FlaskConical, Car, Plane, Building2, Zap, Fuel, Mountain,
+  Beaker, UtensilsCrossed, Gift, Shirt, Container, PlaneTakeoff, Hotel, Map, Radio,
+  Film, Monitor, Briefcase, HeartHandshake, Wheat, TreePine, Leaf, Gamepad2, Target,
+  Ship, Wand2, UserPlus, Handshake
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
   Settings, Store, FileText, Plug, DollarSign, Building, Bug, Lightbulb,
   GraduationCap, MessageCircle, MessageSquare, Users, Star, Trophy,
-  TrendingUp, Clock, Award, Hash, Home, Bookmark, Flag, Shield
+  TrendingUp, Clock, Award, Hash, Home, Bookmark, Flag, Shield,
+  UserCheck, Wallet, ShoppingCart, Package, Factory, Truck, FolderKanban, Wrench,
+  Headphones, Megaphone, BarChart3, Bot, Lock, Workflow, BadgeCheck, HardDrive,
+  CreditCard, Smartphone, Database, Heart, Pill, Dna, Landmark, ShieldCheck,
+  ShoppingBag, Boxes, Cog, FlaskConical, Car, Plane, Building2, Zap, Fuel, Mountain,
+  Beaker, UtensilsCrossed, Gift, Shirt, Container, PlaneTakeoff, Hotel, Map, Radio,
+  Film, Monitor, Briefcase, HeartHandshake, Wheat, TreePine, Leaf, Gamepad2, Target,
+  Ship, Wand2, UserPlus, Handshake, Bell, LayoutGrid, Sparkles
 };
 
 const getSpaceIcon = (iconName: string | null) => {
