@@ -186,6 +186,9 @@ const MarketplaceAdmin = lazy(() => import("@/pages/MarketplaceAdmin"));
 const MarketplaceServices = lazy(() => import("@/pages/MarketplaceServices"));
 const MarketplaceJobs = lazy(() => import("@/pages/MarketplaceJobs"));
 const MarketplaceJobDetail = lazy(() => import("@/pages/MarketplaceJobDetail"));
+const MyJobsDashboard = lazy(() => import("@/pages/MyJobsDashboard"));
+const MyProposalsDashboard = lazy(() => import("@/pages/MyProposalsDashboard"));
+const ContributorDashboard = lazy(() => import("@/pages/ContributorDashboard"));
 const IntegrationHub = lazy(() => import("@/pages/IntegrationHub"));
 const Settings = lazy(() => import("@/pages/Settings"));
 
@@ -560,6 +563,9 @@ function Router() {
       <Route path="/marketplace/services" component={MarketplaceServices} />
       <Route path="/marketplace/jobs/:id" component={MarketplaceJobDetail} />
       <Route path="/marketplace/jobs" component={MarketplaceJobs} />
+      <Route path="/marketplace/my-jobs" component={MyJobsDashboard} />
+      <Route path="/marketplace/my-proposals" component={MyProposalsDashboard} />
+      <Route path="/marketplace/contributor" component={ContributorDashboard} />
       <Route path="/community" component={CommunityForum} />
       <Route path="/developer-portal" component={DeveloperPortal} />
       <Route path="/marketplace-admin" component={MarketplaceAdmin} />
