@@ -454,8 +454,7 @@ export default function CommunityForum() {
             <p className="text-muted-foreground text-sm">Ask questions, share knowledge, earn reputation</p>
           </div>
           <div className="flex gap-2 flex-wrap">
-            <Button variant="outline" size="sm" onClick={() => setShowMarketplace(true)} data-testid="button-marketplace"><Award className="w-4 h-4 mr-2" /> Marketplace</Button>
-            <Button variant="outline" size="sm" onClick={() => setShowModeration(true)} data-testid="button-moderation"><Shield className="w-4 h-4 mr-2" /> Moderation</Button>
+                        <Button variant="outline" size="sm" onClick={() => setShowModeration(true)} data-testid="button-moderation"><Shield className="w-4 h-4 mr-2" /> Moderation</Button>
             <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
               <DialogTrigger asChild><Button size="sm" data-testid="button-new-post"><Plus className="w-4 h-4 mr-2" /> New Post</Button></DialogTrigger>
               <DialogContent className="max-w-2xl">
