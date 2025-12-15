@@ -553,6 +553,10 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/copilot" component={Copilot} />
       <Route path="/marketplace" component={Marketplace} />
+      <Route path="/marketplace/apps" component={Marketplace} />
+      <Route path="/marketplace/services" component={Marketplace} />
+      <Route path="/community" component={CommunityForum} />
+      <Route path="/community/industries" component={CommunityForum} />
       <Route path="/developer-portal" component={DeveloperPortal} />
       <Route path="/marketplace-admin" component={MarketplaceAdmin} />
       <Route path="/settings" component={Settings} />
