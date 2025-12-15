@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart } from "lucide-react";
+import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart, Video, FileCode2, FileText, FolderOpen } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -185,6 +185,50 @@ export function Header() {
                       </div>
                     </div>
                   </Link>
+
+                  <div className="border-t border-slate-600 mt-1 pt-1">
+                    <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Community Content</p>
+                  </div>
+
+                  <Link to="/training/videos" className="block">
+                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <Video className="w-4 h-4 text-red-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">Training Videos</div>
+                        <div className="text-xs text-slate-400">Community video tutorials</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link to="/training/apis" className="block">
+                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <FileCode2 className="w-4 h-4 text-cyan-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">APIs & Integrations</div>
+                        <div className="text-xs text-slate-400">API documentation & samples</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link to="/training/guides" className="block">
+                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <FileText className="w-4 h-4 text-yellow-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">User Guides</div>
+                        <div className="text-xs text-slate-400">Step-by-step tutorials</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link to="/training/materials" className="block">
+                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <FolderOpen className="w-4 h-4 text-emerald-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">Training Materials</div>
+                        <div className="text-xs text-slate-400">Courses & learning paths</div>
+                      </div>
+                    </div>
+                  </Link>
                   </div>
                 </div>
               )}
@@ -302,6 +346,27 @@ export function Header() {
               <Link to="/docs/implementation">
                 <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
                   Implementation
+                </button>
+              </Link>
+              <p className="px-4 pt-2 text-xs text-slate-500 uppercase">Community Content</p>
+              <Link to="/training/videos">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  Training Videos
+                </button>
+              </Link>
+              <Link to="/training/apis">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  APIs & Integrations
+                </button>
+              </Link>
+              <Link to="/training/guides">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  User Guides
+                </button>
+              </Link>
+              <Link to="/training/materials">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  Training Materials
                 </button>
               </Link>
             </div>

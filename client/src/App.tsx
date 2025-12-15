@@ -130,6 +130,11 @@ const TechnicalAPIReference = lazy(() => import("@/pages/public/documentation/Te
 const CareersPage = lazy(() => import("@/pages/public/CareersPage"));
 const ImplementationSystemSetup = lazy(() => import("@/pages/public/documentation/ImplementationSystemSetup"));
 
+// Training Content Pages
+const TrainingContent = lazy(() => import("@/pages/TrainingContent"));
+const TrainingContentSubmit = lazy(() => import("@/pages/TrainingContentSubmit"));
+const TrainingContentAdmin = lazy(() => import("@/pages/admin/TrainingContentAdmin"));
+
 // Open Source Pages
 const OpenSourcePage = lazy(() => import("@/pages/OpenSourcePage"));
 const LicensePage = lazy(() => import("@/pages/LicensePage"));
@@ -569,6 +574,13 @@ function Router() {
       <Route path="/marketplace/contributor" component={ContributorDashboard} />
       <Route path="/marketplace/profile/:userId" component={ContributorProfile} />
       <Route path="/community" component={CommunityForum} />
+      
+      {/* Training Content Routes */}
+      <Route path="/training/:type" component={TrainingContent} />
+      <Route path="/contributor/training/submit" component={TrainingContentSubmit} />
+      <Route path="/contributor/training/filter-request" component={TrainingContentSubmit} />
+      <Route path="/admin/training" component={TrainingContentAdmin} />
+      
       <Route path="/developer-portal" component={DeveloperPortal} />
       <Route path="/marketplace-admin" component={MarketplaceAdmin} />
       <Route path="/settings" component={Settings} />
