@@ -40,6 +40,8 @@ import {
   insertServiceCategorySchema, insertServicePackageSchema, insertServiceOrderSchema, insertServiceReviewSchema,
   communityVoteEvents, communityVoteAnomalies, communityAIRecommendations,
   insertCommunityVoteEventSchema, insertCommunityVoteAnomalySchema, insertCommunityAIRecommendationSchema,
+  trainingResources, trainingResourceLikes, trainingFilterRequests,
+  insertTrainingResourceSchema, insertTrainingResourceLikeSchema, insertTrainingFilterRequestSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -5307,6 +5309,388 @@ Be fair and consider context. Not all controversial content is harmful.`
     } catch (error: any) {
       console.error("Error seeding jobs:", error);
       res.status(500).json({ error: "Failed to seed jobs", details: error.message });
+    }
+  });
+
+  // ========== TRAINING RESOURCES API ==========
+  
+  // GET /api/training - List training resources (public)
+  app.get("/api/training", async (req, res) => {
+    try {
+      const { type, module, industry, app, difficulty, search, featured, status, limit = "50", offset = "0" } = req.query;
+      
+      let query = `SELECT * FROM training_resources WHERE 1=1`;
+      const params: any[] = [];
+      let paramIndex = 1;
+      
+      // Default to approved for public view
+      const statusFilter = status || "approved";
+      query += ` AND status = $${paramIndex++}`;
+      params.push(statusFilter);
+      
+      if (type && type !== "all") {
+        query += ` AND type = $${paramIndex++}`;
+        params.push(type);
+      }
+      if (module) {
+        query += ` AND $${paramIndex++} = ANY(modules)`;
+        params.push(module);
+      }
+      if (industry) {
+        query += ` AND $${paramIndex++} = ANY(industries)`;
+        params.push(industry);
+      }
+      if (app) {
+        query += ` AND $${paramIndex++} = ANY(apps)`;
+        params.push(app);
+      }
+      if (difficulty) {
+        query += ` AND difficulty = $${paramIndex++}`;
+        params.push(difficulty);
+      }
+      if (search) {
+        query += ` AND (title ILIKE $${paramIndex} OR description ILIKE $${paramIndex++})`;
+        params.push(`%${search}%`);
+      }
+      if (featured === "true") {
+        query += ` AND featured = true`;
+      }
+      
+      query += ` ORDER BY featured DESC, likes DESC, created_at DESC`;
+      query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+      params.push(parseInt(limit as string), parseInt(offset as string));
+      
+      const result = await db.execute(sql.raw(query, params));
+      
+      // Get counts by type
+      const countsResult = await db.execute(sql`
+        SELECT type, COUNT(*) as count FROM training_resources WHERE status = 'approved' GROUP BY type
+      `);
+      
+      res.json({
+        resources: result.rows,
+        counts: countsResult.rows.reduce((acc: any, r: any) => ({ ...acc, [r.type]: parseInt(r.count) }), {}),
+        total: result.rows.length
+      });
+    } catch (error: any) {
+      console.error("Error fetching training resources:", error);
+      res.status(500).json({ error: "Failed to fetch training resources" });
+    }
+  });
+
+  // GET /api/training/filters - Get available filter options
+  app.get("/api/training/filters", async (req, res) => {
+    try {
+      const modulesResult = await db.execute(sql`SELECT DISTINCT slug, name FROM community_spaces WHERE slug LIKE 'crm%' OR slug LIKE 'finance%' OR slug LIKE 'human%' OR slug LIKE 'payroll%' OR slug LIKE 'procurement%' OR slug LIKE 'inventory%' OR slug LIKE 'manufacturing%' OR slug LIKE 'supply%' OR slug LIKE 'project%' OR slug LIKE 'field%' OR slug LIKE 'service%' OR slug LIKE 'marketing%' OR slug LIKE 'analytics%' OR slug LIKE 'ai%' OR slug LIKE 'compliance%' OR slug LIKE 'security%' OR slug LIKE 'integration%' OR slug LIKE 'workflow%' OR slug LIKE 'document%' OR slug LIKE 'quality%' OR slug LIKE 'asset%' OR slug LIKE 'billing%' OR slug LIKE 'mobile%' OR slug LIKE 'data%' ORDER BY name`);
+      const industriesResult = await db.execute(sql`SELECT DISTINCT slug, name FROM community_spaces WHERE slug LIKE 'ind-%' ORDER BY name`);
+      const appsResult = await db.execute(sql`SELECT id, name FROM marketplace_apps WHERE status = 'published' ORDER BY name LIMIT 100`);
+      
+      res.json({
+        modules: modulesResult.rows,
+        industries: industriesResult.rows,
+        apps: appsResult.rows,
+        difficulties: ["beginner", "intermediate", "advanced"],
+        types: ["video", "api", "guide", "material", "tutorial"]
+      });
+    } catch (error: any) {
+      console.error("Error fetching training filters:", error);
+      res.status(500).json({ error: "Failed to fetch filters" });
+    }
+  });
+
+  // GET /api/training/:id - Get single training resource
+  app.get("/api/training/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await db.execute(sql`
+        SELECT tr.*, u.name as author_name 
+        FROM training_resources tr
+        LEFT JOIN users u ON tr.submitted_by = u.id
+        WHERE tr.id = ${id}
+      `);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Resource not found" });
+      }
+      
+      // Increment view count
+      await db.execute(sql`UPDATE training_resources SET views = views + 1 WHERE id = ${id}`);
+      
+      res.json(result.rows[0]);
+    } catch (error: any) {
+      console.error("Error fetching training resource:", error);
+      res.status(500).json({ error: "Failed to fetch resource" });
+    }
+  });
+
+  // POST /api/training - Submit new training resource (requires auth)
+  app.post("/api/training", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ error: "Authentication required" });
+      
+      const parsed = insertTrainingResourceSchema.safeParse({ ...req.body, submittedBy: user.id });
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid data", details: parsed.error.errors });
+      }
+      
+      const { type, title, description, resourceUrl, thumbnailUrl, duration, difficulty, modules, industries, apps, tags } = parsed.data;
+      const id = `tr-${Date.now()}-${Math.random().toString(36).substr(2, 8)}`;
+      
+      await db.execute(sql`
+        INSERT INTO training_resources (id, type, title, description, resource_url, thumbnail_url, duration, difficulty, modules, industries, apps, tags, submitted_by, status, created_at, updated_at)
+        VALUES (${id}, ${type}, ${title}, ${description || null}, ${resourceUrl || null}, ${thumbnailUrl || null}, ${duration || null}, ${difficulty || 'beginner'}, ${modules || []}, ${industries || []}, ${apps || []}, ${tags || []}, ${user.id}, 'pending', ${new Date()}, ${new Date()})
+      `);
+      
+      res.status(201).json({ id, message: "Resource submitted for review" });
+    } catch (error: any) {
+      console.error("Error submitting training resource:", error);
+      res.status(500).json({ error: "Failed to submit resource" });
+    }
+  });
+
+  // POST /api/training/:id/like - Like a training resource
+  app.post("/api/training/:id/like", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ error: "Authentication required" });
+      
+      const { id } = req.params;
+      
+      // Check if already liked
+      const existing = await db.execute(sql`
+        SELECT id FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${user.id}
+      `);
+      
+      if (existing.rows.length > 0) {
+        // Unlike
+        await db.execute(sql`DELETE FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${user.id}`);
+        await db.execute(sql`UPDATE training_resources SET likes = likes - 1 WHERE id = ${id}`);
+        return res.json({ liked: false });
+      }
+      
+      // Like
+      const likeId = `like-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+      await db.execute(sql`INSERT INTO training_resource_likes (id, resource_id, user_id, created_at) VALUES (${likeId}, ${id}, ${user.id}, ${new Date()})`);
+      await db.execute(sql`UPDATE training_resources SET likes = likes + 1 WHERE id = ${id}`);
+      
+      // Award points to the resource author
+      const resource = await db.execute(sql`SELECT submitted_by FROM training_resources WHERE id = ${id}`);
+      if (resource.rows.length > 0) {
+        const authorId = (resource.rows[0] as any).submitted_by;
+        if (authorId !== user.id) {
+          const eventId = `rep-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+          await db.execute(sql`
+            INSERT INTO reputation_events (id, user_id, action_type, points, source_type, source_id, description, created_at)
+            VALUES (${eventId}, ${authorId}, 'content_liked', 5, 'training_resource', ${id}, 'Training resource received a like', ${new Date()})
+          `);
+          await db.execute(sql`
+            UPDATE user_trust_levels SET total_reputation = total_reputation + 5 WHERE user_id = ${authorId}
+          `);
+        }
+      }
+      
+      res.json({ liked: true });
+    } catch (error: any) {
+      console.error("Error liking training resource:", error);
+      res.status(500).json({ error: "Failed to like resource" });
+    }
+  });
+
+  // GET /api/training/:id/liked - Check if user liked a resource
+  app.get("/api/training/:id/liked", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.json({ liked: false });
+      
+      const { id } = req.params;
+      const existing = await db.execute(sql`
+        SELECT id FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${user.id}
+      `);
+      
+      res.json({ liked: existing.rows.length > 0 });
+    } catch (error: any) {
+      res.json({ liked: false });
+    }
+  });
+
+  // POST /api/training/filter-request - Request new filter category
+  app.post("/api/training/filter-request", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ error: "Authentication required" });
+      
+      const parsed = insertTrainingFilterRequestSchema.safeParse({ ...req.body, requestedBy: user.id });
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid data", details: parsed.error.errors });
+      }
+      
+      const { filterType, filterValue, description } = parsed.data;
+      const id = `fr-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+      
+      await db.execute(sql`
+        INSERT INTO training_filter_requests (id, filter_type, filter_value, description, requested_by, status, created_at)
+        VALUES (${id}, ${filterType}, ${filterValue}, ${description || null}, ${user.id}, 'pending', ${new Date()})
+      `);
+      
+      res.status(201).json({ id, message: "Filter request submitted" });
+    } catch (error: any) {
+      console.error("Error submitting filter request:", error);
+      res.status(500).json({ error: "Failed to submit request" });
+    }
+  });
+
+  // GET /api/admin/training - Admin: List all training resources (any status)
+  app.get("/api/admin/training", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+      
+      const { status, type, limit = "100", offset = "0" } = req.query;
+      
+      let query = `SELECT tr.*, u.name as author_name FROM training_resources tr LEFT JOIN users u ON tr.submitted_by = u.id WHERE 1=1`;
+      const params: any[] = [];
+      let paramIndex = 1;
+      
+      if (status && status !== "all") {
+        query += ` AND tr.status = $${paramIndex++}`;
+        params.push(status);
+      }
+      if (type && type !== "all") {
+        query += ` AND tr.type = $${paramIndex++}`;
+        params.push(type);
+      }
+      
+      query += ` ORDER BY tr.created_at DESC`;
+      query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+      params.push(parseInt(limit as string), parseInt(offset as string));
+      
+      const result = await db.execute(sql.raw(query, params));
+      
+      // Get counts by status
+      const countsResult = await db.execute(sql`
+        SELECT status, COUNT(*) as count FROM training_resources GROUP BY status
+      `);
+      
+      res.json({
+        resources: result.rows,
+        counts: countsResult.rows.reduce((acc: any, r: any) => ({ ...acc, [r.status]: parseInt(r.count) }), {})
+      });
+    } catch (error: any) {
+      console.error("Error fetching admin training resources:", error);
+      res.status(500).json({ error: "Failed to fetch resources" });
+    }
+  });
+
+  // PATCH /api/admin/training/:id - Admin: Update training resource status
+  app.patch("/api/admin/training/:id", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+      
+      const { id } = req.params;
+      const { status, reviewNotes, featured } = req.body;
+      
+      await db.execute(sql`
+        UPDATE training_resources 
+        SET status = COALESCE(${status}, status),
+            review_notes = COALESCE(${reviewNotes}, review_notes),
+            featured = COALESCE(${featured}, featured),
+            reviewed_by = ${user.id},
+            reviewed_at = ${new Date()},
+            updated_at = ${new Date()}
+        WHERE id = ${id}
+      `);
+      
+      // Award points if approved
+      if (status === "approved") {
+        const resource = await db.execute(sql`SELECT submitted_by, type FROM training_resources WHERE id = ${id}`);
+        if (resource.rows.length > 0) {
+          const { submitted_by: authorId, type } = resource.rows[0] as any;
+          const points = type === "video" ? 50 : type === "guide" ? 30 : 20;
+          const eventId = `rep-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+          await db.execute(sql`
+            INSERT INTO reputation_events (id, user_id, action_type, points, source_type, source_id, description, created_at)
+            VALUES (${eventId}, ${authorId}, 'content_approved', ${points}, 'training_resource', ${id}, ${'Training ' + type + ' approved'}, ${new Date()})
+          `);
+          await db.execute(sql`
+            UPDATE user_trust_levels SET total_reputation = total_reputation + ${points} WHERE user_id = ${authorId}
+          `);
+        }
+      }
+      
+      res.json({ message: "Resource updated" });
+    } catch (error: any) {
+      console.error("Error updating training resource:", error);
+      res.status(500).json({ error: "Failed to update resource" });
+    }
+  });
+
+  // GET /api/admin/training/filter-requests - Admin: List filter requests
+  app.get("/api/admin/training/filter-requests", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+      
+      const { status = "pending" } = req.query;
+      
+      const result = await db.execute(sql`
+        SELECT tfr.*, u.name as requester_name 
+        FROM training_filter_requests tfr
+        LEFT JOIN users u ON tfr.requested_by = u.id
+        WHERE tfr.status = ${status}
+        ORDER BY tfr.created_at DESC
+      `);
+      
+      res.json(result.rows);
+    } catch (error: any) {
+      console.error("Error fetching filter requests:", error);
+      res.status(500).json({ error: "Failed to fetch requests" });
+    }
+  });
+
+  // PATCH /api/admin/training/filter-requests/:id - Admin: Approve/reject filter request
+  app.patch("/api/admin/training/filter-requests/:id", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+      
+      const { id } = req.params;
+      const { status } = req.body;
+      
+      if (!["approved", "rejected"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status" });
+      }
+      
+      await db.execute(sql`
+        UPDATE training_filter_requests 
+        SET status = ${status}, reviewed_by = ${user.id}, reviewed_at = ${new Date()}
+        WHERE id = ${id}
+      `);
+      
+      res.json({ message: "Filter request updated" });
+    } catch (error: any) {
+      console.error("Error updating filter request:", error);
+      res.status(500).json({ error: "Failed to update request" });
+    }
+  });
+
+  // GET /api/contributor/training - Get contributor's own submissions
+  app.get("/api/contributor/training", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ error: "Authentication required" });
+      
+      const result = await db.execute(sql`
+        SELECT * FROM training_resources 
+        WHERE submitted_by = ${user.id}
+        ORDER BY created_at DESC
+      `);
+      
+      res.json(result.rows);
+    } catch (error: any) {
+      console.error("Error fetching contributor resources:", error);
+      res.status(500).json({ error: "Failed to fetch resources" });
     }
   });
 
