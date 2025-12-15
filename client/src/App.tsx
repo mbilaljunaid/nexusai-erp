@@ -183,6 +183,7 @@ const AIChat = lazy(() => import("@/pages/AIChat"));
 const Marketplace = lazy(() => import("@/pages/Marketplace"));
 const DeveloperPortal = lazy(() => import("@/pages/DeveloperPortal"));
 const MarketplaceAdmin = lazy(() => import("@/pages/MarketplaceAdmin"));
+const MarketplaceServices = lazy(() => import("@/pages/MarketplaceServices"));
 const IntegrationHub = lazy(() => import("@/pages/IntegrationHub"));
 const Settings = lazy(() => import("@/pages/Settings"));
 
@@ -554,7 +555,7 @@ function Router() {
       <Route path="/copilot" component={Copilot} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/marketplace/apps" component={Marketplace} />
-      <Route path="/marketplace/services" component={Marketplace} />
+      <Route path="/marketplace/services" component={MarketplaceServices} />
       <Route path="/community" component={CommunityForum} />
       <Route path="/community/industries" component={CommunityForum} />
       <Route path="/developer-portal" component={DeveloperPortal} />

@@ -1,0 +1,197 @@
+Perfect — this is an important constraint. Below is the **final, tightened Replit prompt**, with **strict instructions to NOT create any new tables** and to **gracefully skip anything that doesn’t fit the existing schema**.
+
+You can copy-paste this as-is.
+
+---
+
+## 🔹 FINAL PROMPT: Generate Sample Data for `/marketplace/services`
+
+**(STRICT: Use Existing Database & Architecture Only)**
+
+### Objective
+
+Populate the `/marketplace/services` module with **realistic, production-quality sample data** to support UI development, filtering, analytics, ratings, reviews, and workflow testing.
+
+⚠️ **CRITICAL CONSTRAINT**
+
+* **DO NOT create, modify, or suggest any new database tables**
+* **DO NOT alter existing table structures**
+* Use **only the current database schema and architecture**
+* If any requested data **cannot be represented using existing tables or fields**, **SKIP that data**
+* Do NOT introduce temporary, virtual, or derived tables
+
+---
+
+## 1️⃣ Scope of Data to Generate (Within Existing Schema Only)
+
+Generate sample data only where supported by the **current tables**, typically including (names may differ—map intelligently):
+
+* Services
+* Service categories / tags
+* Job posts / service requests
+* Proposals / bids
+* Users (buyers & sellers)
+* Reviews / ratings
+* Status and workflow fields
+
+If your existing schema does **not** support any of the above, skip gracefully.
+
+---
+
+## 2️⃣ Services & Categories
+
+Populate existing **services-related tables** with architecture-focused services such as:
+
+* Frontend development
+* Backend & API development
+* Database & performance optimization
+* New module / feature development
+* Reports & dashboards
+* Forms & workflow automation
+* Implementation services
+* Training & enablement
+
+Only use fields that already exist, such as:
+
+* ID
+* Title
+* Description
+* Category reference
+* Pricing model / price
+* Status
+* Created / updated timestamps
+
+❌ If the schema does not support a field (e.g., “complexity level”), do not simulate it.
+
+---
+
+## 3️⃣ Job Posts (Buyer Requests)
+
+Generate job posts using **only existing job/request tables and columns**.
+
+### 🔴 Mandatory Date Rule
+
+All job posting dates must be:
+
+* **On or after:** 20-Jan-2022
+* **On or before:** Today’s date
+
+Ensure:
+
+* Logical sequencing of dates (created → deadline → completion where applicable)
+* Job statuses align with available status enums
+
+If fields like attachments, priority, or location do not exist → **skip them**.
+
+---
+
+## 4️⃣ Proposals / Bids
+
+For each job post, create multiple proposals using existing proposal tables.
+
+Constraints:
+
+* Proposal dates must be **after job post date**
+* Status values must match existing enums
+* Pricing and timelines must align with existing columns
+
+If milestones, cover letters, or availability fields don’t exist → do not fabricate them.
+
+---
+
+## 5️⃣ Users
+
+Use existing user-related tables only.
+
+Create realistic buyers and sellers by varying:
+
+* Roles (if role column exists)
+* Profile completeness
+* Activity levels
+* Account creation dates (can predate 20-Jan-2022)
+
+❌ Do not add skills, badges, certifications, or reputation if those tables/fields don’t already exist.
+
+---
+
+## 6️⃣ Reviews & Ratings
+
+Create reviews **only if supported by current schema** and only for completed jobs.
+
+Rules:
+
+* Review date must be after job completion
+* Rating values must respect existing constraints (e.g., 1–5)
+* If review replies, sentiments, or flags are not supported → skip them
+
+---
+
+## 7️⃣ Timeline & Data Realism
+
+Ensure:
+
+* Data distribution spans **20-Jan-2022 → today**
+* Realistic activity density (older data thinner, recent data denser)
+* No impossible date overlaps
+* Repeat interactions only if schema supports relational links
+
+---
+
+## 8️⃣ Analytics & Metrics
+
+⚠️ **Do NOT create analytics tables**
+
+If analytics fields already exist (e.g., counters, averages):
+
+* Populate them with realistic values
+
+If analytics are computed dynamically or not stored:
+
+* **Do not persist any analytics data**
+
+---
+
+## 9️⃣ Output & Execution Rules
+
+* Insert data via:
+
+  * Seed scripts, OR
+  * ORM-based inserts, OR
+  * Direct SQL (matching existing schema)
+* Maintain strict referential integrity
+* Do not hardcode IDs that conflict with existing data
+* Avoid duplicate or nonsensical records
+
+---
+
+## 🔟 Strict Do-Not List
+
+🚫 No new tables
+🚫 No schema migrations
+🚫 No fake columns
+🚫 No lorem ipsum
+🚫 No breaking changes
+🚫 No assumptions about missing fields
+
+If something doesn’t fit → **skip it silently and continue**
+
+---
+
+### ✅ Final Instruction
+
+Before inserting data, **analyze the current database schema first**, then:
+
+1. Map this prompt to existing tables/columns
+2. Skip unsupported data points
+3. Populate only what is valid
+
+---
+
+If you want, next I can:
+
+* Rewrite this as a **system prompt specifically tuned for Replit Agent**
+* Add a **pre-execution schema validation checklist**
+* Convert this into **SQL-only** or **ORM-only** instructions
+* Align it with your **open-core marketplace governance rules**
+
+Just say the word 👍
