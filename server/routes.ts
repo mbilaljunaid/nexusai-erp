@@ -371,9 +371,14 @@ export async function registerRoutes(
     }
   });
 
-  // Generic form endpoints
-  app.get("/api/:formId", async (req, res) => {
+  // Generic form endpoints - Skip known API paths
+  const reservedApiPaths = ['training', 'admin', 'auth', 'community', 'marketplace', 'demos', 'feedback', 'invoices', 'quotes', 'export', 'smartviews', 'reports', 'contact', 'payments', 'partners', 'industries', 'tenants', 'industry-deployments', 'dashboard', 'gamification', 'developers', 'notifications'];
+  app.get("/api/:formId", async (req, res, next) => {
     const { formId } = req.params;
+    // Skip reserved paths - let specific routes handle them
+    if (reservedApiPaths.includes(formId)) {
+      return next();
+    }
     try {
       const records = await db.query.formData.findMany({
         where: (formData) => eq(formData.formId, formId),
@@ -386,8 +391,12 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/:formId", async (req, res) => {
+  app.post("/api/:formId", async (req, res, next) => {
     const { formId } = req.params;
+    // Skip reserved paths - let specific routes handle them
+    if (reservedApiPaths.includes(formId)) {
+      return next();
+    }
     try {
       const data = sanitizeInput(req.body);
       const result = await db.insert(formDataTable).values({
@@ -5317,50 +5326,64 @@ Be fair and consider context. Not all controversial content is harmful.`
   // GET /api/training - List training resources (public)
   app.get("/api/training", async (req, res) => {
     try {
-      const { type, module, industry, app, difficulty, search, featured, status, limit = "50", offset = "0" } = req.query;
-      
-      let query = `SELECT * FROM training_resources WHERE 1=1`;
-      const params: any[] = [];
-      let paramIndex = 1;
+      const { type, module: moduleFilter, industry, app: appFilter, difficulty, search, featured, status } = req.query;
+      const limitNum = parseInt(req.query.limit as string) || 50;
+      const offsetNum = parseInt(req.query.offset as string) || 0;
       
       // Default to approved for public view
-      const statusFilter = status || "approved";
-      query += ` AND status = $${paramIndex++}`;
-      params.push(statusFilter);
+      const statusFilter = (status as string) || "approved";
+      const typeFilter = type as string;
+      const difficultyFilter = difficulty as string;
+      const searchFilter = search as string;
       
-      if (type && type !== "all") {
-        query += ` AND type = $${paramIndex++}`;
-        params.push(type);
+      // Build query using Drizzle's sql template
+      let result;
+      if (typeFilter && typeFilter !== "all") {
+        if (searchFilter) {
+          result = await db.execute(sql`
+            SELECT * FROM training_resources 
+            WHERE status = ${statusFilter} 
+            AND type = ${typeFilter}
+            AND (title ILIKE ${'%' + searchFilter + '%'} OR description ILIKE ${'%' + searchFilter + '%'})
+            ORDER BY featured DESC, likes DESC, created_at DESC
+            LIMIT ${limitNum} OFFSET ${offsetNum}
+          `);
+        } else if (difficultyFilter) {
+          result = await db.execute(sql`
+            SELECT * FROM training_resources 
+            WHERE status = ${statusFilter} 
+            AND type = ${typeFilter}
+            AND difficulty = ${difficultyFilter}
+            ORDER BY featured DESC, likes DESC, created_at DESC
+            LIMIT ${limitNum} OFFSET ${offsetNum}
+          `);
+        } else {
+          result = await db.execute(sql`
+            SELECT * FROM training_resources 
+            WHERE status = ${statusFilter} 
+            AND type = ${typeFilter}
+            ORDER BY featured DESC, likes DESC, created_at DESC
+            LIMIT ${limitNum} OFFSET ${offsetNum}
+          `);
+        }
+      } else {
+        if (searchFilter) {
+          result = await db.execute(sql`
+            SELECT * FROM training_resources 
+            WHERE status = ${statusFilter}
+            AND (title ILIKE ${'%' + searchFilter + '%'} OR description ILIKE ${'%' + searchFilter + '%'})
+            ORDER BY featured DESC, likes DESC, created_at DESC
+            LIMIT ${limitNum} OFFSET ${offsetNum}
+          `);
+        } else {
+          result = await db.execute(sql`
+            SELECT * FROM training_resources 
+            WHERE status = ${statusFilter}
+            ORDER BY featured DESC, likes DESC, created_at DESC
+            LIMIT ${limitNum} OFFSET ${offsetNum}
+          `);
+        }
       }
-      if (module) {
-        query += ` AND $${paramIndex++} = ANY(modules)`;
-        params.push(module);
-      }
-      if (industry) {
-        query += ` AND $${paramIndex++} = ANY(industries)`;
-        params.push(industry);
-      }
-      if (app) {
-        query += ` AND $${paramIndex++} = ANY(apps)`;
-        params.push(app);
-      }
-      if (difficulty) {
-        query += ` AND difficulty = $${paramIndex++}`;
-        params.push(difficulty);
-      }
-      if (search) {
-        query += ` AND (title ILIKE $${paramIndex} OR description ILIKE $${paramIndex++})`;
-        params.push(`%${search}%`);
-      }
-      if (featured === "true") {
-        query += ` AND featured = true`;
-      }
-      
-      query += ` ORDER BY featured DESC, likes DESC, created_at DESC`;
-      query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
-      params.push(parseInt(limit as string), parseInt(offset as string));
-      
-      const result = await db.execute(sql.raw(query, params));
       
       // Get counts by type
       const countsResult = await db.execute(sql`
@@ -5368,9 +5391,9 @@ Be fair and consider context. Not all controversial content is harmful.`
       `);
       
       res.json({
-        resources: result.rows,
-        counts: countsResult.rows.reduce((acc: any, r: any) => ({ ...acc, [r.type]: parseInt(r.count) }), {}),
-        total: result.rows.length
+        resources: result.rows || [],
+        counts: (countsResult.rows || []).reduce((acc: any, r: any) => ({ ...acc, [r.type]: parseInt(r.count) }), {}),
+        total: (result.rows || []).length
       });
     } catch (error: any) {
       console.error("Error fetching training resources:", error);
@@ -5546,26 +5569,48 @@ Be fair and consider context. Not all controversial content is harmful.`
       const user = (req as any).user;
       if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
       
-      const { status, type, limit = "100", offset = "0" } = req.query;
+      const statusFilter = req.query.status as string;
+      const typeFilter = req.query.type as string;
+      const limitNum = parseInt(req.query.limit as string) || 100;
+      const offsetNum = parseInt(req.query.offset as string) || 0;
       
-      let query = `SELECT tr.*, u.name as author_name FROM training_resources tr LEFT JOIN users u ON tr.submitted_by = u.id WHERE 1=1`;
-      const params: any[] = [];
-      let paramIndex = 1;
-      
-      if (status && status !== "all") {
-        query += ` AND tr.status = $${paramIndex++}`;
-        params.push(status);
+      let result;
+      if (statusFilter && statusFilter !== "all" && typeFilter && typeFilter !== "all") {
+        result = await db.execute(sql`
+          SELECT tr.*, u.name as author_name 
+          FROM training_resources tr 
+          LEFT JOIN users u ON tr.submitted_by = u.id 
+          WHERE tr.status = ${statusFilter} AND tr.type = ${typeFilter}
+          ORDER BY tr.created_at DESC
+          LIMIT ${limitNum} OFFSET ${offsetNum}
+        `);
+      } else if (statusFilter && statusFilter !== "all") {
+        result = await db.execute(sql`
+          SELECT tr.*, u.name as author_name 
+          FROM training_resources tr 
+          LEFT JOIN users u ON tr.submitted_by = u.id 
+          WHERE tr.status = ${statusFilter}
+          ORDER BY tr.created_at DESC
+          LIMIT ${limitNum} OFFSET ${offsetNum}
+        `);
+      } else if (typeFilter && typeFilter !== "all") {
+        result = await db.execute(sql`
+          SELECT tr.*, u.name as author_name 
+          FROM training_resources tr 
+          LEFT JOIN users u ON tr.submitted_by = u.id 
+          WHERE tr.type = ${typeFilter}
+          ORDER BY tr.created_at DESC
+          LIMIT ${limitNum} OFFSET ${offsetNum}
+        `);
+      } else {
+        result = await db.execute(sql`
+          SELECT tr.*, u.name as author_name 
+          FROM training_resources tr 
+          LEFT JOIN users u ON tr.submitted_by = u.id 
+          ORDER BY tr.created_at DESC
+          LIMIT ${limitNum} OFFSET ${offsetNum}
+        `);
       }
-      if (type && type !== "all") {
-        query += ` AND tr.type = $${paramIndex++}`;
-        params.push(type);
-      }
-      
-      query += ` ORDER BY tr.created_at DESC`;
-      query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
-      params.push(parseInt(limit as string), parseInt(offset as string));
-      
-      const result = await db.execute(sql.raw(query, params));
       
       // Get counts by status
       const countsResult = await db.execute(sql`

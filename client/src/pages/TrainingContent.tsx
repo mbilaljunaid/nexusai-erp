@@ -74,7 +74,21 @@ export default function TrainingContent() {
   });
 
   const { data: resourcesData, isLoading } = useQuery<{ resources: TrainingResource[]; counts: Record<string, number> }>({
-    queryKey: ["/api/training", { type, module: selectedModule, industry: selectedIndustry, difficulty: selectedDifficulty, search }],
+    queryKey: ["/api/training", type, selectedModule, selectedIndustry, selectedDifficulty, search],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.set("type", type);
+      if (selectedModule) params.set("module", selectedModule);
+      if (selectedIndustry) params.set("industry", selectedIndustry);
+      if (selectedDifficulty) params.set("difficulty", selectedDifficulty);
+      if (search) params.set("search", search);
+      const res = await fetch(`/api/training?${params.toString()}`, {
+        headers: { "x-tenant-id": "tenant1", "x-user-id": "user1", "x-user-role": "admin" },
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
   });
 
   const likeMutation = useMutation({

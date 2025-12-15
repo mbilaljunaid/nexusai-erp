@@ -1,6 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-// Default RBAC context for demo (in production, this would come from auth system)
 const DEFAULT_TENANT_ID = "tenant1";
 const DEFAULT_USER_ID = "user1";
 const DEFAULT_USER_ROLE = "admin";
@@ -18,6 +17,20 @@ async function throwIfResNotOk(res: Response) {
     const text = (await res.text()) || res.statusText;
     throw new Error(`${res.status}: ${text}`);
   }
+}
+
+export function buildQueryUrl(basePath: string, params?: Record<string, any>): string {
+  if (!params || Object.keys(params).length === 0) {
+    return basePath;
+  }
+  const searchParams = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== "") {
+      searchParams.set(key, String(value));
+    }
+  }
+  const queryString = searchParams.toString();
+  return queryString ? `${basePath}?${queryString}` : basePath;
 }
 
 export async function apiRequest(
@@ -45,7 +58,18 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    let url: string;
+    
+    if (queryKey.length === 1) {
+      url = queryKey[0] as string;
+    } else if (queryKey.length === 2 && typeof queryKey[1] === "object" && queryKey[1] !== null) {
+      url = buildQueryUrl(queryKey[0] as string, queryKey[1] as Record<string, any>);
+    } else {
+      const pathParts = queryKey.filter(part => typeof part === "string");
+      url = pathParts.join("/");
+    }
+    
+    const res = await fetch(url, {
       headers: getRBACHeaders(),
       credentials: "include",
     });

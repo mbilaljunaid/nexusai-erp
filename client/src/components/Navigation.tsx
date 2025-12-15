@@ -143,85 +143,87 @@ export function Header() {
 
               {docsOpen && (
                 <div
-                  className="absolute left-0 top-full pt-1 w-64"
+                  className="absolute left-0 top-full pt-1 w-72"
                 >
                   <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2">
+                  <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Official Documentation</p>
+
                   <Link to="/docs/process-flows" className="block">
-                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
                       <Compass className="w-4 h-4 text-blue-400" />
                       <div>
                         <div className="font-semibold text-sm text-slate-100">Process Flows</div>
-                        <div className="text-xs text-slate-400">All 18 end-to-end processes</div>
-                      </div>
-                    </div>
-                  </Link>
-
-                  <Link to="/docs/training-guides" className="block">
-                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <BookOpen className="w-4 h-4 text-green-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">Training Guides</div>
-                        <div className="text-xs text-slate-400">Module training materials</div>
-                      </div>
-                    </div>
-                  </Link>
-
-                  <Link to="/docs/technical" className="block">
-                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <Code2 className="w-4 h-4 text-purple-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">Technical Docs</div>
-                        <div className="text-xs text-slate-400">API & developer guides</div>
+                        <div className="text-xs text-slate-400">All 18 end-to-end business processes</div>
                       </div>
                     </div>
                   </Link>
 
                   <Link to="/docs/implementation" className="block">
-                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
                       <Zap className="w-4 h-4 text-orange-400" />
                       <div>
-                        <div className="font-semibold text-sm text-slate-100">Implementation</div>
-                        <div className="text-xs text-slate-400">Go-live preparation</div>
+                        <div className="font-semibold text-sm text-slate-100">Implementation Playbooks</div>
+                        <div className="text-xs text-slate-400">Go-live preparation & best practices</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link to="/docs/technical" className="block">
+                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <Code2 className="w-4 h-4 text-purple-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">Technical Reference</div>
+                        <div className="text-xs text-slate-400">API specs & developer documentation</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link to="/docs/governance" className="block">
+                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                      <BookOpen className="w-4 h-4 text-green-400" />
+                      <div>
+                        <div className="font-semibold text-sm text-slate-100">Governance Policies</div>
+                        <div className="text-xs text-slate-400">Compliance & security standards</div>
                       </div>
                     </div>
                   </Link>
 
                   <div className="border-t border-slate-600 mt-1 pt-1">
-                    <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Community Content</p>
+                    <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Community Academy</p>
                   </div>
 
                   <Link to="/training/videos" className="block">
-                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
                       <Video className="w-4 h-4 text-red-400" />
                       <div>
-                        <div className="font-semibold text-sm text-slate-100">Training Videos</div>
-                        <div className="text-xs text-slate-400">Community video tutorials</div>
+                        <div className="font-semibold text-sm text-slate-100">Video Tutorials</div>
+                        <div className="text-xs text-slate-400">Community-contributed video guides</div>
                       </div>
                     </div>
                   </Link>
 
                   <Link to="/training/apis" className="block">
-                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
                       <FileCode2 className="w-4 h-4 text-cyan-400" />
                       <div>
-                        <div className="font-semibold text-sm text-slate-100">APIs & Integrations</div>
-                        <div className="text-xs text-slate-400">API documentation & samples</div>
+                        <div className="font-semibold text-sm text-slate-100">API & Integrations</div>
+                        <div className="text-xs text-slate-400">Sample code & integration guides</div>
                       </div>
                     </div>
                   </Link>
 
                   <Link to="/training/guides" className="block">
-                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
                       <FileText className="w-4 h-4 text-yellow-400" />
                       <div>
                         <div className="font-semibold text-sm text-slate-100">User Guides</div>
-                        <div className="text-xs text-slate-400">Step-by-step tutorials</div>
+                        <div className="text-xs text-slate-400">Step-by-step how-to tutorials</div>
                       </div>
                     </div>
                   </Link>
 
                   <Link to="/training/materials" className="block">
-                    <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
                       <FolderOpen className="w-4 h-4 text-emerald-400" />
                       <div>
                         <div className="font-semibold text-sm text-slate-100">Training Materials</div>

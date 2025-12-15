@@ -77,11 +77,30 @@ export default function TrainingContentAdmin() {
   const { toast } = useToast();
 
   const { data: resourcesData, isLoading: resourcesLoading } = useQuery<{ resources: TrainingResource[]; counts: Record<string, number> }>({
-    queryKey: ["/api/admin/training", { status: statusFilter, type: typeFilter }],
+    queryKey: ["/api/admin/training", statusFilter, typeFilter],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (statusFilter && statusFilter !== "all") params.set("status", statusFilter);
+      if (typeFilter && typeFilter !== "all") params.set("type", typeFilter);
+      const res = await fetch(`/api/admin/training?${params.toString()}`, {
+        headers: { "x-tenant-id": "tenant1", "x-user-id": "user1", "x-user-role": "admin" },
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
   });
 
   const { data: filterRequests, isLoading: filtersLoading } = useQuery<FilterRequest[]>({
-    queryKey: ["/api/admin/training/filter-requests", { status: "pending" }],
+    queryKey: ["/api/admin/training/filter-requests", "pending"],
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/training/filter-requests?status=pending`, {
+        headers: { "x-tenant-id": "tenant1", "x-user-id": "user1", "x-user-role": "admin" },
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
   });
 
   const updateResourceMutation = useMutation({
