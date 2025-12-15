@@ -4118,5 +4118,339 @@ Be fair and consider context. Not all controversial content is harmful.`
     }
   });
 
+  // ========== SERVICE MARKETPLACE - JOB POSTINGS API ==========
+
+  // GET /api/community/marketplace/jobs - List job postings with filters
+  app.get("/api/community/marketplace/jobs", async (req, res) => {
+    try {
+      const { status, categoryId, limit = "20", offset = "0" } = req.query;
+      const limitNum = Math.min(parseInt(limit as string) || 20, 100);
+      const offsetNum = parseInt(offset as string) || 0;
+
+      let result;
+      if (status && categoryId) {
+        result = await db.execute(sql`
+          SELECT jp.*, 
+                 u.name as buyer_name, 
+                 sc.name as category_name,
+                 (SELECT COUNT(*) FROM job_proposals WHERE job_posting_id = jp.id) as proposal_count
+          FROM job_postings jp
+          LEFT JOIN users u ON jp.buyer_id = u.id
+          LEFT JOIN service_categories sc ON jp.category_id = sc.id
+          WHERE jp.status = ${status} AND jp.category_id = ${categoryId}
+          ORDER BY jp.created_at DESC
+          LIMIT ${limitNum} OFFSET ${offsetNum}
+        `);
+      } else if (status) {
+        result = await db.execute(sql`
+          SELECT jp.*, 
+                 u.name as buyer_name, 
+                 sc.name as category_name,
+                 (SELECT COUNT(*) FROM job_proposals WHERE job_posting_id = jp.id) as proposal_count
+          FROM job_postings jp
+          LEFT JOIN users u ON jp.buyer_id = u.id
+          LEFT JOIN service_categories sc ON jp.category_id = sc.id
+          WHERE jp.status = ${status}
+          ORDER BY jp.created_at DESC
+          LIMIT ${limitNum} OFFSET ${offsetNum}
+        `);
+      } else if (categoryId) {
+        result = await db.execute(sql`
+          SELECT jp.*, 
+                 u.name as buyer_name, 
+                 sc.name as category_name,
+                 (SELECT COUNT(*) FROM job_proposals WHERE job_posting_id = jp.id) as proposal_count
+          FROM job_postings jp
+          LEFT JOIN users u ON jp.buyer_id = u.id
+          LEFT JOIN service_categories sc ON jp.category_id = sc.id
+          WHERE jp.category_id = ${categoryId}
+          ORDER BY jp.created_at DESC
+          LIMIT ${limitNum} OFFSET ${offsetNum}
+        `);
+      } else {
+        result = await db.execute(sql`
+          SELECT jp.*, 
+                 u.name as buyer_name, 
+                 sc.name as category_name,
+                 (SELECT COUNT(*) FROM job_proposals WHERE job_posting_id = jp.id) as proposal_count
+          FROM job_postings jp
+          LEFT JOIN users u ON jp.buyer_id = u.id
+          LEFT JOIN service_categories sc ON jp.category_id = sc.id
+          ORDER BY jp.created_at DESC
+          LIMIT ${limitNum} OFFSET ${offsetNum}
+        `);
+      }
+
+      res.json(result.rows || []);
+    } catch (error: any) {
+      console.error("Error fetching job postings:", error);
+      res.status(500).json({ error: "Failed to fetch job postings" });
+    }
+  });
+
+  // GET /api/community/marketplace/jobs/:id - Get job posting details with proposals
+  app.get("/api/community/marketplace/jobs/:id", async (req, res) => {
+    try {
+      const jobResult = await db.execute(sql`
+        SELECT jp.*, 
+               u.name as buyer_name,
+               sc.name as category_name
+        FROM job_postings jp
+        LEFT JOIN users u ON jp.buyer_id = u.id
+        LEFT JOIN service_categories sc ON jp.category_id = sc.id
+        WHERE jp.id = ${req.params.id}
+      `);
+
+      if (!jobResult.rows || jobResult.rows.length === 0) {
+        return res.status(404).json({ error: "Job posting not found" });
+      }
+
+      const proposalsResult = await db.execute(sql`
+        SELECT jpr.*, 
+               u.name as provider_name
+        FROM job_proposals jpr
+        LEFT JOIN users u ON jpr.provider_id = u.id
+        WHERE jpr.job_posting_id = ${req.params.id}
+        ORDER BY jpr.created_at DESC
+      `);
+
+      res.json({
+        ...jobResult.rows[0],
+        proposals: proposalsResult.rows || []
+      });
+    } catch (error: any) {
+      console.error("Error fetching job posting:", error);
+      res.status(500).json({ error: "Failed to fetch job posting" });
+    }
+  });
+
+  // POST /api/community/marketplace/jobs - Create job posting
+  app.post("/api/community/marketplace/jobs", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const { title, description, requirements, categoryId, budgetMin, budgetMax, deadline, skills } = req.body;
+      if (!title || !description || !categoryId) {
+        return res.status(400).json({ error: "Title, description, and category are required" });
+      }
+
+      const id = `job-${Date.now()}`;
+      const result = await db.execute(sql`
+        INSERT INTO job_postings (id, buyer_id, category_id, title, description, requirements, budget_min, budget_max, deadline, skills, status, created_at, updated_at)
+        VALUES (${id}, ${userId}, ${categoryId}, ${title}, ${description}, ${requirements || null}, ${budgetMin || null}, ${budgetMax || null}, ${deadline || null}, ${skills || null}, 'open', NOW(), NOW())
+        RETURNING *
+      `);
+
+      res.status(201).json(result.rows?.[0] || {});
+    } catch (error: any) {
+      console.error("Error creating job posting:", error);
+      res.status(500).json({ error: "Failed to create job posting" });
+    }
+  });
+
+  // PATCH /api/community/marketplace/jobs/:id - Update job posting
+  app.patch("/api/community/marketplace/jobs/:id", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const jobResult = await db.execute(sql`SELECT * FROM job_postings WHERE id = ${req.params.id}`);
+      if (!jobResult.rows || jobResult.rows.length === 0) {
+        return res.status(404).json({ error: "Job posting not found" });
+      }
+
+      const job = jobResult.rows[0] as any;
+      if (job.buyer_id !== userId) {
+        return res.status(403).json({ error: "Only the job poster can update" });
+      }
+
+      const { status, title, description, requirements, budgetMin, budgetMax, deadline } = req.body;
+      const result = await db.execute(sql`
+        UPDATE job_postings 
+        SET status = COALESCE(${status}, status),
+            title = COALESCE(${title}, title),
+            description = COALESCE(${description}, description),
+            requirements = COALESCE(${requirements}, requirements),
+            budget_min = COALESCE(${budgetMin}, budget_min),
+            budget_max = COALESCE(${budgetMax}, budget_max),
+            deadline = COALESCE(${deadline}, deadline),
+            updated_at = NOW()
+        WHERE id = ${req.params.id}
+        RETURNING *
+      `);
+
+      res.json(result.rows?.[0] || {});
+    } catch (error: any) {
+      console.error("Error updating job posting:", error);
+      res.status(500).json({ error: "Failed to update job posting" });
+    }
+  });
+
+  // ========== SERVICE MARKETPLACE - JOB PROPOSALS API ==========
+
+  // GET /api/community/marketplace/jobs/:jobId/proposals - List proposals for a job
+  app.get("/api/community/marketplace/jobs/:jobId/proposals", async (req, res) => {
+    try {
+      const result = await db.execute(sql`
+        SELECT jpr.*, 
+               u.name as provider_name
+        FROM job_proposals jpr
+        LEFT JOIN users u ON jpr.provider_id = u.id
+        WHERE jpr.job_posting_id = ${req.params.jobId}
+        ORDER BY jpr.created_at DESC
+      `);
+
+      res.json(result.rows || []);
+    } catch (error: any) {
+      console.error("Error fetching proposals:", error);
+      res.status(500).json({ error: "Failed to fetch proposals" });
+    }
+  });
+
+  // POST /api/community/marketplace/jobs/:jobId/proposals - Submit proposal
+  app.post("/api/community/marketplace/jobs/:jobId/proposals", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      // Check if user has trust level >= 3
+      const [trust] = await db.select().from(userTrustLevels).where(eq(userTrustLevels.userId, userId));
+      if (!trust || (trust.trustLevel || 0) < 3) {
+        return res.status(403).json({ error: "Trust level 3 or higher required to submit proposals" });
+      }
+
+      const jobResult = await db.execute(sql`SELECT * FROM job_postings WHERE id = ${req.params.jobId}`);
+      if (!jobResult.rows || jobResult.rows.length === 0) {
+        return res.status(404).json({ error: "Job posting not found" });
+      }
+
+      const job = jobResult.rows[0] as any;
+      if (job.status !== "open") {
+        return res.status(400).json({ error: "Job is not accepting proposals" });
+      }
+
+      const { proposalMessage, bidAmount, estimatedDeliveryDays, packageId } = req.body;
+      if (!proposalMessage || !bidAmount) {
+        return res.status(400).json({ error: "Proposal message and bid amount are required" });
+      }
+
+      const id = `prop-${Date.now()}`;
+      const result = await db.execute(sql`
+        INSERT INTO job_proposals (id, job_posting_id, provider_id, package_id, proposal_message, bid_amount, estimated_delivery_days, status, created_at, updated_at)
+        VALUES (${id}, ${req.params.jobId}, ${userId}, ${packageId || null}, ${proposalMessage}, ${bidAmount}, ${estimatedDeliveryDays || null}, 'pending', NOW(), NOW())
+        RETURNING *
+      `);
+
+      res.status(201).json(result.rows?.[0] || {});
+    } catch (error: any) {
+      console.error("Error submitting proposal:", error);
+      res.status(500).json({ error: "Failed to submit proposal" });
+    }
+  });
+
+  // PATCH /api/community/marketplace/proposals/:id - Update proposal status (buyer accepts/rejects)
+  app.patch("/api/community/marketplace/proposals/:id", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const proposalResult = await db.execute(sql`SELECT jpr.*, jp.buyer_id FROM job_proposals jpr JOIN job_postings jp ON jpr.job_posting_id = jp.id WHERE jpr.id = ${req.params.id}`);
+      if (!proposalResult.rows || proposalResult.rows.length === 0) {
+        return res.status(404).json({ error: "Proposal not found" });
+      }
+
+      const proposal = proposalResult.rows[0] as any;
+      const { status } = req.body;
+
+      // Validate status is one of allowed values
+      const allowedStatuses = ["accepted", "rejected", "shortlisted", "withdrawn"];
+      if (!status || !allowedStatuses.includes(status)) {
+        return res.status(400).json({ error: "Invalid status. Must be one of: accepted, rejected, shortlisted, withdrawn" });
+      }
+
+      // Authorization: Buyer can accept/reject/shortlist, provider can withdraw
+      if (["accepted", "rejected", "shortlisted"].includes(status)) {
+        if (proposal.buyer_id !== userId) {
+          return res.status(403).json({ error: "Only job poster can accept/reject proposals" });
+        }
+      }
+      if (status === "withdrawn") {
+        if (proposal.provider_id !== userId) {
+          return res.status(403).json({ error: "Only proposal author can withdraw" });
+        }
+      }
+
+      const result = await db.execute(sql`
+        UPDATE job_proposals 
+        SET status = ${status}, updated_at = NOW()
+        WHERE id = ${req.params.id}
+        RETURNING *
+      `);
+
+      // If proposal is accepted, update job status to in_progress
+      if (status === "accepted") {
+        await db.execute(sql`
+          UPDATE job_postings 
+          SET status = 'in_progress', updated_at = NOW()
+          WHERE id = ${proposal.job_posting_id}
+        `);
+      }
+
+      res.json(result.rows?.[0] || {});
+    } catch (error: any) {
+      console.error("Error updating proposal:", error);
+      res.status(500).json({ error: "Failed to update proposal" });
+    }
+  });
+
+  // GET /api/community/marketplace/my-proposals - Get current user's submitted proposals
+  app.get("/api/community/marketplace/my-proposals", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const result = await db.execute(sql`
+        SELECT jpr.*, 
+               jp.title as job_title,
+               jp.status as job_status,
+               u.name as buyer_name
+        FROM job_proposals jpr
+        JOIN job_postings jp ON jpr.job_posting_id = jp.id
+        LEFT JOIN users u ON jp.buyer_id = u.id
+        WHERE jpr.provider_id = ${userId}
+        ORDER BY jpr.created_at DESC
+      `);
+
+      res.json(result.rows || []);
+    } catch (error: any) {
+      console.error("Error fetching user proposals:", error);
+      res.status(500).json({ error: "Failed to fetch proposals" });
+    }
+  });
+
+  // GET /api/community/marketplace/my-jobs - Get current user's posted jobs
+  app.get("/api/community/marketplace/my-jobs", isPlatformAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.userId;
+      if (!userId) return res.status(401).json({ error: "User not authenticated" });
+
+      const result = await db.execute(sql`
+        SELECT jp.*, 
+               sc.name as category_name,
+               (SELECT COUNT(*) FROM job_proposals WHERE job_posting_id = jp.id) as proposal_count
+        FROM job_postings jp
+        LEFT JOIN service_categories sc ON jp.category_id = sc.id
+        WHERE jp.buyer_id = ${userId}
+        ORDER BY jp.created_at DESC
+      `);
+
+      res.json(result.rows || []);
+    } catch (error: any) {
+      console.error("Error fetching user jobs:", error);
+      res.status(500).json({ error: "Failed to fetch jobs" });
+    }
+  });
+
   return httpServer;
 }
