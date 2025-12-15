@@ -3496,6 +3496,460 @@ export async function registerRoutes(
     }
   });
 
+  // ========== COMMUNITY DISCUSSION SEEDING API ==========
+
+  // POST /api/community/seed-discussions - Seed realistic community discussions (admin only)
+  app.post("/api/community/seed-discussions", isPlatformAuthenticated, async (req: any, res) => {
+    const userId = req.user?.id || req.userId;
+    if (!userId) return res.status(401).json({ error: "Authentication required" });
+
+    try {
+      // Probability helper functions
+      const weightedRandom = (weights: number[]): number => {
+        const total = weights.reduce((a, b) => a + b, 0);
+        let random = Math.random() * total;
+        for (let i = 0; i < weights.length; i++) {
+          random -= weights[i];
+          if (random <= 0) return i;
+        }
+        return weights.length - 1;
+      };
+
+      const getReplyCount = (): number => {
+        const choice = weightedRandom([5, 40, 35, 15]); // 0, 1-3, 4-10, 11-25
+        switch (choice) {
+          case 0: return 0;
+          case 1: return 1 + Math.floor(Math.random() * 3);
+          case 2: return 4 + Math.floor(Math.random() * 7);
+          case 3: return 11 + Math.floor(Math.random() * 15);
+          default: return 2;
+        }
+      };
+
+      const getNestedReplyCount = (): number => {
+        const choice = weightedRandom([40, 45, 15]); // 0, 1-2, 3-5
+        switch (choice) {
+          case 0: return 0;
+          case 1: return 1 + Math.floor(Math.random() * 2);
+          case 2: return 3 + Math.floor(Math.random() * 3);
+          default: return 0;
+        }
+      };
+
+      const getUpvotes = (isHighRep: boolean): number => {
+        const weights = isHighRep ? [10, 40, 30, 20] : [20, 50, 20, 10];
+        const choice = weightedRandom(weights);
+        switch (choice) {
+          case 0: return 0;
+          case 1: return 1 + Math.floor(Math.random() * 3);
+          case 2: return 4 + Math.floor(Math.random() * 7);
+          case 3: return 10 + Math.floor(Math.random() * 15);
+          default: return 1;
+        }
+      };
+
+      const getTimestamp = (startDate: Date, endDate: Date, period: 'early' | 'middle' | 'recent'): Date => {
+        const earlyEnd = new Date('2022-09-30');
+        const middleEnd = new Date('2023-12-31');
+        let start: Date, end: Date;
+        
+        if (period === 'early') {
+          start = startDate;
+          end = earlyEnd;
+        } else if (period === 'middle') {
+          start = new Date('2022-10-01');
+          end = middleEnd;
+        } else {
+          start = new Date('2024-01-01');
+          end = endDate;
+        }
+        
+        const timezoneOffsets = [-8, -5, 0, 1, 5.5, 8, 10]; // PST, EST, GMT, CET, IST, CST, AEST
+        const tzOffset = timezoneOffsets[Math.floor(Math.random() * timezoneOffsets.length)] * 60 * 60 * 1000;
+        
+        const timestamp = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+        timestamp.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60), Math.floor(Math.random() * 60));
+        return timestamp;
+      };
+
+      const getReplyTimestamp = (postDate: Date): Date => {
+        const choice = weightedRandom([30, 40, 20, 10]); // immediate, 1-7 days, 8-30 days, 1+ months
+        let delay: number;
+        switch (choice) {
+          case 0: delay = Math.random() * 24 * 60 * 60 * 1000; break; // 0-24 hours
+          case 1: delay = (1 + Math.random() * 6) * 24 * 60 * 60 * 1000; break; // 1-7 days
+          case 2: delay = (8 + Math.random() * 22) * 24 * 60 * 60 * 1000; break; // 8-30 days
+          case 3: delay = (30 + Math.random() * 60) * 24 * 60 * 60 * 1000; break; // 1-3 months
+          default: delay = 24 * 60 * 60 * 1000;
+        }
+        return new Date(postDate.getTime() + delay);
+      };
+
+      // Fetch existing community spaces
+      const spaces = await db.select().from(communitySpaces).where(eq(communitySpaces.isActive, true));
+      if (spaces.length === 0) {
+        return res.status(400).json({ error: "No active community spaces found" });
+      }
+
+      // Create contributor users with varying reputations
+      const contributorProfiles = [
+        { name: "Priya Sharma", location: "India", expertise: ["ERP Implementation", "Financial Modules"], isHighRep: true },
+        { name: "James Wilson", location: "USA", expertise: ["Integration", "API Development"], isHighRep: true },
+        { name: "Chen Wei", location: "Singapore", expertise: ["Manufacturing", "Supply Chain"], isHighRep: true },
+        { name: "Sarah Johnson", location: "UK", expertise: ["HR & Payroll", "Compliance"], isHighRep: true },
+        { name: "Ahmed Hassan", location: "Pakistan", expertise: ["Form Builder", "Customization"], isHighRep: true },
+        { name: "Maria Garcia", location: "Canada", expertise: ["Training", "Documentation"], isHighRep: false },
+        { name: "David Kim", location: "Australia", expertise: ["Analytics", "Reporting"], isHighRep: false },
+        { name: "Lisa Chen", location: "USA", expertise: ["User Experience", "Workflows"], isHighRep: false },
+        { name: "Mohammed Al-Rashid", location: "UAE", expertise: ["Multi-currency", "Localization"], isHighRep: false },
+        { name: "Emma Thompson", location: "UK", expertise: ["Project Management", "Agile"], isHighRep: false },
+        { name: "Raj Patel", location: "India", expertise: ["Database", "Performance"], isHighRep: true },
+        { name: "Jennifer Lee", location: "USA", expertise: ["Security", "Audit"], isHighRep: false },
+        { name: "Carlos Rodriguez", location: "Mexico", expertise: ["Construction ERP", "Field Ops"], isHighRep: false },
+        { name: "Fatima Khan", location: "Pakistan", expertise: ["Accounting", "Tax Compliance"], isHighRep: true },
+        { name: "Michael Brown", location: "Canada", expertise: ["CRM", "Sales Pipeline"], isHighRep: false },
+        { name: "Aisha Okonkwo", location: "Nigeria", expertise: ["Inventory", "Warehouse"], isHighRep: false },
+        { name: "Thomas Mueller", location: "Germany", expertise: ["Manufacturing", "Quality"], isHighRep: true },
+        { name: "Yuki Tanaka", location: "Japan", expertise: ["Lean Manufacturing", "Kanban"], isHighRep: false },
+        { name: "Anna Kowalski", location: "Poland", expertise: ["Finance", "Budgeting"], isHighRep: false },
+        { name: "Robert Singh", location: "India", expertise: ["System Admin", "Deployment"], isHighRep: true },
+      ];
+
+      const contributors: { id: string; name: string; isHighRep: boolean }[] = [];
+      for (const profile of contributorProfiles) {
+        const id = `contributor-${profile.name.toLowerCase().replace(/\s/g, '-')}`;
+        const email = `${profile.name.toLowerCase().replace(/\s/g, '.')}@nexusai-community.com`;
+        await db.execute(sql`
+          INSERT INTO users (id, email, name, avatar_url, role, created_at)
+          VALUES (${id}, ${email}, ${profile.name}, ${`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name)}`}, 'member', ${new Date()})
+          ON CONFLICT (email) DO NOTHING
+        `);
+        contributors.push({ id, name: profile.name, isHighRep: profile.isHighRep });
+
+        // Create trust level for high-rep contributors
+        if (profile.isHighRep) {
+          await db.execute(sql`
+            INSERT INTO user_trust_levels (id, user_id, trust_level, total_reputation)
+            VALUES (${`trust-${id}`}, ${id}, ${4 + Math.floor(Math.random() * 2)}, ${2000 + Math.floor(Math.random() * 5000)})
+            ON CONFLICT (user_id) DO UPDATE SET trust_level = EXCLUDED.trust_level, total_reputation = EXCLUDED.total_reputation
+          `);
+        } else {
+          await db.execute(sql`
+            INSERT INTO user_trust_levels (id, user_id, trust_level, total_reputation)
+            VALUES (${`trust-${id}`}, ${id}, ${1 + Math.floor(Math.random() * 2)}, ${100 + Math.floor(Math.random() * 500)})
+            ON CONFLICT (user_id) DO UPDATE SET trust_level = EXCLUDED.trust_level, total_reputation = EXCLUDED.total_reputation
+          `);
+        }
+      }
+
+      // NexusAI-specific discussion templates by space
+      const discussionTemplates: Record<string, { postType: string; title: string; content: string; tags: string[] }[]> = {
+        "core-platform": [
+          { postType: "question", title: "Best practices for multi-tenant configuration in NexusAI?", content: "We're deploying NexusAI for multiple subsidiaries. What's the recommended approach for configuring tenant isolation while allowing shared master data?", tags: ["multi-tenant", "configuration", "best-practices"] },
+          { postType: "discussion", title: "NexusAI performance optimization strategies", content: "Let's discuss proven strategies for optimizing NexusAI performance. We've seen significant improvements after implementing query caching and optimizing our custom reports.", tags: ["performance", "optimization", "caching"] },
+          { postType: "how-to", title: "Complete guide to NexusAI role-based access control", content: "This guide covers everything you need to know about setting up RBAC in NexusAI, from basic role definitions to complex permission inheritance.", tags: ["security", "rbac", "permissions"] },
+          { postType: "question", title: "Migrating from legacy ERP to NexusAI - data mapping challenges", content: "We're migrating from SAP R/3 to NexusAI. Has anyone dealt with complex data mapping scenarios, especially for historical transaction data?", tags: ["migration", "data-mapping", "sap"] },
+          { postType: "discussion", title: "NexusAI v3.2 release discussion - new features and breaking changes", content: "The new release looks promising with the enhanced workflow engine. What are your thoughts on the deprecation of the legacy API endpoints?", tags: ["release", "v3.2", "upgrade"] },
+          { postType: "question", title: "Custom dashboard widgets - best approach for real-time data?", content: "I need to create custom dashboard widgets that display real-time manufacturing KPIs. Should I use WebSocket subscriptions or polling?", tags: ["dashboard", "widgets", "real-time"] },
+          { postType: "how-to", title: "Setting up SSO with Azure AD in NexusAI", content: "Step-by-step guide for configuring Single Sign-On using Azure Active Directory, including group-based role assignment and MFA enforcement.", tags: ["sso", "azure-ad", "authentication"] },
+          { postType: "question", title: "Handling concurrent transaction conflicts in NexusAI", content: "We're experiencing occasional transaction conflicts when multiple users edit the same purchase order. How do others handle optimistic locking scenarios?", tags: ["concurrency", "transactions", "locking"] },
+          { postType: "discussion", title: "NexusAI API rate limiting - impact on integrations", content: "The new rate limiting policy is affecting our high-volume integrations. Let's discuss workarounds and best practices for API-heavy workflows.", tags: ["api", "rate-limiting", "integration"] },
+          { postType: "question", title: "Audit trail configuration for compliance requirements", content: "Our compliance team requires detailed audit trails for all financial transactions. What's the recommended configuration for meeting SOX compliance?", tags: ["audit", "compliance", "sox"] },
+        ],
+        "app-marketplace": [
+          { postType: "show-tell", title: "Introducing NexusConnect - our new integration framework", content: "Excited to share our new integration framework that simplifies connecting NexusAI with external systems. Built-in support for 50+ connectors!", tags: ["integration", "announcement", "showcase"] },
+          { postType: "question", title: "Recommended apps for warehouse barcode scanning?", content: "Looking for recommendations on barcode scanning apps that integrate well with NexusAI's inventory module. Mobile support is essential.", tags: ["warehouse", "barcode", "mobile"] },
+          { postType: "discussion", title: "App certification program - requirements and timeline", content: "For those building apps for the marketplace, let's discuss the certification requirements and typical review timelines.", tags: ["certification", "marketplace", "development"] },
+          { postType: "bug", title: "Shipment Tracker app not syncing with carrier APIs", content: "After the latest NexusAI update, the Shipment Tracker app stopped syncing with UPS and FedEx APIs. Anyone else experiencing this?", tags: ["bug", "shipping", "api-sync"] },
+          { postType: "feature", title: "Request: Native Slack integration for NexusAI notifications", content: "It would be great to have a native Slack integration for workflow notifications. Currently using Zapier but a direct integration would be more reliable.", tags: ["feature-request", "slack", "notifications"] },
+          { postType: "question", title: "Best document management app for NexusAI?", content: "We need to attach and manage documents across multiple modules. What document management apps have you found work best?", tags: ["documents", "dms", "apps"] },
+          { postType: "show-tell", title: "AI-powered expense categorization plugin", content: "Just released our ML-powered expense categorization plugin. It learns from your historical data and auto-categorizes with 95%+ accuracy.", tags: ["ai", "expense", "automation"] },
+          { postType: "discussion", title: "API versioning concerns for marketplace apps", content: "With the upcoming API changes, how are other app developers handling backward compatibility? Share your strategies.", tags: ["api", "versioning", "compatibility"] },
+        ],
+        "form-builder": [
+          { postType: "question", title: "Conditional logic for complex approval workflows", content: "I need to create a form where approval routing changes based on multiple conditions (amount, department, project type). How can I implement this in Form Builder?", tags: ["conditional-logic", "approval", "workflow"] },
+          { postType: "how-to", title: "Creating multi-page forms with progress indicators", content: "Learn how to split complex forms into multiple pages with a visual progress indicator and section navigation.", tags: ["multi-page", "ux", "forms"] },
+          { postType: "bug", title: "Form validation not working on mobile devices", content: "Custom validation rules work on desktop but fail on mobile browsers. The error messages don't display correctly on iOS Safari.", tags: ["bug", "mobile", "validation"] },
+          { postType: "question", title: "Integrating external data sources in dropdown fields", content: "How can I populate a dropdown with data from an external API? Need to show customer data from our legacy CRM.", tags: ["integration", "dropdown", "external-data"] },
+          { postType: "discussion", title: "Form Builder performance with large datasets", content: "We're experiencing slowdowns when forms load large reference datasets. What optimization techniques have worked for you?", tags: ["performance", "optimization", "datasets"] },
+          { postType: "how-to", title: "Building dynamic repeating sections in forms", content: "Complete guide to creating repeating sections that allow users to add multiple line items with calculations.", tags: ["repeating", "dynamic", "calculations"] },
+        ],
+        "integrations": [
+          { postType: "question", title: "REST API authentication best practices", content: "What's the recommended approach for authenticating external systems with NexusAI's REST API? We need to support both service accounts and user-delegated access.", tags: ["api", "authentication", "security"] },
+          { postType: "how-to", title: "Setting up bi-directional sync with Salesforce", content: "Step-by-step guide for configuring real-time bi-directional synchronization between NexusAI CRM and Salesforce.", tags: ["salesforce", "sync", "crm"] },
+          { postType: "bug", title: "Webhook delivery failures after firewall update", content: "Our webhooks stopped working after a firewall update. The NexusAI webhook IP addresses don't match the documentation.", tags: ["webhook", "firewall", "networking"] },
+          { postType: "question", title: "EDI integration options for supply chain partners", content: "We need to set up EDI with our major suppliers. What EDI solutions integrate best with NexusAI's procurement module?", tags: ["edi", "supply-chain", "procurement"] },
+          { postType: "feature", title: "Request: Native GraphQL API support", content: "REST is fine but GraphQL would make frontend integration much more efficient. Requesting native GraphQL endpoint support.", tags: ["graphql", "api", "feature-request"] },
+          { postType: "discussion", title: "Integration patterns for high-volume data sync", content: "Let's discuss proven patterns for syncing millions of records between NexusAI and data warehouses without impacting production performance.", tags: ["data-sync", "patterns", "warehouse"] },
+          { postType: "how-to", title: "Configuring OAuth 2.0 for third-party integrations", content: "Complete guide to setting up OAuth 2.0 authentication for external applications accessing NexusAI APIs.", tags: ["oauth", "security", "api"] },
+          { postType: "question", title: "Power BI connector connection timeout issues", content: "The Power BI connector times out when querying large datasets. Has anyone configured it successfully for tables with 10M+ rows?", tags: ["power-bi", "reporting", "timeout"] },
+        ],
+        "accounting-finance": [
+          { postType: "question", title: "Multi-currency revaluation process questions", content: "We operate in 12 currencies. What's the recommended approach for month-end currency revaluation in NexusAI?", tags: ["multi-currency", "revaluation", "month-end"] },
+          { postType: "how-to", title: "Configuring automated bank reconciliation", content: "This guide covers setting up automated bank reconciliation with matching rules, exception handling, and approval workflows.", tags: ["bank-reconciliation", "automation", "treasury"] },
+          { postType: "question", title: "Intercompany accounting setup for complex hierarchies", content: "We have a complex corporate structure with multiple holding companies. How do you set up intercompany elimination rules in NexusAI?", tags: ["intercompany", "consolidation", "corporate"] },
+          { postType: "discussion", title: "Revenue recognition under ASC 606 in NexusAI", content: "Let's discuss how others are implementing ASC 606 revenue recognition requirements. What configurations are you using for performance obligations?", tags: ["revenue-recognition", "asc-606", "compliance"] },
+          { postType: "question", title: "Fixed asset depreciation methods comparison", content: "NexusAI supports multiple depreciation methods. Which ones have you found most practical for tax vs. book accounting?", tags: ["fixed-assets", "depreciation", "tax"] },
+          { postType: "how-to", title: "Setting up expense approval workflows by amount threshold", content: "Learn how to configure tiered expense approval workflows where different approvers are routed based on expense amount.", tags: ["expense", "approval", "workflow"] },
+        ],
+        "construction-erp": [
+          { postType: "question", title: "Project cost tracking with WBS integration", content: "How are other construction companies integrating their WBS structures with NexusAI's cost tracking? We need to track costs at the activity level.", tags: ["wbs", "cost-tracking", "project"] },
+          { postType: "discussion", title: "Field data collection best practices", content: "What mobile solutions are you using for field data collection (timesheets, equipment logs, daily reports) that sync with NexusAI?", tags: ["mobile", "field-data", "timesheets"] },
+          { postType: "how-to", title: "Setting up progress billing with AIA G702/G703 forms", content: "Complete guide to configuring progress billing for construction projects using industry-standard AIA forms.", tags: ["billing", "aia", "progress-billing"] },
+          { postType: "question", title: "Change order management workflow questions", content: "We're struggling with change order workflow bottlenecks. How do you handle the approval chain for change orders in NexusAI?", tags: ["change-orders", "workflow", "approvals"] },
+          { postType: "feature", title: "Request: BIM integration for quantity takeoff", content: "Would be great to have native BIM integration for automated quantity takeoff from Revit/AutoCAD models.", tags: ["bim", "quantity-takeoff", "feature-request"] },
+        ],
+        "bugs-issues": [
+          { postType: "bug", title: "Report export to Excel failing for large datasets", content: "When exporting reports with more than 100K rows to Excel, the export fails with a timeout error. Browser console shows memory issues.", tags: ["export", "excel", "timeout", "critical"] },
+          { postType: "bug", title: "Dashboard widgets not refreshing automatically", content: "Dashboard widgets set to auto-refresh every 5 minutes are not updating. Manual refresh works fine.", tags: ["dashboard", "refresh", "widgets"] },
+          { postType: "bug", title: "Date picker showing wrong timezone for international users", content: "Users in different timezones see incorrect dates. A transaction entered on Dec 15 in Tokyo shows as Dec 14 in reports.", tags: ["timezone", "date", "international"] },
+          { postType: "bug", title: "Workflow notifications not being sent for delegated approvals", content: "When an approver delegates their authority, the delegate doesn't receive notification emails for pending items.", tags: ["workflow", "notifications", "delegation"] },
+          { postType: "bug", title: "Search function returning duplicate results", content: "Global search sometimes returns the same record multiple times. Seems related to records with special characters.", tags: ["search", "duplicates", "character-encoding"] },
+        ],
+        "feature-requests": [
+          { postType: "feature", title: "AI-powered anomaly detection for financial transactions", content: "Request: ML-based anomaly detection that flags unusual transactions for review. Similar to what's available in banking fraud detection.", tags: ["ai", "anomaly-detection", "finance"] },
+          { postType: "feature", title: "Bulk action support for approval queues", content: "Would save hours if we could approve/reject multiple items at once. Currently we have to process each approval individually.", tags: ["bulk-actions", "approvals", "productivity"] },
+          { postType: "feature", title: "Custom keyboard shortcuts for power users", content: "Allow users to define custom keyboard shortcuts for frequently used actions. Would significantly speed up data entry.", tags: ["keyboard", "shortcuts", "ux"] },
+          { postType: "feature", title: "Scheduled report delivery to external email addresses", content: "Need ability to schedule report delivery to external stakeholders (auditors, board members) without giving them system access.", tags: ["reports", "scheduling", "email"] },
+          { postType: "feature", title: "Kanban view for project task management", content: "The list view for project tasks is limiting. A Kanban board view would help visualize workflow and bottlenecks.", tags: ["kanban", "projects", "visualization"] },
+        ],
+        "training-learning": [
+          { postType: "discussion", title: "Training program for new NexusAI administrators", content: "We're onboarding new system admins. What training approach has worked best for your organization?", tags: ["training", "admin", "onboarding"] },
+          { postType: "how-to", title: "Creating effective end-user training materials", content: "Tips and templates for creating role-based training materials that actually get used.", tags: ["training", "materials", "end-users"] },
+          { postType: "show-tell", title: "Our NexusAI certification program journey", content: "Sharing our experience going through the NexusAI certification program. Tips on preparation and what to expect.", tags: ["certification", "learning", "career"] },
+          { postType: "discussion", title: "Video tutorials vs. live training - what works better?", content: "We're debating between video-based training and live sessions. What's your experience with each approach?", tags: ["video", "training", "methodology"] },
+        ],
+        "general-discussion": [
+          { postType: "discussion", title: "NexusAI community meetup planning - 2024", content: "Interest check for an in-person NexusAI user community meetup. Would love to connect with fellow users and share experiences.", tags: ["community", "meetup", "networking"] },
+          { postType: "announcement", title: "Welcome new community members - December 2023", content: "Let's welcome all new members who joined this month! Introduce yourself and tell us about your NexusAI journey.", tags: ["welcome", "community", "introductions"] },
+          { postType: "discussion", title: "How has NexusAI transformed your business operations?", content: "Share your success stories! How has implementing NexusAI changed your day-to-day operations?", tags: ["success-stories", "roi", "transformation"] },
+          { postType: "show-tell", title: "Creative customizations we've built in NexusAI", content: "Showcasing some of the creative customizations we've implemented. Would love to see what others have built!", tags: ["customization", "showcase", "inspiration"] },
+        ],
+      };
+
+      // Reply templates for different scenarios
+      const replyTemplates = {
+        helpful: [
+          "Great question! We faced similar challenges. Here's what worked for us: {detail}",
+          "I've dealt with this before. The key is to {detail}",
+          "This is a common issue. The solution that worked for our team was {detail}",
+          "We implemented something similar. You'll want to {detail}",
+          "Based on our experience, I'd recommend {detail}",
+        ],
+        clarification: [
+          "Could you provide more details about your specific configuration?",
+          "What version of NexusAI are you running? The approach might differ.",
+          "Are you using the cloud or on-premise deployment?",
+          "How large is your dataset? That might affect the recommended approach.",
+          "Is this for a specific module or across the entire platform?",
+        ],
+        thanks: [
+          "Thanks for sharing this! Very helpful for our implementation.",
+          "Appreciate the detailed explanation. This solved our issue.",
+          "This is exactly what I was looking for. Thanks!",
+          "Great solution! We'll be implementing this next week.",
+          "Perfect, this worked for us. Thank you!",
+        ],
+        alternative: [
+          "Another approach to consider is {detail}",
+          "We tried a different method: {detail}",
+          "Have you also looked at {detail}? It might be more efficient.",
+          "An alternative that worked for us was {detail}",
+          "You might also want to explore {detail}",
+        ],
+        authorReply: [
+          "Thanks everyone for the helpful responses! {detail}",
+          "Update: We implemented the suggested solution and {detail}",
+          "To clarify my original question: {detail}",
+          "Following up on this - {detail}",
+          "Great feedback! Quick follow-up question: {detail}",
+        ],
+      };
+
+      const details = [
+        "checking the system configuration in Admin > Settings > Advanced Options",
+        "using batch processing for large datasets to avoid timeout issues",
+        "creating a custom workflow rule that triggers on specific conditions",
+        "configuring the API connection with proper authentication tokens",
+        "running the data validation script before importing",
+        "adjusting the memory allocation in server configuration",
+        "implementing proper error handling in custom scripts",
+        "using the built-in retry mechanism for external integrations",
+        "setting up proper indexing on frequently queried fields",
+        "leveraging the caching layer for frequently accessed data",
+        "it reduced our processing time by 60%",
+        "it now handles our 500K+ transactions smoothly",
+        "our team productivity improved significantly",
+        "the issue is related to the permission settings",
+        "a custom API endpoint would help here",
+      ];
+
+      const startDate = new Date('2022-04-01');
+      const endDate = new Date();
+      
+      let postsCreated = 0;
+      let commentsCreated = 0;
+      let votesCreated = 0;
+
+      // Generate discussions for each space
+      for (const space of spaces) {
+        const spaceSlug = space.slug;
+        const templates = discussionTemplates[spaceSlug] || discussionTemplates["general-discussion"];
+        
+        // Number of posts per space based on activity level
+        const postCounts: Record<string, number> = {
+          "core-platform": 35,
+          "integrations": 30,
+          "accounting-finance": 28,
+          "form-builder": 22,
+          "app-marketplace": 20,
+          "bugs-issues": 25,
+          "feature-requests": 22,
+          "construction-erp": 18,
+          "training-learning": 15,
+          "general-discussion": 20,
+        };
+        const numPosts = postCounts[spaceSlug] || 15;
+
+        for (let i = 0; i < numPosts; i++) {
+          const template = templates[i % templates.length];
+          const author = contributors[Math.floor(Math.random() * contributors.length)];
+          
+          // Determine post timestamp based on distribution
+          const periodChoice = weightedRandom([20, 50, 30]);
+          const period = periodChoice === 0 ? 'early' : periodChoice === 1 ? 'middle' : 'recent';
+          const postDate = getTimestamp(startDate, endDate, period);
+          
+          // Add some variation to titles
+          const variation = Math.floor(Math.random() * 1000);
+          const title = `${template.title} [#${variation}]`;
+          
+          const postId = `post-${spaceSlug}-${i}-${Date.now()}`;
+          const postUpvotes = getUpvotes(author.isHighRep);
+          
+          await db.execute(sql`
+            INSERT INTO community_posts (id, space_id, author_id, post_type, title, content, upvotes, downvotes, view_count, answer_count, tags, created_at, updated_at)
+            VALUES (${postId}, ${space.id}, ${author.id}, ${template.postType}, ${title}, ${template.content}, ${postUpvotes}, ${Math.floor(Math.random() * 2)}, ${10 + Math.floor(Math.random() * 500)}, ${0}, ${template.tags}, ${postDate}, ${postDate})
+            ON CONFLICT DO NOTHING
+          `);
+          postsCreated++;
+
+          // Generate votes for post
+          const numVoters = Math.min(postUpvotes, contributors.length);
+          for (let v = 0; v < numVoters; v++) {
+            const voter = contributors[(v + i) % contributors.length];
+            if (voter.id !== author.id) {
+              const voteId = `vote-${postId}-${v}`;
+              await db.execute(sql`
+                INSERT INTO community_votes (id, user_id, target_type, target_id, vote_type, created_at)
+                VALUES (${voteId}, ${voter.id}, 'post', ${postId}, 'upvote', ${new Date(postDate.getTime() + Math.random() * 7 * 24 * 60 * 60 * 1000)})
+                ON CONFLICT DO NOTHING
+              `);
+              votesCreated++;
+            }
+          }
+
+          // Generate replies based on distribution
+          const replyCount = getReplyCount();
+          let answerCount = 0;
+          
+          for (let r = 0; r < replyCount; r++) {
+            const replier = contributors[Math.floor(Math.random() * contributors.length)];
+            const replyDate = getReplyTimestamp(postDate);
+            
+            // Ensure reply is before today
+            if (replyDate > endDate) continue;
+            
+            const replyType = weightedRandom([50, 20, 20, 10]);
+            let replyContent: string;
+            const detail = details[Math.floor(Math.random() * details.length)];
+            
+            switch (replyType) {
+              case 0:
+                replyContent = replyTemplates.helpful[Math.floor(Math.random() * replyTemplates.helpful.length)].replace("{detail}", detail);
+                break;
+              case 1:
+                replyContent = replyTemplates.clarification[Math.floor(Math.random() * replyTemplates.clarification.length)];
+                break;
+              case 2:
+                replyContent = replyTemplates.alternative[Math.floor(Math.random() * replyTemplates.alternative.length)].replace("{detail}", detail);
+                break;
+              default:
+                replyContent = replyTemplates.thanks[Math.floor(Math.random() * replyTemplates.thanks.length)];
+            }
+            
+            const commentId = `comment-${postId}-${r}`;
+            const commentUpvotes = getUpvotes(replier.isHighRep);
+            const isAccepted = template.postType === "question" && r === 0 && Math.random() < 0.6;
+            
+            await db.execute(sql`
+              INSERT INTO community_comments (id, post_id, parent_id, author_id, content, upvotes, downvotes, is_accepted, created_at, updated_at)
+              VALUES (${commentId}, ${postId}, ${null}, ${replier.id}, ${replyContent}, ${commentUpvotes}, ${Math.floor(Math.random() * 1)}, ${isAccepted}, ${replyDate}, ${replyDate})
+              ON CONFLICT DO NOTHING
+            `);
+            commentsCreated++;
+            if (isAccepted) answerCount++;
+
+            // Generate nested replies
+            const nestedCount = getNestedReplyCount();
+            for (let n = 0; n < nestedCount; n++) {
+              const nestedReplier = contributors[Math.floor(Math.random() * contributors.length)];
+              const nestedDate = getReplyTimestamp(replyDate);
+              
+              if (nestedDate > endDate) continue;
+              
+              const nestedContent = replyTemplates.thanks[Math.floor(Math.random() * replyTemplates.thanks.length)] + " " + detail;
+              const nestedId = `comment-${postId}-${r}-nested-${n}`;
+              
+              await db.execute(sql`
+                INSERT INTO community_comments (id, post_id, parent_id, author_id, content, upvotes, downvotes, is_accepted, created_at, updated_at)
+                VALUES (${nestedId}, ${postId}, ${commentId}, ${nestedReplier.id}, ${nestedContent}, ${getUpvotes(nestedReplier.isHighRep)}, ${0}, ${false}, ${nestedDate}, ${nestedDate})
+                ON CONFLICT DO NOTHING
+              `);
+              commentsCreated++;
+            }
+          }
+
+          // Author participation (~50% of discussions)
+          if (Math.random() < 0.5 && replyCount > 0) {
+            const authorReplyDate = getReplyTimestamp(postDate);
+            if (authorReplyDate <= endDate) {
+              const authorReplyContent = replyTemplates.authorReply[Math.floor(Math.random() * replyTemplates.authorReply.length)]
+                .replace("{detail}", details[Math.floor(Math.random() * details.length)]);
+              const authorReplyId = `comment-${postId}-author`;
+              
+              await db.execute(sql`
+                INSERT INTO community_comments (id, post_id, parent_id, author_id, content, upvotes, downvotes, is_accepted, created_at, updated_at)
+                VALUES (${authorReplyId}, ${postId}, ${null}, ${author.id}, ${authorReplyContent}, ${getUpvotes(author.isHighRep)}, ${0}, ${false}, ${authorReplyDate}, ${authorReplyDate})
+                ON CONFLICT DO NOTHING
+              `);
+              commentsCreated++;
+            }
+          }
+
+          // Update answer count
+          if (answerCount > 0) {
+            await db.execute(sql`
+              UPDATE community_posts SET answer_count = ${answerCount + replyCount} WHERE id = ${postId}
+            `);
+          }
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `Successfully seeded community discussions`,
+        postsCreated,
+        commentsCreated,
+        votesCreated,
+        contributorsCreated: contributors.length,
+      });
+    } catch (error: any) {
+      console.error("Error seeding discussions:", error);
+      res.status(500).json({ error: "Failed to seed discussions", details: error.message });
+    }
+  });
+
   // ========== SERVICE MARKETPLACE API ==========
 
   // GET /api/community/marketplace/categories - List all service categories
