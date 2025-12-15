@@ -87,6 +87,15 @@ export function Header() {
                         </div>
                       </div>
                     </Link>
+                    <Link to="/marketplace/jobs" className="block" data-testid="link-marketplace-jobs">
+                      <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <Users className="w-4 h-4 text-cyan-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Job Board</div>
+                          <div className="text-xs text-slate-400">Find work or hire experts</div>
+                        </div>
+                      </div>
+                    </Link>
                   </div>
                 </div>
               )}

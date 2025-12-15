@@ -184,6 +184,8 @@ const Marketplace = lazy(() => import("@/pages/Marketplace"));
 const DeveloperPortal = lazy(() => import("@/pages/DeveloperPortal"));
 const MarketplaceAdmin = lazy(() => import("@/pages/MarketplaceAdmin"));
 const MarketplaceServices = lazy(() => import("@/pages/MarketplaceServices"));
+const MarketplaceJobs = lazy(() => import("@/pages/MarketplaceJobs"));
+const MarketplaceJobDetail = lazy(() => import("@/pages/MarketplaceJobDetail"));
 const IntegrationHub = lazy(() => import("@/pages/IntegrationHub"));
 const Settings = lazy(() => import("@/pages/Settings"));
 
@@ -556,6 +558,8 @@ function Router() {
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/marketplace/apps" component={Marketplace} />
       <Route path="/marketplace/services" component={MarketplaceServices} />
+      <Route path="/marketplace/jobs/:id" component={MarketplaceJobDetail} />
+      <Route path="/marketplace/jobs" component={MarketplaceJobs} />
       <Route path="/community" component={CommunityForum} />
       <Route path="/developer-portal" component={DeveloperPortal} />
       <Route path="/marketplace-admin" component={MarketplaceAdmin} />
@@ -689,8 +693,8 @@ export default function App() {
   const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
   
   // Public routes don't show sidebar - includes dynamic routes
-  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/contribution", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/community", "/marketplace/services", "/marketplace/apps"];
-  const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/") || location.startsWith("/blog/");
+  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/contribution", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/community", "/marketplace/services", "/marketplace/apps", "/marketplace/jobs"];
+  const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/") || location.startsWith("/blog/") || location.startsWith("/marketplace/jobs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
   
   // Industry setup routes should show authenticated layout
