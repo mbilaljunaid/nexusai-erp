@@ -2115,3 +2115,749 @@ export const insertTrainingFilterRequestSchema = createInsertSchema(trainingFilt
 
 export type InsertTrainingFilterRequest = z.infer<typeof insertTrainingFilterRequestSchema>;
 export type TrainingFilterRequest = typeof trainingFilterRequests.$inferSelect;
+
+// ========== MOBILE & OFFLINE SYNC ==========
+export const mobileDevices = pgTable("mobile_devices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  deviceId: varchar("device_id").notNull(),
+  deviceName: varchar("device_name"),
+  platform: varchar("platform"), // ios, android, web
+  pushToken: varchar("push_token"),
+  lastSyncAt: timestamp("last_sync_at"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertMobileDeviceSchema = createInsertSchema(mobileDevices).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  userId: z.string().min(1),
+  deviceId: z.string().min(1),
+  deviceName: z.string().optional(),
+  platform: z.string().optional(),
+  pushToken: z.string().optional(),
+  lastSyncAt: z.date().optional().nullable(),
+  isActive: z.boolean().optional(),
+});
+
+export type InsertMobileDevice = z.infer<typeof insertMobileDeviceSchema>;
+export type MobileDevice = typeof mobileDevices.$inferSelect;
+
+export const offlineSyncs = pgTable("offline_syncs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  deviceId: varchar("device_id").notNull(),
+  entityType: varchar("entity_type").notNull(),
+  entityId: varchar("entity_id").notNull(),
+  action: varchar("action").notNull(), // create, update, delete
+  data: jsonb("data"),
+  syncStatus: varchar("sync_status").default("pending"), // pending, synced, failed
+  syncedAt: timestamp("synced_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertOfflineSyncSchema = createInsertSchema(offlineSyncs).omit({ id: true, createdAt: true }).extend({
+  deviceId: z.string().min(1),
+  entityType: z.string().min(1),
+  entityId: z.string().min(1),
+  action: z.string().min(1),
+  data: z.record(z.any()).optional(),
+  syncStatus: z.string().optional(),
+  syncedAt: z.date().optional().nullable(),
+});
+
+export type InsertOfflineSync = z.infer<typeof insertOfflineSyncSchema>;
+export type OfflineSync = typeof offlineSyncs.$inferSelect;
+
+// ========== FINANCIAL FORECASTING ==========
+export const revenueForecasts = pgTable("revenue_forecasts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  period: varchar("period").notNull(), // monthly, quarterly, yearly
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  forecastAmount: numeric("forecast_amount", { precision: 18, scale: 2 }),
+  actualAmount: numeric("actual_amount", { precision: 18, scale: 2 }),
+  variance: numeric("variance", { precision: 18, scale: 2 }),
+  status: varchar("status").default("draft"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertRevenueForecastSchema = createInsertSchema(revenueForecasts).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  period: z.string().min(1),
+  startDate: z.date(),
+  endDate: z.date(),
+  forecastAmount: z.string().optional(),
+  actualAmount: z.string().optional(),
+  variance: z.string().optional(),
+  status: z.string().optional(),
+});
+
+export type InsertRevenueForecast = z.infer<typeof insertRevenueForecastSchema>;
+export type RevenueForecast = typeof revenueForecasts.$inferSelect;
+
+export const budgetAllocations = pgTable("budget_allocations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  department: varchar("department"),
+  category: varchar("category"),
+  fiscalYear: varchar("fiscal_year"),
+  allocatedAmount: numeric("allocated_amount", { precision: 18, scale: 2 }),
+  spentAmount: numeric("spent_amount", { precision: 18, scale: 2 }).default("0"),
+  remainingAmount: numeric("remaining_amount", { precision: 18, scale: 2 }),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertBudgetAllocationSchema = createInsertSchema(budgetAllocations).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  department: z.string().optional(),
+  category: z.string().optional(),
+  fiscalYear: z.string().optional(),
+  allocatedAmount: z.string().optional(),
+  spentAmount: z.string().optional(),
+  remainingAmount: z.string().optional(),
+  status: z.string().optional(),
+});
+
+export type InsertBudgetAllocation = z.infer<typeof insertBudgetAllocationSchema>;
+export type BudgetAllocation = typeof budgetAllocations.$inferSelect;
+
+export const timeSeriesData = pgTable("time_series_data", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  seriesName: varchar("series_name").notNull(),
+  dataPoint: timestamp("data_point").notNull(),
+  value: numeric("value", { precision: 18, scale: 4 }),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertTimeSeriesDataSchema = createInsertSchema(timeSeriesData).omit({ id: true, createdAt: true }).extend({
+  seriesName: z.string().min(1),
+  dataPoint: z.date(),
+  value: z.string().optional(),
+  metadata: z.record(z.any()).optional(),
+});
+
+export type InsertTimeSeriesData = z.infer<typeof insertTimeSeriesDataSchema>;
+export type TimeSeriesData = typeof timeSeriesData.$inferSelect;
+
+export const forecastModels = pgTable("forecast_models", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(), // linear, exponential, arima, ml
+  parameters: jsonb("parameters"),
+  accuracy: numeric("accuracy", { precision: 5, scale: 2 }),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertForecastModelSchema = createInsertSchema(forecastModels).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  type: z.string().min(1),
+  parameters: z.record(z.any()).optional(),
+  accuracy: z.string().optional(),
+  isActive: z.boolean().optional(),
+});
+
+export type InsertForecastModel = z.infer<typeof insertForecastModelSchema>;
+export type ForecastModel = typeof forecastModels.$inferSelect;
+
+// ========== SCENARIOS & PLANNING ==========
+export const scenarios = pgTable("scenarios", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  type: varchar("type"), // best_case, worst_case, most_likely
+  baselineId: varchar("baseline_id"),
+  status: varchar("status").default("draft"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertScenarioSchema = createInsertSchema(scenarios).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  type: z.string().optional(),
+  baselineId: z.string().optional(),
+  status: z.string().optional(),
+});
+
+export type InsertScenario = z.infer<typeof insertScenarioSchema>;
+export type Scenario = typeof scenarios.$inferSelect;
+
+export const scenarioVariables = pgTable("scenario_variables", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  scenarioId: varchar("scenario_id").notNull(),
+  variableName: varchar("variable_name").notNull(),
+  baseValue: numeric("base_value", { precision: 18, scale: 4 }),
+  adjustedValue: numeric("adjusted_value", { precision: 18, scale: 4 }),
+  adjustmentType: varchar("adjustment_type"), // percentage, absolute
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertScenarioVariableSchema = createInsertSchema(scenarioVariables).omit({ id: true, createdAt: true }).extend({
+  scenarioId: z.string().min(1),
+  variableName: z.string().min(1),
+  baseValue: z.string().optional(),
+  adjustedValue: z.string().optional(),
+  adjustmentType: z.string().optional(),
+});
+
+export type InsertScenarioVariable = z.infer<typeof insertScenarioVariableSchema>;
+export type ScenarioVariable = typeof scenarioVariables.$inferSelect;
+
+// ========== DASHBOARD WIDGETS ==========
+export const dashboardWidgets = pgTable("dashboard_widgets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  widgetType: varchar("widget_type").notNull(),
+  title: varchar("title").notNull(),
+  config: jsonb("config"),
+  position: integer("position").default(0),
+  size: varchar("size").default("medium"),
+  isVisible: boolean("is_visible").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertDashboardWidgetSchema = createInsertSchema(dashboardWidgets).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  userId: z.string().min(1),
+  widgetType: z.string().min(1),
+  title: z.string().min(1),
+  config: z.record(z.any()).optional(),
+  position: z.number().optional(),
+  size: z.string().optional(),
+  isVisible: z.boolean().optional(),
+});
+
+export type InsertDashboardWidget = z.infer<typeof insertDashboardWidgetSchema>;
+export type DashboardWidget = typeof dashboardWidgets.$inferSelect;
+
+// ========== AUDIT LOGS ==========
+export const auditLogs = pgTable("audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  action: varchar("action").notNull(),
+  entityType: varchar("entity_type"),
+  entityId: varchar("entity_id"),
+  oldValue: jsonb("old_value"),
+  newValue: jsonb("new_value"),
+  ipAddress: varchar("ip_address"),
+  userAgent: varchar("user_agent"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({ id: true, createdAt: true }).extend({
+  userId: z.string().optional(),
+  action: z.string().min(1),
+  entityType: z.string().optional(),
+  entityId: z.string().optional(),
+  oldValue: z.record(z.any()).optional(),
+  newValue: z.record(z.any()).optional(),
+  ipAddress: z.string().optional(),
+  userAgent: z.string().optional(),
+});
+
+export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
+export type AuditLog = typeof auditLogs.$inferSelect;
+
+// ========== APPS (Legacy/Simple) ==========
+export const apps = pgTable("apps", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  version: varchar("version"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertAppSchema = createInsertSchema(apps).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  version: z.string().optional(),
+  status: z.string().optional(),
+});
+
+export type InsertApp = z.infer<typeof insertAppSchema>;
+export type App = typeof apps.$inferSelect;
+
+export const appReviews = pgTable("app_reviews", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  rating: integer("rating").notNull(),
+  title: varchar("title"),
+  content: text("content"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAppReviewSchema = createInsertSchema(appReviews).omit({ id: true, createdAt: true }).extend({
+  appId: z.string().min(1),
+  userId: z.string().min(1),
+  rating: z.number().min(1).max(5),
+  title: z.string().optional(),
+  content: z.string().optional(),
+});
+
+export type InsertAppReview = z.infer<typeof insertAppReviewSchema>;
+export type AppReview = typeof appReviews.$inferSelect;
+
+export const appInstallations = pgTable("app_installations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").notNull(),
+  tenantId: varchar("tenant_id").notNull(),
+  installedBy: varchar("installed_by").notNull(),
+  status: varchar("status").default("active"),
+  installedAt: timestamp("installed_at").default(sql`now()`),
+});
+
+export const insertAppInstallationSchema = createInsertSchema(appInstallations).omit({ id: true, installedAt: true }).extend({
+  appId: z.string().min(1),
+  tenantId: z.string().min(1),
+  installedBy: z.string().min(1),
+  status: z.string().optional(),
+});
+
+export type InsertAppInstallation = z.infer<typeof insertAppInstallationSchema>;
+export type AppInstallation = typeof appInstallations.$inferSelect;
+
+// ========== CONNECTORS & INTEGRATIONS ==========
+export const connectors = pgTable("connectors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(), // api, database, webhook, file
+  config: jsonb("config"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertConnectorSchema = createInsertSchema(connectors).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  type: z.string().min(1),
+  config: z.record(z.any()).optional(),
+  status: z.string().optional(),
+});
+
+export type InsertConnector = z.infer<typeof insertConnectorSchema>;
+export type Connector = typeof connectors.$inferSelect;
+
+export const connectorInstances = pgTable("connector_instances", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  connectorId: varchar("connector_id").notNull(),
+  tenantId: varchar("tenant_id").notNull(),
+  config: jsonb("config"),
+  credentials: jsonb("credentials"),
+  status: varchar("status").default("active"),
+  lastSyncAt: timestamp("last_sync_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertConnectorInstanceSchema = createInsertSchema(connectorInstances).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  connectorId: z.string().min(1),
+  tenantId: z.string().min(1),
+  config: z.record(z.any()).optional(),
+  credentials: z.record(z.any()).optional(),
+  status: z.string().optional(),
+  lastSyncAt: z.date().optional().nullable(),
+});
+
+export type InsertConnectorInstance = z.infer<typeof insertConnectorInstanceSchema>;
+export type ConnectorInstance = typeof connectorInstances.$inferSelect;
+
+export const webhookEvents = pgTable("webhook_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  connectorInstanceId: varchar("connector_instance_id").notNull(),
+  eventType: varchar("event_type").notNull(),
+  payload: jsonb("payload"),
+  status: varchar("status").default("pending"), // pending, processed, failed
+  processedAt: timestamp("processed_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertWebhookEventSchema = createInsertSchema(webhookEvents).omit({ id: true, createdAt: true }).extend({
+  connectorInstanceId: z.string().min(1),
+  eventType: z.string().min(1),
+  payload: z.record(z.any()).optional(),
+  status: z.string().optional(),
+  processedAt: z.date().optional().nullable(),
+});
+
+export type InsertWebhookEvent = z.infer<typeof insertWebhookEventSchema>;
+export type WebhookEvent = typeof webhookEvents.$inferSelect;
+
+// ========== SECURITY & COMPLIANCE ==========
+export const abacRules = pgTable("abac_rules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  resource: varchar("resource").notNull(),
+  action: varchar("action").notNull(),
+  conditions: jsonb("conditions"),
+  effect: varchar("effect").default("allow"), // allow, deny
+  priority: integer("priority").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertAbacRuleSchema = createInsertSchema(abacRules).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  resource: z.string().min(1),
+  action: z.string().min(1),
+  conditions: z.record(z.any()).optional(),
+  effect: z.string().optional(),
+  priority: z.number().optional(),
+  isActive: z.boolean().optional(),
+});
+
+export type InsertAbacRule = z.infer<typeof insertAbacRuleSchema>;
+export type AbacRule = typeof abacRules.$inferSelect;
+
+export const encryptedFields = pgTable("encrypted_fields", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  entityType: varchar("entity_type").notNull(),
+  entityId: varchar("entity_id").notNull(),
+  fieldName: varchar("field_name").notNull(),
+  encryptedValue: text("encrypted_value"),
+  keyVersion: varchar("key_version"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertEncryptedFieldSchema = createInsertSchema(encryptedFields).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  entityType: z.string().min(1),
+  entityId: z.string().min(1),
+  fieldName: z.string().min(1),
+  encryptedValue: z.string().optional(),
+  keyVersion: z.string().optional(),
+});
+
+export type InsertEncryptedField = z.infer<typeof insertEncryptedFieldSchema>;
+export type EncryptedField = typeof encryptedFields.$inferSelect;
+
+export const complianceConfigs = pgTable("compliance_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  framework: varchar("framework").notNull(), // gdpr, hipaa, sox, pci
+  settings: jsonb("settings"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertComplianceConfigSchema = createInsertSchema(complianceConfigs).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  tenantId: z.string().min(1),
+  framework: z.string().min(1),
+  settings: z.record(z.any()).optional(),
+  isActive: z.boolean().optional(),
+});
+
+export type InsertComplianceConfig = z.infer<typeof insertComplianceConfigSchema>;
+export type ComplianceConfig = typeof complianceConfigs.$inferSelect;
+
+// ========== AGILE PROJECT MANAGEMENT ==========
+export const sprints = pgTable("sprints", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: varchar("project_id").notNull(),
+  name: varchar("name").notNull(),
+  goal: text("goal"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  status: varchar("status").default("planned"), // planned, active, completed
+  velocity: integer("velocity"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertSprintSchema = createInsertSchema(sprints).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  projectId: z.string().min(1),
+  name: z.string().min(1),
+  goal: z.string().optional(),
+  startDate: z.date().optional().nullable(),
+  endDate: z.date().optional().nullable(),
+  status: z.string().optional(),
+  velocity: z.number().optional(),
+});
+
+export type InsertSprint = z.infer<typeof insertSprintSchema>;
+export type Sprint = typeof sprints.$inferSelect;
+
+export const issues = pgTable("issues", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: varchar("project_id").notNull(),
+  sprintId: varchar("sprint_id"),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  type: varchar("type").default("task"), // task, bug, story, epic
+  status: varchar("status").default("todo"), // todo, in_progress, review, done
+  priority: varchar("priority").default("medium"),
+  assigneeId: varchar("assignee_id"),
+  reporterId: varchar("reporter_id"),
+  storyPoints: integer("story_points"),
+  dueDate: timestamp("due_date"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertIssueSchema = createInsertSchema(issues).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  projectId: z.string().min(1),
+  sprintId: z.string().optional().nullable(),
+  title: z.string().min(1),
+  description: z.string().optional(),
+  type: z.string().optional(),
+  status: z.string().optional(),
+  priority: z.string().optional(),
+  assigneeId: z.string().optional().nullable(),
+  reporterId: z.string().optional().nullable(),
+  storyPoints: z.number().optional(),
+  dueDate: z.date().optional().nullable(),
+});
+
+export type InsertIssue = z.infer<typeof insertIssueSchema>;
+export type Issue = typeof issues.$inferSelect;
+
+// ========== DATA LAKE & ETL ==========
+export const dataLakes = pgTable("data_lakes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  storageType: varchar("storage_type"), // s3, gcs, azure, local
+  connectionConfig: jsonb("connection_config"),
+  status: varchar("status").default("active"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertDataLakeSchema = createInsertSchema(dataLakes).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  storageType: z.string().optional(),
+  connectionConfig: z.record(z.any()).optional(),
+  status: z.string().optional(),
+});
+
+export type InsertDataLake = z.infer<typeof insertDataLakeSchema>;
+export type DataLake = typeof dataLakes.$inferSelect;
+
+export const etlPipelines = pgTable("etl_pipelines", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  sourceConfig: jsonb("source_config"),
+  transformConfig: jsonb("transform_config"),
+  destinationConfig: jsonb("destination_config"),
+  schedule: varchar("schedule"), // cron expression
+  status: varchar("status").default("active"),
+  lastRunAt: timestamp("last_run_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertEtlPipelineSchema = createInsertSchema(etlPipelines).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  sourceConfig: z.record(z.any()).optional(),
+  transformConfig: z.record(z.any()).optional(),
+  destinationConfig: z.record(z.any()).optional(),
+  schedule: z.string().optional(),
+  status: z.string().optional(),
+  lastRunAt: z.date().optional().nullable(),
+});
+
+export type InsertEtlPipeline = z.infer<typeof insertEtlPipelineSchema>;
+export type EtlPipeline = typeof etlPipelines.$inferSelect;
+
+export const biDashboards = pgTable("bi_dashboards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  layout: jsonb("layout"),
+  widgets: jsonb("widgets"),
+  filters: jsonb("filters"),
+  isPublic: boolean("is_public").default(false),
+  createdBy: varchar("created_by"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertBiDashboardSchema = createInsertSchema(biDashboards).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  layout: z.record(z.any()).optional(),
+  widgets: z.record(z.any()).optional(),
+  filters: z.record(z.any()).optional(),
+  isPublic: z.boolean().optional(),
+  createdBy: z.string().optional(),
+});
+
+export type InsertBiDashboard = z.infer<typeof insertBiDashboardSchema>;
+export type BiDashboard = typeof biDashboards.$inferSelect;
+
+// ========== FIELD SERVICE ==========
+export const fieldServiceJobs = pgTable("field_service_jobs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobNumber: varchar("job_number").notNull(),
+  customerId: varchar("customer_id"),
+  technicianId: varchar("technician_id"),
+  jobType: varchar("job_type"), // installation, repair, maintenance
+  status: varchar("status").default("scheduled"), // scheduled, in_progress, completed, cancelled
+  priority: varchar("priority").default("medium"),
+  scheduledDate: timestamp("scheduled_date"),
+  completedDate: timestamp("completed_date"),
+  location: jsonb("location"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertFieldServiceJobSchema = createInsertSchema(fieldServiceJobs).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  jobNumber: z.string().min(1),
+  customerId: z.string().optional().nullable(),
+  technicianId: z.string().optional().nullable(),
+  jobType: z.string().optional(),
+  status: z.string().optional(),
+  priority: z.string().optional(),
+  scheduledDate: z.date().optional().nullable(),
+  completedDate: z.date().optional().nullable(),
+  location: z.record(z.any()).optional(),
+  notes: z.string().optional(),
+});
+
+export type InsertFieldServiceJob = z.infer<typeof insertFieldServiceJobSchema>;
+export type FieldServiceJob = typeof fieldServiceJobs.$inferSelect;
+
+// ========== PAYROLL CONFIGURATION ==========
+export const payrollConfigs = pgTable("payroll_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  payPeriod: varchar("pay_period").default("monthly"), // weekly, biweekly, monthly
+  payDay: integer("pay_day"),
+  taxSettings: jsonb("tax_settings"),
+  benefitSettings: jsonb("benefit_settings"),
+  overtimeRules: jsonb("overtime_rules"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertPayrollConfigSchema = createInsertSchema(payrollConfigs).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  tenantId: z.string().min(1),
+  payPeriod: z.string().optional(),
+  payDay: z.number().optional(),
+  taxSettings: z.record(z.any()).optional(),
+  benefitSettings: z.record(z.any()).optional(),
+  overtimeRules: z.record(z.any()).optional(),
+  isActive: z.boolean().optional(),
+});
+
+export type InsertPayrollConfig = z.infer<typeof insertPayrollConfigSchema>;
+export type PayrollConfig = typeof payrollConfigs.$inferSelect;
+
+// ========== ROLES & PERMISSIONS ==========
+export const roles = pgTable("roles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  permissions: jsonb("permissions"),
+  isSystem: boolean("is_system").default(false),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertRoleSchema = createInsertSchema(roles).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  tenantId: z.string().optional().nullable(),
+  name: z.string().min(1),
+  description: z.string().optional(),
+  permissions: z.record(z.any()).optional(),
+  isSystem: z.boolean().optional(),
+});
+
+export type InsertRole = z.infer<typeof insertRoleSchema>;
+export type Role = typeof roles.$inferSelect;
+
+// ========== SUBSCRIPTION PLANS ==========
+export const plans = pgTable("plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  price: numeric("price", { precision: 18, scale: 2 }),
+  billingPeriod: varchar("billing_period").default("monthly"), // monthly, yearly
+  features: jsonb("features"),
+  limits: jsonb("limits"),
+  isActive: boolean("is_active").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  price: z.string().optional(),
+  billingPeriod: z.string().optional(),
+  features: z.record(z.any()).optional(),
+  limits: z.record(z.any()).optional(),
+  isActive: z.boolean().optional(),
+  sortOrder: z.number().optional(),
+});
+
+export type InsertPlan = z.infer<typeof insertPlanSchema>;
+export type Plan = typeof plans.$inferSelect;
+
+export const subscriptions = pgTable("subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  planId: varchar("plan_id").notNull(),
+  status: varchar("status").default("active"), // active, cancelled, expired, past_due
+  currentPeriodStart: timestamp("current_period_start"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  cancelledAt: timestamp("cancelled_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  tenantId: z.string().min(1),
+  planId: z.string().min(1),
+  status: z.string().optional(),
+  currentPeriodStart: z.date().optional().nullable(),
+  currentPeriodEnd: z.date().optional().nullable(),
+  cancelledAt: z.date().optional().nullable(),
+});
+
+export type InsertSubscription = z.infer<typeof insertSubscriptionSchema>;
+export type Subscription = typeof subscriptions.$inferSelect;
+
+export const payments = pgTable("payments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull(),
+  invoiceId: varchar("invoice_id"),
+  amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+  currency: varchar("currency").default("USD"),
+  status: varchar("status").default("pending"), // pending, completed, failed, refunded
+  paymentMethod: varchar("payment_method"),
+  transactionId: varchar("transaction_id"),
+  paidAt: timestamp("paid_at"),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPaymentSchema = createInsertSchema(payments).omit({ id: true, createdAt: true }).extend({
+  tenantId: z.string().min(1),
+  invoiceId: z.string().optional().nullable(),
+  amount: z.string().min(1),
+  currency: z.string().optional(),
+  status: z.string().optional(),
+  paymentMethod: z.string().optional(),
+  transactionId: z.string().optional(),
+  paidAt: z.date().optional().nullable(),
+});
+
+export type InsertPayment = z.infer<typeof insertPaymentSchema>;
+export type Payment = typeof payments.$inferSelect;
