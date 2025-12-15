@@ -1870,6 +1870,70 @@ export const insertServiceReviewSchema = createInsertSchema(serviceReviews).omit
 export type InsertServiceReview = z.infer<typeof insertServiceReviewSchema>;
 export type ServiceReview = typeof serviceReviews.$inferSelect;
 
+// Job Postings - buyers post service requests for providers to bid on
+export const jobPostings = pgTable("job_postings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  buyerId: varchar("buyer_id").notNull(),
+  categoryId: varchar("category_id").notNull(),
+  title: varchar("title").notNull(),
+  description: text("description").notNull(),
+  budgetMin: numeric("budget_min", { precision: 10, scale: 2 }),
+  budgetMax: numeric("budget_max", { precision: 10, scale: 2 }),
+  currency: varchar("currency").default("USD"),
+  deadline: timestamp("deadline"),
+  status: varchar("status").default("open"), // open, in_progress, completed, cancelled, expired
+  skills: text("skills").array(),
+  urgency: varchar("urgency").default("normal"), // low, normal, high, urgent
+  totalProposals: integer("total_proposals").default(0),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertJobPostingSchema = createInsertSchema(jobPostings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  buyerId: z.string().min(1),
+  categoryId: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  budgetMin: z.string().optional(),
+  budgetMax: z.string().optional(),
+  currency: z.string().optional(),
+  deadline: z.date().optional().nullable(),
+  status: z.enum(["open", "in_progress", "completed", "cancelled", "expired"]).optional(),
+  skills: z.array(z.string()).optional(),
+  urgency: z.enum(["low", "normal", "high", "urgent"]).optional(),
+  totalProposals: z.number().optional(),
+});
+
+export type InsertJobPosting = z.infer<typeof insertJobPostingSchema>;
+export type JobPosting = typeof jobPostings.$inferSelect;
+
+// Job Proposals - providers submit proposals to job postings
+export const jobProposals = pgTable("job_proposals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobPostingId: varchar("job_posting_id").notNull(),
+  providerId: varchar("provider_id").notNull(),
+  packageId: varchar("package_id"), // optional link to existing service package
+  proposalMessage: text("proposal_message").notNull(),
+  bidAmount: numeric("bid_amount", { precision: 10, scale: 2 }).notNull(),
+  estimatedDeliveryDays: integer("estimated_delivery_days").notNull(),
+  status: varchar("status").default("pending"), // pending, shortlisted, accepted, rejected, withdrawn
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertJobProposalSchema = createInsertSchema(jobProposals).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+  jobPostingId: z.string().min(1),
+  providerId: z.string().min(1),
+  packageId: z.string().optional().nullable(),
+  proposalMessage: z.string().min(1),
+  bidAmount: z.string().min(1),
+  estimatedDeliveryDays: z.number().min(1),
+  status: z.enum(["pending", "shortlisted", "accepted", "rejected", "withdrawn"]).optional(),
+});
+
+export type InsertJobProposal = z.infer<typeof insertJobProposalSchema>;
+export type JobProposal = typeof jobProposals.$inferSelect;
+
 // ========== ABUSE DETECTION ==========
 // Community Vote Events - granular vote tracking for anomaly detection
 export const communityVoteEvents = pgTable("community_vote_events", {
