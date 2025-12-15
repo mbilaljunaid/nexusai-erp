@@ -120,15 +120,6 @@ export function Header() {
                         </div>
                       </div>
                     </Link>
-                    <Link to="/community/industries" className="block" data-testid="link-community-industries">
-                      <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                        <Users className="w-4 h-4 text-cyan-400" />
-                        <div>
-                          <div className="font-semibold text-sm text-slate-100">Industry Communities</div>
-                          <div className="text-xs text-slate-400">Connect with your industry</div>
-                        </div>
-                      </div>
-                    </Link>
                   </div>
                 </div>
               )}
@@ -292,11 +283,6 @@ export function Header() {
               <Link to="/community">
                 <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-community-forum">
                   Community Forum
-                </button>
-              </Link>
-              <Link to="/community/industries">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-community-industries">
-                  Industry Communities
                 </button>
               </Link>
             </div>
