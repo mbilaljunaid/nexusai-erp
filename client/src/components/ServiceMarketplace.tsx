@@ -13,7 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { 
   Package, Star, Clock, DollarSign, ShoppingCart, Plus, Search, 
-  CheckCircle, XCircle, AlertCircle, Truck, MessageSquare, User
+  CheckCircle, XCircle, AlertCircle, Truck, MessageSquare, User,
+  ChevronLeft, ChevronRight, ArrowUpDown
 } from "lucide-react";
 import type { ServicePackage, ServiceOrder, ServiceCategory, ServiceReview, UserTrustLevel } from "@shared/schema";
 
@@ -40,6 +41,9 @@ export function ServiceMarketplace() {
   const [orderViewType, setOrderViewType] = useState<"buyer" | "provider">("buyer");
   const [reviewDialogOrder, setReviewDialogOrder] = useState<ServiceOrder | null>(null);
   const [reviewData, setReviewData] = useState({ rating: 5, comment: "" });
+  const [sortBy, setSortBy] = useState<"newest" | "price_low" | "price_high" | "rating" | "orders">("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
 
   const { data: trustLevel } = useQuery<UserTrustLevel>({
     queryKey: ["/api/community/trust-level"],
@@ -151,10 +155,53 @@ export function ServiceMarketplace() {
     },
   });
 
-  const filteredPackages = packages?.filter(p => 
-    p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+  const filteredAndSortedPackages = (() => {
+    let result = packages?.filter(p => 
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+    ) || [];
+    
+    // Apply sorting
+    result = [...result].sort((a, b) => {
+      switch (sortBy) {
+        case "price_low":
+          return Number(a.price) - Number(b.price);
+        case "price_high":
+          return Number(b.price) - Number(a.price);
+        case "rating":
+          return Number(b.averageRating || 0) - Number(a.averageRating || 0);
+        case "orders":
+          return (b.totalOrders || 0) - (a.totalOrders || 0);
+        case "newest":
+        default:
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      }
+    });
+    
+    return result;
+  })();
+
+  const totalPages = Math.ceil((filteredAndSortedPackages?.length || 0) / ITEMS_PER_PAGE);
+  const paginatedPackages = filteredAndSortedPackages?.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
   );
+
+  // Reset page when filters change
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value === "all" ? null : value);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value as typeof sortBy);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
 
   const getStatusBadge = (status: string | null) => {
     const statusConfig: Record<string, { color: string; icon: typeof CheckCircle }> = {
@@ -283,12 +330,12 @@ export function ServiceMarketplace() {
               <Input
                 placeholder="Search services..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-10"
                 data-testid="input-search-packages"
               />
             </div>
-            <Select value={selectedCategory || "all"} onValueChange={(v) => setSelectedCategory(v === "all" ? null : v)}>
+            <Select value={selectedCategory || "all"} onValueChange={handleCategoryChange}>
               <SelectTrigger className="w-[180px]" data-testid="select-category-filter">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
@@ -297,6 +344,19 @@ export function ServiceMarketplace() {
                 {categories?.map((cat) => (
                   <SelectItem key={cat.id} value={cat.id}>{cat.icon} {cat.name}</SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+            <Select value={sortBy} onValueChange={handleSortChange}>
+              <SelectTrigger className="w-[180px]" data-testid="select-sort">
+                <ArrowUpDown className="w-4 h-4 mr-2" />
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="price_low">Price: Low to High</SelectItem>
+                <SelectItem value="price_high">Price: High to Low</SelectItem>
+                <SelectItem value="rating">Highest Rated</SelectItem>
+                <SelectItem value="orders">Most Popular</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -313,7 +373,7 @@ export function ServiceMarketplace() {
                 </Card>
               ))}
             </div>
-          ) : !filteredPackages?.length ? (
+          ) : !filteredAndSortedPackages?.length ? (
             <Card>
               <CardContent className="pt-6 text-center text-muted-foreground">
                 <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -322,47 +382,93 @@ export function ServiceMarketplace() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredPackages.map((pkg) => (
-                <Card 
-                  key={pkg.id} 
-                  className="cursor-pointer hover-elevate"
-                  onClick={() => setSelectedPackage(pkg)}
-                  data-testid={`card-package-${pkg.id}`}
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-lg line-clamp-1">{pkg.title}</CardTitle>
-                      <Badge variant="secondary" className="shrink-0">
-                        {categories?.find(c => c.id === pkg.categoryId)?.name || "Other"}
-                      </Badge>
-                    </div>
-                    <CardDescription className="line-clamp-2">{pkg.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pb-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Star className="w-4 h-4 text-yellow-500" />
-                        {Number(pkg.averageRating || 0).toFixed(1)}
-                      </span>
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="w-4 h-4" />
-                        {pkg.deliveryDays} days
-                      </span>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="pt-2">
-                    <div className="flex items-center justify-between w-full">
-                      <span className="text-xl font-bold text-primary flex items-center gap-1">
-                        <DollarSign className="w-5 h-5" />
-                        {Number(pkg.price).toFixed(2)}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{pkg.totalOrders} orders</span>
-                    </div>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
+            <>
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                <span data-testid="text-results-count">
+                  Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredAndSortedPackages.length)} of {filteredAndSortedPackages.length} services
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {paginatedPackages?.map((pkg) => (
+                  <Card 
+                    key={pkg.id} 
+                    className="cursor-pointer hover-elevate"
+                    onClick={() => setSelectedPackage(pkg)}
+                    data-testid={`card-package-${pkg.id}`}
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-lg line-clamp-1">{pkg.title}</CardTitle>
+                        <Badge variant="secondary" className="shrink-0">
+                          {categories?.find(c => c.id === pkg.categoryId)?.name || "Other"}
+                        </Badge>
+                      </div>
+                      <CardDescription className="line-clamp-2">{pkg.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pb-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Star className="w-4 h-4 text-yellow-500" />
+                          {Number(pkg.averageRating || 0).toFixed(1)}
+                        </span>
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-4 h-4" />
+                          {pkg.deliveryDays} days
+                        </span>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="pt-2">
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-xl font-bold text-primary flex items-center gap-1">
+                          <DollarSign className="w-5 h-5" />
+                          {Number(pkg.price).toFixed(2)}
+                        </span>
+                        <span className="text-xs text-muted-foreground">{pkg.totalOrders} orders</span>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+              
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-6">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    data-testid="button-prev-page"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Previous
+                  </Button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page)}
+                        data-testid={`button-page-${page}`}
+                        className="w-9"
+                      >
+                        {page}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    data-testid="button-next-page"
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </TabsContent>
 
