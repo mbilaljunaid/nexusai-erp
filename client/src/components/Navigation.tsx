@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
-import nexusLogo from "@assets/ChatGPT_Image_Dec_15,_2025,_11_23_15_PM_1765823153505.png";
 
 export function Header() {
   const [location] = useLocation();
@@ -27,8 +26,8 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/">
-            <div className="flex items-center gap-2 cursor-pointer" data-testid="link-logo">
-              <img src={nexusLogo} alt="NexusAI Logo" className="h-10 w-auto" />
+            <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent cursor-pointer" data-testid="link-logo">
+              NexusAI
             </div>
           </Link>
 
@@ -335,9 +334,9 @@ export function Footer() {
         <div className="grid md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div>
-            <Link to="/">
-              <img src={nexusLogo} alt="NexusAI Logo" className="h-12 w-auto mb-4 cursor-pointer" data-testid="link-footer-logo" />
-            </Link>
+            <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+              NexusAI
+            </h3>
             <p className="text-slate-400 text-sm">
               Transform your enterprise with AI-powered ERP solutions for 41+ industries.
             </p>
