@@ -303,7 +303,11 @@ export default function MarketplaceJobDetail() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <h4 className="font-semibold">{proposalItem.provider_name}</h4>
+                              <Link href={`/marketplace/profile/${proposalItem.provider_id}`}>
+                                <h4 className="font-semibold hover:text-primary cursor-pointer" data-testid={`link-provider-${proposalItem.provider_id}`}>
+                                  {proposalItem.provider_name}
+                                </h4>
+                              </Link>
                               <p className="text-xs text-muted-foreground">
                                 Submitted {formatShortDate(proposalItem.created_at)}
                               </p>

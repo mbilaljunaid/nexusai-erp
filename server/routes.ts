@@ -4906,6 +4906,84 @@ Be fair and consider context. Not all controversial content is harmful.`
     }
   });
 
+  // GET /api/community/marketplace/profile/:userId - Get public contributor profile
+  app.get("/api/community/marketplace/profile/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      if (!userId) return res.status(400).json({ error: "User ID is required" });
+
+      // Get user info (omit email for privacy)
+      const userResult = await db.execute(sql`
+        SELECT id, name, role, created_at FROM users WHERE id = ${userId}
+      `);
+      const user = userResult.rows[0];
+      if (!user) return res.status(404).json({ error: "User not found" });
+
+      // Get trust level
+      const trustResult = await db.execute(sql`
+        SELECT trust_level, total_reputation FROM user_trust_levels WHERE user_id = ${userId}
+      `);
+      const trust = trustResult.rows[0] || null;
+
+      // Get services offered by this user
+      const servicesResult = await db.execute(sql`
+        SELECT sp.id, sp.title, sp.description, sp.price, sp.delivery_days, 
+               sc.name as category, COALESCE(sp.average_rating, 0) as rating, COALESCE(sp.total_orders, 0) as review_count, sp.status
+        FROM service_packages sp
+        LEFT JOIN service_categories sc ON sp.category_id = sc.id
+        WHERE sp.provider_id = ${userId}
+        ORDER BY sp.created_at DESC
+        LIMIT 50
+      `);
+
+      // Get jobs posted by this user
+      const jobsResult = await db.execute(sql`
+        SELECT jp.id, jp.title, jp.description, jp.budget_min, jp.budget_max, jp.status, jp.created_at,
+               (SELECT COUNT(*) FROM job_proposals WHERE job_posting_id = jp.id) as proposal_count
+        FROM job_postings jp
+        WHERE jp.buyer_id = ${userId}
+        ORDER BY jp.created_at DESC
+        LIMIT 50
+      `);
+
+      // Get community posts by this user
+      const postsResult = await db.execute(sql`
+        SELECT cp.id, cp.title, cp.content, cp.space_id, cp.view_count, cp.upvotes as like_count, cp.answer_count as reply_count, cp.created_at
+        FROM community_posts cp
+        WHERE cp.author_id = ${userId}
+        ORDER BY cp.created_at DESC
+        LIMIT 50
+      `);
+
+      // Get stats
+      const statsResult = await db.execute(sql`
+        SELECT 
+          (SELECT COUNT(*) FROM service_packages WHERE provider_id = ${userId}) as total_services,
+          (SELECT COUNT(*) FROM job_postings WHERE buyer_id = ${userId}) as total_jobs,
+          (SELECT COUNT(*) FROM community_posts WHERE author_id = ${userId}) as total_posts,
+          (SELECT COUNT(*) FROM community_comments WHERE author_id = ${userId}) as total_comments
+      `);
+      const stats = statsResult.rows[0] || { total_services: 0, total_jobs: 0, total_posts: 0, total_comments: 0 };
+
+      res.json({
+        user,
+        trust,
+        services: servicesResult.rows || [],
+        jobs: jobsResult.rows || [],
+        posts: postsResult.rows || [],
+        stats: {
+          total_services: Number(stats.total_services) || 0,
+          total_jobs: Number(stats.total_jobs) || 0,
+          total_posts: Number(stats.total_posts) || 0,
+          total_comments: Number(stats.total_comments) || 0,
+        },
+      });
+    } catch (error: any) {
+      console.error("Error fetching contributor profile:", error);
+      res.status(500).json({ error: "Failed to fetch profile" });
+    }
+  });
+
   // POST /api/community/marketplace/seed-jobs - Seed 500+ NexusAI-aligned jobs (admin only)
   app.post("/api/community/marketplace/seed-jobs", isPlatformAuthenticated, async (req: any, res) => {
     const userId = req.user?.id || req.userId;
