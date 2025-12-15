@@ -36,32 +36,50 @@ async function seedDiscussions() {
     }
   };
 
-  const getUpvotes = (isHighRep: boolean): number => {
-    const weights = isHighRep ? [10, 40, 30, 20] : [20, 50, 20, 10];
+  const getUpvotes = (isHighRep: boolean, isRecent: boolean = false): number => {
+    if (isRecent) {
+      const weights = isHighRep ? [5, 20, 35, 25, 15] : [10, 30, 35, 20, 5];
+      const choice = weightedRandom(weights);
+      switch (choice) {
+        case 0: return 0;
+        case 1: return 1 + Math.floor(Math.random() * 5);
+        case 2: return 6 + Math.floor(Math.random() * 10);
+        case 3: return 16 + Math.floor(Math.random() * 20);
+        case 4: return 36 + Math.floor(Math.random() * 50);
+        default: return 3;
+      }
+    }
+    const weights = isHighRep ? [5, 25, 30, 25, 15] : [15, 40, 25, 15, 5];
     const choice = weightedRandom(weights);
     switch (choice) {
       case 0: return 0;
-      case 1: return 1 + Math.floor(Math.random() * 3);
-      case 2: return 4 + Math.floor(Math.random() * 7);
-      case 3: return 10 + Math.floor(Math.random() * 15);
-      default: return 1;
+      case 1: return 1 + Math.floor(Math.random() * 5);
+      case 2: return 6 + Math.floor(Math.random() * 15);
+      case 3: return 21 + Math.floor(Math.random() * 30);
+      case 4: return 51 + Math.floor(Math.random() * 100);
+      default: return 2;
     }
   };
 
-  const getTimestamp = (startDate: Date, endDate: Date, period: 'early' | 'middle' | 'recent'): Date => {
-    const earlyEnd = new Date('2022-09-30');
-    const middleEnd = new Date('2023-12-31');
+  const getTimestamp = (startDate: Date, endDate: Date, period: 'early' | 'middle' | 'recent' | 'today' | 'thisWeek'): Date => {
+    const now = new Date();
     let start: Date, end: Date;
     
     if (period === 'early') {
       start = startDate;
-      end = earlyEnd;
+      end = new Date('2023-06-30');
     } else if (period === 'middle') {
-      start = new Date('2022-10-01');
-      end = middleEnd;
+      start = new Date('2023-07-01');
+      end = new Date('2024-06-30');
+    } else if (period === 'recent') {
+      start = new Date('2024-07-01');
+      end = new Date('2025-11-30');
+    } else if (period === 'thisWeek') {
+      start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      end = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
     } else {
-      start = new Date('2024-01-01');
-      end = endDate;
+      start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      end = new Date(now.getTime() - 60 * 60 * 1000);
     }
     
     const timestamp = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
@@ -90,26 +108,26 @@ async function seedDiscussions() {
   console.log(`Found ${spaces.length} active community spaces`);
 
   const contributorProfiles = [
-    { name: "Priya Sharma", location: "India", isHighRep: true },
-    { name: "James Wilson", location: "USA", isHighRep: true },
-    { name: "Chen Wei", location: "Singapore", isHighRep: true },
-    { name: "Sarah Johnson", location: "UK", isHighRep: true },
-    { name: "Ahmed Hassan", location: "Pakistan", isHighRep: true },
-    { name: "Maria Garcia", location: "Canada", isHighRep: false },
-    { name: "David Kim", location: "Australia", isHighRep: false },
-    { name: "Lisa Chen", location: "USA", isHighRep: false },
-    { name: "Mohammed Al-Rashid", location: "UAE", isHighRep: false },
-    { name: "Emma Thompson", location: "UK", isHighRep: false },
-    { name: "Raj Patel", location: "India", isHighRep: true },
-    { name: "Jennifer Lee", location: "USA", isHighRep: false },
-    { name: "Carlos Rodriguez", location: "Mexico", isHighRep: false },
-    { name: "Fatima Khan", location: "Pakistan", isHighRep: true },
-    { name: "Michael Brown", location: "Canada", isHighRep: false },
-    { name: "Aisha Okonkwo", location: "Nigeria", isHighRep: false },
-    { name: "Thomas Mueller", location: "Germany", isHighRep: true },
-    { name: "Yuki Tanaka", location: "Japan", isHighRep: false },
-    { name: "Anna Kowalski", location: "Poland", isHighRep: false },
-    { name: "Robert Singh", location: "India", isHighRep: true },
+    { name: "Priya Sharma", location: "India", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya" },
+    { name: "James Wilson", location: "USA", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=James" },
+    { name: "Chen Wei", location: "Singapore", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Chen" },
+    { name: "Sarah Johnson", location: "UK", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" },
+    { name: "Ahmed Hassan", location: "Pakistan", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed" },
+    { name: "Maria Garcia", location: "Canada", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maria" },
+    { name: "David Kim", location: "Australia", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David" },
+    { name: "Lisa Chen", location: "USA", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa" },
+    { name: "Mohammed Al-Rashid", location: "UAE", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mohammed" },
+    { name: "Emma Thompson", location: "UK", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma" },
+    { name: "Raj Patel", location: "India", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Raj" },
+    { name: "Jennifer Lee", location: "USA", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer" },
+    { name: "Carlos Rodriguez", location: "Mexico", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos" },
+    { name: "Fatima Khan", location: "Pakistan", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fatima" },
+    { name: "Michael Brown", location: "Canada", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael" },
+    { name: "Aisha Okonkwo", location: "Nigeria", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aisha" },
+    { name: "Thomas Mueller", location: "Germany", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Thomas" },
+    { name: "Yuki Tanaka", location: "Japan", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Yuki" },
+    { name: "Anna Kowalski", location: "Poland", isHighRep: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Anna" },
+    { name: "Robert Singh", location: "India", isHighRep: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert" },
   ];
 
   const contributors: { id: string; name: string; isHighRep: boolean }[] = [];
@@ -122,7 +140,7 @@ async function seedDiscussions() {
     await db.execute(sql`
       INSERT INTO users (id, email, name, role, created_at)
       VALUES (${id}, ${email}, ${profile.name}, 'member', ${new Date()})
-      ON CONFLICT (email) DO NOTHING
+      ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name
     `);
     contributors.push({ id, name: profile.name, isHighRep: profile.isHighRep });
 
@@ -261,20 +279,25 @@ async function seedDiscussions() {
       const template = templates[i % templates.length];
       const author = contributors[Math.floor(Math.random() * contributors.length)];
       
-      const periodChoice = weightedRandom([20, 50, 30]);
-      const period = periodChoice === 0 ? 'early' : periodChoice === 1 ? 'middle' : 'recent';
+      const periodChoice = weightedRandom([10, 25, 30, 20, 15]);
+      const periods: ('early' | 'middle' | 'recent' | 'thisWeek' | 'today')[] = ['early', 'middle', 'recent', 'thisWeek', 'today'];
+      const period = periods[periodChoice];
       const postDate = getTimestamp(startDate, endDate, period);
       
       const variation = Math.floor(Math.random() * 1000);
       const title = `${template.title} [#${variation}]`;
       
       const postId = `post-${spaceSlug}-${i}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const postUpvotes = getUpvotes(author.isHighRep);
+      const isRecent = period === 'today' || period === 'thisWeek';
+      const postUpvotes = getUpvotes(author.isHighRep, isRecent);
+      const viewCount = isRecent 
+        ? 20 + Math.floor(Math.random() * 300) 
+        : 50 + Math.floor(Math.random() * 800);
       
       const tagsArray = `{${template.tags.join(',')}}`;
       await db.execute(sql`
         INSERT INTO community_posts (id, space_id, author_id, post_type, title, content, upvotes, downvotes, view_count, answer_count, tags, created_at, updated_at)
-        VALUES (${postId}, ${space.id}, ${author.id}, ${template.postType}, ${title}, ${template.content}, ${postUpvotes}, ${Math.floor(Math.random() * 2)}, ${10 + Math.floor(Math.random() * 500)}, ${0}, ${sql.raw(`'${tagsArray}'::text[]`)}, ${postDate}, ${postDate})
+        VALUES (${postId}, ${space.id}, ${author.id}, ${template.postType}, ${title}, ${template.content}, ${postUpvotes}, ${Math.floor(Math.random() * 3)}, ${viewCount}, ${0}, ${sql.raw(`'${tagsArray}'::text[]`)}, ${postDate}, ${postDate})
         ON CONFLICT DO NOTHING
       `);
       postsCreated++;

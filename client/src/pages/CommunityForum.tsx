@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -38,7 +38,16 @@ interface PostWithComments extends CommunityPost {
   }>;
 }
 
-interface LeaderboardUser extends UserTrustLevel {}
+interface LeaderboardUser {
+  id: string;
+  userId: string;
+  trustLevel: number | null;
+  totalReputation: number | null;
+  userName: string | null;
+  userFirstName: string | null;
+  userLastName: string | null;
+  profileImageUrl: string | null;
+}
 
 const ITEMS_PER_PAGE = 30;
 
@@ -419,13 +428,24 @@ export default function CommunityForum() {
         <CardContent className="pt-0 space-y-2">
           {leaderboard?.slice(0, 5).map((user, index) => {
             const trustInfo = getTrustLevelInfo(user.trustLevel || 0);
+            const displayName = user.userName || (user.userFirstName && user.userLastName ? `${user.userFirstName} ${user.userLastName}` : null) || user.userId?.slice(0, 12);
+            const initials = displayName ? displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?';
             return (
               <div key={user.id} className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setProfileUserId(user.userId)} data-testid={`leaderboard-user-${index}`}>
-                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">{index + 1}</div>
+                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">{index + 1}</div>
+                <Avatar className="w-7 h-7">
+                  {user.profileImageUrl && <AvatarImage src={user.profileImageUrl} alt={displayName} />}
+                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{user.userId?.slice(0, 12)}...</p>
+                  <p className="text-sm font-medium truncate">{displayName}</p>
+                  <div className="flex items-center gap-1">
+                    <Badge variant="outline" className={`text-[10px] px-1 py-0 ${trustInfo.color}`}>
+                      <trustInfo.icon className="w-2 h-2 mr-0.5" />{trustInfo.name}
+                    </Badge>
+                  </div>
                 </div>
-                <span className="text-sm font-bold">{user.totalReputation || 0}</span>
+                <span className="text-xs font-bold text-muted-foreground">{user.totalReputation || 0}</span>
               </div>
             );
           })}

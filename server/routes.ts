@@ -3137,9 +3137,20 @@ export async function registerRoutes(
   // GET /api/community/leaderboard - Get top contributors
   app.get("/api/community/leaderboard", async (req, res) => {
     try {
-      const leaders = await db.select().from(userTrustLevels)
-        .orderBy(desc(userTrustLevels.totalReputation));
-      res.json(leaders.slice(0, 25));
+      const leaders = await db.select({
+        id: userTrustLevels.id,
+        userId: userTrustLevels.userId,
+        trustLevel: userTrustLevels.trustLevel,
+        totalReputation: userTrustLevels.totalReputation,
+        userName: users.name,
+        userFirstName: users.firstName,
+        userLastName: users.lastName,
+        profileImageUrl: users.profileImageUrl,
+      }).from(userTrustLevels)
+        .leftJoin(users, eq(userTrustLevels.userId, users.id))
+        .orderBy(desc(userTrustLevels.totalReputation))
+        .limit(25);
+      res.json(leaders);
     } catch (error: any) {
       console.error("Error fetching leaderboard:", error);
       res.status(500).json({ error: "Failed to fetch leaderboard" });
