@@ -89,52 +89,55 @@ export default function MarketplaceJobs() {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  const getUrgencyColor = (urgency: string) => {
+  const getUrgencyBadge = (urgency: string) => {
     switch (urgency) {
-      case "critical": return "bg-red-500/10 text-red-500 border-red-500/20";
-      case "high": return "bg-orange-500/10 text-orange-500 border-orange-500/20";
-      case "normal": return "bg-blue-500/10 text-blue-500 border-blue-500/20";
-      case "low": return "bg-slate-500/10 text-slate-400 border-slate-500/20";
-      default: return "bg-slate-500/10 text-slate-400 border-slate-500/20";
+      case "critical": return <Badge variant="destructive">{urgency}</Badge>;
+      case "high": return <Badge className="bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20">{urgency}</Badge>;
+      case "normal": return <Badge variant="secondary">{urgency}</Badge>;
+      case "low": return <Badge variant="outline">{urgency}</Badge>;
+      default: return <Badge variant="outline">{urgency}</Badge>;
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case "open": return "bg-green-500/10 text-green-500 border-green-500/20";
-      case "in_progress": return "bg-blue-500/10 text-blue-500 border-blue-500/20";
-      case "completed": return "bg-slate-500/10 text-slate-400 border-slate-500/20";
-      case "cancelled": return "bg-red-500/10 text-red-500 border-red-500/20";
-      default: return "bg-slate-500/10 text-slate-400 border-slate-500/20";
+      case "open": return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">Open</Badge>;
+      case "in_progress": return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">In Progress</Badge>;
+      case "completed": return <Badge variant="secondary">Completed</Badge>;
+      case "cancelled": return <Badge variant="destructive">Cancelled</Badge>;
+      default: return <Badge variant="outline">{status}</Badge>;
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <div className="bg-gradient-to-b from-slate-900 to-slate-950 py-12 border-b border-slate-800">
+        <div className="bg-muted/50 py-12 border-b">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
-              <h1 className="text-4xl font-bold text-white mb-4" data-testid="text-jobs-title">
+              <Badge className="mb-4" style={{ backgroundColor: `hsl(var(--primary) / 0.1)`, color: `hsl(var(--primary))` }}>
+                JOB BOARD
+              </Badge>
+              <h1 className="text-4xl font-bold mb-4" data-testid="text-jobs-title">
                 NexusAI Job Board
               </h1>
-              <p className="text-xl text-slate-400 mb-8" data-testid="text-jobs-description">
+              <p className="text-xl text-muted-foreground mb-8" data-testid="text-jobs-description">
                 Find ERP consulting opportunities or post a job to hire experienced NexusAI experts
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     placeholder="Search jobs by title or keywords..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500"
+                    className="pl-10"
                     data-testid="input-jobs-search"
                   />
                 </div>
-                <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800" data-testid="button-post-job">
+                <Button data-testid="button-post-job">
                   <Briefcase className="w-4 h-4 mr-2" />
                   Post a Job
                 </Button>
@@ -147,22 +150,22 @@ export default function MarketplaceJobs() {
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className="lg:w-64 space-y-6">
               <div>
-                <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                   <Filter className="w-4 h-4" />
                   Filters
                 </h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="text-xs text-slate-400 mb-1.5 block">Category</label>
+                    <label className="text-xs text-muted-foreground mb-1.5 block">Category</label>
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                      <SelectTrigger className="bg-slate-800/50 border-slate-700 text-slate-200" data-testid="select-category">
+                      <SelectTrigger data-testid="select-category">
                         <SelectValue placeholder="All Categories" />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-700">
-                        <SelectItem value="all" className="text-slate-200">All Categories</SelectItem>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
                         {categories?.map(cat => (
-                          <SelectItem key={cat.id} value={cat.id} className="text-slate-200">
+                          <SelectItem key={cat.id} value={cat.id}>
                             {cat.name}
                           </SelectItem>
                         ))}
@@ -171,162 +174,164 @@ export default function MarketplaceJobs() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-slate-400 mb-1.5 block">Status</label>
+                    <label className="text-xs text-muted-foreground mb-1.5 block">Status</label>
                     <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                      <SelectTrigger className="bg-slate-800/50 border-slate-700 text-slate-200" data-testid="select-status">
-                        <SelectValue placeholder="Status" />
+                      <SelectTrigger data-testid="select-status">
+                        <SelectValue placeholder="All Status" />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-700">
-                        <SelectItem value="all" className="text-slate-200">All Status</SelectItem>
-                        <SelectItem value="open" className="text-slate-200">Open</SelectItem>
-                        <SelectItem value="in_progress" className="text-slate-200">In Progress</SelectItem>
-                        <SelectItem value="completed" className="text-slate-200">Completed</SelectItem>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="open">Open</SelectItem>
+                        <SelectItem value="in_progress">In Progress</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <label className="text-xs text-slate-400 mb-1.5 block">Urgency</label>
+                    <label className="text-xs text-muted-foreground mb-1.5 block">Urgency</label>
                     <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
-                      <SelectTrigger className="bg-slate-800/50 border-slate-700 text-slate-200" data-testid="select-urgency">
-                        <SelectValue placeholder="Urgency" />
+                      <SelectTrigger data-testid="select-urgency">
+                        <SelectValue placeholder="All Urgency" />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-700">
-                        <SelectItem value="all" className="text-slate-200">Any Urgency</SelectItem>
-                        <SelectItem value="critical" className="text-slate-200">Critical</SelectItem>
-                        <SelectItem value="high" className="text-slate-200">High</SelectItem>
-                        <SelectItem value="normal" className="text-slate-200">Normal</SelectItem>
-                        <SelectItem value="low" className="text-slate-200">Low</SelectItem>
+                      <SelectContent>
+                        <SelectItem value="all">All Urgency</SelectItem>
+                        <SelectItem value="critical">Critical</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="low">Low</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <label className="text-xs text-slate-400 mb-1.5 block">Sort By</label>
+                    <label className="text-xs text-muted-foreground mb-1.5 block">Sort By</label>
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="bg-slate-800/50 border-slate-700 text-slate-200" data-testid="select-sort">
-                        <SelectValue placeholder="Sort by" />
+                      <SelectTrigger data-testid="select-sort">
+                        <ArrowUpDown className="w-4 h-4 mr-2" />
+                        <SelectValue placeholder="Newest First" />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-700">
-                        <SelectItem value="newest" className="text-slate-200">Newest First</SelectItem>
-                        <SelectItem value="budget_high" className="text-slate-200">Budget: High to Low</SelectItem>
-                        <SelectItem value="budget_low" className="text-slate-200">Budget: Low to High</SelectItem>
-                        <SelectItem value="deadline" className="text-slate-200">Deadline: Soonest</SelectItem>
+                      <SelectContent>
+                        <SelectItem value="newest">Newest First</SelectItem>
+                        <SelectItem value="budget_high">Budget: High to Low</SelectItem>
+                        <SelectItem value="budget_low">Budget: Low to High</SelectItem>
+                        <SelectItem value="deadline">Deadline Soon</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-lg border border-blue-500/20">
-                <h4 className="font-semibold text-white mb-2">Looking to hire?</h4>
-                <p className="text-sm text-slate-400 mb-3">
-                  Post your project requirements and receive proposals from qualified experts.
-                </p>
-                <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-500" data-testid="button-post-job-sidebar">
-                  Post a Job
-                </Button>
-              </div>
+              <Card>
+                <CardContent className="pt-6">
+                  <h4 className="font-semibold mb-2">Quick Stats</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Open Jobs</span>
+                      <span className="font-medium">{jobs?.filter(j => j.status === "open").length || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Active Projects</span>
+                      <span className="font-medium">{jobs?.filter(j => j.status === "in_progress").length || 0}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </aside>
 
             <div className="flex-1">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-white" data-testid="text-jobs-count">
-                  {isLoading ? "Loading..." : `${filteredJobs.length} Jobs Available`}
-                </h2>
-                <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <ArrowUpDown className="w-4 h-4" />
-                  <span>Sorted by {sortBy === "newest" ? "Newest" : sortBy}</span>
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  Showing {filteredJobs.length} jobs
+                </p>
               </div>
 
               {isLoading ? (
-                <div className="grid gap-4">
-                  {[...Array(6)].map((_, i) => (
-                    <Card key={i} className="bg-slate-800/50 border-slate-700">
-                      <CardHeader>
-                        <Skeleton className="h-6 w-3/4 bg-slate-700" />
-                        <Skeleton className="h-4 w-1/2 bg-slate-700 mt-2" />
-                      </CardHeader>
-                      <CardContent>
-                        <Skeleton className="h-16 w-full bg-slate-700" />
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map(i => (
+                    <Card key={i}>
+                      <CardContent className="pt-6">
+                        <Skeleton className="h-6 w-3/4 mb-2" />
+                        <Skeleton className="h-4 w-full mb-2" />
+                        <Skeleton className="h-4 w-1/2" />
                       </CardContent>
                     </Card>
                   ))}
                 </div>
               ) : filteredJobs.length === 0 ? (
-                <Card className="bg-slate-800/50 border-slate-700">
-                  <CardContent className="py-12 text-center">
-                    <AlertCircle className="w-12 h-12 text-slate-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-white mb-2">No Jobs Found</h3>
-                    <p className="text-slate-400">Try adjusting your filters or search query</p>
+                <Card>
+                  <CardContent className="pt-6 text-center py-12">
+                    <AlertCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
+                    <p className="text-muted-foreground">
+                      Try adjusting your filters or search terms
+                    </p>
                   </CardContent>
                 </Card>
               ) : (
-                <div className="grid gap-4">
-                  {filteredJobs.map((job) => (
+                <div className="space-y-4">
+                  {filteredJobs.map(job => (
                     <Link key={job.id} to={`/marketplace/jobs/${job.id}`}>
-                      <Card 
-                        className="bg-slate-800/50 border-slate-700 hover:border-slate-600 transition-colors cursor-pointer"
-                        data-testid={`card-job-${job.id}`}
-                      >
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1 min-w-0">
-                              <CardTitle className="text-lg text-white mb-1 line-clamp-1" data-testid={`text-job-title-${job.id}`}>
-                                {job.title}
-                              </CardTitle>
-                              <div className="flex items-center gap-3 text-sm text-slate-400">
-                                <span>{job.buyer_name}</span>
-                                <span className="text-slate-600">|</span>
-                                <span>{job.category_name}</span>
+                      <Card className="hover-elevate cursor-pointer" data-testid={`card-job-${job.id}`}>
+                        <CardContent className="pt-6">
+                          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 flex-wrap mb-2">
+                                <h3 className="text-lg font-semibold">{job.title}</h3>
+                                {getStatusBadge(job.status)}
+                                {getUrgencyBadge(job.urgency)}
+                              </div>
+                              <p className="text-muted-foreground line-clamp-2 mb-3">
+                                {job.description}
+                              </p>
+                              <div className="flex flex-wrap gap-1 mb-3">
+                                {job.skills?.slice(0, 4).map((skill, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {skill}
+                                  </Badge>
+                                ))}
+                                {job.skills?.length > 4 && (
+                                  <Badge variant="outline" className="text-xs">
+                                    +{job.skills.length - 4} more
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Users className="w-4 h-4" />
+                                  {job.buyer_name}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Briefcase className="w-4 h-4" />
+                                  {job.category_name}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-4 h-4" />
+                                  Posted {formatDate(job.created_at)}
+                                </span>
                               </div>
                             </div>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <Badge variant="outline" className={getStatusColor(job.status)}>
-                                {job.status === "in_progress" ? "In Progress" : job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-                              </Badge>
-                              <Badge variant="outline" className={getUrgencyColor(job.urgency)}>
-                                {job.urgency.charAt(0).toUpperCase() + job.urgency.slice(1)}
-                              </Badge>
+                            <div className="flex flex-col items-end gap-2">
+                              <div className="text-right">
+                                <p className="text-lg font-bold" style={{ color: `hsl(var(--primary))` }}>
+                                  {formatBudget(job.budget_min, job.budget_max, job.currency)}
+                                </p>
+                                <p className="text-xs text-muted-foreground">Budget</p>
+                              </div>
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-4 h-4" />
+                                  Due {formatDate(job.deadline)}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Users className="w-4 h-4" />
+                                  {job.proposal_count || 0} proposals
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pb-3">
-                          <p className="text-slate-400 text-sm line-clamp-2 mb-4" data-testid={`text-job-description-${job.id}`}>
-                            {job.description}
-                          </p>
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {job.skills?.slice(0, 4).map((skill, idx) => (
-                              <Badge key={idx} variant="secondary" className="bg-slate-700/50 text-slate-300 text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                            {job.skills?.length > 4 && (
-                              <Badge variant="secondary" className="bg-slate-700/50 text-slate-400 text-xs">
-                                +{job.skills.length - 4} more
-                              </Badge>
-                            )}
                           </div>
                         </CardContent>
-                        <CardFooter className="pt-3 border-t border-slate-700/50">
-                          <div className="flex items-center justify-between w-full text-sm">
-                            <div className="flex items-center gap-4 text-slate-400">
-                              <span className="flex items-center gap-1.5">
-                                <DollarSign className="w-4 h-4 text-green-400" />
-                                <span className="text-green-400 font-medium">{formatBudget(job.budget_min, job.budget_max, job.currency)}</span>
-                              </span>
-                              <span className="flex items-center gap-1.5">
-                                <Calendar className="w-4 h-4" />
-                                Due {formatDate(job.deadline)}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-1.5 text-slate-400">
-                              <Users className="w-4 h-4" />
-                              <span>{job.proposal_count || 0} proposals</span>
-                            </div>
-                          </div>
-                        </CardFooter>
                       </Card>
                     </Link>
                   ))}
@@ -340,19 +345,19 @@ export default function MarketplaceJobs() {
                     size="sm"
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="border-slate-700 text-slate-300"
                     data-testid="button-prev-page"
                   >
                     <ChevronLeft className="w-4 h-4" />
                     Previous
                   </Button>
-                  <span className="px-4 text-slate-400 text-sm">Page {currentPage}</span>
+                  <span className="px-4 text-sm text-muted-foreground">
+                    Page {currentPage}
+                  </span>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setCurrentPage(p => p + 1)}
                     disabled={filteredJobs.length < ITEMS_PER_PAGE}
-                    className="border-slate-700 text-slate-300"
                     data-testid="button-next-page"
                   >
                     Next
