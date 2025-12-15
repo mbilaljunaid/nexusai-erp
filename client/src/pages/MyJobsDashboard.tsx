@@ -112,7 +112,7 @@ export default function MyJobsDashboard() {
 
   const updateProposalMutation = useMutation({
     mutationFn: async ({ proposalId, status }: { proposalId: string; status: string }) => {
-      return apiRequest("PATCH", `/api/community/marketplace/proposals/${proposalId}/status`, { status });
+      return apiRequest("PATCH", `/api/community/marketplace/proposals/${proposalId}`, { status });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/community/marketplace/jobs", selectedJob?.id, "proposals"] });

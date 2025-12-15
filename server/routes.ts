@@ -4452,5 +4452,320 @@ Be fair and consider context. Not all controversial content is harmful.`
     }
   });
 
+  // POST /api/community/marketplace/seed-jobs - Seed 500+ NexusAI-aligned jobs (admin only)
+  app.post("/api/community/marketplace/seed-jobs", isPlatformAuthenticated, async (req: any, res) => {
+    const userId = req.user?.id || req.userId;
+    if (!userId) return res.status(401).json({ error: "Authentication required" });
+    try {
+      // NexusAI-specific job templates organized by category
+      const nexusAIJobTemplates = {
+        "ERP Implementation & Configuration": [
+          { title: "NexusAI ERP Full Implementation for Manufacturing Plant", skills: ["ERP Implementation", "Manufacturing", "NexusAI", "Data Migration"], budgetMin: 15000, budgetMax: 45000 },
+          { title: "Configure NexusAI Finance Module for Multi-Currency Support", skills: ["Financial Management", "Multi-Currency", "NexusAI Finance", "GL Configuration"], budgetMin: 5000, budgetMax: 12000 },
+          { title: "NexusAI Procure-to-Pay Process Implementation", skills: ["Procurement", "AP Automation", "Vendor Management", "NexusAI"], budgetMin: 8000, budgetMax: 20000 },
+          { title: "Order-to-Cash Workflow Setup in NexusAI", skills: ["Order Management", "AR", "Revenue Recognition", "NexusAI"], budgetMin: 7000, budgetMax: 18000 },
+          { title: "NexusAI Inventory Management Module Configuration", skills: ["Inventory Control", "Warehouse Management", "NexusAI SCM"], budgetMin: 6000, budgetMax: 15000 },
+          { title: "Implement NexusAI Fixed Asset Lifecycle Management", skills: ["Asset Management", "Depreciation", "NexusAI Finance"], budgetMin: 4000, budgetMax: 10000 },
+          { title: "NexusAI Month-End Close Automation Setup", skills: ["Financial Close", "Consolidation", "Reporting", "NexusAI"], budgetMin: 5000, budgetMax: 12000 },
+          { title: "Configure NexusAI for Construction Industry", skills: ["Construction ERP", "Project Costing", "NexusAI Industry"], budgetMin: 12000, budgetMax: 30000 },
+          { title: "NexusAI Retail & E-Commerce Module Implementation", skills: ["Retail ERP", "POS Integration", "E-Commerce", "NexusAI"], budgetMin: 10000, budgetMax: 25000 },
+          { title: "Healthcare Compliance Setup in NexusAI", skills: ["Healthcare ERP", "HIPAA", "Compliance", "NexusAI"], budgetMin: 8000, budgetMax: 22000 },
+        ],
+        "AI & Automation Development": [
+          { title: "Build Custom AI Copilot Extension for NexusAI", skills: ["AI Development", "NexusAI Copilot", "Python", "OpenAI API"], budgetMin: 8000, budgetMax: 25000 },
+          { title: "Develop Predictive Analytics Dashboard for NexusAI", skills: ["Machine Learning", "Analytics", "Python", "NexusAI BI"], budgetMin: 10000, budgetMax: 30000 },
+          { title: "Implement AI-Powered Lead Scoring in NexusAI CRM", skills: ["AI", "CRM", "Lead Scoring", "NexusAI"], budgetMin: 6000, budgetMax: 15000 },
+          { title: "Build Anomaly Detection System for NexusAI Finance", skills: ["Anomaly Detection", "ML", "Financial Analysis", "NexusAI"], budgetMin: 7000, budgetMax: 18000 },
+          { title: "Create AI Document Processing Pipeline for NexusAI", skills: ["OCR", "NLP", "Document AI", "NexusAI Integration"], budgetMin: 5000, budgetMax: 14000 },
+          { title: "Develop Chatbot for NexusAI Customer Support Module", skills: ["Chatbot", "NLP", "Customer Service", "NexusAI"], budgetMin: 4000, budgetMax: 12000 },
+          { title: "Implement AI-Based Demand Forecasting in NexusAI", skills: ["Forecasting", "ML", "Supply Chain", "NexusAI SCM"], budgetMin: 8000, budgetMax: 20000 },
+          { title: "Build Recommendation Engine for NexusAI E-Commerce", skills: ["Recommendation System", "ML", "E-Commerce", "NexusAI"], budgetMin: 7000, budgetMax: 18000 },
+          { title: "Create AI Quality Inspection Module for NexusAI Manufacturing", skills: ["Computer Vision", "QC", "Manufacturing", "NexusAI"], budgetMin: 12000, budgetMax: 35000 },
+          { title: "Develop Intelligent Workflow Automation for NexusAI", skills: ["RPA", "Workflow Automation", "AI", "NexusAI"], budgetMin: 6000, budgetMax: 16000 },
+        ],
+        "Integration & API Development": [
+          { title: "Integrate NexusAI with Salesforce CRM", skills: ["Salesforce", "API Integration", "NexusAI API", "REST"], budgetMin: 5000, budgetMax: 15000 },
+          { title: "Build NexusAI to SAP Data Sync Pipeline", skills: ["SAP", "Data Integration", "ETL", "NexusAI"], budgetMin: 10000, budgetMax: 28000 },
+          { title: "Develop Custom API Connectors for NexusAI", skills: ["API Development", "REST", "GraphQL", "NexusAI SDK"], budgetMin: 4000, budgetMax: 12000 },
+          { title: "Integrate NexusAI with Stripe Payment Gateway", skills: ["Stripe", "Payment Integration", "NexusAI Finance"], budgetMin: 3000, budgetMax: 8000 },
+          { title: "Build NexusAI to Shopify Integration", skills: ["Shopify", "E-Commerce Integration", "NexusAI"], budgetMin: 4000, budgetMax: 10000 },
+          { title: "Implement NexusAI Webhook System for Real-Time Events", skills: ["Webhooks", "Event-Driven", "NexusAI API"], budgetMin: 3000, budgetMax: 8000 },
+          { title: "Integrate NexusAI with QuickBooks for SMB", skills: ["QuickBooks", "Accounting Integration", "NexusAI"], budgetMin: 3500, budgetMax: 9000 },
+          { title: "Build NexusAI to HubSpot Marketing Integration", skills: ["HubSpot", "Marketing Automation", "NexusAI CRM"], budgetMin: 4000, budgetMax: 11000 },
+          { title: "Develop NexusAI EDI Integration for Supply Chain", skills: ["EDI", "B2B Integration", "Supply Chain", "NexusAI"], budgetMin: 8000, budgetMax: 22000 },
+          { title: "Integrate NexusAI with Microsoft Teams for Collaboration", skills: ["Microsoft Teams", "Collaboration", "NexusAI"], budgetMin: 3000, budgetMax: 7000 },
+        ],
+        "Reporting & Analytics": [
+          { title: "Build Executive Dashboard Suite for NexusAI", skills: ["Business Intelligence", "Dashboard Design", "NexusAI Analytics"], budgetMin: 6000, budgetMax: 18000 },
+          { title: "Create Financial Reporting Package in NexusAI", skills: ["Financial Reporting", "GAAP", "NexusAI Finance"], budgetMin: 5000, budgetMax: 14000 },
+          { title: "Develop KPI Tracking System for NexusAI Manufacturing", skills: ["KPIs", "Manufacturing Analytics", "NexusAI"], budgetMin: 4000, budgetMax: 12000 },
+          { title: "Build Sales Pipeline Analytics for NexusAI CRM", skills: ["Sales Analytics", "Pipeline Reporting", "NexusAI CRM"], budgetMin: 3500, budgetMax: 10000 },
+          { title: "Create HR Analytics Dashboard in NexusAI", skills: ["HR Analytics", "Workforce Planning", "NexusAI HR"], budgetMin: 4000, budgetMax: 11000 },
+          { title: "Develop Supply Chain Visibility Dashboard for NexusAI", skills: ["SCM Analytics", "Logistics", "NexusAI SCM"], budgetMin: 5000, budgetMax: 14000 },
+          { title: "Build Compliance Reporting Module for NexusAI", skills: ["Compliance Reporting", "Audit", "NexusAI"], budgetMin: 6000, budgetMax: 16000 },
+          { title: "Create Customer 360 View Dashboard in NexusAI", skills: ["Customer Analytics", "CRM", "NexusAI"], budgetMin: 4500, budgetMax: 12000 },
+          { title: "Develop Real-Time Operations Dashboard for NexusAI", skills: ["Operations Analytics", "Real-Time", "NexusAI"], budgetMin: 5000, budgetMax: 13000 },
+          { title: "Build Profitability Analysis Reports for NexusAI", skills: ["Profitability Analysis", "Cost Accounting", "NexusAI Finance"], budgetMin: 4000, budgetMax: 11000 },
+        ],
+        "Custom Development & Extensions": [
+          { title: "Develop Custom NexusAI Module for Legal Industry", skills: ["Legal Tech", "Custom Development", "NexusAI SDK"], budgetMin: 15000, budgetMax: 40000 },
+          { title: "Build Custom Approval Workflow Engine for NexusAI", skills: ["Workflow Engine", "BPM", "NexusAI"], budgetMin: 8000, budgetMax: 22000 },
+          { title: "Create Custom Form Builder Extension for NexusAI", skills: ["Form Builder", "Low-Code", "NexusAI"], budgetMin: 6000, budgetMax: 16000 },
+          { title: "Develop Multi-Tenant Module for NexusAI SaaS", skills: ["Multi-Tenancy", "SaaS", "NexusAI Architecture"], budgetMin: 12000, budgetMax: 35000 },
+          { title: "Build Custom Scheduling Module for NexusAI", skills: ["Scheduling", "Resource Planning", "NexusAI"], budgetMin: 5000, budgetMax: 14000 },
+          { title: "Create Custom Pricing Engine for NexusAI Commerce", skills: ["Pricing Engine", "E-Commerce", "NexusAI"], budgetMin: 7000, budgetMax: 18000 },
+          { title: "Develop Custom Notification System for NexusAI", skills: ["Notifications", "Real-Time", "NexusAI"], budgetMin: 3500, budgetMax: 9000 },
+          { title: "Build Custom Document Management for NexusAI", skills: ["DMS", "Document Management", "NexusAI"], budgetMin: 6000, budgetMax: 15000 },
+          { title: "Create Custom Time Tracking Module for NexusAI Projects", skills: ["Time Tracking", "Project Management", "NexusAI"], budgetMin: 4000, budgetMax: 10000 },
+          { title: "Develop Custom Audit Trail System for NexusAI", skills: ["Audit", "Compliance", "NexusAI Security"], budgetMin: 5000, budgetMax: 13000 },
+        ],
+        "Data Migration & Onboarding": [
+          { title: "Migrate Legacy ERP Data to NexusAI Platform", skills: ["Data Migration", "ETL", "Legacy Systems", "NexusAI"], budgetMin: 8000, budgetMax: 25000 },
+          { title: "Enterprise Data Cleansing for NexusAI Implementation", skills: ["Data Quality", "Data Cleansing", "NexusAI"], budgetMin: 5000, budgetMax: 15000 },
+          { title: "Historical Financial Data Import to NexusAI", skills: ["Financial Data", "Data Import", "NexusAI Finance"], budgetMin: 4000, budgetMax: 12000 },
+          { title: "Customer Master Data Migration to NexusAI CRM", skills: ["CRM Data", "Master Data", "NexusAI"], budgetMin: 3500, budgetMax: 10000 },
+          { title: "Product Catalog Migration to NexusAI Commerce", skills: ["Product Data", "E-Commerce", "NexusAI"], budgetMin: 3000, budgetMax: 8000 },
+          { title: "Employee Data Onboarding to NexusAI HR", skills: ["HR Data", "Employee Onboarding", "NexusAI HR"], budgetMin: 3000, budgetMax: 8000 },
+          { title: "Vendor Master Data Migration to NexusAI", skills: ["Vendor Data", "Procurement", "NexusAI SCM"], budgetMin: 3500, budgetMax: 9000 },
+          { title: "Asset Register Migration to NexusAI", skills: ["Asset Data", "Fixed Assets", "NexusAI"], budgetMin: 4000, budgetMax: 11000 },
+          { title: "Inventory Data Migration to NexusAI WMS", skills: ["Inventory Data", "Warehouse", "NexusAI SCM"], budgetMin: 4500, budgetMax: 12000 },
+          { title: "Chart of Accounts Setup and Migration in NexusAI", skills: ["COA", "GL Setup", "NexusAI Finance"], budgetMin: 3000, budgetMax: 8000 },
+        ],
+        "Training & Enablement": [
+          { title: "Develop NexusAI End-User Training Program", skills: ["Training", "E-Learning", "NexusAI"], budgetMin: 5000, budgetMax: 15000 },
+          { title: "Create NexusAI Admin Training Materials", skills: ["Admin Training", "Documentation", "NexusAI"], budgetMin: 4000, budgetMax: 12000 },
+          { title: "Build Video Tutorial Series for NexusAI Finance", skills: ["Video Production", "Finance Training", "NexusAI"], budgetMin: 6000, budgetMax: 18000 },
+          { title: "Develop NexusAI Certification Program Content", skills: ["Certification", "Training", "NexusAI"], budgetMin: 8000, budgetMax: 22000 },
+          { title: "Create Interactive NexusAI Onboarding Experience", skills: ["Onboarding", "UX", "NexusAI"], budgetMin: 4000, budgetMax: 11000 },
+          { title: "Build NexusAI Knowledge Base and FAQ System", skills: ["Knowledge Base", "Documentation", "NexusAI"], budgetMin: 5000, budgetMax: 14000 },
+          { title: "Develop NexusAI Best Practices Guide for Manufacturing", skills: ["Best Practices", "Manufacturing", "NexusAI"], budgetMin: 3500, budgetMax: 9000 },
+          { title: "Create NexusAI Implementation Playbook", skills: ["Implementation", "Project Management", "NexusAI"], budgetMin: 6000, budgetMax: 16000 },
+          { title: "Build Train-the-Trainer Program for NexusAI", skills: ["TTT", "Training", "NexusAI"], budgetMin: 7000, budgetMax: 18000 },
+          { title: "Develop NexusAI Change Management Toolkit", skills: ["Change Management", "Adoption", "NexusAI"], budgetMin: 5000, budgetMax: 13000 },
+        ],
+        "Security & Compliance": [
+          { title: "Implement RBAC Security Model in NexusAI", skills: ["RBAC", "Security", "Access Control", "NexusAI"], budgetMin: 6000, budgetMax: 16000 },
+          { title: "Configure SOX Compliance Controls in NexusAI", skills: ["SOX", "Compliance", "Internal Controls", "NexusAI"], budgetMin: 8000, budgetMax: 22000 },
+          { title: "Implement GDPR Data Protection in NexusAI", skills: ["GDPR", "Data Privacy", "NexusAI"], budgetMin: 7000, budgetMax: 18000 },
+          { title: "Configure SSO Integration for NexusAI", skills: ["SSO", "SAML", "Authentication", "NexusAI"], budgetMin: 3500, budgetMax: 9000 },
+          { title: "Implement Multi-Factor Authentication for NexusAI", skills: ["MFA", "Security", "NexusAI"], budgetMin: 3000, budgetMax: 7000 },
+          { title: "Build Security Audit Dashboard for NexusAI", skills: ["Security Audit", "Compliance", "NexusAI"], budgetMin: 5000, budgetMax: 14000 },
+          { title: "Configure Data Encryption at Rest for NexusAI", skills: ["Encryption", "Data Security", "NexusAI"], budgetMin: 4000, budgetMax: 11000 },
+          { title: "Implement PCI-DSS Compliance for NexusAI Payments", skills: ["PCI-DSS", "Payment Security", "NexusAI"], budgetMin: 8000, budgetMax: 20000 },
+          { title: "Develop Security Incident Response for NexusAI", skills: ["Incident Response", "Security", "NexusAI"], budgetMin: 5000, budgetMax: 13000 },
+          { title: "Configure HIPAA Compliance Controls in NexusAI", skills: ["HIPAA", "Healthcare Compliance", "NexusAI"], budgetMin: 10000, budgetMax: 28000 },
+        ],
+        "Performance & Optimization": [
+          { title: "Optimize NexusAI Database Performance", skills: ["Database Optimization", "SQL Tuning", "NexusAI"], budgetMin: 4000, budgetMax: 12000 },
+          { title: "Implement Caching Strategy for NexusAI", skills: ["Caching", "Performance", "Redis", "NexusAI"], budgetMin: 3500, budgetMax: 9000 },
+          { title: "Scale NexusAI for High-Volume Transactions", skills: ["Scalability", "High Availability", "NexusAI"], budgetMin: 8000, budgetMax: 22000 },
+          { title: "Optimize NexusAI Report Generation Performance", skills: ["Reporting", "Performance", "NexusAI"], budgetMin: 4000, budgetMax: 11000 },
+          { title: "Implement Load Balancing for NexusAI", skills: ["Load Balancing", "Infrastructure", "NexusAI"], budgetMin: 5000, budgetMax: 14000 },
+          { title: "Optimize NexusAI API Response Times", skills: ["API Optimization", "Performance", "NexusAI"], budgetMin: 4000, budgetMax: 10000 },
+          { title: "Implement CDN for NexusAI Static Assets", skills: ["CDN", "Performance", "NexusAI"], budgetMin: 2500, budgetMax: 6000 },
+          { title: "Database Indexing Strategy for NexusAI", skills: ["Database Indexing", "SQL", "NexusAI"], budgetMin: 3000, budgetMax: 8000 },
+          { title: "Implement Background Job Processing for NexusAI", skills: ["Job Queue", "Async Processing", "NexusAI"], budgetMin: 4000, budgetMax: 11000 },
+          { title: "Optimize NexusAI Memory Usage", skills: ["Memory Optimization", "Performance", "NexusAI"], budgetMin: 3500, budgetMax: 9000 },
+        ],
+        "Mobile & Frontend Development": [
+          { title: "Develop NexusAI Mobile App for Field Sales", skills: ["Mobile Development", "React Native", "NexusAI CRM"], budgetMin: 12000, budgetMax: 35000 },
+          { title: "Build Progressive Web App for NexusAI", skills: ["PWA", "Frontend", "NexusAI"], budgetMin: 8000, budgetMax: 22000 },
+          { title: "Create Mobile Inventory App for NexusAI WMS", skills: ["Mobile", "Inventory", "NexusAI SCM"], budgetMin: 10000, budgetMax: 28000 },
+          { title: "Develop NexusAI Employee Self-Service Mobile App", skills: ["Mobile HR", "Self-Service", "NexusAI HR"], budgetMin: 8000, budgetMax: 20000 },
+          { title: "Build NexusAI Executive Dashboard Mobile App", skills: ["Mobile BI", "Dashboard", "NexusAI"], budgetMin: 7000, budgetMax: 18000 },
+          { title: "Create Offline-First Mobile App for NexusAI Field Service", skills: ["Offline Mobile", "Field Service", "NexusAI"], budgetMin: 12000, budgetMax: 32000 },
+          { title: "Develop Barcode Scanning App for NexusAI Warehouse", skills: ["Barcode", "Mobile", "NexusAI WMS"], budgetMin: 6000, budgetMax: 15000 },
+          { title: "Build NexusAI Customer Portal Frontend", skills: ["Customer Portal", "Frontend", "NexusAI"], budgetMin: 8000, budgetMax: 20000 },
+          { title: "Create NexusAI Vendor Portal UI", skills: ["Vendor Portal", "Frontend", "NexusAI SCM"], budgetMin: 7000, budgetMax: 18000 },
+          { title: "Develop NexusAI Responsive Dashboard Redesign", skills: ["UI/UX", "Dashboard", "NexusAI"], budgetMin: 6000, budgetMax: 16000 },
+        ],
+      };
+
+      const descriptions = [
+        "We are looking for an experienced NexusAI specialist to help us with this critical project. The ideal candidate should have hands-on experience with similar implementations and a proven track record of successful deployments. This is a high-priority initiative for our organization.",
+        "Our enterprise requires expert assistance to implement this solution within our NexusAI environment. We need someone who understands best practices and can ensure seamless integration with our existing systems. Timeline is flexible for the right candidate.",
+        "Seeking a certified NexusAI consultant to lead this implementation project. You should have experience working with enterprise clients and be comfortable with agile methodologies. Must be available for regular status calls.",
+        "We need a skilled developer to build this custom solution on the NexusAI platform. Prior experience with similar projects is essential. The project includes comprehensive documentation and knowledge transfer requirements.",
+        "Looking for an experienced professional to configure and optimize this functionality within NexusAI. Must demonstrate expertise through portfolio or references. This is a remote-friendly engagement.",
+        "Our team requires specialized expertise to implement this NexusAI feature. You will be working closely with our internal IT team and stakeholders. Strong communication skills are essential.",
+        "We are seeking a contractor to develop and deploy this NexusAI solution for our growing business. The project requires attention to detail and adherence to enterprise security standards.",
+        "Expert consultant needed to architect and implement this NexusAI capability. You should be comfortable presenting to executive stakeholders and managing project timelines independently.",
+        "Professional services needed for this NexusAI implementation. The ideal candidate will have domain expertise and can provide strategic recommendations beyond just technical implementation.",
+        "We require a technical specialist to customize this NexusAI module for our specific industry requirements. Must have experience with compliance and regulatory requirements in our sector.",
+      ];
+
+      const urgencies = ["low", "normal", "normal", "normal", "high", "high", "urgent"];
+      const statuses = ["open", "open", "open", "open", "open", "in_progress", "in_progress", "completed", "completed", "cancelled"];
+
+      // Get existing categories
+      const categoriesResult = await db.execute(sql`SELECT id, name FROM service_categories`);
+      const categories = (categoriesResult.rows as any[]) || [];
+
+      if (categories.length === 0) {
+        return res.status(400).json({ error: "No service categories found. Please seed categories first." });
+      }
+
+      // Get or create users for buyers
+      const existingUsersResult = await db.execute(sql`SELECT id, name FROM users LIMIT 100`);
+      let buyerUsers = (existingUsersResult.rows as any[]) || [];
+
+      // Create additional users if needed
+      const buyerNames = [
+        "Michael Chen", "Sarah Johnson", "David Williams", "Jennifer Brown", "Robert Davis",
+        "Lisa Anderson", "James Wilson", "Emily Taylor", "Christopher Moore", "Amanda Martin",
+        "Daniel Garcia", "Jessica Martinez", "Matthew Robinson", "Ashley Clark", "Andrew Lewis",
+        "Stephanie Hall", "Joshua Young", "Nicole King", "Ryan Wright", "Melissa Scott",
+        "Kevin Green", "Rachel Adams", "Brian Baker", "Laura Nelson", "Justin Hill",
+        "Kimberly Campbell", "Brandon Mitchell", "Amber Roberts", "Eric Carter", "Heather Phillips",
+        "Steven Evans", "Michelle Turner", "Jason Collins", "Amy Stewart", "Mark Sanchez",
+        "Samantha Morris", "Timothy Rogers", "Rebecca Reed", "Jeffrey Cook", "Megan Morgan",
+        "William Bell", "Christina Murphy", "Gregory Bailey", "Victoria Rivera", "Patrick Cooper",
+        "Lauren Richardson", "Scott Cox", "Angela Howard", "Jose Ward", "Kathryn Torres"
+      ];
+
+      for (const name of buyerNames) {
+        const email = name.toLowerCase().replace(" ", ".") + "@nexusai-enterprise.com";
+        const existingUser = buyerUsers.find(u => u.name === name);
+        if (!existingUser) {
+          const userId = `user-buyer-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          await db.execute(sql`
+            INSERT INTO users (id, name, email, role) 
+            VALUES (${userId}, ${name}, ${email}, 'user')
+            ON CONFLICT (email) DO NOTHING
+          `);
+          buyerUsers.push({ id: userId, name });
+        }
+      }
+
+      // Refresh buyer list
+      const refreshedUsersResult = await db.execute(sql`SELECT id, name FROM users LIMIT 100`);
+      buyerUsers = (refreshedUsersResult.rows as any[]) || [];
+
+      // Generate date between Jan 20, 2022 and today
+      const startDate = new Date("2022-01-20");
+      const endDate = new Date();
+      const getRandomDate = () => {
+        const time = startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime());
+        return new Date(time);
+      };
+
+      let jobsCreated = 0;
+      const jobIds: string[] = [];
+
+      // Generate 500+ jobs
+      for (const [categoryName, templates] of Object.entries(nexusAIJobTemplates)) {
+        const category = categories.find((c: any) => c.name.toLowerCase().includes(categoryName.toLowerCase().split(" ")[0])) || categories[Math.floor(Math.random() * categories.length)];
+        
+        // Generate 5 variations of each template = 100 jobs per category * 10 categories = 1000+ jobs
+        for (const template of templates) {
+          for (let variation = 0; variation < 5; variation++) {
+            const buyer = buyerUsers[Math.floor(Math.random() * buyerUsers.length)];
+            const createdAt = getRandomDate();
+            const deadline = new Date(createdAt.getTime() + (30 + Math.random() * 90) * 24 * 60 * 60 * 1000);
+            const status = statuses[Math.floor(Math.random() * statuses.length)];
+            const urgency = urgencies[Math.floor(Math.random() * urgencies.length)];
+            const description = descriptions[Math.floor(Math.random() * descriptions.length)];
+            
+            const budgetMultiplier = 0.8 + Math.random() * 0.4; // 80% to 120% of base
+            const budgetMin = Math.round(template.budgetMin * budgetMultiplier);
+            const budgetMax = Math.round(template.budgetMax * budgetMultiplier);
+            
+            const titleSuffix = variation > 0 ? ` - Phase ${variation + 1}` : "";
+            const jobId = `job-${createdAt.getTime()}-${Math.random().toString(36).substr(2, 6)}`;
+            const skillsArray = `{${template.skills.map(s => `"${s}"`).join(",")}}`;
+
+            await db.execute(sql`
+              INSERT INTO job_postings (id, buyer_id, category_id, title, description, budget_min, budget_max, currency, deadline, status, skills, urgency, total_proposals, created_at, updated_at)
+              VALUES (${jobId}, ${buyer.id}, ${category.id}, ${template.title + titleSuffix}, ${description}, ${budgetMin.toString()}, ${budgetMax.toString()}, 'USD', ${deadline}, ${status}, ${skillsArray}::text[], ${urgency}, 0, ${createdAt}, ${createdAt})
+            `);
+
+            jobIds.push(jobId);
+            jobsCreated++;
+          }
+        }
+      }
+
+      // Create provider users for proposals
+      const providerNames = [
+        "Alex Thompson", "Maria Garcia", "John Smith", "Elena Rodriguez", "David Lee",
+        "Sophia Martinez", "Michael Brown", "Olivia Johnson", "James Anderson", "Emma Wilson",
+        "William Taylor", "Ava Thomas", "Benjamin Moore", "Isabella Jackson", "Lucas White",
+        "Mia Harris", "Alexander Martin", "Charlotte Thompson", "Daniel Garcia", "Amelia Lewis"
+      ];
+
+      const providerUsers: { id: string; name: string }[] = [];
+      for (const name of providerNames) {
+        const email = name.toLowerCase().replace(" ", ".") + "@nexusai-provider.com";
+        const userId = `user-provider-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        await db.execute(sql`
+          INSERT INTO users (id, name, email, role) 
+          VALUES (${userId}, ${name}, ${email}, 'user')
+          ON CONFLICT (email) DO NOTHING
+        `);
+        providerUsers.push({ id: userId, name });
+
+        // Create trust level for provider (level 3+ to allow proposals)
+        await db.execute(sql`
+          INSERT INTO user_trust_levels (id, user_id, trust_level, total_reputation)
+          VALUES (${`trust-${userId}`}, ${userId}, ${3 + Math.floor(Math.random() * 2)}, ${500 + Math.floor(Math.random() * 2000)})
+          ON CONFLICT (user_id) DO UPDATE SET trust_level = EXCLUDED.trust_level, total_reputation = EXCLUDED.total_reputation
+        `);
+      }
+
+      // Generate proposals for jobs
+      let proposalsCreated = 0;
+      const proposalStatuses = ["pending", "pending", "pending", "shortlisted", "accepted", "rejected", "withdrawn"];
+      const proposalMessages = [
+        "I have extensive experience implementing similar solutions on the NexusAI platform. My background includes 5+ years of enterprise ERP implementations and I can deliver this project efficiently within your timeline and budget.",
+        "As a certified NexusAI consultant, I understand the intricacies of this type of project. I have successfully completed 20+ similar engagements and can provide references upon request.",
+        "I specialize in this exact type of NexusAI implementation and have a proven methodology that ensures success. Let me share my approach and how we can achieve your goals together.",
+        "With my deep expertise in NexusAI and related technologies, I am confident I can deliver exceptional results. I propose a phased approach that minimizes risk while maximizing value.",
+        "I have worked on several comparable projects and understand the challenges you face. My proposal includes comprehensive documentation and knowledge transfer to ensure long-term success.",
+      ];
+
+      for (const jobId of jobIds.slice(0, 400)) { // Add proposals to first 400 jobs
+        const numProposals = 1 + Math.floor(Math.random() * 6);
+        const usedProviders = new Set<string>();
+        
+        for (let i = 0; i < numProposals; i++) {
+          let provider = providerUsers[Math.floor(Math.random() * providerUsers.length)];
+          if (usedProviders.has(provider.id)) continue;
+          usedProviders.add(provider.id);
+
+          const proposalId = `prop-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+          const message = proposalMessages[Math.floor(Math.random() * proposalMessages.length)];
+          const bidAmount = (1000 + Math.random() * 20000).toFixed(2);
+          const estimatedDays = 7 + Math.floor(Math.random() * 60);
+          const status = proposalStatuses[Math.floor(Math.random() * proposalStatuses.length)];
+          const createdAt = getRandomDate();
+
+          await db.execute(sql`
+            INSERT INTO job_proposals (id, job_posting_id, provider_id, proposal_message, bid_amount, estimated_delivery_days, status, created_at, updated_at)
+            VALUES (${proposalId}, ${jobId}, ${provider.id}, ${message}, ${bidAmount}, ${estimatedDays}, ${status}, ${createdAt}, ${createdAt})
+          `);
+          proposalsCreated++;
+        }
+
+        // Update total_proposals count
+        await db.execute(sql`
+          UPDATE job_postings 
+          SET total_proposals = (SELECT COUNT(*) FROM job_proposals WHERE job_posting_id = ${jobId})
+          WHERE id = ${jobId}
+        `);
+      }
+
+      res.json({
+        success: true,
+        message: `Successfully seeded ${jobsCreated} NexusAI-aligned jobs and ${proposalsCreated} proposals`,
+        jobsCreated,
+        proposalsCreated,
+        providersCreated: providerUsers.length
+      });
+    } catch (error: any) {
+      console.error("Error seeding jobs:", error);
+      res.status(500).json({ error: "Failed to seed jobs", details: error.message });
+    }
+  });
+
   return httpServer;
 }

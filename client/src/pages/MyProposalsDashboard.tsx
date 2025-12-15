@@ -42,7 +42,7 @@ export default function MyProposalsDashboard() {
 
   const withdrawMutation = useMutation({
     mutationFn: async (proposalId: string) => {
-      return apiRequest("PATCH", `/api/community/marketplace/proposals/${proposalId}/status`, { status: "withdrawn" });
+      return apiRequest("PATCH", `/api/community/marketplace/proposals/${proposalId}`, { status: "withdrawn" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/community/marketplace/my-proposals"] });
