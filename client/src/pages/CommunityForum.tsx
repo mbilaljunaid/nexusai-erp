@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Header, Footer } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -203,42 +204,57 @@ export default function CommunityForum() {
 
   if (showMarketplace) {
     return (
-      <div className="space-y-6">
-        <Button variant="ghost" onClick={() => setShowMarketplace(false)} data-testid="button-back-from-marketplace">
-          Back to Forum
-        </Button>
-        <ServiceMarketplace />
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="space-y-6">
+            <Button variant="ghost" onClick={() => setShowMarketplace(false)} data-testid="button-back-from-marketplace">
+              Back to Forum
+            </Button>
+            <ServiceMarketplace />
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   if (showModeration) {
     return (
-      <div className="space-y-6">
-        <Button variant="ghost" onClick={() => setShowModeration(false)} data-testid="button-back-from-moderation">
-          Back to Forum
-        </Button>
-        <ModerationQueue />
-        <FlagContentDialog
-          open={!!flagTarget}
-          onOpenChange={(open) => !open && setFlagTarget(null)}
-          targetType={flagTarget?.type || "post"}
-          targetId={flagTarget?.id || ""}
-        />
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="space-y-6">
+            <Button variant="ghost" onClick={() => setShowModeration(false)} data-testid="button-back-from-moderation">
+              Back to Forum
+            </Button>
+            <ModerationQueue />
+            <FlagContentDialog
+              open={!!flagTarget}
+              onOpenChange={(open) => !open && setFlagTarget(null)}
+              targetType={flagTarget?.type || "post"}
+              targetId={flagTarget?.id || ""}
+            />
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   if (selectedPost && postDetail) {
     return (
-      <div className="space-y-6">
-        <Button variant="ghost" onClick={() => setSelectedPost(null)} data-testid="button-back">
-          Back to Posts
-        </Button>
-        <FlagContentDialog
-          open={!!flagTarget}
-          onOpenChange={(open) => !open && setFlagTarget(null)}
-          targetType={flagTarget?.type || "post"}
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="space-y-6">
+            <Button variant="ghost" onClick={() => setSelectedPost(null)} data-testid="button-back">
+              Back to Posts
+            </Button>
+            <FlagContentDialog
+              open={!!flagTarget}
+              onOpenChange={(open) => !open && setFlagTarget(null)}
+              targetType={flagTarget?.type || "post"}
           targetId={flagTarget?.id || ""}
         />
 
@@ -401,12 +417,18 @@ export default function CommunityForum() {
             </CardFooter>
           </Card>
         </div>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-3xl font-bold" data-testid="text-page-title">Community Forum</h1>
@@ -624,6 +646,9 @@ export default function CommunityForum() {
         targetType={flagTarget?.type || "post"}
         targetId={flagTarget?.id || ""}
       />
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
