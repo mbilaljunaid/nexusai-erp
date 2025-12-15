@@ -5449,10 +5449,10 @@ Be fair and consider context. Not all controversial content is harmful.`
   // POST /api/training - Submit new training resource (requires auth)
   app.post("/api/training", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user) return res.status(401).json({ error: "Authentication required" });
+      const userId = (req as any).userId;
+      if (!userId) return res.status(401).json({ error: "Authentication required" });
       
-      const parsed = insertTrainingResourceSchema.safeParse({ ...req.body, submittedBy: user.id });
+      const parsed = insertTrainingResourceSchema.safeParse({ ...req.body, submittedBy: userId });
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid data", details: parsed.error.errors });
       }
@@ -5462,7 +5462,7 @@ Be fair and consider context. Not all controversial content is harmful.`
       
       await db.execute(sql`
         INSERT INTO training_resources (id, type, title, description, resource_url, thumbnail_url, duration, difficulty, modules, industries, apps, tags, submitted_by, status, created_at, updated_at)
-        VALUES (${id}, ${type}, ${title}, ${description || null}, ${resourceUrl || null}, ${thumbnailUrl || null}, ${duration || null}, ${difficulty || 'beginner'}, ${modules || []}, ${industries || []}, ${apps || []}, ${tags || []}, ${user.id}, 'pending', ${new Date()}, ${new Date()})
+        VALUES (${id}, ${type}, ${title}, ${description || null}, ${resourceUrl || null}, ${thumbnailUrl || null}, ${duration || null}, ${difficulty || 'beginner'}, ${modules || []}, ${industries || []}, ${apps || []}, ${tags || []}, ${userId}, 'pending', ${new Date()}, ${new Date()})
       `);
       
       res.status(201).json({ id, message: "Resource submitted for review" });
@@ -5475,33 +5475,33 @@ Be fair and consider context. Not all controversial content is harmful.`
   // POST /api/training/:id/like - Like a training resource
   app.post("/api/training/:id/like", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user) return res.status(401).json({ error: "Authentication required" });
+      const userId = (req as any).userId;
+      if (!userId) return res.status(401).json({ error: "Authentication required" });
       
       const { id } = req.params;
       
       // Check if already liked
       const existing = await db.execute(sql`
-        SELECT id FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${user.id}
+        SELECT id FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${userId}
       `);
       
       if (existing.rows.length > 0) {
         // Unlike
-        await db.execute(sql`DELETE FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${user.id}`);
+        await db.execute(sql`DELETE FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${userId}`);
         await db.execute(sql`UPDATE training_resources SET likes = likes - 1 WHERE id = ${id}`);
         return res.json({ liked: false });
       }
       
       // Like
       const likeId = `like-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
-      await db.execute(sql`INSERT INTO training_resource_likes (id, resource_id, user_id, created_at) VALUES (${likeId}, ${id}, ${user.id}, ${new Date()})`);
+      await db.execute(sql`INSERT INTO training_resource_likes (id, resource_id, user_id, created_at) VALUES (${likeId}, ${id}, ${userId}, ${new Date()})`);
       await db.execute(sql`UPDATE training_resources SET likes = likes + 1 WHERE id = ${id}`);
       
       // Award points to the resource author
       const resource = await db.execute(sql`SELECT submitted_by FROM training_resources WHERE id = ${id}`);
       if (resource.rows.length > 0) {
         const authorId = (resource.rows[0] as any).submitted_by;
-        if (authorId !== user.id) {
+        if (authorId !== userId) {
           const eventId = `rep-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
           await db.execute(sql`
             INSERT INTO reputation_events (id, user_id, action_type, points, source_type, source_id, description, created_at)
@@ -5523,12 +5523,12 @@ Be fair and consider context. Not all controversial content is harmful.`
   // GET /api/training/:id/liked - Check if user liked a resource
   app.get("/api/training/:id/liked", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user) return res.json({ liked: false });
+      const userId = (req as any).userId;
+      if (!userId) return res.json({ liked: false });
       
       const { id } = req.params;
       const existing = await db.execute(sql`
-        SELECT id FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${user.id}
+        SELECT id FROM training_resource_likes WHERE resource_id = ${id} AND user_id = ${userId}
       `);
       
       res.json({ liked: existing.rows.length > 0 });
@@ -5540,10 +5540,10 @@ Be fair and consider context. Not all controversial content is harmful.`
   // POST /api/training/filter-request - Request new filter category
   app.post("/api/training/filter-request", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user) return res.status(401).json({ error: "Authentication required" });
+      const userId = (req as any).userId;
+      if (!userId) return res.status(401).json({ error: "Authentication required" });
       
-      const parsed = insertTrainingFilterRequestSchema.safeParse({ ...req.body, requestedBy: user.id });
+      const parsed = insertTrainingFilterRequestSchema.safeParse({ ...req.body, requestedBy: userId });
       if (!parsed.success) {
         return res.status(400).json({ error: "Invalid data", details: parsed.error.errors });
       }
@@ -5553,7 +5553,7 @@ Be fair and consider context. Not all controversial content is harmful.`
       
       await db.execute(sql`
         INSERT INTO training_filter_requests (id, filter_type, filter_value, description, requested_by, status, created_at)
-        VALUES (${id}, ${filterType}, ${filterValue}, ${description || null}, ${user.id}, 'pending', ${new Date()})
+        VALUES (${id}, ${filterType}, ${filterValue}, ${description || null}, ${userId}, 'pending', ${new Date()})
       `);
       
       res.status(201).json({ id, message: "Filter request submitted" });
@@ -5566,8 +5566,8 @@ Be fair and consider context. Not all controversial content is harmful.`
   // GET /api/admin/training - Admin: List all training resources (any status)
   app.get("/api/admin/training", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+      const role = (req as any).role;
+      if (role !== "admin") return res.status(403).json({ error: "Admin access required" });
       
       const statusFilter = req.query.status as string;
       const typeFilter = req.query.type as string;
@@ -5630,8 +5630,9 @@ Be fair and consider context. Not all controversial content is harmful.`
   // PATCH /api/admin/training/:id - Admin: Update training resource status
   app.patch("/api/admin/training/:id", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+      const role = (req as any).role;
+      const userId = (req as any).userId;
+      if (role !== "admin") return res.status(403).json({ error: "Admin access required" });
       
       const { id } = req.params;
       const { status, reviewNotes, featured } = req.body;
@@ -5641,7 +5642,7 @@ Be fair and consider context. Not all controversial content is harmful.`
         SET status = COALESCE(${status}, status),
             review_notes = COALESCE(${reviewNotes}, review_notes),
             featured = COALESCE(${featured}, featured),
-            reviewed_by = ${user.id},
+            reviewed_by = ${userId},
             reviewed_at = ${new Date()},
             updated_at = ${new Date()}
         WHERE id = ${id}
@@ -5674,8 +5675,8 @@ Be fair and consider context. Not all controversial content is harmful.`
   // GET /api/admin/training/filter-requests - Admin: List filter requests
   app.get("/api/admin/training/filter-requests", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+      const role = (req as any).role;
+      if (role !== "admin") return res.status(403).json({ error: "Admin access required" });
       
       const { status = "pending" } = req.query;
       
@@ -5697,8 +5698,9 @@ Be fair and consider context. Not all controversial content is harmful.`
   // PATCH /api/admin/training/filter-requests/:id - Admin: Approve/reject filter request
   app.patch("/api/admin/training/filter-requests/:id", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user || user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+      const role = (req as any).role;
+      const userId = (req as any).userId;
+      if (role !== "admin") return res.status(403).json({ error: "Admin access required" });
       
       const { id } = req.params;
       const { status } = req.body;
@@ -5709,7 +5711,7 @@ Be fair and consider context. Not all controversial content is harmful.`
       
       await db.execute(sql`
         UPDATE training_filter_requests 
-        SET status = ${status}, reviewed_by = ${user.id}, reviewed_at = ${new Date()}
+        SET status = ${status}, reviewed_by = ${userId}, reviewed_at = ${new Date()}
         WHERE id = ${id}
       `);
       
@@ -5723,12 +5725,12 @@ Be fair and consider context. Not all controversial content is harmful.`
   // GET /api/contributor/training - Get contributor's own submissions
   app.get("/api/contributor/training", async (req, res) => {
     try {
-      const user = (req as any).user;
-      if (!user) return res.status(401).json({ error: "Authentication required" });
+      const userId = (req as any).userId;
+      if (!userId) return res.status(401).json({ error: "Authentication required" });
       
       const result = await db.execute(sql`
         SELECT * FROM training_resources 
-        WHERE submitted_by = ${user.id}
+        WHERE submitted_by = ${userId}
         ORDER BY created_at DESC
       `);
       
