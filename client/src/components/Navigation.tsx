@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart, MessageSquare } from "lucide-react";
+import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -9,7 +9,6 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);
   const [marketplaceOpen, setMarketplaceOpen] = useState(false);
-  const [communityOpen, setCommunityOpen] = useState(false);
 
   const isActive = (path: string) => location === path;
 
@@ -93,37 +92,19 @@ export function Header() {
               )}
             </div>
 
-            {/* Community Dropdown */}
-            <div 
-              className="relative"
-              onMouseEnter={() => setCommunityOpen(true)}
-              onMouseLeave={() => setCommunityOpen(false)}
-            >
-              <button
-                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1 py-2"
-                onClick={() => setCommunityOpen(!communityOpen)}
-                data-testid="button-community-menu"
+            {/* Community Link */}
+            <Link to="/community">
+              <span
+                className={`text-sm font-medium transition-colors cursor-pointer ${
+                  isActive("/community")
+                    ? "text-blue-400"
+                    : "text-slate-300 hover:text-white"
+                }`}
+                data-testid="link-nav-community"
               >
                 Community
-                <ChevronDown className={`w-4 h-4 transition-transform ${communityOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {communityOpen && (
-                <div className="absolute left-0 top-full pt-1 w-64">
-                  <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2">
-                    <Link to="/community" className="block" data-testid="link-community-forum">
-                      <div className="px-4 py-3 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                        <MessageSquare className="w-4 h-4 text-blue-400" />
-                        <div>
-                          <div className="font-semibold text-sm text-slate-100">Community Forum</div>
-                          <div className="text-xs text-slate-400">Discuss & share ideas</div>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
+              </span>
+            </Link>
 
             {/* Highlighted Contribution Link */}
             <Link to="/contribution">
@@ -278,14 +259,19 @@ export function Header() {
               </Link>
             </div>
             {/* Mobile Community */}
-            <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
-              <p className="px-4 text-xs text-slate-500 uppercase">Community</p>
-              <Link to="/community">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-community-forum">
-                  Community Forum
-                </button>
-              </Link>
-            </div>
+            <Link to="/community">
+              <button 
+                onClick={() => setMenuOpen(false)} 
+                className={`block w-full text-left px-4 py-2 rounded text-sm ${
+                  isActive("/community")
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-300 hover:bg-slate-800"
+                }`}
+                data-testid="link-mobile-community"
+              >
+                Community
+              </button>
+            </Link>
             {/* Mobile Documentation */}
             <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
               <p className="px-4 text-xs text-slate-500 uppercase">Documentation</p>
