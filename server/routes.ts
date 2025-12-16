@@ -448,7 +448,7 @@ export async function registerRoutes(
     }
   });
   
-  app.post("/api/demos/request", validateRequest(insertDemoSchema.omit({ id: true, createdAt: true })), async (req, res) => {
+  app.post("/api/demos/request", validateRequest(insertDemoSchema), async (req, res) => {
     try {
       const data = sanitizeInput((req as any).validatedData);
       const demoData = {
