@@ -253,6 +253,15 @@ export const dbStorage = {
     return result[0];
   },
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const result = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email))
+      .limit(1);
+    return result[0];
+  },
+
   async listUsers(): Promise<User[]> {
     return await db.select().from(usersTable);
   },

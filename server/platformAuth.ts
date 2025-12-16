@@ -212,3 +212,26 @@ export const isPlatformAuthenticated: RequestHandler = (req: Request, res: Respo
   }
   next();
 };
+
+// Seed admin user if it doesn't exist
+export async function seedAdminUser() {
+  try {
+    const adminEmail = "admin@nexusai.com";
+    const existingAdmin = await storage.getUserByEmail(adminEmail);
+    
+    if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash("Admin@2025!", SALT_ROUNDS);
+      await storage.createUser({
+        email: adminEmail,
+        password: hashedPassword,
+        name: "Admin User",
+        firstName: "Admin",
+        lastName: "User",
+        role: "admin",
+      });
+      console.log("[auth] Admin user seeded successfully");
+    }
+  } catch (error) {
+    console.error("[auth] Failed to seed admin user:", error);
+  }
+}

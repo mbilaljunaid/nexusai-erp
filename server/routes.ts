@@ -52,7 +52,7 @@ import analyticsRoutes from "./routes/analyticsRoutes";
 import templateRoutes from "./routes/templateRoutes";
 import migrationRoutes from "./routes/migrationRoutes";
 import { validateRequest, errorResponse, ErrorCode, sanitizeInput } from "./security";
-import { setupPlatformAuth, isPlatformAuthenticated } from "./platformAuth";
+import { setupPlatformAuth, isPlatformAuthenticated, seedAdminUser } from "./platformAuth";
 
 // Generic form data storage (in-memory)
 const formDataStore: Map<string, any[]> = new Map();
@@ -148,6 +148,9 @@ export async function registerRoutes(
 
   // Setup Platform Auth (email/password authentication)
   await setupPlatformAuth(app);
+  
+  // Seed admin user for Quick Login
+  await seedAdminUser();
 
   // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {
