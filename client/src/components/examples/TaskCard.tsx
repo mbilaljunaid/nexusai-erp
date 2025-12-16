@@ -1,7 +1,7 @@
 import { TaskCard } from "../TaskCard";
 
 export default function TaskCardExample() {
-  // Fallback data for demo/preview when no API data provided
+  // todo: remove mock functionality
   const mockTask = {
     id: "1",
     title: "Review Q4 marketing strategy",

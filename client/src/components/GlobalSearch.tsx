@@ -46,7 +46,7 @@ export function GlobalSearch({ onSelect }: GlobalSearchProps) {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  // Fallback data for demo/preview when no API data provided
+  // todo: remove mock functionality
   const recentSearches: SearchResult[] = [
     { id: "1", type: "lead", title: "Sarah Johnson", subtitle: "TechCorp Inc." },
     { id: "2", type: "project", title: "Website Redesign", subtitle: "Marketing" },

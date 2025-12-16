@@ -1,7 +1,7 @@
 import { LeadCard } from "../LeadCard";
 
 export default function LeadCardExample() {
-  // Fallback data for demo/preview when no API data provided
+  // todo: remove mock functionality
   const mockLead = {
     id: "1",
     name: "Sarah Johnson",

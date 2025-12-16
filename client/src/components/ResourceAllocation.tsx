@@ -20,7 +20,7 @@ interface ResourceAllocationProps {
 }
 
 export function ResourceAllocation({ members }: ResourceAllocationProps) {
-  // Fallback data for demo/preview when no API data provided
+  // todo: remove mock functionality
   const defaultMembers: TeamMember[] = members || [
     {
       id: "1",

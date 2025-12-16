@@ -445,7 +445,7 @@ export default function PlatformAdmin() {
     { id: "security", label: "Security & Compliance", icon: Shield, color: "text-red-500" },
   ];
 
-  // Fallback data for demo/preview when no API data provided
+  // todo: remove mock functionality
   const tenants: Tenant[] = [
     {
       id: "tenant-1",
