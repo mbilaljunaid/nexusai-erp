@@ -1,0 +1,225 @@
+Below is a single, merged, production-grade, bulletproof Replit prompt you can copy-paste and use as-is.
+It is written to force a deep, non-skippable audit, full verification, fixes where needed, and a clear final report.
+
+⸻
+
+🔒 MASTER REPLIT PROMPT – FULL CODEBASE DEEP AUDIT & PRODUCTION READINESS CONFIRMATION
+
+You are a senior full-stack engineer and architect with up-to-date knowledge of modern web development.
+Always use the latest stable libraries, APIs, and best practices.
+Do not use deprecated, experimental, or legacy patterns.
+
+Your task is to conduct a deep, exhaustive audit of the entire existing codebase and confirm full compliance with the requirements below.
+This audit is a production-readiness gate — nothing may be assumed; everything must be verified directly in code.
+
+⸻
+
+🔍 1. Scope of Audit (MANDATORY)
+
+Audit every part of the system end-to-end, including but not limited to:
+	•	Frontend UI/UX
+	•	State management and data flow
+	•	API integrations
+	•	Backend routes and controllers
+	•	Business logic and services
+	•	Database models, migrations, and seed data
+	•	Authentication and authorization
+	•	Configuration and environment setup
+	•	Error handling, logging, and observability
+	•	Performance, scalability, and security
+	•	Open-core vs proprietary boundaries (if applicable)
+
+⸻
+
+✅ 2. Core Engineering Requirements (NON-NEGOTIABLE)
+
+You must verify and confirm that:
+	•	No files, logic, or implementation steps are skipped
+	•	No placeholders exist (no TODO, ..., commented stubs, mock logic)
+	•	No hard-coded pages, dashboards, cards, reports, forms, or data
+	•	All files contain complete, production-ready code
+	•	Clean, modular architecture is followed
+	•	Frontend uses modern patterns:
+	•	Functional components
+	•	Hooks
+	•	Proper state management
+	•	No prop drilling abuse
+	•	Backend uses modern standards:
+	•	async/await
+	•	Proper validation
+	•	Clean separation of concerns
+	•	Frontend is fully connected to backend
+	•	No mocked APIs
+	•	No static JSON pretending to be dynamic
+	•	All UI pages are fully built, connected, and working
+	•	Output must be real, working code — never pseudocode
+
+⸻
+
+🔐 3. Security & Compliance Audit
+
+Perform a full security review and fix issues if found:
+	•	Authentication & authorization (RBAC, guards, middleware)
+	•	Secure session/JWT handling (expiry, refresh, storage)
+	•	OWASP Top 10 vulnerabilities
+	•	Input validation & sanitization
+	•	SQL/NoSQL injection prevention
+	•	XSS, CSRF, CORS, clickjacking protection
+	•	Secure file upload handling (type, size, storage)
+	•	Secrets management (no secrets in repo)
+	•	Proper environment-based configuration
+
+Explicitly list all security gaps and their fixes in the final report.
+
+⸻
+
+🚀 4. Performance & Scalability Review
+
+Verify and optimize:
+	•	Database queries and indexing
+	•	N+1 query issues
+	•	Pagination, filtering, sorting
+	•	Caching strategy (where applicable)
+	•	API payload size and response times
+	•	Frontend bundle size and code splitting
+	•	Lazy loading and memoization
+
+Document bottlenecks and applied improvements.
+
+⸻
+
+🧱 5. Database & Data Integrity Audit
+
+Confirm:
+	•	Proper schema design and normalization
+	•	Correct relationships and constraints
+	•	Migration strategy
+	•	Seed data correctness
+	•	No hard-coded IDs or magic values
+	•	Data consistency across all modules
+
+⸻
+
+🔄 6. State Management & Data Flow
+
+Audit and confirm:
+	•	Correct usage of global vs local state
+	•	Predictable and consistent data flow
+	•	Proper loading, error, and empty states
+	•	No duplicated or conflicting state logic
+
+⸻
+
+🎨 7. UI / UX / Accessibility Review
+
+Verify:
+	•	Responsive design across breakpoints
+	•	WCAG accessibility compliance
+	•	Keyboard navigation and ARIA labels
+	•	Clear validation and error messaging
+	•	Proper empty states, loaders, and edge-case handling
+
+⸻
+
+🧪 8. Error Handling, Logging & Observability
+
+Confirm:
+	•	Centralized error handling (frontend & backend)
+	•	Meaningful API error responses
+	•	Logging strategy suitable for production
+	•	Monitoring and alert readiness
+
+⸻
+
+🧪 9. Testing & Quality Gates
+
+Audit:
+	•	Unit, integration, and E2E test coverage
+	•	Critical user flows
+	•	Data integrity and security-related paths
+
+If tests are missing or insufficient:
+	•	Explicitly list gaps
+	•	Recommend concrete test cases
+
+⸻
+
+📦 10. Dependency, License & Maintainability Review
+
+Verify:
+	•	No deprecated or vulnerable libraries
+	•	License compatibility for commercial use
+	•	Clean dependency graph
+	•	Long-term maintainability and extensibility
+
+⸻
+
+🧠 11. Architecture & Technical Debt Assessment
+
+Evaluate:
+	•	Separation of concerns
+	•	Reusability and modularity
+	•	Open-core vs proprietary boundaries (if applicable)
+	•	Technical debt and refactoring opportunities
+
+⸻
+
+📄 12. REQUIRED FINAL DELIVERABLES (STRICT)
+
+You must produce a complete written audit report containing:
+
+1️⃣ Executive Summary
+	•	Overall health of the codebase
+	•	Production readiness status
+
+2️⃣ Detailed Findings (by category)
+	•	Security
+	•	Performance
+	•	Architecture
+	•	UX
+	•	Data integrity
+	•	Maintainability
+
+3️⃣ Complete System Inventory
+
+List explicitly:
+	•	All frontend pages
+	•	All forms and their validations
+	•	All backend routes and controllers
+	•	All database models and relationships
+	•	Frontend ↔ Backend connections
+
+4️⃣ Hardcoded Elements Report
+	•	Identify any hardcoded fields, values, or logic
+	•	Confirm they were fixed or justify why they exist
+
+5️⃣ Issues & Fixes Log
+	•	Issue description
+	•	Severity
+	•	Resolution applied
+
+6️⃣ Final Compliance Checklist
+
+A yes/no confirmation against every requirement above.
+
+⸻
+
+🛑 Final Instruction (NON-OPTIONAL)
+
+This audit must be treated as a production-readiness gate.
+If any requirement is unmet, you must:
+	•	Explicitly call it out
+	•	Fix it
+	•	Document the fix
+
+Do not assume intent. Verify everything in code.
+
+⸻
+
+If you want, next I can:
+	•	Adapt this for Next.js + Node + Prisma
+	•	Adapt it for monorepo or microservices
+	•	Tailor it specifically for NexusAIFirst / Brandoye / Flowboard
+	•	Create a post-audit remediation prompt
+
+Just tell me.

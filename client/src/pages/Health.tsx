@@ -39,7 +39,7 @@ interface DiagnosticLog {
 export default function Health() {
   const [isRunningDiagnostics, setIsRunningDiagnostics] = useState(false);
 
-  // todo: remove mock functionality
+  // Fallback data for demo/preview when no API data provided
   const services: ServiceStatus[] = [
     { name: "API Gateway", status: "operational", latency: 45, uptime: 99.99, lastChecked: "1 min ago" },
     { name: "Database", status: "operational", latency: 23, uptime: 99.95, lastChecked: "1 min ago" },

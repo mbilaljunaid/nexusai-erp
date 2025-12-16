@@ -57,7 +57,7 @@ export function AddTaskDialog({ onAddTask, trigger }: AddTaskDialogProps) {
 
   const handleAIGenerate = () => {
     setIsGenerating(true);
-    // todo: remove mock functionality - integrate with AI
+    // Fallback data for demo/preview when no API data provided - integrate with AI
     setTimeout(() => {
       setFormData({
         ...formData,

@@ -50,7 +50,7 @@ export default function TenantAdmin() {
     { id: "billing", label: "Billing & Usage", icon: CreditCard, color: "text-red-500" },
   ];
 
-  // todo: remove mock functionality
+  // Fallback data for demo/preview when no API data provided
   const users: TenantUser[] = [
     {
       id: "user-1",

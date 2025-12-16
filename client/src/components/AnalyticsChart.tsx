@@ -23,6 +23,7 @@ import {
   Cell,
 } from "recharts";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 type ChartType = "area" | "bar" | "pie";
 type TimeRange = "7d" | "30d" | "90d" | "1y";
@@ -42,7 +43,7 @@ const COLORS = ["hsl(217, 91%, 60%)", "hsl(142, 76%, 36%)", "hsl(271, 81%, 56%)"
 export function AnalyticsChart({
   title,
   type = "area",
-  data,
+  data: propData,
   dataKey = "value",
   xAxisKey = "name",
   showTimeRange = true,
@@ -50,26 +51,16 @@ export function AnalyticsChart({
 }: AnalyticsChartProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("30d");
 
-  // todo: remove mock functionality
-  const defaultAreaData = data || [
-    { name: "Jan", value: 4000, leads: 24 },
-    { name: "Feb", value: 3000, leads: 18 },
-    { name: "Mar", value: 5000, leads: 32 },
-    { name: "Apr", value: 4500, leads: 28 },
-    { name: "May", value: 6000, leads: 42 },
-    { name: "Jun", value: 5500, leads: 38 },
-    { name: "Jul", value: 7000, leads: 52 },
-  ];
+  const { data: apiData } = useQuery<Array<Record<string, unknown>>>({
+    queryKey: ['/api/dashboard/analytics', title, timeRange],
+    enabled: !propData,
+    staleTime: 60000,
+  });
 
-  const defaultPieData = [
-    { name: "Won", value: 35 },
-    { name: "In Progress", value: 25 },
-    { name: "Proposal", value: 20 },
-    { name: "Qualified", value: 15 },
-    { name: "Lost", value: 5 },
-  ];
+  const areaData = propData || apiData || [];
+  const pieData = propData || apiData || [];
 
-  const chartData = type === "pie" ? defaultPieData : defaultAreaData;
+  const chartData = type === "pie" ? pieData : areaData;
 
   return (
     <Card data-testid={`card-chart-${title.toLowerCase().replace(/\s+/g, '-')}`}>
@@ -176,15 +167,15 @@ export function AnalyticsChart({
             )}
           </ResponsiveContainer>
         </div>
-        {type === "pie" && (
+        {type === "pie" && chartData.length > 0 && (
           <div className="flex flex-wrap justify-center gap-4 mt-4">
-            {(chartData as typeof defaultPieData).map((entry, index) => (
-              <div key={entry.name} className="flex items-center gap-2">
+            {chartData.map((entry: Record<string, unknown>, index: number) => (
+              <div key={String(entry.name)} className="flex items-center gap-2">
                 <div 
                   className="w-3 h-3 rounded-full" 
                   style={{ backgroundColor: COLORS[index % COLORS.length] }}
                 />
-                <span className="text-xs text-muted-foreground">{entry.name}</span>
+                <span className="text-xs text-muted-foreground">{String(entry.name)}</span>
               </div>
             ))}
           </div>

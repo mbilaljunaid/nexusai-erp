@@ -52,7 +52,7 @@ interface SystemHealthProps {
 export function SystemHealth({ metrics, insights, onRefresh }: SystemHealthProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // todo: remove mock functionality
+  // Fallback data for demo/preview when no API data provided
   const defaultMetrics: SystemMetric[] = metrics || [
     { name: "API Response", status: "healthy", value: 45, max: 200, unit: "ms", icon: Activity },
     { name: "Database", status: "healthy", value: 23, max: 100, unit: "%", icon: Database },

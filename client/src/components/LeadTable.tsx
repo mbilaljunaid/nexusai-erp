@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
@@ -41,22 +42,20 @@ interface LeadTableProps {
   onBulkAction?: (leadIds: string[], action: string) => void;
 }
 
-export function LeadTable({ leads, onSelectLead, onBulkAction }: LeadTableProps) {
+export function LeadTable({ leads: propLeads, onSelectLead, onBulkAction }: LeadTableProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [sortField, setSortField] = useState<keyof Lead>("score");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  // todo: remove mock functionality
-  const defaultLeads: Lead[] = leads || [
-    { id: "1", name: "Sarah Johnson", email: "sarah@techcorp.com", company: "TechCorp Inc.", status: "qualified", score: 87, value: 45000 },
-    { id: "2", name: "Mark Chen", email: "mark@acme.com", company: "Acme Corp", status: "proposal", score: 78, value: 62000 },
-    { id: "3", name: "Lisa Wong", email: "lisa@globaltech.io", company: "GlobalTech", status: "new", score: 65, value: 28000 },
-    { id: "4", name: "James Miller", email: "james@startup.co", company: "StartupCo", status: "contacted", score: 54, value: 15000 },
-    { id: "5", name: "Emma Davis", email: "emma@enterprise.com", company: "Enterprise LLC", status: "won", score: 92, value: 120000 },
-    { id: "6", name: "Michael Brown", email: "michael@corp.net", company: "Corp Network", status: "qualified", score: 71, value: 38000 },
-  ];
+  const { data: apiLeads } = useQuery<Lead[]>({
+    queryKey: ['/api/crm/leads'],
+    enabled: !propLeads,
+    staleTime: 30000,
+  });
 
-  const sortedLeads = [...defaultLeads].sort((a, b) => {
+  const leads = propLeads || apiLeads || [];
+
+  const sortedLeads = [...leads].sort((a, b) => {
     const aVal = a[sortField];
     const bVal = b[sortField];
     if (typeof aVal === "number" && typeof bVal === "number") {

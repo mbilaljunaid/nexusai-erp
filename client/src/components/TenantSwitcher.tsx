@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,7 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Building2, Plus, Check } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Plus, Check } from "lucide-react";
 
 interface Tenant {
   id: string;
@@ -20,17 +21,31 @@ interface Tenant {
 interface TenantSwitcherProps {
   currentTenant: string;
   onTenantChange?: (tenantId: string) => void;
+  tenants?: Tenant[];
 }
 
-export function TenantSwitcher({ currentTenant, onTenantChange }: TenantSwitcherProps) {
-  // todo: remove mock functionality
-  const tenants: Tenant[] = [
-    { id: "acme", name: "Acme Corp", initials: "AC" },
-    { id: "techstart", name: "TechStart Inc", initials: "TI" },
-    { id: "global", name: "Global Solutions", initials: "GS" },
-  ];
+export function TenantSwitcher({ currentTenant, onTenantChange, tenants: propTenants }: TenantSwitcherProps) {
+  const { data: apiTenants, isLoading } = useQuery<Tenant[]>({
+    queryKey: ['/api/tenants'],
+    enabled: !propTenants,
+    staleTime: 60000,
+  });
 
+  const tenants = propTenants || apiTenants || [];
   const current = tenants.find(t => t.id === currentTenant) || tenants[0];
+
+  if (isLoading && !propTenants) {
+    return (
+      <Button variant="ghost" size="sm" className="gap-2" disabled>
+        <Skeleton className="h-5 w-5 rounded-full" />
+        <Skeleton className="h-3 w-16 hidden md:block" />
+      </Button>
+    );
+  }
+
+  if (!current) {
+    return null;
+  }
 
   return (
     <DropdownMenu>

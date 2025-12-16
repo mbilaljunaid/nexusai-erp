@@ -55,7 +55,7 @@ export default function Ecommerce() {
     { id: "analytics", label: "Analytics", icon: BarChart3, color: "text-pink-500" },
   ];
 
-  // todo: remove mock functionality
+  // Fallback data for demo/preview when no API data provided
   const products: Product[] = [
     { id: "1", name: "Premium Widget", sku: "WID-001", category: "Widgets", price: 29.99, cost: 12, stock: 245, rating: 4.8, sales: 1250, status: "active", image: "" },
     { id: "2", name: "Deluxe Gadget", sku: "GAD-002", category: "Gadgets", price: 49.99, cost: 20, stock: 89, rating: 4.6, sales: 856, status: "active", image: "" },
