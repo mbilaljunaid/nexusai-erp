@@ -1,6 +1,6 @@
 # Configuration Guide
 
-This document describes all configuration options for NexusAI ERP.
+This document describes all configuration options for NexusAIFirst ERP.
 
 ## Environment Variables
 

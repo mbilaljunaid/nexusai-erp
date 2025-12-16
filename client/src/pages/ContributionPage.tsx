@@ -29,7 +29,7 @@ import { Header, Footer } from "@/components/Navigation";
 
 export default function ContributionPage() {
   useEffect(() => {
-    document.title = "Contribute to NexusAI - Join Our Community | NexusAI";
+    document.title = "Contribute to NexusAIFirst - Join Our Community | NexusAIFirst";
   }, []);
 
   const contributionTypes = [
@@ -44,7 +44,7 @@ export default function ContributionPage() {
     {
       icon: Code2,
       title: "App Development",
-      description: "Build and share apps, integrations, and extensions for the NexusAI ecosystem",
+      description: "Build and share apps, integrations, and extensions for the NexusAIFirst ecosystem",
       examples: ["Create marketplace apps", "Build integrations", "Develop custom modules", "Share templates"],
       color: "text-purple-400",
       bgColor: "bg-purple-500/10"
@@ -52,7 +52,7 @@ export default function ContributionPage() {
     {
       icon: Video,
       title: "Training Content",
-      description: "Create tutorials, guides, and training videos to help users master NexusAI",
+      description: "Create tutorials, guides, and training videos to help users master NexusAIFirst",
       examples: ["Video tutorials", "Written guides", "Quick tips", "Use case demos"],
       color: "text-green-400",
       bgColor: "bg-green-500/10"
@@ -68,7 +68,7 @@ export default function ContributionPage() {
     {
       icon: Lightbulb,
       title: "Ideas & Features",
-      description: "Share your innovative ideas and help shape the future of NexusAI",
+      description: "Share your innovative ideas and help shape the future of NexusAIFirst",
       examples: ["Feature requests", "Industry insights", "Process improvements", "Integration ideas"],
       color: "text-yellow-400",
       bgColor: "bg-yellow-500/10"
@@ -87,7 +87,7 @@ export default function ContributionPage() {
     {
       icon: DollarSign,
       title: "Service Marketplace",
-      description: "Sell your expertise through our service marketplace. Offer consulting, implementation, training, and custom development services to the NexusAI community.",
+      description: "Sell your expertise through our service marketplace. Offer consulting, implementation, training, and custom development services to the NexusAIFirst community.",
       highlights: ["Set your own rates", "Global client base", "Verified expert badge", "Secure payments"],
       color: "text-green-400"
     },
@@ -179,7 +179,7 @@ export default function ContributionPage() {
             Join Our Community
           </Badge>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Contribute to <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">NexusAI</span>
+            Contribute to <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">NexusAIFirst</span>
           </h1>
           <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
             Be part of building the world's most powerful open-source ERP platform. 
@@ -203,7 +203,7 @@ export default function ContributionPage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Ways to Contribute</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              There are many ways to contribute to NexusAI. Choose what matches your skills and interests.
+              There are many ways to contribute to NexusAIFirst. Choose what matches your skills and interests.
             </p>
           </div>
 
@@ -364,7 +364,7 @@ export default function ContributionPage() {
               <Target className="w-12 h-12 mx-auto mb-4 text-blue-500" />
               <h2 className="text-4xl font-bold mb-4">Contributor Ecosystem</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                See how your contributions create value for you and the entire NexusAI community.
+                See how your contributions create value for you and the entire NexusAIFirst community.
               </p>
             </div>
 

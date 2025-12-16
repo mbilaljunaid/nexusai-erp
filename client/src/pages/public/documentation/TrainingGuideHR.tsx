@@ -20,7 +20,7 @@ interface ModuleData {
 
 export default function TrainingGuideHR() {
   useEffect(() => {
-    document.title = "HR & Payroll Training Guide | NexusAI ERP";
+    document.title = "HR & Payroll Training Guide | NexusAIFirst ERP";
   }, []);
 
   const [selectedRole, setSelectedRole] = useState<EnterpriseRole | "all">("all");

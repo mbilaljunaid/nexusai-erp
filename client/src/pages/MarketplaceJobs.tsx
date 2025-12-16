@@ -120,10 +120,10 @@ export default function MarketplaceJobs() {
                 JOB BOARD
               </Badge>
               <h1 className="text-4xl font-bold mb-4" data-testid="text-jobs-title">
-                NexusAI Job Board
+                NexusAIFirst Job Board
               </h1>
               <p className="text-xl text-muted-foreground mb-8" data-testid="text-jobs-description">
-                Find ERP consulting opportunities or post a job to hire experienced NexusAI experts
+                Find ERP consulting opportunities or post a job to hire experienced NexusAIFirst experts
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">

@@ -8,7 +8,7 @@ import { Calendar, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicMonthEndProcess() {
   useEffect(() => {
-    document.title = "Month-End Close Process | NexusAI ERP";
+    document.title = "Month-End Close Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

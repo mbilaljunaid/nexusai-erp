@@ -62,7 +62,7 @@ export default function PricingPage() {
   };
 
   useEffect(() => {
-    document.title = "Pricing | NexusAI - Free Open Source ERP";
+    document.title = "Pricing | NexusAIFirst - Free Open Source ERP";
   }, []);
 
   // Check payment system status
@@ -194,7 +194,7 @@ export default function PricingPage() {
           <Badge className="mb-4 bg-green-600 text-white" data-testid="badge-free">100% FREE FOREVER</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Open Source. Free Forever.</h1>
           <p className="text-xl text-muted-foreground mb-8">
-            NexusAI ERP is and will always remain free and open source. 
+            NexusAIFirst ERP is and will always remain free and open source. 
             Licensed under AGPL-3.0, you get the complete enterprise platform at no cost.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -218,14 +218,14 @@ export default function PricingPage() {
               <h2 className="text-3xl font-bold mb-4">Everything Included. Zero Cost.</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 Unlike proprietary ERP systems that charge per user or per module, 
-                NexusAI gives you the complete platform for free.
+                NexusAIFirst gives you the complete platform for free.
               </p>
             </div>
 
             <Card className="p-8 max-w-3xl mx-auto">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h3 className="text-2xl font-bold">NexusAI ERP</h3>
+                  <h3 className="text-2xl font-bold">NexusAIFirst ERP</h3>
                   <p className="text-muted-foreground">Complete Enterprise Platform</p>
                 </div>
                 <div className="text-right">
@@ -257,7 +257,7 @@ export default function PricingPage() {
               <Scale className="w-12 h-12 mx-auto mb-4 text-blue-500" />
               <h2 className="text-3xl font-bold mb-4">Licensing</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                NexusAI is licensed under AGPL-3.0. The license is and will remain <strong>FREE</strong>.
+                NexusAIFirst is licensed under AGPL-3.0. The license is and will remain <strong>FREE</strong>.
               </p>
             </div>
             <Card className="p-6">
@@ -266,7 +266,7 @@ export default function PricingPage() {
                   <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold">Free to Use</h4>
-                    <p className="text-sm text-muted-foreground">Use NexusAI for any purpose - personal, commercial, or educational</p>
+                    <p className="text-sm text-muted-foreground">Use NexusAIFirst for any purpose - personal, commercial, or educational</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -411,9 +411,9 @@ export default function PricingPage() {
         <section className="px-4 py-20 bg-gradient-to-br from-orange-500 to-red-500 text-white">
           <div className="max-w-4xl mx-auto text-center">
             <Heart className="w-16 h-16 mx-auto mb-6" />
-            <h2 className="text-4xl font-bold mb-4">Support NexusAI Development</h2>
+            <h2 className="text-4xl font-bold mb-4">Support NexusAIFirst Development</h2>
             <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              If you find NexusAI valuable, consider sponsoring the project development. 
+              If you find NexusAIFirst valuable, consider sponsoring the project development. 
               Your support helps us maintain and improve the platform for everyone.
             </p>
 
@@ -514,16 +514,16 @@ export default function PricingPage() {
             <h2 className="text-3xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
             <div className="space-y-4">
               <Card className="p-6">
-                <h4 className="font-bold mb-2">Is NexusAI really free?</h4>
+                <h4 className="font-bold mb-2">Is NexusAIFirst really free?</h4>
                 <p className="text-muted-foreground text-sm">
-                  Yes! NexusAI is 100% free and open source under the AGPL-3.0 license. 
+                  Yes! NexusAIFirst is 100% free and open source under the AGPL-3.0 license. 
                   You can use it for any purpose without paying licensing fees.
                 </p>
               </Card>
               <Card className="p-6">
                 <h4 className="font-bold mb-2">Will it remain free?</h4>
                 <p className="text-muted-foreground text-sm">
-                  Absolutely. NexusAI will remain free forever. Our commitment to open source is unwavering.
+                  Absolutely. NexusAIFirst will remain free forever. Our commitment to open source is unwavering.
                 </p>
               </Card>
               <Card className="p-6">
@@ -549,7 +549,7 @@ export default function PricingPage() {
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-muted-foreground mb-6">
-              Download NexusAI and start transforming your business today. It's free!
+              Download NexusAIFirst and start transforming your business today. It's free!
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">

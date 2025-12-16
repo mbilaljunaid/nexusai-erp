@@ -23,7 +23,7 @@ import {
 
 export default function ImplementationGuidelinesPage() {
   useEffect(() => {
-    document.title = "Implementation Guidelines | NexusAI ERP Documentation";
+    document.title = "Implementation Guidelines | NexusAIFirst ERP Documentation";
   }, []);
 
   const implementationPhases = [
@@ -66,7 +66,7 @@ export default function ImplementationGuidelinesPage() {
           <Badge className="mb-4 bg-green-600 text-white" data-testid="badge-implementation">IMPLEMENTATION GUIDE</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Implementation Guidelines</h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Step-by-step guidance for deploying NexusAI ERP in your organization. 
+            Step-by-step guidance for deploying NexusAIFirst ERP in your organization. 
             From initial setup to full production deployment.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -86,7 +86,7 @@ export default function ImplementationGuidelinesPage() {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-4 text-center">Quick Start</h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Get NexusAI running in minutes with these simple steps
+              Get NexusAIFirst running in minutes with these simple steps
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {quickStartSteps.map((step, i) => {

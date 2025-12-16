@@ -8,7 +8,7 @@ import { Star, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicVendorPerformanceProcess() {
   useEffect(() => {
-    document.title = "Vendor Performance Management | NexusAI ERP";
+    document.title = "Vendor Performance Management | NexusAIFirst ERP";
   }, []);
 
   const steps = [

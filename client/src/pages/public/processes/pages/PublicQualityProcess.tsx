@@ -8,7 +8,7 @@ import { ClipboardCheck, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react
 
 export default function PublicQualityProcess() {
   useEffect(() => {
-    document.title = "Quality Management Process | NexusAI ERP";
+    document.title = "Quality Management Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

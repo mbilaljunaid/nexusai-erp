@@ -37,7 +37,7 @@ interface TrainingModuleData {
 
 export default function TrainingGuidesPage() {
   useEffect(() => {
-    document.title = "Training Guides | NexusAI ERP Documentation";
+    document.title = "Training Guides | NexusAIFirst ERP Documentation";
   }, []);
 
   const [selectedRole, setSelectedRole] = useState<EnterpriseRole | "all">("all");
@@ -158,7 +158,7 @@ export default function TrainingGuidesPage() {
     { icon: Video, title: "Video Tutorials", desc: "Step-by-step video walkthroughs" },
     { icon: BookOpen, title: "Written Guides", desc: "Detailed documentation with screenshots" },
     { icon: PlayCircle, title: "Interactive Labs", desc: "Hands-on practice environments" },
-    { icon: Award, title: "Certifications", desc: "Validate your NexusAI expertise" },
+    { icon: Award, title: "Certifications", desc: "Validate your NexusAIFirst expertise" },
   ];
 
   const clearFilters = () => {
@@ -176,7 +176,7 @@ export default function TrainingGuidesPage() {
           <Badge className="mb-4 bg-orange-600 text-white" data-testid="badge-training">TRAINING CENTER</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Training Guides</h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Comprehensive training resources to help you and your team master NexusAI ERP. 
+            Comprehensive training resources to help you and your team master NexusAIFirst ERP. 
             From beginner tutorials to advanced certifications.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -325,7 +325,7 @@ export default function TrainingGuidesPage() {
                 <div>
                   <h2 className="text-2xl font-bold mb-2">Quick Start Checklist</h2>
                   <p className="text-muted-foreground">
-                    New to NexusAI? Follow these steps to get started quickly.
+                    New to NexusAIFirst? Follow these steps to get started quickly.
                   </p>
                 </div>
               </div>
@@ -344,7 +344,7 @@ export default function TrainingGuidesPage() {
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                   <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">4</span>
-                  <span className="text-sm">Earn your NexusAI certification</span>
+                  <span className="text-sm">Earn your NexusAIFirst certification</span>
                 </div>
               </div>
             </Card>
@@ -354,9 +354,9 @@ export default function TrainingGuidesPage() {
         <section className="px-4 py-16 bg-gradient-to-br from-orange-600 to-red-600 text-white">
           <div className="max-w-4xl mx-auto text-center">
             <GraduationCap className="w-12 h-12 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold mb-4">Ready to Become a NexusAI Expert?</h2>
+            <h2 className="text-3xl font-bold mb-4">Ready to Become a NexusAIFirst Expert?</h2>
             <p className="text-lg text-white/80 mb-8">
-              Start your training journey today and unlock the full potential of NexusAI ERP.
+              Start your training journey today and unlock the full potential of NexusAIFirst ERP.
             </p>
             <Link to="/docs/training-guides/crm">
               <Button size="lg" className="bg-white text-orange-600 hover:bg-slate-100" data-testid="button-begin-training">

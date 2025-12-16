@@ -33,7 +33,7 @@ interface ContributorRole {
 
 export default function CareersPage() {
   useEffect(() => {
-    document.title = "Careers - Open Source Contributors | NexusAI ERP";
+    document.title = "Careers - Open Source Contributors | NexusAIFirst ERP";
   }, []);
 
   const contributorRoles: ContributorRole[] = [

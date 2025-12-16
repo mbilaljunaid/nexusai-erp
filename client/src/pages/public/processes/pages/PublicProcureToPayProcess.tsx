@@ -8,7 +8,7 @@ import { ShoppingCart, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicProcureToPayProcess() {
   useEffect(() => {
-    document.title = "Procure-to-Pay Process | NexusAI ERP";
+    document.title = "Procure-to-Pay Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

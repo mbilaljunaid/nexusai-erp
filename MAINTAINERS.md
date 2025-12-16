@@ -1,4 +1,4 @@
-# NexusAI ERP Maintainers
+# NexusAIFirst ERP Maintainers
 
 ## Current Maintainers
 

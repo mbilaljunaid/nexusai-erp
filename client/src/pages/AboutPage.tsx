@@ -8,7 +8,7 @@ import { Header, Footer } from "@/components/Navigation";
 
 export default function AboutPage() {
   useEffect(() => {
-    document.title = "About NexusAI | Open Source AI-Powered ERP Platform";
+    document.title = "About NexusAIFirst | Open Source AI-Powered ERP Platform";
   }, []);
 
   return (
@@ -19,7 +19,7 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="public-hero px-4 py-20 text-center max-w-4xl mx-auto">
         <Badge className="mb-4 bg-green-600 text-white">OPEN SOURCE</Badge>
-        <h1 className="public-hero-title text-5xl font-bold mb-6">About NexusAI</h1>
+        <h1 className="public-hero-title text-5xl font-bold mb-6">About NexusAIFirst</h1>
         <p className="public-hero-subtitle text-xl">An open source, AI-powered enterprise platform built by the community, for the community. Licensed under AGPL-3.0.</p>
       </section>
 
@@ -50,7 +50,7 @@ export default function AboutPage() {
           <Github className="w-16 h-16 mx-auto mb-6" />
           <h2 className="text-4xl font-bold mb-4">100% Open Source</h2>
           <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-            NexusAI is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). 
+            NexusAIFirst is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). 
             You're free to use, modify, and distribute the software.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -86,9 +86,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Why NexusAI */}
+      {/* Why NexusAIFirst */}
       <section className="public-section px-4 py-20 max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold mb-12 text-center">Why Choose NexusAI?</h2>
+        <h2 className="text-4xl font-bold mb-12 text-center">Why Choose NexusAIFirst?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
             { title: "Open Source Freedom", desc: "Full source code access. Audit, modify, and deploy on your own infrastructure." },
@@ -113,7 +113,7 @@ export default function AboutPage() {
           <h2 className="text-4xl font-bold mb-6">Join Our Community</h2>
           <p className="text-xl text-muted-foreground mb-8">
             Whether you're a developer, enterprise user, or just getting started, 
-            there's a place for you in the NexusAI community.
+            there's a place for you in the NexusAIFirst community.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link to="/docs/contributing">
@@ -155,7 +155,7 @@ export default function AboutPage() {
                     <Link to="/docs/contributing" className="text-blue-400 hover:underline">
                       View Contributing Guidelines
                     </Link>
-                    <p className="text-muted-foreground text-sm mt-1">Learn how to contribute to NexusAI</p>
+                    <p className="text-muted-foreground text-sm mt-1">Learn how to contribute to NexusAIFirst</p>
                   </div>
                 </div>
                 <div className="flex gap-4">

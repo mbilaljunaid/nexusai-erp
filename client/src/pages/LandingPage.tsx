@@ -8,7 +8,7 @@ import { Header, Footer } from "@/components/Navigation";
 
 export default function LandingPage() {
   useEffect(() => {
-    document.title = "NexusAI - Open Source AI-Powered ERP | AGPL-3.0 Licensed";
+    document.title = "NexusAIFirst - Open Source AI-Powered ERP | AGPL-3.0 Licensed";
   }, []);
 
   const industries = [
@@ -46,7 +46,7 @@ export default function LandingPage() {
           <Badge className="landing-hero-badge">AGPL-3.0 LICENSED</Badge>
         </div>
         <h1 className="landing-hero-title text-6xl font-bold mb-6">
-          NexusAI — The Open Source AI-Powered ERP
+          NexusAIFirst — The Open Source AI-Powered ERP
         </h1>
         <p className="landing-hero-subtitle text-2xl mb-8 max-w-4xl mx-auto leading-relaxed">
           Enterprise-grade ERP platform for 40+ industries. Free to use, modify, and distribute under AGPL-3.0.
@@ -219,7 +219,7 @@ export default function LandingPage() {
       <section className="landing-section px-4 py-20 max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4">Why Choose Open Source ERP?</h2>
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Unlike proprietary solutions, NexusAI gives you complete control over your enterprise software
+          Unlike proprietary solutions, NexusAIFirst gives you complete control over your enterprise software
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
@@ -248,7 +248,7 @@ export default function LandingPage() {
               <thead>
                 <tr style={{ borderColor: `hsl(var(--border))` }} className="border-b">
                   <th className="text-left p-3">Feature</th>
-                  <th className="text-center p-3">NexusAI</th>
+                  <th className="text-center p-3">NexusAIFirst</th>
                   <th className="text-center p-3">Oracle</th>
                   <th className="text-center p-3">SAP</th>
                   <th className="text-center p-3">Odoo</th>

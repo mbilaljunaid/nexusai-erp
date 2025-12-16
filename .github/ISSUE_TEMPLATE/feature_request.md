@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest an idea for NexusAI ERP
+about: Suggest an idea for NexusAIFirst ERP
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''

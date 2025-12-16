@@ -1,6 +1,6 @@
-# Contributing to NexusAI ERP
+# Contributing to NexusAIFirst ERP
 
-Thank you for your interest in contributing to NexusAI ERP! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to NexusAIFirst ERP! This document provides guidelines and instructions for contributing.
 
 ## Code of Conduct
 

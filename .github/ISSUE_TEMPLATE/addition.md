@@ -1,6 +1,6 @@
 ---
 name: Software Addition
-about: Add new software to NexusAI ERP ecosystem
+about: Add new software to NexusAIFirst ERP ecosystem
 title: 'Add [SOFTWARE NAME]'
 labels: addition
 assignees: ''

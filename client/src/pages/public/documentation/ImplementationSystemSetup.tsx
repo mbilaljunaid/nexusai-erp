@@ -8,7 +8,7 @@ import { Settings, ArrowLeft, CheckCircle, Server, Database, Shield, Users } fro
 
 export default function ImplementationSystemSetup() {
   useEffect(() => {
-    document.title = "System Setup Guide | NexusAI ERP Implementation";
+    document.title = "System Setup Guide | NexusAIFirst ERP Implementation";
   }, []);
 
   const setupSteps = [
@@ -38,7 +38,7 @@ export default function ImplementationSystemSetup() {
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
-            Complete guide to setting up your NexusAI ERP environment, 
+            Complete guide to setting up your NexusAIFirst ERP environment, 
             from infrastructure configuration to user provisioning.
           </p>
         </section>

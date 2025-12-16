@@ -29,7 +29,7 @@ export default function ContactPage() {
   });
 
   useEffect(() => {
-    document.title = "Contact Us | NexusAI ERP Platform";
+    document.title = "Contact Us | NexusAIFirst ERP Platform";
   }, []);
 
   const submitMutation = useMutation({
@@ -79,7 +79,7 @@ export default function ContactPage() {
         <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
           <h1 className="public-hero-title text-5xl font-bold mb-4" data-testid="text-contact-title">Contact Us</h1>
           <p className="public-hero-subtitle text-xl text-muted-foreground">
-            Have questions about NexusAI ERP? We're here to help. Send us a message and we'll respond as soon as possible.
+            Have questions about NexusAIFirst ERP? We're here to help. Send us a message and we'll respond as soon as possible.
           </p>
         </section>
 
@@ -226,13 +226,13 @@ export default function ContactPage() {
               <Card className="p-6">
                 <h4 className="font-semibold mb-2">How do I request a demo?</h4>
                 <p className="text-sm text-muted-foreground">
-                  Visit our Demo page to schedule a personalized walkthrough of NexusAI ERP features.
+                  Visit our Demo page to schedule a personalized walkthrough of NexusAIFirst ERP features.
                 </p>
               </Card>
               <Card className="p-6">
                 <h4 className="font-semibold mb-2">What industries do you support?</h4>
                 <p className="text-sm text-muted-foreground">
-                  NexusAI ERP supports 41+ industries including manufacturing, retail, healthcare, and more.
+                  NexusAIFirst ERP supports 41+ industries including manufacturing, retail, healthcare, and more.
                 </p>
               </Card>
               <Card className="p-6">

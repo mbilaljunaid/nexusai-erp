@@ -22,11 +22,11 @@ import {
 
 export default function OpenSourcePage() {
   useEffect(() => {
-    document.title = "Open Source | NexusAI - AGPL-3.0 Licensed ERP Platform";
+    document.title = "Open Source | NexusAIFirst - AGPL-3.0 Licensed ERP Platform";
   }, []);
 
   const licenseFeatures = [
-    { title: "Free to Use", desc: "Deploy NexusAI for your organization at no cost" },
+    { title: "Free to Use", desc: "Deploy NexusAIFirst for your organization at no cost" },
     { title: "View Source Code", desc: "Complete transparency - inspect every line of code" },
     { title: "Modify & Extend", desc: "Customize the platform to fit your exact needs" },
     { title: "Share Improvements", desc: "Contribute back and help the community grow" },
@@ -41,7 +41,7 @@ export default function OpenSourcePage() {
 
   const resources = [
     { icon: Github, title: "GitHub Repository", desc: "Source code, issues, and pull requests", href: "https://github.com/mbilaljunaid/nexusai-erp" },
-    { icon: BookOpen, title: "Contributing Guide", desc: "How to contribute to NexusAI", href: "/docs/contributing" },
+    { icon: BookOpen, title: "Contributing Guide", desc: "How to contribute to NexusAIFirst", href: "/docs/contributing" },
     { icon: Scale, title: "License (AGPL-3.0)", desc: "Full license text and terms", href: "/license" },
     { icon: Shield, title: "Security Policy", desc: "How to report vulnerabilities", href: "/security" },
   ];
@@ -55,10 +55,10 @@ export default function OpenSourcePage() {
         <section className="px-4 py-20 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-green-600 text-white">OPEN SOURCE</Badge>
           <h1 className="text-5xl font-bold mb-6">
-            NexusAI is Open Source
+            NexusAIFirst is Open Source
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Built by the community, for the community. NexusAI is licensed under the 
+            Built by the community, for the community. NexusAIFirst is licensed under the 
             GNU Affero General Public License v3.0 (AGPL-3.0), ensuring freedom to use, 
             modify, and share.
           </p>
@@ -101,8 +101,8 @@ export default function OpenSourcePage() {
             <div className="mt-12 text-center">
               <Card className="inline-block p-6 bg-slate-800 text-white max-w-3xl">
                 <p className="text-sm font-mono leading-relaxed">
-                  NexusAI - AI-Powered Enterprise ERP Platform<br />
-                  Copyright (C) 2025 NexusAI Contributors<br /><br />
+                  NexusAIFirst - AI-Powered Enterprise ERP Platform<br />
+                  Copyright (C) 2025 NexusAIFirst Contributors<br /><br />
                   This program is free software: you can redistribute it and/or modify
                   it under the terms of the GNU Affero General Public License as published
                   by the Free Software Foundation, either version 3 of the License, or
@@ -122,7 +122,7 @@ export default function OpenSourcePage() {
               <h3 className="text-xl font-bold mb-3">Community-Driven Innovation</h3>
               <p className="text-muted-foreground">
                 The best ideas come from diverse perspectives. Our community of developers, 
-                enterprises, and users continuously improve NexusAI.
+                enterprises, and users continuously improve NexusAIFirst.
               </p>
             </Card>
             <Card className="p-6">
@@ -150,7 +150,7 @@ export default function OpenSourcePage() {
             <h2 className="text-4xl font-bold mb-4 text-center">How to Contribute</h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
               Whether you're a developer, designer, writer, or just an enthusiastic user, 
-              there are many ways to contribute to NexusAI.
+              there are many ways to contribute to NexusAIFirst.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -240,7 +240,7 @@ export default function OpenSourcePage() {
               <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
               <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">
                 Star the repository, fork it, submit issues, or contribute code. 
-                Every contribution helps make NexusAI better for everyone.
+                Every contribution helps make NexusAIFirst better for everyone.
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
                 <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">

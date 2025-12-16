@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Forgot Password | NexusAI";
+    document.title = "Forgot Password | NexusAIFirst";
   }, []);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {

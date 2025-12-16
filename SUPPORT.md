@@ -1,6 +1,6 @@
 # Support
 
-Thank you for using NexusAI ERP! This document outlines how to get help and support.
+Thank you for using NexusAIFirst ERP! This document outlines how to get help and support.
 
 ## Getting Help
 
@@ -43,7 +43,7 @@ For questions and community help:
 ### Bug Report Template
 
 When reporting bugs, include:
-- NexusAI ERP version
+- NexusAIFirst ERP version
 - Browser and OS
 - Steps to reproduce
 - Expected vs actual behavior
@@ -80,7 +80,7 @@ See our [Security Policy](./SECURITY.md) for responsible disclosure.
 
 ## Contributing
 
-Want to help improve NexusAI ERP?
+Want to help improve NexusAIFirst ERP?
 - See our [Contributing Guide](./CONTRIBUTING.md)
 - Check [good first issues](https://github.com/mbilaljunaid/nexusai-erp/labels/good%20first%20issue)
 
@@ -109,4 +109,4 @@ For organizations requiring dedicated support, SLAs, or custom development, cont
 
 ---
 
-Thank you for being part of the NexusAI community!
+Thank you for being part of the NexusAIFirst community!

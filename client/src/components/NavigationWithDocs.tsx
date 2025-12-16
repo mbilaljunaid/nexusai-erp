@@ -10,7 +10,7 @@ export function Header() {
       <nav className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-blue-600 dark:text-blue-400">
-          NexusAI
+          NexusAIFirst
         </Link>
 
         {/* Main Navigation */}
@@ -125,7 +125,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-4">NexusAI</h3>
+            <h3 className="text-lg font-bold text-white mb-4">NexusAIFirst</h3>
             <p className="text-sm text-slate-300">Enterprise resource planning platform designed for modern businesses</p>
           </div>
 
@@ -193,7 +193,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
-          <p>&copy; 2025 NexusAI. All rights reserved.</p>
+          <p>&copy; 2025 NexusAIFirst. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link href="#" className="hover:text-slate-200 transition-colors">Privacy Policy</Link>
             <Link href="#" className="hover:text-slate-200 transition-colors">Terms of Service</Link>

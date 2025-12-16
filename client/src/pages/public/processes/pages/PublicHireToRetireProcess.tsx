@@ -8,7 +8,7 @@ import { Users, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicHireToRetireProcess() {
   useEffect(() => {
-    document.title = "Hire-to-Retire Process | NexusAI ERP";
+    document.title = "Hire-to-Retire Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

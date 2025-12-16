@@ -8,7 +8,7 @@ import { Package, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicInventoryProcess() {
   useEffect(() => {
-    document.title = "Inventory Management Process | NexusAI ERP";
+    document.title = "Inventory Management Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

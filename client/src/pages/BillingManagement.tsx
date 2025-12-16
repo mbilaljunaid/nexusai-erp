@@ -61,7 +61,7 @@ export default function BillingManagement() {
   const [selectedMonth, setSelectedMonth] = useState<string>("current");
 
   useEffect(() => {
-    document.title = "Billing Management | NexusAI";
+    document.title = "Billing Management | NexusAIFirst";
   }, []);
 
   const stats = {

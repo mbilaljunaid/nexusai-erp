@@ -17,7 +17,7 @@ import {
 
 export default function SecurityPolicyPage() {
   useEffect(() => {
-    document.title = "Security Policy | NexusAI";
+    document.title = "Security Policy | NexusAIFirst";
   }, []);
 
   const reportingSteps = [
@@ -59,8 +59,8 @@ export default function SecurityPolicyPage() {
 
             <Card className="p-6 mb-8 border-yellow-500/50 bg-yellow-500/5">
               <p className="text-lg mb-4">
-                If you discover a security vulnerability in NexusAI, please report it responsibly. 
-                We appreciate your help in keeping NexusAI secure.
+                If you discover a security vulnerability in NexusAIFirst, please report it responsibly. 
+                We appreciate your help in keeping NexusAIFirst secure.
               </p>
               <div className="flex items-center gap-3 p-4 bg-background rounded-lg">
                 <Mail className="w-6 h-6 text-blue-500" />
@@ -171,7 +171,7 @@ export default function SecurityPolicyPage() {
             <Shield className="w-16 h-16 mx-auto mb-6" />
             <h2 className="text-3xl font-bold mb-4">Security Researchers</h2>
             <p className="text-lg text-white/80 mb-8">
-              We appreciate the work of security researchers who help keep NexusAI safe. 
+              We appreciate the work of security researchers who help keep NexusAIFirst safe. 
               Responsible disclosure reporters will be credited in our security acknowledgments.
             </p>
             <Button size="lg" className="bg-white text-green-600 hover:bg-slate-100" asChild data-testid="button-report-vulnerability">

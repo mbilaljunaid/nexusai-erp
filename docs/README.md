@@ -1,6 +1,6 @@
-# NexusAI ERP Documentation
+# NexusAIFirst ERP Documentation
 
-Welcome to the NexusAI ERP documentation. This directory contains comprehensive guides and references for using and contributing to the platform.
+Welcome to the NexusAIFirst ERP documentation. This directory contains comprehensive guides and references for using and contributing to the platform.
 
 ## Documentation Structure
 
@@ -39,7 +39,7 @@ Additional documentation is available in the repository root:
 
 ## Platform Overview
 
-NexusAI ERP is an AI-powered enterprise resource planning platform featuring:
+NexusAIFirst ERP is an AI-powered enterprise resource planning platform featuring:
 
 - **12 Core Modules**: CRM, Projects, ERP, HR, Finance, Manufacturing, Supply Chain, Sales, Service, Analytics, Compliance, AI Assistant
 - **812 Dynamic Forms**: Comprehensive business process coverage
@@ -53,4 +53,4 @@ NexusAI ERP is an AI-powered enterprise resource planning platform featuring:
 
 ## License
 
-NexusAI ERP is licensed under the [AGPL-3.0 License](../LICENSE).
+NexusAIFirst ERP is licensed under the [AGPL-3.0 License](../LICENSE).

@@ -1,4 +1,4 @@
-# Design Guidelines: NexusAI - Ultimate AI-First Enterprise Platform
+# Design Guidelines: NexusAIFirst - Ultimate AI-First Enterprise Platform
 
 ## Design Approach
 

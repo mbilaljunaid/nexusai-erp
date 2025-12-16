@@ -24,7 +24,7 @@ import {
 
 export default function ProcessFlowsPage() {
   useEffect(() => {
-    document.title = "Process Flows | NexusAI ERP Documentation";
+    document.title = "Process Flows | NexusAIFirst ERP Documentation";
   }, []);
 
   const coreProcesses = [
@@ -62,7 +62,7 @@ export default function ProcessFlowsPage() {
           <Badge className="mb-4 bg-purple-600 text-white" data-testid="badge-process-flows">PROCESS DOCUMENTATION</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Process Flows</h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Explore NexusAI's 18 end-to-end business processes designed to streamline 
+            Explore NexusAIFirst's 18 end-to-end business processes designed to streamline 
             your enterprise operations across all departments.
           </p>
           <Link to="/public/processes">

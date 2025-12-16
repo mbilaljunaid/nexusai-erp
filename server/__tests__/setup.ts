@@ -1,5 +1,5 @@
 /**
- * Test Setup and Utilities for NexusAI Testing Framework
+ * Test Setup and Utilities for NexusAIFirst Testing Framework
  * Provides shared test utilities for all test suites
  */
 

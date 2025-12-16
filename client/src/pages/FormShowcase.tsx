@@ -28,7 +28,7 @@ export default function FormShowcase() {
       <div>
         <h1 className="text-3xl font-semibold flex items-center gap-2">
           <Sparkles className="h-8 w-8 text-blue-600" />
-          NexusAI Form Showcase
+          NexusAIFirst Form Showcase
         </h1>
         <p className="text-muted-foreground text-sm mt-2">
           Production-ready form components across all modules

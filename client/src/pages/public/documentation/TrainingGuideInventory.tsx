@@ -20,7 +20,7 @@ interface ModuleData {
 
 export default function TrainingGuideInventory() {
   useEffect(() => {
-    document.title = "Inventory Training Guide | NexusAI ERP";
+    document.title = "Inventory Training Guide | NexusAIFirst ERP";
   }, []);
 
   const [selectedRole, setSelectedRole] = useState<EnterpriseRole | "all">("all");

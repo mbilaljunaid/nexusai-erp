@@ -129,7 +129,7 @@ export function WhatsNew() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              What's New in NexusAI
+              What's New in NexusAIFirst
             </DialogTitle>
             <DialogDescription>
               Discover the latest features, improvements, and updates

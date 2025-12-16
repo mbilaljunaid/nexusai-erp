@@ -14,23 +14,23 @@ async function seedDiverseProfiles() {
     { name: "Amara Okafor", type: "buyer", location: "Lagos, Nigeria", title: "CEO", company: "Afrotech Solutions", bio: "Building Africa's leading ERP platform." },
 
     // Pure Service Providers (8 users)
-    { name: "Dr. Samantha Wright", type: "service_provider", location: "Boston, USA", title: "ERP Implementation Consultant", company: "Wright Consulting", bio: "15+ years of SAP and NexusAI implementations. Certified in financial modules.", expertise: ["Financial Modules", "SAP Migration", "Compliance"] },
+    { name: "Dr. Samantha Wright", type: "service_provider", location: "Boston, USA", title: "ERP Implementation Consultant", company: "Wright Consulting", bio: "15+ years of SAP and NexusAIFirst implementations. Certified in financial modules.", expertise: ["Financial Modules", "SAP Migration", "Compliance"] },
     { name: "Arjun Kapoor", type: "service_provider", location: "Bangalore, India", title: "Technical Architect", company: "CloudBridge Solutions", bio: "Cloud-native ERP solutions architect. AWS and Azure certified.", expertise: ["Cloud Architecture", "API Integration", "Performance Optimization"] },
     { name: "Elena Volkov", type: "service_provider", location: "Berlin, Germany", title: "Manufacturing Consultant", company: "Volkov & Associates", bio: "Industry 4.0 expert specializing in smart manufacturing.", expertise: ["Manufacturing", "IoT Integration", "Supply Chain"] },
     { name: "Hassan Al-Farsi", type: "service_provider", location: "Dubai, UAE", title: "Finance Specialist", company: "Gulf ERP Partners", bio: "Multi-currency and Islamic finance expert.", expertise: ["Multi-currency", "Treasury", "Islamic Finance"] },
     { name: "Sophie Laurent", type: "service_provider", location: "Paris, France", title: "HR Systems Expert", company: "TalentWorks", bio: "Payroll and HR module specialist for European compliance.", expertise: ["HR & Payroll", "GDPR Compliance", "Workforce Analytics"] },
     { name: "Kenji Tanaka", type: "service_provider", location: "Tokyo, Japan", title: "Lean Manufacturing Consultant", company: "Kaizen Systems", bio: "Toyota Production System expert bringing lean to ERP.", expertise: ["Lean Manufacturing", "Quality Control", "Kanban"] },
-    { name: "Patricia Silva", type: "service_provider", location: "São Paulo, Brazil", title: "Tax & Compliance Consultant", company: "Compliance Pro BR", bio: "Latin American tax regulations and NexusAI localization.", expertise: ["Tax Compliance", "Localization", "Regulatory"] },
+    { name: "Patricia Silva", type: "service_provider", location: "São Paulo, Brazil", title: "Tax & Compliance Consultant", company: "Compliance Pro BR", bio: "Latin American tax regulations and NexusAIFirst localization.", expertise: ["Tax Compliance", "Localization", "Regulatory"] },
     { name: "David Kowalski", type: "service_provider", location: "Warsaw, Poland", title: "Data Migration Expert", company: "MigrateEasy", bio: "Seamless data migrations from legacy systems.", expertise: ["Data Migration", "ETL", "Database Optimization"] },
 
     // Pure Community Contributors (7 users)
-    { name: "Rachel Green", type: "community", location: "Austin, USA", title: "Technical Writer", company: "DocsFirst", bio: "Making NexusAI documentation accessible to everyone.", expertise: ["Documentation", "Training", "User Guides"] },
-    { name: "Omar Hassan", type: "community", location: "Cairo, Egypt", title: "Community Manager", company: "NexusAI Community", bio: "Helping users solve problems and share solutions.", expertise: ["Community Support", "Troubleshooting", "Best Practices"] },
+    { name: "Rachel Green", type: "community", location: "Austin, USA", title: "Technical Writer", company: "DocsFirst", bio: "Making NexusAIFirst documentation accessible to everyone.", expertise: ["Documentation", "Training", "User Guides"] },
+    { name: "Omar Hassan", type: "community", location: "Cairo, Egypt", title: "Community Manager", company: "NexusAIFirst Community", bio: "Helping users solve problems and share solutions.", expertise: ["Community Support", "Troubleshooting", "Best Practices"] },
     { name: "Linda Chen", type: "community", location: "Singapore", title: "Solution Architect", company: "Independent", bio: "Active contributor helping others optimize their implementations.", expertise: ["Architecture", "Performance", "Integrations"] },
     { name: "Stefan Mueller", type: "community", location: "Munich, Germany", title: "Developer Advocate", company: "OpenERP Initiative", bio: "Open source enthusiast and API documentation contributor.", expertise: ["API Development", "Open Source", "Developer Tools"] },
     { name: "Aisha Patel", type: "community", location: "Mumbai, India", title: "Training Specialist", company: "ERP Academy", bio: "Creating free tutorials and learning resources.", expertise: ["Training", "Video Tutorials", "Onboarding"] },
     { name: "Carlos Mendez", type: "community", location: "Mexico City, Mexico", title: "Forum Moderator", company: "Volunteer", bio: "Keeping the community safe and helpful.", expertise: ["Moderation", "Community Guidelines", "User Support"] },
-    { name: "Nina Johansson", type: "community", location: "Stockholm, Sweden", title: "UX Researcher", company: "DesignLabs", bio: "Collecting user feedback to improve NexusAI experience.", expertise: ["UX Research", "User Feedback", "Accessibility"] },
+    { name: "Nina Johansson", type: "community", location: "Stockholm, Sweden", title: "UX Researcher", company: "DesignLabs", bio: "Collecting user feedback to improve NexusAIFirst experience.", expertise: ["UX Research", "User Feedback", "Accessibility"] },
 
     // Service Provider + Buyer Combo (5 users)
     { name: "Michael O'Brien", type: "service_provider_buyer", location: "Dublin, Ireland", title: "ERP Consultant & Business Owner", company: "O'Brien Enterprises", bio: "Running my own business while consulting for others.", expertise: ["ERP Implementation", "Business Strategy", "Change Management"] },
@@ -44,7 +44,7 @@ async function seedDiverseProfiles() {
     { name: "Thomas Anderson", type: "community_service_provider", location: "Seattle, USA", title: "Integration Specialist", company: "AndersonTech", bio: "Helping the community while providing premium integration services.", expertise: ["API Integration", "Middleware", "Data Sync"] },
     { name: "Yuki Yamamoto", type: "community_service_provider", location: "Osaka, Japan", title: "Quality Assurance Lead", company: "QualityFirst", bio: "Testing expert sharing knowledge in forums and offering QA services.", expertise: ["Testing", "Quality Assurance", "Automation"] },
     { name: "Anna Kowalczyk", type: "community_service_provider", location: "Krakow, Poland", title: "Database Expert", company: "DataWorks", bio: "Helping optimize databases in the community and professionally.", expertise: ["Database Optimization", "Performance Tuning", "SQL"] },
-    { name: "Mohammed Saleh", type: "community_service_provider", location: "Amman, Jordan", title: "Localization Specialist", company: "ArabicERP", bio: "Making NexusAI work for Arabic-speaking markets.", expertise: ["Localization", "RTL Support", "Arabic Translations"] },
+    { name: "Mohammed Saleh", type: "community_service_provider", location: "Amman, Jordan", title: "Localization Specialist", company: "ArabicERP", bio: "Making NexusAIFirst work for Arabic-speaking markets.", expertise: ["Localization", "RTL Support", "Arabic Translations"] },
 
     // Community + Buyer Combo (5 users)
     { name: "Jennifer Adams", type: "community_buyer", location: "Chicago, USA", title: "IT Director", company: "Midwest Manufacturing", bio: "Learning from the community to make better purchasing decisions.", expertise: ["IT Strategy", "Vendor Evaluation", "Implementation"] },
@@ -61,11 +61,11 @@ async function seedDiverseProfiles() {
     { name: "Ahmed El-Sayed", type: "all_three", location: "Doha, Qatar", title: "Regional Director", company: "Gulf Digital Solutions", bio: "Leading regional implementations while building the community.", expertise: ["Regional Strategy", "Implementation", "Partnership"] },
 
     // App Providers (5 users)
-    { name: "Nathan Brooks", type: "app_provider", location: "Portland, USA", title: "Founder & CEO", company: "AppForge Inc", bio: "Building innovative apps for the NexusAI marketplace.", expertise: ["App Development", "Product Management", "UX Design"] },
-    { name: "Lisa Wang", type: "app_provider", location: "Shenzhen, China", title: "Technical Director", company: "SmartApp Solutions", bio: "Creating AI-powered extensions for NexusAI.", expertise: ["AI/ML", "App Development", "Integration"] },
-    { name: "Patrick O'Neill", type: "app_provider", location: "Cork, Ireland", title: "Product Manager", company: "Celtic Software", bio: "Building productivity tools for NexusAI users.", expertise: ["Product Development", "Analytics", "Automation"] },
+    { name: "Nathan Brooks", type: "app_provider", location: "Portland, USA", title: "Founder & CEO", company: "AppForge Inc", bio: "Building innovative apps for the NexusAIFirst marketplace.", expertise: ["App Development", "Product Management", "UX Design"] },
+    { name: "Lisa Wang", type: "app_provider", location: "Shenzhen, China", title: "Technical Director", company: "SmartApp Solutions", bio: "Creating AI-powered extensions for NexusAIFirst.", expertise: ["AI/ML", "App Development", "Integration"] },
+    { name: "Patrick O'Neill", type: "app_provider", location: "Cork, Ireland", title: "Product Manager", company: "Celtic Software", bio: "Building productivity tools for NexusAIFirst users.", expertise: ["Product Development", "Analytics", "Automation"] },
     { name: "Anita Desai", type: "app_provider", location: "Pune, India", title: "CTO", company: "InnoApps India", bio: "Developing enterprise-grade apps for the marketplace.", expertise: ["Enterprise Apps", "Security", "Scalability"] },
-    { name: "Martin Bergström", type: "app_provider", location: "Gothenburg, Sweden", title: "Lead Developer", company: "Nordic Apps", bio: "Creating tools that enhance NexusAI workflows.", expertise: ["Workflow Automation", "Reporting", "Dashboards"] },
+    { name: "Martin Bergström", type: "app_provider", location: "Gothenburg, Sweden", title: "Lead Developer", company: "Nordic Apps", bio: "Creating tools that enhance NexusAIFirst workflows.", expertise: ["Workflow Automation", "Reporting", "Dashboards"] },
   ];
 
   console.log(`Creating ${userProfiles.length} diverse user profiles...`);

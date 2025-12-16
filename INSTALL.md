@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide covers how to set up NexusAI ERP for development and production.
+This guide covers how to set up NexusAIFirst ERP for development and production.
 
 ## Prerequisites
 

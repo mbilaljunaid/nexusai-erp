@@ -17,7 +17,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
   const [demoLink, setDemoLink] = useState("");
 
   useEffect(() => {
-    document.title = `${industry} Demo | NexusAI`;
+    document.title = `${industry} Demo | NexusAIFirst`;
   }, [industry]);
 
   const handleRequestDemo = async () => {
@@ -73,7 +73,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
               {industry.toUpperCase()} DEMO
             </Badge>
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Experience NexusAI for {industry}
+              Experience NexusAIFirst for {industry}
             </h1>
             <p className="text-xl text-slate-300 mb-8">
               Explore a fully configured demo environment with pre-populated {industry.toLowerCase()} data
@@ -178,7 +178,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your {industry} Business?</h2>
             <p className="text-slate-300 mb-8">
-              Our experts can help you implement NexusAI for your specific needs
+              Our experts can help you implement NexusAIFirst for your specific needs
             </p>
             <Link to="/about">
               <Button className="bg-blue-600 hover:bg-blue-700" data-testid="button-contact-sales">

@@ -1,8 +1,8 @@
-# NexusAI ERP Architecture
+# NexusAIFirst ERP Architecture
 
 ## System Overview
 
-NexusAI ERP is built with a modern, scalable architecture designed for enterprise-grade performance.
+NexusAIFirst ERP is built with a modern, scalable architecture designed for enterprise-grade performance.
 
 ## Architecture Layers
 

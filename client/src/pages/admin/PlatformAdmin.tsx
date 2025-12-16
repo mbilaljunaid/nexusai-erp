@@ -1345,7 +1345,7 @@ export default function PlatformAdmin() {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label>System Name</Label>
-                <Input defaultValue="NexusAI" data-testid="input-system-name" />
+                <Input defaultValue="NexusAIFirst" data-testid="input-system-name" />
               </div>
               <div className="space-y-2">
                 <Label>Default Timezone</Label>

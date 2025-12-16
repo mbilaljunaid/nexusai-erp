@@ -17,7 +17,7 @@ const dashboardTour: Tour = {
     {
       target: "[data-testid='button-sidebar-toggle']",
       title: "Navigation Menu",
-      content: "Click here to toggle the sidebar navigation. The sidebar gives you access to all NexusAI modules and features.",
+      content: "Click here to toggle the sidebar navigation. The sidebar gives you access to all NexusAIFirst modules and features.",
       placement: "right",
     },
     {
@@ -29,7 +29,7 @@ const dashboardTour: Tour = {
     {
       target: "[data-tour='core-modules']",
       title: "Core Modules",
-      content: "These are the main business modules available in NexusAI. Click any card to access CRM, Projects, Finance, HR, and more.",
+      content: "These are the main business modules available in NexusAIFirst. Click any card to access CRM, Projects, Finance, HR, and more.",
       placement: "top",
     },
     {
@@ -41,7 +41,7 @@ const dashboardTour: Tour = {
     {
       target: "[data-tour='getting-started']",
       title: "Getting Started",
-      content: "New to NexusAI? The Process Hub is a great starting point to understand our 18 end-to-end business processes.",
+      content: "New to NexusAIFirst? The Process Hub is a great starting point to understand our 18 end-to-end business processes.",
       placement: "top",
     },
   ],

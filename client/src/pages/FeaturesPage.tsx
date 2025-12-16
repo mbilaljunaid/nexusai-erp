@@ -652,7 +652,7 @@ export default function FeaturesPage() {
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Business?</h2>
             <p className="text-lg opacity-90 mb-8">
-              See how NexusAI can streamline your operations with a personalized demo.
+              See how NexusAIFirst can streamline your operations with a personalized demo.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>

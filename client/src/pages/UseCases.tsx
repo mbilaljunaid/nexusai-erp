@@ -44,7 +44,7 @@ export default function UseCases() {
         <section className="public-hero px-4 py-24 max-w-7xl mx-auto">
           <h1 className="public-hero-title text-5xl font-bold mb-6">Use Cases</h1>
           <p className="public-hero-subtitle text-xl">
-            Discover how NexusAI solves real business challenges across industries
+            Discover how NexusAIFirst solves real business challenges across industries
           </p>
         </section>
 

@@ -1,4 +1,4 @@
-# NexusAI Internal Techstack Architecture
+# NexusAIFirst Internal Techstack Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐

@@ -26,7 +26,7 @@ import {
 
 export default function PublicProcessHub() {
   useEffect(() => {
-    document.title = "Business Processes | NexusAI ERP";
+    document.title = "Business Processes | NexusAIFirst ERP";
   }, []);
 
   const processes = [
@@ -59,7 +59,7 @@ export default function PublicProcessHub() {
           <Badge className="mb-4 bg-blue-600 text-white" data-testid="badge-process-hub">18 END-TO-END PROCESSES</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Business Process Hub</h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Explore NexusAI's comprehensive suite of enterprise business processes designed to 
+            Explore NexusAIFirst's comprehensive suite of enterprise business processes designed to 
             streamline operations across finance, supply chain, HR, and manufacturing.
           </p>
         </section>
@@ -93,7 +93,7 @@ export default function PublicProcessHub() {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Operations?</h2>
             <p className="text-muted-foreground mb-8">
-              See how NexusAI can automate and optimize your business processes.
+              See how NexusAIFirst can automate and optimize your business processes.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link to="/demo">

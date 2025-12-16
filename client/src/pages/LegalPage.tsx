@@ -7,7 +7,7 @@ import { Scale, FileText, Shield, AlertCircle, Globe, Mail } from "lucide-react"
 
 export default function LegalPage() {
   useEffect(() => {
-    document.title = "Legal | NexusAI ERP";
+    document.title = "Legal | NexusAIFirst ERP";
   }, []);
 
   return (
@@ -20,7 +20,7 @@ export default function LegalPage() {
           <Badge className="mb-4 bg-slate-600 text-white" data-testid="badge-legal">LEGAL</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Legal Information</h1>
           <p className="text-xl text-muted-foreground">
-            Important legal information about NexusAI ERP, including licensing, terms, and policies.
+            Important legal information about NexusAIFirst ERP, including licensing, terms, and policies.
           </p>
         </section>
 
@@ -60,14 +60,14 @@ export default function LegalPage() {
             <Card className="p-6">
               <h3 className="font-bold text-lg mb-3 text-foreground">1. Acceptance of Terms</h3>
               <p>
-                By accessing and using NexusAI ERP, you accept and agree to be bound by the terms and 
-                provisions of this agreement. NexusAI is open source software licensed under AGPL-3.0.
+                By accessing and using NexusAIFirst ERP, you accept and agree to be bound by the terms and 
+                provisions of this agreement. NexusAIFirst is open source software licensed under AGPL-3.0.
               </p>
             </Card>
             <Card className="p-6">
               <h3 className="font-bold text-lg mb-3 text-foreground">2. Open Source License</h3>
               <p>
-                NexusAI ERP is distributed under the GNU Affero General Public License version 3.0 (AGPL-3.0). 
+                NexusAIFirst ERP is distributed under the GNU Affero General Public License version 3.0 (AGPL-3.0). 
                 You are free to use, modify, and distribute the software in accordance with this license.
                 See our <Link to="/license" className="text-blue-500 hover:underline">License page</Link> for full details.
               </p>
@@ -82,7 +82,7 @@ export default function LegalPage() {
             <Card className="p-6">
               <h3 className="font-bold text-lg mb-3 text-foreground">4. Contributions</h3>
               <p>
-                Contributions to NexusAI are governed by our contributor agreement. By submitting code, 
+                Contributions to NexusAIFirst are governed by our contributor agreement. By submitting code, 
                 you agree that your contributions will be licensed under the same AGPL-3.0 license.
               </p>
             </Card>
@@ -100,7 +100,7 @@ export default function LegalPage() {
                   <div>
                     <h3 className="font-bold text-lg mb-2 text-foreground">Self-Hosted Solution</h3>
                     <p>
-                      NexusAI ERP is designed to be self-hosted. When you run NexusAI on your own 
+                      NexusAIFirst ERP is designed to be self-hosted. When you run NexusAIFirst on your own 
                       infrastructure, your data stays on your servers. We do not collect or have access 
                       to any of your business data.
                     </p>
@@ -128,9 +128,9 @@ export default function LegalPage() {
           <h2 className="text-3xl font-bold mb-8">Trademark</h2>
           <Card className="p-6">
             <p className="text-muted-foreground">
-              "NexusAI" and the NexusAI logo are trademarks of the NexusAI project. 
+              "NexusAIFirst" and the NexusAIFirst logo are trademarks of the NexusAIFirst project. 
               Use of these trademarks is subject to our trademark guidelines. You may use the 
-              NexusAI name to accurately refer to the software, but you may not use the trademark 
+              NexusAIFirst name to accurately refer to the software, but you may not use the trademark 
               in a way that suggests endorsement or affiliation without permission.
             </p>
           </Card>

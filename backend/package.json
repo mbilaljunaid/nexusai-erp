@@ -1,8 +1,8 @@
 {
   "name": "nexusai-backend",
   "version": "1.0.0",
-  "description": "NexusAI Backend - NestJS Microservices",
-  "author": "NexusAI Team",
+  "description": "NexusAIFirst Backend - NestJS Microservices",
+  "author": "NexusAIFirst Team",
   "private": true,
   "license": "MIT",
   "scripts": {

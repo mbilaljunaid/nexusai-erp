@@ -1,4 +1,4 @@
-# NexusAI ERP - Enterprise AI-First Platform
+# NexusAIFirst ERP - Enterprise AI-First Platform
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub Stars](https://img.shields.io/github/stars/mbilaljunaid/nexusai-erp)](https://github.com/mbilaljunaid/nexusai-erp/stargazers)
@@ -174,7 +174,7 @@ docker-compose up -d
 
 ## License
 
-NexusAI ERP is licensed under the [GNU Affero General Public License v3.0](./LICENSE).
+NexusAIFirst ERP is licensed under the [GNU Affero General Public License v3.0](./LICENSE).
 
 This means you can:
 - Use the software for any purpose
@@ -204,9 +204,9 @@ With the requirement that you:
 
 ---
 
-**Platform**: NexusAI ERP  
+**Platform**: NexusAIFirst ERP  
 **Version**: 2.0.0  
 **Status**: Production Ready  
 **License**: [AGPL-3.0](./LICENSE)
 
-Made with care by the NexusAI community
+Made with care by the NexusAIFirst community

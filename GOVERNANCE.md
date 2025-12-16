@@ -1,4 +1,4 @@
-# NexusAI ERP Governance
+# NexusAIFirst ERP Governance
 
 ## Project Structure
 

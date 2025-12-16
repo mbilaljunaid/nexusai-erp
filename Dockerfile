@@ -1,5 +1,5 @@
 # ============================================
-# NexusAI ERP - Production Dockerfile
+# NexusAIFirst ERP - Production Dockerfile
 # Multi-stage build for Node.js + React + Vite
 # ============================================
 

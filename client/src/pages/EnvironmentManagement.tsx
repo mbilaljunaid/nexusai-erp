@@ -30,7 +30,7 @@ export default function EnvironmentManagement() {
   const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "Environment Management | NexusAI";
+    document.title = "Environment Management | NexusAIFirst";
     loadEnvVars();
   }, []);
 

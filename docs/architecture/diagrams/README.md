@@ -1,6 +1,6 @@
 # Architecture Diagrams
 
-This directory contains architecture diagrams for NexusAI ERP.
+This directory contains architecture diagrams for NexusAIFirst ERP.
 
 ## Available Diagrams
 

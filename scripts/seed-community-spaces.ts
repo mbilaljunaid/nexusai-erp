@@ -72,14 +72,14 @@ const industrySpaces = [
 ];
 
 const generalSpaces = [
-  { slug: "announcements", name: "Announcements", icon: "Bell", description: "Official NexusAI announcements and updates" },
+  { slug: "announcements", name: "Announcements", icon: "Bell", description: "Official NexusAIFirst announcements and updates" },
   { slug: "general-discussion", name: "General Discussion", icon: "MessageCircle", description: "General community discussions" },
   { slug: "feature-requests", name: "Feature Requests", icon: "Lightbulb", description: "Suggest new features and improvements" },
   { slug: "bugs-issues", name: "Bugs & Issues", icon: "Bug", description: "Report bugs and technical issues" },
   { slug: "best-practices", name: "Best Practices", icon: "Sparkles", description: "Share and learn best practices" },
   { slug: "tips-tricks", name: "Tips & Tricks", icon: "Wand2", description: "Productivity tips and shortcuts" },
   { slug: "training-certification", name: "Training & Certification", icon: "Award", description: "Learning resources and certifications" },
-  { slug: "jobs-careers", name: "Jobs & Careers", icon: "UserPlus", description: "NexusAI job opportunities and career advice" },
+  { slug: "jobs-careers", name: "Jobs & Careers", icon: "UserPlus", description: "NexusAIFirst job opportunities and career advice" },
   { slug: "partners", name: "Partner Network", icon: "Handshake", description: "Partner discussions and collaborations" },
   { slug: "app-marketplace", name: "App Marketplace", icon: "LayoutGrid", description: "Discuss marketplace apps and extensions" },
 ];

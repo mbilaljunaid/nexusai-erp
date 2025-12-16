@@ -13,7 +13,7 @@ export default function ModuleDetail() {
 
   useEffect(() => {
     if (module) {
-      document.title = `${module.name} | NexusAI Enterprise Platform`;
+      document.title = `${module.name} | NexusAIFirst Enterprise Platform`;
     }
   }, [module]);
 
@@ -148,7 +148,7 @@ export default function ModuleDetail() {
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-6">Ready to Transform Your {module.name}?</h2>
             <p style={{ color: `hsl(var(--muted-foreground))` }} className="text-lg mb-8">
-              Join leading enterprises using NexusAI to streamline operations and drive growth
+              Join leading enterprises using NexusAIFirst to streamline operations and drive growth
             </p>
             <div className="flex gap-4 justify-center">
               <Button size="lg" className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white" data-testid={`button-module-start-${slug}`}>

@@ -8,7 +8,7 @@ import { Factory, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicProductionProcess() {
   useEffect(() => {
-    document.title = "Production Management Process | NexusAI ERP";
+    document.title = "Production Management Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

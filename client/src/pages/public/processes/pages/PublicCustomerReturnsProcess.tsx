@@ -8,7 +8,7 @@ import { RotateCcw, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicCustomerReturnsProcess() {
   useEffect(() => {
-    document.title = "Customer Returns Process | NexusAI ERP";
+    document.title = "Customer Returns Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

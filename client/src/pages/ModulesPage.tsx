@@ -31,7 +31,7 @@ import {
 
 export default function ModulesPage() {
   useEffect(() => {
-    document.title = "Modules | NexusAI ERP - AI-First Enterprise Solutions";
+    document.title = "Modules | NexusAIFirst ERP - AI-First Enterprise Solutions";
   }, []);
 
   const modules = [
@@ -217,7 +217,7 @@ export default function ModulesPage() {
             Enterprise Modules Powered by AI
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            NexusAI delivers 16 comprehensive enterprise modules, each enhanced with artificial intelligence 
+            NexusAIFirst delivers 16 comprehensive enterprise modules, each enhanced with artificial intelligence 
             to automate decisions, predict outcomes, and optimize operations across your entire organization.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -321,7 +321,7 @@ export default function ModulesPage() {
         {/* How AI Works Section */}
         <section className="px-4 py-16 bg-muted/50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4 text-center">How NexusAI Works</h2>
+            <h2 className="text-3xl font-bold mb-4 text-center">How NexusAIFirst Works</h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
               Our AI engine processes your enterprise data to deliver intelligent automation and insights
             </p>
@@ -331,7 +331,7 @@ export default function ModulesPage() {
                 <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
                 <h3 className="font-bold text-lg mb-2">Data Integration</h3>
                 <p className="text-sm text-muted-foreground">
-                  NexusAI continuously ingests data from all modules, external systems, and market sources to build a comprehensive enterprise data lake.
+                  NexusAIFirst continuously ingests data from all modules, external systems, and market sources to build a comprehensive enterprise data lake.
                 </p>
               </Card>
               
@@ -366,7 +366,7 @@ export default function ModulesPage() {
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-xl font-bold mb-2">All Modules Work Together</h3>
                 <p className="text-muted-foreground">
-                  NexusAI modules share a unified data layer, enabling cross-functional AI insights. 
+                  NexusAIFirst modules share a unified data layer, enabling cross-functional AI insights. 
                   For example, sales predictions inform manufacturing schedules, which optimize inventory 
                   levels, which affect cash flow forecasts - all automatically connected.
                 </p>
@@ -381,7 +381,7 @@ export default function ModulesPage() {
             <Brain className="w-12 h-12 mx-auto mb-4" />
             <h2 className="text-3xl font-bold mb-4">Experience the AI Difference</h2>
             <p className="text-lg text-white/80 mb-8">
-              See how NexusAI can transform your enterprise operations with intelligent automation.
+              See how NexusAIFirst can transform your enterprise operations with intelligent automation.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link to="/demo">

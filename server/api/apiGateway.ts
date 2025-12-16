@@ -56,7 +56,7 @@ export class APIGateway {
    */
   getDocumentation(): any {
     const docs: any = {
-      title: "NexusAI Enterprise API",
+      title: "NexusAIFirst Enterprise API",
       currentVersion: this.currentVersion,
       versions: Array.from(this.versions.values()),
       routes: Array.from(this.routes.values()).map((r) => ({

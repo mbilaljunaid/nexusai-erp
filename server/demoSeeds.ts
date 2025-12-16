@@ -103,11 +103,11 @@ export function generateDemoData(industry: string) {
 export const marketplaceDeveloperSeeds = [
   {
     userId: "dev-nexus-001",
-    companyName: "NexusAI Solutions",
-    displayName: "NexusAI Official",
-    email: "apps@nexusai.com",
-    website: "https://nexusai.com",
-    description: "Official NexusAI first-party apps and integrations",
+    companyName: "NexusAIFirst Solutions",
+    displayName: "NexusAIFirst Official",
+    email: "apps@nexusaifirst.cloud",
+    website: "https://nexusaifirst.cloud",
+    description: "Official NexusAIFirst first-party apps and integrations",
     status: "approved"
   },
   {

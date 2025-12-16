@@ -20,7 +20,7 @@ interface ModuleData {
 
 export default function TrainingGuideCRM() {
   useEffect(() => {
-    document.title = "CRM Training Guide | NexusAI ERP";
+    document.title = "CRM Training Guide | NexusAIFirst ERP";
   }, []);
 
   const [selectedRole, setSelectedRole] = useState<EnterpriseRole | "all">("all");

@@ -290,7 +290,7 @@ export default function TrainingContentSubmit() {
                 Submit Training Content
               </CardTitle>
               <CardDescription>
-                Share your knowledge with the NexusAI community. All submissions are reviewed before publishing.
+                Share your knowledge with the NexusAIFirst community. All submissions are reviewed before publishing.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -334,7 +334,7 @@ export default function TrainingContentSubmit() {
                       <FormItem>
                         <FormLabel>Title</FormLabel>
                         <FormControl>
-                          <Input {...field} className="bg-slate-900 border-slate-600" placeholder="e.g., Getting Started with NexusAI CRM" data-testid="input-title" />
+                          <Input {...field} className="bg-slate-900 border-slate-600" placeholder="e.g., Getting Started with NexusAIFirst CRM" data-testid="input-title" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

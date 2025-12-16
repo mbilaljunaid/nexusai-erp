@@ -8,7 +8,7 @@ import { Shield, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicComplianceProcess() {
   useEffect(() => {
-    document.title = "Compliance Management Process | NexusAI ERP";
+    document.title = "Compliance Management Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

@@ -18,7 +18,7 @@ export default function LoginPage() {
   const { login, isAuthenticated, isLoading } = useRBAC();
 
   useEffect(() => {
-    document.title = "Login | NexusAI";
+    document.title = "Login | NexusAIFirst";
   }, []);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email: "admin@nexusai.com", password: "Admin@2025!" }),
+        body: JSON.stringify({ email: "admin@nexusaifirst.cloud", password: "Admin@2025!" }),
       });
 
       if (res.ok) {
@@ -112,7 +112,7 @@ export default function LoginPage() {
           <div className="text-center mb-12">
             <Badge className="public-badge mb-4">LOGIN</Badge>
             <h1 className="public-hero-title text-4xl font-bold mb-2">Welcome Back</h1>
-            <p className="public-hero-subtitle">Sign in to access your NexusAI dashboard</p>
+            <p className="public-hero-subtitle">Sign in to access your NexusAIFirst dashboard</p>
           </div>
 
           <Card className="public-card p-8" data-testid="card-login">

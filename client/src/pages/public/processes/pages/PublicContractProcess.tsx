@@ -8,7 +8,7 @@ import { FileText, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicContractProcess() {
   useEffect(() => {
-    document.title = "Contract Lifecycle Management | NexusAI ERP";
+    document.title = "Contract Lifecycle Management | NexusAIFirst ERP";
   }, []);
 
   const steps = [

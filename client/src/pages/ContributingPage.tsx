@@ -27,11 +27,11 @@ import { Link } from "wouter";
 
 export default function ContributingPage() {
   useEffect(() => {
-    document.title = "Contributing | NexusAI Open Source";
+    document.title = "Contributing | NexusAIFirst Open Source";
   }, []);
 
   const steps = [
-    { num: 1, title: "Fork the Repository", desc: "Create your own copy of NexusAI on GitHub" },
+    { num: 1, title: "Fork the Repository", desc: "Create your own copy of NexusAIFirst on GitHub" },
     { num: 2, title: "Create a Branch", desc: "Make a new branch for your feature or fix" },
     { num: 3, title: "Make Changes", desc: "Implement your improvements following our guidelines" },
     { num: 4, title: "Test Thoroughly", desc: "Ensure all tests pass and add new ones if needed" },
@@ -58,7 +58,7 @@ export default function ContributingPage() {
     {
       icon: Wrench,
       title: "Development Contributors",
-      description: "Developers who contribute code, fix bugs, and build new features for the NexusAI platform.",
+      description: "Developers who contribute code, fix bugs, and build new features for the NexusAIFirst platform.",
       benefits: ["Contributor credits", "Priority support", "Dev community access", "Feature input voting"],
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
@@ -66,7 +66,7 @@ export default function ContributingPage() {
     {
       icon: Handshake,
       title: "Implementation Partners",
-      description: "Certified partners who help organizations implement and customize NexusAI for their specific needs.",
+      description: "Certified partners who help organizations implement and customize NexusAIFirst for their specific needs.",
       benefits: ["Partner certification", "Revenue sharing", "Lead referrals", "Co-marketing opportunities"],
       color: "text-teal-500",
       bgColor: "bg-teal-500/10",
@@ -74,7 +74,7 @@ export default function ContributingPage() {
     {
       icon: GraduationCap,
       title: "Certified Trainers",
-      description: "Experienced professionals who train users and administrators on how to effectively use NexusAI.",
+      description: "Experienced professionals who train users and administrators on how to effectively use NexusAIFirst.",
       benefits: ["Trainer certification", "Training materials", "Course marketplace", "Professional network"],
       color: "text-amber-500",
       bgColor: "bg-amber-500/10",
@@ -89,10 +89,10 @@ export default function ContributingPage() {
         {/* Hero */}
         <section className="px-4 py-16 text-center max-w-4xl mx-auto">
           <Badge className="mb-4 bg-purple-600 text-white">CONTRIBUTING GUIDE</Badge>
-          <h1 className="text-5xl font-bold mb-6">Contribute to NexusAI</h1>
+          <h1 className="text-5xl font-bold mb-6">Contribute to NexusAIFirst</h1>
           <p className="text-xl text-muted-foreground mb-8">
             Thank you for your interest in contributing! This guide will help you get started 
-            with contributing to NexusAI.
+            with contributing to NexusAIFirst.
           </p>
           <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
             <Button size="lg" data-testid="button-view-repo">
@@ -149,7 +149,7 @@ export default function ContributingPage() {
             <h2 className="text-3xl font-bold mb-4">Become a Contributor</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Whether you're a developer, QA specialist, implementation expert, or trainer, 
-              there's a place for you in the NexusAI community.
+              there's a place for you in the NexusAIFirst community.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

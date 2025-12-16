@@ -1,6 +1,6 @@
 # API Documentation
 
-NexusAI ERP provides a comprehensive REST API for all platform functionality.
+NexusAIFirst ERP provides a comprehensive REST API for all platform functionality.
 
 ## Base URL
 

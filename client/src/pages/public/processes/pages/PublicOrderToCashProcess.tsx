@@ -8,7 +8,7 @@ import { DollarSign, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicOrderToCashProcess() {
   useEffect(() => {
-    document.title = "Order-to-Cash Process | NexusAI ERP";
+    document.title = "Order-to-Cash Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

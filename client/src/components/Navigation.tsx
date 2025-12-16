@@ -27,7 +27,7 @@ export function Header() {
           {/* Logo */}
           <Link to="/">
             <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent cursor-pointer" data-testid="link-logo">
-              NexusAI
+              NexusAIFirst
             </div>
           </Link>
 
@@ -402,7 +402,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
-              NexusAI
+              NexusAIFirst
             </h3>
             <p className="text-slate-400 text-sm">
               Transform your enterprise with AI-powered ERP solutions for 41+ industries.
@@ -462,7 +462,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-slate-700 flex flex-col md:flex-row justify-between items-center text-slate-400 text-sm">
-          <p>&copy; 2025 NexusAI Contributors. Licensed under AGPL-3.0.</p>
+          <p>&copy; 2025 NexusAIFirst Contributors. Licensed under AGPL-3.0.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link to="/privacy" className="hover:text-white transition">Privacy</Link>
             <Link to="/terms" className="hover:text-white transition">Terms</Link>

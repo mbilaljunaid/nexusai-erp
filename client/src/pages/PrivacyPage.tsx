@@ -5,7 +5,7 @@ import { Shield } from "lucide-react";
 
 export default function PrivacyPage() {
   useEffect(() => {
-    document.title = "Privacy Policy | NexusAI ERP Platform";
+    document.title = "Privacy Policy | NexusAIFirst ERP Platform";
   }, []);
 
   return (
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
             <div>
               <h2 className="text-2xl font-bold mb-4">1. Information We Collect</h2>
               <p className="text-muted-foreground mb-4">
-                NexusAI ERP is an open source project. When you use our demo or contact us, we may collect:
+                NexusAIFirst ERP is an open source project. When you use our demo or contact us, we may collect:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                 <li>Contact information (name, email) when you submit forms</li>
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
                 <li>Respond to your inquiries and support requests</li>
                 <li>Provide demo access and implementation services</li>
                 <li>Improve our open source software</li>
-                <li>Send relevant updates about NexusAI (with your consent)</li>
+                <li>Send relevant updates about NexusAIFirst (with your consent)</li>
               </ul>
             </div>
 
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
             <div>
               <h2 className="text-2xl font-bold mb-4">4. Self-Hosted Instances</h2>
               <p className="text-muted-foreground">
-                If you self-host NexusAI ERP, you are responsible for your own data privacy 
+                If you self-host NexusAIFirst ERP, you are responsible for your own data privacy 
                 and security. The software does not send data to external servers unless 
                 you configure it to do so.
               </p>

@@ -7,7 +7,7 @@ import { Link } from "wouter";
 
 export default function LicensePage() {
   useEffect(() => {
-    document.title = "License | NexusAI - AGPL-3.0";
+    document.title = "License | NexusAIFirst - AGPL-3.0";
   }, []);
 
   return (
@@ -20,7 +20,7 @@ export default function LicensePage() {
             <Scale className="w-12 h-12 mx-auto mb-4 text-blue-500" />
             <h1 className="text-4xl font-bold mb-4">License</h1>
             <p className="text-muted-foreground">
-              NexusAI is licensed under the GNU Affero General Public License v3.0
+              NexusAIFirst is licensed under the GNU Affero General Public License v3.0
             </p>
           </div>
 
@@ -58,9 +58,9 @@ export default function LicensePage() {
 
               <h4 className="text-lg font-semibold mt-8 mb-4">Key Terms</h4>
               <ul className="list-disc pl-6 space-y-2 mb-6">
-                <li><strong>Freedom to Use:</strong> You may use NexusAI for any purpose</li>
-                <li><strong>Freedom to Study:</strong> You may examine how NexusAI works and modify it</li>
-                <li><strong>Freedom to Share:</strong> You may redistribute copies of NexusAI</li>
+                <li><strong>Freedom to Use:</strong> You may use NexusAIFirst for any purpose</li>
+                <li><strong>Freedom to Study:</strong> You may examine how NexusAIFirst works and modify it</li>
+                <li><strong>Freedom to Share:</strong> You may redistribute copies of NexusAIFirst</li>
                 <li><strong>Freedom to Improve:</strong> You may distribute your modified versions</li>
                 <li><strong>Network Copyleft:</strong> If you run a modified version on a server and let users interact with it, you must make the source code available to them</li>
               </ul>

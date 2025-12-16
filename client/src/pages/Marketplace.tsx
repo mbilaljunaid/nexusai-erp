@@ -752,7 +752,7 @@ export default function Marketplace() {
 
   const handleShare = (platform: string, app: MarketplaceApp) => {
     const appUrl = `${window.location.origin}/marketplace?app=${app.id}`;
-    const text = `Check out ${app.name} on NexusAI Marketplace!`;
+    const text = `Check out ${app.name} on NexusAIFirst Marketplace!`;
     
     switch (platform) {
       case 'twitter':
@@ -777,7 +777,7 @@ export default function Marketplace() {
     .slice(0, 6);
 
   useEffect(() => {
-    document.title = "App Marketplace | NexusAI";
+    document.title = "App Marketplace | NexusAIFirst";
   }, []);
 
   return (

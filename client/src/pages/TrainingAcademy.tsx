@@ -9,7 +9,7 @@ export default function TrainingAcademy() {
       </div>
       <div className="grid gap-4">
         {[
-          { course: "NexusAI Fundamentals", students: "1,245", completion: "85%" },
+          { course: "NexusAIFirst Fundamentals", students: "1,245", completion: "85%" },
           { course: "Advanced CRM", students: "340", completion: "72%" },
         ].map((c) => (
           <Card key={c.course}>

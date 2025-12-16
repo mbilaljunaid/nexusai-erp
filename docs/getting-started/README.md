@@ -1,6 +1,6 @@
-# Getting Started with NexusAI ERP
+# Getting Started with NexusAIFirst ERP
 
-This guide will help you get NexusAI ERP up and running quickly.
+This guide will help you get NexusAIFirst ERP up and running quickly.
 
 ## Prerequisites
 

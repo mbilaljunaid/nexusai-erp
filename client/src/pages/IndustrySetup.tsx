@@ -87,7 +87,7 @@ export default function IndustrySetup() {
   const { toast } = useToast();
 
   useEffect(() => {
-    document.title = "Industry Setup | NexusAI";
+    document.title = "Industry Setup | NexusAIFirst";
   }, []);
 
   const { data: tenants = [], isLoading: tenantsLoading } = useQuery<Tenant[]>({

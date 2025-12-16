@@ -8,7 +8,7 @@ import { PiggyBank, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicBudgetProcess() {
   useEffect(() => {
-    document.title = "Budget Planning & Control | NexusAI ERP";
+    document.title = "Budget Planning & Control | NexusAIFirst ERP";
   }, []);
 
   const steps = [

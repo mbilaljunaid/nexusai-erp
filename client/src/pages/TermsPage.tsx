@@ -5,7 +5,7 @@ import { FileText } from "lucide-react";
 
 export default function TermsPage() {
   useEffect(() => {
-    document.title = "Terms of Service | NexusAI ERP Platform";
+    document.title = "Terms of Service | NexusAIFirst ERP Platform";
   }, []);
 
   return (
@@ -16,7 +16,7 @@ export default function TermsPage() {
           <FileText className="w-16 h-16 mx-auto mb-4 text-blue-500" />
           <h1 className="public-hero-title text-5xl font-bold mb-4" data-testid="text-terms-title">Terms of Service</h1>
           <p className="public-hero-subtitle text-xl text-muted-foreground">
-            Terms and conditions for using NexusAI ERP and related services.
+            Terms and conditions for using NexusAIFirst ERP and related services.
           </p>
         </section>
 
@@ -25,7 +25,7 @@ export default function TermsPage() {
             <div>
               <h2 className="text-2xl font-bold mb-4">1. Acceptance of Terms</h2>
               <p className="text-muted-foreground">
-                By accessing or using NexusAI ERP, you agree to be bound by these Terms of Service. 
+                By accessing or using NexusAIFirst ERP, you agree to be bound by these Terms of Service. 
                 If you disagree with any part of these terms, you may not access the service.
               </p>
             </div>
@@ -33,7 +33,7 @@ export default function TermsPage() {
             <div>
               <h2 className="text-2xl font-bold mb-4">2. Open Source License</h2>
               <p className="text-muted-foreground mb-4">
-                NexusAI ERP is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). 
+                NexusAIFirst ERP is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). 
                 This means:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
@@ -78,7 +78,7 @@ export default function TermsPage() {
             <div>
               <h2 className="text-2xl font-bold mb-4">6. Limitation of Liability</h2>
               <p className="text-muted-foreground">
-                To the maximum extent permitted by law, NexusAI and its contributors shall not be 
+                To the maximum extent permitted by law, NexusAIFirst and its contributors shall not be 
                 liable for any indirect, incidental, special, consequential, or punitive damages 
                 resulting from your use of or inability to use the service.
               </p>

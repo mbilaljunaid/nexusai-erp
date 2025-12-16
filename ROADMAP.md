@@ -1,6 +1,6 @@
-# NexusAI ERP Roadmap
+# NexusAIFirst ERP Roadmap
 
-This document outlines the planned development roadmap for NexusAI ERP.
+This document outlines the planned development roadmap for NexusAIFirst ERP.
 
 ## Vision
 

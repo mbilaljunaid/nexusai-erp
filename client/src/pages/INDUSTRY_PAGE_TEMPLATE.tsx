@@ -45,11 +45,11 @@ export default function IndustryPage({
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
       {/* SEO Meta */}
       <head>
-        <title>{industry} ERP Solutions | NexusAI</title>
+        <title>{industry} ERP Solutions | NexusAIFirst</title>
         <meta name="description" content={`${industry} enterprise ERP software with AI-driven automation, real-time analytics, and industry-specific modules. See demo.`} />
         <meta name="keywords" content={`${industry}, ERP, enterprise software, automation, analytics`} />
-        <meta property="og:title" content={`${industry} ERP Solutions | NexusAI`} />
-        <meta property="og:description" content={`Transform your ${industry.toLowerCase()} operations with NexusAI's comprehensive ERP platform.`} />
+        <meta property="og:title" content={`${industry} ERP Solutions | NexusAIFirst`} />
+        <meta property="og:description" content={`Transform your ${industry.toLowerCase()} operations with NexusAIFirst's comprehensive ERP platform.`} />
       </head>
 
       {/* Hero Section */}
@@ -100,7 +100,7 @@ export default function IndustryPage({
       {/* Benefits */}
       <section className="px-4 py-16 bg-slate-800/50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Why NexusAI for {industry}</h2>
+          <h2 className="text-3xl font-bold text-white mb-8 text-center">Why NexusAIFirst for {industry}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {benefits.map((benefit, idx) => (
               <div key={idx} className="text-white">
@@ -154,7 +154,7 @@ export default function IndustryPage({
       {/* USPs */}
       <section className="px-4 py-16 bg-slate-900/50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">NexusAI Advantages</h2>
+          <h2 className="text-3xl font-bold text-white mb-8 text-center">NexusAIFirst Advantages</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="bg-slate-800 border-slate-700 p-4 text-white">
               <Globe className="w-8 h-8 text-blue-400 mb-2" />

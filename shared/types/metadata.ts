@@ -1,5 +1,5 @@
 /**
- * Advanced Metadata Type Definitions for NexusAI Form System
+ * Advanced Metadata Type Definitions for NexusAIFirst Form System
  * Supports validation, GL configuration, workflow transitions, and conditional logic
  */
 

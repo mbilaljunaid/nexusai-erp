@@ -8,7 +8,7 @@ import { TrendingUp, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicDemandProcess() {
   useEffect(() => {
-    document.title = "Demand Planning Process | NexusAI ERP";
+    document.title = "Demand Planning Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

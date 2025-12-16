@@ -8,7 +8,7 @@ import { Building2, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicFixedAssetProcess() {
   useEffect(() => {
-    document.title = "Fixed Asset Management Process | NexusAI ERP";
+    document.title = "Fixed Asset Management Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

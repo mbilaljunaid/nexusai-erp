@@ -8,7 +8,7 @@ import { Warehouse, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicWarehouseProcess() {
   useEffect(() => {
-    document.title = "Warehouse Management Process | NexusAI ERP";
+    document.title = "Warehouse Management Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

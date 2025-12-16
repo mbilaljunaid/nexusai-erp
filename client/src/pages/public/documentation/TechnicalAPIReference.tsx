@@ -8,7 +8,7 @@ import { Code2, ArrowLeft, Terminal, Key, Webhook, FileJson } from "lucide-react
 
 export default function TechnicalAPIReference() {
   useEffect(() => {
-    document.title = "API Reference | NexusAI ERP Technical Documentation";
+    document.title = "API Reference | NexusAIFirst ERP Technical Documentation";
   }, []);
 
   const apiCategories = [
@@ -38,7 +38,7 @@ export default function TechnicalAPIReference() {
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
-            Complete API documentation for integrating with NexusAI ERP. 
+            Complete API documentation for integrating with NexusAIFirst ERP. 
             RESTful endpoints with OpenAPI 3.0 specifications.
           </p>
         </section>

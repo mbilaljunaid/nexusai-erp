@@ -33,7 +33,7 @@ export default function FeaturesComparison() {
   ];
 
   const companies = [
-    { name: "NexusAI", color: "bg-blue-50 dark:bg-blue-950", strength: "AI-First, Industry-Ready, Fast" },
+    { name: "NexusAIFirst", color: "bg-blue-50 dark:bg-blue-950", strength: "AI-First, Industry-Ready, Fast" },
     { name: "Oracle", color: "bg-red-50 dark:bg-red-950", strength: "Enterprise Scale, Legacy Support" },
     { name: "Salesforce", color: "bg-green-50 dark:bg-green-950", strength: "CRM Excellence, Cloud Native" },
     { name: "Odoo", color: "bg-purple-50 dark:bg-purple-950", strength: "Open Source, Affordable" },
@@ -47,7 +47,7 @@ export default function FeaturesComparison() {
         <section className="px-4 py-24 max-w-7xl mx-auto">
           <h1 className="text-5xl font-bold mb-4">Features & Functionality Comparison</h1>
           <p className="text-xl text-muted-foreground mb-8">
-            How NexusAI compares with leading ERP solutions. Discover why enterprises choose NexusAI for faster implementation and AI-driven insights.
+            How NexusAIFirst compares with leading ERP solutions. Discover why enterprises choose NexusAIFirst for faster implementation and AI-driven insights.
           </p>
 
           {/* Company Overview */}
@@ -70,7 +70,7 @@ export default function FeaturesComparison() {
                     <thead>
                       <tr className="bg-muted border-b">
                         <th className="text-left p-4 font-bold">Feature</th>
-                        <th className="text-center p-4 font-bold w-20">NexusAI</th>
+                        <th className="text-center p-4 font-bold w-20">NexusAIFirst</th>
                         <th className="text-center p-4 font-bold w-20">Oracle</th>
                         <th className="text-center p-4 font-bold w-20">Salesforce</th>
                         <th className="text-center p-4 font-bold w-20">Odoo</th>
@@ -101,7 +101,7 @@ export default function FeaturesComparison() {
 
           {/* Key Differentiators */}
           <div className="mt-16 space-y-8">
-            <h2 className="text-3xl font-bold">Why NexusAI Stands Out</h2>
+            <h2 className="text-3xl font-bold">Why NexusAIFirst Stands Out</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 {
@@ -134,7 +134,7 @@ export default function FeaturesComparison() {
             <h2 className="text-2xl font-bold mb-6">Total Cost of Ownership (TCO) Comparison</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="font-bold text-lg mb-4">NexusAI</h3>
+                <h3 className="font-bold text-lg mb-4">NexusAIFirst</h3>
                 <ul className="space-y-2 text-sm">
                   <li>✓ Transparent, predictable pricing</li>
                   <li>✓ 50% faster implementation = lower consulting costs</li>
@@ -158,7 +158,7 @@ export default function FeaturesComparison() {
 
           {/* CTA */}
           <Card className="mt-12 p-8 text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Choose NexusAI?</h2>
+            <h2 className="text-3xl font-bold mb-4">Ready to Choose NexusAIFirst?</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
               Experience the difference of an AI-First, Industry-Ready ERP platform. Get instant access to a fully configured demo environment for your industry.
             </p>

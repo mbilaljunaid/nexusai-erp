@@ -26,7 +26,7 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
-    document.title = "Blog | NexusAI ERP Platform";
+    document.title = "Blog | NexusAIFirst ERP Platform";
   }, []);
 
   const posts = [
@@ -41,11 +41,11 @@ export default function BlogPage() {
     },
     {
       id: 11,
-      title: "Building Resilient Supply Chains with NexusAI",
+      title: "Building Resilient Supply Chains with NexusAIFirst",
       category: "Analytics",
       author: "Lisa Wang",
       date: "Dec 10, 2025",
-      excerpt: "Learn how to build supply chain resilience using predictive modeling, multi-source vendor management, and automated risk assessment features in NexusAI ERP.",
+      excerpt: "Learn how to build supply chain resilience using predictive modeling, multi-source vendor management, and automated risk assessment features in NexusAIFirst ERP.",
       icon: Factory,
     },
     {
@@ -54,7 +54,7 @@ export default function BlogPage() {
       category: "Technical",
       author: "David Lee",
       date: "Dec 07, 2025",
-      excerpt: "Explore how NexusAI implements zero-trust security principles including continuous authentication, micro-segmentation, and encrypted data at rest and in transit.",
+      excerpt: "Explore how NexusAIFirst implements zero-trust security principles including continuous authentication, micro-segmentation, and encrypted data at rest and in transit.",
       icon: Shield,
     },
     {
@@ -81,7 +81,7 @@ export default function BlogPage() {
       category: "AI",
       author: "Mike Johnson",
       date: "Nov 29, 2025",
-      excerpt: "Discover how NexusAI's process mining capabilities use machine learning to identify bottlenecks, predict process failures, and recommend optimization strategies.",
+      excerpt: "Discover how NexusAIFirst's process mining capabilities use machine learning to identify bottlenecks, predict process failures, and recommend optimization strategies.",
       icon: Cpu,
     },
     {
@@ -117,7 +117,7 @@ export default function BlogPage() {
       category: "Technical",
       author: "David Lee",
       date: "Nov 20, 2025",
-      excerpt: "Deep dive into how NexusAI ensures complete data isolation and enterprise-grade security in a multi-tenant SaaS environment with role-based access controls.",
+      excerpt: "Deep dive into how NexusAIFirst ensures complete data isolation and enterprise-grade security in a multi-tenant SaaS environment with role-based access controls.",
       icon: Lock,
     },
     {
@@ -153,7 +153,7 @@ export default function BlogPage() {
 
       {/* Hero */}
       <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
-        <h1 className="public-hero-title text-5xl font-bold mb-4">NexusAI Blog</h1>
+        <h1 className="public-hero-title text-5xl font-bold mb-4">NexusAIFirst Blog</h1>
         <p className="public-hero-subtitle text-xl">Insights, best practices, and industry news for enterprise ERP</p>
       </section>
 

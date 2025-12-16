@@ -39,7 +39,7 @@ We take security vulnerabilities seriously. If you discover a security issue, pl
 
 ## Security Best Practices
 
-When deploying NexusAI ERP:
+When deploying NexusAIFirst ERP:
 
 1. Keep dependencies updated
 2. Use environment variables for sensitive data
@@ -50,4 +50,4 @@ When deploying NexusAI ERP:
 
 ## Acknowledgments
 
-We appreciate the security research community's efforts in helping keep NexusAI ERP secure.
+We appreciate the security research community's efforts in helping keep NexusAIFirst ERP secure.

@@ -216,7 +216,7 @@ export const isPlatformAuthenticated: RequestHandler = (req: Request, res: Respo
 // Seed admin user if it doesn't exist
 export async function seedAdminUser() {
   try {
-    const adminEmail = "admin@nexusai.com";
+    const adminEmail = "admin@nexusaifirst.cloud";
     const existingAdmin = await storage.getUserByEmail(adminEmail);
     
     if (!existingAdmin) {

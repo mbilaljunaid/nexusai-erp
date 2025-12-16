@@ -369,7 +369,7 @@ export default function TrainingContent() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-slate-300 mb-4">
-                  Share your knowledge and earn reputation points! Get recognized for your contributions to the NexusAI community.
+                  Share your knowledge and earn reputation points! Get recognized for your contributions to the NexusAIFirst community.
                 </p>
                 <ul className="text-sm text-slate-400 space-y-2 mb-4">
                   <li className="flex items-center gap-2">

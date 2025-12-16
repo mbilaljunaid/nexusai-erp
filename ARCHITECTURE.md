@@ -1,10 +1,10 @@
-# NexusAI ERP Architecture
+# NexusAIFirst ERP Architecture
 
-This document describes the system architecture of NexusAI ERP.
+This document describes the system architecture of NexusAIFirst ERP.
 
 ## System Overview
 
-NexusAI ERP is built with a modern, layered architecture designed for enterprise-grade performance, scalability, and maintainability.
+NexusAIFirst ERP is built with a modern, layered architecture designed for enterprise-grade performance, scalability, and maintainability.
 
 ---
 
@@ -106,7 +106,7 @@ NexusAI ERP is built with a modern, layered architecture designed for enterprise
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│                     NexusAI ERP Modules                     │
+│                     NexusAIFirst ERP Modules                     │
 ├──────────────┬──────────────┬──────────────┬──────────────┤
 │     CRM      │   Projects   │   Finance    │      HR      │
 ├──────────────┼──────────────┼──────────────┼──────────────┤

@@ -24,7 +24,7 @@ export default function AIAssistant() {
     {
       id: "1",
       role: "assistant",
-      content: "Hello! I'm your NexusAI Copilot. How can I help you today? I can assist with budgeting, forecasting, process automation, and more.",
+      content: "Hello! I'm your NexusAIFirst Copilot. How can I help you today? I can assist with budgeting, forecasting, process automation, and more.",
       timestamp: new Date(),
     },
   ]);
@@ -97,7 +97,7 @@ export default function AIAssistant() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageCircle className="h-5 w-5" />
-                NexusAI Copilot
+                NexusAIFirst Copilot
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto space-y-4 mb-4">

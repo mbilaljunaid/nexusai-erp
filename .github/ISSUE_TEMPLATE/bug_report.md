@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug to help us improve NexusAI ERP
+about: Report a bug to help us improve NexusAIFirst ERP
 title: '[BUG] '
 labels: bug
 assignees: ''
@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain the problem.
 ## Environment
 - **Browser**: [e.g., Chrome 120, Firefox 121]
 - **OS**: [e.g., Windows 11, macOS 14]
-- **NexusAI Version**: [e.g., 1.0.0]
+- **NexusAIFirst Version**: [e.g., 1.0.0]
 
 ## Additional Context
 Add any other context about the problem here.

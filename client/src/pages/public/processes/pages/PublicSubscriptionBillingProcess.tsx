@@ -8,7 +8,7 @@ import { CreditCard, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicSubscriptionBillingProcess() {
   useEffect(() => {
-    document.title = "Subscription & Recurring Billing | NexusAI ERP";
+    document.title = "Subscription & Recurring Billing | NexusAIFirst ERP";
   }, []);
 
   const steps = [

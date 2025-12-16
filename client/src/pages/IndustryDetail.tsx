@@ -1820,7 +1820,7 @@ export default function IndustryDetail() {
                 </ul>
               </div>
               <div>
-                <h2 className="text-3xl font-bold mb-6">How NexusAI Solves It</h2>
+                <h2 className="text-3xl font-bold mb-6">How NexusAIFirst Solves It</h2>
                 <ul className="space-y-3">
                   {industry.solutions.map((solution: string, i: number) => (
                     <li key={i} className="flex gap-3">

@@ -71,7 +71,7 @@ export default function SubscriptionManagement() {
   const [filterPlan, setFilterPlan] = useState<string>("all");
 
   useEffect(() => {
-    document.title = "Subscription Management | NexusAI";
+    document.title = "Subscription Management | NexusAIFirst";
   }, []);
 
   const handleChangeStatus = (id: string, newStatus: Subscription["status"]) => {

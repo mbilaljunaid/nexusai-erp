@@ -1,7 +1,7 @@
 /* @jest-environment node */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-describe('NexusAI Testing Suite - Phase 3 & 4', () => {
+describe('NexusAIFirst Testing Suite - Phase 3 & 4', () => {
   describe('Frontend: PublicProcessHub', () => {
     test('should have 18 enterprise processes', () => {
       const processes = 18;

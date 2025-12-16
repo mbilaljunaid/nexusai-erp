@@ -8,7 +8,7 @@ import { Header, Footer } from "@/components/Navigation";
 
 export default function UseCasesPage() {
   useEffect(() => {
-    document.title = "Use Cases | NexusAI - Real-World Enterprise Solutions";
+    document.title = "Use Cases | NexusAIFirst - Real-World Enterprise Solutions";
   }, []);
 
   const useCases = [
@@ -254,10 +254,10 @@ export default function UseCasesPage() {
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">USE CASES</Badge>
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Transform Your Business with NexusAI
+              Transform Your Business with NexusAIFirst
             </h1>
             <p className="text-xl text-slate-300 max-w-3xl">
-              Discover how enterprises across industries leverage NexusAI's 28+ modules to drive efficiency, reduce costs, and accelerate growth
+              Discover how enterprises across industries leverage NexusAIFirst's 28+ modules to drive efficiency, reduce costs, and accelerate growth
             </p>
           </div>
         </section>
@@ -367,7 +367,7 @@ export default function UseCasesPage() {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Business?</h2>
             <p className="text-slate-300 mb-8">
-              Let our experts show you how NexusAI can solve your specific challenges and drive measurable results
+              Let our experts show you how NexusAIFirst can solve your specific challenges and drive measurable results
             </p>
             <div className="flex gap-4 justify-center">
               <Link to="/demo">

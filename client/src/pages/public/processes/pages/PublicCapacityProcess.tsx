@@ -8,7 +8,7 @@ import { Gauge, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicCapacityProcess() {
   useEffect(() => {
-    document.title = "Capacity Planning Process | NexusAI ERP";
+    document.title = "Capacity Planning Process | NexusAIFirst ERP";
   }, []);
 
   const steps = [

@@ -12,7 +12,7 @@ export default function IndustriesPage() {
   const createSlug = (name: string) => name.toLowerCase().replace(/[&\s]+/g, '-').replace(/[^a-z0-9-]/g, '');
 
   useEffect(() => {
-    document.title = "Industries | NexusAI - Enterprise Solutions for 41+ Industries";
+    document.title = "Industries | NexusAIFirst - Enterprise Solutions for 41+ Industries";
   }, []);
 
   const industries = [
@@ -165,7 +165,7 @@ export default function IndustriesPage() {
               <Card className="p-8">
                 <h3 className="text-2xl font-bold mb-4">Ready to Explore?</h3>
                 <p className="text-muted-foreground mb-6">
-                  Select your industry to see how NexusAI transforms operations, reduces costs, and drives growth
+                  Select your industry to see how NexusAIFirst transforms operations, reduces costs, and drives growth
                 </p>
                 <Link to="/demo">
                   <Button className="w-full" data-testid="button-request-demo-industries">

@@ -64,7 +64,7 @@ const lessonContent: Record<string, LessonContent> = {
     ],
     prerequisites: [
       "Basic understanding of accounting principles",
-      "Access to NexusAI Finance module"
+      "Access to NexusAIFirst Finance module"
     ],
     sections: [
       {
@@ -427,7 +427,7 @@ const lessonContent: Record<string, LessonContent> = {
       "Segment customers for targeted engagement"
     ],
     prerequisites: [
-      "Access to NexusAI CRM module",
+      "Access to NexusAIFirst CRM module",
       "Understanding of your customer base"
     ],
     sections: [
@@ -669,7 +669,7 @@ const lessonContent: Record<string, LessonContent> = {
       "Configure employee self-service"
     ],
     prerequisites: [
-      "Access to NexusAI HR module",
+      "Access to NexusAIFirst HR module",
       "Understanding of organizational structure"
     ],
     sections: [
@@ -1033,7 +1033,7 @@ const lessonContent: Record<string, LessonContent> = {
       "Handle item status changes"
     ],
     prerequisites: [
-      "Access to NexusAI Inventory module",
+      "Access to NexusAIFirst Inventory module",
       "Understanding of your product catalog"
     ],
     sections: [
@@ -1336,7 +1336,7 @@ const lessonContent: Record<string, LessonContent> = {
       "Share and publish dashboards"
     ],
     prerequisites: [
-      "Access to NexusAI Analytics module",
+      "Access to NexusAIFirst Analytics module",
       "Understanding of available data sources"
     ],
     sections: [
@@ -1639,7 +1639,7 @@ const lessonContent: Record<string, LessonContent> = {
       "Import/export BOM data"
     ],
     prerequisites: [
-      "Access to NexusAI Manufacturing module",
+      "Access to NexusAIFirst Manufacturing module",
       "Understanding of product structure"
     ],
     sections: [
@@ -2006,7 +2006,7 @@ export default function TrainingLessonPage() {
 
   useEffect(() => {
     if (lesson) {
-      document.title = `${lesson.title} - ${lesson.category} Training | NexusAI ERP`;
+      document.title = `${lesson.title} - ${lesson.category} Training | NexusAIFirst ERP`;
     }
   }, [lesson]);
 

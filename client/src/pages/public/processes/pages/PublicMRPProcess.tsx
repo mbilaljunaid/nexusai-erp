@@ -8,7 +8,7 @@ import { Calculator, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicMRPProcess() {
   useEffect(() => {
-    document.title = "Material Requirements Planning (MRP) | NexusAI ERP";
+    document.title = "Material Requirements Planning (MRP) | NexusAIFirst ERP";
   }, []);
 
   const steps = [

@@ -21,7 +21,7 @@ import {
 
 export default function TechnicalDocumentationPage() {
   useEffect(() => {
-    document.title = "Technical Documentation | NexusAI ERP";
+    document.title = "Technical Documentation | NexusAIFirst ERP";
   }, []);
 
   const architectureComponents = [
@@ -57,7 +57,7 @@ export default function TechnicalDocumentationPage() {
           <Badge className="mb-4 bg-blue-600 text-white" data-testid="badge-technical">TECHNICAL DOCUMENTATION</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Technical Documentation</h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Comprehensive technical reference for developers building with NexusAI ERP. 
+            Comprehensive technical reference for developers building with NexusAIFirst ERP. 
             Explore our architecture, APIs, and integration guides.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -79,7 +79,7 @@ export default function TechnicalDocumentationPage() {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-4 text-center">System Architecture</h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              NexusAI is built on a modern, scalable architecture designed for enterprise workloads.
+              NexusAIFirst is built on a modern, scalable architecture designed for enterprise workloads.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {architectureComponents.map((component, i) => {
@@ -152,7 +152,7 @@ export default function TechnicalDocumentationPage() {
               <div>
                 <h2 className="text-2xl font-bold mb-2">Security & Compliance</h2>
                 <p className="text-muted-foreground">
-                  NexusAI implements enterprise-grade security measures to protect your data.
+                  NexusAIFirst implements enterprise-grade security measures to protect your data.
                 </p>
               </div>
             </div>
@@ -183,7 +183,7 @@ export default function TechnicalDocumentationPage() {
             <BookOpen className="w-12 h-12 mx-auto mb-4" />
             <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-lg text-white/80 mb-8">
-              Explore our implementation guides and start building with NexusAI today.
+              Explore our implementation guides and start building with NexusAIFirst today.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link to="/docs/implementation">

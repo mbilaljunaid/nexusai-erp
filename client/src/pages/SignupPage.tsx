@@ -18,7 +18,7 @@ export default function SignupPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    document.title = "Sign Up | NexusAI";
+    document.title = "Sign Up | NexusAIFirst";
   }, []);
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -71,7 +71,7 @@ export default function SignupPage() {
             <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
               Create Account
             </h1>
-            <p className="text-slate-300">Join NexusAI and transform your business</p>
+            <p className="text-slate-300">Join NexusAIFirst and transform your business</p>
           </div>
 
           <Card className="bg-slate-800/50 border-slate-700 p-8" data-testid="card-signup">

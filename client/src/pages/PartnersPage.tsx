@@ -68,7 +68,7 @@ export default function PartnersPage() {
   });
 
   useEffect(() => {
-    document.title = "Partners & Trainers | NexusAI - Enterprise ERP Platform";
+    document.title = "Partners & Trainers | NexusAIFirst - Enterprise ERP Platform";
   }, []);
 
   const { data, isLoading } = useQuery<{ partners: Partner[]; total: number; page: number; totalPages: number }>({
@@ -130,7 +130,7 @@ export default function PartnersPage() {
           <h1 className="text-5xl font-bold mb-6">Partners & Trainers</h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Connect with our certified implementation partners and professional trainers 
-            to accelerate your NexusAI deployment and maximize your platform investment.
+            to accelerate your NexusAIFirst deployment and maximize your platform investment.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Dialog open={applyOpen} onOpenChange={setApplyOpen}>
@@ -386,7 +386,7 @@ export default function PartnersPage() {
         </section>
 
         <section className="px-4 py-20 max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Why Partner With NexusAI?</h2>
+          <h2 className="text-3xl font-bold mb-6">Why Partner With NexusAIFirst?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="p-6">
               <Award className="h-10 w-10 mx-auto mb-4 text-yellow-500" />
@@ -406,7 +406,7 @@ export default function PartnersPage() {
               <GraduationCap className="h-10 w-10 mx-auto mb-4 text-green-500" />
               <h3 className="font-semibold mb-2">Certification Program</h3>
               <p className="text-sm text-muted-foreground">
-                Get certified on NexusAI modules and showcase your expertise to potential clients.
+                Get certified on NexusAIFirst modules and showcase your expertise to potential clients.
               </p>
             </Card>
           </div>

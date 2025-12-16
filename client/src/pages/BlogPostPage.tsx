@@ -39,29 +39,29 @@ Modern ERP systems are designed to be the hub of an interconnected ecosystem. AP
   },
   {
     id: 11,
-    title: "Building Resilient Supply Chains with NexusAI",
+    title: "Building Resilient Supply Chains with NexusAIFirst",
     category: "Analytics",
     author: "Lisa Wang",
     date: "Dec 10, 2025",
-    excerpt: "Learn how to build supply chain resilience using predictive modeling, multi-source vendor management, and automated risk assessment features in NexusAI ERP.",
+    excerpt: "Learn how to build supply chain resilience using predictive modeling, multi-source vendor management, and automated risk assessment features in NexusAIFirst ERP.",
     icon: Factory,
     content: `Supply chain disruptions have become a constant challenge for businesses worldwide. Building resilience into your supply chain is no longer optional—it's essential for survival.
 
 ## Predictive Modeling
 
-NexusAI's advanced predictive modeling capabilities allow you to anticipate supply chain disruptions before they occur. By analyzing historical data, market trends, and external factors, the system can alert you to potential issues and suggest proactive measures.
+NexusAIFirst's advanced predictive modeling capabilities allow you to anticipate supply chain disruptions before they occur. By analyzing historical data, market trends, and external factors, the system can alert you to potential issues and suggest proactive measures.
 
 ## Multi-Source Vendor Management
 
-Relying on a single supplier for critical components is a recipe for disaster. NexusAI enables sophisticated multi-source vendor management, helping you diversify your supplier base while maintaining quality and cost efficiency.
+Relying on a single supplier for critical components is a recipe for disaster. NexusAIFirst enables sophisticated multi-source vendor management, helping you diversify your supplier base while maintaining quality and cost efficiency.
 
 ## Automated Risk Assessment
 
-Every vendor, every route, every warehouse carries inherent risks. NexusAI's automated risk assessment continuously monitors your supply chain, scoring each element based on reliability, financial stability, and external factors.
+Every vendor, every route, every warehouse carries inherent risks. NexusAIFirst's automated risk assessment continuously monitors your supply chain, scoring each element based on reliability, financial stability, and external factors.
 
 ## Real-Time Visibility
 
-You can't manage what you can't see. NexusAI provides end-to-end visibility into your supply chain, from raw materials to finished goods delivery.`
+You can't manage what you can't see. NexusAIFirst provides end-to-end visibility into your supply chain, from raw materials to finished goods delivery.`
   },
   {
     id: 10,
@@ -69,21 +69,21 @@ You can't manage what you can't see. NexusAI provides end-to-end visibility into
     category: "Technical",
     author: "David Lee",
     date: "Dec 07, 2025",
-    excerpt: "Explore how NexusAI implements zero-trust security principles including continuous authentication, micro-segmentation, and encrypted data at rest and in transit.",
+    excerpt: "Explore how NexusAIFirst implements zero-trust security principles including continuous authentication, micro-segmentation, and encrypted data at rest and in transit.",
     icon: Shield,
     content: `In today's threat landscape, traditional perimeter-based security is no longer sufficient. Zero-trust architecture assumes that threats can come from anywhere—inside or outside your organization.
 
 ## Continuous Authentication
 
-Rather than authenticating users once at login, NexusAI continuously verifies user identity throughout their session using behavioral analytics and contextual factors.
+Rather than authenticating users once at login, NexusAIFirst continuously verifies user identity throughout their session using behavioral analytics and contextual factors.
 
 ## Micro-Segmentation
 
-NexusAI implements micro-segmentation to isolate different parts of the system. Even if one segment is compromised, the breach cannot spread to other areas.
+NexusAIFirst implements micro-segmentation to isolate different parts of the system. Even if one segment is compromised, the breach cannot spread to other areas.
 
 ## Encryption Everywhere
 
-All data in NexusAI is encrypted both at rest and in transit using industry-standard AES-256 encryption.`
+All data in NexusAIFirst is encrypted both at rest and in transit using industry-standard AES-256 encryption.`
   },
   {
     id: 9,
@@ -97,7 +97,7 @@ All data in NexusAI is encrypted both at rest and in transit using industry-stan
 
 ## Automated Audit Trails
 
-NexusAI automatically captures every action, every change, and every access attempt in immutable audit logs. These comprehensive trails make compliance audits faster and more reliable.
+NexusAIFirst automatically captures every action, every change, and every access attempt in immutable audit logs. These comprehensive trails make compliance audits faster and more reliable.
 
 ## Pre-Built Compliance Templates
 
@@ -115,11 +115,11 @@ Get started quickly with pre-built templates for major regulations including SOX
 
 ## Multi-Currency Payroll
 
-NexusAI handles payroll in any currency, with automatic exchange rate updates and compliance with local tax regulations.
+NexusAIFirst handles payroll in any currency, with automatic exchange rate updates and compliance with local tax regulations.
 
 ## Regional Compliance
 
-Labor laws vary dramatically from country to country. NexusAI stays current with regulations in over 100 countries.`
+Labor laws vary dramatically from country to country. NexusAIFirst stays current with regulations in over 100 countries.`
   },
   {
     id: 7,
@@ -127,13 +127,13 @@ Labor laws vary dramatically from country to country. NexusAI stays current with
     category: "AI",
     author: "Mike Johnson",
     date: "Nov 29, 2025",
-    excerpt: "Discover how NexusAI's process mining capabilities use machine learning to identify bottlenecks, predict process failures, and recommend optimization strategies.",
+    excerpt: "Discover how NexusAIFirst's process mining capabilities use machine learning to identify bottlenecks, predict process failures, and recommend optimization strategies.",
     icon: Cpu,
     content: `Most organizations don't fully understand their own processes. Process mining uses data from your ERP system to create accurate models of how work actually flows through your organization.
 
 ## Automated Process Discovery
 
-NexusAI analyzes your transaction data to automatically discover and visualize your actual business processes.
+NexusAIFirst analyzes your transaction data to automatically discover and visualize your actual business processes.
 
 ## Bottleneck Identification
 
@@ -173,11 +173,11 @@ Conversational interfaces powered by NLP make ERP systems more accessible to non
 
 ## Inventory Optimization
 
-Effective inventory management is critical in retail. NexusAI's AI-powered forecasting helps you maintain optimal stock levels.
+Effective inventory management is critical in retail. NexusAIFirst's AI-powered forecasting helps you maintain optimal stock levels.
 
 ## Omnichannel Integration
 
-Modern retailers must provide seamless experiences across all channels. NexusAI unifies online and offline operations.`
+Modern retailers must provide seamless experiences across all channels. NexusAIFirst unifies online and offline operations.`
   },
   {
     id: 3,
@@ -191,7 +191,7 @@ Modern retailers must provide seamless experiences across all channels. NexusAI 
 
 ## Automated Journal Entries
 
-NexusAI automatically generates routine journal entries based on configured rules, reducing manual effort and errors.
+NexusAIFirst automatically generates routine journal entries based on configured rules, reducing manual effort and errors.
 
 ## Real-Time Reconciliation
 
@@ -203,7 +203,7 @@ Continuous reconciliation throughout the month means fewer surprises at close ti
     category: "Technical",
     author: "David Lee",
     date: "Nov 20, 2025",
-    excerpt: "Deep dive into how NexusAI ensures complete data isolation and enterprise-grade security in a multi-tenant SaaS environment with role-based access controls.",
+    excerpt: "Deep dive into how NexusAIFirst ensures complete data isolation and enterprise-grade security in a multi-tenant SaaS environment with role-based access controls.",
     icon: Lock,
     content: `Multi-tenant architecture is the foundation of modern SaaS ERP systems. It enables economies of scale while maintaining security and customization.
 
@@ -241,7 +241,7 @@ Smart algorithms determine optimal reorder points and quantities for each SKU ba
     date: "Nov 15, 2025",
     excerpt: "Complete HR lifecycle management featuring automated onboarding, performance tracking, benefits administration, and compliance monitoring in one unified platform.",
     icon: Users,
-    content: `Managing the complete employee lifecycle requires coordination across multiple functions. NexusAI unifies all HR processes in a single platform.
+    content: `Managing the complete employee lifecycle requires coordination across multiple functions. NexusAIFirst unifies all HR processes in a single platform.
 
 ## Automated Onboarding
 
@@ -260,7 +260,7 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (post) {
-      document.title = `${post.title} | NexusAI Blog`;
+      document.title = `${post.title} | NexusAIFirst Blog`;
     }
   }, [post]);
 
