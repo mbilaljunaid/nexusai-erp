@@ -453,8 +453,13 @@ export async function registerRoutes(
         return res.status(401).json({ error: "Authentication required for action mode. Please log in." });
       }
       
-      // Build enterprise-grade multi-agent contextual system prompt
-      const enabledModules = ["Projects", "CRM", "Finance", "HR", "Analytics", "Automation", "EPM", "Workflows", "Emails", "Marketplace"];
+      // Build enterprise-grade multi-agent contextual system prompt with 25+ modules
+      const enabledModules = [
+        "Projects", "Tasks", "Workflows", "ERP", "EPM", "CRM", "Finance", "HR", "Payroll",
+        "Analytics", "Automation", "Emails", "Documents", "SCM", "Quality", "Compliance",
+        "Marketing", "E-Commerce", "Service", "Field Service", "Asset Management",
+        "Training", "Marketplace", "Community", "API", "DevOps", "R&D"
+      ];
       const industryConfig = context?.industry || "General Enterprise";
       
       const contextualPrompt = `You are **NexusAI**, a **stateful, enterprise-grade AI Agent** embedded inside **NexusAI First**, an AI-first, multi-tenant ERP & project management platform.

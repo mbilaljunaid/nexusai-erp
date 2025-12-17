@@ -185,6 +185,14 @@ export interface EntityTemplate {
   validationRules: Record<string, string>;
 }
 
+// Full list of 25+ modules available in NexusAI First
+export const ALL_MODULES = [
+  "Projects", "Tasks", "Workflows", "ERP", "EPM", "CRM", "Finance", "HR", "Payroll",
+  "Analytics", "Automation", "Emails", "Documents", "SCM", "Quality", "Compliance",
+  "Marketing", "E-Commerce", "Service", "Field Service", "Asset Management",
+  "Training", "Marketplace", "Community", "API", "DevOps", "R&D"
+];
+
 export const MODULE_TEMPLATES: ModuleTemplate[] = [
   {
     id: "projects",
@@ -246,6 +254,15 @@ export const MODULE_TEMPLATES: ModuleTemplate[] = [
     crossModuleIntegrations: ["CRM", "Reports", "Automation"]
   },
   {
+    id: "hr",
+    name: "HR & Payroll",
+    description: "Human Resources Management",
+    entities: [
+      { name: "employee", requiredFields: ["name"], optionalFields: ["email", "department", "title", "hireDate", "salary"], defaultValues: { status: "active" }, validationRules: { name: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["Finance", "Projects", "Training"]
+  },
+  {
     id: "analytics",
     name: "Analytics & BI",
     description: "Business Intelligence & Reporting",
@@ -259,6 +276,141 @@ export const MODULE_TEMPLATES: ModuleTemplate[] = [
       }
     ],
     crossModuleIntegrations: ["Projects", "CRM", "Finance", "HR"]
+  },
+  {
+    id: "workflows",
+    name: "Workflows & Automation",
+    description: "Business Process Automation",
+    entities: [
+      { name: "workflow", requiredFields: ["name"], optionalFields: ["trigger", "actions", "conditions"], defaultValues: { status: "active" }, validationRules: { name: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["Projects", "CRM", "Finance", "HR", "Emails"]
+  },
+  {
+    id: "erp",
+    name: "ERP",
+    description: "Enterprise Resource Planning",
+    entities: [
+      { name: "order", requiredFields: ["customerId"], optionalFields: ["items", "total", "status"], defaultValues: { status: "pending" }, validationRules: {} }
+    ],
+    crossModuleIntegrations: ["Finance", "SCM", "CRM"]
+  },
+  {
+    id: "epm",
+    name: "EPM",
+    description: "Enterprise Performance Management",
+    entities: [
+      { name: "goal", requiredFields: ["title"], optionalFields: ["kpis", "owner", "deadline"], defaultValues: { status: "active" }, validationRules: { title: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["Projects", "Analytics", "HR"]
+  },
+  {
+    id: "scm",
+    name: "Supply Chain Management",
+    description: "Supply Chain & Logistics",
+    entities: [
+      { name: "shipment", requiredFields: ["origin", "destination"], optionalFields: ["carrier", "trackingId", "status"], defaultValues: { status: "pending" }, validationRules: {} }
+    ],
+    crossModuleIntegrations: ["ERP", "Finance", "Analytics"]
+  },
+  {
+    id: "marketing",
+    name: "Marketing & Campaigns",
+    description: "Marketing Automation & Campaigns",
+    entities: [
+      { name: "campaign", requiredFields: ["name"], optionalFields: ["budget", "startDate", "endDate", "channels"], defaultValues: { status: "draft" }, validationRules: { name: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["CRM", "Analytics", "Emails"]
+  },
+  {
+    id: "ecommerce",
+    name: "E-Commerce & Retail",
+    description: "Online Sales & Retail Management",
+    entities: [
+      { name: "product", requiredFields: ["name", "price"], optionalFields: ["sku", "inventory", "category"], defaultValues: { status: "active" }, validationRules: { price: "number|min:0" } }
+    ],
+    crossModuleIntegrations: ["Finance", "SCM", "Marketing"]
+  },
+  {
+    id: "service",
+    name: "Service & Support",
+    description: "Customer Service & Support",
+    entities: [
+      { name: "ticket", requiredFields: ["subject"], optionalFields: ["description", "priority", "assignee", "status"], defaultValues: { status: "open", priority: "medium" }, validationRules: { subject: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["CRM", "Emails", "Analytics"]
+  },
+  {
+    id: "documents",
+    name: "Documents & Knowledge",
+    description: "Document Management & Knowledge Base",
+    entities: [
+      { name: "document", requiredFields: ["title"], optionalFields: ["content", "category", "tags"], defaultValues: { status: "draft" }, validationRules: { title: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["Projects", "Compliance", "Training"]
+  },
+  {
+    id: "compliance",
+    name: "Compliance & Governance",
+    description: "Regulatory Compliance & Governance",
+    entities: [
+      { name: "policy", requiredFields: ["title"], optionalFields: ["description", "effectiveDate", "category"], defaultValues: { status: "active" }, validationRules: { title: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["Documents", "HR", "Finance"]
+  },
+  {
+    id: "training",
+    name: "Training & LMS",
+    description: "Learning Management System",
+    entities: [
+      { name: "course", requiredFields: ["title"], optionalFields: ["description", "duration", "instructor"], defaultValues: { status: "active" }, validationRules: { title: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["HR", "Documents", "Analytics"]
+  },
+  {
+    id: "emails",
+    name: "Emails & Communication",
+    description: "Email & Messaging",
+    entities: [
+      { name: "email", requiredFields: ["to", "subject"], optionalFields: ["body", "attachments", "cc"], defaultValues: { status: "draft" }, validationRules: { to: "email", subject: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["CRM", "Marketing", "Workflows"]
+  },
+  {
+    id: "marketplace",
+    name: "Marketplace & Extensions",
+    description: "App Marketplace & Integrations",
+    entities: [
+      { name: "extension", requiredFields: ["name"], optionalFields: ["description", "version", "author"], defaultValues: { status: "active" }, validationRules: { name: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["API", "All Modules"]
+  },
+  {
+    id: "api",
+    name: "API & Integration",
+    description: "API Gateway & External Integrations",
+    entities: [
+      { name: "integration", requiredFields: ["name", "endpoint"], optionalFields: ["authType", "headers"], defaultValues: { status: "active" }, validationRules: { name: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["All Modules"]
+  },
+  {
+    id: "asset-management",
+    name: "Asset Management",
+    description: "IT & Physical Asset Tracking",
+    entities: [
+      { name: "asset", requiredFields: ["name"], optionalFields: ["serialNumber", "location", "assignee", "purchaseDate"], defaultValues: { status: "active" }, validationRules: { name: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["Finance", "HR", "Service"]
+  },
+  {
+    id: "field-service",
+    name: "Field Service",
+    description: "Field Service Management",
+    entities: [
+      { name: "workOrder", requiredFields: ["title"], optionalFields: ["location", "assignee", "scheduledDate"], defaultValues: { status: "scheduled" }, validationRules: { title: "minLength:1" } }
+    ],
+    crossModuleIntegrations: ["Service", "SCM", "HR"]
   }
 ];
 
@@ -362,16 +514,74 @@ export interface IndustryTemplate {
 }
 
 export const INDUSTRY_TEMPLATES: IndustryTemplate[] = [
+  // Health & Life Sciences (5)
   { id: "healthcare", name: "Healthcare", category: "Health & Life Sciences", enabledModules: ["Projects", "CRM", "Finance", "HR", "Compliance"], customFields: { patient: ["mrn", "insuranceId"], appointment: ["diagnosis", "provider"] }, workflows: ["patient-intake", "insurance-verification"] },
+  { id: "pharmaceuticals", name: "Pharmaceuticals", category: "Health & Life Sciences", enabledModules: ["Projects", "ERP", "Compliance", "SCM", "R&D"], customFields: { drug: ["ndc", "fda_status"], trial: ["phase", "participants"] }, workflows: ["clinical-trial", "fda-approval"] },
+  { id: "biotech", name: "Biotechnology", category: "Health & Life Sciences", enabledModules: ["Projects", "R&D", "Finance", "Compliance", "Analytics"], customFields: { research: ["patent", "grant"], specimen: ["type", "storage"] }, workflows: ["research-approval", "patent-filing"] },
+  { id: "medical-devices", name: "Medical Devices", category: "Health & Life Sciences", enabledModules: ["Projects", "ERP", "SCM", "Compliance", "Quality"], customFields: { device: ["fda_class", "serial"], maintenance: ["schedule", "certification"] }, workflows: ["device-approval", "quality-audit"] },
+  { id: "veterinary", name: "Veterinary Services", category: "Health & Life Sciences", enabledModules: ["Projects", "CRM", "Finance", "Scheduling", "Inventory"], customFields: { patient: ["species", "owner"], treatment: ["diagnosis", "medication"] }, workflows: ["appointment-booking", "treatment-plan"] },
+  
+  // Industrial (6)
   { id: "manufacturing", name: "Manufacturing", category: "Industrial", enabledModules: ["Projects", "ERP", "EPM", "Finance", "SCM"], customFields: { product: ["sku", "bom"], order: ["quantity", "leadTime"] }, workflows: ["production-scheduling", "quality-control"] },
-  { id: "retail", name: "Retail & E-Commerce", category: "Consumer", enabledModules: ["CRM", "Finance", "Analytics", "Marketing", "E-Commerce"], customFields: { product: ["sku", "inventory"], order: ["shippingMethod", "trackingId"] }, workflows: ["order-fulfillment", "inventory-sync"] },
-  { id: "banking", name: "Banking & Finance", category: "Financial Services", enabledModules: ["CRM", "Finance", "Compliance", "Analytics", "Automation"], customFields: { account: ["accountType", "tier"], transaction: ["category", "riskScore"] }, workflows: ["kyc-verification", "fraud-detection"] },
-  { id: "education", name: "Education", category: "Public Sector", enabledModules: ["Projects", "HR", "Finance", "LMS", "Analytics"], customFields: { student: ["enrollmentId", "program"], course: ["credits", "semester"] }, workflows: ["enrollment", "grading"] },
   { id: "construction", name: "Construction", category: "Industrial", enabledModules: ["Projects", "Finance", "SCM", "HR", "Compliance"], customFields: { project: ["siteLocation", "permitId"], contractor: ["license", "insurance"] }, workflows: ["permit-approval", "safety-inspection"] },
-  { id: "legal", name: "Legal Services", category: "Professional Services", enabledModules: ["Projects", "CRM", "Finance", "Documents", "Compliance"], customFields: { case: ["caseNumber", "court"], client: ["retainer", "conflictCheck"] }, workflows: ["case-intake", "billing"] },
-  { id: "hospitality", name: "Hospitality", category: "Consumer", enabledModules: ["CRM", "Finance", "HR", "Marketing", "Reservations"], customFields: { reservation: ["roomType", "guests"], guest: ["loyalty", "preferences"] }, workflows: ["booking", "check-in"] },
   { id: "logistics", name: "Logistics & Supply Chain", category: "Industrial", enabledModules: ["Projects", "SCM", "Finance", "Analytics", "Automation"], customFields: { shipment: ["trackingId", "carrier"], warehouse: ["capacity", "location"] }, workflows: ["shipment-tracking", "inventory-management"] },
-  { id: "technology", name: "Technology & SaaS", category: "Technology", enabledModules: ["Projects", "CRM", "Finance", "HR", "Analytics", "DevOps"], customFields: { feature: ["sprint", "priority"], customer: ["plan", "mrr"] }, workflows: ["sprint-planning", "release-management"] }
+  { id: "automotive", name: "Automotive", category: "Industrial", enabledModules: ["Projects", "ERP", "SCM", "Quality", "Service"], customFields: { vehicle: ["vin", "model"], part: ["partNumber", "supplier"] }, workflows: ["production-line", "recall-management"] },
+  { id: "aerospace", name: "Aerospace & Defense", category: "Industrial", enabledModules: ["Projects", "ERP", "Compliance", "SCM", "Quality"], customFields: { aircraft: ["tailNumber", "certification"], component: ["serialNumber", "traceability"] }, workflows: ["certification", "maintenance-tracking"] },
+  { id: "oil-gas", name: "Oil & Gas", category: "Industrial", enabledModules: ["Projects", "ERP", "HSE", "Finance", "Asset Management"], customFields: { well: ["location", "production"], equipment: ["serialNumber", "maintenance"] }, workflows: ["drilling-ops", "safety-compliance"] },
+  
+  // Consumer (5)
+  { id: "retail", name: "Retail & E-Commerce", category: "Consumer", enabledModules: ["CRM", "Finance", "Analytics", "Marketing", "E-Commerce"], customFields: { product: ["sku", "inventory"], order: ["shippingMethod", "trackingId"] }, workflows: ["order-fulfillment", "inventory-sync"] },
+  { id: "hospitality", name: "Hospitality", category: "Consumer", enabledModules: ["CRM", "Finance", "HR", "Marketing", "Reservations"], customFields: { reservation: ["roomType", "guests"], guest: ["loyalty", "preferences"] }, workflows: ["booking", "check-in"] },
+  { id: "food-beverage", name: "Food & Beverage", category: "Consumer", enabledModules: ["Projects", "SCM", "Compliance", "Quality", "POS"], customFields: { product: ["lot", "expiry"], order: ["deliveryTime", "temperature"] }, workflows: ["food-safety", "inventory-rotation"] },
+  { id: "fashion", name: "Fashion & Apparel", category: "Consumer", enabledModules: ["CRM", "SCM", "E-Commerce", "Marketing", "PLM"], customFields: { product: ["season", "size"], collection: ["designer", "launchDate"] }, workflows: ["collection-planning", "trend-analysis"] },
+  { id: "consumer-goods", name: "Consumer Goods", category: "Consumer", enabledModules: ["Projects", "SCM", "Marketing", "Analytics", "Distribution"], customFields: { product: ["upc", "shelfLife"], promotion: ["campaign", "roi"] }, workflows: ["product-launch", "promotion-tracking"] },
+  
+  // Financial Services (5)
+  { id: "banking", name: "Banking & Finance", category: "Financial Services", enabledModules: ["CRM", "Finance", "Compliance", "Analytics", "Automation"], customFields: { account: ["accountType", "tier"], transaction: ["category", "riskScore"] }, workflows: ["kyc-verification", "fraud-detection"] },
+  { id: "insurance", name: "Insurance", category: "Financial Services", enabledModules: ["CRM", "Finance", "Compliance", "Claims", "Analytics"], customFields: { policy: ["type", "premium"], claim: ["status", "adjuster"] }, workflows: ["underwriting", "claims-processing"] },
+  { id: "investment", name: "Investment Management", category: "Financial Services", enabledModules: ["CRM", "Finance", "Compliance", "Analytics", "Portfolio"], customFields: { fund: ["aum", "strategy"], client: ["riskProfile", "allocation"] }, workflows: ["rebalancing", "compliance-reporting"] },
+  { id: "fintech", name: "FinTech", category: "Financial Services", enabledModules: ["Projects", "CRM", "Compliance", "Analytics", "API"], customFields: { product: ["api", "integration"], transaction: ["volume", "fee"] }, workflows: ["api-onboarding", "transaction-monitoring"] },
+  { id: "accounting", name: "Accounting & Tax", category: "Financial Services", enabledModules: ["Projects", "CRM", "Finance", "Documents", "Compliance"], customFields: { client: ["fiscalYear", "taxId"], engagement: ["type", "deadline"] }, workflows: ["tax-preparation", "audit-support"] },
+  
+  // Professional Services (5)
+  { id: "legal", name: "Legal Services", category: "Professional Services", enabledModules: ["Projects", "CRM", "Finance", "Documents", "Compliance"], customFields: { case: ["caseNumber", "court"], client: ["retainer", "conflictCheck"] }, workflows: ["case-intake", "billing"] },
+  { id: "consulting", name: "Management Consulting", category: "Professional Services", enabledModules: ["Projects", "CRM", "Finance", "HR", "Analytics"], customFields: { engagement: ["scope", "deliverables"], consultant: ["utilization", "rate"] }, workflows: ["proposal", "resource-allocation"] },
+  { id: "architecture", name: "Architecture & Engineering", category: "Professional Services", enabledModules: ["Projects", "CRM", "Finance", "CAD", "Documents"], customFields: { project: ["phase", "drawings"], permit: ["status", "jurisdiction"] }, workflows: ["design-review", "permit-submission"] },
+  { id: "marketing-agency", name: "Marketing & Advertising", category: "Professional Services", enabledModules: ["Projects", "CRM", "Finance", "Creative", "Analytics"], customFields: { campaign: ["budget", "kpis"], client: ["industry", "brandGuidelines"] }, workflows: ["campaign-planning", "creative-approval"] },
+  { id: "hr-services", name: "HR & Staffing", category: "Professional Services", enabledModules: ["Projects", "CRM", "HR", "Finance", "Recruiting"], customFields: { candidate: ["skills", "availability"], placement: ["rate", "duration"] }, workflows: ["candidate-sourcing", "placement-tracking"] },
+  
+  // Technology (5)
+  { id: "technology", name: "Technology & SaaS", category: "Technology", enabledModules: ["Projects", "CRM", "Finance", "HR", "Analytics", "DevOps"], customFields: { feature: ["sprint", "priority"], customer: ["plan", "mrr"] }, workflows: ["sprint-planning", "release-management"] },
+  { id: "telecommunications", name: "Telecommunications", category: "Technology", enabledModules: ["Projects", "CRM", "Network", "Finance", "Service"], customFields: { customer: ["plan", "usage"], network: ["coverage", "capacity"] }, workflows: ["service-activation", "network-monitoring"] },
+  { id: "cybersecurity", name: "Cybersecurity", category: "Technology", enabledModules: ["Projects", "Compliance", "Incidents", "Analytics", "Training"], customFields: { incident: ["severity", "vector"], assessment: ["score", "recommendations"] }, workflows: ["incident-response", "vulnerability-assessment"] },
+  { id: "gaming", name: "Gaming & Entertainment", category: "Technology", enabledModules: ["Projects", "CRM", "Analytics", "Marketing", "Creative"], customFields: { game: ["platform", "rating"], player: ["level", "spending"] }, workflows: ["game-development", "live-ops"] },
+  { id: "ai-ml", name: "AI & Machine Learning", category: "Technology", enabledModules: ["Projects", "R&D", "Analytics", "Data", "DevOps"], customFields: { model: ["accuracy", "version"], dataset: ["size", "quality"] }, workflows: ["model-training", "deployment"] },
+  
+  // Public Sector (5)
+  { id: "education", name: "Education", category: "Public Sector", enabledModules: ["Projects", "HR", "Finance", "LMS", "Analytics"], customFields: { student: ["enrollmentId", "program"], course: ["credits", "semester"] }, workflows: ["enrollment", "grading"] },
+  { id: "government", name: "Government", category: "Public Sector", enabledModules: ["Projects", "Finance", "Compliance", "Documents", "HR"], customFields: { citizen: ["id", "district"], service: ["type", "status"] }, workflows: ["permit-processing", "public-records"] },
+  { id: "nonprofit", name: "Nonprofit & NGO", category: "Public Sector", enabledModules: ["Projects", "CRM", "Finance", "Fundraising", "Volunteers"], customFields: { donor: ["level", "interests"], grant: ["funder", "reporting"] }, workflows: ["grant-management", "donor-stewardship"] },
+  { id: "healthcare-public", name: "Public Health", category: "Public Sector", enabledModules: ["Projects", "Analytics", "Compliance", "Outreach", "Research"], customFields: { program: ["population", "outcomes"], outbreak: ["region", "cases"] }, workflows: ["disease-surveillance", "vaccination-campaign"] },
+  { id: "utilities", name: "Utilities", category: "Public Sector", enabledModules: ["Projects", "Asset Management", "CRM", "Field Service", "Analytics"], customFields: { meter: ["reading", "location"], outage: ["duration", "affected"] }, workflows: ["meter-reading", "outage-response"] },
+  
+  // Real Estate (3)
+  { id: "real-estate", name: "Real Estate", category: "Real Estate", enabledModules: ["Projects", "CRM", "Finance", "Documents", "Marketing"], customFields: { property: ["address", "listing"], transaction: ["price", "commission"] }, workflows: ["listing-management", "closing-coordination"] },
+  { id: "property-management", name: "Property Management", category: "Real Estate", enabledModules: ["Projects", "CRM", "Finance", "Maintenance", "Leasing"], customFields: { property: ["units", "occupancy"], tenant: ["lease", "balance"] }, workflows: ["lease-renewal", "maintenance-request"] },
+  { id: "commercial-real-estate", name: "Commercial Real Estate", category: "Real Estate", enabledModules: ["Projects", "CRM", "Finance", "Analytics", "Leasing"], customFields: { property: ["sqft", "capRate"], tenant: ["creditRating", "term"] }, workflows: ["deal-pipeline", "tenant-improvement"] },
+  
+  // Media & Entertainment (3)
+  { id: "media", name: "Media & Publishing", category: "Media & Entertainment", enabledModules: ["Projects", "CRM", "Creative", "Analytics", "Distribution"], customFields: { content: ["format", "rights"], campaign: ["impressions", "engagement"] }, workflows: ["content-creation", "distribution-scheduling"] },
+  { id: "sports", name: "Sports & Recreation", category: "Media & Entertainment", enabledModules: ["Projects", "CRM", "Events", "Marketing", "Analytics"], customFields: { event: ["venue", "capacity"], athlete: ["contract", "stats"] }, workflows: ["event-planning", "ticketing"] },
+  { id: "film-production", name: "Film & TV Production", category: "Media & Entertainment", enabledModules: ["Projects", "Finance", "HR", "Creative", "Scheduling"], customFields: { production: ["budget", "schedule"], talent: ["contract", "availability"] }, workflows: ["pre-production", "post-production"] },
+  
+  // Transportation (3)
+  { id: "airlines", name: "Airlines", category: "Transportation", enabledModules: ["Projects", "CRM", "Operations", "HR", "Compliance"], customFields: { flight: ["route", "capacity"], crew: ["certification", "schedule"] }, workflows: ["flight-scheduling", "crew-management"] },
+  { id: "shipping", name: "Shipping & Maritime", category: "Transportation", enabledModules: ["Projects", "SCM", "Compliance", "Fleet", "Finance"], customFields: { vessel: ["imo", "capacity"], cargo: ["type", "weight"] }, workflows: ["voyage-planning", "cargo-tracking"] },
+  { id: "trucking", name: "Trucking & Freight", category: "Transportation", enabledModules: ["Projects", "Fleet", "CRM", "Finance", "Compliance"], customFields: { load: ["origin", "destination"], driver: ["cdl", "hours"] }, workflows: ["dispatch", "driver-scheduling"] },
+  
+  // Agriculture (2)
+  { id: "agriculture", name: "Agriculture", category: "Agriculture", enabledModules: ["Projects", "SCM", "Analytics", "Finance", "Field"], customFields: { crop: ["variety", "yield"], field: ["acres", "soil"] }, workflows: ["planting-schedule", "harvest-tracking"] },
+  { id: "agribusiness", name: "Agribusiness", category: "Agriculture", enabledModules: ["Projects", "SCM", "Finance", "Analytics", "Commodities"], customFields: { commodity: ["grade", "price"], contract: ["volume", "delivery"] }, workflows: ["commodity-trading", "supply-forecasting"] }
 ];
 
 // ============================================================================

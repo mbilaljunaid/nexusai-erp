@@ -38,13 +38,16 @@ NexusAIFirst is built around 18 core end-to-end business processes, including Pr
   - **Planner Agent**: Intent classification, execution plan design, RBAC validation, dependency resolution
   - **Executor Agent**: Action execution via storage layer, cross-module coordination, audit logging
   - **Verifier Agent**: State validation, memory reconciliation, conflict handling, factual feedback
-- **Enterprise System Prompt**: Context-aware AI with 40+ industry templates and 10+ enabled modules
+- **Enterprise System Prompt**: Context-aware AI with 42 industry templates and 27 enabled modules
+- **Industry Coverage (42 industries)**: Healthcare, Pharmaceuticals, Biotech, Medical Devices, Veterinary, Manufacturing, Construction, Logistics, Automotive, Aerospace, Oil & Gas, Retail, Hospitality, Food & Beverage, Fashion, Consumer Goods, Banking, Insurance, Investment, FinTech, Accounting, Legal, Consulting, Architecture, Marketing Agency, HR Services, Technology, Telecommunications, Cybersecurity, Gaming, AI/ML, Education, Government, Nonprofit, Public Health, Utilities, Real Estate, Property Management, Commercial RE, Media, Sports, Film Production, Airlines, Shipping, Trucking, Agriculture, Agribusiness
+- **Module Coverage (27 modules)**: Projects, Tasks, Workflows, ERP, EPM, CRM, Finance, HR, Payroll, Analytics, Automation, Emails, Documents, SCM, Quality, Compliance, Marketing, E-Commerce, Service, Field Service, Asset Management, Training, Marketplace, Community, API, DevOps, R&D
 - **Real Action Execution**: Creates projects, tasks, leads, invoices via storage layer (not mocks)
 - **RBAC Enforcement**: Actions validated against user role (admin/editor/viewer)
 - **Audit Logging**: All AI actions logged with user ID, action type, entity, and outcome
 - **Context Persistence**: Conversation history persists to localStorage (max 50 messages)
 - **Session-Only Authentication**: Role determined from server session, not client context
 - **Core Principles**: Action-first behavior, failure transparency, confirmation over assumption, cross-module intelligence
+- **Global Availability**: AI Copilot widget accessible on ALL pages throughout the application
 
 ### System Design Choices
 The system utilizes a modular design to support extensive configurability and scalability. It features a robust API Gateway for managing and securing external integrations. Data governance and compliance monitoring are integrated throughout the platform. The architecture supports multi-tenancy and is designed for high performance, with browser testing confirming fast page loads and API response times.
