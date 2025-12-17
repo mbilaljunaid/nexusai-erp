@@ -23,10 +23,10 @@ import {
   Save,
   Mail
 } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider";
+import { useTheme, ACCENT_COLORS } from "@/components/ThemeProvider";
 
 export default function Settings() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, accentColor, setAccentColor } = useTheme();
   const [activeNav, setActiveNav] = useState("profile");
   const [notifications, setNotifications] = useState({
     email: true,
@@ -301,8 +301,8 @@ export default function Settings() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Theme</CardTitle>
-              <CardDescription>Customize the appearance of the application</CardDescription>
+              <CardTitle className="text-base">Theme Mode</CardTitle>
+              <CardDescription>Choose between light and dark mode</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
@@ -329,6 +329,53 @@ export default function Settings() {
                 >
                   <div className="h-20 rounded bg-gradient-to-r from-white to-gray-900 border mb-2" />
                   <p className="text-sm font-medium text-center">System</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Accent Color</CardTitle>
+              <CardDescription>Choose your preferred accent color for buttons and highlights</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-6 gap-3">
+                {ACCENT_COLORS.map((color) => (
+                  <button
+                    key={color.name}
+                    onClick={() => setAccentColor(color)}
+                    className={`group relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all hover-elevate ${
+                      accentColor.name === color.name 
+                        ? 'border-foreground/50 bg-muted/50' 
+                        : 'border-transparent'
+                    }`}
+                    data-testid={`button-accent-${color.name.toLowerCase()}`}
+                  >
+                    <div 
+                      className={`w-8 h-8 rounded-full transition-transform group-hover:scale-110 ${
+                        accentColor.name === color.name ? 'ring-2 ring-offset-2 ring-offset-background' : ''
+                      }`}
+                      style={{ 
+                        backgroundColor: color.value,
+                        boxShadow: accentColor.name === color.name ? `0 0 0 2px var(--background), 0 0 0 4px ${color.value}` : 'none'
+                      }}
+                    />
+                    <span className="text-xs font-medium">{color.name}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="pt-4 border-t">
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Preview</p>
+                    <p className="text-xs text-muted-foreground">See how your accent color looks</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" data-testid="button-preview-primary">Primary</Button>
+                    <Button size="sm" variant="outline" data-testid="button-preview-outline">Outline</Button>
+                    <Badge data-testid="badge-preview-accent">Badge</Badge>
+                  </div>
                 </div>
               </div>
             </CardContent>

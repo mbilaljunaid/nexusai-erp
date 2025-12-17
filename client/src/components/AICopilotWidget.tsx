@@ -21,7 +21,8 @@ import {
   Maximize2,
   Minimize2,
   Settings,
-  Info
+  Info,
+  Trash2
 } from "lucide-react";
 
 interface Message {
@@ -56,23 +57,55 @@ const modeDescriptions = {
   action: "Action Mode - Execute in-app operations"
 };
 
+const CONVERSATION_STORAGE_KEY = "nexusai-copilot-history";
+const MAX_STORED_MESSAGES = 50;
+
+const welcomeMessage: Message = {
+  id: "welcome",
+  role: "assistant",
+  content: "Hi! I'm your AI Copilot. I can help you with information OR take actions in the app. Try asking me to create a project, add a task, or explain a feature. What would you like to do?",
+  timestamp: new Date(),
+  actionType: "info"
+};
+
+function loadPersistedMessages(): Message[] {
+  try {
+    const stored = localStorage.getItem(CONVERSATION_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return parsed.map((m: any) => ({
+        ...m,
+        timestamp: new Date(m.timestamp)
+      }));
+    }
+  } catch (e) {
+    console.warn("Failed to load persisted messages:", e);
+  }
+  return [welcomeMessage];
+}
+
 export function AICopilotWidget({ userId, userRole, tenantId }: AICopilotWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content: "Hi! I'm your AI Copilot. I can help you with information OR take actions in the app. Try asking me to create a project, add a task, or explain a feature. What would you like to do?",
-      timestamp: new Date(),
-      actionType: "info"
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(loadPersistedMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<"info" | "action">("info");
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (messages.length > 1 || messages[0]?.id !== "welcome") {
+      const toStore = messages.slice(-MAX_STORED_MESSAGES);
+      localStorage.setItem(CONVERSATION_STORAGE_KEY, JSON.stringify(toStore));
+    }
+  }, [messages]);
+
+  const clearConversation = useCallback(() => {
+    localStorage.removeItem(CONVERSATION_STORAGE_KEY);
+    setMessages([welcomeMessage]);
+    toast({ title: "Conversation cleared", description: "Your chat history has been reset." });
+  }, [toast]);
 
   const { data: userData } = useQuery<any>({
     queryKey: ["/api/auth/user"],
@@ -257,6 +290,16 @@ export function AICopilotWidget({ userId, userRole, tenantId }: AICopilotWidgetP
           </div>
         </div>
         <div className="flex items-center gap-1">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-7 w-7"
+            onClick={clearConversation}
+            title="Clear conversation"
+            data-testid="button-clear-conversation"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
           <Button 
             variant="ghost" 
             size="icon" 

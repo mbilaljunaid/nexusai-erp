@@ -26,6 +26,20 @@ The frontend uses React with TypeScript, styled with Shadcn/UI and Tailwind CSS 
 ### Feature Specifications
 NexusAIFirst is built around 18 core end-to-end business processes, including Procure-to-Pay, Order-to-Cash, Hire-to-Retire, Month-End Consolidation, and more. Key modules include CRM & Sales, Finance & Accounting, Human Resources & Payroll, Manufacturing & Production, Supply Chain & Logistics, Project Management, Service & Support, Analytics & BI, AI & Automation, Workflow & Automation, Integration & API, Administration & Security, Marketing & Campaigns, E-Commerce & Retail, and Compliance & Governance. Each module offers a rich set of features to support its respective domain. The platform also includes an AI Copilot and various AI-powered features for insights, automation, and predictive modeling.
 
+### Dynamic Theming System
+- **Theme Modes**: Light, Dark, and System (auto-detect) with persistence to localStorage
+- **Custom Accent Colors**: 12 preset colors (Rose, Orange, Amber, Emerald, Teal, Cyan, Blue, Indigo, Violet, Purple, Fuchsia, Pink)
+- **Implementation**: ThemeProvider.tsx manages theme state and applies CSS variables (--primary, --ring, --sidebar-primary, --sidebar-ring)
+- **Settings**: Appearance section in Settings page allows theme and accent color selection with live preview
+
+### AI Copilot Features
+- **Enterprise System Prompt**: Context-aware AI agent with intent classification (Execution vs Informational mode)
+- **Real Action Execution**: Creates projects, tasks, leads, invoices via storage layer (not mocks)
+- **RBAC Enforcement**: Actions validated against user role (admin/editor/viewer)
+- **Audit Logging**: All AI actions logged with user ID, action type, entity, and outcome
+- **Context Persistence**: Conversation history persists to localStorage (max 50 messages)
+- **Session-Only Authentication**: Role determined from server session, not client context
+
 ### System Design Choices
 The system utilizes a modular design to support extensive configurability and scalability. It features a robust API Gateway for managing and securing external integrations. Data governance and compliance monitoring are integrated throughout the platform. The architecture supports multi-tenancy and is designed for high performance, with browser testing confirming fast page loads and API response times.
 
