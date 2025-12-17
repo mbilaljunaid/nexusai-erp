@@ -63,7 +63,7 @@ const MAX_STORED_MESSAGES = 50;
 const welcomeMessage: Message = {
   id: "welcome",
   role: "assistant",
-  content: "Hi! I'm your AI Copilot. I can help you with information OR take actions in the app. Try asking me to create a project, add a task, or explain a feature. What would you like to do?",
+  content: "Hi! I'm NexusAI, your enterprise AI copilot powered by a multi-agent architecture (Auditor, Planner, Executor, Verifier). I can analyze your system, plan actions, execute them, and verify results. Try asking me to create a project, add a task, or explain any feature!",
   timestamp: new Date(),
   actionType: "info"
 };

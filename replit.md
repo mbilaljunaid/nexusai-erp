@@ -33,12 +33,18 @@ NexusAIFirst is built around 18 core end-to-end business processes, including Pr
 - **Settings**: Appearance section in Settings page allows theme and accent color selection with live preview
 
 ### AI Copilot Features
-- **Enterprise System Prompt**: Context-aware AI agent with intent classification (Execution vs Informational mode)
+- **Multi-Agent Architecture**: Four coordinated agents (Auditor, Planner, Executor, Verifier) for enterprise-grade AI operations
+  - **Auditor Agent**: System audit, module mapping, constraint detection, gap analysis
+  - **Planner Agent**: Intent classification, execution plan design, RBAC validation, dependency resolution
+  - **Executor Agent**: Action execution via storage layer, cross-module coordination, audit logging
+  - **Verifier Agent**: State validation, memory reconciliation, conflict handling, factual feedback
+- **Enterprise System Prompt**: Context-aware AI with 40+ industry templates and 10+ enabled modules
 - **Real Action Execution**: Creates projects, tasks, leads, invoices via storage layer (not mocks)
 - **RBAC Enforcement**: Actions validated against user role (admin/editor/viewer)
 - **Audit Logging**: All AI actions logged with user ID, action type, entity, and outcome
 - **Context Persistence**: Conversation history persists to localStorage (max 50 messages)
 - **Session-Only Authentication**: Role determined from server session, not client context
+- **Core Principles**: Action-first behavior, failure transparency, confirmation over assumption, cross-module intelligence
 
 ### System Design Choices
 The system utilizes a modular design to support extensive configurability and scalability. It features a robust API Gateway for managing and securing external integrations. Data governance and compliance monitoring are integrated throughout the platform. The architecture supports multi-tenancy and is designed for high performance, with browser testing confirming fast page loads and API response times.
