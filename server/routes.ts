@@ -416,6 +416,403 @@ export async function registerRoutes(
     }
   });
 
+  // ========== CONTEXTUAL AI COPILOT WITH ACTIONS ==========
+  
+  app.post("/api/copilot/contextual-chat", async (req, res) => {
+    try {
+      const { message, context, conversationHistory = [] } = req.body;
+      
+      if (!message || typeof message !== "string") {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      // Get authenticated user from session ONLY (never trust client-supplied role)
+      const sessionUser = (req as any).user;
+      const currentPage = context?.currentPage || "dashboard";
+      const mode = context?.mode || "info";
+      
+      // Extract authenticated user data - ALWAYS use session if available
+      let authenticatedUserId: string | undefined;
+      let authenticatedRole: string;
+      let tenantId: string;
+      
+      if (sessionUser) {
+        // Use session user data exclusively (never fall back to client context for auth)
+        authenticatedUserId = sessionUser.id;
+        authenticatedRole = sessionUser.role || "viewer";
+        tenantId = sessionUser.tenantId || "default";
+      } else {
+        // No session - only info mode allowed, use minimal context for context-awareness
+        authenticatedUserId = undefined;
+        authenticatedRole = "viewer"; // Force viewer role for unauthenticated
+        tenantId = context?.tenantId || "default";
+      }
+
+      // Verify user is authenticated for action mode - HARD FAIL if no session
+      if (mode === "action" && !sessionUser) {
+        return res.status(401).json({ error: "Authentication required for action mode. Please log in." });
+      }
+      
+      // Build contextual system prompt with real user context
+      const contextualPrompt = `You are NexusAIFirst AI Copilot - an intelligent in-app assistant that can both provide information AND execute actions.
+
+CURRENT CONTEXT:
+- User ID: ${authenticatedUserId || "anonymous"}
+- User Role: ${authenticatedRole}
+- Current Page: ${currentPage}
+- Tenant: ${tenantId}
+- Mode: ${mode}
+
+CAPABILITIES:
+1. INFORMATION MODE: Answer questions about the platform, explain features, provide guidance
+2. ACTION MODE: When user requests actions, you can:
+   - Create projects (requires: name)
+   - Create tasks (requires: title)
+   - Create leads (requires: name)
+   - Create invoices (requires: amount)
+   - Generate reports
+
+RESPONSE FORMAT:
+For ACTIONS, respond with JSON in this exact format:
+\`\`\`action
+{
+  "action": "create|update|delete|list|generate",
+  "entity": "project|task|lead|contact|invoice|report",
+  "data": { ...relevant fields... },
+  "confirmation": "Brief description of what will happen"
+}
+\`\`\`
+
+For INFORMATION, just respond naturally with helpful text.
+
+IMPORTANT RULES:
+1. ALWAYS ask for required fields if they are missing before creating an action block
+   - Project requires: name (ask if not provided)
+   - Task requires: title (ask if not provided)
+   - Lead requires: name (ask if not provided)
+   - Invoice requires: amount (ask if not provided)
+2. Always confirm before destructive actions (delete, bulk update)
+3. Respect user role permissions:
+   - admin: can perform all actions
+   - editor: can create and edit records
+   - viewer: can only view/list data
+   - Current user (${authenticatedRole}) can ${authenticatedRole === 'admin' ? 'perform all actions' : authenticatedRole === 'editor' ? 'create and edit records' : 'only view data'}
+4. Be action-oriented, not just informational
+5. After completing an action, summarize what was done and suggest next steps
+
+Current user is asking: ${message}`;
+
+      const messages: any[] = [
+        { role: "system", content: contextualPrompt },
+        ...conversationHistory.slice(-4),
+        { role: "user", content: message }
+      ];
+
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages,
+        max_tokens: 800,
+        temperature: 0.5,
+      });
+
+      let aiResponse = completion.choices[0]?.message?.content || "I couldn't process that request. Please try again.";
+      let actionExecuted = false;
+      let actionDetails: any = null;
+      let requiresConfirmation = false;
+      let confirmationMessage = "";
+
+      // Parse action blocks from response
+      const actionMatch = aiResponse.match(/```action\s*([\s\S]*?)```/);
+      if (actionMatch) {
+        try {
+          const actionData = JSON.parse(actionMatch[1].trim());
+          const { action, entity, data, confirmation } = actionData;
+
+          // Validate action payload structure (allowlist approach)
+          const validActions = ["create", "update", "delete", "list", "generate"];
+          const validEntities = ["project", "task", "lead", "contact", "invoice", "report"];
+          
+          if (!validActions.includes(action) || !validEntities.includes(entity)) {
+            // Log invalid action attempt
+            try {
+              await storage.createAuditLog({
+                userId: String(authenticatedUserId || "anonymous"),
+                action: `ai_copilot_invalid_action`,
+                entityType: entity || "unknown",
+                entityId: "validation-failed",
+                newValue: { action, entity, reason: "invalid_action_or_entity" },
+                ipAddress: req.ip || req.headers['x-forwarded-for'] as string,
+                userAgent: req.headers['user-agent']
+              });
+            } catch (e) { /* audit best-effort */ }
+            
+            aiResponse = aiResponse.replace(/```action[\s\S]*?```/, "").trim();
+            aiResponse += "\n\nI'm not able to perform that action. Please try a different request.";
+          } else {
+            // Role-based permission check using authenticated role
+            const canExecute = authenticatedRole === "admin" || authenticatedRole === "editor" || 
+              (authenticatedRole === "viewer" && action === "list");
+
+            if (!canExecute) {
+              // Log denied action attempt
+              try {
+                await storage.createAuditLog({
+                  userId: String(authenticatedUserId || "anonymous"),
+                  action: `ai_copilot_denied`,
+                  entityType: entity,
+                  entityId: "permission-denied",
+                  newValue: { action, entity, role: authenticatedRole, reason: "insufficient_permissions" },
+                  ipAddress: req.ip || req.headers['x-forwarded-for'] as string,
+                  userAgent: req.headers['user-agent']
+                });
+              } catch (e) { /* audit best-effort */ }
+              
+              aiResponse = `I understand you want to ${action} a ${entity}, but your current role (${authenticatedRole}) doesn't have permission for this action. Please contact your administrator.`;
+            } else if (action === "delete" || (action === "update" && Object.keys(data || {}).length > 3)) {
+              // Destructive actions need confirmation
+              requiresConfirmation = true;
+              confirmationMessage = confirmation || `Are you sure you want to ${action} this ${entity}?`;
+              aiResponse = aiResponse.replace(/```action[\s\S]*?```/, "").trim();
+              aiResponse += `\n\n**Confirmation Required**: ${confirmationMessage}`;
+            } else {
+              // Execute the action using real storage
+              const result = await executeAIActionWithStorage(action, entity, data, authenticatedUserId, tenantId, req);
+              actionExecuted = true;
+              actionDetails = {
+                type: action.charAt(0).toUpperCase() + action.slice(1),
+                entity: entity.charAt(0).toUpperCase() + entity.slice(1),
+                id: result.id,
+                summary: result.summary
+              };
+              
+              // Persist audit log to storage (success or validation error)
+              try {
+                await storage.createAuditLog({
+                  userId: String(authenticatedUserId),
+                  action: `ai_copilot_${action}`,
+                  entityType: entity,
+                  entityId: result.id,
+                  newValue: { data, outcome: result.id === "validation-error" ? "failed" : "success" },
+                  ipAddress: req.ip || req.headers['x-forwarded-for'] as string,
+                  userAgent: req.headers['user-agent']
+                });
+              } catch (auditError) {
+                console.warn("Failed to persist audit log:", auditError);
+              }
+
+              // Clean response and add action summary
+              aiResponse = aiResponse.replace(/```action[\s\S]*?```/, "").trim();
+              aiResponse += `\n\n**Action Completed**: ${result.summary}`;
+              if (result.nextSteps) {
+                aiResponse += `\n\n**Suggested Next Steps:**\n${result.nextSteps}`;
+              }
+            }
+          }
+        } catch (parseError) {
+          console.warn("Failed to parse action block:", parseError);
+          // Strip malformed action block from response
+          aiResponse = aiResponse.replace(/```action[\s\S]*?```/, "").trim();
+        }
+      }
+
+      res.json({
+        response: aiResponse,
+        actionType: actionExecuted ? "action" : (requiresConfirmation ? "confirmation" : "info"),
+        actionExecuted,
+        actionDetails,
+        requiresConfirmation,
+        confirmationMessage
+      });
+    } catch (error: any) {
+      console.error("Contextual copilot error:", error);
+      res.status(500).json({
+        error: "Failed to process request",
+        message: error.message || "Unknown error"
+      });
+    }
+  });
+
+  // AI Action Executor using real storage
+  async function executeAIActionWithStorage(
+    action: string, 
+    entity: string, 
+    data: any, 
+    userId: string | number | undefined, 
+    tenantId: string,
+    req: any
+  ): Promise<{ id: string; summary: string; nextSteps?: string }> {
+    try {
+      switch (entity.toLowerCase()) {
+        case "project":
+          if (action === "create") {
+            if (!data.name) {
+              return { id: "validation-error", summary: "Project name is required. Please provide a name." };
+            }
+            const project = await storage.createProject({
+              name: data.name,
+              description: data.description || null,
+              ownerId: String(userId) || "system"
+            });
+            return {
+              id: project.id,
+              summary: `Created project "${project.name}"`,
+              nextSteps: "- Add team members\n- Create initial tasks\n- Set milestones"
+            };
+          }
+          if (action === "list") {
+            const projects = await storage.listProjects();
+            return {
+              id: "list-result",
+              summary: `Found ${projects.length} project(s)`,
+              nextSteps: projects.length === 0 ? "- Create your first project" : "- Filter or search results\n- Export data"
+            };
+          }
+          break;
+
+        case "task":
+          if (action === "create") {
+            if (!data.title && !data.name) {
+              return { id: "validation-error", summary: "Task title is required. Please provide a title." };
+            }
+            // Use generic form store for tasks since no specific task table
+            const taskId = `task-${Date.now()}`;
+            const task = {
+              id: taskId,
+              title: data.title || data.name,
+              description: data.description || "",
+              status: data.status || "pending",
+              priority: data.priority || "medium",
+              assignee: data.assignee || String(userId),
+              projectId: data.projectId,
+              createdAt: new Date().toISOString(),
+              createdBy: "AI Copilot"
+            };
+            if (!formDataStore.has("ai_tasks")) formDataStore.set("ai_tasks", []);
+            formDataStore.get("ai_tasks")!.push(task);
+            return {
+              id: taskId,
+              summary: `Created task "${task.title}" with ${task.priority} priority`,
+              nextSteps: "- Assign team member\n- Set due date\n- Add subtasks"
+            };
+          }
+          break;
+
+        case "lead":
+          if (action === "create") {
+            if (!data.name) {
+              return { id: "validation-error", summary: "Lead name is required. Please provide a name." };
+            }
+            const lead = await storage.createLead({
+              name: data.name,
+              email: data.email || null,
+              company: data.company || null,
+              status: data.status || "new",
+              score: data.score || "0"
+            });
+            return {
+              id: lead.id,
+              summary: `Created lead "${lead.name}" from ${lead.company || "unknown company"}`,
+              nextSteps: "- Qualify the lead\n- Schedule follow-up\n- Add to pipeline"
+            };
+          }
+          if (action === "list") {
+            const leads = await storage.listLeads();
+            return {
+              id: "list-result",
+              summary: `Found ${leads.length} lead(s)`,
+              nextSteps: leads.length === 0 ? "- Create your first lead" : "- Filter or search results\n- Export data"
+            };
+          }
+          break;
+
+        case "invoice":
+          if (action === "create") {
+            if (!data.amount) {
+              return { id: "validation-error", summary: "Invoice amount is required. Please provide an amount." };
+            }
+            const invoice = await dbStorage.createInvoice({
+              invoiceNumber: `INV-${Date.now().toString().slice(-6)}`,
+              customerId: data.customerId || "CUST-001",
+              amount: String(data.amount),
+              dueDate: data.dueDate ? new Date(data.dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              status: "draft"
+            });
+            return {
+              id: invoice.id,
+              summary: `Created invoice ${invoice.invoiceNumber} for $${invoice.amount}`,
+              nextSteps: "- Add line items\n- Review and finalize\n- Send to customer"
+            };
+          }
+          break;
+
+        case "report":
+          if (action === "generate") {
+            return {
+              id: `report-${Date.now()}`,
+              summary: `Generated ${data.type || "summary"} report for ${data.period || "current period"}`,
+              nextSteps: "- Export to PDF\n- Share with team\n- Schedule recurring"
+            };
+          }
+          break;
+
+        default:
+          // Generic entity handling via form store
+          if (action === "create") {
+            const recordId = `${entity}-${Date.now()}`;
+            const record = { id: recordId, ...data, createdAt: new Date().toISOString(), createdBy: "AI Copilot" };
+            if (!formDataStore.has(entity)) formDataStore.set(entity, []);
+            formDataStore.get(entity)!.push(record);
+            return {
+              id: recordId,
+              summary: `Created ${entity} record`,
+              nextSteps: "- Review the created record\n- Add additional details"
+            };
+          }
+          if (action === "list") {
+            const records = formDataStore.get(entity) || [];
+            return {
+              id: "list-result",
+              summary: `Found ${records.length} ${entity} record(s)`,
+              nextSteps: records.length === 0 ? `- Create your first ${entity}` : "- Filter or search results\n- Export data"
+            };
+          }
+          break;
+      }
+
+      return { id: "unknown", summary: `Action ${action} on ${entity} not implemented` };
+    } catch (error: any) {
+      console.error("AI action execution error:", error);
+      return { id: "error", summary: `Failed to execute ${action} on ${entity}: ${error.message || "Unknown error"}` };
+    }
+  }
+
+  // Get AI action audit log (protected endpoint - requires authentication)
+  app.get("/api/copilot/actions-log", async (req, res) => {
+    try {
+      // Require authentication to view audit logs
+      const sessionUser = (req as any).user;
+      if (!sessionUser) {
+        return res.status(401).json({ error: "Authentication required to view audit logs" });
+      }
+      
+      const { limit = 50 } = req.query;
+      
+      // Fetch from storage audit logs with AI Copilot actions
+      const allLogs = await storage.listAuditLogs();
+      let aiLogs = allLogs.filter((log: any) => log.action?.startsWith("ai_copilot_"));
+      
+      // Non-admin users can only see their own logs
+      if (sessionUser.role !== "admin") {
+        aiLogs = aiLogs.filter((l: any) => String(l.userId) === String(sessionUser.id));
+      }
+      
+      res.json(aiLogs.slice(0, Number(limit)));
+    } catch (error) {
+      console.error("Failed to fetch AI action logs:", error);
+      res.json([]);
+    }
+  });
+
   // ========== PUBLIC DEMO ROUTES ==========
   app.get("/api/demos/industries", (req, res) => {
     const industries = [

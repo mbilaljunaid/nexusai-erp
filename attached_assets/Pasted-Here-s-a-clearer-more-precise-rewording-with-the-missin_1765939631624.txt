@@ -1,0 +1,33 @@
+Here’s a clearer, more precise rewording with the missing expectations and gaps explicitly added:
+
+⸻
+
+I have built a project management application with AI-first capabilities, however the current AI chat agent behaves like a generic OpenAI chatbot. When I ask the agent questions or give it instructions, it returns high-level, generic responses instead of taking contextual, in-app actions.
+
+For example, when I ask the agent to “create a project for product development”, it merely explains what steps are typically involved in product development, rather than:
+	•	Creating the project inside the application
+	•	Applying the correct project type or template
+	•	Assigning ownership based on my role
+	•	Initializing tasks, milestones, or workflows
+
+Expected AI Agent Behavior (Missing Today)
+	•	The chat agent should be deeply contextual and aware of:
+	•	The application’s data models and codebase
+	•	The current user’s role, permissions, and tenant
+	•	Existing projects, teams, and configurations
+	•	The agent should be able to:
+	•	Execute real application actions (e.g., create/update projects, tasks, users)
+	•	Use internal APIs or service layers rather than responding with static text
+	•	Ask for missing required inputs before proceeding (e.g., project name, timeline, owner)
+	•	Responses should be:
+	•	Action-oriented and transactional, not purely informational
+	•	Confirm what was created or changed
+	•	Provide a summary and next suggested actions
+
+Additional Gaps Identified
+	•	No distinction between “informational mode” and “action/execution mode” for the AI agent
+	•	No guardrails to prevent generic LLM responses when an actionable intent is detected
+	•	No visibility or confirmation of AI-initiated actions (audit log / activity feed)
+	•	No role-based restrictions enforced on AI-triggered actions
+
+In short, the AI agent should function as an intelligent in-app operator, not a standalone chatbot, responding and acting based on the application context, user permissions, and system state.

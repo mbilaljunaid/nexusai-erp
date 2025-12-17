@@ -16,6 +16,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { WhatsNew } from "@/components/WhatsNew";
 import { NotificationCenter as NotificationCenterWidget } from "@/components/NotificationCenter";
 import { QuickTipsProvider, TipsToggle } from "@/components/QuickTips";
+import AICopilotWidget from "@/components/AICopilotWidget";
 import NotFound from "@/pages/not-found";
 
 // Landing Page
@@ -691,6 +692,7 @@ function AuthenticatedLayout() {
             </Suspense>
           </main>
         </div>
+        <AICopilotWidget />
       </div>
     </QuickTipsProvider>
   );
