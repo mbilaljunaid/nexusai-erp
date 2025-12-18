@@ -18,7 +18,7 @@
 
 ## Overview
 
-**NexusAIFirst** is a production-ready Enterprise Resource Planning (ERP) platform designed to manage and automate core business processes across 42 industry verticals and 27 enterprise modules.
+**NexusAIFirst** is an Open Source production-ready Enterprise Resource Planning (ERP) platform designed to manage and automate core business processes across 42 industry verticals and 27 enterprise modules.
 
 ### Platform Statistics
 - **Pages**: 200+ frontend pages
