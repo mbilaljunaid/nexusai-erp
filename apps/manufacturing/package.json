@@ -1,0 +1,20 @@
+{
+    "name": "nexusai-manufacturing",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "nest start",
+        "dev": "nest start --watch",
+        "build": "nest build"
+    },
+    "dependencies": {
+        "@nestjs/common": "^11.1.9",
+        "@nestjs/core": "^11.1.9",
+        "@nestjs/platform-express": "^11.1.9",
+        "@nestjs/typeorm": "^11.0.0",
+        "pg": "^8.16.3",
+        "reflect-metadata": "^0.2.2",
+        "rxjs": "^7.8.1",
+        "typeorm": "^0.3.27"
+    }
+}
