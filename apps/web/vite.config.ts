@@ -38,6 +38,10 @@ export default defineConfig({
       '/api/ai': {
         target: 'http://localhost:5001',
         changeOrigin: true,
+      },
+      '/api/logistics': {
+        target: 'http://localhost:5007',
+        changeOrigin: true,
       }
     },
   },
