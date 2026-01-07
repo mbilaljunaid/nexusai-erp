@@ -61,6 +61,7 @@
     "@types/memoizee": "^0.4.12",
     "@types/papaparse": "^5.5.2",
     "@types/pdfkit": "^0.17.4",
+    "@types/pg": "^8.16.0",
     "bcrypt": "^6.0.0",
     "bull": "^4.16.5",
     "class-transformer": "^0.5.1",
