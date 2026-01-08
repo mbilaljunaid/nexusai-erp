@@ -31,7 +31,7 @@ export default function Stories() {
         <p className="text-muted-foreground">Manage sprint stories and track progress</p>
       </div>
 
-      <IconNavigation items={navigationItems} activeId={activeNav} onNavigate={setActiveNav} />
+      <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 
       <div className="grid gap-4">
         {filteredStories.map((story: any) => (

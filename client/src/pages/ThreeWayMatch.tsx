@@ -39,7 +39,7 @@ export default function ThreeWayMatch() {
         <p className="text-muted-foreground">Match Purchase Orders, Goods Receipts, and Supplier Invoices</p>
       </div>
 
-      <IconNavigation items={navigationItems} activeId={activeNav} onNavigate={setActiveNav} />
+      <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 
       <div className="grid gap-4">
         {filteredMatches.map((match: any) => (

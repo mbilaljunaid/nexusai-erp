@@ -11,6 +11,13 @@ import RequisitionForm from "@/components/forms/RequisitionForm";
 import { OpportunityForm } from "@/components/forms/OpportunityForm";
 import { Sparkles, DollarSign, Users, Briefcase, TrendingUp, FileText, BarChart3 } from "lucide-react";
 
+
+function BudgetEntryForm() { return <div className="p-4 border border-dashed">Budget Entry Form</div>; }
+function LeadEntryForm() { return <div className="p-4 border border-dashed">Lead Entry Form</div>; }
+function EmployeeEntryForm() { return <div className="p-4 border border-dashed">Employee Entry Form</div>; }
+function GLEntryForm() { return <div className="p-4 border border-dashed">GL Entry Form</div>; }
+function InvoiceEntryForm() { return <div className="p-4 border border-dashed">Invoice Entry Form</div>; }
+
 export default function FormShowcase() {
   const [activeNav, setActiveNav] = useState("epm");
 

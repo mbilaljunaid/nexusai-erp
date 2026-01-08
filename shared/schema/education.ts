@@ -16,7 +16,7 @@ export const educationStudents = pgTable("education_students", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEducationStudentSchema = createInsertSchema(educationStudents).omit({ id: true, createdAt: true }).extend({
+export const insertEducationStudentSchema = createInsertSchema(educationStudents).extend({
     tenantId: z.string().min(1),
     studentId: z.string().min(1),
     firstName: z.string().min(1),
@@ -40,7 +40,7 @@ export const educationCourses = pgTable("education_courses", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEducationCourseSchema = createInsertSchema(educationCourses).omit({ id: true, createdAt: true }).extend({
+export const insertEducationCourseSchema = createInsertSchema(educationCourses).extend({
     tenantId: z.string().min(1),
     courseId: z.string().min(1),
     courseName: z.string().min(1),
@@ -63,7 +63,7 @@ export const educationEnrollments = pgTable("education_enrollments", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEducationEnrollmentSchema = createInsertSchema(educationEnrollments).omit({ id: true, createdAt: true }).extend({
+export const insertEducationEnrollmentSchema = createInsertSchema(educationEnrollments).extend({
     tenantId: z.string().min(1),
     studentId: z.string().min(1),
     courseId: z.string().min(1),
@@ -86,7 +86,7 @@ export const educationAssignments = pgTable("education_assignments", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEducationAssignmentSchema = createInsertSchema(educationAssignments).omit({ id: true, createdAt: true }).extend({
+export const insertEducationAssignmentSchema = createInsertSchema(educationAssignments).extend({
     tenantId: z.string().min(1),
     assignmentId: z.string().min(1),
     courseId: z.string().min(1),
@@ -109,7 +109,7 @@ export const educationGrades = pgTable("education_grades", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEducationGradeSchema = createInsertSchema(educationGrades).omit({ id: true, createdAt: true }).extend({
+export const insertEducationGradeSchema = createInsertSchema(educationGrades).extend({
     tenantId: z.string().min(1),
     studentId: z.string().min(1),
     courseId: z.string().min(1),
@@ -132,7 +132,7 @@ export const educationBilling = pgTable("education_billing", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEducationBillingSchema = createInsertSchema(educationBilling).omit({ id: true, createdAt: true }).extend({
+export const insertEducationBillingSchema = createInsertSchema(educationBilling).extend({
     tenantId: z.string().min(1),
     invoiceId: z.string().min(1),
     studentId: z.string().min(1),
@@ -155,7 +155,7 @@ export const educationEvents = pgTable("education_events", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEducationEventSchema = createInsertSchema(educationEvents).omit({ id: true, createdAt: true }).extend({
+export const insertEducationEventSchema = createInsertSchema(educationEvents).extend({
     tenantId: z.string().min(1),
     eventId: z.string().min(1),
     eventName: z.string().min(1),
@@ -177,7 +177,7 @@ export const educationAttendance = pgTable("education_attendance", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEducationAttendanceSchema = createInsertSchema(educationAttendance).omit({ id: true, createdAt: true }).extend({
+export const insertEducationAttendanceSchema = createInsertSchema(educationAttendance).extend({
     tenantId: z.string().min(1),
     studentId: z.string().min(1),
     courseId: z.string().optional(),

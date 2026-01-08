@@ -19,7 +19,7 @@ export const userDashboardWidgets = pgTable("user_dashboard_widgets", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertUserDashboardWidgetSchema = createInsertSchema(userDashboardWidgets).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertUserDashboardWidgetSchema = createInsertSchema(userDashboardWidgets).extend({
     userId: z.string().min(1),
     widgetType: z.enum(["app", "stat", "chart", "activity", "quick_action"]),
     appId: z.string().optional().nullable(),
@@ -46,7 +46,7 @@ export const userBadges = pgTable("user_badges", {
     earnedAt: timestamp("earned_at").default(sql`now()`),
 });
 
-export const insertUserBadgeSchema = createInsertSchema(userBadges).omit({ id: true, earnedAt: true }).extend({
+export const insertUserBadgeSchema = createInsertSchema(userBadges).extend({
     userId: z.string().min(1),
     badgeId: z.string().min(1),
     badgeName: z.string().min(1),
@@ -72,7 +72,7 @@ export const badgeDefinitions = pgTable("badge_definitions", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertBadgeDefinitionSchema = createInsertSchema(badgeDefinitions).omit({ id: true, createdAt: true }).extend({
+export const insertBadgeDefinitionSchema = createInsertSchema(badgeDefinitions).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     icon: z.string().optional(),
@@ -96,7 +96,7 @@ export const userActivityPoints = pgTable("user_activity_points", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertUserActivityPointSchema = createInsertSchema(userActivityPoints).omit({ id: true, createdAt: true }).extend({
+export const insertUserActivityPointSchema = createInsertSchema(userActivityPoints).extend({
     userId: z.string().min(1),
     activityType: z.string().min(1),
     points: z.number().optional(),

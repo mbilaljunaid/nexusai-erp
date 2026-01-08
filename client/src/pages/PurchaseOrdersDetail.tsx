@@ -10,7 +10,7 @@ import { PurchaseOrderForm } from "@/components/forms/PurchaseOrderForm";
 
 export default function PurchaseOrdersDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: pos = [] } = useQuery({ queryKey: ["/api/purchase-orders"], retry: false });
+  const { data: pos = [] } = useQuery<any[]>({ queryKey: ["/api/purchase-orders"], retry: false });
 
   return (
     <div className="space-y-6">

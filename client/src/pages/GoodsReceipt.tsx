@@ -33,7 +33,7 @@ export default function GoodsReceipt() {
         <p className="text-muted-foreground">Track incoming goods, perform quality checks, and match with POs</p>
       </div>
 
-      <IconNavigation items={navigationItems} activeId={activeNav} onNavigate={setActiveNav} />
+      <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "list" && (
         <div className="grid gap-4">

@@ -17,8 +17,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { 
-  Plus, Package, Building2, Mail, Globe, DollarSign, 
+import {
+  Plus, Package, Building2, Mail, Globe, DollarSign,
   Edit, Trash2, Send, Eye, Star, Download, Clock,
   CheckCircle, XCircle, AlertCircle, Code, FileText, ExternalLink
 } from "lucide-react";
@@ -49,10 +49,10 @@ const appSchema = z.object({
   name: z.string().min(1, "App name is required"),
   slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9-]+$/, "Slug must be lowercase with hyphens"),
   shortDescription: z.string().max(200, "Max 200 characters").optional(),
-  longDescription: z.string().optional(),
+  fullDescription: z.string().optional(),
   categoryId: z.string().optional(),
   tags: z.string().optional(),
-  pricingModel: z.enum(["free", "one_time", "subscription", "freemium"]),
+  priceType: z.enum(["free", "one_time", "subscription", "freemium"]),
   price: z.string().optional(),
   subscriptionPriceMonthly: z.string().optional(),
   subscriptionPriceYearly: z.string().optional(),
@@ -94,10 +94,10 @@ function DeveloperRegistrationForm({ onSuccess }: { onSuccess: () => void }) {
       onSuccess();
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to register", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to register",
+        variant: "destructive"
       });
     },
   });
@@ -180,10 +180,10 @@ function DeveloperRegistrationForm({ onSuccess }: { onSuccess: () => void }) {
                 <FormItem>
                   <FormLabel>About Your Company</FormLabel>
                   <FormControl>
-                    <Textarea 
+                    <Textarea
                       placeholder="Tell us about your company and the apps you plan to build..."
                       className="min-h-[100px]"
-                      {...field} 
+                      {...field}
                       data-testid="input-dev-description"
                     />
                   </FormControl>
@@ -203,15 +203,15 @@ function DeveloperRegistrationForm({ onSuccess }: { onSuccess: () => void }) {
   );
 }
 
-function AppFormDialog({ 
-  open, 
-  onOpenChange, 
+function AppFormDialog({
+  open,
+  onOpenChange,
   developerId,
   editApp,
   categories
-}: { 
-  open: boolean; 
-  onOpenChange: (open: boolean) => void; 
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   developerId: string;
   editApp?: MarketplaceApp | null;
   categories: MarketplaceCategory[];
@@ -223,10 +223,10 @@ function AppFormDialog({
       name: editApp?.name || "",
       slug: editApp?.slug || "",
       shortDescription: editApp?.shortDescription || "",
-      longDescription: editApp?.longDescription || "",
+      fullDescription: editApp?.fullDescription || "",
       categoryId: editApp?.categoryId || "",
       tags: editApp?.tags?.join(", ") || "",
-      pricingModel: (editApp?.pricingModel as any) || "free",
+      priceType: (editApp?.priceType as any) || "free",
       price: editApp?.price || "",
       subscriptionPriceMonthly: editApp?.subscriptionPriceMonthly || "",
       subscriptionPriceYearly: editApp?.subscriptionPriceYearly || "",
@@ -260,10 +260,10 @@ function AppFormDialog({
       form.reset();
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to save app", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save app",
+        variant: "destructive"
       });
     },
   });
@@ -327,15 +327,15 @@ function AppFormDialog({
                   />
                   <FormField
                     control={form.control}
-                    name="longDescription"
+                    name="fullDescription"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Full Description</FormLabel>
                         <FormControl>
-                          <Textarea 
+                          <Textarea
                             placeholder="Detailed description of your app, features, and benefits..."
                             className="min-h-[120px]"
-                            {...field} 
+                            {...field}
                             data-testid="input-app-long-desc"
                           />
                         </FormControl>
@@ -388,7 +388,7 @@ function AppFormDialog({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="pricingModel"
+                      name="priceType"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Pricing Model</FormLabel>
@@ -409,7 +409,7 @@ function AppFormDialog({
                         </FormItem>
                       )}
                     />
-                    {form.watch("pricingModel") === "one_time" && (
+                    {form.watch("priceType") === "one_time" && (
                       <FormField
                         control={form.control}
                         name="price"
@@ -425,7 +425,7 @@ function AppFormDialog({
                       />
                     )}
                   </div>
-                  {form.watch("pricingModel") === "subscription" && (
+                  {form.watch("priceType") === "subscription" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
@@ -623,10 +623,10 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
       queryClient.invalidateQueries({ queryKey: ["/api/marketplace/my-apps"] });
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to submit app", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit app",
+        variant: "destructive"
       });
     },
   });
@@ -658,7 +658,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
   };
 
   const totalRevenue = myApps.reduce((sum, app) => sum + parseFloat(app.totalRevenue || "0"), 0);
-  const totalInstalls = myApps.reduce((sum, app) => sum + (app.totalInstalls || 0), 0);
+  const installCount = myApps.reduce((sum, app) => sum + (app.installCount || 0), 0);
   const publishedApps = myApps.filter(app => app.status === "approved").length;
 
   return (
@@ -703,7 +703,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
           <CardContent>
             <div className="text-2xl font-bold flex items-center gap-1">
               <Download className="w-5 h-5 text-muted-foreground" />
-              {totalInstalls.toLocaleString()}
+              {installCount.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -766,8 +766,8 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            {app.icon ? (
-                              <img src={app.icon} alt={app.name} className="w-6 h-6 rounded" />
+                            {app.logoUrl ? (
+                              <img src={app.logoUrl} alt={app.name} className="w-6 h-6 rounded" />
                             ) : (
                               <Package className="w-5 h-5 text-primary" />
                             )}
@@ -781,7 +781,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                         </div>
                       </TableCell>
                       <TableCell>{getStatusBadge(app.status || "draft")}</TableCell>
-                      <TableCell className="text-right">{app.totalInstalls || 0}</TableCell>
+                      <TableCell className="text-right">{app.installCount || 0}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1">
                           <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
@@ -793,8 +793,8 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1">
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="icon"
                             onClick={() => { setEditingApp(app); setAppFormOpen(true); }}
                             data-testid={`button-edit-app-${app.id}`}
@@ -802,8 +802,8 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                             <Edit className="w-4 h-4" />
                           </Button>
                           {app.status === "draft" && (
-                            <Button 
-                              variant="ghost" 
+                            <Button
+                              variant="ghost"
                               size="icon"
                               onClick={() => submitMutation.mutate(app.id)}
                               disabled={submitMutation.isPending}
@@ -930,17 +930,17 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                               {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
-                              <Badge 
+                              <Badge
                                 variant={
-                                  payout.status === "paid" ? "default" : 
-                                  payout.status === "processing" ? "secondary" :
-                                  payout.status === "failed" ? "destructive" : "outline"
+                                  payout.status === "paid" ? "default" :
+                                    payout.status === "processing" ? "secondary" :
+                                      payout.status === "failed" ? "destructive" : "outline"
                                 }
                                 className={payout.status === "paid" ? "bg-green-500/10 text-green-600 border-green-200" : ""}
                               >
                                 {payout.status === "paid" ? "Paid" :
-                                 payout.status === "processing" ? "Processing" :
-                                 payout.status === "failed" ? "Failed" : "Pending"}
+                                  payout.status === "processing" ? "Processing" :
+                                    payout.status === "failed" ? "Failed" : "Pending"}
                               </Badge>
                             </TableCell>
                             <TableCell className="text-right font-medium">
@@ -984,15 +984,15 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium">Company Name</label>
-                  <p className="text-muted-foreground">{developer.companyName}</p>
+                  <p className="text-muted-foreground">{developer.name}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Display Name</label>
-                  <p className="text-muted-foreground">{developer.displayName}</p>
+                  <p className="text-muted-foreground">{developer.name}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Email</label>
-                  <p className="text-muted-foreground">{developer.email}</p>
+                  <p className="text-muted-foreground">{developer.supportEmail}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Website</label>
@@ -1002,7 +1002,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
               <div className="pt-4 border-t">
                 <h4 className="font-medium mb-2">Payout Information</h4>
                 <p className="text-sm text-muted-foreground">
-                  Total Revenue: ${parseFloat(developer.totalRevenue || "0").toFixed(2)}<br/>
+                  Total Revenue: ${parseFloat(developer.totalRevenue || "0").toFixed(2)}<br />
                   Total Payouts: ${parseFloat(developer.totalPayouts || "0").toFixed(2)}
                 </p>
               </div>

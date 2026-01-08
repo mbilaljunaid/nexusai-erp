@@ -9,7 +9,7 @@ import { Plus, Search } from "lucide-react";
 export default function HealthcarePage() {
   const [search, setSearch] = useState("");
   const endpoint = window.location.pathname.replace("/", "").replace(/-/g, "-").toLowerCase();
-  const { data = [] } = useQuery({ queryKey: [`/api/healthcare-${endpoint.split("healthcare")[1] || "default"}`] });
+  const { data = [] } = useQuery<any[]>({ queryKey: [`/api/healthcare-${endpoint.split("healthcare")[1] || "default"}`] });
 
   const filtered = data.filter((item: any) =>
     (item.name || item.firstName || item.title || "").toLowerCase().includes(search.toLowerCase())

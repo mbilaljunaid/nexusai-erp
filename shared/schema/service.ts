@@ -14,7 +14,7 @@ export const serviceCategories = pgTable("service_categories", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertServiceCategorySchema = createInsertSchema(serviceCategories).omit({ id: true, createdAt: true }).extend({
+export const insertServiceCategorySchema = createInsertSchema(serviceCategories).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     icon: z.string().optional(),
@@ -40,7 +40,7 @@ export const servicePackages = pgTable("service_packages", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertServicePackageSchema = createInsertSchema(servicePackages).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertServicePackageSchema = createInsertSchema(servicePackages).extend({
     providerId: z.string().min(1),
     categoryId: z.string().min(1),
     title: z.string().min(1),
@@ -70,7 +70,7 @@ export const serviceOrders = pgTable("service_orders", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertServiceOrderSchema = createInsertSchema(serviceOrders).omit({ id: true, createdAt: true }).extend({
+export const insertServiceOrderSchema = createInsertSchema(serviceOrders).extend({
     packageId: z.string().min(1),
     buyerId: z.string().min(1),
     providerId: z.string().min(1),
@@ -96,7 +96,7 @@ export const serviceReviews = pgTable("service_reviews", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertServiceReviewSchema = createInsertSchema(serviceReviews).omit({ id: true, createdAt: true }).extend({
+export const insertServiceReviewSchema = createInsertSchema(serviceReviews).extend({
     orderId: z.string().min(1),
     reviewerId: z.string().min(1),
     providerId: z.string().min(1),
@@ -126,7 +126,7 @@ export const jobPostings = pgTable("job_postings", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertJobPostingSchema = createInsertSchema(jobPostings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertJobPostingSchema = createInsertSchema(jobPostings).extend({
     buyerId: z.string().min(1),
     categoryId: z.string().min(1),
     title: z.string().min(1),
@@ -158,7 +158,7 @@ export const jobProposals = pgTable("job_proposals", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertJobProposalSchema = createInsertSchema(jobProposals).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertJobProposalSchema = createInsertSchema(jobProposals).extend({
     jobPostingId: z.string().min(1),
     providerId: z.string().min(1),
     packageId: z.string().optional().nullable(),

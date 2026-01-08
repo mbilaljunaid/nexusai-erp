@@ -39,7 +39,7 @@ router.post("/workflow/transition", async (req, res) => {
     const { formId, recordId, toStatus, userId } = req.body;
     const metadata = metadataRegistry.getMetadata(formId);
 
-    const result = await workflowEngine.transitionStatus(formId, recordId, toStatus, userId, metadata);
+    const result = await workflowEngine.transitionStatus(formId, recordId, toStatus, userId, metadata || undefined);
     res.json(result);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

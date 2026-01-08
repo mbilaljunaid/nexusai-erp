@@ -13,7 +13,7 @@ export const bom = pgTable("bom", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertBomSchema = createInsertSchema(bom).omit({ id: true, createdAt: true }).extend({
+export const insertBomSchema = createInsertSchema(bom).extend({
     bomNumber: z.string().min(1),
     productId: z.string().optional(),
     quantity: z.number().optional(),
@@ -32,7 +32,7 @@ export const workCenters = pgTable("work_centers", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertWorkCenterSchema = createInsertSchema(workCenters).omit({ id: true, createdAt: true }).extend({
+export const insertWorkCenterSchema = createInsertSchema(workCenters).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     capacity: z.number().optional(),
@@ -52,7 +52,7 @@ export const productionOrders = pgTable("production_orders", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertProductionOrderSchema = createInsertSchema(productionOrders).omit({ id: true, createdAt: true }).extend({
+export const insertProductionOrderSchema = createInsertSchema(productionOrders).extend({
     orderNumber: z.string().min(1),
     productId: z.string().optional(),
     quantity: z.number().optional(),

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function MediaPage() {
-  const { data = [] } = useQuery({ queryKey: ['/api/media-default'] });
+  const { data = [] } = useQuery<any[]>({ queryKey: ['/api/media-default'] });
 
   return (
     <div className="space-y-6 p-6">

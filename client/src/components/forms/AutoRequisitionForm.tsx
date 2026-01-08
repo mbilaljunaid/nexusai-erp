@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertTriangle, Zap } from "lucide-react";
+import { AlertTriangle, Zap, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -26,14 +26,14 @@ export function AutoRequisitionForm({ item }: { item: LowStockItem }) {
   const createRequisitionMutation = useMutation({
     mutationFn: async () => {
       return apiRequest("POST", "/api/procurement/requisitions", {
-        requisitionNumber: `AUTO-REQ-${Date.now()}`,
+        requisitionNumber: `AUTO - REQ - ${Date.now()} `,
         department: "Operations",
         requestDate: new Date().toISOString().split("T")[0],
         requiredDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-        justification: `Automatic requisition for low stock item: ${item.itemName}`,
+        justification: `Automatic requisition for low stock item: ${item.itemName} `,
         items: [{
           itemName: item.itemName,
-          description: `SKU: ${item.sku}`,
+          description: `SKU: ${item.sku} `,
           quantity: parseInt(quantity),
           unit: "EA",
           estimatedCost: 0
@@ -45,7 +45,7 @@ export function AutoRequisitionForm({ item }: { item: LowStockItem }) {
     onSuccess: () => {
       toast({
         title: "Success",
-        description: `Auto-requisition created for ${item.itemName}`,
+        description: `Auto - requisition created for ${item.itemName}`,
       });
       setShowForm(false);
     },
@@ -71,7 +71,7 @@ export function AutoRequisitionForm({ item }: { item: LowStockItem }) {
               </div>
             </div>
             <Button size="sm" onClick={() => setShowForm(true)} data-testid="button-create-auto-req">
-              <AutoFix className="w-4 h-4 mr-1" /> Create Auto-Requisition
+              <Wand2 className="w-4 h-4 mr-1" /> Create Auto-Requisition
             </Button>
           </div>
         </CardContent>

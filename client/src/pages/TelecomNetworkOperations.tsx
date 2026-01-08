@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function TelecomPage() {
-  const { data = [] } = useQuery({ queryKey: ['/api/telecom-default'] });
+  const { data = [] } = useQuery<any[]>({ queryKey: ['/api/telecom-default'] });
 
   return (
     <div className="space-y-6 p-6">

@@ -19,7 +19,7 @@ export default function ComplianceGovernance() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => fetch("/api/compliance-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: typeof newRule) => fetch("/api/compliance-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/compliance-rules"] });
       setNewRule({ ruleName: "", jurisdiction: "", riskLevel: "medium" });

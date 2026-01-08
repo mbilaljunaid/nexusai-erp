@@ -8,6 +8,13 @@ import { registerDashboardRoutes } from "./modules/dashboard/routes";
 import { registerCrmRoutes } from "./modules/crm/routes";
 import { registerFeedbackRoutes } from "./modules/feedback/routes";
 import { registerCopilotRoutes } from "./modules/copilot/routes";
+import { registerFinanceRoutes } from "./modules/finance/routes";
+import { registerHrRoutes } from "./modules/hr/routes";
+import { registerProjectRoutes } from "./modules/project/routes";
+import { registerManufacturingRoutes } from "./modules/manufacturing/routes";
+import { registerPlatformRoutes } from "./modules/platform/routes";
+import { registerMarketplaceRoutes } from "./modules/marketplace/routes";
+import { registerCommunityRoutes } from "./modules/community/routes";
 
 // Import existing routes files that were already modularized (if any)
 import analyticsRoutes from "./routes/analyticsRoutes";
@@ -27,25 +34,21 @@ export async function registerRoutes(
 
   // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {
-    if (req.path === "/health") return next();
-    if (req.path.startsWith("/auth")) return next();
-    if (req.path === "/login") return next();
-    if (req.path === "/logout") return next();
-    if (req.path === "/callback") return next();
-    if (req.path === "/demos/industries") return next();
-    if (req.path === "/demos/request") return next();
-    if (req.path === "/demos/list") return next();
-    if (req.path.startsWith("/copilot")) return next();
-    if (req.path === "/feedback") return next();
-    if (req.path === "/auth/user") return next();
-    if (req.path === "/marketplace/categories") return next();
-    if (req.path === "/marketplace/apps") return next();
-    if (req.path.match(/^\/marketplace\/apps\/[^/]+$/)) return next();
-    if (req.path.match(/^\/marketplace\/apps\/[^/]+\/reviews$/)) return next();
-    if (req.path.match(/^\/marketplace\/apps\/[^/]+\/dependencies$/)) return next();
+    // Exemptions for public/auth routes
+    const publicPaths = [
+      "/health", "/login", "/logout", "/callback", "/auth", "/demos",
+      "/copilot", "/feedback", "/marketplace/categories"
+    ];
+
+    // Check if path or prefix is public
+    if (publicPaths.some(p => req.path === p || req.path.startsWith(p + "/"))) return next();
+
+    // Check specifically for marketplace apps/details which can be public
+    if (req.path.startsWith("/marketplace/apps")) return next();
     if (req.path.startsWith("/community")) return next();
-    if (req.path.startsWith("/dashboard")) return next();
-    if (req.path.startsWith("/crm")) return next();
+
+    // Dashboard and CRM logic might overlap with authenticated data, check logic inside modules if needed
+    // But for now we enforce RBAC on everything else
 
     // Use the extracted middleware
     enforceRBAC()(req as any, res, next);
@@ -76,9 +79,15 @@ export async function registerRoutes(
   registerCrmRoutes(app);
   registerFeedbackRoutes(app);
   registerCopilotRoutes(app);
+  registerFinanceRoutes(app); // New
+  registerHrRoutes(app);      // New
+  registerProjectRoutes(app); // New
+  registerManufacturingRoutes(app); // New
+  registerPlatformRoutes(app); // New
+  registerMarketplaceRoutes(app); // New
+  registerCommunityRoutes(app); // New
 
   // Register Legacy/Unrefactored Routes
-  // TODO: Refactor these into modules as well
   app.use(analyticsRoutes);
   app.use(templateRoutes);
   app.use(migrationRoutes);

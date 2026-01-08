@@ -94,12 +94,12 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: reports = [] } = useQuery({
+  const { data: reports = [] } = useQuery<any[]>({
     queryKey: ["/api/reports", module],
   });
 
   const createReportMutation = useMutation({
-    mutationFn: (data) =>
+    mutationFn: (data: any) =>
       apiRequest("POST", "/api/reports", {
         name: reportName,
         module,

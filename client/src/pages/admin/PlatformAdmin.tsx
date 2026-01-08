@@ -59,7 +59,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
   });
 
   const updatePartnerMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<Partner> }) => {
+    mutationFn: async ({ id, data }: { id: string; data: Partial<Partner> }) => {
       return apiRequest("PATCH", `/api/partners/${id}`, data);
     },
     onSuccess: () => {
@@ -79,7 +79,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
   });
 
   const deletePartnerMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       return apiRequest("DELETE", `/api/partners/${id}`);
     },
     onSuccess: () => {
@@ -102,12 +102,12 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
   const approvedPartners = partners.filter(p => p.isApproved);
 
   const filteredApprovedPartners = approvedPartners.filter(p => {
-    const matchesSearch = searchQuery === "" || 
+    const matchesSearch = searchQuery === "" ||
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = filterType === "all" || p.type === filterType;
-    const matchesStatus = filterStatus === "all" || 
+    const matchesStatus = filterStatus === "all" ||
       (filterStatus === "active" && p.isActive) ||
       (filterStatus === "inactive" && !p.isActive);
     return matchesSearch && matchesType && matchesStatus;
@@ -158,8 +158,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
           <CardContent>
             <div className="space-y-3">
               {pendingPartners.map((partner) => (
-                <div 
-                  key={partner.id} 
+                <div
+                  key={partner.id}
                   className="flex items-center justify-between p-4 rounded-lg border bg-background"
                   data-testid={`row-pending-partner-${partner.id}`}
                 >
@@ -178,8 +178,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                   </div>
                   <div className="flex items-center gap-2">
                     {partner.website && (
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="icon"
                         onClick={() => window.open(partner.website!, '_blank')}
                         data-testid={`button-view-website-${partner.id}`}
@@ -187,8 +187,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                         <ExternalLink className="h-4 w-4" />
                       </Button>
                     )}
-                    <Select 
-                      defaultValue={partner.tier}
+                    <Select
+                      defaultValue={partner.tier || "silver"}
                       onValueChange={(v) => handleChangeTier(partner, v as Partner["tier"])}
                     >
                       <SelectTrigger className="w-28" data-testid={`select-tier-${partner.id}`}>
@@ -201,8 +201,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                         <SelectItem value="diamond">Diamond</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => handleReject(partner)}
                       disabled={deletePartnerMutation.isPending}
@@ -211,7 +211,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                       <X className="h-4 w-4 mr-1" />
                       Reject
                     </Button>
-                    <Button 
+                    <Button
                       size="sm"
                       onClick={() => handleApprove(partner)}
                       disabled={updatePartnerMutation.isPending}
@@ -238,8 +238,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <Input 
-              placeholder="Search partners..." 
+            <Input
+              placeholder="Search partners..."
               className="max-w-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -289,10 +289,10 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                 </thead>
                 <tbody>
                   {filteredApprovedPartners.map((partner) => {
-                    const tier = tierConfig[partner.tier];
+                    const tier = tierConfig[(partner.tier as keyof typeof tierConfig) || "silver"];
                     return (
-                      <tr 
-                        key={partner.id} 
+                      <tr
+                        key={partner.id}
                         className="border-b hover:bg-muted/50"
                         data-testid={`row-partner-${partner.id}`}
                       >
@@ -308,8 +308,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                           </Badge>
                         </td>
                         <td className="px-4 py-3">
-                          <Select 
-                            value={partner.tier}
+                          <Select
+                            value={partner.tier || "silver"}
                             onValueChange={(v) => handleChangeTier(partner, v as Partner["tier"])}
                           >
                             <SelectTrigger className="w-28 h-8" data-testid={`select-tier-approved-${partner.id}`}>
@@ -326,8 +326,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                           </Select>
                         </td>
                         <td className="px-4 py-3">
-                          <Switch 
-                            checked={partner.isActive}
+                          <Switch
+                            checked={partner.isActive || false}
                             onCheckedChange={() => handleToggleActive(partner)}
                             data-testid={`switch-active-${partner.id}`}
                           />
@@ -338,8 +338,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-end gap-1">
                             {partner.website && (
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 size="icon"
                                 onClick={() => window.open(partner.website!, '_blank')}
                                 data-testid={`button-website-${partner.id}`}
@@ -347,8 +347,8 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                                 <ExternalLink className="h-4 w-4" />
                               </Button>
                             )}
-                            <Button 
-                              variant="ghost" 
+                            <Button
+                              variant="ghost"
                               size="icon"
                               onClick={() => handleReject(partner)}
                               disabled={deletePartnerMutation.isPending}
@@ -423,7 +423,7 @@ export default function PlatformAdmin() {
     }
     setIsSavingPayments(false);
   };
-  
+
   const [emailSettings, setEmailSettings] = useState({
     smtp: { host: "", port: "587", username: "", password: "", encryption: "tls" },
     imap: { host: "", port: "993", username: "", password: "", encryption: "ssl" },
@@ -759,7 +759,7 @@ export default function PlatformAdmin() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>SMTP Host</Label>
-                  <Input 
+                  <Input
                     placeholder="smtp.example.com"
                     value={emailSettings.smtp.host}
                     onChange={(e) => setEmailSettings(prev => ({
@@ -771,7 +771,7 @@ export default function PlatformAdmin() {
                 </div>
                 <div className="space-y-2">
                   <Label>Port</Label>
-                  <Input 
+                  <Input
                     placeholder="587"
                     value={emailSettings.smtp.port}
                     onChange={(e) => setEmailSettings(prev => ({
@@ -785,7 +785,7 @@ export default function PlatformAdmin() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Username</Label>
-                  <Input 
+                  <Input
                     placeholder="noreply@example.com"
                     value={emailSettings.smtp.username}
                     onChange={(e) => setEmailSettings(prev => ({
@@ -798,7 +798,7 @@ export default function PlatformAdmin() {
                 <div className="space-y-2">
                   <Label>Password</Label>
                   <div className="flex gap-2">
-                    <Input 
+                    <Input
                       type={showApiKeys.smtpPass ? "text" : "password"}
                       placeholder="SMTP Password"
                       value={emailSettings.smtp.password}
@@ -816,7 +816,7 @@ export default function PlatformAdmin() {
               </div>
               <div className="space-y-2">
                 <Label>Encryption</Label>
-                <Select 
+                <Select
                   value={emailSettings.smtp.encryption}
                   onValueChange={(v) => setEmailSettings(prev => ({
                     ...prev,
@@ -834,8 +834,8 @@ export default function PlatformAdmin() {
                 </Select>
               </div>
               <div className="flex gap-2 pt-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => {
                     setIsSendingTestEmail(true);
                     setTimeout(() => {
@@ -869,7 +869,7 @@ export default function PlatformAdmin() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>IMAP Host</Label>
-                  <Input 
+                  <Input
                     placeholder="imap.example.com"
                     value={emailSettings.imap.host}
                     onChange={(e) => setEmailSettings(prev => ({
@@ -881,7 +881,7 @@ export default function PlatformAdmin() {
                 </div>
                 <div className="space-y-2">
                   <Label>Port</Label>
-                  <Input 
+                  <Input
                     placeholder="993"
                     value={emailSettings.imap.port}
                     onChange={(e) => setEmailSettings(prev => ({
@@ -895,7 +895,7 @@ export default function PlatformAdmin() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Username</Label>
-                  <Input 
+                  <Input
                     placeholder="support@example.com"
                     value={emailSettings.imap.username}
                     onChange={(e) => setEmailSettings(prev => ({
@@ -908,7 +908,7 @@ export default function PlatformAdmin() {
                 <div className="space-y-2">
                   <Label>Password</Label>
                   <div className="flex gap-2">
-                    <Input 
+                    <Input
                       type={showApiKeys.imapPass ? "text" : "password"}
                       placeholder="IMAP Password"
                       value={emailSettings.imap.password}
@@ -1058,7 +1058,7 @@ export default function PlatformAdmin() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     onClick={() => {
                       setIsRefreshingDemo(true);
                       setTimeout(() => {
@@ -1164,7 +1164,7 @@ export default function PlatformAdmin() {
               <div className="space-y-2">
                 <Label>API Key</Label>
                 <div className="flex gap-2">
-                  <Input 
+                  <Input
                     type={showApiKeys.lsApiKey ? "text" : "password"}
                     placeholder="Enter LemonSqueezy API Key"
                     value={paymentSettings.lemonSqueezy.apiKey}
@@ -1174,9 +1174,9 @@ export default function PlatformAdmin() {
                     }))}
                     data-testid="input-lemonsqueezy-api-key"
                   />
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
+                  <Button
+                    variant="outline"
+                    size="icon"
                     onClick={() => toggleShowKey("lsApiKey")}
                     data-testid="button-toggle-ls-api-key"
                   >
@@ -1187,7 +1187,7 @@ export default function PlatformAdmin() {
               </div>
               <div className="space-y-2">
                 <Label>Store ID</Label>
-                <Input 
+                <Input
                   placeholder="Enter Store ID"
                   value={paymentSettings.lemonSqueezy.storeId}
                   onChange={(e) => setPaymentSettings(prev => ({
@@ -1200,7 +1200,7 @@ export default function PlatformAdmin() {
               </div>
               <div className="space-y-2">
                 <Label>Variant ID</Label>
-                <Input 
+                <Input
                   placeholder="Enter Variant ID"
                   value={paymentSettings.lemonSqueezy.variantId}
                   onChange={(e) => setPaymentSettings(prev => ({
@@ -1214,7 +1214,7 @@ export default function PlatformAdmin() {
               <div className="space-y-2">
                 <Label>Webhook Secret</Label>
                 <div className="flex gap-2">
-                  <Input 
+                  <Input
                     type={showApiKeys.lsWebhook ? "text" : "password"}
                     placeholder="Enter Webhook Secret"
                     value={paymentSettings.lemonSqueezy.webhookSecret}
@@ -1224,9 +1224,9 @@ export default function PlatformAdmin() {
                     }))}
                     data-testid="input-lemonsqueezy-webhook-secret"
                   />
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
+                  <Button
+                    variant="outline"
+                    size="icon"
                     onClick={() => toggleShowKey("lsWebhook")}
                     data-testid="button-toggle-ls-webhook"
                   >
@@ -1250,7 +1250,7 @@ export default function PlatformAdmin() {
               <div className="space-y-2">
                 <Label>Secret Key</Label>
                 <div className="flex gap-2">
-                  <Input 
+                  <Input
                     type={showApiKeys.stripeSecret ? "text" : "password"}
                     placeholder="sk_live_..."
                     value={paymentSettings.stripe.secretKey}
@@ -1260,9 +1260,9 @@ export default function PlatformAdmin() {
                     }))}
                     data-testid="input-stripe-secret-key"
                   />
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
+                  <Button
+                    variant="outline"
+                    size="icon"
                     onClick={() => toggleShowKey("stripeSecret")}
                     data-testid="button-toggle-stripe-secret"
                   >
@@ -1273,7 +1273,7 @@ export default function PlatformAdmin() {
               </div>
               <div className="space-y-2">
                 <Label>Publishable Key</Label>
-                <Input 
+                <Input
                   placeholder="pk_live_..."
                   value={paymentSettings.stripe.publishableKey}
                   onChange={(e) => setPaymentSettings(prev => ({
@@ -1287,7 +1287,7 @@ export default function PlatformAdmin() {
               <div className="space-y-2">
                 <Label>Webhook Secret</Label>
                 <div className="flex gap-2">
-                  <Input 
+                  <Input
                     type={showApiKeys.stripeWebhook ? "text" : "password"}
                     placeholder="whsec_..."
                     value={paymentSettings.stripe.webhookSecret}
@@ -1297,9 +1297,9 @@ export default function PlatformAdmin() {
                     }))}
                     data-testid="input-stripe-webhook-secret"
                   />
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
+                  <Button
+                    variant="outline"
+                    size="icon"
                     onClick={() => toggleShowKey("stripeWebhook")}
                     data-testid="button-toggle-stripe-webhook"
                   >
@@ -1318,7 +1318,7 @@ export default function PlatformAdmin() {
                 <div>
                   <p className="font-medium text-sm">Security Note</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    For security, API keys should be stored as environment variables (secrets) rather than in the database. 
+                    For security, API keys should be stored as environment variables (secrets) rather than in the database.
                     Use the Secrets panel in your hosting environment to set these values. The fields above are for reference only.
                   </p>
                 </div>

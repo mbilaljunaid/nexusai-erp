@@ -21,9 +21,9 @@ export default function Analytics() {
     { name: "Avg Order Value", icon: ShoppingCart, color: "text-orange-500" },
   ];
   // Fetch ARIMA forecasting data from backend
-  const { data: forecastData } = useQuery({ queryKey: ["/api/analytics/forecast-advanced"] });
-  const { data: dashboardSummary } = useQuery({ queryKey: ["/api/analytics/dashboard/summary"] });
-  const { data: olapResults } = useQuery({ queryKey: ["/api/analytics/olap/query"] });
+  const { data: forecastData } = useQuery<any[]>({ queryKey: ["/api/analytics/forecast-advanced"] });
+  const { data: dashboardSummary } = useQuery<any[]>({ queryKey: ["/api/analytics/dashboard/summary"] });
+  const { data: olapResults } = useQuery<any[]>({ queryKey: ["/api/analytics/olap/query"] });
 
   // Use backend forecast data or mock as fallback
   const dashboardData = (forecastData as any)?.timeSeries || [

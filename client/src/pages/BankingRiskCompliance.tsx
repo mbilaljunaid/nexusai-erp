@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function BankingPage() {
-  const { data = [] } = useQuery({ queryKey: ['/api/banking-default'] });
+  const { data = [] } = useQuery<any[]>({ queryKey: ['/api/banking-default'] });
 
   return (
     <div className="space-y-6 p-6">

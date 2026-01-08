@@ -15,6 +15,14 @@ import { Search, Filter, FolderKanban, CheckCircle2, Clock, AlertTriangle, Spark
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useRoute } from "wouter";
 
+function TaskEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Task Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 interface Project {
   id: string;
   name: string;
@@ -186,7 +194,7 @@ export default function Projects() {
       {activeNav === "analytics" && (
         <div className="space-y-4">
           {selectedProject ? (
-            <ProjectToGLForm 
+            <ProjectToGLForm
               project={selectedProject}
               onClose={() => setSelectedProject(null)}
             />

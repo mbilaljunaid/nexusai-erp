@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function AutomotivePage() {
-  const { data = [] } = useQuery({ queryKey: ['/api/automotive-default'] });
+  const { data = [] } = useQuery<any[]>({ queryKey: ['/api/automotive-default'] });
 
   return (
     <div className="space-y-6 p-6">

@@ -18,7 +18,7 @@ export const revenueForecasts = pgTable("revenue_forecasts", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertRevenueForecastSchema = createInsertSchema(revenueForecasts).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertRevenueForecastSchema = createInsertSchema(revenueForecasts).extend({
     name: z.string().min(1),
     period: z.string().min(1),
     startDate: z.date(),
@@ -46,7 +46,7 @@ export const budgetAllocations = pgTable("budget_allocations", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertBudgetAllocationSchema = createInsertSchema(budgetAllocations).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertBudgetAllocationSchema = createInsertSchema(budgetAllocations).extend({
     name: z.string().min(1),
     department: z.string().optional(),
     category: z.string().optional(),
@@ -71,7 +71,7 @@ export const forecastModels = pgTable("forecast_models", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertForecastModelSchema = createInsertSchema(forecastModels).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertForecastModelSchema = createInsertSchema(forecastModels).extend({
     name: z.string().min(1),
     type: z.string().min(1),
     parameters: z.record(z.any()).optional(),
@@ -94,7 +94,7 @@ export const scenarios = pgTable("scenarios", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertScenarioSchema = createInsertSchema(scenarios).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertScenarioSchema = createInsertSchema(scenarios).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     type: z.string().optional(),
@@ -115,7 +115,7 @@ export const scenarioVariables = pgTable("scenario_variables", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertScenarioVariableSchema = createInsertSchema(scenarioVariables).omit({ id: true, createdAt: true }).extend({
+export const insertScenarioVariableSchema = createInsertSchema(scenarioVariables).extend({
     scenarioId: z.string().min(1),
     variableName: z.string().min(1),
     baseValue: z.string().optional(),

@@ -8,7 +8,7 @@ import { OrderToInvoiceForm } from "@/components/forms/OrderToInvoiceForm";
 
 export default function Page() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const { data = [] } = useQuery({ queryKey: [`/api/retail-${window.location.pathname}`] });
+  const { data = [] } = useQuery<any[]>({ queryKey: [`/api/retail-${window.location.pathname}`] });
 
   if (selectedOrder) {
     return (

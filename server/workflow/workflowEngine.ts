@@ -40,14 +40,18 @@ export class WorkflowEngine {
     userId?: string
   ): WorkflowState {
     const initialStatus = metadata.statusWorkflow?.[0]?.fromStatus || "draft";
+    const transitions = (metadata.statusWorkflow || []).map(t => ({
+      ...t,
+      permissions: t.permissions || []
+    }));
 
     const state: WorkflowState = {
       id: `WF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       formId,
       recordId,
       currentStatus: initialStatus,
-      transitions: metadata.statusWorkflow || [],
-      allowedNextStatuses: this.getAllowedTransitions(initialStatus, metadata.statusWorkflow || []).map(
+      transitions,
+      allowedNextStatuses: this.getAllowedTransitions(initialStatus, transitions).map(
         (t) => t.toStatus
       ),
       createdAt: new Date(),

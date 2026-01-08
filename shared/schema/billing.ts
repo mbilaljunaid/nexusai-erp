@@ -18,7 +18,7 @@ export const plans = pgTable("plans", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertPlanSchema = createInsertSchema(plans).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertPlanSchema = createInsertSchema(plans).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     price: z.string().optional(),
@@ -44,7 +44,7 @@ export const subscriptions = pgTable("subscriptions", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertSubscriptionSchema = createInsertSchema(subscriptions).extend({
     tenantId: z.string().min(1),
     planId: z.string().min(1),
     status: z.string().optional(),
@@ -69,7 +69,7 @@ export const payments = pgTable("payments", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertPaymentSchema = createInsertSchema(payments).omit({ id: true, createdAt: true }).extend({
+export const insertPaymentSchema = createInsertSchema(payments).extend({
     tenantId: z.string().min(1),
     invoiceId: z.string().optional().nullable(),
     amount: z.string().min(1),

@@ -6,9 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
+function CustomerEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Customer Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function CustomersDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const customers = [{id: 1, name: "TechCorp Inc", industry: "Technology", revenue: "100M"}, {id: 2, name: "RetailCo", industry: "Retail", revenue: "50M"}];
+  const customers = [{ id: 1, name: "TechCorp Inc", industry: "Technology", revenue: "100M" }, { id: 2, name: "RetailCo", industry: "Retail", revenue: "50M" }];
 
   return (
     <div className="space-y-6">

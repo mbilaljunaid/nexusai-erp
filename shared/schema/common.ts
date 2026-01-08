@@ -29,7 +29,7 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertUserSchema = createInsertSchema(users).extend({
   email: z.string().email().optional(),
   password: z.string().optional(),
   name: z.string().optional(),
@@ -60,7 +60,7 @@ export const projects = pgTable("projects", {
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertProjectSchema = createInsertSchema(projects).omit({ id: true, createdAt: true }).extend({
+export const insertProjectSchema = createInsertSchema(projects).extend({
   name: z.string().min(1),
   description: z.string().optional().nullable(),
   ownerId: z.string().min(1),
@@ -81,7 +81,7 @@ export const formData = pgTable("form_data", {
   updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertFormDataSchema = createInsertSchema(formData).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertFormDataSchema = createInsertSchema(formData).extend({
   formId: z.string().min(1),
   data: z.record(z.any()),
   status: z.string().optional(),
@@ -104,7 +104,7 @@ export const demos = pgTable("demos", {
   expiresAt: timestamp("expires_at"),
 });
 
-export const insertDemoSchema = createInsertSchema(demos).omit({ id: true, createdAt: true, demoToken: true }).extend({
+export const insertDemoSchema = createInsertSchema(demos).extend({
   email: z.string().email(),
   company: z.string().min(1),
   industry: z.string().min(1),
@@ -127,7 +127,7 @@ export const contactSubmissions = pgTable("contact_submissions", {
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({ id: true, createdAt: true }).extend({
+export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).extend({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   company: z.string().optional(),
@@ -154,7 +154,7 @@ export const userFeedback = pgTable("user_feedback", {
   updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertUserFeedbackSchema = createInsertSchema(userFeedback).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertUserFeedbackSchema = createInsertSchema(userFeedback).extend({
   userId: z.string().optional(),
   type: z.enum(["suggestion", "bug", "feature", "other"]),
   category: z.string().optional(),
@@ -181,7 +181,7 @@ export const tenants = pgTable("tenants", {
   updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertTenantSchema = createInsertSchema(tenants).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertTenantSchema = createInsertSchema(tenants).extend({
   name: z.string().min(1, "Tenant name is required"),
   slug: z.string().min(1),
   description: z.string().optional(),
@@ -206,7 +206,7 @@ export const industries = pgTable("industries", {
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertIndustrySchema = createInsertSchema(industries).omit({ id: true, createdAt: true }).extend({
+export const insertIndustrySchema = createInsertSchema(industries).extend({
   name: z.string().min(1, "Industry name is required"),
   slug: z.string().min(1),
   description: z.string().optional(),
@@ -232,7 +232,7 @@ export const industryDeployments = pgTable("industry_deployments", {
   updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertIndustryDeploymentSchema = createInsertSchema(industryDeployments).omit({ id: true, deployedAt: true, updatedAt: true }).extend({
+export const insertIndustryDeploymentSchema = createInsertSchema(industryDeployments).extend({
   tenantId: z.string().min(1),
   industryId: z.string().min(1),
   enabledModules: z.array(z.string()).optional(),
@@ -253,7 +253,7 @@ export const industryAppRecommendations = pgTable("industry_app_recommendations"
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertIndustryAppRecommendationSchema = createInsertSchema(industryAppRecommendations).omit({ id: true, createdAt: true }).extend({
+export const insertIndustryAppRecommendationSchema = createInsertSchema(industryAppRecommendations).extend({
   industryId: z.string().min(1),
   appId: z.string().min(1),
   ranking: z.number().optional(),
@@ -277,7 +277,7 @@ export const auditLogs = pgTable("audit_logs", {
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({ id: true, createdAt: true }).extend({
+export const insertAuditLogSchema = createInsertSchema(auditLogs).extend({
   userId: z.string().optional(),
   action: z.string().min(1),
   entityType: z.string().optional(),
@@ -309,7 +309,7 @@ export const userNotifications = pgTable("user_notifications", {
   readAt: timestamp("read_at"),
 });
 
-export const insertUserNotificationSchema = createInsertSchema(userNotifications).omit({ id: true, createdAt: true, readAt: true }).extend({
+export const insertUserNotificationSchema = createInsertSchema(userNotifications).extend({
   userId: z.string().min(1),
   type: z.enum(["app_update", "new_feature", "recommendation", "badge_earned", "system"]),
   title: z.string().min(1),
@@ -340,7 +340,7 @@ export const dashboardWidgets = pgTable("dashboard_widgets", {
   updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertDashboardWidgetSchema = createInsertSchema(dashboardWidgets).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertDashboardWidgetSchema = createInsertSchema(dashboardWidgets).extend({
   userId: z.string().min(1),
   widgetType: z.string().min(1),
   title: z.string().min(1),

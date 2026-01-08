@@ -68,7 +68,7 @@ export default function BackendIntegration() {
 }
 
 function EndpointCard({ name, url, icon }: { name: string; url: string; icon: string }) {
-  const { data, isLoading, isError } = useQuery({ queryKey: [url] });
+  const { data, isLoading, isError } = useQuery<any[]>({ queryKey: [url] });
 
   return (
     <Card className="hover:shadow-md transition-shadow">

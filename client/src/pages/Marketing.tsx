@@ -5,6 +5,14 @@ import { useState } from "react";
 import { BarChart3, Mail, Share2, TrendingUp, Users, Settings, Zap, PieChart, Target, Activity } from "lucide-react";
 import { Link } from "wouter";
 
+function CampaignEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Campaign Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function Marketing() {
   const [activeNav, setActiveNav] = useState("overview");
 

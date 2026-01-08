@@ -6,9 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
+function ExpenseEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Expense Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function ExpensesDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const expenses = [{id: 1, name: "Office Supplies", amount: 2500}, {id: 2, name: "Travel", amount: 5000}];
+  const expenses = [{ id: 1, name: "Office Supplies", amount: 2500 }, { id: 2, name: "Travel", amount: 5000 }];
 
   return (
     <div className="space-y-6">

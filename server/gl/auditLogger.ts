@@ -98,6 +98,7 @@ export class AuditLogger {
       entityId: formId,
       changes: {
         before: formData,
+        after: {},
       },
       description: `Form deleted: ${formId}`,
     });

@@ -28,11 +28,11 @@ export default function RFQs() {
     { id: "templates", label: "Templates", icon: FileText, color: "orange" as const },
   ];
 
-  const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = { 
-    draft: "default", 
-    sent: "secondary", 
-    quoted: "destructive", 
-    closed: "outline" 
+  const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+    draft: "default",
+    sent: "secondary",
+    quoted: "destructive",
+    closed: "outline"
   };
 
   return (
@@ -42,7 +42,7 @@ export default function RFQs() {
         <p className="text-muted-foreground">Manage RFQs, send quotes to vendors, and track responses</p>
       </div>
 
-      <IconNavigation items={navigationItems} activeId={activeNav} onNavigate={setActiveNav} />
+      <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "list" && (
         <div className="grid gap-4">

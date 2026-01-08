@@ -13,7 +13,7 @@ export const copilotConversations = pgTable("copilot_conversations", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertCopilotConversationSchema = createInsertSchema(copilotConversations).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertCopilotConversationSchema = createInsertSchema(copilotConversations).extend({
     userId: z.string().min(1),
     title: z.string().optional(),
     status: z.string().optional(),
@@ -30,7 +30,7 @@ export const copilotMessages = pgTable("copilot_messages", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCopilotMessageSchema = createInsertSchema(copilotMessages).omit({ id: true, createdAt: true }).extend({
+export const insertCopilotMessageSchema = createInsertSchema(copilotMessages).extend({
     conversationId: z.string().min(1),
     role: z.string().optional(),
     content: z.string().min(1),

@@ -17,7 +17,7 @@ export default function InventoryManagement() {
   const [activeNav, setActiveNav] = useState("stock-levels");
   const [newItem, setNewItem] = useState({ itemName: "", sku: "", quantity: "", category: "Raw Materials" });
 
-  const { data: inventory = [], isLoading } = useQuery({ queryKey: ["/api/inventory/items"], queryFn: () => fetch("/api/inventory/items").then(r => r.json()) });
+  const { data: inventory = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/items"], queryFn: () => fetch("/api/inventory/items").then(r => r.json()) });
 
   const createMutation = useMutation({
     mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),

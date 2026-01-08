@@ -3,6 +3,8 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { requestIdMiddleware, securityHeaders } from "./security";
+import { errorHandler } from "./middleware/error";
+import { auditMiddleware } from "./middleware/audit";
 
 const app = express();
 const httpServer = createServer(app);
@@ -73,17 +75,13 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Audit logging for mutations
+  app.use(auditMiddleware);
+
   await registerRoutes(httpServer, app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    if (!res.headersSent) {
-      res.status(status).json({ message });
-    }
-    console.error(err);
-  });
+  // Centralized Error Handling
+  app.use(errorHandler);
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
@@ -104,7 +102,6 @@ app.use((req, res, next) => {
     {
       port,
       host: "0.0.0.0",
-      reusePort: true,
     },
     () => {
       log(`serving on port ${port}`);

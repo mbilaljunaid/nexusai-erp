@@ -4,7 +4,49 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Heart, DollarSign, Users, BookOpen, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import type { BenefitsPlan, PayrollConfig, SuccessionPlan, LearningPath, CompensationPlan } from "@shared/schema";
+// Local type definitions since these are not yet in shared schema
+interface BenefitsPlan {
+  id: string;
+  name: string;
+  benefitType: string;
+  providerName: string;
+  costPerEmployee: number;
+  employeeContribution: number;
+}
+interface PayrollConfig {
+  id: string;
+  country: string;
+  federalTaxRate: number;
+  stateTaxRate: number;
+  socialSecurityRate: number;
+  medicareRate: number;
+  minimumWage: number;
+  payFrequency: string;
+}
+interface SuccessionPlan {
+  id: string;
+  positionId: string;
+  criticalityLevel: string;
+  readinessPercent: number;
+  successor1Id: string;
+  successor2Id: string;
+  successor3Id: string;
+  status: string;
+}
+interface LearningPath {
+  id: string;
+  name: string;
+  progressPercent: number;
+  courseIds: string[];
+}
+interface CompensationPlan {
+  id: string;
+  baseSalary: number;
+  bonusPercentage: number;
+  stockOptions: number;
+  performanceBonus: number;
+  status: string;
+}
 
 export default function HRAdvanced() {
   const { data: benefits = [] } = useQuery<BenefitsPlan[]>({ queryKey: ["/api/hr/benefits-plans"] });
@@ -148,7 +190,7 @@ export default function HRAdvanced() {
                       <div className="space-y-2">
                         <strong>{path.name}</strong>
                         <div className="w-full bg-secondary h-2 rounded-full">
-                          <div className="bg-primary h-2 rounded-full" style={{width: `${path.progressPercent}%`}}></div>
+                          <div className="bg-primary h-2 rounded-full" style={{ width: `${path.progressPercent}%` }}></div>
                         </div>
                         <div className="flex justify-between text-xs">
                           <div>Progress: {path.progressPercent}%</div>

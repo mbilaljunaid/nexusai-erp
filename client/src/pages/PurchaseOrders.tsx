@@ -39,7 +39,7 @@ export default function PurchaseOrders() {
         <p className="text-muted-foreground">Create, track, and manage purchase orders with vendors</p>
       </div>
 
-      <IconNavigation items={navigationItems} activeId={activeNav} onNavigate={setActiveNav} />
+      <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "list" && (
         <div className="grid gap-4">

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function GovernmentPage() {
-  const { data = [] } = useQuery({ queryKey: ['/api/government-default'] });
+  const { data = [] } = useQuery<any[]>({ queryKey: ['/api/government-default'] });
 
   return (
     <div className="space-y-6 p-6">

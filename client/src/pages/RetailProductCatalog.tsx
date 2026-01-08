@@ -8,7 +8,7 @@ import { Plus, Search, Edit2, Trash2 } from "lucide-react";
 
 export default function RetailProductCatalog() {
   const [search, setSearch] = useState("");
-  const { data: products = [] } = useQuery({ queryKey: ['/api/retail-products'] });
+  const { data: products = [] } = useQuery<any[]>({ queryKey: ['/api/retail-products'] });
   
   const filtered = products.filter((p: any) =>
     p.name?.toLowerCase().includes(search.toLowerCase()) ||

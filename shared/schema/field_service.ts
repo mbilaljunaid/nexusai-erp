@@ -20,7 +20,7 @@ export const fieldServiceJobs = pgTable("field_service_jobs", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertFieldServiceJobSchema = createInsertSchema(fieldServiceJobs).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertFieldServiceJobSchema = createInsertSchema(fieldServiceJobs).extend({
     jobNumber: z.string().min(1),
     customerId: z.string().optional().nullable(),
     technicianId: z.string().optional().nullable(),

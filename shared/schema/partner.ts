@@ -22,7 +22,7 @@ export const partners = pgTable("partners", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertPartnerSchema = createInsertSchema(partners).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertPartnerSchema = createInsertSchema(partners).extend({
     name: z.string().min(1, "Name is required"),
     company: z.string().min(1, "Company is required"),
     email: z.string().email("Invalid email address"),

@@ -17,7 +17,7 @@ export const mobileDevices = pgTable("mobile_devices", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertMobileDeviceSchema = createInsertSchema(mobileDevices).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertMobileDeviceSchema = createInsertSchema(mobileDevices).extend({
     userId: z.string().min(1),
     deviceId: z.string().min(1),
     deviceName: z.string().optional(),
@@ -42,7 +42,7 @@ export const offlineSyncs = pgTable("offline_syncs", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertOfflineSyncSchema = createInsertSchema(offlineSyncs).omit({ id: true, createdAt: true }).extend({
+export const insertOfflineSyncSchema = createInsertSchema(offlineSyncs).extend({
     deviceId: z.string().min(1),
     entityType: z.string().min(1),
     entityId: z.string().min(1),

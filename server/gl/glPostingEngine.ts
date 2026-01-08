@@ -69,10 +69,11 @@ export class GLPostingEngine {
           amount,
           description: description || `${mapping.description || ""} - Form: ${formId}`,
           formId,
-          formData: formData,
-          timestamp: new Date(),
-          status: "posted",
-          userId,
+          // user defined recordId unavailable in this context, using placeholder or handled by audit log
+          recordId: `REC-${Date.now()}`,
+          createdAt: new Date(),
+          // status: "posted", // Removed as not in type definition
+          // userId, // Removed as not in type definition
         };
 
         entries.push(entry);

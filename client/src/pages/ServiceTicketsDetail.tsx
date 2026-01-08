@@ -10,7 +10,7 @@ import { ServiceTicketForm } from "@/components/forms/ServiceTicketForm";
 
 export default function ServiceTicketsDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: tickets = [] } = useQuery({ queryKey: ["/api/service-tickets"], retry: false });
+  const { data: tickets = [] } = useQuery<any[]>({ queryKey: ["/api/service-tickets"], retry: false });
 
   return (
     <div className="space-y-6">

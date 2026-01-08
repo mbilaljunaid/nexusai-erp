@@ -11,9 +11,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { 
-  Shield, AlertTriangle, CheckCircle, XCircle, 
-  Clock, MessageSquare, Eye, Trash2, Ban, Sparkles, 
+import {
+  Shield, AlertTriangle, CheckCircle, XCircle,
+  Clock, MessageSquare, Eye, Trash2, Ban, Sparkles,
   Users, Activity, Loader2, AlertOctagon, Search
 } from "lucide-react";
 import type { CommunityVoteAnomaly, CommunityAIRecommendation } from "@shared/schema";
@@ -41,7 +41,7 @@ interface ModerationAction {
   createdAt: Date | null;
 }
 
-interface AIRecommendation extends CommunityAIRecommendation {
+interface AIRecommendation extends Omit<CommunityAIRecommendation, 'processingTime'> {
   processingTime?: number | null;
 }
 
@@ -398,7 +398,7 @@ export function ModerationQueue() {
                               </>
                             )}
                           </Button>
-                          <Button 
+                          <Button
                             onClick={() => {
                               setSelectedFlag(flag);
                               if (existingRec) setAiRecommendation(existingRec);
@@ -489,7 +489,7 @@ export function ModerationQueue() {
                           <p>Detected {formatDate(anomaly.createdAt)}</p>
                         </div>
                       </div>
-                      <Button 
+                      <Button
                         onClick={() => setSelectedAnomaly(anomaly)}
                         data-testid={`button-review-anomaly-${anomaly.id}`}
                       >
@@ -539,7 +539,7 @@ export function ModerationQueue() {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={!!selectedFlag} onOpenChange={(open) => { 
+      <Dialog open={!!selectedFlag} onOpenChange={(open) => {
         if (!open) { setSelectedFlag(null); setAiRecommendation(null); }
       }}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
@@ -653,7 +653,7 @@ export function ModerationQueue() {
             <Button variant="outline" onClick={() => { setSelectedFlag(null); setAiRecommendation(null); }} data-testid="button-cancel-moderation">
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleTakeAction}
               disabled={!action || takeActionMutation.isPending}
               data-testid="button-confirm-action"
@@ -707,7 +707,7 @@ export function ModerationQueue() {
                   {selectedAnomaly.targetId && (
                     <p><strong>Target:</strong> {selectedAnomaly.targetType} - {selectedAnomaly.targetId}</p>
                   )}
-                  {selectedAnomaly.evidence && (
+                  {!!selectedAnomaly.evidence && (
                     <div>
                       <p className="font-medium">Evidence:</p>
                       <pre className="text-xs bg-muted p-2 rounded mt-1 overflow-x-auto">
@@ -752,7 +752,7 @@ export function ModerationQueue() {
             >
               Dismiss
             </Button>
-            <Button 
+            <Button
               onClick={() => selectedAnomaly && anomalyAction && anomalyActionMutation.mutate({
                 anomalyId: selectedAnomaly.id,
                 action: anomalyAction,

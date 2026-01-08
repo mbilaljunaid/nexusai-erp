@@ -252,5 +252,5 @@ export function isValidGLAccount(account: string): boolean {
  * Get GL account details
  */
 export function getGLAccountDetails(account: string): any {
-  return GL_CHART_OF_ACCOUNTS[account] || null;
+  return GL_CHART_OF_ACCOUNTS[account as keyof typeof GL_CHART_OF_ACCOUNTS] || null;
 }

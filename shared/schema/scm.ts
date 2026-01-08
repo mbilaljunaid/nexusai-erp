@@ -14,7 +14,7 @@ export const suppliers = pgTable("suppliers", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertSupplierSchema = createInsertSchema(suppliers).omit({ id: true, createdAt: true }).extend({
+export const insertSupplierSchema = createInsertSchema(suppliers).extend({
     name: z.string().min(1),
     email: z.string().email().optional(),
     phone: z.string().optional(),
@@ -35,7 +35,7 @@ export const purchaseOrders = pgTable("purchase_orders", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertPurchaseOrderSchema = createInsertSchema(purchaseOrders).omit({ id: true, createdAt: true }).extend({
+export const insertPurchaseOrderSchema = createInsertSchema(purchaseOrders).extend({
     orderNumber: z.string().min(1),
     supplierId: z.string().optional(),
     totalAmount: z.string().optional(),
@@ -56,7 +56,7 @@ export const inventory = pgTable("inventory", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertInventorySchema = createInsertSchema(inventory).omit({ id: true, createdAt: true }).extend({
+export const insertInventorySchema = createInsertSchema(inventory).extend({
     itemName: z.string().min(1),
     sku: z.string().optional(),
     quantity: z.number().optional(),

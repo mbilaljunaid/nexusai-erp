@@ -7,9 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
+function GLEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">GL Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function GeneralLedgerDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: glEntries = [] } = useQuery({ queryKey: ["/api/ledger"], retry: false });
+  const { data: glEntries = [] } = useQuery<any[]>({ queryKey: ["/api/ledger"], retry: false });
 
   return (
     <div className="space-y-6">

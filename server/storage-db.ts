@@ -16,12 +16,24 @@ import {
   users as usersTable,
   projects as projectsTable,
   tenants as tenantsTable,
+  accounts as accountsTable,
+  contacts as contactsTable,
+  opportunities as opportunitiesTable,
+  interactions as interactionsTable,
 } from "@shared/schema";
 import type {
   Invoice,
   InsertInvoice,
   Lead,
   InsertLead,
+  Account,
+  InsertAccount,
+  Contact,
+  InsertContact,
+  Opportunity,
+  InsertOpportunity,
+  Interaction,
+  InsertInteraction,
   WorkOrder,
   InsertWorkOrder,
   Employee,
@@ -96,6 +108,93 @@ export const dbStorage = {
     const result = await db
       .insert(leadsTable)
       .values(lead)
+      .returning();
+    return result[0];
+  },
+
+  // ========== ACCOUNTS (CRM) ==========
+  async getAccount(id: string): Promise<Account | undefined> {
+    const result = await db
+      .select()
+      .from(accountsTable)
+      .where(eq(accountsTable.id, id))
+      .limit(1);
+    return result[0];
+  },
+
+  async listAccounts(): Promise<Account[]> {
+    return await db.select().from(accountsTable);
+  },
+
+  async createAccount(account: InsertAccount): Promise<Account> {
+    const result = await db
+      .insert(accountsTable)
+      .values(account)
+      .returning();
+    return result[0];
+  },
+
+  // ========== CONTACTS (CRM) ==========
+  async listContacts(accountId?: string): Promise<Contact[]> {
+    if (accountId) {
+      return await db
+        .select()
+        .from(contactsTable)
+        .where(eq(contactsTable.accountId, accountId));
+    }
+    return await db.select().from(contactsTable);
+  },
+
+  async createContact(contact: InsertContact): Promise<Contact> {
+    const result = await db
+      .insert(contactsTable)
+      .values(contact)
+      .returning();
+    return result[0];
+  },
+
+  // ========== OPPORTUNITIES (CRM) ==========
+  async listOpportunities(): Promise<Opportunity[]> {
+    return await db.select().from(opportunitiesTable);
+  },
+
+  async createOpportunity(opportunity: InsertOpportunity): Promise<Opportunity> {
+    const result = await db
+      .insert(opportunitiesTable)
+      .values({
+        ...opportunity,
+        amount: String(opportunity.amount)
+      })
+      .returning();
+    return result[0];
+  },
+
+  async updateOpportunity(id: string, updates: Partial<InsertOpportunity>): Promise<Opportunity | undefined> {
+    const updateData: any = { ...updates };
+    if (updateData.amount !== undefined) {
+      updateData.amount = String(updateData.amount);
+    }
+
+    const result = await db
+      .update(opportunitiesTable)
+      .set(updateData)
+      .where(eq(opportunitiesTable.id, id))
+      .returning();
+    return result[0];
+  },
+
+  // ========== INTERACTIONS (CRM) ==========
+  async listInteractions(entityType: string, entityId: string): Promise<Interaction[]> {
+    return await db
+      .select()
+      .from(interactionsTable)
+      .where(and(eq(interactionsTable.entityType, entityType), eq(interactionsTable.entityId, entityId)));
+  },
+
+  async createInteraction(interaction: InsertInteraction): Promise<Interaction> {
+    const result = await db
+      .insert(interactionsTable)
+      .values(interaction)
       .returning();
     return result[0];
   },

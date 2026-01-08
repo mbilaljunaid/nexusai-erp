@@ -6,9 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
+function TaskEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Task Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function TasksDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const tasks = [{id: 1, title: "Design homepage", status: "done", priority: "high"}, {id: 2, title: "Implement auth", status: "in_progress", priority: "urgent"}];
+  const tasks = [{ id: 1, title: "Design homepage", status: "done", priority: "high" }, { id: 2, title: "Implement auth", status: "in_progress", priority: "urgent" }];
 
   return (
     <div className="space-y-6">

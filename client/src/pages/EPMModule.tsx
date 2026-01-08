@@ -7,6 +7,14 @@ import { ScenarioBuilderForm } from "@/components/forms/ScenarioBuilderForm";
 import { IconNavigation } from "@/components/IconNavigation";
 import { TrendingUp, DollarSign, Target, AlertCircle, BarChart3 } from "lucide-react";
 
+function BudgetEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Budget Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function EPMModule() {
   const [activeNav, setActiveNav] = useState("overview");
 

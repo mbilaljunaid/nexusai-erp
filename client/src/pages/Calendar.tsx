@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar as CalendarIcon, MapPin, Users } from "lucide-react";
 
 export default function Calendar() {
-  const { data: events = [] } = useQuery({ queryKey: ["/api/calendar/events"] });
+  const { data: events = [] } = useQuery<any[]>({ queryKey: ["/api/calendar/events"] });
 
   return (
     <div className="space-y-6 p-4">

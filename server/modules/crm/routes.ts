@@ -8,24 +8,31 @@ export function registerCrmRoutes(app: Express) {
     app.get("/api/crm/metrics", async (req, res) => {
         try {
             const leads = await dbStorage.listLeads();
+            const opportunities = await dbStorage.listOpportunities();
 
-            // Calculate real metrics from opportunities data
-            const pipelineValue = "$4.2M";
-            const winRate = "35%";
+            const pipelineValue = opportunities.reduce((acc, opp) => acc + Number(opp.amount), 0);
+            const wonOpportunities = opportunities.filter(opp => opp.stage === "closed-won");
+            const winRate = opportunities.length > 0
+                ? Math.round((wonOpportunities.length / opportunities.length) * 100)
+                : 0;
+
+            // Mock sales cycle for now
             const avgSalesCycle = "18 days";
 
             res.json({
                 totalLeads: leads.length,
-                pipelineValue,
-                winRate,
+                pipelineValue: `$${(pipelineValue / 1000000).toFixed(1)}M`, // Format as millions
+                winRate: `${winRate}%`,
                 avgSalesCycle,
             });
         } catch (error) {
+            console.error("Failed to fetch CRM metrics:", error);
+            // Return fallback data on error
             res.json({
                 totalLeads: 0,
-                pipelineValue: "$4.2M",
-                winRate: "35%",
-                avgSalesCycle: "18 days",
+                pipelineValue: "$0M",
+                winRate: "0%",
+                avgSalesCycle: "0 days",
             });
         }
     });
@@ -33,22 +40,49 @@ export function registerCrmRoutes(app: Express) {
     // CRM opportunities
     app.get("/api/crm/opportunities", async (req, res) => {
         try {
-            // Fetch from generic form data store (assuming db.query.formData exists)
-            // Note: We need to ensure db schema is correctly imported in db.ts for this to work
-            // If db.query.formData is not available, we might need to use generic select
-
-            // Use fallback mock if DB query fails or table not ready
-            res.json([
-                { id: "1", name: "Enterprise License", account: "Tech Corp", amount: 500000, stage: "Won" },
-                { id: "2", name: "Implementation Services", account: "Finance Inc", amount: 150000, stage: "Proposal" },
-                { id: "3", name: "Support Contract", account: "Tech Corp", amount: 50000, stage: "Negotiation" },
-            ]);
+            const opportunities = await dbStorage.listOpportunities();
+            res.json(opportunities);
         } catch (error) {
-            res.json([
-                { id: "1", name: "Enterprise License", account: "Tech Corp", amount: 500000, stage: "Won" },
-                { id: "2", name: "Implementation Services", account: "Finance Inc", amount: 150000, stage: "Proposal" },
-                { id: "3", name: "Support Contract", account: "Tech Corp", amount: 50000, stage: "Negotiation" },
-            ]);
+            res.status(500).json({ error: "Failed to list opportunities" });
+        }
+    });
+
+    app.post("/api/crm/opportunities", async (req, res) => {
+        try {
+            const { insertOpportunitySchema } = await import("../../../shared/schema");
+            const parseResult = insertOpportunitySchema.safeParse(req.body);
+            if (!parseResult.success) {
+                return res.status(400).json({ error: parseResult.error });
+            }
+            const opportunity = await dbStorage.createOpportunity(parseResult.data);
+            res.status(201).json(opportunity);
+        } catch (error) {
+            console.error("Create opportunity error:", error);
+            res.status(500).json({ error: "Failed to create opportunity" });
+        }
+    });
+
+    // CRM Leads
+    app.get("/api/leads", async (req, res) => {
+        try {
+            const leads = await dbStorage.listLeads();
+            res.json(leads);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list leads" });
+        }
+    });
+
+    app.post("/api/leads", async (req, res) => {
+        try {
+            const { insertLeadSchema } = await import("../../../shared/schema");
+            const parseResult = insertLeadSchema.safeParse(req.body);
+            if (!parseResult.success) {
+                return res.status(400).json({ error: parseResult.error });
+            }
+            const lead = await dbStorage.createLead(parseResult.data);
+            res.status(201).json(lead);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create lead" });
         }
     });
 }

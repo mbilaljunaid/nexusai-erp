@@ -29,7 +29,7 @@ export class GLReconciler {
   generateReconciliationReport(entries: GLEntry[], startDate: Date, endDate: Date): GLReconciliationReport {
     // Filter entries by date range
     const filteredEntries = entries.filter(
-      (e) => e.timestamp >= startDate && e.timestamp <= endDate
+      (e) => e.createdAt >= startDate && e.createdAt <= endDate
     );
 
     // Group by account

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Search } from "lucide-react";
 
 export default function ServiceTicket() {
-  const { data: tickets = [] } = useQuery({ queryKey: ["/api/service-tickets"] });
+  const { data: tickets = [] } = useQuery<any[]>({ queryKey: ["/api/service-tickets"] });
 
   return (
     <div className="space-y-6">

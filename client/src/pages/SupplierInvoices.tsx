@@ -33,7 +33,7 @@ export default function SupplierInvoices() {
         <p className="text-muted-foreground">Manage vendor invoices, match with POs/GRNs, and process payments</p>
       </div>
 
-      <IconNavigation items={navigationItems} activeId={activeNav} onNavigate={setActiveNav} />
+      <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "list" && (
         <div className="grid gap-4">

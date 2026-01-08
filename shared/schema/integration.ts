@@ -14,7 +14,7 @@ export const connectors = pgTable("connectors", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertConnectorSchema = createInsertSchema(connectors).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertConnectorSchema = createInsertSchema(connectors).extend({
     name: z.string().min(1),
     type: z.string().min(1),
     config: z.record(z.any()).optional(),
@@ -36,7 +36,7 @@ export const connectorInstances = pgTable("connector_instances", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertConnectorInstanceSchema = createInsertSchema(connectorInstances).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertConnectorInstanceSchema = createInsertSchema(connectorInstances).extend({
     connectorId: z.string().min(1),
     tenantId: z.string().min(1),
     config: z.record(z.any()).optional(),
@@ -58,7 +58,7 @@ export const webhookEvents = pgTable("webhook_events", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertWebhookEventSchema = createInsertSchema(webhookEvents).omit({ id: true, createdAt: true }).extend({
+export const insertWebhookEventSchema = createInsertSchema(webhookEvents).extend({
     connectorInstanceId: z.string().min(1),
     eventType: z.string().min(1),
     payload: z.record(z.any()).optional(),
@@ -81,7 +81,7 @@ export const dataLakes = pgTable("data_lakes", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertDataLakeSchema = createInsertSchema(dataLakes).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertDataLakeSchema = createInsertSchema(dataLakes).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     storageType: z.string().optional(),
@@ -106,7 +106,7 @@ export const etlPipelines = pgTable("etl_pipelines", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertEtlPipelineSchema = createInsertSchema(etlPipelines).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertEtlPipelineSchema = createInsertSchema(etlPipelines).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     sourceConfig: z.record(z.any()).optional(),

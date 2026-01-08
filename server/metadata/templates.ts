@@ -187,12 +187,12 @@ export function createStandardTransactionMetadata(
     // GL Configuration if required
     ...(options?.requiresGL &&
       glMappings && {
-        glConfig: {
-          autoCreateGL: true,
-          requireBalance: true,
-          glMappings,
-        },
-      }),
+      glConfig: {
+        autoCreateGL: true,
+        requireBalance: true,
+        glMappings,
+      },
+    }),
 
     // Workflow if required
     ...(options?.hasWorkflow && {
@@ -235,8 +235,8 @@ export function createStandardTransactionMetadata(
     },
 
     onSubmitActions: [
-      ...(options?.requiresGL ? [{ type: "createGL", config: { useGLConfig: true } }] : []),
-      { type: "sendNotification", config: { recipient: "owner", template: "record_created" } },
+      ...(options?.requiresGL ? [{ type: "createGL" as const, config: { useGLConfig: true } }] : []),
+      { type: "sendNotification" as const, config: { recipient: "owner", template: "record_created" } },
     ],
 
     breadcrumbs: [
@@ -425,6 +425,7 @@ export function createEmployeeMetadata(): FormMetadataAdvanced {
         label: "Status",
         type: "select",
         required: false,
+        searchable: true,
         options: [
           { label: "Active", value: "active" },
           { label: "On Leave", value: "on_leave" },
@@ -517,6 +518,7 @@ export function createPurchaseOrderMetadata(): FormMetadataAdvanced {
         label: "Status",
         type: "select",
         required: false,
+        searchable: true,
         options: [
           { label: "Draft", value: "draft" },
           { label: "Submitted", value: "submitted" },
@@ -605,6 +607,7 @@ export function createPayrollMetadata(): FormMetadataAdvanced {
         label: "Status",
         type: "select",
         required: false,
+        searchable: true,
         options: [
           { label: "Draft", value: "draft" },
           { label: "Approved", value: "approved" },

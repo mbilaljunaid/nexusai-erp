@@ -23,7 +23,7 @@ export const invoices = pgTable("invoices", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertInvoiceSchema = createInsertSchema(invoices).omit({ id: true, createdAt: true }).extend({
+export const insertInvoiceSchema = createInsertSchema(invoices).extend({
     invoiceNumber: z.string().min(1),
     customerId: z.string().optional().nullable(),
     amount: z.string().min(1),
@@ -43,7 +43,7 @@ export const expenses = pgTable("expenses", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertExpenseSchema = createInsertSchema(expenses).omit({ id: true, createdAt: true }).extend({
+export const insertExpenseSchema = createInsertSchema(expenses).extend({
     description: z.string().min(1),
     amount: z.string().min(1),
     category: z.string().optional(),

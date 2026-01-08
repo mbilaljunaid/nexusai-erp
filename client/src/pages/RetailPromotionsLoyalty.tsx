@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function Page() {
-  const { data = [] } = useQuery({ queryKey: [`/api/retail-${window.location.pathname}`] });
+  const { data = [] } = useQuery<any[]>({ queryKey: [`/api/retail-${window.location.pathname}`] });
 
   return (
     <div className="space-y-6 p-6">

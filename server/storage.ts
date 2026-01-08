@@ -359,8 +359,8 @@ export class MemStorage implements IStorage {
 
 
   async getUser(id: string) { return this.users.get(id); }
-  async getUserByEmail(email: string) { 
-    return Array.from(this.users.values()).find(u => u.email === email); 
+  async getUserByEmail(email: string) {
+    return Array.from(this.users.values()).find(u => u.email === email);
   }
   async listUsers() { return Array.from(this.users.values()); }
   async createUser(u: InsertUser) { const id = randomUUID(); const user: User = { id, ...u as any, createdAt: new Date() }; this.users.set(id, user); return user; }
@@ -371,16 +371,16 @@ export class MemStorage implements IStorage {
       this.users.set(userData.id, updated);
       return updated;
     }
-    const user: User = { 
-      id: userData.id, 
-      email: userData.email ?? null, 
-      password: null, 
+    const user: User = {
+      id: userData.id,
+      email: userData.email ?? null,
+      password: null,
       name: userData.firstName && userData.lastName ? `${userData.firstName} ${userData.lastName}` : null,
       firstName: userData.firstName ?? null,
       lastName: userData.lastName ?? null,
       profileImageUrl: userData.profileImageUrl ?? null,
-      role: "user", 
-      permissions: null, 
+      role: "user",
+      permissions: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -398,7 +398,24 @@ export class MemStorage implements IStorage {
 
   async getLead(id: string) { return this.leads.get(id); }
   async listLeads() { return Array.from(this.leads.values()); }
-  async createLead(l: InsertLead) { const id = randomUUID(); const lead: Lead = { id, name: l.name, email: l.email ?? null, company: l.company ?? null, score: l.score ? parseFloat(l.score) : 0, status: l.status ?? "new", createdAt: new Date() }; this.leads.set(id, lead); return lead; }
+  async createLead(l: InsertLead) {
+    const id = randomUUID();
+    const lead: Lead = {
+      id,
+      name: l.name,
+      email: l.email ?? null,
+      phone: null,
+      company: l.company ?? null,
+      title: null,
+      score: l.score ?? "0",
+      status: l.status ?? "new",
+      source: null,
+      createdAt: new Date(),
+      ownerId: null
+    };
+    this.leads.set(id, lead);
+    return lead;
+  }
 
   async getWorkOrder(id: string) { return this.workOrders.get(id); }
   async listWorkOrders() { return Array.from(this.workOrders.values()); }
@@ -406,27 +423,27 @@ export class MemStorage implements IStorage {
 
   async getEmployee(id: string) { return this.employees.get(id); }
   async listEmployees(department?: string) { const list = Array.from(this.employees.values()); return department ? list.filter(e => e.department === department) : list; }
-  async createEmployee(e: InsertEmployee) { const id = randomUUID(); const emp: Employee = { id, name: e.name, email: e.email ?? null, department: e.department ?? null, role: e.role ?? null, salary: e.salary ? parseFloat(e.salary) : null, createdAt: new Date() }; this.employees.set(id, emp); return emp; }
+  async createEmployee(e: InsertEmployee) { const id = randomUUID(); const emp: Employee = { id, firstName: e.firstName, lastName: e.lastName, email: e.email ?? null, department: e.department ?? null, hireDate: e.hireDate ?? null, status: e.status ?? "active", createdAt: new Date() }; this.employees.set(id, emp); return emp; }
 
   async getMobileDevice(id: string) { return this.mobileDevices.get(id); }
   async listMobileDevices(userId?: string) { const list = Array.from(this.mobileDevices.values()); return userId ? list.filter(d => d.userId === userId) : list; }
-  async createMobileDevice(d: InsertMobileDevice) { const id = randomUUID(); const dev: MobileDevice = { id, userId: d.userId, deviceId: d.deviceId, platform: d.platform ?? null, lastSync: d.lastSync ?? null, createdAt: new Date() }; this.mobileDevices.set(id, dev); return dev; }
+  async createMobileDevice(d: InsertMobileDevice) { const id = randomUUID(); const dev: MobileDevice = { id, userId: d.userId, deviceId: d.deviceId, deviceName: d.deviceName ?? null, platform: d.platform ?? null, pushToken: d.pushToken ?? null, lastSyncAt: d.lastSyncAt ?? null, createdAt: new Date(), updatedAt: new Date(), isActive: d.isActive ?? true }; this.mobileDevices.set(id, dev); return dev; }
   async registerMobileDevice(d: InsertMobileDevice) { return this.createMobileDevice(d); }
   async updateMobileDeviceSync(deviceId: string) { return this.mobileDevices.get(deviceId); }
 
   async getOfflineSync(id: string) { return this.offlineSyncQueue.get(id); }
   async listOfflineSync(deviceId?: string) { const list = Array.from(this.offlineSyncQueue.values()); return deviceId ? list.filter(s => s.deviceId === deviceId) : list; }
-  async createOfflineSync(s: InsertOfflineSync) { const id = randomUUID(); const sync: OfflineSync = { id, ...s, createdAt: new Date() }; this.offlineSyncQueue.set(id, sync); return sync; }
+  async createOfflineSync(s: InsertOfflineSync) { const id = randomUUID(); const sync: OfflineSync = { id, deviceId: s.deviceId, entityType: s.entityType, entityId: s.entityId, action: s.action, data: s.data ?? null, syncStatus: s.syncStatus ?? "pending", syncedAt: s.syncedAt ?? null, createdAt: new Date() }; this.offlineSyncQueue.set(id, sync); return sync; }
   async getOfflineSyncQueue(deviceId: string) { return this.listOfflineSync(deviceId); }
   async addToOfflineQueue(s: InsertOfflineSync) { return this.createOfflineSync(s); }
 
   async getCopilotConversation(id: string) { return this.copilotConversations.get(id); }
   async listCopilotConversations(userId?: string) { const list = Array.from(this.copilotConversations.values()); return userId ? list.filter(c => c.userId === userId) : list; }
-  async createCopilotConversation(c: InsertCopilotConversation) { const id = randomUUID(); const conv: CopilotConversation = { id, ...c, createdAt: new Date() }; this.copilotConversations.set(id, conv); return conv; }
+  async createCopilotConversation(c: InsertCopilotConversation) { const id = randomUUID(); const conv: CopilotConversation = { id, userId: c.userId, title: c.title ?? null, status: c.status ?? "active", createdAt: new Date(), updatedAt: new Date() }; this.copilotConversations.set(id, conv); return conv; }
 
   async getCopilotMessage(id: string) { return this.copilotMessages.get(id); }
   async listCopilotMessages(conversationId?: string) { const list = Array.from(this.copilotMessages.values()); return conversationId ? list.filter(m => m.conversationId === conversationId) : list; }
-  async createCopilotMessage(m: InsertCopilotMessage) { const id = randomUUID(); const msg: CopilotMessage = { id, conversationId: m.conversationId, role: m.role, content: m.content ?? null, createdAt: new Date() }; this.copilotMessages.set(id, msg); return msg; }
+  async createCopilotMessage(m: InsertCopilotMessage) { const id = randomUUID(); const msg: CopilotMessage = { id, conversationId: m.conversationId, role: m.role ?? null, content: m.content, createdAt: new Date() }; this.copilotMessages.set(id, msg); return msg; }
 
   async getRevenueForecast(id: string) { return this.revenueForecasts.get(id); }
   async listRevenueForecasts() { return Array.from(this.revenueForecasts.values()); }
@@ -442,11 +459,11 @@ export class MemStorage implements IStorage {
 
   async getForecastModel(id: string) { return this.forecastModels.get(id); }
   async listForecastModels() { return Array.from(this.forecastModels.values()); }
-  async createForecastModel(m: InsertForecastModel) { const id = randomUUID(); const model: ForecastModel = { id, ...m, createdAt: new Date() }; this.forecastModels.set(id, model); return model; }
+  async createForecastModel(m: InsertForecastModel) { const id = randomUUID(); const model: ForecastModel = { id, name: m.name, type: m.type, isActive: m.isActive ?? true, parameters: m.parameters ?? null, accuracy: m.accuracy ?? null, createdAt: new Date(), updatedAt: new Date() }; this.forecastModels.set(id, model); return model; }
 
   async getScenario(id: string) { return this.scenarios.get(id); }
   async listScenarios() { return Array.from(this.scenarios.values()); }
-  async createScenario(s: InsertScenario) { const id = randomUUID(); const scenario: Scenario = { id, ...s, createdAt: new Date() }; this.scenarios.set(id, scenario); return scenario; }
+  async createScenario(s: InsertScenario) { const id = randomUUID(); const scenario: Scenario = { id, name: s.name, description: s.description ?? null, status: s.status ?? "active", type: s.type ?? null, baselineId: s.baselineId ?? null, createdAt: new Date(), updatedAt: new Date() }; this.scenarios.set(id, scenario); return scenario; }
 
   async getScenarioVariable(id: string) { return this.scenarioVariables.get(id); }
   async listScenarioVariables(scenarioId?: string) { const list = Array.from(this.scenarioVariables.values()); return scenarioId ? list.filter(v => v.scenarioId === scenarioId) : list; }
@@ -456,101 +473,102 @@ export class MemStorage implements IStorage {
 
   async getDashboardWidget(id: string) { return this.dashboardWidgets.get(id); }
   async listDashboardWidgets(dashboardId?: string) { const list = Array.from(this.dashboardWidgets.values()); return dashboardId ? list.filter(w => (w as any).dashboardId === dashboardId) : list; }
-  async createDashboardWidget(w: InsertDashboardWidget) { const id = randomUUID(); const widget: DashboardWidget = { id, ...w, createdAt: new Date() }; this.dashboardWidgets.set(id, widget); return widget; }
+  async createDashboardWidget(w: InsertDashboardWidget) { const id = randomUUID(); const widget: DashboardWidget = { id, userId: w.userId, widgetType: w.widgetType, title: w.title, config: w.config ?? null, position: w.position ?? 0, size: w.size ?? "medium", isVisible: w.isVisible ?? true, createdAt: new Date(), updatedAt: new Date() }; this.dashboardWidgets.set(id, widget); return widget; }
 
   async getReport(id: string) { return this.reports.get(id); }
   async listReports() { return Array.from(this.reports.values()); }
-  async createReport(r: InsertReport) { const id = randomUUID(); const report: Report = { id, ...r, createdAt: new Date() }; this.reports.set(id, report); return report; }
+  async createReport(r: InsertReport) { const id = randomUUID(); const report: Report = { id, name: r.name, type: r.type ?? null, category: r.category ?? null, config: r.config ?? null, module: r.module ?? null, isFavorite: r.isFavorite ?? false, lastRunAt: r.lastRunAt ?? null, createdAt: new Date() }; this.reports.set(id, report); return report; }
 
   async getAuditLog(id: string) { return this.auditLogs.get(id); }
   async listAuditLogs() { return Array.from(this.auditLogs.values()); }
-  async createAuditLog(l: InsertAuditLog) { const id = randomUUID(); const log: AuditLog = { id, ...l, createdAt: new Date() }; this.auditLogs.set(id, log); return log; }
+  async createAuditLog(l: InsertAuditLog) { const id = randomUUID(); const log: AuditLog = { id, userId: l.userId ?? null, action: l.action, entityType: l.entityType ?? null, entityId: l.entityId ?? null, oldValue: l.oldValue ?? null, newValue: l.newValue ?? null, ipAddress: l.ipAddress ?? null, userAgent: l.userAgent ?? null, createdAt: new Date() }; this.auditLogs.set(id, log); return log; }
 
   async getApp(id: string) { return this.apps.get(id); }
   async listApps() { return Array.from(this.apps.values()); }
-  async createApp(a: InsertApp) { const id = randomUUID(); const app: App = { id, ...a, createdAt: new Date() }; this.apps.set(id, app); return app; }
+  async createApp(a: InsertApp) { const id = randomUUID(); const app: App = { id, name: a.name, description: a.description ?? null, status: a.status ?? "active", version: a.version ?? "1.0.0", createdAt: new Date(), updatedAt: new Date() }; this.apps.set(id, app); return app; }
 
   async getAppReview(id: string) { return this.appReviews.get(id); }
   async listAppReviews(appId?: string) { const list = Array.from(this.appReviews.values()); return appId ? list.filter(r => r.appId === appId) : list; }
-  async createAppReview(r: InsertAppReview) { const id = randomUUID(); const review: AppReview = { id, ...r, createdAt: new Date() }; this.appReviews.set(id, review); return review; }
+  async createAppReview(r: InsertAppReview) { const id = randomUUID(); const review: AppReview = { id, appId: r.appId, userId: r.userId, rating: r.rating, title: r.title ?? null, content: r.content ?? null, createdAt: new Date() }; this.appReviews.set(id, review); return review; }
 
   async getAppInstallation(id: string) { return this.appInstallations.get(id); }
-  async listAppInstallations(userId?: string) { const list = Array.from(this.appInstallations.values()); return userId ? list.filter(i => i.userId === userId) : list; }
-  async createAppInstallation(i: InsertAppInstallation) { const id = randomUUID(); const inst: AppInstallation = { id, ...i, createdAt: new Date() }; this.appInstallations.set(id, inst); return inst; }
+  async listAppInstallations(userId?: string) { const list = Array.from(this.appInstallations.values()); return userId ? list.filter(i => i.installedBy === userId) : list; }
+  async createAppInstallation(i: InsertAppInstallation) { const id = randomUUID(); const inst: AppInstallation = { id, tenantId: i.tenantId, appId: i.appId, status: i.status ?? "active", installedBy: i.installedBy, installedAt: new Date() }; this.appInstallations.set(id, inst); return inst; }
 
   async getConnector(id: string) { return this.connectors.get(id); }
   async listConnectors() { return Array.from(this.connectors.values()); }
-  async createConnector(c: InsertConnector) { const id = randomUUID(); const connector: Connector = { id, ...c, createdAt: new Date() }; this.connectors.set(id, connector); return connector; }
+  async createConnector(c: InsertConnector) { const id = randomUUID(); const connector: Connector = { id, name: c.name, type: c.type, status: c.status ?? "active", config: c.config ?? null, createdAt: new Date(), updatedAt: new Date() }; this.connectors.set(id, connector); return connector; }
 
   async getConnectorInstance(id: string) { return this.connectorInstances.get(id); }
-  async listConnectorInstances(userId?: string) { const list = Array.from(this.connectorInstances.values()); return userId ? list.filter(ci => ci.userId === userId) : list; }
-  async createConnectorInstance(i: InsertConnectorInstance) { const id = randomUUID(); const instance: ConnectorInstance = { id, ...i, createdAt: new Date() }; this.connectorInstances.set(id, instance); return instance; }
+  async listConnectorInstances(userId?: string) { return Array.from(this.connectorInstances.values()); }
+  async createConnectorInstance(i: InsertConnectorInstance) { const id = randomUUID(); const instance: ConnectorInstance = { id, connectorId: i.connectorId, tenantId: i.tenantId, status: i.status ?? "active", config: i.config ?? null, credentials: i.credentials ?? null, lastSyncAt: i.lastSyncAt ?? null, createdAt: new Date(), updatedAt: new Date() }; this.connectorInstances.set(id, instance); return instance; }
 
   async getWebhookEvent(id: string) { return this.webhookEvents.get(id); }
   async listWebhookEvents() { return Array.from(this.webhookEvents.values()); }
-  async createWebhookEvent(e: InsertWebhookEvent) { const id = randomUUID(); const event: WebhookEvent = { id, ...e, createdAt: new Date() }; this.webhookEvents.set(id, event); return event; }
+  async createWebhookEvent(e: InsertWebhookEvent) { const id = randomUUID(); const event: WebhookEvent = { id, connectorInstanceId: e.connectorInstanceId, eventType: e.eventType, payload: e.payload ?? null, status: e.status ?? "pending", processedAt: e.processedAt ?? null, createdAt: new Date() }; this.webhookEvents.set(id, event); return event; }
 
   async getAbacRule(id: string) { return this.abacRules.get(id); }
   async listAbacRules() { return Array.from(this.abacRules.values()); }
-  async createAbacRule(r: InsertAbacRule) { const id = randomUUID(); const rule: AbacRule = { id, ...r, createdAt: new Date() }; this.abacRules.set(id, rule); return rule; }
+  async createAbacRule(r: InsertAbacRule) { const id = randomUUID(); const rule: AbacRule = { id, name: r.name, action: r.action, resource: r.resource, conditions: r.conditions ?? null, effect: r.effect ?? "allow", priority: r.priority ?? 0, isActive: r.isActive ?? true, createdAt: new Date(), updatedAt: new Date() }; this.abacRules.set(id, rule); return rule; }
 
   async getEncryptedField(id: string) { return this.encryptedFields.get(id); }
   async listEncryptedFields() { return Array.from(this.encryptedFields.values()); }
-  async createEncryptedField(f: InsertEncryptedField) { const id = randomUUID(); const field: EncryptedField = { id, ...f, createdAt: new Date() }; this.encryptedFields.set(id, field); return field; }
+  async createEncryptedField(f: InsertEncryptedField) { const id = randomUUID(); const field: EncryptedField = { id, entityType: f.entityType, entityId: f.entityId, fieldName: f.fieldName, encryptedValue: f.encryptedValue ?? null, keyVersion: f.keyVersion ?? null, createdAt: new Date(), updatedAt: new Date() }; this.encryptedFields.set(id, field); return field; }
 
   async getComplianceConfig(id: string) { return this.complianceConfigs.get(id); }
   async listComplianceConfigs() { return Array.from(this.complianceConfigs.values()); }
-  async createComplianceConfig(c: InsertComplianceConfig) { const id = randomUUID(); const cfg: ComplianceConfig = { id, ...c, createdAt: new Date() }; this.complianceConfigs.set(id, cfg); return cfg; }
+  async createComplianceConfig(c: InsertComplianceConfig) { const id = randomUUID(); const cfg: ComplianceConfig = { id, tenantId: c.tenantId, framework: c.framework, settings: c.settings ?? null, isActive: c.isActive ?? true, createdAt: new Date(), updatedAt: new Date() }; this.complianceConfigs.set(id, cfg); return cfg; }
 
   async getSprint(id: string) { return this.sprints.get(id); }
   async listSprints(projectId?: string) { const list = Array.from(this.sprints.values()); return projectId ? list.filter(s => s.projectId === projectId) : list; }
-  async createSprint(s: InsertSprint) { const id = randomUUID(); const sprint: Sprint = { id, ...s, createdAt: new Date() }; this.sprints.set(id, sprint); return sprint; }
+  async createSprint(s: InsertSprint) { const id = randomUUID(); const sprint: Sprint = { id, name: s.name, projectId: s.projectId, status: s.status ?? "planned", startDate: s.startDate ?? null, endDate: s.endDate ?? null, goal: s.goal ?? null, velocity: s.velocity ?? null, createdAt: new Date(), updatedAt: new Date() }; this.sprints.set(id, sprint); return sprint; }
 
   async getIssue(id: string) { return this.issues.get(id); }
   async listIssues(sprintId?: string) { const list = Array.from(this.issues.values()); return sprintId ? list.filter(i => i.sprintId === sprintId) : list; }
-  async createIssue(i: InsertIssue) { const id = randomUUID(); const issue: Issue = { id, ...i, createdAt: new Date() }; this.issues.set(id, issue); return issue; }
+  async createIssue(i: InsertIssue) { const id = randomUUID(); const issue: Issue = { id, title: i.title, projectId: i.projectId, sprintId: i.sprintId ?? null, description: i.description ?? null, status: i.status ?? "open", type: i.type ?? "task", priority: i.priority ?? "medium", assigneeId: i.assigneeId ?? null, reporterId: i.reporterId ?? null, storyPoints: i.storyPoints ?? null, dueDate: i.dueDate ?? null, createdAt: new Date(), updatedAt: new Date() }; this.issues.set(id, issue); return issue; }
 
   async getDataLake(id: string) { return this.dataLakes.get(id); }
   async listDataLakes() { return Array.from(this.dataLakes.values()); }
-  async createDataLake(l: InsertDataLake) { const id = randomUUID(); const lake: DataLake = { id, ...l, createdAt: new Date() }; this.dataLakes.set(id, lake); return lake; }
+  async createDataLake(l: InsertDataLake) { const id = randomUUID(); const lake: DataLake = { id, name: l.name, description: l.description ?? null, storageType: l.storageType ?? null, connectionConfig: l.connectionConfig ?? null, status: l.status ?? "active", createdAt: new Date(), updatedAt: new Date() }; this.dataLakes.set(id, lake); return lake; }
 
   async getEtlPipeline(id: string) { return this.etlPipelines.get(id); }
   async listEtlPipelines() { return Array.from(this.etlPipelines.values()); }
-  async createEtlPipeline(p: InsertEtlPipeline) { const id = randomUUID(); const pipeline: EtlPipeline = { id, ...p, createdAt: new Date() }; this.etlPipelines.set(id, pipeline); return pipeline; }
+  async createEtlPipeline(p: InsertEtlPipeline) { const id = randomUUID(); const pipeline: EtlPipeline = { id, name: p.name, description: p.description ?? null, sourceConfig: p.sourceConfig ?? null, transformConfig: p.transformConfig ?? null, destinationConfig: p.destinationConfig ?? null, schedule: p.schedule ?? null, status: p.status ?? "active", lastRunAt: p.lastRunAt ?? null, createdAt: new Date(), updatedAt: new Date() }; this.etlPipelines.set(id, pipeline); return pipeline; }
 
   async getBiDashboard(id: string) { return this.biDashboards.get(id); }
   async listBiDashboards() { return Array.from(this.biDashboards.values()); }
-  async createBiDashboard(d: InsertBiDashboard) { const id = randomUUID(); const dash: BiDashboard = { id, ...d, createdAt: new Date() }; this.biDashboards.set(id, dash); return dash; }
+  async createBiDashboard(d: InsertBiDashboard) { const id = randomUUID(); const dash: BiDashboard = { id, name: d.name, description: d.description ?? null, layout: d.layout ?? null, widgets: d.widgets ?? null, filters: d.filters ?? null, isPublic: d.isPublic ?? false, createdBy: d.createdBy ?? null, createdAt: new Date(), updatedAt: new Date() }; this.biDashboards.set(id, dash); return dash; }
 
   async getFieldServiceJob(id: string) { return this.fieldServiceJobs.get(id); }
   async listFieldServiceJobs(status?: string) { const list = Array.from(this.fieldServiceJobs.values()); return status ? list.filter(j => j.status === status) : list; }
-  async createFieldServiceJob(j: InsertFieldServiceJob) { const id = randomUUID(); const job: FieldServiceJob = { id, ...j, createdAt: new Date() }; this.fieldServiceJobs.set(id, job); return job; }
+  async createFieldServiceJob(j: InsertFieldServiceJob) { const id = randomUUID(); const job: FieldServiceJob = { id, jobNumber: j.jobNumber, customerId: j.customerId ?? null, technicianId: j.technicianId ?? null, status: j.status ?? "scheduled", priority: j.priority ?? "medium", jobType: j.jobType ?? null, scheduledDate: j.scheduledDate ?? null, completedDate: j.completedDate ?? null, location: j.location ?? null, notes: j.notes ?? null, createdAt: new Date(), updatedAt: new Date() }; this.fieldServiceJobs.set(id, job); return job; }
 
   async getPayrollConfig(id: string) { return this.payrollConfigs.get(id); }
   async listPayrollConfigs() { return Array.from(this.payrollConfigs.values()); }
-  async createPayrollConfig(c: InsertPayrollConfig) { const id = randomUUID(); const cfg: PayrollConfig = { id, ...c, createdAt: new Date() }; this.payrollConfigs.set(id, cfg); return cfg; }
+  async createPayrollConfig(c: InsertPayrollConfig) { const id = randomUUID(); const cfg: PayrollConfig = { id, tenantId: c.tenantId, payPeriod: c.payPeriod ?? "monthly", payDay: c.payDay ?? null, taxSettings: c.taxSettings ?? null, benefitSettings: c.benefitSettings ?? null, overtimeRules: c.overtimeRules ?? null, isActive: c.isActive ?? true, createdAt: new Date(), updatedAt: new Date() }; this.payrollConfigs.set(id, cfg); return cfg; }
 
   // Demo Management
   private demos = new Map<string, Demo>();
 
   async getDemo(id: string) { return this.demos.get(id); }
   async listDemos() { return Array.from(this.demos.values()); }
-  async createDemo(d: InsertDemo) { 
-    const id = randomUUID(); 
-    const demo: Demo = { 
-      id, 
-      ...d, 
+  async createDemo(d: InsertDemo) {
+    const id = randomUUID();
+    const demo: Demo = {
+      id,
+      ...d,
+      status: d.status ?? "active",
       demoToken: `demo_${randomUUID()}`,
       createdAt: new Date(),
       expiresAt: d.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    }; 
-    this.demos.set(id, demo); 
-    return demo; 
+    };
+    this.demos.set(id, demo);
+    return demo;
   }
-  async deleteDemo(id: string) { 
-    return this.demos.delete(id); 
+  async deleteDemo(id: string) {
+    return this.demos.delete(id);
   }
-  async updateDemo(id: string, d: Partial<InsertDemo>) { 
+  async updateDemo(id: string, d: Partial<InsertDemo>) {
     const demo = this.demos.get(id);
     if (!demo) return undefined;
     const updated: Demo = { ...demo, ...d };
@@ -560,7 +578,7 @@ export class MemStorage implements IStorage {
 
   // Partner Management
   async getPartner(id: string) { return this.partners.get(id); }
-  async listPartners(filters?: { type?: string; tier?: string; isApproved?: boolean; search?: string }) { 
+  async listPartners(filters?: { type?: string; tier?: string; isApproved?: boolean; search?: string }) {
     let list = Array.from(this.partners.values());
     if (filters?.type) list = list.filter(p => p.type === filters.type);
     if (filters?.tier) list = list.filter(p => p.tier === filters.tier);
@@ -571,79 +589,89 @@ export class MemStorage implements IStorage {
     }
     return list.sort((a, b) => a.name.localeCompare(b.name));
   }
-  async createPartner(p: InsertPartner) { 
-    const id = randomUUID(); 
-    const partner: Partner = { 
-      id, 
-      ...p, 
+  async createPartner(p: InsertPartner) {
+    const id = randomUUID();
+    const partner: Partner = {
+      id,
+      name: p.name,
+      email: p.email,
+      company: p.company ?? "Unknown",
+      description: p.description ?? null,
+      website: p.website ?? null,
+      phone: p.phone ?? null,
       type: p.type || "partner",
       tier: p.tier || "silver",
       isActive: p.isActive ?? true,
       isApproved: p.isApproved ?? false,
+      logo: p.logo ?? null,
+      specializations: p.specializations ?? null,
       createdAt: new Date(),
       updatedAt: new Date()
-    }; 
-    this.partners.set(id, partner); 
-    return partner; 
+    };
+    this.partners.set(id, partner);
+    return partner;
   }
-  async updatePartner(id: string, p: Partial<InsertPartner>) { 
+  async updatePartner(id: string, p: Partial<InsertPartner>) {
     const partner = this.partners.get(id);
     if (!partner) return undefined;
     const updated: Partner = { ...partner, ...p, updatedAt: new Date() };
     this.partners.set(id, updated);
     return updated;
   }
-  async deletePartner(id: string) { 
-    return this.partners.delete(id); 
+  async deletePartner(id: string) {
+    return this.partners.delete(id);
   }
 
   async getUserFeedback(id: string) { return this.userFeedbackStore.get(id); }
   async listUserFeedback() { return Array.from(this.userFeedbackStore.values()).sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()); }
-  async createUserFeedback(f: InsertUserFeedback) { 
-    const id = randomUUID(); 
-    const feedback: UserFeedback = { 
-      id, 
-      ...f, 
+  async createUserFeedback(f: InsertUserFeedback) {
+    const id = randomUUID();
+    const feedback: UserFeedback = {
+      id,
+      ...f,
+      userId: f.userId ?? null,
+      category: f.category ?? null,
+      attachmentUrl: f.attachmentUrl ?? null,
       status: f.status || "new",
       priority: f.priority || "medium",
       createdAt: new Date(),
       updatedAt: new Date()
-    }; 
-    this.userFeedbackStore.set(id, feedback); 
-    return feedback; 
+    };
+    this.userFeedbackStore.set(id, feedback);
+    return feedback;
   }
 
   // Industry Management
   async getIndustry(id: string) { return this.industries.get(id); }
   async listIndustries() { return Array.from(this.industries.values()); }
-  async createIndustry(i: InsertIndustry) { 
-    const id = randomUUID(); 
-    const industry: Industry = { id, ...i as any, createdAt: new Date() }; 
-    this.industries.set(id, industry); 
-    return industry; 
+  async createIndustry(i: InsertIndustry) {
+    const id = randomUUID();
+    const industry: Industry = { id, ...i as any, createdAt: new Date() };
+    this.industries.set(id, industry);
+    return industry;
   }
 
   // Industry Deployment Management
   async getIndustryDeployment(id: string) { return this.industryDeployments.get(id); }
-  async listIndustryDeployments(tenantId?: string) { 
-    const list = Array.from(this.industryDeployments.values()); 
-    return tenantId ? list.filter(d => d.tenantId === tenantId) : list; 
+  async listIndustryDeployments(tenantId?: string) {
+    const list = Array.from(this.industryDeployments.values());
+    return tenantId ? list.filter(d => d.tenantId === tenantId) : list;
   }
-  async createIndustryDeployment(d: InsertIndustryDeployment) { 
-    const id = randomUUID(); 
-    const deployment: IndustryDeployment = { id, ...d as any, createdAt: new Date(), updatedAt: new Date() }; 
-    this.industryDeployments.set(id, deployment); 
-    return deployment; 
+  async createIndustryDeployment(d: InsertIndustryDeployment) {
+    const id = randomUUID();
+    const deployment: IndustryDeployment = { id, ...d as any, createdAt: new Date(), updatedAt: new Date() };
+    this.industryDeployments.set(id, deployment);
+    return deployment;
   }
-  async updateIndustryDeployment(id: string, d: Partial<InsertIndustryDeployment>) { 
+  async updateIndustryDeployment(id: string, d: Partial<InsertIndustryDeployment>) {
     const deployment = this.industryDeployments.get(id);
     if (!deployment) return undefined;
     const updated: IndustryDeployment = { ...deployment, ...d as any, updatedAt: new Date() };
     this.industryDeployments.set(id, updated);
     return updated;
   }
-  async deleteIndustryDeployment(id: string) { 
-    return this.industryDeployments.delete(id); 
+  async deleteIndustryDeployment(id: string) {
+    return this.industryDeployments.delete(id);
   }
 
   // Community Space Management
@@ -656,43 +684,43 @@ export class MemStorage implements IStorage {
   private communityBadgeProgressStore = new Map<string, CommunityBadgeProgress>();
 
   async getCommunitySpace(id: string) { return this.communitySpaces.get(id); }
-  async getCommunitySpaceBySlug(slug: string) { 
-    return Array.from(this.communitySpaces.values()).find(s => s.slug === slug); 
+  async getCommunitySpaceBySlug(slug: string) {
+    return Array.from(this.communitySpaces.values()).find(s => s.slug === slug);
   }
-  async listCommunitySpaces() { 
-    return Array.from(this.communitySpaces.values()).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)); 
+  async listCommunitySpaces() {
+    return Array.from(this.communitySpaces.values()).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   }
-  async createCommunitySpace(s: InsertCommunitySpace) { 
-    const id = randomUUID(); 
-    const space: CommunitySpace = { id, ...s as any, createdAt: new Date() }; 
-    this.communitySpaces.set(id, space); 
-    return space; 
+  async createCommunitySpace(s: InsertCommunitySpace) {
+    const id = randomUUID();
+    const space: CommunitySpace = { id, ...s as any, createdAt: new Date() };
+    this.communitySpaces.set(id, space);
+    return space;
   }
 
   async getCommunityPost(id: string) { return this.communityPosts.get(id); }
-  async listCommunityPosts(spaceId?: string) { 
-    const list = Array.from(this.communityPosts.values()); 
+  async listCommunityPosts(spaceId?: string) {
+    const list = Array.from(this.communityPosts.values());
     const filtered = spaceId ? list.filter(p => p.spaceId === spaceId) : list;
     return filtered.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
   }
-  async createCommunityPost(p: InsertCommunityPost) { 
-    const id = randomUUID(); 
-    const post: CommunityPost = { 
-      id, 
-      ...p as any, 
-      upvotes: 0, 
-      downvotes: 0, 
-      viewCount: 0, 
+  async createCommunityPost(p: InsertCommunityPost) {
+    const id = randomUUID();
+    const post: CommunityPost = {
+      id,
+      ...p as any,
+      upvotes: 0,
+      downvotes: 0,
+      viewCount: 0,
       answerCount: 0,
       isPinned: false,
       isLocked: false,
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    }; 
-    this.communityPosts.set(id, post); 
-    return post; 
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.communityPosts.set(id, post);
+    return post;
   }
-  async updateCommunityPost(id: string, p: Partial<InsertCommunityPost>) { 
+  async updateCommunityPost(id: string, p: Partial<InsertCommunityPost>) {
     const post = this.communityPosts.get(id);
     if (!post) return undefined;
     const updated: CommunityPost = { ...post, ...p as any, updatedAt: new Date() };
@@ -701,38 +729,38 @@ export class MemStorage implements IStorage {
   }
 
   async getCommunityComment(id: string) { return this.communityComments.get(id); }
-  async listCommunityComments(postId: string) { 
+  async listCommunityComments(postId: string) {
     return Array.from(this.communityComments.values())
       .filter(c => c.postId === postId)
       .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
   }
-  async createCommunityComment(c: InsertCommunityComment) { 
-    const id = randomUUID(); 
-    const comment: CommunityComment = { 
-      id, 
-      ...c as any, 
-      upvotes: 0, 
-      downvotes: 0, 
+  async createCommunityComment(c: InsertCommunityComment) {
+    const id = randomUUID();
+    const comment: CommunityComment = {
+      id,
+      ...c as any,
+      upvotes: 0,
+      downvotes: 0,
       isAccepted: false,
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    }; 
-    this.communityComments.set(id, comment); 
-    return comment; 
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.communityComments.set(id, comment);
+    return comment;
   }
 
-  async getCommunityVote(userId: string, targetType: string, targetId: string) { 
+  async getCommunityVote(userId: string, targetType: string, targetId: string) {
     return Array.from(this.communityVotes.values()).find(
       v => v.userId === userId && v.targetType === targetType && v.targetId === targetId
-    ); 
+    );
   }
-  async createCommunityVote(v: InsertCommunityVote) { 
-    const id = randomUUID(); 
-    const vote: CommunityVote = { id, ...v as any, createdAt: new Date() }; 
-    this.communityVotes.set(id, vote); 
-    return vote; 
+  async createCommunityVote(v: InsertCommunityVote) {
+    const id = randomUUID();
+    const vote: CommunityVote = { id, ...v as any, createdAt: new Date() };
+    this.communityVotes.set(id, vote);
+    return vote;
   }
-  async deleteCommunityVote(userId: string, targetType: string, targetId: string) { 
+  async deleteCommunityVote(userId: string, targetType: string, targetId: string) {
     const vote = await this.getCommunityVote(userId, targetType, targetId);
     if (vote) {
       this.communityVotes.delete(vote.id);
@@ -741,27 +769,27 @@ export class MemStorage implements IStorage {
     return false;
   }
 
-  async getUserTrustLevel(userId: string) { 
-    return Array.from(this.userTrustLevels.values()).find(t => t.userId === userId); 
+  async getUserTrustLevel(userId: string) {
+    return Array.from(this.userTrustLevels.values()).find(t => t.userId === userId);
   }
-  async createUserTrustLevel(t: InsertUserTrustLevel) { 
-    const id = randomUUID(); 
-    const trust: UserTrustLevel = { 
-      id, 
-      ...t as any, 
+  async createUserTrustLevel(t: InsertUserTrustLevel) {
+    const id = randomUUID();
+    const trust: UserTrustLevel = {
+      id,
+      ...t as any,
       trustLevel: 0,
       totalReputation: 0,
       postsToday: 0,
       answersToday: 0,
       spacesJoinedToday: 0,
       isShadowBanned: false,
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    }; 
-    this.userTrustLevels.set(id, trust); 
-    return trust; 
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.userTrustLevels.set(id, trust);
+    return trust;
   }
-  async updateUserTrustLevel(userId: string, t: Partial<InsertUserTrustLevel>) { 
+  async updateUserTrustLevel(userId: string, t: Partial<InsertUserTrustLevel>) {
     const trust = await this.getUserTrustLevel(userId);
     if (!trust) return undefined;
     const updated: UserTrustLevel = { ...trust, ...t as any, updatedAt: new Date() };
@@ -769,39 +797,39 @@ export class MemStorage implements IStorage {
     return updated;
   }
 
-  async listReputationEvents(userId: string) { 
+  async listReputationEvents(userId: string) {
     return Array.from(this.reputationEventsStore.values())
       .filter(e => e.userId === userId)
       .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
   }
-  async createReputationEvent(e: InsertReputationEvent) { 
-    const id = randomUUID(); 
-    const event: ReputationEvent = { id, ...e as any, createdAt: new Date() }; 
-    this.reputationEventsStore.set(id, event); 
-    return event; 
+  async createReputationEvent(e: InsertReputationEvent) {
+    const id = randomUUID();
+    const event: ReputationEvent = { id, ...e as any, createdAt: new Date() };
+    this.reputationEventsStore.set(id, event);
+    return event;
   }
 
-  async getCommunityBadgeProgress(userId: string, badgeCategory: string) { 
+  async getCommunityBadgeProgress(userId: string, badgeCategory: string) {
     return Array.from(this.communityBadgeProgressStore.values()).find(
       b => b.userId === userId && b.badgeCategory === badgeCategory
-    ); 
+    );
   }
-  async listCommunityBadgeProgress(userId: string) { 
+  async listCommunityBadgeProgress(userId: string) {
     return Array.from(this.communityBadgeProgressStore.values()).filter(b => b.userId === userId);
   }
-  async createCommunityBadgeProgress(p: InsertCommunityBadgeProgress) { 
-    const id = randomUUID(); 
-    const progress: CommunityBadgeProgress = { 
-      id, 
-      ...p as any, 
+  async createCommunityBadgeProgress(p: InsertCommunityBadgeProgress) {
+    const id = randomUUID();
+    const progress: CommunityBadgeProgress = {
+      id,
+      ...p as any,
       currentCount: 0,
       currentLevel: "none",
-      updatedAt: new Date() 
-    }; 
-    this.communityBadgeProgressStore.set(id, progress); 
-    return progress; 
+      updatedAt: new Date()
+    };
+    this.communityBadgeProgressStore.set(id, progress);
+    return progress;
   }
-  async updateCommunityBadgeProgress(userId: string, badgeCategory: string, p: Partial<InsertCommunityBadgeProgress>) { 
+  async updateCommunityBadgeProgress(userId: string, badgeCategory: string, p: Partial<InsertCommunityBadgeProgress>) {
     const progress = await this.getCommunityBadgeProgress(userId, badgeCategory);
     if (!progress) return undefined;
     const updated: CommunityBadgeProgress = { ...progress, ...p as any, updatedAt: new Date() };

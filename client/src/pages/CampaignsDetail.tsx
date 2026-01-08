@@ -6,9 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
+function CampaignEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Campaign Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function CampaignsDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const campaigns = [{id: 1, name: "Q4 Email Blast", status: "active", recipients: 5000}, {id: 2, name: "Holiday Sale", status: "planned", recipients: 8000}];
+  const campaigns = [{ id: 1, name: "Q4 Email Blast", status: "active", recipients: 5000 }, { id: 2, name: "Holiday Sale", status: "planned", recipients: 8000 }];
 
   return (
     <div className="space-y-6">

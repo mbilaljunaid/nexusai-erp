@@ -19,7 +19,7 @@ export const communitySpaces = pgTable("community_spaces", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCommunitySpaceSchema = createInsertSchema(communitySpaces).omit({ id: true, createdAt: true }).extend({
+export const insertCommunitySpaceSchema = createInsertSchema(communitySpaces).extend({
     name: z.string().min(1),
     slug: z.string().min(1),
     description: z.string().optional(),
@@ -54,7 +54,7 @@ export const communityPosts = pgTable("community_posts", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertCommunityPostSchema = createInsertSchema(communityPosts).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertCommunityPostSchema = createInsertSchema(communityPosts).extend({
     spaceId: z.string().min(1),
     authorId: z.string().min(1),
     postType: z.enum(["question", "discussion", "how-to", "bug", "feature", "show-tell", "announcement"]),
@@ -87,7 +87,7 @@ export const communityComments = pgTable("community_comments", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertCommunityCommentSchema = createInsertSchema(communityComments).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertCommunityCommentSchema = createInsertSchema(communityComments).extend({
     postId: z.string().min(1),
     parentId: z.string().optional().nullable(),
     authorId: z.string().min(1),
@@ -110,7 +110,7 @@ export const communityVotes = pgTable("community_votes", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCommunityVoteSchema = createInsertSchema(communityVotes).omit({ id: true, createdAt: true }).extend({
+export const insertCommunityVoteSchema = createInsertSchema(communityVotes).extend({
     userId: z.string().min(1),
     targetType: z.enum(["post", "comment"]),
     targetId: z.string().min(1),
@@ -137,7 +137,7 @@ export const userTrustLevels = pgTable("user_trust_levels", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertUserTrustLevelSchema = createInsertSchema(userTrustLevels).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertUserTrustLevelSchema = createInsertSchema(userTrustLevels).extend({
     userId: z.string().min(1),
     trustLevel: z.number().optional(),
     totalReputation: z.number().optional(),
@@ -165,7 +165,7 @@ export const reputationEvents = pgTable("reputation_events", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertReputationEventSchema = createInsertSchema(reputationEvents).omit({ id: true, createdAt: true }).extend({
+export const insertReputationEventSchema = createInsertSchema(reputationEvents).extend({
     userId: z.string().min(1),
     actionType: z.string().min(1),
     points: z.number(),
@@ -190,7 +190,7 @@ export const reputationDimensions = pgTable("reputation_dimensions", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertReputationDimensionSchema = createInsertSchema(reputationDimensions).omit({ id: true, updatedAt: true }).extend({
+export const insertReputationDimensionSchema = createInsertSchema(reputationDimensions).extend({
     userId: z.string().min(1),
     technicalSkill: z.number().optional(),
     knowledgeSharing: z.number().optional(),
@@ -214,7 +214,7 @@ export const communityBadgeProgress = pgTable("community_badge_progress", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertCommunityBadgeProgressSchema = createInsertSchema(communityBadgeProgress).omit({ id: true, updatedAt: true }).extend({
+export const insertCommunityBadgeProgressSchema = createInsertSchema(communityBadgeProgress).extend({
     userId: z.string().min(1),
     badgeCategory: z.string().min(1),
     currentCount: z.number().optional(),
@@ -242,7 +242,7 @@ export const communityModerationActions = pgTable("community_moderation_actions"
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCommunityModerationActionSchema = createInsertSchema(communityModerationActions).omit({ id: true, createdAt: true }).extend({
+export const insertCommunityModerationActionSchema = createInsertSchema(communityModerationActions).extend({
     moderatorId: z.string().min(1),
     targetUserId: z.string().optional(),
     actionType: z.enum(["warn", "mute", "ban", "unban", "delete_post", "lock_post", "flag", "hide", "delete", "suspend"]),
@@ -271,7 +271,7 @@ export const communityRateLimits = pgTable("community_rate_limits", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCommunityRateLimitSchema = createInsertSchema(communityRateLimits).omit({ id: true, createdAt: true }).extend({
+export const insertCommunityRateLimitSchema = createInsertSchema(communityRateLimits).extend({
     userId: z.string().min(1),
     actionType: z.string().min(1),
     actionCount: z.number().optional(),
@@ -292,7 +292,7 @@ export const communitySpaceMemberships = pgTable("community_space_memberships", 
     joinedAt: timestamp("joined_at").default(sql`now()`),
 });
 
-export const insertCommunitySpaceMembershipSchema = createInsertSchema(communitySpaceMemberships).omit({ id: true, joinedAt: true }).extend({
+export const insertCommunitySpaceMembershipSchema = createInsertSchema(communitySpaceMemberships).extend({
     userId: z.string().min(1),
     spaceId: z.string().min(1),
     role: z.enum(["member", "moderator"]).optional(),
@@ -316,7 +316,7 @@ export const communityFlags = pgTable("community_flags", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCommunityFlagSchema = createInsertSchema(communityFlags).omit({ id: true, createdAt: true }).extend({
+export const insertCommunityFlagSchema = createInsertSchema(communityFlags).extend({
     reporterId: z.string().min(1),
     targetType: z.enum(["post", "comment"]),
     targetId: z.string().min(1),
@@ -339,7 +339,7 @@ export const userEarnedBadges = pgTable("user_earned_badges", {
     earnedAt: timestamp("earned_at").default(sql`now()`),
 });
 
-export const insertUserEarnedBadgeSchema = createInsertSchema(userEarnedBadges).omit({ id: true, earnedAt: true }).extend({
+export const insertUserEarnedBadgeSchema = createInsertSchema(userEarnedBadges).extend({
     userId: z.string().min(1),
     badgeId: z.string().min(1),
 });
@@ -360,7 +360,7 @@ export const communityVoteEvents = pgTable("community_vote_events", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCommunityVoteEventSchema = createInsertSchema(communityVoteEvents).omit({ id: true, createdAt: true }).extend({
+export const insertCommunityVoteEventSchema = createInsertSchema(communityVoteEvents).extend({
     voterId: z.string().min(1),
     targetType: z.enum(["post", "comment"]),
     targetId: z.string().min(1),
@@ -389,7 +389,7 @@ export const communityVoteAnomalies = pgTable("community_vote_anomalies", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCommunityVoteAnomalySchema = createInsertSchema(communityVoteAnomalies).omit({ id: true, createdAt: true }).extend({
+export const insertCommunityVoteAnomalySchema = createInsertSchema(communityVoteAnomalies).extend({
     anomalyType: z.enum(["vote_ring", "rapid_voting", "self_promotion", "sock_puppet"]),
     userId: z.string().optional(),
     relatedUserIds: z.array(z.string()).optional(),
@@ -421,7 +421,7 @@ export const communityAIRecommendations = pgTable("community_ai_recommendations"
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertCommunityAIRecommendationSchema = createInsertSchema(communityAIRecommendations).omit({ id: true, createdAt: true }).extend({
+export const insertCommunityAIRecommendationSchema = createInsertSchema(communityAIRecommendations).extend({
     flagId: z.string().min(1),
     contentAnalysis: z.record(z.any()).optional(),
     severityScore: z.string().optional(),

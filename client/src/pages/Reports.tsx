@@ -6,9 +6,9 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { ReportBuilder } from "@/components/ReportBuilder";
 import { SmartViewBuilder } from "@/components/SmartViewBuilder";
 import { ExcelExportButton } from "@/components/ExcelExportButton";
-import { 
-  BarChart3, 
-  FileUp, 
+import {
+  BarChart3,
+  FileUp,
   Filter,
   DownloadCloud,
   Upload,
@@ -42,7 +42,7 @@ export default function Reports() {
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.load(arrayBuffer);
       const worksheet = workbook.worksheets[0];
-      
+
       if (!worksheet) {
         toast({
           title: "Import failed",
@@ -54,7 +54,7 @@ export default function Reports() {
 
       const data: any[] = [];
       const headers: string[] = [];
-      
+
       worksheet.eachRow((row, rowNumber) => {
         if (rowNumber === 1) {
           row.eachCell((cell) => {
@@ -92,8 +92,8 @@ export default function Reports() {
     <div className="space-y-8">
       <Breadcrumb
         items={[
-          { label: "Home", href: "/" },
-          { label: "Reports", href: "/reports" },
+          { label: "Home", path: "/" },
+          { label: "Reports", path: "/reports" },
         ]}
       />
 
@@ -291,7 +291,7 @@ export default function Reports() {
             <CardContent className="space-y-6">
               <div className="space-y-3">
                 <h3 className="font-semibold text-sm">Default Export Format</h3>
-                <select className="w-full p-2 border rounded-md bg-background">
+                <select className="w-full p-2 border rounded-md bg-background" aria-label="Default Export Format">
                   <option>PDF</option>
                   <option>CSV</option>
                   <option>DOCX</option>
@@ -301,7 +301,7 @@ export default function Reports() {
 
               <div className="space-y-3">
                 <h3 className="font-semibold text-sm">Data Retention Policy</h3>
-                <select className="w-full p-2 border rounded-md bg-background">
+                <select className="w-full p-2 border rounded-md bg-background" aria-label="Data Retention Policy">
                   <option>Keep all data</option>
                   <option>1 year</option>
                   <option>6 months</option>

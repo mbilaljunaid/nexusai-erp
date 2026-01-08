@@ -6,9 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
+function EmployeeEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Employee Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function EmployeesDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const employees = [{id: 1, name: "Sarah Johnson", dept: "Engineering", email: "sarah@company.com"}, {id: 2, name: "John Smith", dept: "Sales", email: "john@company.com"}];
+  const employees = [{ id: 1, name: "Sarah Johnson", dept: "Engineering", email: "sarah@company.com" }, { id: 2, name: "John Smith", dept: "Sales", email: "john@company.com" }];
 
   return (
     <div className="space-y-6">

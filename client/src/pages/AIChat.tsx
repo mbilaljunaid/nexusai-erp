@@ -12,7 +12,7 @@ export default function AIChat() {
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { data: conversations = [] } = useQuery({ queryKey: ["/api/copilot/conversations"], queryFn: () => fetch("/api/copilot/conversations").then(r => r.json()) }) as { data: any[] };
+  const { data: conversations = [] } = useQuery<any[]>({ queryKey: ["/api/copilot/conversations"], queryFn: () => fetch("/api/copilot/conversations").then(r => r.json()) }) as { data: any[] };
   
   const { data: currentMessages = [] } = useQuery({ 
     queryKey: ["/api/copilot/messages", activeConvId], 

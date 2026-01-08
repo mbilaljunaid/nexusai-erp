@@ -13,8 +13,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { 
-  CheckCircle, XCircle, Package, Eye, Clock, DollarSign, 
+import {
+  CheckCircle, XCircle, Package, Eye, Clock, DollarSign,
   TrendingUp, Users, Settings, Percent, Building2, ExternalLink,
   Play, CreditCard, AlertTriangle, FileText, RefreshCw
 } from "lucide-react";
@@ -56,8 +56,8 @@ function AppReviewDialog({ app, open, onOpenChange, onApprove, onReject, isPendi
           <div className="space-y-6 py-4">
             <div className="flex items-start gap-4">
               <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                {app.icon ? (
-                  <img src={app.icon} alt={app.name} className="w-12 h-12 rounded-lg" />
+                {app.logoUrl ? (
+                  <img src={app.logoUrl} alt={app.name} className="w-12 h-12 rounded-lg" />
                 ) : (
                   <Package className="w-8 h-8" />
                 )}
@@ -66,7 +66,7 @@ function AppReviewDialog({ app, open, onOpenChange, onApprove, onReject, isPendi
                 <h3 className="text-xl font-semibold">{app.name}</h3>
                 <p className="text-muted-foreground">{app.shortDescription}</p>
                 <div className="flex gap-2 mt-2">
-                  <Badge variant="secondary">{app.pricingModel}</Badge>
+                  <Badge variant="secondary">{app.priceType}</Badge>
                   <Badge variant="outline">{app.licenseType}</Badge>
                 </div>
               </div>
@@ -75,7 +75,7 @@ function AppReviewDialog({ app, open, onOpenChange, onApprove, onReject, isPendi
             <div>
               <h4 className="font-medium mb-2">Description</h4>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                {app.longDescription || app.shortDescription || "No description provided."}
+                {app.fullDescription || app.shortDescription || "No description provided."}
               </p>
             </div>
 
@@ -93,9 +93,9 @@ function AppReviewDialog({ app, open, onOpenChange, onApprove, onReject, isPendi
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-muted-foreground">Pricing:</span>{" "}
-                {app.pricingModel === "free" ? "Free" : 
-                 app.pricingModel === "subscription" ? `$${app.subscriptionPriceMonthly}/mo` :
-                 `$${app.price}`}
+                {app.priceType === "free" ? "Free" :
+                  app.priceType === "subscription" ? `$${app.subscriptionPriceMonthly}/mo` :
+                    `$${app.price}`}
               </div>
               <div>
                 <span className="text-muted-foreground">Deployment:</span>{" "}
@@ -142,8 +142,8 @@ function AppReviewDialog({ app, open, onOpenChange, onApprove, onReject, isPendi
               <Button variant="ghost" onClick={() => setShowRejectForm(false)}>
                 Back
               </Button>
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 onClick={handleReject}
                 disabled={!rejectionReason.trim() || isPending}
                 data-testid="button-confirm-reject"
@@ -153,15 +153,15 @@ function AppReviewDialog({ app, open, onOpenChange, onApprove, onReject, isPendi
             </>
           ) : (
             <>
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 onClick={() => setShowRejectForm(true)}
                 data-testid="button-reject-app"
               >
                 <XCircle className="w-4 h-4 mr-2" />
                 Reject
               </Button>
-              <Button 
+              <Button
                 onClick={() => onApprove(app.id)}
                 disabled={isPending}
                 data-testid="button-approve-app"
@@ -223,10 +223,10 @@ export default function MarketplaceAdmin() {
       setReviewDialogOpen(false);
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to approve app", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to approve app",
+        variant: "destructive"
       });
     },
   });
@@ -242,18 +242,18 @@ export default function MarketplaceAdmin() {
       setReviewDialogOpen(false);
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to reject app", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to reject app",
+        variant: "destructive"
       });
     },
   });
 
   const commissionMutation = useMutation({
     mutationFn: async (rate: string) => {
-      return apiRequest("PUT", "/api/marketplace/commission-settings", { 
-        defaultCommissionRate: rate 
+      return apiRequest("PUT", "/api/marketplace/commission-settings", {
+        defaultCommissionRate: rate
       });
     },
     onSuccess: () => {
@@ -261,10 +261,10 @@ export default function MarketplaceAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/marketplace/commission-settings"] });
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to update settings", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update settings",
+        variant: "destructive"
       });
     },
   });
@@ -280,10 +280,10 @@ export default function MarketplaceAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/marketplace/audit-logs"] });
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to generate payouts", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate payouts",
+        variant: "destructive"
       });
     },
   });
@@ -299,10 +299,10 @@ export default function MarketplaceAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/marketplace/developer/earnings"] });
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to process payout", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to process payout",
+        variant: "destructive"
       });
     },
   });
@@ -318,10 +318,10 @@ export default function MarketplaceAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/marketplace/developer/earnings"] });
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to complete payout", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to complete payout",
+        variant: "destructive"
       });
     },
   });
@@ -337,10 +337,10 @@ export default function MarketplaceAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/marketplace/developer/earnings"] });
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to update payout", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update payout",
+        variant: "destructive"
       });
     },
   });
@@ -352,7 +352,7 @@ export default function MarketplaceAdmin() {
 
   const approvedApps = allApps.filter(app => app.status === "approved");
   const totalRevenue = approvedApps.reduce((sum, app) => sum + parseFloat(app.totalRevenue || "0"), 0);
-  const totalInstalls = approvedApps.reduce((sum, app) => sum + (app.totalInstalls || 0), 0);
+  const installCount = approvedApps.reduce((sum, app) => sum + (app.installCount || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -396,7 +396,7 @@ export default function MarketplaceAdmin() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalInstalls.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{installCount.toLocaleString()}</div>
           </CardContent>
         </Card>
         <Card>
@@ -469,8 +469,8 @@ export default function MarketplaceAdmin() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            {app.icon ? (
-                              <img src={app.icon} alt={app.name} className="w-6 h-6 rounded" />
+                            {app.logoUrl ? (
+                              <img src={app.logoUrl} alt={app.name} className="w-6 h-6 rounded" />
                             ) : (
                               <Package className="w-5 h-5 text-primary" />
                             )}
@@ -487,7 +487,7 @@ export default function MarketplaceAdmin() {
                         <span className="text-sm text-muted-foreground">{app.developerId}</span>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="capitalize">{app.pricingModel}</Badge>
+                        <Badge variant="outline" className="capitalize">{app.priceType}</Badge>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-muted-foreground">
@@ -495,7 +495,7 @@ export default function MarketplaceAdmin() {
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button 
+                        <Button
                           size="sm"
                           onClick={() => handleReview(app)}
                           data-testid={`button-review-app-${app.id}`}
@@ -533,8 +533,8 @@ export default function MarketplaceAdmin() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            {app.icon ? (
-                              <img src={app.icon} alt={app.name} className="w-6 h-6 rounded" />
+                            {app.logoUrl ? (
+                              <img src={app.logoUrl} alt={app.name} className="w-6 h-6 rounded" />
                             ) : (
                               <Package className="w-5 h-5 text-primary" />
                             )}
@@ -546,18 +546,18 @@ export default function MarketplaceAdmin() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge 
-                          variant={app.status === "approved" ? "default" : 
-                                  app.status === "rejected" ? "destructive" : "secondary"}
+                        <Badge
+                          variant={app.status === "approved" ? "default" :
+                            app.status === "rejected" ? "destructive" : "secondary"}
                           className={app.status === "approved" ? "bg-green-500/10 text-green-600 border-green-200" : ""}
                         >
                           {app.status}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="capitalize">{app.pricingModel}</Badge>
+                        <Badge variant="outline" className="capitalize">{app.priceType}</Badge>
                       </TableCell>
-                      <TableCell className="text-right">{app.totalInstalls || 0}</TableCell>
+                      <TableCell className="text-right">{app.installCount || 0}</TableCell>
                       <TableCell className="text-right">${parseFloat(app.totalRevenue || "0").toFixed(2)}</TableCell>
                     </TableRow>
                   ))}
@@ -574,7 +574,7 @@ export default function MarketplaceAdmin() {
                 <h2 className="text-xl font-semibold">Payout Management</h2>
                 <p className="text-sm text-muted-foreground">Process developer payouts</p>
               </div>
-              <Button 
+              <Button
                 onClick={() => generatePayoutsMutation.mutate()}
                 disabled={generatePayoutsMutation.isPending}
                 data-testid="button-generate-payouts"
@@ -618,17 +618,17 @@ export default function MarketplaceAdmin() {
                           {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
-                          <Badge 
+                          <Badge
                             variant={
-                              payout.status === "paid" ? "default" : 
-                              payout.status === "processing" ? "secondary" :
-                              payout.status === "failed" ? "destructive" : "outline"
+                              payout.status === "paid" ? "default" :
+                                payout.status === "processing" ? "secondary" :
+                                  payout.status === "failed" ? "destructive" : "outline"
                             }
                             className={payout.status === "paid" ? "bg-green-500/10 text-green-600 border-green-200" : ""}
                           >
                             {payout.status === "paid" ? "Paid" :
-                             payout.status === "processing" ? "Processing" :
-                             payout.status === "failed" ? "Failed" : "Pending"}
+                              payout.status === "processing" ? "Processing" :
+                                payout.status === "failed" ? "Failed" : "Pending"}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right font-medium">
@@ -637,7 +637,7 @@ export default function MarketplaceAdmin() {
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1">
                             {payout.status === "pending" && (
-                              <Button 
+                              <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => processPayoutMutation.mutate(payout.id)}
@@ -650,7 +650,7 @@ export default function MarketplaceAdmin() {
                             )}
                             {payout.status === "processing" && (
                               <>
-                                <Button 
+                                <Button
                                   size="sm"
                                   onClick={() => {
                                     setSelectedPayoutId(payout.id);
@@ -663,7 +663,7 @@ export default function MarketplaceAdmin() {
                                   <CreditCard className="w-3 h-3 mr-1" />
                                   Mark Paid
                                 </Button>
-                                <Button 
+                                <Button
                                   size="sm"
                                   variant="destructive"
                                   onClick={() => {
@@ -780,7 +780,7 @@ export default function MarketplaceAdmin() {
                       onChange={(e) => setCommissionRate(e.target.value)}
                       data-testid="input-commission-rate"
                     />
-                    <Button 
+                    <Button
                       onClick={() => commissionMutation.mutate(commissionRate)}
                       disabled={!commissionRate || commissionMutation.isPending}
                       data-testid="button-save-commission"
@@ -865,12 +865,12 @@ export default function MarketplaceAdmin() {
             <Button variant="outline" onClick={() => setCompletePayoutDialogOpen(false)}>
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={() => {
                 if (selectedPayoutId) {
-                  completePayoutMutation.mutate({ 
-                    payoutId: selectedPayoutId, 
-                    transactionRef: transactionRef || undefined 
+                  completePayoutMutation.mutate({
+                    payoutId: selectedPayoutId,
+                    transactionRef: transactionRef || undefined
                   });
                   setCompletePayoutDialogOpen(false);
                 }
@@ -908,13 +908,13 @@ export default function MarketplaceAdmin() {
             <Button variant="outline" onClick={() => setFailPayoutDialogOpen(false)}>
               Cancel
             </Button>
-            <Button 
+            <Button
               variant="destructive"
               onClick={() => {
                 if (selectedPayoutId && failReason.trim()) {
-                  failPayoutMutation.mutate({ 
-                    payoutId: selectedPayoutId, 
-                    reason: failReason 
+                  failPayoutMutation.mutate({
+                    payoutId: selectedPayoutId,
+                    reason: failReason
                   });
                   setFailPayoutDialogOpen(false);
                 }

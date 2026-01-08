@@ -37,7 +37,8 @@ export const enforceRBAC = (requiredPermission?: string) => {
                 editor: ["read", "write"],
                 viewer: ["read"],
             };
-            const allowedPerms = rolePermissions[req.role] || [];
+            const role = req.role || "viewer";
+            const allowedPerms = rolePermissions[role] || [];
             if (!allowedPerms.includes(requiredPermission)) {
                 return res.status(403).json({ error: "Insufficient permissions" });
             }

@@ -14,7 +14,7 @@ export const workOrders = pgTable("work_orders", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertWorkOrderSchema = createInsertSchema(workOrders).omit({ id: true, createdAt: true }).extend({
+export const insertWorkOrderSchema = createInsertSchema(workOrders).extend({
     title: z.string().min(1),
     description: z.string().optional(),
     status: z.string().optional(),
@@ -35,7 +35,7 @@ export const projects2 = pgTable("projects2", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertProject2Schema = createInsertSchema(projects2).omit({ id: true, createdAt: true }).extend({
+export const insertProject2Schema = createInsertSchema(projects2).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     status: z.string().optional(),
@@ -60,7 +60,7 @@ export const sprints = pgTable("sprints", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertSprintSchema = createInsertSchema(sprints).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertSprintSchema = createInsertSchema(sprints).extend({
     projectId: z.string().min(1),
     name: z.string().min(1),
     goal: z.string().optional(),
@@ -90,7 +90,7 @@ export const issues = pgTable("issues", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertIssueSchema = createInsertSchema(issues).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertIssueSchema = createInsertSchema(issues).extend({
     projectId: z.string().min(1),
     sprintId: z.string().optional().nullable(),
     title: z.string().min(1),

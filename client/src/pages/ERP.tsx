@@ -29,12 +29,12 @@ export default function ERP() {
   const [filteredGLEntries, setFilteredGLEntries] = useState<any[]>([]);
   const [filteredVendors, setFilteredVendors] = useState<any[]>([]);
   
-  const { data: glEntries = [] } = useQuery({ queryKey: ["/api/ledger"], retry: false });
-  const { data: invoices = [] } = useQuery({ queryKey: ["/api/invoices"], retry: false });
-  const { data: pos = [] } = useQuery({ queryKey: ["/api/purchase-orders"], retry: false });
-  const { data: vendors = [] } = useQuery({ queryKey: ["/api/vendors"], retry: false });
-  const { data: requisitions = [] } = useQuery({ queryKey: ["/api/procurement/requisitions"], retry: false });
-  const { data: rfqs = [] } = useQuery({ queryKey: ["/api/procurement/rfqs"], retry: false });
+  const { data: glEntries = [] } = useQuery<any[]>({ queryKey: ["/api/ledger"], retry: false });
+  const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"], retry: false });
+  const { data: pos = [] } = useQuery<any[]>({ queryKey: ["/api/purchase-orders"], retry: false });
+  const { data: vendors = [] } = useQuery<any[]>({ queryKey: ["/api/vendors"], retry: false });
+  const { data: requisitions = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/requisitions"], retry: false });
+  const { data: rfqs = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/rfqs"], retry: false });
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },

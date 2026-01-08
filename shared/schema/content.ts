@@ -29,7 +29,7 @@ export const trainingResources = pgTable("training_resources", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertTrainingResourceSchema = createInsertSchema(trainingResources).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertTrainingResourceSchema = createInsertSchema(trainingResources).extend({
     type: z.enum(["video", "api", "guide", "material", "tutorial"]),
     title: z.string().min(1).max(200),
     description: z.string().optional(),
@@ -62,7 +62,7 @@ export const trainingResourceLikes = pgTable("training_resource_likes", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertTrainingResourceLikeSchema = createInsertSchema(trainingResourceLikes).omit({ id: true, createdAt: true }).extend({
+export const insertTrainingResourceLikeSchema = createInsertSchema(trainingResourceLikes).extend({
     resourceId: z.string().min(1),
     userId: z.string().min(1),
 });
@@ -83,7 +83,7 @@ export const trainingFilterRequests = pgTable("training_filter_requests", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertTrainingFilterRequestSchema = createInsertSchema(trainingFilterRequests).omit({ id: true, createdAt: true }).extend({
+export const insertTrainingFilterRequestSchema = createInsertSchema(trainingFilterRequests).extend({
     filterType: z.enum(["module", "industry", "app", "tag"]),
     filterValue: z.string().min(1).max(100),
     description: z.string().optional(),
@@ -110,7 +110,7 @@ export const developerSpotlight = pgTable("developer_spotlight", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertDeveloperSpotlightSchema = createInsertSchema(developerSpotlight).omit({ id: true, createdAt: true }).extend({
+export const insertDeveloperSpotlightSchema = createInsertSchema(developerSpotlight).extend({
     developerId: z.string().min(1),
     featuredReason: z.string().optional(),
     isTrending: z.boolean().optional(),

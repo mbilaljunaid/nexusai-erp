@@ -7,9 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
+function InvoiceEntryForm() {
+  return (
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+      <p className="text-muted-foreground">Invoice Entry Form Placeholder</p>
+    </div>
+  );
+}
+
 export default function InvoicesDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: invoices = [] } = useQuery({ queryKey: ["/api/invoices"], retry: false });
+  const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"], retry: false });
 
   return (
     <div className="space-y-6">

@@ -15,7 +15,7 @@ export const employees = pgTable("employees", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertEmployeeSchema = createInsertSchema(employees).omit({ id: true, createdAt: true }).extend({
+export const insertEmployeeSchema = createInsertSchema(employees).extend({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
     email: z.string().email().optional(),
@@ -38,7 +38,7 @@ export const payroll = pgTable("payroll", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertPayrollSchema = createInsertSchema(payroll).omit({ id: true, createdAt: true }).extend({
+export const insertPayrollSchema = createInsertSchema(payroll).extend({
     employeeId: z.string().min(1),
     salary: z.string().optional(),
     bonus: z.string().optional(),
@@ -64,7 +64,7 @@ export const payrollConfigs = pgTable("payroll_configs", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertPayrollConfigSchema = createInsertSchema(payrollConfigs).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertPayrollConfigSchema = createInsertSchema(payrollConfigs).extend({
     tenantId: z.string().min(1),
     payPeriod: z.string().optional(),
     payDay: z.number().optional(),

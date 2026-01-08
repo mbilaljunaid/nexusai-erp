@@ -20,12 +20,12 @@ export function SmartViewBuilder({ formId, onViewSelect }: SmartViewBuilderProps
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: smartViews = [] } = useQuery({
+  const { data: smartViews = [] } = useQuery<any[]>({
     queryKey: ["/api/smartviews", formId],
   });
 
   const createViewMutation = useMutation({
-    mutationFn: (data) =>
+    mutationFn: (data: any) =>
       apiRequest("POST", `/api/smartviews`, {
         formId,
         name: viewName,

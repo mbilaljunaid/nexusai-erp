@@ -4,7 +4,33 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Target, DollarSign, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import type { LeadScore, CpqPricingRule, Territory } from "@shared/schema";
+// Local type definitions since these are not yet in shared schema
+interface LeadScore {
+  id: string;
+  leadId: string;
+  score: number | string;
+  probability: number;
+  nextAction: string;
+  updatedDate: string;
+}
+interface CpqPricingRule {
+  id: string;
+  name: string;
+  productId: string;
+  discountPercent: number;
+  discountAmount: number;
+  quantity: number;
+  status: string;
+}
+interface Territory {
+  id: string;
+  name: string;
+  status: string;
+  assignedTo: string;
+  quota: number;
+  quotaPeriod: string;
+  description: string;
+}
 
 export default function CRMAdvanced() {
   const { data: leadScores = [] } = useQuery<LeadScore[]>({ queryKey: ["/api/crm/lead-scores"] });

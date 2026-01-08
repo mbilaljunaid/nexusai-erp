@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Smartphone, Wifi, Cloud } from "lucide-react";
 
 export default function MobileSync() {
-  const { data: devices = [] } = useQuery({ queryKey: ["/api/mobile/devices"] }) as { data: any[] };
-  const { data: syncQueue = [] } = useQuery({ queryKey: ["/api/mobile/sync"] }) as { data: any[] };
+  const { data: devices = [] } = useQuery<any[]>({ queryKey: ["/api/mobile/devices"] }) as { data: any[] };
+  const { data: syncQueue = [] } = useQuery<any[]>({ queryKey: ["/api/mobile/sync"] }) as { data: any[] };
 
   return (
     <div className="space-y-6 p-4">

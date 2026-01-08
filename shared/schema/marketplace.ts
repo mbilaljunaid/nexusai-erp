@@ -14,11 +14,14 @@ export const marketplaceDevelopers = pgTable("marketplace_developers", {
     supportEmail: varchar("support_email"),
     status: varchar("status").default("pending"), // pending, approved, suspended
     verified: boolean("verified").default(false),
+    totalRevenue: numeric("total_revenue", { precision: 18, scale: 2 }).default("0"),
+    totalPayouts: numeric("total_payouts", { precision: 18, scale: 2 }).default("0"),
+    totalApps: integer("total_apps").default(0),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertMarketplaceDeveloperSchema = createInsertSchema(marketplaceDevelopers).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertMarketplaceDeveloperSchema = createInsertSchema(marketplaceDevelopers).extend({
     userId: z.string().min(1),
     name: z.string().min(1),
     description: z.string().optional(),
@@ -42,7 +45,7 @@ export const marketplaceCategories = pgTable("marketplace_categories", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertMarketplaceCategorySchema = createInsertSchema(marketplaceCategories).omit({ id: true, createdAt: true }).extend({
+export const insertMarketplaceCategorySchema = createInsertSchema(marketplaceCategories).extend({
     name: z.string().min(1),
     slug: z.string().min(1),
     description: z.string().optional(),
@@ -78,9 +81,23 @@ export const marketplaceApps = pgTable("marketplace_apps", {
     installCount: integer("install_count").default(0),
     averageRating: numeric("average_rating", { precision: 3, scale: 2 }).default("0"),
     reviewCount: integer("review_count").default(0),
+    supportedIndustries: text("supported_industries").array(),
+    subscriptionPriceMonthly: numeric("subscription_price_monthly", { precision: 18, scale: 2 }),
+    subscriptionPriceYearly: numeric("subscription_price_yearly", { precision: 18, scale: 2 }),
+    totalRevenue: numeric("total_revenue", { precision: 18, scale: 2 }).default("0"),
+
+    // Additional Metadata
+    deploymentType: varchar("deployment_type").default("cloud"), // cloud, on_premise, hybrid
+    demoUrl: varchar("demo_url"),
+    documentationUrl: varchar("documentation_url"),
+    githubUrl: varchar("github_url"),
+    supportUrl: varchar("support_url"),
+    supportEmail: varchar("support_email"),
+    licenseType: varchar("license_type").default("proprietary"), // open_source, proprietary, mit, etc.
+    featuredOrder: integer("featured_order"), // If set, shows in featured section
 });
 
-export const insertMarketplaceAppSchema = createInsertSchema(marketplaceApps).omit({ id: true, createdAt: true, updatedAt: true, publishedAt: true, installCount: true, averageRating: true, reviewCount: true }).extend({
+export const insertMarketplaceAppSchema = createInsertSchema(marketplaceApps).extend({
     developerId: z.string().min(1),
     categoryId: z.string().min(1),
     name: z.string().min(1),
@@ -120,7 +137,7 @@ export const marketplaceAppVersions = pgTable("marketplace_app_versions", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertMarketplaceAppVersionSchema = createInsertSchema(marketplaceAppVersions).omit({ id: true, createdAt: true, publishedAt: true }).extend({
+export const insertMarketplaceAppVersionSchema = createInsertSchema(marketplaceAppVersions).extend({
     appId: z.string().min(1),
     version: z.string().min(1),
     changelog: z.string().optional(),
@@ -152,7 +169,7 @@ export const marketplaceInstallations = pgTable("marketplace_installations", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertMarketplaceInstallationSchema = createInsertSchema(marketplaceInstallations).omit({ id: true, createdAt: true, updatedAt: true, installedAt: true }).extend({
+export const insertMarketplaceInstallationSchema = createInsertSchema(marketplaceInstallations).extend({
     appId: z.string().min(1),
     appVersionId: z.string().optional(),
     tenantId: z.string().min(1),
@@ -185,7 +202,7 @@ export const marketplaceTransactions = pgTable("marketplace_transactions", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertMarketplaceTransactionSchema = createInsertSchema(marketplaceTransactions).omit({ id: true, createdAt: true }).extend({
+export const insertMarketplaceTransactionSchema = createInsertSchema(marketplaceTransactions).extend({
     appId: z.string().min(1),
     developerId: z.string().min(1),
     tenantId: z.string().min(1),
@@ -225,7 +242,7 @@ export const marketplaceSubscriptions = pgTable("marketplace_subscriptions", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertMarketplaceSubscriptionSchema = createInsertSchema(marketplaceSubscriptions).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertMarketplaceSubscriptionSchema = createInsertSchema(marketplaceSubscriptions).extend({
     appId: z.string().min(1),
     tenantId: z.string().min(1),
     userId: z.string().min(1),
@@ -262,7 +279,7 @@ export const marketplaceReviews = pgTable("marketplace_reviews", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertMarketplaceReviewSchema = createInsertSchema(marketplaceReviews).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertMarketplaceReviewSchema = createInsertSchema(marketplaceReviews).extend({
     appId: z.string().min(1),
     appVersionId: z.string().optional(),
     userId: z.string().min(1),
@@ -295,7 +312,7 @@ export const marketplacePayouts = pgTable("marketplace_payouts", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertMarketplacePayoutSchema = createInsertSchema(marketplacePayouts).omit({ id: true, createdAt: true }).extend({
+export const insertMarketplacePayoutSchema = createInsertSchema(marketplacePayouts).extend({
     developerId: z.string().min(1),
     amount: z.string().min(1),
     currency: z.string().optional(),
@@ -329,7 +346,7 @@ export const marketplaceCommissionSettings = pgTable("marketplace_commission_set
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertMarketplaceCommissionSettingSchema = createInsertSchema(marketplaceCommissionSettings).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertMarketplaceCommissionSettingSchema = createInsertSchema(marketplaceCommissionSettings).extend({
     name: z.string().min(1),
     type: z.enum(["global", "category", "developer"]).optional(),
     targetId: z.string().optional(),
@@ -360,7 +377,7 @@ export const marketplaceAuditLogs = pgTable("marketplace_audit_logs", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertMarketplaceAuditLogSchema = createInsertSchema(marketplaceAuditLogs).omit({ id: true, createdAt: true }).extend({
+export const insertMarketplaceAuditLogSchema = createInsertSchema(marketplaceAuditLogs).extend({
     entityType: z.enum(["app", "app_version", "developer", "payout", "commission", "license", "review", "installation", "transaction"]),
     entityId: z.string().min(1),
     action: z.string().min(1),
@@ -399,7 +416,7 @@ export const marketplaceLicenses = pgTable("marketplace_licenses", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertMarketplaceLicenseSchema = createInsertSchema(marketplaceLicenses).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertMarketplaceLicenseSchema = createInsertSchema(marketplaceLicenses).extend({
     appId: z.string().min(1),
     appVersionId: z.string().optional(),
     tenantId: z.string().min(1),
@@ -432,7 +449,7 @@ export const marketplaceAppDependencies = pgTable("marketplace_app_dependencies"
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertMarketplaceAppDependencySchema = createInsertSchema(marketplaceAppDependencies).omit({ id: true, createdAt: true }).extend({
+export const insertMarketplaceAppDependencySchema = createInsertSchema(marketplaceAppDependencies).extend({
     appId: z.string().min(1),
     dependsOnAppId: z.string().min(1),
     minVersion: z.string().optional(),

@@ -15,7 +15,7 @@ export const roles = pgTable("roles", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertRoleSchema = createInsertSchema(roles).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertRoleSchema = createInsertSchema(roles).extend({
     tenantId: z.string().optional().nullable(),
     name: z.string().min(1),
     description: z.string().optional(),
@@ -40,7 +40,7 @@ export const abacRules = pgTable("abac_rules", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertAbacRuleSchema = createInsertSchema(abacRules).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertAbacRuleSchema = createInsertSchema(abacRules).extend({
     name: z.string().min(1),
     resource: z.string().min(1),
     action: z.string().min(1),
@@ -64,7 +64,7 @@ export const encryptedFields = pgTable("encrypted_fields", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertEncryptedFieldSchema = createInsertSchema(encryptedFields).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertEncryptedFieldSchema = createInsertSchema(encryptedFields).extend({
     entityType: z.string().min(1),
     entityId: z.string().min(1),
     fieldName: z.string().min(1),
@@ -85,7 +85,7 @@ export const complianceConfigs = pgTable("compliance_configs", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertComplianceConfigSchema = createInsertSchema(complianceConfigs).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertComplianceConfigSchema = createInsertSchema(complianceConfigs).extend({
     tenantId: z.string().min(1),
     framework: z.string().min(1),
     settings: z.record(z.any()).optional(),
@@ -106,7 +106,7 @@ export const apps = pgTable("apps", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertAppSchema = createInsertSchema(apps).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertAppSchema = createInsertSchema(apps).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     version: z.string().optional(),
@@ -126,7 +126,7 @@ export const appReviews = pgTable("app_reviews", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertAppReviewSchema = createInsertSchema(appReviews).omit({ id: true, createdAt: true }).extend({
+export const insertAppReviewSchema = createInsertSchema(appReviews).extend({
     appId: z.string().min(1),
     userId: z.string().min(1),
     rating: z.number().min(1).max(5),
@@ -146,7 +146,7 @@ export const appInstallations = pgTable("app_installations", {
     installedAt: timestamp("installed_at").default(sql`now()`),
 });
 
-export const insertAppInstallationSchema = createInsertSchema(appInstallations).omit({ id: true, installedAt: true }).extend({
+export const insertAppInstallationSchema = createInsertSchema(appInstallations).extend({
     appId: z.string().min(1),
     tenantId: z.string().min(1),
     installedBy: z.string().min(1),

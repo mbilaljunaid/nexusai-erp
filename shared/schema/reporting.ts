@@ -16,7 +16,7 @@ export const reports = pgTable("reports", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertReportSchema = createInsertSchema(reports).omit({ id: true, createdAt: true }).extend({
+export const insertReportSchema = createInsertSchema(reports).extend({
     name: z.string().min(1),
     module: z.string().optional(),
     type: z.string().optional(),
@@ -41,7 +41,7 @@ export const smartViews = pgTable("smart_views", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertSmartViewSchema = createInsertSchema(smartViews).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertSmartViewSchema = createInsertSchema(smartViews).extend({
     formId: z.string().min(1),
     name: z.string().min(1),
     description: z.string().optional(),
@@ -62,7 +62,7 @@ export const timeSeriesData = pgTable("time_series_data", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertTimeSeriesDataSchema = createInsertSchema(timeSeriesData).omit({ id: true, createdAt: true }).extend({
+export const insertTimeSeriesDataSchema = createInsertSchema(timeSeriesData).extend({
     seriesName: z.string().min(1),
     dataPoint: z.date(),
     value: z.string().optional(),
@@ -85,7 +85,7 @@ export const biDashboards = pgTable("bi_dashboards", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertBiDashboardSchema = createInsertSchema(biDashboards).omit({ id: true, createdAt: true, updatedAt: true }).extend({
+export const insertBiDashboardSchema = createInsertSchema(biDashboards).extend({
     name: z.string().min(1),
     description: z.string().optional(),
     layout: z.record(z.any()).optional(),

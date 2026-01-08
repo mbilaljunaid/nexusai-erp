@@ -11,8 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { 
-  Search, Star, Package, Trash2, MessageSquare, 
+import {
+  Search, Star, Package, Trash2, MessageSquare,
   ExternalLink, Settings, CheckCircle, Clock, AlertCircle
 } from "lucide-react";
 import type { MarketplaceApp, AppInstallation, AppReview } from "@shared/schema";
@@ -47,8 +47,8 @@ function InstalledAppCard({ installation, onUninstall, onReview, isUninstalling 
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              {app.icon ? (
-                <img src={app.icon} alt={app.name} className="w-8 h-8 rounded" />
+              {app.logoUrl ? (
+                <img src={app.logoUrl} alt={app.name} className="w-8 h-8 rounded" />
               ) : (
                 <Package className="w-6 h-6" />
               )}
@@ -84,8 +84,8 @@ function InstalledAppCard({ installation, onUninstall, onReview, isUninstalling 
         )}
       </CardContent>
       <CardFooter className="pt-0 gap-2 flex-wrap">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={() => onReview(app)}
           data-testid={`button-review-app-${app.id}`}
@@ -93,16 +93,16 @@ function InstalledAppCard({ installation, onUninstall, onReview, isUninstalling 
           <MessageSquare className="w-4 h-4 mr-1" />
           Review
         </Button>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           data-testid={`button-settings-app-${app.id}`}
         >
           <Settings className="w-4 h-4 mr-1" />
           Settings
         </Button>
-        <Button 
-          variant="destructive" 
+        <Button
+          variant="destructive"
           size="sm"
           onClick={() => onUninstall(app.id)}
           disabled={isUninstalling}
@@ -134,11 +134,8 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
   });
 
   const submitReviewMutation = useMutation({
-    mutationFn: async ({ appId, data }: { appId: string; data: { rating: number; comment: string } }) => {
-      return apiRequest(`/api/marketplace/apps/${appId}/reviews`, {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+    mutationFn: async ({ appId, data }: { appId: string; data: { rating: number; content: string } }) => {
+      return apiRequest("POST", `/api/marketplace/apps/${appId}/reviews`, data);
     },
     onSuccess: () => {
       toast({ title: "Review submitted", description: "Thank you for your feedback!" });
@@ -160,9 +157,9 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
       toast({ title: "Please write a review", variant: "destructive" });
       return;
     }
-    submitReviewMutation.mutate({ 
-      appId: app.id, 
-      data: { rating, comment: comment.trim() } 
+    submitReviewMutation.mutate({
+      appId: app.id,
+      data: { rating, content: comment.trim() }
     });
   };
 
@@ -193,12 +190,11 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
                   className="p-1 hover-elevate rounded"
                   data-testid={`button-rating-star-${star}`}
                 >
-                  <Star 
-                    className={`w-6 h-6 ${
-                      star <= (hoveredRating || rating) 
-                        ? "text-yellow-500 fill-yellow-500" 
-                        : "text-muted-foreground"
-                    }`} 
+                  <Star
+                    className={`w-6 h-6 ${star <= (hoveredRating || rating)
+                      ? "text-yellow-500 fill-yellow-500"
+                      : "text-muted-foreground"
+                      }`}
                   />
                 </button>
               ))}
@@ -231,13 +227,12 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
                       <div className="flex items-center gap-2 mb-1">
                         <div className="flex">
                           {[1, 2, 3, 4, 5].map((star) => (
-                            <Star 
+                            <Star
                               key={star}
-                              className={`w-3 h-3 ${
-                                star <= review.rating 
-                                  ? "text-yellow-500 fill-yellow-500" 
-                                  : "text-muted-foreground"
-                              }`} 
+                              className={`w-3 h-3 ${star <= review.rating
+                                ? "text-yellow-500 fill-yellow-500"
+                                : "text-muted-foreground"
+                                }`}
                             />
                           ))}
                         </div>
@@ -245,7 +240,7 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
                           {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ""}
                         </span>
                       </div>
-                      <p className="text-muted-foreground">{review.comment}</p>
+                      <p className="text-muted-foreground">{review.content}</p>
                     </div>
                   ))}
                 </div>
@@ -260,8 +255,8 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
           <Button variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-review">
             Cancel
           </Button>
-          <Button 
-            onClick={handleSubmit} 
+          <Button
+            onClick={handleSubmit}
             disabled={submitReviewMutation.isPending}
             data-testid="button-submit-review"
           >
@@ -286,9 +281,7 @@ export default function AppStore() {
   const uninstallMutation = useMutation({
     mutationFn: async (appId: string) => {
       setUninstallingAppId(appId);
-      return apiRequest(`/api/marketplace/apps/${appId}/uninstall`, {
-        method: "DELETE",
-      });
+      return apiRequest("DELETE", `/api/marketplace/apps/${appId}/uninstall`);
     },
     onSuccess: () => {
       toast({ title: "App uninstalled", description: "The app has been removed successfully." });

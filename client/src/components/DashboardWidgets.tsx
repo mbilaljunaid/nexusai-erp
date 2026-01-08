@@ -61,7 +61,7 @@ interface Widget {
   enabled: boolean;
 }
 
-type WidgetType = 
+type WidgetType =
   | "revenue"
   | "users"
   | "orders"
@@ -141,14 +141,14 @@ function PinnedAppsWidget() {
   return (
     <div className="space-y-2">
       {installedApps.slice(0, 5).map((installed) => (
-        <div 
-          key={installed.id} 
+        <div
+          key={installed.id}
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors cursor-pointer"
           data-testid={`pinned-app-${installed.appId}`}
         >
           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-            {installed.app?.icon ? (
-              <img src={installed.app.icon} alt={installed.app.name} className="w-6 h-6 rounded" />
+            {(installed.app as any)?.icon ? (
+              <img src={(installed.app as any).icon} alt={installed.app.name} className="w-6 h-6 rounded" />
             ) : (
               <Package className="w-4 h-4" />
             )}
@@ -348,8 +348,8 @@ function DeveloperSpotlightWidget() {
         >
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary shrink-0 overflow-hidden">
             {entry.developer?.avatarUrl ? (
-              <img 
-                src={entry.developer.avatarUrl} 
+              <img
+                src={entry.developer.avatarUrl}
                 alt={entry.developer.name}
                 className="w-full h-full object-cover"
               />
@@ -533,10 +533,9 @@ function WidgetContent({ type }: { type: WidgetType }) {
               { task: "Update documentation", due: "Tomorrow", priority: "low" },
             ].map((t, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
-                <div className={`w-2 h-2 rounded-full ${
-                  t.priority === "high" ? "bg-red-500" : 
-                  t.priority === "medium" ? "bg-yellow-500" : "bg-green-500"
-                }`} />
+                <div className={`w-2 h-2 rounded-full ${t.priority === "high" ? "bg-red-500" :
+                    t.priority === "medium" ? "bg-yellow-500" : "bg-green-500"
+                  }`} />
                 <span className="flex-1 truncate">{t.task}</span>
                 <span className="text-muted-foreground text-xs">{t.due}</span>
               </div>
@@ -637,7 +636,7 @@ function WidgetContent({ type }: { type: WidgetType }) {
                 <span className="text-muted-foreground">{g.progress}%</span>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-primary rounded-full transition-all"
                   style={{ width: `${g.progress}%` }}
                 />
@@ -863,10 +862,10 @@ export function DashboardWidgets() {
                       })}
                     </div>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="w-full" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full"
                     onClick={resetToDefaults}
                     data-testid="button-reset-widgets"
                   >
@@ -915,9 +914,8 @@ export function DashboardWidgets() {
           return (
             <Card
               key={widget.id}
-              className={`${getSizeClass(widget.size)} transition-all ${
-                draggedWidget === widget.id ? "opacity-50 scale-95" : ""
-              } ${draggedWidget && draggedWidget !== widget.id ? "hover:border-primary" : ""}`}
+              className={`${getSizeClass(widget.size)} transition-all ${draggedWidget === widget.id ? "opacity-50 scale-95" : ""
+                } ${draggedWidget && draggedWidget !== widget.id ? "hover:border-primary" : ""}`}
               draggable
               onDragStart={(e) => handleDragStart(e, widget.id)}
               onDragOver={handleDragOver}
@@ -928,7 +926,7 @@ export function DashboardWidgets() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <div 
+                    <div
                       className="cursor-grab active:cursor-grabbing p-1 -ml-1 rounded hover:bg-muted"
                       data-testid={`drag-handle-${widget.id}`}
                     >
@@ -939,9 +937,9 @@ export function DashboardWidgets() {
                   </CardTitle>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         className="h-7 w-7"
                         data-testid={`button-widget-menu-${widget.id}`}
                       >
@@ -950,21 +948,21 @@ export function DashboardWidgets() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Widget Size</DropdownMenuLabel>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => changeSize(widget.id, "small")}
                         data-testid={`menu-size-small-${widget.id}`}
                       >
                         Small
                         {widget.size === "small" && <CheckCircle className="w-4 h-4 ml-auto" />}
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => changeSize(widget.id, "medium")}
                         data-testid={`menu-size-medium-${widget.id}`}
                       >
                         Medium
                         {widget.size === "medium" && <CheckCircle className="w-4 h-4 ml-auto" />}
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => changeSize(widget.id, "large")}
                         data-testid={`menu-size-large-${widget.id}`}
                       >
@@ -972,7 +970,7 @@ export function DashboardWidgets() {
                         {widget.size === "large" && <CheckCircle className="w-4 h-4 ml-auto" />}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => removeWidget(widget.id)}
                         className="text-red-600"
                         data-testid={`menu-remove-widget-${widget.id}`}

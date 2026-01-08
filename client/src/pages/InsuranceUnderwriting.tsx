@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function InsurancePage() {
-  const { data = [] } = useQuery({ queryKey: ['/api/insurance-default'] });
+  const { data = [] } = useQuery<any[]>({ queryKey: ['/api/insurance-default'] });
 
   return (
     <div className="space-y-6 p-6">

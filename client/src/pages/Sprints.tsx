@@ -28,7 +28,7 @@ export default function Sprints() {
         <p className="text-muted-foreground">Plan and execute sprints with your team</p>
       </div>
 
-      <IconNavigation items={navigationItems} activeId={activeNav} onNavigate={setActiveNav} />
+      <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 
       <div className="grid gap-4">
         {filteredSprints.map((sprint: any) => (

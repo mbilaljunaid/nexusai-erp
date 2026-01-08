@@ -12,7 +12,7 @@ interface ProcessPageProps {
 export function PublicProcessTemplate({ title, description, steps, kpis }: ProcessPageProps) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <Breadcrumbs />
+      <Breadcrumbs items={[]} />
       <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">{title}</h1>

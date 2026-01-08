@@ -3,7 +3,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, TrendingUp, Users, ArrowRightLeft } from "lucide-react";
-import type { TaxRule, ConsolidationRule, FxTranslation } from "@shared/schema";
+// Local type definitions since these are not yet in shared schema
+interface TaxRule {
+  id: string;
+  name: string;
+  jurisdiction: string;
+  taxType: string;
+  rate: number;
+  effectiveDate: string | Date;
+}
+interface ConsolidationRule {
+  id: string;
+  parentEntityId: string;
+  childEntityId: string;
+  consolidationMethod: string;
+  ownershipPercentage: number;
+  status: string;
+}
+interface FxTranslation {
+  id: string;
+  fromCurrency: string;
+  toCurrency: string;
+  transactionAmount: number;
+  exchangeRate: number;
+  translatedAmount: number;
+  realizedGainLoss?: number;
+}
 
 export default function ERPAdvanced() {
   const { data: taxRules = [] } = useQuery<TaxRule[]>({ queryKey: ["/api/erp/tax-rules"] });

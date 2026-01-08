@@ -18,9 +18,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  Search, Star, Download, Package, Grid3X3, List, 
-  ExternalLink, Check, Tag, Layers, Shield, Zap, 
+import {
+  Search, Star, Download, Package, Grid3X3, List,
+  ExternalLink, Check, Tag, Layers, Shield, Zap,
   Code, BookOpen, Mail, Globe, DollarSign, LogIn, Building2,
   Sparkles, Share2, Twitter, Linkedin, Link2, GitCompare, X, Clock, Trash2, ChevronsUpDown
 } from "lucide-react";
@@ -47,9 +47,9 @@ interface AppCardProps {
 
 function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, compareMode, isSelectedForCompare, onToggleCompare }: AppCardProps) {
   const getPriceDisplay = () => {
-    if (app.pricingModel === "free") return "Free";
-    if (app.pricingModel === "freemium") return "Freemium";
-    if (app.pricingModel === "subscription") {
+    if (app.priceType === "free") return "Free";
+    if (app.priceType === "freemium") return "Freemium";
+    if (app.priceType === "subscription") {
       return app.subscriptionPriceMonthly ? `$${app.subscriptionPriceMonthly}/mo` : "Contact";
     }
     return app.price && parseFloat(app.price) > 0 ? `$${app.price}` : "Free";
@@ -80,8 +80,8 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
           )}
           <div className="flex items-center gap-3 flex-1">
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              {app.icon ? (
-                <img src={app.icon} alt={app.name} className="w-8 h-8 rounded" />
+              {app.logoUrl ? (
+                <img src={app.logoUrl} alt={app.name} className="w-8 h-8 rounded" />
               ) : (
                 <Package className="w-6 h-6" />
               )}
@@ -101,11 +101,11 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
             <span>{app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "0.0"}</span>
-            <span className="text-xs">({app.totalReviews || 0})</span>
+            <span className="text-xs">({app.reviewCount || 0})</span>
           </div>
           <div className="flex items-center gap-1">
             <Download className="w-4 h-4" />
-            <span>{app.totalInstalls || 0}</span>
+            <span>{app.installCount || 0}</span>
           </div>
           <div className="ml-auto font-medium text-foreground">
             {getPriceDisplay()}
@@ -125,9 +125,9 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
         )}
       </CardContent>
       <CardFooter className="pt-0 gap-2">
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           className="flex-1"
           onClick={() => onViewDetails(app)}
           data-testid={`button-view-app-${app.id}`}
@@ -140,8 +140,8 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
             Installed
           </Button>
         ) : (
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             className="flex-1"
             onClick={() => onInstall(app.id)}
             disabled={isInstalling}
@@ -155,17 +155,17 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
   );
 }
 
-function AppDetailDialog({ 
-  app, 
-  open, 
-  onOpenChange, 
-  onInstall, 
-  isInstalling, 
+function AppDetailDialog({
+  app,
+  open,
+  onOpenChange,
+  onInstall,
+  isInstalling,
   isInstalled,
   onShare
-}: { 
-  app: MarketplaceApp | null; 
-  open: boolean; 
+}: {
+  app: MarketplaceApp | null;
+  open: boolean;
   onOpenChange: (open: boolean) => void;
   onInstall: (appId: string) => void;
   isInstalling: boolean;
@@ -175,9 +175,9 @@ function AppDetailDialog({
   if (!app) return null;
 
   const getPriceDisplay = () => {
-    if (app.pricingModel === "free") return "Free";
-    if (app.pricingModel === "freemium") return "Freemium";
-    if (app.pricingModel === "subscription") {
+    if (app.priceType === "free") return "Free";
+    if (app.priceType === "freemium") return "Freemium";
+    if (app.priceType === "subscription") {
       const monthly = app.subscriptionPriceMonthly ? `$${app.subscriptionPriceMonthly}/mo` : "";
       const yearly = app.subscriptionPriceYearly ? `$${app.subscriptionPriceYearly}/yr` : "";
       return [monthly, yearly].filter(Boolean).join(" or ") || "Contact";
@@ -191,8 +191,8 @@ function AppDetailDialog({
         <DialogHeader>
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              {app.icon ? (
-                <img src={app.icon} alt={app.name} className="w-12 h-12 rounded-lg" />
+              {app.logoUrl ? (
+                <img src={app.logoUrl} alt={app.name} className="w-12 h-12 rounded-lg" />
               ) : (
                 <Package className="w-8 h-8" />
               )}
@@ -206,17 +206,17 @@ function AppDetailDialog({
                 <div className="flex items-center gap-1">
                   <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                   <span className="font-medium">{app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "0.0"}</span>
-                  <span className="text-muted-foreground">({app.totalReviews || 0} reviews)</span>
+                  <span className="text-muted-foreground">({app.reviewCount || 0} reviews)</span>
                 </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <Download className="w-4 h-4" />
-                  <span>{app.totalInstalls || 0} installs</span>
+                  <span>{app.installCount || 0} installs</span>
                 </div>
               </div>
             </div>
           </div>
         </DialogHeader>
-        
+
         <ScrollArea className="flex-1 -mx-6 px-6">
           <div className="space-y-6 py-4">
             {app.screenshots && app.screenshots.length > 0 && (
@@ -224,9 +224,9 @@ function AppDetailDialog({
                 <h4 className="font-medium mb-3">Screenshots</h4>
                 <div className="flex gap-2 overflow-x-auto pb-2">
                   {app.screenshots.map((screenshot, i) => (
-                    <img 
-                      key={i} 
-                      src={screenshot} 
+                    <img
+                      key={i}
+                      src={screenshot}
                       alt={`Screenshot ${i + 1}`}
                       className="h-32 rounded-lg border object-cover"
                     />
@@ -238,7 +238,7 @@ function AppDetailDialog({
             <div>
               <h4 className="font-medium mb-2">Description</h4>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                {app.longDescription || app.shortDescription || "No description available."}
+                {app.fullDescription || app.shortDescription || "No description available."}
               </p>
             </div>
 
@@ -250,7 +250,7 @@ function AppDetailDialog({
                 </h4>
                 <p className="text-sm">
                   <span className="font-medium">{getPriceDisplay()}</span>
-                  <span className="text-muted-foreground ml-2 capitalize">({app.pricingModel})</span>
+                  <span className="text-muted-foreground ml-2 capitalize">({app.priceType})</span>
                 </p>
               </div>
               <div>
@@ -309,41 +309,41 @@ function AppDetailDialog({
 
             <div className="flex flex-wrap gap-4 text-sm">
               {app.demoUrl && (
-                <a href={app.demoUrl} target="_blank" rel="noopener noreferrer" 
-                   className="flex items-center gap-1 text-primary hover:underline"
-                   data-testid="link-app-demo">
+                <a href={app.demoUrl} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-primary hover:underline"
+                  data-testid="link-app-demo">
                   <Zap className="w-4 h-4" />
                   Live Demo
                 </a>
               )}
               {app.documentationUrl && (
                 <a href={app.documentationUrl} target="_blank" rel="noopener noreferrer"
-                   className="flex items-center gap-1 text-primary hover:underline"
-                   data-testid="link-app-docs">
+                  className="flex items-center gap-1 text-primary hover:underline"
+                  data-testid="link-app-docs">
                   <BookOpen className="w-4 h-4" />
                   Documentation
                 </a>
               )}
               {app.githubUrl && (
                 <a href={app.githubUrl} target="_blank" rel="noopener noreferrer"
-                   className="flex items-center gap-1 text-primary hover:underline"
-                   data-testid="link-app-github">
+                  className="flex items-center gap-1 text-primary hover:underline"
+                  data-testid="link-app-github">
                   <Code className="w-4 h-4" />
                   Source Code
                 </a>
               )}
               {app.supportUrl && (
                 <a href={app.supportUrl} target="_blank" rel="noopener noreferrer"
-                   className="flex items-center gap-1 text-primary hover:underline"
-                   data-testid="link-app-support">
+                  className="flex items-center gap-1 text-primary hover:underline"
+                  data-testid="link-app-support">
                   <Globe className="w-4 h-4" />
                   Support
                 </a>
               )}
               {app.supportEmail && (
                 <a href={`mailto:${app.supportEmail}`}
-                   className="flex items-center gap-1 text-primary hover:underline"
-                   data-testid="link-app-contact">
+                  className="flex items-center gap-1 text-primary hover:underline"
+                  data-testid="link-app-contact">
                   <Mail className="w-4 h-4" />
                   Contact
                 </a>
@@ -422,9 +422,9 @@ function CompareDialog({
   if (apps.length < 2) return null;
 
   const getPriceDisplay = (app: MarketplaceApp) => {
-    if (app.pricingModel === "free") return "Free";
-    if (app.pricingModel === "freemium") return "Freemium";
-    if (app.pricingModel === "subscription") {
+    if (app.priceType === "free") return "Free";
+    if (app.priceType === "freemium") return "Freemium";
+    if (app.priceType === "subscription") {
       return app.subscriptionPriceMonthly ? `$${app.subscriptionPriceMonthly}/mo` : "Contact";
     }
     return app.price && parseFloat(app.price) > 0 ? `$${app.price}` : "Free";
@@ -453,8 +453,8 @@ function CompareDialog({
                     <th key={app.id} className="text-left p-3 border-b">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                          {app.icon ? (
-                            <img src={app.icon} alt={app.name} className="w-6 h-6 rounded" />
+                          {app.logoUrl ? (
+                            <img src={app.logoUrl} alt={app.name} className="w-6 h-6 rounded" />
                           ) : (
                             <Package className="w-4 h-4" />
                           )}
@@ -473,7 +473,7 @@ function CompareDialog({
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                         <span>{app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "0.0"}</span>
-                        <span className="text-xs text-muted-foreground">({app.totalReviews || 0})</span>
+                        <span className="text-xs text-muted-foreground">({app.reviewCount || 0})</span>
                       </div>
                     </td>
                   ))}
@@ -484,7 +484,7 @@ function CompareDialog({
                     <td key={app.id} className="p-3 border-b">
                       <div className="flex items-center gap-1">
                         <Download className="w-4 h-4" />
-                        <span>{app.totalInstalls || 0}</span>
+                        <span>{app.installCount || 0}</span>
                       </div>
                     </td>
                   ))}
@@ -595,7 +595,7 @@ export default function Marketplace() {
   const [selectedForCompare, setSelectedForCompare] = useState<MarketplaceApp[]>([]);
   const [compareDialogOpen, setCompareDialogOpen] = useState(false);
   const [industryPopoverOpen, setIndustryPopoverOpen] = useState(false);
-  
+
   const RECENTLY_VIEWED_KEY = "nexusai-recently-viewed-apps";
   const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
@@ -675,10 +675,10 @@ export default function Marketplace() {
       queryClient.invalidateQueries({ queryKey: ["/api/marketplace/apps"] });
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to install app", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to install app",
+        variant: "destructive"
       });
     },
   });
@@ -711,25 +711,25 @@ export default function Marketplace() {
   };
 
   const selectedIndustrySlug = industryFilter !== "all" ? getIndustrySlug(industryFilter) : null;
-  const selectedIndustryName = industryFilter !== "all" 
-    ? industries.find((i) => i.id === industryFilter)?.name 
+  const selectedIndustryName = industryFilter !== "all"
+    ? industries.find((i) => i.id === industryFilter)?.name
     : null;
 
   const industryRecommendedApps = industryFilter !== "all"
-    ? apps.filter((app) => 
-        app.status === "approved" && 
-        app.supportedIndustries?.includes(selectedIndustrySlug || industryFilter)
-      )
+    ? apps.filter((app) =>
+      app.status === "approved" &&
+      app.supportedIndustries?.includes(selectedIndustrySlug || industryFilter)
+    )
     : [];
 
   const filteredApps = apps.filter((app) => {
     if (app.status !== "approved") return false;
     if (searchQuery && !app.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (selectedCategory !== "all" && app.categoryId !== selectedCategory) return false;
-    if (pricingFilter !== "all" && app.pricingModel !== pricingFilter) return false;
-    if (aiFilter && !app.tags?.some(t => 
-      t.toLowerCase().includes('ai') || 
-      t.toLowerCase().includes('openai') || 
+    if (pricingFilter !== "all" && app.priceType !== pricingFilter) return false;
+    if (aiFilter && !app.tags?.some(t =>
+      t.toLowerCase().includes('ai') ||
+      t.toLowerCase().includes('openai') ||
       t.toLowerCase().includes('machine learning') ||
       t.toLowerCase().includes('ml') ||
       t.toLowerCase().includes('automation')
@@ -753,7 +753,7 @@ export default function Marketplace() {
   const handleShare = (platform: string, app: MarketplaceApp) => {
     const appUrl = `${window.location.origin}/marketplace?app=${app.id}`;
     const text = `Check out ${app.name} on NexusAIFirst Marketplace!`;
-    
+
     switch (platform) {
       case 'twitter':
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(appUrl)}`, '_blank');
@@ -787,285 +787,330 @@ export default function Marketplace() {
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-3xl font-bold" data-testid="text-marketplace-title">App Marketplace</h1>
-          <p className="text-muted-foreground mt-1">
-            Discover and install apps to extend your platform
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")} data-testid="button-view-grid">
-            <Grid3X3 className="w-4 h-4" />
-          </Button>
-          <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" onClick={() => setViewMode("list")} data-testid="button-view-list">
-            <List className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search apps..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-            data-testid="input-search-apps"
-          />
-        </div>
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-full sm:w-[180px]" data-testid="select-category">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {categories.map((cat) => (
-              <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={pricingFilter} onValueChange={setPricingFilter}>
-          <SelectTrigger className="w-full sm:w-[150px]" data-testid="select-pricing">
-            <SelectValue placeholder="Pricing" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Pricing</SelectItem>
-            <SelectItem value="free">Free</SelectItem>
-            <SelectItem value="freemium">Freemium</SelectItem>
-            <SelectItem value="one_time">One-time</SelectItem>
-            <SelectItem value="subscription">Subscription</SelectItem>
-          </SelectContent>
-        </Select>
-        <Popover open={industryPopoverOpen} onOpenChange={setIndustryPopoverOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={industryPopoverOpen}
-              className="w-full sm:w-[220px] justify-between"
-              data-testid="select-industry-filter"
-            >
-              <div className="flex items-center gap-2 truncate">
-                <Building2 className="w-4 h-4 text-muted-foreground shrink-0" />
-                <span className="truncate">
-                  {industryFilter === "all" 
-                    ? "All Industries" 
-                    : industries.find((i) => i.id === industryFilter)?.name || "Select industry..."}
-                </span>
-              </div>
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <p className="text-muted-foreground mt-1">
+              Discover and install apps to extend your platform
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")} data-testid="button-view-grid">
+              <Grid3X3 className="w-4 h-4" />
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[280px] p-0" align="start">
-            <Command>
-              <CommandInput placeholder="Search industries..." data-testid="input-search-industry" />
-              <CommandList>
-                <CommandEmpty>No industry found.</CommandEmpty>
-                <CommandGroup>
-                  <CommandItem
-                    value="all"
-                    onSelect={() => {
-                      setIndustryFilter("all");
-                      setIndustryPopoverOpen(false);
-                    }}
-                    data-testid="option-industry-all"
-                  >
-                    <Check className={`mr-2 h-4 w-4 ${industryFilter === "all" ? "opacity-100" : "opacity-0"}`} />
-                    All Industries
-                  </CommandItem>
-                  {industries.filter((i) => i.isActive).map((industry) => (
+            <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" onClick={() => setViewMode("list")} data-testid="button-view-list">
+              <List className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search apps..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+              data-testid="input-search-apps"
+            />
+          </div>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-full sm:w-[180px]" data-testid="select-category">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={pricingFilter} onValueChange={setPricingFilter}>
+            <SelectTrigger className="w-full sm:w-[150px]" data-testid="select-pricing">
+              <SelectValue placeholder="Pricing" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Pricing</SelectItem>
+              <SelectItem value="free">Free</SelectItem>
+              <SelectItem value="freemium">Freemium</SelectItem>
+              <SelectItem value="one_time">One-time</SelectItem>
+              <SelectItem value="subscription">Subscription</SelectItem>
+            </SelectContent>
+          </Select>
+          <Popover open={industryPopoverOpen} onOpenChange={setIndustryPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={industryPopoverOpen}
+                className="w-full sm:w-[220px] justify-between"
+                data-testid="select-industry-filter"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <Building2 className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className="truncate">
+                    {industryFilter === "all"
+                      ? "All Industries"
+                      : industries.find((i) => i.id === industryFilter)?.name || "Select industry..."}
+                  </span>
+                </div>
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[280px] p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Search industries..." data-testid="input-search-industry" />
+                <CommandList>
+                  <CommandEmpty>No industry found.</CommandEmpty>
+                  <CommandGroup>
                     <CommandItem
-                      key={industry.id}
-                      value={industry.name}
+                      value="all"
                       onSelect={() => {
-                        setIndustryFilter(industry.id);
+                        setIndustryFilter("all");
                         setIndustryPopoverOpen(false);
                       }}
-                      data-testid={`option-industry-${industry.id}`}
+                      data-testid="option-industry-all"
                     >
-                      <Check className={`mr-2 h-4 w-4 ${industryFilter === industry.id ? "opacity-100" : "opacity-0"}`} />
-                      {industry.name}
+                      <Check className={`mr-2 h-4 w-4 ${industryFilter === "all" ? "opacity-100" : "opacity-0"}`} />
+                      All Industries
                     </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-        <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-background">
-          <Sparkles className="w-4 h-4 text-primary" />
-          <Label htmlFor="ai-filter" className="text-sm cursor-pointer whitespace-nowrap">AI-Powered</Label>
-          <Switch 
-            id="ai-filter" 
-            checked={aiFilter} 
-            onCheckedChange={setAiFilter} 
-            data-testid="switch-ai-filter"
-          />
-        </div>
-        <Button 
-          variant={compareMode ? "default" : "outline"} 
-          onClick={() => {
-            setCompareMode(!compareMode);
-            if (compareMode) {
-              setSelectedForCompare([]);
-            }
-          }}
-          className="gap-2"
-          data-testid="button-compare-mode"
-        >
-          <GitCompare className="w-4 h-4" />
-          {compareMode ? "Exit Compare" : "Compare Apps"}
-        </Button>
-      </div>
-
-      {compareMode && selectedForCompare.length > 0 && (
-        <div className="flex items-center gap-4 p-4 rounded-lg border bg-muted/50" data-testid="compare-selection-bar">
-          <span className="text-sm font-medium">
-            {selectedForCompare.length} of 3 apps selected
-          </span>
-          <div className="flex gap-2 flex-1">
-            {selectedForCompare.map(app => (
-              <Badge key={app.id} variant="secondary" className="gap-1">
-                {app.name}
-                <button 
-                  onClick={() => toggleCompareApp(app)}
-                  className="ml-1 hover:text-destructive"
-                  data-testid={`button-remove-compare-${app.id}`}
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </Badge>
-            ))}
+                    {industries.filter((i) => i.isActive).map((industry) => (
+                      <CommandItem
+                        key={industry.id}
+                        value={industry.name}
+                        onSelect={() => {
+                          setIndustryFilter(industry.id);
+                          setIndustryPopoverOpen(false);
+                        }}
+                        data-testid={`option-industry-${industry.id}`}
+                      >
+                        <Check className={`mr-2 h-4 w-4 ${industryFilter === industry.id ? "opacity-100" : "opacity-0"}`} />
+                        {industry.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-background">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <Label htmlFor="ai-filter" className="text-sm cursor-pointer whitespace-nowrap">AI-Powered</Label>
+            <Switch
+              id="ai-filter"
+              checked={aiFilter}
+              onCheckedChange={setAiFilter}
+              data-testid="switch-ai-filter"
+            />
           </div>
-          <Button 
-            onClick={() => setCompareDialogOpen(true)} 
-            disabled={selectedForCompare.length < 2}
-            data-testid="button-open-compare"
+          <Button
+            variant={compareMode ? "default" : "outline"}
+            onClick={() => {
+              setCompareMode(!compareMode);
+              if (compareMode) {
+                setSelectedForCompare([]);
+              }
+            }}
+            className="gap-2"
+            data-testid="button-compare-mode"
           >
-            Compare ({selectedForCompare.length})
+            <GitCompare className="w-4 h-4" />
+            {compareMode ? "Exit Compare" : "Compare Apps"}
           </Button>
         </div>
-      )}
 
-      {!loadingApps && recentlyViewedApps.length > 0 && (
-        <Card className="p-6" data-testid="section-recently-viewed">
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-muted rounded-lg">
-                <Clock className="w-5 h-5 text-muted-foreground" />
+        {compareMode && selectedForCompare.length > 0 && (
+          <div className="flex items-center gap-4 p-4 rounded-lg border bg-muted/50" data-testid="compare-selection-bar">
+            <span className="text-sm font-medium">
+              {selectedForCompare.length} of 3 apps selected
+            </span>
+            <div className="flex gap-2 flex-1">
+              {selectedForCompare.map(app => (
+                <Badge key={app.id} variant="secondary" className="gap-1">
+                  {app.name}
+                  <button
+                    onClick={() => toggleCompareApp(app)}
+                    className="ml-1 hover:text-destructive"
+                    data-testid={`button-remove-compare-${app.id}`}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+            <Button
+              onClick={() => setCompareDialogOpen(true)}
+              disabled={selectedForCompare.length < 2}
+              data-testid="button-open-compare"
+            >
+              Compare ({selectedForCompare.length})
+            </Button>
+          </div>
+        )}
+
+        {!loadingApps && recentlyViewedApps.length > 0 && (
+          <Card className="p-6" data-testid="section-recently-viewed">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-muted rounded-lg">
+                  <Clock className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold">Recently Viewed</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Quick access to apps you've explored
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearRecentlyViewed}
+                className="text-muted-foreground"
+                data-testid="button-clear-recently-viewed"
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                Clear
+              </Button>
+            </div>
+            <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+              {recentlyViewedApps.map((app) => (
+                <AppCard
+                  key={app.id}
+                  app={app}
+                  onViewDetails={handleViewDetails}
+                  onInstall={handleInstall}
+                  isInstalling={installMutation.isPending}
+                  isInstalled={installedAppIds.has(app.id)}
+                  compareMode={compareMode}
+                  isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                  onToggleCompare={toggleCompareApp}
+                />
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {industryFilter !== "all" && !loadingApps && industryRecommendedApps.length > 0 && (
+          <Card className="p-6 bg-primary/5 border-primary/20" data-testid="section-industry-recommendations">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Building2 className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold">Recently Viewed</h2>
+                <h2 className="text-lg font-semibold">Recommended for {selectedIndustryName}</h2>
                 <p className="text-sm text-muted-foreground">
-                  Quick access to apps you've explored
+                  {industryRecommendedApps.length} app{industryRecommendedApps.length !== 1 ? 's' : ''} tailored for your industry
                 </p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearRecentlyViewed}
-              className="text-muted-foreground"
-              data-testid="button-clear-recently-viewed"
-            >
-              <Trash2 className="w-4 h-4 mr-1" />
-              Clear
-            </Button>
-          </div>
-          <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-            {recentlyViewedApps.map((app) => (
-              <AppCard
-                key={app.id}
-                app={app}
-                onViewDetails={handleViewDetails}
-                onInstall={handleInstall}
-                isInstalling={installMutation.isPending}
-                isInstalled={installedAppIds.has(app.id)}
-                compareMode={compareMode}
-                isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
-                onToggleCompare={toggleCompareApp}
-              />
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {industryFilter !== "all" && !loadingApps && industryRecommendedApps.length > 0 && (
-        <Card className="p-6 bg-primary/5 border-primary/20" data-testid="section-industry-recommendations">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Building2 className="w-5 h-5 text-primary" />
+            <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+              {industryRecommendedApps.slice(0, 6).map((app) => (
+                <AppCard
+                  key={app.id}
+                  app={app}
+                  onViewDetails={handleViewDetails}
+                  onInstall={handleInstall}
+                  isInstalling={installMutation.isPending}
+                  isInstalled={installedAppIds.has(app.id)}
+                  compareMode={compareMode}
+                  isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                  onToggleCompare={toggleCompareApp}
+                />
+              ))}
             </div>
-            <div>
-              <h2 className="text-lg font-semibold">Recommended for {selectedIndustryName}</h2>
-              <p className="text-sm text-muted-foreground">
-                {industryRecommendedApps.length} app{industryRecommendedApps.length !== 1 ? 's' : ''} tailored for your industry
+            {industryRecommendedApps.length > 6 && (
+              <p className="text-sm text-muted-foreground text-center mt-4">
+                Showing 6 of {industryRecommendedApps.length} recommended apps. Browse all apps below.
               </p>
-            </div>
-          </div>
-          <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-            {industryRecommendedApps.slice(0, 6).map((app) => (
-              <AppCard
-                key={app.id}
-                app={app}
-                onViewDetails={handleViewDetails}
-                onInstall={handleInstall}
-                isInstalling={installMutation.isPending}
-                isInstalled={installedAppIds.has(app.id)}
-                compareMode={compareMode}
-                isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
-                onToggleCompare={toggleCompareApp}
-              />
-            ))}
-          </div>
-          {industryRecommendedApps.length > 6 && (
-            <p className="text-sm text-muted-foreground text-center mt-4">
-              Showing 6 of {industryRecommendedApps.length} recommended apps. Browse all apps below.
-            </p>
-          )}
-        </Card>
-      )}
+            )}
+          </Card>
+        )}
 
-      <Tabs defaultValue="all" className="w-full">
-        <TabsList>
-          <TabsTrigger value="all" data-testid="tab-all-apps">All Apps</TabsTrigger>
-          <TabsTrigger value="featured" data-testid="tab-featured">Featured</TabsTrigger>
-          <TabsTrigger value="popular" data-testid="tab-popular">Popular</TabsTrigger>
-          <TabsTrigger value="new" data-testid="tab-new">New</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList>
+            <TabsTrigger value="all" data-testid="tab-all-apps">All Apps</TabsTrigger>
+            <TabsTrigger value="featured" data-testid="tab-featured">Featured</TabsTrigger>
+            <TabsTrigger value="popular" data-testid="tab-popular">Popular</TabsTrigger>
+            <TabsTrigger value="new" data-testid="tab-new">New</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="all" className="mt-6">
-          {loadingApps ? (
-            <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-              {[...Array(6)].map((_, i) => (
-                <Card key={i}>
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="w-12 h-12 rounded-lg" />
-                      <div className="space-y-2 flex-1">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-3 w-48" />
+          <TabsContent value="all" className="mt-6">
+            {loadingApps ? (
+              <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+                {[...Array(6)].map((_, i) => (
+                  <Card key={i}>
+                    <CardHeader>
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="w-12 h-12 rounded-lg" />
+                        <div className="space-y-2 flex-1">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-3 w-48" />
+                        </div>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <Skeleton className="h-4 w-24" />
-                  </CardContent>
-                  <CardFooter className="gap-2">
-                    <Skeleton className="h-8 flex-1" />
-                    <Skeleton className="h-8 flex-1" />
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          ) : filteredApps.length === 0 ? (
-            <div className="text-center py-12">
-              <Package className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-lg font-medium">Discover Amazing Apps</h3>
-              <p className="text-muted-foreground mt-1">Adjust your filters to explore our growing collection of powerful integrations</p>
-            </div>
-          ) : (
+                    </CardHeader>
+                    <CardContent>
+                      <Skeleton className="h-4 w-24" />
+                    </CardContent>
+                    <CardFooter className="gap-2">
+                      <Skeleton className="h-8 flex-1" />
+                      <Skeleton className="h-8 flex-1" />
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : filteredApps.length === 0 ? (
+              <div className="text-center py-12">
+                <Package className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h3 className="text-lg font-medium">Discover Amazing Apps</h3>
+                <p className="text-muted-foreground mt-1">Adjust your filters to explore our growing collection of powerful integrations</p>
+              </div>
+            ) : (
+              <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+                {filteredApps.map((app) => (
+                  <AppCard
+                    key={app.id}
+                    app={app}
+                    onViewDetails={handleViewDetails}
+                    onInstall={handleInstall}
+                    isInstalling={installMutation.isPending}
+                    isInstalled={installedAppIds.has(app.id)}
+                    compareMode={compareMode}
+                    isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                    onToggleCompare={toggleCompareApp}
+                  />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="featured" className="mt-6">
+            {featuredApps.length === 0 ? (
+              <div className="text-center py-12">
+                <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+                <h3 className="text-lg font-medium">Featured Apps Coming Soon</h3>
+                <p className="text-muted-foreground mt-1">Our team is handpicking the best apps for you - stay tuned for curated recommendations!</p>
+              </div>
+            ) : (
+              <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+                {featuredApps.map((app) => (
+                  <AppCard
+                    key={app.id}
+                    app={app}
+                    onViewDetails={handleViewDetails}
+                    onInstall={handleInstall}
+                    isInstalling={installMutation.isPending}
+                    isInstalled={installedAppIds.has(app.id)}
+                    compareMode={compareMode}
+                    isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
+                    onToggleCompare={toggleCompareApp}
+                  />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="popular" className="mt-6">
             <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-              {filteredApps.map((app) => (
+              {[...filteredApps].sort((a, b) => (b.installCount || 0) - (a.installCount || 0)).slice(0, 12).map((app) => (
                 <AppCard
                   key={app.id}
                   app={app}
@@ -1079,19 +1124,14 @@ export default function Marketplace() {
                 />
               ))}
             </div>
-          )}
-        </TabsContent>
+          </TabsContent>
 
-        <TabsContent value="featured" className="mt-6">
-          {featuredApps.length === 0 ? (
-            <div className="text-center py-12">
-              <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-              <h3 className="text-lg font-medium">Featured Apps Coming Soon</h3>
-              <p className="text-muted-foreground mt-1">Our team is handpicking the best apps for you - stay tuned for curated recommendations!</p>
-            </div>
-          ) : (
+          <TabsContent value="new" className="mt-6">
             <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-              {featuredApps.map((app) => (
+              {[...filteredApps].sort((a, b) =>
+                new Date(b.publishedAt || b.createdAt || 0).getTime() -
+                new Date(a.publishedAt || a.createdAt || 0).getTime()
+              ).slice(0, 12).map((app) => (
                 <AppCard
                   key={app.id}
                   app={app}
@@ -1105,48 +1145,8 @@ export default function Marketplace() {
                 />
               ))}
             </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="popular" className="mt-6">
-          <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-            {[...filteredApps].sort((a, b) => (b.totalInstalls || 0) - (a.totalInstalls || 0)).slice(0, 12).map((app) => (
-              <AppCard
-                key={app.id}
-                app={app}
-                onViewDetails={handleViewDetails}
-                onInstall={handleInstall}
-                isInstalling={installMutation.isPending}
-                isInstalled={installedAppIds.has(app.id)}
-                compareMode={compareMode}
-                isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
-                onToggleCompare={toggleCompareApp}
-              />
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="new" className="mt-6">
-          <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-            {[...filteredApps].sort((a, b) => 
-              new Date(b.publishedAt || b.createdAt || 0).getTime() - 
-              new Date(a.publishedAt || a.createdAt || 0).getTime()
-            ).slice(0, 12).map((app) => (
-              <AppCard
-                key={app.id}
-                app={app}
-                onViewDetails={handleViewDetails}
-                onInstall={handleInstall}
-                isInstalling={installMutation.isPending}
-                isInstalled={installedAppIds.has(app.id)}
-                compareMode={compareMode}
-                isSelectedForCompare={selectedForCompare.some(a => a.id === app.id)}
-                onToggleCompare={toggleCompareApp}
-              />
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+        </Tabs>
 
         <AppDetailDialog
           app={selectedApp}
@@ -1164,7 +1164,7 @@ export default function Marketplace() {
           onOpenChange={setCompareDialogOpen}
         />
 
-        <TutorialOverlay 
+        <TutorialOverlay
           storageKey="marketplace-tutorial-completed"
           onComplete={() => console.log('Tutorial completed')}
         />
