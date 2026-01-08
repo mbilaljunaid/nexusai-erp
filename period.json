@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinanceFlow - Automated Financial Projections & Reporting SaaS</title>
+    <meta name="description" content="Replace Excel with intelligent financial modeling. Generate board-ready P&L, Balance Sheet, and Cash Flow statements automatically. Trusted by 500+ finance teams." />
+    <meta name="keywords" content="financial projections, financial modeling, SaaS, automated reporting, P&L, balance sheet, cash flow, scenario analysis" />
+    <meta name="author" content="FinanceFlow" />
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://financeflow.io" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="FinanceFlow - Automated Financial Projections" />
+    <meta property="og:description" content="Replace Excel with intelligent financial modeling. Generate board-ready statements automatically." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="FinanceFlow - Automated Financial Projections" />
+    <meta name="twitter:description" content="Replace Excel with intelligent financial modeling. Generate board-ready statements automatically." />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx?v=7iwh8ft5BfR969CvoVIkE"></script>
+  </body>
+</html>

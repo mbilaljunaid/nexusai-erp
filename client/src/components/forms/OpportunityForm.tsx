@@ -26,7 +26,7 @@ export function OpportunityForm() {
   // Fetch real accounts
   const { data: accounts } = useQuery({
     queryKey: ['/api/crm/accounts'],
-    queryFn: () => apiRequest('/api/crm/accounts').then(res => res.json())
+    queryFn: () => apiRequest('GET', '/api/crm/accounts').then(res => res.json())
   });
 
   const stages = [

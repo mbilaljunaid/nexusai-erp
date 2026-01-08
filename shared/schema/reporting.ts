@@ -7,22 +7,67 @@ import { z } from "zod";
 export const reports = pgTable("reports", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     name: varchar("name").notNull(),
+    description: text("description"),
     module: varchar("module"),
     type: varchar("type"), // chart, table, summary
     category: varchar("category"),
     config: jsonb("config"),
     isFavorite: boolean("is_favorite").default(false),
+    isPublic: boolean("is_public").default(false),
+    createdBy: varchar("created_by"),
     lastRunAt: timestamp("last_run_at"),
     createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
 });
+
+// CRM Report Configuration Schemas
+export const CrmReportEntity = z.enum([
+    "leads",
+    "opportunities",
+    "accounts",
+    "contacts",
+    "activities"
+]);
+export type CrmReportEntity = z.infer<typeof CrmReportEntity>;
+
+export const CrmReportAggregation = z.enum(["count", "sum", "avg", "min", "max"]);
+export type CrmReportAggregation = z.infer<typeof CrmReportAggregation>;
+
+export const crmReportConfigSchema = z.object({
+    entity: CrmReportEntity,
+    metrics: z.array(z.object({
+        field: z.string(),
+        aggregation: CrmReportAggregation,
+        label: z.string().optional()
+    })),
+    dimensions: z.array(z.object({
+        field: z.string(),
+        label: z.string().optional()
+    })).optional(),
+    filters: z.array(z.object({
+        field: z.string(),
+        operator: z.enum(["equals", "contains", "gt", "lt", "between", "in"]),
+        value: z.any()
+    })).optional(),
+    sortBy: z.array(z.object({
+        field: z.string(),
+        direction: z.enum(["asc", "desc"])
+    })).optional(),
+    limit: z.number().optional()
+});
+
+export type CrmReportConfig = z.infer<typeof crmReportConfigSchema>;
 
 export const insertReportSchema = createInsertSchema(reports).extend({
     name: z.string().min(1),
+    description: z.string().optional(),
     module: z.string().optional(),
     type: z.string().optional(),
     category: z.string().optional(),
     config: z.record(z.any()).optional(),
     isFavorite: z.boolean().optional(),
+    isPublic: z.boolean().optional(),
+    createdBy: z.string().optional(),
     lastRunAt: z.date().optional().nullable(),
 });
 

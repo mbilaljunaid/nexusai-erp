@@ -4,11 +4,13 @@ import { db } from "../../db";
 import { eq } from "drizzle-orm";
 
 import { registerQuoteRoutes } from "./quotes-routes";
-import { casesRoutes } from "./cases-routes"; // Added import for casesRoutes
+import { casesRoutes } from "./cases-routes";
+import { analyticsRoutes } from "./analytics-routes";
 
 export function registerCrmRoutes(app: Express) {
     registerQuoteRoutes(app); // New quotes module
-    casesRoutes(app); // Register cases routes
+    app.use("/api/crm", casesRoutes); // Register cases routes
+    app.use("/api/analytics", analyticsRoutes); // Register analytics routes
     // CRM metrics
     app.get("/api/crm/metrics", async (req, res) => {
         try {

@@ -21,10 +21,20 @@ import analyticsRoutes from "./routes/analyticsRoutes";
 import templateRoutes from "./routes/templateRoutes";
 import migrationRoutes from "./routes/migrationRoutes";
 
+import financeRouter from "./routes/finance";
+import aiRouter from "./routes/ai";
+import { aiService } from "./services/ai";
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Oracle Fusion Parity
+  app.use("/api", financeRouter);
+
+  // Agentic AI
+  app.use("/api", aiRouter);
+  await aiService.initialize();
 
   // Setup Platform Auth (email/password authentication)
   await setupPlatformAuth(app);

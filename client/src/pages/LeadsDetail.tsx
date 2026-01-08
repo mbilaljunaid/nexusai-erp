@@ -21,6 +21,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Users,
+  UserPlus,
+  TrendingUp,
+  CheckCircle2,
+  Clock,
+  MoreVertical,
+} from "lucide-react";
 
 function LeadConvertModal({ lead, onSuccess }: { lead: Lead; onSuccess: () => void }) {
   const [open, setOpen] = useState(false);
@@ -115,18 +132,11 @@ function LeadEntryForm() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Add New Lead</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Core Info */}
-            <div className="space-y-2">
-              <Label htmlFor="salutation">Salutation</Label>
-              <Input id="salutation" {...form.register("salutation")} placeholder="Mr./Ms." />
-            </div>
+    <div className="space-y-6 pt-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="grid grid-cols-1 gap-4">
+          {/* Core Info */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
               <Input id="firstName" {...form.register("firstName")} placeholder="John" />
@@ -134,23 +144,26 @@ function LeadEntryForm() {
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name *</Label>
               <Input id="lastName" {...form.register("lastName")} placeholder="Doe" />
-              {form.formState.errors.lastName && <p className="text-sm text-destructive">{form.formState.errors.lastName.message}</p>}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="name">Full Name Display *</Label>
+            <Input id="name" {...form.register("name")} placeholder="John Doe" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name Display *</Label>
-              <Input id="name" {...form.register("name")} placeholder="John Doe" />
-              {form.formState.errors.name && <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>}
+              <Label htmlFor="company">Company</Label>
+              <Input id="company" {...form.register("company")} placeholder="Acme Inc" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input id="title" {...form.register("title")} placeholder="CEO" />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="company">Company</Label>
-              <Input id="company" {...form.register("company")} placeholder="Acme Inc" />
-            </div>
+          </div>
 
-            {/* Contact Info */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" {...form.register("email")} placeholder="john@example.com" />
@@ -159,66 +172,34 @@ function LeadEntryForm() {
               <Label htmlFor="phone">Phone</Label>
               <Input id="phone" {...form.register("phone")} placeholder="+1 555..." />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="mobilePhone">Mobile</Label>
-              <Input id="mobilePhone" {...form.register("mobilePhone")} placeholder="+1 555..." />
-            </div>
-
-            {/* Address Info */}
-            <div className="space-y-2 md:col-span-2">
-              <Label>Address</Label>
-              <div className="grid grid-cols-2 gap-2">
-                <Input {...form.register("street")} placeholder="Street" className="col-span-2" />
-                <Input {...form.register("city")} placeholder="City" />
-                <Input {...form.register("state")} placeholder="State" />
-                <Input {...form.register("postalCode")} placeholder="Zip" />
-                <Input {...form.register("country")} placeholder="Country" />
-              </div>
-            </div>
-
-            {/* Qualification */}
-            <div className="space-y-2">
-              <Label htmlFor="leadSource">Lead Source</Label>
-              <Input id="leadSource" {...form.register("leadSource")} placeholder="Web, Referral..." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
-              <Input id="status" {...form.register("status")} placeholder="new" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="industry">Industry</Label>
-              <Input id="industry" {...form.register("industry")} placeholder="Tech, Retail..." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="rating">Rating</Label>
-              <Input id="rating" {...form.register("rating")} placeholder="Hot, Warm, Cold" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="annualRevenue">Annual Revenue</Label>
-              <Input id="annualRevenue" type="number" {...form.register("annualRevenue", { valueAsNumber: true })} placeholder="0" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="numberOfEmployees">No. Employees</Label>
-              <Input id="numberOfEmployees" type="number" {...form.register("numberOfEmployees", { valueAsNumber: true })} placeholder="0" />
-            </div>
           </div>
 
-          <Button type="submit" disabled={createMutation.isPending} className="w-full">
-            {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Create Lead
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+          <div className="space-y-2">
+            <Label htmlFor="status">Status</Label>
+            <Input id="status" {...form.register("status")} placeholder="new" />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="leadSource">Lead Source</Label>
+            <Input id="leadSource" {...form.register("leadSource")} placeholder="Web, Referral..." />
+          </div>
+        </div>
+
+        <Button type="submit" disabled={createMutation.isPending} className="w-full">
+          {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Create Lead
+        </Button>
+      </form>
+    </div>
   );
 }
 
 export default function LeadsDetail() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const queryClient = useQueryClient();
   const { data: leads = [], isLoading } = useQuery<Lead[]>({
     queryKey: ["/api/leads"],
-    // Use select to handle potential non-array error responses gracefully in UI
     select: (data) => Array.isArray(data) ? data : []
   });
 
@@ -228,69 +209,212 @@ export default function LeadsDetail() {
     (l.company && l.company.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  const metrics = [
+    { label: "Total Leads", value: leads.length, icon: Users, color: "text-blue-600" },
+    { label: "New Leads", value: leads.filter(l => l.status === 'new').length, icon: Clock, color: "text-orange-600" },
+    { label: "Converted", value: leads.filter(l => l.status === 'converted').length, icon: CheckCircle2, color: "text-green-600" },
+  ];
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Link href="/crm">
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-semibold">Leads</h1>
-          <p className="text-muted-foreground text-sm">Search, view, and create leads</p>
+    <div className="space-y-8 pb-10">
+      {/* Premium Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Link href="/crm">
+            <Button variant="outline" size="icon" className="rounded-full">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Leads</h1>
+            <p className="text-muted-foreground">Manage and qualify your potential customers.</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button className="shadcn-button-premium">
+                <UserPlus className="mr-2 h-4 w-4" />
+                Add New Lead
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="sm:max-w-md">
+              <SheetHeader>
+                <SheetTitle>Create New Lead</SheetTitle>
+                <SheetDescription>
+                  Enter the details for the new prospect.
+                </SheetDescription>
+              </SheetHeader>
+              <LeadEntryForm />
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex gap-2 items-center">
-          <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+      {/* Metric Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {metrics.map((m, i) => (
+          <Card key={i} className="hover-elevate shadow-sm overflow-hidden group">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">{m.label}</p>
+                  <p className="text-3xl font-bold">{m.value}</p>
+                </div>
+                <div className={`p-2 rounded-xl bg-muted/50 group-hover:scale-110 transition-transform ${m.color}`}>
+                  <m.icon className="h-4 w-4" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Filters and List */}
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          <div className="relative flex-1 group max-w-xl">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <Input
               placeholder="Search leads by name, email, or company..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8"
+              className="pl-10 h-11 bg-muted/30 border-none shadow-none focus-visible:ring-2 focus-visible:ring-primary/20"
             />
           </div>
         </div>
 
-        <div className="space-y-2 max-h-[500px] overflow-y-auto">
-          {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground"><Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />Loading leads...</div>
-          ) : filteredLeads.length > 0 ? (
-            filteredLeads.map((l) => (
-              <Card key={l.id} className="hover-elevate cursor-pointer">
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold">{l.name}</p>
-                      <div className="flex gap-2 text-sm text-muted-foreground">
-                        <span>{l.email || "No email"}</span>
-                        {l.company && <span>• {l.company}</span>}
-                      </div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <Card key={i} className="h-48 animate-pulse bg-muted/20" />
+            ))}
+          </div>
+        ) : filteredLeads.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredLeads.map((l) => (
+              <Card
+                key={l.id}
+                className="hover-elevate group cursor-pointer border-muted/50 overflow-hidden"
+                onClick={() => setSelectedLead(l)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
+                      <AvatarFallback className="bg-primary/5 text-primary font-bold">
+                        {l.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <Badge
+                      variant={l.status === 'converted' ? 'secondary' : 'default'}
+                      className={l.status === 'converted' ? 'bg-green-100/50 text-green-700 hover:bg-green-100/50' : ''}
+                    >
+                      {l.status}
+                    </Badge>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{l.name}</h3>
+                    <p className="text-sm text-muted-foreground truncate">{l.company || "Independent"}</p>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-muted/50 flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Contact</p>
+                      <p className="text-sm font-medium">{l.email || "No email"}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={l.status === 'new' ? 'default' : 'secondary'}>{l.status}</Badge>
-                      <LeadConvertModal
-                        lead={l}
-                        onSuccess={() => {
-                          queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
-                          queryClient.invalidateQueries({ queryKey: ["/api/crm/metrics"] });
-                        }}
-                      />
-                    </div>
+                    <LeadConvertModal
+                      lead={l}
+                      onSuccess={() => {
+                        queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+                        queryClient.invalidateQueries({ queryKey: ["/api/crm/metrics"] });
+                      }}
+                    />
                   </div>
                 </CardContent>
               </Card>
-            ))
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">No leads found. Create one below.</div>
-          )}
-        </div>
-
-        <div className="mt-8 border-t pt-8">
-          <LeadEntryForm />
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed border-muted/50">
+            <Users className="h-12 w-12 text-muted-foreground mb-4 opacity-50" />
+            <p className="text-lg font-medium text-muted-foreground">No leads found</p>
+            <p className="text-sm text-muted-foreground mt-1">Try a different search or create a new lead.</p>
+          </div>
+        )}
       </div>
+
+      {/* Detail Sheet */}
+      <Sheet open={!!selectedLead} onOpenChange={(open) => !open && setSelectedLead(null)}>
+        <SheetContent className="sm:max-w-xl w-[90vw]">
+          <SheetHeader className="mb-8">
+            <div className="flex items-center gap-4 mb-4">
+              <Avatar className="h-16 w-16 border-2 border-background shadow-md">
+                <AvatarFallback className="bg-primary/5 text-primary text-2xl font-bold">
+                  {selectedLead?.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <SheetTitle className="text-2xl font-bold">{selectedLead?.name}</SheetTitle>
+                <SheetDescription className="text-base">
+                  {selectedLead?.title} at {selectedLead?.company}
+                </SheetDescription>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Badge variant="outline" className="px-3 py-1 font-medium italic">
+                {selectedLead?.leadSource || "Direct Traffic"}
+              </Badge>
+              <Badge variant="secondary" className="px-3 py-1">
+                {selectedLead?.status}
+              </Badge>
+            </div>
+          </SheetHeader>
+
+          <div className="space-y-8">
+            <section className="space-y-4">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Contact Information</h3>
+              <div className="grid grid-cols-2 gap-6 bg-muted/20 p-6 rounded-2xl border border-muted/50">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Email Address</p>
+                  <p className="font-medium">{selectedLead?.email || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Phone Number</p>
+                  <p className="font-medium">{selectedLead?.phone || "—"}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-xs text-muted-foreground mb-1">Postal Address</p>
+                  <p className="font-medium">
+                    {selectedLead?.street && `${selectedLead.street}, `}
+                    {selectedLead?.city} {selectedLead?.state} {selectedLead?.postalCode}
+                    {selectedLead?.country && ` (${selectedLead.country})`}
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Lead Timeline</h3>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="space-y-4 px-2">
+                <div className="relative pl-6 pb-4 border-l-2 border-muted/50">
+                  <div className="absolute left-[-9px] top-0 h-4 w-4 rounded-full bg-primary border-4 border-background" />
+                  <p className="text-sm font-medium">Lead Created</p>
+                  <p className="text-xs text-muted-foreground">Automatic capture via website portal</p>
+                </div>
+                <div className="relative pl-6 border-l-2 border-transparent">
+                  <div className="absolute left-[-9px] top-0 h-4 w-4 rounded-full bg-muted border-4 border-background" />
+                  <p className="text-sm font-medium text-muted-foreground">Next Step: Qualification</p>
+                  <p className="text-xs text-muted-foreground italic">Pending initial outreach...</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

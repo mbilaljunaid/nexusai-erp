@@ -208,7 +208,7 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                                     <TableCell className="font-medium">
                                         <div className="flex items-center gap-2">
                                             <Package className="h-4 w-4 text-muted-foreground" />
-                                            {getProductName(item.productId)}
+                                            {getProductName(item.productId ?? "")}
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right">{item.quantity}</TableCell>

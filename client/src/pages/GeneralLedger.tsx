@@ -1,125 +1,194 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Check, Layers, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Plus, Trash2 } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
+import {
+  Tabs, TabsContent, TabsList, TabsTrigger,
+} from "@/components/ui/tabs";
+import { TrialBalanceGrid } from "@/components/finance/TrialBalanceGrid";
+import { FiscalPeriods } from "@/components/finance/FiscalPeriods";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import type { GlJournal, GlJournalBatch } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 
+import { AIChatWidget } from "@/components/AIChatWidget";
+
 export default function GeneralLedger() {
-  const { toast } = useToast();
-  const [newEntry, setNewEntry] = useState({ description: "", accountId: "", debitAmount: "", creditAmount: "" });
-
-  const { data: entries = [], isLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/finance/general-ledger"],
-    queryFn: () => fetch("/api/finance/general-ledger").then(r => r.json()),
-  });
-
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/finance/general-ledger", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/finance/general-ledger"] });
-      setNewEntry({ description: "", accountId: "", debitAmount: "", creditAmount: "" });
-      toast({ title: "Journal entry created" });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/general-ledger/${id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/finance/general-ledger"] });
-      toast({ title: "Entry deleted" });
-    },
-  });
-
-  const totalDebits = entries.reduce((sum, e: any) => sum + parseFloat(e.debitAmount || 0), 0);
-  const totalCredits = entries.reduce((sum, e: any) => sum + parseFloat(e.creditAmount || 0), 0);
-  const balance = totalDebits - totalCredits;
+  const [activeTab, setActiveTab] = useState("journals");
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <Wallet className="w-8 h-8" />
-          General Ledger
-        </h1>
-        <p className="text-muted-foreground">View all journal entries and account balances</p>
+    <div className="space-y-6 relative min-h-screen">
+      <AIChatWidget context="finance" />
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            General Ledger
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Manage journals, batches, approvals, and financial reports.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {activeTab === "journals" && (
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              New Journal
+            </Button>
+          )}
+          {activeTab === "batches" && (
+            <Button variant="outline">
+              <Layers className="mr-2 h-4 w-4" />
+              New Batch
+            </Button>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Total Debits</p>
-            <p className="text-2xl font-bold">${totalDebits.toFixed(2)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Total Credits</p>
-            <p className="text-2xl font-bold">${totalCredits.toFixed(2)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Balance</p>
-            <p className={`text-2xl font-bold ${balance === 0 ? "text-green-600" : "text-red-600"}`}>
-              ${Math.abs(balance).toFixed(2)}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <Tabs defaultValue="journals" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="bg-background border">
+          <TabsTrigger value="journals">Journals</TabsTrigger>
+          <TabsTrigger value="batches">Batches</TabsTrigger>
+          <TabsTrigger value="approvals">Approvals</TabsTrigger>
+          <TabsTrigger value="periods">Fiscal Periods</TabsTrigger>
+          <TabsTrigger value="trial-balance">Trial Balance</TabsTrigger>
+        </TabsList>
 
-      <Card data-testid="card-new-entry">
-        <CardHeader><CardTitle className="text-base">Create Journal Entry</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-4 gap-3">
-            <Input placeholder="Description" value={newEntry.description} onChange={(e) => setNewEntry({ ...newEntry, description: e.target.value })} data-testid="input-description" />
-            <Input placeholder="Account ID" value={newEntry.accountId} onChange={(e) => setNewEntry({ ...newEntry, accountId: e.target.value })} data-testid="input-account-id" />
-            <Input placeholder="Debit" type="number" value={newEntry.debitAmount} onChange={(e) => setNewEntry({ ...newEntry, debitAmount: e.target.value })} data-testid="input-debit" />
-            <Input placeholder="Credit" type="number" value={newEntry.creditAmount} onChange={(e) => setNewEntry({ ...newEntry, creditAmount: e.target.value })} data-testid="input-credit" />
-          </div>
-          <Button onClick={() => createMutation.mutate(newEntry)} disabled={createMutation.isPending || !newEntry.description} className="w-full" data-testid="button-create-entry">
-            <Plus className="w-4 h-4 mr-2" /> Create Entry
-          </Button>
-        </CardContent>
-      </Card>
+        <TabsContent value="journals">
+          <JournalList />
+        </TabsContent>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Journal Entries</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 max-h-96 overflow-y-auto">
-            {isLoading ? (
-              <p className="text-center py-4">Loading...</p>
-            ) : entries.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No entries yet</p>
-            ) : (
-              entries.map((entry: any) => (
-                <div key={entry.id} className="flex justify-between items-center p-3 border rounded hover-elevate" data-testid={`entry-${entry.id}`}>
-                  <div>
-                    <p className="font-semibold">{entry.description}</p>
-                    <p className="text-sm text-muted-foreground">{entry.accountId}</p>
-                  </div>
-                  <div className="flex gap-4 items-center">
-                    {entry.debitAmount > 0 && <p className="text-green-600">${entry.debitAmount}</p>}
-                    {entry.creditAmount > 0 && <p className="text-red-600">${entry.creditAmount}</p>}
-                    <Badge variant={entry.isPosted ? "default" : "secondary"}>
-                      {entry.isPosted ? "Posted" : "Draft"}
-                    </Badge>
-                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(entry.id)} data-testid={`button-delete-${entry.id}`}>
-                      <Trash2 className="w-4 h-4" />
+        <TabsContent value="batches">
+          <BatchList />
+        </TabsContent>
+
+        <TabsContent value="approvals">
+          <ApprovalList />
+        </TabsContent>
+
+        <TabsContent value="periods">
+          <FiscalPeriods />
+        </TabsContent>
+
+        <TabsContent value="trial-balance">
+          <TrialBalanceGrid />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+function JournalList() {
+  const { data: journals, isLoading } = useQuery<GlJournal[]>({
+    queryKey: ["/api/gl/journals"]
+  });
+  const { toast } = useToast();
+
+  const reverseMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest("POST", `/api/gl/journals/${id}/reverse`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gl/journals"] });
+      toast({ title: "Journal Reversed", description: "A reversal entry has been created." });
+    },
+    onError: (e: Error) => {
+      toast({ title: "Reversal Failed", description: e.message, variant: "destructive" });
+    }
+  });
+
+  if (isLoading) return <div>Loading journals...</div>;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Journal Entries</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Journal #</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Approval</TableHead>
+              <TableHead>Period</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {journals?.map((j) => (
+              <TableRow key={j.id}>
+                <TableCell className="font-medium">{j.journalNumber}</TableCell>
+                <TableCell>{j.description}</TableCell>
+                <TableCell>
+                  <Badge variant={j.status === "Posted" ? "default" : "secondary"}>
+                    {j.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant={j.approvalStatus === "Approved" ? "success" : j.approvalStatus === "Required" ? "destructive" : "outline"}>
+                    {j.approvalStatus}
+                  </Badge>
+                </TableCell>
+                <TableCell>{j.periodId}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" title="Reverse"
+                      disabled={j.status !== "Posted"}
+                      onClick={() => reverseMutation.mutate(j.id)}
+                    >
+                      <ArrowLeftRight className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
+function BatchList() {
+  // Placeholder for Batches UI
+  const { data: batches } = useQuery<GlJournalBatch[]>({
+    queryKey: ["/api/gl/batches"], // Just using cache key pattern, route might need GET
+    enabled: false // Disable until GET route exists
+  });
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Journal Batches</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="text-center py-8 text-muted-foreground">
+          <Layers className="mx-auto h-12 w-12 opacity-20 mb-4" />
+          <p>Journal Batch Management is coming soon.</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ApprovalList() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Pending Approvals</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="text-center py-8 text-muted-foreground">
+          <Check className="mx-auto h-12 w-12 opacity-20 mb-4" />
+          <p>No pending approvals found.</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

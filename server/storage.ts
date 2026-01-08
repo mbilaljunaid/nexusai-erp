@@ -57,6 +57,23 @@ import {
   type Account, type InsertAccount,
   type Contact, type InsertContact,
   type Opportunity, type InsertOpportunity,
+  // Oracle Fusion Parity (Financials)
+  type GlAccount, type InsertGlAccount,
+  type GlPeriod, type InsertGlPeriod,
+  type GlJournal, type InsertGlJournal,
+  type GlJournalLine, type InsertGlJournalLine,
+  // Advanced GL (Phase 2 - Journals)
+  type GlJournalBatch, type InsertGlJournalBatch,
+  type GlJournalApproval, type InsertGlJournalApproval,
+  // Advanced GL (Phase 2 - Architecture)
+  type GlLedger, type InsertGlLedger,
+  type GlSegment, type InsertGlSegment,
+  type GlSegmentValue, type InsertGlSegmentValue,
+  type GlCodeCombination, type InsertGlCodeCombination,
+  type GlDailyRate, type InsertGlDailyRate,
+  // Agentic AI
+  type AiAction, type InsertAiAction,
+  type AiAuditLog, type InsertAiAuditLog,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -310,6 +327,54 @@ export interface IStorage {
   listCommunityBadgeProgress(userId: string): Promise<CommunityBadgeProgress[]>;
   createCommunityBadgeProgress(progress: InsertCommunityBadgeProgress): Promise<CommunityBadgeProgress>;
   updateCommunityBadgeProgress(userId: string, badgeCategory: string, progress: Partial<InsertCommunityBadgeProgress>): Promise<CommunityBadgeProgress | undefined>;
+  // Analytics
+  getPipelineMetrics(): Promise<{ stage: string; count: number; value: number }[]>;
+  getRevenueMetrics(): Promise<{ month: string; value: number }[]>;
+  getLeadSourceMetrics(): Promise<{ source: string; count: number }[]>;
+  getCaseMetrics(): Promise<{ status: string; priority: string; count: number }[]>;
+
+  // Oracle Fusion Parity - Financials (GL)
+  getGlAccount(id: string): Promise<GlAccount | undefined>;
+  listGlAccounts(): Promise<GlAccount[]>;
+  createGlAccount(account: InsertGlAccount): Promise<GlAccount>;
+
+  getGlPeriod(id: string): Promise<GlPeriod | undefined>;
+  listGlPeriods(): Promise<GlPeriod[]>;
+  createGlPeriod(period: InsertGlPeriod): Promise<GlPeriod>;
+  updateGlPeriod(id: string, updates: Partial<GlPeriod>): Promise<GlPeriod>;
+
+  getGlJournal(id: string): Promise<GlJournal | undefined>;
+  listGlJournals(periodId?: string): Promise<GlJournal[]>;
+  createGlJournal(journal: InsertGlJournal): Promise<GlJournal>;
+
+  listGlJournalLines(journalId: string): Promise<GlJournalLine[]>;
+  createGlJournalLine(line: InsertGlJournalLine): Promise<GlJournalLine>;
+
+  // Agentic AI Core
+  getAiAction(actionName: string): Promise<AiAction | undefined>;
+  listAiActions(): Promise<AiAction[]>;
+  createAiAction(action: InsertAiAction): Promise<AiAction>;
+
+  createAiAuditLog(log: InsertAiAuditLog): Promise<AiAuditLog>;
+  listAiAuditLogs(limit?: number): Promise<AiAuditLog[]>;
+  createGlJournalLine(line: InsertGlJournalLine): Promise<GlJournalLine>;
+
+  // Advanced GL (Phase 2)
+  getGlLedger(id: string): Promise<GlLedger | undefined>;
+  listGlLedgers(): Promise<GlLedger[]>;
+  createGlLedger(ledger: InsertGlLedger): Promise<GlLedger>;
+
+  listGlSegments(ledgerId: string): Promise<GlSegment[]>;
+  createGlSegment(segment: InsertGlSegment): Promise<GlSegment>;
+
+  listGlSegmentValues(segmentId: string): Promise<GlSegmentValue[]>;
+  createGlSegmentValue(val: InsertGlSegmentValue): Promise<GlSegmentValue>;
+
+  getGlCodeCombination(id: string): Promise<GlCodeCombination | undefined>;
+  createGlCodeCombination(cc: InsertGlCodeCombination): Promise<GlCodeCombination>;
+
+  listGlDailyRates(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate[]>;
+  createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate>;
 }
 
 export class MemStorage implements IStorage {
@@ -364,7 +429,110 @@ export class MemStorage implements IStorage {
   private contacts = new Map<string, Contact>();
   private opportunities = new Map<string, Opportunity>();
 
-  // PHASE 1 Methods
+
+  // GL Maps
+  private glAccounts = new Map<string, GlAccount>();
+  private glPeriods = new Map<string, GlPeriod>();
+  private glJournals = new Map<string, GlJournal>();
+  private glJournalLines = new Map<string, GlJournalLine>();
+
+  // GL Implementation
+  async getGlAccount(id: string) { return this.glAccounts.get(id); }
+  async listGlAccounts() { return Array.from(this.glAccounts.values()); }
+  async createGlAccount(a: InsertGlAccount) { const id = randomUUID(); const account: GlAccount = { id, ...a, parentAccountId: a.parentAccountId ?? null, isActive: a.isActive ?? true, createdAt: new Date() }; this.glAccounts.set(id, account); return account; }
+
+  async getGlPeriod(id: string) { return this.glPeriods.get(id); }
+  async listGlPeriods() { return Array.from(this.glPeriods.values()); }
+  async createGlPeriod(p: InsertGlPeriod) { const id = randomUUID(); const period: GlPeriod = { id, ...p, status: p.status ?? "Open" }; this.glPeriods.set(id, period); return period; }
+  async updateGlPeriod(id: string, updates: Partial<GlPeriod>) { const period = await this.getGlPeriod(id); if (!period) throw new Error("Period not found"); const updated = { ...period, ...updates }; this.glPeriods.set(id, updated); return updated; }
+
+  async getGlJournal(id: string) { return this.glJournals.get(id); }
+  async listGlJournals(periodId?: string) { const list = Array.from(this.glJournals.values()); return periodId ? list.filter(j => j.periodId === periodId) : list; }
+  async createGlJournal(j: InsertGlJournal) { const id = randomUUID(); const journal: GlJournal = { id, ...j, periodId: j.periodId ?? null, description: j.description ?? null, source: j.source ?? "Manual", status: j.status ?? "Draft", postedDate: j.postedDate ?? null, createdBy: j.createdBy ?? null, batchId: j.batchId ?? null, approvalStatus: j.approvalStatus ?? "Not Required", reversalJournalId: j.reversalJournalId ?? null, createdAt: new Date() }; this.glJournals.set(id, journal); return journal; }
+
+  async listGlJournalLines(journalId: string) { return Array.from(this.glJournalLines.values()).filter(l => l.journalId === journalId); }
+  async createGlJournalLine(l: InsertGlJournalLine) { const id = randomUUID(); const line: GlJournalLine = { id, ...l, debit: l.debit ?? "0", credit: l.credit ?? "0", description: l.description ?? null }; this.glJournalLines.set(id, line); return line; }
+
+  // Advanced GL (Batches & Approvals)
+  async createGlJournalBatch(b: InsertGlJournalBatch) {
+    const id = randomUUID();
+    const batch: GlJournalBatch = {
+      id,
+      ...b,
+      description: b.description ?? null,
+      status: b.status ?? "Unposted",
+      periodId: b.periodId ?? null,
+      totalDebit: "0",
+      totalCredit: "0",
+      createdAt: new Date()
+    };
+    return batch;
+  }
+  async getGlJournalBatch(id: string) { return undefined; }
+  async listGlJournalBatches() { return []; }
+  async updateGlJournalBatch(id: string, b: Partial<InsertGlJournalBatch>) { return undefined; }
+
+  async createGlJournalApproval(a: InsertGlJournalApproval) {
+    const id = randomUUID();
+    const approval: GlJournalApproval = {
+      id,
+      ...a,
+      approverId: a.approverId ?? null,
+      status: a.status ?? "Pending",
+      comments: a.comments ?? null,
+      actionDate: a.actionDate ?? null,
+      createdAt: new Date()
+    };
+    return approval;
+  }
+  async listGlJournalApprovals(journalId: string) { return []; }
+  async updateGlJournalApproval(id: string, a: Partial<InsertGlJournalApproval>) { return undefined; }
+
+  // Advanced GL (Phase 2)
+  async getGlLedger(id: string) { return undefined; }
+  async listGlLedgers() { return []; }
+  async createGlLedger(l: InsertGlLedger) {
+    const id = randomUUID();
+    return { id, ...l, currencyCode: l.currencyCode ?? "USD", ledgerCategory: l.ledgerCategory ?? "PRIMARY", isActive: l.isActive ?? true, description: l.description ?? null, calendarId: l.calendarId ?? null, coaId: l.coaId ?? null, createdAt: new Date() };
+  }
+
+  async listGlSegments(ledgerId: string) { return []; }
+  async createGlSegment(s: InsertGlSegment) {
+    const id = randomUUID();
+    return { id, ...s, isRequired: s.isRequired ?? true, validationSource: s.validationSource ?? null, createdAt: new Date() };
+  }
+
+  async listGlSegmentValues(segmentId: string) { return []; }
+  async createGlSegmentValue(v: InsertGlSegmentValue) {
+    const id = randomUUID();
+    return { id, ...v, description: v.description ?? null, parentValue: v.parentValue ?? null, enabled: v.enabled ?? true, startDate: v.startDate ?? null, endDate: v.endDate ?? null, createdAt: new Date() };
+  }
+
+  async getGlCodeCombination(id: string) { return undefined; }
+  async createGlCodeCombination(cc: InsertGlCodeCombination) {
+    const id = randomUUID();
+    return { id, ...cc, segment1: cc.segment1 ?? null, segment2: cc.segment2 ?? null, segment3: cc.segment3 ?? null, segment4: cc.segment4 ?? null, segment5: cc.segment5 ?? null, accountType: cc.accountType ?? null, enabledFlag: cc.enabledFlag ?? true, startDateActive: cc.startDateActive ?? null, endDateActive: cc.endDateActive ?? null, summaryFlag: cc.summaryFlag ?? false };
+  }
+
+  async listGlDailyRates(from: string, to: string, date: Date) { return []; }
+  async createGlDailyRate(r: InsertGlDailyRate) {
+    const id = randomUUID();
+    return { id, ...r, conversionType: r.conversionType ?? "Spot", createdAt: new Date() };
+  }
+
+  // Agentic AI Implementation
+  private aiActions = new Map<string, AiAction>();
+  private aiAuditLogs = new Map<string, AiAuditLog>();
+
+  async getAiAction(actionName: string) {
+    return Array.from(this.aiActions.values()).find(a => a.actionName === actionName);
+  }
+  async listAiActions() { return Array.from(this.aiActions.values()); }
+  async createAiAction(a: InsertAiAction) { const id = randomUUID(); const action: AiAction = { id, ...a, description: a.description ?? null, requiredPermissions: a.requiredPermissions ?? null, inputSchema: a.inputSchema ?? null, isEnabled: a.isEnabled ?? true, createdAt: new Date() }; this.aiActions.set(id, action); return action; }
+
+  async createAiAuditLog(l: InsertAiAuditLog) { const id = randomUUID(); const log: AiAuditLog = { id, ...l, userId: l.userId ?? null, inputPrompt: l.inputPrompt ?? null, structuredIntent: l.structuredIntent ?? null, errorMessage: l.errorMessage ?? null, executionTimeMs: l.executionTimeMs ?? null, timestamp: new Date() }; this.aiAuditLogs.set(id, log); return log; }
+  async listAiAuditLogs(limit = 100) { return Array.from(this.aiAuditLogs.values()).sort((a, b) => b.timestamp!.getTime() - a.timestamp!.getTime()).slice(0, limit); }
+
   // Interaction Methods
   async listInteractions(entityType: string, entityId: string) {
     if (entityType === "lead") return []; // Stub
@@ -382,6 +550,12 @@ export class MemStorage implements IStorage {
     // Stub implementation for MemStorage
     throw new Error("Lead conversion not supported in MemStorage");
   }
+
+  // Analytics Stubs
+  async getPipelineMetrics() { return []; }
+  async getRevenueMetrics() { return []; }
+  async getLeadSourceMetrics() { return []; }
+  async getCaseMetrics() { return []; }
 
   async getAccount(id: string) { return this.accounts.get(id); }
   async getTenant(id: string) { return this.tenants.get(id); }
@@ -599,7 +773,7 @@ export class MemStorage implements IStorage {
 
   async getReport(id: string) { return this.reports.get(id); }
   async listReports() { return Array.from(this.reports.values()); }
-  async createReport(r: InsertReport) { const id = randomUUID(); const report: Report = { id, name: r.name, type: r.type ?? null, category: r.category ?? null, config: r.config ?? null, module: r.module ?? null, isFavorite: r.isFavorite ?? false, lastRunAt: r.lastRunAt ?? null, createdAt: new Date() }; this.reports.set(id, report); return report; }
+  async createReport(r: InsertReport) { const id = randomUUID(); const report: Report = { id, name: r.name, description: r.description ?? null, type: r.type ?? null, category: r.category ?? null, config: r.config ?? null, module: r.module ?? null, isFavorite: r.isFavorite ?? false, isPublic: r.isPublic ?? false, createdBy: r.createdBy ?? null, lastRunAt: r.lastRunAt ?? null, createdAt: new Date(), updatedAt: new Date() }; this.reports.set(id, report); return report; }
 
   async getAuditLog(id: string) { return this.auditLogs.get(id); }
   async listAuditLogs() { return Array.from(this.auditLogs.values()); }

@@ -15,6 +15,7 @@ import CampaignsDetail from "./CampaignsDetail";
 import ProductsDetail from "./ProductsDetail";
 import QuotesDetail from "./QuotesDetail";
 import CasesDetail from "./CasesDetail";
+import AnalyticsDetail from "./AnalyticsDetail";
 interface CRMMetrics {
   totalLeads: number;
   pipelineValue: string;
@@ -124,7 +125,7 @@ export default function CRM() {
 
   const handleIconClick = (id: string, formId: string | null) => {
     // Check for standalone pages
-    if (["leads", "accounts", "contacts", "opportunities", "campaigns", "products", "quotes", "cases"].includes(id)) {
+    if (["leads", "accounts", "contacts", "opportunities", "campaigns", "products", "quotes", "cases", "analytics", "pipeline", "settings"].includes(id)) {
       setLocation(`/crm/${id}`);
       return;
     }
@@ -139,7 +140,7 @@ export default function CRM() {
   return (
     <div className="space-y-6 min-h-screen overflow-y-auto">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Target className="h-8 w-8" />CRM & Sales</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2"><Target className="h-6 w-6" />CRM & Sales</h1>
         <p className="text-muted-foreground text-sm">Manage leads, opportunities, accounts, contacts, and campaigns</p>
       </div>
 
@@ -148,12 +149,14 @@ export default function CRM() {
           <button
             key={item.id}
             onClick={() => handleIconClick(item.id, item.formId)}
-            className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${!item.formId ? "hover:border-primary hover-elevate" : "hover:bg-primary/10 hover:border-primary hover-elevate"
+            className={`flex flex-col items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${!item.formId ? "hover:border-primary hover-elevate bg-card" : "hover:bg-primary/5 hover:border-primary hover-elevate bg-card"
               }`}
             data-testid={`button-icon-${item.id}`}
           >
-            <item.icon className={`w-6 h-6 ${item.color}`} />
-            <span className="text-sm font-medium text-center">{item.label}</span>
+            <div className={`p-2 rounded-lg bg-muted/30 mb-1 group-hover:scale-110 transition-transform`}>
+              <item.icon className={`w-5 h-5 ${item.color}`} />
+            </div>
+            <span className="text-xs font-semibold text-center tracking-tight">{item.label}</span>
           </button>
         ))}
       </div>
@@ -180,15 +183,7 @@ export default function CRM() {
         </div>
       )}
 
-      {activeNav === "analytics" && (
-        <div className="space-y-4">
-          <Breadcrumb items={[
-            { label: "CRM", path: "/crm" },
-            { label: "Analytics", path: "/crm/analytics" },
-          ]} />
-          <Card><CardHeader><CardTitle>CRM Analytics</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Reports, forecasts, and performance metrics</p></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "analytics" && <AnalyticsDetail />}
 
       {activeNav === "settings" && (
         <div className="space-y-4">

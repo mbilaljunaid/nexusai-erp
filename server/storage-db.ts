@@ -4,7 +4,8 @@
  */
 
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+// duplicate import removed
+import { eq, and, sql, desc } from "drizzle-orm";
 import {
   invoices as invoicesTable,
   leads as leadsTable,
@@ -30,6 +31,17 @@ import {
   orders as ordersTable,
   cases as casesTable,
   caseComments as caseCommentsTable,
+  glLedgers as glLedgersTable,
+  glSegments as glSegmentsTable,
+  glSegmentValues as glSegmentValuesTable,
+  glCodeCombinations as glCodeCombinationsTable,
+  glDailyRates as glDailyRatesTable,
+  glJournalBatches as glJournalBatchesTable,
+  glJournalApprovals as glJournalApprovalsTable,
+  type InsertGlJournalBatch,
+  type InsertGlJournalApproval,
+  type GlJournalBatch,
+  type GlJournalApproval
 } from "@shared/schema";
 import type {
   Campaign,
@@ -450,14 +462,17 @@ export const dbStorage = {
   async listOrders(): Promise<Order[]> {
     return await db.select().from(ordersTable);
   },
+
+  async createOrder(order: InsertOrder): Promise<Order> {
+    const result = await db
       .insert(ordersTable)
-    .values({
-      ...order,
-      totalAmount: order.totalAmount ? String(order.totalAmount) : '0'
-    })
-    .returning();
-  return result[0];
-},
+      .values({
+        ...order,
+        totalAmount: order.totalAmount ? String(order.totalAmount) : '0'
+      })
+      .returning();
+    return result[0];
+  },
 
   // ========== CASES (SERVICE) ==========
   async listCases(options?: { accountId?: string; contactId?: string }): Promise<Case[]> {
@@ -470,331 +485,461 @@ export const dbStorage = {
     return await db.select().from(casesTable);
   },
 
-    async getCase(id: string): Promise < Case | undefined > {
-      const result = await db
-        .select()
-        .from(casesTable)
-        .where(eq(casesTable.id, id))
-        .limit(1);
-      return result[0];
-    },
-
-      async createCase(data: InsertCase): Promise < Case > {
-        const result = await db.insert(casesTable).values(data).returning();
-        return result[0];
-      },
-
-        async updateCase(id: string, data: InsertCase): Promise < Case | undefined > {
-          const result = await db
-            .update(casesTable)
-            .set(data)
-            .where(eq(casesTable.id, id))
-            .returning();
-          return result[0];
-        },
-
-          async listCaseComments(caseId: string): Promise < CaseComment[] > {
-            return await db
-              .select()
-              .from(caseCommentsTable)
-              .where(eq(caseCommentsTable.caseId, caseId));
-          },
-
-            async createCaseComment(data: InsertCaseComment): Promise < CaseComment > {
-              const result = await db.insert(caseCommentsTable).values(data).returning();
-              return result[0];
-            },
-
-              // ========== INTERACTIONS (CRM) ==========
-              async listInteractions(entityType: string, entityId: string): Promise < Interaction[] > {
-                return await db
-                  .select()
-                  .from(interactionsTable)
-                  .where(and(eq(interactionsTable.entityType, entityType), eq(interactionsTable.entityId, entityId)));
-              },
-
-                async createInteraction(interaction: InsertInteraction): Promise < Interaction > {
-                  const result = await db
-                    .insert(interactionsTable)
-                    .values(interaction)
-                    .returning();
-                  return result[0];
-                },
-
-                  async updateLead(
-                    id: string,
-                    lead: Partial<InsertLead>
-                  ): Promise < Lead | undefined > {
-                    const updateData: any = { ...lead };
-                    if(updateData.annualRevenue !== undefined) {
-  updateData.annualRevenue = updateData.annualRevenue ? String(updateData.annualRevenue) : null;
-}
-
-const result = await db
-  .update(leadsTable)
-  .set(updateData)
-  .where(eq(leadsTable.id, id))
-  .returning();
-return result[0];
-  },
-
-  async convertLead(leadId: string, ownerId ?: string): Promise < { account: Account, contact: Contact, opportunity: Opportunity } > {
-  return await db.transaction(async (tx) => {
-    // 1. Get Lead
-    const [lead] = await tx.select().from(leadsTable).where(eq(leadsTable.id, leadId));
-    if (!lead) throw new Error("Lead not found");
-    if (lead.status === "converted") throw new Error("Lead already converted");
-
-    // 2. Create Account
-    const [account] = await tx.insert(accountsTable).values({
-      name: lead.company || `${lead.name}'s Account`,
-      billingStreet: lead.street,
-      billingCity: lead.city,
-      billingState: lead.state,
-      billingPostalCode: lead.postalCode,
-      billingCountry: lead.country,
-      phone: lead.phone,
-      website: lead.website,
-      industry: lead.industry,
-      annualRevenue: lead.annualRevenue,
-      description: lead.description,
-      ownerId: ownerId || lead.ownerId,
-      status: "active"
-    }).returning();
-
-    // 3. Create Contact
-    const [contact] = await tx.insert(contactsTable).values({
-      accountId: account.id,
-      firstName: lead.firstName || lead.name.split(' ')[0] || "Unknown",
-      lastName: lead.lastName,
-      salutation: lead.salutation,
-      title: lead.title,
-      email: lead.email,
-      phone: lead.phone,
-      mobilePhone: lead.mobilePhone,
-      mailingStreet: lead.street,
-      mailingCity: lead.city,
-      mailingState: lead.state,
-      mailingPostalCode: lead.postalCode,
-      mailingCountry: lead.country,
-      leadSource: lead.leadSource,
-      description: lead.description,
-      ownerId: ownerId || lead.ownerId
-    }).returning();
-
-    // 4. Create Opportunity
-    const [opportunity] = await tx.insert(opportunitiesTable).values({
-      accountId: account.id,
-      name: `${account.name} - Opportunity`,
-      amount: "0", // Default
-      stage: "qualification",
-      leadSource: lead.leadSource,
-      closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
-      probability: 10,
-      description: lead.description,
-      ownerId: ownerId || lead.ownerId
-    }).returning();
-
-    // 5. Update Lead
-    await tx.update(leadsTable).set({
-      status: "converted",
-      isConverted: 1,
-      convertedDate: new Date(),
-      convertedAccountId: account.id,
-      convertedContactId: contact.id,
-      convertedOpportunityId: opportunity.id
-    }).where(eq(leadsTable.id, leadId));
-
-    return { account, contact, opportunity };
-  });
-},
-
-  // ========== WORK ORDERS ==========
-  async getWorkOrder(id: string): Promise < WorkOrder | undefined > {
+  async getCase(id: string): Promise<Case | undefined> {
     const result = await db
       .select()
-      .from(workOrdersTable)
-      .where(eq(workOrdersTable.id, id))
+      .from(casesTable)
+      .where(eq(casesTable.id, id))
       .limit(1);
     return result[0];
   },
 
-    async listWorkOrders(): Promise < WorkOrder[] > {
-      return await db.select().from(workOrdersTable);
-    },
+  async createCase(data: InsertCase): Promise<Case> {
+    const result = await db.insert(casesTable).values(data).returning();
+    return result[0];
+  },
 
-      async createWorkOrder(order: InsertWorkOrder): Promise < WorkOrder > {
-        const result = await db
-          .insert(workOrdersTable)
-          .values(order)
-          .returning();
-        return result[0];
-      },
+  async updateCase(id: string, data: InsertCase): Promise<Case | undefined> {
+    const result = await db
+      .update(casesTable)
+      .set(data)
+      .where(eq(casesTable.id, id))
+      .returning();
+    return result[0];
+  },
 
-        // ========== EMPLOYEES ==========
-        async getEmployee(id: string): Promise < Employee | undefined > {
-          const result = await db
-            .select()
-            .from(employeesTable)
-            .where(eq(employeesTable.id, id))
-            .limit(1);
-          return result[0];
-        },
+  async listCaseComments(caseId: string): Promise<CaseComment[]> {
+    return await db
+      .select()
+      .from(caseCommentsTable)
+      .where(eq(caseCommentsTable.caseId, caseId));
+  },
 
-          async listEmployees(): Promise < Employee[] > {
-            return await db.select().from(employeesTable);
-          },
+  async createCaseComment(data: InsertCaseComment): Promise<CaseComment> {
+    const result = await db.insert(caseCommentsTable).values(data).returning();
+    return result[0];
+  },
 
-            async createEmployee(employee: InsertEmployee): Promise < Employee > {
-              const result = await db
-                .insert(employeesTable)
-                .values(employee)
-                .returning();
-              return result[0];
-            },
+  // ========== INTERACTIONS (CRM) ==========
+  async listInteractions(entityType: string, entityId: string): Promise<Interaction[]> {
+    return await db
+      .select()
+      .from(interactionsTable)
+      .where(and(eq(interactionsTable.entityType, entityType), eq(interactionsTable.entityId, entityId)));
+  },
 
-              // ========== COPILOT ==========
-              async getCopilotConversation(id: string): Promise < CopilotConversation | undefined > {
-                const result = await db
-                  .select()
-                  .from(conversationsTable)
-                  .where(eq(conversationsTable.id, id))
-                  .limit(1);
-                return result[0];
-              },
+  async createInteraction(interaction: InsertInteraction): Promise<Interaction> {
+    const result = await db
+      .insert(interactionsTable)
+      .values(interaction)
+      .returning();
+    return result[0];
+  },
 
-                async listCopilotConversations(): Promise < CopilotConversation[] > {
-                  return await db.select().from(conversationsTable);
-                },
+  async updateLead(
+    id: string,
+    lead: Partial<InsertLead>
+  ): Promise<Lead | undefined> {
+    const updateData: any = { ...lead };
+    if (updateData.annualRevenue !== undefined) {
+      updateData.annualRevenue = updateData.annualRevenue ? String(updateData.annualRevenue) : null;
+    }
 
-                  async createCopilotConversation(
-                    conv: InsertCopilotConversation
-                  ): Promise < CopilotConversation > {
-                    const result = await db
-                      .insert(conversationsTable)
-                      .values(conv)
-                      .returning();
-                    return result[0];
-                  },
+    const result = await db
+      .update(leadsTable)
+      .set(updateData)
+      .where(eq(leadsTable.id, id))
+      .returning();
+    return result[0];
+  },
 
-                    async getCopilotMessage(id: string): Promise < CopilotMessage | undefined > {
-                      const result = await db
-                        .select()
-                        .from(messagesTable)
-                        .where(eq(messagesTable.id, id))
-                        .limit(1);
-                      return result[0];
-                    },
+  async convertLead(leadId: string, ownerId?: string): Promise<{ account: Account; contact: Contact; opportunity: Opportunity }> {
+    return await db.transaction(async (tx) => {
+      const [lead] = await tx.select().from(leadsTable).where(eq(leadsTable.id, leadId));
+      if (!lead) throw new Error("Lead not found");
+      if (lead.isConverted) throw new Error("Lead already converted");
 
-                      async listCopilotMessages(conversationId ?: string): Promise < CopilotMessage[] > {
-                        if(conversationId) {
-                          return await db
-                            .select()
-                            .from(messagesTable)
-                            .where(eq(messagesTable.conversationId, conversationId));
-                        }
+      // 1. Create Account
+      const [account] = await tx.insert(accountsTable).values({
+        name: lead.company || `${lead.firstName} ${lead.lastName}`,
+        industry: lead.industry,
+        phone: lead.phone,
+        billingCity: lead.city,
+        billingState: lead.state,
+        billingCountry: lead.country,
+        ownerId: ownerId || lead.ownerId
+      }).returning();
+
+      // 2. Create Contact
+      const [contact] = await tx.insert(contactsTable).values({
+        accountId: account.id,
+        firstName: lead.firstName || "",
+        lastName: lead.lastName,
+        email: lead.email,
+        phone: lead.phone,
+        mobilePhone: lead.mobilePhone,
+        mailingCity: lead.city,
+        mailingState: lead.state,
+        mailingCountry: lead.country,
+        ownerId: ownerId || lead.ownerId,
+        leadSource: lead.leadSource
+      }).returning();
+
+      // 3. Create Opportunity
+      const [opportunity] = await tx.insert(opportunitiesTable).values({
+        accountId: account.id,
+        contactId: contact.id, // Primary contact
+        name: `${account.name} - Opportunity`,
+        stage: "Prospecting",
+        amount: "0", // Default
+        closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
+        leadSource: lead.leadSource,
+        ownerId: ownerId || lead.ownerId
+      }).returning();
+
+      // 4. Update Lead
+      await tx.update(leadsTable).set({
+        isConverted: 1,
+        convertedDate: new Date(),
+        convertedAccountId: account.id,
+        convertedContactId: contact.id,
+        convertedOpportunityId: opportunity.id,
+        status: "Converted"
+      }).where(eq(leadsTable.id, leadId));
+
+      return { account, contact, opportunity };
+    });
+  },
+
+  // ========== ANALYTICS ==========
+  async getPipelineMetrics() {
+    const result = await db
+      .select({
+        stage: opportunitiesTable.stage,
+        count: sql<number>`count(*)`,
+        value: sql<number>`sum(cast(${opportunitiesTable.amount} as numeric))`
+      })
+      .from(opportunitiesTable)
+      .groupBy(opportunitiesTable.stage);
+
+    return result.map(r => ({
+      stage: r.stage || "Unknown",
+      count: Number(r.count),
+      value: Number(r.value || 0)
+    }));
+  },
+
+  async getRevenueMetrics() {
+    // Group by month of closed-won opportunities
+    const result = await db
+      .select({
+        month: sql<string>`to_char(${opportunitiesTable.closeDate}, 'YYYY-MM')`,
+        value: sql<number>`sum(cast(${opportunitiesTable.amount} as numeric))`
+      })
+      .from(opportunitiesTable)
+      .where(eq(opportunitiesTable.stage, 'closed-won'))
+      .groupBy(sql`to_char(${opportunitiesTable.closeDate}, 'YYYY-MM')`)
+      .orderBy(desc(sql`to_char(${opportunitiesTable.closeDate}, 'YYYY-MM')`))
+      .limit(12);
+
+    return result.map(r => ({
+      month: r.month,
+      value: Number(r.value || 0)
+    })).reverse();
+  },
+
+  async getLeadSourceMetrics() {
+    const result = await db
+      .select({
+        source: leadsTable.leadSource,
+        count: sql<number>`count(*)`
+      })
+      .from(leadsTable)
+      .groupBy(leadsTable.leadSource);
+
+    return result.map(r => ({
+      source: r.source || "Unknown",
+      count: Number(r.count)
+    }));
+  },
+
+  async getCaseMetrics() {
+    const result = await db
+      .select({
+        status: casesTable.status,
+        priority: casesTable.priority,
+        count: sql<number>`count(*)`
+      })
+      .from(casesTable)
+      .groupBy(casesTable.status, casesTable.priority);
+
+    return result.map(r => ({
+      status: r.status || "Unknown",
+      priority: r.priority || "Unknown",
+      count: Number(r.count)
+    }));
+  },
+
+  // ========== WORK ORDERS ==========
+  async createWorkOrder(order: InsertWorkOrder): Promise<WorkOrder> {
+    const result = await db
+      .insert(workOrdersTable)
+      .values(order)
+      .returning();
+    return result[0];
+  },
+
+  // ========== EMPLOYEES ==========
+  async getEmployee(id: string): Promise<Employee | undefined> {
+    const result = await db
+      .select()
+      .from(employeesTable)
+      .where(eq(employeesTable.id, id))
+      .limit(1);
+    return result[0];
+  },
+
+  async listEmployees(): Promise<Employee[]> {
+    return await db.select().from(employeesTable);
+  },
+
+  async createEmployee(employee: InsertEmployee): Promise<Employee> {
+    const result = await db
+      .insert(employeesTable)
+      .values(employee)
+      .returning();
+    return result[0];
+  },
+
+  // ========== COPILOT ==========
+  async getCopilotConversation(id: string): Promise<CopilotConversation | undefined> {
+    const result = await db
+      .select()
+      .from(conversationsTable)
+      .where(eq(conversationsTable.id, id))
+      .limit(1);
+    return result[0];
+  },
+
+  async listCopilotConversations(): Promise<CopilotConversation[]> {
+    return await db.select().from(conversationsTable);
+  },
+
+  async createCopilotConversation(
+    conv: InsertCopilotConversation
+  ): Promise<CopilotConversation> {
+    const result = await db
+      .insert(conversationsTable)
+      .values(conv)
+      .returning();
+    return result[0];
+  },
+
+  async getCopilotMessage(id: string): Promise<CopilotMessage | undefined> {
+    const result = await db
+      .select()
+      .from(messagesTable)
+      .where(eq(messagesTable.id, id))
+      .limit(1);
+    return result[0];
+  },
+
+  async listCopilotMessages(conversationId?: string): Promise<CopilotMessage[]> {
+    if (conversationId) {
+      return await db
+        .select()
+        .from(messagesTable)
+        .where(eq(messagesTable.conversationId, conversationId));
+    }
     return await db.select().from(messagesTable);
-                      },
+  },
 
-                        async createCopilotMessage(msg: InsertCopilotMessage): Promise < CopilotMessage > {
-                          const result = await db
-                            .insert(messagesTable)
-                            .values(msg)
-                            .returning();
-                          return result[0];
-                        },
+  async createCopilotMessage(msg: InsertCopilotMessage): Promise<CopilotMessage> {
+    const result = await db
+      .insert(messagesTable)
+      .values(msg)
+      .returning();
+    return result[0];
+  },
 
-                          // ========== DEMOS ==========
-                          async getDemo(id: string): Promise < Demo | undefined > {
-                            const result = await db
-                              .select()
-                              .from(demosTable)
-                              .where(eq(demosTable.id, id))
-                              .limit(1);
-                            return result[0];
-                          },
+  // ========== DEMOS ==========
+  async getDemo(id: string): Promise<Demo | undefined> {
+    const result = await db
+      .select()
+      .from(demosTable)
+      .where(eq(demosTable.id, id))
+      .limit(1);
+    return result[0];
+  },
 
-                            async listDemos(): Promise < Demo[] > {
-                              return await db.select().from(demosTable);
-                            },
+  async listDemos(): Promise<Demo[]> {
+    return await db.select().from(demosTable);
+  },
 
-                              async createDemo(demo: InsertDemo): Promise < Demo > {
-                                const result = await db
-                                  .insert(demosTable)
-                                  .values(demo)
-                                  .returning();
-                                return result[0];
-                              },
+  async createDemo(demo: InsertDemo): Promise<Demo> {
+    const result = await db
+      .insert(demosTable)
+      .values(demo)
+      .returning();
+    return result[0];
+  },
 
-                                async updateDemo(id: string, demo: Partial<InsertDemo>): Promise < Demo | undefined > {
-                                  const result = await db
-                                    .update(demosTable)
-                                    .set(demo)
-                                    .where(eq(demosTable.id, id))
-                                    .returning();
-                                  return result[0];
-                                },
+  async updateDemo(id: string, demo: Partial<InsertDemo>): Promise<Demo | undefined> {
+    const result = await db
+      .update(demosTable)
+      .set(demo)
+      .where(eq(demosTable.id, id))
+      .returning();
+    return result[0];
+  },
 
-                                  async deleteDemo(id: string): Promise < boolean > {
-                                    await db.delete(demosTable).where(eq(demosTable.id, id));
-                                    return true;
-                                  },
+  async deleteDemo(id: string): Promise<boolean> {
+    await db.delete(demosTable).where(eq(demosTable.id, id));
+    return true;
+  },
 
-                                    // ========== USERS ==========
-                                    async getUser(id: string): Promise < User | undefined > {
-                                      const result = await db
-                                        .select()
-                                        .from(usersTable)
-                                        .where(eq(usersTable.id, id))
-                                        .limit(1);
-                                      return result[0];
-                                    },
+  // ========== USERS ==========
+  async getUser(id: string): Promise<User | undefined> {
+    const result = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, id))
+      .limit(1);
+    return result[0];
+  },
 
-                                      async getUserByEmail(email: string): Promise < User | undefined > {
-                                        const result = await db
-                                          .select()
-                                          .from(usersTable)
-                                          .where(eq(usersTable.email, email))
-                                          .limit(1);
-                                        return result[0];
-                                      },
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const result = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email))
+      .limit(1);
+    return result[0];
+  },
 
-                                        async listUsers(): Promise < User[] > {
-                                          return await db.select().from(usersTable);
-                                        },
+  async createUser(user: InsertUser): Promise<User> {
+    const result = await db.insert(usersTable).values(user).returning();
+    return result[0];
+  },
 
-                                          async createUser(user: InsertUser): Promise < User > {
-                                            const result = await db
-                                              .insert(usersTable)
-                                              .values(user)
-                                              .returning();
-                                            return result[0];
-                                          },
+  // ========== ADVANCED GL (PHASE 2) ==========
 
-                                            // ========== PROJECTS ==========
-                                            async getProject(id: string): Promise < Project | undefined > {
-                                              const result = await db
-                                                .select()
-                                                .from(projectsTable)
-                                                .where(eq(projectsTable.id, id))
-                                                .limit(1);
-                                              return result[0];
-                                            },
+  async getGlLedger(id: string): Promise<GlLedger | undefined> {
+    const result = await db.select().from(glLedgersTable).where(eq(glLedgersTable.id, id)).limit(1);
+    return result[0];
+  },
+  async listGlLedgers(): Promise<GlLedger[]> {
+    return await db.select().from(glLedgersTable);
+  },
+  async createGlLedger(ledger: InsertGlLedger): Promise<GlLedger> {
+    const result = await db.insert(glLedgersTable).values(ledger).returning();
+    return result[0];
+  },
 
-                                              async listProjects(): Promise < Project[] > {
-                                                return await db.select().from(projectsTable);
-                                              },
+  async listGlSegments(ledgerId: string): Promise<GlSegment[]> {
+    return await db.select().from(glSegmentsTable).where(eq(glSegmentsTable.ledgerId, ledgerId));
+  },
+  async createGlSegment(segment: InsertGlSegment): Promise<GlSegment> {
+    const result = await db.insert(glSegmentsTable).values(segment).returning();
+    return result[0];
+  },
 
-                                                async createProject(project: InsertProject): Promise < Project > {
-                                                  const result = await db
-                                                    .insert(projectsTable)
-                                                    .values(project)
-                                                    .returning();
-                                                  return result[0];
-                                                },
+  async listGlSegmentValues(segmentId: string): Promise<GlSegmentValue[]> {
+    return await db.select().from(glSegmentValuesTable).where(eq(glSegmentValuesTable.segmentId, segmentId));
+  },
+  async createGlSegmentValue(val: InsertGlSegmentValue): Promise<GlSegmentValue> {
+    const result = await db.insert(glSegmentValuesTable).values(val).returning();
+    return result[0];
+  },
 
-                                                  // ========== TENANTS ==========
-                                                  async listTenants(): Promise < Tenant[] > {
-                                                    return await db.select().from(tenantsTable);
-                                                  },
+  async getGlCodeCombination(id: string): Promise<GlCodeCombination | undefined> {
+    const result = await db.select().from(glCodeCombinationsTable).where(eq(glCodeCombinationsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createGlCodeCombination(cc: InsertGlCodeCombination): Promise<GlCodeCombination> {
+    const result = await db.insert(glCodeCombinationsTable).values(cc).returning();
+    return result[0];
+  },
+
+  async listGlDailyRates(from: string, to: string, date: Date): Promise<GlDailyRate[]> {
+    return await db.select().from(glDailyRatesTable).where(
+      and(eq(glDailyRatesTable.fromCurrency, from), eq(glDailyRatesTable.toCurrency, to))
+    );
+  },
+  async createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate> {
+    const result = await db.insert(glDailyRatesTable).values({
+      ...rate,
+      rate: String(rate.rate)
+    }).returning();
+    return result[0];
+  },
+
+  // ========== ADVANCED GL (PHASE 2 - JOURNALS) ==========
+
+  async createGlJournalBatch(batch: InsertGlJournalBatch): Promise<GlJournalBatch> {
+    const result = await db.insert(glJournalBatchesTable).values(batch).returning();
+    return result[0];
+  },
+  async getGlJournalBatch(id: string): Promise<GlJournalBatch | undefined> {
+    const result = await db.select().from(glJournalBatchesTable).where(eq(glJournalBatchesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async listGlJournalBatches(): Promise<GlJournalBatch[]> {
+    return await db.select().from(glJournalBatchesTable);
+  },
+  async updateGlJournalBatch(id: string, batch: Partial<InsertGlJournalBatch>): Promise<GlJournalBatch | undefined> {
+    const result = await db.update(glJournalBatchesTable).set(batch).where(eq(glJournalBatchesTable.id, id)).returning();
+    return result[0];
+  },
+
+  async createGlJournalApproval(approval: InsertGlJournalApproval): Promise<GlJournalApproval> {
+    const result = await db.insert(glJournalApprovalsTable).values(approval).returning();
+    return result[0];
+  },
+  async listGlJournalApprovals(journalId: string): Promise<GlJournalApproval[]> {
+    return await db.select().from(glJournalApprovalsTable).where(eq(glJournalApprovalsTable.journalId, journalId));
+  },
+  async updateGlJournalApproval(id: string, approval: Partial<InsertGlJournalApproval>): Promise<GlJournalApproval | undefined> {
+    const result = await db.update(glJournalApprovalsTable).set(approval).where(eq(glJournalApprovalsTable.id, id)).returning();
+    return result[0];
+  },
+
+  async listUsers(): Promise<User[]> {
+    return await db.select().from(usersTable);
+  },
+
+  async createUser(user: InsertUser): Promise<User> {
+    const result = await db
+      .insert(usersTable)
+      .values(user)
+      .returning();
+    return result[0];
+  },
+
+  // ========== PROJECTS ==========
+  async getProject(id: string): Promise<Project | undefined> {
+    const result = await db
+      .select()
+      .from(projectsTable)
+      .where(eq(projectsTable.id, id))
+      .limit(1);
+    return result[0];
+  },
+
+  async listProjects(): Promise<Project[]> {
+    return await db.select().from(projectsTable);
+  },
+
+  async createProject(project: InsertProject): Promise<Project> {
+    const result = await db
+      .insert(projectsTable)
+      .values(project)
+      .returning();
+    return result[0];
+  },
+
+  // ========== TENANTS ==========
+  async listTenants(): Promise<Tenant[]> {
+    return await db.select().from(tenantsTable);
+  },
 };

@@ -185,6 +185,7 @@ export const opportunities = pgTable("opportunities", {
     forecastCategory: varchar("forecast_category"), // Pipeline, Best Case, Commit, Closed
 
     description: text("description"),
+    contactId: varchar("contact_id"),
     campaignId: varchar("campaign_id"),
 
     createdAt: timestamp("created_at").default(sql`now()`),

@@ -4,11 +4,14 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // ========== ROLES & PERMISSIONS ==========
+/* 
+// Duplicate sessions export - using the one in common.ts
 export const sessions = pgTable("sessions", {
     sid: varchar("sid").primaryKey(),
     sess: jsonb("sess").notNull(),
     expire: timestamp("expire", { precision: 6 }).notNull(),
 });
+*/
 
 export const roles = pgTable("roles", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
