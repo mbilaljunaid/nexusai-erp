@@ -311,6 +311,7 @@ const WorkflowMonitoring = lazy(() => import("@/pages/WorkflowMonitoring"));
 const IntegrationStatus = lazy(() => import("@/pages/IntegrationStatus"));
 const JournalEntries = lazy(() => import("@/pages/JournalEntries"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
+const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
 const FinancialReportsDashboard = lazy(() => import("@/pages/FinancialReportsDashboard"));
 const PurchaseRequisitions = lazy(() => import("@/pages/PurchaseRequisitions"));
@@ -556,6 +557,8 @@ function Router() {
       <Route path="/crm/contacts" component={ContactsDetail} />
       <Route path="/crm/:page?" component={CRM} />
       <Route path="/erp/:page?" component={ERP} />
+      <Route path="/finance/cash-management" component={CashManagementPage} />
+      <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
       <Route path="/finance/accounts-payable" component={AccountsPayable} />
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
       <Route path="/finance/:page?" component={Finance} />

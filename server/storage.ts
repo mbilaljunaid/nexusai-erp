@@ -83,6 +83,10 @@ import {
   type ArCustomer, type InsertArCustomer,
   type ArInvoice, type InsertArInvoice,
   type ArReceipt, type InsertArReceipt, type ArRevenueSchedule, type InsertArRevenueSchedule,
+  // Cash Module
+  type CashBankAccount, type InsertCashBankAccount,
+  type CashStatementLine, type InsertCashStatementLine,
+  type CashTransaction, type InsertCashTransaction
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -93,6 +97,19 @@ export interface IStorage {
   createArRevenueSchedule(data: InsertArRevenueSchedule): Promise<ArRevenueSchedule>;
   updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>): Promise<ArRevenueSchedule | undefined>;
   deleteArRevenueSchedule(id: string): Promise<boolean>;
+
+  // Cash Management
+  listCashBankAccounts(): Promise<CashBankAccount[]>;
+  getCashBankAccount(id: string): Promise<CashBankAccount | undefined>;
+  createCashBankAccount(data: InsertCashBankAccount): Promise<CashBankAccount>;
+  updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>): Promise<CashBankAccount | undefined>;
+  deleteCashBankAccount(id: string): Promise<boolean>;
+
+  listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]>;
+  createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine>;
+
+  listCashTransactions(bankAccountId: string): Promise<CashTransaction[]>;
+  createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction>;
 
   // User operations (IMPORTANT: mandatory for Replit Auth)
   upsertUser(user: UpsertUser): Promise<User>;
@@ -502,6 +519,11 @@ export class MemStorage implements IStorage {
   private arReceipts = new Map<string, ArReceipt>();
   private arRevenueSchedules = new Map<string, ArRevenueSchedule>();
 
+  // Cash Maps
+  private cashBankAccounts = new Map<string, CashBankAccount>();
+  private cashStatementLines = new Map<string, CashStatementLine>();
+  private cashTransactions = new Map<string, CashTransaction>();
+
 
   // GL Maps
   private glAccounts = new Map<string, GlAccount>();
@@ -737,7 +759,11 @@ export class MemStorage implements IStorage {
   async getArRevenueSchedule(id: string) { return this.arRevenueSchedules.get(id); }
   async createArRevenueSchedule(data: InsertArRevenueSchedule) {
     const id = randomUUID();
-    const schedule: ArRevenueSchedule = { id, ...data, status: data.status ?? "Pending" };
+    const schedule: ArRevenueSchedule = {
+      id, ...data,
+      amount: String(data.amount), // Cast number to numeric string
+      status: data.status ?? "Pending"
+    };
     this.arRevenueSchedules.set(id, schedule);
     return schedule;
   }
@@ -749,6 +775,66 @@ export class MemStorage implements IStorage {
     return updated;
   }
   async deleteArRevenueSchedule(id: string) { return this.arRevenueSchedules.delete(id); }
+
+  // Cash Management Implementation
+  async listCashBankAccounts() { return Array.from(this.cashBankAccounts.values()); }
+  async getCashBankAccount(id: string) { return this.cashBankAccounts.get(id); }
+  async createCashBankAccount(data: InsertCashBankAccount) {
+    const id = randomUUID();
+    const account: CashBankAccount = {
+      id, ...data,
+      currency: data.currency ?? "USD",
+      currentBalance: data.currentBalance ? String(data.currentBalance) : "0",
+      glAccountId: data.glAccountId ?? null,
+      swiftCode: data.swiftCode ?? null,
+      active: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.cashBankAccounts.set(id, account);
+    return account;
+  }
+  async updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>) {
+    const existing = this.cashBankAccounts.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...data, currentBalance: data.currentBalance ? String(data.currentBalance) : existing.currentBalance };
+    this.cashBankAccounts.set(id, updated);
+    return updated;
+  }
+  async deleteCashBankAccount(id: string) { return this.cashBankAccounts.delete(id); }
+
+  async listCashStatementLines(bankAccountId: string) {
+    return Array.from(this.cashStatementLines.values()).filter(l => String(l.bankAccountId) === bankAccountId);
+  }
+  async createCashStatementLine(data: InsertCashStatementLine) {
+    const id = randomUUID();
+    const line: CashStatementLine = {
+      id, ...data,
+      amount: String(data.amount),
+      description: data.description ?? null,
+      referenceNumber: data.referenceNumber ?? null,
+      reconciled: data.reconciled ?? false,
+      createdAt: new Date()
+    };
+    this.cashStatementLines.set(id, line);
+    return line;
+  }
+
+  async listCashTransactions(bankAccountId: string) {
+    return Array.from(this.cashTransactions.values()).filter(t => String(t.bankAccountId) === bankAccountId);
+  }
+  async createCashTransaction(data: InsertCashTransaction) {
+    const id = randomUUID();
+    const trx: CashTransaction = {
+      id, ...data,
+      amount: String(data.amount), // Cast
+      transactionDate: data.transactionDate ? new Date(data.transactionDate) : new Date(),
+      reference: data.reference ?? null,
+      status: data.status ?? "Unreconciled"
+    };
+    this.cashTransactions.set(id, trx);
+    return trx;
+  }
 
   // Agentic AI Implementation
   private aiActions = new Map<string, AiAction>();
