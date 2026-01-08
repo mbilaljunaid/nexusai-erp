@@ -4,6 +4,12 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // ========== ROLES & PERMISSIONS ==========
+export const sessions = pgTable("sessions", {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire", { precision: 6 }).notNull(),
+});
+
 export const roles = pgTable("roles", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     tenantId: varchar("tenant_id"),

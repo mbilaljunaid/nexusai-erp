@@ -5,10 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
 export function OpportunityForm() {
@@ -17,45 +16,47 @@ export function OpportunityForm() {
   const [formData, setFormData] = useState({
     name: "",
     accountId: "",
-    stage: "lead",
-    probability: 25,
-    expectedValue: "",
+    stage: "qualification",
+    probability: 10,
+    amount: "",
     closeDate: "",
     description: "",
-    ownerId: "",
-    products: "",
-    status: "open",
+  });
+
+  // Fetch real accounts
+  const { data: accounts } = useQuery({
+    queryKey: ['/api/crm/accounts'],
+    queryFn: () => apiRequest('/api/crm/accounts').then(res => res.json())
   });
 
   const stages = [
-    { value: "lead", label: "Lead" },
-    { value: "qualified", label: "Qualified" },
+    { value: "qualification", label: "Qualification" },
+    { value: "needs_analysis", label: "Needs Analysis" },
     { value: "proposal", label: "Proposal" },
     { value: "negotiation", label: "Negotiation" },
-    { value: "won", label: "Won" },
-    { value: "lost", label: "Lost" },
+    { value: "closed_won", label: "Closed Won" },
+    { value: "closed_lost", label: "Closed Lost" },
   ];
 
   const handleChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const expectedAmount = parseFloat(formData.expectedValue) || 0;
-  const weightedValue = expectedAmount * (formData.probability / 100);
+  const amount = parseFloat(formData.amount) || 0;
+  const weightedValue = amount * (formData.probability / 100);
 
   const submitMutation = useMutation({
     mutationFn: async () => {
+      // @ts-ignore
+      if (!formData.accountId) throw new Error("Account is required");
       return apiRequest("POST", "/api/crm/opportunities", {
         name: formData.name,
         accountId: formData.accountId,
         stage: formData.stage,
         probability: formData.probability,
-        expectedValue: expectedAmount,
-        closeDate: formData.closeDate,
+        amount: amount,
+        closeDate: formData.closeDate ? new Date(formData.closeDate).toISOString() : null,
         description: formData.description,
-        ownerId: formData.ownerId,
-        products: formData.products,
-        status: formData.status,
       });
     },
     onSuccess: () => {
@@ -64,17 +65,15 @@ export function OpportunityForm() {
       setFormData({
         name: "",
         accountId: "",
-        stage: "lead",
-        probability: 25,
-        expectedValue: "",
+        stage: "qualification",
+        probability: 10,
+        amount: "",
         closeDate: "",
         description: "",
-        ownerId: "",
-        products: "",
-        status: "open",
       });
     },
-    onError: () => {
+    onError: (err) => {
+      console.error(err);
       toast({ title: "Error", description: "Failed to create opportunity", variant: "destructive" });
     }
   });
@@ -112,9 +111,9 @@ export function OpportunityForm() {
                   <SelectValue placeholder="Select account" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="acme">Acme Corp</SelectItem>
-                  <SelectItem value="techco">TechCo Inc</SelectItem>
-                  <SelectItem value="finance">Finance Plus</SelectItem>
+                  {accounts?.map((acc: any) => (
+                    <SelectItem key={acc.id} value={acc.id}>{acc.name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -147,14 +146,14 @@ export function OpportunityForm() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="value">Expected Value *</Label>
+              <Label htmlFor="amount">Amount *</Label>
               <Input
-                id="value"
+                id="amount"
                 type="number"
                 placeholder="0.00"
-                value={formData.expectedValue}
-                onChange={(e) => handleChange("expectedValue", e.target.value)}
-                data-testid="input-expected-value"
+                value={formData.amount}
+                onChange={(e) => handleChange("amount", e.target.value)}
+                data-testid="input-amount"
               />
             </div>
           </div>
@@ -167,7 +166,7 @@ export function OpportunityForm() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="close">Close Date *</Label>
+              <Label htmlFor="close">Close Date</Label>
               <Input
                 id="close"
                 type="date"
@@ -176,30 +175,6 @@ export function OpportunityForm() {
                 data-testid="input-close-date"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="owner">Sales Owner</Label>
-              <Select value={formData.ownerId} onValueChange={(v) => handleChange("ownerId", v)}>
-                <SelectTrigger id="owner" data-testid="select-owner">
-                  <SelectValue placeholder="Select owner" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="john">John Sales</SelectItem>
-                  <SelectItem value="jane">Jane Manager</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="products">Products/Services</Label>
-            <Textarea
-              id="products"
-              placeholder="List products/services included in this opportunity"
-              value={formData.products}
-              onChange={(e) => handleChange("products", e.target.value)}
-              rows={3}
-              data-testid="textarea-products"
-            />
           </div>
 
           <div className="space-y-2">
@@ -214,28 +189,13 @@ export function OpportunityForm() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
-            <Select value={formData.status} onValueChange={(v) => handleChange("status", v)}>
-              <SelectTrigger id="status" data-testid="select-status">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="open">Open</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="paused">Paused</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </CardContent>
       </Card>
 
       <div className="flex gap-3">
-        <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending || !formData.name} data-testid="button-save-opportunity">
+        <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending || !formData.name || !formData.accountId} data-testid="button-save-opportunity">
           {submitMutation.isPending ? "Saving..." : "Save Opportunity"}
         </Button>
-        <Button variant="outline" data-testid="button-cancel-opportunity">Cancel</Button>
       </div>
     </div>
   );

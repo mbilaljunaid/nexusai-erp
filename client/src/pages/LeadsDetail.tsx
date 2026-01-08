@@ -5,13 +5,81 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Search, ArrowLeft, Loader2 } from "lucide-react";
+import { Search, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertLeadSchema, type InsertLead, type Lead } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+function LeadConvertModal({ lead, onSuccess }: { lead: Lead; onSuccess: () => void }) {
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+
+  const convertMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/leads/${lead.id}/convert`);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Lead Converted",
+        description: `Created Account: ${data.account.name}, Contact: ${data.contact.firstName} ${data.contact.lastName}, Opportunity: ${data.opportunity.name}`
+      });
+      setOpen(false);
+      onSuccess();
+    },
+    onError: (error: Error) => {
+      toast({ title: "Conversion Failed", description: error.message, variant: "destructive" });
+    }
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline" className="ml-auto" disabled={lead.status === 'converted'}>
+          {lead.status === 'converted' ? <CheckCircle className="mr-2 h-4 w-4" /> : null}
+          {lead.status === 'converted' ? "Converted" : "Convert"}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Convert Lead</DialogTitle>
+          <DialogDescription>
+            This will create a new Account, Contact, and Opportunity from this lead.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="py-4 space-y-4">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div><strong>Company:</strong> {lead.company}</div>
+            <div><strong>Name:</strong> {lead.name}</div>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Account Name will be <strong>{lead.company || lead.name}</strong>.
+            Opportunity Name will be <strong>{lead.company || lead.name} - New Opportunity</strong>.
+          </p>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={() => convertMutation.mutate()} disabled={convertMutation.isPending}>
+            {convertMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Convert
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 function LeadEntryForm() {
   const { toast } = useToast();
@@ -52,28 +120,90 @@ function LeadEntryForm() {
         <CardTitle>Add New Lead</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Core Info */}
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="salutation">Salutation</Label>
+              <Input id="salutation" {...form.register("salutation")} placeholder="Mr./Ms." />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input id="firstName" {...form.register("firstName")} placeholder="John" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name *</Label>
+              <Input id="lastName" {...form.register("lastName")} placeholder="Doe" />
+              {form.formState.errors.lastName && <p className="text-sm text-destructive">{form.formState.errors.lastName.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name Display *</Label>
               <Input id="name" {...form.register("name")} placeholder="John Doe" />
               {form.formState.errors.name && <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" {...form.register("email")} placeholder="john@example.com" />
-              {form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" {...form.register("title")} placeholder="CEO" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="company">Company</Label>
               <Input id="company" {...form.register("company")} placeholder="Acme Inc" />
             </div>
+
+            {/* Contact Info */}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" {...form.register("email")} placeholder="john@example.com" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input id="phone" {...form.register("phone")} placeholder="+1 555..." />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="mobilePhone">Mobile</Label>
+              <Input id="mobilePhone" {...form.register("mobilePhone")} placeholder="+1 555..." />
+            </div>
+
+            {/* Address Info */}
+            <div className="space-y-2 md:col-span-2">
+              <Label>Address</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <Input {...form.register("street")} placeholder="Street" className="col-span-2" />
+                <Input {...form.register("city")} placeholder="City" />
+                <Input {...form.register("state")} placeholder="State" />
+                <Input {...form.register("postalCode")} placeholder="Zip" />
+                <Input {...form.register("country")} placeholder="Country" />
+              </div>
+            </div>
+
+            {/* Qualification */}
+            <div className="space-y-2">
+              <Label htmlFor="leadSource">Lead Source</Label>
+              <Input id="leadSource" {...form.register("leadSource")} placeholder="Web, Referral..." />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
               <Input id="status" {...form.register("status")} placeholder="new" />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="industry">Industry</Label>
+              <Input id="industry" {...form.register("industry")} placeholder="Tech, Retail..." />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="rating">Rating</Label>
+              <Input id="rating" {...form.register("rating")} placeholder="Hot, Warm, Cold" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="annualRevenue">Annual Revenue</Label>
+              <Input id="annualRevenue" type="number" {...form.register("annualRevenue", { valueAsNumber: true })} placeholder="0" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="numberOfEmployees">No. Employees</Label>
+              <Input id="numberOfEmployees" type="number" {...form.register("numberOfEmployees", { valueAsNumber: true })} placeholder="0" />
+            </div>
           </div>
-          <Button type="submit" disabled={createMutation.isPending}>
+
+          <Button type="submit" disabled={createMutation.isPending} className="w-full">
             {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Create Lead
           </Button>
@@ -85,6 +215,7 @@ function LeadEntryForm() {
 
 export default function LeadsDetail() {
   const [searchQuery, setSearchQuery] = useState("");
+  const queryClient = useQueryClient();
   const { data: leads = [], isLoading } = useQuery<Lead[]>({
     queryKey: ["/api/leads"],
     // Use select to handle potential non-array error responses gracefully in UI
@@ -137,7 +268,16 @@ export default function LeadsDetail() {
                         {l.company && <span>• {l.company}</span>}
                       </div>
                     </div>
-                    <Badge variant={l.status === 'new' ? 'default' : 'secondary'}>{l.status}</Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={l.status === 'new' ? 'default' : 'secondary'}>{l.status}</Badge>
+                      <LeadConvertModal
+                        lead={l}
+                        onSuccess={() => {
+                          queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+                          queryClient.invalidateQueries({ queryKey: ["/api/crm/metrics"] });
+                        }}
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>

@@ -141,14 +141,19 @@ export async function setupPlatformAuth(app: Express) {
       req.session.userRole = user.role || "user";
       req.session.isAuthenticated = true;
 
-      res.json({
-        success: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        },
+      req.session.isAuthenticated = true;
+
+      req.session.save((err) => {
+        if (err) console.error("Session save error:", err);
+        res.json({
+          success: true,
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+        });
       });
     } catch (error: any) {
       console.error("Login error:", error);
@@ -185,7 +190,7 @@ export async function setupPlatformAuth(app: Express) {
 
       const user = await storage.getUser(req.session.userId);
       if (!user) {
-        req.session.destroy(() => {});
+        req.session.destroy(() => { });
         return res.status(401).json({ message: "User not found" });
       }
 
@@ -218,7 +223,7 @@ export async function seedAdminUser() {
   try {
     const adminEmail = "admin@nexusaifirst.cloud";
     const existingAdmin = await storage.getUserByEmail(adminEmail);
-    
+
     if (!existingAdmin) {
       const hashedPassword = await bcrypt.hash("Admin@2025!", SALT_ROUNDS);
       await storage.createUser({

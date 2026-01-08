@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useRoute } from "wouter";
+import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,14 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { openFormInNewWindow } from "@/lib/formUtils";
-import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity } from "lucide-react";
+import { Target, Users, BarChart3, TrendingUp, Mail, Phone, FileText, Settings, Activity, Package, MessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-// Re-export or redefine types if needed, but for now we trust the API returns
+import OpportunitiesDetail from "./OpportunitiesDetail";
+import CampaignsDetail from "./CampaignsDetail";
+import ProductsDetail from "./ProductsDetail";
+import QuotesDetail from "./QuotesDetail";
+import CasesDetail from "./CasesDetail";
 interface CRMMetrics {
   totalLeads: number;
   pipelineValue: string;
@@ -105,13 +109,26 @@ export default function CRM() {
     { id: "opportunities", label: "Opportunities", icon: Target, color: "text-purple-500", formId: "opportunities" },
     { id: "accounts", label: "Accounts", icon: FileText, color: "text-orange-500", formId: "accounts" },
     { id: "contacts", label: "Contacts", icon: Phone, color: "text-pink-500", formId: "contacts" },
+    { id: "products", label: "Products", icon: Package, color: "text-red-500", formId: "products" },
+    { id: "quotes", label: "Quotes", icon: FileText, color: "text-amber-500", formId: "quotes" },
     { id: "campaigns", label: "Campaigns", icon: Mail, color: "text-cyan-500", formId: "campaigns" },
+    { id: "cases", label: "Cases", icon: MessageSquare, color: "text-rose-500", formId: "cases" },
     { id: "pipeline", label: "Pipeline", icon: TrendingUp, color: "text-indigo-500", formId: null },
     { id: "analytics", label: "Analytics", icon: Activity, color: "text-yellow-500", formId: null },
     { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500", formId: null },
   ];
 
-  const handleIconClick = (formId: string | null) => {
+  /* Removed inline Leads, Accounts, Contacts render blocks in favor of routing */
+
+  const [location, setLocation] = useLocation();
+
+  const handleIconClick = (id: string, formId: string | null) => {
+    // Check for standalone pages
+    if (["leads", "accounts", "contacts", "opportunities", "campaigns", "products", "quotes", "cases"].includes(id)) {
+      setLocation(`/crm/${id}`);
+      return;
+    }
+
     if (formId) {
       openFormInNewWindow(formId, `${formId.charAt(0).toUpperCase() + formId.slice(1)} Form`);
     } else {
@@ -120,7 +137,7 @@ export default function CRM() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen overflow-y-auto">
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-2"><Target className="h-8 w-8" />CRM & Sales</h1>
         <p className="text-muted-foreground text-sm">Manage leads, opportunities, accounts, contacts, and campaigns</p>
@@ -130,7 +147,7 @@ export default function CRM() {
         {navItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => handleIconClick(item.formId)}
+            onClick={() => handleIconClick(item.id, item.formId)}
             className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${!item.formId ? "hover:border-primary hover-elevate" : "hover:bg-primary/10 hover:border-primary hover-elevate"
               }`}
             data-testid={`button-icon-${item.id}`}
@@ -143,69 +160,15 @@ export default function CRM() {
 
       {activeNav === "overview" && <CRMOverview />}
 
-      {activeNav === "leads" && (
-        <div className="space-y-4">
-          <Breadcrumb items={[{ label: "Leads", path: "/crm/leads" }]} />
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-1">
-              <CardTitle>Leads</CardTitle>
-              <Button onClick={() => openFormInNewWindow("leads", "Leads Form")} data-testid="button-add-leads">
-                + Add New
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormSearchWithMetadata
-                formMetadata={leadsMetadata}
-                value={searchQuery}
-                onChange={setSearchQuery}
-                data={leads}
-                onFilter={setFilteredLeads}
-              />
-              <div className="space-y-2">
-                {filteredLeads.length > 0 ? (
-                  filteredLeads.map((lead: any, idx: number) => (
-                    <Card key={lead.id || idx} className="hover-elevate cursor-pointer">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-semibold">{lead.name || 'Unknown'}</p>
-                            <p className="text-sm text-muted-foreground">{lead.email}</p>
-                          </div>
-                          <Badge>{lead.status || 'New'}</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : (
-                  <p className="text-muted-foreground text-center py-4">No leads found</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {activeNav === "opportunities" && <OpportunitiesDetail />}
 
-      {activeNav === "opportunities" && <OpportunitiesSection />}
+      {activeNav === "campaigns" && <CampaignsDetail />}
 
-      {activeNav === "customers" && (
-        <div className="space-y-4">
-          <Breadcrumb items={[
-            { label: "CRM", path: "/crm" },
-            { label: "Customers", path: "/crm/customers" },
-          ]} />
-          <Card><CardHeader><CardTitle>Accounts & Contacts</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Manage customer accounts and contact information</p></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "products" && <ProductsDetail />}
 
-      {activeNav === "campaigns" && (
-        <div className="space-y-4">
-          <Breadcrumb items={[
-            { label: "CRM", path: "/crm" },
-            { label: "Campaigns", path: "/crm/campaigns" },
-          ]} />
-          <Card><CardHeader><CardTitle>Marketing Campaigns</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Create and manage marketing campaigns</p></CardContent></Card>
-        </div>
-      )}
+      {activeNav === "quotes" && <QuotesDetail />}
+
+      {activeNav === "cases" && <CasesDetail />}
 
       {activeNav === "pipeline" && (
         <div className="space-y-4">

@@ -166,6 +166,9 @@ const TeamCollaboration = lazy(() => import("@/pages/TeamCollaboration"));
 
 // All existing pages (keep imports for all 191 pages)
 const LeadDetail = lazy(() => import("@/pages/LeadDetail"));
+const LeadsDetail = lazy(() => import("@/pages/LeadsDetail"));
+const AccountsDetail = lazy(() => import("@/pages/AccountsDetail"));
+const ContactsDetail = lazy(() => import("@/pages/ContactsDetail"));
 const LeadConversion = lazy(() => import("@/pages/LeadConversion"));
 const InvoiceList = lazy(() => import("@/pages/InvoiceList"));
 const InvoiceDetail = lazy(() => import("@/pages/InvoiceDetail"));
@@ -546,6 +549,9 @@ function Router() {
       <Route path="/admin-roles" component={AdminRoles} />
       <Route path="/demo" component={DemoManagement} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/crm/leads" component={LeadsDetail} />
+      <Route path="/crm/accounts" component={AccountsDetail} />
+      <Route path="/crm/contacts" component={ContactsDetail} />
       <Route path="/crm/:page?" component={CRM} />
       <Route path="/erp/:page?" component={ERP} />
       <Route path="/finance/:page?" component={Finance} />
@@ -575,13 +581,13 @@ function Router() {
       <Route path="/marketplace/contributor" component={ContributorDashboard} />
       <Route path="/marketplace/profile/:userId" component={ContributorProfile} />
       <Route path="/community" component={CommunityForum} />
-      
+
       {/* Training Content Routes */}
       <Route path="/training/:type" component={TrainingContent} />
       <Route path="/contributor/training/submit" component={TrainingContentSubmit} />
       <Route path="/contributor/training/filter-request" component={TrainingContentSubmit} />
       <Route path="/admin/training" component={TrainingContentAdmin} />
-      
+
       <Route path="/developer-portal" component={DeveloperPortal} />
       <Route path="/marketplace-admin" component={MarketplaceAdmin} />
       <Route path="/settings" component={Settings} />
@@ -606,7 +612,7 @@ function Router() {
       <Route path="/processes/customer-returns" component={CustomerReturnsProcess} />
       <Route path="/processes/vendor-performance" component={VendorPerformanceProcess} />
       <Route path="/processes/subscription-billing" component={SubscriptionBillingProcess} />
-      
+
       {/* Public Process Pages */}
       <Route path="/public/processes" component={PublicProcessHub} />
       <Route path="/public/processes/procure-to-pay" component={PublicProcureToPayProcess} />
@@ -627,7 +633,7 @@ function Router() {
       <Route path="/public/processes/customer-returns" component={PublicCustomerReturnsProcess} />
       <Route path="/public/processes/vendor-performance" component={PublicVendorPerformanceProcess} />
       <Route path="/public/processes/subscription-billing" component={PublicSubscriptionBillingProcess} />
-      
+
       {/* Public Documentation Routes */}
       <Route path="/docs/process-flows" component={ProcessFlowsPage} />
       <Route path="/docs/training-guides" component={TrainingGuidesPage} />
@@ -642,7 +648,7 @@ function Router() {
       <Route path="/docs/technical/api-reference" component={TechnicalAPIReference} />
       <Route path="/docs/implementation" component={ImplementationGuidelinesPage} />
       <Route path="/docs/implementation/system-setup" component={ImplementationSystemSetup} />
-      
+
       <Route path="/mrp-dashboard" component={MRPDashboard} />
       <Route path="/attendance-dashboard" component={AttendanceDashboard} />
       <Route path="/ticket-dashboard" component={TicketDashboard} />
@@ -658,9 +664,9 @@ function Router() {
       <Route path="/industry-deployments" component={IndustrySetup} />
       <Route path="/environment-management" component={EnvironmentManagement} />
       <Route path="/subscription-management" component={SubscriptionManagement} />
-              <Route path="/reports/:module" component={Reports} />
-              <Route path="/reports" component={Reports} />
-              <Route path="/features" component={FeaturesComparison} />
+      <Route path="/reports/:module" component={Reports} />
+      <Route path="/reports" component={Reports} />
+      <Route path="/features" component={FeaturesComparison} />
       <Route path="/billing-management" component={BillingManagement} />
       <Route path="/industry/:slug" component={IndustryDetail} />
       <Route path="/module/:slug" component={ModuleDetail} />
@@ -713,12 +719,12 @@ function PublicLayout() {
 export default function App() {
   const [location] = useLocation();
   const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
-  
+
   // Public routes don't show sidebar - includes dynamic routes
   const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/contribution", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/community", "/marketplace/services", "/marketplace/apps", "/marketplace/jobs"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/") || location.startsWith("/blog/") || location.startsWith("/marketplace/jobs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
-  
+
   // Industry setup routes should show authenticated layout
   const isIndustrySetup = location === "/industry-setup" || location === "/industry-deployments";
 

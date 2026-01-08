@@ -14,8 +14,16 @@ export const enforceRBAC = (requiredPermission?: string) => {
         const tenantId = req.headers["x-tenant-id"] as string;
         const userId = req.headers["x-user-id"] as string;
 
-        // If user is already authenticated via session (Platform Auth), use that
-        if (req.user) {
+
+        // If user is already authenticated via session (Platform Auth)
+        // @ts-ignore
+        if (req.session && req.session.userId) {
+            // @ts-ignore
+            req.userId = req.session.userId;
+            // @ts-ignore
+            req.role = req.session.userRole || "viewer";
+            req.tenantId = "default"; // Default tenant for platform auth users
+        } else if (req.user) {
             req.tenantId = req.user.tenantId || "default";
             req.userId = req.user.id;
             req.role = req.user.role || "viewer";

@@ -422,6 +422,32 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
       { label: "Activity Timeline", path: "/crm/activitytimeline" }
     ]
   },
+
+  opportunities: {
+    id: "opportunities",
+    name: "Opportunities",
+    apiEndpoint: "/api/crm/opportunities",
+    fields: [
+      { name: "name", label: "Opportunity Name", type: "text", required: true, searchable: true },
+      { name: "accountId", label: "Account", type: "select", required: true, searchable: true },
+      { name: "stage", label: "Stage", type: "select", required: true, searchable: true },
+      { name: "amount", label: "Amount", type: "number", required: true, searchable: false },
+      { name: "closeDate", label: "Close Date", type: "date", required: false, searchable: false },
+      { name: "probability", label: "Probability", type: "number", required: false, searchable: false }
+    ],
+    searchFields: ["name", "accountId"],
+    displayField: "name",
+    createButtonText: "Create Opportunity",
+    module: "CRM",
+    page: "/crm/opportunities",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Opportunities", path: "/crm/opportunities" }
+    ]
+  },
   adminConsole: {
     id: "adminConsole",
     name: "Admin Console",
@@ -2438,6 +2464,56 @@ export const formMetadataRegistry: Record<string, FormMetadata> = {
       { label: "Calendar", path: "/general/calendar" }
     ]
   },
+  campaigns: {
+    id: "campaigns",
+    name: "Campaigns",
+    apiEndpoint: "/api/crm/campaigns",
+    fields: [
+      { name: "name", label: "Campaign Name", type: "text", required: true, searchable: true },
+      { name: "type", label: "Type", type: "select", required: false, searchable: true },
+      { name: "status", label: "Status", type: "select", required: false, searchable: true },
+      { name: "startDate", label: "Start Date", type: "date", required: false, searchable: false },
+      { name: "formattedExpectedRevenue", label: "Expected Revenue", type: "number", required: false, searchable: false },
+      { name: "budgetedCost", label: "Budgeted Cost", type: "number", required: false, searchable: false },
+      { name: "isActive", label: "Active", type: "select", required: false, searchable: false }
+    ],
+    searchFields: ["name", "type", "status"],
+    displayField: "name",
+    createButtonText: "Create Campaign",
+    module: "CRM",
+    page: "/crm/campaigns",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Campaigns", path: "/crm/campaigns" }
+    ]
+  },
+  products: {
+    id: "products",
+    name: "Products",
+    apiEndpoint: "/api/crm/products",
+    fields: [
+      { name: "name", label: "Product Name", type: "text", required: true, searchable: true },
+      { name: "productCode", label: "Product Code", type: "text", required: false, searchable: true },
+      { name: "description", label: "Description", type: "textarea", required: false, searchable: true },
+      { name: "isActive", label: "Active", type: "select", required: false, searchable: false }
+    ],
+    searchFields: ["name", "productCode"],
+    displayField: "name",
+    createButtonText: "Add Product",
+    module: "CRM",
+    page: "/crm/products",
+    allowCreate: true,
+    showSearch: true,
+    breadcrumbs: [
+      { label: "Dashboard", path: "/" },
+      { label: "CRM", path: "/crm" },
+      { label: "Products", path: "/crm/products" }
+    ]
+  },
+
   campaignsDashboard: {
     id: "campaignsDashboard",
     name: "Campaigns Dashboard",

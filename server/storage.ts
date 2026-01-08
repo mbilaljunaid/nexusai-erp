@@ -51,6 +51,12 @@ import {
   type UserTrustLevel, type InsertUserTrustLevel,
   type ReputationEvent, type InsertReputationEvent,
   type CommunityBadgeProgress, type InsertCommunityBadgeProgress,
+  type Case, type InsertCase,
+  type CaseComment, type InsertCaseComment,
+  type Interaction, type InsertInteraction,
+  type Account, type InsertAccount,
+  type Contact, type InsertContact,
+  type Opportunity, type InsertOpportunity,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -97,8 +103,24 @@ export interface IStorage {
   createInvoice(invoice: InsertInvoice): Promise<Invoice>;
 
   getLead(id: string): Promise<Lead | undefined>;
+  // Case Management
+  listCases(filters?: { accountId?: string; contactId?: string }): Promise<Case[]>;
+  getCase(id: string): Promise<Case | undefined>;
+  createCase(data: InsertCase): Promise<Case>;
+  updateCase(id: string, data: Partial<InsertCase>): Promise<Case | undefined>;
+  listCaseComments(caseId: string): Promise<CaseComment[]>;
+  createCaseComment(data: InsertCaseComment): Promise<CaseComment>;
+
+  // Interaction Methods
+  listInteractions(entityType: string, entityId: string): Promise<Interaction[]>;
+  createInteraction(interaction: InsertInteraction): Promise<Interaction>;
+
+  // Lead Management
+  getLead(id: string): Promise<Lead | undefined>;
   listLeads(): Promise<Lead[]>;
   createLead(lead: InsertLead): Promise<Lead>;
+  convertLead(leadId: string, ownerId?: string): Promise<{ account: Account; contact: Contact; opportunity: Opportunity }>;
+
 
   getWorkOrder(id: string): Promise<WorkOrder | undefined>;
   listWorkOrders(): Promise<WorkOrder[]>;
@@ -335,8 +357,33 @@ export class MemStorage implements IStorage {
   private userFeedbackStore = new Map<string, UserFeedback>();
   private industries = new Map<string, Industry>();
   private industryDeployments = new Map<string, IndustryDeployment>();
+  private cases = new Map<string, Case>();
+  private caseComments = new Map<string, CaseComment>();
+  private interactions = new Map<string, Interaction>();
+  private accounts = new Map<string, Account>();
+  private contacts = new Map<string, Contact>();
+  private opportunities = new Map<string, Opportunity>();
 
   // PHASE 1 Methods
+  // Interaction Methods
+  async listInteractions(entityType: string, entityId: string) {
+    if (entityType === "lead") return []; // Stub
+    if (entityType === "account") return []; // Stub
+    if (entityType === "contact") return []; // Stub
+    if (entityType === "opportunity") return []; // Stub
+    return [];
+  }
+  async createInteraction(i: InsertInteraction) {
+    // Stub implementation for MemStorage
+    return {} as Interaction;
+  }
+
+  async convertLead(leadId: string, ownerId?: string): Promise<{ account: Account; contact: Contact; opportunity: Opportunity }> {
+    // Stub implementation for MemStorage
+    throw new Error("Lead conversion not supported in MemStorage");
+  }
+
+  async getAccount(id: string) { return this.accounts.get(id); }
   async getTenant(id: string) { return this.tenants.get(id); }
   async listTenants() { return Array.from(this.tenants.values()); }
   async createTenant(t: InsertTenant) { const id = randomUUID(); const tenant: Tenant = { id, ...t as any, createdAt: new Date() }; this.tenants.set(id, tenant); return tenant; }
@@ -396,6 +443,55 @@ export class MemStorage implements IStorage {
   async listInvoices(customerId?: string) { const list = Array.from(this.invoices.values()); return customerId ? list.filter(i => i.customerId === customerId) : list; }
   async createInvoice(i: InsertInvoice) { const id = randomUUID(); const invoice: Invoice = { id, invoiceNumber: i.invoiceNumber, customerId: i.customerId ?? null, amount: i.amount, dueDate: i.dueDate ?? null, status: i.status ?? "draft", createdAt: new Date() }; this.invoices.set(id, invoice); return invoice; }
 
+  // Case Methods
+  async listCases(filters?: { accountId?: string; contactId?: string }) {
+    let cases = Array.from(this.cases.values());
+    if (filters?.accountId) cases = cases.filter(c => c.accountId === filters.accountId);
+    if (filters?.contactId) cases = cases.filter(c => c.contactId === filters.contactId);
+    return cases;
+  }
+  async getCase(id: string) { return this.cases.get(id); }
+  async createCase(data: InsertCase) {
+    const id = randomUUID();
+    const newCase: Case = {
+      id,
+      ...data,
+      description: data.description ?? null,
+      status: data.status ?? 'New',
+      priority: data.priority ?? 'Medium',
+      origin: data.origin ?? 'Web',
+      accountId: data.accountId ?? null,
+      contactId: data.contactId ?? null,
+      userId: data.userId ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.cases.set(id, newCase);
+    return newCase;
+  }
+  async updateCase(id: string, data: Partial<InsertCase>) {
+    const existing = this.cases.get(id);
+    if (!existing) return undefined;
+    const updated: Case = { ...existing, ...data, updatedAt: new Date() };
+    this.cases.set(id, updated);
+    return updated;
+  }
+  async listCaseComments(caseId: string) {
+    return Array.from(this.caseComments.values()).filter(c => c.caseId === caseId);
+  }
+  async createCaseComment(data: InsertCaseComment) {
+    const id = randomUUID();
+    const comment: CaseComment = {
+      id,
+      ...data,
+      isPublic: data.isPublic ?? false,
+      createdById: data.createdById ?? null,
+      createdAt: new Date()
+    };
+    this.caseComments.set(id, comment);
+    return comment;
+  }
+
   async getLead(id: string) { return this.leads.get(id); }
   async listLeads() { return Array.from(this.leads.values()); }
   async createLead(l: InsertLead) {
@@ -403,15 +499,41 @@ export class MemStorage implements IStorage {
     const lead: Lead = {
       id,
       name: l.name,
-      email: l.email ?? null,
-      phone: null,
+      firstName: l.firstName ?? null,
+      lastName: l.lastName ?? l.name.split(' ').pop() ?? "", // Fallback
+      salutation: l.salutation ?? null,
+      title: l.title ?? null,
       company: l.company ?? null,
-      title: null,
-      score: l.score ?? "0",
+
+      email: l.email ?? null,
+      phone: l.phone ?? null,
+      mobilePhone: l.mobilePhone ?? null,
+      website: l.website ?? null,
+
+      street: l.street ?? null,
+      city: l.city ?? null,
+      state: l.state ?? null,
+      postalCode: l.postalCode ?? null,
+      country: l.country ?? null,
+
+      leadSource: l.leadSource ?? null,
       status: l.status ?? "new",
-      source: null,
+      industry: l.industry ?? null,
+      rating: l.rating ?? null,
+      annualRevenue: l.annualRevenue ? String(l.annualRevenue) : null,
+      numberOfEmployees: l.numberOfEmployees ?? null,
+
+      score: l.score ?? "0",
+      isConverted: 0,
+      convertedDate: null,
+      convertedAccountId: null,
+      convertedContactId: null,
+      convertedOpportunityId: null,
+
+      description: l.description ?? null,
       createdAt: new Date(),
-      ownerId: null
+      updatedAt: new Date(),
+      ownerId: l.ownerId ?? null
     };
     this.leads.set(id, lead);
     return lead;
