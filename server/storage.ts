@@ -82,11 +82,18 @@ import {
   // AR Module
   type ArCustomer, type InsertArCustomer,
   type ArInvoice, type InsertArInvoice,
-  type ArReceipt, type InsertArReceipt,
+  type ArReceipt, type InsertArReceipt, type ArRevenueSchedule, type InsertArRevenueSchedule,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
+  // AR Revenue Schedule operations
+  listArRevenueSchedules(): Promise<ArRevenueSchedule[]>;
+  getArRevenueSchedule(id: string): Promise<ArRevenueSchedule | undefined>;
+  createArRevenueSchedule(data: InsertArRevenueSchedule): Promise<ArRevenueSchedule>;
+  updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>): Promise<ArRevenueSchedule | undefined>;
+  deleteArRevenueSchedule(id: string): Promise<boolean>;
+
   // User operations (IMPORTANT: mandatory for Replit Auth)
   upsertUser(user: UpsertUser): Promise<User>;
   getTenant(id: string): Promise<Tenant | undefined>;
@@ -493,6 +500,7 @@ export class MemStorage implements IStorage {
   private arCustomers = new Map<string, ArCustomer>();
   private arInvoices = new Map<string, ArInvoice>();
   private arReceipts = new Map<string, ArReceipt>();
+  private arRevenueSchedules = new Map<string, ArRevenueSchedule>();
 
 
   // GL Maps
@@ -723,6 +731,24 @@ export class MemStorage implements IStorage {
     return updated;
   }
   async deleteArReceipt(id: string) { return this.arReceipts.delete(id); }
+
+  // AR Revenue Schedule CRUD
+  async listArRevenueSchedules() { return Array.from(this.arRevenueSchedules.values()); }
+  async getArRevenueSchedule(id: string) { return this.arRevenueSchedules.get(id); }
+  async createArRevenueSchedule(data: InsertArRevenueSchedule) {
+    const id = randomUUID();
+    const schedule: ArRevenueSchedule = { id, ...data, status: data.status ?? "Pending" };
+    this.arRevenueSchedules.set(id, schedule);
+    return schedule;
+  }
+  async updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>) {
+    const existing = this.arRevenueSchedules.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...data } as ArRevenueSchedule;
+    this.arRevenueSchedules.set(id, updated);
+    return updated;
+  }
+  async deleteArRevenueSchedule(id: string) { return this.arRevenueSchedules.delete(id); }
 
   // Agentic AI Implementation
   private aiActions = new Map<string, AiAction>();

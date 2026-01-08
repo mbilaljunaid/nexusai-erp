@@ -1,133 +1,103 @@
-import { Router } from "express";
+// Accounts Payable (AP) API Routes
+import express from "express";
 import { apService } from "../services/ap";
-import { insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema, insertApApprovalSchema } from "@shared/schema";
+import { storage } from "../storage";
+import { insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema } from "@shared/schema/ap";
 import { z } from "zod";
 
-const router = Router();
+export const apRouter = express.Router();
 
-// ================= SUPPLIERS =================
-router.get("/suppliers", async (req, res) => {
+// Seed demo data
+apRouter.post("/seed", async (req, res) => {
     try {
-        const suppliers = await apService.listSuppliers();
-        res.json(suppliers);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        const result = await apService.seedDemoData();
+        res.json(result);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Failed to seed AP data" });
     }
 });
 
-router.post("/suppliers", async (req, res) => {
-    try {
-        const data = insertApSupplierSchema.parse(req.body);
-        const supplier = await apService.createSupplier(data);
-        res.json(supplier);
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
-    }
+// Supplier CRUD
+apRouter.get("/suppliers", async (req, res) => {
+    const list = await storage.listApSuppliers();
+    res.json(list);
 });
 
-router.get("/suppliers/:id", async (req, res) => {
-    try {
-        const supplier = await apService.getSupplier(req.params.id);
-        if (!supplier) return res.status(404).json({ message: "Supplier not found" });
-        res.json(supplier);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
+apRouter.get("/suppliers/:id", async (req, res) => {
+    const sup = await storage.getApSupplier(req.params.id);
+    if (!sup) return res.status(404).json({ error: "Supplier not found" });
+    res.json(sup);
 });
 
-// ================= INVOICES =================
-router.get("/invoices", async (req, res) => {
-    try {
-        const invoices = await apService.listInvoices();
-        res.json(invoices);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
+apRouter.post("/suppliers", async (req, res) => {
+    const parse = insertApSupplierSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json(parse.error);
+    const created = await storage.createApSupplier(parse.data as any);
+    res.status(201).json(created);
 });
 
-router.post("/invoices", async (req, res) => {
-    try {
-        const data = insertApInvoiceSchema.parse(req.body);
-        const invoice = await apService.createInvoice(data);
-        res.json(invoice);
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
-    }
+apRouter.put("/suppliers/:id", async (req, res) => {
+    const parse = insertApSupplierSchema.partial().safeParse(req.body);
+    if (!parse.success) return res.status(400).json(parse.error);
+    const updated = await storage.updateApSupplier(req.params.id, parse.data as any);
+    if (!updated) return res.status(404).json({ error: "Supplier not found" });
+    res.json(updated);
 });
 
-router.get("/invoices/:id", async (req, res) => {
-    try {
-        const invoice = await apService.getInvoice(req.params.id);
-        if (!invoice) return res.status(404).json({ message: "Invoice not found" });
-        res.json(invoice);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
+apRouter.delete("/suppliers/:id", async (req, res) => {
+    const ok = await storage.deleteApSupplier(req.params.id);
+    res.json({ deleted: ok });
 });
 
-router.post("/invoices/:id/approve", async (req, res) => {
-    try {
-        // Determine approval status from body or default to Approved
-        const { status } = req.body;
-        const newStatus = status || "Approved";
-        const invoice = await apService.updateInvoice(req.params.id, { status: newStatus });
-
-        // Log approval action (simplified)
-        await apService.createApproval({
-            invoiceId: req.params.id,
-            decision: newStatus,
-            approverId: "system", // In a real app, this would be the logged-in user
-            comments: req.body.comments || "Approved via API"
-        });
-
-        res.json(invoice);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
+// Toggle credit hold
+apRouter.post("/suppliers/:id/hold", async (req, res) => {
+    const { hold } = req.body;
+    if (typeof hold !== "boolean") return res.status(400).json({ error: "hold must be boolean" });
+    const result = await apService.toggleCreditHold(req.params.id, hold);
+    if (!result) return res.status(404).json({ error: "Supplier not found" });
+    res.json(result);
 });
 
-// ================= PAYMENTS =================
-router.get("/payments", async (req, res) => {
-    try {
-        const payments = await apService.listPayments();
-        res.json(payments);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
+// Invoice CRUD
+apRouter.get("/invoices", async (req, res) => {
+    const list = await storage.listApInvoices();
+    res.json(list);
 });
 
-router.post("/payments", async (req, res) => {
-    try {
-        const data = insertApPaymentSchema.parse(req.body);
-        const payment = await apService.createPayment(data);
-
-        // Update invoice status to 'Paid' for all linked invoices
-        if (payment.invoiceIds) {
-            const invoiceIds = payment.invoiceIds.split(",");
-            for (const invId of invoiceIds) {
-                await apService.updateInvoice(invId.trim(), { status: "Paid" });
-            }
-        }
-
-        res.json(payment);
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
-    }
+apRouter.get("/invoices/:id", async (req, res) => {
+    const inv = await storage.getApInvoice(req.params.id);
+    if (!inv) return res.status(404).json({ error: "Invoice not found" });
+    res.json(inv);
 });
 
-// ================= AI ACTIONS (Simulations) =================
-router.post("/ai/simulate", async (req, res) => {
-    // Placeholder for AI simulation logic (e.g., payment run preview)
-    res.json({
-        simulationId: "sim_" + Date.now(),
-        action: req.body.action,
-        predictedOutcome: "Success",
-        impact: "Cash outflow +$15,000",
-        details: [
-            { step: "Validate invoices", status: "Passed" },
-            { step: "Check bank balance", status: "Passed" }
-        ]
-    });
+apRouter.post("/invoices", async (req, res) => {
+    const parse = insertApInvoiceSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json(parse.error);
+    const created = await storage.createApInvoice(parse.data as any);
+    res.status(201).json(created);
 });
 
-export default router;
+apRouter.put("/invoices/:id", async (req, res) => {
+    const parse = insertApInvoiceSchema.partial().safeParse(req.body);
+    if (!parse.success) return res.status(400).json(parse.error);
+    const updated = await storage.updateApInvoice(req.params.id, parse.data as any);
+    if (!updated) return res.status(404).json({ error: "Invoice not found" });
+    res.json(updated);
+});
+
+apRouter.delete("/invoices/:id", async (req, res) => {
+    const ok = await storage.deleteApInvoice(req.params.id);
+    res.json({ deleted: ok });
+});
+
+// Payment apply endpoint
+apRouter.post("/payments/apply", async (req, res) => {
+    const parse = insertApPaymentSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json(parse.error);
+    const payment = await apService.applyPayment(req.body.invoiceId, parse.data as any);
+    if (!payment) return res.status(404).json({ error: "Invoice not found for payment" });
+    res.status(201).json(payment);
+});
+
+export default apRouter;

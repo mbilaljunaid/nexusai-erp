@@ -17,6 +17,7 @@ import {
     Clock,
     AlertCircle
 } from "lucide-react";
+import { ArRevenueScheduleList } from "./ArRevenueScheduleList";
 
 interface ArSideSheetProps {
     isOpen: boolean;
@@ -62,10 +63,11 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
 
             <div className="space-y-4 pt-4 border-t">
                 <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Revenue Recognition</h4>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-2">
                     <Activity className="h-4 w-4 text-amber-500" />
                     <span className="text-sm">Status: <strong>{data.recognitionStatus || "Pending"}</strong></span>
                 </div>
+                <ArRevenueScheduleList invoiceId={data.id} />
             </div>
         </div>
     );
