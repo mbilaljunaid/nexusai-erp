@@ -22,6 +22,8 @@ import templateRoutes from "./routes/templateRoutes";
 import migrationRoutes from "./routes/migrationRoutes";
 
 import financeRouter from "./routes/finance";
+import apRouter from "./routes/ap"; // Added AP router
+import arRouter from "./routes/ar"; // Added AR router
 import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
 
@@ -31,6 +33,8 @@ export async function registerRoutes(
 ): Promise<Server> {
   // Oracle Fusion Parity
   app.use("/api", financeRouter);
+  app.use("/api/ap", apRouter); // Register AP routes
+  app.use("/api/ar", arRouter); // Register AR routes
 
   // Agentic AI
   app.use("/api", aiRouter);

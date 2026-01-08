@@ -74,6 +74,15 @@ import {
   // Agentic AI
   type AiAction, type InsertAiAction,
   type AiAuditLog, type InsertAiAuditLog,
+  // AP Module
+  type ApSupplier, type InsertApSupplier,
+  type ApInvoice, type InsertApInvoice,
+  type ApPayment, type InsertApPayment,
+  type ApApproval, type InsertApApproval,
+  // AR Module
+  type ArCustomer, type InsertArCustomer,
+  type ArInvoice, type InsertArInvoice,
+  type ArReceipt, type InsertArReceipt,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -375,6 +384,51 @@ export interface IStorage {
 
   listGlDailyRates(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate[]>;
   createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate>;
+
+  // AP Module
+  listApSuppliers(): Promise<ApSupplier[]>;
+  getApSupplier(id: string): Promise<ApSupplier | undefined>;
+  createApSupplier(data: InsertApSupplier): Promise<ApSupplier>;
+  updateApSupplier(id: string, data: Partial<InsertApSupplier>): Promise<ApSupplier | undefined>;
+  deleteApSupplier(id: string): Promise<boolean>;
+
+  listApInvoices(): Promise<ApInvoice[]>;
+  getApInvoice(id: string): Promise<ApInvoice | undefined>;
+  createApInvoice(data: InsertApInvoice): Promise<ApInvoice>;
+  updateApInvoice(id: string, data: Partial<InsertApInvoice>): Promise<ApInvoice | undefined>;
+  deleteApInvoice(id: string): Promise<boolean>;
+
+  listApPayments(): Promise<ApPayment[]>;
+  getApPayment(id: string): Promise<ApPayment | undefined>;
+  createApPayment(data: InsertApPayment): Promise<ApPayment>;
+  updateApPayment(id: string, data: Partial<InsertApPayment>): Promise<ApPayment | undefined>;
+  deleteApPayment(id: string): Promise<boolean>;
+
+  listApApprovals(): Promise<ApApproval[]>;
+  getApApproval(id: string): Promise<ApApproval | undefined>;
+  createApApproval(data: InsertApApproval): Promise<ApApproval>;
+  updateApApproval(id: string, data: Partial<InsertApApproval>): Promise<ApApproval | undefined>;
+  deleteApApproval(id: string): Promise<boolean>;
+
+  // AR Module
+  listArCustomers(): Promise<ArCustomer[]>;
+  getArCustomer(id: string): Promise<ArCustomer | undefined>;
+  createArCustomer(data: InsertArCustomer): Promise<ArCustomer>;
+  updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined>;
+  deleteArCustomer(id: string): Promise<boolean>;
+
+  listArInvoices(): Promise<ArInvoice[]>;
+  getArInvoice(id: string): Promise<ArInvoice | undefined>;
+  createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
+  updateArInvoice(id: string, data: Partial<InsertArInvoice>): Promise<ArInvoice | undefined>;
+  deleteArInvoice(id: string): Promise<boolean>;
+
+  listArReceipts(): Promise<ArReceipt[]>;
+  getArReceipt(id: string): Promise<ArReceipt | undefined>;
+  createArReceipt(data: InsertArReceipt): Promise<ArReceipt>;
+  updateArReceipt(id: string, r: Partial<InsertArReceipt>): Promise<ArReceipt | undefined>;
+  deleteArReceipt(id: string): Promise<boolean>;
+  updateArInvoiceStatus(id: string, status: string): Promise<ArInvoice | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -428,6 +482,17 @@ export class MemStorage implements IStorage {
   private accounts = new Map<string, Account>();
   private contacts = new Map<string, Contact>();
   private opportunities = new Map<string, Opportunity>();
+
+  // AP Maps
+  private apSuppliers = new Map<string, ApSupplier>();
+  private apInvoices = new Map<string, ApInvoice>();
+  private apPayments = new Map<string, ApPayment>();
+  private apApprovals = new Map<string, ApApproval>();
+
+  // AR Maps
+  private arCustomers = new Map<string, ArCustomer>();
+  private arInvoices = new Map<string, ArInvoice>();
+  private arReceipts = new Map<string, ArReceipt>();
 
 
   // GL Maps
@@ -519,6 +584,145 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     return { id, ...r, conversionType: r.conversionType ?? "Spot", createdAt: new Date() };
   }
+
+  // AP Module Implementation
+  async listApSuppliers() { return Array.from(this.apSuppliers.values()); }
+  async getApSupplier(id: string) { return this.apSuppliers.get(id); }
+  async createApSupplier(s: InsertApSupplier) {
+    const id = randomUUID();
+    const supplier: ApSupplier = { id, ...s, riskScore: s.riskScore ?? null, taxId: s.taxId ?? null, country: s.country ?? null, address: s.address ?? null, contactEmail: s.contactEmail ?? null, createdAt: new Date() };
+    this.apSuppliers.set(id, supplier);
+    return supplier;
+  }
+  async updateApSupplier(id: string, s: Partial<InsertApSupplier>) {
+    const existing = this.apSuppliers.get(id); if (!existing) return undefined;
+    const updated = { ...existing, ...s }; this.apSuppliers.set(id, updated);
+    return updated;
+  }
+  async deleteApSupplier(id: string) { return this.apSuppliers.delete(id); }
+
+  async listApInvoices() { return Array.from(this.apInvoices.values()); }
+  async getApInvoice(id: string) { return this.apInvoices.get(id); }
+  async createApInvoice(i: InsertApInvoice) {
+    const id = randomUUID();
+    const invoice: ApInvoice = { id, ...i, currency: i.currency ?? "USD", dueDate: i.dueDate ?? null, status: i.status ?? "Draft", approvalStatus: i.approvalStatus ?? "Pending", glAccountId: i.glAccountId ?? null, description: i.description ?? null, createdAt: new Date() };
+    this.apInvoices.set(id, invoice);
+    return invoice;
+  }
+  async updateApInvoice(id: string, i: Partial<InsertApInvoice>) {
+    const existing = this.apInvoices.get(id); if (!existing) return undefined;
+    const updated = { ...existing, ...i }; this.apInvoices.set(id, updated);
+    return updated;
+  }
+  async deleteApInvoice(id: string) { return this.apInvoices.delete(id); }
+
+  async listApPayments() { return Array.from(this.apPayments.values()); }
+  async getApPayment(id: string) { return this.apPayments.get(id); }
+  async createApPayment(p: InsertApPayment) {
+    const id = randomUUID();
+    const payment: ApPayment = { id, ...p, status: p.status ?? "Scheduled", scheduledDate: p.scheduledDate ?? null, paymentDate: p.paymentDate ?? null, transactionId: p.transactionId ?? null, createdAt: new Date() };
+    this.apPayments.set(id, payment);
+    return payment;
+  }
+  async updateApPayment(id: string, p: Partial<InsertApPayment>) {
+    const existing = this.apPayments.get(id); if (!existing) return undefined;
+    const updated = { ...existing, ...p }; this.apPayments.set(id, updated);
+    return updated;
+  }
+  async deleteApPayment(id: string) { return this.apPayments.delete(id); }
+
+  async listApApprovals() { return Array.from(this.apApprovals.values()); }
+  async getApApproval(id: string) { return this.apApprovals.get(id); }
+  async createApApproval(a: InsertApApproval) {
+    const id = randomUUID();
+    const approval: ApApproval = { id, ...a, approverId: a.approverId ?? null, decision: a.decision ?? "Pending", comments: a.comments ?? null, actionDate: a.actionDate ?? null, createdAt: new Date() };
+    this.apApprovals.set(id, approval);
+    return approval;
+  }
+  async updateApApproval(id: string, a: Partial<InsertApApproval>) {
+    const existing = this.apApprovals.get(id); if (!existing) return undefined;
+    const updated = { ...existing, ...a }; this.apApprovals.set(id, updated);
+    return updated;
+  }
+  async deleteApApproval(id: string) { return this.apApprovals.delete(id); }
+
+  // AR Module Implementation
+  async listArCustomers() { return Array.from(this.arCustomers.values()); }
+  async getArCustomer(id: string) { return this.arCustomers.get(id); }
+  async createArCustomer(c: InsertArCustomer) {
+    const id = randomUUID();
+    const customer: ArCustomer = {
+      id, ...c,
+      taxId: c.taxId ?? null,
+      customerType: c.customerType ?? "Commercial",
+      creditLimit: c.creditLimit ?? "0",
+      balance: c.balance ?? "0",
+      address: c.address ?? null,
+      contactEmail: c.contactEmail ?? null,
+      creditHold: c.creditHold ?? false,
+      riskCategory: c.riskCategory ?? "Low",
+      parentCustomerId: c.parentCustomerId ?? null,
+      status: c.status ?? "Active",
+      createdAt: new Date()
+    };
+    this.arCustomers.set(id, customer);
+    return customer;
+  }
+  async updateArCustomer(id: string, c: Partial<InsertArCustomer>) {
+    const existing = this.arCustomers.get(id); if (!existing) return undefined;
+    const updated = { ...existing, ...c }; this.arCustomers.set(id, updated);
+    return updated;
+  }
+  async deleteArCustomer(id: string) { return this.arCustomers.delete(id); }
+
+  async listArInvoices() { return Array.from(this.arInvoices.values()); }
+  async getArInvoice(id: string) { return this.arInvoices.get(id); }
+  async createArInvoice(i: InsertArInvoice) {
+    const id = randomUUID();
+    const invoice: ArInvoice = {
+      id, ...i,
+      taxAmount: i.taxAmount ?? "0",
+      currency: i.currency ?? "USD",
+      dueDate: i.dueDate ?? null,
+      status: i.status ?? "Draft",
+      description: i.description ?? null,
+      glAccountId: i.glAccountId ?? null,
+      revenueScheduleId: i.revenueScheduleId ?? null,
+      recognitionStatus: i.recognitionStatus ?? "Pending",
+      createdAt: new Date()
+    };
+    this.arInvoices.set(id, invoice);
+    return invoice;
+  }
+  async updateArInvoice(id: string, i: Partial<InsertArInvoice>) {
+    const existing = this.arInvoices.get(id); if (!existing) return undefined;
+    const updated = { ...existing, ...i }; this.arInvoices.set(id, updated);
+    return updated;
+  }
+  async deleteArInvoice(id: string) { return this.arInvoices.delete(id); }
+
+  async updateArInvoiceStatus(id: string, status: string) {
+    const inv = this.arInvoices.get(id);
+    if (!inv) return undefined;
+    inv.status = status;
+    this.arInvoices.set(id, inv);
+    return inv;
+  }
+
+  async listArReceipts() { return Array.from(this.arReceipts.values()); }
+  async getArReceipt(id: string) { return this.arReceipts.get(id); }
+  async createArReceipt(r: InsertArReceipt) {
+    const id = randomUUID();
+    const receipt: ArReceipt = { id, ...r, invoiceId: r.invoiceId ?? null, receiptDate: r.receiptDate ?? null, paymentMethod: r.paymentMethod ?? null, transactionId: r.transactionId ?? null, status: r.status ?? "Completed", createdAt: new Date() };
+    this.arReceipts.set(id, receipt);
+    return receipt;
+  }
+  async updateArReceipt(id: string, r: Partial<InsertArReceipt>) {
+    const existing = this.arReceipts.get(id); if (!existing) return undefined;
+    const updated = { ...existing, ...r }; this.arReceipts.set(id, updated);
+    return updated;
+  }
+  async deleteArReceipt(id: string) { return this.arReceipts.delete(id); }
 
   // Agentic AI Implementation
   private aiActions = new Map<string, AiAction>();

@@ -75,6 +75,8 @@ const operationsModules: MenuItem[] = [
 ];
 
 const financeModules: MenuItem[] = [
+  { title: "Accounts Payable", icon: DollarSign, href: "/finance/accounts-payable", allowedRoles: ["admin", "editor"] },
+  { title: "Accounts Receivable", icon: TrendingUp, href: "/finance/accounts-receivable", allowedRoles: ["admin", "editor"] },
   { title: "Procurement", icon: ShoppingCart, href: "/procurement", allowedRoles: ["admin", "editor"] },
   { title: "Governance", icon: Lock, href: "/governance", allowedRoles: ["admin"] },
 ];

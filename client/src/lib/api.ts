@@ -1,6 +1,6 @@
 import { apiRequest } from "./queryClient";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_BASE = import.meta.env.VITE_API_URL || "";
 
 export const api = {
   // ERP
@@ -103,6 +103,47 @@ export const api = {
     },
   },
 
+  // Accounts Payable (AP)
+  ap: {
+    suppliers: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ap/suppliers`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/ap/suppliers`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/ap/suppliers/${id}`, { credentials: "include" }).then(r => r.json()),
+      // update: (id: string, data: any) => apiRequest("PUT", `${API_BASE}/api/ap/suppliers/${id}`, data).then(r => r.json()),
+    },
+    invoices: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ap/invoices`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/ap/invoices`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/ap/invoices/${id}`, { credentials: "include" }).then(r => r.json()),
+      approve: (id: string, comments?: string) => apiRequest("POST", `${API_BASE}/api/ap/invoices/${id}/approve`, { comments }).then(r => r.json()),
+    },
+    payments: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ap/payments`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/ap/payments`, { credentials: "include" }).then(r => r.json()),
+    },
+    ai: {
+      simulate: (action: string) => apiRequest("POST", `${API_BASE}/api/ap/ai/simulate`, { action }).then(r => r.json()),
+    },
+  },
+
+  // Accounts Receivable (AR)
+  ar: {
+    customers: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/customers`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/ar/customers`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/ar/customers/${id}`, { credentials: "include" }).then(r => r.json()),
+    },
+    invoices: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/invoices`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/ar/invoices`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/ar/invoices/${id}`, { credentials: "include" }).then(r => r.json()),
+    },
+    receipts: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/receipts`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/ar/receipts`, { credentials: "include" }).then(r => r.json()),
+    },
+  },
+
   // Inventory
   inventory: {
     products: {
@@ -130,9 +171,9 @@ export const api = {
   // Configuration
   configuration: {
     save: (data: any) => apiRequest("POST", `${API_BASE}/api/configuration`, data).then(r => r.json()),
-    getByTenantAndIndustry: (tenantId: string, industryId: string) => 
+    getByTenantAndIndustry: (tenantId: string, industryId: string) =>
       fetch(`${API_BASE}/api/configuration/tenant/${tenantId}/industry/${industryId}`, { credentials: "include" }).then(r => r.json()),
-    getByTenant: (tenantId: string) => 
+    getByTenant: (tenantId: string) =>
       fetch(`${API_BASE}/api/configuration/tenant/${tenantId}`, { credentials: "include" }).then(r => r.json()),
   },
 

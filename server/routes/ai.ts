@@ -12,11 +12,11 @@ router.post("/ai/init", async (req, res) => {
 
 // Parse Natural Language Intent
 router.post("/ai/parse", async (req, res) => {
-    const { prompt, userId } = req.body;
+    const { prompt, userId, context } = req.body;
     if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
     // In a real app, userId would come from session
-    const result = await aiService.parseIntent(prompt, userId || "anonymous");
+    const result = await aiService.parseIntent(prompt, userId || "anonymous", context);
     res.json(result);
 });
 

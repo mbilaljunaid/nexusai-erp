@@ -37,7 +37,11 @@ import {
   glCodeCombinations as glCodeCombinationsTable,
   glDailyRates as glDailyRatesTable,
   glJournalBatches as glJournalBatchesTable,
-  glJournalApprovals as glJournalApprovalsTable,
+  apApprovals as apApprovalsTable,
+  // AR Module
+  arCustomers as arCustomersTable,
+  arInvoices as arInvoicesTable,
+  arReceipts as arReceiptsTable,
   type InsertGlJournalBatch,
   type InsertGlJournalApproval,
   type GlJournalBatch,
@@ -91,6 +95,16 @@ import type {
   InsertCase,
   CaseComment,
   InsertCaseComment,
+  // AP Module
+  ApApproval,
+  InsertApApproval,
+  // AR Module
+  ArCustomer,
+  InsertArCustomer,
+  ArInvoice,
+  InsertArInvoice,
+  ArReceipt,
+  InsertArReceipt,
 } from "@shared/schema";
 
 /**
@@ -796,6 +810,148 @@ export const dbStorage = {
   async deleteDemo(id: string): Promise<boolean> {
     await db.delete(demosTable).where(eq(demosTable.id, id));
     return true;
+  },
+
+  // ========== ACCOUNTS PAYABLE ==========
+  async listApSuppliers(): Promise<ApSupplier[]> {
+    return await db.select().from(apSuppliersTable);
+  },
+  async getApSupplier(id: string): Promise<ApSupplier | undefined> {
+    const result = await db.select().from(apSuppliersTable).where(eq(apSuppliersTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApSupplier(data: InsertApSupplier): Promise<ApSupplier> {
+    const result = await db.insert(apSuppliersTable).values(data).returning();
+    return result[0];
+  },
+  async updateApSupplier(id: string, data: Partial<InsertApSupplier>): Promise<ApSupplier | undefined> {
+    const result = await db.update(apSuppliersTable).set(data).where(eq(apSuppliersTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteApSupplier(id: string): Promise<boolean> {
+    const result = await db.delete(apSuppliersTable).where(eq(apSuppliersTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  async listApInvoices(): Promise<ApInvoice[]> {
+    return await db.select().from(apInvoicesTable);
+  },
+  async getApInvoice(id: string): Promise<ApInvoice | undefined> {
+    const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApInvoice(data: InsertApInvoice): Promise<ApInvoice> {
+    const result = await db.insert(apInvoicesTable).values(data).returning();
+    return result[0];
+  },
+  async updateApInvoice(id: string, data: Partial<InsertApInvoice>): Promise<ApInvoice | undefined> {
+    const result = await db.update(apInvoicesTable).set(data).where(eq(apInvoicesTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteApInvoice(id: string): Promise<boolean> {
+    const result = await db.delete(apInvoicesTable).where(eq(apInvoicesTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  async listApPayments(): Promise<ApPayment[]> {
+    return await db.select().from(apPaymentsTable);
+  },
+  async getApPayment(id: string): Promise<ApPayment | undefined> {
+    const result = await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApPayment(data: InsertApPayment): Promise<ApPayment> {
+    const result = await db.insert(apPaymentsTable).values(data).returning();
+    return result[0];
+  },
+  async updateApPayment(id: string, data: Partial<InsertApPayment>): Promise<ApPayment | undefined> {
+    const result = await db.update(apPaymentsTable).set(data).where(eq(apPaymentsTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteApPayment(id: string): Promise<boolean> {
+    const result = await db.delete(apPaymentsTable).where(eq(apPaymentsTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  async listApApprovals(): Promise<ApApproval[]> {
+    return await db.select().from(apApprovalsTable);
+  },
+  async getApApproval(id: string): Promise<ApApproval | undefined> {
+    const result = await db.select().from(apApprovalsTable).where(eq(apApprovalsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApApproval(data: InsertApApproval): Promise<ApApproval> {
+    const result = await db.insert(apApprovalsTable).values(data).returning();
+    return result[0];
+  },
+  async updateApApproval(id: string, data: Partial<InsertApApproval>): Promise<ApApproval | undefined> {
+    const result = await db.update(apApprovalsTable).set(data).where(eq(apApprovalsTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteApApproval(id: string): Promise<boolean> {
+    const result = await db.delete(apApprovalsTable).where(eq(apApprovalsTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  // ========== ACCOUNTS RECEIVABLE ==========
+  async listArCustomers(): Promise<ArCustomer[]> {
+    return await db.select().from(arCustomersTable);
+  },
+  async getArCustomer(id: string): Promise<ArCustomer | undefined> {
+    const result = await db.select().from(arCustomersTable).where(eq(arCustomersTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomer(data: InsertArCustomer): Promise<ArCustomer> {
+    const result = await db.insert(arCustomersTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
+    const result = await db.update(arCustomersTable).set(data).where(eq(arCustomersTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArCustomer(id: string): Promise<boolean> {
+    const result = await db.delete(arCustomersTable).where(eq(arCustomersTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  async listArInvoices(): Promise<ArInvoice[]> {
+    return await db.select().from(arInvoicesTable);
+  },
+  async getArInvoice(id: string): Promise<ArInvoice | undefined> {
+    const result = await db.select().from(arInvoicesTable).where(eq(arInvoicesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArInvoice(data: InsertArInvoice): Promise<ArInvoice> {
+    const result = await db.insert(arInvoicesTable).values(data).returning();
+    return result[0];
+  },
+  async updateArInvoice(id: string, data: Partial<InsertArInvoice>): Promise<ArInvoice | undefined> {
+    const result = await db.update(arInvoicesTable).set(data).where(eq(arInvoicesTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArInvoice(id: string): Promise<boolean> {
+    const result = await db.delete(arInvoicesTable).where(eq(arInvoicesTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  async listArReceipts(): Promise<ArReceipt[]> {
+    return await db.select().from(arReceiptsTable);
+  },
+  async getArReceipt(id: string): Promise<ArReceipt | undefined> {
+    const result = await db.select().from(arReceiptsTable).where(eq(arReceiptsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArReceipt(data: InsertArReceipt): Promise<ArReceipt> {
+    const result = await db.insert(arReceiptsTable).values(data).returning();
+    return result[0];
+  },
+  async updateArReceipt(id: string, data: Partial<InsertArReceipt>): Promise<ArReceipt | undefined> {
+    const result = await db.update(arReceiptsTable).set(data).where(eq(arReceiptsTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArReceipt(id: string): Promise<boolean> {
+    const result = await db.delete(arReceiptsTable).where(eq(arReceiptsTable.id, id)).returning();
+    return result.length > 0;
   },
 
   // ========== USERS ==========

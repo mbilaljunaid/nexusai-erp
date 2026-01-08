@@ -41,6 +41,8 @@ const BillingManagement = lazy(() => import("@/pages/BillingManagement"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const CRM = lazy(() => import("@/pages/CRM"));
 const ERP = lazy(() => import("@/pages/ERP"));
+const AccountsPayable = lazy(() => import("@/pages/AccountsPayable"));
+const AccountsReceivable = lazy(() => import("@/pages/AccountsReceivable"));
 const HR = lazy(() => import("@/pages/HR"));
 const Projects = lazy(() => import("@/pages/Projects"));
 
@@ -554,6 +556,8 @@ function Router() {
       <Route path="/crm/contacts" component={ContactsDetail} />
       <Route path="/crm/:page?" component={CRM} />
       <Route path="/erp/:page?" component={ERP} />
+      <Route path="/finance/accounts-payable" component={AccountsPayable} />
+      <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
       <Route path="/finance/:page?" component={Finance} />
       <Route path="/hr/:page?" component={HR} />
       <Route path="/projects/:page?" component={Projects} />

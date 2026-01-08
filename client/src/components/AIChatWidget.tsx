@@ -47,7 +47,7 @@ export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatW
 
         try {
             // 1. Parse Intent
-            const res = await apiRequest("POST", "/api/ai/parse", { prompt: userMsg.content, userId });
+            const res = await apiRequest("POST", "/api/ai/parse", { prompt: userMsg.content, userId, context });
             const analysis = await res.json();
 
             if (analysis.action && analysis.confidence > 0.7) {
@@ -195,8 +195,8 @@ export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatW
                                         <div className={`flex flex-col gap-1 max-w-[80%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                                             {/* Text Bubble */}
                                             <div className={`p-3 rounded-xl text-sm ${msg.role === 'user'
-                                                    ? 'bg-primary text-primary-foreground rounded-tr-none'
-                                                    : 'bg-muted rounded-tl-none'
+                                                ? 'bg-primary text-primary-foreground rounded-tr-none'
+                                                : 'bg-muted rounded-tl-none'
                                                 }`}>
                                                 {msg.content}
                                             </div>
