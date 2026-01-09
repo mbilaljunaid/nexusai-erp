@@ -224,7 +224,7 @@ export class FinanceService {
             if (lines.length === 0) throw new Error("No lines to post.");
 
             // 2. Heavy Validations & Updates
-            await this.validateCrossValidationRules(lines, journal.periodId!);
+            await this.validateCrossValidationRules(lines, journal.ledgerId);
 
             // NEW: Budgetary Control (Pre-check)
             await this.checkFunds(journalId);
@@ -397,15 +397,13 @@ export class FinanceService {
     // ================= AI CAPABILITIES =================
 
     private async validateCrossValidationRules(lines: any[], ledgerId: string) {
-        console.log(`Validating CVRs for Ledger ${ledgerId}...`);
+        console.log("Validating CVRs...");
 
         const rules = await db.select().from(glCrossValidationRules)
             .where(and(
                 eq(glCrossValidationRules.ledgerId, ledgerId),
                 eq(glCrossValidationRules.enabled, true)
             ));
-
-        console.log(`Found ${rules.length} active CVR rules.`);
 
         if (rules.length === 0) return true;
 
@@ -426,13 +424,9 @@ export class FinanceService {
 
             for (const rule of rules) {
                 // Logic: Block if (Include Matches AND Exclude Matches)
-                const inc = this.matchesFilter(cc, rule.includeFilter);
-                const exc = this.matchesFilter(cc, rule.excludeFilter);
 
-                console.log(`Checking Rule '${rule.ruleName}' against CC ${cc.code}: Include=${inc}, Exclude=${exc}`);
-
-                if (inc) {
-                    if (exc) {
+                if (this.matchesFilter(cc, rule.includeFilter)) {
+                    if (this.matchesFilter(cc, rule.excludeFilter)) {
                         throw new Error(`Cross Validation Rule Failed: '${rule.ruleName}'. ${rule.errorMessage || "Invalid account combination."}`);
                     }
                 }

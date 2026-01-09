@@ -2,7 +2,7 @@ import "dotenv/config";
 import { db } from "../server/db";
 import { storage } from "../server/storage";
 import { FinanceService } from "../server/services/finance";
-import { glCrossValidationRules, glJournals, glJournalLines, glCodeCombinations, glPeriods } from "../shared/schema";
+import { glCrossValidationRules, glJournals, glJournalLines, glCodeCombinations, glPeriods, glAuditLogs } from "../shared/schema";
 import { eq, and } from "drizzle-orm";
 
 const financeService = new FinanceService();
@@ -79,13 +79,27 @@ async function verifyCVRAndApprovals() {
             credit: "100"
         });
 
-        try {
-            await (financeService as any).processPostingInBackground(journalCVR.id, "SYSTEM");
-            throw new Error("CVR Check Failed (Should have blocked posting)");
-        } catch (e: any) {
-            console.log(`✅ Expected Error: ${e.message}`);
-            if (!e.message.includes("Cross Validation Rule Failed")) throw new Error("Wrong error for CVR");
+        // Try Posting (Should fail silently and set status to Draft)
+        await (financeService as any).processPostingInBackground(journalCVR.id, "SYSTEM");
+
+        const cvrJournalResult = await storage.getGlJournal(journalCVR.id);
+        if (cvrJournalResult?.status !== "Draft") {
+            throw new Error(`CVR Failed: Journal status is ${cvrJournalResult?.status}, expected Draft`);
         }
+
+        // Check Audit Log for specific error
+        const logs = await db.select().from(glAuditLogs)
+            .where(eq(glAuditLogs.entityId, journalCVR.id))
+            .orderBy(glAuditLogs.timestamp);
+
+        const failureLog = logs.find(l => l.action === "JOURNAL_POST_FAILED");
+        if (!failureLog) throw new Error("No JOURNAL_POST_FAILED audit log found");
+
+        const details = failureLog.details as any;
+        if (!details.error || !details.error.includes("Cross Validation Rule Failed")) {
+            throw new Error(`Wrong error in audit log: ${details.error}`);
+        }
+        console.log(`✅ CVR Blocked correctly with error: ${details.error}`);
 
 
         // 4. Test Approval Workflow
@@ -115,13 +129,23 @@ async function verifyCVRAndApprovals() {
         });
 
         // Try Posting (Should Fail)
-        try {
-            await (financeService as any).processPostingInBackground(journalApproval.id, "SYSTEM");
-            throw new Error("Approval Check Failed (Should have blocked posting)");
-        } catch (e: any) {
-            console.log(`✅ Expected Error: ${e.message}`);
-            if (!e.message.includes("requires approval")) throw new Error("Wrong error for Approval");
+        await (financeService as any).processPostingInBackground(journalApproval.id, "SYSTEM");
+
+        const appJournalResult = await storage.getGlJournal(journalApproval.id);
+        if (appJournalResult?.status !== "Draft") {
+            throw new Error(`Approval Check Failed: Journal posted but should have been blocked (Status=${appJournalResult?.status})`);
         }
+
+        const appLogs = await db.select().from(glAuditLogs)
+            .where(eq(glAuditLogs.entityId, journalApproval.id))
+            .orderBy(glAuditLogs.timestamp);
+
+        const appFailure = appLogs.find(l => l.action === "JOURNAL_POST_FAILED");
+        const appDetails = appFailure?.details as any;
+        if (!appDetails?.error?.includes("requires approval")) {
+            throw new Error("Wrong error for Approval Check: " + appDetails?.error);
+        }
+        console.log(`✅ Approvals Blocked correctly.`);
 
         // Submit & Approve
         console.log("Submitting for Approval...");
