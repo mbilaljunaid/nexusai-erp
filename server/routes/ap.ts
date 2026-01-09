@@ -2,10 +2,16 @@
 import express from "express";
 import { apService } from "../services/ap";
 import { storage } from "../storage";
-import { insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema } from "@shared/schema/ap";
+import { insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema, insertApInvoiceLineSchema } from "@shared/schema";
 import { z } from "zod";
 
 export const apRouter = express.Router();
+
+// Schema for the compound payload
+const createInvoiceSchema = z.object({
+    header: insertApInvoiceSchema,
+    lines: z.array(insertApInvoiceLineSchema),
+});
 
 // Seed demo data
 apRouter.post("/seed", async (req, res) => {
@@ -71,11 +77,19 @@ apRouter.get("/invoices/:id", async (req, res) => {
     res.json(inv);
 });
 
+// Schema defined at top
+
+
 apRouter.post("/invoices", async (req, res) => {
-    const parse = insertApInvoiceSchema.safeParse(req.body);
+    const parse = createInvoiceSchema.safeParse(req.body);
     if (!parse.success) return res.status(400).json(parse.error);
-    const created = await storage.createApInvoice(parse.data as any);
-    res.status(201).json(created);
+
+    try {
+        const created = await apService.createInvoice(parse.data);
+        res.status(201).json(created);
+    } catch (e) {
+        res.status(500).json({ error: e instanceof Error ? e.message : "Unknown error" });
+    }
 });
 
 apRouter.put("/invoices/:id", async (req, res) => {

@@ -64,31 +64,58 @@ import {
   type GlReportDefinition, type InsertGlReportDefinition,
   type GlReportRow, type InsertGlReportRow,
   type GlReportColumn, type InsertGlReportColumn,
-  type GlIntercompanyRule, type InsertGlIntercompanyRule,
+  // GL
+  glAccounts, glPeriods, glJournals, glJournalLines, glLedgers,
+  glLedgerSets, glLedgerSetAssignments, glBalances, glDailyRates,
   type GlAccount, type InsertGlAccount,
   type GlPeriod, type InsertGlPeriod,
   type GlJournal, type InsertGlJournal,
   type GlJournalLine, type InsertGlJournalLine,
+  type GlLedger, type InsertGlLedger,
+  type GlLedgerSet, type InsertGlLedgerSet,
+  type GlLedgerSetAssignment, type InsertGlLedgerSetAssignment,
+  type GlBalance, type InsertGlBalance,
+  type GlDailyRate, type InsertGlDailyRate,
   // Advanced GL (Phase 2 - Journals)
   type GlJournalBatch, type InsertGlJournalBatch,
   type GlJournalApproval, type InsertGlJournalApproval,
   // Advanced GL (Phase 2 - Architecture)
-  type GlLedger, type InsertGlLedger,
   type GlSegment, type InsertGlSegment,
   type GlSegmentValue, type InsertGlSegmentValue,
   type GlCodeCombination, type InsertGlCodeCombination,
   type GlDailyRate, type InsertGlDailyRate,
   // Agentic AI
-  type AiAction, type InsertAiAction,
+  type AiCredits, type InsertAiCredits,
   type AiAuditLog, type InsertAiAuditLog,
   // AP Module
+  apSuppliers, apInvoices, apInvoiceLines, apInvoiceDistributions, apPayments, apApprovals,
   type ApSupplier, type InsertApSupplier,
-  type ApInvoice, type InsertApInvoice,
+  type ApInvoice, type InsertApInvoice, type ApInvoiceLine, type InsertApInvoiceLine, type ApInvoiceDistribution, type InsertApInvoiceDistribution,
   type ApPayment, type InsertApPayment,
   type ApApproval, type InsertApApproval,
   // AR Module
+  arCustomers, arInvoices, arPayments, arAdjustments,
   type ArCustomer, type InsertArCustomer,
   type ArInvoice, type InsertArInvoice,
+  type ArPayment, type InsertArPayment,
+  type ArAdjustment, type InsertArAdjustment,
+  // Cash Management
+  ceBankAccounts, ceBankTransactions, ceBankStatements, ceCashForecasts, ceCashPositions,
+  type CeBankAccount, type InsertCeBankAccount,
+  type CeBankTransaction, type InsertCeBankTransaction,
+  type CeBankStatement, type InsertCeBankStatement,
+  type CeCashForecast, type InsertCeCashForecast,
+  type CeCashPosition, type InsertCeCashPosition,
+  // Fixed Assets
+  faAdditions, faBooks, faTransactions, faDepreciations, faCategories,
+  type FaAddition, type InsertFaAddition,
+  type FaBook, type InsertFaBook,
+  type FaTransactionHeader, type InsertFaTransactionHeader,
+  type FaDepreciation, type InsertFaDepreciation,
+  type FaCategory, type InsertFaCategory,
+  // GL
+  glLedgers, glSegments, glSegmentValues, glCodeCombinations, glDailyRates, glBalances, glJournals, glJournalLines, glJournalBatches, glJournalApprovals, glIntercompanyRules, glRevaluations, glRevaluationEntries, glExchangeRates, glPeriods, glReportDefinitions, glReportRows, glReportColumns,
+  type GlLedger, type InsertGlLedger, type GlSegment, type InsertGlSegment, type GlSegmentValue, type InsertGlSegmentValue, type GlCodeCombination, type InsertGlCodeCombination, type GlDailyRate, type InsertGlDailyRate, type GlBalance, type InsertGlBalance, type GlJournal, type InsertGlJournal, type GlJournalLine, type InsertGlJournalLine, type GlJournalBatch, type InsertGlJournalBatch, type GlJournalApproval, type InsertGlJournalApproval, type GlIntercompanyRule, type InsertGlIntercompanyRule, type GlRevaluation, type InsertGlRevaluation, type GlRevaluationEntry, type InsertGlRevaluationEntry, type GlExchangeRate, type InsertGlExchangeRate, type GlPeriod, type InsertGlPeriod, type GlReportDefinition, type InsertGlReportDefinition, type GlReportRow, type InsertGlReportRow, type GlReportColumn, type InsertGlReportColumn,
   type ArReceipt, type InsertArReceipt, type ArRevenueSchedule, type InsertArRevenueSchedule,
   // Cash Module
   type CashBankAccount, type InsertCashBankAccount,
@@ -102,12 +129,12 @@ import {
   type FaTransactionHeader, type InsertFaTransactionHeader,
   type FaDepreciationSummary,
   // Tables
-  glAccounts, glPeriods, glJournals, glJournalLines, glBalances,
-  glJournalBatches, glJournalApprovals,
-  glLedgers, glSegments, glSegmentValues, glCodeCombinations, glDailyRates,
-  glIntercompanyRules, glCrossValidationRules,
   glReportDefinitions, glReportRows, glReportColumns,
-  glRevaluations, type GlRevaluation, type InsertGlRevaluation
+  glRevaluations, type GlRevaluation, type InsertGlRevaluation,
+  glBudgets, glBudgetBalances, glBudgetControlRules,
+  type GlBudget, type InsertGlBudget,
+  type GlBudgetBalance, type InsertGlBudgetBalance,
+  type GlBudgetControlRule, type InsertGlBudgetControlRule
 } from "@shared/schema";
 
 import { randomUUID } from "crypto";
@@ -411,7 +438,7 @@ export interface IStorage {
   updateGlPeriod(id: string, updates: Partial<GlPeriod>): Promise<GlPeriod>;
 
   getGlJournal(id: string): Promise<GlJournal | undefined>;
-  listGlJournals(periodId?: string): Promise<GlJournal[]>;
+  listGlJournals(periodId?: string, ledgerId?: string): Promise<GlJournal[]>;
   createGlJournal(journal: InsertGlJournal): Promise<GlJournal>;
 
   listGlJournalLines(journalId: string): Promise<GlJournalLine[]>;
@@ -449,18 +476,40 @@ export interface IStorage {
   // Revaluation
   createRevaluation(data: InsertGlRevaluation): Promise<GlRevaluation>;
   listRevaluations(ledgerId: string): Promise<GlRevaluation[]>;
+  // Revaluation Engine methods
+  createRevaluationEntry(data: InsertGlRevaluationEntry): Promise<GlRevaluationEntry>;
+  listRevaluationEntries(ledgerId: string): Promise<GlRevaluationEntry[]>;
+  createExchangeRate(data: InsertGlExchangeRate): Promise<GlExchangeRate>;
+  getExchangeRate(currency: string, periodName: string): Promise<GlExchangeRate | undefined>;
 
   // AP Module
   listApSuppliers(): Promise<ApSupplier[]>;
   getApSupplier(id: string): Promise<ApSupplier | undefined>;
-  createApSupplier(data: InsertApSupplier): Promise<ApSupplier>;
-  updateApSupplier(id: string, data: Partial<InsertApSupplier>): Promise<ApSupplier | undefined>;
+  createApSupplier(supplier: InsertApSupplier): Promise<ApSupplier>;
+  updateApSupplier(id: string, supplier: Partial<InsertApSupplier>): Promise<ApSupplier | undefined>;
   deleteApSupplier(id: string): Promise<boolean>;
+  // GL Advanced Reporting (Phase 3 Chunk 2)
+  createGlLedgerSet(set: InsertGlLedgerSet): Promise<GlLedgerSet>;
+  getGlLedgerSet(id: string): Promise<GlLedgerSet | undefined>;
+  addLedgerToSet(assignment: InsertGlLedgerSetAssignment): Promise<GlLedgerSetAssignment>;
+  getLedgerSetMembers(setId: string): Promise<GlLedger[]>;
 
-  listApInvoices(): Promise<ApInvoice[]>;
+  getGlBalances(ledgerId: string, periodName: string, currencyCode: string): Promise<GlBalance[]>;
+  upsertGlBalance(balance: InsertGlBalance): Promise<GlBalance>; // Helper to update if exists
+  getGlDailyRate(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate | undefined>;
+  createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate>;
+
+  // Legacy Finance
+  listInvoices(): Promise<Invoice[]>;
   getApInvoice(id: string): Promise<ApInvoice | undefined>;
-  createApInvoice(data: InsertApInvoice): Promise<ApInvoice>;
-  updateApInvoice(id: string, data: Partial<InsertApInvoice>): Promise<ApInvoice | undefined>;
+
+  // Enterprise AP Interface
+  createApInvoiceHeader(invoice: InsertApInvoice): Promise<ApInvoice>;
+  createApInvoiceLine(line: InsertApInvoiceLine): Promise<ApInvoiceLine>;
+  createApInvoiceDistribution(dist: InsertApInvoiceDistribution): Promise<ApInvoiceDistribution>;
+  getApInvoiceLines(invoiceId: number): Promise<ApInvoiceLine[]>;
+
+  updateApInvoice(id: string, invoice: Partial<InsertApInvoice>): Promise<ApInvoice | undefined>;
   deleteApInvoice(id: string): Promise<boolean>;
 
   listApPayments(): Promise<ApPayment[]>;
@@ -491,6 +540,15 @@ export interface IStorage {
   listArReceipts(): Promise<ArReceipt[]>;
   getArReceipt(id: string): Promise<ArReceipt | undefined>;
   createArReceipt(data: InsertArReceipt): Promise<ArReceipt>;
+  createSubscription(subscription: InsertSubscription): Promise<Subscription>;
+  updateSubscription(id: string, subscription: Partial<InsertSubscription>): Promise<Subscription | undefined>;
+
+  // SCM
+  getPo(id: string): Promise<PurchaseOrder | undefined>;
+  getPoLine(id: string): Promise<PurchaseOrderLine | undefined>;
+  createPo(po: InsertPurchaseOrder): Promise<PurchaseOrder>;
+  createPoLine(line: InsertPurchaseOrderLine): Promise<PurchaseOrderLine>;
+
   updateArReceipt(id: string, r: Partial<InsertArReceipt>): Promise<ArReceipt | undefined>;
   deleteArReceipt(id: string): Promise<boolean>;
   updateArInvoiceStatus(id: string, status: string): Promise<ArInvoice | undefined>;
@@ -499,6 +557,28 @@ export interface IStorage {
   createAgentExecution(exec: InsertAgentExecution): Promise<AgentExecution>;
   updateAgentExecution(id: number, updates: Partial<AgentExecution>): Promise<AgentExecution>;
   createAgentAuditLog(log: InsertAgentAuditLog): Promise<AgentAuditLog>;
+
+  // FSG (Financial Statement Generator)
+  createReportDefinition(data: InsertGlReportDefinition): Promise<GlReportDefinition>;
+  getReportDefinition(id: string): Promise<GlReportDefinition | undefined>;
+  listReportDefinitions(ledgerId?: string): Promise<GlReportDefinition[]>;
+  createReportRow(data: InsertGlReportRow): Promise<GlReportRow>;
+  getReportRows(reportDefinitionId: string): Promise<GlReportRow[]>;
+  createReportColumn(data: InsertGlReportColumn): Promise<GlReportColumn>;
+  getReportColumns(reportDefinitionId: string): Promise<GlReportColumn[]>;
+
+  // Budgeting
+  createGlBudget(data: InsertGlBudget): Promise<GlBudget>;
+  listGlBudgets(ledgerId: string): Promise<GlBudget[]>;
+  getGlBudget(id: string): Promise<GlBudget | undefined>;
+
+  createGlBudgetBalance(data: InsertGlBudgetBalance): Promise<GlBudgetBalance>;
+  getGlBudgetBalance(budgetId: string, periodName: string, codeCombinationId: string): Promise<GlBudgetBalance | undefined>;
+  listGlBudgetBalances(budgetId: string, periodName?: string): Promise<GlBudgetBalance[]>;
+  upsertGlBudgetBalance(data: InsertGlBudgetBalance): Promise<GlBudgetBalance>;
+
+  createGlBudgetControlRule(data: InsertGlBudgetControlRule): Promise<GlBudgetControlRule>;
+  listGlBudgetControlRules(ledgerId: string): Promise<GlBudgetControlRule[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -625,10 +705,25 @@ export class MemStorage implements IStorage {
     const res = await db.insert(glAccounts).values(a).returning();
     return res[0];
   }
+  // SCM
+  async getPo(id: string) {
+    const [po] = await db.select().from(purchaseOrders).where(eq(purchaseOrders.id, id));
+    return po;
+  }
 
-  async getGlPeriod(id: string) {
-    const res = await db.select().from(glPeriods).where(eq(glPeriods.id, id));
-    return res[0];
+  async getPoLine(id: string) {
+    const [line] = await db.select().from(purchaseOrderLines).where(eq(purchaseOrderLines.id, id));
+    return line;
+  }
+
+  async createPo(po: InsertPurchaseOrder) {
+    const [newPo] = await db.insert(purchaseOrders).values(po).returning();
+    return newPo;
+  }
+
+  async createPoLine(line: InsertPurchaseOrderLine) {
+    const [newLine] = await db.insert(purchaseOrderLines).values(line).returning();
+    return newLine;
   }
   async listGlPeriods() {
     return await db.select().from(glPeriods);
@@ -646,9 +741,15 @@ export class MemStorage implements IStorage {
     const res = await db.select().from(glJournals).where(eq(glJournals.id, id));
     return res[0];
   }
-  async listGlJournals(periodId?: string) {
-    if (periodId) {
-      return await db.select().from(glJournals).where(eq(glJournals.periodId, periodId)).orderBy(desc(glJournals.createdAt));
+  async listGlJournals(periodId?: string, ledgerId?: string) {
+    let conditions = [];
+    if (periodId) conditions.push(eq(glJournals.periodId, periodId));
+    if (ledgerId) conditions.push(eq(glJournals.ledgerId, ledgerId));
+
+    if (conditions.length > 0) {
+      return await db.select().from(glJournals)
+        .where(and(...conditions))
+        .orderBy(desc(glJournals.createdAt));
     }
     return await db.select().from(glJournals).orderBy(desc(glJournals.createdAt));
   }
@@ -674,6 +775,85 @@ export class MemStorage implements IStorage {
     const res = await db.select().from(glJournalBatches).where(eq(glJournalBatches.id, id));
     return res[0];
   }
+
+  // PARTNER / AP METHODS
+  async listApSuppliers(): Promise<ApSupplier[]> {
+    return await db.select().from(apSuppliers);
+  }
+
+  async getApSupplier(id: string): Promise<ApSupplier | undefined> {
+    const [supplier] = await db.select().from(apSuppliers).where(eq(apSuppliers.id, parseInt(id)));
+    return supplier;
+  }
+
+  async createApSupplier(supplier: InsertApSupplier): Promise<ApSupplier> {
+    const [newSupplier] = await db.insert(apSuppliers).values(supplier).returning();
+    return newSupplier;
+  }
+
+  async updateApSupplier(id: string, supplier: Partial<InsertApSupplier>): Promise<ApSupplier | undefined> {
+    const [updated] = await db.update(apSuppliers).set(supplier).where(eq(apSuppliers.id, parseInt(id))).returning();
+    return updated;
+  }
+
+  async deleteApSupplier(id: string): Promise<boolean> {
+    const [deleted] = await db.delete(apSuppliers).where(eq(apSuppliers.id, parseInt(id))).returning();
+    return !!deleted;
+  }
+
+  // Enterprise Invoice Methods
+  async listApInvoices(): Promise<ApInvoice[]> {
+    return await db.select().from(apInvoices);
+  }
+
+  async getApInvoice(id: string): Promise<ApInvoice | undefined> {
+    const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, parseInt(id)));
+    return invoice;
+  }
+
+  // NOTE: This creates Header ONLY. Use Service for Orchestration.
+  async createApInvoiceHeader(invoice: InsertApInvoice): Promise<ApInvoice> {
+    const [newInvoice] = await db.insert(apInvoices).values(invoice).returning();
+    return newInvoice;
+  }
+
+  async createApInvoiceLine(line: InsertApInvoiceLine): Promise<ApInvoiceLine> {
+    const [newLine] = await db.insert(apInvoiceLines).values(line).returning();
+    return newLine;
+  }
+
+  async createApInvoiceDistribution(dist: InsertApInvoiceDistribution): Promise<ApInvoiceDistribution> {
+    const [newDist] = await db.insert(apInvoiceDistributions).values(dist).returning();
+    return newDist;
+  }
+
+  async getApInvoiceLines(invoiceId: number): Promise<ApInvoiceLine[]> {
+    return await db.select().from(apInvoiceLines).where(eq(apInvoiceLines.invoiceId, invoiceId));
+  }
+
+  async updateApInvoice(id: string, invoice: Partial<InsertApInvoice>): Promise<ApInvoice | undefined> {
+    const [updated] = await db.update(apInvoices).set(invoice).where(eq(apInvoices.id, parseInt(id))).returning();
+    return updated;
+  }
+
+  async deleteApInvoice(id: string): Promise<boolean> {
+    // Service must handle cascade
+    await db.delete(apInvoiceDistributions).where(eq(apInvoiceDistributions.invoiceId, parseInt(id)));
+    await db.delete(apInvoiceLines).where(eq(apInvoiceLines.invoiceId, parseInt(id)));
+    const [deleted] = await db.delete(apInvoices).where(eq(apInvoices.id, parseInt(id))).returning();
+    return !!deleted;
+  }
+
+  // Payments
+  async listApPayments(): Promise<ApPayment[]> {
+    return await db.select().from(apPayments);
+  }
+
+  async createApPayment(payment: InsertApPayment): Promise<ApPayment> {
+    const [newPayment] = await db.insert(apPayments).values(payment).returning();
+    return newPayment;
+  }
+
   async listGlJournalBatches() {
     return await db.select().from(glJournalBatches);
   }
@@ -693,6 +873,79 @@ export class MemStorage implements IStorage {
     const res = await db.update(glJournalApprovals).set(a).where(eq(glJournalApprovals.id, id)).returning();
     return res[0];
   }
+
+  // GL Advanced Reporting
+  async createGlLedgerSet(set: InsertGlLedgerSet) {
+    const [newSet] = await db.insert(glLedgerSets).values(set).returning();
+    return newSet;
+  }
+
+  async getGlLedgerSet(id: string) {
+    const [set] = await db.select().from(glLedgerSets).where(eq(glLedgerSets.id, id));
+    return set;
+  }
+
+  async addLedgerToSet(assignment: InsertGlLedgerSetAssignment) {
+    const [newAssignment] = await db.insert(glLedgerSetAssignments).values(assignment).returning();
+    return newAssignment;
+  }
+
+  async getLedgerSetMembers(setId: string) {
+    const members = await db.select({
+      ledger: glLedgers
+    })
+      .from(glLedgerSetAssignments)
+      .innerJoin(glLedgers, eq(glLedgerSetAssignments.ledgerId, glLedgers.id))
+      .where(eq(glLedgerSetAssignments.ledgerSetId, setId));
+
+    return members.map(m => m.ledger);
+  }
+
+  async getGlBalances(ledgerId: string, periodName: string, currencyCode: string) {
+    return await db.select().from(glBalances)
+      .where(and(
+        eq(glBalances.ledgerId, ledgerId),
+        eq(glBalances.periodName, periodName),
+        eq(glBalances.currencyCode, currencyCode)
+      ));
+  }
+
+  async upsertGlBalance(balance: InsertGlBalance) {
+    const [existing] = await db.select().from(glBalances)
+      .where(and(
+        eq(glBalances.ledgerId, balance.ledgerId),
+        eq(glBalances.periodName, balance.periodName),
+        eq(glBalances.codeCombinationId, balance.codeCombinationId),
+        eq(glBalances.currencyCode, balance.currencyCode)
+      ));
+
+    if (existing) {
+      const [updated] = await db.update(glBalances)
+        .set(balance)
+        .where(eq(glBalances.id, existing.id))
+        .returning();
+      return updated;
+    } else {
+      const [inserted] = await db.insert(glBalances).values(balance).returning();
+      return inserted;
+    }
+  }
+
+  async getGlDailyRate(from: string, to: string, date: Date) {
+    const [rate] = await db.select().from(glDailyRates)
+      .where(and(
+        eq(glDailyRates.fromCurrency, from),
+        eq(glDailyRates.toCurrency, to)
+      ))
+      .orderBy(desc(glDailyRates.createdAt));
+    return rate;
+  }
+
+  async createGlDailyRate(rate: InsertGlDailyRate) {
+    const [newRate] = await db.insert(glDailyRates).values(rate).returning();
+    return newRate;
+  }
+
 
   // Advanced GL (Phase 2)
   async getGlLedger(id: string) {
@@ -741,67 +994,51 @@ export class MemStorage implements IStorage {
     return res[0];
   }
 
-  // AP Module Implementation
-  async listApSuppliers() { return Array.from(this.apSuppliers.values()); }
-  async getApSupplier(id: string) { return this.apSuppliers.get(id); }
-  async createApSupplier(s: InsertApSupplier) {
-    const id = randomUUID();
-    const supplier: ApSupplier = { id, ...s, riskScore: s.riskScore ?? null, taxId: s.taxId ?? null, country: s.country ?? null, address: s.address ?? null, contactEmail: s.contactEmail ?? null, createdAt: new Date() };
-    this.apSuppliers.set(id, supplier);
-    return supplier;
+  async createRevaluation(data: InsertGlRevaluation): Promise<GlRevaluation> {
+    const [res] = await db.insert(glRevaluations).values(data).returning();
+    return res;
   }
-  async updateApSupplier(id: string, s: Partial<InsertApSupplier>) {
-    const existing = this.apSuppliers.get(id); if (!existing) return undefined;
-    const updated = { ...existing, ...s }; this.apSuppliers.set(id, updated);
-    return updated;
-  }
-  async deleteApSupplier(id: string) { return this.apSuppliers.delete(id); }
 
-  async listApInvoices() { return Array.from(this.apInvoices.values()); }
-  async getApInvoice(id: string) { return this.apInvoices.get(id); }
-  async createApInvoice(i: InsertApInvoice) {
-    const id = randomUUID();
-    const invoice: ApInvoice = { id, ...i, currency: i.currency ?? "USD", dueDate: i.dueDate ?? null, status: i.status ?? "Draft", approvalStatus: i.approvalStatus ?? "Pending", glAccountId: i.glAccountId ?? null, description: i.description ?? null, createdAt: new Date() };
-    this.apInvoices.set(id, invoice);
-    return invoice;
+  async listRevaluations(ledgerId: string): Promise<GlRevaluation[]> {
+    return await db.select().from(glRevaluations).where(eq(glRevaluations.ledgerId, ledgerId));
   }
-  async updateApInvoice(id: string, i: Partial<InsertApInvoice>) {
-    const existing = this.apInvoices.get(id); if (!existing) return undefined;
-    const updated = { ...existing, ...i }; this.apInvoices.set(id, updated);
-    return updated;
-  }
-  async deleteApInvoice(id: string) { return this.apInvoices.delete(id); }
 
-  async listApPayments() { return Array.from(this.apPayments.values()); }
-  async getApPayment(id: string) { return this.apPayments.get(id); }
-  async createApPayment(p: InsertApPayment) {
-    const id = randomUUID();
-    const payment: ApPayment = { id, ...p, status: p.status ?? "Scheduled", scheduledDate: p.scheduledDate ?? null, paymentDate: p.paymentDate ?? null, transactionId: p.transactionId ?? null, createdAt: new Date() };
-    this.apPayments.set(id, payment);
-    return payment;
+  async createRevaluationEntry(data: InsertGlRevaluationEntry): Promise<GlRevaluationEntry> {
+    const [res] = await db.insert(glRevaluationEntries).values(data).returning();
+    return res;
   }
-  async updateApPayment(id: string, p: Partial<InsertApPayment>) {
-    const existing = this.apPayments.get(id); if (!existing) return undefined;
-    const updated = { ...existing, ...p }; this.apPayments.set(id, updated);
-    return updated;
-  }
-  async deleteApPayment(id: string) { return this.apPayments.delete(id); }
 
-  async listApApprovals() { return Array.from(this.apApprovals.values()); }
-  async getApApproval(id: string) { return this.apApprovals.get(id); }
-  async createApApproval(a: InsertApApproval) {
-    const id = randomUUID();
-    const approval: ApApproval = { id, ...a, approverId: a.approverId ?? null, decision: a.decision ?? "Pending", comments: a.comments ?? null, actionDate: a.actionDate ?? null, createdAt: new Date() };
-    this.apApprovals.set(id, approval);
-    return approval;
+  async listRevaluationEntries(ledgerId: string): Promise<GlRevaluationEntry[]> {
+    return await db.select().from(glRevaluationEntries).where(eq(glRevaluationEntries.ledgerId, ledgerId));
   }
-  async updateApApproval(id: string, a: Partial<InsertApApproval>) {
-    const existing = this.apApprovals.get(id); if (!existing) return undefined;
-    const updated = { ...existing, ...a }; this.apApprovals.set(id, updated);
-    return updated;
-  }
-  async deleteApApproval(id: string) { return this.apApprovals.delete(id); }
 
+  async createExchangeRate(data: InsertGlExchangeRate): Promise<GlExchangeRate> {
+    const [res] = await db.insert(glExchangeRates).values(data).returning();
+    return res;
+  }
+
+  async getExchangeRate(currency: string, periodName: string): Promise<GlExchangeRate | undefined> {
+    const [res] = await db.select().from(glExchangeRates)
+      .where(and(eq(glExchangeRates.currency, currency), eq(glExchangeRates.periodName, periodName)))
+      .limit(1);
+    return res;
+  }
+
+  // Platform Admin
+  async listTenants(): Promise<Tenant[]> {
+    return Array.from(this.tenants.values());
+  }
+
+  async getTenant(id: string): Promise<Tenant | undefined> {
+    return this.tenants.get(id);
+  }
+
+  async createTenant(tenant: InsertTenant): Promise<Tenant> {
+    const id = randomUUID();
+    const newTenant: Tenant = { ...tenant, id, status: tenant.status ?? "active", createdAt: new Date() };
+    this.tenants.set(id, newTenant);
+    return newTenant;
+  }
   // AR Module Implementation
   async listArCustomers() { return Array.from(this.arCustomers.values()); }
   async getArCustomer(id: string) { return this.arCustomers.get(id); }
@@ -1722,10 +1959,10 @@ export class MemStorage implements IStorage {
   async getOrCreateCodeCombination(ledgerId: string, segments: string[] | string): Promise<GlCodeCombination> {
     const segmentArray = Array.isArray(segments) ? segments : segments.split("-");
 
-    // 1. Check if exists
+    // 1. Check if exists (Code is unique globally)
     const code = segmentArray.join("-");
     const existing = await db.select().from(glCodeCombinations)
-      .where(and(eq(glCodeCombinations.ledgerId, ledgerId), eq(glCodeCombinations.code, code)));
+      .where(eq(glCodeCombinations.code, code));
 
     if (existing.length > 0) return existing[0];
 
@@ -1776,6 +2013,111 @@ export class MemStorage implements IStorage {
 
   async listRevaluations(ledgerId: string): Promise<GlRevaluation[]> {
     return db.select().from(glRevaluations).where(eq(glRevaluations.ledgerId, ledgerId)).orderBy(desc(glRevaluations.createdAt));
+  }
+
+  // FSG Implementation
+  async createReportDefinition(data: InsertGlReportDefinition): Promise<GlReportDefinition> {
+    const [res] = await db.insert(glReportDefinitions).values(data).returning();
+    return res;
+  }
+
+  async getReportDefinition(id: string): Promise<GlReportDefinition | undefined> {
+    const [res] = await db.select().from(glReportDefinitions).where(eq(glReportDefinitions.id, id));
+    return res;
+  }
+
+  async listReportDefinitions(ledgerId?: string): Promise<GlReportDefinition[]> {
+    if (ledgerId) {
+      return await db.select().from(glReportDefinitions).where(eq(glReportDefinitions.ledgerId, ledgerId));
+    }
+    return await db.select().from(glReportDefinitions);
+  }
+
+  async createReportRow(data: InsertGlReportRow): Promise<GlReportRow> {
+    const [res] = await db.insert(glReportRows).values(data).returning();
+    return res;
+  }
+
+  async getReportRows(reportDefinitionId: string): Promise<GlReportRow[]> {
+    return await db.select().from(glReportRows).where(eq(glReportRows.reportId, reportDefinitionId)).orderBy(glReportRows.rowNumber);
+  }
+
+  async createReportColumn(data: InsertGlReportColumn): Promise<GlReportColumn> {
+    const [res] = await db.insert(glReportColumns).values(data).returning();
+    return res;
+  }
+
+  async getReportColumns(reportDefinitionId: string): Promise<GlReportColumn[]> {
+    return await db.select().from(glReportColumns).where(eq(glReportColumns.reportId, reportDefinitionId)).orderBy(glReportColumns.columnNumber);
+  }
+
+  // Budgeting Implementation
+  async createGlBudget(data: InsertGlBudget): Promise<GlBudget> {
+    const [budget] = await db.insert(glBudgets).values(data).returning();
+    return budget;
+  }
+
+  async listGlBudgets(ledgerId: string): Promise<GlBudget[]> {
+    return db.select().from(glBudgets).where(eq(glBudgets.ledgerId, ledgerId));
+  }
+
+  async getGlBudget(id: string): Promise<GlBudget | undefined> {
+    const [budget] = await db.select().from(glBudgets).where(eq(glBudgets.id, id));
+    return budget;
+  }
+
+  async createGlBudgetBalance(data: InsertGlBudgetBalance): Promise<GlBudgetBalance> {
+    const [balance] = await db.insert(glBudgetBalances).values(data).returning();
+    return balance;
+  }
+
+  async getGlBudgetBalance(budgetId: string, periodName: string, codeCombinationId: string): Promise<GlBudgetBalance | undefined> {
+    const [balance] = await db.select().from(glBudgetBalances).where(
+      and(
+        eq(glBudgetBalances.budgetId, budgetId),
+        eq(glBudgetBalances.periodName, periodName),
+        eq(glBudgetBalances.codeCombinationId, codeCombinationId)
+      )
+    );
+    return balance;
+  }
+
+  async listGlBudgetBalances(budgetId: string, periodName?: string): Promise<GlBudgetBalance[]> {
+    if (periodName) {
+      return db.select().from(glBudgetBalances).where(
+        and(
+          eq(glBudgetBalances.budgetId, budgetId),
+          eq(glBudgetBalances.periodName, periodName)
+        )
+      );
+    }
+    return db.select().from(glBudgetBalances).where(eq(glBudgetBalances.budgetId, budgetId));
+  }
+
+  async upsertGlBudgetBalance(data: InsertGlBudgetBalance): Promise<GlBudgetBalance> {
+    const existing = await this.getGlBudgetBalance(data.budgetId, data.periodName, data.codeCombinationId);
+    if (existing) {
+      const [updated] = await db.update(glBudgetBalances)
+        .set({
+          budgetAmount: data.budgetAmount,
+          actualAmount: data.actualAmount,
+          encumbranceAmount: data.encumbranceAmount,
+          updatedAt: new Date()
+        })
+        .where(eq(glBudgetBalances.id, existing.id))
+        .returning();
+      return updated;
+    }
+    return this.createGlBudgetBalance(data);
+  }
+
+  async createGlBudgetControlRule(data: InsertGlBudgetControlRule): Promise<GlBudgetControlRule> {
+    const [rule] = await db.insert(glBudgetControlRules).values(data).returning();
+    return rule;
+  }
+
+  async listGlBudgetControlRules(ledgerId: string): Promise<GlBudgetControlRule[]> {
+    return db.select().from(glBudgetControlRules).where(eq(glBudgetControlRules.ledgerId, ledgerId));
   }
 }
 

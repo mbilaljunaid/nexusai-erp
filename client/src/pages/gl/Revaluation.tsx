@@ -45,8 +45,13 @@ export default function Revaluation() {
     const [unrealizedAccountId, setUnrealizedAccountId] = useState("");
 
     // Queries
+    const { data: ledgers } = useQuery<any[]>({
+        queryKey: ["/api/gl/ledgers"],
+    });
+
     const { data: runs, isLoading: isRunsLoading } = useQuery<RevaluationRun[]>({
         queryKey: ["/api/gl/revaluations", ledgerId],
+        enabled: !!ledgerId
     });
 
     const { data: periods } = useQuery<GlPeriod[]>({
@@ -112,6 +117,27 @@ export default function Revaluation() {
                 <Button onClick={() => setIsCreateOpen(true)}>
                     <Play className="mr-2 h-4 w-4" /> Run Revaluation
                 </Button>
+            </div>
+
+            <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-lg">
+                <div className="flex-1 max-w-sm">
+                    <Label htmlFor="ledger-select">Active Ledger</Label>
+                    <Select value={ledgerId} onValueChange={setLedgerId}>
+                        <SelectTrigger id="ledger-select">
+                            <SelectValue placeholder="Select Ledger" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {ledgers?.map(l => (
+                                <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="flex-1 max-w-sm">
+                    <p className="text-xs text-muted-foreground mt-6">
+                        Showing history for selected ledger. All revaluation journals will be posted to this ledger.
+                    </p>
+                </div>
             </div>
 
             <Card>
@@ -182,7 +208,9 @@ export default function Revaluation() {
                                     <SelectValue placeholder="Select Ledger" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="primary-ledger-001">Primary Ledger (US)</SelectItem>
+                                    {ledgers?.map(l => (
+                                        <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>

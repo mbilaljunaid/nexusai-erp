@@ -35,6 +35,18 @@ export const purchaseOrders = pgTable("purchase_orders", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
+export const purchaseOrderLines = pgTable("purchase_order_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    poHeaderId: varchar("po_header_id").notNull(), // FK to purchaseOrders
+    lineNumber: integer("line_number").notNull(),
+    itemId: varchar("item_id"), // FK to inventory optional
+    description: varchar("description"),
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
+    unitPrice: numeric("unit_price", { precision: 18, scale: 4 }).notNull(),
+    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
 export const insertPurchaseOrderSchema = createInsertSchema(purchaseOrders).extend({
     orderNumber: z.string().min(1),
     supplierId: z.string().optional(),
@@ -43,8 +55,18 @@ export const insertPurchaseOrderSchema = createInsertSchema(purchaseOrders).exte
     dueDate: z.date().optional().nullable(),
 });
 
+export const insertPurchaseOrderLineSchema = createInsertSchema(purchaseOrderLines).extend({
+    poHeaderId: z.string().min(1),
+    lineNumber: z.number(),
+    quantity: z.number(),
+    unitPrice: z.number(),
+    amount: z.number(),
+});
+
 export type InsertPurchaseOrder = z.infer<typeof insertPurchaseOrderSchema>;
 export type PurchaseOrder = typeof purchaseOrders.$inferSelect;
+export type InsertPurchaseOrderLine = z.infer<typeof insertPurchaseOrderLineSchema>;
+export type PurchaseOrderLine = typeof purchaseOrderLines.$inferSelect;
 
 export const inventory = pgTable("inventory", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

@@ -1,77 +1,193 @@
 
-import 'dotenv/config';
-import { financeService } from "../server/services/finance";
 import { db } from "../server/db";
-import { glReportDefinitions, glBalances, glJournals } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { financeService } from "../server/services/finance";
+import { storage } from "../server/storage";
+import { glBalances, glCodeCombinations, glReportDefinitions, glReportRows, glReportColumns } from "../shared/schema";
+import { eq, sql } from "drizzle-orm";
 
-async function testFSG() {
-    console.log("Testing FSG Engine...");
+async function verifyFsgEngine() {
+    console.log("🚀 Starting FSG Engine Verification...");
+
+    const TEST_LEDGER = "PRIMARY"; // Using existing
+    const TEST_PERIOD = "Verify-Report-2026";
+    // Using a fake account range for testing
+    const ACC_ASSET_MIN = "1000";
+    const ACC_ASSET_MAX = "1999";
+    const ACC_LIAB_MIN = "2000";
+    const ACC_LIAB_MAX = "2999";
 
     try {
-        // 1. Get Balance Sheet Report ID
-        const reports = await financeService.listReports();
-        const bsReport = reports.find(r => r.name.includes("Balance Sheet"));
-        if (!bsReport) throw new Error("Balance Sheet report not found. Did you seed?");
-        console.log(`1. Found Balance Sheet: ${bsReport.id}`);
+        // 0. Ensure Tables Exist (Manual Migration workaround)
+        console.log("0. Ensuring DB Tables Exist...");
+        await db.execute(sql`
+            CREATE TABLE IF NOT EXISTS gl_fsg_defs (
+                id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+                name VARCHAR NOT NULL,
+                description TEXT,
+                ledger_id VARCHAR,
+                chart_of_accounts_id VARCHAR,
+                enabled BOOLEAN DEFAULT true,
+                created_at TIMESTAMP DEFAULT now()
+            );
+            CREATE TABLE IF NOT EXISTS gl_fsg_rows (
+                id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+                report_id VARCHAR NOT NULL,
+                row_number INTEGER NOT NULL,
+                description VARCHAR NOT NULL,
+                row_type VARCHAR NOT NULL DEFAULT 'DETAIL',
+                account_filter_min VARCHAR,
+                account_filter_max VARCHAR,
+                segment_filter VARCHAR,
+                calculation_formula VARCHAR,
+                indent_level INTEGER DEFAULT 0,
+                inverse_sign BOOLEAN DEFAULT false,
+                created_at TIMESTAMP DEFAULT now()
+            );
+            CREATE TABLE IF NOT EXISTS gl_fsg_cols (
+                id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+                report_id VARCHAR NOT NULL,
+                column_number INTEGER NOT NULL,
+                column_header VARCHAR NOT NULL,
+                amount_type VARCHAR DEFAULT 'PTD',
+                currency_type VARCHAR DEFAULT 'Functional',
+                period_offset INTEGER DEFAULT 0,
+                ledger_id VARCHAR,
+                created_at TIMESTAMP DEFAULT now()
+            );
+        `);
 
-        // 2. Ensure we have Balances (using Posting Engine verification logic or manual check)
-        // Let's create a fresh journal to ensure we have KNOWN data
-        console.log("2. creating Test Data...");
+        // 1. Setup Test Data (Balances)
+        console.log("1. Seeding Mock Balances...");
 
-        // Create Journal: Debit Cash (11000) 500, Credit Revenue (40000) 500
-        // We'll use the Posting Engine directly if possible, or just mock balances if posting is heavy.
-        // Let's use createJournal + postJournal to be thorough (Integration Test).
+        // Cleanup Test Data
+        await db.delete(glBalances).where(eq(glBalances.periodName, TEST_PERIOD));
+        // Also cleanup reports if needed, but unique IDs handle that usually. 
+        // Actually, report definitions accumulate. 
+        // Ideally we delete old report definitions too, but balances are the critical summation issue.
 
-        const journal = await financeService.createJournal(
-            {
-                ledgerId: "primary-ledger-001",
-                journalName: "FSG Test Journal " + Date.now(),
-                periodId: "2026-01", // Assuming this period exists from previous seeds
-                periodName: "Jan-2026",
-                currencyCode: "USD",
-                category: "Manual",
-                description: "Test for FSG",
-                source: "Manual"
-            },
-            [
-                { lineNum: 1, accountId: "01-000-11000-000", debit: "500.00", credit: "0.00", description: "Cash - Test" },
-                { lineNum: 2, accountId: "01-000-40000-000", debit: "0.00", credit: "500.00", description: "Revenue - Test" }
-            ]
-        );
-        console.log(`   -> Created Journal ${journal.id}`);
+        // Helper to get CCID by code
+        const getCCId = async (code: string) => {
+            const [cc] = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.code, code));
+            return cc?.id;
+        };
 
-        // Post it
-        await financeService.postJournal(journal.id);
-        console.log("   -> Posted Journal");
-
-        // 3. Run FSG
-        console.log("3. Running FSG Generation...");
-        const reportGrid = await financeService.generateFinancialReport(bsReport.id, "Jan-2026", "primary-ledger-001");
-
-        // 4. Verify Output
-        console.log("4. Verifying Output...");
-        // Find "Cash & Equivalents" row (Row 20)
-        const cashRow = reportGrid.rows.find((r: any) => r.description === "Cash & Equivalents");
-        if (!cashRow) throw new Error("Cash Row not found in output");
-
-        const cashValue = cashRow.cells[0]; // Column 1: PTD
-        console.log(`   -> Cash Row Value: ${cashValue}`);
-
-        if (Math.abs(cashValue) >= 500) {
-            console.log("SUCCESS: Cash value reflects the posted journal (>= 500).");
-        } else {
-            console.error("FAILURE: Cash value is less than 500. Balances update might have failed or Filtration logic is wrong.");
-            console.log("Full Row:", JSON.stringify(cashRow));
+        // Ensure CCID exists for Asset
+        const assetCode = "101-000-" + ACC_ASSET_MIN + "-000";
+        let assetCCId = await getCCId(assetCode);
+        if (!assetCCId) {
+            const cc = await storage.createGlCodeCombination({
+                code: assetCode,
+                segment1: "101", segment2: "000", segment3: ACC_ASSET_MIN, segment4: "000",
+                ledgerId: TEST_LEDGER
+            });
+            assetCCId = cc.id;
         }
 
-        // Check Liabilities/Equity if needed, but Cash is good proxy for "Assets" logic
+        // Ensure CCID exists for Liability
+        const liabCode = "101-000-" + ACC_LIAB_MIN + "-000";
+        let liabCCId = await getCCId(liabCode);
+        if (!liabCCId) {
 
-    } catch (e) {
-        console.error("Test Failed:", e);
+            const cc = await storage.createGlCodeCombination({
+                code: liabCode,
+                segment1: "101", segment2: "000", segment3: ACC_LIAB_MIN, segment4: "000",
+                ledgerId: TEST_LEDGER
+            });
+            liabCCId = cc.id;
+        }
+
+        // Insert Balances
+        // Asset: Dr 1000, Cr 0 => Net Dr 1000 (Positive for Asset)
+        await db.insert(glBalances).values({
+            ledgerId: TEST_LEDGER,
+            periodName: TEST_PERIOD,
+            codeCombinationId: assetCCId!,
+            currencyCode: "USD",
+            periodNetDr: "1000",
+            periodNetCr: "0",
+            endBalance: "1000"
+        });
+
+        // Liability: Dr 0, Cr 500 => Net Cr 500 (Positive for Liab if inverseSign=true)
+        await db.insert(glBalances).values({
+            ledgerId: TEST_LEDGER,
+            periodName: TEST_PERIOD,
+            codeCombinationId: liabCCId!,
+            currencyCode: "USD",
+            periodNetDr: "0",
+            periodNetCr: "500",
+            endBalance: "-500"
+        });
+
+        // 2. Define Report
+        console.log("2. Defining Test Report...");
+        const reportDef = await storage.createReportDefinition({
+            name: "Test Balance Sheet",
+            description: "Verification Report",
+            ledgerId: TEST_LEDGER
+        });
+
+        // Rows
+        // Row 10: Assets (1000-1999)
+        await storage.createReportRow({
+            reportId: reportDef.id,
+            rowNumber: 10,
+            description: "Total Assets",
+            rowType: "Detail",
+            accountFilterMin: ACC_ASSET_MIN,
+            accountFilterMax: ACC_ASSET_MAX,
+            inverseSign: false // Expect +1000
+        });
+
+        // Row 20: Liabilities (2000-2999)
+        await storage.createReportRow({
+            reportId: reportDef.id,
+            rowNumber: 20,
+            description: "Total Liabilities",
+            rowType: "Detail",
+            accountFilterMin: ACC_LIAB_MIN,
+            accountFilterMax: ACC_LIAB_MAX,
+            inverseSign: true // Expect +500 (Flip -500 to +500)
+        });
+
+        // Columns
+        // Col 1: Current Month PTD
+        await storage.createReportColumn({
+            reportId: reportDef.id,
+            columnNumber: 1,
+            columnHeader: "Current PTD",
+            amountType: "PTD"
+        });
+
+        // 3. Run Engine
+        console.log("3. Running FSG Engine...");
+        const grid = await financeService.generateFinancialReport(reportDef.id, TEST_PERIOD, TEST_LEDGER);
+
+        console.log(JSON.stringify(grid, null, 2));
+
+        // 4. Assertions
+        const assetRow = grid.rows.find((r: any) => r.rowNumber === 10);
+        const liabRow = grid.rows.find((r: any) => r.rowNumber === 20);
+
+        const assetVal = assetRow.cells[0];
+        const liabVal = liabRow.cells[0];
+
+        console.log(`Assets: ${assetVal} (Expected 1000)`);
+        console.log(`Liabilities: ${liabVal} (Expected 500)`);
+
+        if (assetVal !== 1000) throw new Error(`Asset mismatch. Got ${assetVal}, expected 1000`);
+        if (liabVal !== 500) throw new Error(`Liability mismatch. Got ${liabVal}, expected 500`);
+
+        console.log("✅ FSG Verification Passed!");
+
+        // Cleanup (Optional)
+        // Leaving data for manual inspection if needed
+    } catch (error) {
+        console.error("❌ verification Failed:", error);
         process.exit(1);
+    } finally {
+        process.exit(0);
     }
-    process.exit(0);
 }
 
-testFSG();
+verifyFsgEngine();

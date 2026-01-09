@@ -22,8 +22,8 @@ import templateRoutes from "./routes/templateRoutes";
 import migrationRoutes from "./routes/migrationRoutes";
 
 import financeRouter from "./routes/finance";
-import apRouter from "./routes/ap"; // Added AP router
-import arRouter from "./routes/ar"; // Added AR router
+import { apRouter } from "./routes/ap";
+import arRouter from "./routes/ar";
 import cashRouter from "./routes/cash"; // Added Cash router
 import { fixedAssetsRouter } from "./routes/fixedAssets";
 import aiRouter from "./routes/ai";
@@ -33,8 +33,10 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Oracle Fusion Parity
-  app.use("/api", financeRouter);
+  // Oracle  // Finance & ERP
+  app.use("/api/finance", financeRouter);
+  app.use("/api/ap", apRouter);
+  app.use("/api/ar", arRouter); // Assuming arRouter exists or will exist
   app.use("/api/ap", apRouter); // Register AP routes
   app.use("/api/ar", arRouter); // Register AR routes
   app.use("/api/cash", cashRouter); // Register Cash routes

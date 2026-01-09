@@ -17,6 +17,8 @@ import { WhatsNew } from "@/components/WhatsNew";
 import { NotificationCenter as NotificationCenterWidget } from "@/components/NotificationCenter";
 import { QuickTipsProvider, TipsToggle } from "@/components/QuickTips";
 import { AIChatWidget } from "@/components/AIChatWidget";
+import { LedgerProvider } from "@/context/LedgerContext";
+import { LedgerSelector } from "@/components/LedgerSelector";
 import NotFound from "@/pages/not-found";
 
 // Landing Page
@@ -528,8 +530,6 @@ const AutomotiveMobileApp = lazy(() => import("@/pages/AutomotiveMobileApp"));
 const AutomotiveQualityAnalytics = lazy(() => import("@/pages/AutomotiveQualityAnalytics"));
 const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
 
-import VarianceAnalysis from "@/pages/gl/VarianceAnalysis"; // If exists, or just use widget
-import AuditLogsPage from "@/pages/gl/AuditLogs";
 
 function Router() {
   return (
@@ -710,6 +710,7 @@ function AuthenticatedLayout() {
           <header className="flex items-center justify-between p-2 border-b gap-2">
             <SidebarTrigger data-testid="button-sidebar-toggle" />
             <div className="flex items-center gap-1">
+              <LedgerSelector />
               <NotificationCenterWidget />
               <WhatsNew />
               <TipsToggle />
@@ -771,17 +772,19 @@ export default function App() {
   return (
     <RBACProvider>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <TooltipProvider>
-            <TourProvider>
-              <SidebarProvider style={style}>
-                {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <ProtectedRoute><AuthenticatedLayout /></ProtectedRoute>}
-                <GuidedTourOverlay />
-                <Toaster />
-              </SidebarProvider>
-            </TourProvider>
-          </TooltipProvider>
-        </ThemeProvider>
+        <LedgerProvider>
+          <ThemeProvider>
+            <TooltipProvider>
+              <TourProvider>
+                <SidebarProvider style={style}>
+                  {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <ProtectedRoute><AuthenticatedLayout /></ProtectedRoute>}
+                  <GuidedTourOverlay />
+                  <Toaster />
+                </SidebarProvider>
+              </TourProvider>
+            </TooltipProvider>
+          </ThemeProvider>
+        </LedgerProvider>
       </QueryClientProvider>
     </RBACProvider>
   );

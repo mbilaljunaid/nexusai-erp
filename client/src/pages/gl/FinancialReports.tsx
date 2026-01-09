@@ -1,6 +1,7 @@
 
 import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useLedger } from "@/context/LedgerContext";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -55,9 +57,9 @@ import { VarianceAnalysisWidget } from "@/components/gl/VarianceAnalysisWidget";
 
 export default function FinancialReports() {
     const { toast } = useToast();
+    const { currentLedgerId, activeLedger } = useLedger();
     const [selectedReportId, setSelectedReportId] = useState<string>("");
     const [selectedPeriod, setSelectedPeriod] = useState<string>("Jan-2026");
-    const [selectedLedger, setSelectedLedger] = useState<string>("primary-ledger-001");
     const [reportData, setReportData] = useState<ReportGrid | null>(null);
 
     // Drill Down State
@@ -83,7 +85,7 @@ export default function FinancialReports() {
             const res = await apiRequest("POST", "/api/gl/reports/generate", {
                 reportId: selectedReportId,
                 periodName: selectedPeriod,
-                ledgerId: selectedLedger
+                ledgerId: currentLedgerId
             });
             return await res.json();
         },
@@ -152,7 +154,7 @@ export default function FinancialReports() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-xl font-bold truncate">Primary Ledger (USD)</div>
+                        <div className="text-xl font-bold truncate">{activeLedger?.name || "Primary Ledger"} ({activeLedger?.currencyCode || "USD"})</div>
                         <p className="text-xs text-muted-foreground mt-1">Calendar: Monthly</p>
                     </CardContent>
                 </Card>
@@ -212,16 +214,13 @@ export default function FinancialReports() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Ledger</label>
-                            <Select value={selectedLedger} onValueChange={setSelectedLedger}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="primary-ledger-001">Primary Ledger (USD)</SelectItem>
-                                    <SelectItem value="secondary-ledger-001">Secondary Ledger (EUR)</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <label className="text-sm font-medium">Ledger (Read Only)</label>
+                            <Input
+                                value={activeLedger?.name || "Loading..."}
+                                disabled
+                                className="bg-muted/50"
+                            />
+                            <p className="text-[10px] text-muted-foreground italic">Use the Global Ledger Switcher to change books.</p>
                         </div>
 
                         <div className="space-y-2">

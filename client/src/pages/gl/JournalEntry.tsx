@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useLedger } from "@/context/LedgerContext";
+import React, { useState, useMemo, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -40,12 +41,21 @@ interface JournalLine {
 
 export default function JournalEntry() {
     const { toast } = useToast();
+    const { currentLedgerId, activeLedger } = useLedger();
+
     const [header, setHeader] = useState({
         description: "",
         currencyCode: "USD",
         periodId: "",
         category: "Manual"
     });
+
+    // Sync Currency with Ledger
+    useEffect(() => {
+        if (activeLedger) {
+            setHeader(prev => ({ ...prev, currencyCode: activeLedger.currencyCode }));
+        }
+    }, [activeLedger]);
 
     const [lines, setLines] = useState<JournalLine[]>([
         { id: "1", accountId: "", debit: "0", credit: "0", description: "" },
@@ -96,6 +106,7 @@ export default function JournalEntry() {
                 currencyCode: header.currencyCode,
                 source: header.category,
                 status,
+                ledgerId: currentLedgerId,
                 lines: lines.map(l => ({
                     accountId: l.accountId,
                     enteredDebit: l.debit,
@@ -107,10 +118,18 @@ export default function JournalEntry() {
             return await res.json();
         },
         onSuccess: (data) => {
-            toast({
-                title: "Journal Saved",
-                description: `Journal ${data.journalNumber} created successfully.`,
-            });
+            if (data.status === "Processing") {
+                toast({
+                    title: "Posting Initiated",
+                    description: `Journal ${data.journalNumber} is being processed in the background.`,
+                    className: "bg-blue-600 text-white border-none",
+                });
+            } else {
+                toast({
+                    title: "Journal Saved",
+                    description: `Journal ${data.journalNumber} created successfully as Draft.`,
+                });
+            }
         },
         onError: (err: any) => {
             toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -128,7 +147,7 @@ export default function JournalEntry() {
                         New Journal Entry
                     </h1>
                     <p className="text-muted-foreground mt-1 text-sm">
-                        Create manual journal entries for the {header.currencyCode} Ledger.
+                        Create manual journal entries for the {activeLedger?.name || "Primary"} Ledger ({header.currencyCode}).
                     </p>
                 </div>
                 <div className="flex items-center gap-2">

@@ -2,10 +2,10 @@ import { storage } from "../storage";
 import {
     InsertGlJournal, InsertGlAccount, InsertGlPeriod, InsertGlJournalLine,
     glBalances, glJournals, glJournalLines, glCodeCombinations,
-    glRevaluations, glDailyRates, glPeriods, glCrossValidationRules, glAllocations,
+    glRevaluations, glDailyRates, glPeriods, glCrossValidationRules, glAllocations, glIntercompanyRules,
     glAuditLogs, glDataAccessSets, glDataAccessSetAssignments
 } from "@shared/schema";
-import { eq, and, sql, inArray } from "drizzle-orm";
+import { eq, and, sql, inArray, gte, lte } from "drizzle-orm";
 import { db } from "../db"; // Direct DB access needed for complex transactions
 import { randomUUID } from "crypto";
 
@@ -38,12 +38,33 @@ export class FinanceService {
     }
 
     // ================= GL JOURNALS =================
-    async listJournals(periodId?: string) {
-        return await storage.listGlJournals(periodId);
+    async listJournals(periodId?: string, ledgerId?: string) {
+        return await storage.listGlJournals(periodId, ledgerId);
+    }
+
+    async checkDataAccess(userId: string, ledgerId: string, segments: string[]) {
+        // Placeholder for GL Security Logic (DAS/BSV)
+        // For now, allow all.
+        return true;
+    }
+
+    private async logAuditAction(userId: string, action: string, details: any) {
+        try {
+            await db.insert(glAuditLogs).values({
+                userId,
+                action,
+                entity: "GL_JOURNAL", // Corrected column name
+                entityId: details.journalId || "N/A",
+                details: JSON.stringify(details)
+            });
+        } catch (e) {
+            console.error("Audit Log Error:", e);
+            // Don't block flow on audit fail?
+        }
     }
 
     async createJournal(journalData: InsertGlJournal, linesData: Omit<InsertGlJournalLine, "journalId">[], userId: string = "system") {
-        const ledgerId = "PRIMARY"; // MVP Hardcoded, should come from context or period
+        const ledgerId = journalData.ledgerId || "PRIMARY";
 
         // 0. Security Check: Data Access Sets
         // Validate that user can write to these accounts
@@ -56,6 +77,10 @@ export class FinanceService {
                 .where(inArray(glCodeCombinations.id, uniqueAccountIds));
 
             for (const cc of ccs) {
+                if (cc.ledgerId && cc.ledgerId !== ledgerId) {
+                    throw new Error(`Account ${cc.code} belongs to ledger ${cc.ledgerId}, cannot post to journal ledger ${ledgerId}`);
+                }
+
                 const segments = [
                     cc.segment1 || "",
                     cc.segment2 || "",
@@ -80,10 +105,12 @@ export class FinanceService {
         }
 
         // 2. Validate Currencies & Rates
+        const journalCurrency = journalData.currencyCode || "USD";
         const processedLines = linesData.map(line => {
             const rate = Number(line.exchangeRate || 1);
             return {
                 ...line,
+                currencyCode: line.currencyCode || journalCurrency,
                 accountedDebit: line.enteredDebit ? (Number(line.enteredDebit) * rate).toFixed(2) : undefined,
                 accountedCredit: line.enteredCredit ? (Number(line.enteredCredit) * rate).toFixed(2) : undefined,
                 debit: line.enteredDebit ? (Number(line.enteredDebit) * rate).toFixed(2) : line.debit,
@@ -116,7 +143,7 @@ export class FinanceService {
 
         // If user requested "Posted", trigger the async engine immediately
         if (journalData.status === "Posted") {
-            const result = await this.postJournal(journal.id);
+            const result = await this.postJournal(journal.id, userId);
             // Return with the new status (Processing) so UI knows it's pending
             return { ...journal, status: result.status, lines };
         }
@@ -147,8 +174,8 @@ export class FinanceService {
         throw new Error("Batch posting Not Implemented. Use postJournal(id) for testing.");
     }
 
-    async postJournal(journalId: string) {
-        console.log(`[ASYNC] Request to post journal ${journalId}...`);
+    async postJournal(journalId: string, userId: string = "SYSTEM") {
+        console.log(`[ASYNC] Request to post journal ${journalId} by user ${userId}...`);
 
         // 1. Initial Validation (Synchronous)
         const journal = await storage.getGlJournal(journalId);
@@ -162,7 +189,7 @@ export class FinanceService {
             .where(eq(glJournals.id, journalId));
 
         // 3. Trigger Background Job
-        this.processPostingInBackground(journalId).catch(err => {
+        this.processPostingInBackground(journalId, userId).catch(err => {
             console.error(`[WORKER] Uncaught error in background job`, err);
         });
 
@@ -170,7 +197,7 @@ export class FinanceService {
         return { success: true, message: "Posting initiated in background", journalId, status: "Processing" };
     }
 
-    private async processPostingInBackground(journalId: string) {
+    private async processPostingInBackground(journalId: string, userId: string) {
         console.log(`[WORKER] Starting job for Journal ${journalId}...`);
 
         // Simulate Queue Delay
@@ -188,11 +215,20 @@ export class FinanceService {
                 if (period.status !== "Open") throw new Error(`Period ${period.periodName} is not Open.`);
             }
 
+            // 1.1 Approval Check
+            if (journal.approvalStatus === "Required" || journal.approvalStatus === "Pending" || journal.approvalStatus === "Rejected") {
+                throw new Error(`Journal ${journal.journalNumber} requires approval (Status: ${journal.approvalStatus}).`);
+            }
+
             const lines = await storage.listGlJournalLines(journalId);
             if (lines.length === 0) throw new Error("No lines to post.");
 
             // 2. Heavy Validations & Updates
             await this.validateCrossValidationRules(lines, journal.periodId!);
+
+            // NEW: Budgetary Control (Pre-check)
+            await this.checkFunds(journalId);
+
             const balancedLines = await this.generateIntercompanyLines(journal, lines);
             await this.updateBalancesCube(journal, balancedLines);
 
@@ -205,7 +241,8 @@ export class FinanceService {
                 .where(eq(glJournals.id, journalId));
 
             // 4. Audit
-            await this.logAuditAction("JOURNAL_POST", "GlJournal", journalId, {
+            await this.logAuditAction(userId, "JOURNAL_POST", {
+                journalId: journalId,
                 periodId: journal.periodId,
                 status: "Posted",
                 mode: "Async Job"
@@ -221,7 +258,8 @@ export class FinanceService {
                 .set({ status: "Draft" }) // Reset to Draft so user can fix
                 .where(eq(glJournals.id, journalId));
 
-            await this.logAuditAction("JOURNAL_POST_FAILED", "GlJournal", journalId, {
+            await this.logAuditAction(userId, "JOURNAL_POST_FAILED", {
+                journalId: journalId,
                 error: error.message
             });
         }
@@ -281,7 +319,7 @@ export class FinanceService {
             periodId: (await storage.listGlPeriods()).find(p => p.periodName === periodName)?.id, // Inefficient but functional
             ledgerId: rule.ledgerId,
             currencyCode: "USD", // Should be dynamic
-            status: "Draft"
+            status: "Draft" as const
         };
 
         const journal = await storage.createGlJournal(journalData);
@@ -359,15 +397,7 @@ export class FinanceService {
     // ================= AI CAPABILITIES =================
 
     private async validateCrossValidationRules(lines: any[], ledgerId: string) {
-        console.log("Validating CVRs...");
-
-        // 1. Fetch Rules
-        // Note: We need to ensure we have imported glCrossValidationRules and inArray at top of file.
-        // Since I cannot see top of file in this chunk, I will assume I need to add them or user has added them. 
-        // Wait, I should do a safe replacement that includes the Helper logic as well to avoid undefined 'matchesFilter'.
-
-        // Check Imports (Simulated check - I will add imports in next step or use Fully Qualified if possible, but Drizzle objects need import)
-        // Let's implement logic assuming imports are present, then I'll fix imports.
+        console.log(`Validating CVRs for Ledger ${ledgerId}...`);
 
         const rules = await db.select().from(glCrossValidationRules)
             .where(and(
@@ -375,65 +405,34 @@ export class FinanceService {
                 eq(glCrossValidationRules.enabled, true)
             ));
 
+        console.log(`Found ${rules.length} active CVR rules.`);
+
         if (rules.length === 0) return true;
 
-        // 2. Fetch CCIDs for all lines
-        // We need to resolve accountId (CCID) to actual segments
         const ccids = [...new Set(lines.map(l => l.accountId))]; // Dedupe
         if (ccids.length === 0) return true;
 
-        // We need 'inArray' from drizzle-orm. 
-        // If not imported, this will break. I will update imports in a separate call or rely on "multi_replace" if I could.
-        // But I only have replace_file_content (single block). 
-        // I will write the helper method matchesFilter inside this class.
-
-        // Fetch CCs
-        // Using raw SQL or need inArray. 
-        // Let's assume standard drizzle import 'inArray' is available or I will add it.
-        // Actually, to be safe, I will fetch ALL CCs matching these IDs using a workaround if inArray is missing?
-        // No, I should fix imports first.
-
-        // Let's use a simpler loop for MVP to avoid import issues in this specific tool call if I haven't added inArray yet.
-        // Or better: I will replace the imports AND this method in this same call? No, can't touch separated lines.
-
-        // Strategy: 
-        // 1. Fetch relevant CCs manually or loop if list is small. 
-        // 2. Or just execute the query. I will assume I can fix imports next.
-
-        /* 
-           Refined Implementation:
-           I'll replace the imports block first in a separate tool call to be safe?
-           No, the user wants me to be efficient.
-           I'll just implement the logic here and rely on TypeScript to catch missing import, which I'll fix immediately.
-        */
-
-        // ACTUALLY, I can't leave broken code. 
-        // I will trust I will add imports.
-
         const combinations = await db.select().from(glCodeCombinations)
-            .where(sql`${glCodeCombinations.id} IN ${ccids}`);
-        // used sql template to avoid importing InArray yet? No, `inArray` is cleaner.
-        // I'll stick to logic and fix imports after.
+            .where(inArray(glCodeCombinations.id, ccids));
 
         const ccMap = new Map(combinations.map(c => [c.id, c]));
 
-        // 3. Validate
         for (const line of lines) {
             const cc = ccMap.get(line.accountId);
             if (!cc) {
-                // Warn but maybe don't block if CC missing? Robustness says block.
                 console.warn(`CCID ${line.accountId} missing in validation.`);
                 continue;
             }
 
             for (const rule of rules) {
-                // Logic: Error if (IncludeCondition Matches) AND (ExcludeCondition Matches)
-                // Interpretation: "If [Segment1=01], Then [Segment2 must NOT be 99]"
-                // So Include="Segment1=01", Exclude="Segment2=99"
-                // If both true -> Block.
+                // Logic: Block if (Include Matches AND Exclude Matches)
+                const inc = this.matchesFilter(cc, rule.includeFilter);
+                const exc = this.matchesFilter(cc, rule.excludeFilter);
 
-                if (this.matchesFilter(cc, rule.includeFilter)) {
-                    if (this.matchesFilter(cc, rule.excludeFilter)) {
+                console.log(`Checking Rule '${rule.ruleName}' against CC ${cc.code}: Include=${inc}, Exclude=${exc}`);
+
+                if (inc) {
+                    if (exc) {
                         throw new Error(`Cross Validation Rule Failed: '${rule.ruleName}'. ${rule.errorMessage || "Invalid account combination."}`);
                     }
                 }
@@ -445,73 +444,119 @@ export class FinanceService {
     private matchesFilter(cc: any, filter: string | null): boolean {
         if (!filter) return false;
 
-        // Format: "Segment1=100" or "segment2 LIKE '10%'" (Simplified)
-        // MVP: supports "col=val"
+        // Simple parser: "segment1=100, segment2=200"
+        const conditions = filter.split(",").map(s => s.trim());
 
-        const parts = filter.split("=");
-        if (parts.length !== 2) return false;
+        for (const condition of conditions) {
+            const parts = condition.split("=");
+            if (parts.length !== 2) return false;
 
-        const key = parts[0].trim(); // e.g. "segment1"
-        const val = parts[1].trim(); // e.g. "100"
+            const key = parts[0].trim(); // e.g. "segment1"
+            const val = parts[1].trim(); // e.g. "100" // e.g. "10%"
 
-        // Normalize key to match schema property (segment1, segment2...)
-        // schema is snake_case in DB but camelCase in result? Drizzle defaults to camelCase in select if defined so.
-        // glCodeCombinations definition: segment1: varchar("segment1") -> property segment1.
+            // Dynamic access to cc.segment1, cc.segment2...
+            const ccValue = cc[key] || cc[key.toLowerCase()];
+            if (!ccValue) return false;
 
-        // Handle case sensitivity?
-        // Let's assume exact match key for now. 
-        const ccValue = cc[key] || cc[key.toLowerCase()];
-
-        if (!ccValue) return false;
-
-        if (val.endsWith("%")) {
-            const prefix = val.replace(/%/g, "");
-            return ccValue.startsWith(prefix);
-        } else {
-            return ccValue === val;
+            if (val.endsWith("%")) {
+                const prefix = val.replace(/%/g, "");
+                if (!ccValue.startsWith(prefix)) return false;
+            } else {
+                if (ccValue !== val) return false;
+            }
         }
+        // If all conditions match
+        return true;
     }
 
-    private async generateIntercompanyLines(journal: any, lines: any[]) {
-        // 1. Fetch Segments for all lines to identify "Company" (Segment 1)
-        // Optimization: Deduplicate fetch
-        const companies: Record<string, number> = {}; // { "101": 500, "102": -500 }
-        const lineDetails = [];
+    /**
+     * Submit a journal for approval.
+     * Simple Logic: Set status to Pending.
+     */
+    async submitJournalForApproval(journalId: string, userId: string) {
+        // 1. Get Journal
+        const journal = await storage.getGlJournal(journalId);
+        if (!journal) throw new Error("Journal not found");
 
+        if (journal.status === "Posted") throw new Error("Cannot approve posted journal");
+
+        // 2. Logic: If amount < 1000, Auto Approve? (Demo logic)
+        // For now, just set to Pending
+        await db.update(glJournals)
+            .set({ approvalStatus: "Pending" })
+            .where(eq(glJournals.id, journalId));
+
+        await this.logAuditAction(userId, "JOURNAL_SUBMIT_APPROVAL", { journalId });
+        return { success: true, message: "Journal submitted for approval" };
+    }
+
+    /**
+     * Approve a journal.
+     */
+    async approveJournal(journalId: string, approverId: string, action: "Approve" | "Reject") {
+        const status = action === "Approve" ? "Approved" : "Rejected";
+
+        await db.update(glJournals)
+            .set({ approvalStatus: status })
+            .where(eq(glJournals.id, journalId));
+
+        await this.logAuditAction(approverId, "JOURNAL_APPROVAL_ACTION", { journalId, action });
+        return { success: true, status };
+    }
+
+
+    // Main Intercompany Orchestrator
+    private async generateIntercompanyLines(journal: any, lines: any[]): Promise<any[]> {
+        console.log("Checking for Intercompany Balances...");
+
+        // 1. Calculate Balance per Company (Segment 1)
+        const balances = new Map<string, number>();
+
+        // Helper to get company segment. Assume lines have accountId which allows resolving segment1.
+        // For MVP, we assume we need to fetch CC for each line. 
+        // Optimization: Prefetch all CCs.
+
+        // Fix: Just assume we have helper or logic.
+        // Let's implement a quick loop that fetches CC if needed.
+
+        // Note: This matches the logic we had earlier but simpler.
         for (const line of lines) {
-            // In a real app, we might cache this or join in the initial query
-            // We need to fetch the CC struct.
-            // Let's assume for MVP `line.accountId` IS the CCID UUID.
-            // We need to fetch the CC struct.
-            // Let's add a small helper in storage or just direct DB select here since we have `db` access in this file?
-            // "import { db } from '../db';" is at the top.
-            // Let's use direct DB for speed/fix.
-            const [ccData] = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.id, line.accountId));
-
-            if (!ccData) {
-                console.warn(`CCID ${line.accountId} not found for line. Skipping IC check.`);
+            const cc = await storage.getGlCodeCombination(line.accountId);
+            if (!cc) {
+                console.warn(`[WARN] glCodeCombination not found for accountId: ${line.accountId}`);
                 continue;
             }
+            const company = cc.segment1; // Co101, Co102
 
-            const company = ccData.segment1 || "Default";
-            const netAmount = (Number(line.enteredDebit) || 0) - (Number(line.enteredCredit) || 0);
+            // Robustly get amount (Entered > Accounted > Raw)
+            const dr = Number(line.enteredDebit || line.accountedDebit || line.debit) || 0;
+            const cr = Number(line.enteredCredit || line.accountedCredit || line.credit) || 0;
+            const net = dr - cr;
 
-            companies[company] = (companies[company] || 0) + netAmount;
-            lineDetails.push({ ...line, company });
+            balances.set(company, (balances.get(company) || 0) + net);
         }
 
-        // 2. Identify Imbalances
-        const unbalancedCompanies = Object.entries(companies).filter(([_, bal]) => Math.abs(bal) > 0.01);
+        // 2. Identify Unbalanced Companies
+        const unbalancedCompanies: [string, number][] = [];
+        for (const [co, bal] of balances.entries()) {
+            if (Math.abs(bal) > 0.01) { // Tolerance
+                unbalancedCompanies.push([co, bal]);
+            }
+        }
 
-        if (unbalancedCompanies.length === 0) return lines; // Already balanced
+        if (unbalancedCompanies.length === 0) {
+            console.log("Journal is already balanced by Company. No IC lines needed.");
+            return lines;
+        }
 
-        console.log("Found Intercompany Imbalance:", unbalancedCompanies);
+        console.log("Found Intercompany Imbalances:", unbalancedCompanies);
 
-        // 3. Resolve Imbalances (Simple Pairwise for MVP)
-        // Find a positive (Needs Credit) and negative (Needs Debit)
-        // Scenario: Co101: +1000 (Needs Cr), Co102: -1000 (Needs Dr)
-        // Co101 Owes Co102.
+        // 3. Delegate to Resolver
+        return await this.resolveImbalances(journal, lines, unbalancedCompanies);
+    }
 
+    // 3. Resolve Imbalances (Simple Pairwise for MVP)
+    private async resolveImbalances(journal: any, lines: any[], unbalancedCompanies: [string, number][]) {
         const newLines = [...lines];
 
         // Split into Debtors (Positive Balance -> Received Value -> Owe Money) and Creditors (Negative Balance -> Gave Value -> Owed Money)
@@ -527,16 +572,16 @@ export class FinanceService {
             for (const [creditorCo, creditorBal] of creditors) {
                 if (remainingToBalance <= 0.01) break;
 
+                const rule = await storage.getIntercompanyRule(debtorCo, creditorCo);
+                if (!rule) {
+                    console.error("No Intercompany Rule found.");
+                    continue;
+                }
+
                 // How much can this creditor absorb? (creditorBal is negative)
                 // We want to match up to the magnitude of the creditor's contribution
                 // This is complex multi-way matching.
                 // SIMPLIFICATION: Assume 2 companies only for MVP verification.
-
-                const rule = await storage.getIntercompanyRule(debtorCo, creditorCo);
-                if (!rule) {
-                    console.error(`No Intercompany Rule found between ${debtorCo} and ${creditorCo}. Journal will remain unbalanced.`);
-                    continue;
-                }
 
                 // Debtor (Co101) needs a Credit (Payable)
                 // Creditor (Co102) needs a Debit (Receivable)
@@ -547,8 +592,8 @@ export class FinanceService {
                 const valLine1 = {
                     id: randomUUID(),
                     journalId: journal.id,
-                    accountId: rule.payableAccountId, // The I/C Payable Code Combination
-                    description: `Intercompany Allocation: Due to ${creditorCo}`,
+                    accountId: rule.payableAccountId,
+                    description: "Intercompany Allocation: Due to " + creditorCo,
                     enteredDebit: "0",
                     enteredCredit: String(amountToFix),
                     accountedDebit: "0",
@@ -561,8 +606,8 @@ export class FinanceService {
                 const valLine2 = {
                     id: randomUUID(),
                     journalId: journal.id,
-                    accountId: rule.receivableAccountId, // The I/C Receivable Code Combination
-                    description: `Intercompany Allocation: Due from ${debtorCo}`,
+                    accountId: rule.receivableAccountId,
+                    description: "Intercompany Allocation: Due from " + debtorCo,
                     enteredDebit: String(amountToFix),
                     enteredCredit: "0",
                     accountedDebit: String(amountToFix),
@@ -573,75 +618,300 @@ export class FinanceService {
                 newLines.push(valLine2);
 
                 // PERSIST TO DB
-                await db.insert(glJournalLines).values(valLine1);
-                await db.insert(glJournalLines).values(valLine2);
-                console.log(`Generated Intercompany Lines for ${debtorCo} -> ${creditorCo} ($${amountToFix})`);
+                await storage.createGlJournalLine(valLine1);
+                await storage.createGlJournalLine(valLine2);
+
+                console.log("Generated Intercompany Lines for " + debtorCo + " -> " + creditorCo + " (" + amountToFix + ")");
 
                 remainingToBalance -= amountToFix;
             }
         }
 
+        // 4. Return new set of lines
         return newLines;
     }
 
+    async getJournalLines(journalId: number) {
+        return await storage.listGlJournalLines(journalId);
+    }
+
     private async updateBalancesCube(journal: any, lines: any[]) {
-        // Update gl_balances_v2
+        // Get ledger to find functional currency
+        const ledger = await storage.getGlLedger(journal.ledgerId);
+        const functionalCurrency = ledger?.currencyCode || "USD";
+
+        // Get period to find period name
+        const period = await storage.getGlPeriod(journal.periodId);
+        const periodName = period?.periodName || "Jan-2026";
+
         for (const line of lines) {
-            // We need the CCID to update the cube.
-            // Assumption: line.accountId IS the CCID or mapped to it.
-            // In our schema: line.accountId is a UUID of gl_accounts_v2? 
-            // Wait, glJournalLines_v2 uses `accountId`. 
-            // BUT glBalances_v2 uses `codeCombinationId`.
-            // We need to map AccountID -> CCID or assume AccountID IS the CCID for simple implementation.
-            // Given: glCodeCombinations_v2 exists.
-            // Correction: `accountId` in lines usually refers to Code Combination in Oracle.
-            // Let's assume line.accountId links to a CCID table or is the CCID itself.
-
             const ccid = line.accountId;
-            const periodName = "Jan-2026"; // Should come from Period ID -> Name
 
-            // Upsert Logic (Postgres)
-            // We increment period_net_dr / cr
-            const dr = Number(line.accountedDebit || 0);
-            const cr = Number(line.accountedCredit || 0);
+            // 1. Update Entered Currency Balance
+            // Use enteredDebit/Credit first, fallback to line.debit if single currency
+            const enteredCurrency = line.currencyCode || journal.currencyCode || functionalCurrency;
+            const enteredDr = Number(line.enteredDebit || (enteredCurrency === functionalCurrency ? line.debit : 0) || 0);
+            const enteredCr = Number(line.enteredCredit || (enteredCurrency === functionalCurrency ? line.credit : 0) || 0);
 
-            // Check if balance row exists
-            const existing = await db.select().from(glBalances)
-                .where(and(
-                    eq(glBalances.codeCombinationId, ccid),
-                    eq(glBalances.periodName, periodName),
-                    eq(glBalances.ledgerId, "PRIMARY") // Hardcoded for MVP
-                ))
-                .limit(1);
+            await this.upsertBalanceRow(journal.ledgerId, ccid, periodName, enteredCurrency, enteredDr, enteredCr);
 
-            if (existing.length > 0) {
-                const row = existing[0];
-                await db.update(glBalances)
-                    .set({
-                        periodNetDr: (Number(row.periodNetDr) + dr).toString(),
-                        periodNetCr: (Number(row.periodNetCr) + cr).toString(),
-                        endBalance: (Number(row.beginBalance) + Number(row.periodNetDr) + dr - (Number(row.periodNetCr) + cr)).toString()
-                    })
-                    .where(eq(glBalances.id, row.id));
-            } else {
-                await db.insert(glBalances).values({
-                    ledgerId: "PRIMARY",
-                    codeCombinationId: ccid,
-                    currencyCode: journal.currencyCode || "USD",
-                    periodName: periodName,
-                    periodNetDr: dr.toString(),
-                    periodNetCr: cr.toString(),
-                    beginBalance: "0",
-                    endBalance: (dr - cr).toString(),
-                    periodYear: 2026,
-                    periodNum: 1
-                });
+            // 2. Update Functional Currency Balance (if different)
+            if (enteredCurrency !== functionalCurrency) {
+                const accountedDr = Number(line.accountedDebit || line.debit || 0);
+                const accountedCr = Number(line.accountedCredit || line.credit || 0);
+                await this.upsertBalanceRow(journal.ledgerId, ccid, periodName, functionalCurrency, accountedDr, accountedCr);
+            }
+
+            // 3. Update Budget Balances Actuals
+            const budgets = await storage.listGlBudgets(journal.ledgerId);
+            const openBudget = budgets.find(b => b.status === "Open");
+            if (openBudget) {
+                const accountedDr = Number(line.accountedDebit || line.debit || 0);
+                const accountedCr = Number(line.accountedCredit || line.credit || 0);
+                const netChange = accountedDr - accountedCr;
+                await this.updateBudgetActuals(openBudget.id, periodName, ccid, netChange);
             }
         }
     }
 
-    async getJournalLines(journalId: string) {
-        return await storage.listGlJournalLines(journalId);
+    /**
+     * Budgetary Control: Check if the journal exceeds approved budget limits.
+     */
+    private async checkFunds(journalId: string) {
+        const journal = await storage.getGlJournal(journalId);
+        if (!journal) return;
+
+        const lines = await storage.listGlJournalLines(journalId);
+        const period = await storage.getGlPeriod(journal.periodId!);
+        if (!period) return;
+
+        // 1. Get Control Rules for Ledger
+        const rules = await storage.listGlBudgetControlRules(journal.ledgerId);
+        if (rules.length === 0) return;
+
+        // 2. Aggregate Impact
+        const impactMap = new Map<string, number>();
+        for (const line of lines) {
+            const amt = Number(line.accountedDebit || line.debit || 0) - Number(line.accountedCredit || line.credit || 0);
+            impactMap.set(line.accountId, (impactMap.get(line.accountId) || 0) + amt);
+        }
+
+        // 3. Match against Open Budget
+        const budgets = await storage.listGlBudgets(journal.ledgerId);
+        const openBudget = budgets.find(b => b.status === "Open");
+        if (!openBudget) return;
+
+        for (const [ccid, change] of impactMap.entries()) {
+            if (change <= 0) continue; // Only check spending
+
+            const cc = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.id, ccid)).limit(1);
+            if (cc.length === 0) continue;
+            const combo = cc[0];
+
+            const rule = rules.find(r => {
+                if (!r.enabled) return false;
+                const filters = r.controlFilters as any;
+                if (filters?.segment3) {
+                    return combo.segment3! >= filters.segment3.min && combo.segment3! <= filters.segment3.max;
+                }
+                return true;
+            });
+
+            if (!rule || rule.controlLevel === "Track") continue;
+
+            const bal = await storage.getGlBudgetBalance(openBudget.id, period.periodName, ccid);
+            const available = Number(bal?.budgetAmount || 0) - (Number(bal?.actualAmount || 0) + Number(bal?.encumbranceAmount || 0));
+
+            if (change > available) {
+                if (rule.controlLevel === "Absolute") {
+                    throw new Error(`[FUNDS_CHECK_FAILED] Insufficient funds for Account ${combo.code}. Available: ${available}, Attempting: ${change}`);
+                } else if (rule.controlLevel === "Advisory") {
+                    console.warn(`[FUNDS_CHECK_WARNING] Account ${combo.code} over budget.`);
+                }
+            }
+        }
+    }
+
+    private async updateBudgetActuals(budgetId: string, periodName: string, ccid: string, netChange: number) {
+        const existing = await storage.getGlBudgetBalance(budgetId, periodName, ccid);
+        await storage.upsertGlBudgetBalance({
+            budgetId,
+            periodName,
+            codeCombinationId: ccid,
+            actualAmount: String(Number(existing?.actualAmount || 0) + netChange),
+            budgetAmount: existing?.budgetAmount || "0",
+            encumbranceAmount: existing?.encumbranceAmount || "0"
+        });
+    }
+
+    private async upsertBalanceRow(ledgerId: string, ccid: string, periodName: string, currency: string, dr: number, cr: number) {
+        const existing = await db.select().from(glBalances)
+            .where(and(
+                eq(glBalances.ledgerId, ledgerId),
+                eq(glBalances.codeCombinationId, ccid),
+                eq(glBalances.periodName, periodName),
+                eq(glBalances.currencyCode, currency)
+            ))
+            .limit(1);
+
+        if (existing.length > 0) {
+            const row = existing[0];
+            await db.update(glBalances)
+                .set({
+                    periodNetDr: (Number(row.periodNetDr) + dr).toString(),
+                    periodNetCr: (Number(row.periodNetCr) + cr).toString(),
+                    endBalance: (Number(row.beginBalance) + Number(row.periodNetDr) + dr - (Number(row.periodNetCr) + cr)).toString()
+                })
+                .where(eq(glBalances.id, row.id));
+        } else {
+            await db.insert(glBalances).values({
+                ledgerId,
+                codeCombinationId: ccid,
+                currencyCode: currency,
+                periodName,
+                periodNetDr: dr.toString(),
+                periodNetCr: cr.toString(),
+                beginBalance: "0",
+                endBalance: (dr - cr).toString(),
+                periodYear: 2026,
+                periodNum: 1
+            });
+        }
+    }
+
+    async runRevaluation(ledgerId: string, periodName: string, foreignCurrency: string, rateType: string = "Spot", unrealizedGainLossAccountId?: string) {
+        console.log(`[REVALUATION] Starting for Ledger: ${ledgerId}, Period: ${periodName}, Currency: ${foreignCurrency}`);
+
+        // 1. Setup
+        const ledger = await storage.getGlLedger(ledgerId);
+        if (!ledger) throw new Error("Ledger not found");
+        const functionalCurrency = ledger.currencyCode || "USD";
+
+        if (foreignCurrency === functionalCurrency) {
+            throw new Error("Cannot revalue functional currency itself.");
+        }
+
+        const periods = await storage.listGlPeriods();
+        const period = periods.find(p => p.periodName === periodName);
+        if (!period) throw new Error(`Period ${periodName} not found.`);
+
+        // 2. Get Exchange Rate
+        const rateRow = await storage.getExchangeRate(foreignCurrency, periodName);
+        if (!rateRow) {
+            throw new Error(`Exchange rate not found for ${foreignCurrency} in period ${periodName}`);
+        }
+        const currentRate = Number(rateRow.rateToFunctional);
+
+        // 3. Get Foreign Balances
+        const foreignBalances = await db.select().from(glBalances)
+            .where(and(
+                eq(glBalances.ledgerId, ledgerId),
+                eq(glBalances.periodName, periodName),
+                eq(glBalances.currencyCode, foreignCurrency)
+            ));
+
+        const entries: any[] = [];
+        const linesToCreate: any[] = [];
+        let totalVariance = 0;
+
+        // 4. Calculate Gain/Loss
+        for (const fBal of foreignBalances) {
+            const amount = Number(fBal.endBalance || 0);
+            if (amount === 0) continue;
+
+            const [funcBal] = await db.select().from(glBalances)
+                .where(and(
+                    eq(glBalances.ledgerId, ledgerId),
+                    eq(glBalances.codeCombinationId, fBal.codeCombinationId),
+                    eq(glBalances.periodName, periodName),
+                    eq(glBalances.currencyCode, functionalCurrency)
+                ))
+                .limit(1);
+
+            const existingFunctionalValue = Number(funcBal?.endBalance || 0);
+            const targetFunctionalValue = amount * currentRate;
+            const variance = targetFunctionalValue - existingFunctionalValue;
+
+            if (Math.abs(variance) > 0.001) {
+                const entry = await storage.createRevaluationEntry({
+                    ledgerId,
+                    periodName,
+                    currency: foreignCurrency,
+                    amount: amount.toString(),
+                    fxRate: currentRate.toString(),
+                    gainLoss: variance.toString()
+                });
+                entries.push(entry);
+                totalVariance += variance;
+
+                // Prepare Journal Line
+                // Variance > 0 means asset increased (Debit) or liability increased (Credit?).
+                // Gain/Loss on Account = targetFunctionalValue - existingFunctionalValue
+                const dr = variance > 0 ? variance : 0;
+                const cr = variance < 0 ? -variance : 0;
+
+                linesToCreate.push({
+                    accountId: fBal.codeCombinationId,
+                    description: `Revaluation Adjust: ${periodName} @ ${currentRate}`,
+                    debit: dr,
+                    credit: cr
+                });
+            }
+        }
+
+        if (linesToCreate.length === 0) {
+            return { success: false, message: "No revaluation needed.", journalId: null, totalVariance: 0 };
+        }
+
+        // 5. Create Offset Line (Unrealized Gain/Loss)
+        if (unrealizedGainLossAccountId) {
+            const offDr = totalVariance < 0 ? -totalVariance : 0;
+            const offCr = totalVariance > 0 ? totalVariance : 0;
+
+            linesToCreate.push({
+                accountId: unrealizedGainLossAccountId,
+                description: `Unrealized Gain/Loss Offset`,
+                debit: offDr,
+                credit: offCr
+            });
+        }
+
+        // 6. Create & Post Journal
+        const journal = await this.createJournal(
+            {
+                journalNumber: `REV-${periodName}-${foreignCurrency}-${Date.now()}`,
+                description: `Revaluation ${periodName} ${foreignCurrency}`,
+                periodId: period.id,
+                ledgerId: ledgerId,
+                source: "Revaluation",
+                currencyCode: functionalCurrency, // Adjustments are in functional currency
+                status: "Posted" // Trigger posting which updates balances
+            },
+            linesToCreate.map((l, idx) => ({
+                lineNumber: idx + 1,
+                accountId: l.accountId,
+                description: l.description,
+                enteredDebit: l.debit.toString(),
+                enteredCredit: l.credit.toString(),
+                accountedDebit: l.debit.toString(),
+                accountedCredit: l.credit.toString(),
+                currencyCode: functionalCurrency
+            }))
+        );
+
+        // 7. Record Run
+        await storage.createRevaluation({
+            ledgerId,
+            periodName,
+            currencyCode: foreignCurrency,
+            rateType,
+            unrealizedGainLossAccountId: unrealizedGainLossAccountId || "SYSTEM",
+            status: "Posted",
+            journalBatchId: journal.id
+        });
+
+        console.log(`[REVALUATION] Completed. Generated ${entries.length} entries. Journal: ${journal.id}`);
+        return { success: true, journalId: journal.id, totalVariance, entriesGenerated: entries.length };
     }
 
     // ================= AI CAPABILITIES =================
@@ -707,7 +977,7 @@ export class FinanceService {
         for (const [amount, count] of Object.entries(amountFrequency)) {
             if (count > 5 && Number(amount) > 1000) { // Arbitrary threshold: same large amount > 5 times
                 anomalies.push({
-                    reason: `Potential Duplicate/Split Transaction: Amount ${amount} appears ${count} times.`,
+                    reason: `Potential Duplicate / Split Transaction: Amount ${amount} appears ${count} times.`,
                     severity: "Medium"
                 });
             }
@@ -883,7 +1153,7 @@ export class FinanceService {
         return storage.listGlReportDefinitions();
     }
 
-    async generateFinancialReport(reportId: string, periodName: string, ledgerId: string = "primary-ledger-001") {
+    async generateFinancialReport(reportId: string, periodName: string, ledgerId: string = "PRIMARY") {
         // 1. Fetch Definition
         const report = await storage.getGlReportDefinition(reportId);
         if (!report) throw new Error("Report not found");
@@ -895,49 +1165,65 @@ export class FinanceService {
         const grid = {
             reportName: report.name,
             period: periodName,
-            columns: cols.map(c => c.columnHeader),
+            ledger: ledgerId,
+            columns: cols.map(c => ({
+                header: c.columnHeader,
+                type: c.amountType
+            })),
             rows: [] as any[]
         };
 
-        // 3. Calculation Loop (Naive implementation for MVP)
-        // In Prod: Utilize SQL Aggregation or Cube Queries
+        // 3. Calculation Loop
+        const rowValuesLookup = new Map<number, number[]>(); // Maps rowNumber -> array of values (one per column)
 
-        // Pre-fetch relevant balances for optimization? 
-        // For MVP, we'll query per cell or per row. Per Row is better.
+        // Sort rows by rowNumber to ensure calc rows have access to previous detail rows
+        const sortedRows = rows.sort((a, b) => a.rowNumber - b.rowNumber);
 
-        for (const row of rows) {
+        for (const row of sortedRows) {
             const rowData: any = {
                 description: row.description,
+                rowNumber: row.rowNumber,
                 rowType: row.rowType,
                 indentLevel: row.indentLevel,
                 cells: [] as number[]
             };
 
-            if (row.rowType === "DETAIL" && row.accountFilterMin) {
+            const type = row.rowType?.toUpperCase();
+
+            if (type === "DETAIL" && row.accountFilterMin) {
                 // Calculate for each column
                 for (const col of cols) {
-                    let minAccount = row.accountFilterMin;
-                    let maxAccount = row.accountFilterMax || minAccount;
-
-                    // Query Balances
-                    // We need to join with Code Combinations to filter by Account Segment
-                    // This is tricky with simple storage methods. We might need direct DB access or refined storage method.
-                    // For now, let's assume we can query balances by range.
-                    // We need a helper: storage.getBalancesByAccountRange(ledgerId, periodName, min, max)
-
-                    // FALLBACK: Since we don't have complex join storage method yet, 
-                    // we will implement a basic version that assumes 'codeCombinationId' contains the account segment 
-                    // (which it doesn't, it's a UUID).
-                    // FIX: We need robust filtering.
-                    // Let's implement a 'getAccountBalance' helper in this service that handles the Logic.
-
-                    const val = await this.calculateCell(ledgerId, periodName, minAccount, maxAccount, col.amountType);
+                    const val = await this.calculateCell(ledgerId, periodName, row.accountFilterMin, row.accountFilterMax || row.accountFilterMin, col.amountType);
                     rowData.cells.push(row.inverseSign ? -val : val);
                 }
+            } else if (type === "CALCULATION" && row.calculationFormula) {
+                // Formula Parser: Handles simple addition/subtraction of row numbers (e.g., "10+20-30")
+                for (let cIdx = 0; cIdx < cols.length; cIdx++) {
+                    let formula = row.calculationFormula.replace(/\s+/g, ""); // Remove spaces
+
+                    // Identify row numbers (digits) and replace with their values for this column
+                    const evaluatedValue = formula.split(/([+-])/).reduce((acc, part, i, arr) => {
+                        if (i === 0 || i % 2 === 0) {
+                            const rowNum = parseInt(part);
+                            const rowVals = rowValuesLookup.get(rowNum);
+                            const val = rowVals ? rowVals[cIdx] : 0;
+
+                            if (i === 0) return val;
+                            const operator = arr[i - 1];
+                            return operator === "+" ? acc + val : acc - val;
+                        }
+                        return acc;
+                    }, 0);
+
+                    rowData.cells.push(evaluatedValue);
+                }
             } else {
-                // Formatting or Calc rows - empty logic for now
+                // Formatting or Title rows
                 cols.forEach(() => rowData.cells.push(0));
             }
+
+            // Store result for future calculation rows
+            rowValuesLookup.set(row.rowNumber, rowData.cells);
             grid.rows.push(rowData);
         }
 
@@ -1038,6 +1324,14 @@ export class FinanceService {
     async createSegmentValue(data: any) { return await storage.createGlSegmentValue(data); }
     async listSegmentValues(segmentId: string) { return await storage.listGlSegmentValues(segmentId); }
 
+    async listIntercompanyRules() {
+        return await storage.listIntercompanyRules();
+    }
+
+    async createIntercompanyRule(data: any) {
+        return await storage.createIntercompanyRule(data);
+    }
+
     // CCID Generator (The "Brain" of the GL)
     /**
      * Validates a segment string (e.g. "100-200-5000") against the Ledger's Chart of Accounts
@@ -1074,175 +1368,9 @@ export class FinanceService {
 
         return ccid;
     }
-    // ================= REVALUATION =================
-    async runRevaluation(ledgerId: string, periodName: string, currencyCode: string, rateType: string, unrealizedGainLossAccountId: string) {
-        console.log(`Starting Revaluation for ${periodName} - ${currencyCode}...`);
+    // ================= FSG ENGINE =================
 
-        // 1. Get Period Info (for End Date)
-        // We'd typically search by name. For MVP assuming periodName implies ID or we scan.
-        // Let's scan periods to find the one matching name.
-        const periods = await storage.listGlPeriods();
-        const period = periods.find(p => p.periodName === periodName);
-        if (!period) throw new Error(`Period ${periodName} not found.`);
 
-        // 2. Get Exchange Rate at Period End
-        // Target is Ledger Currency (USD).
-        // Rate: Foreign -> USD.
-        const rates = await storage.listGlDailyRates(currencyCode, "USD", period.endDate);
-        // Find closest match or exact? Assuming list returns specifically for that date/pair.
-        // Actually storage.listGlDailyRates takes a specific date.
-        const rateRecord = rates.find(r => r.conversionType === rateType) || rates[0]; // Fallback to first if type not found
-
-        if (!rateRecord) {
-            throw new Error(`No exchange rate found for ${currencyCode} to USD on ${period.endDate}`);
-        }
-        const endRate = Number(rateRecord.rate);
-        console.log(`Revaluation Rate: ${endRate}`);
-
-        // 3. Calculate Balances from Journal Lines (Source of Truth)
-        // We need: Sum(Entered) and Sum(Accounted) for all accounts for this currency.
-        // Filter: posted journals, currency = target, date <= period.endDate.
-
-        // Fetch all lines (optimization: do SQL aggregation in future)
-        // We'll iterate all journals for now.
-        const journals = await storage.listGlJournals();
-        const relevantJournals = journals.filter(j =>
-            j.status === "Posted" &&
-            // j.currencyCode === currencyCode && // Line level currency matters more?
-            // Usually journals are single currency.
-            // Let's assume we check lines or header.
-            // Header currency is safer for now.
-            // Wait, glJournals doesn't have currencyCode in schema? 
-            // glJournalLines has currencyCode.
-            // So we must check lines.
-            (j.postedDate ? new Date(j.postedDate) <= period.endDate : false)
-        );
-
-        const accountTotals: Record<string, { entered: number, accounted: number }> = {};
-
-        for (const j of relevantJournals) {
-            const lines = await storage.listGlJournalLines(j.id);
-            for (const line of lines) {
-                if (line.currencyCode === currencyCode) {
-                    const accId = line.accountId;
-                    if (!accountTotals[accId]) accountTotals[accId] = { entered: 0, accounted: 0 };
-
-                    const entDr = Number(line.enteredDebit || 0);
-                    const entCr = Number(line.enteredCredit || 0);
-                    const accDr = Number(line.accountedDebit || 0);
-                    const accCr = Number(line.accountedCredit || 0);
-
-                    accountTotals[accId].entered += (entDr - entCr);
-                    accountTotals[accId].accounted += (accDr - accCr);
-                }
-            }
-        }
-
-        // 4. Calculate Variance & Generate Journal
-        const linesToCreate: any[] = [];
-        let totalVariance = 0;
-
-        for (const [accountId, totals] of Object.entries(accountTotals)) {
-            // Only revalue Asset/Liability?
-            // For MVP revalue ALL with a balance.
-            // Real world: check Account Type.
-            const account = await storage.getGlAccount(accountId);
-            // Example: Skip Equity/Rev/Exp? Usually yes.
-            // Filter: only Asset/Liability
-            if (account && ["Asset", "Liability"].includes(account.accountType)) {
-
-                const targetBase = totals.entered * endRate;
-                const currentBase = totals.accounted;
-                const variance = targetBase - currentBase;
-
-                if (Math.abs(variance) > 0.01) {
-                    console.log(`Account ${account.accountCode}: Entered ${totals.entered} * ${endRate} = ${targetBase}. Current ${currentBase}. Variance ${variance}.`);
-
-                    // Create Adjusting Line
-                    // Variance > 0 means asset increased (Debit) or liability increased (Credit?).
-                    // Actually:
-                    // If totals.entered is Positive (Debit balance):
-                    //   Target > Current => Gain (Debit Asset, Credit Unrealized Gain)
-                    //   Target < Current => Loss (Credit Asset, Debit Unrealized Loss)
-                    // We handle signs simply:
-                    //   Debit = variance if > 0
-                    //   Credit = -variance if < 0
-
-                    const dr = variance > 0 ? variance : 0;
-                    const cr = variance < 0 ? -variance : 0;
-
-                    linesToCreate.push({
-                        accountId: accountId,
-                        description: `Revaluation Adjust: ${periodName} @ ${endRate}`,
-                        debit: dr,
-                        credit: cr
-                    });
-                    totalVariance += variance;
-                }
-            }
-        }
-
-        if (linesToCreate.length === 0) {
-            return { message: "No revaluation needed.", runs: [] };
-        }
-
-        // 5. Create Journal
-        const batchName = `Revaluation ${periodName} ${currencyCode}`;
-
-        // Offset Line (Unrealized Gain/Loss)
-        // Total Variance > 0 => Net Debit to Assets => Credit Gain.
-        // Total Variance < 0 => Net Credit to Assets => Debit Loss.
-        // So offset is opposite of totalVariance.
-        const offDr = totalVariance < 0 ? -totalVariance : 0;
-        const offCr = totalVariance > 0 ? totalVariance : 0;
-
-        linesToCreate.push({
-            accountId: unrealizedGainLossAccountId,
-            description: `Unrealized Gain/Loss`,
-            debit: offDr,
-            credit: offCr
-        });
-
-        // Create Journal Record
-        const journal = await storage.createGlJournal({
-            journalNumber: `REV-${periodName}-${currencyCode}-${Date.now()}`,
-            description: batchName,
-            periodId: period.id,
-            source: "Revaluation",
-            status: "Posted", // Auto-post
-            postedDate: new Date(),
-            approvalStatus: "Not Required"
-        });
-
-        // Insert Lines
-        for (const line of linesToCreate) {
-            await storage.createGlJournalLine({
-                journalId: journal.id,
-                accountId: line.accountId,
-                description: line.description,
-                currencyCode: "USD", // Revaluation adjustment is in Base Currency
-                enteredDebit: (line.debit || 0).toString(), // Entered = Accounted for functional adj
-                enteredCredit: (line.credit || 0).toString(),
-                accountedDebit: (line.debit || 0).toString(),
-                accountedCredit: (line.credit || 0).toString(),
-                exchangeRate: "1"
-            });
-        }
-
-        // 6. Record Revaluation Run
-        await storage.createRevaluation({
-            ledgerId,
-            periodName,
-            currencyCode,
-            rateType,
-            unrealizedGainLossAccountId,
-            status: "Posted",
-            journalBatchId: journal.id
-        });
-
-        console.log("Revaluation Complete.");
-        return { success: true, journalId: journal.id, totalVariance };
-    }
 }
 
 export const financeService = new FinanceService();

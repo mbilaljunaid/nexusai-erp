@@ -116,6 +116,15 @@ export function registerFinanceRoutes(app: Express) {
         }
     });
 
+    app.get("/api/gl/ledgers", async (req, res) => {
+        try {
+            const ledgers = await financeService.listLedgers();
+            res.json(ledgers);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list ledgers" });
+        }
+    });
+
     app.get("/api/gl/periods", async (req, res) => {
         try {
             const periods = await financeService.listPeriods();
@@ -162,6 +171,25 @@ export function registerFinanceRoutes(app: Express) {
         } catch (error: any) {
             console.error("Revaluation Error:", error);
             res.status(500).json({ error: error.message });
+        }
+    });
+
+    // Intercompany Rules
+    app.get("/api/gl/intercompany-rules", async (req, res) => {
+        try {
+            const rules = await financeService.listIntercompanyRules();
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list intercompany rules" });
+        }
+    });
+
+    app.post("/api/gl/intercompany-rules", async (req, res) => {
+        try {
+            const rule = await financeService.createIntercompanyRule(req.body);
+            res.status(201).json(rule);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create intercompany rule" });
         }
     });
 }

@@ -6,8 +6,6 @@ import { z } from "zod";
 // ========== FINANCE MODULE ==========
 
 // 1. Chart of Accounts (COA)
-// 1. Chart of Accounts (COA)
-// 1. Chart of Accounts (COA)
 export const glAccounts = pgTable("gl_accounts_v2", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     accountCode: varchar("account_code").notNull().unique(), // e.g. 1000
@@ -27,12 +25,6 @@ export const insertGlAccountSchema = createInsertSchema(glAccounts).extend({
 });
 export type InsertGlAccount = z.infer<typeof insertGlAccountSchema>;
 export type GlAccount = typeof glAccounts.$inferSelect;
-
-// // KEEP LEGACY TABLE
-// export const glAccountsLegacy = pgTable("gl_accounts", {
-//     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-//     accountCode: varchar("account_code"),
-// });
 
 // 2. Fiscal Periods
 export const glPeriods = pgTable("gl_periods", {
@@ -55,13 +47,14 @@ export type InsertGlPeriod = z.infer<typeof insertGlPeriodSchema>;
 export type GlPeriod = typeof glPeriods.$inferSelect;
 
 // 3. Journal Headers
-// 3. Journal Headers
 export const glJournals = pgTable("gl_journals_v2", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     journalNumber: varchar("journal_number").notNull().unique(),
+    ledgerId: varchar("ledger_id").notNull().default("PRIMARY"), // Linked to glLedgers
     batchId: varchar("batch_id"), // Link to Batch
     periodId: varchar("period_id"), // Linked to glPeriods
     description: text("description"),
+    currencyCode: varchar("currency_code").notNull().default("USD"),
     source: varchar("source").default("Manual"), // Manual, AP, AR, etc.
     status: varchar("status").default("Draft"), // Draft, Processing, Posted
     approvalStatus: varchar("approval_status").default("Not Required"), // Not Required, Required, Pending, Approved, Rejected
@@ -73,9 +66,11 @@ export const glJournals = pgTable("gl_journals_v2", {
 
 export const insertGlJournalSchema = createInsertSchema(glJournals).extend({
     journalNumber: z.string().min(1),
+    ledgerId: z.string().optional(), // Optional for now to support legacy calls defaulting to PRIMARY
     batchId: z.string().optional().nullable(),
     periodId: z.string().optional(),
     description: z.string().optional(),
+    currencyCode: z.string().optional().default("USD"),
     source: z.string().optional(),
     status: z.enum(["Draft", "Processing", "Posted"]).optional(),
     approvalStatus: z.enum(["Not Required", "Required", "Pending", "Approved", "Rejected"]).optional(),
@@ -86,13 +81,6 @@ export const insertGlJournalSchema = createInsertSchema(glJournals).extend({
 export type InsertGlJournal = z.infer<typeof insertGlJournalSchema>;
 export type GlJournal = typeof glJournals.$inferSelect;
 
-// // KEEP LEGACY TABLE
-// export const glJournalsLegacy = pgTable("gl_journals", {
-//     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-//     journalNumber: varchar("journal_number"),
-// });
-
-// 4. Journal Lines
 // 4. Journal Lines
 export const glJournalLines = pgTable("gl_journal_lines_v2", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -132,13 +120,6 @@ export const insertGlJournalLineSchema = createInsertSchema(glJournalLines).exte
 });
 export type InsertGlJournalLine = z.infer<typeof insertGlJournalLineSchema>;
 export type GlJournalLine = typeof glJournalLines.$inferSelect;
-
-// // KEEP LEGACY TABLE
-// export const glJournalLinesLegacy = pgTable("gl_journal_lines", {
-//     id: serial("id").primaryKey(),
-//     journalId: varchar("journal_id"),
-//     accountId: varchar("account_id"),
-// });
 
 // 4.1 Journal Batches
 export const glJournalBatches = pgTable("gl_journal_batches", {
@@ -214,7 +195,6 @@ export type Expense = typeof expenses.$inferSelect;
 
 // ========== ADVANCED GL ARCHITECTURE (Phase 2) ==========
 
-// 5. Ledgers (The "Books") - NEW (Using gl_ledgers_new)
 // 5. Ledgers (The "Books") - NEW (Using gl_ledgers_v2)
 export const glLedgers = pgTable("gl_ledgers_v2", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -232,16 +212,28 @@ export const insertGlLedgerSchema = createInsertSchema(glLedgers);
 export type InsertGlLedger = z.infer<typeof insertGlLedgerSchema>;
 export type GlLedger = typeof glLedgers.$inferSelect;
 
-// // KEEP LEGACY TABLE TO PREVENT DROP ERROR
-// export const glLedgersLegacy = pgTable("gl_ledgers", {
-//     id: serial("id").primaryKey(),
-//     name: varchar("name").notNull().unique(),
-//     currencyCode: varchar("currency_code").notNull().default("USD"),
-//     calendarId: varchar("calendar_id"),
-//     // coaId might be missing or different, assume basic for now to satisfy Drizzle existence
-//     description: text("description"),
-//     createdAt: timestamp("created_at").default(sql`now()`),
-// });
+// 5.1 Ledger Sets (Consolidation Groups)
+export const glLedgerSets = pgTable("gl_ledger_sets", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(),
+    description: text("description"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const glLedgerSetAssignments = pgTable("gl_ledger_set_assignments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ledgerSetId: varchar("ledger_set_id").notNull(), // FK to glLedgerSets
+    ledgerId: varchar("ledger_id").notNull(), // FK to glLedgers
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlLedgerSetSchema = createInsertSchema(glLedgerSets);
+export type InsertGlLedgerSet = z.infer<typeof insertGlLedgerSetSchema>;
+export type GlLedgerSet = typeof glLedgerSets.$inferSelect;
+
+export const insertGlLedgerSetAssignmentSchema = createInsertSchema(glLedgerSetAssignments);
+export type InsertGlLedgerSetAssignment = z.infer<typeof insertGlLedgerSetAssignmentSchema>;
+export type GlLedgerSetAssignment = typeof glLedgerSetAssignments.$inferSelect;
 
 // 6. COA Segments (Flexfields definition)
 export const glSegments = pgTable("gl_segments_v2", {
@@ -267,9 +259,6 @@ export const glCrossValidationRules = pgTable("gl_cross_validation_rules_v2", {
     description: text("description"),
     enabled: boolean("enabled").default(true),
     errorMessage: text("error_message"),
-    // Simplified Rule Definition for Phase 1: 
-    // "Include" filter (applies to) AND "Exclude" filter (forbidden)
-    // In prod this would be complex boolean logic.
     includeFilter: text("include_filter"), // e.g., "Segment1=100" (Company 100)
     excludeFilter: text("exclude_filter"), // e.g., "Segment3=5000" (R&D Expense)
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -389,14 +378,6 @@ export const insertGlDailyRateSchema = createInsertSchema(glDailyRates);
 export type InsertGlDailyRate = z.infer<typeof insertGlDailyRateSchema>;
 export type GlDailyRate = typeof glDailyRates.$inferSelect;
 
-// Updated Journal Lines (Multi-Currency Support)
-// Note: We are REDEFINING glJournalLines here to add columns.
-// In a real migration we would alter table provided by Drizzle kit, 
-// likely extending the existing object.
-// Given strict "replace file" constraints, I will leave existing export above and append logic documentation
-// or better, I will MODIFY the existing glJournalLines definition directly in next tool call.
-
-
 // 14. Revaluation Runs
 export const glRevaluations = pgTable("gl_revaluations", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -409,33 +390,68 @@ export const glRevaluations = pgTable("gl_revaluations", {
     journalBatchId: varchar("journal_batch_id"), // Link to generated journal
     createdAt: timestamp("created_at").default(sql`now()`),
 });
+// 15. Revaluation Entries (FX Gains/Losses)
+export const glRevaluationEntries = pgTable("gl_revaluation_entries", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ledgerId: varchar("ledger_id").notNull(),
+    periodName: varchar("period_name").notNull(),
+    currency: varchar("currency").notNull(),
+    amount: numeric("amount", { precision: 20, scale: 10 }).notNull(),
+    fxRate: numeric("fx_rate", { precision: 20, scale: 10 }).notNull(),
+    gainLoss: numeric("gain_loss", { precision: 20, scale: 10 }).notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
 
+export const insertGlRevaluationEntrySchema = createInsertSchema(glRevaluationEntries);
+export type InsertGlRevaluationEntry = z.infer<typeof insertGlRevaluationEntrySchema>;
+export type GlRevaluationEntry = typeof glRevaluationEntries.$inferSelect;
+
+// New table for exchange rates (functional currency conversion)
+export const glExchangeRates = pgTable("gl_exchange_rates", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    currency: varchar("currency").notNull(), // e.g., EUR, GBP
+    periodName: varchar("period_name").notNull(), // e.g., "Jan-2026"
+    rateToFunctional: numeric("rate_to_functional", { precision: 20, scale: 10 }).notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlExchangeRateSchema = createInsertSchema(glExchangeRates);
+export type InsertGlExchangeRate = z.infer<typeof insertGlExchangeRateSchema>;
+export type GlExchangeRate = typeof glExchangeRates.$inferSelect;
 export const insertGlRevaluationSchema = createInsertSchema(glRevaluations);
 export type InsertGlRevaluation = z.infer<typeof insertGlRevaluationSchema>;
 export type GlRevaluation = typeof glRevaluations.$inferSelect;
 
 // Financial Statement Generator (FSG) Schema
-
-export const glReportDefinitions = pgTable("gl_report_definitions", {
+// 18. Financial Reporting Engine (FSG) - CONSOLIDATED & UPDATED
+export const glReportDefinitions = pgTable("gl_fsg_defs", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    name: varchar("name").notNull(), // e.g., "Balance Sheet - Standard"
+    name: varchar("name").notNull(), // e.g., "Consolidated Balance Sheet"
     description: text("description"),
-    chartOfAccountsId: varchar("chart_of_accounts_id"), // Optional filter
+    ledgerId: varchar("ledger_id"), // Optional: Specific to a ledger, or null for generic
+    chartOfAccountsId: varchar("chart_of_accounts_id"), // Optional filter (kept from old schema)
     enabled: boolean("enabled").default(true),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const glReportRows = pgTable("gl_report_rows", {
+export const insertGlReportDefinitionSchema = createInsertSchema(glReportDefinitions);
+export type InsertGlReportDefinition = z.infer<typeof insertGlReportDefinitionSchema>;
+export type GlReportDefinition = typeof glReportDefinitions.$inferSelect;
+
+export const glReportRows = pgTable("gl_fsg_rows", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     reportId: varchar("report_id").notNull(), // FK to glReportDefinitions
     rowNumber: integer("row_number").notNull(), // 10, 20, 30...
     description: varchar("description").notNull(), // Row Label
-    rowType: varchar("row_type").notNull().default("DETAIL"), // DETAIL or CALCULATION
+    rowType: varchar("row_type").notNull().default("DETAIL"), // DETAIL or CALCULATION或TITLE
 
     // Account Filter (Simplified Range)
-    // In full implementation, this supports multiple ranges/sets
-    accountFilterMin: varchar("account_filter_min"), // e.g. "10000"
-    accountFilterMax: varchar("account_filter_max"), // e.g. "19999"
+    accountFilterMin: varchar("account_filter_min"), // e.g. "1000"
+    accountFilterMax: varchar("account_filter_max"), // e.g. "1999"
+    segmentFilter: varchar("segment_filter"), // e.g. "Segment1=01" (Optional additional refinement)
+
+    // Logics
+    calculationFormula: varchar("calculation_formula"), // e.g. "10+20" or "R10+R20" (Simplified)
 
     // Formatting
     indentLevel: integer("indent_level").default(0),
@@ -444,28 +460,30 @@ export const glReportRows = pgTable("gl_report_rows", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const glReportColumns = pgTable("gl_report_columns", {
+export const insertGlReportRowSchema = createInsertSchema(glReportRows);
+export type InsertGlReportRow = z.infer<typeof insertGlReportRowSchema>;
+export type GlReportRow = typeof glReportRows.$inferSelect;
+
+export const glReportColumns = pgTable("gl_fsg_cols", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     reportId: varchar("report_id").notNull(), // FK to glReportDefinitions
     columnNumber: integer("column_number").notNull(), // 1, 2, 3...
-    columnHeader: varchar("column_header").notNull(), // "Current Month"
 
-    // Data Definition
+    // Header
+    columnHeader: varchar("column_header").notNull(),
+
+    // Data Logic
     amountType: varchar("amount_type").default("PTD"), // PTD (Period to Date), YTD (Year to Date), QTD
-    currencyType: varchar("currency_type").default("E"), // E (Entered), T (Total/Functional)
+    currencyType: varchar("currency_type").default("Functional"), // Functional, Entered, Reporting
+
+    // Time Logic relative to Run Period
+    // 0 = Current, -1 = Previous Period
+    periodOffset: integer("period_offset").default(0),
+
     ledgerId: varchar("ledger_id"), // Optional override
 
     createdAt: timestamp("created_at").default(sql`now()`),
 });
-
-// Zod Schemas
-export const insertGlReportDefinitionSchema = createInsertSchema(glReportDefinitions);
-export type InsertGlReportDefinition = z.infer<typeof insertGlReportDefinitionSchema>;
-export type GlReportDefinition = typeof glReportDefinitions.$inferSelect;
-
-export const insertGlReportRowSchema = createInsertSchema(glReportRows);
-export type InsertGlReportRow = z.infer<typeof insertGlReportRowSchema>;
-export type GlReportRow = typeof glReportRows.$inferSelect;
 
 export const insertGlReportColumnSchema = createInsertSchema(glReportColumns);
 export type InsertGlReportColumn = z.infer<typeof insertGlReportColumnSchema>;
@@ -555,3 +573,46 @@ export const glAuditLogs = pgTable("gl_audit_logs", {
 export const insertGlAuditLogSchema = createInsertSchema(glAuditLogs);
 export type InsertGlAuditLog = z.infer<typeof insertGlAuditLogSchema>;
 export type GlAuditLog = typeof glAuditLogs.$inferSelect;
+
+// 19. Budgeting (Budgetary Control & Funds Check)
+export const glBudgets = pgTable("gl_budgets", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(), // e.g., "2026 Corporate Budget"
+    description: text("description"),
+    ledgerId: varchar("ledger_id").notNull(),
+    status: varchar("status").default("Open"), // Open, Frozen, Closed
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const glBudgetBalances = pgTable("gl_budget_balances", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    budgetId: varchar("budget_id").notNull(),
+    periodName: varchar("period_name").notNull(),
+    codeCombinationId: varchar("code_combination_id").notNull(),
+    budgetAmount: numeric("budget_amount", { precision: 18, scale: 2 }).default("0"),
+    encumbranceAmount: numeric("encumbrance_amount", { precision: 18, scale: 2 }).default("0"), // Commitments
+    actualAmount: numeric("actual_amount", { precision: 18, scale: 2 }).default("0"), // Posted
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const glBudgetControlRules = pgTable("gl_budget_control_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ledgerId: varchar("ledger_id").notNull(),
+    ruleName: varchar("rule_name").notNull(),
+    controlLevel: varchar("control_level").default("Absolute"), // Absolute (Reject), Advisory (Warn), Track (None)
+
+    // Segment specific controls
+    // { "segment3": { "min": "5000", "max": "5999" } } (e.g. all Expense accounts)
+    controlFilters: jsonb("control_filters"),
+
+    enabled: boolean("enabled").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlBudgetSchema = createInsertSchema(glBudgets);
+export const insertGlBudgetBalanceSchema = createInsertSchema(glBudgetBalances);
+export const insertGlBudgetControlRuleSchema = createInsertSchema(glBudgetControlRules);
+
+export type GlBudget = typeof glBudgets.$inferSelect;
+export type GlBudgetBalance = typeof glBudgetBalances.$inferSelect;
+export type GlBudgetControlRule = typeof glBudgetControlRules.$inferSelect;
