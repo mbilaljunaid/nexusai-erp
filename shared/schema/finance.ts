@@ -397,6 +397,23 @@ export type GlDailyRate = typeof glDailyRates.$inferSelect;
 // or better, I will MODIFY the existing glJournalLines definition directly in next tool call.
 
 
+// 14. Revaluation Runs
+export const glRevaluations = pgTable("gl_revaluations", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ledgerId: varchar("ledger_id").notNull(),
+    periodName: varchar("period_name").notNull(), // e.g., "Jan-2026"
+    currencyCode: varchar("currency_code").notNull(), // Target currency to revalue
+    rateType: varchar("rate_type").notNull().default("Spot"),
+    unrealizedGainLossAccountId: varchar("unrealized_gain_loss_account_id").notNull(),
+    status: varchar("status").default("Draft"), // Draft, Posted
+    journalBatchId: varchar("journal_batch_id"), // Link to generated journal
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlRevaluationSchema = createInsertSchema(glRevaluations);
+export type InsertGlRevaluation = z.infer<typeof insertGlRevaluationSchema>;
+export type GlRevaluation = typeof glRevaluations.$inferSelect;
+
 // Financial Statement Generator (FSG) Schema
 
 export const glReportDefinitions = pgTable("gl_report_definitions", {

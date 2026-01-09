@@ -61,6 +61,10 @@ import {
   type InsertAgentAction, type AgentAction,
   type InsertAgentExecution, type AgentExecution,
   type InsertAgentAuditLog, type AgentAuditLog,
+  type GlReportDefinition, type InsertGlReportDefinition,
+  type GlReportRow, type InsertGlReportRow,
+  type GlReportColumn, type InsertGlReportColumn,
+  type GlIntercompanyRule, type InsertGlIntercompanyRule,
   type GlAccount, type InsertGlAccount,
   type GlPeriod, type InsertGlPeriod,
   type GlJournal, type InsertGlJournal,
@@ -102,8 +106,10 @@ import {
   glJournalBatches, glJournalApprovals,
   glLedgers, glSegments, glSegmentValues, glCodeCombinations, glDailyRates,
   glIntercompanyRules, glCrossValidationRules,
-  glReportDefinitions, glReportRows, glReportColumns
+  glReportDefinitions, glReportRows, glReportColumns,
+  glRevaluations, type GlRevaluation, type InsertGlRevaluation
 } from "@shared/schema";
+
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -439,6 +445,10 @@ export interface IStorage {
 
   listGlDailyRates(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate[]>;
   createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate>;
+
+  // Revaluation
+  createRevaluation(data: InsertGlRevaluation): Promise<GlRevaluation>;
+  listRevaluations(ledgerId: string): Promise<GlRevaluation[]>;
 
   // AP Module
   listApSuppliers(): Promise<ApSupplier[]>;
@@ -1661,6 +1671,111 @@ export class MemStorage implements IStorage {
     this.agentAuditLogs.set(id, newLog);
     return newLog;
   }
+
+
+  // FSG Implementation (Hybrid - DB Backed)
+  async createGlReportDefinition(data: InsertGlReportDefinition): Promise<GlReportDefinition> {
+    const [report] = await db.insert(glReportDefinitions).values(data).returning();
+    return report;
+  }
+  async createGlReportRow(data: InsertGlReportRow): Promise<GlReportRow> {
+    const [row] = await db.insert(glReportRows).values(data).returning();
+    return row;
+  }
+  async createGlReportColumn(data: InsertGlReportColumn): Promise<GlReportColumn> {
+    const [col] = await db.insert(glReportColumns).values(data).returning();
+    return col;
+  }
+  async getGlReportDefinition(id: string): Promise<GlReportDefinition | undefined> {
+    const [report] = await db.select().from(glReportDefinitions).where(eq(glReportDefinitions.id, id));
+    return report;
+  }
+  async getGlReportRows(reportId: string): Promise<GlReportRow[]> {
+    return db.select().from(glReportRows).where(eq(glReportRows.reportId, reportId)).orderBy(glReportRows.rowNumber);
+  }
+  async getGlReportColumns(reportId: string): Promise<GlReportColumn[]> {
+    return db.select().from(glReportColumns).where(eq(glReportColumns.reportId, reportId)).orderBy(glReportColumns.columnNumber);
+  }
+  async listGlReportDefinitions(): Promise<GlReportDefinition[]> {
+    return db.select().from(glReportDefinitions);
+  }
+
+  // GL Support (Hybrid)
+  async getGlPeriod(id: string): Promise<GlPeriod | undefined> {
+    const [period] = await db.select().from(glPeriods).where(eq(glPeriods.id, id));
+    return period;
+  }
+
+  async getGlBalancesForPeriod(ledgerId: string, periodName: string): Promise<GlBalance[]> {
+    return db.select().from(glBalances).where(
+      and(
+        eq(glBalances.ledgerId, ledgerId),
+        eq(glBalances.periodName, periodName)
+      )
+    );
+  }
+
+  async listGlCodeCombinations(ledgerId: string): Promise<GlCodeCombination[]> {
+    return db.select().from(glCodeCombinations).where(eq(glCodeCombinations.ledgerId, ledgerId));
+  }
+
+  async getOrCreateCodeCombination(ledgerId: string, segments: string[]): Promise<GlCodeCombination> {
+    // 1. Check if exists
+    const code = segments.join("-");
+    const existing = await db.select().from(glCodeCombinations)
+      .where(and(eq(glCodeCombinations.ledgerId, ledgerId), eq(glCodeCombinations.code, code)));
+
+    if (existing.length > 0) return existing[0];
+
+    // 2. Create if not
+    const [newCc] = await db.insert(glCodeCombinations).values({
+      ledgerId,
+      segment1: segments[0],
+      segment2: segments[1],
+      segment3: segments[2],
+      segment4: segments[3],
+      segment5: segments[4],
+      code: code,
+      enabledFlag: true,
+      startDateActive: new Date(),
+      summaryFlag: false,
+      accountType: "Asset" // Default, real logic should lookup nature of segment3
+    }).returning();
+
+    return newCc;
+  }
+
+  // Intercompany Rules
+  async createIntercompanyRule(data: InsertGlIntercompanyRule): Promise<GlIntercompanyRule> {
+    const [rule] = await db.insert(glIntercompanyRules).values(data).returning();
+    return rule;
+  }
+
+  async listIntercompanyRules(): Promise<GlIntercompanyRule[]> {
+    return db.select().from(glIntercompanyRules);
+  }
+
+  async getIntercompanyRule(fromCompany: string, toCompany: string): Promise<GlIntercompanyRule | undefined> {
+    const [rule] = await db.select().from(glIntercompanyRules).where(
+      and(
+        eq(glIntercompanyRules.fromCompany, fromCompany),
+        eq(glIntercompanyRules.toCompany, toCompany),
+        eq(glIntercompanyRules.enabled, true)
+      )
+    );
+    return rule;
+  }
+
+  // Revaluation
+  async createRevaluation(data: InsertGlRevaluation): Promise<GlRevaluation> {
+    const [rev] = await db.insert(glRevaluations).values(data).returning();
+    return rev;
+  }
+
+  async listRevaluations(ledgerId: string): Promise<GlRevaluation[]> {
+    return db.select().from(glRevaluations).where(eq(glRevaluations.ledgerId, ledgerId)).orderBy(desc(glRevaluations.createdAt));
+  }
 }
 
-export const storage = new DatabaseStorage();
+
+export const storage = new MemStorage();

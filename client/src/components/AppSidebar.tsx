@@ -47,6 +47,9 @@ import {
   Workflow as WorkflowIcon,
   Building,
   LogOut,
+  BookOpen,
+  ArrowRightLeft,
+  RefreshCw,
 } from "lucide-react";
 
 type UserRole = "admin" | "editor" | "viewer";
@@ -71,10 +74,13 @@ const operationsModules: MenuItem[] = [
   { title: "Operations", icon: Cog, href: "/operations", allowedRoles: ["admin", "editor"] },
   { title: "Admin", icon: Shield, href: "/admin", allowedRoles: ["admin"] },
   { title: "General", icon: Grid3x3, href: "/general", allowedRoles: ["admin", "editor"] },
-  { title: "Finance", icon: DollarSign, href: "/finance", allowedRoles: ["admin", "editor"] },
 ];
 
 const financeModules: MenuItem[] = [
+  { title: "General Ledger", icon: BookOpen, href: "/gl/journals", allowedRoles: ["admin", "editor"] },
+  { title: "Financial Reporting", icon: BarChart3, href: "/gl/reports", allowedRoles: ["admin", "editor"] },
+  { title: "Intercompany", icon: ArrowRightLeft, href: "/gl/intercompany", allowedRoles: ["admin", "editor"] },
+  { title: "Revaluation", icon: RefreshCw, href: "/gl/revaluation", allowedRoles: ["admin", "editor"] },
   { title: "Accounts Payable", icon: DollarSign, href: "/finance/accounts-payable", allowedRoles: ["admin", "editor"] },
   { title: "Accounts Receivable", icon: TrendingUp, href: "/finance/accounts-receivable", allowedRoles: ["admin", "editor"] },
   { title: "Procurement", icon: ShoppingCart, href: "/procurement", allowedRoles: ["admin", "editor"] },

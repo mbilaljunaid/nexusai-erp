@@ -1,6 +1,7 @@
 import { Express, Request, Response } from "express";
 import { storage } from "../../storage";
 import { insertInvoiceSchema, insertPaymentSchema, insertRevenueForecastSchema, insertBudgetAllocationSchema } from "../../../shared/schema";
+import { financeService } from "../../services/finance";
 
 export function registerFinanceRoutes(app: Express) {
     // Invoices
@@ -103,6 +104,64 @@ export function registerFinanceRoutes(app: Express) {
             res.status(201).json(budget);
         } catch (error) {
             res.status(500).json({ error: "Failed to create budget" });
+        }
+    });
+    // Financial Reporting (FSG)
+    app.get("/api/gl/reports", async (req, res) => {
+        try {
+            const reports = await financeService.listReports();
+            res.json(reports);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list reports" });
+        }
+    });
+
+    app.get("/api/gl/periods", async (req, res) => {
+        try {
+            const periods = await financeService.listPeriods();
+            res.json(periods);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list periods" });
+        }
+    });
+
+    app.post("/api/gl/reports/generate", async (req, res) => {
+        try {
+            const { reportId, periodName, ledgerId } = req.body;
+            if (!reportId || !periodName) {
+                return res.status(400).json({ error: "reportId and periodName are required" });
+            }
+            const report = await financeService.generateFinancialReport(reportId, periodName, ledgerId);
+            res.json(report);
+        } catch (error) {
+            console.error("FSG Generation Error:", error);
+            res.status(500).json({ error: "Failed to generate report" });
+        }
+    });
+    // Revaluation
+    app.get("/api/gl/revaluations", async (req, res) => {
+        try {
+            const ledgerId = (req.query.ledgerId as string) || "primary-ledger-001";
+            const runs = await storage.listRevaluations(ledgerId);
+            res.json(runs);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list revaluation runs" });
+        }
+    });
+
+    app.post("/api/gl/revaluation", async (req, res) => {
+        try {
+            const { ledgerId, periodName, currencyCode, rateType, unrealizedGainLossAccountId } = req.body;
+            if (!periodName || !currencyCode || !unrealizedGainLossAccountId) {
+                return res.status(400).json({ error: "Missing required fields" });
+            }
+            // Default ledger if missing
+            const lid = ledgerId || "primary-ledger-001";
+            const result = await financeService.runRevaluation(lid, periodName, currencyCode, rateType || "Spot", unrealizedGainLossAccountId);
+            res.json(result);
+        } catch (error: any) {
+            console.error("Revaluation Error:", error);
+            res.status(500).json({ error: error.message });
         }
     });
 }

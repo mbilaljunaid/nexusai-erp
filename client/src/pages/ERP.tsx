@@ -39,7 +39,7 @@ export default function ERP() {
   // Navigation Items - Updated to link to Premium Modules where available
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500", path: "/erp" },
-    { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500", path: "/finance" },
+    { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500", path: "/gl/journals" },
     { id: "ap", label: "Accounts Payable", icon: FileText, color: "text-orange-500", path: "/finance/accounts-payable" },
     { id: "ar", label: "Accounts Receivable", icon: TrendingUp, color: "text-purple-500", path: "/finance/accounts-receivable" },
     { id: "cash", label: "Cash Management", icon: DollarSign, color: "text-emerald-500", path: "/finance/cash-management" },

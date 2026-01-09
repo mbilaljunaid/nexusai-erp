@@ -162,7 +162,7 @@ const AgingReport = lazy(() => import("@/pages/AgingReport"));
 
 // Phase 3: Projects & Automation (4 pages)
 const AgileBoard = lazy(() => import("@/pages/AgileBoard"));
-const TaskManagement = lazy(() => import("@/pages/TaskManagement"));
+const Revaluation = lazy(() => import("@/pages/gl/Revaluation"));
 const WorkflowDesigner = lazy(() => import("@/pages/WorkflowDesigner"));
 const TeamCollaboration = lazy(() => import("@/pages/TeamCollaboration"));
 
@@ -177,7 +177,7 @@ const InvoiceDetail = lazy(() => import("@/pages/InvoiceDetail"));
 const PurchaseOrder = lazy(() => import("@/pages/PurchaseOrder"));
 const VendorManagement = lazy(() => import("@/pages/VendorManagement"));
 const GeneralLedger = lazy(() => import("@/pages/GeneralLedger"));
-const FinancialReports = lazy(() => import("@/pages/FinancialReports"));
+
 const WorkOrder = lazy(() => import("@/pages/WorkOrder"));
 const MRPDashboard = lazy(() => import("@/pages/MRPDashboard"));
 const ShopFloor = lazy(() => import("@/pages/ShopFloor"));
@@ -310,7 +310,9 @@ const EventTriggers = lazy(() => import("@/pages/EventTriggers"));
 const WorkflowMonitoring = lazy(() => import("@/pages/WorkflowMonitoring"));
 const IntegrationStatus = lazy(() => import("@/pages/IntegrationStatus"));
 const JournalEntries = lazy(() => import("@/pages/JournalEntries"));
-const JournalEntry = lazy(() => import("@/pages/gl/JournalEntry"));
+const JournalEntry = lazy(() => import("./pages/gl/JournalEntry"));
+const FinancialReports = lazy(() => import("./pages/gl/FinancialReports"));
+const IntercompanyRules = lazy(() => import("@/pages/gl/IntercompanyRules"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
@@ -565,6 +567,8 @@ function Router() {
       <Route path="/finance/accounts-payable" component={AccountsPayable} />
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
       <Route path="/gl/journals/new" component={JournalEntry} />
+      <Route path="/gl/journals" component={JournalEntries} />
+      <Route path="/gl/reports" component={FinancialReports} />
       <Route path="/finance/:page?" component={Finance} />
       <Route path="/hr/:page?" component={HR} />
       <Route path="/projects/:page?" component={Projects} />
@@ -682,6 +686,11 @@ function Router() {
       <Route path="/industry/:slug" component={IndustryDetail} />
       <Route path="/module/:slug" component={ModuleDetail} />
       <Route path="/features/:slug" component={FeatureDetailPage} />
+      <Route path="/gl/intercompany" component={IntercompanyRules} />
+      <Route path="/gl/revaluation" component={Revaluation} />
+
+      {/* New Finance Routes */}
+
       <Route component={NotFound} />
     </Switch>
   );

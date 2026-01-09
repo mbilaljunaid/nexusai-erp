@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,14 +7,14 @@ import { useQuery } from "@tanstack/react-query";
 import { openFormInNewWindow } from "@/lib/formUtils";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard } from "lucide-react";
+import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard, BookOpen, ArrowRightLeft, RefreshCw } from "lucide-react";
 
 export default function Finance() {
   const [activeNav, setActiveNav] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const invoicesMetadata = getFormMetadata("invoices");
-  
+
   const { data: invoices = [] } = useQuery<any[]>({
     queryKey: ["/api/invoices"],
     retry: false
@@ -21,14 +22,36 @@ export default function Finance() {
 
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500", formId: null },
+    { id: "gl", label: "General Ledger", icon: BookOpen, color: "text-indigo-500", formId: "gl_journals" },
+    { id: "reporting", label: "Reporting", icon: BarChart3, color: "text-teal-500", formId: "gl_reports" },
+    { id: "intercompany", label: "Intercompany", icon: ArrowRightLeft, color: "text-pink-500", formId: "gl_intercompany" },
+    { id: "revaluation", label: "Revaluation", icon: RefreshCw, color: "text-amber-500", formId: "gl_revaluation" },
     { id: "invoices", label: "Invoices", icon: FileText, color: "text-green-500", formId: "invoices" },
     { id: "expenses", label: "Expenses", icon: DollarSign, color: "text-orange-500", formId: "expenses" },
     { id: "budgets", label: "Budgets", icon: PieChart, color: "text-purple-500", formId: "budgets" },
-    { id: "reports", label: "Reports", icon: TrendingUp, color: "text-pink-500", formId: null },
     { id: "payments", label: "Payments", icon: CreditCard, color: "text-cyan-500", formId: "payments" },
   ];
 
+  const [, setLocation] = useLocation();
+
   const handleIconClick = (formId: string | null) => {
+    if (formId === "gl_journals") {
+      setLocation("/gl/journals");
+      return;
+    }
+    if (formId === "gl_reports") {
+      setLocation("/gl/reports");
+      return;
+    }
+    if (formId === "gl_intercompany") {
+      setLocation("/gl/intercompany");
+      return;
+    }
+    if (formId === "gl_revaluation") {
+      setLocation("/gl/revaluation");
+      return;
+    }
+
     if (formId) {
       openFormInNewWindow(formId, `${formId.charAt(0).toUpperCase() + formId.slice(1)} Form`);
     } else {
@@ -48,9 +71,8 @@ export default function Finance() {
           <button
             key={item.id}
             onClick={() => handleIconClick(item.formId)}
-            className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${
-              !item.formId ? "hover:border-primary hover-elevate" : "hover:bg-primary/10 hover:border-primary hover-elevate"
-            }`}
+            className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${!item.formId ? "hover:border-primary hover-elevate" : "hover:bg-primary/10 hover:border-primary hover-elevate"
+              }`}
             data-testid={`button-icon-${item.id}`}
           >
             <item.icon className={`w-6 h-6 ${item.color}`} />
