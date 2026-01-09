@@ -310,6 +310,7 @@ const EventTriggers = lazy(() => import("@/pages/EventTriggers"));
 const WorkflowMonitoring = lazy(() => import("@/pages/WorkflowMonitoring"));
 const IntegrationStatus = lazy(() => import("@/pages/IntegrationStatus"));
 const JournalEntries = lazy(() => import("@/pages/JournalEntries"));
+const JournalEntry = lazy(() => import("@/pages/gl/JournalEntry"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
@@ -563,6 +564,7 @@ function Router() {
       <Route path="/finance/fixed-assets" component={FixedAssetsPage} />
       <Route path="/finance/accounts-payable" component={AccountsPayable} />
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
+      <Route path="/gl/journals/new" component={JournalEntry} />
       <Route path="/finance/:page?" component={Finance} />
       <Route path="/hr/:page?" component={HR} />
       <Route path="/projects/:page?" component={Projects} />

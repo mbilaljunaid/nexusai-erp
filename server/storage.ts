@@ -96,9 +96,17 @@ import {
   type FaAddition, type InsertFaAddition,
   type FaBook, type InsertFaBook,
   type FaTransactionHeader, type InsertFaTransactionHeader,
-  type FaDepreciationSummary
+  type FaDepreciationSummary,
+  // Tables
+  glAccounts, glPeriods, glJournals, glJournalLines, glBalances,
+  glJournalBatches, glJournalApprovals,
+  glLedgers, glSegments, glSegmentValues, glCodeCombinations, glDailyRates,
+  glIntercompanyRules, glCrossValidationRules,
+  glReportDefinitions, glReportRows, glReportColumns
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
   // AR Revenue Schedule operations
@@ -423,8 +431,11 @@ export interface IStorage {
   listGlSegmentValues(segmentId: string): Promise<GlSegmentValue[]>;
   createGlSegmentValue(val: InsertGlSegmentValue): Promise<GlSegmentValue>;
 
-  getGlCodeCombination(id: string): Promise<GlCodeCombination | undefined>;
-  createGlCodeCombination(cc: InsertGlCodeCombination): Promise<GlCodeCombination>;
+  // GL Support
+  getGlPeriod(id: string): Promise<GlPeriod | undefined>;
+  getGlBalancesForPeriod(ledgerId: string, periodName: string): Promise<GlBalance[]>;
+  listGlCodeCombinations(ledgerId: string): Promise<GlCodeCombination[]>;
+  getOrCreateCodeCombination(ledgerId: string, segments: string[]): Promise<GlCodeCombination>;
 
   listGlDailyRates(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate[]>;
   createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate>;
@@ -565,94 +576,159 @@ export class MemStorage implements IStorage {
   private faDepreciation = new Map<string, FaDepreciationSummary>();
 
 
-  // GL Maps
-  private glAccounts = new Map<string, GlAccount>();
-  private glPeriods = new Map<string, GlPeriod>();
-  private glJournals = new Map<string, GlJournal>();
-  private glJournalLines = new Map<string, GlJournalLine>();
+  // FSG Implementation
+  async createGlReportDefinition(data: InsertGlReportDefinition): Promise<GlReportDefinition> {
+    const [report] = await db.insert(glReportDefinitions).values(data).returning();
+    return report;
+  }
+  async createGlReportRow(data: InsertGlReportRow): Promise<GlReportRow> {
+    const [row] = await db.insert(glReportRows).values(data).returning();
+    return row;
+  }
+  async createGlReportColumn(data: InsertGlReportColumn): Promise<GlReportColumn> {
+    const [col] = await db.insert(glReportColumns).values(data).returning();
+    return col;
+  }
+  async getGlReportDefinition(id: string): Promise<GlReportDefinition | undefined> {
+    const [report] = await db.select().from(glReportDefinitions).where(eq(glReportDefinitions.id, id));
+    return report;
+  }
+  async getGlReportRows(reportId: string): Promise<GlReportRow[]> {
+    return db.select().from(glReportRows).where(eq(glReportRows.reportId, reportId)).orderBy(glReportRows.rowNumber);
+  }
+  async getGlReportColumns(reportId: string): Promise<GlReportColumn[]> {
+    return db.select().from(glReportColumns).where(eq(glReportColumns.reportId, reportId)).orderBy(glReportColumns.columnNumber);
+  }
+  async listGlReportDefinitions(): Promise<GlReportDefinition[]> {
+    return db.select().from(glReportDefinitions);
+  }
 
-  // GL Implementation
-  async getGlAccount(id: string) { return this.glAccounts.get(id); }
-  async listGlAccounts() { return Array.from(this.glAccounts.values()); }
-  async createGlAccount(a: InsertGlAccount) { const id = randomUUID(); const account: GlAccount = { id, ...a, parentAccountId: a.parentAccountId ?? null, isActive: a.isActive ?? true, createdAt: new Date() }; this.glAccounts.set(id, account); return account; }
+  // GL Implementation (DB-Backed)
+  async getGlAccount(id: string) {
+    const res = await db.select().from(glAccounts).where(eq(glAccounts.id, id));
+    return res[0];
+  }
+  async listGlAccounts() {
+    return await db.select().from(glAccounts);
+  }
+  async createGlAccount(a: InsertGlAccount) {
+    const res = await db.insert(glAccounts).values(a).returning();
+    return res[0];
+  }
 
-  async getGlPeriod(id: string) { return this.glPeriods.get(id); }
-  async listGlPeriods() { return Array.from(this.glPeriods.values()); }
-  async createGlPeriod(p: InsertGlPeriod) { const id = randomUUID(); const period: GlPeriod = { id, ...p, status: p.status ?? "Open" }; this.glPeriods.set(id, period); return period; }
-  async updateGlPeriod(id: string, updates: Partial<GlPeriod>) { const period = await this.getGlPeriod(id); if (!period) throw new Error("Period not found"); const updated = { ...period, ...updates }; this.glPeriods.set(id, updated); return updated; }
+  async getGlPeriod(id: string) {
+    const res = await db.select().from(glPeriods).where(eq(glPeriods.id, id));
+    return res[0];
+  }
+  async listGlPeriods() {
+    return await db.select().from(glPeriods);
+  }
+  async createGlPeriod(p: InsertGlPeriod) {
+    const res = await db.insert(glPeriods).values(p).returning();
+    return res[0];
+  }
+  async updateGlPeriod(id: string, updates: Partial<GlPeriod>) {
+    const res = await db.update(glPeriods).set(updates).where(eq(glPeriods.id, id)).returning();
+    return res[0];
+  }
 
-  async getGlJournal(id: string) { return this.glJournals.get(id); }
-  async listGlJournals(periodId?: string) { const list = Array.from(this.glJournals.values()); return periodId ? list.filter(j => j.periodId === periodId) : list; }
-  async createGlJournal(j: InsertGlJournal) { const id = randomUUID(); const journal: GlJournal = { id, ...j, periodId: j.periodId ?? null, description: j.description ?? null, source: j.source ?? "Manual", status: j.status ?? "Draft", postedDate: j.postedDate ?? null, createdBy: j.createdBy ?? null, batchId: j.batchId ?? null, approvalStatus: j.approvalStatus ?? "Not Required", reversalJournalId: j.reversalJournalId ?? null, createdAt: new Date() }; this.glJournals.set(id, journal); return journal; }
+  async getGlJournal(id: string) {
+    const res = await db.select().from(glJournals).where(eq(glJournals.id, id));
+    return res[0];
+  }
+  async listGlJournals(periodId?: string) {
+    if (periodId) {
+      return await db.select().from(glJournals).where(eq(glJournals.periodId, periodId)).orderBy(desc(glJournals.createdAt));
+    }
+    return await db.select().from(glJournals).orderBy(desc(glJournals.createdAt));
+  }
+  async createGlJournal(j: InsertGlJournal) {
+    const res = await db.insert(glJournals).values(j).returning();
+    return res[0];
+  }
 
-  async listGlJournalLines(journalId: string) { return Array.from(this.glJournalLines.values()).filter(l => l.journalId === journalId); }
-  async createGlJournalLine(l: InsertGlJournalLine) { const id = randomUUID(); const line: GlJournalLine = { id, ...l, debit: l.debit ?? "0", credit: l.credit ?? "0", description: l.description ?? null }; this.glJournalLines.set(id, line); return line; }
+  async listGlJournalLines(journalId: string) {
+    return await db.select().from(glJournalLines).where(eq(glJournalLines.journalId, journalId));
+  }
+  async createGlJournalLine(l: InsertGlJournalLine) {
+    const res = await db.insert(glJournalLines).values(l).returning();
+    return res[0];
+  }
 
   // Advanced GL (Batches & Approvals)
   async createGlJournalBatch(b: InsertGlJournalBatch) {
-    const id = randomUUID();
-    const batch: GlJournalBatch = {
-      id,
-      ...b,
-      description: b.description ?? null,
-      status: b.status ?? "Unposted",
-      periodId: b.periodId ?? null,
-      totalDebit: "0",
-      totalCredit: "0",
-      createdAt: new Date()
-    };
-    return batch;
+    const res = await db.insert(glJournalBatches).values(b).returning();
+    return res[0];
   }
-  async getGlJournalBatch(id: string) { return undefined; }
-  async listGlJournalBatches() { return []; }
-  async updateGlJournalBatch(id: string, b: Partial<InsertGlJournalBatch>) { return undefined; }
+  async getGlJournalBatch(id: string) {
+    const res = await db.select().from(glJournalBatches).where(eq(glJournalBatches.id, id));
+    return res[0];
+  }
+  async listGlJournalBatches() {
+    return await db.select().from(glJournalBatches);
+  }
+  async updateGlJournalBatch(id: string, b: Partial<InsertGlJournalBatch>) {
+    const res = await db.update(glJournalBatches).set(b).where(eq(glJournalBatches.id, id)).returning();
+    return res[0];
+  }
 
   async createGlJournalApproval(a: InsertGlJournalApproval) {
-    const id = randomUUID();
-    const approval: GlJournalApproval = {
-      id,
-      ...a,
-      approverId: a.approverId ?? null,
-      status: a.status ?? "Pending",
-      comments: a.comments ?? null,
-      actionDate: a.actionDate ?? null,
-      createdAt: new Date()
-    };
-    return approval;
+    const res = await db.insert(glJournalApprovals).values(a).returning();
+    return res[0];
   }
-  async listGlJournalApprovals(journalId: string) { return []; }
-  async updateGlJournalApproval(id: string, a: Partial<InsertGlJournalApproval>) { return undefined; }
+  async listGlJournalApprovals(journalId: string) {
+    return await db.select().from(glJournalApprovals).where(eq(glJournalApprovals.journalId, journalId));
+  }
+  async updateGlJournalApproval(id: string, a: Partial<InsertGlJournalApproval>) {
+    const res = await db.update(glJournalApprovals).set(a).where(eq(glJournalApprovals.id, id)).returning();
+    return res[0];
+  }
 
   // Advanced GL (Phase 2)
-  async getGlLedger(id: string) { return undefined; }
-  async listGlLedgers() { return []; }
+  async getGlLedger(id: string) {
+    const res = await db.select().from(glLedgers).where(eq(glLedgers.id, id));
+    return res[0];
+  }
+  async listGlLedgers() {
+    return await db.select().from(glLedgers);
+  }
   async createGlLedger(l: InsertGlLedger) {
-    const id = randomUUID();
-    return { id, ...l, currencyCode: l.currencyCode ?? "USD", ledgerCategory: l.ledgerCategory ?? "PRIMARY", isActive: l.isActive ?? true, description: l.description ?? null, calendarId: l.calendarId ?? null, coaId: l.coaId ?? null, createdAt: new Date() };
+    const res = await db.insert(glLedgers).values(l).returning();
+    return res[0];
   }
 
-  async listGlSegments(ledgerId: string) { return []; }
+  async listGlSegments(ledgerId: string) {
+    return await db.select().from(glSegments).where(eq(glSegments.ledgerId, ledgerId));
+  }
   async createGlSegment(s: InsertGlSegment) {
-    const id = randomUUID();
-    return { id, ...s, isRequired: s.isRequired ?? true, validationSource: s.validationSource ?? null, createdAt: new Date() };
+    const res = await db.insert(glSegments).values(s).returning();
+    return res[0];
   }
 
-  async listGlSegmentValues(segmentId: string) { return []; }
+  async listGlSegmentValues(segmentId: string) {
+    return await db.select().from(glSegmentValues).where(eq(glSegmentValues.segmentId, segmentId));
+  }
   async createGlSegmentValue(v: InsertGlSegmentValue) {
-    const id = randomUUID();
-    return { id, ...v, description: v.description ?? null, parentValue: v.parentValue ?? null, enabled: v.enabled ?? true, startDate: v.startDate ?? null, endDate: v.endDate ?? null, createdAt: new Date() };
+    const res = await db.insert(glSegmentValues).values(v).returning();
+    return res[0];
   }
 
-  async getGlCodeCombination(id: string) { return undefined; }
+  async getGlCodeCombination(id: string) {
+    const res = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.id, id));
+    return res[0];
+  }
   async createGlCodeCombination(cc: InsertGlCodeCombination) {
-    const id = randomUUID();
-    return { id, ...cc, segment1: cc.segment1 ?? null, segment2: cc.segment2 ?? null, segment3: cc.segment3 ?? null, segment4: cc.segment4 ?? null, segment5: cc.segment5 ?? null, accountType: cc.accountType ?? null, enabledFlag: cc.enabledFlag ?? true, startDateActive: cc.startDateActive ?? null, endDateActive: cc.endDateActive ?? null, summaryFlag: cc.summaryFlag ?? false };
+    const res = await db.insert(glCodeCombinations).values(cc).returning();
+    return res[0];
   }
 
-  async listGlDailyRates(from: string, to: string, date: Date) { return []; }
+  async listGlDailyRates(from: string, to: string, date: Date) {
+    return await db.select().from(glDailyRates)
+      .where(and(eq(glDailyRates.fromCurrency, from), eq(glDailyRates.toCurrency, to)));
+  }
   async createGlDailyRate(r: InsertGlDailyRate) {
-    const id = randomUUID();
-    return { id, ...r, conversionType: r.conversionType ?? "Spot", createdAt: new Date() };
+    const res = await db.insert(glDailyRates).values(r).returning();
+    return res[0];
   }
 
   // AP Module Implementation
@@ -1587,4 +1663,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
