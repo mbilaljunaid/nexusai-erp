@@ -33,6 +33,12 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Setup Platform Auth (email/password authentication)
+  await setupPlatformAuth(app);
+
+  // Seed admin user for Quick Login
+  await seedAdminUser();
+
   // Oracle  // Finance & ERP
   app.use("/api/finance", financeRouter);
   app.use("/api/ap", apRouter);
@@ -46,11 +52,6 @@ export async function registerRoutes(
   app.use("/api", aiRouter);
   await aiService.initialize();
 
-  // Setup Platform Auth (email/password authentication)
-  await setupPlatformAuth(app);
-
-  // Seed admin user for Quick Login
-  await seedAdminUser();
 
   // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {

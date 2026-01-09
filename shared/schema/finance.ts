@@ -59,6 +59,7 @@ export const glJournals = pgTable("gl_journals_v2", {
     status: varchar("status").default("Draft"), // Draft, Processing, Posted
     approvalStatus: varchar("approval_status").default("Not Required"), // Not Required, Required, Pending, Approved, Rejected
     reversalJournalId: varchar("reversal_journal_id"), // Link to the reversal entry
+    autoReverse: boolean("auto_reverse").default(false), // Auto-reverse in next period
     postedDate: timestamp("posted_date"),
     createdBy: varchar("created_by"),
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -616,3 +617,29 @@ export const insertGlBudgetControlRuleSchema = createInsertSchema(glBudgetContro
 export type GlBudget = typeof glBudgets.$inferSelect;
 export type GlBudgetBalance = typeof glBudgetBalances.$inferSelect;
 export type GlBudgetControlRule = typeof glBudgetControlRules.$inferSelect;
+
+// 20. Recurring Journals (Automation)
+export const glRecurringJournals = pgTable("gl_recurring_journals", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    ledgerId: varchar("ledger_id").notNull(),
+    currencyCode: varchar("currency_code").default("USD"),
+
+    // Schedule
+    scheduleType: varchar("schedule_type").notNull(), // Monthly, Quarterly, One-Time
+    nextRunDate: timestamp("next_run_date").notNull(),
+    lastRunDate: timestamp("last_run_date"),
+
+    status: varchar("status").default("Active"), // Active, Inactive
+
+    // Template (Simplified JSON storage for lines)
+    // { "lines": [ { "accountId": "...", "debit": "100", ... } ] }
+    journalTemplate: jsonb("journal_template").notNull(),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlRecurringJournalSchema = createInsertSchema(glRecurringJournals);
+export type InsertGlRecurringJournal = z.infer<typeof insertGlRecurringJournalSchema>;
+export type GlRecurringJournal = typeof glRecurringJournals.$inferSelect;

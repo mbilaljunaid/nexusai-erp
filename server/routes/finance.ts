@@ -7,6 +7,11 @@ import { eq } from "drizzle-orm";
 
 const router = Router();
 
+router.use((req, res, next) => {
+    console.log(`[FinanceRouter] ${req.method} ${req.path}`);
+    next();
+});
+
 // GL Accounts
 router.get("/gl/accounts", async (req, res) => {
     const accounts = await financeService.listAccounts();
@@ -60,14 +65,14 @@ router.get("/gl/journals/:id/lines", async (req, res) => {
 
 router.post("/gl/journals", async (req, res) => {
     // Expects { journal: ..., lines: [...] }
-    const schema = z.object({
-        journal: insertGlJournalSchema,
-        lines: z.array(insertGlJournalLineSchema.omit({ journalId: true }))
-    });
-
-    const { journal: journalData, lines: linesData } = schema.parse(req.body);
-
     try {
+        const schema = z.object({
+            journal: insertGlJournalSchema,
+            lines: z.array(insertGlJournalLineSchema.omit({ journalId: true }))
+        });
+
+        const { journal: journalData, lines: linesData } = schema.parse(req.body);
+
         const result = await financeService.createJournal(journalData, linesData);
         res.json(result);
     } catch (e: any) {
@@ -208,6 +213,82 @@ router.post("/gl/allocations/:id/run", async (req, res) => {
         res.json(result);
     } catch (error: any) {
         console.error("Allocation Run Error:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Advanced GL Routes (Phase 4)
+router.post("/gl/revaluations/run", async (req, res) => {
+    try {
+        const { ledgerId, periodName, currencyCode } = req.body;
+        const result = await financeService.runRevaluation(ledgerId, periodName, currencyCode);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/gl/recurring-journals", async (req, res) => {
+    try {
+        const payload = { ...req.body };
+        if (payload.nextRunDate && typeof payload.nextRunDate === 'string') {
+            payload.nextRunDate = new Date(payload.nextRunDate);
+        }
+
+        const result = await financeService.createRecurringJournal(payload);
+        res.status(201).json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/gl/recurring-journals", async (req, res) => {
+    try {
+        const ledgerId = (req.query.ledgerId as string) || "primary-ledger-001";
+        const result = await financeService.listRecurringJournals(ledgerId);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/gl/recurring-journals/process", async (req, res) => {
+    try {
+        const { ledgerId } = req.body;
+        const result = await financeService.processRecurringJournals(ledgerId);
+        res.json({ processed: result });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/gl/journals/:id/toggle-auto-reverse", async (req, res) => {
+    try {
+        const result = await financeService.toggleAutoReverse(req.params.id);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/gl/auto-reversals/process", async (req, res) => {
+    try {
+        const { ledgerId, periodName } = req.body;
+        const result = await financeService.processAutoReversals(ledgerId, periodName); // Reverse journals INTO this period
+        res.json({ reversedJournalIds: result });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/gl/reconciliation/:ledgerId", async (req, res) => {
+    try {
+        const { ledgerId } = req.params;
+        const periodName = req.query.periodName as string;
+        if (!periodName) return res.status(400).json({ error: "periodName required" });
+        const result = await financeService.getReconciliationSummary(ledgerId, periodName);
+        res.json(result);
+    } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 });

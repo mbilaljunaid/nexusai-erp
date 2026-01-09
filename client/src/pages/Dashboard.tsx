@@ -38,6 +38,8 @@ import {
   Building,
   UserCheck,
   ClipboardList,
+  Archive,
+  PieChart,
 } from "lucide-react";
 
 interface AdminStats {
@@ -99,14 +101,14 @@ function AdminDashboard() {
     { title: "System Config", url: "/system-configuration", icon: Settings, color: "text-gray-600" },
     { title: "Tenant Admin", url: "/tenant-admin", icon: Building, color: "text-purple-600" },
     { title: "Security", url: "/security-settings", icon: Shield, color: "text-red-600" },
-    { title: "API Gateway", url: "/api-management", icon: Code, color: "text-green-600" },
+    { title: "Period Close", url: "/gl/period-close", icon: Archive, color: "text-emerald-600" },
     { title: "Audit Logs", url: "/audit-logs", icon: FileText, color: "text-orange-600" },
   ];
 
   return (
     <div className="space-y-8 p-6">
       <OnboardingChecklist />
-      
+
       <Breadcrumb items={[]} />
 
       <div className="space-y-2">
@@ -264,15 +266,15 @@ function EditorDashboard() {
 
   const quickLinks = [
     { title: "Processes", url: "/process-hub", icon: Workflow, color: "text-blue-600" },
-    { title: "Reports", url: "/reports", icon: FileText, color: "text-green-600" },
-    { title: "Analytics", url: "/business-intelligence", icon: BarChart3, color: "text-purple-600" },
+    { title: "Period Close", url: "/gl/period-close", icon: Archive, color: "text-emerald-600" },
+    { title: "GL Reports", url: "/gl/reports", icon: FileText, color: "text-green-600" },
     { title: "Team", url: "/hr/employees", icon: Users, color: "text-orange-600" },
   ];
 
   return (
     <div className="space-y-8 p-6">
       <OnboardingChecklist />
-      
+
       <Breadcrumb items={[]} />
 
       <div className="space-y-2">
@@ -392,7 +394,7 @@ function ViewerDashboard() {
   return (
     <div className="space-y-8 p-6">
       <OnboardingChecklist />
-      
+
       <Breadcrumb items={[]} />
 
       <div className="space-y-2">

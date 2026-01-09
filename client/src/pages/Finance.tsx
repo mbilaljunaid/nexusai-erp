@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { openFormInNewWindow } from "@/lib/formUtils";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard, BookOpen, ArrowRightLeft, RefreshCw } from "lucide-react";
+import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard, BookOpen, ArrowRightLeft, RefreshCw, Shield, Archive } from "lucide-react";
 
 export default function Finance() {
   const [activeNav, setActiveNav] = useState("overview");
@@ -26,9 +26,11 @@ export default function Finance() {
     { id: "reporting", label: "Reporting", icon: BarChart3, color: "text-teal-500", formId: "gl_reports" },
     { id: "intercompany", label: "Intercompany", icon: ArrowRightLeft, color: "text-pink-500", formId: "gl_intercompany" },
     { id: "revaluation", label: "Revaluation", icon: RefreshCw, color: "text-amber-500", formId: "gl_revaluation" },
+    { id: "budgets", label: "Budget Manager", icon: PieChart, color: "text-purple-500", formId: "gl_budgets" },
+    { id: "cvr", label: "CVR Manager", icon: Shield, color: "text-red-500", formId: "gl_cvr" },
+    { id: "period_close", label: "Period Close", icon: Archive, color: "text-emerald-500", formId: "gl_period_close" },
     { id: "invoices", label: "Invoices", icon: FileText, color: "text-green-500", formId: "invoices" },
     { id: "expenses", label: "Expenses", icon: DollarSign, color: "text-orange-500", formId: "expenses" },
-    { id: "budgets", label: "Budgets", icon: PieChart, color: "text-purple-500", formId: "budgets" },
     { id: "payments", label: "Payments", icon: CreditCard, color: "text-cyan-500", formId: "payments" },
   ];
 
@@ -49,6 +51,18 @@ export default function Finance() {
     }
     if (formId === "gl_revaluation") {
       setLocation("/gl/revaluation");
+      return;
+    }
+    if (formId === "gl_budgets") {
+      setLocation("/gl/budgets");
+      return;
+    }
+    if (formId === "gl_cvr") {
+      setLocation("/gl/cvr");
+      return;
+    }
+    if (formId === "gl_period_close") {
+      setLocation("/gl/period-close");
       return;
     }
 
