@@ -1719,9 +1719,11 @@ export class MemStorage implements IStorage {
     return db.select().from(glCodeCombinations).where(eq(glCodeCombinations.ledgerId, ledgerId));
   }
 
-  async getOrCreateCodeCombination(ledgerId: string, segments: string[]): Promise<GlCodeCombination> {
+  async getOrCreateCodeCombination(ledgerId: string, segments: string[] | string): Promise<GlCodeCombination> {
+    const segmentArray = Array.isArray(segments) ? segments : segments.split("-");
+
     // 1. Check if exists
-    const code = segments.join("-");
+    const code = segmentArray.join("-");
     const existing = await db.select().from(glCodeCombinations)
       .where(and(eq(glCodeCombinations.ledgerId, ledgerId), eq(glCodeCombinations.code, code)));
 
@@ -1730,11 +1732,11 @@ export class MemStorage implements IStorage {
     // 2. Create if not
     const [newCc] = await db.insert(glCodeCombinations).values({
       ledgerId,
-      segment1: segments[0],
-      segment2: segments[1],
-      segment3: segments[2],
-      segment4: segments[3],
-      segment5: segments[4],
+      segment1: segmentArray[0] || "",
+      segment2: segmentArray[1] || "",
+      segment3: segmentArray[2] || "",
+      segment4: segmentArray[3] || "",
+      segment5: segmentArray[4] || "",
       code: code,
       enabledFlag: true,
       startDateActive: new Date(),

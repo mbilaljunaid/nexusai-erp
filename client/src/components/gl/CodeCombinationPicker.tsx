@@ -7,6 +7,13 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Grid, Search, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -21,7 +28,7 @@ export function CodeCombinationPicker({ value, onChange, ledgerId = "primary-led
     const [segments, setSegments] = useState<string[]>([]);
 
     // Fetch Structure
-    const { data: structure, isLoading } = useQuery({
+    const { data: structure, isLoading } = useQuery<any[]>({
         queryKey: [`/api/gl/ledgers/${ledgerId}/structure`],
         enabled: open // Fetch when opened
     });
@@ -88,18 +95,19 @@ export function CodeCombinationPicker({ value, onChange, ledgerId = "primary-led
                             {structure?.map((seg: any, idx: number) => (
                                 <div key={seg.name} className="space-y-1">
                                     <Label className="text-xs text-muted-foreground">{seg.name}</Label>
-                                    <select
-                                        value={segments[idx] || ""}
-                                        onChange={(e) => handleSegmentChange(idx, e.target.value)}
-                                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                                    >
-                                        <option value="">Select...</option>
-                                        {seg.options.map((opt: any) => (
-                                            <option key={opt.val} value={opt.val}>
-                                                {opt.val}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <Select value={segments[idx] || ""} onValueChange={(val) => handleSegmentChange(idx, val)}>
+                                        <SelectTrigger aria-label={`Select ${seg.name}`} className="h-9 w-full">
+                                            <SelectValue placeholder="Select..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="">Select...</SelectItem>
+                                            {seg.options.map((opt: any) => (
+                                                <SelectItem key={opt.val} value={opt.val}>
+                                                    {opt.val}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <div className="text-[10px] text-gray-400 truncate">
                                         {seg.options.find((o: any) => o.val === segments[idx])?.desc || "Select a value"}
                                     </div>

@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Plus } from "lucide-react";
+import { AnomaliesWidget } from "@/components/gl/AnomaliesWidget";
 
 export default function JournalEntries() {
   const entries = [
@@ -29,25 +30,32 @@ export default function JournalEntries() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-3 gap-3">
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Total Entries</p>
-            <p className="text-2xl font-bold">{entries.length}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Pending Approval</p>
-            <p className="text-2xl font-bold text-yellow-600">{entries.filter(e => e.status === "pending").length}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Total Posted</p>
-            <p className="text-2xl font-bold">${entries.length * 10000}</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {/* Metric Cards */}
+        <div className="md:col-span-2 grid grid-cols-3 gap-3">
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Total Entries</p>
+              <p className="text-2xl font-bold">{entries.length}</p>
+            </CardContent>
+          </Card>
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Pending Approval</p>
+              <p className="text-2xl font-bold text-yellow-600">{entries.filter(e => e.status === "pending").length}</p>
+            </CardContent>
+          </Card>
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Total Posted</p>
+              <p className="text-2xl font-bold">${entries.length * 10000}</p>
+            </CardContent>
+          </Card>
+        </div>
+        {/* Anomaly Detection Widget (Takes 1/3 space) */}
+        <div className="md:col-span-1 row-span-2">
+          <AnomaliesWidget />
+        </div>
       </div>
 
       <Card>

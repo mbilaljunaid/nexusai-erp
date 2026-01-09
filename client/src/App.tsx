@@ -312,6 +312,7 @@ const IntegrationStatus = lazy(() => import("@/pages/IntegrationStatus"));
 const JournalEntries = lazy(() => import("@/pages/JournalEntries"));
 const JournalEntry = lazy(() => import("./pages/gl/JournalEntry"));
 const FinancialReports = lazy(() => import("./pages/gl/FinancialReports"));
+const AuditLogsPage = lazy(() => import("@/pages/gl/AuditLogs"));
 const IntercompanyRules = lazy(() => import("@/pages/gl/IntercompanyRules"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
@@ -527,6 +528,9 @@ const AutomotiveMobileApp = lazy(() => import("@/pages/AutomotiveMobileApp"));
 const AutomotiveQualityAnalytics = lazy(() => import("@/pages/AutomotiveQualityAnalytics"));
 const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
 
+import VarianceAnalysis from "@/pages/gl/VarianceAnalysis"; // If exists, or just use widget
+import AuditLogsPage from "@/pages/gl/AuditLogs";
+
 function Router() {
   return (
     <Switch>
@@ -569,6 +573,7 @@ function Router() {
       <Route path="/gl/journals/new" component={JournalEntry} />
       <Route path="/gl/journals" component={JournalEntries} />
       <Route path="/gl/reports" component={FinancialReports} />
+      <Route path="/gl/audit" component={AuditLogsPage} />
       <Route path="/finance/:page?" component={Finance} />
       <Route path="/hr/:page?" component={HR} />
       <Route path="/projects/:page?" component={Projects} />
@@ -731,7 +736,7 @@ function AIChatWidgetWrapper() {
   if (location.includes("/accounts-payable")) context = "ap";
   else if (location.includes("/accounts-receivable")) context = "ar";
   else if (location.includes("/cash-management")) context = "cash";
-  else if (location.includes("/finance")) context = "finance";
+  else if (location.includes("/finance") || location.includes("/gl")) context = "finance";
   else if (location.includes("/crm")) context = "crm";
   else if (location.includes("/hr")) context = "hr";
   else if (location.includes("/projects")) context = "projects";

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,8 +14,21 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Plus, Trash2, Save, Send } from "lucide-react";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+    SheetFooter,
+    SheetClose
+} from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Plus, Trash2, Save, Send, MoreHorizontal, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
+import { cn } from "@/lib/utils";
 
 interface JournalLine {
     id: string; // temp id for UI
@@ -31,14 +44,35 @@ export default function JournalEntry() {
         description: "",
         currencyCode: "USD",
         periodId: "",
+        category: "Manual"
     });
 
     const [lines, setLines] = useState<JournalLine[]>([
-        { id: "1", accountId: "", debit: "0", credit: "0", description: "" }
+        { id: "1", accountId: "", debit: "0", credit: "0", description: "" },
+        { id: "2", accountId: "", debit: "0", credit: "0", description: "" }
     ]);
 
+    const [activeLineId, setActiveLineId] = useState<string | null>(null);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+    // Derived State (Real-time Balancing)
+    const totals = useMemo(() => {
+        const totalDebit = lines.reduce((sum, line) => sum + (parseFloat(line.debit) || 0), 0);
+        const totalCredit = lines.reduce((sum, line) => sum + (parseFloat(line.credit) || 0), 0);
+        return {
+            debit: totalDebit,
+            credit: totalCredit,
+            variance: totalDebit - totalCredit,
+            isBalanced: Math.abs(totalDebit - totalCredit) < 0.01
+        };
+    }, [lines]);
+
     const addLine = () => {
-        setLines([...lines, { id: Math.random().toString(), accountId: "", debit: "0", credit: "0", description: "" }]);
+        const newLine = { id: Math.random().toString(), accountId: "", debit: "0", credit: "0", description: "" };
+        setLines([...lines, newLine]);
+        // Open sheet for the new line to encourage detail entry
+        setActiveLineId(newLine.id);
+        setIsSheetOpen(true);
     };
 
     const updateLine = (id: string, field: keyof JournalLine, value: string) => {
@@ -46,71 +80,135 @@ export default function JournalEntry() {
     };
 
     const removeLine = (id: string) => {
+        if (lines.length <= 1) return;
         setLines(lines.filter(l => l.id !== id));
     };
 
+    const handleEditLine = (line: JournalLine) => {
+        setActiveLineId(line.id);
+        setIsSheetOpen(true);
+    };
+
     const createMutation = useMutation({
-        mutationFn: async () => {
-            // 1. Create Journal
+        mutationFn: async (status: 'Draft' | 'Posted') => {
             const res = await apiRequest("POST", "/api/gl/journals", {
                 description: header.description,
                 currencyCode: header.currencyCode,
-                // periodId: header.periodId || null, // Optional for draft
-                source: "Manual",
+                source: header.category,
+                status,
                 lines: lines.map(l => ({
-                    accountId: l.accountId, // Need valid UUIDs here in real app
-                    // For now, assuming user types account ID directly or we map it.
-                    // In prod: Logic to map "100-200" to UUID.
+                    accountId: l.accountId,
                     enteredDebit: l.debit,
                     enteredCredit: l.credit,
                     description: l.description,
                     currencyCode: header.currencyCode
                 }))
             });
-            const data = await res.json();
-            return data;
+            return await res.json();
         },
         onSuccess: (data) => {
-            toast({ title: "Journal Created", description: "Journal saved as Draft." });
-            // Optionally trigger Post
+            toast({
+                title: "Journal Saved",
+                description: `Journal ${data.journalNumber} created successfully.`,
+            });
         },
         onError: (err: any) => {
             toast({ title: "Error", description: err.message, variant: "destructive" });
         }
     });
 
+    const activeLine = lines.find(l => l.id === activeLineId);
+
     return (
-        <div className="p-8 space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold tracking-tight">Create Journal Entry</h1>
-                <div className="space-x-2">
-                    <Button variant="outline" onClick={() => createMutation.mutate()}>
+        <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500">
+            {/* Top Header Section */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
+                        New Journal Entry
+                    </h1>
+                    <p className="text-muted-foreground mt-1 text-sm">
+                        Create manual journal entries for the {header.currencyCode} Ledger.
+                    </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" onClick={() => createMutation.mutate('Draft')} disabled={createMutation.isPending}>
                         <Save className="mr-2 h-4 w-4" /> Save Draft
                     </Button>
-                    <Button onClick={() => { }}>
-                        <Send className="mr-2 h-4 w-4" /> Post
+                    <Button
+                        onClick={() => createMutation.mutate('Posted')}
+                        disabled={!totals.isBalanced || createMutation.isPending}
+                        className={cn(totals.isBalanced ? "bg-green-600 hover:bg-green-700" : "opacity-50")}
+                    >
+                        <Send className="mr-2 h-4 w-4" /> Post Journal
                     </Button>
                 </div>
             </div>
 
-            <Card>
+            {/* Metric Cards (Real-time Balance) */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="shadow-sm border-l-4 border-l-blue-500">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Debits</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{totals.debit.toLocaleString('en-US', { style: 'currency', currency: header.currencyCode })}</div>
+                    </CardContent>
+                </Card>
+                <Card className="shadow-sm border-l-4 border-l-blue-500">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Credits</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{totals.credit.toLocaleString('en-US', { style: 'currency', currency: header.currencyCode })}</div>
+                    </CardContent>
+                </Card>
+                <Card className={cn("shadow-sm border-l-4", totals.isBalanced ? "border-l-green-500 bg-green-50/50" : "border-l-red-500 bg-red-50/50")}>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Variance</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className={cn("text-2xl font-bold flex items-center gap-2", totals.isBalanced ? "text-green-700" : "text-red-700")}>
+                            {totals.variance.toLocaleString('en-US', { style: 'currency', currency: header.currencyCode })}
+                            {totals.isBalanced ? <CheckCircle2 className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="shadow-sm border-l-4 border-l-purple-500">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Period Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">Open</Badge>
+                            <span className="text-xs text-muted-foreground">Jan-2026</span>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Main Form Area */}
+            <Card className="border-t-4 border-t-primary/20 shadow-md">
                 <CardHeader>
-                    <CardTitle>Batch Header</CardTitle>
+                    <CardTitle className="text-lg">Batch Header</CardTitle>
+                    <CardDescription>Enter high-level details for this journal batch.</CardDescription>
                 </CardHeader>
-                <CardContent className="grid grid-cols-3 gap-4">
+                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                        <Label>Journal Name / Description</Label>
+                        <Label>Description</Label>
                         <Input
                             value={header.description}
                             onChange={(e) => setHeader({ ...header, description: e.target.value })}
-                            placeholder="e.g. Monthly Accruals"
+                            placeholder="e.g. Monthly Accruals for IT Dept"
+                            className="bg-muted/30 focus:bg-background transition-colors"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label>Currency</Label>
+                        <Label>Category / Source</Label>
                         <Input
-                            value={header.currencyCode}
-                            onChange={(e) => setHeader({ ...header, currencyCode: e.target.value })}
+                            value={header.category}
+                            onChange={(e) => setHeader({ ...header, category: e.target.value })}
+                            className="bg-muted/30"
                         />
                     </div>
                     <div className="space-y-2">
@@ -118,31 +216,40 @@ export default function JournalEntry() {
                         <Input
                             value={header.periodId}
                             onChange={(e) => setHeader({ ...header, periodId: e.target.value })}
-                            placeholder="e.g. Jan-2026"
+                            placeholder="Jan-2026"
+                            className="bg-muted/30"
                         />
                     </div>
                 </CardContent>
             </Card>
 
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Journal Lines</CardTitle>
-                    <Button size="sm" onClick={addLine}><Plus className="h-4 w-4 mr-2" /> Add Line</Button>
+            {/* Journal Lines Grid */}
+            <Card className="shadow-lg border-none ring-1 ring-border/50">
+                <CardHeader className="flex flex-row items-center justify-between bg-muted/20 pb-4">
+                    <div>
+                        <CardTitle className="text-lg">Journal Lines</CardTitle>
+                        <CardDescription>Enter the debits and credits. Use the action menu for details.</CardDescription>
+                    </div>
+                    <Button onClick={addLine} size="sm" className="bg-primary shadow-sm hover:shadow-md transition-all">
+                        <Plus className="h-4 w-4 mr-2" /> Add Line
+                    </Button>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     <Table>
                         <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[300px]">Account</TableHead>
-                                <TableHead>Description</TableHead>
-                                <TableHead className="w-[150px]">Debit ({header.currencyCode})</TableHead>
-                                <TableHead className="w-[150px]">Credit ({header.currencyCode})</TableHead>
-                                <TableHead className="w-[50px]"></TableHead>
+                            <TableRow className="hover:bg-transparent">
+                                <TableHead className="w-[50px] text-center">#</TableHead>
+                                <TableHead className="w-[350px]">Account</TableHead>
+                                <TableHead className="min-w-[200px]">Description</TableHead>
+                                <TableHead className="w-[180px] text-right">Debit</TableHead>
+                                <TableHead className="w-[180px] text-right">Credit</TableHead>
+                                <TableHead className="w-[80px]"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {lines.map((line) => (
-                                <TableRow key={line.id}>
+                            {lines.map((line, index) => (
+                                <TableRow key={line.id} className="group transition-colors hover:bg-muted/30">
+                                    <TableCell className="text-center font-mono text-xs text-muted-foreground">{index + 10}</TableCell>
                                     <TableCell>
                                         <CodeCombinationPicker
                                             value={line.accountId}
@@ -153,6 +260,8 @@ export default function JournalEntry() {
                                         <Input
                                             value={line.description}
                                             onChange={(e) => updateLine(line.id, 'description', e.target.value)}
+                                            className="border-none shadow-none focus-visible:ring-0 bg-transparent px-0 placeholder:text-muted-foreground/50"
+                                            placeholder="Enter line description..."
                                         />
                                     </TableCell>
                                     <TableCell>
@@ -160,6 +269,8 @@ export default function JournalEntry() {
                                             type="number"
                                             value={line.debit}
                                             onChange={(e) => updateLine(line.id, 'debit', e.target.value)}
+                                            className="text-right border-none shadow-none focus-visible:ring-0 bg-transparent px-0 font-mono"
+                                            onFocus={(e) => e.target.select()}
                                         />
                                     </TableCell>
                                     <TableCell>
@@ -167,12 +278,19 @@ export default function JournalEntry() {
                                             type="number"
                                             value={line.credit}
                                             onChange={(e) => updateLine(line.id, 'credit', e.target.value)}
+                                            className="text-right border-none shadow-none focus-visible:ring-0 bg-transparent px-0 font-mono"
+                                            onFocus={(e) => e.target.select()}
                                         />
                                     </TableCell>
-                                    <TableCell>
-                                        <Button variant="ghost" size="icon" onClick={() => removeLine(line.id)}>
-                                            <Trash2 className="h-4 w-4 text-red-500" />
-                                        </Button>
+                                    <TableCell className="text-right">
+                                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Button variant="ghost" size="icon" onClick={() => handleEditLine(line)}>
+                                                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => removeLine(line.id)}>
+                                                <Trash2 className="h-4 w-4 text-red-500/70 hover:text-red-600" />
+                                            </Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -181,6 +299,90 @@ export default function JournalEntry() {
                 </CardContent>
             </Card>
 
+            {/* Line Detail Side Sheet */}
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <SheetContent className="sm:max-w-[540px] flex flex-col h-full">
+                    <SheetHeader className="pb-6 border-b">
+                        <SheetTitle className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
+                                {lines.findIndex(l => l.id === activeLineId) + 10}
+                            </div>
+                            Line Details
+                        </SheetTitle>
+                        <SheetDescription>
+                            Review and edit granular details for this journal line.
+                        </SheetDescription>
+                    </SheetHeader>
+
+                    {activeLine && (
+                        <div className="flex-1 overflow-y-auto py-6 space-y-6 pr-2">
+                            {/* Account Details Block */}
+                            <div className="space-y-4 p-4 rounded-lg bg-muted/40 border">
+                                <h4 className="text-sm font-semibold flex items-center gap-2">
+                                    <Badge variant="outline" className="h-6">Account</Badge>
+                                    Technical & Segment Information
+                                </h4>
+                                <div className="space-y-2">
+                                    <Label>Account Combination</Label>
+                                    <CodeCombinationPicker
+                                        value={activeLine.accountId}
+                                        onChange={(val) => updateLine(activeLine.id, 'accountId', val)}
+                                    />
+                                </div>
+                            </div>
+
+                            <Separator />
+
+                            {/* Amounts Block */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Debit ({header.currencyCode})</Label>
+                                    <Input
+                                        type="number"
+                                        value={activeLine.debit}
+                                        onChange={(e) => updateLine(activeLine.id, 'debit', e.target.value)}
+                                        className="font-mono text-right"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Credit ({header.currencyCode})</Label>
+                                    <Input
+                                        type="number"
+                                        value={activeLine.credit}
+                                        onChange={(e) => updateLine(activeLine.id, 'credit', e.target.value)}
+                                        className="font-mono text-right"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Additional Info */}
+                            <div className="space-y-2">
+                                <Label>Line Description</Label>
+                                <Input
+                                    value={activeLine.description}
+                                    onChange={(e) => updateLine(activeLine.id, 'description', e.target.value)}
+                                    placeholder="Explanation for audit trail..."
+                                />
+                            </div>
+
+                            {/* Placeholder for Attachments/DFF */}
+                            <div className="p-4 rounded-lg border border-dashed text-center text-sm text-muted-foreground">
+                                No attachments linked to this line.
+                            </div>
+
+                        </div>
+                    )}
+
+                    <SheetFooter className="mt-auto pt-6 border-t">
+                        <SheetClose asChild>
+                            <Button className="w-full">
+                                <CheckCircle2 className="mr-2 h-4 w-4" /> Save & Close Line
+                            </Button>
+                        </SheetClose>
+                    </SheetFooter>
+                </SheetContent>
+            </Sheet>
         </div>
     );
 }
+

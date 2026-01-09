@@ -120,4 +120,40 @@ router.post("/gl/journals/:id/reverse", async (req, res) => {
     }
 });
 
+// ================= AGENTIC AI ROUTES (CHUNK 4) =================
+
+// Anomaly Detection
+router.get("/gl/anomalies", async (req, res) => {
+    try {
+        const anomalies = await financeService.detectAnomalies();
+        res.json(anomalies);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Variance Analysis
+router.get("/gl/variance-analysis", async (req, res) => {
+    try {
+        const { periodId, benchmarkPeriodId } = req.query;
+        if (!periodId || !benchmarkPeriodId) {
+            return res.status(400).json({ message: "periodId and benchmarkPeriodId are required" });
+        }
+        const variances = await financeService.explainVariance(periodId as string, benchmarkPeriodId as string);
+        res.json(variances);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Audit Logs
+router.get("/gl/audit-logs", async (req, res) => {
+    try {
+        const logs = await financeService.listAuditLogs();
+        res.json(logs);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 export default router;

@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, timestamp, numeric, boolean, integer, serial } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, numeric, boolean, integer, serial, jsonb } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -63,7 +63,7 @@ export const glJournals = pgTable("gl_journals_v2", {
     periodId: varchar("period_id"), // Linked to glPeriods
     description: text("description"),
     source: varchar("source").default("Manual"), // Manual, AP, AR, etc.
-    status: varchar("status").default("Draft"), // Draft, Posted
+    status: varchar("status").default("Draft"), // Draft, Processing, Posted
     approvalStatus: varchar("approval_status").default("Not Required"), // Not Required, Required, Pending, Approved, Rejected
     reversalJournalId: varchar("reversal_journal_id"), // Link to the reversal entry
     postedDate: timestamp("posted_date"),
@@ -77,7 +77,7 @@ export const insertGlJournalSchema = createInsertSchema(glJournals).extend({
     periodId: z.string().optional(),
     description: z.string().optional(),
     source: z.string().optional(),
-    status: z.enum(["Draft", "Posted"]).optional(),
+    status: z.enum(["Draft", "Processing", "Posted"]).optional(),
     approvalStatus: z.enum(["Not Required", "Required", "Pending", "Approved", "Rejected"]).optional(),
     reversalJournalId: z.string().optional().nullable(),
     postedDate: z.date().optional().nullable(),
@@ -470,3 +470,88 @@ export type GlReportRow = typeof glReportRows.$inferSelect;
 export const insertGlReportColumnSchema = createInsertSchema(glReportColumns);
 export type InsertGlReportColumn = z.infer<typeof insertGlReportColumnSchema>;
 export type GlReportColumn = typeof glReportColumns.$inferSelect;
+
+// 15. Mass Allocations (Phase 3)
+export const glAllocations = pgTable("gl_allocations", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    ledgerId: varchar("ledger_id").notNull(),
+
+    // Formula: A * B / C
+    // Pool (A): Source Cost Pool (e.g., Rent Expense)
+    poolAccountFilter: varchar("pool_account_filter").notNull(),
+
+    // Basis (B): Driver (e.g., Headcount or SqFt or Revenue)
+    basisAccountFilter: varchar("basis_account_filter").notNull(),
+
+    // Target (C? No, Target is where result goes)
+    // Actually Formula is: Target = Pool * (Basis / Total Basis)
+
+    targetAccountPattern: varchar("target_account_pattern").notNull(), // e.g. "Segment1=Basis.Segment1, Segment2=Pool.Segment2..."
+    offsetAccount: varchar("offset_account").notNull(), // Where to credit the pool
+
+    enabled: boolean("enabled").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlAllocationSchema = createInsertSchema(glAllocations);
+export type InsertGlAllocation = z.infer<typeof insertGlAllocationSchema>;
+export type GlAllocation = typeof glAllocations.$inferSelect;
+
+// 16. Security: Data Access Sets
+export const glDataAccessSets = pgTable("gl_data_access_sets", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(),
+    description: text("description"),
+    ledgerId: varchar("ledger_id").notNull(), // The primary ledger this set controls
+
+    // Access Controls (Simplified for MVP)
+    // "Read Only" or "Read/Write"
+    accessLevel: varchar("access_level").default("Read/Write"),
+
+    // Segment Security (JSON for flexibility)
+    // e.g. { "segment1": ["100", "200"], "segment2": "ALL" }
+    segmentSecurity: jsonb("segment_security"),
+
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlDataAccessSetSchema = createInsertSchema(glDataAccessSets);
+export type InsertGlDataAccessSet = z.infer<typeof insertGlDataAccessSetSchema>;
+export type GlDataAccessSet = typeof glDataAccessSets.$inferSelect;
+
+export const glDataAccessSetAssignments = pgTable("gl_data_access_set_assignments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id").notNull(),
+    dataAccessSetId: varchar("data_access_set_id").notNull(),
+    assignedBy: varchar("assigned_by"),
+    assignedAt: timestamp("assigned_at").default(sql`now()`),
+});
+
+export const insertGlDataAccessSetAssignmentSchema = createInsertSchema(glDataAccessSetAssignments);
+export type InsertGlDataAccessSetAssignment = z.infer<typeof insertGlDataAccessSetAssignmentSchema>;
+export type GlDataAccessSetAssignment = typeof glDataAccessSetAssignments.$inferSelect;
+
+// 17. Audit: Immutable Action Logs
+export const glAuditLogs = pgTable("gl_audit_logs", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    action: varchar("action").notNull(), // e.g. "JOURNAL_POST", "PERIOD_CLOSE"
+    entity: varchar("entity").notNull(), // e.g. "GlJournal", "GlPeriod"
+    entityId: varchar("entity_id").notNull(),
+
+    // Who did it?
+    userId: varchar("user_id").notNull(),
+
+    // Context
+    details: jsonb("details"), // generic payload
+    beforeState: jsonb("before_state"), // Snapshot before
+    afterState: jsonb("after_state"), // Snapshot after
+
+    timestamp: timestamp("timestamp").default(sql`now()`).notNull(),
+});
+
+export const insertGlAuditLogSchema = createInsertSchema(glAuditLogs);
+export type InsertGlAuditLog = z.infer<typeof insertGlAuditLogSchema>;
+export type GlAuditLog = typeof glAuditLogs.$inferSelect;
