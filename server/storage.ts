@@ -114,8 +114,8 @@ import {
   type FaDepreciation, type InsertFaDepreciation,
   type FaCategory, type InsertFaCategory,
   // GL
-  glLedgers, glSegments, glSegmentValues, glCodeCombinations, glDailyRates, glBalances, glJournals, glJournalLines, glJournalBatches, glJournalApprovals, glIntercompanyRules, glRevaluations, glRevaluationEntries, glExchangeRates, glPeriods, glReportDefinitions, glReportRows, glReportColumns,
-  type GlLedger, type InsertGlLedger, type GlSegment, type InsertGlSegment, type GlSegmentValue, type InsertGlSegmentValue, type GlCodeCombination, type InsertGlCodeCombination, type GlDailyRate, type InsertGlDailyRate, type GlBalance, type InsertGlBalance, type GlJournal, type InsertGlJournal, type GlJournalLine, type InsertGlJournalLine, type GlJournalBatch, type InsertGlJournalBatch, type GlJournalApproval, type InsertGlJournalApproval, type GlIntercompanyRule, type InsertGlIntercompanyRule, type GlRevaluation, type InsertGlRevaluation, type GlRevaluationEntry, type InsertGlRevaluationEntry, type GlExchangeRate, type InsertGlExchangeRate, type GlPeriod, type InsertGlPeriod, type GlReportDefinition, type InsertGlReportDefinition, type GlReportRow, type InsertGlReportRow, type GlReportColumn, type InsertGlReportColumn,
+  glLedgers, glSegments, glSegmentValues, glCodeCombinations, glDailyRates, glBalances, glJournals, glJournalLines, glJournalBatches, glJournalApprovals, glIntercompanyRules, glRevaluations, glRevaluationEntries, glExchangeRates, glPeriods, glReportDefinitions, glReportRows, glReportColumns, glCrossValidationRules,
+  type GlLedger, type InsertGlLedger, type GlSegment, type InsertGlSegment, type GlSegmentValue, type InsertGlSegmentValue, type GlCodeCombination, type InsertGlCodeCombination, type GlDailyRate, type InsertGlDailyRate, type GlBalance, type InsertGlBalance, type GlJournal, type InsertGlJournal, type GlJournalLine, type InsertGlJournalLine, type GlJournalBatch, type InsertGlJournalBatch, type GlJournalApproval, type InsertGlJournalApproval, type GlIntercompanyRule, type InsertGlIntercompanyRule, type GlRevaluation, type InsertGlRevaluation, type GlRevaluationEntry, type InsertGlRevaluationEntry, type GlExchangeRate, type InsertGlExchangeRate, type GlPeriod, type InsertGlPeriod, type GlReportDefinition, type InsertGlReportDefinition, type GlReportRow, type InsertGlReportRow, type GlReportColumn, type InsertGlReportColumn, type GlCrossValidationRule, type InsertGlCrossValidationRule,
   type ArReceipt, type InsertArReceipt, type ArRevenueSchedule, type InsertArRevenueSchedule,
   // Cash Module
   type CashBankAccount, type InsertCashBankAccount,
@@ -139,7 +139,7 @@ import {
 
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql, ne } from "drizzle-orm";
 
 export interface IStorage {
   // AR Revenue Schedule operations
@@ -579,6 +579,15 @@ export interface IStorage {
 
   createGlBudgetControlRule(data: InsertGlBudgetControlRule): Promise<GlBudgetControlRule>;
   listGlBudgetControlRules(ledgerId: string): Promise<GlBudgetControlRule[]>;
+
+  // Period Management
+  getUnpostedJournalsCount(periodId: string): Promise<number>;
+
+  // Cross Validation Rules (CVR)
+  listGlCrossValidationRules(ledgerId: string): Promise<GlCrossValidationRule[]>;
+  createGlCrossValidationRule(rule: InsertGlCrossValidationRule): Promise<GlCrossValidationRule>;
+  updateGlCrossValidationRule(id: string, updates: Partial<GlCrossValidationRule>): Promise<GlCrossValidationRule | undefined>;
+  deleteGlCrossValidationRule(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -2118,6 +2127,41 @@ export class MemStorage implements IStorage {
 
   async listGlBudgetControlRules(ledgerId: string): Promise<GlBudgetControlRule[]> {
     return db.select().from(glBudgetControlRules).where(eq(glBudgetControlRules.ledgerId, ledgerId));
+  }
+
+  // Cross Validation Rules (CVR)
+  async listGlCrossValidationRules(ledgerId: string): Promise<GlCrossValidationRule[]> {
+    return await db.select().from(glCrossValidationRules).where(eq(glCrossValidationRules.ledgerId, ledgerId));
+  }
+
+  async createGlCrossValidationRule(rule: InsertGlCrossValidationRule): Promise<GlCrossValidationRule> {
+    const [newRule] = await db.insert(glCrossValidationRules).values(rule).returning();
+    return newRule;
+  }
+
+  async updateGlCrossValidationRule(id: string, updates: Partial<GlCrossValidationRule>): Promise<GlCrossValidationRule | undefined> {
+    const [updated] = await db.update(glCrossValidationRules).set(updates).where(eq(glCrossValidationRules.id, id)).returning();
+    return updated;
+  }
+
+  async deleteGlCrossValidationRule(id: string): Promise<boolean> {
+    const [deleted] = await db.delete(glCrossValidationRules).where(eq(glCrossValidationRules.id, id)).returning();
+    return !!deleted;
+  }
+
+  // Period Management Helpers
+  async getUnpostedJournalsCount(periodId: string): Promise<number> {
+    const [res] = await db.select({
+      count: sql<number>`count(*)`
+    })
+      .from(glJournals)
+      .where(
+        and(
+          eq(glJournals.periodId, periodId),
+          ne(glJournals.status, "Posted")
+        )
+      );
+    return Number(res.count);
   }
 }
 

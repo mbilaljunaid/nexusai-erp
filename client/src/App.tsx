@@ -20,6 +20,7 @@ import { AIChatWidget } from "@/components/AIChatWidget";
 import { LedgerProvider } from "@/context/LedgerContext";
 import { LedgerSelector } from "@/components/LedgerSelector";
 import NotFound from "@/pages/not-found";
+// Imports fixed
 
 // Landing Page
 const LandingPage = lazy(() => import("@/pages/LandingPage"));
@@ -316,6 +317,9 @@ const JournalEntry = lazy(() => import("./pages/gl/JournalEntry"));
 const FinancialReports = lazy(() => import("./pages/gl/FinancialReports"));
 const AuditLogsPage = lazy(() => import("@/pages/gl/AuditLogs"));
 const IntercompanyRules = lazy(() => import("@/pages/gl/IntercompanyRules"));
+const BudgetManager = lazy(() => import("@/pages/gl/BudgetManager"));
+const CVRManager = lazy(() => import("@/pages/gl/CVRManager"));
+const PeriodCloseDashboard = lazy(() => import("@/pages/gl/PeriodCloseDashboard"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
@@ -695,6 +699,9 @@ function Router() {
       <Route path="/gl/revaluation" component={Revaluation} />
 
       {/* New Finance Routes */}
+      <Route path="/gl/budgets" component={BudgetManager} />
+      <Route path="/gl/cvr" component={CVRManager} />
+      <Route path="/gl/period-close" component={PeriodCloseDashboard} />
 
       <Route component={NotFound} />
     </Switch>

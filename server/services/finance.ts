@@ -37,6 +37,18 @@ export class FinanceService {
         return await storage.updateGlPeriod(id, { status: "Closed" });
     }
 
+    async reopenPeriod(id: string) {
+        return await storage.updateGlPeriod(id, { status: "Open" });
+    }
+
+    async getPeriodExceptions(id: string) {
+        const unpostedCount = await storage.getUnpostedJournalsCount(id);
+        return {
+            unpostedJournalsCount: unpostedCount,
+            readyToClose: unpostedCount === 0
+        };
+    }
+
     // ================= GL JOURNALS =================
     async listJournals(periodId?: string, ledgerId?: string) {
         return await storage.listGlJournals(periodId, ledgerId);
@@ -189,6 +201,7 @@ export class FinanceService {
             .where(eq(glJournals.id, journalId));
 
         // 3. Trigger Background Job
+        console.log(`[ASYNC] Triggering worker for ${journalId}`);
         this.processPostingInBackground(journalId, userId).catch(err => {
             console.error(`[WORKER] Uncaught error in background job`, err);
         });
@@ -198,12 +211,10 @@ export class FinanceService {
     }
 
     private async processPostingInBackground(journalId: string, userId: string) {
-        console.log(`[WORKER] Starting job for Journal ${journalId}...`);
-
-        // Simulate Queue Delay
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        console.error(`[WORKER] FORCE LOG Starting job for Journal ${journalId}...`);
 
         try {
+            // Check if journal exists immediately
             const journal = await storage.getGlJournal(journalId);
             if (!journal) return;
 
@@ -256,7 +267,7 @@ export class FinanceService {
             // Revert Status
             await db.update(glJournals)
                 .set({ status: "Draft" }) // Reset to Draft so user can fix
-                .where(eq(glJournals.id, journalId));
+                .where(eq(glJourrals.id, journalId));
 
             await this.logAuditAction(userId, "JOURNAL_POST_FAILED", {
                 journalId: journalId,
@@ -363,34 +374,97 @@ export class FinanceService {
         return { success: true, journalId: journal.id, totalAllocated: poolAmount };
     }
 
+    /**
+ * Helper to parse a filter string (e.g., "Segment1=01, Segment3=4000:4999")
+ * into a predicate function for GlCodeCombination.
+ */
+    private parseFilter(filterStr: string): (cc: any) => boolean {
+        if (!filterStr || filterStr === "*" || filterStr === "ALL") return () => true;
+
+        const conditions = filterStr.split(",").map(c => c.trim()).filter(Boolean);
+        return (cc: any) => {
+            return conditions.every(cond => {
+                const parts = cond.split("=");
+                if (parts.length !== 2) return true; // Skip malformed
+
+                const [key, value] = parts.map(s => s.trim());
+                const segmentKey = key.toLowerCase();
+                const actualValue = cc[segmentKey];
+
+                if (!actualValue) return false;
+
+                if (value.includes(":")) {
+                    const [min, max] = value.split(":").map(s => s.trim());
+                    return actualValue >= min && actualValue <= max;
+                }
+
+                if (value.includes("|")) {
+                    const allowed = value.split("|").map(s => s.trim());
+                    return allowed.includes(actualValue);
+                }
+
+                return actualValue === value;
+            });
+        };
+    }
+
     // Helper: generic balance calc
     private async calculateBalance(filterObj: string, periodName: string, ledgerId: string): Promise<number> {
-        // Mock Implementation that parses filter "Segment1=100..." and sums balances
-        // For MVP, return a dummy random amount if no real data found, 
-        // OR reuse the logic from reporting but simplified.
-        console.log(`Calculating Balance for ${filterObj}...`);
+        console.log(`Calculating Real Balance for ${filterObj} in ${periodName}...`);
 
-        // Real logic: Fetch Balances -> Filter by Code Combination -> Sum
-        // This effectively duplicates `calculateCell` logic but simpler.
-        return 10000; // Mocked Pool Amount for Verification
+        const filter = this.parseFilter(filterObj);
+
+        // 1. Get all combinations for this ledger
+        const allCombinations = await storage.listGlCodeCombinations(ledgerId);
+        const targetCcids = allCombinations.filter(filter).map(c => c.id);
+
+        console.log(`DEBUG: Filter matched ${targetCcids.length} CCIDs out of ${allCombinations.length}`);
+
+        if (targetCcids.length === 0) return 0;
+
+        // 2. Sum balances for matching CCIDs
+        // Assuming the ledger uses USD for now. 
+        const balances = await storage.getGlBalances(ledgerId, periodName, "USD");
+        console.log(`DEBUG: Found ${balances.length} balances for ${periodName}`);
+
+        return balances
+            .filter(b => targetCcids.includes(b.codeCombinationId))
+            .reduce((sum, b) => sum + (Number(b.periodNetDr) - Number(b.periodNetCr)), 0);
     }
 
     // Helper: breakdown by segment
     private async getBalancesBySegment(filterObj: string, periodName: string, ledgerId: string, segment: string): Promise<Record<string, number>> {
-        // Returns { "CC_100": 500, "CC_200": 1500 }
-        console.log(`Breakdown Basis by ${segment}...`);
-        return {
-            "100": 20.0, // e.g. Headcount
-            "200": 80.0  // e.g. Headcount
-        };
+        console.log(`Breakdown Basis (${filterObj}) by ${segment}...`);
+
+        const filter = this.parseFilter(filterObj);
+        const allCombinations = await storage.listGlCodeCombinations(ledgerId);
+
+        const ccMap = new Map(allCombinations.map(c => [c.id, c]));
+        const filteredCcids = allCombinations.filter(filter).map(c => c.id);
+
+        if (filteredCcids.length === 0) return {};
+
+        const balances = await storage.getGlBalances(ledgerId, periodName, "USD");
+        const breakdown: Record<string, number> = {};
+        const segmentKey = segment.toLowerCase();
+
+        for (const b of balances) {
+            if (filteredCcids.includes(b.codeCombinationId)) {
+                const cc = ccMap.get(b.codeCombinationId) as any;
+                const segVal = cc[segmentKey];
+                if (segVal) {
+                    const amount = Number(b.periodNetDr) - Number(b.periodNetCr);
+                    breakdown[segVal] = (breakdown[segVal] || 0) + amount;
+                }
+            }
+        }
+
+        return breakdown;
     }
 
     private async resolveTargetAccount(pattern: string, driverValue: string, ledgerId: string): Promise<string> {
-        // Pattern: "01-?-6000-000" where ? is replaced by driverValue?
-        // Or "Segment1=01, Segment2={driver}, Segment3=6000..."
-        // Simple Replace logic:
-        // Assume Pattern is a full code string "01-{source}-6000-000"
-        const code = pattern.replace("{source}", driverValue);
+        // Support {source} or {driver} placeholder
+        const code = pattern.replace("{source}", driverValue).replace("{driver}", driverValue);
         return (await storage.getOrCreateCodeCombination(ledgerId, code)).id;
     }
 

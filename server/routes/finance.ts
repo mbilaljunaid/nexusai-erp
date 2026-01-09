@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { financeService } from "../services/finance";
-import { insertGlAccountSchema, insertGlPeriodSchema, insertGlJournalSchema, insertGlJournalLineSchema } from "@shared/schema";
+import { insertGlAccountSchema, insertGlPeriodSchema, insertGlJournalSchema, insertGlJournalLineSchema, glAllocations } from "@shared/schema";
 import { z } from "zod";
+import { db } from "../db";
+import { eq } from "drizzle-orm";
 
 const router = Router();
 
@@ -34,6 +36,16 @@ router.post("/gl/periods/:id/close", async (req, res) => {
     res.json(period);
 });
 
+router.post("/gl/periods/:id/reopen", async (req, res) => {
+    const period = await financeService.reopenPeriod(req.params.id);
+    res.json(period);
+});
+
+router.get("/gl/periods/:id/exceptions", async (req, res) => {
+    const exceptions = await financeService.getPeriodExceptions(req.params.id);
+    res.json(exceptions);
+});
+
 // GL Journals
 router.get("/gl/journals", async (req, res) => {
     const periodId = req.query.periodId as string | undefined;
@@ -60,6 +72,17 @@ router.post("/gl/journals", async (req, res) => {
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
+    }
+});
+
+
+
+router.post("/gl/journals/:id/post", async (req, res) => {
+    try {
+        const result = await financeService.postJournal(req.params.id, "SYSTEM"); // Using SYSTEM as default user or get from req.user
+        res.json(result);
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
     }
 });
 
@@ -153,6 +176,39 @@ router.get("/gl/audit-logs", async (req, res) => {
         res.json(logs);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
+    }
+});
+
+// Mass Allocations
+router.get("/gl/allocations", async (req, res) => {
+    try {
+        const ledgerId = (req.query.ledgerId as string) || "primary-ledger-001";
+        const allocations = await db.select().from(glAllocations).where(eq(glAllocations.ledgerId, ledgerId));
+        res.json(allocations);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to list allocations" });
+    }
+});
+
+router.post("/gl/allocations", async (req, res) => {
+    try {
+        const [allocation] = await db.insert(glAllocations).values(req.body).returning();
+        res.status(201).json(allocation);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to create allocation" });
+    }
+});
+
+router.post("/gl/allocations/:id/run", async (req, res) => {
+    try {
+        const { periodName } = req.body;
+        if (!periodName) return res.status(400).json({ error: "Period Name is required" });
+
+        const result = await financeService.runAllocation(req.params.id, periodName);
+        res.json(result);
+    } catch (error: any) {
+        console.error("Allocation Run Error:", error);
+        res.status(500).json({ error: error.message });
     }
 });
 

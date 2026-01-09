@@ -192,4 +192,84 @@ export function registerFinanceRoutes(app: Express) {
             res.status(500).json({ error: "Failed to create intercompany rule" });
         }
     });
+
+    // Budgetary Control - Budgets
+    app.get("/api/gl/budgets", async (req, res) => {
+        try {
+            const ledgerId = (req.query.ledgerId as string) || "primary-ledger-001";
+            const budgets = await storage.listGlBudgets(ledgerId);
+            res.json(budgets);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list budgets" });
+        }
+    });
+
+    app.post("/api/gl/budgets", async (req, res) => {
+        try {
+            const budget = await storage.createGlBudget(req.body);
+            res.status(201).json(budget);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create budget" });
+        }
+    });
+
+    // Budgetary Control - Rules
+    app.get("/api/gl/budget-control-rules", async (req, res) => {
+        try {
+            const ledgerId = (req.query.ledgerId as string) || "primary-ledger-001";
+            const rules = await storage.listGlBudgetControlRules(ledgerId);
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list control rules" });
+        }
+    });
+
+    app.post("/api/gl/budget-control-rules", async (req, res) => {
+        try {
+            const rule = await storage.createGlBudgetControlRule(req.body);
+            res.status(201).json(rule);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create control rule" });
+        }
+    });
+
+    // Cross Validation Rules (CVR)
+    app.get("/api/gl/cross-validation-rules", async (req, res) => {
+        try {
+            const ledgerId = (req.query.ledgerId as string) || "primary-ledger-001";
+            const rules = await storage.listGlCrossValidationRules(ledgerId);
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list cross validation rules" });
+        }
+    });
+
+    app.post("/api/gl/cross-validation-rules", async (req, res) => {
+        try {
+            const rule = await storage.createGlCrossValidationRule(req.body);
+            res.status(201).json(rule);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create cross validation rule" });
+        }
+    });
+
+    app.patch("/api/gl/cross-validation-rules/:id", async (req, res) => {
+        try {
+            const rule = await storage.updateGlCrossValidationRule(req.params.id, req.body);
+            if (!rule) return res.status(404).json({ error: "Rule not found" });
+            res.json(rule);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to update cross validation rule" });
+        }
+    });
+
+    app.delete("/api/gl/cross-validation-rules/:id", async (req, res) => {
+        try {
+            const success = await storage.deleteGlCrossValidationRule(req.params.id);
+            if (!success) return res.status(404).json({ error: "Rule not found" });
+            res.status(204).end();
+        } catch (error) {
+            res.status(500).json({ error: "Failed to delete cross validation rule" });
+        }
+    });
 }
