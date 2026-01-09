@@ -28,7 +28,7 @@ export default function ERP() {
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const [filteredGLEntries, setFilteredGLEntries] = useState<any[]>([]);
   const [filteredVendors, setFilteredVendors] = useState<any[]>([]);
-  
+
   const { data: glEntries = [] } = useQuery<any[]>({ queryKey: ["/api/ledger"], retry: false });
   const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"], retry: false });
   const { data: pos = [] } = useQuery<any[]>({ queryKey: ["/api/purchase-orders"], retry: false });
@@ -36,18 +36,21 @@ export default function ERP() {
   const { data: requisitions = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/requisitions"], retry: false });
   const { data: rfqs = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/rfqs"], retry: false });
 
+  // Navigation Items - Updated to link to Premium Modules where available
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
-    { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500" },
-    { id: "ap", label: "Accounts Payable", icon: FileText, color: "text-orange-500" },
-    { id: "ar", label: "Accounts Receivable", icon: TrendingUp, color: "text-purple-500" },
-    { id: "requisitions", label: "Requisitions", icon: ClipboardList, color: "text-blue-600" },
-    { id: "rfqs", label: "RFQs", icon: Mail, color: "text-teal-500" },
-    { id: "po", label: "Purchase Orders", icon: ShoppingCart, color: "text-pink-500" },
-    { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500" },
-    { id: "quality", label: "Quality Control", icon: Zap, color: "text-cyan-500" },
-    { id: "suppliers", label: "Suppliers", icon: Users, color: "text-indigo-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500", path: "/erp" },
+    { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500", path: "/finance" },
+    { id: "ap", label: "Accounts Payable", icon: FileText, color: "text-orange-500", path: "/finance/accounts-payable" },
+    { id: "ar", label: "Accounts Receivable", icon: TrendingUp, color: "text-purple-500", path: "/finance/accounts-receivable" },
+    { id: "cash", label: "Cash Management", icon: DollarSign, color: "text-emerald-500", path: "/finance/cash-management" },
+    { id: "assets", label: "Fixed Assets", icon: Warehouse, color: "text-indigo-500", path: "/finance/fixed-assets" },
+    { id: "requisitions", label: "Requisitions", icon: ClipboardList, color: "text-blue-600", path: "/erp/requisitions" },
+    { id: "rfqs", label: "RFQs", icon: Mail, color: "text-teal-500", path: "/erp/rfqs" },
+    { id: "po", label: "Purchase Orders", icon: ShoppingCart, color: "text-pink-500", path: "/erp/po" },
+    { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500", path: "/erp/inventory" },
+    { id: "quality", label: "Quality Control", icon: Zap, color: "text-cyan-500", path: "/erp/quality" },
+    { id: "suppliers", label: "Suppliers", icon: Users, color: "text-indigo-500", path: "/erp/suppliers" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500", path: "/erp/settings" },
   ];
 
   return (
@@ -66,9 +69,8 @@ export default function ERP() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {navItems.map((item) => {
-          let routePath = item.id === "overview" ? "/erp" : `/erp/${item.id}`;
           return (
-            <Link key={item.id} to={routePath}>
+            <Link key={item.id} to={item.path}>
               <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
                 <item.icon className={`w-6 h-6 ${item.color}`} />
                 <span className="text-sm font-medium text-center">{item.label}</span>
@@ -85,83 +87,11 @@ export default function ERP() {
         </div>
       )}
 
-      {activeNav === "gl" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <FormSearch
-              placeholder="Search by account code, description, or type..."
-              value={searchQuery}
-              onChange={setSearchQuery}
-              searchFields={['accountCode', 'description', 'accountType']}
-              data={glEntries as any[]}
-              onFilter={setFilteredGLEntries}
-            />
-            <Button data-testid="button-add-gl-entry">+ Add GL Entry</Button>
-          </div>
-          <div className="space-y-2">
-            {filteredGLEntries.length > 0 ? (
-              filteredGLEntries.map((e: any, idx: number) => (
-                <Card key={e.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{e.accountCode}</p><p className="text-sm text-muted-foreground">{e.description}</p></div><Badge>{e.accountType}</Badge></div></CardContent></Card>
-              ))
-            ) : (
-              <Card><CardContent className="p-4"><p className="text-muted-foreground">No GL entries found</p></CardContent></Card>
-            )}
-          </div>
-          <GLEntryForm />
-        </div>
-      )}
+      {/* Premium Module Link: General Ledger is now at /finance */}
 
-      {activeNav === "ap" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <FormSearch
-              placeholder="Search by invoice number, customer, or amount..."
-              value={searchQuery}
-              onChange={setSearchQuery}
-              searchFields={['invoiceNumber', 'customerId', 'amount']}
-              data={invoices as any[]}
-              onFilter={setFilteredInvoices}
-            />
-            <Button data-testid="button-add-invoice">+ Add Invoice</Button>
-          </div>
-          <div className="space-y-2">
-            {filteredInvoices.length > 0 ? (
-              filteredInvoices.map((i: any, idx: number) => (
-                <Card key={i.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.invoiceNumber}</p><p className="text-sm text-muted-foreground">{i.customerId}</p></div><Badge>${Number(i.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
-              ))
-            ) : (
-              <Card><CardContent className="p-4"><p className="text-muted-foreground">No invoices found</p></CardContent></Card>
-            )}
-          </div>
-          <InvoiceEntryForm />
-        </div>
-      )}
+      {/* Premium Module Link: AP is now at /finance/accounts-payable */}
 
-      {activeNav === "ar" && (
-        <div className="space-y-4">
-          <div className="flex gap-2 items-center">
-            <FormSearch
-              placeholder="Search receivables by customer or invoice..."
-              value={searchQuery}
-              onChange={setSearchQuery}
-              searchFields={['customerId', 'invoiceNumber']}
-              data={invoices as any[]}
-              onFilter={setFilteredInvoices}
-            />
-            <Button data-testid="button-new-invoice">+ New Invoice</Button>
-          </div>
-          <div className="space-y-2">
-            {filteredInvoices.length > 0 ? (
-              filteredInvoices.map((i: any, idx: number) => (
-                <Card key={i.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">Invoice {i.invoiceNumber}</p><p className="text-sm text-muted-foreground">{i.customerId}</p></div><Badge>${(Number(i.amount) || 0).toLocaleString()}</Badge></div></CardContent></Card>
-              ))
-            ) : (
-              <Card><CardContent className="p-4"><p className="text-muted-foreground">No receivables found</p></CardContent></Card>
-            )}
-          </div>
-          <InvoiceEntryForm />
-        </div>
-      )}
+      {/* Premium Module Link: AR is now at /finance/accounts-receivable */}
 
       {activeNav === "requisitions" && (
         <div className="space-y-4">
@@ -252,7 +182,7 @@ export default function ERP() {
               value={searchQuery}
               onChange={setSearchQuery}
               searchFields={['name']}
-              data={[{id: 1, name: "Widget A", qty: 145, value: 14500}, {id: 2, name: "Widget B", qty: 89, value: 8900}]}
+              data={[{ id: 1, name: "Widget A", qty: 145, value: 14500 }, { id: 2, name: "Widget B", qty: 89, value: 8900 }]}
               onFilter={(filtered) => setFilteredInvoices(filtered)}
             />
             <Button data-testid="button-adjust-stock">+ Adjust Stock</Button>

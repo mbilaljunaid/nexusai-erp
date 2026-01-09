@@ -16,7 +16,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { WhatsNew } from "@/components/WhatsNew";
 import { NotificationCenter as NotificationCenterWidget } from "@/components/NotificationCenter";
 import { QuickTipsProvider, TipsToggle } from "@/components/QuickTips";
-import AICopilotWidget from "@/components/AICopilotWidget";
+import { AIChatWidget } from "@/components/AIChatWidget";
 import NotFound from "@/pages/not-found";
 
 // Landing Page
@@ -312,6 +312,7 @@ const IntegrationStatus = lazy(() => import("@/pages/IntegrationStatus"));
 const JournalEntries = lazy(() => import("@/pages/JournalEntries"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
+const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
 const FinancialReportsDashboard = lazy(() => import("@/pages/FinancialReportsDashboard"));
 const PurchaseRequisitions = lazy(() => import("@/pages/PurchaseRequisitions"));
@@ -559,6 +560,7 @@ function Router() {
       <Route path="/erp/:page?" component={ERP} />
       <Route path="/finance/cash-management" component={CashManagementPage} />
       <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
+      <Route path="/finance/fixed-assets" component={FixedAssetsPage} />
       <Route path="/finance/accounts-payable" component={AccountsPayable} />
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
       <Route path="/finance/:page?" component={Finance} />
@@ -705,10 +707,25 @@ function AuthenticatedLayout() {
             </Suspense>
           </main>
         </div>
-        <AICopilotWidget />
+        <AIChatWidgetWrapper />
       </div>
     </QuickTipsProvider>
   );
+}
+
+function AIChatWidgetWrapper() {
+  const [location] = useLocation();
+
+  let context = "general";
+  if (location.includes("/accounts-payable")) context = "ap";
+  else if (location.includes("/accounts-receivable")) context = "ar";
+  else if (location.includes("/cash-management")) context = "cash";
+  else if (location.includes("/finance")) context = "finance";
+  else if (location.includes("/crm")) context = "crm";
+  else if (location.includes("/hr")) context = "hr";
+  else if (location.includes("/projects")) context = "projects";
+
+  return <AIChatWidget context={context} />;
 }
 
 function PublicLayout() {

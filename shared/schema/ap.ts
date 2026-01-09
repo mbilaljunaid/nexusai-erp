@@ -12,6 +12,8 @@ export const apSuppliers = pgTable("ap_suppliers", {
     parentSupplierId: integer("parent_supplier_id"),
     address: text("address"),
     contactEmail: varchar("contact_email", { length: 255 }),
+    riskScore: integer("risk_score"),
+    country: varchar("country", { length: 100 }),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow()
 });
@@ -23,7 +25,9 @@ export const insertApSupplierSchema = z.object({
     riskCategory: z.enum(["Low", "Medium", "High"]).optional(),
     parentSupplierId: z.number().int().optional().nullable(),
     address: z.string().optional().nullable(),
-    contactEmail: z.string().email().optional().nullable()
+    contactEmail: z.string().email().optional().nullable(),
+    riskScore: z.number().int().optional().nullable(),
+    country: z.string().optional().nullable()
 });
 
 export type ApSupplier = typeof apSuppliers.$inferSelect;
@@ -39,7 +43,6 @@ export const apInvoices = pgTable("ap_invoices", {
     currency: varchar("currency", { length: 10 }).default("USD"),
     dueDate: timestamp("due_date"),
     paymentTerms: varchar("payment_terms", { length: 100 }),
-    status: varchar("status", { length: 50 }).default("Draft"),
     status: varchar("status", { length: 50 }).default("Draft"),
     approvalStatus: varchar("approval_status", { length: 50 }).default("Pending"),
     glAccountId: integer("gl_account_id"),
@@ -57,7 +60,6 @@ export const insertApInvoiceSchema = z.object({
     currency: z.string().optional(),
     dueDate: z.string().optional().nullable(),
     paymentTerms: z.string().optional().nullable(),
-    status: z.enum(["Draft", "Posted", "Paid", "Overdue"]).optional(),
     status: z.enum(["Draft", "Posted", "Paid", "Overdue"]).optional(),
     approvalStatus: z.enum(["Pending", "Approved", "Rejected"]).optional(),
     glAccountId: z.number().int().optional(),

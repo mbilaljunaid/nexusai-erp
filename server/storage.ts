@@ -57,7 +57,10 @@ import {
   type Account, type InsertAccount,
   type Contact, type InsertContact,
   type Opportunity, type InsertOpportunity,
-  // Oracle Fusion Parity (Financials)
+  // Agentic AI
+  type InsertAgentAction, type AgentAction,
+  type InsertAgentExecution, type AgentExecution,
+  type InsertAgentAuditLog, type AgentAuditLog,
   type GlAccount, type InsertGlAccount,
   type GlPeriod, type InsertGlPeriod,
   type GlJournal, type InsertGlJournal,
@@ -86,7 +89,14 @@ import {
   // Cash Module
   type CashBankAccount, type InsertCashBankAccount,
   type CashStatementLine, type InsertCashStatementLine,
-  type CashTransaction, type InsertCashTransaction
+  type CashTransaction, type InsertCashTransaction,
+  // Fixed Assets Module
+  type FaAssetBook, type InsertFaAssetBook,
+  type FaCategory, type InsertFaCategory,
+  type FaAddition, type InsertFaAddition,
+  type FaBook, type InsertFaBook,
+  type FaTransactionHeader, type InsertFaTransactionHeader,
+  type FaDepreciationSummary
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -110,6 +120,16 @@ export interface IStorage {
 
   listCashTransactions(bankAccountId: string): Promise<CashTransaction[]>;
   createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction>;
+
+  // Fixed Assets
+  listFaAssets(): Promise<FaAddition[]>;
+  getFaAsset(id: string): Promise<FaAddition | undefined>;
+  createFaAsset(data: InsertFaAddition): Promise<FaAddition>;
+  createFaBook(data: InsertFaBook): Promise<FaBook>;
+  listFaBooks(assetId: string): Promise<FaBook[]>;
+  createFaTransaction(data: InsertFaTransactionHeader): Promise<FaTransactionHeader>;
+  getFaCategory(id: string): Promise<FaCategory | undefined>;
+  listFaCategories(): Promise<FaCategory[]>;
 
   // User operations (IMPORTANT: mandatory for Replit Auth)
   upsertUser(user: UpsertUser): Promise<User>;
@@ -453,6 +473,11 @@ export interface IStorage {
   updateArReceipt(id: string, r: Partial<InsertArReceipt>): Promise<ArReceipt | undefined>;
   deleteArReceipt(id: string): Promise<boolean>;
   updateArInvoiceStatus(id: string, status: string): Promise<ArInvoice | undefined>;
+
+  // Agentic AI
+  createAgentExecution(exec: InsertAgentExecution): Promise<AgentExecution>;
+  updateAgentExecution(id: number, updates: Partial<AgentExecution>): Promise<AgentExecution>;
+  createAgentAuditLog(log: InsertAgentAuditLog): Promise<AgentAuditLog>;
 }
 
 export class MemStorage implements IStorage {
@@ -519,10 +544,25 @@ export class MemStorage implements IStorage {
   private arReceipts = new Map<string, ArReceipt>();
   private arRevenueSchedules = new Map<string, ArRevenueSchedule>();
 
+  private currentId = 1;
+  private agentCurrentId = 1;
+
+  // Agentic AI Maps
+  private agentExecutions = new Map<number, AgentExecution>();
+  private agentAuditLogs = new Map<number, AgentAuditLog>();
+
   // Cash Maps
   private cashBankAccounts = new Map<string, CashBankAccount>();
   private cashStatementLines = new Map<string, CashStatementLine>();
   private cashTransactions = new Map<string, CashTransaction>();
+
+  // Fixed Asset Maps
+  private faAssets = new Map<string, FaAddition>();
+  private faAssetBooks = new Map<string, FaAssetBook>();
+  private faBooks = new Map<string, FaBook>(); // Key: assetId-bookTypeCode
+  private faCategories = new Map<string, FaCategory>();
+  private faTransactions = new Map<string, FaTransactionHeader>();
+  private faDepreciation = new Map<string, FaDepreciationSummary>();
 
 
   // GL Maps
@@ -742,9 +782,9 @@ export class MemStorage implements IStorage {
   async listArReceipts() { return Array.from(this.arReceipts.values()); }
   async getArReceipt(id: string) { return this.arReceipts.get(id); }
   async createArReceipt(r: InsertArReceipt) {
-    const id = randomUUID();
+    const id = this.currentId++;
     const receipt: ArReceipt = { id, ...r, invoiceId: r.invoiceId ?? null, receiptDate: r.receiptDate ?? null, paymentMethod: r.paymentMethod ?? null, transactionId: r.transactionId ?? null, status: r.status ?? "Completed", createdAt: new Date() };
-    this.arReceipts.set(id, receipt);
+    this.arReceipts.set(String(id), receipt);
     return receipt;
   }
   async updateArReceipt(id: string, r: Partial<InsertArReceipt>) {
@@ -758,13 +798,13 @@ export class MemStorage implements IStorage {
   async listArRevenueSchedules() { return Array.from(this.arRevenueSchedules.values()); }
   async getArRevenueSchedule(id: string) { return this.arRevenueSchedules.get(id); }
   async createArRevenueSchedule(data: InsertArRevenueSchedule) {
-    const id = randomUUID();
+    const id = this.currentId++;
     const schedule: ArRevenueSchedule = {
       id, ...data,
       amount: String(data.amount), // Cast number to numeric string
       status: data.status ?? "Pending"
     };
-    this.arRevenueSchedules.set(id, schedule);
+    this.arRevenueSchedules.set(String(id), schedule);
     return schedule;
   }
   async updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>) {
@@ -780,7 +820,7 @@ export class MemStorage implements IStorage {
   async listCashBankAccounts() { return Array.from(this.cashBankAccounts.values()); }
   async getCashBankAccount(id: string) { return this.cashBankAccounts.get(id); }
   async createCashBankAccount(data: InsertCashBankAccount) {
-    const id = randomUUID();
+    const id = this.currentId++;
     const account: CashBankAccount = {
       id, ...data,
       currency: data.currency ?? "USD",
@@ -791,7 +831,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    this.cashBankAccounts.set(id, account);
+    this.cashBankAccounts.set(String(id), account);
     return account;
   }
   async updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>) {
@@ -807,7 +847,7 @@ export class MemStorage implements IStorage {
     return Array.from(this.cashStatementLines.values()).filter(l => String(l.bankAccountId) === bankAccountId);
   }
   async createCashStatementLine(data: InsertCashStatementLine) {
-    const id = randomUUID();
+    const id = this.currentId++;
     const line: CashStatementLine = {
       id, ...data,
       amount: String(data.amount),
@@ -816,7 +856,7 @@ export class MemStorage implements IStorage {
       reconciled: data.reconciled ?? false,
       createdAt: new Date()
     };
-    this.cashStatementLines.set(id, line);
+    this.cashStatementLines.set(String(id), line);
     return line;
   }
 
@@ -824,7 +864,7 @@ export class MemStorage implements IStorage {
     return Array.from(this.cashTransactions.values()).filter(t => String(t.bankAccountId) === bankAccountId);
   }
   async createCashTransaction(data: InsertCashTransaction) {
-    const id = randomUUID();
+    const id = this.currentId++;
     const trx: CashTransaction = {
       id, ...data,
       amount: String(data.amount), // Cast
@@ -832,9 +872,66 @@ export class MemStorage implements IStorage {
       reference: data.reference ?? null,
       status: data.status ?? "Unreconciled"
     };
-    this.cashTransactions.set(id, trx);
+    this.cashTransactions.set(String(id), trx);
     return trx;
   }
+
+  // Fixed Assets Implementation
+  async listFaAssets() { return Array.from(this.faAssets.values()); }
+  async getFaAsset(id: string) { return this.faAssets.get(id); }
+  async createFaAsset(data: InsertFaAddition) {
+    const id = this.currentId++;
+    const asset: FaAddition = {
+      id, ...data,
+      tagNumber: data.tagNumber ?? null,
+      manufacturer: data.manufacturer ?? null,
+      model: data.model ?? null,
+      serialNumber: data.serialNumber ?? null,
+      salvageValue: data.salvageValue ? String(data.salvageValue) : "0",
+      originalCost: String(data.originalCost),
+      units: data.units ?? 1,
+      status: "Active",
+      location: data.location ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      datePlacedInService: data.datePlacedInService ? new Date(data.datePlacedInService) : new Date()
+    };
+    this.faAssets.set(String(id), asset);
+    return asset;
+  }
+  async createFaBook(data: InsertFaBook) {
+    const key = `${data.assetId}-${data.bookTypeCode}`;
+    const book: FaBook = {
+      ...data,
+      cost: String(data.cost),
+      ytdDepreciation: data.ytdDepreciation ? String(data.ytdDepreciation) : "0",
+      depreciationReserve: data.depreciationReserve ? String(data.depreciationReserve) : "0",
+      netBookValue: data.netBookValue ? String(data.netBookValue) : String(data.cost),
+      depreciateFlag: data.depreciateFlag ?? true,
+      datePlacedInService: data.datePlacedInService ? new Date(data.datePlacedInService) : new Date(),
+      createdAt: new Date()
+    };
+    this.faBooks.set(key, book);
+    return book;
+  }
+  async listFaBooks(assetId: string) {
+    // Inefficient but fine for MemStorage demo
+    return Array.from(this.faBooks.values()).filter(b => String(b.assetId) === assetId);
+  }
+  async createFaTransaction(data: InsertFaTransactionHeader) {
+    const id = randomUUID();
+    const trx: FaTransactionHeader = {
+      id, ...data,
+      transactionDate: data.transactionDate ? new Date(data.transactionDate) : new Date(),
+      dateEffective: data.dateEffective ? new Date(data.dateEffective) : new Date(),
+      amount: data.amount ? String(data.amount) : "0",
+      comments: data.comments ?? null
+    };
+    this.faTransactions.set(id, trx);
+    return trx;
+  }
+  async getFaCategory(id: string) { return this.faCategories.get(id); }
+  async listFaCategories() { return Array.from(this.faCategories.values()); }
 
   // Agentic AI Implementation
   private aiActions = new Map<string, AiAction>();
@@ -1447,6 +1544,46 @@ export class MemStorage implements IStorage {
     const updated: CommunityBadgeProgress = { ...progress, ...p as any, updatedAt: new Date() };
     this.communityBadgeProgressStore.set(progress.id, updated);
     return updated;
+  }
+
+  // Agentic AI Implementation
+  async createAgentExecution(exec: InsertAgentExecution): Promise<AgentExecution> {
+    const id = this.agentCurrentId++;
+    const newExec: AgentExecution = {
+      ...exec,
+      id,
+      actionCode: exec.actionCode || null,
+      status: exec.status || "PENDING",
+      confidenceScore: exec.confidenceScore || "0",
+      executedBy: exec.executedBy || "system",
+      createdAt: new Date(),
+      completedAt: null,
+      errorMessage: null,
+      parameters: exec.parameters || {}
+    };
+    this.agentExecutions.set(id, newExec);
+    return newExec;
+  }
+
+  async updateAgentExecution(id: number, updates: Partial<AgentExecution>): Promise<AgentExecution> {
+    const existing = this.agentExecutions.get(id);
+    if (!existing) throw new Error("Execution not found");
+    const updated = { ...existing, ...updates };
+    this.agentExecutions.set(id, updated);
+    return updated;
+  }
+
+  async createAgentAuditLog(log: InsertAgentAuditLog): Promise<AgentAuditLog> {
+    const id = this.agentCurrentId++;
+    const newLog: AgentAuditLog = {
+      ...log,
+      id,
+      createdAt: new Date(),
+      dataSnapshot: log.dataSnapshot || null,
+      executionId: log.executionId || null
+    };
+    this.agentAuditLogs.set(id, newLog);
+    return newLog;
   }
 }
 

@@ -14,6 +14,12 @@ import { CashStatementLine, CashTransaction } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import {
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ReconciliationWorkbenchProps {
     accountId: string;
@@ -73,6 +79,27 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
         }
     });
 
+    // Create Transaction from Line Logic
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [createData, setCreateData] = useState({ type: "FEE", glAccountId: 60001, description: "" });
+
+    const createTransactionMutation = useMutation({
+        mutationFn: async () => {
+            if (!selectedLine) return;
+            await apiRequest("POST", `/api/cash/accounts/${accountId}/create-transaction`, {
+                lineId: selectedLine.id, // Assuming string/number match or need cast
+                ...createData,
+                description: createData.description || selectedLine.description
+            });
+        },
+        onSuccess: () => {
+            toast({ title: "Transaction Created", description: "Created and matched to statement line." });
+            setCreateDialogOpen(false);
+            setSelectedLine(null);
+            queryClient.invalidateQueries({ queryKey: ["/api/cash"] });
+        }
+    });
+
     // Mock Data for Visuals (since API might be empty)
     const mockLines = [
         { id: 1, date: "2024-05-01", description: "ACH Pmt: Stripe Transfer", amount: 15400.00, reconciled: false },
@@ -94,6 +121,40 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                         <Wand2 className="h-4 w-4 mr-2" />
                         Auto-Match (AI)
                     </Button>
+
+                    <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="secondary" disabled={!selectedLine}>
+                                Create Trans...
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader><DialogTitle>Create Transaction from Statement</DialogTitle></DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid gap-2">
+                                    <Label>Type</Label>
+                                    <Select onValueChange={(v) => setCreateData({ ...createData, type: v })} defaultValue={createData.type}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="FEE">Bank Fee</SelectItem>
+                                            <SelectItem value="INTEREST">Interest Income</SelectItem>
+                                            <SelectItem value="TRANSFER">Transfer</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label>Description</Label>
+                                    <Input
+                                        value={createData.description}
+                                        onChange={(e) => setCreateData({ ...createData, description: e.target.value })}
+                                        placeholder={selectedLine?.description || ""}
+                                    />
+                                </div>
+                                <Button onClick={() => createTransactionMutation.mutate()}>Save & Match</Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
                     <Button disabled={!selectedLine || !selectedTrx} onClick={() => reconcileMutation.mutate()}>
                         <Check className="h-4 w-4 mr-2" />
                         Confirm Match
@@ -121,6 +182,11 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                                             <span className="text-xs text-muted-foreground flex items-center gap-1">
                                                 <Calendar className="h-3 w-3" /> {line.date}
                                             </span>
+                                            {(line as any).aiMatch && (
+                                                <Badge variant="outline" className="w-fit mt-1 bg-green-50 text-green-700 border-green-200 text-[10px] px-1 py-0 h-5">
+                                                    🤖 AI Match: {(line as any).aiConfidence}%
+                                                </Badge>
+                                            )}
                                         </div>
                                         <span className={`font-mono font-medium ${line.amount < 0 ? "text-red-500" : "text-green-600"}`}>
                                             {line.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}

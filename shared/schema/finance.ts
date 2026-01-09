@@ -82,17 +82,37 @@ export const glJournalLines = pgTable("gl_journal_lines", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     journalId: varchar("journal_id").notNull(),
     accountId: varchar("account_id").notNull(),
+    description: text("description"),
+
+    // Entered Amounts (Transaction Currency)
+    currencyCode: varchar("currency_code").notNull().default("USD"),
+    enteredDebit: numeric("entered_debit", { precision: 18, scale: 2 }),
+    enteredCredit: numeric("entered_credit", { precision: 18, scale: 2 }),
+
+    // Accounted Amounts (Ledger Currency)
+    accountedDebit: numeric("accounted_debit", { precision: 18, scale: 2 }),
+    accountedCredit: numeric("accounted_credit", { precision: 18, scale: 2 }),
+
+    // For specific rate override
+    exchangeRate: numeric("exchange_rate", { precision: 20, scale: 10 }).default("1"),
+
+    // Legacy / Convenience columns mapped to Accounted for backward compat
     debit: numeric("debit", { precision: 18, scale: 2 }).default("0"),
     credit: numeric("credit", { precision: 18, scale: 2 }).default("0"),
-    description: text("description"),
 });
 
 export const insertGlJournalLineSchema = createInsertSchema(glJournalLines).extend({
     journalId: z.string().min(1),
     accountId: z.string().min(1),
-    debit: z.string().optional(), // numeric is string in zod
+    debit: z.string().optional(),
     credit: z.string().optional(),
     description: z.string().optional(),
+    currencyCode: z.string().optional(),
+    enteredDebit: z.string().optional(),
+    enteredCredit: z.string().optional(),
+    accountedDebit: z.string().optional(),
+    accountedCredit: z.string().optional(),
+    exchangeRate: z.string().optional(),
 });
 export type InsertGlJournalLine = z.infer<typeof insertGlJournalLineSchema>;
 export type GlJournalLine = typeof glJournalLines.$inferSelect;
@@ -172,14 +192,14 @@ export type Expense = typeof expenses.$inferSelect;
 // ========== ADVANCED GL ARCHITECTURE (Phase 2) ==========
 
 // 5. Ledgers (The "Books")
-export const glLedgers = pgTable("gl_ledgers", {
+export const glLedgers = pgTable("gl_ledgers_new", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     name: varchar("name").notNull().unique(), // e.g., "US Primary Ledger"
     currencyCode: varchar("currency_code").notNull().default("USD"),
-    calendarId: varchar("calendar_id"), // Link to Calendar (simplified as string for now)
-    coaId: varchar("coa_id"), // Link to Chart of Accounts Structure
+    calendarId: varchar("calendar_id"),
+    coaId: varchar("coa_id"),
     description: text("description"),
-    ledgerCategory: varchar("ledger_category").default("PRIMARY"), // PRIMARY, SECONDARY, REPORTING
+    ledgerCategory: varchar("ledger_category").default("PRIMARY"),
     isActive: boolean("is_active").default(true),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
@@ -241,7 +261,21 @@ export const insertGlCodeCombinationSchema = createInsertSchema(glCodeCombinatio
 export type InsertGlCodeCombination = z.infer<typeof insertGlCodeCombinationSchema>;
 export type GlCodeCombination = typeof glCodeCombinations.$inferSelect;
 
-// 9. Daily Rates (Multi-Currency)
+
+// 9. Currencies
+export const glCurrencies = pgTable("gl_currencies", {
+    code: varchar("code").primaryKey(), // USD, EUR
+    name: varchar("name").notNull(),
+    symbol: varchar("symbol"),
+    precision: integer("precision").default(2),
+    isActive: boolean("is_active").default(true),
+});
+
+export const insertGlCurrencySchema = createInsertSchema(glCurrencies);
+export type InsertGlCurrency = z.infer<typeof insertGlCurrencySchema>;
+export type GlCurrency = typeof glCurrencies.$inferSelect;
+
+// 10. Daily Rates (Multi-Currency)
 export const glDailyRates = pgTable("gl_daily_rates", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     fromCurrency: varchar("from_currency").notNull(), // USD
@@ -255,3 +289,11 @@ export const glDailyRates = pgTable("gl_daily_rates", {
 export const insertGlDailyRateSchema = createInsertSchema(glDailyRates);
 export type InsertGlDailyRate = z.infer<typeof insertGlDailyRateSchema>;
 export type GlDailyRate = typeof glDailyRates.$inferSelect;
+
+// Updated Journal Lines (Multi-Currency Support)
+// Note: We are REDEFINING glJournalLines here to add columns.
+// In a real migration we would alter table provided by Drizzle kit, 
+// likely extending the existing object.
+// Given strict "replace file" constraints, I will leave existing export above and append logic documentation
+// or better, I will MODIFY the existing glJournalLines definition directly in next tool call.
+

@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,7 @@ interface Message {
     type?: "text" | "action-confirmation" | "result";
     actionData?: any; // For pending actions
     resultData?: any; // For executed results
+    originalInput?: string; // To re-send for execution if needed
 }
 
 interface AIChatWidgetProps {
@@ -25,7 +27,7 @@ interface AIChatWidgetProps {
 export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatWidgetProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
-        { id: "1", role: "system", content: "Hello! I'm your AI Controller. Ask me to detect anomalies or explain variances.", type: "text" }
+        { id: "1", role: "system", content: "Hello! I'm your AI Controller. Ask me to post journals or create invoices.", type: "text" }
     ]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -46,21 +48,23 @@ export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatW
         setIsLoading(true);
 
         try {
-            // 1. Parse Intent
-            const res = await apiRequest("POST", "/api/ai/parse", { prompt: userMsg.content, userId, context });
+            // 1. Parse Intent (using new Agentic Engine endpoint)
+            const res = await apiRequest("POST", "/api/intent/parse", { text: userMsg.content, context });
             const analysis = await res.json();
+            // Expected: { actionCode: string | null, params: any, confidence: number }
 
-            if (analysis.action && analysis.confidence > 0.7) {
+            if (analysis.actionCode && analysis.confidence > 0.6) {
                 // 2. Propose Action
                 const systemMsg: Message = {
                     id: (Date.now() + 1).toString(),
                     role: "system",
-                    content: `I can help with that. I've detected you want to run: ${analysis.action.actionName}.`,
+                    content: `I can help with that. I've detected you want to run: ${analysis.actionCode}.`,
                     type: "action-confirmation",
+                    originalInput: userMsg.content,
                     actionData: {
-                        actionName: analysis.action.actionName,
+                        actionCode: analysis.actionCode,
                         params: analysis.params,
-                        description: analysis.action.description
+                        confidence: analysis.confidence
                     }
                 };
                 setMessages(prev => [...prev, systemMsg]);
@@ -69,7 +73,7 @@ export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatW
                 setMessages(prev => [...prev, {
                     id: (Date.now() + 1).toString(),
                     role: "system",
-                    content: "I'm not sure what you mean. Try asking to 'detect anomalies' or 'explain variance'.",
+                    content: "I'm not sure what you mean. Try saying 'Post a journal for supplies'.",
                     type: "text"
                 }]);
             }
@@ -80,26 +84,69 @@ export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatW
         }
     };
 
-    const executeAction = async (actionData: any) => {
+    const executeAction = async (msg: Message) => {
         setIsLoading(true);
-        try {
-            const res = await apiRequest("POST", "/api/ai/execute", {
-                userId,
-                actionName: actionData.actionName,
-                params: actionData.params
-            });
-            const result = await res.json();
+        // Optimistic update to show we are starting
+        const systemMsgId = (Date.now() + 1).toString();
+        setMessages(prev => [...prev, {
+            id: systemMsgId,
+            role: "system",
+            content: "Initializing execution...",
+            type: "text"
+        }]);
 
-            if (result.status === "success") {
-                setMessages(prev => [...prev, {
-                    id: Date.now().toString(),
-                    role: "system",
-                    content: "Action executed successfully. Here are the results:",
-                    type: "result",
-                    resultData: result.data
-                }]);
-            } else {
-                throw new Error(result.message);
+        try {
+            // Use streaming endpoint
+            const response = await fetch(`/api/intent/stream-execute?text=${encodeURIComponent(msg.originalInput || "")}&userId=${encodeURIComponent(userId)}&context=${encodeURIComponent(context)}`);
+
+            if (!response.body) throw new Error("No response body");
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                buffer += chunk;
+                const lines = buffer.split("\n\n");
+                buffer = lines.pop() || ""; // Keep incomplete line
+
+                for (const line of lines) {
+                    if (line.startsWith("data: ")) {
+                        const dataStr = line.slice(6);
+                        try {
+                            const data = JSON.parse(dataStr);
+
+                            if (data.type === "status") {
+                                // Update the last message with status
+                                setMessages(prev => prev.map(m =>
+                                    m.id === systemMsgId ? { ...m, content: `[${data.step}] ${data.message}` } : m
+                                ));
+                            } else if (data.type === "result") {
+                                // Final result
+                                setMessages(prev => [...prev, {
+                                    id: Date.now().toString(),
+                                    role: "system",
+                                    content: "Execution completed.",
+                                    type: "result",
+                                    resultData: data.result
+                                }]);
+                            } else if (data.type === "error") {
+                                setMessages(prev => [...prev, {
+                                    id: Date.now().toString(),
+                                    role: "system",
+                                    content: `Error: ${data.message}`,
+                                    type: "text"
+                                }]);
+                            }
+                        } catch (e) {
+                            console.error("Failed to parse stream data", e);
+                        }
+                    }
+                }
             }
         } catch (error: any) {
             setMessages(prev => [...prev, {
@@ -115,52 +162,6 @@ export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatW
 
     // Render Result Content based on data type
     const renderResult = (data: any) => {
-        if (Array.isArray(data)) {
-            if (data.length === 0) return <div className="text-sm text-muted-foreground italic">No issues found.</div>;
-
-            // Detailed Logic for known types
-            const isAnomaly = data[0]?.severity !== undefined;
-            const isVariance = data[0]?.explanation !== undefined;
-
-            if (isAnomaly) {
-                return (
-                    <div className="space-y-2 mt-2">
-                        {data.map((item: any, i: number) => (
-                            <div key={i} className="flex items-start gap-2 text-sm bg-muted/50 p-2 rounded border border-red-200 dark:border-red-900">
-                                <AlertTriangle className="h-4 w-4 text-red-500 mt-0.5 shrink-0" />
-                                <div>
-                                    <div className="font-semibold text-red-600 dark:text-red-400">{item.reason}</div>
-                                    <div className="text-xs text-muted-foreground">Severity: {item.severity} | Ref: {item.ref || item.journalNumber || "N/A"}</div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )
-            }
-
-            if (isVariance) {
-                return (
-                    <div className="space-y-2 mt-2">
-                        {data.map((item: any, i: number) => (
-                            <div key={i} className="text-sm bg-muted/50 p-2 rounded border">
-                                <div className="font-medium">{item.account} ({item.code})</div>
-                                <div className="text-muted-foreground">{item.explanation}</div>
-                                <div className={`text-xs font-mono mt-1 ${item.diff < 0 ? 'text-red-500' : 'text-green-500'}`}>
-                                    {item.diff > 0 ? '+' : ''}{item.diff.toLocaleString()} ({item.pct.toFixed(1)}%)
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )
-            }
-
-            // Fallback List
-            return (
-                <ul className="list-disc pl-4 text-sm space-y-1">
-                    {data.map((item, i) => <li key={i}>{JSON.stringify(item).slice(0, 50)}...</li>)}
-                </ul>
-            );
-        }
         return <pre className="text-xs bg-muted p-2 rounded overflow-auto max-h-40">{JSON.stringify(data, null, 2)}</pre>;
     };
 
@@ -174,8 +175,8 @@ export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatW
                             <div className="flex items-center gap-2">
                                 <Bot className="h-5 w-5" />
                                 <div>
-                                    <CardTitle className="text-sm font-bold">AI Controller</CardTitle>
-                                    <div className="text-xs opacity-90">Finance Assistant</div>
+                                    <CardTitle className="text-sm font-bold">Ask the Controller</CardTitle>
+                                    <div className="text-xs opacity-90">Agentic AI Assistant</div>
                                 </div>
                             </div>
                             <Button size="icon" variant="ghost" className="h-6 w-6 text-white hover:bg-white/20" onClick={() => setIsOpen(false)}>
@@ -207,12 +208,13 @@ export function AIChatWidget({ context = "general", userId = "user-1" }: AIChatW
                                                     <div className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">
                                                         <Sparkles className="h-3 w-3" /> Suggested Action
                                                     </div>
-                                                    <div className="text-sm font-medium">{msg.actionData.description}</div>
+                                                    <div className="text-sm font-medium">{msg.actionData.actionCode}</div>
+                                                    <div className="text-xs text-muted-foreground">Confidence: {msg.actionData.confidence}</div>
                                                     <div className="flex gap-2 mt-2">
                                                         <Button
                                                             size="sm"
                                                             className="w-full gap-1"
-                                                            onClick={() => executeAction(msg.actionData)}
+                                                            onClick={() => executeAction(msg)}
                                                             disabled={isLoading}
                                                         >
                                                             {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}

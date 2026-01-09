@@ -7,7 +7,7 @@ import { ApInvoiceList } from "@/components/ap/ApInvoiceList";
 import { ApSupplierList } from "@/components/ap/ApSupplierList";
 import { ApPaymentList } from "@/components/ap/ApPaymentList";
 import { ApApprovalList } from "@/components/ap/ApApprovalList";
-import { AIChatWidget } from "@/components/AIChatWidget";
+
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
 
@@ -31,7 +31,7 @@ export default function AccountsPayable() {
 
     return (
         <div className="space-y-6 relative min-h-screen pb-20 p-6">
-            <AIChatWidget context="ap" />
+
 
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

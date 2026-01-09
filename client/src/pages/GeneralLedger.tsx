@@ -22,14 +22,14 @@ import { FiscalPeriods } from "@/components/finance/FiscalPeriods";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { GlJournal, GlJournalBatch } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
-import { AIChatWidget } from "@/components/AIChatWidget";
+
 
 export default function GeneralLedger() {
   const [activeTab, setActiveTab] = useState("journals");
 
   return (
     <div className="space-y-6 relative min-h-screen pb-20">
-      <AIChatWidget context="finance" />
+
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

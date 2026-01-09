@@ -25,6 +25,7 @@ import financeRouter from "./routes/finance";
 import apRouter from "./routes/ap"; // Added AP router
 import arRouter from "./routes/ar"; // Added AR router
 import cashRouter from "./routes/cash"; // Added Cash router
+import { fixedAssetsRouter } from "./routes/fixedAssets";
 import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
 
@@ -37,6 +38,7 @@ export async function registerRoutes(
   app.use("/api/ap", apRouter); // Register AP routes
   app.use("/api/ar", arRouter); // Register AR routes
   app.use("/api/cash", cashRouter); // Register Cash routes
+  app.use("/api/fa", fixedAssetsRouter); // Register FA routes
 
   // Agentic AI
   app.use("/api", aiRouter);

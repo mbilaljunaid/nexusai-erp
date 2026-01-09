@@ -8,7 +8,7 @@ import {
     ArCustomerList,
     ArReceiptList
 } from "@/components/ar";
-import { AIChatWidget } from "@/components/AIChatWidget";
+
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
 
@@ -47,7 +47,7 @@ export default function AccountsReceivable() {
 
     return (
         <div className="space-y-6 relative min-h-screen pb-20 p-6">
-            <AIChatWidget context="ar" />
+
 
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
