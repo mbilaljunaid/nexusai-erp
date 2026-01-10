@@ -548,12 +548,18 @@ const AutomotiveMobileApp = lazy(() => import("@/pages/AutomotiveMobileApp"));
 const AutomotiveQualityAnalytics = lazy(() => import("@/pages/AutomotiveQualityAnalytics"));
 const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
 
+import ApSettings from "@/components/ap/ApSettings";
+
 
 function Router() {
   return (
     <Switch>
       <Route path="/form" component={FormPage} />
-      <Route path="/" component={LandingPage} />
+      <Route path="/ap/settings">
+        <ProtectedRoute>
+          <ApSettings />
+        </ProtectedRoute>
+      </Route>
       <Route path="/use-cases" component={UseCases} />
       <Route path="/industries" component={IndustriesPage} />
       <Route path="/about" component={AboutPage} />

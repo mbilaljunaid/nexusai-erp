@@ -8,6 +8,13 @@
       "when": 1768070158546,
       "tag": "0000_boring_phil_sheldon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1768075053635,
+      "tag": "0001_silly_krista_starr",
+      "breakpoints": true
     }
   ]
 }

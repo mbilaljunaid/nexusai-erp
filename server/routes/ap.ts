@@ -7,6 +7,36 @@ import { z } from "zod";
 
 export const apRouter = express.Router();
 
+// --- System Parameters ---
+apRouter.get("/system-parameters", async (_req, res) => {
+    const params = await apService.getSystemParameters();
+    res.json(params || {});
+});
+
+apRouter.post("/system-parameters", async (req, res) => {
+    try {
+        const result = await apService.updateSystemParameters(req.body);
+        res.json(result);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+// --- Distribution Sets ---
+apRouter.get("/distribution-sets", async (_req, res) => {
+    const sets = await apService.getDistributionSets();
+    res.json(sets);
+});
+
+apRouter.post("/distribution-sets", async (req, res) => {
+    try {
+        const set = await apService.createDistributionSet(req.body);
+        res.status(201).json(set);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
 // Schema for the compound payload
 const createInvoiceSchema = z.object({
     header: insertApInvoiceSchema,
@@ -97,7 +127,18 @@ apRouter.put("/invoices/:id", async (req, res) => {
     if (!parse.success) return res.status(400).json(parse.error);
     const updated = await storage.updateApInvoice(req.params.id, parse.data as any);
     if (!updated) return res.status(404).json({ error: "Invoice not found" });
+    const updated = await storage.updateApInvoice(req.params.id, parse.data as any);
+    if (!updated) return res.status(404).json({ error: "Invoice not found" });
     res.json(updated);
+});
+
+apRouter.post("/invoices/:id/validate", async (req, res) => {
+    try {
+        const result = await apService.validateInvoice(parseInt(req.params.id));
+        res.json(result);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
 });
 
 apRouter.delete("/invoices/:id", async (req, res) => {

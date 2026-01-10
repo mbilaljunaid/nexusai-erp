@@ -1,74 +1,118 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, FileText, Clock, AlertTriangle, Activity } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+    FileText,
+    Clock,
+    DollarSign,
+    AlertTriangle,
+    TrendingUp,
+    ArrowUpRight,
+    ArrowDownRight
+} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
 export function ApMetricCards() {
-    const { data: invoices } = useQuery({
+    const { data: invoices, isLoading: isLoadingInvoices } = useQuery({
         queryKey: ['/api/ap/invoices'],
         queryFn: () => api.ap.invoices.list()
     });
 
-    const { data: payments } = useQuery({
+    const { data: payments, isLoading: isLoadingPayments } = useQuery({
         queryKey: ['/api/ap/payments'],
         queryFn: () => api.ap.payments.list()
     });
 
+    const isLoading = isLoadingInvoices || isLoadingPayments;
+
     // Calculate metrics
     const totalInvoices = invoices?.length || 0;
-    const pendingApproval = invoices?.filter((i: any) => i.status === "PendingApproval").length || 0;
-    const onHold = invoices?.filter((i: any) => i.status === "OnHold").length || 0;
+    const pendingApproval = invoices?.filter((i: any) => i.approvalStatus === "REQUIRED" || i.approvalStatus === "PENDING").length || 0;
+    const onHold = invoices?.filter((i: any) => i.validationStatus === "NEEDS REVALIDATION" || i.validationStatus === "ON HOLD").length || 0;
 
-    // Calculate cash outflow (sum of scheduled payments)
-    const cashOutflow = payments
-        ?.filter((p: any) => p.status === "Scheduled")
-        .reduce((sum: number, p: any) => sum + Number(p.amount), 0) || 0;
+    // Calculate cash outflow (sum of unpaid invoices due in next 30 days) implementation note: using simple unpaid sum for now
+    const cashOutflow = invoices
+        ?.filter((i: any) => i.paymentStatus !== "PAID")
+        .reduce((sum: number, i: any) => sum + Number(i.invoiceAmount), 0) || 0;
+
+    const cards = [
+        {
+            title: "Total Invoices",
+            value: totalInvoices,
+            subtext: "Across all periods",
+            icon: FileText,
+            color: "text-blue-600",
+            bg: "bg-blue-100/50"
+        },
+        {
+            title: "Pending Approval",
+            value: pendingApproval,
+            subtext: "Requires action",
+            icon: Clock,
+            color: "text-amber-600",
+            bg: "bg-amber-100/50"
+        },
+        {
+            title: "Projected Outflow",
+            value: `$${cashOutflow.toLocaleString()}`,
+            subtext: "Next 30 Days",
+            icon: DollarSign,
+            color: "text-emerald-600",
+            bg: "bg-emerald-100/50"
+        },
+        {
+            title: "Exceptions",
+            value: onHold,
+            subtext: "Validation Errors",
+            icon: AlertTriangle,
+            color: "text-red-600",
+            bg: "bg-red-100/50"
+        }
+    ];
+
+    if (isLoading) {
+        return (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {[1, 2, 3, 4].map((i) => (
+                    <Card key={i}>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <Skeleton className="h-4 w-[100px]" />
+                            <Skeleton className="h-4 w-4 rounded-full" />
+                        </CardHeader>
+                        <CardContent>
+                            <Skeleton className="h-8 w-[60px] mb-2" />
+                            <Skeleton className="h-3 w-[80px]" />
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        );
+    }
 
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Invoices</CardTitle>
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{totalInvoices}</div>
-                    <p className="text-xs text-muted-foreground">Across all periods</p>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Pending Approval</CardTitle>
-                    <Clock className="h-4 w-4 text-amber-500" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{pendingApproval}</div>
-                    <p className="text-xs text-muted-foreground">Requires action</p>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Next 30 Days Outflow</CardTitle>
-                    <DollarSign className="h-4 w-4 text-red-500" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">${cashOutflow.toLocaleString()}</div>
-                    <p className="text-xs text-muted-foreground">Scheduled payments</p>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">On Hold</CardTitle>
-                    <AlertTriangle className="h-4 w-4 text-destructive" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{onHold}</div>
-                    <p className="text-xs text-muted-foreground">Exceptions to resolve</p>
-                </CardContent>
-            </Card>
+            {cards.map((card, idx) => (
+                <Card key={idx} className="relative overflow-hidden border-l-4" style={{ borderLeftColor: card.color.includes('red') ? '#ef4444' : card.color.includes('emerald') ? '#10b981' : card.color.includes('amber') ? '#f59e0b' : '#3b82f6' }}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                            {card.title}
+                        </CardTitle>
+                        <div className={`p-2 rounded-full ${card.bg}`}>
+                            <card.icon className={`h-4 w-4 ${card.color}`} />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold tracking-tight">{card.value}</div>
+                        <p className="text-xs text-muted-foreground mt-1 font-medium">
+                            {card.subtext}
+                        </p>
+                        {/* Decorative background element */}
+                        <div className="absolute -right-4 -bottom-4 opacity-5">
+                            <card.icon className="h-24 w-24" />
+                        </div>
+                    </CardContent>
+                </Card>
+            ))}
         </div>
     );
 }

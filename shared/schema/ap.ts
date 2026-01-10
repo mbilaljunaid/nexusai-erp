@@ -4,25 +4,28 @@ import { pgTable, serial, text, varchar, numeric, timestamp, boolean, integer, j
 import { z } from "zod";
 import { createInsertSchema } from "drizzle-zod";
 
-// 1. Supplier Entity (Enhanced)
+// 1. Supplier Entity (Parent)
 export const apSuppliers = pgTable("ap_suppliers", {
     id: serial("id").primaryKey(),
     supplierNumber: varchar("supplier_number", { length: 50 }), // Business Key
     name: varchar("name", { length: 255 }).notNull(),
     taxOrganizationType: varchar("tax_organization_type", { length: 50 }), // Corporation, Partnership, etc.
+
+    // Legacy fields (Deprecated - moved to Sites)
     taxId: varchar("tax_id", { length: 100 }),
+    address: text("address"),
+    paymentTermsId: varchar("payment_terms_id", { length: 50 }),
 
     // Controls
     enabledFlag: boolean("enabled_flag").default(true),
+    supplierType: varchar("supplier_type", { length: 50 }).default("STANDARD"), // STANDARD, ONE_TIME
     creditHold: boolean("credit_hold").default(false),
-    paymentTermsId: varchar("payment_terms_id", { length: 50 }), // Link to Terms
 
     // Risk & Compliance
     riskCategory: varchar("risk_category", { length: 50 }).default("Low"),
     riskScore: integer("risk_score"),
 
     // Contact
-    address: text("address"),
     country: varchar("country", { length: 100 }),
     contactEmail: varchar("contact_email", { length: 255 }),
     parentSupplierId: integer("parent_supplier_id"),
@@ -35,6 +38,28 @@ export const insertApSupplierSchema = createInsertSchema(apSuppliers);
 export type ApSupplier = typeof apSuppliers.$inferSelect;
 export type InsertApSupplier = typeof apSuppliers.$inferInsert;
 
+// 1.1 Supplier Sites (Child - New V2 Schema)
+export const apSupplierSites = pgTable("ap_supplier_sites", {
+    id: serial("id").primaryKey(),
+    supplierId: integer("supplier_id").notNull(), // Parent
+    siteName: varchar("site_name", { length: 100 }).notNull().default("OFFICE"), // e.g. HEADQUARTERS, PAY_ONLY
+
+    address: text("address"),
+    taxId: varchar("tax_id", { length: 100 }), // Override parent
+    paymentTermsId: varchar("payment_terms_id", { length: 50 }), // Override parent
+
+    isPaySite: boolean("is_pay_site").default(true),
+    isPurchasingSite: boolean("is_purchasing_site").default(true),
+
+    enabledFlag: boolean("enabled_flag").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApSupplierSiteSchema = createInsertSchema(apSupplierSites);
+export type ApSupplierSite = typeof apSupplierSites.$inferSelect;
+export type InsertApSupplierSite = typeof apSupplierSites.$inferInsert;
+
 
 // 2. Invoice Header
 export const apInvoices = pgTable("ap_invoices", {
@@ -42,7 +67,7 @@ export const apInvoices = pgTable("ap_invoices", {
     invoiceId: varchar("invoice_id", { length: 50 }), // Logical ID if needed, or use serial ID
 
     supplierId: integer("supplier_id").notNull(),
-    supplierSiteId: integer("supplier_site_id"), // Future use
+    supplierSiteId: integer("supplier_site_id"), // FK to ap_supplier_sites (Migration will populate this)
 
     invoiceNumber: varchar("invoice_number", { length: 100 }).notNull(),
     invoiceDate: timestamp("invoice_date").notNull(),
@@ -60,6 +85,7 @@ export const apInvoices = pgTable("ap_invoices", {
     approvalStatus: varchar("approval_status", { length: 50 }).default("REQUIRED"), // REQUIRED, APPROVED, REJECTED, NOT REQUIRED
     paymentStatus: varchar("payment_status", { length: 50 }).default("UNPAID"), // UNPAID, PARTIAL, PAID
     accountingStatus: varchar("accounting_status", { length: 50 }).default("UNACCOUNTED"), // UNACCOUNTED, ACCOUNTED
+    invoiceStatus: varchar("invoice_status", { length: 50 }).default("DRAFT"), // DRAFT, VALIDATED, APPROVED, PAID
 
     // UI Compatibility & Parity
     dueDate: timestamp("due_date"),
@@ -152,15 +178,66 @@ export const apHolds = pgTable("ap_holds", {
     invoice_id: integer("invoice_id").notNull(),
     line_location_id: integer("line_location_id"), // Optional: if hold is on a specific line
     hold_lookup_code: varchar("hold_lookup_code", { length: 50 }).notNull(), // e.g. PRICE VARIANCE, QTY RECD
+    hold_type: varchar("hold_type", { length: 50 }).notNull().default("GENERAL"), // e.g. PRICE_VARIANCE, QTY_VARIANCE
     hold_reason: varchar("hold_reason", { length: 255 }),
     release_lookup_code: varchar("release_lookup_code", { length: 50 }), // NULL if active
     hold_date: timestamp("hold_date").defaultNow(),
     held_by: integer("held_by").default(1), // System User ID
 });
 
-export const insertApInvoiceDistributionSchema = createInsertSchema(apInvoiceDistributions);
-export type ApInvoiceDistribution = typeof apInvoiceDistributions.$inferSelect;
-export type InsertApInvoiceDistribution = typeof apInvoiceDistributions.$inferInsert;
+export const insertApHoldSchema = createInsertSchema(apHolds);
+export type ApHold = typeof apHolds.$inferSelect;
+export type InsertApHold = typeof apHolds.$inferInsert;
+
+// 6. System Parameters (Global Options)
+export const apSystemParameters = pgTable("ap_system_parameters", {
+    id: serial("id").primaryKey(),
+    orgId: integer("org_id").default(1), // Single Org for now
+
+    // Tolerances
+    priceTolerancePercent: numeric("price_tolerance_percent").default("0.05"), // 5%
+    qtyTolerancePercent: numeric("qty_tolerance_percent").default("0.05"), // 5%
+    taxTolerancePercent: numeric("tax_tolerance_percent").default("0.10"), // 10%
+
+    // Defaults
+    defaultPaymentTermsId: varchar("default_payment_terms_id", { length: 50 }).default("Net 30"),
+    defaultCurrencyCode: varchar("default_currency_code", { length: 10 }).default("USD"),
+
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApSystemParametersSchema = createInsertSchema(apSystemParameters);
+export type ApSystemParameters = typeof apSystemParameters.$inferSelect;
+export type InsertApSystemParameters = typeof apSystemParameters.$inferInsert;
+
+
+// 7. Distribution Sets (Templates)
+export const apDistributionSets = pgTable("ap_distribution_sets", {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 100 }).notNull(),
+    description: text("description"),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApDistributionSetSchema = createInsertSchema(apDistributionSets);
+export type ApDistributionSet = typeof apDistributionSets.$inferSelect;
+export type InsertApDistributionSet = typeof apDistributionSets.$inferInsert;
+
+export const apDistributionSetLines = pgTable("ap_distribution_set_lines", {
+    id: serial("id").primaryKey(),
+    distributionSetId: integer("distribution_set_id").notNull(),
+    distributionPercent: numeric("distribution_percent").notNull(), // e.g. 50.00
+    distCodeCombinationId: integer("dist_code_combination_id").notNull(), // GL Account
+    description: varchar("description", { length: 255 }),
+});
+
+export const insertApDistributionSetLineSchema = createInsertSchema(apDistributionSetLines);
+export type ApDistributionSetLine = typeof apDistributionSetLines.$inferSelect;
+export type InsertApDistributionSetLine = typeof apDistributionSetLines.$inferInsert;
+
+// (Removed duplicate apInvoiceDistributions)
 
 export const insertApPaymentSchema = createInsertSchema(apPayments);
 export type ApPayment = typeof apPayments.$inferSelect;
