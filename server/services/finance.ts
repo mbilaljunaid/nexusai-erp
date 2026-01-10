@@ -91,21 +91,53 @@ export class FinanceService {
     }
 
     async getGLStats() {
-        const journals = await storage.listGlJournals();
-        const periods = await storage.listGlPeriods();
+        // Optimize: Use count queries instead of fetching all records
+        const [totalJournals] = await db.select({ count: sql<number>`count(*)` }).from(glJournals);
+        const [postedJournals] = await db.select({ count: sql<number>`count(*)` }).from(glJournals).where(eq(glJournals.status, "Posted"));
 
-        const totalJournals = journals.length;
-        const postedJournals = journals.filter(j => j.status === "Posted").length;
-        const unpostedJournals = totalJournals - postedJournals;
-        const openPeriods = periods.filter(p => p.status === "Open").length;
+        // Count unposted
+        const unpostedJournals = Number(totalJournals.count) - Number(postedJournals.count);
+
+        const [openPeriods] = await db.select({ count: sql<number>`count(*)` }).from(glPeriods).where(eq(glPeriods.status, "Open"));
+
+        // Active Ledgers (Distinct count)
+        const [activeLedgers] = await db.select({ count: sql<number>`count(distinct ${glJournals.ledgerId})` }).from(glJournals);
 
         return {
-            totalJournals,
-            postedJournals,
+            totalJournals: Number(totalJournals.count),
+            postedJournals: Number(postedJournals.count),
             unpostedJournals,
-            openPeriods,
-            activeLedgers: [...new Set(journals.map(j => j.ledgerId))].length
+            openPeriods: Number(openPeriods.count),
+            activeLedgers: Number(activeLedgers.count)
         };
+    }
+
+    async listJournals(filters?: { status?: string, ledgerId?: string, search?: string }) {
+        let conditions = [];
+
+        if (filters?.status) {
+            conditions.push(eq(glJournals.status, filters.status));
+        }
+
+        if (filters?.ledgerId) {
+            conditions.push(eq(glJournals.ledgerId, filters.ledgerId));
+        }
+
+        // Note: Drizzle's like/ilike handling might need explicit sql operator in some versions, 
+        // using standardized approach here.
+        if (filters?.search) {
+            // Checking description or journalNumber
+            const searchPattern = `%${filters.search}%`;
+            conditions.push(sql`(${glJournals.description} ILIKE ${searchPattern} OR ${glJournals.journalNumber} ILIKE ${searchPattern})`);
+        }
+
+        const query = db.select().from(glJournals);
+
+        if (conditions.length > 0) {
+            query.where(and(...conditions));
+        }
+
+        return await query.orderBy(desc(glJournals.postedDate), desc(glJournals.createdAt));
     }
 
     // ================= GL JOURNALS =================
@@ -1609,25 +1641,11 @@ export class FinanceService {
         return await storage.createGlCrossValidationRule(data);
     }
 
-    async listJournals(periodId?: string, ledgerId?: string) {
-        return await storage.listGlJournals(periodId, ledgerId);
-    }
-
     async listAuditLogs() {
         return await storage.listGlAuditLogs();
     }
 
-    async listLegalEntities() {
-        return await storage.listLegalEntities();
-    }
-
-    async createLegalEntity(data: any) {
-        return await storage.createLegalEntity(data);
-    }
-
-    async updateLegalEntity(id: string, data: any) {
-        return await storage.updateLegalEntity(id, data);
-    }
+    // listLegalEntities and createLegalEntity moved to line 1989+
 
     async listValueSets() {
         return await storage.listValueSets();
@@ -1925,8 +1943,7 @@ export class FinanceService {
         // Create the Ledger Set definition
         const [ledgerSet] = await db.insert(glLedgerSets).values({
             name: data.name,
-            description: data.description,
-            ledgerId: data.ledgerId // Primary Ledger this set belongs to (or master chart)
+            description: data.description || null,
         }).returning();
 
         return ledgerSet;
@@ -1943,8 +1960,7 @@ export class FinanceService {
     async createLegalEntity(data: { name: string; organizationId: string; registrationNumber?: string; ledgerId: string }) {
         const [legalEntity] = await db.insert(glLegalEntities).values({
             name: data.name,
-            organizationId: data.organizationId,
-            registrationNumber: data.registrationNumber,
+            taxId: data.organizationId, // Mapping organizationId to taxId for now as per schema
             ledgerId: data.ledgerId
         }).returning();
         return legalEntity;

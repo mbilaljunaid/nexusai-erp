@@ -48,6 +48,37 @@ router.post("/gl/post", async (req, res) => {
 });
 
 /**
+ * GET /api/gl/stats
+ * Get GL statistics for dashboards
+ */
+router.get("/gl/stats", async (req, res) => {
+  try {
+    const stats = await financeService.getGLStats();
+    res.json(stats);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/gl/journals
+ * Get list of journals with optional filters
+ */
+router.get("/gl/journals", async (req, res) => {
+  try {
+    const { status, ledgerId, search } = req.query;
+    const journals = await financeService.listJournals({
+      status: status as string,
+      ledgerId: ledgerId as string,
+      search: search as string
+    });
+    res.json(journals);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * GET /api/gl/entries/:formId
  * Get GL entries for a form
  */

@@ -61,15 +61,23 @@ async function verifyGlApiRefactor() {
 
         // 3. Verify in DB via Finance Service
         console.log("3. Verifying persistence in FinanceService...");
-        // Note: financeService doesn't have `getJournal` exposed directly in the simplified interface file I saw?
-        // Let's check `getLedger` or just list journals?
-        // Wait, `financeService` needs `getJournal`?
-        // Looking at `financeService.ts` content I saw earlier, it has `createJournal` but I didn't verify `getJournal` in the snippet.
-        // But `server/storage.ts` definitely has `getGlJournal`.
-        // Let's assume financeService has it or I can direct check storage if exported.
-        // Actually best to try a direct check if possible, or trust the success result.
+        const journals = await financeService.listJournals({ search: "Verification" });
+        console.log(`   Found ${journals.length} journals matching 'Verification'`);
 
-        console.log("✅ GL Engine Refactor Verified.");
+        if (journals.length === 0) {
+            throw new Error("List Journals returned 0 items.");
+        }
+
+        // 4. Verify GL Stats
+        console.log("4. Verifying GL Stats...");
+        const stats = await financeService.getGLStats();
+        console.log("   Stats:", JSON.stringify(stats, null, 2));
+
+        if (stats.totalJournals === 0) {
+            throw new Error("Stats reported 0 total journals.");
+        }
+
+        console.log("✅ GL Engine & UI Data Verified.");
         process.exit(0);
 
     } catch (e) {

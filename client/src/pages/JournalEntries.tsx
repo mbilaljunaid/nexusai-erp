@@ -12,8 +12,11 @@ import {
   MoreVertical,
   ChevronRight,
   ArrowUpRight,
-  Download
+  Download,
+  Play
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   Table,
   TableBody,
@@ -32,9 +35,22 @@ export default function JournalEntries() {
   const [selectedJournal, setSelectedJournal] = useState<any>(null);
   const [isSideSheetOpen, setIsSideSheetOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
+
+  const handlePost = async (e: React.MouseEvent, journal: any) => {
+    e.stopPropagation();
+    try {
+      await apiRequest("POST", `/api/finance/gl/journals/${journal.id}/post`);
+      toast({ title: "Posting Initiated", description: `Batch ${journal.journalNumber} submitted for processing.` });
+      queryClient.invalidateQueries({ queryKey: ["/api/gl/journals"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/gl/stats"] });
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
 
   const { data: journals = [], isLoading } = useQuery<any[]>({
-    queryKey: ["/api/finance/gl/journals"],
+    queryKey: ["/api/gl/journals"],
   });
 
   const filteredJournals = journals.filter(j =>
@@ -153,7 +169,12 @@ export default function JournalEntries() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right pr-6">
-                      <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity gap-2">
+                        {journal.status === 'Draft' && (
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 shadow-sm rounded-full" onClick={(e) => handlePost(e, journal)} title="Post Batch">
+                            <Play className="h-4 w-4" />
+                          </Button>
+                        )}
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-indigo-600 hover:bg-white shadow-sm rounded-full">
                           <ChevronRight className="h-4 w-4" />
                         </Button>

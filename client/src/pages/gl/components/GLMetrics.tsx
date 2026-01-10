@@ -24,7 +24,7 @@ interface GLStats {
 
 export function GLMetrics() {
     const { data: stats, isLoading } = useQuery<GLStats>({
-        queryKey: ["/api/finance/gl/stats"],
+        queryKey: ["/api/gl/stats"],
     });
 
     if (isLoading) {
