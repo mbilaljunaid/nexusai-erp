@@ -19,6 +19,12 @@ async function fetchInvoices() {
 export function ApInvoiceList() {
     const queryClient = useQueryClient();
     const { toast } = useToast();
+    const [selectedInvoice, setSelectedInvoice] = useState<ApInvoice | null>(null);
+
+    const { data: invoices, isLoading } = useQuery<ApInvoice[]>({
+        queryKey: ['/api/ap/invoices'],
+        queryFn: fetchInvoices
+    });
 
     const validateMutation = useMutation({
         mutationFn: async (id: number) => {
@@ -94,6 +100,9 @@ export function ApInvoiceList() {
                                     <div className="flex gap-1">
                                         <Badge variant={invoice.paymentStatus === "PAID" ? "default" : invoice.paymentStatus === "UNPAID" ? "destructive" : "secondary"}>
                                             {invoice.paymentStatus}
+                                        </Badge>
+                                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                                            {invoice.invoiceStatus || "DRAFT"}
                                         </Badge>
                                         <Badge variant={invoice.validationStatus === "VALIDATED" ? "outline" : "destructive"} className={invoice.validationStatus === "VALIDATED" ? "text-green-600 border-green-200 bg-green-50" : ""}>
                                             {invoice.validationStatus || "NEVER"}

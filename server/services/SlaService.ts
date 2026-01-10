@@ -82,42 +82,69 @@ export class SlaService {
                 currencyCode: event.currency,
                 description: "Item Expense"
             });
-        } else if (event.eventClass === "AR_INVOICE_COMPLETE") {
-            // 3c. Derive Receivable (Debit)
-            const receivableCCID = await this.deriveAccount("RECEIVABLE", event.sourceData, event.ledgerId);
-            linesToInsert.push({
-                headerId: header.id,
-                lineNumber: lineNumber++,
-                accountingClass: "Receivable",
-                codeCombinationId: receivableCCID,
-                enteredDr: String(event.amount),
-                accountedDr: String(event.amount),
-                currencyCode: event.currency,
-                description: "Receivable Entry"
-            });
+        });
+    } else if(event.eventClass === "AP_PAYMENT_CREATED") {
+    // 3c. Debit Liability (Undo credit from invoice)
+    const liabilityCCID = await this.deriveAccount("AP_LIABILITY", event.sourceData, event.ledgerId);
+    linesToInsert.push({
+        headerId: header.id,
+        lineNumber: lineNumber++,
+        accountingClass: "Liability",
+        codeCombinationId: liabilityCCID,
+        enteredDr: String(event.amount),
+        accountedDr: String(event.amount),
+        currencyCode: event.currency,
+        description: "Payment - Liability Clearing"
+    });
 
-            // 3d. Derive Revenue (Credit)
-            const revenueCCID = await this.deriveAccount("REVENUE", event.sourceData, event.ledgerId);
-            linesToInsert.push({
-                headerId: header.id,
-                lineNumber: lineNumber++,
-                accountingClass: "Revenue",
-                codeCombinationId: revenueCCID,
-                enteredCr: String(event.amount),
-                accountedCr: String(event.amount),
-                currencyCode: event.currency,
-                description: "Revenue Entry"
-            });
-        }
-        // Add more event classes here (AR_INVOICE, PAYMENT, etc.)
+    // 3d. Credit Cash (The actual cash outflow)
+    const cashCCID = await this.deriveAccount("CASH", event.sourceData, event.ledgerId);
+    linesToInsert.push({
+        headerId: header.id,
+        lineNumber: lineNumber++,
+        accountingClass: "Cash",
+        codeCombinationId: cashCCID,
+        enteredCr: String(event.amount),
+        accountedCr: String(event.amount),
+        currencyCode: event.currency,
+        description: "Payment - Cash Outflow"
+    });
+} else if (event.eventClass === "AR_INVOICE_COMPLETE") {
+    // 3c. Derive Receivable (Debit)
+    const receivableCCID = await this.deriveAccount("RECEIVABLE", event.sourceData, event.ledgerId);
+    linesToInsert.push({
+        headerId: header.id,
+        lineNumber: lineNumber++,
+        accountingClass: "Receivable",
+        codeCombinationId: receivableCCID,
+        enteredDr: String(event.amount),
+        accountedDr: String(event.amount),
+        currencyCode: event.currency,
+        description: "Receivable Entry"
+    });
 
-        // 4. Insert Lines
-        if (linesToInsert.length > 0) {
-            await db.insert(slaJournalLines).values(linesToInsert);
-        }
+    // 3d. Derive Revenue (Credit)
+    const revenueCCID = await this.deriveAccount("REVENUE", event.sourceData, event.ledgerId);
+    linesToInsert.push({
+        headerId: header.id,
+        lineNumber: lineNumber++,
+        accountingClass: "Revenue",
+        codeCombinationId: revenueCCID,
+        enteredCr: String(event.amount),
+        accountedCr: String(event.amount),
+        currencyCode: event.currency,
+        description: "Revenue Entry"
+    });
+}
+// Add more event classes here (AR_INVOICE, PAYMENT, etc.)
 
-        console.log(`[SLA] Created SLA Journal ${header.id} with ${linesToInsert.length} lines.`);
-        return header;
+// 4. Insert Lines
+if (linesToInsert.length > 0) {
+    await db.insert(slaJournalLines).values(linesToInsert);
+}
+
+console.log(`[SLA] Created SLA Journal ${header.id} with ${linesToInsert.length} lines.`);
+return header;
     }
 
     /**
@@ -125,71 +152,74 @@ export class SlaService {
      * This turns the Draft SLA entry into a Real GL Journal.
      */
     async postToGL(slaHeaderId: string, userId: string) {
-        const [header] = await db.select().from(slaJournalHeaders).where(eq(slaJournalHeaders.id, slaHeaderId));
-        if (!header) throw new Error("SLA Header not found");
-        if (header.transferStatus === "Transferred") throw new Error("Already transferred to GL");
+    const [header] = await db.select().from(slaJournalHeaders).where(eq(slaJournalHeaders.id, slaHeaderId));
+    if (!header) throw new Error("SLA Header not found");
+    if (header.transferStatus === "Transferred") throw new Error("Already transferred to GL");
 
-        const lines = await db.select().from(slaJournalLines).where(eq(slaJournalLines.headerId, slaHeaderId));
+    const lines = await db.select().from(slaJournalLines).where(eq(slaJournalLines.headerId, slaHeaderId));
 
-        // Create GL Journal
-        // We need to map SLA lines to GL Lines
-        // Note: SLA lines might be detailed, GL might summarize. For now, 1:1.
+    // Create GL Journal
+    // We need to map SLA lines to GL Lines
+    // Note: SLA lines might be detailed, GL might summarize. For now, 1:1.
 
-        // Call FinanceService to create journal
-        // We construct the "Input" for createJournal
-        const journal = await financeService.createJournal({
-            ledgerId: header.ledgerId,
-            periodName: "Jan-26", // TODO: Derive period from date
-            source: "SLA",
-            category: header.eventClassId || "Manual",
-            currencyCode: header.currencyCode,
-            description: header.description || "SLA Import",
-            lines: lines.map(l => ({
-                accountId: l.codeCombinationId!, // Non-null assertion for MVP
-                enteredDr: l.enteredDr ? Number(l.enteredDr) : 0,
-                enteredCr: l.enteredCr ? Number(l.enteredCr) : 0,
-                description: l.description || ""
-            }))
-        }, userId);
+    // Call FinanceService to create journal
+    // We construct the "Input" for createJournal
+    const journal = await financeService.createJournal({
+        ledgerId: header.ledgerId,
+        periodName: "Jan-26", // TODO: Derive period from date
+        source: "SLA",
+        category: header.eventClassId || "Manual",
+        currencyCode: header.currencyCode,
+        description: header.description || "SLA Import",
+        lines: lines.map(l => ({
+            accountId: l.codeCombinationId!, // Non-null assertion for MVP
+            enteredDr: l.enteredDr ? Number(l.enteredDr) : 0,
+            enteredCr: l.enteredCr ? Number(l.enteredCr) : 0,
+            description: l.description || ""
+        }))
+    }, userId);
 
-        // Update SLA status
-        await db.update(slaJournalHeaders).set({
-            transferStatus: "Transferred",
-            glJournalId: journal.id,
-            completedFlag: true,
-            status: "Final"
-        }).where(eq(slaJournalHeaders.id, slaHeaderId));
+    // Update SLA status
+    await db.update(slaJournalHeaders).set({
+        transferStatus: "Transferred",
+        glJournalId: journal.id,
+        completedFlag: true,
+        status: "Final"
+    }).where(eq(slaJournalHeaders.id, slaHeaderId));
 
-        return journal;
-    }
+    return journal;
+}
 
     /**
      * Rule Evaluation Engine
      */
-    async deriveAccount(ruleType: string, sourceData: any, ledgerId: string): Promise<string> {
-        // Real implementation would look up `slaAccountingRules`
-        // For now, hardcode to ensure we use valid 10-segment codes.
+    async deriveAccount(ruleType: string, sourceData: any, ledgerId: string): Promise < string > {
+    // Real implementation would look up `slaAccountingRules`
+    // For now, hardcode to ensure we use valid 10-segment codes.
 
-        const DEFAULT_SEGMENTS = "01-000-00000-000-000-000-000-000-000-000"; // 10 segments
-        let segmentString = DEFAULT_SEGMENTS;
+    const DEFAULT_SEGMENTS = "01-000-00000-000-000-000-000-000-000-000"; // 10 segments
+    let segmentString = DEFAULT_SEGMENTS;
 
-        if (ruleType === "LIABILITY") {
-            // 01-000-20000-...
-            segmentString = "01-000-20000-000-000-000-000-000-000-000";
-        } else if (ruleType === "EXPENSE") {
-            // 01-000-50000-...
-            segmentString = "01-000-50000-000-000-000-000-000-000-000";
-        } else if (ruleType === "RECEIVABLE") {
-            // 01-000-12000-...
-            segmentString = "01-000-12000-000-000-000-000-000-000-000";
-        } else if (ruleType === "REVENUE") {
-            // 01-000-40000-...
-            segmentString = "01-000-40000-000-000-000-000-000-000-000";
-        }
+    if(ruleType === "LIABILITY" || ruleType === "AP_LIABILITY") {
+    // 01-000-20000-...
+    segmentString = "01-000-20000-000-000-000-000-000-000-000";
+} else if (ruleType === "EXPENSE") {
+    // 01-000-50000-...
+    segmentString = "01-000-50000-000-000-000-000-000-000-000";
+} else if (ruleType === "CASH") {
+    // 01-000-11000-...
+    segmentString = "01-000-11000-000-000-000-000-000-000-000";
+} else if (ruleType === "RECEIVABLE") {
+    // 01-000-12000-...
+    segmentString = "01-000-12000-000-000-000-000-000-000-000";
+} else if (ruleType === "REVENUE") {
+    // 01-000-40000-...
+    segmentString = "01-000-40000-000-000-000-000-000-000-000";
+}
 
-        // Ensure this combination exists in GL
-        const cc = await financeService.getOrCreateCodeCombination(ledgerId, segmentString);
-        return cc.id;
+// Ensure this combination exists in GL
+const cc = await financeService.getOrCreateCodeCombination(ledgerId, segmentString);
+return cc.id;
     }
 }
 

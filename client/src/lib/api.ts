@@ -116,6 +116,12 @@ export const api = {
       list: () => fetch(`${API_BASE}/api/ap/invoices`, { credentials: "include" }).then(r => r.json()),
       get: (id: string) => fetch(`${API_BASE}/api/ap/invoices/${id}`, { credentials: "include" }).then(r => r.json()),
       approve: (id: string, comments?: string) => apiRequest("POST", `${API_BASE}/api/ap/invoices/${id}/approve`, { comments }).then(r => r.json()),
+      validate: (id: string) => apiRequest("POST", `${API_BASE}/api/ap/invoices/${id}/validate`, {}).then(r => r.json()),
+      match: (id: string, data: any) => apiRequest("POST", `${API_BASE}/api/ap/invoices/${id}/match`, data).then(r => r.json()),
+      getHolds: (id: string) => fetch(`${API_BASE}/api/ap/invoices/${id}/holds`, { credentials: "include" }).then(r => r.json()),
+    },
+    holds: {
+      release: (id: string, releaseCode: string) => apiRequest("POST", `${API_BASE}/api/ap/holds/${id}/release`, { releaseCode }).then(r => r.json()),
     },
     payments: {
       create: (data: any) => apiRequest("POST", `${API_BASE}/api/ap/payments`, data).then(r => r.json()),
@@ -123,6 +129,12 @@ export const api = {
     },
     ai: {
       simulate: (action: string) => apiRequest("POST", `${API_BASE}/api/ap/ai/simulate`, { action }).then(r => r.json()),
+    },
+    paymentBatches: {
+      list: () => fetch(`${API_BASE}/api/ap/payment-batches`, { credentials: "include" }).then(r => r.json()),
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ap/payment-batches`, data).then(r => r.json()),
+      select: (id: string | number) => apiRequest("POST", `${API_BASE}/api/ap/payment-batches/${id}/select`, {}).then(r => r.json()),
+      confirm: (id: string | number) => apiRequest("POST", `${API_BASE}/api/ap/payment-batches/${id}/confirm`, {}).then(r => r.json()),
     },
   },
 

@@ -2,7 +2,7 @@
 import express from "express";
 import { apService } from "../services/ap";
 import { storage } from "../storage";
-import { insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema, insertApInvoiceLineSchema } from "@shared/schema";
+import { insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema, insertApInvoiceLineSchema, insertApPaymentBatchSchema } from "@shared/schema";
 import { z } from "zod";
 
 export const apRouter = express.Router();
@@ -127,8 +127,6 @@ apRouter.put("/invoices/:id", async (req, res) => {
     if (!parse.success) return res.status(400).json(parse.error);
     const updated = await storage.updateApInvoice(req.params.id, parse.data as any);
     if (!updated) return res.status(404).json({ error: "Invoice not found" });
-    const updated = await storage.updateApInvoice(req.params.id, parse.data as any);
-    if (!updated) return res.status(404).json({ error: "Invoice not found" });
     res.json(updated);
 });
 
@@ -136,6 +134,33 @@ apRouter.post("/invoices/:id/validate", async (req, res) => {
     try {
         const result = await apService.validateInvoice(parseInt(req.params.id));
         res.json(result);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+apRouter.post("/invoices/:id/match", async (req, res) => {
+    try {
+        const result = await apService.matchInvoiceToPO(parseInt(req.params.id), req.body);
+        res.json(result);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+apRouter.get("/invoices/:id/holds", async (req, res) => {
+    try {
+        const holds = await apService.getInvoiceHolds(parseInt(req.params.id));
+        res.json(holds);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+apRouter.post("/holds/:id/release", async (req, res) => {
+    try {
+        const hold = await apService.releaseHold(parseInt(req.params.id), req.body.releaseCode);
+        res.json(hold);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
     }
@@ -153,6 +178,42 @@ apRouter.post("/payments/apply", async (req, res) => {
     const payment = await apService.applyPayment(req.body.invoiceId, parse.data as any);
     if (!payment) return res.status(404).json({ error: "Invoice not found for payment" });
     res.status(201).json(payment);
+});
+
+// --- PPR (Payment Process Request) Routes ---
+
+apRouter.get("/payment-batches", async (_req, res) => {
+    const list = await apService.listPaymentBatches();
+    res.json(list);
+});
+
+apRouter.post("/payment-batches", async (req, res) => {
+    const parse = insertApPaymentBatchSchema.safeParse(req.body);
+    if (!parse.success) return res.status(400).json(parse.error);
+    try {
+        const batch = await apService.createPaymentBatch(parse.data as any);
+        res.status(201).json(batch);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+apRouter.post("/payment-batches/:id/select", async (req, res) => {
+    try {
+        const result = await apService.selectInvoicesForBatch(parseInt(req.params.id));
+        res.json(result);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+apRouter.post("/payment-batches/:id/confirm", async (req, res) => {
+    try {
+        const result = await apService.confirmPaymentBatch(parseInt(req.params.id));
+        res.json(result);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
 });
 
 export default apRouter;

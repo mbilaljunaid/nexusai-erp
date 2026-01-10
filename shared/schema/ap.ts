@@ -156,11 +156,36 @@ export const apInvoiceDistributions = pgTable("ap_invoice_distributions", {
     createdAt: timestamp("created_at").defaultNow()
 });
 
-// 5. Payments (Refactored to link to Invoices)
+// 5. Payment Batches (PPR - Payment Process Request)
+export const apPaymentBatches = pgTable("ap_payment_batches", {
+    id: serial("id").primaryKey(),
+    batchName: varchar("batch_name", { length: 100 }).notNull(),
+    status: varchar("status", { length: 50 }).default("NEW"), // NEW, SELECTED, CONFIRMED, CANCELLED
+
+    // Selection Criteria
+    checkDate: timestamp("check_date").notNull().defaultNow(),
+    payGroup: varchar("pay_group", { length: 50 }),
+    paymentMethodCode: varchar("payment_method_code", { length: 50 }).default("CHECK"),
+
+    // Totals
+    totalAmount: numeric("total_amount", { precision: 18, scale: 2 }).default("0"),
+    paymentCount: integer("payment_count").default(0),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApPaymentBatchSchema = createInsertSchema(apPaymentBatches);
+export type ApPaymentBatch = typeof apPaymentBatches.$inferSelect;
+export type InsertApPaymentBatch = typeof apPaymentBatches.$inferInsert;
+
+// 6. Payments (Refactored to link to Invoices)
 export const apPayments = pgTable("ap_payments", {
     id: serial("id").primaryKey(),
     paymentNumber: serial("payment_number"), // Internal sequential
     checkNumber: varchar("check_number"), // External ref
+
+    batchId: integer("batch_id"), // Link to PPR batch
 
     paymentDate: timestamp("payment_date").notNull(),
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),

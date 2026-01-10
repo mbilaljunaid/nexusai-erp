@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ApSupplier, ApInvoice } from "@shared/schema";
 import { format } from "date-fns";
 import { CreditCard, AlertTriangle, Building2, FileText, CheckCircle2, XCircle, Activity, Layers, Receipt } from "lucide-react";
@@ -115,6 +116,7 @@ export function ApSideSheet({
                         {type === "invoice" ? (
                             <>
                                 <TabsTrigger value="lines">Lines</TabsTrigger>
+                                <TabsTrigger value="holds">Holds</TabsTrigger>
                                 <TabsTrigger value="distributions">Distributions</TabsTrigger>
                             </>
                         ) : (
@@ -228,6 +230,9 @@ export function ApSideSheet({
                                     </div>
                                 </ScrollArea>
                             </TabsContent>
+                            <TabsContent value="holds" className="space-y-4">
+                                {invoice && <InvoiceHoldsView invoiceId={invoice.id} />}
+                            </TabsContent>
                             <TabsContent value="distributions">
                                 <ScrollArea className="h-[300px] rounded-md border p-0">
                                     <div className="p-4 space-y-4">
@@ -311,3 +316,71 @@ export function ApSideSheet({
         </Sheet>
     );
 }
+
+function InvoiceHoldsView({ invoiceId }: { invoiceId: number }) {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+    const { data: holds, isLoading } = useQuery({
+        queryKey: [`/api/ap/invoices/${invoiceId}/holds`],
+    });
+
+    const releaseMutation = useMutation({
+        mutationFn: async (holdId: number) => {
+            const res = await apiRequest("POST", `/api/ap/holds/${holdId}/release`, { releaseCode: "MANUAL" });
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/ap/invoices/${invoiceId}/holds`] });
+            queryClient.invalidateQueries({ queryKey: ['/api/ap/invoices'] });
+            toast({ title: "Hold Released", description: "The hold has been successfully released." });
+        },
+    });
+
+    if (isLoading) return <Skeleton className="h-20 w-full" />;
+
+    return (
+        <div className="space-y-3">
+            {Array.isArray(holds) && holds.length > 0 ? (
+                holds.map((hold: any) => (
+                    <div key={hold.id} className={`p-3 border rounded-lg ${hold.release_lookup_code ? 'bg-muted/50 border-muted-foreground/20' : 'bg-destructive/5 border-destructive/20'}`}>
+                        <div className="flex items-center justify-between mb-1">
+                            <div className="flex items-center gap-2">
+                                <AlertTriangle className={`h-4 w-4 ${hold.release_lookup_code ? 'text-muted-foreground' : 'text-destructive'}`} />
+                                <span className={`font-semibold text-sm ${hold.release_lookup_code ? 'text-muted-foreground line-through' : ''}`}>
+                                    {hold.hold_lookup_code}
+                                </span>
+                            </div>
+                            {hold.release_lookup_code ? (
+                                <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">
+                                    Released: {hold.release_lookup_code}
+                                </Badge>
+                            ) : (
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-6 text-[10px] px-2"
+                                    onClick={() => releaseMutation.mutate(hold.id)}
+                                    disabled={releaseMutation.isPending}
+                                >
+                                    Release
+                                </Button>
+                            )}
+                        </div>
+                        <p className="text-xs text-muted-foreground pl-6">{hold.hold_reason}</p>
+                        <div className="mt-2 text-[10px] text-muted-foreground flex gap-3 pl-6">
+                            <span>Type: {hold.hold_type}</span>
+                            <span>Date: {hold.hold_date ? format(new Date(hold.hold_date), "MMM dd, yyyy") : 'N/A'}</span>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
+                    <CheckCircle2 className="h-8 w-8 mx-auto mb-2 opacity-20 text-green-500" />
+                    <p className="text-sm font-medium">No active holds.</p>
+                    <p className="text-xs">Invoice is ready for next lifecycle step.</p>
+                </div>
+            )}
+        </div>
+    );
+}
+
