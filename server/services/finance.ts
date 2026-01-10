@@ -13,6 +13,28 @@ import { randomUUID } from "crypto";
 
 export class FinanceService {
 
+    // ================= LEDGER RELATIONSHIPS =================
+    async listLedgerRelationships() {
+        return await storage.listLedgerRelationships();
+    }
+
+    async createLedgerRelationship(data: any) {
+        return await storage.createLedgerRelationship(data);
+    }
+
+    // ================= MAIN LEDGERS =================
+    async listLedgers() {
+        return await storage.listGlLedgers();
+    }
+
+    async getLedger(id: string) {
+        return await storage.getLedger(id);
+    }
+
+    async createLedger(data: any) {
+        return await storage.createLedger(data);
+    }
+
     // ================= GL ACCOUNTS =================
     async listAccounts() {
         return await storage.listGlAccounts();
@@ -27,7 +49,10 @@ export class FinanceService {
     }
 
     // ================= GL PERIODS =================
-    async listPeriods() {
+    async listPeriods(ledgerId?: string) {
+        if (ledgerId) {
+            return (await storage.listGlPeriods()).filter(p => p.ledgerId === ledgerId);
+        }
         return await storage.listGlPeriods();
     }
 
@@ -35,12 +60,16 @@ export class FinanceService {
         return await storage.createGlPeriod(data);
     }
 
-    async closePeriod(id: string) {
-        return await storage.updateGlPeriod(id, { status: "Closed" });
+    async closePeriod(id: string, userId: string = "system", context?: { ipAddress?: string, sessionId?: string }) {
+        const period = await storage.updateGlPeriod(id, { status: "Closed" });
+        await this.logAuditAction(userId, "PERIOD_CLOSE", { periodId: id, periodName: period.periodName }, context);
+        return period;
     }
 
-    async reopenPeriod(id: string) {
-        return await storage.updateGlPeriod(id, { status: "Open" });
+    async reopenPeriod(id: string, userId: string = "system", context?: { ipAddress?: string, sessionId?: string }) {
+        const period = await storage.updateGlPeriod(id, { status: "Open" });
+        await this.logAuditAction(userId, "PERIOD_REOPEN", { periodId: id, periodName: period.periodName }, context);
+        return period;
     }
 
     async getPeriodExceptions(id: string) {
@@ -51,33 +80,90 @@ export class FinanceService {
         };
     }
 
-    // ================= GL JOURNALS =================
-    async listJournals(periodId?: string, ledgerId?: string) {
-        return await storage.listGlJournals(periodId, ledgerId);
+    async getGLStats() {
+        const journals = await storage.listGlJournals();
+        const periods = await storage.listGlPeriods();
+
+        const totalJournals = journals.length;
+        const postedJournals = journals.filter(j => j.status === "Posted").length;
+        const unpostedJournals = totalJournals - postedJournals;
+        const openPeriods = periods.filter(p => p.status === "Open").length;
+
+        return {
+            totalJournals,
+            postedJournals,
+            unpostedJournals,
+            openPeriods,
+            activeLedgers: [...new Set(journals.map(j => j.ledgerId))].length
+        };
     }
+
+    // ================= GL JOURNALS =================
 
     async checkDataAccess(userId: string, ledgerId: string, segments: string[]) {
-        // Placeholder for GL Security Logic (DAS/BSV)
-        // For now, allow all.
-        return true;
+        if (userId === "system" || userId === "SYSTEM") return true;
+
+        const assignments = await storage.listGlDataAccessSetAssignments(userId);
+        if (assignments.length === 0) return true; // Default to allow if no specific restriction? 
+        // In Oracle, if you have NO DAS, you usually have NO access. 
+        // But for this ERP demo, we will allow if no DAS assigned to prevent total block.
+
+        for (const assignment of assignments) {
+            const das = await storage.getGlDataAccessSet(assignment.dataAccessSetId);
+            if (!das || !das.isActive) continue;
+
+            // 1. Ledger Level Check
+            if (das.ledgerId !== ledgerId) continue;
+
+            // 2. Segment Level Check (SVS)
+            const sec = das.segmentSecurity as any;
+            if (!sec) return true; // DAS exists but no segment restrictions
+
+            let allSegmentsPassed = true;
+            for (let i = 0; i < segments.length; i++) {
+                const segmentKey = `segment${i + 1}`;
+                const allowedValues = sec[segmentKey];
+
+                if (!allowedValues || allowedValues === "ALL") continue;
+
+                if (Array.isArray(allowedValues)) {
+                    if (!allowedValues.includes(segments[i])) {
+                        allSegmentsPassed = false;
+                        break;
+                    }
+                } else if (typeof allowedValues === "string") {
+                    if (allowedValues !== segments[i]) {
+                        allSegmentsPassed = false;
+                        break;
+                    }
+                }
+            }
+
+            if (allSegmentsPassed) return true; // Found at least one DAS that allows this
+        }
+
+        return false; // No DAS allowed this specific combination
     }
 
-    private async logAuditAction(userId: string, action: string, details: any) {
+    private async logAuditAction(userId: string, action: string, details: any, context?: { ipAddress?: string, sessionId?: string }) {
         try {
             await db.insert(glAuditLogs).values({
                 userId,
                 action,
-                entity: "GL_JOURNAL", // Corrected column name
-                entityId: details.journalId || "N/A",
-                details: JSON.stringify(details)
+                entity: details.entity || "GL_JOURNAL",
+                entityId: details.journalId || details.entityId || "N/A",
+                ipAddress: context?.ipAddress,
+                sessionId: context?.sessionId,
+                details: JSON.stringify(details),
+                beforeState: details.beforeState ? JSON.stringify(details.beforeState) : null,
+                afterState: details.afterState ? JSON.stringify(details.afterState) : null
             });
         } catch (e) {
             console.error("Audit Log Error:", e);
-            // Don't block flow on audit fail?
         }
     }
 
-    async createJournal(journalData: InsertGlJournal, linesData: Omit<InsertGlJournalLine, "journalId">[], userId: string = "system") {
+    async createJournal(journalData: InsertGlJournal, linesData: Omit<InsertGlJournalLine, "journalId">[], userId: string = "system", context?: { ipAddress?: string, sessionId?: string }) {
         const ledgerId = journalData.ledgerId || "PRIMARY";
 
         // 0. Security Check: Data Access Sets
@@ -157,10 +243,12 @@ export class FinanceService {
 
         // If user requested "Posted", trigger the async engine immediately
         if (journalData.status === "Posted") {
-            const result = await this.postJournal(journal.id, userId);
+            const result = await this.postJournal(journal.id, userId, context);
             // Return with the new status (Processing) so UI knows it's pending
             return { ...journal, status: result.status, lines };
         }
+
+        await this.logAuditAction(userId, "JOURNAL_CREATE", { journalId: journal.id, journalNumber: journal.journalNumber }, context);
 
         return { ...journal, lines };
     }
@@ -188,7 +276,7 @@ export class FinanceService {
         throw new Error("Batch posting Not Implemented. Use postJournal(id) for testing.");
     }
 
-    async postJournal(journalId: string, userId: string = "SYSTEM") {
+    async postJournal(journalId: string, userId: string = "SYSTEM", context?: { ipAddress?: string, sessionId?: string }) {
         console.log(`[ASYNC] Request to post journal ${journalId} by user ${userId}...`);
 
         // 1. Initial Validation (Synchronous)
@@ -204,7 +292,7 @@ export class FinanceService {
 
         // 3. Trigger Background Job
         console.log(`[ASYNC] Triggering worker for ${journalId}`);
-        this.processPostingInBackground(journalId, userId).catch(err => {
+        this.processPostingInBackground(journalId, userId, context).catch(err => {
             console.error(`[WORKER] Uncaught error in background job`, err);
         });
 
@@ -212,7 +300,7 @@ export class FinanceService {
         return { success: true, message: "Posting initiated in background", journalId, status: "Processing" };
     }
 
-    private async processPostingInBackground(journalId: string, userId: string) {
+    private async processPostingInBackground(journalId: string, userId: string, context?: { ipAddress?: string, sessionId?: string }) {
         console.error(`[WORKER] FORCE LOG Starting job for Journal ${journalId}...`);
 
         try {
@@ -256,10 +344,10 @@ export class FinanceService {
             // 4. Audit
             await this.logAuditAction(userId, "JOURNAL_POST", {
                 journalId: journalId,
+                status: "Success",
                 periodId: journal.periodId,
-                status: "Posted",
                 mode: "Async Job"
-            });
+            }, context);
 
             console.log(`[WORKER] Journal ${journalId} Posted Successfully.`);
 
@@ -269,7 +357,7 @@ export class FinanceService {
             // Revert Status
             await db.update(glJournals)
                 .set({ status: "Draft" }) // Reset to Draft so user can fix
-                .where(eq(glJourrals.id, journalId));
+                .where(eq(glJournals.id, journalId));
 
             await this.logAuditAction(userId, "JOURNAL_POST_FAILED", {
                 journalId: journalId,
@@ -1415,13 +1503,19 @@ export class FinanceService {
 
         const [segment1, segment2, segment3, segment4, segment5] = segments;
 
-        // 2. Validate availability (Mock logic for now, would check `gl_segment_values` in prod)
+        // 2. Check for existing
+        const existing = await db.select().from(glCodeCombinations)
+            .where(and(eq(glCodeCombinations.ledgerId, ledgerId), eq(glCodeCombinations.code, segmentString)))
+            .limit(1);
+
+        if (existing.length > 0) return existing[0];
+
+        // 3. Validate availability (Mock logic for now, would check `gl_segment_values` in prod)
         if (!segment1 || !segment2 || !segment3) {
             throw new Error("Invalid formulation. At minimum Company-CostCenter-Account is required.");
         }
 
-        // 3. Create unique
-        // In production, you MUST hash this or query by all 5 columns to prevent duplicates.
+        // 4. Create unique
         const ccid = await storage.createGlCodeCombination({
             code: segmentString,
             ledgerId,
@@ -1697,6 +1791,15 @@ export class FinanceService {
             }
         };
     }
+    // ================= LEGAL ENTITIES =================
+    async listLegalEntities() {
+        return await storage.listLegalEntities();
+    }
+
+    async createLegalEntity(data: any) {
+        return await storage.createLegalEntity(data);
+    }
+
     // ================= FSG ENGINE =================
 
 

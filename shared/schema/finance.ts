@@ -30,6 +30,7 @@ export type GlAccount = typeof glAccounts.$inferSelect;
 export const glPeriods = pgTable("gl_periods", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     periodName: varchar("period_name").notNull(), // e.g., "Jan-2026"
+    ledgerId: varchar("ledger_id").notNull().default("PRIMARY"), // Multi-ledger calendar support
     startDate: timestamp("start_date").notNull(),
     endDate: timestamp("end_date").notNull(),
     fiscalYear: integer("fiscal_year").notNull(),
@@ -38,6 +39,7 @@ export const glPeriods = pgTable("gl_periods", {
 
 export const insertGlPeriodSchema = createInsertSchema(glPeriods).extend({
     periodName: z.string().min(1),
+    ledgerId: z.string().optional(),
     startDate: z.date(),
     endDate: z.date(),
     fiscalYear: z.number().int(),
@@ -212,6 +214,35 @@ export const glLedgers = pgTable("gl_ledgers_v2", {
 export const insertGlLedgerSchema = createInsertSchema(glLedgers);
 export type InsertGlLedger = z.infer<typeof insertGlLedgerSchema>;
 export type GlLedger = typeof glLedgers.$inferSelect;
+
+// 5.2 Legal Entities
+export const glLegalEntities = pgTable("gl_legal_entities", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(),
+    taxId: varchar("tax_id"),
+    ledgerId: varchar("ledger_id").notNull(), // One-to-Many: Ledger can have multiple Legal Entities
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlLegalEntitySchema = createInsertSchema(glLegalEntities);
+export type InsertGlLegalEntity = z.infer<typeof insertGlLegalEntitySchema>;
+export type GlLegalEntity = typeof glLegalEntities.$inferSelect;
+
+// 5.3 Ledger Relationships (Primary to Secondary/Reporting)
+export const glLedgerRelationships = pgTable("gl_ledger_relationships", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    primaryLedgerId: varchar("primary_ledger_id").notNull(),
+    secondaryLedgerId: varchar("secondary_ledger_id").notNull(),
+    relationshipType: varchar("relationship_type").notNull(), // SECONDARY, REPORTING
+    conversionLevel: varchar("conversion_level").default("JOURNAL"), // SUBLEDGER, JOURNAL, BALANCE
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlLedgerRelationshipSchema = createInsertSchema(glLedgerRelationships);
+export type InsertGlLedgerRelationship = z.infer<typeof insertGlLedgerRelationshipSchema>;
+export type GlLedgerRelationship = typeof glLedgerRelationships.$inferSelect;
 
 // 5.1 Ledger Sets (Consolidation Groups)
 export const glLedgerSets = pgTable("gl_ledger_sets", {
@@ -564,6 +595,8 @@ export const glAuditLogs = pgTable("gl_audit_logs", {
     userId: varchar("user_id").notNull(),
 
     // Context
+    ipAddress: varchar("ip_address"),
+    sessionId: varchar("session_id"),
     details: jsonb("details"), // generic payload
     beforeState: jsonb("before_state"), // Snapshot before
     afterState: jsonb("after_state"), // Snapshot after

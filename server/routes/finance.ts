@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { financeService } from "../services/finance";
-import { insertGlAccountSchema, insertGlPeriodSchema, insertGlJournalSchema, insertGlJournalLineSchema, glAllocations } from "@shared/schema";
+import {
+    insertGlAccountSchema, insertGlPeriodSchema, insertGlJournalSchema,
+    insertGlJournalLineSchema, glAllocations, insertGlLegalEntitySchema,
+    insertGlLedgerRelationshipSchema, insertGlLedgerSchema
+} from "@shared/schema";
 import { z } from "zod";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
@@ -26,7 +30,8 @@ router.post("/gl/accounts", async (req, res) => {
 
 // GL Periods
 router.get("/gl/periods", async (req, res) => {
-    const periods = await financeService.listPeriods();
+    const ledgerId = req.query.ledgerId as string | undefined;
+    const periods = await financeService.listPeriods(ledgerId);
     res.json(periods);
 });
 
@@ -37,18 +42,28 @@ router.post("/gl/periods", async (req, res) => {
 });
 
 router.post("/gl/periods/:id/close", async (req, res) => {
-    const period = await financeService.closePeriod(req.params.id);
+    const userId = (req.user as any)?.id || "system";
+    const context = { ipAddress: req.ip, sessionId: req.sessionID };
+    const period = await financeService.closePeriod(req.params.id, userId, context);
     res.json(period);
 });
 
 router.post("/gl/periods/:id/reopen", async (req, res) => {
-    const period = await financeService.reopenPeriod(req.params.id);
+    const userId = (req.user as any)?.id || "system";
+    const context = { ipAddress: req.ip, sessionId: req.sessionID };
+    const period = await financeService.reopenPeriod(req.params.id, userId, context);
     res.json(period);
 });
 
 router.get("/gl/periods/:id/exceptions", async (req, res) => {
     const exceptions = await financeService.getPeriodExceptions(req.params.id);
     res.json(exceptions);
+});
+
+// GL Statistics
+router.get("/gl/stats", async (req, res) => {
+    const stats = await financeService.getGLStats();
+    res.json(stats);
 });
 
 // GL Journals
@@ -73,7 +88,9 @@ router.post("/gl/journals", async (req, res) => {
 
         const { journal: journalData, lines: linesData } = schema.parse(req.body);
 
-        const result = await financeService.createJournal(journalData, linesData);
+        const userId = (req.user as any)?.id || "system";
+        const context = { ipAddress: req.ip, sessionId: req.sessionID };
+        const result = await financeService.createJournal(journalData, linesData, userId, context);
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -84,7 +101,9 @@ router.post("/gl/journals", async (req, res) => {
 
 router.post("/gl/journals/:id/post", async (req, res) => {
     try {
-        const result = await financeService.postJournal(req.params.id, "SYSTEM"); // Using SYSTEM as default user or get from req.user
+        const userId = (req.user as any)?.id || "system";
+        const context = { ipAddress: req.ip, sessionId: req.sessionID };
+        const result = await financeService.postJournal(req.params.id, userId, context);
         res.json(result);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
@@ -291,6 +310,52 @@ router.get("/gl/reconciliation/:ledgerId", async (req, res) => {
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
+});
+
+// Legal Entities
+router.get("/gl/legal-entities", async (req, res) => {
+    const entities = await financeService.listLegalEntities();
+    res.json(entities);
+});
+
+router.post("/gl/legal-entities", async (req, res) => {
+    const data = insertGlLegalEntitySchema.parse(req.body);
+    const entity = await financeService.createLegalEntity(data);
+    res.json(entity);
+});
+
+router.patch("/gl/legal-entities/:id", async (req, res) => {
+    const entity = await financeService.updateLegalEntity(req.params.id, req.body);
+    res.json(entity);
+});
+
+// Ledger Relationships
+router.get("/gl/ledger-relationships", async (req, res) => {
+    const relationships = await financeService.listLedgerRelationships();
+    res.json(relationships);
+});
+
+router.post("/gl/ledger-relationships", async (req, res) => {
+    const data = insertGlLedgerRelationshipSchema.parse(req.body);
+    const relationship = await financeService.createLedgerRelationship(data);
+    res.json(relationship);
+});
+
+// Ledgers
+router.get("/gl/ledgers", async (req, res) => {
+    const ledgers = await financeService.listLedgers();
+    res.json(ledgers);
+});
+
+router.post("/gl/ledgers", async (req, res) => {
+    const data = insertGlLedgerSchema.parse(req.body);
+    const ledger = await financeService.createLedger(data);
+    res.json(ledger);
+});
+
+router.get("/gl/ledgers/:id", async (req, res) => {
+    const ledger = await financeService.getLedger(req.params.id);
+    res.json(ledger);
 });
 
 export default router;

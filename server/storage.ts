@@ -65,8 +65,8 @@ import {
   type GlReportRow, type InsertGlReportRow,
   type GlReportColumn, type InsertGlReportColumn,
   // GL
-  glAccounts, glPeriods, glJournals, glJournalLines, glLedgers,
   glLedgerSets, glLedgerSetAssignments, glBalances, glDailyRates,
+  glDataAccessSets, glDataAccessSetAssignments,
   type GlAccount, type InsertGlAccount,
   type GlPeriod, type InsertGlPeriod,
   type GlJournal, type InsertGlJournal,
@@ -115,7 +115,9 @@ import {
   type FaCategory, type InsertFaCategory,
   // GL
   glLedgers, glSegments, glSegmentValues, glCodeCombinations, glDailyRates, glBalances, glJournals, glJournalLines, glJournalBatches, glJournalApprovals, glIntercompanyRules, glRevaluations, glRevaluationEntries, glExchangeRates, glPeriods, glReportDefinitions, glReportRows, glReportColumns, glCrossValidationRules,
+  glDataAccessSets, glDataAccessSetAssignments, glLegalEntities, glLedgerRelationships,
   type GlLedger, type InsertGlLedger, type GlSegment, type InsertGlSegment, type GlSegmentValue, type InsertGlSegmentValue, type GlCodeCombination, type InsertGlCodeCombination, type GlDailyRate, type InsertGlDailyRate, type GlBalance, type InsertGlBalance, type GlJournal, type InsertGlJournal, type GlJournalLine, type InsertGlJournalLine, type GlJournalBatch, type InsertGlJournalBatch, type GlJournalApproval, type InsertGlJournalApproval, type GlIntercompanyRule, type InsertGlIntercompanyRule, type GlRevaluation, type InsertGlRevaluation, type GlRevaluationEntry, type InsertGlRevaluationEntry, type GlExchangeRate, type InsertGlExchangeRate, type GlPeriod, type InsertGlPeriod, type GlReportDefinition, type InsertGlReportDefinition, type GlReportRow, type InsertGlReportRow, type GlReportColumn, type InsertGlReportColumn, type GlCrossValidationRule, type InsertGlCrossValidationRule,
+  type GlLegalEntity, type InsertGlLegalEntity, type GlLedgerRelationship, type InsertGlLedgerRelationship,
   type ArReceipt, type InsertArReceipt, type ArRevenueSchedule, type InsertArRevenueSchedule,
   // Cash Module
   type CashBankAccount, type InsertCashBankAccount,
@@ -142,6 +144,16 @@ import { db } from "./db";
 import { eq, desc, and, sql, ne } from "drizzle-orm";
 
 export interface IStorage {
+  // Legal Entity operations
+  listLegalEntities(): Promise<GlLegalEntity[]>;
+  getLegalEntity(id: string): Promise<GlLegalEntity | undefined>;
+  createLegalEntity(data: InsertGlLegalEntity): Promise<GlLegalEntity>;
+  updateLegalEntity(id: string, data: Partial<InsertGlLegalEntity>): Promise<GlLegalEntity | undefined>;
+
+  // Ledger Relationship operations
+  listLedgerRelationships(): Promise<GlLedgerRelationship[]>;
+  createLedgerRelationship(data: InsertGlLedgerRelationship): Promise<GlLedgerRelationship>;
+
   // AR Revenue Schedule operations
   listArRevenueSchedules(): Promise<ArRevenueSchedule[]>;
   getArRevenueSchedule(id: string): Promise<ArRevenueSchedule | undefined>;
@@ -588,9 +600,11 @@ export interface IStorage {
   createGlCrossValidationRule(rule: InsertGlCrossValidationRule): Promise<GlCrossValidationRule>;
   updateGlCrossValidationRule(id: string, updates: Partial<GlCrossValidationRule>): Promise<GlCrossValidationRule | undefined>;
   deleteGlCrossValidationRule(id: string): Promise<boolean>;
+  getGlDataAccessSet(id: string): Promise<GlDataAccessSet | undefined>;
+  listGlDataAccessSetAssignments(userId: string): Promise<GlDataAccessSetAssignment[]>;
 }
 
-export class MemStorage implements IStorage {
+export class DatabaseStorage implements IStorage {
   private tenants = new Map<string, Tenant>();
   private roles = new Map<string, Role>();
   private plans = new Map<string, Plan>();
@@ -2163,7 +2177,53 @@ export class MemStorage implements IStorage {
       );
     return Number(res.count);
   }
+
+  async getGlDataAccessSet(id: string): Promise<GlDataAccessSet | undefined> {
+    const [res] = await db.select().from(glDataAccessSets).where(eq(glDataAccessSets.id, id));
+    return res;
+  }
+
+  async listGlDataAccessSetAssignments(userId: string): Promise<GlDataAccessSetAssignment[]> {
+    return await db.select().from(glDataAccessSetAssignments).where(eq(glDataAccessSetAssignments.userId, userId));
+  }
+  // Legal Entities
+  async listLegalEntities(): Promise<GlLegalEntity[]> {
+    return db.select().from(glLegalEntities);
+  }
+
+  async getLegalEntity(id: string): Promise<GlLegalEntity | undefined> {
+    const [entity] = await db.select().from(glLegalEntities).where(eq(glLegalEntities.id, id));
+    return entity;
+  }
+
+  async createLegalEntity(data: InsertGlLegalEntity): Promise<GlLegalEntity> {
+    const [entity] = await db.insert(glLegalEntities).values({
+      ...data,
+      id: data.id || randomUUID()
+    }).returning();
+    return entity;
+  }
+
+  async updateLegalEntity(id: string, data: Partial<InsertGlLegalEntity>): Promise<GlLegalEntity | undefined> {
+    const [updated] = await db.update(glLegalEntities)
+      .set(data)
+      .where(eq(glLegalEntities.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Ledger Relationships
+  async listLedgerRelationships(): Promise<GlLedgerRelationship[]> {
+    return db.select().from(glLedgerRelationships);
+  }
+
+  async createLedgerRelationship(data: InsertGlLedgerRelationship): Promise<GlLedgerRelationship> {
+    const [rel] = await db.insert(glLedgerRelationships).values({
+      ...data,
+      id: data.id || randomUUID()
+    }).returning();
+    return rel;
+  }
 }
 
-
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

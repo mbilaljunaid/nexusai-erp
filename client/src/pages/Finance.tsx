@@ -7,7 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { openFormInNewWindow } from "@/lib/formUtils";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard, BookOpen, ArrowRightLeft, RefreshCw, Shield, Archive } from "lucide-react";
+import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard, BookOpen, ArrowRightLeft, RefreshCw, Shield, Archive, Settings, Building2 } from "lucide-react";
+import { GLMetrics } from "./gl/components/GLMetrics";
 
 export default function Finance() {
   const [activeNav, setActiveNav] = useState("overview");
@@ -29,6 +30,8 @@ export default function Finance() {
     { id: "budgets", label: "Budget Manager", icon: PieChart, color: "text-purple-500", formId: "gl_budgets" },
     { id: "cvr", label: "CVR Manager", icon: Shield, color: "text-red-500", formId: "gl_cvr" },
     { id: "period_close", label: "Period Close", icon: Archive, color: "text-emerald-500", formId: "gl_period_close" },
+    { id: "ledger_setup", label: "Ledger Setup", icon: Settings, color: "text-slate-500", formId: "gl_ledger_setup" },
+    { id: "legal_entities", label: "Legal Entities", icon: Building2, color: "text-orange-500", formId: "gl_legal_entities" },
     { id: "invoices", label: "Invoices", icon: FileText, color: "text-green-500", formId: "invoices" },
     { id: "expenses", label: "Expenses", icon: DollarSign, color: "text-orange-500", formId: "expenses" },
     { id: "payments", label: "Payments", icon: CreditCard, color: "text-cyan-500", formId: "payments" },
@@ -65,6 +68,14 @@ export default function Finance() {
       setLocation("/gl/period-close");
       return;
     }
+    if (formId === "gl_ledger_setup") {
+      setLocation("/gl/ledger-setup");
+      return;
+    }
+    if (formId === "gl_legal_entities") {
+      setLocation("/gl/legal-entity-setup");
+      return;
+    }
 
     if (formId) {
       openFormInNewWindow(formId, `${formId.charAt(0).toUpperCase() + formId.slice(1)} Form`);
@@ -96,11 +107,40 @@ export default function Finance() {
       </div>
 
       {activeNav === "overview" && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">${(invoices.length * 50000).toLocaleString()}</p><p className="text-xs text-muted-foreground">Total Revenue</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">{invoices.length}</p><p className="text-xs text-muted-foreground">Total Invoices</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">92%</p><p className="text-xs text-muted-foreground">Collection Rate</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$125K</p><p className="text-xs text-muted-foreground">Monthly Budget</p></CardContent></Card>
+        <div className="space-y-6">
+          <GLMetrics />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border-none shadow-sm bg-indigo-900 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 p-8 opacity-10">
+                <Shield className="h-32 w-32" />
+              </div>
+              <CardHeader>
+                <CardTitle className="text-lg">Compliance & Data Protection</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 relative">
+                <p className="text-sm text-indigo-100/70">NexusAI GL is running with Oracle-grade Segment Value Security (SVS) and enhanced audit trails enabled.</p>
+                <Button variant="secondary" className="bg-white/10 hover:bg-white/20 border-none text-white text-xs" onClick={() => setLocation("/gl/audit-logs")}>
+                  View Audit Trail
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-sm bg-slate-900 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 p-8 opacity-10">
+                <Archive className="h-32 w-32" />
+              </div>
+              <CardHeader>
+                <CardTitle className="text-lg">Period Close Status</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 relative">
+                <p className="text-sm text-slate-400">Successfully close fiscal periods with automated diagnostics and exception reporting.</p>
+                <Button variant="secondary" className="bg-white/10 hover:bg-white/20 border-none text-white text-xs" onClick={() => setLocation("/gl/period-close")}>
+                  Go to Close Dashboard
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
 

@@ -20,7 +20,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
 
     // Fetch available ledgers
     const { data: ledgers, isLoading } = useQuery<GlLedger[]>({
-        queryKey: ["/api/gl/ledgers"],
+        queryKey: ["/api/finance/gl/ledgers"],
         // If API doesn't exist yet, we might need to mock or ensure it exists.
         // Assuming listGlLedgers endpoint exists (it was in storage.ts interface)
     });
