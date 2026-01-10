@@ -167,6 +167,170 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
+CREATE TABLE "ap_approvals" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"invoice_id" integer NOT NULL,
+	"approver_id" integer,
+	"status" varchar(50) DEFAULT 'Pending',
+	"decision" varchar(50) DEFAULT 'Pending',
+	"action_date" timestamp,
+	"comments" text,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ap_holds" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"invoice_id" integer NOT NULL,
+	"line_location_id" integer,
+	"hold_lookup_code" varchar(50) NOT NULL,
+	"hold_reason" varchar(255),
+	"release_lookup_code" varchar(50),
+	"hold_date" timestamp DEFAULT now(),
+	"held_by" integer DEFAULT 1
+);
+--> statement-breakpoint
+CREATE TABLE "ap_invoice_distributions" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"invoice_id" integer NOT NULL,
+	"invoice_line_id" integer NOT NULL,
+	"dist_line_number" integer NOT NULL,
+	"amount" numeric(18, 2) NOT NULL,
+	"dist_code_combination_id" varchar NOT NULL,
+	"accounting_date" timestamp,
+	"description" text,
+	"posted_flag" boolean DEFAULT false,
+	"reversal_flag" boolean DEFAULT false,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ap_invoice_lines" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"invoice_id" integer NOT NULL,
+	"line_number" integer NOT NULL,
+	"line_type" varchar(50) DEFAULT 'ITEM' NOT NULL,
+	"amount" numeric(18, 2) NOT NULL,
+	"description" text,
+	"po_header_id" varchar,
+	"po_line_id" varchar,
+	"quantity_invoiced" numeric(18, 4),
+	"unit_price" numeric(18, 4),
+	"discarded_flag" boolean DEFAULT false,
+	"cancelled_flag" boolean DEFAULT false,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ap_invoice_payments" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"payment_id" integer NOT NULL,
+	"invoice_id" integer NOT NULL,
+	"amount" numeric(18, 2) NOT NULL,
+	"accounting_date" timestamp,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ap_invoices" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"invoice_id" varchar(50),
+	"supplier_id" integer NOT NULL,
+	"supplier_site_id" integer,
+	"invoice_number" varchar(100) NOT NULL,
+	"invoice_date" timestamp NOT NULL,
+	"description" text,
+	"invoice_type" varchar(50) DEFAULT 'STANDARD',
+	"invoice_currency_code" varchar(10) DEFAULT 'USD' NOT NULL,
+	"payment_currency_code" varchar(10) DEFAULT 'USD' NOT NULL,
+	"invoice_amount" numeric(18, 2) NOT NULL,
+	"validation_status" varchar(50) DEFAULT 'NEVER VALIDATED',
+	"approval_status" varchar(50) DEFAULT 'REQUIRED',
+	"payment_status" varchar(50) DEFAULT 'UNPAID',
+	"accounting_status" varchar(50) DEFAULT 'UNACCOUNTED',
+	"due_date" timestamp,
+	"payment_terms" varchar(100) DEFAULT 'Net 30',
+	"tax_amount" numeric(18, 2) DEFAULT '0',
+	"cancelled_date" timestamp,
+	"gl_date" timestamp,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ap_payments" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"payment_number" serial NOT NULL,
+	"check_number" varchar,
+	"payment_date" timestamp NOT NULL,
+	"amount" numeric(18, 2) NOT NULL,
+	"currency_code" varchar(10) NOT NULL,
+	"payment_method_code" varchar(50) NOT NULL,
+	"supplier_id" integer NOT NULL,
+	"status" varchar(50) DEFAULT 'NEGOTIABLE',
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ap_suppliers" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"supplier_number" varchar(50),
+	"name" varchar(255) NOT NULL,
+	"tax_organization_type" varchar(50),
+	"tax_id" varchar(100),
+	"enabled_flag" boolean DEFAULT true,
+	"credit_hold" boolean DEFAULT false,
+	"payment_terms_id" varchar(50),
+	"risk_category" varchar(50) DEFAULT 'Low',
+	"risk_score" integer,
+	"address" text,
+	"country" varchar(100),
+	"contact_email" varchar(255),
+	"parent_supplier_id" integer,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ar_customers" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"tax_id" varchar,
+	"customer_type" varchar DEFAULT 'Commercial',
+	"credit_limit" numeric(18, 2) DEFAULT '0',
+	"balance" numeric(18, 2) DEFAULT '0',
+	"address" text,
+	"contact_email" varchar,
+	"credit_hold" boolean DEFAULT false,
+	"risk_category" varchar DEFAULT 'Low',
+	"parent_customer_id" varchar,
+	"status" varchar DEFAULT 'Active',
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ar_invoices" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"customer_id" varchar NOT NULL,
+	"invoice_number" varchar NOT NULL,
+	"amount" numeric(18, 2) NOT NULL,
+	"tax_amount" numeric(18, 2) DEFAULT '0',
+	"total_amount" numeric(18, 2) NOT NULL,
+	"currency" varchar DEFAULT 'USD',
+	"due_date" timestamp,
+	"status" varchar DEFAULT 'Draft',
+	"description" text,
+	"gl_account_id" varchar,
+	"revenue_schedule_id" varchar,
+	"recognition_status" varchar DEFAULT 'Pending',
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "ar_invoices_invoice_number_unique" UNIQUE("invoice_number")
+);
+--> statement-breakpoint
+CREATE TABLE "ar_receipts" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"customer_id" varchar NOT NULL,
+	"invoice_id" varchar,
+	"amount" numeric(18, 2) NOT NULL,
+	"receipt_date" timestamp,
+	"payment_method" varchar,
+	"transaction_id" varchar,
+	"status" varchar DEFAULT 'Completed',
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
 CREATE TABLE "accounts" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar NOT NULL,
@@ -213,6 +377,29 @@ CREATE TABLE "campaigns" (
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	"owner_id" varchar
+);
+--> statement-breakpoint
+CREATE TABLE "crm_case_comments" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"case_id" varchar NOT NULL,
+	"body" text NOT NULL,
+	"is_public" boolean DEFAULT false,
+	"created_by_id" text,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "crm_cases" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"subject" text NOT NULL,
+	"description" text,
+	"status" text DEFAULT 'New',
+	"priority" text DEFAULT 'Medium',
+	"origin" text,
+	"account_id" varchar,
+	"contact_id" varchar,
+	"user_id" text,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "contacts" (
@@ -306,6 +493,7 @@ CREATE TABLE "opportunities" (
 	"probability" integer,
 	"forecast_category" varchar,
 	"description" text,
+	"contact_id" varchar,
 	"campaign_id" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
@@ -315,13 +503,28 @@ CREATE TABLE "opportunities" (
 CREATE TABLE "crm_opportunity_line_items" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"opportunity_id" varchar NOT NULL,
-	"product_id" varchar NOT NULL,
+	"product_id" varchar,
 	"price_book_entry_id" varchar,
 	"quantity" integer DEFAULT 1 NOT NULL,
 	"unit_price" numeric NOT NULL,
-	"total_price" numeric NOT NULL,
+	"total_price" numeric,
 	"description" text,
 	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "crm_orders" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"account_id" varchar,
+	"quote_id" varchar,
+	"opportunity_id" varchar,
+	"order_number" text,
+	"status" text DEFAULT 'Draft',
+	"total_amount" numeric DEFAULT '0',
+	"effective_date" timestamp DEFAULT now(),
+	"billing_address" text,
+	"shipping_address" text,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "crm_price_book_entries" (
@@ -351,6 +554,36 @@ CREATE TABLE "crm_products" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE "crm_quote_line_items" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"quote_id" varchar NOT NULL,
+	"product_id" varchar,
+	"quantity" integer DEFAULT 1 NOT NULL,
+	"unit_price" numeric NOT NULL,
+	"total_price" numeric,
+	"description" text,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "crm_quotes" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"opportunity_id" varchar,
+	"name" text NOT NULL,
+	"quote_number" text,
+	"expiration_date" timestamp,
+	"status" text DEFAULT 'Draft',
+	"total_amount" numeric DEFAULT '0',
+	"description" text,
+	"bill_to_name" text,
+	"bill_to_street" text,
+	"bill_to_city" text,
+	"bill_to_state" text,
+	"bill_to_zip" text,
+	"bill_to_country" text,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
 CREATE TABLE "expenses" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"description" text NOT NULL,
@@ -360,13 +593,425 @@ CREATE TABLE "expenses" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "general_ledger" (
+CREATE TABLE "gl_accounts_v2" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"account_code" varchar NOT NULL,
+	"account_name" varchar NOT NULL,
+	"account_type" varchar NOT NULL,
+	"parent_account_id" varchar,
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_accounts_v2_account_code_unique" UNIQUE("account_code")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_allocations" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
 	"description" text,
-	"account_type" varchar,
-	"balance" numeric(18, 2) DEFAULT '0',
+	"ledger_id" varchar NOT NULL,
+	"pool_account_filter" varchar NOT NULL,
+	"basis_account_filter" varchar NOT NULL,
+	"target_account_pattern" varchar NOT NULL,
+	"offset_account" varchar NOT NULL,
+	"enabled" boolean DEFAULT true,
 	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_audit_logs" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"action" varchar NOT NULL,
+	"entity" varchar NOT NULL,
+	"entity_id" varchar NOT NULL,
+	"user_id" varchar NOT NULL,
+	"ip_address" varchar,
+	"session_id" varchar,
+	"details" jsonb,
+	"before_state" jsonb,
+	"after_state" jsonb,
+	"timestamp" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "gl_balances_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"ledger_id" varchar NOT NULL,
+	"code_combination_id" varchar NOT NULL,
+	"currency_code" varchar NOT NULL,
+	"period_name" varchar NOT NULL,
+	"period_year" integer,
+	"period_num" integer,
+	"period_net_dr" numeric(18, 2) DEFAULT '0',
+	"period_net_cr" numeric(18, 2) DEFAULT '0',
+	"begin_balance" numeric(18, 2) DEFAULT '0',
+	"end_balance" numeric(18, 2) DEFAULT '0',
+	"translated_flag" boolean DEFAULT false,
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_budget_balances" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"budget_id" varchar NOT NULL,
+	"period_name" varchar NOT NULL,
+	"code_combination_id" varchar NOT NULL,
+	"budget_amount" numeric(18, 2) DEFAULT '0',
+	"encumbrance_amount" numeric(18, 2) DEFAULT '0',
+	"actual_amount" numeric(18, 2) DEFAULT '0',
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_budget_control_rules" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"ledger_id" varchar NOT NULL,
+	"rule_name" varchar NOT NULL,
+	"control_level" varchar DEFAULT 'Absolute',
+	"control_filters" jsonb,
+	"enabled" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_budgets" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"ledger_id" varchar NOT NULL,
+	"status" varchar DEFAULT 'Open',
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_budgets_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_coa_structures" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"delimiter" varchar DEFAULT '-',
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_coa_structures_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_code_combinations_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"code" varchar NOT NULL,
+	"ledger_id" varchar NOT NULL,
+	"segment1" varchar,
+	"segment2" varchar,
+	"segment3" varchar,
+	"segment4" varchar,
+	"segment5" varchar,
+	"segment6" varchar,
+	"segment7" varchar,
+	"segment8" varchar,
+	"segment9" varchar,
+	"segment10" varchar,
+	"account_type" varchar,
+	"enabled_flag" boolean DEFAULT true,
+	"start_date_active" timestamp,
+	"end_date_active" timestamp,
+	"summary_flag" boolean DEFAULT false,
+	CONSTRAINT "gl_code_combinations_v2_code_unique" UNIQUE("code")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_cross_validation_rules_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"ledger_id" varchar NOT NULL,
+	"rule_name" varchar NOT NULL,
+	"description" text,
+	"enabled" boolean DEFAULT true,
+	"error_message" text,
+	"include_filter" text,
+	"exclude_filter" text,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_currencies" (
+	"code" varchar PRIMARY KEY NOT NULL,
+	"name" varchar NOT NULL,
+	"symbol" varchar,
+	"precision" integer DEFAULT 2,
+	"is_active" boolean DEFAULT true
+);
+--> statement-breakpoint
+CREATE TABLE "gl_daily_rates" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"from_currency" varchar NOT NULL,
+	"to_currency" varchar NOT NULL,
+	"conversion_date" timestamp NOT NULL,
+	"conversion_type" varchar DEFAULT 'Spot',
+	"rate" numeric(20, 10) NOT NULL,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_data_access_set_assignments" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" varchar NOT NULL,
+	"data_access_set_id" varchar NOT NULL,
+	"assigned_by" varchar,
+	"assigned_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_data_access_sets" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"ledger_id" varchar NOT NULL,
+	"access_level" varchar DEFAULT 'Read/Write',
+	"segment_security" jsonb,
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_data_access_sets_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_exchange_rates" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"currency" varchar NOT NULL,
+	"period_name" varchar NOT NULL,
+	"rate_to_functional" numeric(20, 10) NOT NULL,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_intercompany_rules_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"from_company" varchar NOT NULL,
+	"to_company" varchar NOT NULL,
+	"receivable_account_id" varchar NOT NULL,
+	"payable_account_id" varchar NOT NULL,
+	"enabled" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_journal_approvals" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"journal_id" varchar NOT NULL,
+	"approver_id" varchar,
+	"status" varchar DEFAULT 'Pending',
+	"comments" text,
+	"action_date" timestamp,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_journal_batches" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"batch_name" varchar NOT NULL,
+	"description" text,
+	"period_id" varchar,
+	"status" varchar DEFAULT 'Unposted',
+	"total_debit" numeric(18, 2) DEFAULT '0',
+	"total_credit" numeric(18, 2) DEFAULT '0',
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_journal_lines_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"journal_id" varchar NOT NULL,
+	"account_id" varchar NOT NULL,
+	"description" text,
+	"currency_code" varchar DEFAULT 'USD' NOT NULL,
+	"entered_debit" numeric(18, 2),
+	"entered_credit" numeric(18, 2),
+	"accounted_debit" numeric(18, 2),
+	"accounted_credit" numeric(18, 2),
+	"exchange_rate" numeric(20, 10) DEFAULT '1',
+	"debit" numeric(18, 2) DEFAULT '0',
+	"credit" numeric(18, 2) DEFAULT '0'
+);
+--> statement-breakpoint
+CREATE TABLE "gl_journals_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"journal_number" varchar NOT NULL,
+	"ledger_id" varchar DEFAULT 'PRIMARY' NOT NULL,
+	"batch_id" varchar,
+	"period_id" varchar,
+	"description" text,
+	"currency_code" varchar DEFAULT 'USD' NOT NULL,
+	"source" varchar DEFAULT 'Manual',
+	"status" varchar DEFAULT 'Draft',
+	"approval_status" varchar DEFAULT 'Not Required',
+	"reversal_journal_id" varchar,
+	"auto_reverse" boolean DEFAULT false,
+	"posted_date" timestamp,
+	"created_by" varchar,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_journals_v2_journal_number_unique" UNIQUE("journal_number")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_ledger_relationships" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"primary_ledger_id" varchar NOT NULL,
+	"secondary_ledger_id" varchar NOT NULL,
+	"relationship_type" varchar NOT NULL,
+	"conversion_level" varchar DEFAULT 'JOURNAL',
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_ledger_set_assignments" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"ledger_set_id" varchar NOT NULL,
+	"ledger_id" varchar NOT NULL,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_ledger_sets" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_ledger_sets_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_ledgers_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"currency_code" varchar DEFAULT 'USD' NOT NULL,
+	"calendar_id" varchar,
+	"coa_id" varchar,
+	"description" text,
+	"ledger_category" varchar DEFAULT 'PRIMARY',
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_ledgers_v2_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_legal_entities" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"tax_id" varchar,
+	"ledger_id" varchar NOT NULL,
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_legal_entities_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE "gl_periods" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"period_name" varchar NOT NULL,
+	"ledger_id" varchar DEFAULT 'PRIMARY' NOT NULL,
+	"start_date" timestamp NOT NULL,
+	"end_date" timestamp NOT NULL,
+	"fiscal_year" integer NOT NULL,
+	"status" varchar DEFAULT 'Open'
+);
+--> statement-breakpoint
+CREATE TABLE "gl_recurring_journals" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"ledger_id" varchar NOT NULL,
+	"currency_code" varchar DEFAULT 'USD',
+	"schedule_type" varchar NOT NULL,
+	"next_run_date" timestamp NOT NULL,
+	"last_run_date" timestamp,
+	"status" varchar DEFAULT 'Active',
+	"journal_template" jsonb NOT NULL,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_fsg_cols" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"report_id" varchar NOT NULL,
+	"column_number" integer NOT NULL,
+	"column_header" varchar NOT NULL,
+	"amount_type" varchar DEFAULT 'PTD',
+	"currency_type" varchar DEFAULT 'Functional',
+	"period_offset" integer DEFAULT 0,
+	"ledger_id" varchar,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_fsg_defs" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"ledger_id" varchar,
+	"chart_of_accounts_id" varchar,
+	"enabled" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_fsg_rows" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"report_id" varchar NOT NULL,
+	"row_number" integer NOT NULL,
+	"description" varchar NOT NULL,
+	"row_type" varchar DEFAULT 'DETAIL' NOT NULL,
+	"account_filter_min" varchar,
+	"account_filter_max" varchar,
+	"segment_filter" varchar,
+	"calculation_formula" varchar,
+	"indent_level" integer DEFAULT 0,
+	"inverse_sign" boolean DEFAULT false,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_revaluation_entries" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"ledger_id" varchar NOT NULL,
+	"period_name" varchar NOT NULL,
+	"currency" varchar NOT NULL,
+	"amount" numeric(20, 10) NOT NULL,
+	"fx_rate" numeric(20, 10) NOT NULL,
+	"gain_loss" numeric(20, 10) NOT NULL,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_revaluations" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"ledger_id" varchar NOT NULL,
+	"period_name" varchar NOT NULL,
+	"currency_code" varchar NOT NULL,
+	"rate_type" varchar DEFAULT 'Spot' NOT NULL,
+	"unrealized_gain_loss_account_id" varchar NOT NULL,
+	"status" varchar DEFAULT 'Draft',
+	"journal_batch_id" varchar,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_segment_hierarchies" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"value_set_id" varchar NOT NULL,
+	"parent_value" varchar NOT NULL,
+	"child_value" varchar NOT NULL,
+	"tree_name" varchar DEFAULT 'DEFAULT',
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_segment_values_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"value_set_id" varchar NOT NULL,
+	"value" varchar NOT NULL,
+	"description" text,
+	"parent_value_id" varchar,
+	"is_summary" boolean DEFAULT false,
+	"enabled_flag" boolean DEFAULT true,
+	"start_date_active" timestamp,
+	"end_date_active" timestamp,
+	"account_type" varchar,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_segments_v2" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"coa_structure_id" varchar NOT NULL,
+	"segment_name" varchar NOT NULL,
+	"segment_number" integer NOT NULL,
+	"column_name" varchar NOT NULL,
+	"value_set_id" varchar NOT NULL,
+	"prompt" varchar NOT NULL,
+	"display_width" integer DEFAULT 20,
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "gl_value_sets" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"validation_type" varchar DEFAULT 'Independent',
+	"format_type" varchar DEFAULT 'Char',
+	"max_length" integer,
+	"uppercase_only" boolean DEFAULT true,
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "gl_value_sets_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
 CREATE TABLE "invoices" (
@@ -454,6 +1099,18 @@ CREATE TABLE "inventory" (
 	"location" varchar,
 	"created_at" timestamp DEFAULT now(),
 	CONSTRAINT "inventory_sku_unique" UNIQUE("sku")
+);
+--> statement-breakpoint
+CREATE TABLE "purchase_order_lines" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"po_header_id" varchar NOT NULL,
+	"line_number" integer NOT NULL,
+	"item_id" varchar,
+	"description" varchar,
+	"quantity" numeric(18, 4) NOT NULL,
+	"unit_price" numeric(18, 4) NOT NULL,
+	"amount" numeric(18, 2) NOT NULL,
+	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "purchase_orders" (
@@ -1227,13 +1884,17 @@ CREATE TABLE "bi_dashboards" (
 CREATE TABLE "reports" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar NOT NULL,
+	"description" text,
 	"module" varchar,
 	"type" varchar,
 	"category" varchar,
 	"config" jsonb,
 	"is_favorite" boolean DEFAULT false,
+	"is_public" boolean DEFAULT false,
+	"created_by" varchar,
 	"last_run_at" timestamp,
-	"created_at" timestamp DEFAULT now()
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "smart_views" (
@@ -1448,6 +2109,69 @@ CREATE TABLE "roles" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE "ai_actions" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"module" varchar NOT NULL,
+	"action_name" varchar NOT NULL,
+	"description" text,
+	"required_permissions" jsonb,
+	"input_schema" jsonb,
+	"is_enabled" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "ai_actions_action_name_unique" UNIQUE("action_name")
+);
+--> statement-breakpoint
+CREATE TABLE "ai_audit_logs" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" varchar,
+	"action_name" varchar NOT NULL,
+	"input_prompt" text,
+	"structured_intent" jsonb,
+	"status" varchar NOT NULL,
+	"error_message" text,
+	"execution_time_ms" integer,
+	"timestamp" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "ai_credits" (
+	"user_id" varchar PRIMARY KEY NOT NULL,
+	"balance" integer DEFAULT 0 NOT NULL,
+	"total_mined" integer DEFAULT 0,
+	"last_daily_bonus" timestamp,
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "agent_actions" (
+	"code" text PRIMARY KEY NOT NULL,
+	"description" text NOT NULL,
+	"required_permissions" jsonb,
+	"parameters_schema" jsonb NOT NULL,
+	"is_enabled" boolean DEFAULT true
+);
+--> statement-breakpoint
+CREATE TABLE "agent_audit_logs" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"execution_id" integer,
+	"step_number" integer NOT NULL,
+	"message" text NOT NULL,
+	"action_type" text NOT NULL,
+	"data_snapshot" jsonb,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "agent_executions" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"intent_text" text NOT NULL,
+	"action_code" text,
+	"parameters" jsonb,
+	"status" text DEFAULT 'PENDING' NOT NULL,
+	"confidence_score" numeric DEFAULT '0',
+	"executed_by" text DEFAULT 'system',
+	"created_at" timestamp DEFAULT now(),
+	"completed_at" timestamp,
+	"error_message" text
+);
+--> statement-breakpoint
 CREATE TABLE "payments" (
 	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"tenant_id" varchar NOT NULL,
@@ -1593,4 +2317,214 @@ CREATE TABLE "user_dashboard_widgets" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE "ar_revenue_schedules" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"invoice_id" integer NOT NULL,
+	"schedule_date" timestamp NOT NULL,
+	"amount" numeric(12, 2) NOT NULL,
+	"status" varchar(20) DEFAULT 'Pending'
+);
+--> statement-breakpoint
+CREATE TABLE "cash_bank_accounts" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"account_number" varchar(100) NOT NULL,
+	"bank_name" varchar(255) NOT NULL,
+	"currency" varchar(10) DEFAULT 'USD',
+	"swift_code" varchar(50),
+	"gl_account_id" integer,
+	"current_balance" numeric(12, 2) DEFAULT '0',
+	"active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "cash_statement_lines" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"bank_account_id" integer NOT NULL,
+	"transaction_date" timestamp NOT NULL,
+	"amount" numeric(12, 2) NOT NULL,
+	"description" text,
+	"reference_number" varchar(100),
+	"reconciled" boolean DEFAULT false,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "cash_transactions" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"bank_account_id" integer NOT NULL,
+	"source_module" varchar(20) NOT NULL,
+	"source_id" integer NOT NULL,
+	"amount" numeric(12, 2) NOT NULL,
+	"transaction_date" timestamp DEFAULT now(),
+	"reference" varchar(100),
+	"status" varchar(20) DEFAULT 'Unreconciled'
+);
+--> statement-breakpoint
+CREATE TABLE "fa_additions" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"asset_number" varchar(50) NOT NULL,
+	"description" text NOT NULL,
+	"tag_number" varchar(50),
+	"category_id" integer NOT NULL,
+	"manufacturer" varchar(100),
+	"model" varchar(100),
+	"serial_number" varchar(100),
+	"date_placed_in_service" timestamp NOT NULL,
+	"original_cost" numeric(12, 2) NOT NULL,
+	"salvage_value" numeric(12, 2) DEFAULT '0',
+	"units" integer DEFAULT 1,
+	"status" varchar(30) DEFAULT 'Active',
+	"location" varchar(100),
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "fa_additions_asset_number_unique" UNIQUE("asset_number")
+);
+--> statement-breakpoint
+CREATE TABLE "fa_asset_books" (
+	"book_type_code" varchar(30) PRIMARY KEY NOT NULL,
+	"book_name" varchar(100) NOT NULL,
+	"description" text,
+	"current_open_period" varchar(20),
+	"active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "fa_books" (
+	"asset_id" integer NOT NULL,
+	"book_type_code" varchar(30) NOT NULL,
+	"cost" numeric(12, 2) NOT NULL,
+	"depreciate_flag" boolean DEFAULT true,
+	"method_code" varchar(30) NOT NULL,
+	"life_in_months" integer NOT NULL,
+	"date_placed_in_service" timestamp NOT NULL,
+	"ytd_depreciation" numeric(12, 2) DEFAULT '0',
+	"depreciation_reserve" numeric(12, 2) DEFAULT '0',
+	"net_book_value" numeric(12, 2) NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "fa_books_asset_id_book_type_code_pk" PRIMARY KEY("asset_id","book_type_code")
+);
+--> statement-breakpoint
+CREATE TABLE "fa_categories" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(100) NOT NULL,
+	"major_category" varchar(100),
+	"default_life_months" integer,
+	"default_method_code" varchar(30),
+	"active" boolean DEFAULT true
+);
+--> statement-breakpoint
+CREATE TABLE "fa_depreciation_summary" (
+	"asset_id" integer NOT NULL,
+	"book_type_code" varchar(30) NOT NULL,
+	"period_name" varchar(20) NOT NULL,
+	"depreciation_amount" numeric(12, 2) NOT NULL,
+	"ytd_depreciation" numeric(12, 2) NOT NULL,
+	"depreciation_reserve" numeric(12, 2) NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "fa_depreciation_summary_asset_id_book_type_code_period_name_pk" PRIMARY KEY("asset_id","book_type_code","period_name")
+);
+--> statement-breakpoint
+CREATE TABLE "fa_transaction_headers" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"asset_id" integer NOT NULL,
+	"book_type_code" varchar(30) NOT NULL,
+	"transaction_type" varchar(30) NOT NULL,
+	"transaction_date" timestamp DEFAULT now(),
+	"date_effective" timestamp,
+	"amount" numeric(12, 2) DEFAULT '0',
+	"comments" text
+);
+--> statement-breakpoint
+CREATE TABLE "sla_accounting_rules" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"code" varchar NOT NULL,
+	"name" varchar NOT NULL,
+	"event_class_id" varchar,
+	"rule_type" varchar NOT NULL,
+	"segment_name" varchar,
+	"source_type" varchar NOT NULL,
+	"constant_value" varchar,
+	"mapping_set_id" varchar,
+	"source_attribute" varchar,
+	CONSTRAINT "sla_accounting_rules_code_unique" UNIQUE("code")
+);
+--> statement-breakpoint
+CREATE TABLE "sla_event_classes" (
+	"id" varchar PRIMARY KEY NOT NULL,
+	"application_id" varchar NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"enabled_flag" boolean DEFAULT true
+);
+--> statement-breakpoint
+CREATE TABLE "sla_journal_headers" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"ledger_id" varchar NOT NULL,
+	"event_class_id" varchar,
+	"entity_id" varchar NOT NULL,
+	"entity_table" varchar NOT NULL,
+	"event_date" timestamp NOT NULL,
+	"gl_date" timestamp NOT NULL,
+	"currency_code" varchar NOT NULL,
+	"status" varchar DEFAULT 'Draft',
+	"completed_flag" boolean DEFAULT false,
+	"description" text,
+	"transfer_status" varchar DEFAULT 'Not Transferred',
+	"gl_journal_id" varchar,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "sla_journal_lines" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"header_id" varchar NOT NULL,
+	"line_number" integer NOT NULL,
+	"accounting_class" varchar NOT NULL,
+	"code_combination_id" varchar,
+	"entered_dr" varchar,
+	"entered_cr" varchar,
+	"accounted_dr" varchar,
+	"accounted_cr" varchar,
+	"currency_code" varchar NOT NULL,
+	"description" text
+);
+--> statement-breakpoint
+CREATE TABLE "sla_mapping_set_values" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"mapping_set_id" varchar NOT NULL,
+	"input_value" varchar NOT NULL,
+	"output_value" varchar NOT NULL,
+	"start_date_active" timestamp,
+	"end_date_active" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE "sla_mapping_sets" (
+	"id" varchar PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"code" varchar NOT NULL,
+	"name" varchar NOT NULL,
+	"description" text,
+	"input_type" varchar NOT NULL,
+	"output_type" varchar NOT NULL,
+	CONSTRAINT "sla_mapping_sets_code_unique" UNIQUE("code")
+);
+--> statement-breakpoint
+ALTER TABLE "crm_case_comments" ADD CONSTRAINT "crm_case_comments_case_id_crm_cases_id_fk" FOREIGN KEY ("case_id") REFERENCES "public"."crm_cases"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_cases" ADD CONSTRAINT "crm_cases_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."accounts"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_cases" ADD CONSTRAINT "crm_cases_contact_id_contacts_id_fk" FOREIGN KEY ("contact_id") REFERENCES "public"."contacts"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_opportunity_line_items" ADD CONSTRAINT "crm_opportunity_line_items_opportunity_id_opportunities_id_fk" FOREIGN KEY ("opportunity_id") REFERENCES "public"."opportunities"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_opportunity_line_items" ADD CONSTRAINT "crm_opportunity_line_items_product_id_crm_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."crm_products"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_orders" ADD CONSTRAINT "crm_orders_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."accounts"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_orders" ADD CONSTRAINT "crm_orders_quote_id_crm_quotes_id_fk" FOREIGN KEY ("quote_id") REFERENCES "public"."crm_quotes"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_orders" ADD CONSTRAINT "crm_orders_opportunity_id_opportunities_id_fk" FOREIGN KEY ("opportunity_id") REFERENCES "public"."opportunities"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_quote_line_items" ADD CONSTRAINT "crm_quote_line_items_quote_id_crm_quotes_id_fk" FOREIGN KEY ("quote_id") REFERENCES "public"."crm_quotes"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_quote_line_items" ADD CONSTRAINT "crm_quote_line_items_product_id_crm_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."crm_products"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "crm_quotes" ADD CONSTRAINT "crm_quotes_opportunity_id_opportunities_id_fk" FOREIGN KEY ("opportunity_id") REFERENCES "public"."opportunities"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "agent_audit_logs" ADD CONSTRAINT "agent_audit_logs_execution_id_agent_executions_id_fk" FOREIGN KEY ("execution_id") REFERENCES "public"."agent_executions"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sla_accounting_rules" ADD CONSTRAINT "sla_accounting_rules_event_class_id_sla_event_classes_id_fk" FOREIGN KEY ("event_class_id") REFERENCES "public"."sla_event_classes"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sla_accounting_rules" ADD CONSTRAINT "sla_accounting_rules_mapping_set_id_sla_mapping_sets_id_fk" FOREIGN KEY ("mapping_set_id") REFERENCES "public"."sla_mapping_sets"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sla_journal_headers" ADD CONSTRAINT "sla_journal_headers_ledger_id_gl_ledgers_v2_id_fk" FOREIGN KEY ("ledger_id") REFERENCES "public"."gl_ledgers_v2"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sla_journal_headers" ADD CONSTRAINT "sla_journal_headers_event_class_id_sla_event_classes_id_fk" FOREIGN KEY ("event_class_id") REFERENCES "public"."sla_event_classes"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sla_journal_lines" ADD CONSTRAINT "sla_journal_lines_header_id_sla_journal_headers_id_fk" FOREIGN KEY ("header_id") REFERENCES "public"."sla_journal_headers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sla_journal_lines" ADD CONSTRAINT "sla_journal_lines_code_combination_id_gl_code_combinations_v2_id_fk" FOREIGN KEY ("code_combination_id") REFERENCES "public"."gl_code_combinations_v2"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sla_mapping_set_values" ADD CONSTRAINT "sla_mapping_set_values_mapping_set_id_sla_mapping_sets_id_fk" FOREIGN KEY ("mapping_set_id") REFERENCES "public"."sla_mapping_sets"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "IDX_session_expire" ON "sessions" USING btree ("expire");

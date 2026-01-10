@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupPlatformAuth, seedAdminUser } from "./platformAuth";
 import { enforceRBAC } from "./middleware/auth";
+import { storage } from "./storage";
 
 // Import modular routes
 import { registerDashboardRoutes } from "./modules/dashboard/routes";
@@ -84,33 +85,6 @@ export async function registerRoutes(
 
   app.get("/api/gl/ledgers/:id/structure", async (req, res) => {
     try {
-      // Assuming 'storage' is imported or available in scope, e.g., from a data layer
-      // For this example, I'll add a placeholder for 'storage' if it's not globally available
-      // In a real app, you'd import it: import * as storage from "./data/storage";
-      const storage = {
-        listGlSegments: async (ledgerId: string) => {
-          // Mock data for segments
-          if (ledgerId === "1") {
-            return [
-              { id: "seg1", segmentName: "Company", segmentNumber: 1 },
-              { id: "seg2", segmentName: "Account", segmentNumber: 2 },
-              { id: "seg3", segmentName: "Department", segmentNumber: 3 },
-            ];
-          }
-          return [];
-        },
-        listGlSegmentValues: async (segmentId: string) => {
-          // Mock data for segment values
-          if (segmentId === "seg1") {
-            return [{ value: "001", description: "Headquarters" }, { value: "002", description: "Branch Office" }];
-          } else if (segmentId === "seg2") {
-            return [{ value: "1000", description: "Cash" }, { value: "2000", description: "Accounts Payable" }];
-          } else if (segmentId === "seg3") {
-            return [{ value: "100", description: "Sales" }, { value: "200", description: "Marketing" }];
-          }
-          return [];
-        }
-      };
 
       const segments = await storage.listGlSegments(req.params.id);
       const structure = await Promise.all(segments.sort((a, b) => a.segmentNumber - b.segmentNumber).map(async seg => {

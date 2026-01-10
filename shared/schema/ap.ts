@@ -7,7 +7,7 @@ import { createInsertSchema } from "drizzle-zod";
 // 1. Supplier Entity (Enhanced)
 export const apSuppliers = pgTable("ap_suppliers", {
     id: serial("id").primaryKey(),
-    supplierNumber: varchar("supplier_number", { length: 50 }).unique(), // Business Key
+    supplierNumber: varchar("supplier_number", { length: 50 }), // Business Key
     name: varchar("name", { length: 255 }).notNull(),
     taxOrganizationType: varchar("tax_organization_type", { length: 50 }), // Corporation, Partnership, etc.
     taxId: varchar("tax_id", { length: 100 }),
@@ -39,7 +39,7 @@ export type InsertApSupplier = typeof apSuppliers.$inferInsert;
 // 2. Invoice Header
 export const apInvoices = pgTable("ap_invoices", {
     id: serial("id").primaryKey(),
-    invoiceId: varchar("invoice_id", { length: 50 }).unique(), // Logical ID if needed, or use serial ID
+    invoiceId: varchar("invoice_id", { length: 50 }), // Logical ID if needed, or use serial ID
 
     supplierId: integer("supplier_id").notNull(),
     supplierSiteId: integer("supplier_site_id"), // Future use

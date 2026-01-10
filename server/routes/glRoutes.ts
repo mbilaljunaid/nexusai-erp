@@ -5,6 +5,7 @@
 
 import { Router } from "express";
 import { glPostingEngine } from "../gl/glPostingEngine";
+import { financeService } from "../services/finance";
 import { dualEntryValidator } from "../gl/dualEntryValidator";
 import { glReconciler } from "../gl/glReconciler";
 import { auditLogger } from "../gl/auditLogger";
@@ -50,10 +51,10 @@ router.post("/gl/post", async (req, res) => {
  * GET /api/gl/entries/:formId
  * Get GL entries for a form
  */
-router.get("/gl/entries/:formId", (req, res) => {
+router.get("/gl/entries/:formId", async (req, res) => {
   try {
     const { formId } = req.params;
-    const entries = glPostingEngine.getGLEntriesForForm(formId);
+    const entries = await glPostingEngine.getGLEntriesForForm(formId);
     res.json(entries);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -64,10 +65,10 @@ router.get("/gl/entries/:formId", (req, res) => {
  * GET /api/gl/account/:account
  * Get GL entries for an account
  */
-router.get("/gl/account/:account", (req, res) => {
+router.get("/gl/account/:account", async (req, res) => {
   try {
     const { account } = req.params;
-    const entries = glPostingEngine.getGLEntriesForAccount(account);
+    const entries = await glPostingEngine.getGLEntriesForAccount(account);
     res.json(entries);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -78,10 +79,10 @@ router.get("/gl/account/:account", (req, res) => {
  * GET /api/gl/balance/:account
  * Get account balance
  */
-router.get("/gl/balance/:account", (req, res) => {
+router.get("/gl/balance/:account", async (req, res) => {
   try {
     const { account } = req.params;
-    const balance = glPostingEngine.getAccountBalance(account);
+    const balance = await glPostingEngine.getAccountBalance(account);
     res.json(balance);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -106,13 +107,13 @@ router.post("/gl/validate", (req, res) => {
  * GET /api/gl/reconciliation
  * Generate reconciliation report
  */
-router.get("/gl/reconciliation", (req, res) => {
+router.get("/gl/reconciliation", async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
     const start = new Date(String(startDate));
     const end = new Date(String(endDate));
 
-    const entries = glPostingEngine.getAllGLEntries();
+    const entries = await glPostingEngine.getAllGLEntries();
     const report = glReconciler.generateReconciliationReport(entries, start, end);
 
     res.json(report);
@@ -125,9 +126,9 @@ router.get("/gl/reconciliation", (req, res) => {
  * GET /api/gl/trial-balance
  * Get trial balance
  */
-router.get("/gl/trial-balance", (req, res) => {
+router.get("/gl/trial-balance", async (req, res) => {
   try {
-    const entries = glPostingEngine.getAllGLEntries();
+    const entries = await glPostingEngine.getAllGLEntries();
     const trialBalance = glReconciler.getTrialBalance(entries);
     res.json(trialBalance);
   } catch (error: any) {
@@ -171,6 +172,62 @@ router.get("/audit/report", (req, res) => {
 
     const report = auditLogger.generateAuditReport(start, end);
     res.json(report);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+/**
+ * POST /api/gl/ledgersets
+ * Create a new Ledger Set
+ */
+router.post("/gl/ledgersets", async (req, res) => {
+  try {
+    const ledgerSet = await financeService.createLedgerSet(req.body);
+    res.json(ledgerSet);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/gl/ledgersets/:id/assign
+ * Assign a ledger to a set
+ */
+router.post("/gl/ledgersets/:id/assign", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { ledgerId } = req.body;
+    const result = await financeService.assignLedgerToSet(id, ledgerId);
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/gl/legal-entities
+ * Create a new Legal Entity
+ */
+router.post("/api/gl/legal-entities", async (req, res) => {
+  try {
+    const legalEntity = await financeService.createLegalEntity(req.body);
+    res.json(legalEntity);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/gl/coa/structure/:ledgerId
+ * Get COA structure (segments) for a ledger
+ */
+router.get("/gl/coa/structure/:ledgerId", async (req, res) => {
+  try {
+    const { ledgerId } = req.params;
+    const structure = await financeService.getFullCoaStructure(ledgerId);
+    res.json(structure);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

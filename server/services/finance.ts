@@ -4,6 +4,7 @@ import {
     glBalances, glJournals, glJournalLines, glCodeCombinations,
     glRevaluations, glDailyRates, glPeriods, glCrossValidationRules, glAllocations, glIntercompanyRules,
     glAuditLogs, glDataAccessSets, glDataAccessSetAssignments,
+    glLedgerSets, glLedgerSetAssignments, glLegalEntities, // Added for Chunk 3
     apInvoices, arInvoices,
     glRecurringJournals, insertGlRecurringJournalSchema
 } from "@shared/schema";
@@ -1918,6 +1919,52 @@ export class FinanceService {
     // ================= FSG ENGINE =================
 
 
+    // ================= LEDGER SETS & LEGAL ENTITIES (Chunk 3) =================
+
+    async createLedgerSet(data: { name: string; description?: string; ledgerId: string }) {
+        // Create the Ledger Set definition
+        const [ledgerSet] = await db.insert(glLedgerSets).values({
+            name: data.name,
+            description: data.description,
+            ledgerId: data.ledgerId // Primary Ledger this set belongs to (or master chart)
+        }).returning();
+
+        return ledgerSet;
+    }
+
+    async assignLedgerToSet(ledgerSetId: string, ledgerId: string) {
+        const [assignment] = await db.insert(glLedgerSetAssignments).values({
+            ledgerSetId,
+            ledgerId
+        }).returning();
+        return assignment;
+    }
+
+    async createLegalEntity(data: { name: string; organizationId: string; registrationNumber?: string; ledgerId: string }) {
+        const [legalEntity] = await db.insert(glLegalEntities).values({
+            name: data.name,
+            organizationId: data.organizationId,
+            registrationNumber: data.registrationNumber,
+            ledgerId: data.ledgerId
+        }).returning();
+        return legalEntity;
+    }
+
+    async listLedgerSets() {
+        return await db.select().from(glLedgerSets);
+    }
+
+    async listLegalEntities() {
+        return await db.select().from(glLegalEntities);
+    }
+
+    async getFullCoaStructure(ledgerId: string) {
+        // Return full segment structure for the ledger
+        // Using existing storage method if available, or querying gl_segments_v2 directly
+        // Assuming storage has this, otherwise implementing here
+        const segments = await storage.listGlSegments(ledgerId);
+        return segments;
+    }
 }
 
 export const financeService = new FinanceService();

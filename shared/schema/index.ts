@@ -30,3 +30,4 @@ export * from "./ar";
 export * from "./arRevenueSchedule";
 export * from "./cash";
 export * from "./fixedAssets";
+export * from "./sla";
