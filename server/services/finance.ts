@@ -1800,6 +1800,76 @@ export class FinanceService {
         return await storage.createLegalEntity(data);
     }
 
+    // ================= MASTER DATA (Chunk 4) =================
+    async listValueSets() {
+        return await storage.listValueSets();
+    }
+    async createValueSet(data: any) {
+        return await storage.createValueSet(data);
+    }
+    async listCoaStructures() {
+        return await storage.listCoaStructures();
+    }
+    async createCoaStructure(data: any) {
+        return await storage.createCoaStructure(data);
+    }
+    async listSegments(coaStructureId: string) {
+        return await storage.listSegments(coaStructureId);
+    }
+    async createSegment(data: any) {
+        return await storage.createSegment(data);
+    }
+    async listSegmentValues(valueSetId: string) {
+        return await storage.listSegmentValues(valueSetId);
+    }
+    async createSegmentValue(data: any) {
+        return await storage.createSegmentValue(data);
+    }
+    async listSegmentHierarchies(valueSetId: string) {
+        return await storage.listSegmentHierarchies(valueSetId);
+    }
+    async createSegmentHierarchy(data: any) {
+        return await storage.createSegmentHierarchy(data);
+    }
+
+    // ================= CVR & SECURITY (Chunk 4 Part 2) =================
+    async listCrossValidationRules(ledgerId: string) {
+        return await storage.listCrossValidationRules(ledgerId);
+    }
+    async createCrossValidationRule(data: any) {
+        return await storage.createCrossValidationRule(data);
+    }
+    async listDataAccessSets() {
+        return await storage.listDataAccessSets();
+    }
+    async createDataAccessSet(data: any) {
+        return await storage.createDataAccessSet(data);
+    }
+    async createDataAccessSetAssignment(data: any) {
+        return await storage.createDataAccessSetAssignment(data);
+    }
+
+    // Validation Logic
+    async validateCodeCombination(ledgerId: string, segments: Record<string, string>): Promise<{ isValid: boolean, error?: string }> {
+        // 1. Fetch CVRs for Ledger
+        const rules = await this.listCrossValidationRules(ledgerId);
+
+        // 2. Iterate rules and check matches
+        // Simplified Logic: if IncludeFilter matches AND ExcludeFilter matches -> Invalid
+        // This is a placeholder for the actual rule engine integration
+        for (const rule of rules) {
+            if (rule.enabled) {
+                // Check if segments match the 'include' filter (Conditions where rule applies)
+                // Check if segments match the 'exclude' filter (Forbidden values)
+                // If both match, it's a violation.
+
+                // TODO: Implement proper expression parsing
+            }
+        }
+
+        return { isValid: true };
+    }
+
     // ================= FSG ENGINE =================
 
 

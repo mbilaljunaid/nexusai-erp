@@ -267,18 +267,50 @@ export const insertGlLedgerSetAssignmentSchema = createInsertSchema(glLedgerSetA
 export type InsertGlLedgerSetAssignment = z.infer<typeof insertGlLedgerSetAssignmentSchema>;
 export type GlLedgerSetAssignment = typeof glLedgerSetAssignments.$inferSelect;
 
-// 6. COA Segments (Flexfields definition)
-export const glSegments = pgTable("gl_segments_v2", {
+// ================= MASTER DATA MANAGEMENT (Chunk 4) =================
+
+// 6.1 Value Sets (Validation Rules)
+export const glValueSets = pgTable("gl_value_sets", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    ledgerId: varchar("ledger_id").notNull(),
-    segmentName: varchar("segment_name").notNull(), // e.g., "Company", "Cost Center", "Account"
-    segmentNumber: integer("segment_number").notNull(), // 1, 2, 3...
-    isRequired: boolean("is_required").default(true),
-    validationSource: varchar("validation_source"), // Table name validator or Value Set ID
-    segmentQualifier: varchar("segment_qualifier"), // Balancing, Cost Center, Natural Account, Intercompany
+    name: varchar("name").notNull().unique(),
+    description: text("description"),
+    validationType: varchar("validation_type").default("Independent"), // Independent, Dependent, Table
+    formatType: varchar("format_type").default("Char"), // Char, Number, Date
+    maxLength: integer("max_length"),
+    uppercaseOnly: boolean("uppercase_only").default(true),
+    isActive: boolean("is_active").default(true),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
+export const insertGlValueSetSchema = createInsertSchema(glValueSets);
+export type InsertGlValueSet = z.infer<typeof insertGlValueSetSchema>;
+export type GlValueSet = typeof glValueSets.$inferSelect;
 
+// 6.2 CoA Structures (The Container)
+export const glCoaStructures = pgTable("gl_coa_structures", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(),
+    description: text("description"),
+    delimiter: varchar("delimiter").default("-"),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+export const insertGlCoaStructureSchema = createInsertSchema(glCoaStructures);
+export type InsertGlCoaStructure = z.infer<typeof insertGlCoaStructureSchema>;
+export type GlCoaStructure = typeof glCoaStructures.$inferSelect;
+
+// 6.3 Segments (The Dimensions)
+export const glSegments = pgTable("gl_segments_v2", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    coaStructureId: varchar("coa_structure_id").notNull(),
+    segmentName: varchar("segment_name").notNull(), // e.g., Company, CostCenter
+    segmentNumber: integer("segment_number").notNull(), // 1, 2, 3...
+    columnName: varchar("column_name").notNull(), // segment1, segment2...
+    valueSetId: varchar("value_set_id").notNull(), // Link to validation
+    prompt: varchar("prompt").notNull(),
+    displayWidth: integer("display_width").default(20),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
 export const insertGlSegmentSchema = createInsertSchema(glSegments);
 export type InsertGlSegment = z.infer<typeof insertGlSegmentSchema>;
 export type GlSegment = typeof glSegments.$inferSelect;
@@ -344,21 +376,36 @@ export type InsertGlIntercompanyRule = z.infer<typeof insertGlIntercompanyRuleSc
 export type GlIntercompanyRule = typeof glIntercompanyRules.$inferSelect;
 
 // 7. Segment Values (The actual checklist for each segment)
+// 6.4 Segment Values (The Data)
 export const glSegmentValues = pgTable("gl_segment_values_v2", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    segmentId: varchar("segment_id").notNull(),
-    value: varchar("value").notNull(), // e.g., "101", "Sales"
-    description: varchar("description"),
-    parentValue: varchar("parent_value"), // For hierarchies
-    enabled: boolean("enabled").default(true),
-    startDate: timestamp("start_date"),
-    endDate: timestamp("end_date"),
+    valueSetId: varchar("value_set_id").notNull(),
+    value: varchar("value").notNull(),
+    description: text("description"),
+    parentValueId: varchar("parent_value_id"), // For simple hierarchy
+    isSummary: boolean("is_summary").default(false), // Parent node?
+    enabledFlag: boolean("enabled_flag").default(true),
+    startDateActive: timestamp("start_date_active"),
+    endDateActive: timestamp("end_date_active"),
+    accountType: varchar("account_type"), // Asset, Liability, etc. (Only for Natural Account segment)
     createdAt: timestamp("created_at").default(sql`now()`),
 });
-
 export const insertGlSegmentValueSchema = createInsertSchema(glSegmentValues);
 export type InsertGlSegmentValue = z.infer<typeof insertGlSegmentValueSchema>;
 export type GlSegmentValue = typeof glSegmentValues.$inferSelect;
+
+// 6.5 Segment Hierarchies (Complex Trees)
+export const glSegmentHierarchies = pgTable("gl_segment_hierarchies", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    valueSetId: varchar("value_set_id").notNull(),
+    parentValue: varchar("parent_value").notNull(),
+    childValue: varchar("child_value").notNull(),
+    treeName: varchar("tree_name").default("DEFAULT"), // Support multiple versions
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+export const insertGlSegmentHierarchySchema = createInsertSchema(glSegmentHierarchies);
+export type InsertGlSegmentHierarchy = z.infer<typeof insertGlSegmentHierarchySchema>;
+export type GlSegmentHierarchy = typeof glSegmentHierarchies.$inferSelect;
 
 // 8. Code Combinations (CCID - The intersection)
 export const glCodeCombinations = pgTable("gl_code_combinations_v2", {
@@ -676,3 +723,4 @@ export const glRecurringJournals = pgTable("gl_recurring_journals", {
 export const insertGlRecurringJournalSchema = createInsertSchema(glRecurringJournals);
 export type InsertGlRecurringJournal = z.infer<typeof insertGlRecurringJournalSchema>;
 export type GlRecurringJournal = typeof glRecurringJournals.$inferSelect;
+

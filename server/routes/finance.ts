@@ -3,7 +3,10 @@ import { financeService } from "../services/finance";
 import {
     insertGlAccountSchema, insertGlPeriodSchema, insertGlJournalSchema,
     insertGlJournalLineSchema, glAllocations, insertGlLegalEntitySchema,
-    insertGlLedgerRelationshipSchema, insertGlLedgerSchema
+    insertGlLedgerRelationshipSchema, insertGlLedgerSchema,
+    insertGlValueSetSchema, insertGlCoaStructureSchema, insertGlSegmentSchema,
+    insertGlSegmentValueSchema, insertGlSegmentHierarchySchema,
+    insertGlCrossValidationRuleSchema, insertGlDataAccessSetSchema, insertGlDataAccessSetAssignmentSchema
 } from "@shared/schema";
 import { z } from "zod";
 import { db } from "../db";
@@ -356,6 +359,107 @@ router.post("/gl/ledgers", async (req, res) => {
 router.get("/gl/ledgers/:id", async (req, res) => {
     const ledger = await financeService.getLedger(req.params.id);
     res.json(ledger);
+});
+
+// Master Data (Chunk 4)
+
+// Value Sets
+router.get("/gl/value-sets", async (req, res) => {
+    const valueSets = await financeService.listValueSets();
+    res.json(valueSets);
+});
+
+router.post("/gl/value-sets", async (req, res) => {
+    const data = insertGlValueSetSchema.parse(req.body);
+    const valueSet = await financeService.createValueSet(data);
+    res.json(valueSet);
+});
+
+// CoA Structures
+router.get("/gl/coa-structures", async (req, res) => {
+    const structures = await financeService.listCoaStructures();
+    res.json(structures);
+});
+
+router.post("/gl/coa-structures", async (req, res) => {
+    const data = insertGlCoaStructureSchema.parse(req.body);
+    const structure = await financeService.createCoaStructure(data);
+    res.json(structure);
+});
+
+// Segments
+router.get("/gl/segments", async (req, res) => {
+    const coaStructureId = req.query.coaStructureId as string;
+    if (!coaStructureId) return res.status(400).json({ error: "coaStructureId required" });
+    const segments = await financeService.listSegments(coaStructureId);
+    res.json(segments);
+});
+
+router.post("/gl/segments", async (req, res) => {
+    const data = insertGlSegmentSchema.parse(req.body);
+    const segment = await financeService.createSegment(data);
+    res.json(segment);
+});
+
+// Segment Values
+router.get("/gl/segment-values", async (req, res) => {
+    const valueSetId = req.query.valueSetId as string;
+    if (!valueSetId) return res.status(400).json({ error: "valueSetId required" });
+    const values = await financeService.listSegmentValues(valueSetId);
+    res.json(values);
+});
+
+router.post("/gl/segment-values", async (req, res) => {
+    const data = insertGlSegmentValueSchema.parse(req.body);
+    const value = await financeService.createSegmentValue(data);
+    res.json(value);
+});
+
+router.get("/gl/segment-hierarchies", async (req, res) => {
+    const valueSetId = req.query.valueSetId as string;
+    if (!valueSetId) return res.status(400).json({ error: "valueSetId required" });
+    const hierarchies = await financeService.listSegmentHierarchies(valueSetId);
+    res.json(hierarchies);
+});
+
+router.post("/gl/segment-hierarchies", async (req, res) => {
+    const data = insertGlSegmentHierarchySchema.parse(req.body);
+    const hierarchy = await financeService.createSegmentHierarchy(data);
+    res.json(hierarchy);
+});
+
+// CVR & Security (Chunk 4 Part 2)
+
+// Cross-Validation Rules
+router.get("/gl/cvr", async (req, res) => {
+    const ledgerId = req.query.ledgerId as string;
+    if (!ledgerId) return res.status(400).json({ error: "ledgerId required" });
+    const rules = await financeService.listCrossValidationRules(ledgerId);
+    res.json(rules);
+});
+
+router.post("/gl/cvr", async (req, res) => {
+    const data = insertGlCrossValidationRuleSchema.parse(req.body);
+    const rule = await financeService.createCrossValidationRule(data);
+    res.json(rule);
+});
+
+// Data Access Sets
+router.get("/gl/access-sets", async (req, res) => {
+    const sets = await financeService.listDataAccessSets();
+    res.json(sets);
+});
+
+router.post("/gl/access-sets", async (req, res) => {
+    const data = insertGlDataAccessSetSchema.parse(req.body);
+    const set = await financeService.createDataAccessSet(data);
+    res.json(set);
+});
+
+router.post("/gl/access-set-assignments", async (req, res) => {
+    const data = insertGlDataAccessSetAssignmentSchema.parse(req.body);
+    const assignment = await financeService.createDataAccessSetAssignment(data);
+    res.json(assignment);
 });
 
 export default router;

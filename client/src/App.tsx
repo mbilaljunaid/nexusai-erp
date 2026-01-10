@@ -320,8 +320,11 @@ const IntercompanyRules = lazy(() => import("@/pages/gl/IntercompanyRules"));
 const BudgetManager = lazy(() => import("@/pages/gl/BudgetManager"));
 const CVRManager = lazy(() => import("@/pages/gl/CVRManager"));
 const PeriodCloseDashboard = lazy(() => import("@/pages/gl/PeriodCloseDashboard"));
-const LedgerSetup = lazy(() => import("@/pages/gl/LedgerSetup"));
-const LegalEntitySetup = lazy(() => import("@/pages/gl/LegalEntitySetup"));
+const LedgerSetup = lazy(() => import("./pages/gl/LedgerSetup"));
+const LegalEntitySetup = lazy(() => import("./pages/gl/LegalEntitySetup"));
+const ValueSetManager = lazy(() => import("./pages/gl/ValueSetManager"));
+const CoaStructureSetup = lazy(() => import("./pages/gl/CoaStructureSetup"));
+const HierarchyManager = lazy(() => import("./pages/gl/HierarchyManager"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
@@ -706,6 +709,9 @@ function Router() {
       <Route path="/gl/period-close" component={PeriodCloseDashboard} />
       <Route path="/gl/ledger-setup" component={LedgerSetup} />
       <Route path="/gl/legal-entity-setup" component={LegalEntitySetup} />
+      <Route path="/gl/value-sets" component={ValueSetManager} />
+      <Route path="/gl/coa-structures" component={CoaStructureSetup} />
+      <Route path="/gl/hierarchies" component={HierarchyManager} />
 
       <Route component={NotFound} />
     </Switch>

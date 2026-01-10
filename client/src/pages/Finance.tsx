@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { openFormInNewWindow } from "@/lib/formUtils";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard, BookOpen, ArrowRightLeft, RefreshCw, Shield, Archive, Settings, Building2 } from "lucide-react";
+import { DollarSign, TrendingUp, BarChart3, FileText, PieChart, CreditCard, BookOpen, ArrowRightLeft, RefreshCw, Shield, Archive, Settings, Building2, Layers, List, Network } from "lucide-react";
 import { GLMetrics } from "./gl/components/GLMetrics";
 
 export default function Finance() {
@@ -32,6 +32,9 @@ export default function Finance() {
     { id: "period_close", label: "Period Close", icon: Archive, color: "text-emerald-500", formId: "gl_period_close" },
     { id: "ledger_setup", label: "Ledger Setup", icon: Settings, color: "text-slate-500", formId: "gl_ledger_setup" },
     { id: "legal_entities", label: "Legal Entities", icon: Building2, color: "text-orange-500", formId: "gl_legal_entities" },
+    { id: "coa", label: "CoA Structures", icon: Layers, color: "text-blue-500", formId: "gl_coa" },
+    { id: "values", label: "Value Sets", icon: List, color: "text-indigo-500", formId: "gl_values" },
+    { id: "hierarchies", label: "Hierarchies", icon: Network, color: "text-purple-500", formId: "gl_hierarchies" },
     { id: "invoices", label: "Invoices", icon: FileText, color: "text-green-500", formId: "invoices" },
     { id: "expenses", label: "Expenses", icon: DollarSign, color: "text-orange-500", formId: "expenses" },
     { id: "payments", label: "Payments", icon: CreditCard, color: "text-cyan-500", formId: "payments" },
@@ -74,6 +77,18 @@ export default function Finance() {
     }
     if (formId === "gl_legal_entities") {
       setLocation("/gl/legal-entity-setup");
+      return;
+    }
+    if (formId === "gl_coa") {
+      setLocation("/gl/coa-structures");
+      return;
+    }
+    if (formId === "gl_values") {
+      setLocation("/gl/value-sets");
+      return;
+    }
+    if (formId === "gl_hierarchies") {
+      setLocation("/gl/hierarchies");
       return;
     }
 

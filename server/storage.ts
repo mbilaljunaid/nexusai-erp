@@ -136,7 +136,15 @@ import {
   glBudgets, glBudgetBalances, glBudgetControlRules,
   type GlBudget, type InsertGlBudget,
   type GlBudgetBalance, type InsertGlBudgetBalance,
-  type GlBudgetControlRule, type InsertGlBudgetControlRule
+  type GlBudgetControlRule, type InsertGlBudgetControlRule,
+  // Master Data (Chunk 4)
+  glValueSets, type GlValueSet, type InsertGlValueSet,
+  glCoaStructures, type GlCoaStructure, type InsertGlCoaStructure,
+  glSegmentHierarchies, type GlSegmentHierarchy, type InsertGlSegmentHierarchy,
+  // CVR & Security (Chunk 4 Part 2)
+  glCrossValidationRules, type GlCrossValidationRule, type InsertGlCrossValidationRule,
+  glDataAccessSets, type GlDataAccessSet, type InsertGlDataAccessSet,
+  glDataAccessSetAssignments, type GlDataAccessSetAssignment, type InsertGlDataAccessSetAssignment
 } from "@shared/schema";
 
 import { randomUUID } from "crypto";
@@ -153,6 +161,25 @@ export interface IStorage {
   // Ledger Relationship operations
   listLedgerRelationships(): Promise<GlLedgerRelationship[]>;
   createLedgerRelationship(data: InsertGlLedgerRelationship): Promise<GlLedgerRelationship>;
+
+  // Master Data (Chunk 4)
+  listValueSets(): Promise<GlValueSet[]>;
+  createValueSet(data: InsertGlValueSet): Promise<GlValueSet>;
+  listCoaStructures(): Promise<GlCoaStructure[]>;
+  createCoaStructure(data: InsertGlCoaStructure): Promise<GlCoaStructure>;
+  listSegments(coaStructureId: string): Promise<GlSegment[]>;
+  createSegment(data: InsertGlSegment): Promise<GlSegment>;
+  listSegmentValues(valueSetId: string): Promise<GlSegmentValue[]>;
+  createSegmentValue(data: InsertGlSegmentValue): Promise<GlSegmentValue>;
+  listSegmentHierarchies(valueSetId: string): Promise<GlSegmentHierarchy[]>;
+  createSegmentHierarchy(data: InsertGlSegmentHierarchy): Promise<GlSegmentHierarchy>;
+
+  // CVR & Security (Chunk 4 Part 2)
+  listCrossValidationRules(ledgerId: string): Promise<GlCrossValidationRule[]>;
+  createCrossValidationRule(data: InsertGlCrossValidationRule): Promise<GlCrossValidationRule>;
+  listDataAccessSets(): Promise<GlDataAccessSet[]>;
+  createDataAccessSet(data: InsertGlDataAccessSet): Promise<GlDataAccessSet>;
+  createDataAccessSetAssignment(data: InsertGlDataAccessSetAssignment): Promise<GlDataAccessSetAssignment>;
 
   // AR Revenue Schedule operations
   listArRevenueSchedules(): Promise<ArRevenueSchedule[]>;
@@ -2223,6 +2250,63 @@ export class DatabaseStorage implements IStorage {
       id: data.id || randomUUID()
     }).returning();
     return rel;
+  }
+
+  // Master Data (Chunk 4)
+  async listValueSets(): Promise<GlValueSet[]> {
+    return db.select().from(glValueSets);
+  }
+  async createValueSet(data: InsertGlValueSet): Promise<GlValueSet> {
+    const [res] = await db.insert(glValueSets).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listCoaStructures(): Promise<GlCoaStructure[]> {
+    return db.select().from(glCoaStructures);
+  }
+  async createCoaStructure(data: InsertGlCoaStructure): Promise<GlCoaStructure> {
+    const [res] = await db.insert(glCoaStructures).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listSegments(coaStructureId: string): Promise<GlSegment[]> {
+    return db.select().from(glSegments).where(eq(glSegments.coaStructureId, coaStructureId));
+  }
+  async createSegment(data: InsertGlSegment): Promise<GlSegment> {
+    const [res] = await db.insert(glSegments).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listSegmentValues(valueSetId: string): Promise<GlSegmentValue[]> {
+    return db.select().from(glSegmentValues).where(eq(glSegmentValues.valueSetId, valueSetId));
+  }
+  async createSegmentValue(data: InsertGlSegmentValue): Promise<GlSegmentValue> {
+    const [res] = await db.insert(glSegmentValues).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listSegmentHierarchies(valueSetId: string): Promise<GlSegmentHierarchy[]> {
+    return db.select().from(glSegmentHierarchies).where(eq(glSegmentHierarchies.valueSetId, valueSetId));
+  }
+  async createSegmentHierarchy(data: InsertGlSegmentHierarchy): Promise<GlSegmentHierarchy> {
+    const [res] = await db.insert(glSegmentHierarchies).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+
+  // CVR & Security (Chunk 4 Part 2)
+  async listCrossValidationRules(ledgerId: string): Promise<GlCrossValidationRule[]> {
+    return db.select().from(glCrossValidationRules).where(eq(glCrossValidationRules.ledgerId, ledgerId));
+  }
+  async createCrossValidationRule(data: InsertGlCrossValidationRule): Promise<GlCrossValidationRule> {
+    const [res] = await db.insert(glCrossValidationRules).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listDataAccessSets(): Promise<GlDataAccessSet[]> {
+    return db.select().from(glDataAccessSets);
+  }
+  async createDataAccessSet(data: InsertGlDataAccessSet): Promise<GlDataAccessSet> {
+    const [res] = await db.insert(glDataAccessSets).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async createDataAccessSetAssignment(data: InsertGlDataAccessSetAssignment): Promise<GlDataAccessSetAssignment> {
+    const [res] = await db.insert(glDataAccessSetAssignments).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
   }
 }
 

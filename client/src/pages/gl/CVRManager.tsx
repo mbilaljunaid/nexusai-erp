@@ -1,402 +1,226 @@
+
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription
+    Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogFooter
+    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from "@/components/ui/table";
+import {
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
 } from "@/components/ui/dialog";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    FormDescription
-} from "@/components/ui/form";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { insertGlCrossValidationRuleSchema, type GlCrossValidationRule } from "@shared/schema";
-import { ShieldCheck, Plus, Trash2, Edit2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Shield, Plus, Ban, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import type { GlCrossValidationRule, GlLedger } from "@shared/schema";
+import { useLedger } from "@/context/LedgerContext";
 
 export default function CVRManager() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-    const [editingRule, setEditingRule] = useState<GlCrossValidationRule | null>(null);
+    const { currentLedgerId, ledgers } = useLedger();
+    const [isAddOpen, setIsAddOpen] = useState(false);
 
-    const ledgerId = "primary-ledger-001"; // In real app, get from context
-
-    const { data: rules, isLoading } = useQuery<GlCrossValidationRule[]>({
-        queryKey: ["/api/gl/cross-validation-rules", { ledgerId }],
+    // Form State
+    const [formData, setFormData] = useState<Partial<GlCrossValidationRule>>({
+        ruleName: "",
+        description: "",
+        includeFilter: "Segment1=*", // Default: Apply to all companies
+        excludeFilter: "", // Example: Segment2=999
+        errorMessage: "This combination is invalid.",
+        enabled: true
     });
 
-    const createRuleMutation = useMutation({
+    const activeLedger = ledgers.find(l => l.id === currentLedgerId);
+
+    const { data: rules = [], isLoading } = useQuery<GlCrossValidationRule[]>({
+        queryKey: ["/api/finance/gl/cvr", currentLedgerId],
+        queryFn: async () => {
+            if (!currentLedgerId) return [];
+            const res = await apiRequest("GET", `/api/finance/gl/cvr?ledgerId=${currentLedgerId}`);
+            return res.json();
+        },
+        enabled: !!currentLedgerId
+    });
+
+    const createMutation = useMutation({
         mutationFn: async (data: any) => {
-            const res = await fetch("/api/gl/cross-validation-rules", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...data, ledgerId }),
-            });
-            if (!res.ok) throw new Error("Failed to create rule");
-            return res.json();
+            return apiRequest("POST", "/api/finance/gl/cvr", { ...data, ledgerId: currentLedgerId });
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/gl/cross-validation-rules"] });
-            setIsCreateDialogOpen(false);
-            toast({ title: "Success", description: "Cross validation rule created" });
-        },
-    });
-
-    const updateRuleMutation = useMutation({
-        mutationFn: async ({ id, data }: { id: string; data: any }) => {
-            const res = await fetch(`/api/gl/cross-validation-rules/${id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+            queryClient.invalidateQueries({ queryKey: ["/api/finance/gl/cvr", currentLedgerId] });
+            setIsAddOpen(false);
+            setFormData({
+                ruleName: "", description: "", includeFilter: "Segment1=*", excludeFilter: "", errorMessage: "This combination is invalid.", enabled: true
             });
-            if (!res.ok) throw new Error("Failed to update rule");
-            return res.json();
+            toast({ title: "Rule Created", description: "Cross-validation rule added successfully." });
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/gl/cross-validation-rules"] });
-            setEditingRule(null);
-            toast({ title: "Success", description: "Rule updated" });
-        },
-    });
-
-    const deleteRuleMutation = useMutation({
-        mutationFn: async (id: string) => {
-            const res = await fetch(`/api/gl/cross-validation-rules/${id}`, {
-                method: "DELETE",
-            });
-            if (!res.ok) throw new Error("Failed to delete rule");
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/gl/cross-validation-rules"] });
-            toast({ title: "Deleted", description: "Rule removed successfully" });
-        },
-    });
-
-    const form = useForm({
-        resolver: zodResolver(insertGlCrossValidationRuleSchema),
-        defaultValues: {
-            ruleName: "",
-            description: "",
-            errorMessage: "",
-            includeFilter: "",
-            excludeFilter: "",
-            enabled: true,
-        },
-    });
-
-    const onSubmit = (data: any) => {
-        if (editingRule) {
-            updateRuleMutation.mutate({ id: editingRule.id, data });
-        } else {
-            createRuleMutation.mutate(data);
+        onError: (err: any) => {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
         }
+    });
+
+    const handleCreate = () => {
+        if (!formData.ruleName || !formData.excludeFilter) {
+            toast({ title: "Validation Error", description: "Rule Name and Exclude Condition are required.", variant: "destructive" });
+            return;
+        }
+        createMutation.mutate(formData);
     };
 
-    const startEdit = (rule: GlCrossValidationRule) => {
-        setEditingRule(rule);
-        form.reset({
-            ruleName: rule.ruleName,
-            description: rule.description || "",
-            errorMessage: rule.errorMessage || "",
-            includeFilter: rule.includeFilter || "",
-            excludeFilter: rule.excludeFilter || "",
-            enabled: rule.enabled ?? true,
-        });
-    };
+    if (!currentLedgerId) {
+        return <div className="p-8 text-center text-muted-foreground">Please select a ledger to manage rules.</div>;
+    }
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Cross Validation Rules</h1>
-                    <p className="text-muted-foreground">Manage account combination restrictions for Ledger: {ledgerId}</p>
+                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                        <Shield className="h-8 w-8 text-primary" /> Cross-Validation Rules
+                    </h1>
+                    <p className="text-muted-foreground mt-2">
+                        Prevent invalid account combinations for <strong>{activeLedger?.name || "Unknown Ledger"}</strong>.
+                    </p>
                 </div>
-                <Dialog open={isCreateDialogOpen || !!editingRule} onOpenChange={(open) => {
-                    if (!open) {
-                        setIsCreateDialogOpen(false);
-                        setEditingRule(null);
-                        form.reset();
-                    }
-                }}>
+                <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                     <DialogTrigger asChild>
-                        <Button onClick={() => setIsCreateDialogOpen(true)}>
-                            <Plus className="mr-2 h-4 w-4" /> Create Rule
+                        <Button className="bg-red-600 hover:bg-red-700 text-white">
+                            <Plus className="mr-2 h-4 w-4" /> Create Block Rule
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
+                    <DialogContent className="sm:max-w-[600px]">
                         <DialogHeader>
-                            <DialogTitle>{editingRule ? "Edit Rule" : "Create New Cross Validation Rule"}</DialogTitle>
+                            <DialogTitle>Define Validation Rule</DialogTitle>
                         </DialogHeader>
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="ruleName"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Rule Name</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="e.g. Block Expenses for Admin" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="enabled"
-                                        render={({ field }) => (
-                                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm mt-8">
-                                                <div className="space-y-0.5">
-                                                    <FormLabel>Enabled</FormLabel>
-                                                </div>
-                                                <FormControl>
-                                                    <Switch
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
+                        <div className="space-y-4 py-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Rule Name</Label>
+                                    <Input
+                                        value={formData.ruleName}
+                                        onChange={(e) => setFormData({ ...formData, ruleName: e.target.value })}
+                                        placeholder="e.g. Block_CostCentre_999"
                                     />
                                 </div>
-
-                                <FormField
-                                    control={form.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Description</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Short explanation of this rule" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="includeFilter"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Include Filter</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="e.g. Segment1=01" {...field} />
-                                                </FormControl>
-                                                <FormDescription>Combinations matching this will be evaluated</FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="excludeFilter"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Exclude Filter</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="e.g. Segment3=5000" {...field} />
-                                                </FormControl>
-                                                <FormDescription>Evaluated combinations matching this are BLOCKED</FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                <div className="space-y-2">
+                                    <Label>Status</Label>
+                                    <div className="flex items-center space-x-2 pt-2">
+                                        <Switch
+                                            checked={formData.enabled}
+                                            onCheckedChange={(c) => setFormData({ ...formData, enabled: c })}
+                                        />
+                                        <span className="text-sm text-muted-foreground">{formData.enabled ? "Active" : "Inactive"}</span>
+                                    </div>
                                 </div>
+                            </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="errorMessage"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Error Message</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Message shown when validation fails" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                            <div className="space-y-2">
+                                <Label>Description</Label>
+                                <Input
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 />
+                            </div>
 
-                                <DialogFooter>
-                                    <Button type="submit" disabled={createRuleMutation.isPending || updateRuleMutation.isPending}>
-                                        {editingRule ? "Update Rule" : "Create Rule"}
-                                    </Button>
-                                </DialogFooter>
-                            </form>
-                        </Form>
+                            <Card className="bg-slate-50 border-slate-200">
+                                <CardContent className="pt-4 space-y-4">
+                                    <div className="space-y-2">
+                                        <Label className="flex items-center gap-2">
+                                            <CheckCircle className="h-4 w-4 text-green-600" /> Condition Filter (Where applies)
+                                        </Label>
+                                        <Input
+                                            value={formData.includeFilter}
+                                            onChange={(e) => setFormData({ ...formData, includeFilter: e.target.value })}
+                                            placeholder="e.g. Segment1=01 (Company 01 Only)"
+                                            className="font-mono bg-white"
+                                        />
+                                        <p className="text-xs text-muted-foreground">Enter segment condition (e.g. Segment1=01). Use '*' for all.</p>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="flex items-center gap-2">
+                                            <Ban className="h-4 w-4 text-red-600" /> Exclude Filter (What is forbidden)
+                                        </Label>
+                                        <Input
+                                            value={formData.excludeFilter}
+                                            onChange={(e) => setFormData({ ...formData, excludeFilter: e.target.value })}
+                                            placeholder="e.g. Segment2=999 (No Dummy Cost Centers)"
+                                            className="font-mono bg-white border-red-200 focus-visible:ring-red-500"
+                                        />
+                                        <p className="text-xs text-muted-foreground">Defines the invalid values for the condition above.</p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <div className="space-y-2">
+                                <Label>Error Message</Label>
+                                <Input
+                                    value={formData.errorMessage}
+                                    onChange={(e) => setFormData({ ...formData, errorMessage: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+                            <Button onClick={handleCreate} disabled={createMutation.isPending}>Create Rule</Button>
+                        </DialogFooter>
                     </DialogContent>
                 </Dialog>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <ShieldCheck className="h-5 w-5 text-primary" />
-                        Active Rules
-                    </CardTitle>
-                    <CardDescription>Rules are evaluated during journal entry and posting to prevent invalid combinations.</CardDescription>
+                    <CardTitle>Active Rules</CardTitle>
+                    <CardDescription>
+                        Total Rules: {rules.length}
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="rounded-md border text-sm overflow-hidden">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-muted/50">
-                                    <TableHead className="w-[200px]">Rule Name</TableHead>
-                                    <TableHead>Include / Exclude</TableHead>
-                                    <TableHead>Error Message</TableHead>
-                                    <TableHead className="w-[100px]">Status</TableHead>
-                                    <TableHead className="w-[100px] text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {isLoading ? (
-                                    <TableRow>
-                                        <TableCell colSpan={5} className="text-center py-10">Loading rules...</TableCell>
-                                    </TableRow>
-                                ) : rules?.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={5} className="text-center py-10 text-muted-foreground italic">
-                                            No cross validation rules defined for this ledger.
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Description</TableHead>
+                                <TableHead>Condition</TableHead>
+                                <TableHead>Restriction</TableHead>
+                                <TableHead>Status</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableRow><TableCell colSpan={5} className="text-center h-24">Loading rules...</TableCell></TableRow>
+                            ) : rules.length === 0 ? (
+                                <TableRow><TableCell colSpan={5} className="text-center h-24 text-muted-foreground">No rules defined.</TableCell></TableRow>
+                            ) : (
+                                rules.map((rule) => (
+                                    <TableRow key={rule.id}>
+                                        <TableCell className="font-medium">{rule.ruleName}</TableCell>
+                                        <TableCell>{rule.description}</TableCell>
+                                        <TableCell className="font-mono text-xs">{rule.includeFilter}</TableCell>
+                                        <TableCell className="font-mono text-xs text-red-600">{rule.excludeFilter}</TableCell>
+                                        <TableCell>
+                                            {rule.enabled ?
+                                                <Badge className="bg-green-600">Enabled</Badge> :
+                                                <Badge variant="outline">Disabled</Badge>
+                                            }
                                         </TableCell>
                                     </TableRow>
-                                ) : (
-                                    rules?.map((rule) => (
-                                        <TableRow key={rule.id}>
-                                            <TableCell className="font-medium">
-                                                <div className="flex flex-col">
-                                                    <span>{rule.ruleName}</span>
-                                                    <span className="text-xs text-muted-foreground">{rule.description}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center gap-1">
-                                                        <Badge variant="outline" className="text-[10px] h-4">INC</Badge>
-                                                        <span className="font-mono text-xs text-blue-600">{rule.includeFilter || "ALL"}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1">
-                                                        <Badge variant="secondary" className="text-[10px] h-4">EXC</Badge>
-                                                        <span className="font-mono text-xs text-red-600 font-bold">{rule.excludeFilter}</span>
-                                                    </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-muted-foreground italic truncate max-w-[250px]">
-                                                {rule.errorMessage || "Account combination failure"}
-                                            </TableCell>
-                                            <TableCell>
-                                                {rule.enabled ? (
-                                                    <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 flex items-center gap-1 w-fit">
-                                                        <CheckCircle2 className="h-3 w-3" /> Active
-                                                    </Badge>
-                                                ) : (
-                                                    <Badge variant="secondary" className="flex items-center gap-1 w-fit">
-                                                        <AlertCircle className="h-3 w-3" /> Disabled
-                                                    </Badge>
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="flex justify-end gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => startEdit(rule)}
-                                                        className="h-8 w-8"
-                                                    >
-                                                        <Edit2 className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => {
-                                                            if (confirm("Delete this rule?")) {
-                                                                deleteRuleMutation.mutate(rule.id);
-                                                            }
-                                                        }}
-                                                        className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
                 </CardContent>
             </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-blue-50/30 border-blue-100 shadow-none">
-                    <CardHeader>
-                        <CardTitle className="text-sm flex items-center gap-2">
-                            <ShieldCheck className="h-5 w-5 text-blue-500" />
-                            How CVR Evaluation Works
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-xs space-y-2 text-blue-700">
-                        <p>1. The engine checks if the account combination matches the <strong>Include Filter</strong>.</p>
-                        <p>2. If it matches, the engine then checks the <strong>Exclude Filter</strong>.</p>
-                        <p>3. If it matches the Exclude Filter, the transaction is <strong>REJECTED</strong> with your error message.</p>
-                        <p className="font-semibold italic">Example: Include (Company 01) AND Exclude (Expense Accounts) results in "Expenses cannot be booked to Corporate HQ".</p>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-amber-50/30 border-amber-100 shadow-none">
-                    <CardHeader>
-                        <CardTitle className="text-sm flex items-center gap-2">
-                            <AlertCircle className="h-5 w-5 text-amber-500" />
-                            Rule Optimization
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-xs space-y-2 text-amber-700">
-                        <p>• Avoid overly broad Include filters to maintain system performance.</p>
-                        <p>• Use strict exclusion filters for high-risk combinations (e.g. prohibiting Intercompany segments in Cash accounts).</p>
-                        <p>• Rules are evaluated in parallel. The first rule to fail will trigger the error.</p>
-                    </CardContent>
-                </Card>
-            </div>
         </div>
     );
 }
