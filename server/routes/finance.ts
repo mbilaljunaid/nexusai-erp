@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { financeService } from "../services/finance";
+import { reportingService } from "../services/reporting";
 import {
     insertGlAccountSchema, insertGlPeriodSchema, insertGlJournalSchema,
     insertGlJournalLineSchema, glAllocations, insertGlLegalEntitySchema,
@@ -11,6 +12,7 @@ import {
 import { z } from "zod";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
+import { storage } from "../storage";
 
 const router = Router();
 
@@ -118,6 +120,87 @@ router.get("/gl/trial-balance", async (req, res) => {
     const periodId = req.query.periodId as string | undefined;
     const report = await financeService.calculateTrialBalance(periodId);
     res.json(report);
+});
+
+// FSG Reporting
+router.get("/gl/fsg/row-sets", async (req, res) => {
+    const ledgerId = req.query.ledgerId as string;
+    if (!ledgerId) return res.status(400).json({ error: "ledgerId required" });
+    const sets = await storage.listFsgRowSets(ledgerId);
+    res.json(sets);
+});
+
+router.post("/gl/fsg/row-sets", async (req, res) => {
+    const set = await storage.createFsgRowSet(req.body);
+    res.json(set);
+});
+
+router.get("/gl/fsg/column-sets", async (req, res) => {
+    const ledgerId = req.query.ledgerId as string;
+    if (!ledgerId) return res.status(400).json({ error: "ledgerId required" });
+    const sets = await storage.listFsgColumnSets(ledgerId);
+    res.json(sets);
+});
+
+router.post("/gl/fsg/column-sets", async (req, res) => {
+    const set = await storage.createFsgColumnSet(req.body);
+    res.json(set);
+});
+
+// FSG Rows (Children of Row Sets)
+router.get("/gl/fsg/row-sets/:id/rows", async (req, res) => {
+    const rows = await storage.getFsgRows(req.params.id);
+    res.json(rows);
+});
+
+router.post("/gl/fsg/rows", async (req, res) => {
+    // Expected body: { rowSetId, sequence, description, rowType, ... }
+    const row = await storage.createFsgRow(req.body);
+    res.json(row);
+});
+
+router.get("/gl/fsg/column-sets/:id/columns", async (req, res) => {
+    const cols = await storage.getFsgColumns(req.params.id);
+    res.json(cols);
+});
+
+router.post("/gl/fsg/columns", async (req, res) => {
+    const col = await storage.createFsgColumn(req.body);
+    res.json(col);
+});
+
+router.get("/gl/fsg/reports", async (req, res) => {
+    const ledgerId = req.query.ledgerId as string;
+    const reports = await storage.listReportDefinitions(ledgerId);
+    res.json(reports);
+});
+
+router.post("/gl/fsg/reports", async (req, res) => {
+    const report = await storage.createReportDefinition(req.body);
+    res.json(report);
+});
+
+router.post("/gl/fsg/generate", async (req, res) => {
+    try {
+        const { reportId, ledgerId, periodName, format } = req.body;
+        if (!reportId || !ledgerId || !periodName) {
+            return res.status(400).json({ error: "Missing required params" });
+        }
+        const result = await reportingService.generateFsgReport(reportId, ledgerId, periodName, format);
+        res.json(result);
+    } catch (e: any) {
+        console.error("FSG Generation Error:", e);
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.post("/gl/fsg/schedules", async (req, res) => {
+    try {
+        const schedule = await reportingService.scheduleReport(req.body);
+        res.json(schedule);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 // Advanced GL: Code Combination Generator

@@ -142,3 +142,40 @@ export const insertBiDashboardSchema = createInsertSchema(biDashboards).extend({
 
 export type InsertBiDashboard = z.infer<typeof insertBiDashboardSchema>;
 export type BiDashboard = typeof biDashboards.$inferSelect;
+
+
+// ========== GL REPORTING EXTENSIONS (FSG+) ==========
+
+// Report Schedules: Reusable recurring jobs
+export const glReportSchedules = pgTable("gl_report_schedules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    reportId: varchar("report_id").notNull(), // Link to glReportDefinitions or reports
+    name: varchar("name").notNull(),
+    recurrence: varchar("recurrence").notNull(), // CRON or "DAILY", "WEEKLY", "MONTHLY"
+    parameters: jsonb("parameters"), // { period: "CURRENT", ledgerId: "..." }
+    recipientEmails: text("recipient_emails"), // Comma-separated or JSON array
+    nextRunAt: timestamp("next_run_at"),
+    enabled: boolean("enabled").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlReportScheduleSchema = createInsertSchema(glReportSchedules);
+export type InsertGlReportSchedule = z.infer<typeof insertGlReportScheduleSchema>;
+export type GlReportSchedule = typeof glReportSchedules.$inferSelect;
+
+// Report Instances: Historical records of generated reports
+export const glReportInstances = pgTable("gl_report_instances", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    reportId: varchar("report_id").notNull(),
+    scheduleId: varchar("schedule_id"), // Optional: Link to the schedule that triggered it
+    runDate: timestamp("run_date").default(sql`now()`),
+    status: varchar("status").default("COMPLETED"), // COMPLETED, FAILED, RUNNING
+    outputPath: text("output_path"), // S3 or Local path to PDF/Excel
+    filtersApplied: jsonb("filters_applied"),
+    errorLog: text("error_log"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlReportInstanceSchema = createInsertSchema(glReportInstances);
+export type InsertGlReportInstance = z.infer<typeof insertGlReportInstanceSchema>;
+export type GlReportInstance = typeof glReportInstances.$inferSelect;

@@ -1,6 +1,8 @@
 
+import { db } from "../db";
+import { eq } from "drizzle-orm";
 import { storage } from "../storage";
-import { InsertCashBankAccount, InsertCashStatementLine, InsertCashTransaction } from "@shared/schema";
+import { InsertCashBankAccount, InsertCashStatementLine, InsertCashTransaction, cashStatementLines } from "@shared/schema";
 
 export class CashService {
 
@@ -63,9 +65,9 @@ export class CashService {
         if (!line) throw new Error("Statement line not found");
 
         const trx = await storage.createCashTransaction({
-            bankAccountId: Number(bankAccountId),
+            bankAccountId: String(bankAccountId),
             sourceModule: "GL",
-            sourceId: 0,
+            sourceId: "MANUAL",
             amount: String(line.amount),
             transactionDate: new Date(line.transactionDate),
             reference: line.referenceNumber || `STMT-${lineId}`,
@@ -85,73 +87,107 @@ export class CashService {
         console.log(`  CR Bank Account: ${trx.amount}`);
     }
 
-    async autoReconcile(accountId: string) {
-        const statementLines = await storage.listCashStatementLines(accountId);
-        const transactions = await storage.listCashTransactions(accountId);
+    async autoReconcile(bankAccountId: string, userId: string = "system") {
+        const account = await storage.getCashBankAccount(bankAccountId);
+        if (!account) throw new Error("Bank account not found");
+
+        const statementLines = await storage.listCashStatementLines(bankAccountId);
+        const transactions = await storage.listCashTransactions(bankAccountId);
+        const rules = await storage.listCashReconciliationRules(account.ledgerId || "PRIMARY");
 
         const unreconciledLines = statementLines.filter(l => !l.reconciled);
         const unreconciledTrx = transactions.filter(t => t.status === "Unreconciled");
 
-        let matchCount = 0;
-        const proposedMatches: any[] = [];
+        console.log(`[CASH] Starting Auto-Reconcile for ${account.name}. Rules found: ${rules.length}`);
+
+        const matches: any[] = [];
+        const group = await storage.createCashMatchingGroup({
+            userId,
+            method: "AUTO",
+            reconciledDate: new Date(),
+        });
 
         for (const line of unreconciledLines) {
-            // Fuzzy Matching Logic
-            // 1. Amount Match (High Weight)
-            const amountMatches = unreconciledTrx.filter(t => Number(t.amount) === Number(line.amount));
+            for (const rule of rules.sort((a, b) => (a.priority || 0) - (b.priority || 0))) {
+                const criteria = rule.matchingCriteria as any;
 
-            for (const t of amountMatches) {
-                let score = 50; // Base score for exact amount match
+                // 1. Amount Match (Usually required)
+                const candidates = unreconciledTrx.filter(t =>
+                    Math.abs(Number(t.amount) - Number(line.amount)) < 0.01 &&
+                    !matches.find(m => m.transaction.id === t.id)
+                );
 
-                // 2. Date Proximity (Up to 30 points)
-                const txDate = t.transactionDate ? new Date(t.transactionDate).getTime() : 0;
-                const lineDate = new Date(line.transactionDate).getTime();
-                const daysDiff = Math.abs(txDate - lineDate) / (1000 * 60 * 60 * 24);
+                if (candidates.length === 0) continue;
 
-                if (daysDiff === 0) score += 30;
-                else if (daysDiff <= 2) score += 20;
-                else if (daysDiff <= 5) score += 10;
+                // 2. Ref/Date/Fuzzy logic per rule
+                for (const trx of candidates) {
+                    let isMatch = true;
 
-                // 3. Description/Ref Fuzzy (Up to 20 points)
-                const lineDesc = (line.description || "").toLowerCase();
-                const trxDesc = (t.reference || "").toLowerCase();
+                    // Date Tolerance
+                    if (criteria.dateToleranceDays) {
+                        const txDate = new Date(trx.transactionDate || "").getTime();
+                        const lineDate = new Date(line.transactionDate).getTime();
+                        const daysDiff = Math.abs(txDate - lineDate) / (1000 * 60 * 60 * 24);
+                        if (daysDiff > criteria.dateToleranceDays) isMatch = false;
+                    }
 
-                // Token Matching (Tokens > 2 chars, keyword match)
-                const lineTokens = lineDesc.split(/\s+/).filter(tok => tok.length > 2);
-                const trxTokens = trxDesc.split(/\s+/).filter(tok => tok.length > 2);
+                    // Reference Match
+                    if (isMatch && criteria.requireRefMatch) {
+                        const lineRef = (line.referenceNumber || "").toLowerCase();
+                        const trxRef = (trx.reference || "").toLowerCase();
+                        if (!lineRef.includes(trxRef) && !trxRef.includes(lineRef)) isMatch = false;
+                    }
 
-                const hasKeywordMatch = lineTokens.some(token => trxDesc.includes(token)) ||
-                    trxTokens.some(token => lineDesc.includes(token));
+                    if (isMatch) {
+                        matches.push({ line, transaction: trx, rule: rule.ruleName });
 
-                if (hasKeywordMatch) score += 20;
+                        // Update DB Status
+                        await storage.updateCashTransaction(trx.id, {
+                            status: "Cleared",
+                            matchingGroupId: group.id
+                        });
 
-                // Match if Score >= 70
-                if (score >= 70) {
-                    matchCount++;
-                    proposedMatches.push({ line, transaction: t, confidence: score, type: "AI_MATCH" });
-                    break;
+                        // Also update the Statement Line status
+                        // (Assuming we need to mark it as reconciled in DB too)
+                        await db.update(cashStatementLines).set({
+                            reconciled: true,
+                            matchingGroupId: group.id
+                        }).where(eq(cashStatementLines.id, line.id));
+
+                        // Mark line as reconciled
+                        // This would ideally be a bulk update or specialized storage method
+                        // For now we use the storage interface
+                        console.log(`[CASH] Matched: ${line.id} <-> ${trx.id} via rule ${rule.ruleName}`);
+                        break;
+                    }
                 }
+
+                if (matches.find(m => m.line.id === line.id)) break;
             }
         }
 
         return {
             processed: unreconciledLines.length,
-            matched: matchCount,
-            proposedMatches,
-            message: `Auto-reconciliation complete. Found ${matchCount} high-confidence matches.`
+            matched: matches.length,
+            matchingGroupId: group.id,
+            message: `Auto-reconciliation complete. Found ${matches.length} matches.`
         };
     }
 
     async createTransaction(data: any) {
         return await storage.createCashTransaction({
-            bankAccountId: Number(data.bankAccountId),
+            bankAccountId: String(data.bankAccountId),
             sourceModule: data.sourceModule || 'GL',
-            sourceId: Number(data.sourceId || 0),
+            sourceId: String(data.sourceId || "MANUAL"),
             amount: String(data.amount),
             transactionDate: data.date || new Date(),
             reference: data.reference || `TXN-${Date.now()}`,
             status: data.status || "Unreconciled" as any
         });
+    }
+
+    async createReconciliationRule(data: any) {
+        return await storage.createCashReconciliationRule(data);
     }
 }
 

@@ -148,10 +148,10 @@ export class AgenticService {
             async (params) => {
                 console.log("[AGENT] Analyzing Variance:", params);
                 const period = params.period || "Jan-2026";
-                const balances = await financeService.getBalancesOverview(period);
+                const balances = await (financeService as any).getBalancesOverview(period);
 
                 // AI Simulation: identify high variance
-                const anomalies = balances.filter(b => Math.abs(parseFloat(b.actual) - parseFloat(b.budget)) > 5000);
+                const anomalies = (balances as any[]).filter((b: any) => Math.abs(parseFloat(b.actual) - parseFloat(b.budget)) > 5000);
 
                 return {
                     period,

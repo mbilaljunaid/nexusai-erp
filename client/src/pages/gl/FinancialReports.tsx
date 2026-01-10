@@ -1,5 +1,6 @@
 
 import { useState, useMemo } from "react";
+import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLedger } from "@/context/LedgerContext";
 import {
@@ -23,7 +24,7 @@ import {
     SheetFooter,
     SheetClose
 } from "@/components/ui/sheet";
-import { Download, Play, FileText, Loader2, ArrowUpRight, TrendingUp, DollarSign, Wallet } from "lucide-react";
+import { Download, Play, FileText, Loader2, ArrowUpRight, TrendingUp, DollarSign, Wallet, Layout } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -71,7 +72,7 @@ export default function FinancialReports() {
 
     // Fetch Available Reports
     const { data: reports, isLoading: isLoadingReports } = useQuery<ReportDefinition[]>({
-        queryKey: ["/api/gl/reports"],
+        queryKey: ["/api/gl/fsg/reports"],
     });
 
     // Fetch Periods
@@ -82,12 +83,27 @@ export default function FinancialReports() {
     // Generate Report Mutation
     const generateReportMutation = useMutation({
         mutationFn: async () => {
-            const res = await apiRequest("POST", "/api/gl/reports/generate", {
+            const res = await apiRequest("POST", "/api/gl/fsg/generate", {
                 reportId: selectedReportId,
                 periodName: selectedPeriod,
-                ledgerId: currentLedgerId
+                ledgerId: currentLedgerId,
+                format: "JSON"
             });
-            return await res.json();
+            const data = await res.json();
+
+            // Map Backend Response to Frontend Grid
+            return {
+                reportName: data.reportName,
+                period: data.period,
+                ledger: currentLedgerId || "Unknown",
+                columns: data.headers.map((h: string) => ({ header: h, type: "number" })),
+                rows: data.rows.map((r: any) => ({
+                    description: r.label,
+                    rowType: r.rowType,
+                    indentLevel: r.indentLevel || 0,
+                    cells: r.values
+                }))
+            };
         },
         onSuccess: (data: ReportGrid) => {
             setReportData(data);
@@ -139,6 +155,11 @@ export default function FinancialReports() {
                     <Button variant="secondary" onClick={() => setIsAnalysisOpen(true)}>
                         <TrendingUp className="mr-2 h-4 w-4" /> Analyze Variance
                     </Button>
+                    <Link href="/gl/reports/builder">
+                        <Button variant="outline">
+                            <Layout className="mr-2 h-4 w-4" /> Builder
+                        </Button>
+                    </Link>
                     <Button variant="outline" onClick={() => handleExport('excel')} disabled={!reportData}>
                         <Download className="mr-2 h-4 w-4" /> Export Excel
                     </Button>

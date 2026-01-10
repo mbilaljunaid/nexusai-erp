@@ -50,6 +50,7 @@ import {
   glCrossValidationRules, glDataAccessSets, glDataAccessSetAssignments,
   glBudgets, glBudgetBalances, glBudgetControlRules,
   glReportDefinitions, glReportRows, glReportColumns,
+  glFsgRowSets, glFsgColumnSets, glReportSchedules, glReportInstances,
   glIntercompanyRules, glAuditLogs, glCloseTasks,
 
   type GlAccount, type InsertGlAccount,
@@ -82,6 +83,10 @@ import {
   type GlReportDefinition, type InsertGlReportDefinition,
   type GlReportRow, type InsertGlReportRow,
   type GlReportColumn, type InsertGlReportColumn,
+  type GlFsgRowSet, type InsertGlFsgRowSet,
+  type GlFsgColumnSet, type InsertGlFsgColumnSet,
+  type GlReportSchedule, type InsertGlReportSchedule,
+  type GlReportInstance, type InsertGlReportInstance,
   type GlIntercompanyRule, type InsertGlIntercompanyRule,
   type GlAuditLog, type InsertGlAuditLog,
   type GlCloseTask, type InsertGlCloseTask,
@@ -111,10 +116,12 @@ import {
   type ArRevenueSchedule, type InsertArRevenueSchedule,
 
   // Cash Management
-  cashBankAccounts, cashTransactions,
+  cashBankAccounts, cashTransactions, cashStatementLines, cashReconciliationRules, cashMatchingGroups,
   type CashBankAccount, type InsertCashBankAccount,
   type CashTransaction, type InsertCashTransaction,
   type CashStatementLine, type InsertCashStatementLine,
+  type CashReconciliationRule, type InsertCashReconciliationRule,
+  type CashMatchingGroup, type InsertCashMatchingGroup,
   faTransactionHeaders,
   // Fixed Assets (DB)
   faAdditions, faBooks, faTransactionHeaders as faTransactionsTable, faCategories,
@@ -224,6 +231,26 @@ export interface IStorage {
 
   listCashTransactions(bankAccountId: string): Promise<CashTransaction[]>;
   createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction>;
+  updateCashTransaction(id: string, data: Partial<InsertCashTransaction>): Promise<CashTransaction>;
+
+  // Rules & Matching
+  listCashReconciliationRules(ledgerId: string): Promise<CashReconciliationRule[]>;
+  createCashReconciliationRule(data: InsertCashReconciliationRule): Promise<CashReconciliationRule>;
+  createCashMatchingGroup(data: InsertCashMatchingGroup): Promise<CashMatchingGroup>;
+
+  // Financial Reporting (FSG+)
+  listFsgRowSets(ledgerId: string): Promise<GlFsgRowSet[]>;
+  getFsgRowSet(id: string): Promise<GlFsgRowSet | undefined>;
+  createFsgRowSet(data: InsertGlFsgRowSet): Promise<GlFsgRowSet>;
+
+  listFsgColumnSets(ledgerId: string): Promise<GlFsgColumnSet[]>;
+  getFsgColumnSet(id: string): Promise<GlFsgColumnSet | undefined>;
+  createFsgColumnSet(data: InsertGlFsgColumnSet): Promise<GlFsgColumnSet>;
+
+  // Reporting Lifecycle
+  listReportSchedules(): Promise<GlReportSchedule[]>;
+  createReportSchedule(data: InsertGlReportSchedule): Promise<GlReportSchedule>;
+  createReportInstance(data: InsertGlReportInstance): Promise<GlReportInstance>;
 
   // Fixed Assets
   listFaAssets(): Promise<FaAddition[]>;
@@ -601,10 +628,10 @@ export interface IStorage {
   createReportDefinition(data: InsertGlReportDefinition): Promise<GlReportDefinition>;
   getReportDefinition(id: string): Promise<GlReportDefinition | undefined>;
   listReportDefinitions(ledgerId?: string): Promise<GlReportDefinition[]>;
-  createReportRow(data: InsertGlReportRow): Promise<GlReportRow>;
-  getReportRows(reportDefinitionId: string): Promise<GlReportRow[]>;
-  createReportColumn(data: InsertGlReportColumn): Promise<GlReportColumn>;
-  getReportColumns(reportDefinitionId: string): Promise<GlReportColumn[]>;
+  getFsgRows(rowSetId: string): Promise<GlReportRow[]>;
+  createFsgRow(data: InsertGlReportRow): Promise<GlReportRow>;
+  getFsgColumns(columnSetId: string): Promise<GlReportColumn[]>;
+  createFsgColumn(data: InsertGlReportColumn): Promise<GlReportColumn>;
 
   // Budgeting
   createGlBudget(data: InsertGlBudget): Promise<GlBudget>;
@@ -1068,19 +1095,19 @@ export class DatabaseStorage implements IStorage {
   async listGlAuditLogs() {
     return db.select().from(glAuditLogs);
   }
-  async createReportRow(data: InsertGlReportRow) {
+  async createFsgRow(data: InsertGlReportRow) {
     const [res] = await db.insert(glReportRows).values(data).returning();
     return res;
   }
-  async getReportRows(reportDefinitionId: string) {
-    return db.select().from(glReportRows).where(eq(glReportRows.reportId, reportDefinitionId));
+  async getFsgRows(rowSetId: string) {
+    return db.select().from(glReportRows).where(eq(glReportRows.rowSetId, rowSetId));
   }
-  async createReportColumn(data: InsertGlReportColumn) {
+  async createFsgColumn(data: InsertGlReportColumn) {
     const [res] = await db.insert(glReportColumns).values(data).returning();
     return res;
   }
-  async getReportColumns(reportDefinitionId: string) {
-    return db.select().from(glReportColumns).where(eq(glReportColumns.reportId, reportDefinitionId));
+  async getFsgColumns(columnSetId: string) {
+    return db.select().from(glReportColumns).where(eq(glReportColumns.columnSetId, columnSetId));
   }
   async getGlCodeCombination(id: string) {
     const res = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.id, id));
@@ -1269,64 +1296,94 @@ export class DatabaseStorage implements IStorage {
   }
   async deleteArRevenueSchedule(id: string) { return this.arRevenueSchedules.delete(id); }
 
-  // Cash Management Implementation
-  async listCashBankAccounts() { return Array.from(this.cashBankAccounts.values()); }
-  async getCashBankAccount(id: string) { return this.cashBankAccounts.get(id); }
+  // Cash Management Implementation (DB-Backed)
+  async listCashBankAccounts() {
+    return await db.select().from(cashBankAccounts);
+  }
+  async getCashBankAccount(id: string) {
+    const [acc] = await db.select().from(cashBankAccounts).where(eq(cashBankAccounts.id, id));
+    return acc;
+  }
   async createCashBankAccount(data: InsertCashBankAccount) {
-    const id = this.currentId++;
-    const account: CashBankAccount = {
-      id, ...data,
-      currency: data.currency ?? "USD",
-      currentBalance: data.currentBalance ? String(data.currentBalance) : "0",
-      glAccountId: data.glAccountId ?? null,
-      swiftCode: data.swiftCode ?? null,
-      active: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.cashBankAccounts.set(String(id), account);
-    return account;
+    const [acc] = await db.insert(cashBankAccounts).values(data).returning();
+    return acc;
   }
   async updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>) {
-    const existing = this.cashBankAccounts.get(id);
-    if (!existing) return undefined;
-    const updated = { ...existing, ...data, currentBalance: data.currentBalance ? String(data.currentBalance) : existing.currentBalance };
-    this.cashBankAccounts.set(id, updated);
-    return updated;
+    const [acc] = await db.update(cashBankAccounts).set(data).where(eq(cashBankAccounts.id, id)).returning();
+    return acc;
   }
-  async deleteCashBankAccount(id: string) { return this.cashBankAccounts.delete(id); }
+  async deleteCashBankAccount(id: string) {
+    await db.delete(cashBankAccounts).where(eq(cashBankAccounts.id, id));
+    return true;
+  }
 
   async listCashStatementLines(bankAccountId: string) {
-    return Array.from(this.cashStatementLines.values()).filter(l => String(l.bankAccountId) === bankAccountId);
+    return await db.select().from(cashStatementLines).where(eq(cashStatementLines.bankAccountId, bankAccountId));
   }
   async createCashStatementLine(data: InsertCashStatementLine) {
-    const id = this.currentId++;
-    const line: CashStatementLine = {
-      id, ...data,
-      amount: String(data.amount),
-      description: data.description ?? null,
-      referenceNumber: data.referenceNumber ?? null,
-      reconciled: data.reconciled ?? false,
-      createdAt: new Date()
-    };
-    this.cashStatementLines.set(String(id), line);
+    const [line] = await db.insert(cashStatementLines).values(data).returning();
     return line;
   }
 
   async listCashTransactions(bankAccountId: string) {
-    return Array.from(this.cashTransactions.values()).filter(t => String(t.bankAccountId) === bankAccountId);
+    return await db.select().from(cashTransactions).where(eq(cashTransactions.bankAccountId, bankAccountId));
   }
   async createCashTransaction(data: InsertCashTransaction) {
-    const id = this.currentId++;
-    const trx: CashTransaction = {
-      id, ...data,
-      amount: String(data.amount), // Cast
-      transactionDate: data.transactionDate ? new Date(data.transactionDate) : new Date(),
-      reference: data.reference ?? null,
-      status: data.status ?? "Unreconciled"
-    };
-    this.cashTransactions.set(String(id), trx);
+    const [trx] = await db.insert(cashTransactions).values(data).returning();
     return trx;
+  }
+  async updateCashTransaction(id: string, data: Partial<InsertCashTransaction>) {
+    const [res] = await db.update(cashTransactions).set(data).where(eq(cashTransactions.id, id)).returning();
+    return res;
+  }
+
+  // FSG Implementation
+  async listFsgRowSets(ledgerId: string) {
+    return await db.select().from(glFsgRowSets).where(eq(glFsgRowSets.ledgerId, ledgerId));
+  }
+  async getFsgRowSet(id: string) {
+    const [res] = await db.select().from(glFsgRowSets).where(eq(glFsgRowSets.id, id));
+    return res;
+  }
+  async createFsgRowSet(data: InsertGlFsgRowSet) {
+    const [res] = await db.insert(glFsgRowSets).values(data).returning();
+    return res;
+  }
+
+  async listFsgColumnSets(ledgerId: string) {
+    return await db.select().from(glFsgColumnSets).where(eq(glFsgColumnSets.ledgerId, ledgerId));
+  }
+  async getFsgColumnSet(id: string) {
+    const [res] = await db.select().from(glFsgColumnSets).where(eq(glFsgColumnSets.id, id));
+    return res;
+  }
+  async createFsgColumnSet(data: InsertGlFsgColumnSet) {
+    const [res] = await db.insert(glFsgColumnSets).values(data).returning();
+    return res;
+  }
+
+  async listReportSchedules() {
+    return await db.select().from(glReportSchedules);
+  }
+  async createReportSchedule(data: InsertGlReportSchedule) {
+    const [res] = await db.insert(glReportSchedules).values(data).returning();
+    return res;
+  }
+  async createReportInstance(data: InsertGlReportInstance) {
+    const [res] = await db.insert(glReportInstances).values(data).returning();
+    return res;
+  }
+
+  async listCashReconciliationRules(ledgerId: string) {
+    return await db.select().from(cashReconciliationRules).where(eq(cashReconciliationRules.ledgerId, ledgerId));
+  }
+  async createCashReconciliationRule(data: InsertCashReconciliationRule) {
+    const [rule] = await db.insert(cashReconciliationRules).values(data).returning();
+    return rule;
+  }
+  async createCashMatchingGroup(data: InsertCashMatchingGroup) {
+    const [group] = await db.insert(cashMatchingGroups).values(data).returning();
+    return group;
   }
 
 

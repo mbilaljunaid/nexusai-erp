@@ -1,13 +1,16 @@
 import { storage } from "../storage";
 import {
     InsertGlJournal, InsertGlAccount, InsertGlPeriod, InsertGlJournalLine,
+    GlJournal, GlJournalLine,
     glBalances, glJournals, glJournalLines, glCodeCombinations,
     glRevaluations, glDailyRates, glPeriods, glCrossValidationRules, glAllocations, glIntercompanyRules,
     glAuditLogs, glDataAccessSets, glDataAccessSetAssignments,
     glLedgerSets, glLedgerSetAssignments, glLegalEntities, // Added for Chunk 3
     glCloseTasks, // Added for Chunk 7
     apInvoices, arInvoices,
-    glRecurringJournals, insertGlRecurringJournalSchema
+    glRecurringJournals, insertGlRecurringJournalSchema,
+    glBudgetBalances, glBudgetControlRules, glBudgets,
+    glAllocationLines, glRevaluationRules, glLedgers, glSegments, glCoaStructures, glSegmentValues
 } from "@shared/schema";
 import { eq, and, sql, inArray, gte, lte, desc, isNull, ne } from "drizzle-orm";
 import { db } from "../db"; // Direct DB access needed for complex transactions
@@ -128,7 +131,7 @@ export class FinanceService {
         // using standardized approach here.
         if (filters?.search) {
             // Checking description or journalNumber
-            const searchPattern = `%${filters.search}%`;
+            const searchPattern = `% ${filters.search}% `;
             conditions.push(sql`(${glJournals.description} ILIKE ${searchPattern} OR ${glJournals.journalNumber} ILIKE ${searchPattern})`);
         }
 
@@ -164,7 +167,7 @@ export class FinanceService {
 
             let allSegmentsPassed = true;
             for (let i = 0; i < segments.length; i++) {
-                const segmentKey = `segment${i + 1}`;
+                const segmentKey = `segment${i + 1} `;
                 const allowedValues = sec[segmentKey];
 
                 if (!allowedValues || allowedValues === "ALL") continue;
@@ -221,7 +224,7 @@ export class FinanceService {
 
             for (const cc of ccs) {
                 if (cc.ledgerId && cc.ledgerId !== ledgerId) {
-                    throw new Error(`Account ${cc.code} belongs to ledger ${cc.ledgerId}, cannot post to journal ledger ${ledgerId}`);
+                    throw new Error(`Account ${cc.code} belongs to ledger ${cc.ledgerId}, cannot post to journal ledger ${ledgerId} `);
                 }
 
                 const segments = [
@@ -259,10 +262,10 @@ export class FinanceService {
             return {
                 ...line,
                 currencyCode: line.currencyCode || journalCurrency,
-                accountedDebit: line.enteredDebit ? (Number(line.enteredDebit) * rate).toFixed(2) : undefined,
-                accountedCredit: line.enteredCredit ? (Number(line.enteredCredit) * rate).toFixed(2) : undefined,
-                debit: line.enteredDebit ? (Number(line.enteredDebit) * rate).toFixed(2) : line.debit,
-                credit: line.enteredCredit ? (Number(line.enteredCredit) * rate).toFixed(2) : line.credit
+                accountedDebit: (line.enteredDebit || line.debit) ? (Number(line.enteredDebit || line.debit) * rate).toFixed(2) : undefined,
+                accountedCredit: (line.enteredCredit || line.credit) ? (Number(line.enteredCredit || line.credit) * rate).toFixed(2) : undefined,
+                debit: (line.enteredDebit || line.debit) ? (Number(line.enteredDebit || line.debit) * rate).toFixed(2) : "0",
+                credit: (line.enteredCredit || line.credit) ? (Number(line.enteredCredit || line.credit) * rate).toFixed(2) : "0"
             };
         });
 
@@ -271,14 +274,14 @@ export class FinanceService {
         const totalCredit = processedLines.reduce((sum, line) => sum + Number(line.accountedCredit || line.credit || 0), 0);
 
         if (Math.abs(totalDebit - totalCredit) > 0.01) {
-            throw new Error(`Journal is not balanced in functional currency. Debits: ${totalDebit}, Credits: ${totalCredit}`);
+            throw new Error(`Journal is not balanced in functional currency.Debits: ${totalDebit}, Credits: ${totalCredit} `);
         }
 
 
         // 4. Create Header and Lines
         const journalDataWithNumber = {
             ...journalData,
-            journalNumber: journalData.journalNumber || `JE-${Date.now()}`,
+            journalNumber: journalData.journalNumber || `JE - ${Date.now()} `,
             totalDebit: totalDebit.toFixed(2),
             totalCredit: totalCredit.toFixed(2),
             status: "Draft" as const
@@ -300,14 +303,6 @@ export class FinanceService {
 
         return { ...journal, lines };
     }
-
-    // ... (rest of methods)
-
-
-
-    // REDOING REPLACEMENT TO BE SAFER:
-    // I will target specific blocks.
-
 
     // ================= POSTING ENGINE (CRITICAL) =================
     /**
@@ -366,7 +361,7 @@ export class FinanceService {
 
             // 1.1 Approval Check
             if (journal.approvalStatus === "Required" || journal.approvalStatus === "Pending" || journal.approvalStatus === "Rejected") {
-                throw new Error(`Journal ${journal.journalNumber} requires approval (Status: ${journal.approvalStatus}).`);
+                throw new Error(`Journal ${journal.journalNumber} requires approval(Status: ${journal.approvalStatus}).`);
             }
 
             const lines = await storage.listGlJournalLines(journalId);
@@ -419,7 +414,7 @@ export class FinanceService {
             console.log(`[WORKER] Journal ${journalId} Posted Successfully.`);
 
         } catch (error: any) {
-            console.error(`[WORKER] Job failed for ${journalId}:`, error.message);
+            console.error(`[WORKER] Job failed for ${journalId}: `, error.message);
 
             // Revert Status
             await db.update(glJournals)
@@ -467,8 +462,8 @@ export class FinanceService {
         const leBalances = new Map<string, number>();
         for (const [le, leLines] of groups.entries()) {
             const net = leLines.reduce((sum, l) => {
-                const dr = parseFloat(l.accountedDebit || "0");
-                const cr = parseFloat(l.accountedCredit || "0");
+                const dr = parseFloat(l.accountedDebit || l.debit || "0");
+                const cr = parseFloat(l.accountedCredit || l.credit || "0");
                 return sum + (dr - cr);
             }, 0);
             leBalances.set(le, net);
@@ -504,7 +499,7 @@ export class FinanceService {
             const balancingLine: any = {
                 journalId: journal.id,
                 accountId: targetCCID,
-                description: `Intercompany Balancing: LE ${le} with LE ${otherLe}`,
+                description: `Intercompany Balancing: LE ${le} with LE ${otherLe} `,
                 currencyCode: journal.currencyCode,
                 accountedDebit: net < 0 ? Math.abs(net).toString() : "0",
                 accountedCredit: net > 0 ? net.toString() : "0",
@@ -514,7 +509,7 @@ export class FinanceService {
 
             const [saved] = await db.insert(glJournalLines).values(balancingLine).returning();
             newLines.push(saved);
-            console.log(`[FINANCE] Inserted Intercompany Line: CCID ${targetCCID}, Net ${net}`);
+            console.log(`[FINANCE] Inserted Intercompany Line: CCID ${targetCCID}, Net ${net} `);
         }
 
         return newLines;
@@ -535,9 +530,8 @@ export class FinanceService {
         if (!journal) return;
 
         const lines = await storage.listGlJournalLines(journalId);
-        const ccids = [...new Set(lines.map(l => l.accountId))];
+        console.log(`[FINANCE] Performing Funds Check for journal ${journalId}(${lines.length} lines)...`);
 
-        // 1. Fetch Budget Control Rules for the ledger
         const rules = await db.select().from(glBudgetControlRules).where(
             and(
                 eq(glBudgetControlRules.ledgerId, journal.ledgerId),
@@ -545,32 +539,47 @@ export class FinanceService {
             )
         );
 
-        if (rules.length === 0) return; // No controls enabled
+        if (rules.length === 0) {
+            console.log("[FINANCE] No active budget control rules found for ledger.");
+            return;
+        }
+
+        // Determine Period Name for lookup
+        let periodName = journal.periodId || "";
+        const period = await storage.getGlPeriod(journal.periodId || "");
+        if (period) {
+            periodName = period.periodName;
+        }
+        console.log(`[FINANCE] Target Period for Budget: ${periodName} `);
 
         for (const rule of rules) {
-            // 2. Identify controlled lines (e.g. all expenses)
-            // For now, assume simple Absolute check on all lines for demo
             for (const line of lines) {
+                // Try matching by both UUID and Name to be robust during migration
                 const balance = await db.select().from(glBudgetBalances).where(
                     and(
                         eq(glBudgetBalances.codeCombinationId, line.accountId),
-                        eq(glBudgetBalances.periodName, journal.periodId || "") // Assuming periodId used as name for now
+                        sql`${glBudgetBalances.periodName} IN(${periodName}, ${journal.periodId || ""})`
                     )
                 ).limit(1);
 
-                if (balance.length === 0) continue;
+                if (balance.length === 0) {
+                    console.log(`[FINANCE] No budget balance found for account ${line.accountId} in period ${periodName} `);
+                    continue;
+                }
 
                 const budget = parseFloat(balance[0].budgetAmount || "0");
                 const actual = parseFloat(balance[0].actualAmount || "0");
                 const encumbrance = parseFloat(balance[0].encumbranceAmount || "0");
                 const available = budget - (actual + encumbrance);
 
-                const dr = parseFloat(line.accountedDebit || "0");
-                const cr = parseFloat(line.accountedCredit || "0");
+                const dr = parseFloat(line.accountedDebit || line.debit || "0");
+                const cr = parseFloat(line.accountedCredit || line.credit || "0");
                 const impact = dr - cr;
 
+                console.log(`[FINANCE] Account ${line.accountId}: Budget = ${budget}, Available = ${available}, Requested = ${impact} `);
+
                 if (impact > available && rule.controlLevel === "Absolute") {
-                    throw new Error(`Budget Violation: Line for account ${line.accountId} exceeds available funds. Available: ${available}, Requested: ${impact}.`);
+                    throw new Error(`Budget Violation: Line for account ${line.accountId} exceeds available funds.Available: ${available}, Requested: ${impact}.`);
                 }
 
                 if (impact > available && rule.controlLevel === "Advisory") {
@@ -605,7 +614,7 @@ export class FinanceService {
 
         // 4. Generate Journal
         const journalData: InsertGlJournal = {
-            journalNumber: `ALLOC-${rule.name}-${Date.now()}`,
+            journalNumber: `ALLOC - ${rule.name} -${Date.now()} `,
             description: `Allocation: ${rule.name} for ${periodName}`,
             source: "Allocation",
             periodId: (await storage.listGlPeriods()).find(p => p.periodName === periodName)?.id,
@@ -643,7 +652,7 @@ export class FinanceService {
         await storage.createGlJournalLine({
             journalId: journal.id,
             accountId: offsetAccountId,
-            description: `Allocation Offset: ${rule.name}`,
+            description: `Allocation Offset: ${rule.name} `,
             debit: "0",
             credit: poolAmount.toFixed(2),
             currencyCode: "USD",
@@ -658,37 +667,10 @@ export class FinanceService {
      * Helper to resolve target account based on pattern.
      * Pattern: "Segment1=Rule.Segment1, Segment2=Basis.Value, Segment3=7000"
      */
-    private async resolveTargetAccount(pattern: string, basisValue: string, ledgerId: string): Promise<string> {
-        // Simple logic: Pattern specifies what to override.
-        // For MVP, we assume Segment2 is the variable from basis.
-        // pattern: "Segment3=5100" means take Basis CCID but use Dept 5100
-        // But basisValue IS the Dept. So we want a CC with basisValue as Segment2.
-
-        // Let's assume a default structure for the ledger or use a heuristic.
-        const defaultCC = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.ledgerId, ledgerId)).limit(1);
-        if (defaultCC.length === 0) throw new Error("No existing code combinations found to use as template.");
-
-        const segments: any = { ...defaultCC[0] };
-        delete segments.id;
-        delete segments.code;
-        delete segments.createdAt;
-
-        // Apply pattern (e.g. "segment2=CC")
-        segments.segment2 = basisValue;
-
-        // Apply specific pattern parts
-        if (pattern) {
-            pattern.split(",").forEach(p => {
-                const [k, v] = p.trim().split("=");
-                if (k && v) {
-                    const key = k.toLowerCase().trim();
-                    segments[key] = v.trim();
-                }
-            });
-        }
-
-        const cc = await this.getOrCreateCodeCombination(ledgerId, segments);
-        return cc.id;
+    private async resolveTargetAccount(pattern: string, driverValue: string, ledgerId: string): Promise<string> {
+        // Support {source} or {driver} placeholder
+        const code = pattern.replace("{source}", driverValue).replace("{driver}", driverValue);
+        return (await this.getOrCreateCodeCombination(ledgerId, code)).id;
     }
 
     /**
@@ -777,7 +759,7 @@ export class FinanceService {
         const allCombinations = await storage.listGlCodeCombinations(ledgerId);
         const targetCcids = allCombinations.filter(filter).map(c => c.id);
 
-        console.log(`DEBUG: Filter matched ${targetCcids.length} CCIDs out of ${allCombinations.length}`);
+        console.log(`DEBUG: Filter matched ${targetCcids.length} CCIDs out of ${allCombinations.length} `);
 
         if (targetCcids.length === 0) return 0;
 
@@ -793,7 +775,7 @@ export class FinanceService {
 
     // Helper: breakdown by segment
     private async getBalancesBySegment(filterObj: string, periodName: string, ledgerId: string, segment: string): Promise<Record<string, number>> {
-        console.log(`Breakdown Basis (${filterObj}) by ${segment}...`);
+        console.log(`Breakdown Basis(${filterObj}) by ${segment}...`);
 
         const filter = this.parseFilter(filterObj);
         const allCombinations = await storage.listGlCodeCombinations(ledgerId);
@@ -819,12 +801,6 @@ export class FinanceService {
         }
 
         return breakdown;
-    }
-
-    private async resolveTargetAccount(pattern: string, driverValue: string, ledgerId: string): Promise<string> {
-        // Support {source} or {driver} placeholder
-        const code = pattern.replace("{source}", driverValue).replace("{driver}", driverValue);
-        return (await this.getOrCreateCodeCombination(ledgerId, code)).id;
     }
 
     // ================= AI CAPABILITIES =================
@@ -860,7 +836,7 @@ export class FinanceService {
 
                 if (this.matchesFilter(cc, rule.includeFilter)) {
                     if (this.matchesFilter(cc, rule.excludeFilter)) {
-                        throw new Error(`Cross Validation Rule Failed: '${rule.ruleName}'. ${rule.errorMessage || "Invalid account combination."}`);
+                        throw new Error(`Cross Validation Rule Failed: '${rule.ruleName}'.${rule.errorMessage || "Invalid account combination."} `);
                     }
                 }
             }
@@ -886,7 +862,7 @@ export class FinanceService {
             const key = pair[0].trim();
             const val = pair[1].trim();
 
-            // Try to resolve segment key (Standardize to segment1, segment2...)
+            // Try to resolve segment key (Standardize to segmentN, segmentN...)
             // If the key is "Company", we'd ideally map it. For now, we support exact segmentN names.
             const ccValue = cc[key] || cc[key.toLowerCase()];
             return this.evaluateFilterValue(ccValue, val);
@@ -929,150 +905,23 @@ export class FinanceService {
     }
 
 
-    // Main Intercompany Orchestrator
-    private async generateIntercompanyLines(journal: any, lines: any[]): Promise<any[]> {
-        console.log("Checking for Intercompany Balances...");
-
-        // 1. Calculate Balance per Company (Segment 1)
-        const balances = new Map<string, number>();
-
-        // Helper to get company segment. Assume lines have accountId which allows resolving segment1.
-        // For MVP, we assume we need to fetch CC for each line. 
-        // Optimization: Prefetch all CCs.
-
-        // Fix: Just assume we have helper or logic.
-        // Let's implement a quick loop that fetches CC if needed.
-
-        // Note: This matches the logic we had earlier but simpler.
-        for (const line of lines) {
-            const cc = await storage.getGlCodeCombination(line.accountId);
-            if (!cc) {
-                console.warn(`[WARN] glCodeCombination not found for accountId: ${line.accountId}`);
-                continue;
-            }
-            const company = cc.segment1 || "Unknown"; // Co101, Co102
-
-            // Robustly get amount (Entered > Accounted > Raw)
-            const dr = Number(line.enteredDebit || line.accountedDebit || line.debit) || 0;
-            const cr = Number(line.enteredCredit || line.accountedCredit || line.credit) || 0;
-            const net = dr - cr;
-
-            balances.set(company, (balances.get(company) || 0) + net);
-        }
-
-        // 2. Identify Unbalanced Companies
-        const unbalancedCompanies: [string, number][] = [];
-        for (const [co, bal] of balances.entries()) {
-            if (Math.abs(bal) > 0.01) { // Tolerance
-                unbalancedCompanies.push([co, bal]);
-            }
-        }
-
-        if (unbalancedCompanies.length === 0) {
-            console.log("Journal is already balanced by Company. No IC lines needed.");
-            return lines;
-        }
-
-        console.log("Found Intercompany Imbalances:", unbalancedCompanies);
-
-        // 3. Delegate to Resolver
-        return await this.resolveImbalances(journal, lines, unbalancedCompanies);
-    }
-
-    // 3. Resolve Imbalances (Simple Pairwise for MVP)
-    private async resolveImbalances(journal: any, lines: any[], unbalancedCompanies: [string, number][]) {
-        const newLines = [...lines];
-
-        // Split into Debtors (Positive Balance -> Received Value -> Owe Money) and Creditors (Negative Balance -> Gave Value -> Owed Money)
-        const debtors = unbalancedCompanies.filter(([_, bal]) => bal > 0);
-        const creditors = unbalancedCompanies.filter(([_, bal]) => bal < 0);
-
-        for (const [debtorCo, amountNeeded] of debtors) {
-            // Find a creditor to match against
-            // Simplest: Take the first one. Complex: Optimization/Knapsack.
-            // We'll iterate creditors until satisfied.
-            let remainingToBalance = amountNeeded;
-
-            for (const [creditorCo, creditorBal] of creditors) {
-                if (remainingToBalance <= 0.01) break;
-
-                const rule = await storage.getIntercompanyRule(debtorCo, creditorCo);
-                if (!rule) {
-                    console.error("No Intercompany Rule found.");
-                    continue;
-                }
-
-                // How much can this creditor absorb? (creditorBal is negative)
-                // We want to match up to the magnitude of the creditor's contribution
-                // This is complex multi-way matching.
-                // SIMPLIFICATION: Assume 2 companies only for MVP verification.
-
-                // Debtor (Co101) needs a Credit (Payable)
-                // Creditor (Co102) needs a Debit (Receivable)
-
-                const amountToFix = Math.min(Math.abs(remainingToBalance), Math.abs(creditorBal));
-
-                // 1. Add Credit to Debtor (Payable)
-                const valLine1 = {
-                    id: randomUUID(),
-                    journalId: journal.id,
-                    accountId: rule.payableAccountId,
-                    description: "Intercompany Allocation: Due to " + creditorCo,
-                    enteredDebit: "0",
-                    enteredCredit: String(amountToFix),
-                    accountedDebit: "0",
-                    accountedCredit: String(amountToFix),
-                    currencyCode: journal.currencyCode || "USD",
-                    exchangeRate: "1"
-                };
-                newLines.push(valLine1);
-
-                const valLine2 = {
-                    id: randomUUID(),
-                    journalId: journal.id,
-                    accountId: rule.receivableAccountId,
-                    description: "Intercompany Allocation: Due from " + debtorCo,
-                    enteredDebit: String(amountToFix),
-                    enteredCredit: "0",
-                    accountedDebit: String(amountToFix),
-                    accountedCredit: "0",
-                    currencyCode: journal.currencyCode || "USD",
-                    exchangeRate: "1"
-                };
-                newLines.push(valLine2);
-
-                // PERSIST TO DB
-                await storage.createGlJournalLine(valLine1);
-                await storage.createGlJournalLine(valLine2);
-
-                console.log("Generated Intercompany Lines for " + debtorCo + " -> " + creditorCo + " (" + amountToFix + ")");
-
-                remainingToBalance -= amountToFix;
-            }
-        }
-
-        // 4. Return new set of lines
-        return newLines;
-    }
-
     async getJournalLines(journalId: string | number) {
         return await storage.listGlJournalLines(String(journalId));
     }
 
-    private async updateBalancesCube(journal: any, lines: any[]) {
+    private async updateBalancesCube(journal: GlJournal, lines: GlJournalLine[]) {
         // Get ledger to find functional currency
         const ledger = await storage.getGlLedger(journal.ledgerId);
         const functionalCurrency = ledger?.currencyCode || "USD";
 
         // Get period to find period name
-        const period = await storage.getGlPeriod(journal.periodId);
+        const period = await storage.getGlPeriod(journal.periodId || "");
         const periodName = period?.periodName || "Jan-2026";
 
         for (const line of lines) {
             const ccid = line.accountId;
 
             // 1. Update Entered Currency Balance
-            // Use enteredDebit/Credit first, fallback to line.debit if single currency
             const enteredCurrency = line.currencyCode || journal.currencyCode || functionalCurrency;
             const enteredDr = Number(line.enteredDebit || (enteredCurrency === functionalCurrency ? line.debit : 0) || 0);
             const enteredCr = Number(line.enteredCredit || (enteredCurrency === functionalCurrency ? line.credit : 0) || 0);
@@ -1096,76 +945,6 @@ export class FinanceService {
                 await this.updateBudgetActuals(openBudget.id, periodName, ccid, netChange);
             }
         }
-    }
-
-    /**
-     * Budgetary Control: Check if the journal exceeds approved budget limits.
-     */
-    private async checkFunds(journalId: string) {
-        const journal = await storage.getGlJournal(journalId);
-        if (!journal) return;
-
-        const lines = await storage.listGlJournalLines(journalId);
-        const period = await storage.getGlPeriod(journal.periodId!);
-        if (!period) return;
-
-        // 1. Get Control Rules for Ledger
-        const rules = await storage.listGlBudgetControlRules(journal.ledgerId);
-        if (rules.length === 0) return;
-
-        // 2. Aggregate Impact
-        const impactMap = new Map<string, number>();
-        for (const line of lines) {
-            const amt = Number(line.accountedDebit || line.debit || 0) - Number(line.accountedCredit || line.credit || 0);
-            impactMap.set(line.accountId, (impactMap.get(line.accountId) || 0) + amt);
-        }
-
-        // 3. Match against Open Budget
-        const budgets = await storage.listGlBudgets(journal.ledgerId);
-        const openBudget = budgets.find(b => b.status === "Open");
-        if (!openBudget) return;
-
-        for (const [ccid, change] of impactMap.entries()) {
-            if (change <= 0) continue; // Only check spending
-
-            const cc = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.id, ccid)).limit(1);
-            if (cc.length === 0) continue;
-            const combo = cc[0];
-
-            const rule = rules.find(r => {
-                if (!r.enabled) return false;
-                const filters = r.controlFilters as any;
-                if (filters?.segment3) {
-                    return combo.segment3! >= filters.segment3.min && combo.segment3! <= filters.segment3.max;
-                }
-                return true;
-            });
-
-            if (!rule || rule.controlLevel === "Track") continue;
-
-            const bal = await storage.getGlBudgetBalance(openBudget.id, period.periodName, ccid);
-            const available = Number(bal?.budgetAmount || 0) - (Number(bal?.actualAmount || 0) + Number(bal?.encumbranceAmount || 0));
-
-            if (change > available) {
-                if (rule.controlLevel === "Absolute") {
-                    throw new Error(`[FUNDS_CHECK_FAILED] Insufficient funds for Account ${combo.code}. Available: ${available}, Attempting: ${change}`);
-                } else if (rule.controlLevel === "Advisory") {
-                    console.warn(`[FUNDS_CHECK_WARNING] Account ${combo.code} over budget.`);
-                }
-            }
-        }
-    }
-
-    private async updateBudgetActuals(budgetId: string, periodName: string, ccid: string, netChange: number) {
-        const existing = await storage.getGlBudgetBalance(budgetId, periodName, ccid);
-        await storage.upsertGlBudgetBalance({
-            budgetId,
-            periodName,
-            codeCombinationId: ccid,
-            actualAmount: String(Number(existing?.actualAmount || 0) + netChange),
-            budgetAmount: existing?.budgetAmount || "0",
-            encumbranceAmount: existing?.encumbranceAmount || "0"
-        });
     }
 
     private async upsertBalanceRow(ledgerId: string, ccid: string, periodName: string, currency: string, dr: number, cr: number) {
@@ -1203,8 +982,20 @@ export class FinanceService {
         }
     }
 
+    private async updateBudgetActuals(budgetId: string, periodName: string, ccid: string, netChange: number) {
+        const existing = await storage.getGlBudgetBalance(budgetId, periodName, ccid);
+        await storage.upsertGlBudgetBalance({
+            budgetId,
+            periodName,
+            codeCombinationId: ccid,
+            actualAmount: String(Number(existing?.actualAmount || 0) + netChange),
+            budgetAmount: existing?.budgetAmount || "0",
+            encumbranceAmount: existing?.encumbranceAmount || "0"
+        });
+    }
+
     async runRevaluation(ledgerId: string, periodName: string, foreignCurrency: string, rateType: string = "Spot", unrealizedGainLossAccountId?: string) {
-        console.log(`[REVALUATION] Starting for Ledger: ${ledgerId}, Period: ${periodName}, Currency: ${foreignCurrency}`);
+        console.log(`[REVALUATION] Starting for Ledger: ${ledgerId}, Period: ${periodName}, Currency: ${foreignCurrency} `);
 
         // 1. Setup
         const ledger = await storage.getGlLedger(ledgerId);
@@ -1222,7 +1013,7 @@ export class FinanceService {
         // 2. Get Exchange Rate
         const rateRow = await storage.getExchangeRate(foreignCurrency, periodName);
         if (!rateRow) {
-            throw new Error(`Exchange rate not found for ${foreignCurrency} in period ${periodName}`);
+            throw new Error(`Exchange rate not found for ${foreignCurrency} in period ${periodName} `);
         }
         const currentRate = Number((rateRow as any).rateToFunctional);
 
@@ -1276,7 +1067,7 @@ export class FinanceService {
 
                 linesToCreate.push({
                     accountId: fBal.codeCombinationId,
-                    description: `Revaluation Adjust: ${periodName} @ ${currentRate}`,
+                    description: `Revaluation Adjust: ${periodName} @${currentRate} `,
                     debit: dr,
                     credit: cr
                 });
@@ -1294,7 +1085,7 @@ export class FinanceService {
 
             linesToCreate.push({
                 accountId: unrealizedGainLossAccountId,
-                description: `Unrealized Gain/Loss Offset`,
+                description: `Unrealized Gain / Loss Offset`,
                 debit: offDr,
                 credit: offCr
             });
@@ -1303,8 +1094,8 @@ export class FinanceService {
         // 6. Create & Post Journal
         const journal = await this.createJournal(
             {
-                journalNumber: `REV-${periodName}-${foreignCurrency}-${Date.now()}`,
-                description: `Revaluation ${periodName} ${foreignCurrency}`,
+                journalNumber: `REV - ${periodName} -${foreignCurrency} -${Date.now()} `,
+                description: `Revaluation ${periodName} ${foreignCurrency} `,
                 periodId: period.id,
                 ledgerId: ledgerId,
                 source: "Revaluation",
@@ -1334,7 +1125,7 @@ export class FinanceService {
             journalBatchId: journal.id
         });
 
-        console.log(`[REVALUATION] Completed. Generated ${entries.length} entries. Journal: ${journal.id}`);
+        console.log(`[REVALUATION] Completed.Generated ${entries.length} entries.Journal: ${journal.id} `);
         return { success: true, journalId: journal.id, totalVariance, entriesGenerated: entries.length };
     }
 
@@ -1909,76 +1700,158 @@ export class FinanceService {
      * and returns a unique Code Combination ID. Creates one if it doesn't match.
      */
     async getOrCreateCodeCombination(ledgerId: string, segmentInput: string | Record<string, string | null>) {
-        let segment1, segment2, segment3, segment4, segment5, segment6, segment7, segment8, segment9, segment10: string | null = null;
-        let segmentString = "";
+        // 1. Fetch Ledger & COA Structure
+        const ledger = await db.select().from(glLedgers).where(eq(glLedgers.id, ledgerId)).limit(1);
+        if (ledger.length === 0) throw new Error("Ledger not found: " + ledgerId);
 
-        if (typeof segmentInput === "string") {
-            segmentString = segmentInput;
-            const segments = segmentInput.split('-');
-            [segment1, segment2, segment3, segment4, segment5, segment6, segment7, segment8, segment9, segment10] = segments.map(s => s || null);
-        } else {
-            segment1 = segmentInput.segment1 || null;
-            segment2 = segmentInput.segment2 || null;
-            segment3 = segmentInput.segment3 || null;
-            segment4 = segmentInput.segment4 || null;
-            segment5 = segmentInput.segment5 || null;
-            segment6 = segmentInput.segment6 || null;
-            segment7 = segmentInput.segment7 || null;
-            segment8 = segmentInput.segment8 || null;
-            segment9 = segmentInput.segment9 || null;
-            segment10 = segmentInput.segment10 || null;
-
-            segmentString = [segment1, segment2, segment3, segment4, segment5, segment6, segment7, segment8, segment9, segment10]
-                .filter(Boolean)
-                .join("-");
+        let coaId = ledger[0].coaId;
+        // Fallback for legacy data if coaId is missing (should not happen in strict mode)
+        if (!coaId) {
+            console.warn("Ledger has no COA ID. Using legacy default logic.");
+            // ... Default logic or error? Let's treat it as error for strict parity.
+            // throw new Error("Ledger configuration error: Missing Chart of Accounts ID.");
+            // Actually, for migration safety, let's try to query a default structure or fail.
         }
 
-        // 2. Check for existing
+        // Fetch Segments Definition
+        // We use the storage method or direct DB query. 
+        // Since we are in FinanceService, we can use db directly for speed/custom joins.
+        const segmentDefs = await db.select().from(glSegments)
+            .where(eq(glSegments.coaStructureId, coaId || "UNKNOWN"))
+            .orderBy(glSegments.segmentNumber);
+
+        if (segmentDefs.length === 0 && coaId) {
+            // Only warn if COA ID existed but no segments found
+            console.warn(`No segments defined for COA ${coaId}`);
+        }
+
+        // 2. Parse Input
+        let inputSegments: string[] = [];
+        let delimiter = "-"; // Default
+
+        // Fetch Delimiter from Structure if available
+        if (coaId) {
+            const structure = await db.select().from(glCoaStructures).where(eq(glCoaStructures.id, coaId)).limit(1);
+            if (structure.length > 0 && structure[0].delimiter) {
+                delimiter = structure[0].delimiter || "-";
+            }
+        }
+
+        if (typeof segmentInput === "string") {
+            inputSegments = segmentInput.split(delimiter);
+        } else {
+            // Extract segments based on definition count
+            // Or just filter all segmentN keys.
+            inputSegments = [
+                segmentInput.segment1, segmentInput.segment2, segmentInput.segment3,
+                segmentInput.segment4, segmentInput.segment5, segmentInput.segment6,
+                segmentInput.segment7, segmentInput.segment8, segmentInput.segment9,
+                segmentInput.segment10
+            ].filter(Boolean) as string[];
+        }
+
+        // 3. Validation
+        if (segmentDefs.length > 0) {
+            if (inputSegments.length !== segmentDefs.length) {
+                throw new Error(`Invalid number of segments. Expected ${segmentDefs.length}, got ${inputSegments.length}. Input: ${inputSegments.join(delimiter)}`);
+            }
+
+            // Validate Values against Value Sets
+            for (let i = 0; i < segmentDefs.length; i++) {
+                const def = segmentDefs[i];
+                const value = inputSegments[i];
+
+                // Check Value Set
+                const validValue = await db.select().from(glSegmentValues)
+                    .where(and(
+                        eq(glSegmentValues.valueSetId, def.valueSetId),
+                        eq(glSegmentValues.value, value),
+                        eq(glSegmentValues.enabledFlag, true)
+                    )).limit(1);
+
+                if (validValue.length === 0) {
+                    throw new Error(`Invalid value '${value}' for segment '${def.segmentName}' (VS: ${def.valueSetId})`);
+                }
+            }
+        }
+
+        // 4. Construct CCID String and Object
+        const segmentString = inputSegments.join(delimiter);
+
+        // Check Existing
         const existing = await db.select().from(glCodeCombinations)
-            .where(and(eq(glCodeCombinations.ledgerId, ledgerId), eq(glCodeCombinations.code, segmentString)))
+            .where(and(
+                eq(glCodeCombinations.code, segmentString),
+                eq(glCodeCombinations.ledgerId, ledgerId)
+            ))
             .limit(1);
 
         if (existing.length > 0) return existing[0];
 
-        // 3. Validate CVRs
+        // 5. CVR Check (Cross-Validation Rules)
         const validation = await this.validateCodeCombination(ledgerId, {
-            segment1: segment1 || "",
-            segment2: segment2 || "",
-            segment3: segment3 || "",
-            segment4: segment4 || "",
-            segment5: segment5 || "",
-            segment6: segment6 || "",
-            segment7: segment7 || "",
-            segment8: segment8 || "",
-            segment9: segment9 || "",
-            segment10: segment10 || ""
+            segment1: inputSegments[0] || "",
+            segment2: inputSegments[1] || "",
+            segment3: inputSegments[2] || "",
+            segment4: inputSegments[3] || "",
+            segment5: inputSegments[4] || "",
+            segment6: inputSegments[5] || "",
+            segment7: inputSegments[6] || "",
+            segment8: inputSegments[7] || "",
+            segment9: inputSegments[8] || "",
+            segment10: inputSegments[9] || ""
         });
 
         if (!validation.isValid) {
             throw new Error(`Code Combination restricted by CVR: ${validation.error}`);
         }
 
-        // 4. Create unique
-        const ccid = await storage.createGlCodeCombination({
+        // 6. Create New
+        // Determine Account Type from Account Segment
+        // Usually we need to know WHICH segment is the Account Segment.
+        // We can check 'accountType' in segmentValues for the Account Segment.
+        let accountType = "Expense"; // Default
+
+        // Find the Natural Account Segment (usually has accountType in value)
+        // Or we need a way to identify the "Natural Account" segment definition.
+        // For MVP, we check all values for an account type.
+        for (let i = 0; i < segmentDefs.length; i++) {
+            const def = segmentDefs[i];
+            // Ideally segment definition has a "segmentLabel" = "ACCOUNT" 
+            // but we don't have that yet.
+            // We can check if the value set has account types.
+            const val = await db.select().from(glSegmentValues)
+                .where(and(
+                    eq(glSegmentValues.valueSetId, def.valueSetId),
+                    eq(glSegmentValues.value, inputSegments[i])
+                )).limit(1);
+
+            if (val.length > 0 && val[0].accountType) {
+                accountType = val[0].accountType;
+                break;
+            }
+        }
+
+        const newCcid = await storage.createGlCodeCombination({
             code: segmentString,
             ledgerId,
-            segment1,
-            segment2,
-            segment3,
-            segment4,
-            segment5,
-            segment6,
-            segment7,
-            segment8,
-            segment9,
-            segment10,
+            segment1: inputSegments[0] || null,
+            segment2: inputSegments[1] || null,
+            segment3: inputSegments[2] || null,
+            segment4: inputSegments[3] || null,
+            segment5: inputSegments[4] || null,
+            segment6: inputSegments[5] || null,
+            segment7: inputSegments[6] || null,
+            segment8: inputSegments[7] || null,
+            segment9: inputSegments[8] || null,
+            segment10: inputSegments[9] || null,
             startDateActive: new Date(),
             enabledFlag: true,
             summaryFlag: false,
-            accountType: "Expense" // Default, should be derived from Segment 3 (Account)
+            accountType: accountType
         });
 
-        return ccid;
+        return newCcid;
     }
 
 

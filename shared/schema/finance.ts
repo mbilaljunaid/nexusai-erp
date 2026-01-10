@@ -524,41 +524,35 @@ export const insertGlRevaluationSchema = createInsertSchema(glRevaluations);
 export type InsertGlRevaluation = z.infer<typeof insertGlRevaluationSchema>;
 export type GlRevaluation = typeof glRevaluations.$inferSelect;
 
-// Financial Statement Generator (FSG) Schema
-// 18. Financial Reporting Engine (FSG) - CONSOLIDATED & UPDATED
-export const glReportDefinitions = pgTable("gl_fsg_defs", {
+// Financial Statement Generator (FSG) Schema - REUSABLE SETS MODEL
+// 18.1 Row Sets
+export const glFsgRowSets = pgTable("gl_fsg_row_sets", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    name: varchar("name").notNull(), // e.g., "Consolidated Balance Sheet"
+    name: varchar("name").notNull(),
     description: text("description"),
-    ledgerId: varchar("ledger_id"), // Optional: Specific to a ledger, or null for generic
-    chartOfAccountsId: varchar("chart_of_accounts_id"), // Optional filter (kept from old schema)
-    enabled: boolean("enabled").default(true),
+    ledgerId: varchar("ledger_id"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertGlReportDefinitionSchema = createInsertSchema(glReportDefinitions);
-export type InsertGlReportDefinition = z.infer<typeof insertGlReportDefinitionSchema>;
-export type GlReportDefinition = typeof glReportDefinitions.$inferSelect;
+export const insertGlFsgRowSetSchema = createInsertSchema(glFsgRowSets);
+export type InsertGlFsgRowSet = z.infer<typeof insertGlFsgRowSetSchema>;
+export type GlFsgRowSet = typeof glFsgRowSets.$inferSelect;
 
 export const glReportRows = pgTable("gl_fsg_rows", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    reportId: varchar("report_id").notNull(), // FK to glReportDefinitions
+    rowSetId: varchar("row_set_id").notNull(), // FK to glFsgRowSets
     rowNumber: integer("row_number").notNull(), // 10, 20, 30...
     description: varchar("description").notNull(), // Row Label
-    rowType: varchar("row_type").notNull().default("DETAIL"), // DETAIL or CALCULATION或TITLE
+    rowType: varchar("row_type").notNull().default("DETAIL"), // DETAIL, CALCULATION, TITLE
 
-    // Account Filter (Simplified Range)
-    accountFilterMin: varchar("account_filter_min"), // e.g. "1000"
-    accountFilterMax: varchar("account_filter_max"), // e.g. "1999"
-    segmentFilter: varchar("segment_filter"), // e.g. "Segment1=01" (Optional additional refinement)
+    // Account Filter (Multi-segment range support)
+    accountFilterMin: varchar("account_filter_min"),
+    accountFilterMax: varchar("account_filter_max"),
+    segmentFilter: jsonb("segment_filter"), // e.g. { "Segment1": "01", "Segment2": ["100", "200"] }
 
-    // Logics
-    calculationFormula: varchar("calculation_formula"), // e.g. "10+20" or "R10+R20" (Simplified)
-
-    // Formatting
+    calculationFormula: varchar("calculation_formula"),
     indentLevel: integer("indent_level").default(0),
-    inverseSign: boolean("inverse_sign").default(false), // Flip credit to positive for reporting
-
+    inverseSign: boolean("inverse_sign").default(false),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -566,30 +560,49 @@ export const insertGlReportRowSchema = createInsertSchema(glReportRows);
 export type InsertGlReportRow = z.infer<typeof insertGlReportRowSchema>;
 export type GlReportRow = typeof glReportRows.$inferSelect;
 
+// 18.2 Column Sets
+export const glFsgColumnSets = pgTable("gl_fsg_column_sets", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    ledgerId: varchar("ledger_id"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlFsgColumnSetSchema = createInsertSchema(glFsgColumnSets);
+export type InsertGlFsgColumnSet = z.infer<typeof insertGlFsgColumnSetSchema>;
+export type GlFsgColumnSet = typeof glFsgColumnSets.$inferSelect;
+
 export const glReportColumns = pgTable("gl_fsg_cols", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    reportId: varchar("report_id").notNull(), // FK to glReportDefinitions
-    columnNumber: integer("column_number").notNull(), // 1, 2, 3...
-
-    // Header
+    columnSetId: varchar("column_set_id").notNull(), // FK to glFsgColumnSets
+    columnNumber: integer("column_number").notNull(),
     columnHeader: varchar("column_header").notNull(),
-
-    // Data Logic
-    amountType: varchar("amount_type").default("PTD"), // PTD (Period to Date), YTD (Year to Date), QTD
-    currencyType: varchar("currency_type").default("Functional"), // Functional, Entered, Reporting
-
-    // Time Logic relative to Run Period
-    // 0 = Current, -1 = Previous Period
+    amountType: varchar("amount_type").default("PTD"), // PTD, YTD, QTD
+    currencyType: varchar("currency_type").default("Functional"),
     periodOffset: integer("period_offset").default(0),
-
-    ledgerId: varchar("ledger_id"), // Optional override
-
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
 export const insertGlReportColumnSchema = createInsertSchema(glReportColumns);
 export type InsertGlReportColumn = z.infer<typeof insertGlReportColumnSchema>;
 export type GlReportColumn = typeof glReportColumns.$inferSelect;
+
+// 18.3 Report Definitions (Templates)
+export const glReportDefinitions = pgTable("gl_fsg_defs", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    rowSetId: varchar("row_set_id").notNull(),
+    columnSetId: varchar("column_set_id").notNull(),
+    ledgerId: varchar("ledger_id"),
+    enabled: boolean("enabled").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlReportDefinitionSchema = createInsertSchema(glReportDefinitions);
+export type InsertGlReportDefinition = z.infer<typeof insertGlReportDefinitionSchema>;
+export type GlReportDefinition = typeof glReportDefinitions.$inferSelect;
 
 // 15. Mass Allocations (Phase 3)
 export const glAllocations = pgTable("gl_allocations", {

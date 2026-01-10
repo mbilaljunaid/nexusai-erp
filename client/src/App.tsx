@@ -315,6 +315,7 @@ const IntegrationStatus = lazy(() => import("@/pages/IntegrationStatus"));
 const JournalEntries = lazy(() => import("@/pages/JournalEntries"));
 const JournalEntry = lazy(() => import("./pages/gl/JournalEntry"));
 const FinancialReports = lazy(() => import("./pages/gl/FinancialReports"));
+const FSGBuilder = lazy(() => import("./pages/gl/FSGBuilder"));
 const AuditLogsPage = lazy(() => import("@/pages/gl/AuditLogs"));
 const IntercompanyRules = lazy(() => import("@/pages/gl/IntercompanyRules"));
 const BudgetManager = lazy(() => import("@/pages/gl/BudgetManager"));
@@ -589,6 +590,7 @@ function Router() {
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
       <Route path="/gl/journals/new" component={JournalEntry} />
       <Route path="/gl/journals" component={JournalEntries} />
+      <Route path="/gl/reports/builder" component={FSGBuilder} />
       <Route path="/gl/reports" component={FinancialReports} />
       <Route path="/gl/audit" component={AuditLogsPage} />
       <Route path="/finance/:page?" component={Finance} />

@@ -1,5 +1,5 @@
 {
-  "id": "5bff6308-ea8e-41ff-b747-f104f92475af",
+  "id": "48b64b33-188a-4d87-b20c-8292297eee80",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -4212,76 +4212,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.gl_close_tasks": {
-      "name": "gl_close_tasks",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "ledger_id": {
-          "name": "ledger_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "period_id": {
-          "name": "period_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "task_name": {
-          "name": "task_name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'PENDING'"
-        },
-        "completed_by": {
-          "name": "completed_by",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "completed_at": {
-          "name": "completed_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.gl_coa_structures": {
       "name": "gl_coa_structures",
       "schema": "",
@@ -4794,96 +4724,6 @@
           "type": "numeric(20, 10)",
           "primaryKey": false,
           "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.gl_fsg_column_sets": {
-      "name": "gl_fsg_column_sets",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ledger_id": {
-          "name": "ledger_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.gl_fsg_row_sets": {
-      "name": "gl_fsg_row_sets",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ledger_id": {
-          "name": "ledger_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -5729,8 +5569,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "column_set_id": {
-          "name": "column_set_id",
+        "report_id": {
+          "name": "report_id",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
@@ -5767,6 +5607,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": 0
+        },
+        "ledger_id": {
+          "name": "ledger_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -5807,20 +5653,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "row_set_id": {
-          "name": "row_set_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "column_set_id": {
-          "name": "column_set_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
         "ledger_id": {
           "name": "ledger_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chart_of_accounts_id": {
+          "name": "chart_of_accounts_id",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -5859,8 +5699,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "row_set_id": {
-          "name": "row_set_id",
+        "report_id": {
+          "name": "report_id",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
@@ -5898,7 +5738,7 @@
         },
         "segment_filter": {
           "name": "segment_filter",
-          "type": "jsonb",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -11547,147 +11387,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.gl_report_instances": {
-      "name": "gl_report_instances",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "report_id": {
-          "name": "report_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "schedule_id": {
-          "name": "schedule_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "run_date": {
-          "name": "run_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'COMPLETED'"
-        },
-        "output_path": {
-          "name": "output_path",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "filters_applied": {
-          "name": "filters_applied",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "error_log": {
-          "name": "error_log",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.gl_report_schedules": {
-      "name": "gl_report_schedules",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "report_id": {
-          "name": "report_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "recurrence": {
-          "name": "recurrence",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "parameters": {
-          "name": "parameters",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "recipient_emails": {
-          "name": "recipient_emails",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "next_run_at": {
-          "name": "next_run_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "enabled": {
-          "name": "enabled",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.reports": {
       "name": "reports",
       "schema": "",
@@ -14327,10 +14026,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar",
+          "type": "serial",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -14363,21 +14061,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "ledger_id": {
-          "name": "ledger_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "gl_account_id": {
           "name": "gl_account_id",
-          "type": "varchar",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
         "current_balance": {
           "name": "current_balance",
-          "type": "numeric(20, 2)",
+          "type": "numeric(12, 2)",
           "primaryKey": false,
           "notNull": false,
           "default": "'0'"
@@ -14412,130 +14104,19 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.cash_matching_groups": {
-      "name": "cash_matching_groups",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "reconciled_date": {
-          "name": "reconciled_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "method": {
-          "name": "method",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "batch_id": {
-          "name": "batch_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.cash_reconciliation_rules": {
-      "name": "cash_reconciliation_rules",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "ledger_id": {
-          "name": "ledger_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "bank_account_id": {
-          "name": "bank_account_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "rule_name": {
-          "name": "rule_name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "priority": {
-          "name": "priority",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 10
-        },
-        "matching_criteria": {
-          "name": "matching_criteria",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "enabled": {
-          "name": "enabled",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.cash_statement_lines": {
       "name": "cash_statement_lines",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar",
+          "type": "serial",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "bank_account_id": {
           "name": "bank_account_id",
-          "type": "varchar",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -14547,7 +14128,7 @@
         },
         "amount": {
           "name": "amount",
-          "type": "numeric(20, 2)",
+          "type": "numeric(12, 2)",
           "primaryKey": false,
           "notNull": true
         },
@@ -14569,12 +14150,6 @@
           "primaryKey": false,
           "notNull": false,
           "default": false
-        },
-        "matching_group_id": {
-          "name": "matching_group_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -14598,14 +14173,13 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar",
+          "type": "serial",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "bank_account_id": {
           "name": "bank_account_id",
-          "type": "varchar",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -14617,13 +14191,13 @@
         },
         "source_id": {
           "name": "source_id",
-          "type": "varchar",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
         "amount": {
           "name": "amount",
-          "type": "numeric(20, 2)",
+          "type": "numeric(12, 2)",
           "primaryKey": false,
           "notNull": true
         },
@@ -14646,12 +14220,6 @@
           "primaryKey": false,
           "notNull": false,
           "default": "'Unreconciled'"
-        },
-        "matching_group_id": {
-          "name": "matching_group_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
@@ -15608,280 +15176,6 @@
           "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.gl_auto_post_rules": {
-      "name": "gl_auto_post_rules",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "rule_name": {
-          "name": "rule_name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "ledger_id": {
-          "name": "ledger_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "priority": {
-          "name": "priority",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 1
-        },
-        "criteria": {
-          "name": "criteria",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "enabled": {
-          "name": "enabled",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.gl_je_categories": {
-      "name": "gl_je_categories",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_category_name": {
-          "name": "user_category_name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "reversal_method": {
-          "name": "reversal_method",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Switch Dr/Cr'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "gl_je_categories_name_unique": {
-          "name": "gl_je_categories_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.gl_je_sources": {
-      "name": "gl_je_sources",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_source_name": {
-          "name": "user_source_name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "import_journal_references": {
-          "name": "import_journal_references",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "journal_approval_flag": {
-          "name": "journal_approval_flag",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "effective_date_rule": {
-          "name": "effective_date_rule",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Fail'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "gl_je_sources_name_unique": {
-          "name": "gl_je_sources_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.gl_ledger_controls": {
-      "name": "gl_ledger_controls",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "ledger_id": {
-          "name": "ledger_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "enable_suspense": {
-          "name": "enable_suspense",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "suspense_ccid": {
-          "name": "suspense_ccid",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "rounding_ccid": {
-          "name": "rounding_ccid",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "threshold_amount": {
-          "name": "threshold_amount",
-          "type": "numeric(18, 2)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'0'"
-        },
-        "auto_post_journals": {
-          "name": "auto_post_journals",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "auto_reverse_journals": {
-          "name": "auto_reverse_journals",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "gl_ledger_controls_ledger_id_unique": {
-          "name": "gl_ledger_controls_ledger_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "ledger_id"
           ]
         }
       },

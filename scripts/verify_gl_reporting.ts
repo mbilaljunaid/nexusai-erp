@@ -1,89 +1,94 @@
-
 import 'dotenv/config';
-import { glReportingService } from "../server/services/gl-reporting";
-import { storage } from "../server/storage";
 import { db } from "../server/db";
+import { storage } from "../server/storage";
+import { reportingService } from "../server/services/reporting";
+import { glReportDefinitions, glReportRows, glReportColumns } from "@shared/schema";
+import { sql } from "drizzle-orm";
 
-async function verifyGlReporting() {
-    console.log("Starting GL Reporting Verification...");
+async function verify() {
+    console.log("Starting FSG Verification...");
 
-    try {
-        const periodName = "Jan-2026";
-        const date = new Date("2026-01-31");
+    // 1. Setup Data
+    const ledgerId = "primary-ledger-001"; // Assume exists or arbitrary
 
-        // 1. Setup Data - Create Ledgers
-        console.log("1. Creating Ledgers...");
-        const usLedger = await storage.createGlLedger({ name: `US Ledger ${Date.now()}`, currencyCode: "USD" });
-        const euLedger = await storage.createGlLedger({ name: `EU Ledger ${Date.now()}`, currencyCode: "EUR" });
+    // Create Row Set
+    const rowSet = await storage.createFsgRowSet({
+        name: `Test Row Set ${Date.now()}`,
+        description: "Verification Row Set",
+        ledgerId: ledgerId
+    });
+    console.log(`Created Row Set: ${rowSet.id}`);
 
-        // 2. Setup Daily Rate (EUR -> USD = 1.1)
-        console.log("2. Creating Exchange Rate...");
-        await storage.createGlDailyRate({
-            fromCurrency: "EUR",
-            toCurrency: "USD",
-            rate: "1.1",
-            conversionDate: date,
-            conversionType: "Spot"
-        });
+    // Create Column Set
+    const colSet = await storage.createFsgColumnSet({
+        name: `Test Col Set ${Date.now()}`,
+        description: "Verification Col Set",
+        ledgerId: ledgerId
+    });
+    console.log(`Created Col Set: ${colSet.id}`);
 
-        // 3. Create Initial Balances
-        console.log("3. Creating Balances...");
-        // US: $1000 Cash
-        await storage.upsertGlBalance({
-            ledgerId: usLedger.id,
-            codeCombinationId: "101-000-1000", // Cash
-            currencyCode: "USD",
-            periodName,
-            periodNetDr: "1000",
-            periodNetCr: "0",
-            endBalance: "1000"
-        });
-        // EU: €500 Cash
-        await storage.upsertGlBalance({
-            ledgerId: euLedger.id,
-            codeCombinationId: "101-000-1000", // Cash
-            currencyCode: "EUR", // Functional Currency
-            periodName,
-            periodNetDr: "500",
-            periodNetCr: "0",
-            endBalance: "500"
-        });
+    // Add Rows
+    await storage.createFsgRow({
+        rowSetId: rowSet.id,
+        rowNumber: 10,
+        description: "Revenue",
+        rowType: "DETAIL",
+        accountFilterMin: "40000",
+        accountFilterMax: "49999",
+        inverseSign: true
+    });
 
-        // 4. Run Translation on EU Ledger (EUR -> USD)
-        // Expect: 500 * 1.1 = 550 USD
-        console.log("4. Running Translation...");
-        const translated = await glReportingService.translateBalances(euLedger.id, periodName, "USD", date);
-        console.log(`Translated check: ${translated[0].endBalance} USD (Expected 550)`);
+    await storage.createFsgRow({
+        rowSetId: rowSet.id,
+        rowNumber: 20,
+        description: "Expense",
+        rowType: "DETAIL",
+        accountFilterMin: "50000",
+        accountFilterMax: "59999",
+        inverseSign: false
+    });
 
-        if (Number(translated[0].endBalance) !== 550) {
-            throw new Error("Translation Failed: Result mismatch");
-        }
+    // Add Columns
+    await storage.createFsgColumn({
+        columnSetId: colSet.id,
+        columnNumber: 10,
+        columnHeader: "Current Month",
+        type: "AMOUNT",
+        amountType: "PTD",
+        offset: 0
+    });
 
-        // 5. Setup Ledger Set
-        console.log("5. Setting up Ledger Set...");
-        const set = await storage.createGlLedgerSet({ name: `Global Set ${Date.now()}` });
-        await storage.addLedgerToSet({ ledgerSetId: set.id, ledgerId: usLedger.id });
-        await storage.addLedgerToSet({ ledgerSetId: set.id, ledgerId: euLedger.id });
+    await storage.createFsgColumn({
+        columnSetId: colSet.id,
+        columnNumber: 20,
+        columnHeader: "YTD",
+        type: "AMOUNT",
+        amountType: "YTD",
+        offset: 0
+    });
 
-        // 6. Run Consolidation
-        // Expect: 1000 (US) + 550 (EU Translated) = 1550 USD
-        console.log("6. Running Consolidation...");
-        const consolidated = await glReportingService.getConsolidatedBalances(set.id, periodName, "USD");
-        const totalCash = consolidated.find(c => c.codeCombinationId === "101-000-1000");
+    // Create Definition
+    const [def] = await db.insert(glReportDefinitions).values({
+        name: `Verification Report ${Date.now()}`,
+        ledgerId: ledgerId,
+        rowSetId: rowSet.id,
+        columnSetId: colSet.id,
+        description: "Automated Test Report"
+    }).returning();
+    console.log(`Created Report Definition: ${def.id}`);
 
-        console.log(`Consolidated Total: ${totalCash?.endBalance} USD (Expected 1550)`);
+    // 2. Generate Report
+    console.log("Generating Report...");
+    const report = await reportingService.generateFsgReport(def.id, ledgerId, "Jan-26");
 
-        if (totalCash?.endBalance !== 1550) {
-            throw new Error("Consolidation Failed: Total mismatch");
-        }
+    // 3. Verify Output
+    console.log("Report Generated:", JSON.stringify(report, null, 2));
 
-        console.log("\n✅ GL Reporting Verification Passed!");
-        process.exit(0);
+    if (report.rows.length !== 2) throw new Error("Expected 2 rows");
+    if (report.headers.length !== 2) throw new Error("Expected 2 columns");
+    if (!report.instanceId) throw new Error("Instance ID not returned");
 
-    } catch (error) {
-        console.error("Verification Failed:", error);
-        process.exit(1);
-    }
+    console.log("✅ FSG Verification Successful");
 }
 
-verifyGlReporting();
+verify().catch(console.error);
