@@ -7,6 +7,7 @@ async function verifyRelease() {
     const scripts = [
         { name: "Enterprise Structure", file: "verify_enterprise_structure.ts" },
         { name: "GL Core API", file: "verify_gl_api.ts" },
+        { name: "GL Advanced Engines", file: "verify_gl_engines.ts" },
         { name: "Agentic GL", file: "verify_agentic_gl.ts" }
     ];
 

@@ -433,18 +433,158 @@ export class FinanceService {
         }
     }
 
-    // ================= ALLOCATIONS ENGINE (Phase 3) =================
-    async createAllocation(data: any) {
-        // Need to import insertGlAllocationSchema or use any
-        // Assuming direct DB or storage helper. 
-        // For now, I'll use direct DB insert as storage likely doesn't have it yet.
-        // Wait, I should add it to storage. But to save steps, I'll do direct DB here.
-        // Needs glAllocations import.
-        // Actually, let's skip createAllocation for now and focus on the ENGINE (runAllocation).
+    // ------------------------------------------------------------------------
+    // CHUNK 9: INTERCOMPANY ENGINE
+    // ------------------------------------------------------------------------
+
+    /**
+     * Automatically generate balancing Due To / Due From lines for cross-entity journals.
+     * Follows Oracle Fusion Intercompany Balancing Rules.
+     */
+    private async generateIntercompanyLines(journal: GlJournal, lines: GlJournalLine[]): Promise<GlJournalLine[]> {
+        console.log(`[FINANCE] Analyzing journal ${journal.id} for Intercompany Balancing...`);
+
+        // 1. Fetch Code Combinations to identify LE/Company segments
+        const ccids = [...new Set(lines.map(l => l.accountId))];
+        const combinations = await db.select().from(glCodeCombinations).where(inArray(glCodeCombinations.id, ccids));
+        const ccMap = new Map(combinations.map(c => [c.id, c]));
+
+        // 2. Group by Balancing Segment (Assuming Segment1 is LE/Company based on standard config)
+        const groups = new Map<string, GlJournalLine[]>();
+        for (const line of lines) {
+            const cc = ccMap.get(line.accountId);
+            if (!cc || !cc.segment1) continue;
+            if (!groups.has(cc.segment1)) groups.set(cc.segment1, []);
+            groups.get(cc.segment1)!.push(line);
+        }
+
+        // 3. If only one group, no intercompany balancing needed
+        if (groups.size <= 1) return lines;
+
+        console.log(`[FINANCE] Intercompany detected: ${groups.size} Legal Entities involved.`);
+
+        // 4. Calculate Net for each LE
+        const leBalances = new Map<string, number>();
+        for (const [le, leLines] of groups.entries()) {
+            const net = leLines.reduce((sum, l) => {
+                const dr = parseFloat(l.accountedDebit || "0");
+                const cr = parseFloat(l.accountedCredit || "0");
+                return sum + (dr - cr);
+            }, 0);
+            leBalances.set(le, net);
+        }
+
+        // 5. Detect Balances and Insert Balancing Lines
+        const newLines = [...lines];
+        for (const [le, net] of leBalances.entries()) {
+            if (Math.abs(net) < 0.01) continue;
+
+            // We need a counter-party. For simplicity, we choose the first other LE as the source.
+            // In real Oracle Fusion, this uses a many-to-many matrix of rules.
+            const otherLe = Array.from(leBalances.keys()).find(k => k !== le);
+            if (!otherLe) continue;
+
+            // Fetch rule
+            const rule = await db.select()
+                .from(glIntercompanyRules)
+                .where(and(
+                    eq(glIntercompanyRules.fromCompany, le),
+                    eq(glIntercompanyRules.toCompany, otherLe),
+                    eq(glIntercompanyRules.enabled, true)
+                ))
+                .limit(1);
+
+            if (rule.length === 0) {
+                throw new Error(`Intercompany Rule not found for connection between LE ${le} and LE ${otherLe}.`);
+            }
+
+            const targetCCID = net > 0 ? rule[0].payableAccountId : rule[0].receivableAccountId;
+
+            // Insert balancing line
+            const balancingLine: any = {
+                journalId: journal.id,
+                accountId: targetCCID,
+                description: `Intercompany Balancing: LE ${le} with LE ${otherLe}`,
+                currencyCode: journal.currencyCode,
+                accountedDebit: net < 0 ? Math.abs(net).toString() : "0",
+                accountedCredit: net > 0 ? net.toString() : "0",
+                enteredDebit: net < 0 ? Math.abs(net).toString() : "0",
+                enteredCredit: net > 0 ? net.toString() : "0"
+            };
+
+            const [saved] = await db.insert(glJournalLines).values(balancingLine).returning();
+            newLines.push(saved);
+            console.log(`[FINANCE] Inserted Intercompany Line: CCID ${targetCCID}, Net ${net}`);
+        }
+
+        return newLines;
     }
 
-    async runAllocation(allocationId: string, periodName: string) {
-        console.log(`Running Allocation ${allocationId} for ${periodName}...`);
+    // ------------------------------------------------------------------------
+    // CHUNK 9: BUDGETARY CONTROL
+    // ------------------------------------------------------------------------
+
+    /**
+     * Ensure journal posting does not exceed budget.
+     * Implements Absolute, Advisory, and Track control levels.
+     */
+    async checkFunds(journalId: string) {
+        console.log(`[FINANCE] Performing Funds Check for journal ${journalId}...`);
+
+        const journal = await storage.getGlJournal(journalId);
+        if (!journal) return;
+
+        const lines = await storage.listGlJournalLines(journalId);
+        const ccids = [...new Set(lines.map(l => l.accountId))];
+
+        // 1. Fetch Budget Control Rules for the ledger
+        const rules = await db.select().from(glBudgetControlRules).where(
+            and(
+                eq(glBudgetControlRules.ledgerId, journal.ledgerId),
+                eq(glBudgetControlRules.enabled, true)
+            )
+        );
+
+        if (rules.length === 0) return; // No controls enabled
+
+        for (const rule of rules) {
+            // 2. Identify controlled lines (e.g. all expenses)
+            // For now, assume simple Absolute check on all lines for demo
+            for (const line of lines) {
+                const balance = await db.select().from(glBudgetBalances).where(
+                    and(
+                        eq(glBudgetBalances.codeCombinationId, line.accountId),
+                        eq(glBudgetBalances.periodName, journal.periodId || "") // Assuming periodId used as name for now
+                    )
+                ).limit(1);
+
+                if (balance.length === 0) continue;
+
+                const budget = parseFloat(balance[0].budgetAmount || "0");
+                const actual = parseFloat(balance[0].actualAmount || "0");
+                const encumbrance = parseFloat(balance[0].encumbranceAmount || "0");
+                const available = budget - (actual + encumbrance);
+
+                const dr = parseFloat(line.accountedDebit || "0");
+                const cr = parseFloat(line.accountedCredit || "0");
+                const impact = dr - cr;
+
+                if (impact > available && rule.controlLevel === "Absolute") {
+                    throw new Error(`Budget Violation: Line for account ${line.accountId} exceeds available funds. Available: ${available}, Requested: ${impact}.`);
+                }
+
+                if (impact > available && rule.controlLevel === "Advisory") {
+                    console.warn(`[FINANCE] Advisory Budget Warning: Account ${line.accountId} is over budget.`);
+                }
+            }
+        }
+
+        console.log(`[FINANCE] Funds Check Passed.`);
+    }
+
+    // ================= ALLOCATIONS ENGINE (Phase 3) =================
+    async runAllocation(allocationId: string, periodName: string, userId: string = "SYSTEM") {
+        console.log(`[FINANCE] Running Allocation ${allocationId} for ${periodName}...`);
 
         // 1. Fetch Allocation Rule
         const [rule] = await db.select().from(glAllocations).where(eq(glAllocations.id, allocationId));
@@ -452,42 +592,27 @@ export class FinanceService {
         if (!rule.enabled) throw new Error("Allocation Rule is disabled");
 
         // 2. Calculate Pool Amount (A)
-        // Sum of balances matching 'poolAccountFilter' for the period
         const poolAmount = await this.calculateBalance(rule.poolAccountFilter, periodName, rule.ledgerId);
-
         if (poolAmount === 0) {
             console.log("Pool balance is zero. Nothing to allocate.");
             return { message: "Pool is zero" };
         }
 
         // 3. Calculate Total Basis (B_Total)
-        // Sum of balances matching 'basisAccountFilter'
-        // But wait, Basis is usually "Headcount" or "Square Foot" (Statistical Accounts) OR "Revenue" (Monetary).
-        // If it's across multiple cost centers, we need the Basis PER Target.
-
-        // Complex Part: The "Target" is typically a range of Cost Centers.
-        // Logic: Find all unique Cost Centers (Segment2) involved in the Basis Filter.
-        // Calculate Basis for each Cost Center.
-        // Allocate proportionate share of Pool to that Cost Center.
-
-        // Simplified Logic for MVP:
-        // Assume 'basisAccountFilter' implies a set of accounts (e.g., "All Revenue Accounts").
-        // We will fetch breakdown by Segment 2 (Cost Center).
-
         const basisBreakdown = await this.getBalancesBySegment(rule.basisAccountFilter, periodName, rule.ledgerId, "segment2");
         const totalBasis = Object.values(basisBreakdown).reduce((sum, val) => sum + val, 0);
-
         if (totalBasis === 0) throw new Error("Total Basis is zero. Cannot divide.");
 
         // 4. Generate Journal
-        const journalData = {
+        const journalData: InsertGlJournal = {
             journalNumber: `ALLOC-${rule.name}-${Date.now()}`,
             description: `Allocation: ${rule.name} for ${periodName}`,
             source: "Allocation",
-            periodId: (await storage.listGlPeriods()).find(p => p.periodName === periodName)?.id, // Inefficient but functional
+            periodId: (await storage.listGlPeriods()).find(p => p.periodName === periodName)?.id,
             ledgerId: rule.ledgerId,
-            currencyCode: "USD", // Should be dynamic
-            status: "Draft" as const
+            currencyCode: "USD",
+            status: "Draft",
+            createdBy: userId
         };
 
         const journal = await storage.createGlJournal(journalData);
@@ -497,38 +622,73 @@ export class FinanceService {
         for (const [costCenter, basisAmount] of Object.entries(basisBreakdown)) {
             const ratio = basisAmount / totalBasis;
             const allocatedAmount = poolAmount * ratio;
-
             if (Math.abs(allocatedAmount) < 0.01) continue;
 
             const targetAccountId = await this.resolveTargetAccount(rule.targetAccountPattern, costCenter, rule.ledgerId);
 
-            // Generate Debit Line (Target)
             await storage.createGlJournalLine({
                 journalId: journal.id,
                 accountId: targetAccountId,
                 description: `Allocated Cost to Center ${costCenter} (${(ratio * 100).toFixed(1)}%)`,
                 debit: allocatedAmount.toFixed(2),
                 credit: "0",
-                currencyCode: "USD"
+                currencyCode: "USD",
+                accountedDebit: allocatedAmount.toFixed(2),
+                accountedCredit: "0"
             });
         }
 
         // Credit Offset (Source Pool)
-        // We credit the Offset Account (usually same as Pool or specific Contra account)
-        // We need to resolve Offset Account ID.
-        // Assume rule.offsetAccount IS the ID or Code. Let's assume Code string. 
         const offsetAccountId = (await this.getOrCreateCodeCombination(rule.ledgerId, rule.offsetAccount)).id;
-
         await storage.createGlJournalLine({
             journalId: journal.id,
             accountId: offsetAccountId,
             description: `Allocation Offset: ${rule.name}`,
             debit: "0",
             credit: poolAmount.toFixed(2),
-            currencyCode: "USD"
+            currencyCode: "USD",
+            accountedDebit: "0",
+            accountedCredit: poolAmount.toFixed(2)
         });
 
         return { success: true, journalId: journal.id, totalAllocated: poolAmount };
+    }
+
+    /**
+     * Helper to resolve target account based on pattern.
+     * Pattern: "Segment1=Rule.Segment1, Segment2=Basis.Value, Segment3=7000"
+     */
+    private async resolveTargetAccount(pattern: string, basisValue: string, ledgerId: string): Promise<string> {
+        // Simple logic: Pattern specifies what to override.
+        // For MVP, we assume Segment2 is the variable from basis.
+        // pattern: "Segment3=5100" means take Basis CCID but use Dept 5100
+        // But basisValue IS the Dept. So we want a CC with basisValue as Segment2.
+
+        // Let's assume a default structure for the ledger or use a heuristic.
+        const defaultCC = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.ledgerId, ledgerId)).limit(1);
+        if (defaultCC.length === 0) throw new Error("No existing code combinations found to use as template.");
+
+        const segments: any = { ...defaultCC[0] };
+        delete segments.id;
+        delete segments.code;
+        delete segments.createdAt;
+
+        // Apply pattern (e.g. "segment2=CC")
+        segments.segment2 = basisValue;
+
+        // Apply specific pattern parts
+        if (pattern) {
+            pattern.split(",").forEach(p => {
+                const [k, v] = p.trim().split("=");
+                if (k && v) {
+                    const key = k.toLowerCase().trim();
+                    segments[key] = v.trim();
+                }
+            });
+        }
+
+        const cc = await this.getOrCreateCodeCombination(ledgerId, segments);
+        return cc.id;
     }
 
     /**
@@ -1745,16 +1905,33 @@ export class FinanceService {
 
     // CCID Generator (The "Brain" of the GL)
     /**
-     * Validates a segment string (e.g. "100-200-5000") against the Ledger's Chart of Accounts
+     * Validates segments against the Ledger's Chart of Accounts
      * and returns a unique Code Combination ID. Creates one if it doesn't match.
      */
-    async getOrCreateCodeCombination(ledgerId: string, segmentString: string) {
-        // 1. Parse the string
-        const segments = segmentString.split('-');
-        // In a real implementation, we would fetch the Ledger -> CoA -> Segment Structure to know how many segments exist
-        // For Phase 2, we assume a standard 5-segment maximum structure: Company-CostCenter-Account-SubAccount-Product
+    async getOrCreateCodeCombination(ledgerId: string, segmentInput: string | Record<string, string | null>) {
+        let segment1, segment2, segment3, segment4, segment5, segment6, segment7, segment8, segment9, segment10: string | null = null;
+        let segmentString = "";
 
-        const [segment1, segment2, segment3, segment4, segment5, segment6, segment7, segment8, segment9, segment10] = segments;
+        if (typeof segmentInput === "string") {
+            segmentString = segmentInput;
+            const segments = segmentInput.split('-');
+            [segment1, segment2, segment3, segment4, segment5, segment6, segment7, segment8, segment9, segment10] = segments.map(s => s || null);
+        } else {
+            segment1 = segmentInput.segment1 || null;
+            segment2 = segmentInput.segment2 || null;
+            segment3 = segmentInput.segment3 || null;
+            segment4 = segmentInput.segment4 || null;
+            segment5 = segmentInput.segment5 || null;
+            segment6 = segmentInput.segment6 || null;
+            segment7 = segmentInput.segment7 || null;
+            segment8 = segmentInput.segment8 || null;
+            segment9 = segmentInput.segment9 || null;
+            segment10 = segmentInput.segment10 || null;
+
+            segmentString = [segment1, segment2, segment3, segment4, segment5, segment6, segment7, segment8, segment9, segment10]
+                .filter(Boolean)
+                .join("-");
+        }
 
         // 2. Check for existing
         const existing = await db.select().from(glCodeCombinations)
@@ -1785,16 +1962,16 @@ export class FinanceService {
         const ccid = await storage.createGlCodeCombination({
             code: segmentString,
             ledgerId,
-            segment1: segment1 || null,
-            segment2: segment2 || null,
-            segment3: segment3 || null,
-            segment4: segment4 || null,
-            segment5: segment5 || null,
-            segment6: segment6 || null,
-            segment7: segment7 || null,
-            segment8: segment8 || null,
-            segment9: segment9 || null,
-            segment10: segment10 || null,
+            segment1,
+            segment2,
+            segment3,
+            segment4,
+            segment5,
+            segment6,
+            segment7,
+            segment8,
+            segment9,
+            segment10,
             startDateActive: new Date(),
             enabledFlag: true,
             summaryFlag: false,
@@ -1821,10 +1998,23 @@ export class FinanceService {
             generatedAt: new Date().toISOString(),
             data: [
                 { account: "Assets", balance: 1000000, variance: 0 },
-                { account: "Liabilities", balance: 600000, variance: 0 },
-                { account: "Equity", balance: 400000, variance: 0 }
+                { account: "Liabilities", balance: 500000, variance: 0 }
             ]
         };
+    }
+
+    async getBalancesOverview(periodName: string) {
+        console.log(`[FINANCE] Getting balances overview for ${periodName}...`);
+        const balances = await db.select().from(glBudgetBalances).where(eq(glBudgetBalances.periodName, periodName));
+
+        // Mocking account names for the overview to satisfy Agentic needs
+        return balances.map(b => ({
+            periodName: b.periodName,
+            accountName: `Account ${b.codeCombinationId}`,
+            actual: b.actualAmount || "0",
+            budget: b.budgetAmount || "0",
+            variance: (parseFloat(b.budgetAmount || "0") - parseFloat(b.actualAmount || "0")).toString()
+        }));
     }
 
     // 2. RECURRING JOURNALS

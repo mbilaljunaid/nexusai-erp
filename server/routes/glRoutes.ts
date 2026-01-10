@@ -419,10 +419,77 @@ router.get("/gl/config/ledger/:ledgerId/autopost-rules", async (req, res) => {
   }
 });
 
-router.post("/gl/config/ledger/autopost-rules", async (req, res) => {
+/**
+ * Intercompany Rules (Chunk 9)
+ */
+router.get("/gl/config/intercompany-rules", async (req, res) => {
   try {
-    const rule = await financeService.createGlAutoPostRule(req.body);
+    const rules = await financeService.listIntercompanyRules();
+    res.json(rules);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/gl/config/intercompany-rules", async (req, res) => {
+  try {
+    const rule = await financeService.createIntercompanyRule(req.body);
     res.json(rule);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Mass Allocations (Chunk 9)
+ */
+router.get("/gl/allocations", async (req, res) => {
+  try {
+    const { ledgerId } = req.query;
+    const rules = await financeService.listAllocations(ledgerId as string);
+    res.json(rules);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/gl/allocations/run", async (req, res) => {
+  try {
+    const { allocationId, periodName, userId } = req.body;
+    const result = await financeService.runAllocation(allocationId, periodName, userId);
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Budgetary Control (Chunk 9)
+ */
+router.get("/gl/config/budget-rules", async (req, res) => {
+  try {
+    const { ledgerId } = req.query;
+    const rules = await financeService.listBudgetControlRules(ledgerId as string);
+    res.json(rules);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/gl/config/budget-rules", async (req, res) => {
+  try {
+    const rule = await financeService.createBudgetControlRule(req.body);
+    res.json(rule);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/gl/budget-balances", async (req, res) => {
+  try {
+    const { ledgerId, periodName } = req.query;
+    const balances = await financeService.listBudgetBalances(ledgerId as string, periodName as string);
+    res.json(balances);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

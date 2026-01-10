@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -9,20 +8,26 @@ import { Input } from "@/components/ui/input";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
-import { Plus, ShieldAlert, BadgeDollarSign, Loader2 } from "lucide-react";
+import {
+    Plus, ShieldAlert, BadgeDollarSign, Loader2, Target,
+    TrendingUp, AlertTriangle, CheckCircle2, Search, Filter
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 // Types
-interface Budget {
+interface BudgetBalance {
     id: string;
-    name: string;
-    description: string;
-    ledgerId: string;
-    status: string;
-    createdAt: string;
+    codeCombinationId: string;
+    periodName: string;
+    budgetAmount: string;
+    actualAmount: string;
+    encumbranceAmount: string;
+    fundsAvailable: string;
 }
 
 interface ControlRule {
@@ -35,20 +40,12 @@ interface ControlRule {
 
 export default function BudgetManager() {
     const { toast } = useToast();
-    const [activeTab, setActiveTab] = useState("budgets");
-    const [budgets, setBudgets] = useState<Budget[]>([]);
+    const [activeTab, setActiveTab] = useState("monitors");
+    const [balances, setBalances] = useState<BudgetBalance[]>([]);
     const [rules, setRules] = useState<ControlRule[]>([]);
     const [loading, setLoading] = useState(false);
-
-    // Create Budget Form State
-    const [newBudgetOpen, setNewBudgetOpen] = useState(false);
-    const [newBudgetName, setNewBudgetName] = useState("");
-    const [newBudgetDesc, setNewBudgetDesc] = useState("");
-
-    // Create Rule Form State
-    const [newRuleOpen, setNewRuleOpen] = useState(false);
-    const [newRuleName, setNewRuleName] = useState("");
-    const [newRuleLevel, setNewRuleLevel] = useState("Absolute");
+    const [selectedLedger] = useState("PRIMARY");
+    const [selectedPeriod] = useState("Jan-2026");
 
     useEffect(() => {
         fetchData();
@@ -57,11 +54,11 @@ export default function BudgetManager() {
     const fetchData = async () => {
         setLoading(true);
         try {
-            if (activeTab === "budgets") {
-                const res = await fetch("/api/gl/budgets?ledgerId=primary-ledger-001");
-                if (res.ok) setBudgets(await res.json());
-            } else {
-                const res = await fetch("/api/gl/budget-control-rules?ledgerId=primary-ledger-001");
+            if (activeTab === "monitors") {
+                const res = await fetch(`/api/gl/budget-balances?ledgerId=${selectedLedger}&periodName=${selectedPeriod}`);
+                if (res.ok) setBalances(await res.json());
+            } else if (activeTab === "rules") {
+                const res = await fetch(`/api/gl/config/budget-rules?ledgerId=${selectedLedger}`);
                 if (res.ok) setRules(await res.json());
             }
         } catch (error) {
@@ -71,131 +68,124 @@ export default function BudgetManager() {
         }
     };
 
-    const handeCreateBudget = async () => {
-        try {
-            const res = await fetch("/api/gl/budgets", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: newBudgetName,
-                    description: newBudgetDesc,
-                    ledgerId: "primary-ledger-001",
-                    status: "Open"
-                })
-            });
-
-            if (!res.ok) throw new Error("Failed to create budget");
-
-            toast({ title: "Success", description: "Budget created successfully" });
-            setNewBudgetOpen(false);
-            fetchData();
-        } catch (error) {
-            toast({ title: "Error", description: "Failed to create budget", variant: "destructive" });
-        }
-    };
-
-    const handleCreateRule = async () => {
-        try {
-            const res = await fetch("/api/gl/budget-control-rules", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    ruleName: newRuleName,
-                    ledgerId: "primary-ledger-001",
-                    controlLevel: newRuleLevel,
-                    enabled: true,
-                    controlFilters: {} // Default to global for MVP
-                })
-            });
-
-            if (!res.ok) throw new Error("Failed to create rule");
-
-            toast({ title: "Success", description: "Control Rule created successfully" });
-            setNewRuleOpen(false);
-            fetchData();
-        } catch (error) {
-            toast({ title: "Error", description: "Failed to create rule", variant: "destructive" });
-        }
-    };
-
     return (
-        <div className="space-y-6 pt-6 pb-12">
-            <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight">Budget Manager</h1>
-                <p className="text-muted-foreground">Manage fiscal budgets and spending control policies.</p>
+        <div className="space-y-6 pt-6 pb-12 animate-in fade-in duration-500">
+            <div className="flex flex-row items-center justify-between">
+                <div className="flex flex-col gap-1">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+                        Budgetary Control & Monitoring
+                    </h1>
+                    <p className="text-gray-400">Real-time funds validation and expenditure tracking.</p>
+                </div>
+                <div className="flex gap-3">
+                    <Badge variant="outline" className="bg-blue-500/10 border-blue-500/20 text-blue-400 py-1.5 px-3">
+                        Ledger: {selectedLedger}
+                    </Badge>
+                    <Badge variant="outline" className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 py-1.5 px-3">
+                        Period: {selectedPeriod}
+                    </Badge>
+                </div>
             </div>
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="budgets" className="flex items-center gap-2">
-                        <BadgeDollarSign className="w-4 h-4" /> Budgets
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="glass-morphism border-0 shadow-lg p-1">
+                    <CardHeader className="pb-2">
+                        <CardDescription className="text-xs font-bold uppercase tracking-wider text-blue-400">Total Budget</CardDescription>
+                        <CardTitle className="text-3xl font-black text-white">$1,240,000</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Progress value={65} className="h-1.5 bg-blue-950" indicatorClassName="bg-blue-500" />
+                        <p className="text-[10px] text-gray-500 mt-2">65% of annual allocation consumed</p>
+                    </CardContent>
+                </Card>
+                <Card className="glass-morphism border-0 shadow-lg p-1">
+                    <CardHeader className="pb-2">
+                        <CardDescription className="text-xs font-bold uppercase tracking-wider text-emerald-400">Actual Spent</CardDescription>
+                        <CardTitle className="text-3xl font-black text-white">$806,000</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold">
+                            <TrendingUp className="h-3 w-3" /> +12% from last month
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="glass-morphism border-0 shadow-lg p-1 border-l-4 border-l-amber-500">
+                    <CardHeader className="pb-2">
+                        <CardDescription className="text-xs font-bold uppercase tracking-wider text-amber-500">Funds Available</CardDescription>
+                        <CardTitle className="text-3xl font-black text-white">$434,000</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-[10px] text-gray-500 leading-relaxed">Encumbrances of $24k excluded from availability</p>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+                <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl h-12">
+                    <TabsTrigger value="monitors" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg px-6">
+                        <Target className="w-4 h-4 mr-2" /> Funds Monitor
                     </TabsTrigger>
-                    <TabsTrigger value="rules" className="flex items-center gap-2">
-                        <ShieldAlert className="w-4 h-4" /> Control Rules
+                    <TabsTrigger value="rules" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg px-6">
+                        <ShieldAlert className="w-4 h-4 mr-2" /> Control Rules
+                    </TabsTrigger>
+                    <TabsTrigger value="versions" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg px-6">
+                        <BadgeDollarSign className="w-4 h-4 mr-2" /> Versions
                     </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="budgets" className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-semibold">Budget Definitions</h2>
-                        <Dialog open={newBudgetOpen} onOpenChange={setNewBudgetOpen}>
-                            <DialogTrigger asChild>
-                                <Button><Plus className="w-4 h-4 mr-2" /> Create Budget</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Create New Budget</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4 py-4">
-                                    <div className="space-y-2">
-                                        <Label>Budget Name</Label>
-                                        <Input value={newBudgetName} onChange={(e) => setNewBudgetName(e.target.value)} placeholder="e.g. FY2026 Corporate" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Description</Label>
-                                        <Input value={newBudgetDesc} onChange={(e) => setNewBudgetDesc(e.target.value)} placeholder="Main operating budget" />
-                                    </div>
+                <TabsContent value="monitors" className="space-y-4">
+                    <Card className="glass-morphism border-0 overflow-hidden shadow-2xl">
+                        <CardHeader className="border-b border-white/10 flex flex-row items-center justify-between py-6">
+                            <div>
+                                <CardTitle className="text-xl font-bold flex items-center gap-2">
+                                    <TrendingUp className="h-5 w-5 text-blue-400" /> Funds Available Inquiry
+                                </CardTitle>
+                                <CardDescription className="text-gray-400">Real-time status of budget vs actuals by account combination.</CardDescription>
+                            </div>
+                            <div className="flex gap-2">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                                    <Input placeholder="Search account..." className="pl-9 bg-white/5 border-white/10 w-64 h-10" />
                                 </div>
-                                <DialogFooter>
-                                    <Button onClick={handeCreateBudget}>Create</Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
-
-                    <Card>
+                                <Button variant="outline" className="border-white/10 bg-white/5"><Filter className="h-4 w-4 mr-2" /> Filter</Button>
+                            </div>
+                        </CardHeader>
                         <CardContent className="p-0">
                             <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Budget Name</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Ledger</TableHead>
-                                        <TableHead>Created At</TableHead>
+                                <TableHeader className="bg-white/5">
+                                    <TableRow className="border-white/5 hover:bg-transparent">
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Account CCID</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-blue-400">Budget</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-emerald-400">Actual</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-amber-400">Encumbrance</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-white">Available</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Usage %</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {loading ? (
-                                        <TableRow>
-                                            <TableCell colSpan={4} className="h-24 text-center">
-                                                <Loader2 className="w-6 h-6 animate-spin mx-auto" />
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : budgets.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
-                                                No budgets found. Create one to get started.
-                                            </TableCell>
-                                        </TableRow>
+                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-40 text-center text-gray-500"><Loader2 className="h-8 w-8 animate-spin mx-auto opacity-20" /></TableCell></TableRow>
+                                    ) : balances.length === 0 ? (
+                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-60 text-center text-gray-500 flex flex-col items-center justify-center italic"><AlertTriangle className="h-8 w-8 mb-2 opacity-20" /> No funds inquiry data found for this period.</TableCell></TableRow>
                                     ) : (
-                                        budgets.map((budget) => (
-                                            <TableRow key={budget.id}>
-                                                <TableCell className="font-medium">{budget.name}</TableCell>
-                                                <TableCell>{budget.status}</TableCell>
-                                                <TableCell>{budget.ledgerId}</TableCell>
-                                                <TableCell>{new Date(budget.createdAt).toLocaleDateString()}</TableCell>
-                                            </TableRow>
-                                        ))
+                                        balances.map((b) => {
+                                            const usage = (parseFloat(b.actualAmount) / parseFloat(b.budgetAmount)) * 100;
+                                            return (
+                                                <TableRow key={b.id} className="border-white/5 hover:bg-white/5 transition-colors">
+                                                    <TableCell className="font-mono text-xs text-blue-200">{b.codeCombinationId}</TableCell>
+                                                    <TableCell className="font-bold text-blue-400">${parseFloat(b.budgetAmount).toLocaleString()}</TableCell>
+                                                    <TableCell className="text-emerald-400">${parseFloat(b.actualAmount).toLocaleString()}</TableCell>
+                                                    <TableCell className="text-amber-400">${parseFloat(b.encumbranceAmount).toLocaleString()}</TableCell>
+                                                    <TableCell className="font-black text-white">${parseFloat(b.fundsAvailable).toLocaleString()}</TableCell>
+                                                    <TableCell className="w-32">
+                                                        <div className="flex flex-col gap-1">
+                                                            <Progress value={usage} className="h-1 bg-white/5" indicatorClassName={usage > 90 ? "bg-red-500" : usage > 70 ? "bg-amber-500" : "bg-blue-500"} />
+                                                            <span className="text-[9px] font-bold text-gray-500">{usage.toFixed(1)}% used</span>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        })
                                     )}
                                 </TableBody>
                             </Table>
@@ -204,81 +194,55 @@ export default function BudgetManager() {
                 </TabsContent>
 
                 <TabsContent value="rules" className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-semibold">Budgetary Control Rules</h2>
-                        <Dialog open={newRuleOpen} onOpenChange={setNewRuleOpen}>
-                            <DialogTrigger asChild>
-                                <Button><Plus className="w-4 h-4 mr-2" /> Create Rule</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Create Control Rule</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4 py-4">
-                                    <div className="space-y-2">
-                                        <Label>Rule Name</Label>
-                                        <Input value={newRuleName} onChange={(e) => setNewRuleName(e.target.value)} placeholder="e.g. Strict Travel Policy" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Control Level</Label>
-                                        <Select value={newRuleLevel} onValueChange={setNewRuleLevel}>
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Absolute">Absolute (Block)</SelectItem>
-                                                <SelectItem value="Advisory">Advisory (Warn)</SelectItem>
-                                                <SelectItem value="Track">Track Only</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button onClick={handleCreateRule}>Create Rule</Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
-
-                    <Card>
-                        <CardDescription className="p-4 bg-muted/50 rounded-t-lg">
-                            Defined rules control how transactions are validated against budget funds. High priority rules override generic ones.
-                        </CardDescription>
+                    <Card className="glass-morphism border-0 shadow-xl overflow-hidden">
+                        <CardHeader className="border-b border-white/10 flex flex-row items-center justify-between py-6">
+                            <div>
+                                <CardTitle className="text-xl font-bold flex items-center gap-2">
+                                    <ShieldAlert className="h-5 w-5 text-amber-500" /> Budgetary Control Rules
+                                </CardTitle>
+                                <CardDescription className="text-gray-400">Assign control levels to account ranges or segments.</CardDescription>
+                            </div>
+                            <Button className="premium-button shadow-lg shadow-blue-500/20"><Plus className="w-4 h-4 mr-2" /> Add Control Rule</Button>
+                        </CardHeader>
                         <CardContent className="p-0">
                             <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Rule Name</TableHead>
-                                        <TableHead>Control Level</TableHead>
-                                        <TableHead>Status</TableHead>
+                                <TableHeader className="bg-white/5">
+                                    <TableRow className="border-white/5 hover:bg-transparent">
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Rule Name</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Control Level</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Status</TableHead>
+                                        <TableHead className="py-4 text-right pr-6">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {loading ? (
-                                        <TableRow>
-                                            <TableCell colSpan={3} className="h-24 text-center">
-                                                <Loader2 className="w-6 h-6 animate-spin mx-auto" />
-                                            </TableCell>
-                                        </TableRow>
+                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={4} className="h-40 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto opacity-20" /></TableCell></TableRow>
                                     ) : rules.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
-                                                No control rules defined.
-                                            </TableCell>
-                                        </TableRow>
+                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={4} className="h-40 text-center text-gray-500 italic">No control rules defined.</TableCell></TableRow>
                                     ) : (
                                         rules.map((rule) => (
-                                            <TableRow key={rule.id}>
-                                                <TableCell className="font-medium">{rule.ruleName}</TableCell>
+                                            <TableRow key={rule.id} className="border-white/5 hover:bg-white/5">
+                                                <TableCell className="py-5 font-semibold text-white">{rule.ruleName}</TableCell>
                                                 <TableCell>
-                                                    <span className={`px-2 py-1 rounded-full text-xs ${rule.controlLevel === "Absolute" ? "bg-red-100 text-red-800" :
-                                                            rule.controlLevel === "Advisory" ? "bg-amber-100 text-amber-800" :
-                                                                "bg-blue-100 text-blue-800"
+                                                    <Badge variant="outline" className={`py-1 px-3 ${rule.controlLevel === "Absolute" ? "bg-red-500/10 border-red-500/20 text-red-500" :
+                                                            rule.controlLevel === "Advisory" ? "bg-amber-500/10 border-amber-500/20 text-amber-500" :
+                                                                "bg-blue-500/10 border-blue-500/20 text-blue-400"
                                                         }`}>
                                                         {rule.controlLevel}
-                                                    </span>
+                                                    </Badge>
                                                 </TableCell>
-                                                <TableCell>{rule.enabled ? "Active" : "Disabled"}</TableCell>
+                                                <TableCell>
+                                                    {rule.enabled ? (
+                                                        <div className="flex items-center gap-1 text-emerald-400 text-xs font-bold">
+                                                            <CheckCircle2 className="h-3 w-3" /> Active
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-gray-600 text-xs">Disabled</span>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell className="text-right pr-6">
+                                                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">Edit</Button>
+                                                </TableCell>
                                             </TableRow>
                                         ))
                                     )}
