@@ -195,7 +195,12 @@ export class FinanceService {
                     cc.segment2 || "",
                     cc.segment3 || "",
                     cc.segment4 || "",
-                    cc.segment5 || ""
+                    cc.segment5 || "",
+                    cc.segment6 || "",
+                    cc.segment7 || "",
+                    cc.segment8 || "",
+                    cc.segment9 || "",
+                    cc.segment10 || ""
                 ];
 
                 const hasAccess = await this.checkDataAccess(userId, cc.ledgerId || ledgerId, segments);
@@ -345,7 +350,10 @@ export class FinanceService {
                 const cc = ccMap.get(line.accountId);
                 if (!cc) continue;
 
-                const segments = [cc.segment1, cc.segment2, cc.segment3, cc.segment4, cc.segment5].filter(s => s !== null) as string[];
+                const segments = [
+                    cc.segment1, cc.segment2, cc.segment3, cc.segment4, cc.segment5,
+                    cc.segment6, cc.segment7, cc.segment8, cc.segment9, cc.segment10
+                ].filter(s => s !== null) as string[];
                 const hasAccess = await this.checkDataAccess(userId, journal.ledgerId, segments);
                 if (!hasAccess) {
                     throw new Error(`Data Access Violation: User ${userId} does not have access to account combination ${cc.code}.`);
@@ -1639,7 +1647,7 @@ export class FinanceService {
         // In a real implementation, we would fetch the Ledger -> CoA -> Segment Structure to know how many segments exist
         // For Phase 2, we assume a standard 5-segment maximum structure: Company-CostCenter-Account-SubAccount-Product
 
-        const [segment1, segment2, segment3, segment4, segment5] = segments;
+        const [segment1, segment2, segment3, segment4, segment5, segment6, segment7, segment8, segment9, segment10] = segments;
 
         // 2. Check for existing
         const existing = await db.select().from(glCodeCombinations)
@@ -1654,7 +1662,12 @@ export class FinanceService {
             segment2: segment2 || "",
             segment3: segment3 || "",
             segment4: segment4 || "",
-            segment5: segment5 || ""
+            segment5: segment5 || "",
+            segment6: segment6 || "",
+            segment7: segment7 || "",
+            segment8: segment8 || "",
+            segment9: segment9 || "",
+            segment10: segment10 || ""
         });
 
         if (!validation.isValid) {
@@ -1670,6 +1683,11 @@ export class FinanceService {
             segment3: segment3 || null,
             segment4: segment4 || null,
             segment5: segment5 || null,
+            segment6: segment6 || null,
+            segment7: segment7 || null,
+            segment8: segment8 || null,
+            segment9: segment9 || null,
+            segment10: segment10 || null,
             startDateActive: new Date(),
             enabledFlag: true,
             summaryFlag: false,

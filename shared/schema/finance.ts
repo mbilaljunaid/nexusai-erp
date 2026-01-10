@@ -417,6 +417,11 @@ export const glCodeCombinations = pgTable("gl_code_combinations_v2", {
     segment3: varchar("segment3"), // Natural Account
     segment4: varchar("segment4"), // Product
     segment5: varchar("segment5"), // Intercompany / Future
+    segment6: varchar("segment6"),
+    segment7: varchar("segment7"),
+    segment8: varchar("segment8"),
+    segment9: varchar("segment9"),
+    segment10: varchar("segment10"),
     accountType: varchar("account_type"), // Inherited from Segment 3 (Natural Account)
     enabledFlag: boolean("enabled_flag").default(true),
     startDateActive: timestamp("start_date_active"),
