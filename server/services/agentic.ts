@@ -40,6 +40,40 @@ export class AgenticService {
             { type: "object", required: ["journalId"] }
         );
 
+        this.registerAction(
+            "GL_LIST_JOURNALS",
+            async (params) => {
+                console.log("[AGENT] Listing Journals:", params);
+                const journals = await financeService.listJournals(params);
+                // Return simplified list for AI context
+                return {
+                    count: journals.length,
+                    journals: journals.slice(0, 5).map(j => ({
+                        id: j.id,
+                        journalNumber: j.journalNumber,
+                        description: j.description,
+                        status: j.status,
+                        totalPoints: j.periodId // Just mocking a useful field or similar
+                    })),
+                    message: `Here are the latest ${Math.min(journals.length, 5)} journals matching your criteria.`
+                };
+            },
+            { type: "object", properties: { status: { type: "string" }, search: { type: "string" } } }
+        );
+
+        this.registerAction(
+            "GL_GET_STATS",
+            async () => {
+                console.log("[AGENT] Getting GL Stats");
+                const stats = await financeService.getGLStats();
+                return {
+                    stats,
+                    message: `GL Status: ${stats.unpostedJournals} Unposted Journals, ${stats.openPeriods} Open Periods.`
+                };
+            },
+            { type: "object", properties: {} }
+        );
+
         // AR: Create Invoice
         this.registerAction(
             "AR_CREATE_INVOICE",
@@ -114,8 +148,41 @@ export class AgenticService {
     }
 
     async parseIntent(text: string, context: string = "general"): Promise<{ actionCode: string | null; params: any; confidence: number }> {
-        // Phase 1: Keyword Heuristics with Context Awareness
+        // Phase 1: Keyword Heuristics & Regex with Context Awareness
         const lowerText = text.toLowerCase();
+
+        // 1. GL: Post Journal (Regex for ID)
+        // Matches: "post journal 123", "post batch INV-001"
+        const postJournalMatch = text.match(/(?:post|process)\s+(?:journal|batch)\s*(?:#|no\.?)?\s*([a-zA-Z0-9-\.]+)/i);
+        if (postJournalMatch) {
+            return {
+                actionCode: "GL_POST_JOURNAL",
+                params: { journalId: postJournalMatch[1] }, // This might be a Number or ID. Service handles lookup.
+                confidence: 0.95
+            };
+        }
+
+        // 2. GL: Stats / Health
+        if (lowerText.includes("gl status") || lowerText.includes("gl stats") || lowerText.includes("how is the gl")) {
+            return {
+                actionCode: "GL_GET_STATS",
+                params: {},
+                confidence: 0.90
+            };
+        }
+
+        // 3. GL: List Journals
+        if (lowerText.includes("list journals") || lowerText.includes("show journals") || lowerText.includes("unposted journals")) {
+            const status = lowerText.includes("unposted") ? "Draft" : undefined;
+            const searchMatch = text.match(/search for\s+(.+)/i);
+            const search = searchMatch ? searchMatch[1] : undefined;
+
+            return {
+                actionCode: "GL_LIST_JOURNALS",
+                params: { status, search },
+                confidence: 0.85
+            };
+        }
 
         // prioritized context check
         if (context === "ar" || lowerText.includes("invoice") || lowerText.includes("customer")) {
@@ -148,11 +215,13 @@ export class AgenticService {
             }
         }
 
+        // Fallback or generic
         if (lowerText.includes("journal") || lowerText.includes("post")) {
+            // Generic fallback if regex didn't catch specific ID
             return {
                 actionCode: "GL_POST_JOURNAL",
                 params: { description: "Detected Journal Entry", amount: 1000 },
-                confidence: 0.90
+                confidence: 0.60 // Lower confidence to prompt user
             };
         }
 

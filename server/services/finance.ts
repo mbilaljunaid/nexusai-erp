@@ -5,6 +5,7 @@ import {
     glRevaluations, glDailyRates, glPeriods, glCrossValidationRules, glAllocations, glIntercompanyRules,
     glAuditLogs, glDataAccessSets, glDataAccessSetAssignments,
     glLedgerSets, glLedgerSetAssignments, glLegalEntities, // Added for Chunk 3
+    glCloseTasks, // Added for Chunk 7
     apInvoices, arInvoices,
     glRecurringJournals, insertGlRecurringJournalSchema
 } from "@shared/schema";
@@ -1263,17 +1264,17 @@ export class FinanceService {
 
     // AI Action: Explain Variance
     // Compares two periods and explains the difference
-    async explainVariance(periodId: string, benchmarkPeriodId: string) {
+    async explainVariance(periodId: string, benchmarkPeriodId: string, ledgerId: string = "PRIMARY") {
         // 1. Calculate TBs
-        const currentTB = await this.calculateTrialBalance(periodId);
-        const benchmarkTB = await this.calculateTrialBalance(benchmarkPeriodId);
+        const currentTB = await this.calculateTrialBalance(ledgerId, periodId);
+        const benchmarkTB = await this.calculateTrialBalance(ledgerId, benchmarkPeriodId);
 
-        const currentMap = new Map(currentTB.map(i => [i.accountCode, i]));
+        const currentMap = new Map(currentTB.map(i => [i.code, i]));
         const variances: any[] = [];
 
         // 2. Compare
         for (const base of benchmarkTB) {
-            const curr = currentMap.get(base.accountCode);
+            const curr = currentMap.get(base.code);
             // Fix: Use netBalance instead of netActivity
             const currentNet = curr ? Number(curr.netBalance) : 0;
             const baseNet = Number(base.netBalance);
@@ -1283,13 +1284,13 @@ export class FinanceService {
 
             if (Math.abs(diff) > 1000 || Math.abs(pct) > 20) { // Significant
                 variances.push({
-                    account: base.accountName,
-                    code: base.accountCode,
+                    account: base.code, // Use code as identifier
+                    code: base.code,
                     current: currentNet,
                     benchmark: baseNet,
                     diff,
                     pct,
-                    explanation: this.generateExplanation(base.accountName, diff, pct)
+                    explanation: this.generateExplanation(base.code, diff, pct)
                 });
             }
         }
@@ -1306,48 +1307,102 @@ export class FinanceService {
     }
 
     // ================= REPORTING =================
-    async calculateTrialBalance(periodId?: string) {
-        // 1. Get Accounts
-        const accounts = await storage.listGlAccounts();
+    async calculateTrialBalance(ledgerId: string, periodId?: string) {
+        // 1. Get Code Combinations for this ledger
+        const ccs = await storage.listGlCodeCombinations(ledgerId);
+        const ccMap = new Map(ccs.map(cc => [cc.id, cc]));
 
-        // 2. Get Journals (Filter by posted & period if provided)
-        const journals = await storage.listGlJournals(periodId);
+        // 2. Get Journals (Filter by ledger and period if provided)
+        const journals = await storage.listGlJournals(periodId, ledgerId);
         const postedJournals = journals.filter(j => j.status === "Posted");
 
         // 3. Aggregate Lines
-        const accountBalances = new Map<string, { debit: number, credit: number }>();
+        const ccBalances = new Map<string, { debit: number, credit: number }>();
 
         for (const journal of postedJournals) {
             const lines = await storage.listGlJournalLines(journal.id);
             for (const line of lines) {
-                const current = accountBalances.get(line.accountId) || { debit: 0, credit: 0 };
-                accountBalances.set(line.accountId, {
-                    debit: current.debit + Number(line.debit),
-                    credit: current.credit + Number(line.credit)
+                const current = ccBalances.get(line.accountId) || { debit: 0, credit: 0 };
+                ccBalances.set(line.accountId, {
+                    debit: current.debit + Number(line.debit || 0),
+                    credit: current.credit + Number(line.credit || 0)
                 });
             }
         }
 
-        // 4. Format Result
-        const report = accounts.map(account => {
-            const balance = accountBalances.get(account.id) || { debit: 0, credit: 0 };
+        // 4. Format Result (CCID Level)
+        const report = ccs.map(cc => {
+            const balance = ccBalances.get(cc.id) || { debit: 0, credit: 0 };
             const net = balance.debit - balance.credit;
             return {
-                accountId: account.id,
-                accountCode: account.accountCode,
-                accountName: account.accountName,
-                accountType: account.accountType,
+                ccid: cc.id,
+                code: cc.code,
+                segment1: cc.segment1,
+                segment2: cc.segment2,
+                segment3: cc.segment3, // Natural Account
                 totalDebit: balance.debit,
                 totalCredit: balance.credit,
                 netBalance: net,
-                // Determine if balanced based on Account Type (Asset/Expense = Debit normal)
-                displayBalance: ["Asset", "Expense"].includes(account.accountType) ? net : -net
+                accountType: cc.accountType || "Asset",
+                // Determine display balance based on normal balance
+                displayBalance: ["Asset", "Expense"].includes(cc.accountType || "") ? net : -net
             };
         });
 
-        // Filter out zero balances if preferred, but usually TB shows all
-        return report.sort((a, b) => a.accountCode.localeCompare(b.accountCode));
+        // Usually TB shows all CCIDs, but we can filter empty ones in frontend if needed
+        return report.sort((a, b) => a.code.localeCompare(b.code));
     }
+
+    async getBalanceDrillDown(ccid: string, periodId: string) {
+        const journals = await storage.listGlJournals(periodId);
+        const postedJournals = journals.filter(j => j.status === "Posted");
+
+        const allLines: any[] = [];
+        for (const j of postedJournals) {
+            const lines = await storage.listGlJournalLines(j.id);
+            const filtered = lines.filter(l => l.accountId === ccid);
+            if (filtered.length > 0) {
+                allLines.push(...filtered.map(l => ({
+                    ...l,
+                    journalNumber: j.journalNumber,
+                    description: j.description,
+                    accountingDate: j.postedDate || j.createdAt
+                })));
+            }
+        }
+        return allLines;
+    }
+
+    // ================= PERIOD CLOSE CHECKLIST =================
+    async listCloseTasks(ledgerId: string, periodId: string) {
+        let tasks = await storage.listCloseTasks(ledgerId, periodId);
+
+        // Seed if empty
+        if (tasks.length === 0) {
+            const seedTasks = [
+                { taskName: "Post all Journals", description: "Ensure no 'Draft' journals remain for this period." },
+                { taskName: "Reconcile Cash", description: "Verify GL cash accounts match bank statements." },
+                { taskName: "Review Suspense Accounts", description: "Zero out any balances in clearing accounts." },
+                { taskName: "Run Translation", description: "Recalculate reporting currency balances for current rates." },
+                { taskName: "Formal Close", description: "Change period status to 'Closed' to lock entries." }
+            ];
+            for (const t of seedTasks) {
+                await storage.createCloseTask({
+                    ...t,
+                    ledgerId,
+                    periodId,
+                    status: "PENDING"
+                });
+            }
+            tasks = await storage.listCloseTasks(ledgerId, periodId);
+        }
+        return tasks;
+    }
+
+    async updateCloseTask(id: string, updates: any) {
+        return await storage.updateCloseTask(id, updates);
+    }
+
 
     // ================= ADVANCED GL JOURNALS (PHASE 2) =================
 
@@ -1643,6 +1698,39 @@ export class FinanceService {
 
     async listAuditLogs() {
         return await storage.listGlAuditLogs();
+    }
+
+    // GL Config (Chunk 8)
+    async listGlJournalSources() {
+        return await storage.listGlJournalSources();
+    }
+
+    async createGlJournalSource(data: any) {
+        return await storage.createGlJournalSource(data);
+    }
+
+    async listGlJournalCategories() {
+        return await storage.listGlJournalCategories();
+    }
+
+    async createGlJournalCategory(data: any) {
+        return await storage.createGlJournalCategory(data);
+    }
+
+    async getGlLedgerControl(ledgerId: string) {
+        return await storage.getGlLedgerControl(ledgerId);
+    }
+
+    async upsertGlLedgerControl(data: any) {
+        return await storage.upsertGlLedgerControl(data);
+    }
+
+    async listGlAutoPostRules(ledgerId: string) {
+        return await storage.listGlAutoPostRules(ledgerId);
+    }
+
+    async createGlAutoPostRule(data: any) {
+        return await storage.createGlAutoPostRule(data);
     }
 
     // listLegalEntities and createLegalEntity moved to line 1989+

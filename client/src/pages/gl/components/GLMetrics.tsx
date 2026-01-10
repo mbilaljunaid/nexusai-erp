@@ -53,7 +53,7 @@ export function GLMetrics() {
             trendUp: true
         },
         {
-            title: "Posted Batch",
+            title: "Posted Journals",
             value: stats?.postedJournals || 0,
             icon: CheckCircle2,
             color: "text-emerald-600",

@@ -28,8 +28,12 @@ import {
     Lock,
     Unlock,
     ChevronRight,
-    ShieldCheck
+    ShieldCheck,
+    CheckSquare,
+    Square
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+
 import { format } from "date-fns";
 import type { GlPeriod } from "@shared/schema";
 
@@ -48,9 +52,44 @@ export default function PeriodCloseDashboard() {
     });
 
     const { data: exceptions, isLoading: isLoadingExceptions } = useQuery<PeriodExceptions>({
-        queryKey: ["/api/finance/gl/periods", selectedPeriod, "exceptions"],
+        queryKey: ["/api/gl/stats", selectedPeriod, "exceptions"], // Fixed endpoint path
+        queryFn: async () => {
+            const res = await fetch(`/api/gl/stats?periodId=${selectedPeriod}`);
+            if (!res.ok) return { unpostedJournalsCount: 0, readyToClose: false };
+            const stats = await res.json();
+            return {
+                unpostedJournalsCount: stats.unpostedJournals || 0,
+                readyToClose: stats.unpostedJournals === 0
+            };
+        },
         enabled: !!selectedPeriod,
     });
+
+    const { data: tasks, isLoading: isLoadingTasks } = useQuery<any[]>({
+        queryKey: ["/api/gl/periods", selectedPeriod, "tasks"],
+        queryFn: async () => {
+            const res = await fetch(`/api/gl/periods/${selectedPeriod}/tasks`);
+            if (!res.ok) throw new Error("Failed to fetch close tasks");
+            return res.json();
+        },
+        enabled: !!selectedPeriod,
+    });
+
+    const updateTaskMutation = useMutation({
+        mutationFn: async ({ taskId, status }: { taskId: string, status: string }) => {
+            const res = await fetch(`/api/gl/periods/tasks/${taskId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status })
+            });
+            if (!res.ok) throw new Error("Failed to update task");
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["/api/gl/periods", selectedPeriod, "tasks"] });
+        }
+    });
+
 
     const closeMutation = useMutation({
         mutationFn: async (id: string) => {
@@ -194,28 +233,49 @@ export default function PeriodCloseDashboard() {
                                     </div>
 
                                     <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm space-y-3">
-                                        <h4 className="text-sm font-semibold text-slate-700">Pre-close Checklist</h4>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2 text-xs">
-                                                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
-                                                <span className="text-slate-600">All journal entries for the period created</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs">
-                                                {exceptions?.unpostedJournalsCount === 0 ? (
-                                                    <CheckCircle2 className="h-3 w-3 text-emerald-500" />
-                                                ) : (
-                                                    <XCircle className="h-3 w-3 text-red-500" />
-                                                )}
-                                                <span className={exceptions?.unpostedJournalsCount === 0 ? "text-slate-600" : "text-red-600 font-medium"}>
-                                                    All journals posted to General Ledger
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs text-slate-400">
-                                                <Clock className="h-3 w-3" />
-                                                <span>Subledger reconciliations complete (Coming Soon)</span>
+                                        <h4 className="text-sm font-semibold text-slate-700">Detailed Close Checklist</h4>
+                                        <div className="space-y-3">
+                                            {isLoadingTasks ? (
+                                                <p className="text-xs text-muted-foreground">Loading tasks...</p>
+                                            ) : tasks?.map((task) => (
+                                                <div key={task.id} className="flex items-start gap-3 group">
+                                                    <Checkbox
+                                                        checked={task.status === "COMPLETED"}
+                                                        onCheckedChange={(checked) => {
+                                                            updateTaskMutation.mutate({
+                                                                taskId: task.id,
+                                                                status: checked ? "COMPLETED" : "PENDING"
+                                                            });
+                                                        }}
+                                                        className="mt-1"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <p className={`text-xs font-medium ${task.status === "COMPLETED" ? "text-slate-400 line-through" : "text-slate-700"}`}>
+                                                            {task.taskName}
+                                                        </p>
+                                                        <p className="text-[10px] text-slate-500 leading-tight">
+                                                            {task.description}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {/* Legacy Exception Check as fallback/header */}
+                                            <div className="pt-2 border-t mt-2">
+                                                <div className="flex items-center gap-2 text-[10px]">
+                                                    {exceptions?.unpostedJournalsCount === 0 ? (
+                                                        <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                                                    ) : (
+                                                        <XCircle className="h-3 w-3 text-red-500" />
+                                                    )}
+                                                    <span className={exceptions?.unpostedJournalsCount === 0 ? "text-slate-600" : "text-red-600 font-medium"}>
+                                                        Validation: All journals posted ({exceptions?.unpostedJournalsCount} remaining)
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div className="pt-6 border-t border-slate-100">

@@ -54,8 +54,8 @@ export default function JournalEntries() {
   });
 
   const filteredJournals = journals.filter(j =>
-    j.journalName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    j.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    (j.journalNumber?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+    (j.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
   );
 
   const handleRowClick = (journal: any) => {
@@ -148,10 +148,12 @@ export default function JournalEntries() {
                     className="group cursor-pointer border-b border-slate-50 hover:bg-indigo-50/30 transition-colors"
                     onClick={() => handleRowClick(journal)}
                   >
-                    <TableCell className="font-mono text-xs text-slate-400 pl-6">#{journal.id.split('-')[0]}</TableCell>
+                    <TableCell className="font-mono text-xs text-slate-400 pl-6">#{journal.journalNumber}</TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-bold text-slate-700 group-hover:text-indigo-600 transition-colors">{journal.journalName}</span>
+                        <span className="font-bold text-slate-700 group-hover:text-indigo-600 transition-colors">
+                          {journal.description || `Batch ${journal.journalNumber}`}
+                        </span>
                         <span className="text-[10px] text-slate-400 font-medium uppercase tracking-tight">{journal.source}</span>
                       </div>
                     </TableCell>
@@ -161,7 +163,7 @@ export default function JournalEntries() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-slate-500 font-medium">
-                      {format(new Date(journal.accountingDate), "MMM dd, yyyy")}
+                      {journal.accountingDate ? format(new Date(journal.accountingDate), "MMM dd, yyyy") : format(new Date(journal.createdAt), "MMM dd, yyyy")}
                     </TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(journal.status)} className="px-2 py-0 text-[10px] font-bold tracking-tight">

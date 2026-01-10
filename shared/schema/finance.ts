@@ -407,6 +407,24 @@ export const insertGlSegmentHierarchySchema = createInsertSchema(glSegmentHierar
 export type InsertGlSegmentHierarchy = z.infer<typeof insertGlSegmentHierarchySchema>;
 export type GlSegmentHierarchy = typeof glSegmentHierarchies.$inferSelect;
 
+// 14. Period Close Tasks
+export const glCloseTasks = pgTable("gl_close_tasks", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ledgerId: varchar("ledger_id").notNull(),
+    periodId: varchar("period_id").notNull(),
+    taskName: varchar("task_name").notNull(),
+    description: text("description"),
+    status: varchar("status").default("PENDING"), // PENDING, COMPLETED, NOT_APPLICABLE
+    completedBy: varchar("completed_by"),
+    completedAt: timestamp("completed_at"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlCloseTaskSchema = createInsertSchema(glCloseTasks);
+export type InsertGlCloseTask = z.infer<typeof insertGlCloseTaskSchema>;
+export type GlCloseTask = typeof glCloseTasks.$inferSelect;
+
+
 // 8. Code Combinations (CCID - The intersection)
 export const glCodeCombinations = pgTable("gl_code_combinations_v2", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

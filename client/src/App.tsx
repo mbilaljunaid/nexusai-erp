@@ -179,7 +179,7 @@ const InvoiceList = lazy(() => import("@/pages/InvoiceList"));
 const InvoiceDetail = lazy(() => import("@/pages/InvoiceDetail"));
 const PurchaseOrder = lazy(() => import("@/pages/PurchaseOrder"));
 const VendorManagement = lazy(() => import("@/pages/VendorManagement"));
-const GeneralLedger = lazy(() => import("@/pages/GeneralLedger"));
+const GeneralLedger = lazy(() => import("@/pages/GeneralLedgerDetail"));
 
 const WorkOrder = lazy(() => import("@/pages/WorkOrder"));
 const MRPDashboard = lazy(() => import("@/pages/MRPDashboard"));
@@ -321,12 +321,19 @@ const BudgetManager = lazy(() => import("@/pages/gl/BudgetManager"));
 const CVRManager = lazy(() => import("@/pages/gl/CVRManager"));
 const DataAccessManager = lazy(() => import("@/pages/gl/DataAccessManager"));
 const PeriodCloseDashboard = lazy(() => import("@/pages/gl/PeriodCloseDashboard"));
+const TrialBalance = lazy(() => import("@/pages/gl/TrialBalance"));
 const LedgerSetup = lazy(() => import("./pages/gl/LedgerSetup"));
+
 const LegalEntitySetup = lazy(() => import("./pages/gl/LegalEntitySetup"));
 const ValueSetManager = lazy(() => import("./pages/gl/ValueSetManager"));
 const CoaStructureSetup = lazy(() => import("./pages/gl/CoaStructureSetup"));
 const HierarchyManager = lazy(() => import("./pages/gl/HierarchyManager"));
+const ConfigurationHub = lazy(() => import("./pages/gl/ConfigurationHub"));
+const CalendarSetup = lazy(() => import("./pages/gl/CalendarSetup"));
+const SourceCategorySetup = lazy(() => import("./pages/gl/SourceCategorySetup"));
+const LedgerControlSetup = lazy(() => import("./pages/gl/LedgerControlSetup"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
+
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
@@ -709,11 +716,18 @@ function Router() {
       <Route path="/gl/cvr" component={CVRManager} />
       <Route path="/gl/data-access" component={DataAccessManager} />
       <Route path="/gl/period-close" component={PeriodCloseDashboard} />
+      <Route path="/gl/trial-balance" component={TrialBalance} />
       <Route path="/gl/ledger-setup" component={LedgerSetup} />
+
       <Route path="/gl/legal-entity-setup" component={LegalEntitySetup} />
       <Route path="/gl/value-sets" component={ValueSetManager} />
       <Route path="/gl/coa-structures" component={CoaStructureSetup} />
       <Route path="/gl/hierarchies" component={HierarchyManager} />
+      <Route path="/gl/config" component={ConfigurationHub} />
+      <Route path="/gl/config/calendars" component={CalendarSetup} />
+      <Route path="/gl/config/sources" component={SourceCategorySetup} />
+      <Route path="/gl/config/controls" component={LedgerControlSetup} />
+
 
       <Route component={NotFound} />
     </Switch>

@@ -40,7 +40,9 @@ import {
   GraduationCap,
   Bell,
   Grid3x3,
+  LayoutGrid,
   Database,
+
   Lock,
   Radio,
   Truck,
@@ -80,7 +82,10 @@ const financeModules: MenuItem[] = [
   { title: "General Ledger", icon: BookOpen, href: "/gl/journals", allowedRoles: ["admin", "editor"] },
   { title: "Budget Manager", icon: BarChart3, href: "/gl/budgets", allowedRoles: ["admin", "editor"] },
   { title: "Financial Reporting", icon: BarChart3, href: "/gl/reports", allowedRoles: ["admin", "editor"] },
+  { title: "Trial Balance", icon: LayoutGrid, href: "/gl/trial-balance", allowedRoles: ["admin", "editor"] },
   { title: "CVR Manager", icon: Shield, href: "/gl/cvr", allowedRoles: ["admin", "editor"] },
+
+
   { title: "Data Access", icon: Lock, href: "/gl/data-access", allowedRoles: ["admin", "editor"] },
   { title: "Period Close", icon: BookOpen, href: "/gl/period-close", allowedRoles: ["admin", "editor"] },
   { title: "Intercompany", icon: ArrowRightLeft, href: "/gl/intercompany", allowedRoles: ["admin", "editor"] },

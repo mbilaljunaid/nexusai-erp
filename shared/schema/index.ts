@@ -31,3 +31,5 @@ export * from "./arRevenueSchedule";
 export * from "./cash";
 export * from "./fixedAssets";
 export * from "./sla";
+export * from "./gl-config";
+

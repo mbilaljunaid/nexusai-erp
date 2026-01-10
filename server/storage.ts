@@ -50,7 +50,7 @@ import {
   glCrossValidationRules, glDataAccessSets, glDataAccessSetAssignments,
   glBudgets, glBudgetBalances, glBudgetControlRules,
   glReportDefinitions, glReportRows, glReportColumns,
-  glIntercompanyRules, glAuditLogs,
+  glIntercompanyRules, glAuditLogs, glCloseTasks,
 
   type GlAccount, type InsertGlAccount,
   type GlPeriod, type InsertGlPeriod,
@@ -84,6 +84,16 @@ import {
   type GlReportColumn, type InsertGlReportColumn,
   type GlIntercompanyRule, type InsertGlIntercompanyRule,
   type GlAuditLog, type InsertGlAuditLog,
+  type GlCloseTask, type InsertGlCloseTask,
+
+  // GL Config (Chunk 8)
+  glJournalSources, glJournalCategories, glLedgerControls, glAutoPostRules,
+  type GlJournalSource, type InsertGlJournalSource,
+  type GlJournalCategory, type InsertGlJournalCategory,
+  type GlLedgerControl, type InsertGlLedgerControl,
+  type GlAutoPostRule, type InsertGlAutoPostRule,
+
+
 
   // AP
   apSuppliers, apInvoices, apInvoiceLines, apInvoiceDistributions, apPayments, apApprovals,
@@ -620,7 +630,23 @@ export interface IStorage {
   deleteGlCrossValidationRule(id: string): Promise<boolean>;
   getGlDataAccessSet(id: string): Promise<GlDataAccessSet | undefined>;
   listGlDataAccessSetAssignments(userId: string): Promise<GlDataAccessSetAssignment[]>;
+
+  // Period Close Tasks
+  listCloseTasks(ledgerId: string, periodId: string): Promise<GlCloseTask[]>;
+  updateCloseTask(id: string, updates: Partial<GlCloseTask>): Promise<GlCloseTask>;
+  createCloseTask(task: InsertGlCloseTask): Promise<GlCloseTask>;
+
+  // GL Config (Chunk 8)
+  listGlJournalSources(): Promise<GlJournalSource[]>;
+  createGlJournalSource(data: InsertGlJournalSource): Promise<GlJournalSource>;
+  listGlJournalCategories(): Promise<GlJournalCategory[]>;
+  createGlJournalCategory(data: InsertGlJournalCategory): Promise<GlJournalCategory>;
+  getGlLedgerControl(ledgerId: string): Promise<GlLedgerControl | undefined>;
+  upsertGlLedgerControl(data: InsertGlLedgerControl): Promise<GlLedgerControl>;
+  listGlAutoPostRules(ledgerId: string): Promise<GlAutoPostRule[]>;
+  createGlAutoPostRule(data: InsertGlAutoPostRule): Promise<GlAutoPostRule>;
 }
+
 
 export class DatabaseStorage implements IStorage {
   private tenants = new Map<string, Tenant>();
@@ -1090,6 +1116,28 @@ export class DatabaseStorage implements IStorage {
     this.tenants.set(id, newTenant);
     return newTenant;
   }
+
+  async getRole(id: string): Promise<Role | undefined> { return this.roles.get(id); }
+  async listRoles(tenantId?: string): Promise<Role[]> {
+    const list = Array.from(this.roles.values());
+    return tenantId ? list.filter(r => r.tenantId === tenantId) : list;
+  }
+  async createRole(role: InsertRole): Promise<Role> {
+    const id = randomUUID();
+    const newRole: Role = { id, ...role as any, createdAt: new Date() };
+    this.roles.set(id, newRole);
+    return newRole;
+  }
+
+  async getPlan(id: string): Promise<Plan | undefined> { return this.plans.get(id); }
+  async listPlans(): Promise<Plan[]> { return Array.from(this.plans.values()); }
+  async createPlan(plan: InsertPlan): Promise<Plan> {
+    const id = randomUUID();
+    const newPlan: Plan = { id, ...plan as any, createdAt: new Date() };
+    this.plans.set(id, newPlan);
+    return newPlan;
+  }
+
 
   // Missing IStorage Methods - AP Approvals
   async getApApproval(id: string) {
@@ -1961,6 +2009,11 @@ export class DatabaseStorage implements IStorage {
       segment3: segmentArray[2] || "",
       segment4: segmentArray[3] || "",
       segment5: segmentArray[4] || "",
+      segment6: segmentArray[5] || "",
+      segment7: segmentArray[6] || "",
+      segment8: segmentArray[7] || "",
+      segment9: segmentArray[8] || "",
+      segment10: segmentArray[9] || "",
       code: code,
       enabledFlag: true,
       startDateActive: new Date(),
@@ -2222,13 +2275,71 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  // Stubs for missing IStorage methods (to be implemented)
-  async getRole(id: string) { return undefined; }
-  async listRoles(tenantId?: string) { return []; }
-  async createRole(role: InsertRole) { return {} as Role; }
-  async getPlan(id: string) { return undefined; }
-  async listPlans() { return []; }
-  async createPlan(plan: InsertPlan) { return {} as Plan; }
+  // Period Close Tasks Implementation
+  async listCloseTasks(ledgerId: string, periodId: string): Promise<GlCloseTask[]> {
+    return db.select().from(glCloseTasks).where(
+      and(
+        eq(glCloseTasks.ledgerId, ledgerId),
+        eq(glCloseTasks.periodId, periodId)
+      )
+    );
+  }
+
+  async updateCloseTask(id: string, updates: Partial<GlCloseTask>): Promise<GlCloseTask> {
+    const [updated] = await db.update(glCloseTasks).set(updates).where(eq(glCloseTasks.id, id)).returning();
+    if (!updated) throw new Error("Close Task not found: " + id);
+    return updated;
+  }
+
+  async createCloseTask(task: InsertGlCloseTask): Promise<GlCloseTask> {
+    const [newTask] = await db.insert(glCloseTasks).values(task).returning();
+    return newTask;
+  }
+
+  // GL Config (Chunk 8)
+  async listGlJournalSources(): Promise<GlJournalSource[]> {
+    return await db.select().from(glJournalSources).orderBy(glJournalSources.name);
+  }
+
+  async createGlJournalSource(data: InsertGlJournalSource): Promise<GlJournalSource> {
+    const [source] = await db.insert(glJournalSources).values({ ...data, id: data.id || randomUUID() }).returning();
+    return source;
+  }
+
+  async listGlJournalCategories(): Promise<GlJournalCategory[]> {
+    return await db.select().from(glJournalCategories).orderBy(glJournalCategories.name);
+  }
+
+  async createGlJournalCategory(data: InsertGlJournalCategory): Promise<GlJournalCategory> {
+    const [category] = await db.insert(glJournalCategories).values({ ...data, id: data.id || randomUUID() }).returning();
+    return category;
+  }
+
+  async getGlLedgerControl(ledgerId: string): Promise<GlLedgerControl | undefined> {
+    const [control] = await db.select().from(glLedgerControls).where(eq(glLedgerControls.ledgerId, ledgerId));
+    return control;
+  }
+
+  async upsertGlLedgerControl(data: InsertGlLedgerControl): Promise<GlLedgerControl> {
+    const [existing] = await db.select().from(glLedgerControls).where(eq(glLedgerControls.ledgerId, data.ledgerId));
+    if (existing) {
+      const [updated] = await db.update(glLedgerControls).set(data).where(eq(glLedgerControls.ledgerId, data.ledgerId)).returning();
+      return updated;
+    }
+    const [created] = await db.insert(glLedgerControls).values({ ...data, id: data.id || randomUUID() }).returning();
+    return created;
+  }
+
+  async listGlAutoPostRules(ledgerId: string): Promise<GlAutoPostRule[]> {
+    return await db.select().from(glAutoPostRules).where(eq(glAutoPostRules.ledgerId, ledgerId)).orderBy(glAutoPostRules.priority);
+  }
+
+  async createGlAutoPostRule(data: InsertGlAutoPostRule): Promise<GlAutoPostRule> {
+    const [rule] = await db.insert(glAutoPostRules).values({ ...data, id: data.id || randomUUID() }).returning();
+    return rule;
+  }
 }
 
+
 export const storage = new DatabaseStorage();
+

@@ -155,17 +155,54 @@ router.get("/gl/reconciliation", async (req, res) => {
 
 /**
  * GET /api/gl/trial-balance
- * Get trial balance
+ * Get trial balance (Compatibility & Reporting)
  */
 router.get("/gl/trial-balance", async (req, res) => {
   try {
-    const entries = await glPostingEngine.getAllGLEntries();
-    const trialBalance = glReconciler.getTrialBalance(entries);
-    res.json(trialBalance);
+    const { ledgerId, periodId } = req.query;
+    const report = await financeService.calculateTrialBalance(
+      (ledgerId as string) || "PRIMARY",
+      periodId as string
+    );
+    res.json(report);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
+
+/**
+ * GET /api/gl/reporting/trial-balance
+ * Alias for standardized reporting path
+ */
+router.get("/gl/reporting/trial-balance", async (req, res) => {
+  try {
+    const { ledgerId, periodId } = req.query;
+    const report = await financeService.calculateTrialBalance(
+      (ledgerId as string) || "PRIMARY",
+      periodId as string
+    );
+    res.json(report);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/gl/reporting/drill-down/:ccid
+ * Get journal lines for a specific balance
+ */
+router.get("/gl/reporting/drill-down/:ccid", async (req, res) => {
+  try {
+    const { ccid } = req.params;
+    const { periodId } = req.query;
+    if (!periodId) return res.status(400).json({ error: "periodId is required for drill-down" });
+    const lines = await financeService.getBalanceDrillDown(ccid, periodId as string);
+    res.json(lines);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 /**
  * GET /api/audit/logs
@@ -264,4 +301,132 @@ router.get("/gl/coa/structure/:ledgerId", async (req, res) => {
   }
 });
 
+/**
+ * Period Close Checklist Routes
+ */
+router.get("/gl/periods/:periodId/tasks", async (req, res) => {
+  try {
+    const { periodId } = req.params;
+    const { ledgerId } = req.query;
+    const tasks = await financeService.listCloseTasks(
+      (ledgerId as string) || "PRIMARY",
+      periodId
+    );
+    res.json(tasks);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.patch("/gl/periods/tasks/:taskId", async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const task = await financeService.updateCloseTask(taskId, req.body);
+    res.json(task);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/gl/reporting/explain-variance
+ * AI Action: Explain variance between two periods
+ */
+router.get("/gl/reporting/explain-variance", async (req, res) => {
+  try {
+    const { periodId, benchmarkPeriodId, ledgerId } = req.query;
+    if (!periodId || !benchmarkPeriodId) {
+      return res.status(400).json({ error: "Both periodId and benchmarkPeriodId are required" });
+    }
+    const explanation = await financeService.explainVariance(
+      periodId as string,
+      benchmarkPeriodId as string,
+      (ledgerId as string) || "PRIMARY"
+    );
+    res.json(explanation);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+/**
+ * GL Configuration Routes (Chunk 8)
+ */
+router.get("/gl/config/sources", async (req, res) => {
+  try {
+    const sources = await financeService.listGlJournalSources();
+    res.json(sources);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/gl/config/sources", async (req, res) => {
+  try {
+    const source = await financeService.createGlJournalSource(req.body);
+    res.json(source);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/gl/config/categories", async (req, res) => {
+  try {
+    const categories = await financeService.listGlJournalCategories();
+    res.json(categories);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/gl/config/categories", async (req, res) => {
+  try {
+    const category = await financeService.createGlJournalCategory(req.body);
+    res.json(category);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/gl/config/ledger/:ledgerId/controls", async (req, res) => {
+  try {
+    const { ledgerId } = req.params;
+    const controls = await financeService.getGlLedgerControl(ledgerId);
+    res.json(controls || {});
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/gl/config/ledger/controls", async (req, res) => {
+  try {
+    const control = await financeService.upsertGlLedgerControl(req.body);
+    res.json(control);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/gl/config/ledger/:ledgerId/autopost-rules", async (req, res) => {
+  try {
+    const { ledgerId } = req.params;
+    const rules = await financeService.listGlAutoPostRules(ledgerId);
+    res.json(rules);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/gl/config/ledger/autopost-rules", async (req, res) => {
+  try {
+    const rule = await financeService.createGlAutoPostRule(req.body);
+    res.json(rule);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
+
