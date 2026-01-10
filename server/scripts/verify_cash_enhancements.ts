@@ -22,17 +22,18 @@ async function verifyCashEnhancements() {
     // Create Transaction: $100.00, Date: 2024-05-01, Desc: "Stripe Payout 123"
     await storage.createCashTransaction({
         bankAccountId: account.id,
-        amount: 100,
+        amount: "100",
         transactionDate: new Date("2024-05-01"),
-        description: "Stripe Payout 123",
+        reference: "Stripe Payout 123",
         status: "Unreconciled",
-        source: "AR"
+        sourceModule: "AR",
+        sourceId: 999
     });
 
     // Create Statement Line: $100.00, Date: 2024-05-03 (2 days diff), Desc: "STRIPE TRANSFER" (Fuzzy match)
     await storage.createCashStatementLine({
         bankAccountId: account.id,
-        amount: 100,
+        amount: "100",
         transactionDate: new Date("2024-05-03"),
         description: "STRIPE TRANSFER",
         reconciled: false
@@ -57,7 +58,7 @@ async function verifyCashEnhancements() {
     // Create Unmatched Line: Bank Fee $15
     const feeLine = await storage.createCashStatementLine({
         bankAccountId: account.id,
-        amount: -15,
+        amount: "-15",
         transactionDate: new Date("2024-05-05"),
         description: "MONTHLY SERVICE FEE",
         reconciled: false

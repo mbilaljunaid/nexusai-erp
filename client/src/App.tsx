@@ -319,6 +319,7 @@ const AuditLogsPage = lazy(() => import("@/pages/gl/AuditLogs"));
 const IntercompanyRules = lazy(() => import("@/pages/gl/IntercompanyRules"));
 const BudgetManager = lazy(() => import("@/pages/gl/BudgetManager"));
 const CVRManager = lazy(() => import("@/pages/gl/CVRManager"));
+const DataAccessManager = lazy(() => import("@/pages/gl/DataAccessManager"));
 const PeriodCloseDashboard = lazy(() => import("@/pages/gl/PeriodCloseDashboard"));
 const LedgerSetup = lazy(() => import("./pages/gl/LedgerSetup"));
 const LegalEntitySetup = lazy(() => import("./pages/gl/LegalEntitySetup"));
@@ -706,6 +707,7 @@ function Router() {
       {/* New Finance Routes */}
       <Route path="/gl/budgets" component={BudgetManager} />
       <Route path="/gl/cvr" component={CVRManager} />
+      <Route path="/gl/data-access" component={DataAccessManager} />
       <Route path="/gl/period-close" component={PeriodCloseDashboard} />
       <Route path="/gl/ledger-setup" component={LedgerSetup} />
       <Route path="/gl/legal-entity-setup" component={LegalEntitySetup} />

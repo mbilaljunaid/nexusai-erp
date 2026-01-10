@@ -61,6 +61,11 @@ export const apInvoices = pgTable("ap_invoices", {
     paymentStatus: varchar("payment_status", { length: 50 }).default("UNPAID"), // UNPAID, PARTIAL, PAID
     accountingStatus: varchar("accounting_status", { length: 50 }).default("UNACCOUNTED"), // UNACCOUNTED, ACCOUNTED
 
+    // UI Compatibility & Parity
+    dueDate: timestamp("due_date"),
+    paymentTerms: varchar("payment_terms", { length: 100 }).default("Net 30"),
+    taxAmount: numeric("tax_amount", { precision: 18, scale: 2 }).default("0"),
+
     // Controls
     cancelledDate: timestamp("cancelled_date"),
     glDate: timestamp("gl_date"), // Default GL Date
@@ -183,3 +188,7 @@ export const apApprovals = pgTable("ap_approvals", {
     comments: text("comments"),
     createdAt: timestamp("created_at").defaultNow()
 });
+
+export const insertApApprovalSchema = createInsertSchema(apApprovals);
+export type ApApproval = typeof apApprovals.$inferSelect;
+export type InsertApApproval = typeof apApprovals.$inferInsert;

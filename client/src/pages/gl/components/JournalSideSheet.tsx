@@ -18,7 +18,8 @@ import {
     Clock,
     User,
     Shield,
-    Database
+    Database,
+    CheckCircle
 } from "lucide-react";
 import { format } from "date-fns";
 import {
@@ -182,7 +183,7 @@ export function JournalSideSheet({ isOpen, onClose, journal }: JournalSideSheetP
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-20 text-slate-400 space-y-4">
                                         <div className="p-4 bg-emerald-50 rounded-full">
-                                            <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+                                            <CheckCircle className="h-8 w-8 text-emerald-500" />
                                         </div>
                                         <div className="text-center">
                                             <h4 className="font-bold text-slate-900 text-sm tracking-tight">Validation Perfect</h4>

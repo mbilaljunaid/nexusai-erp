@@ -52,4 +52,5 @@ export type AgentExecution = z.infer<typeof selectAgentExecutionSchema>;
 export type InsertAgentExecution = z.infer<typeof insertAgentExecutionSchema>;
 
 export const insertAgentAuditLogSchema = createInsertSchema(agentAuditLogs);
+export type AgentAuditLog = typeof agentAuditLogs.$inferSelect;
 export type InsertAgentAuditLog = z.infer<typeof insertAgentAuditLogSchema>;

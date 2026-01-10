@@ -64,12 +64,12 @@ export class CashService {
 
         const trx = await storage.createCashTransaction({
             bankAccountId: Number(bankAccountId),
-            amount: Number(line.amount),
+            sourceModule: "GL",
+            sourceId: 0,
+            amount: String(line.amount),
             transactionDate: new Date(line.transactionDate),
             reference: line.referenceNumber || `STMT-${lineId}`,
             status: "Reconciled", // Created and reconciled immediately
-            description: data.description || line.description || "Created from Statement",
-            source: "MANUAL"
         });
 
         // Mock GL Posting
@@ -140,6 +140,18 @@ export class CashService {
             proposedMatches,
             message: `Auto-reconciliation complete. Found ${matchCount} high-confidence matches.`
         };
+    }
+
+    async createTransaction(data: any) {
+        return await storage.createCashTransaction({
+            bankAccountId: Number(data.bankAccountId),
+            sourceModule: data.sourceModule || 'GL',
+            sourceId: Number(data.sourceId || 0),
+            amount: String(data.amount),
+            transactionDate: data.date || new Date(),
+            reference: data.reference || `TXN-${Date.now()}`,
+            status: data.status || "Unreconciled" as any
+        });
     }
 }
 

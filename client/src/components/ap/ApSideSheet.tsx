@@ -149,11 +149,11 @@ export function ApSideSheet({
                                     <div className="space-y-1">
                                         <span className="text-xs text-muted-foreground uppercase">Total Amount</span>
                                         <div className="text-2xl font-bold">
-                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.currency || "USD" }).format(Number(invoice.amount))}
+                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.invoiceAmount))}
                                         </div>
                                     </div>
-                                    <Badge className={getStatusColor(invoice.status || "Draft")}>
-                                        {invoice.status}
+                                    <Badge className={getStatusColor(invoice.paymentStatus || "UNPAID")}>
+                                        {invoice.paymentStatus}
                                     </Badge>
                                 </div>
 
@@ -171,12 +171,12 @@ export function ApSideSheet({
                                     <div className="space-y-1">
                                         <label className="text-xs text-muted-foreground uppercase">Tax Amount</label>
                                         <p className="text-sm font-medium">
-                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.currency || "USD" }).format(Number(invoice.taxAmount || 0))}
+                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.taxAmount || 0))}
                                         </p>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs text-muted-foreground uppercase">Recognition</label>
-                                        <Badge variant="outline">{invoice.recognitionStatus}</Badge>
+                                        <Badge variant="outline">{invoice.accountingStatus}</Badge>
                                     </div>
                                 </div>
                             </div>

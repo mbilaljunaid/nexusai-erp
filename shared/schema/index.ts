@@ -21,6 +21,7 @@ export * from "./epm";
 export * from "./integration";
 export * from "./platform";
 export * from "./ai";
+export * from "./agentic";
 export * from "./billing";
 export * from "./content";
 export * from "./gamification";

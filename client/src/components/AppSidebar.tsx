@@ -81,6 +81,7 @@ const financeModules: MenuItem[] = [
   { title: "Budget Manager", icon: BarChart3, href: "/gl/budgets", allowedRoles: ["admin", "editor"] },
   { title: "Financial Reporting", icon: BarChart3, href: "/gl/reports", allowedRoles: ["admin", "editor"] },
   { title: "CVR Manager", icon: Shield, href: "/gl/cvr", allowedRoles: ["admin", "editor"] },
+  { title: "Data Access", icon: Lock, href: "/gl/data-access", allowedRoles: ["admin", "editor"] },
   { title: "Period Close", icon: BookOpen, href: "/gl/period-close", allowedRoles: ["admin", "editor"] },
   { title: "Intercompany", icon: ArrowRightLeft, href: "/gl/intercompany", allowedRoles: ["admin", "editor"] },
   { title: "Revaluation", icon: RefreshCw, href: "/gl/revaluation", allowedRoles: ["admin", "editor"] },

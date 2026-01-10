@@ -11,9 +11,9 @@ export const arRevenueSchedules = pgTable("ar_revenue_schedules", {
 });
 
 export const insertArRevenueScheduleSchema = z.object({
-    invoiceId: z.number().int(),
-    scheduleDate: z.string(),
-    amount: z.number(),
+    invoiceId: z.coerce.number().int(),
+    scheduleDate: z.coerce.date(),
+    amount: z.coerce.string(),
     status: z.enum(["Pending", "Recognized"]).optional()
 });
 

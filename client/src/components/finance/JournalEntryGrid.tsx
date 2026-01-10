@@ -9,10 +9,13 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Save, FileSpreadsheet } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLedger } from "@/context/LedgerContext";
 import type { GlAccount, GlPeriod, InsertGlJournal, InsertGlJournalLine } from "@shared/schema";
 
 export function JournalEntryGrid() {
     const { toast } = useToast();
+    const { ledgers, currentLedgerId } = useLedger();
+    const activeLedger = ledgers.find(l => l.id === currentLedgerId);
     const [journalNumber, setJournalNumber] = useState(`JE-${Date.now()}`);
     const [selectedPeriod, setSelectedPeriod] = useState("");
     const [description, setDescription] = useState("");
@@ -93,6 +96,8 @@ export function JournalEntryGrid() {
         const journalData: InsertGlJournal = {
             journalNumber,
             periodId: selectedPeriod,
+            ledgerId: currentLedgerId || "",
+            currencyCode: activeLedger?.currencyCode || "USD",
             description,
             status: "Posted",
             postedDate: new Date(),

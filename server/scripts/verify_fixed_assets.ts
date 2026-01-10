@@ -15,8 +15,8 @@ async function verifyFixedAssets() {
         assetNumber: "FA-1001",
         description: "MacBook Pro M3",
         categoryId: 101, // Computer
-        originalCost: 2400,
-        datePlacedInService: "2024-01-01",
+        originalCost: "2400",
+        datePlacedInService: new Date("2024-01-01"),
         status: "Active"
     };
 
@@ -24,8 +24,9 @@ async function verifyFixedAssets() {
         bookTypeCode: "CORP",
         methodCode: "STL",
         lifeInMonths: 24,
-        cost: 2400,
-        datePlacedInService: "2024-01-01"
+        cost: "2400",
+        datePlacedInService: new Date("2024-01-01"),
+        netBookValue: "2400"
     };
 
     const result = await fixedAssetsService.createAsset(assetData, bookData, "verify-script");

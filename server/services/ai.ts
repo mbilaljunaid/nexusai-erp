@@ -236,7 +236,50 @@ export class AIService {
             // 2. Execute Logic
             switch (actionName) {
                 case "gl_create_journal":
-                    result = { message: "Journal Drafted", details: params };
+                    // 1. Get default ledger and period for demo
+                    const ledgers = await financeService.listLedgers();
+                    const targetLedger = ledgers[0];
+                    if (!targetLedger) throw new Error("No ledger found");
+
+                    const periods = await financeService.listPeriods(targetLedger.id);
+                    const targetPeriod = periods.find(p => p.status === "Open") || periods[0];
+                    if (!targetPeriod) throw new Error("No open period found");
+
+                    // 2. Resolve account (Try to find CCID)
+                    let ccid = params.accountId;
+                    if (!ccid || ccid === "UNKNOWN") {
+                        if (params.segmentString) {
+                            const cc = await financeService.getOrCreateCodeCombination(targetLedger.id, params.segmentString);
+                            ccid = cc.id;
+                        } else {
+                            // Fallback to first available account for demo
+                            const combinations = await financeService.listGlCodeCombinations(targetLedger.id);
+                            ccid = combinations[0]?.id || "default-ccid";
+                        }
+                    }
+
+                    const journal = await financeService.createJournal({
+                        ledgerId: targetLedger.id,
+                        periodId: targetPeriod.id,
+                        journalNumber: "AI-" + Date.now().toString().slice(-6),
+                        description: params.description || "AI Generated Journal",
+                        source: "AI Agent",
+                        currencyCode: targetLedger.currencyCode,
+                        status: "Draft"
+                    }, [
+                        { accountId: ccid, enteredDebit: String(params.amount || 0), enteredCredit: "0" },
+                        { accountId: ccid, enteredDebit: "0", enteredCredit: String(params.amount || 0) } // Balanced entry
+                    ], userId);
+
+                    result = {
+                        message: `I've drafted journal ${journal.journalNumber} for you.`,
+                        journalId: journal.id,
+                        details: {
+                            description: journal.description,
+                            amount: params.amount,
+                            status: "Draft"
+                        }
+                    };
                     break;
                 case "gl_detect_anomalies":
                     result = await financeService.detectAnomalies();
@@ -262,12 +305,18 @@ export class AIService {
                     result = { ...createdInvoice, message: "I've drafted the invoice for you." };
                     break;
                 case "ap_check_status":
-                    result = {
-                        invoice: "INV-RECENT",
-                        status: "Pending Approval",
-                        lastAction: "Submitted by user",
-                        slaBreach: false
-                    };
+                    const apInvoices = await apService.listInvoices();
+                    const apInv = apInvoices.find(i => i.invoiceNumber === params.invoiceNumber);
+                    if (!apInv) {
+                        result = { message: `Invoice ${params.invoiceNumber} not found.` };
+                    } else {
+                        result = {
+                            invoice: apInv.invoiceNumber,
+                            amount: apInv.invoiceAmount,
+                            status: apInv.paymentStatus || "Pending",
+                            date: apInv.invoiceDate
+                        };
+                    }
                     break;
                 case "ar_create_customer":
                     const custData = {
@@ -281,12 +330,20 @@ export class AIService {
                     result = { ...createdCust, message: "I've created the customer profile for you." };
                     break;
                 case "ar_check_balance":
-                    result = {
-                        customer: params.customerName || "Globex Corp",
-                        balance: "2750.00",
-                        overdue: "0.00",
-                        status: "Good Standing"
-                    };
+                    const customers = await arService.listCustomers();
+                    const customer = customers.find(c => c.name.toLowerCase().includes((params.customerName || "").toLowerCase()));
+                    if (!customer) {
+                        result = { message: `I couldn't find a customer named '${params.customerName}'.` };
+                    } else {
+                        const balanceData = await arService.getCustomerBalance(customer.id);
+                        result = {
+                            customer: customer.name,
+                            balance: balanceData.outstanding.toFixed(2),
+                            overdue: "0.00",
+                            status: customer.creditHold ? "Credit Hold" : "Good Standing",
+                            details: balanceData
+                        };
+                    }
                     break;
                 default:
                     throw new Error(`No handler implementation for ${actionName}`);

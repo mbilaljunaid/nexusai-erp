@@ -11,8 +11,18 @@ fixedAssetsRouter.post("/assets", async (req, res) => {
     try {
         // Frontend sends { asset: ..., book: ... }
         const schema = z.object({
-            asset: insertFaAdditionSchema,
-            book: insertFaBookSchema.omit({ assetId: true }) // assetId is generated
+            asset: insertFaAdditionSchema.extend({
+                datePlacedInService: z.coerce.date(),
+                originalCost: z.coerce.string(),
+                salvageValue: z.coerce.string().optional()
+            }),
+            book: insertFaBookSchema.omit({ assetId: true }).extend({
+                datePlacedInService: z.coerce.date(),
+                cost: z.coerce.string(),
+                ytdDepreciation: z.coerce.string().optional(),
+                depreciationReserve: z.coerce.string().optional(),
+                netBookValue: z.coerce.string()
+            })
         });
 
         const data = schema.parse(req.body);

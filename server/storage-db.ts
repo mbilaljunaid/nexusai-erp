@@ -42,6 +42,16 @@ import {
   arCustomers as arCustomersTable,
   arInvoices as arInvoicesTable,
   arReceipts as arReceiptsTable,
+  apSuppliers as apSuppliersTable,
+  apInvoices as apInvoicesTable,
+  apPayments as apPaymentsTable,
+  glJournalApprovals as glJournalApprovalsTable,
+  type GlSegmentValue,
+  type InsertGlSegmentValue,
+  type GlCodeCombination,
+  type InsertGlCodeCombination,
+  type GlDailyRate,
+  type InsertGlDailyRate,
   type InsertGlJournalBatch,
   type InsertGlJournalApproval,
   type GlJournalBatch,
@@ -105,6 +115,16 @@ import type {
   InsertArInvoice,
   ArReceipt,
   InsertArReceipt,
+  ApSupplier,
+  InsertApSupplier,
+  ApInvoice,
+  InsertApInvoice,
+  ApPayment,
+  InsertApPayment,
+  GlLedger,
+  InsertGlLedger,
+  GlSegment,
+  InsertGlSegment
 } from "@shared/schema";
 
 /**
@@ -817,7 +837,7 @@ export const dbStorage = {
     return await db.select().from(apSuppliersTable);
   },
   async getApSupplier(id: string): Promise<ApSupplier | undefined> {
-    const result = await db.select().from(apSuppliersTable).where(eq(apSuppliersTable.id, id)).limit(1);
+    const result = await db.select().from(apSuppliersTable).where(eq(apSuppliersTable.id, parseInt(id))).limit(1);
     return result[0];
   },
   async createApSupplier(data: InsertApSupplier): Promise<ApSupplier> {
@@ -825,11 +845,11 @@ export const dbStorage = {
     return result[0];
   },
   async updateApSupplier(id: string, data: Partial<InsertApSupplier>): Promise<ApSupplier | undefined> {
-    const result = await db.update(apSuppliersTable).set(data).where(eq(apSuppliersTable.id, id)).returning();
+    const result = await db.update(apSuppliersTable).set(data).where(eq(apSuppliersTable.id, parseInt(id))).returning();
     return result[0];
   },
   async deleteApSupplier(id: string): Promise<boolean> {
-    const result = await db.delete(apSuppliersTable).where(eq(apSuppliersTable.id, id)).returning();
+    const result = await db.delete(apSuppliersTable).where(eq(apSuppliersTable.id, parseInt(id))).returning();
     return result.length > 0;
   },
 
@@ -837,7 +857,7 @@ export const dbStorage = {
     return await db.select().from(apInvoicesTable);
   },
   async getApInvoice(id: string): Promise<ApInvoice | undefined> {
-    const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, id)).limit(1);
+    const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, parseInt(id))).limit(1);
     return result[0];
   },
   async createApInvoice(data: InsertApInvoice): Promise<ApInvoice> {
@@ -845,11 +865,11 @@ export const dbStorage = {
     return result[0];
   },
   async updateApInvoice(id: string, data: Partial<InsertApInvoice>): Promise<ApInvoice | undefined> {
-    const result = await db.update(apInvoicesTable).set(data).where(eq(apInvoicesTable.id, id)).returning();
+    const result = await db.update(apInvoicesTable).set(data).where(eq(apInvoicesTable.id, parseInt(id))).returning();
     return result[0];
   },
   async deleteApInvoice(id: string): Promise<boolean> {
-    const result = await db.delete(apInvoicesTable).where(eq(apInvoicesTable.id, id)).returning();
+    const result = await db.delete(apInvoicesTable).where(eq(apInvoicesTable.id, parseInt(id))).returning();
     return result.length > 0;
   },
 
@@ -857,7 +877,7 @@ export const dbStorage = {
     return await db.select().from(apPaymentsTable);
   },
   async getApPayment(id: string): Promise<ApPayment | undefined> {
-    const result = await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.id, id)).limit(1);
+    const result = await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.id, parseInt(id))).limit(1);
     return result[0];
   },
   async createApPayment(data: InsertApPayment): Promise<ApPayment> {
@@ -865,11 +885,11 @@ export const dbStorage = {
     return result[0];
   },
   async updateApPayment(id: string, data: Partial<InsertApPayment>): Promise<ApPayment | undefined> {
-    const result = await db.update(apPaymentsTable).set(data).where(eq(apPaymentsTable.id, id)).returning();
+    const result = await db.update(apPaymentsTable).set(data).where(eq(apPaymentsTable.id, parseInt(id))).returning();
     return result[0];
   },
   async deleteApPayment(id: string): Promise<boolean> {
-    const result = await db.delete(apPaymentsTable).where(eq(apPaymentsTable.id, id)).returning();
+    const result = await db.delete(apPaymentsTable).where(eq(apPaymentsTable.id, parseInt(id))).returning();
     return result.length > 0;
   },
 
@@ -877,7 +897,7 @@ export const dbStorage = {
     return await db.select().from(apApprovalsTable);
   },
   async getApApproval(id: string): Promise<ApApproval | undefined> {
-    const result = await db.select().from(apApprovalsTable).where(eq(apApprovalsTable.id, id)).limit(1);
+    const result = await db.select().from(apApprovalsTable).where(eq(apApprovalsTable.id, parseInt(id))).limit(1);
     return result[0];
   },
   async createApApproval(data: InsertApApproval): Promise<ApApproval> {
@@ -885,11 +905,11 @@ export const dbStorage = {
     return result[0];
   },
   async updateApApproval(id: string, data: Partial<InsertApApproval>): Promise<ApApproval | undefined> {
-    const result = await db.update(apApprovalsTable).set(data).where(eq(apApprovalsTable.id, id)).returning();
+    const result = await db.update(apApprovalsTable).set(data).where(eq(apApprovalsTable.id, parseInt(id))).returning();
     return result[0];
   },
   async deleteApApproval(id: string): Promise<boolean> {
-    const result = await db.delete(apApprovalsTable).where(eq(apApprovalsTable.id, id)).returning();
+    const result = await db.delete(apApprovalsTable).where(eq(apApprovalsTable.id, parseInt(id))).returning();
     return result.length > 0;
   },
 
@@ -993,7 +1013,9 @@ export const dbStorage = {
   },
 
   async listGlSegments(ledgerId: string): Promise<GlSegment[]> {
-    return await db.select().from(glSegmentsTable).where(eq(glSegmentsTable.ledgerId, ledgerId));
+    const [ledger] = await db.select().from(glLedgersTable).where(eq(glLedgersTable.id, ledgerId));
+    if (!ledger || !ledger.coaId) return [];
+    return await db.select().from(glSegmentsTable).where(eq(glSegmentsTable.coaStructureId, ledger.coaId));
   },
   async createGlSegment(segment: InsertGlSegment): Promise<GlSegment> {
     const result = await db.insert(glSegmentsTable).values(segment).returning();
@@ -1001,7 +1023,9 @@ export const dbStorage = {
   },
 
   async listGlSegmentValues(segmentId: string): Promise<GlSegmentValue[]> {
-    return await db.select().from(glSegmentValuesTable).where(eq(glSegmentValuesTable.segmentId, segmentId));
+    const [segment] = await db.select().from(glSegmentsTable).where(eq(glSegmentsTable.id, segmentId));
+    if (!segment) return [];
+    return await db.select().from(glSegmentValuesTable).where(eq(glSegmentValuesTable.valueSetId, segment.valueSetId));
   },
   async createGlSegmentValue(val: InsertGlSegmentValue): Promise<GlSegmentValue> {
     const result = await db.insert(glSegmentValuesTable).values(val).returning();
@@ -1064,13 +1088,6 @@ export const dbStorage = {
     return await db.select().from(usersTable);
   },
 
-  async createUser(user: InsertUser): Promise<User> {
-    const result = await db
-      .insert(usersTable)
-      .values(user)
-      .returning();
-    return result[0];
-  },
 
   // ========== PROJECTS ==========
   async getProject(id: string): Promise<Project | undefined> {

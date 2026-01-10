@@ -107,7 +107,7 @@ export default function CVRManager() {
                                 <div className="space-y-2">
                                     <Label>Rule Name</Label>
                                     <Input
-                                        value={formData.ruleName}
+                                        value={formData.ruleName || ""}
                                         onChange={(e) => setFormData({ ...formData, ruleName: e.target.value })}
                                         placeholder="e.g. Block_CostCentre_999"
                                     />
@@ -116,7 +116,7 @@ export default function CVRManager() {
                                     <Label>Status</Label>
                                     <div className="flex items-center space-x-2 pt-2">
                                         <Switch
-                                            checked={formData.enabled}
+                                            checked={!!formData.enabled}
                                             onCheckedChange={(c) => setFormData({ ...formData, enabled: c })}
                                         />
                                         <span className="text-sm text-muted-foreground">{formData.enabled ? "Active" : "Inactive"}</span>
@@ -127,7 +127,7 @@ export default function CVRManager() {
                             <div className="space-y-2">
                                 <Label>Description</Label>
                                 <Input
-                                    value={formData.description}
+                                    value={formData.description || ""}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 />
                             </div>
@@ -139,7 +139,7 @@ export default function CVRManager() {
                                             <CheckCircle className="h-4 w-4 text-green-600" /> Condition Filter (Where applies)
                                         </Label>
                                         <Input
-                                            value={formData.includeFilter}
+                                            value={formData.includeFilter || ""}
                                             onChange={(e) => setFormData({ ...formData, includeFilter: e.target.value })}
                                             placeholder="e.g. Segment1=01 (Company 01 Only)"
                                             className="font-mono bg-white"
@@ -152,7 +152,7 @@ export default function CVRManager() {
                                             <Ban className="h-4 w-4 text-red-600" /> Exclude Filter (What is forbidden)
                                         </Label>
                                         <Input
-                                            value={formData.excludeFilter}
+                                            value={formData.excludeFilter || ""}
                                             onChange={(e) => setFormData({ ...formData, excludeFilter: e.target.value })}
                                             placeholder="e.g. Segment2=999 (No Dummy Cost Centers)"
                                             className="font-mono bg-white border-red-200 focus-visible:ring-red-500"
@@ -165,7 +165,7 @@ export default function CVRManager() {
                             <div className="space-y-2">
                                 <Label>Error Message</Label>
                                 <Input
-                                    value={formData.errorMessage}
+                                    value={formData.errorMessage || ""}
                                     onChange={(e) => setFormData({ ...formData, errorMessage: e.target.value })}
                                 />
                             </div>

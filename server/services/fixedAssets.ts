@@ -28,9 +28,9 @@ export class FixedAssetsService {
             assetId: asset.id,
             bookTypeCode: book.bookTypeCode,
             transactionType: "ADDITION",
-            transactionDate: new Date().toISOString(),
-            dateEffective: asset.datePlacedInService ? new Date(asset.datePlacedInService).toISOString() : new Date().toISOString(),
-            amount: Number(asset.originalCost),
+            transactionDate: new Date(),
+            dateEffective: asset.datePlacedInService ? new Date(asset.datePlacedInService) : new Date(),
+            amount: String(asset.originalCost),
             comments: `Asset added via Workbench by ${userId}`
         };
         await storage.createFaTransaction(trx);
@@ -62,7 +62,7 @@ export class FixedAssetsService {
             const books = await storage.listFaBooks(String(asset.id));
             const book = books.find(b => b.bookTypeCode === bookTypeCode);
 
-            if (!book && book?.depreciateFlag) continue;
+            if (!book || !book.depreciateFlag) continue;
 
             if (book) {
                 // Determine Depreciation Amount checks
@@ -99,9 +99,9 @@ export class FixedAssetsService {
                     assetId: asset.id,
                     bookTypeCode: bookTypeCode,
                     transactionType: "DEPRECIATION",
-                    transactionDate: new Date().toISOString(),
-                    dateEffective: new Date().toISOString(),
-                    amount: amount,
+                    transactionDate: new Date(),
+                    dateEffective: new Date(),
+                    amount: String(amount),
                     comments: `Depreciation run for ${periodName}`
                 };
                 await storage.createFaTransaction(trx);

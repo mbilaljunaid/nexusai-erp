@@ -1,5 +1,9 @@
 
 import { storage } from "../storage";
+import { financeService } from "./finance";
+import { apService } from "./ap";
+import { arService } from "./ar";
+import { cashService } from "./cash";
 import {
     InsertAgentAction, InsertAgentExecution, InsertAgentAuditLog,
     agentActions, agentExecutions, agentAuditLogs
@@ -19,25 +23,40 @@ export class AgenticService {
     private actions = new Map<string, RegisteredAction>();
 
     constructor() {
-        // Initialize default actions (Mock for now)
+        // Initialize default actions
         this.registerAction(
             "GL_POST_JOURNAL",
-            async (params) => {
+            async (params, { userId }) => {
                 console.log("[AGENT] Posting Journal:", params);
-                return { journalId: 999, status: "Posted" };
+                if (!params.journalId) throw new Error("journalId is required for posting.");
+
+                try {
+                    const result = await financeService.postJournal(params.journalId, userId || "system");
+                    return { ...result, message: `Journal ${params.journalId} has been posted.` };
+                } catch (error: any) {
+                    throw new Error(`Failed to post journal: ${error.message}`);
+                }
             },
-            { type: "object", required: ["amount", "account"] },
-            async (params, snapshot) => { console.log("[AGENT] Rolling back Journal"); }
+            { type: "object", required: ["journalId"] }
         );
 
         // AR: Create Invoice
         this.registerAction(
             "AR_CREATE_INVOICE",
-            async (params) => {
+            async (params, { userId }) => {
                 console.log("[AGENT] Creating AR Invoice:", params);
-                return { invoiceId: "INV-2026-001", customer: params.customer, amount: params.amount, status: "Draft" };
+                const data = {
+                    customerId: params.customerId || "default-customer",
+                    invoiceNumber: params.invoiceNumber || ("INV-" + Date.now().toString().slice(-6)),
+                    amount: String(params.amount),
+                    totalAmount: String(params.amount),
+                    status: "Sent",
+                    dueDate: params.dueDate ? new Date(params.dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+                };
+                const result = await arService.createInvoice(data as any);
+                return { ...result, message: "AR Invoice created and posted to GL." };
             },
-            { type: "object", required: ["customer", "amount"] }
+            { type: "object", required: ["amount", "customerId"] }
         );
 
         // AP: Create Bill
@@ -45,9 +64,29 @@ export class AgenticService {
             "AP_CREATE_BILL",
             async (params) => {
                 console.log("[AGENT] Creating AP Bill:", params);
-                return { billId: "BILL-999", supplier: params.supplier, amount: params.amount, status: "Pending Approval" };
+                const payload = {
+                    header: {
+                        supplierId: params.supplierId || "default-supplier",
+                        invoiceNumber: params.invoiceNumber || ("BILL-" + Date.now().toString().slice(-6)),
+                        invoiceAmount: String(params.amount),
+                        currency: "USD",
+                        invoiceDate: new Date(),
+                        dueDate: params.dueDate ? new Date(params.dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                        paymentStatus: "UNPAID",
+                        validationStatus: "NEEDS REVALIDATION"
+                    },
+                    lines: [
+                        {
+                            lineNumber: 1,
+                            amount: String(params.amount),
+                            description: params.description || "AI Generated Bill Line"
+                        }
+                    ]
+                };
+                const result = await apService.createInvoice(payload as any);
+                return { ...result, message: "AP Bill drafted successfully." };
             },
-            { type: "object", required: ["supplier", "amount"] }
+            { type: "object", required: ["amount", "supplierId"] }
         );
 
         // Cash: Transfer
@@ -55,9 +94,18 @@ export class AgenticService {
             "CASH_TRANSFER",
             async (params) => {
                 console.log("[AGENT] Transferring Cash:", params);
-                return { transferId: "TRX-555", from: params.fromAccount, to: params.toAccount, amount: params.amount, status: "Completed" };
+                const result = await cashService.createTransaction({
+                    bankAccountId: params.fromAccountId || "01-bank-01",
+                    type: "Transfer",
+                    amount: String(params.amount),
+                    date: new Date(),
+                    description: params.description || `AI Transfer to Account ${params.toAccountId}`,
+                    status: "Completed",
+                    referenceNumber: "AI-XFER-" + Date.now().toString().slice(-4)
+                });
+                return { ...result, message: "Cash transfer executed successfully." };
             },
-            { type: "object", required: ["fromAccount", "toAccount", "amount"] }
+            { type: "object", required: ["amount", "toAccountId"] }
         );
     }
 

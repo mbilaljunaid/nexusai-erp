@@ -13,7 +13,7 @@ async function verifyCashFlow() {
         accountNumber: "VER-123456",
         bankName: "First Verification Bank",
         currency: "USD",
-        currentBalance: 100000,
+        currentBalance: "100000",
         glAccountId: 1010
     });
     console.log("Created Account:", account.name, account.id);
@@ -57,7 +57,7 @@ async function verifyCashFlow() {
 
     const formattedLines = lines.map(l => ({
         bankAccountId: l.bankAccountId,
-        transactionDate: new Date(l.date).toISOString(),
+        transactionDate: new Date(l.date),
         amount: l.amount,
         description: l.description,
         referenceNumber: l.referenceNumber,
@@ -73,30 +73,33 @@ async function verifyCashFlow() {
     await storage.createCashTransaction({
         bankAccountId: account.id,
         transactionDate: new Date("2024-06-01"),
-        amount: 5000,
+        amount: "5000",
         reference: "INV-100",
         status: "Unreconciled",
-        source: "AR"
-    } as any);
+        sourceModule: "AR",
+        sourceId: 1001
+    });
 
     await storage.createCashTransaction({
         bankAccountId: account.id,
         transactionDate: new Date("2024-06-02"),
-        amount: -1200,
+        amount: "-1200",
         reference: "BILL-500",
         status: "Unreconciled",
-        source: "AP"
-    } as any);
+        sourceModule: "AP",
+        sourceId: 2001
+    });
 
     // Non-matching transaction
     await storage.createCashTransaction({
         bankAccountId: account.id,
         transactionDate: new Date("2024-06-05"),
-        amount: -500, // No match in statement
+        amount: "-500", // No match in statement
         reference: "BILL-501",
         status: "Unreconciled",
-        source: "AP"
-    } as any);
+        sourceModule: "AP",
+        sourceId: 2002
+    });
 
     const transactions = await storage.listCashTransactions(String(account.id));
     console.log(`Created ${transactions.length} system transactions.`);

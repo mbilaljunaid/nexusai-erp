@@ -694,6 +694,10 @@ export const insertGlBudgetSchema = createInsertSchema(glBudgets);
 export const insertGlBudgetBalanceSchema = createInsertSchema(glBudgetBalances);
 export const insertGlBudgetControlRuleSchema = createInsertSchema(glBudgetControlRules);
 
+export type InsertGlBudget = z.infer<typeof insertGlBudgetSchema>;
+export type InsertGlBudgetBalance = z.infer<typeof insertGlBudgetBalanceSchema>;
+export type InsertGlBudgetControlRule = z.infer<typeof insertGlBudgetControlRuleSchema>;
+
 export type GlBudget = typeof glBudgets.$inferSelect;
 export type GlBudgetBalance = typeof glBudgetBalances.$inferSelect;
 export type GlBudgetControlRule = typeof glBudgetControlRules.$inferSelect;

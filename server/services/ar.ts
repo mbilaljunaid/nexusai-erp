@@ -36,16 +36,27 @@ export class ArService {
         const invoice = await storage.createArInvoice(data);
 
         // Auto-post to GL (simplified)
-        await financeService.createJournal({
-            journalNumber: `AR-INV-${invoice.invoiceNumber}`,
-            description: `Sales Invoice: ${invoice.invoiceNumber}`,
-            source: "AR",
-            status: "Posted",
-            periodId: "CURRENT_PERIOD"
-        }, [
-            { accountId: "RECEIVABLES_ACC", debit: invoice.totalAmount, credit: "0" },
-            { accountId: "REVENUE_ACC", debit: "0", credit: invoice.amount }
-        ]);
+        const ledgers = await financeService.listLedgers();
+        const ledger = ledgers[0];
+        if (ledger) {
+            const periods = await financeService.listPeriods(ledger.id);
+            const period = periods.find(p => p.status === "Open") || periods[0];
+
+            if (period) {
+                await financeService.createJournal({
+                    ledgerId: ledger.id,
+                    currencyCode: invoice.currency || ledger.currencyCode || "USD",
+                    journalNumber: `AR-INV-${invoice.invoiceNumber}`,
+                    description: `Sales Invoice: ${invoice.invoiceNumber}`,
+                    source: "AR",
+                    status: "Posted",
+                    periodId: period.id
+                }, [
+                    { accountId: "RECEIVABLES_ACC", enteredDebit: String(invoice.totalAmount), enteredCredit: "0" },
+                    { accountId: "REVENUE_ACC", enteredDebit: "0", enteredCredit: String(invoice.amount) }
+                ]);
+            }
+        }
 
         return invoice;
     }
@@ -71,17 +82,28 @@ export class ArService {
             }
         }
 
-        // Auto-post to GL
-        await financeService.createJournal({
-            journalNumber: `AR-RCPT-${receipt.id.slice(0, 8)}`,
-            description: `Customer Payment Receipt`,
-            source: "AR",
-            status: "Posted",
-            periodId: "CURRENT_PERIOD"
-        }, [
-            { accountId: "CASH_ACC", debit: receipt.amount, credit: "0" },
-            { accountId: "RECEIVABLES_ACC", debit: "0", credit: receipt.amount }
-        ]);
+        // Auto-post to GL (simplified)
+        const ledgers = await financeService.listLedgers();
+        const ledger = ledgers[0];
+        if (ledger) {
+            const periods = await financeService.listPeriods(ledger.id);
+            const period = periods.find(p => p.status === "Open") || periods[0];
+
+            if (period) {
+                await financeService.createJournal({
+                    ledgerId: ledger.id,
+                    currencyCode: ledger.currencyCode || "USD",
+                    journalNumber: `AR-RCPT-${receipt.id.slice(0, 8)}`,
+                    description: `Customer Payment Receipt`,
+                    source: "AR",
+                    status: "Posted",
+                    periodId: period.id
+                }, [
+                    { accountId: "CASH_ACC", enteredDebit: String(receipt.amount), enteredCredit: "0" },
+                    { accountId: "RECEIVABLES_ACC", enteredDebit: "0", enteredCredit: String(receipt.amount) }
+                ]);
+            }
+        }
 
         return receipt;
     }
@@ -113,9 +135,25 @@ export class ArService {
         }
     }
 
-    // Credit Management
     async toggleCreditHold(id: string, hold: boolean): Promise<ArCustomer> {
-        return await this.updateCustomer(id, { creditHold: hold });
+        return await this.updateCustomer(id, { creditHold: hold }) as ArCustomer;
+    }
+
+    async getCustomerBalance(customerId: string) {
+        const invoices = await storage.listArInvoices();
+        const receipts = await storage.listArReceipts();
+
+        const customerInvoices = invoices.filter(i => i.customerId === customerId && i.status !== "Cancelled");
+        const customerReceipts = receipts.filter(r => r.customerId === customerId);
+
+        const totalInvoiced = customerInvoices.reduce((sum, i) => sum + Number(i.totalAmount), 0);
+        const totalPaid = customerReceipts.reduce((sum, r) => sum + Number(r.amount), 0);
+
+        return {
+            totalInvoiced,
+            totalPaid,
+            outstanding: totalInvoiced - totalPaid
+        };
     }
 }
 

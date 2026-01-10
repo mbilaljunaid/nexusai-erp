@@ -43,3 +43,15 @@ export type InsertAiAction = typeof aiActions.$inferInsert;
 
 export type AiAuditLog = typeof aiAuditLogs.$inferSelect;
 export type InsertAiAuditLog = typeof aiAuditLogs.$inferInsert;
+
+export const aiCredits = pgTable("ai_credits", {
+    userId: varchar("user_id").primaryKey(),
+    balance: integer("balance").notNull().default(0),
+    totalMined: integer("total_mined").default(0),
+    lastDailyBonus: timestamp("last_daily_bonus"),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertAiCreditsSchema = createInsertSchema(aiCredits);
+export type AiCredits = typeof aiCredits.$inferSelect;
+export type InsertAiCredits = typeof aiCredits.$inferInsert;

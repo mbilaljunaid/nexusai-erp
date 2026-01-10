@@ -28,10 +28,9 @@ export function ApInvoiceList() {
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'Paid': return 'success'; // bg-green-100 text-green-800
-            case 'Posted': return 'default';
-            case 'Overdue': return 'destructive';
-            case 'Draft': return 'secondary';
+            case 'PAID': return 'success';
+            case 'PARTIAL': return 'default';
+            case 'UNPAID': return 'destructive';
             default: return 'outline';
         }
     };
@@ -43,7 +42,7 @@ export function ApInvoiceList() {
                     <Card
                         key={invoice.id}
                         className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 group"
-                        style={{ borderLeftColor: invoice.status === 'Overdue' ? '#ef4444' : invoice.status === 'Paid' ? '#22c55e' : '#a855f7' }}
+                        style={{ borderLeftColor: invoice.paymentStatus === 'UNPAID' ? '#ef4444' : invoice.paymentStatus === 'PAID' ? '#22c55e' : '#a855f7' }}
                         onClick={() => setSelectedInvoice(invoice)}
                     >
                         <CardHeader className="pb-2">
@@ -58,12 +57,12 @@ export function ApInvoiceList() {
                                     </CardDescription>
                                 </div>
                                 <div className="flex flex-col items-end gap-1">
-                                    <Badge variant={getStatusColor(invoice.status || "Draft") as any}>
-                                        {invoice.status}
+                                    <Badge variant={getStatusColor(invoice.paymentStatus || "UNPAID") as any}>
+                                        {invoice.paymentStatus}
                                     </Badge>
-                                    {invoice.recognitionStatus === "Pending" && (
+                                    {invoice.accountingStatus === "UNACCOUNTED" && (
                                         <span className="text-[10px] text-blue-600 bg-blue-50 px-1.5 rounded border border-blue-100">
-                                            Recog Pending
+                                            Unaccounted
                                         </span>
                                     )}
                                 </div>
@@ -76,7 +75,7 @@ export function ApInvoiceList() {
                                         <DollarSign className="h-3 w-3" /> Amount
                                     </span>
                                     <span className="font-bold text-lg">
-                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.currency || 'USD' }).format(Number(invoice.amount))}
+                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.invoiceCurrencyCode || 'USD' }).format(Number(invoice.invoiceAmount))}
                                     </span>
                                 </div>
 
@@ -95,7 +94,7 @@ export function ApInvoiceList() {
                                             <Percent className="h-3 w-3" /> Tax
                                         </span>
                                         <span>
-                                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.currency || 'USD' }).format(Number(invoice.taxAmount))}
+                                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.invoiceCurrencyCode || 'USD' }).format(Number(invoice.taxAmount))}
                                         </span>
                                     </div>
                                 )}

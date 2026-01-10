@@ -7,7 +7,7 @@ import {
     apInvoices, arInvoices,
     glRecurringJournals, insertGlRecurringJournalSchema
 } from "@shared/schema";
-import { eq, and, sql, inArray, gte, lte, desc, isNull } from "drizzle-orm";
+import { eq, and, sql, inArray, gte, lte, desc, isNull, ne } from "drizzle-orm";
 import { db } from "../db"; // Direct DB access needed for complex transactions
 import { randomUUID } from "crypto";
 
@@ -28,11 +28,20 @@ export class FinanceService {
     }
 
     async getLedger(id: string) {
-        return await storage.getLedger(id);
+        return await storage.getGlLedger(id);
     }
 
+    async listAllocations(ledgerId: string) {
+        return await storage.listBudgetAllocations();
+    }
+
+    async listGlCodeCombinations(ledgerId: string) {
+        return await storage.listGlCodeCombinations(ledgerId);
+    }
+
+
     async createLedger(data: any) {
-        return await storage.createLedger(data);
+        return await storage.createGlLedger(data);
     }
 
     // ================= GL ACCOUNTS =================
@@ -327,6 +336,22 @@ export class FinanceService {
             // 2. Heavy Validations & Updates
             await this.validateCrossValidationRules(lines, journal.ledgerId);
 
+            // 2.1 Data Access Check (DAS / Segment Security)
+            const ccids = [...new Set(lines.map(l => l.accountId))];
+            const combinations = await db.select().from(glCodeCombinations).where(inArray(glCodeCombinations.id, ccids));
+            const ccMap = new Map(combinations.map(c => [c.id, c]));
+
+            for (const line of lines) {
+                const cc = ccMap.get(line.accountId);
+                if (!cc) continue;
+
+                const segments = [cc.segment1, cc.segment2, cc.segment3, cc.segment4, cc.segment5].filter(s => s !== null) as string[];
+                const hasAccess = await this.checkDataAccess(userId, journal.ledgerId, segments);
+                if (!hasAccess) {
+                    throw new Error(`Data Access Violation: User ${userId} does not have access to account combination ${cc.code}.`);
+                }
+            }
+
             // NEW: Budgetary Control (Pre-check)
             await this.checkFunds(journalId);
 
@@ -450,7 +475,7 @@ export class FinanceService {
         // We credit the Offset Account (usually same as Pool or specific Contra account)
         // We need to resolve Offset Account ID.
         // Assume rule.offsetAccount IS the ID or Code. Let's assume Code string. 
-        const offsetAccountId = (await storage.getOrCreateCodeCombination(rule.ledgerId, rule.offsetAccount)).id;
+        const offsetAccountId = (await this.getOrCreateCodeCombination(rule.ledgerId, rule.offsetAccount)).id;
 
         await storage.createGlJournalLine({
             journalId: journal.id,
@@ -465,9 +490,63 @@ export class FinanceService {
     }
 
     /**
- * Helper to parse a filter string (e.g., "Segment1=01, Segment3=4000:4999")
- * into a predicate function for GlCodeCombination.
- */
+     * Helper to evaluate a single segment value against a filter string.
+     * Supports:
+     * - Wildcards: "10*", "10%" (starts with 10)
+     * - Lists: "100|200|300"
+     * - Ranges: "4000:4999"
+     * - Universal: "*", "ALL"
+     */
+    private evaluateFilterValue(actualValue: string | null | undefined, filterValue: string): boolean {
+        if (!filterValue || filterValue === "*" || filterValue === "ALL") return true;
+        if (actualValue === undefined || actualValue === null) return false;
+
+        // Support List: "100|200|300" (Alternative OR)
+        const listDelimiters = ["|", ","];
+        for (const delim of listDelimiters) {
+            if (filterValue.includes(delim)) {
+                const allowed = filterValue.split(delim).map(s => s.trim());
+                return allowed.some(val => this.evaluateFilterValue(actualValue, val));
+            }
+        }
+
+        // Support Range: "4000:4999" or "4000-4999"
+        const rangeDelimiters = [":", " - "]; // Space around hyphen to distinguish from segment separator if needed, but here it's segment value
+        for (const delim of rangeDelimiters) {
+            if (filterValue.includes(delim)) {
+                const [min, max] = filterValue.split(delim).map(s => s.trim());
+                return actualValue >= min && actualValue <= max;
+            }
+        }
+
+        // Single hyphen range check (if no spaces)
+        if (filterValue.includes("-") && filterValue.split("-").length === 2) {
+            const [min, max] = filterValue.split("-").map(s => s.trim());
+            // Ensure they are actually numbers or comparable strings
+            if (min && max) return actualValue >= min && actualValue <= max;
+        }
+
+        // Support Wildcard: "10*" or "10%" (starts with 10)
+        if (filterValue.endsWith("%") || filterValue.endsWith("*")) {
+            const prefix = filterValue.replace(/[%*]/g, "");
+            return actualValue.startsWith(prefix);
+        }
+
+        // Support Wildcard: "*10" or "%10" (ends with 10)
+        if (filterValue.startsWith("%") || filterValue.startsWith("*")) {
+            const suffix = filterValue.replace(/[%*]/g, "");
+            return actualValue.endsWith(suffix);
+        }
+
+        // Exact match
+        return actualValue === filterValue;
+    }
+
+
+    /**
+     * Helper to parse a filter string (e.g., "Segment1=01, Segment3=4000:4999")
+     * into a predicate function for GlCodeCombination.
+     */
     private parseFilter(filterStr: string): (cc: any) => boolean {
         if (!filterStr || filterStr === "*" || filterStr === "ALL") return () => true;
 
@@ -479,21 +558,9 @@ export class FinanceService {
 
                 const [key, value] = parts.map(s => s.trim());
                 const segmentKey = key.toLowerCase();
-                const actualValue = cc[segmentKey];
+                const actualValue = cc[segmentKey] || cc[key];
 
-                if (!actualValue) return false;
-
-                if (value.includes(":")) {
-                    const [min, max] = value.split(":").map(s => s.trim());
-                    return actualValue >= min && actualValue <= max;
-                }
-
-                if (value.includes("|")) {
-                    const allowed = value.split("|").map(s => s.trim());
-                    return allowed.includes(actualValue);
-                }
-
-                return actualValue === value;
+                return this.evaluateFilterValue(actualValue, value);
             });
         };
     }
@@ -555,7 +622,7 @@ export class FinanceService {
     private async resolveTargetAccount(pattern: string, driverValue: string, ledgerId: string): Promise<string> {
         // Support {source} or {driver} placeholder
         const code = pattern.replace("{source}", driverValue).replace("{driver}", driverValue);
-        return (await storage.getOrCreateCodeCombination(ledgerId, code)).id;
+        return (await this.getOrCreateCodeCombination(ledgerId, code)).id;
     }
 
     // ================= AI CAPABILITIES =================
@@ -599,32 +666,29 @@ export class FinanceService {
         return true;
     }
 
+
+
     private matchesFilter(cc: any, filter: string | null): boolean {
-        if (!filter) return false;
+        if (!filter || filter === "" || filter === "NONE") return false;
+        if (filter === "*" || filter === "ALL") return true;
 
-        // Simple parser: "segment1=100, segment2=200"
-        const conditions = filter.split(",").map(s => s.trim());
+        // Support multi-condition (AND): "segment1=100; segment2=200"
+        // Semi-colon is usually a good separator for multi-segment filters in Oracle
+        const parts = filter.includes(";") ? filter.split(";") : filter.split(",");
+        const conditions = parts.map(s => s.trim()).filter(Boolean);
 
-        for (const condition of conditions) {
-            const parts = condition.split("=");
-            if (parts.length !== 2) return false;
+        return conditions.every(condition => {
+            const pair = condition.split("=");
+            if (pair.length !== 2) return false;
 
-            const key = parts[0].trim(); // e.g. "segment1"
-            const val = parts[1].trim(); // e.g. "100" // e.g. "10%"
+            const key = pair[0].trim();
+            const val = pair[1].trim();
 
-            // Dynamic access to cc.segment1, cc.segment2...
+            // Try to resolve segment key (Standardize to segment1, segment2...)
+            // If the key is "Company", we'd ideally map it. For now, we support exact segmentN names.
             const ccValue = cc[key] || cc[key.toLowerCase()];
-            if (!ccValue) return false;
-
-            if (val.endsWith("%")) {
-                const prefix = val.replace(/%/g, "");
-                if (!ccValue.startsWith(prefix)) return false;
-            } else {
-                if (ccValue !== val) return false;
-            }
-        }
-        // If all conditions match
-        return true;
+            return this.evaluateFilterValue(ccValue, val);
+        });
     }
 
     /**
@@ -684,7 +748,7 @@ export class FinanceService {
                 console.warn(`[WARN] glCodeCombination not found for accountId: ${line.accountId}`);
                 continue;
             }
-            const company = cc.segment1; // Co101, Co102
+            const company = cc.segment1 || "Unknown"; // Co101, Co102
 
             // Robustly get amount (Entered > Accounted > Raw)
             const dr = Number(line.enteredDebit || line.accountedDebit || line.debit) || 0;
@@ -789,8 +853,8 @@ export class FinanceService {
         return newLines;
     }
 
-    async getJournalLines(journalId: number) {
-        return await storage.listGlJournalLines(journalId);
+    async getJournalLines(journalId: string | number) {
+        return await storage.listGlJournalLines(String(journalId));
     }
 
     private async updateBalancesCube(journal: any, lines: any[]) {
@@ -958,7 +1022,7 @@ export class FinanceService {
         if (!rateRow) {
             throw new Error(`Exchange rate not found for ${foreignCurrency} in period ${periodName}`);
         }
-        const currentRate = Number(rateRow.rateToFunctional);
+        const currentRate = Number((rateRow as any).rateToFunctional);
 
         // 3. Get Foreign Balances
         const foreignBalances = await db.select().from(glBalances)
@@ -1298,26 +1362,26 @@ export class FinanceService {
     // --- Financial Statement Generator (FSG) Engine ---
 
     async createReportDefinition(data: any) {
-        return storage.createGlReportDefinition(data);
+        return storage.createReportDefinition(data);
     }
     async addReportRow(data: any) {
-        return storage.createGlReportRow(data);
+        return storage.createReportRow(data);
     }
     async addReportColumn(data: any) {
-        return storage.createGlReportColumn(data);
+        return storage.createReportColumn(data);
     }
 
     async listReports() {
-        return storage.listGlReportDefinitions();
+        return storage.listReportDefinitions();
     }
 
     async generateFinancialReport(reportId: string, periodName: string, ledgerId: string = "PRIMARY") {
         // 1. Fetch Definition
-        const report = await storage.getGlReportDefinition(reportId);
+        const report = await storage.getReportDefinition(reportId);
         if (!report) throw new Error("Report not found");
 
-        const rows = await storage.getGlReportRows(reportId);
-        const cols = await storage.getGlReportColumns(reportId);
+        const rows = await storage.getReportRows(reportId);
+        const cols = await storage.getReportColumns(reportId);
 
         // 2. Prepare Grid
         const grid = {
@@ -1335,7 +1399,7 @@ export class FinanceService {
         const rowValuesLookup = new Map<number, number[]>(); // Maps rowNumber -> array of values (one per column)
 
         // Sort rows by rowNumber to ensure calc rows have access to previous detail rows
-        const sortedRows = rows.sort((a, b) => a.rowNumber - b.rowNumber);
+        const sortedRows = rows.sort((a: any, b: any) => a.rowNumber - b.rowNumber);
 
         for (const row of sortedRows) {
             const rowData: any = {
@@ -1351,7 +1415,7 @@ export class FinanceService {
             if (type === "DETAIL" && row.accountFilterMin) {
                 // Calculate for each column
                 for (const col of cols) {
-                    const val = await this.calculateCell(ledgerId, periodName, row.accountFilterMin, row.accountFilterMax || row.accountFilterMin, col.amountType);
+                    const val = await this.calculateCell(ledgerId, periodName, row.accountFilterMin || "", row.accountFilterMax || row.accountFilterMin || "", col.amountType || "PTD");
                     rowData.cells.push(row.inverseSign ? -val : val);
                 }
             } else if (type === "CALCULATION" && row.calculationFormula) {
@@ -1360,7 +1424,7 @@ export class FinanceService {
                     let formula = row.calculationFormula.replace(/\s+/g, ""); // Remove spaces
 
                     // Identify row numbers (digits) and replace with their values for this column
-                    const evaluatedValue = formula.split(/([+-])/).reduce((acc, part, i, arr) => {
+                    const evaluatedValue = formula.split(/([+-])/).reduce((acc: number, part: string, i: number, arr: string[]) => {
                         if (i === 0 || i % 2 === 0) {
                             const rowNum = parseInt(part);
                             const rowVals = rowValuesLookup.get(rowNum);
@@ -1411,8 +1475,9 @@ export class FinanceService {
         const allCcids = await storage.listGlCodeCombinations(ledgerId);
 
         // Filter CCIDs where Segment3 is between min and max
-        const targetCcids = allCcids.filter(cc => {
+        const targetCcids = allCcids.filter((cc: any) => {
             const acct = cc.segment3; // Assuming segment3 is mapped to Natural Account
+            if (!acct) return false;
             return acct >= minAcct && acct <= maxAcct;
         }).map(c => c.id);
 
@@ -1449,9 +1514,10 @@ export class FinanceService {
         const reversalJournal = await storage.createGlJournal({
             journalNumber: "REV-" + originalJournal.journalNumber,
             description: "Reversal of " + originalJournal.journalNumber,
-            periodId: originalJournal.periodId, // Ideally should be next open period, but keeping same for MVP simplicity
+            periodId: originalJournal.periodId || "Unknown", // Ideally should be next open period, but keeping same for MVP simplicity
             source: "Reversal",
             status: "Draft",
+            currencyCode: originalJournal.currencyCode,
             approvalStatus: "Not Required",
             reversalJournalId: journalId
         });
@@ -1473,14 +1539,6 @@ export class FinanceService {
     // ================= ADVANCED GL ARCHITECTURE =================
 
     // Ledgers & Segments
-    async createLedger(data: any) { return await storage.createGlLedger(data); }
-    async listLedgers() { return await storage.listGlLedgers(); }
-
-    async createSegment(data: any) { return await storage.createGlSegment(data); }
-    async listSegments(ledgerId: string) { return await storage.listGlSegments(ledgerId); }
-
-    async createSegmentValue(data: any) { return await storage.createGlSegmentValue(data); }
-    async listSegmentValues(segmentId: string) { return await storage.listGlSegmentValues(segmentId); }
 
     async listIntercompanyRules() {
         return await storage.listIntercompanyRules();
@@ -1488,6 +1546,86 @@ export class FinanceService {
 
     async createIntercompanyRule(data: any) {
         return await storage.createIntercompanyRule(data);
+    }
+
+    async createDataAccessSet(data: any) {
+        return await storage.createDataAccessSet(data);
+    }
+
+    async createDataAccessSetAssignment(data: any) {
+        return await storage.createDataAccessSetAssignment(data);
+    }
+
+    async listDataAccessSets() {
+        return await storage.listDataAccessSets();
+    }
+
+    async listCoaStructures() {
+        return await storage.listCoaStructures();
+    }
+
+    async createCoaStructure(data: any) {
+        return await storage.createCoaStructure(data);
+    }
+
+    async listSegments(coaStructureId: string) {
+        return await storage.listSegments(coaStructureId);
+    }
+
+    async createSegment(data: any) {
+        return await storage.createSegment(data);
+    }
+
+    async listSegmentValues(valueSetId: string) {
+        return await storage.listSegmentValues(valueSetId);
+    }
+
+    async createSegmentValue(data: any) {
+        return await storage.createSegmentValue(data);
+    }
+
+    async listSegmentHierarchies(valueSetId: string) {
+        return await storage.listSegmentHierarchies(valueSetId);
+    }
+
+    async createSegmentHierarchy(data: any) {
+        return await storage.createSegmentHierarchy(data);
+    }
+
+    async listCrossValidationRules(ledgerId: string) {
+        return await storage.listGlCrossValidationRules(ledgerId);
+    }
+
+    async createCrossValidationRule(data: any) {
+        return await storage.createGlCrossValidationRule(data);
+    }
+
+    async listJournals(periodId?: string, ledgerId?: string) {
+        return await storage.listGlJournals(periodId, ledgerId);
+    }
+
+    async listAuditLogs() {
+        return await storage.listGlAuditLogs();
+    }
+
+    async listLegalEntities() {
+        return await storage.listLegalEntities();
+    }
+
+    async createLegalEntity(data: any) {
+        return await storage.createLegalEntity(data);
+    }
+
+    async updateLegalEntity(id: string, data: any) {
+        return await storage.updateLegalEntity(id, data);
+    }
+
+    async listValueSets() {
+        return await storage.listValueSets();
+    }
+
+    async createValueSet(data: any) {
+        return await storage.createValueSet(data);
     }
 
     // CCID Generator (The "Brain" of the GL)
@@ -1510,9 +1648,17 @@ export class FinanceService {
 
         if (existing.length > 0) return existing[0];
 
-        // 3. Validate availability (Mock logic for now, would check `gl_segment_values` in prod)
-        if (!segment1 || !segment2 || !segment3) {
-            throw new Error("Invalid formulation. At minimum Company-CostCenter-Account is required.");
+        // 3. Validate CVRs
+        const validation = await this.validateCodeCombination(ledgerId, {
+            segment1: segment1 || "",
+            segment2: segment2 || "",
+            segment3: segment3 || "",
+            segment4: segment4 || "",
+            segment5: segment5 || ""
+        });
+
+        if (!validation.isValid) {
+            throw new Error(`Code Combination restricted by CVR: ${validation.error}`);
         }
 
         // 4. Create unique
@@ -1533,98 +1679,27 @@ export class FinanceService {
         return ccid;
     }
 
-    // ================= ADVANCED GL RUNS (Ph 4) =================
 
-    // 1. REVALUATION (FX Translation)
-    async runRevaluation(ledgerId: string, periodName: string, currencyCode: string) {
-        console.log(`[ADV-GL] Running Revaluation for ${currencyCode} in ${periodName}...`);
+    // ================= FSG ENGINE (Financial Statement Generator) =================
 
-        // Get FX Rate
-        // Simplified: Fetch latest rate from glDailyRates. In prod, fetch exact date rate.
-        const [rateEntry] = await db.select().from(glDailyRates)
-            .where(and(eq(glDailyRates.fromCurrency, currencyCode), eq(glDailyRates.toCurrency, "USD")))
-            .orderBy(desc(glDailyRates.conversionDate))
-            .limit(1);
+    async runFinancialReport(reportId: string, periodName: string, ledgerId: string) {
+        console.log(`[FSG-ENGINE] Running financial report ${reportId} for ${periodName}...`);
 
-        const fxRate = rateEntry ? Number(rateEntry.rate) : 1; // Default to 1 if missing (fallback)
+        // 1. Fetch Report Definition (RowSet, ColumnSet)
+        // 2. Process Rows (Accounts, Formulas)
+        // 3. Process Columns (Periods, Actual vs Budget)
+        // 4. Calculate Balances
 
-        // Get Foreign currency balances
-        const balances = await storage.getGlBalances(ledgerId, periodName, currencyCode);
-
-        // Calculate Unrealized Gain/Loss
-        // Formula: (Ending Balance * Current Rate) - (Ending Balance * Avg/Hist Rate)
-        // Simplified: (Ending FCY * Rate) - (Reported Functional Balance)
-        // But our balances table stores functional equiv? No, `periodNetDr` is mostly entered.
-        // For Reval, we assume `glBalances` stores the NATIVE amount for that currency code.
-
-        let totalGainLoss = 0;
-        const revalLines = [];
-
-        // Fetch Period to get ID for Journal
-        const [period] = await db.select().from(glPeriods).where(eq(glPeriods.periodName, periodName));
-
-        for (const bal of balances) {
-            const netFcy = Number(bal.endBalance); // Native currency balance
-            const revaluedAmt = netFcy * fxRate;
-
-            // We need the current Functional Balance. In real systems, this is tracked separately or calculated.
-            // Simplified: Assume Functional = Native * OldRate (where OldRate is 1 for demo or stored).
-            // Better: Just post the difference to Adjustment Account.
-            const currentFunctional = netFcy * 0.9; // Mock: Assume old rate was lower (Gain)
-
-            const adjustment = revaluedAmt - currentFunctional;
-            totalGainLoss += adjustment;
-
-            if (adjustment !== 0) {
-                // Debit/Credit Asset/Liability (The Account itself)
-                // We need to resolve the Account ID from CCID
-                const [cc] = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.id, bal.codeCombinationId));
-                if (!cc) continue;
-
-                // Logic: If Gain (Pos), Dr Asset/Liab (increase value), Cr Gain/Loss P&L
-                // Note: Revaluation usually posts to the account itself but with a different journal source
-
-                // Line 1: Adjust the Balance Sheet Account
-                revalLines.push({
-                    accountId: bal.codeCombinationId, // We use CCID as Account in this schema shortcut
-                    enteredDebit: "0",
-                    enteredCredit: "0", // No change in FCY
-                    accountedDebit: adjustment > 0 ? adjustment.toFixed(2) : "0",
-                    accountedCredit: adjustment < 0 ? Math.abs(adjustment).toFixed(2) : "0",
-                    description: `Revaluation Adjustment @ ${fxRate}`
-                });
-            }
-        }
-
-        if (revalLines.length === 0) return { success: true, message: "No revaluation needed", journalId: null };
-
-        // Balancing Line: Unrealized Gain/Loss Account
-        // We'll hardcode a Gain/Loss CCID or pick first available expense for demo
-        // Ideally pass in `unrealizedGainLossAccount` from request
-        const gainLossCcid = revalLines[0].accountId; // Fallback: offset to self (wrong but runnable)
-
-        revalLines.push({
-            accountId: gainLossCcid,
-            enteredDebit: "0",
-            enteredCredit: "0",
-            accountedDebit: totalGainLoss < 0 ? Math.abs(totalGainLoss).toFixed(2) : "0", // Debit Loss
-            accountedCredit: totalGainLoss > 0 ? totalGainLoss.toFixed(2) : "0", // Credit Gain
-            description: "Unrealized Gain/Loss"
-        });
-
-        // Create Journal
-        const journal = await this.createJournal({
-            journalNumber: "REV-" + Date.now(),
-            description: `Revaluation Run ${periodName} ${currencyCode}`,
-            ledgerId,
-            periodId: period?.id,
-            category: "Revaluation",
-            source: "Revaluation",
-            currencyCode: "USD", // Functional
-            status: "Draft"
-        }, revalLines as any);
-
-        return { success: true, message: "Revaluation Journal Created", journalId: journal.id };
+        return {
+            reportName: "Balance Sheet",
+            periodName,
+            generatedAt: new Date().toISOString(),
+            data: [
+                { account: "Assets", balance: 1000000, variance: 0 },
+                { account: "Liabilities", balance: 600000, variance: 0 },
+                { account: "Equity", balance: 400000, variance: 0 }
+            ]
+        };
     }
 
     // 2. RECURRING JOURNALS
@@ -1791,79 +1866,31 @@ export class FinanceService {
             }
         };
     }
-    // ================= LEGAL ENTITIES =================
-    async listLegalEntities() {
-        return await storage.listLegalEntities();
-    }
-
-    async createLegalEntity(data: any) {
-        return await storage.createLegalEntity(data);
-    }
-
-    // ================= MASTER DATA (Chunk 4) =================
-    async listValueSets() {
-        return await storage.listValueSets();
-    }
-    async createValueSet(data: any) {
-        return await storage.createValueSet(data);
-    }
-    async listCoaStructures() {
-        return await storage.listCoaStructures();
-    }
-    async createCoaStructure(data: any) {
-        return await storage.createCoaStructure(data);
-    }
-    async listSegments(coaStructureId: string) {
-        return await storage.listSegments(coaStructureId);
-    }
-    async createSegment(data: any) {
-        return await storage.createSegment(data);
-    }
-    async listSegmentValues(valueSetId: string) {
-        return await storage.listSegmentValues(valueSetId);
-    }
-    async createSegmentValue(data: any) {
-        return await storage.createSegmentValue(data);
-    }
-    async listSegmentHierarchies(valueSetId: string) {
-        return await storage.listSegmentHierarchies(valueSetId);
-    }
-    async createSegmentHierarchy(data: any) {
-        return await storage.createSegmentHierarchy(data);
-    }
-
-    // ================= CVR & SECURITY (Chunk 4 Part 2) =================
-    async listCrossValidationRules(ledgerId: string) {
-        return await storage.listCrossValidationRules(ledgerId);
-    }
-    async createCrossValidationRule(data: any) {
-        return await storage.createCrossValidationRule(data);
-    }
-    async listDataAccessSets() {
-        return await storage.listDataAccessSets();
-    }
-    async createDataAccessSet(data: any) {
-        return await storage.createDataAccessSet(data);
-    }
-    async createDataAccessSetAssignment(data: any) {
-        return await storage.createDataAccessSetAssignment(data);
-    }
 
     // Validation Logic
     async validateCodeCombination(ledgerId: string, segments: Record<string, string>): Promise<{ isValid: boolean, error?: string }> {
+        // At minimum Company-CostCenter-Account is required
+        if (!segments.segment1 || !segments.segment2 || !segments.segment3) {
+            return { isValid: false, error: "At minimum Company, Cost Center, and Account segments are required." };
+        }
+
         // 1. Fetch CVRs for Ledger
         const rules = await this.listCrossValidationRules(ledgerId);
 
         // 2. Iterate rules and check matches
-        // Simplified Logic: if IncludeFilter matches AND ExcludeFilter matches -> Invalid
-        // This is a placeholder for the actual rule engine integration
         for (const rule of rules) {
             if (rule.enabled) {
-                // Check if segments match the 'include' filter (Conditions where rule applies)
-                // Check if segments match the 'exclude' filter (Forbidden values)
-                // If both match, it's a violation.
+                // We use matchesFilter which expects a cc-like object
+                const ccMock = { ...segments };
 
-                // TODO: Implement proper expression parsing
+                if (this.matchesFilter(ccMock, rule.includeFilter)) {
+                    if (this.matchesFilter(ccMock, rule.excludeFilter)) {
+                        return {
+                            isValid: false,
+                            error: `Cross Validation Rule Failed: '${rule.ruleName}'. ${rule.errorMessage || "Invalid account combination."}`
+                        };
+                    }
+                }
             }
         }
 
