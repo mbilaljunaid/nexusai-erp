@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, timestamp, boolean, integer, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, boolean, integer, jsonb, numeric } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -61,7 +61,6 @@ export const glLedgerControls = pgTable("gl_ledger_controls", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-import { numeric } from "drizzle-orm/pg-core";
 
 export const insertGlLedgerControlSchema = createInsertSchema(glLedgerControls);
 export type InsertGlLedgerControl = z.infer<typeof insertGlLedgerControlSchema>;

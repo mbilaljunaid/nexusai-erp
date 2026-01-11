@@ -83,7 +83,7 @@ describe('Phase 1: Security Middleware Tests', () => {
     it('should not expose internal error details', () => {
       const error = new Error('Internal database failure');
       const response = errorResponse('TEST_003', error, 'INTERNAL_ERROR');
-      expect(response.message).not.toContain('database');
+      expect(response.error.message).not.toContain('database');
     });
   });
 

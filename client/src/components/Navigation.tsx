@@ -14,7 +14,7 @@ export function Header() {
 
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "Use Cases", path: "/use-cases" },
+    { label: "Cash Management", path: "/finance/cash-management" },
     { label: "Industries", path: "/industries" },
     { label: "About", path: "/about" },
     { label: "Blog", path: "/blog" },
@@ -39,11 +39,10 @@ export function Header() {
                 to={item.path}
               >
                 <span
-                  className={`text-sm font-medium transition-colors cursor-pointer ${
-                    isActive(item.path)
-                      ? "text-blue-400"
-                      : "text-slate-300 hover:text-white"
-                  }`}
+                  className={`text-sm font-medium transition-colors cursor-pointer ${isActive(item.path)
+                    ? "text-blue-400"
+                    : "text-slate-300 hover:text-white"
+                    }`}
                   data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                 >
                   {item.label}
@@ -52,7 +51,7 @@ export function Header() {
             ))}
 
             {/* Marketplace Dropdown */}
-            <div 
+            <div
               className="relative"
               onMouseEnter={() => setMarketplaceOpen(true)}
               onMouseLeave={() => setMarketplaceOpen(false)}
@@ -104,11 +103,10 @@ export function Header() {
             {/* Community Link */}
             <Link to="/community">
               <span
-                className={`text-sm font-medium transition-colors cursor-pointer ${
-                  isActive("/community")
-                    ? "text-blue-400"
-                    : "text-slate-300 hover:text-white"
-                }`}
+                className={`text-sm font-medium transition-colors cursor-pointer ${isActive("/community")
+                  ? "text-blue-400"
+                  : "text-slate-300 hover:text-white"
+                  }`}
                 data-testid="link-nav-community"
               >
                 Community
@@ -127,7 +125,7 @@ export function Header() {
             </Link>
 
             {/* Documentation Menu */}
-            <div 
+            <div
               className="relative"
               onMouseEnter={() => setDocsOpen(true)}
               onMouseLeave={() => setDocsOpen(false)}
@@ -146,91 +144,91 @@ export function Header() {
                   className="absolute left-0 top-full pt-1 w-72"
                 >
                   <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2">
-                  <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Official Documentation</p>
+                    <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Official Documentation</p>
 
-                  <Link to="/docs/process-flows" className="block">
-                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <Compass className="w-4 h-4 text-blue-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">Process Flows</div>
-                        <div className="text-xs text-slate-400">All 18 end-to-end business processes</div>
+                    <Link to="/docs/process-flows" className="block">
+                      <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <Compass className="w-4 h-4 text-blue-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Process Flows</div>
+                          <div className="text-xs text-slate-400">All 18 end-to-end business processes</div>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
 
-                  <Link to="/docs/implementation" className="block">
-                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <Zap className="w-4 h-4 text-orange-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">Implementation Playbooks</div>
-                        <div className="text-xs text-slate-400">Go-live preparation & best practices</div>
+                    <Link to="/docs/implementation" className="block">
+                      <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <Zap className="w-4 h-4 text-orange-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Implementation Playbooks</div>
+                          <div className="text-xs text-slate-400">Go-live preparation & best practices</div>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
 
-                  <Link to="/docs/technical" className="block">
-                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <Code2 className="w-4 h-4 text-purple-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">Technical Reference</div>
-                        <div className="text-xs text-slate-400">API specs & developer documentation</div>
+                    <Link to="/docs/technical" className="block">
+                      <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <Code2 className="w-4 h-4 text-purple-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Technical Reference</div>
+                          <div className="text-xs text-slate-400">API specs & developer documentation</div>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
 
-                  <Link to="/docs/governance" className="block">
-                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <BookOpen className="w-4 h-4 text-green-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">Governance Policies</div>
-                        <div className="text-xs text-slate-400">Compliance & security standards</div>
+                    <Link to="/docs/governance" className="block">
+                      <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <BookOpen className="w-4 h-4 text-green-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Governance Policies</div>
+                          <div className="text-xs text-slate-400">Compliance & security standards</div>
+                        </div>
                       </div>
+                    </Link>
+
+                    <div className="border-t border-slate-600 mt-1 pt-1">
+                      <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Community Academy</p>
                     </div>
-                  </Link>
 
-                  <div className="border-t border-slate-600 mt-1 pt-1">
-                    <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Community Academy</p>
-                  </div>
-
-                  <Link to="/training/videos" className="block">
-                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <Video className="w-4 h-4 text-red-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">Video Tutorials</div>
-                        <div className="text-xs text-slate-400">Community-contributed video guides</div>
+                    <Link to="/training/videos" className="block">
+                      <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <Video className="w-4 h-4 text-red-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Video Tutorials</div>
+                          <div className="text-xs text-slate-400">Community-contributed video guides</div>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
 
-                  <Link to="/training/apis" className="block">
-                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <FileCode2 className="w-4 h-4 text-cyan-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">API & Integrations</div>
-                        <div className="text-xs text-slate-400">Sample code & integration guides</div>
+                    <Link to="/training/apis" className="block">
+                      <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <FileCode2 className="w-4 h-4 text-cyan-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">API & Integrations</div>
+                          <div className="text-xs text-slate-400">Sample code & integration guides</div>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
 
-                  <Link to="/training/guides" className="block">
-                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <FileText className="w-4 h-4 text-yellow-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">User Guides</div>
-                        <div className="text-xs text-slate-400">Step-by-step how-to tutorials</div>
+                    <Link to="/training/guides" className="block">
+                      <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <FileText className="w-4 h-4 text-yellow-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">User Guides</div>
+                          <div className="text-xs text-slate-400">Step-by-step how-to tutorials</div>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
 
-                  <Link to="/training/materials" className="block">
-                    <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
-                      <FolderOpen className="w-4 h-4 text-emerald-400" />
-                      <div>
-                        <div className="font-semibold text-sm text-slate-100">Training Materials</div>
-                        <div className="text-xs text-slate-400">Courses & learning paths</div>
+                    <Link to="/training/materials" className="block">
+                      <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <FolderOpen className="w-4 h-4 text-emerald-400" />
+                        <div>
+                          <div className="font-semibold text-sm text-slate-100">Training Materials</div>
+                          <div className="text-xs text-slate-400">Courses & learning paths</div>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
                   </div>
                 </div>
               )}
@@ -278,11 +276,10 @@ export function Header() {
               >
                 <button
                   onClick={() => setMenuOpen(false)}
-                  className={`block w-full text-left px-4 py-2 rounded text-sm ${
-                    isActive(item.path)
-                      ? "bg-blue-600 text-white"
-                      : "text-slate-300 hover:bg-slate-800"
-                  }`}
+                  className={`block w-full text-left px-4 py-2 rounded text-sm ${isActive(item.path)
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-300 hover:bg-slate-800"
+                    }`}
                   data-testid={`link-mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                 >
                   {item.label}
@@ -291,8 +288,8 @@ export function Header() {
             ))}
             {/* Mobile Contribution Link - Highlighted */}
             <Link to="/contribution">
-              <button 
-                onClick={() => setMenuOpen(false)} 
+              <button
+                onClick={() => setMenuOpen(false)}
                 className="block w-full text-left px-4 py-2 rounded text-sm bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium"
                 data-testid="link-mobile-contribution"
               >
@@ -315,13 +312,12 @@ export function Header() {
             </div>
             {/* Mobile Community */}
             <Link to="/community">
-              <button 
-                onClick={() => setMenuOpen(false)} 
-                className={`block w-full text-left px-4 py-2 rounded text-sm ${
-                  isActive("/community")
-                    ? "bg-blue-600 text-white"
-                    : "text-slate-300 hover:bg-slate-800"
-                }`}
+              <button
+                onClick={() => setMenuOpen(false)}
+                className={`block w-full text-left px-4 py-2 rounded text-sm ${isActive("/community")
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-300 hover:bg-slate-800"
+                  }`}
                 data-testid="link-mobile-community"
               >
                 Community

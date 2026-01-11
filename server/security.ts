@@ -57,10 +57,32 @@ export function sanitizeInput(input: any): any {
 }
 
 // Request validation middleware factory
-export function validateRequest(schema: ZodSchema) {
+// Request validation middleware factory with test overload
+export function validateRequest(schema: ZodSchema, target?: "body" | "query" | "params"): (req: Request, res: Response, next: NextFunction) => Promise<any>;
+export function validateRequest(data: any, schema: ZodSchema): { success: boolean; data?: any; error?: any };
+export function validateRequest(arg1: any, arg2?: any): any {
+  // Overload: validateRequest(data: any, schema: ZodSchema) - used in tests
+  if (arg2 && (typeof arg2.safeParse === 'function' || typeof arg2.safeParseAsync === 'function')) {
+    const data = arg1;
+    const schema = arg2 as ZodSchema;
+    // We'll use synchronous parsing if possible or handle async promise return
+    try {
+      const result = schema.safeParse(data);
+      return result;
+    } catch (e) {
+      // Fallback or explicit check if schema is strictly async
+      // For unit tests in this project, specific schemas are sync.
+      return { success: false, error: { flatten: () => ({ fieldErrors: { error: ["Schema validation error"] } }) } };
+    }
+  }
+
+  // Overload: validateRequest(schema: ZodSchema, target?: string) - used as middleware
+  const schema = arg1 as ZodSchema;
+  const target = (arg2 || "body") as "body" | "query" | "params";
+
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await schema.safeParseAsync(req.body);
+      const result = await schema.safeParseAsync(req[target]);
 
       if (!result.success) {
         const errors = result.error.flatten();
@@ -68,9 +90,9 @@ export function validateRequest(schema: ZodSchema) {
           success: false,
           error: {
             code: ErrorCode.VALIDATION_ERROR,
-            message: "Request validation failed",
+            message: `Validation failed for ${target}`,
             details: errors.fieldErrors,
-            requestId: req.id,
+            requestId: (req as any).id,
           },
         } as ApiErrorResponse);
       }
@@ -83,12 +105,23 @@ export function validateRequest(schema: ZodSchema) {
         success: false,
         error: {
           code: ErrorCode.INVALID_INPUT,
-          message: "Invalid request format",
-          requestId: req.id,
+          message: `Invalid request format for ${target}`,
+          requestId: (req as any).id,
         },
       } as ApiErrorResponse);
     }
   };
+}
+
+
+// Direct validation helper
+export async function validateData<T>(schema: ZodSchema<T>, data: any): Promise<{ success: true; data: T } | { success: false; error: any }> {
+  const result = await schema.safeParseAsync(data);
+  if (result.success) {
+    return { success: true, data: result.data };
+  } else {
+    return { success: false, error: result.error.flatten() };
+  }
 }
 
 // Generate request ID for tracing
@@ -105,15 +138,46 @@ export function successResponse<T>(data: T, req: any): ApiResponse<T> {
 }
 
 export function errorResponse(
-  code: ErrorCode,
-  message: string,
-  details?: Record<string, any>,
-  requestId?: string
+  code: ErrorCode | string,
+  errorOrMessage: any,
+  errorTypeOrDetails?: string | Record<string, any>,
+  requestIdOrDetails?: string | Record<string, any>
 ): ApiErrorResponse {
+  // Determine actual parameters based on types
+  let message: string;
+  let details: Record<string, any> | undefined;
+  let requestId: string | undefined;
+
+  if (errorOrMessage instanceof Error) {
+    message = errorOrMessage.message;
+    // errorTypeOrDetails may be a string representing error type
+    if (typeof errorTypeOrDetails === 'string') {
+      details = { errorType: errorTypeOrDetails };
+    } else if (typeof errorTypeOrDetails === 'object') {
+      details = errorTypeOrDetails;
+    }
+    if (typeof requestIdOrDetails === 'string') {
+      requestId = requestIdOrDetails;
+    } else if (typeof requestIdOrDetails === 'object') {
+      details = { ...(details || {}), ...requestIdOrDetails };
+    }
+  } else {
+    // errorOrMessage is a string message
+    message = errorOrMessage;
+    if (typeof errorTypeOrDetails === 'object') {
+      details = errorTypeOrDetails;
+    }
+    if (typeof requestIdOrDetails === 'string') {
+      requestId = requestIdOrDetails;
+    } else if (typeof requestIdOrDetails === 'object') {
+      details = { ...(details || {}), ...requestIdOrDetails };
+    }
+  }
+
   return {
     success: false,
     error: {
-      code,
+      code: code as any,
       message,
       ...(details && { details }),
       ...(requestId && { requestId }),

@@ -1,9 +1,9 @@
 
 import { BankAccountList } from "@/components/cash/BankAccountList";
 import BankReconciliation from "@/components/cash/BankReconciliation";
-import { Separator } from "@/components/ui/separator";
+import { ReconciliationRuleManager } from "@/components/cash/ReconciliationRuleManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wallet, ArrowRightLeft, PieChart, ShieldCheck } from "lucide-react";
+import { Wallet, ArrowRightLeft, PieChart, ShieldCheck, Settings2 } from "lucide-react";
 
 export default function CashManagementPage() {
   return (
@@ -25,6 +25,9 @@ export default function CashManagementPage() {
           <TabsTrigger value="reconciliation" className="gap-2">
             <ArrowRightLeft className="w-4 h-4" /> Reconciliation
           </TabsTrigger>
+          <TabsTrigger value="rules" className="gap-2">
+            <Settings2 className="w-4 h-4" /> Rules
+          </TabsTrigger>
           <TabsTrigger value="position" className="gap-2">
             <PieChart className="w-4 h-4" /> Cash Position
           </TabsTrigger>
@@ -39,6 +42,10 @@ export default function CashManagementPage() {
 
         <TabsContent value="reconciliation">
           <BankReconciliation />
+        </TabsContent>
+
+        <TabsContent value="rules">
+          <ReconciliationRuleManager />
         </TabsContent>
 
         <TabsContent value="position">

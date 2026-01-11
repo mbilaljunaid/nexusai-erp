@@ -14,7 +14,9 @@ export const cashBankAccounts = pgTable("cash_bank_accounts", {
     currency: varchar("currency", { length: 10 }).default("USD"),
     swiftCode: varchar("swift_code", { length: 50 }),
     ledgerId: varchar("ledger_id"), // Link to GL Ledger
-    glAccountId: varchar("gl_account_id"), // Link to GL Chart of Accounts (CCID)
+    glAccountId: varchar("gl_account_id"), // Legacy field, keeping for compatibility
+    cashAccountCCID: integer("cash_account_ccid"), // The Asset Account (e.g. 1010)
+    cashClearingCCID: integer("cash_clearing_ccid"), // The Liability/Contra Account (e.g. 2010)
     currentBalance: numeric("current_balance", { precision: 20, scale: 2 }).default("0"),
     active: boolean("active").default(true),
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -26,9 +28,28 @@ export type CashBankAccount = typeof cashBankAccounts.$inferSelect;
 export type InsertCashBankAccount = z.infer<typeof insertCashBankAccountSchema>;
 
 
+
+// Bank Statement Headers: The file/import event itself
+export const cashStatementHeaders = pgTable("cash_statement_headers", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    bankAccountId: varchar("bank_account_id").notNull(),
+    statementNumber: varchar("statement_number", { length: 50 }),
+    statementDate: timestamp("statement_date").notNull(),
+    openingBalance: numeric("opening_balance", { precision: 20, scale: 2 }),
+    closingBalance: numeric("closing_balance", { precision: 20, scale: 2 }),
+    status: varchar("status", { length: 20 }).default("Uploaded"), // Uploaded, Validated, Processed
+    importFormat: varchar("import_format", { length: 20 }), // CSV, MT940, BAI2
+    createdAt: timestamp("created_at").default(sql`now()`)
+});
+
+export const insertCashStatementHeaderSchema = createInsertSchema(cashStatementHeaders);
+export type CashStatementHeader = typeof cashStatementHeaders.$inferSelect;
+export type InsertCashStatementHeader = z.infer<typeof insertCashStatementHeaderSchema>;
+
 // Bank Statement Lines: External transactions from bank feed/CSV
 export const cashStatementLines = pgTable("cash_statement_lines", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    headerId: varchar("header_id"), // Link to header
     bankAccountId: varchar("bank_account_id").notNull(),
     transactionDate: timestamp("transaction_date").notNull(),
     amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
@@ -53,6 +74,7 @@ export const cashTransactions = pgTable("cash_transactions", {
     amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
     transactionDate: timestamp("transaction_date").default(sql`now()`),
     reference: varchar("reference", { length: 100 }),
+    description: text("description"), // For manual transactions
     status: varchar("status", { length: 20 }).default("Unreconciled"), // 'Unreconciled', 'Cleared'
     matchingGroupId: varchar("matching_group_id")
 });

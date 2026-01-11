@@ -116,10 +116,11 @@ import {
   type ArRevenueSchedule, type InsertArRevenueSchedule,
 
   // Cash Management
-  cashBankAccounts, cashTransactions, cashStatementLines, cashReconciliationRules, cashMatchingGroups,
+  cashBankAccounts, cashTransactions, cashStatementLines, cashReconciliationRules, cashMatchingGroups, cashStatementHeaders,
   type CashBankAccount, type InsertCashBankAccount,
   type CashTransaction, type InsertCashTransaction,
   type CashStatementLine, type InsertCashStatementLine,
+  type CashStatementHeader, type InsertCashStatementHeader,
   type CashReconciliationRule, type InsertCashReconciliationRule,
   type CashMatchingGroup, type InsertCashMatchingGroup,
   faTransactionHeaders,
@@ -229,6 +230,11 @@ export interface IStorage {
   listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]>;
   createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine>;
 
+  // Statement Headers
+  listCashStatementHeaders(bankAccountId: string): Promise<CashStatementHeader[]>;
+  createCashStatementHeader(data: InsertCashStatementHeader): Promise<CashStatementHeader>;
+  updateCashStatementHeader(id: string, data: Partial<InsertCashStatementHeader>): Promise<CashStatementHeader>;
+
   listCashTransactions(bankAccountId: string): Promise<CashTransaction[]>;
   createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction>;
   updateCashTransaction(id: string, data: Partial<InsertCashTransaction>): Promise<CashTransaction>;
@@ -236,6 +242,8 @@ export interface IStorage {
   // Rules & Matching
   listCashReconciliationRules(ledgerId: string): Promise<CashReconciliationRule[]>;
   createCashReconciliationRule(data: InsertCashReconciliationRule): Promise<CashReconciliationRule>;
+  updateCashReconciliationRule(id: string, data: Partial<InsertCashReconciliationRule>): Promise<CashReconciliationRule>;
+  deleteCashReconciliationRule(id: string): Promise<void>;
   createCashMatchingGroup(data: InsertCashMatchingGroup): Promise<CashMatchingGroup>;
 
   // Financial Reporting (FSG+)
@@ -1324,6 +1332,17 @@ export class DatabaseStorage implements IStorage {
     const [line] = await db.insert(cashStatementLines).values(data).returning();
     return line;
   }
+  async createCashStatementHeader(data: InsertCashStatementHeader) {
+    const [header] = await db.insert(cashStatementHeaders).values(data).returning();
+    return header;
+  }
+  async listCashStatementHeaders(bankAccountId: string) {
+    return await db.select().from(cashStatementHeaders).where(eq(cashStatementHeaders.bankAccountId, bankAccountId));
+  }
+  async updateCashStatementHeader(id: string, data: Partial<InsertCashStatementHeader>) {
+    const [header] = await db.update(cashStatementHeaders).set(data).where(eq(cashStatementHeaders.id, id)).returning();
+    return header;
+  }
 
   async listCashTransactions(bankAccountId: string) {
     return await db.select().from(cashTransactions).where(eq(cashTransactions.bankAccountId, bankAccountId));
@@ -1380,6 +1399,13 @@ export class DatabaseStorage implements IStorage {
   async createCashReconciliationRule(data: InsertCashReconciliationRule) {
     const [rule] = await db.insert(cashReconciliationRules).values(data).returning();
     return rule;
+  }
+  async updateCashReconciliationRule(id: string, data: Partial<InsertCashReconciliationRule>) {
+    const [rule] = await db.update(cashReconciliationRules).set(data).where(eq(cashReconciliationRules.id, id)).returning();
+    return rule;
+  }
+  async deleteCashReconciliationRule(id: string) {
+    await db.delete(cashReconciliationRules).where(eq(cashReconciliationRules.id, id));
   }
   async createCashMatchingGroup(data: InsertCashMatchingGroup) {
     const [group] = await db.insert(cashMatchingGroups).values(data).returning();

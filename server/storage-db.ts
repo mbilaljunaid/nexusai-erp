@@ -37,15 +37,20 @@ import {
   glCodeCombinations as glCodeCombinationsTable,
   glDailyRates as glDailyRatesTable,
   glJournalBatches as glJournalBatchesTable,
-  apApprovals as apApprovalsTable,
-  // AR Module
-  arCustomers as arCustomersTable,
+  cashStatementLines as cashStatementLinesTable,
+  cashStatementHeaders as cashStatementHeadersTable,
+  cashTransactions as cashTransactionsTable,
+  cashReconciliationRules as cashReconciliationRulesTable,
+  cashMatchingGroups as cashMatchingGroupsTable,
+  cashBankAccounts as cashBankAccountsTable,
+  glJournalApprovals as glJournalApprovalsTable,
   arInvoices as arInvoicesTable,
   arReceipts as arReceiptsTable,
+  arCustomers as arCustomersTable,
   apSuppliers as apSuppliersTable,
   apInvoices as apInvoicesTable,
   apPayments as apPaymentsTable,
-  glJournalApprovals as glJournalApprovalsTable,
+  apApprovals as apApprovalsTable,
   type GlSegmentValue,
   type InsertGlSegmentValue,
   type GlCodeCombination,
@@ -124,7 +129,13 @@ import type {
   GlLedger,
   InsertGlLedger,
   GlSegment,
-  InsertGlSegment
+  InsertGlSegment,
+  CashStatementLine, InsertCashStatementLine,
+  CashStatementHeader, InsertCashStatementHeader,
+  CashTransaction, InsertCashTransaction,
+  CashReconciliationRule, InsertCashReconciliationRule,
+  CashMatchingGroup, InsertCashMatchingGroup,
+  CashBankAccount, InsertCashBankAccount
 } from "@shared/schema";
 
 /**
@@ -1115,4 +1126,81 @@ export const dbStorage = {
   async listTenants(): Promise<Tenant[]> {
     return await db.select().from(tenantsTable);
   },
+
+  // ========== CASH MANAGEMENT (CHUNK 4 & 5) ==========
+  async listCashBankAccounts(): Promise<CashBankAccount[]> {
+    return await db.select().from(cashBankAccountsTable);
+  },
+  async getCashBankAccount(id: string): Promise<CashBankAccount | undefined> {
+    const [account] = await db.select().from(cashBankAccountsTable).where(eq(cashBankAccountsTable.id, id));
+    return account;
+  },
+  async createCashBankAccount(data: InsertCashBankAccount): Promise<CashBankAccount> {
+    const [account] = await db.insert(cashBankAccountsTable).values(data).returning();
+    return account;
+  },
+  async updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>): Promise<CashBankAccount | undefined> {
+    const [updated] = await db.update(cashBankAccountsTable).set(data).where(eq(cashBankAccountsTable.id, id)).returning();
+    return updated;
+  },
+  async deleteCashBankAccount(id: string): Promise<boolean> {
+    const [deleted] = await db.delete(cashBankAccountsTable).where(eq(cashBankAccountsTable.id, id)).returning();
+    return !!deleted;
+  },
+
+  // Headers
+  async listCashStatementHeaders(bankAccountId: string): Promise<CashStatementHeader[]> {
+    return await db.select().from(cashStatementHeadersTable).where(eq(cashStatementHeadersTable.bankAccountId, bankAccountId)).orderBy(desc(cashStatementHeadersTable.statementDate));
+  },
+  async createCashStatementHeader(data: InsertCashStatementHeader): Promise<CashStatementHeader> {
+    const [header] = await db.insert(cashStatementHeadersTable).values(data).returning();
+    return header;
+  },
+  async updateCashStatementHeader(id: string, data: Partial<InsertCashStatementHeader>): Promise<CashStatementHeader> {
+    const [updated] = await db.update(cashStatementHeadersTable).set(data).where(eq(cashStatementHeadersTable.id, id)).returning();
+    return updated;
+  },
+
+  // Lines
+  async listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]> {
+    return await db.select().from(cashStatementLinesTable).where(eq(cashStatementLinesTable.bankAccountId, bankAccountId)).orderBy(desc(cashStatementLinesTable.transactionDate));
+  },
+  async createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine> {
+    const [line] = await db.insert(cashStatementLinesTable).values(data).returning();
+    return line;
+  },
+
+  // Transactions
+  async listCashTransactions(bankAccountId: string): Promise<CashTransaction[]> {
+    return await db.select().from(cashTransactionsTable).where(eq(cashTransactionsTable.bankAccountId, bankAccountId)).orderBy(desc(cashTransactionsTable.transactionDate));
+  },
+  async createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction> {
+    const [txn] = await db.insert(cashTransactionsTable).values(data).returning();
+    return txn;
+  },
+  async updateCashTransaction(id: string, data: Partial<InsertCashTransaction>): Promise<CashTransaction> {
+    const [updated] = await db.update(cashTransactionsTable).set(data).where(eq(cashTransactionsTable.id, id)).returning();
+    return updated;
+  },
+
+  // Rules
+  async listCashReconciliationRules(ledgerId: string): Promise<CashReconciliationRule[]> {
+    return await db.select().from(cashReconciliationRulesTable).where(eq(cashReconciliationRulesTable.ledgerId, ledgerId));
+  },
+  async createCashReconciliationRule(data: InsertCashReconciliationRule): Promise<CashReconciliationRule> {
+    const [rule] = await db.insert(cashReconciliationRulesTable).values(data).returning();
+    return rule;
+  },
+  async createCashMatchingGroup(data: InsertCashMatchingGroup): Promise<CashMatchingGroup> {
+    const [group] = await db.insert(cashMatchingGroupsTable).values(data).returning();
+    return group;
+  },
+
+  // Fsg (Placeholder implementations to satisfy interface)
+  async listFsgRowSets(ledgerId: string): Promise<any[]> { return []; },
+  async getFsgRowSet(id: string): Promise<any> { return undefined; },
+  async createFsgRowSet(data: any): Promise<any> { return {}; },
+  async listFsgColumnSets(ledgerId: string): Promise<any[]> { return []; },
+  async getFsgColumnSet(id: string): Promise<any> { return undefined; },
+  async createFsgColumnSet(data: any): Promise<any> { return {}; },
 };

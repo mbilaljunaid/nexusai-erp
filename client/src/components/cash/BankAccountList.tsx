@@ -5,13 +5,14 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-    Plus, Wallet, ArrowUpRight, ArrowDownLeft, Building2, CreditCard, RefreshCw
+    Plus, Wallet, ArrowUpRight, ArrowDownLeft, Building2, CreditCard, RefreshCw, TrendingUp
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { CashBankAccount } from "@shared/schema";
 import { Link } from "wouter";
+import { RevaluationDialog } from "./RevaluationDialog";
 
 export function BankAccountList() {
     const { data: accounts, isLoading } = useQuery<CashBankAccount[]>({
@@ -21,6 +22,8 @@ export function BankAccountList() {
     const { data: position } = useQuery<{ totalBalance: number }>({
         queryKey: ["/api/cash/position"]
     });
+
+    const [selectedRevalAccount, setSelectedRevalAccount] = useState<{ id: string, name: string, currency: string } | null>(null);
 
     if (isLoading) {
         return <div className="p-8 text-center text-muted-foreground">Loading accounts...</div>;
@@ -92,11 +95,32 @@ export function BankAccountList() {
                                             Reconcile
                                         </Button>
                                     </Link>
+                                    {account.currency !== 'USD' && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-7 px-2 text-primary"
+                                            onClick={() => setSelectedRevalAccount({ id: account.id, name: account.name, currency: account.currency || 'USD' })}
+                                        >
+                                            <TrendingUp className="h-3 w-3 mr-1" />
+                                            Revalue
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
                 ))}
+
+                {selectedRevalAccount && (
+                    <RevaluationDialog
+                        accountId={selectedRevalAccount.id}
+                        accountName={selectedRevalAccount.name}
+                        currency={selectedRevalAccount.currency}
+                        isOpen={!!selectedRevalAccount}
+                        onClose={() => setSelectedRevalAccount(null)}
+                    />
+                )}
 
                 {/* Empty State Card */}
                 {(!accounts || accounts.length === 0) && (
