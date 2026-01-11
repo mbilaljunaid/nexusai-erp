@@ -130,6 +130,8 @@ export default function ImportStatementDialog({ open, onClose, accountId }: Prop
                                 className="hidden"
                                 accept={format === 'CSV' ? '.csv' : '.txt,.sta,.xml'}
                                 onChange={handleFileChange}
+                                title="Bank statement file upload"
+                                aria-label="Bank statement file upload"
                             />
 
                             {file ? (

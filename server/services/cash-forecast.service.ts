@@ -34,9 +34,16 @@ export class CashForecastService {
      * 2. Confirmed AP Invoices (Unpaid, due within range) -> Outflows
      * 3. Confirmed AR Invoices (Unpaid, due within range) -> Inflows
      */
-    async generateForecast(startDate: Date = new Date(), days: number = 5): Promise<DailyForecast[]> {
+    async generateForecast(startDate: Date = new Date(), days: number = 5, scenario: "BASELINE" | "OPTIMISTIC" | "PESSIMISTIC" = "BASELINE"): Promise<DailyForecast[]> {
         const endDate = new Date(startDate);
         endDate.setDate(startDate.getDate() + days);
+
+        // Scenario Multipliers
+        const multipliers = {
+            BASELINE: { inflow: 1.0, outflow: 1.0 },
+            OPTIMISTIC: { inflow: 1.1, outflow: 0.9 }, // Faster collections, managed payments
+            PESSIMISTIC: { inflow: 0.8, outflow: 1.2 }  // Slow collections, high urgent payments
+        }[scenario];
 
         // 1. Get Current Liquidity Position (Across all enabled accounts)
         // In a real scenario, this might filter by Ledger or Currency. 
@@ -88,8 +95,8 @@ export class CashForecastService {
             const inputs = arInflows.filter(t => t.date && t.date.toISOString().startsWith(dateStr));
             const outputs = apOutflows.filter(t => t.date && t.date.toISOString().startsWith(dateStr));
 
-            const dailyInflow = inputs.reduce((sum, item) => sum + Number(item.amount), 0);
-            const dailyOutflow = outputs.reduce((sum, item) => sum + Number(item.amount), 0);
+            const dailyInflow = inputs.reduce((sum, item) => sum + Number(item.amount), 0) * multipliers.inflow;
+            const dailyOutflow = outputs.reduce((sum, item) => sum + Number(item.amount), 0) * multipliers.outflow;
             const netChange = dailyInflow - dailyOutflow;
 
             const closing = runningBalance + netChange;

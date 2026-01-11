@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
     Card,
@@ -16,7 +16,9 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { TrendingUp, TrendingDown, ArrowRight, Zap, AlertTriangle, Activity } from "lucide-react";
 import {
     ResponsiveContainer,
     ComposedChart,
@@ -49,8 +51,9 @@ interface DailyForecast {
 }
 
 export function CashForecastWidget() {
+    const [scenario, setScenario] = useState<"BASELINE" | "OPTIMISTIC" | "PESSIMISTIC">("BASELINE");
     const { data: forecast = [], isLoading } = useQuery<DailyForecast[]>({
-        queryKey: ["/api/cash/forecast", { days: 5 }],
+        queryKey: ["/api/cash/forecast", { days: 5, scenario }],
     });
 
     if (isLoading) {
@@ -70,8 +73,41 @@ export function CashForecastWidget() {
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle>5-Day Liquidity Forecast</CardTitle>
-                        <CardDescription>Projected cash position based on AP/AR schedules.</CardDescription>
+                        <CardTitle className="flex items-center gap-2">
+                            5-Day Liquidity Forecast
+                            {scenario !== 'BASELINE' && (
+                                <Badge variant="secondary" className={scenario === 'OPTIMISTIC' ? 'bg-green-100 text-green-700 hover:bg-green-100' : 'bg-red-100 text-red-700 hover:bg-red-100'}>
+                                    {scenario} SCENARIO
+                                </Badge>
+                            )}
+                        </CardTitle>
+                        <CardDescription>Projected cash position including stress-test scenarios.</CardDescription>
+                    </div>
+                    <div className="flex bg-muted p-1 rounded-lg gap-1">
+                        <Button
+                            variant={scenario === "BASELINE" ? "secondary" : "ghost"}
+                            size="sm"
+                            className="h-7 text-[10px] uppercase font-bold"
+                            onClick={() => setScenario("BASELINE")}
+                        >
+                            <Activity className="w-3 h-3 mr-1" /> Baseline
+                        </Button>
+                        <Button
+                            variant={scenario === "OPTIMISTIC" ? "secondary" : "ghost"}
+                            size="sm"
+                            className="h-7 text-[10px] uppercase font-bold"
+                            onClick={() => setScenario("OPTIMISTIC")}
+                        >
+                            <Zap className="w-3 h-3 mr-1" /> Optimistic
+                        </Button>
+                        <Button
+                            variant={scenario === "PESSIMISTIC" ? "secondary" : "ghost"}
+                            size="sm"
+                            className="h-7 text-[10px] uppercase font-bold"
+                            onClick={() => setScenario("PESSIMISTIC")}
+                        >
+                            <AlertTriangle className="w-3 h-3 mr-1" /> Risk
+                        </Button>
                     </div>
                 </div>
             </CardHeader>

@@ -411,6 +411,53 @@ export class CashService {
 
         return summary;
     }
+
+    async getReconciliationReport(bankAccountId: string) {
+        const account = await storage.getCashBankAccount(bankAccountId);
+        if (!account) throw new Error("Bank account not found");
+
+        const statementLines = await storage.listCashStatementLines(bankAccountId);
+        const transactions = await storage.listCashTransactions(bankAccountId);
+
+        const reconciledLines = statementLines.filter(l => l.reconciled);
+        const unreconciledLines = statementLines.filter(l => !l.reconciled);
+        const clearedTrx = transactions.filter(t => t.status === "Cleared");
+        const unclearedTrx = transactions.filter(t => t.status === "Unreconciled");
+
+        // Simple Balance Calculation for Report
+        const ledgerBalance = transactions.reduce((acc, t) => acc + Number(t.amount), 0);
+        const statementBalance = statementLines.reduce((acc, l) => acc + Number(l.amount), 0); // Simplified
+
+        return {
+            account: {
+                name: account.name,
+                accountNumber: account.accountNumber,
+                bankName: account.bankName,
+                currency: account.currency
+            },
+            summary: {
+                ledgerBalance,
+                statementBalance,
+                variance: statementBalance - ledgerBalance,
+                reconciledCount: reconciledLines.length,
+                unreconciledCount: unreconciledLines.length
+            },
+            details: {
+                unreconciledLines: unreconciledLines.map(l => ({
+                    date: l.transactionDate,
+                    description: l.description,
+                    amount: l.amount,
+                    ref: l.referenceNumber
+                })),
+                unclearedTransactions: unclearedTrx.map(t => ({
+                    date: t.transactionDate,
+                    description: t.description,
+                    amount: t.amount,
+                    ref: t.reference
+                }))
+            }
+        };
+    }
 }
 
 export const cashService = new CashService();

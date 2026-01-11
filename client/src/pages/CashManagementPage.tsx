@@ -2,8 +2,10 @@
 import { BankAccountList } from "@/components/cash/BankAccountList";
 import BankReconciliation from "@/components/cash/BankReconciliation";
 import { ReconciliationRuleManager } from "@/components/cash/ReconciliationRuleManager";
+import { PeriodCloseDashboard } from "@/components/cash/PeriodCloseDashboard";
+import { ZbaManager } from "@/components/cash/ZbaManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wallet, ArrowRightLeft, PieChart, ShieldCheck, Settings2 } from "lucide-react";
+import { Wallet, ArrowRightLeft, PieChart, ShieldCheck, Settings2, Lock, Landmark } from "lucide-react";
 
 export default function CashManagementPage() {
   return (
@@ -28,8 +30,11 @@ export default function CashManagementPage() {
           <TabsTrigger value="rules" className="gap-2">
             <Settings2 className="w-4 h-4" /> Rules
           </TabsTrigger>
-          <TabsTrigger value="position" className="gap-2">
-            <PieChart className="w-4 h-4" /> Cash Position
+          <TabsTrigger value="close" className="gap-2">
+            <Lock className="w-4 h-4" /> Period Close
+          </TabsTrigger>
+          <TabsTrigger value="treasury" className="gap-2">
+            <Landmark className="w-4 h-4" /> Treasury Ops
           </TabsTrigger>
           <TabsTrigger value="audit" className="gap-2">
             <ShieldCheck className="w-4 h-4" /> Audit Logs
@@ -48,12 +53,12 @@ export default function CashManagementPage() {
           <ReconciliationRuleManager />
         </TabsContent>
 
-        <TabsContent value="position">
-          <div className="p-12 text-center bg-muted/20 rounded-xl border-2 border-dashed border-muted-foreground/10">
-            <PieChart className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="text-lg font-medium">Cash Forecasting Engine</h3>
-            <p className="text-sm text-muted-foreground">Detailed liquidity analysis is being calculated based on your AP/AR forecasts.</p>
-          </div>
+        <TabsContent value="close">
+          <PeriodCloseDashboard />
+        </TabsContent>
+
+        <TabsContent value="treasury">
+          <ZbaManager />
         </TabsContent>
 
         <TabsContent value="audit">

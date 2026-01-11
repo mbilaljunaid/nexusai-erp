@@ -246,6 +246,13 @@ export interface IStorage {
   deleteCashReconciliationRule(id: string): Promise<void>;
   createCashMatchingGroup(data: InsertCashMatchingGroup): Promise<CashMatchingGroup>;
 
+  // ZBA
+  listCashZbaStructures(): Promise<CashZbaStructure[]>;
+  createCashZbaStructure(data: InsertCashZbaStructure): Promise<CashZbaStructure>;
+  updateCashZbaStructure(id: string, data: Partial<InsertCashZbaStructure>): Promise<CashZbaStructure>;
+  createCashZbaSweep(data: InsertCashZbaSweep): Promise<CashZbaSweep>;
+  listCashZbaSweeps(structureId?: string): Promise<CashZbaSweep[]>;
+
   // Financial Reporting (FSG+)
   listFsgRowSets(ledgerId: string): Promise<GlFsgRowSet[]>;
   getFsgRowSet(id: string): Promise<GlFsgRowSet | undefined>;
@@ -1410,6 +1417,29 @@ export class DatabaseStorage implements IStorage {
   async createCashMatchingGroup(data: InsertCashMatchingGroup) {
     const [group] = await db.insert(cashMatchingGroups).values(data).returning();
     return group;
+  }
+
+  // ZBA
+  async listCashZbaStructures() {
+    return await db.select().from(cashZbaStructures);
+  }
+  async createCashZbaStructure(data: InsertCashZbaStructure) {
+    const [res] = await db.insert(cashZbaStructures).values(data).returning();
+    return res;
+  }
+  async updateCashZbaStructure(id: string, data: Partial<InsertCashZbaStructure>) {
+    const [res] = await db.update(cashZbaStructures).set(data).where(eq(cashZbaStructures.id, id)).returning();
+    return res;
+  }
+  async createCashZbaSweep(data: InsertCashZbaSweep) {
+    const [res] = await db.insert(cashZbaSweeps).values(data).returning();
+    return res;
+  }
+  async listCashZbaSweeps(structureId?: string) {
+    if (structureId) {
+      return await db.select().from(cashZbaSweeps).where(eq(cashZbaSweeps.structureId, structureId)).orderBy(desc(cashZbaSweeps.sweepDate));
+    }
+    return await db.select().from(cashZbaSweeps).orderBy(desc(cashZbaSweeps.sweepDate));
   }
 
 

@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-    Plus, Wallet, ArrowUpRight, ArrowDownLeft, Building2, CreditCard, RefreshCw, TrendingUp
+    Plus, Wallet, ArrowUpRight, ArrowDownLeft, Building2, CreditCard, RefreshCw, TrendingUp, Edit3
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CashBankAccount } from "@shared/schema";
 import { Link } from "wouter";
 import { RevaluationDialog } from "./RevaluationDialog";
+import { BankAccountDialog } from "./BankAccountDialog";
 
 export function BankAccountList() {
     const { data: accounts, isLoading } = useQuery<CashBankAccount[]>({
@@ -24,6 +25,7 @@ export function BankAccountList() {
     });
 
     const [selectedRevalAccount, setSelectedRevalAccount] = useState<{ id: string, name: string, currency: string } | null>(null);
+    const [accountDialog, setAccountDialog] = useState<{ isOpen: boolean, account?: any }>({ isOpen: false });
 
     if (isLoading) {
         return <div className="p-8 text-center text-muted-foreground">Loading accounts...</div>;
@@ -51,7 +53,7 @@ export function BankAccountList() {
 
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold tracking-tight">Bank Accounts</h2>
-                <Button>
+                <Button onClick={() => setAccountDialog({ isOpen: true })}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Account
                 </Button>
@@ -62,7 +64,17 @@ export function BankAccountList() {
                     <Card key={account.id} className="relative overflow-hidden group hover:shadow-lg transition-all border-l-4 border-l-primary/50">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <div className="flex flex-col">
-                                <CardTitle className="text-lg font-bold">{account.name}</CardTitle>
+                                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                                    {account.name}
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={() => setAccountDialog({ isOpen: true, account })}
+                                    >
+                                        <Edit3 className="h-3 w-3" />
+                                    </Button>
+                                </CardTitle>
                                 <CardDescription className="flex items-center gap-1">
                                     <Building2 className="h-3 w-3" />
                                     {account.bankName}
@@ -112,6 +124,12 @@ export function BankAccountList() {
                     </Card>
                 ))}
 
+                <BankAccountDialog
+                    isOpen={accountDialog.isOpen}
+                    onClose={() => setAccountDialog({ isOpen: false })}
+                    account={accountDialog.account}
+                />
+
                 {selectedRevalAccount && (
                     <RevaluationDialog
                         accountId={selectedRevalAccount.id}
@@ -127,7 +145,7 @@ export function BankAccountList() {
                     <div className="col-span-full flex flex-col items-center justify-center p-12 border-2 border-dashed rounded-lg text-muted-foreground">
                         <Wallet className="h-10 w-10 mb-4 opacity-20" />
                         <p>No bank accounts configured.</p>
-                        <Button variant="ghost" className="mt-2 text-primary">Setup your first bank account</Button>
+                        <Button variant="ghost" className="mt-2 text-primary" onClick={() => setAccountDialog({ isOpen: true })}>Setup your first bank account</Button>
                     </div>
                 )}
             </div>

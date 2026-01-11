@@ -46,16 +46,57 @@ export class CsvStatementParser implements BankStatementParser {
 
 export class Mt940StatementParser implements BankStatementParser {
     async parse(content: Buffer): Promise<{ header: Partial<InsertCashStatementHeader>, lines: Partial<InsertCashStatementLine>[] }> {
-        // Placeholder for MT940 parsing logic (Chunk 5 advanced)
-        // For now, return empty or error
         throw new Error("MT940 parsing not yet implemented");
+    }
+}
+
+export class Camt053StatementParser implements BankStatementParser {
+    async parse(content: Buffer): Promise<{ header: Partial<InsertCashStatementHeader>, lines: Partial<InsertCashStatementLine>[] }> {
+        // Simplified ISO 20022 camt.053 parsing simulation
+        const text = content.toString('utf-8');
+        if (!text.includes('<camt.053')) {
+            throw new Error("Invalid camt.053 file format");
+        }
+
+        const lines: Partial<InsertCashStatementLine>[] = [];
+
+        // Mock extraction of entries from XML
+        // In camt.053, we look for <Ntry> blocks
+        // For simulation, we'll use regex to find potential entries
+        const entries = text.split('<Ntry>');
+        entries.shift(); // First part is header
+
+        for (const entry of entries) {
+            const amount = entry.match(/<Amt>([\d.]+)<\/Amt>/)?.[1];
+            const date = entry.match(/<BookgDt>.*?<Dt>([\d-]+)<\/Dt>/)?.[1];
+            const desc = entry.match(/<AddtlNtryInf>([^<]+)<\/AddtlNtryInf>/)?.[1] || "Bank Entry";
+            const code = entry.match(/<Domn>.*?<Cd>([^<]+)<\/Cd>/)?.[1]; // Proprietary or ISO code
+
+            if (amount && date) {
+                lines.push({
+                    transactionDate: new Date(date),
+                    amount,
+                    description: code === 'CHGS' ? `[BSG] ${desc}` : desc,
+                    referenceNumber: `CAMT-${Date.now()}-${Math.random().toString(36).substring(7)}`
+                });
+            }
+        }
+
+        return {
+            header: {
+                importFormat: 'CAMT.053',
+                statementDate: new Date()
+            },
+            lines
+        };
     }
 }
 
 export class CashImportService {
     private parsers: Record<string, BankStatementParser> = {
         'CSV': new CsvStatementParser(),
-        'MT940': new Mt940StatementParser()
+        'MT940': new Mt940StatementParser(),
+        'CAMT.053': new Camt053StatementParser()
     };
 
     async importBankStatement(
@@ -74,7 +115,7 @@ export class CashImportService {
         // Create Header
         const statementHeader = await storage.createCashStatementHeader({
             bankAccountId,
-            statementNumber: `STMT-${Date.now()}`, // Generate basic default
+            statementNumber: `STMT-${Date.now()}`,
             statementDate: header.statementDate || new Date(),
             status: "Uploaded",
             importFormat: format,
@@ -84,7 +125,7 @@ export class CashImportService {
         // Create Lines
         const createdLines = [];
         for (const line of lines) {
-            createdLines.push(await storage.createCashStatementLine({
+            const createdLine = await storage.createCashStatementLine({
                 bankAccountId,
                 headerId: statementHeader.id,
                 amount: line.amount as any,
@@ -93,7 +134,27 @@ export class CashImportService {
                 referenceNumber: line.referenceNumber,
                 reconciled: false,
                 ...line as any
-            }));
+            });
+
+            // BSG Automation: If description indicates a Bank Service Charge (BSG), auto-create GL transaction
+            if (line.description?.includes('[BSG]')) {
+                console.log(`[CASH] BSG Automation: Recording bank fee for line ${createdLine.id}`);
+                await storage.createCashTransaction({
+                    bankAccountId,
+                    sourceModule: "GL",
+                    sourceId: createdLine.id,
+                    amount: line.amount as any,
+                    description: `Bank Service Charge: ${line.description}`,
+                    transactionDate: line.transactionDate || new Date(),
+                    status: "Cleared", // Auto-cleared since it's from the bank
+                    matchingGroupId: null
+                });
+
+                // Mark line as reconciled immediately
+                await storage.updateCashStatementLine(createdLine.id, { reconciled: true });
+            }
+
+            createdLines.push(createdLine);
         }
 
         return { header: statementHeader, lines: createdLines };

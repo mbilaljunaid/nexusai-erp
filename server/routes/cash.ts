@@ -1,6 +1,7 @@
-
 import { Router } from "express";
 import { cashService } from "../services/cash";
+import { zbaService } from "../services/zba";
+import { storage } from "../storage";
 import { cashImportService } from "../services/cash-import.service";
 import { cashForecastService } from "../services/cash-forecast.service";
 import { cashRevaluationService } from "../services/cash-revaluation.service";
@@ -50,8 +51,9 @@ router.get("/position", async (req, res) => {
 
 router.get("/forecast", async (req, res) => {
     try {
-        const { days } = req.query;
-        const forecast = await cashForecastService.generateForecast(new Date(), Number(days) || 5);
+        const days = req.query.days ? parseInt(req.query.days as string) : 5;
+        const scenario = (req.query.scenario as any) || "BASELINE";
+        const forecast = await cashForecastService.generateForecast(new Date(), days, scenario);
         res.json(forecast);
     } catch (error) {
         res.status(500).json({ message: "Failed to generate cash forecast" });
@@ -216,6 +218,70 @@ router.get("/reconcile/summary", async (req, res) => {
         res.json(summary);
     } catch (error) {
         res.status(500).json({ message: "Failed to get reconciliation summary" });
+    }
+});
+
+router.get("/accounts/:id/reconcile-report", async (req, res) => {
+    try {
+        const report = await cashService.getReconciliationReport(req.params.id);
+        res.json(report);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to generate reconciliation report" });
+    }
+});
+
+// ZBA Routes
+router.get("/zba/structures", async (req, res) => {
+    try {
+        const structures = await zbaService.listStructures();
+        res.json(structures);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list ZBA structures" });
+    }
+});
+
+router.post("/zba/structures", async (req, res) => {
+    try {
+        const structure = await zbaService.createStructure(req.body);
+        res.json(structure);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to create ZBA structure" });
+    }
+});
+
+router.get("/zba/sweeps", async (req, res) => {
+    try {
+        const sweeps = await zbaService.listSweeps();
+        res.json(sweeps);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list ZBA sweeps" });
+    }
+});
+
+router.post("/zba/execute-sweeps", async (req, res) => {
+    try {
+        const result = await zbaService.executeSweeps();
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to execute ZBA sweeps" });
+    }
+});
+
+router.post("/zba/structures/:id/approve", async (req, res) => {
+    try {
+        const structure = await zbaService.approveStructure(req.params.id);
+        res.json(structure);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to approve ZBA structure" });
+    }
+});
+
+router.post("/zba/structures/:id/reject", async (req, res) => {
+    try {
+        const structure = await zbaService.rejectStructure(req.params.id);
+        res.json(structure);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to reject ZBA structure" });
     }
 });
 

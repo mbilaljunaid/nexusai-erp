@@ -1,5 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
@@ -8,7 +9,9 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, CheckCircle2, Clock, AlertTriangle, Building2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, CheckCircle2, Clock, AlertTriangle, Building2, FileText } from "lucide-react";
+import { ReconciliationReportDialog } from "./ReconciliationReportDialog";
 
 interface ReconciliationSummary {
     accountId: string;
@@ -22,6 +25,9 @@ interface ReconciliationSummary {
 }
 
 export function PeriodCloseDashboard() {
+    const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
+    const [reportOpen, setReportOpen] = useState(false);
+
     const { data: summary, isLoading } = useQuery<ReconciliationSummary[]>({
         queryKey: ["/api/cash/reconcile/summary"]
     });
@@ -29,6 +35,11 @@ export function PeriodCloseDashboard() {
     if (isLoading) {
         return <div className="p-8 text-center text-muted-foreground">Analysing period status...</div>;
     }
+
+    const handleViewReport = (accountId: string) => {
+        setSelectedAccountId(accountId);
+        setReportOpen(true);
+    };
 
     const totalAccounts = summary?.length || 0;
     const completedAccounts = summary?.filter(s => s.status === "Complete").length || 0;
@@ -92,6 +103,7 @@ export function PeriodCloseDashboard() {
                                 <TableHead>Progress</TableHead>
                                 <TableHead>Exceptions</TableHead>
                                 <TableHead>Status</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -139,12 +151,29 @@ export function PeriodCloseDashboard() {
                                             <Badge variant="secondary">In Progress</Badge>
                                         )}
                                     </TableCell>
+                                    <TableCell className="text-right">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="gap-2"
+                                            onClick={() => handleViewReport(account.accountId)}
+                                        >
+                                            <FileText className="h-4 w-4" />
+                                            Report
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </CardContent>
             </Card>
+
+            <ReconciliationReportDialog
+                bankAccountId={selectedAccountId}
+                open={reportOpen}
+                onClose={() => setReportOpen(false)}
+            />
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-4 items-start">
                 <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />

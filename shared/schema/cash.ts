@@ -14,6 +14,7 @@ export const cashBankAccounts = pgTable("cash_bank_accounts", {
     currency: varchar("currency", { length: 10 }).default("USD"),
     swiftCode: varchar("swift_code", { length: 50 }),
     ledgerId: varchar("ledger_id"), // Link to GL Ledger
+    secondaryLedgerId: varchar("secondary_ledger_id"), // Secondary reporting ledger
     glAccountId: varchar("gl_account_id"), // Legacy field, keeping for compatibility
     cashAccountCCID: integer("cash_account_ccid"), // The Asset Account (e.g. 1010)
     cashClearingCCID: integer("cash_clearing_ccid"), // The Liability/Contra Account (e.g. 2010)
@@ -111,3 +112,35 @@ export const cashMatchingGroups = pgTable("cash_matching_groups", {
 export const insertCashMatchingGroupSchema = createInsertSchema(cashMatchingGroups);
 export type InsertCashMatchingGroup = z.infer<typeof insertCashMatchingGroupSchema>;
 export type CashMatchingGroup = typeof cashMatchingGroups.$inferSelect;
+
+// ZBA Hierarchies: Treasury structures for automated sweeping
+export const cashZbaStructures = pgTable("cash_zba_structures", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    masterAccountId: varchar("master_account_id").notNull(),
+    subAccountId: varchar("sub_account_id").notNull(),
+    targetBalance: numeric("target_balance", { precision: 20, scale: 2 }).default("0"),
+    status: varchar("status", { length: 20 }).default("Active"), // 'Pending', 'Active', 'Rejected'
+    pendingData: jsonb("pending_data"), // New data waiting for approval
+    active: boolean("active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`)
+});
+
+export const insertCashZbaStructureSchema = createInsertSchema(cashZbaStructures);
+export type InsertCashZbaStructure = z.infer<typeof insertCashZbaStructureSchema>;
+export type CashZbaStructure = typeof cashZbaStructures.$inferSelect;
+
+// ZBA Sweep History: Log of automated fund movements
+export const cashZbaSweeps = pgTable("cash_zba_sweeps", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    structureId: varchar("structure_id").notNull(),
+    sweepDate: timestamp("sweep_date").default(sql`now()`),
+    amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
+    direction: varchar("direction", { length: 20 }).notNull(), // 'SUB_TO_MASTER', 'MASTER_TO_SUB'
+    transactionId: varchar("transaction_id"), // Link to Cash Transaction
+    status: varchar("status", { length: 20 }).default("Completed")
+});
+
+export const insertCashZbaSweepSchema = createInsertSchema(cashZbaSweeps);
+export type InsertCashZbaSweep = z.infer<typeof insertCashZbaSweepSchema>;
+export type CashZbaSweep = typeof cashZbaSweeps.$inferSelect;
+
