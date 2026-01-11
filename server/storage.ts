@@ -117,12 +117,15 @@ import {
 
   // Cash Management
   cashBankAccounts, cashTransactions, cashStatementLines, cashReconciliationRules, cashMatchingGroups, cashStatementHeaders,
+  cashZbaStructures, cashZbaSweeps,
   type CashBankAccount, type InsertCashBankAccount,
   type CashTransaction, type InsertCashTransaction,
   type CashStatementLine, type InsertCashStatementLine,
   type CashStatementHeader, type InsertCashStatementHeader,
   type CashReconciliationRule, type InsertCashReconciliationRule,
   type CashMatchingGroup, type InsertCashMatchingGroup,
+  type CashZbaStructure, type InsertCashZbaStructure,
+  type CashZbaSweep, type InsertCashZbaSweep,
   faTransactionHeaders,
   // Fixed Assets (DB)
   faAdditions, faBooks, faTransactionHeaders as faTransactionsTable, faCategories,
@@ -229,6 +232,7 @@ export interface IStorage {
 
   listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]>;
   createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine>;
+  updateCashStatementLine(id: string, data: Partial<InsertCashStatementLine>): Promise<CashStatementLine>;
 
   // Statement Headers
   listCashStatementHeaders(bankAccountId: string): Promise<CashStatementHeader[]>;
@@ -1338,6 +1342,10 @@ export class DatabaseStorage implements IStorage {
   async createCashStatementLine(data: InsertCashStatementLine) {
     const [line] = await db.insert(cashStatementLines).values(data).returning();
     return line;
+  }
+  async updateCashStatementLine(id: string, data: Partial<InsertCashStatementLine>) {
+    const [res] = await db.update(cashStatementLines).set(data).where(eq(cashStatementLines.id, id)).returning();
+    return res;
   }
   async createCashStatementHeader(data: InsertCashStatementHeader) {
     const [header] = await db.insert(cashStatementHeaders).values(data).returning();
