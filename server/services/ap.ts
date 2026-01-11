@@ -9,6 +9,7 @@ import {
     apSystemParameters, apDistributionSets, apDistributionSetLines,
     apPaymentBatches, apInvoicePayments, glLedgers, glPeriods,
     apAuditLogs, apPeriodStatuses, apPrepayApplications,
+    apWhtGroups, apWhtRates,
     type InsertApSystemParameters, type InsertApDistributionSet, type InsertApDistributionSetLine,
     type InsertApPaymentBatch
 } from "@shared/schema";
@@ -274,19 +275,40 @@ export class ApService {
         const validationStatus = holds.length > 0 ? "NEEDS REVALIDATION" : "VALIDATED";
         const invoiceStatus = holds.length > 0 ? "DRAFT" : "VALIDATED";
 
-        // 5. Withholding Tax (WHT) Stub Calculation
-        let whtAmount = "0";
+        // 5. Advanced Withholding Tax (WHT) Calculation
+        let totalWhtAmount = 0;
         const [supplier] = await db.select().from(apSuppliers).where(eq(apSuppliers.id, invoice.supplierId)).limit(1);
+
         if (validationStatus === "VALIDATED" && supplier?.allowWithholdingTax) {
-            // Calculate 10% WHT for demonstration
-            whtAmount = (headerAmount * 0.1).toFixed(2);
+            if (supplier.withholdingTaxGroupId) {
+                // Multi-Tier WHT Logic
+                const rates = await db.select().from(apWhtRates)
+                    .where(and(
+                        eq(apWhtRates.groupId, supplier.withholdingTaxGroupId),
+                        eq(apWhtRates.enabledFlag, true)
+                    ))
+                    .orderBy(apWhtRates.priority);
+
+                for (const rate of rates) {
+                    const rateAmount = headerAmount * (Number(rate.ratePercent) / 100);
+                    totalWhtAmount += rateAmount;
+
+                    // In a full implementation, we'd insert separate WHT distributions here
+                    console.log(`[WHT] Applied rate ${rate.taxRateName} (${rate.ratePercent}%): $${rateAmount}`);
+                }
+            } else {
+                // Backward compatibility: 10% stub
+                totalWhtAmount = headerAmount * 0.1;
+            }
         }
+
+        const whtAmountStr = totalWhtAmount.toFixed(2);
 
         await db.update(apInvoices)
             .set({
                 validationStatus,
                 invoiceStatus,
-                withholdingTaxAmount: whtAmount,
+                withholdingTaxAmount: whtAmountStr,
                 approvalStatus: validationStatus === "VALIDATED" ? "REQUIRED" : "NOT REQUIRED",
                 updatedAt: new Date()
             })
@@ -294,7 +316,7 @@ export class ApService {
 
         // Audit Logging
         await this.logAuditAction("SYSTEM", "VALIDATE", "INVOICE", String(invoiceId),
-            `Invoice validated with status ${validationStatus}. WHT calculated: ${whtAmount}`);
+            `Invoice validated with status ${validationStatus}. Total WHT: ${whtAmountStr}`);
 
         // 6. Trigger Accounting if Validated
         if (validationStatus === "VALIDATED") {
@@ -307,12 +329,12 @@ export class ApService {
                     eventClass: "AP_INVOICE_VALIDATED",
                     entityId: String(invoiceId),
                     entityTable: "ap_invoices",
-                    description: `Invoice ${invoice.invoiceNumber} Validated (WHT: ${whtAmount})`,
+                    description: `Invoice ${invoice.invoiceNumber} Validated (WHT: ${whtAmountStr})`,
                     amount: Number(invoice.invoiceAmount),
                     currency: invoice.invoiceCurrencyCode,
                     date: new Date(),
                     ledgerId,
-                    sourceData: { supplierId: invoice.supplierId, withholdingAmount: whtAmount }
+                    sourceData: { supplierId: invoice.supplierId, withholdingAmount: whtAmountStr }
                 });
             } catch (err) {
                 console.error(`[AP] Accounting failed for invoice ${invoiceId}:`, err);

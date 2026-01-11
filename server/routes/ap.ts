@@ -12,6 +12,7 @@ import {
 import { z } from "zod";
 import multer from "multer";
 import { aiService } from "../services/ai";
+import { treasuryService } from "../services/TreasuryService";
 
 export const apRouter = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -280,6 +281,19 @@ apRouter.get("/payment-batches/:id/payments", async (req, res) => {
         res.json(payments);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.get("/payment-batches/:id/iso20022", async (req, res) => {
+    try {
+        const batchId = parseInt(req.params.id);
+        const xml = await treasuryService.generateISO20022(batchId);
+
+        res.setHeader("Content-Disposition", `attachment; filename=ISO20022_BCH_${batchId}.xml`);
+        res.setHeader("Content-Type", "application/xml");
+        res.send(xml);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
     }
 });
 

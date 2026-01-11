@@ -3,7 +3,8 @@ import {
     slaAccountingRules, slaEventClasses, slaJournalHeaders, slaJournalLines,
     slaMappingSets, slaMappingSetValues
 } from "@shared/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, inArray } from "drizzle-orm";
+import { glCodeCombinations } from "@shared/schema";
 // Use dynamic import or careful structure to avoid circular deps if FinanceService imports this.
 // For now assuming Uni-directional: Sla -> Finance
 import { financeService } from "./finance";
@@ -125,9 +126,12 @@ export class SlaService {
             });
         }
 
-        // 3. Insert Lines
-        if (linesToInsert.length > 0) {
-            await db.insert(slaJournalLines).values(linesToInsert);
+        // 3. Apply Intercompany Balancing
+        const balancedLines = await this.balanceBySegment(linesToInsert, event.ledgerId);
+
+        // 4. Insert Lines
+        if (balancedLines.length > 0) {
+            await db.insert(slaJournalLines).values(balancedLines);
         }
 
         console.log(`[SLA] Created SLA Journal ${header.id} with ${linesToInsert.length} lines.`);
@@ -167,6 +171,64 @@ export class SlaService {
         }).where(eq(slaJournalHeaders.id, slaHeaderId));
 
         return journal;
+    }
+
+    /**
+     * Balances lines by segment 1 (Legal Entity / Company).
+     * If debits != credits for a segment, inserts balancing lines.
+     */
+    private async balanceBySegment(lines: any[], ledgerId: string): Promise<any[]> {
+        if (lines.length === 0) return lines;
+
+        // 1. Fetch CCIDs to get segments
+        const ccids = [...new Set(lines.map(l => l.codeCombinationId))];
+        const combinations = await db.select().from(glCodeCombinations).where(inArray(glCodeCombinations.id, ccids));
+        const ccMap = new Map(combinations.map(c => [c.id, c]));
+
+        // 2. Group net balance by Segment1
+        const bsvBalances = new Map<string, number>();
+        for (const line of lines) {
+            const cc = ccMap.get(line.codeCombinationId);
+            const bsv = cc?.segment1 || "01";
+            const dr = Number(line.enteredDr || 0);
+            const cr = Number(line.enteredCr || 0);
+            bsvBalances.set(bsv, (bsvBalances.get(bsv) || 0) + (dr - cr));
+        }
+
+        // 3. If all BSVs balance, return original
+        const unbalancedBSVs = Array.from(bsvBalances.entries()).filter(([_, bal]) => Math.abs(bal) > 0.01);
+        if (unbalancedBSVs.length === 0) return lines;
+
+        console.log(`[SLA] Intercompany imbalance detected in segments: ${unbalancedBSVs.map(x => x[0]).join(", ")}`);
+
+        const newLines = [...lines];
+        let nextLineNum = Math.max(...lines.map(l => l.lineNumber)) + 1;
+
+        for (const [bsv, net] of unbalancedBSVs) {
+            // If net > 0 (Debit heavy), we need a Credit for this BSV
+            // If net < 0 (Credit heavy), we need a Debit for this BSV
+
+            // Derive Intercompany Account for this BSV
+            // In a real system, this would use a complex rule matrix.
+            // Here we use a stub: BSV-000-11105 (Intercompany Rec/Pay)
+            const icSegment = `${bsv}-000-11105-000-000-000-000-000-000-000`;
+            const icCC = await financeService.getOrCreateCodeCombination(ledgerId, icSegment);
+
+            newLines.push({
+                headerId: lines[0].headerId,
+                lineNumber: nextLineNum++,
+                accountingClass: net > 0 ? "Intercompany Payable" : "Intercompany Receivable",
+                codeCombinationId: icCC.id,
+                enteredDr: net < 0 ? Math.abs(net).toString() : "0",
+                enteredCr: net > 0 ? net.toString() : "0",
+                accountedDr: net < 0 ? Math.abs(net).toString() : "0",
+                accountedCr: net > 0 ? net.toString() : "0",
+                currencyCode: lines[0].currencyCode,
+                description: `Intercompany Balancing for BSV ${bsv}`
+            });
+        }
+
+        return newLines;
     }
 
     /**

@@ -54,6 +54,12 @@ export const apSupplierSites = pgTable("ap_supplier_sites", {
     isPaySite: boolean("is_pay_site").default(true),
     isPurchasingSite: boolean("is_purchasing_site").default(true),
 
+    // Banking Parity
+    iban: varchar("iban", { length: 50 }),
+    swiftCode: varchar("swift_code", { length: 20 }),
+    bankAccountName: varchar("bank_account_name", { length: 100 }),
+    bankAccountNumber: varchar("bank_account_number", { length: 50 }),
+
     enabledFlag: boolean("enabled_flag").default(true),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow()
@@ -355,6 +361,31 @@ export const insertApPeriodStatusSchema = createInsertSchema(apPeriodStatuses);
 export type ApPeriodStatus = typeof apPeriodStatuses.$inferSelect;
 
 // 10. Prepayment Applications (Linking Prepayments to Standard Invoices)
+// 11. Withholding Tax Groups & Rates
+export const apWhtGroups = pgTable("ap_wht_groups", {
+    id: serial("id").primaryKey(),
+    groupName: varchar("group_name", { length: 100 }).unique().notNull(),
+    description: text("description"),
+    enabledFlag: boolean("enabled_flag").default(true),
+    createdAt: timestamp("created_at").defaultNow()
+});
+
+export const apWhtRates = pgTable("ap_wht_rates", {
+    id: serial("id").primaryKey(),
+    groupId: integer("group_id").notNull(),
+    taxAuthorityId: integer("tax_authority_id"), // refers to a supplier marked as tax authority
+    taxRateName: varchar("tax_rate_name", { length: 100 }).notNull(),
+    ratePercent: numeric("rate_percent", { precision: 5, scale: 2 }).notNull(), // e.g. 7.50
+    priority: integer("priority").default(1),
+    enabledFlag: boolean("enabled_flag").default(true),
+    createdAt: timestamp("created_at").defaultNow()
+});
+
+export const insertApWhtGroupSchema = createInsertSchema(apWhtGroups);
+export const insertApWhtRateSchema = createInsertSchema(apWhtRates);
+export type ApWhtGroup = typeof apWhtGroups.$inferSelect;
+export type ApWhtRate = typeof apWhtRates.$inferSelect;
+
 export const apPrepayApplications = pgTable("ap_prepay_applications", {
     id: serial("id").primaryKey(),
     standardInvoiceId: integer("standard_invoice_id").notNull(),
