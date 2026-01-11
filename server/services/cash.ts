@@ -18,6 +18,14 @@ export class CashService {
         return await storage.getCashBankAccount(id);
     }
 
+    async listStatementLines(accountId: string) {
+        return await storage.listCashStatementLines(accountId);
+    }
+
+    async listTransactions(accountId: string) {
+        return await storage.listCashTransactions(accountId);
+    }
+
     async importBankStatement(accountId: string, lines: InsertCashStatementLine[]) {
         const results = [];
         for (const line of lines) {

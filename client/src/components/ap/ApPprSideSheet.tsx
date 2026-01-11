@@ -18,11 +18,15 @@ import {
     AlertCircle,
     Loader2,
     Calendar,
-    ArrowRight
+    ArrowRight,
+    XCircle,
+    RotateCcw,
+    CheckCircle
 } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
+import { apiRequest } from "@/lib/queryClient";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
@@ -48,7 +52,12 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
     const { data: selectedInvoices, isLoading: isSelectionLoading, refetch: refetchSelection } = useQuery({
         queryKey: [`/api/ap/payment-batches/${batchId}/selection`],
         queryFn: () => batchId ? api.ap.paymentBatches.select(batchId) : null,
-        enabled: !!batchId && batch?.status === "NEW" || batch?.status === "SELECTED"
+        enabled: !!batchId && (batch?.status === "NEW" || batch?.status === "SELECTED")
+    });
+
+    const { data: batchPayments, refetch: refetchPayments } = useQuery<any[]>({
+        queryKey: [`/api/ap/payment-batches/${batchId}/payments`],
+        enabled: !!batchId && batch?.status === "CONFIRMED"
     });
 
     const createMutation = useMutation({
@@ -75,8 +84,35 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['/api/ap/payment-batches'] });
             queryClient.invalidateQueries({ queryKey: ['/api/ap/invoices'] });
+            refetchPayments();
             toast({ title: "Payments Confirmed", description: "Payments have been issued and invoices marked PAID." });
-            onClose();
+        }
+    });
+
+    const voidMutation = useMutation({
+        mutationFn: async (id: number) => {
+            const res = await apiRequest("POST", `/api/ap/payments/${id}/void`, {});
+            if (!res.ok) throw new Error("Void failed");
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['/api/ap/payment-batches'] });
+            queryClient.invalidateQueries({ queryKey: ['/api/ap/invoices'] });
+            refetchPayments();
+            toast({ title: "Payment Voided", description: "Payment reversed and invoices updated." });
+        }
+    });
+
+    const clearMutation = useMutation({
+        mutationFn: async (id: number) => {
+            const res = await apiRequest("POST", `/api/ap/payments/${id}/clear`, {});
+            if (!res.ok) throw new Error("Clear failed");
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['/api/ap/payment-batches'] });
+            refetchPayments();
+            toast({ title: "Payment Cleared", description: "Payment reconciled with bank." });
         }
     });
 
@@ -96,17 +132,23 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent className="sm:max-w-xl overflow-y-auto">
-                <SheetHeader>
-                    <SheetTitle className="flex items-center gap-2">
-                        <CreditCard className="h-5 w-5 text-primary" />
-                        {isNew ? "New Payment Process Request" : "Payment Batch Details"}
-                    </SheetTitle>
-                    <SheetDescription>
-                        {isNew
-                            ? "Configure requirements to batch select invoices for payment."
-                            : `Batch ${batch?.batchName} - ${batch?.status}`
-                        }
-                    </SheetDescription>
+                <SheetHeader className="pb-6 border-b bg-gradient-to-br from-indigo-50/50 to-muted/20">
+                    <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-xl bg-indigo-600/10 flex items-center justify-center border border-indigo-600/20 shadow-sm animate-in fade-in zoom-in duration-500">
+                            <CreditCard className="h-6 w-6 text-indigo-600" />
+                        </div>
+                        <div>
+                            <SheetTitle className="text-xl font-bold tracking-tight">
+                                {isNew ? "New Payment Process Request" : "Payment Batch Details"}
+                            </SheetTitle>
+                            <SheetDescription className="mt-1">
+                                {isNew
+                                    ? "Configure requirements to batch select invoices for payment."
+                                    : `Batch ${batch?.batchName} • ${batch?.status}`
+                                }
+                            </SheetDescription>
+                        </div>
+                    </div>
                 </SheetHeader>
 
                 <div className="py-6 space-y-6">
@@ -198,9 +240,61 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                             )}
 
                             {isConfirmed && (
-                                <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg flex items-center gap-3">
-                                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                                    <p className="text-sm text-green-700 font-medium">Batch confirmed and payments issued.</p>
+                                <div className="space-y-4">
+                                    <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg flex items-center gap-3">
+                                        <CheckCircle2 className="h-5 w-5 text-green-600" />
+                                        <p className="text-sm text-green-700 font-medium">Batch confirmed and payments issued.</p>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <h4 className="text-sm font-semibold">Issued Payments</h4>
+                                        <div className="space-y-2">
+                                            {batchPayments?.map((payment) => (
+                                                <div key={payment.id} className={`p-3 border rounded-lg flex justify-between items-center group ${payment.status === "VOID" ? "opacity-50 grayscale bg-muted/20" : "bg-card shadow-sm"}`}>
+                                                    <div className="flex gap-3 items-center">
+                                                        <div className={`p-1.5 rounded-full ${payment.status === "VOID" ? "bg-muted" : "bg-green-100"}`}>
+                                                            {payment.status === "VOID" ? <RotateCcw className="h-3 w-3 text-muted-foreground" /> : <CreditCard className="h-3 w-3 text-green-600" />}
+                                                        </div>
+                                                        <div>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="font-mono text-xs font-bold">PMT-{payment.paymentNumber}</span>
+                                                                {payment.status === "VOID" && <Badge variant="destructive" className="text-[8px] h-4">VOID</Badge>}
+                                                            </div>
+                                                            <p className="text-[10px] text-muted-foreground">{format(new Date(payment.paymentDate), "MMM dd, yyyy")}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right flex items-center gap-2">
+                                                        <span className="text-sm font-bold">${Number(payment.amount).toLocaleString()}</span>
+                                                        {payment.status === "NEGOTIABLE" && (
+                                                            <>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="h-8 w-8 text-green-600 opacity-0 group-hover:opacity-100"
+                                                                    onClick={() => clearMutation.mutate(payment.id)}
+                                                                    disabled={clearMutation.isPending}
+                                                                >
+                                                                    {clearMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100"
+                                                                    onClick={() => voidMutation.mutate(payment.id)}
+                                                                    disabled={voidMutation.isPending}
+                                                                >
+                                                                    {voidMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+                                                                </Button>
+                                                            </>
+                                                        )}
+                                                        {payment.status === "CLEARED" && (
+                                                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none text-[8px] h-4">CLEARED</Badge>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>

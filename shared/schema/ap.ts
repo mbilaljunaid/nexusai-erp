@@ -20,6 +20,8 @@ export const apSuppliers = pgTable("ap_suppliers", {
     enabledFlag: boolean("enabled_flag").default(true),
     supplierType: varchar("supplier_type", { length: 50 }).default("STANDARD"), // STANDARD, ONE_TIME
     creditHold: boolean("credit_hold").default(false),
+    allowWithholdingTax: boolean("allow_withholding_tax").default(false),
+    withholdingTaxGroupId: varchar("withholding_tax_group_id", { length: 50 }),
 
     // Risk & Compliance
     riskCategory: varchar("risk_category", { length: 50 }).default("Low"),
@@ -42,6 +44,7 @@ export type InsertApSupplier = typeof apSuppliers.$inferInsert;
 export const apSupplierSites = pgTable("ap_supplier_sites", {
     id: serial("id").primaryKey(),
     supplierId: integer("supplier_id").notNull(), // Parent
+    orgId: integer("org_id").default(1), // Business Unit assignment
     siteName: varchar("site_name", { length: 100 }).notNull().default("OFFICE"), // e.g. HEADQUARTERS, PAY_ONLY
 
     address: text("address"),
@@ -91,10 +94,20 @@ export const apInvoices = pgTable("ap_invoices", {
     dueDate: timestamp("due_date"),
     paymentTerms: varchar("payment_terms", { length: 100 }).default("Net 30"),
     taxAmount: numeric("tax_amount", { precision: 18, scale: 2 }).default("0"),
+    withholdingTaxAmount: numeric("withholding_tax_amount", { precision: 18, scale: 2 }).default("0"),
 
     // Controls
     cancelledDate: timestamp("cancelled_date"),
     glDate: timestamp("gl_date"), // Default GL Date
+
+    // AI Extraction Metadata
+    audioUrl: text("audio_url"),
+    documentUrl: text("document_url"),
+    aiExtractionStatus: varchar("ai_extraction_status", { length: 50 }), // PENDING, PROCESSED, FAILED
+    extractedJson: jsonb("extracted_json"),
+
+    // Prepayment tracking
+    prepayAmountRemaining: numeric("prepay_amount_remaining", { precision: 18, scale: 2 }),
 
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow()
@@ -155,6 +168,10 @@ export const apInvoiceDistributions = pgTable("ap_invoice_distributions", {
 
     createdAt: timestamp("created_at").defaultNow()
 });
+
+export const insertApInvoiceDistributionSchema = createInsertSchema(apInvoiceDistributions);
+export type ApInvoiceDistribution = typeof apInvoiceDistributions.$inferSelect;
+export type InsertApInvoiceDistribution = typeof apInvoiceDistributions.$inferInsert;
 
 // 5. Payment Batches (PPR - Payment Process Request)
 export const apPaymentBatches = pgTable("ap_payment_batches", {
@@ -223,10 +240,23 @@ export const apSystemParameters = pgTable("ap_system_parameters", {
     priceTolerancePercent: numeric("price_tolerance_percent").default("0.05"), // 5%
     qtyTolerancePercent: numeric("qty_tolerance_percent").default("0.05"), // 5%
     taxTolerancePercent: numeric("tax_tolerance_percent").default("0.10"), // 10%
+    amountTolerance: numeric("amount_tolerance").default("10.00"), // Fixed $10 threshold
 
-    // Defaults
+    // Defaults & Options
     defaultPaymentTermsId: varchar("default_payment_terms_id", { length: 50 }).default("Net 30"),
     defaultCurrencyCode: varchar("default_currency_code", { length: 10 }).default("USD"),
+    defaultPayGroup: varchar("default_pay_group", { length: 50 }).default("STANDARD"),
+    defaultPaymentMethod: varchar("default_payment_method", { length: 50 }).default("CHECK"),
+
+    allowManualInvoiceNumber: boolean("allow_manual_invoice_number").default(true),
+    invoiceCurrencyOverride: boolean("invoice_currency_override").default(true),
+    paymentCurrencyOverride: boolean("payment_currency_override").default(true),
+    allowPaymentTermsOverride: boolean("allow_payment_terms_override").default(true),
+
+    // Accounting Options
+    accountOnValidation: boolean("account_on_validation").default(true),
+    accountOnPayment: boolean("account_on_payment").default(true),
+    allowDraftAccounting: boolean("allow_draft_accounting").default(true),
 
     updatedAt: timestamp("updated_at").defaultNow()
 });
@@ -294,3 +324,47 @@ export const apApprovals = pgTable("ap_approvals", {
 export const insertApApprovalSchema = createInsertSchema(apApprovals);
 export type ApApproval = typeof apApprovals.$inferSelect;
 export type InsertApApproval = typeof apApprovals.$inferInsert;
+
+// 8. AP Audit Logs (Immutable history)
+export const apAuditLogs = pgTable("ap_audit_logs", {
+    id: serial("id").primaryKey(),
+    action: varchar("action", { length: 100 }).notNull(), // e.g. INVOICE_VALIDATED, PAYMENT_CREATED
+    entity: varchar("entity", { length: 50 }).notNull(), // e.g. INVOICE, SUPPLIER
+    entityId: varchar("entity_id", { length: 50 }).notNull(),
+    userId: varchar("user_id").notNull(),
+    beforeState: jsonb("before_state"),
+    afterState: jsonb("after_state"),
+    details: text("details"),
+    timestamp: timestamp("timestamp").defaultNow()
+});
+
+export const insertApAuditLogSchema = createInsertSchema(apAuditLogs);
+export type ApAuditLog = typeof apAuditLogs.$inferSelect;
+
+// 9. AP Period Statuses (Control)
+export const apPeriodStatuses = pgTable("ap_period_statuses", {
+    id: serial("id").primaryKey(),
+    periodId: varchar("period_id").notNull(), // refers to glPeriods.id
+    status: varchar("status", { length: 20 }).default("OPEN"), // OPEN, CLOSED, PERMANENTLY_CLOSED
+    closedDate: timestamp("closed_date"),
+    closedBy: varchar("closed_by"),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApPeriodStatusSchema = createInsertSchema(apPeriodStatuses);
+export type ApPeriodStatus = typeof apPeriodStatuses.$inferSelect;
+
+// 10. Prepayment Applications (Linking Prepayments to Standard Invoices)
+export const apPrepayApplications = pgTable("ap_prepay_applications", {
+    id: serial("id").primaryKey(),
+    standardInvoiceId: integer("standard_invoice_id").notNull(),
+    prepaymentInvoiceId: integer("prepayment_invoice_id").notNull(),
+    amountApplied: numeric("amount_applied", { precision: 18, scale: 2 }).notNull(),
+    accountingDate: timestamp("accounting_date").notNull().defaultNow(),
+    userId: varchar("user_id").notNull(),
+    status: varchar("status", { length: 20 }).default("APPLIED"), // APPLIED, UNAPPLIED
+    createdAt: timestamp("created_at").defaultNow()
+});
+
+export const insertApPrepayApplicationSchema = createInsertSchema(apPrepayApplications);
+export type ApPrepayApplication = typeof apPrepayApplications.$inferSelect;

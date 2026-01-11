@@ -2,20 +2,27 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
+import { Link } from "wouter";
 import { ApMetricCards } from "@/components/ap/ApMetricCards";
 import { ApInvoiceList } from "@/components/ap/ApInvoiceList";
 import { ApSupplierList } from "@/components/ap/ApSupplierList";
 import { ApPprDashboard } from "@/components/ap/ApPprDashboard";
 import { ApApprovalList } from "@/components/ap/ApApprovalList";
 import ApWorkbench from "@/components/ap/ApWorkbench";
+import { ApInvoiceCapture } from "@/components/ap/ApInvoiceCapture";
+import ApAgingReport from "@/components/ap/ApAgingReport";
+import ApAuditTrail from "@/components/ap/ApAuditTrail";
+import ApPeriodClose from "@/components/ap/ApPeriodClose";
 
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
+import { Sparkles } from "lucide-react";
 
 export default function AccountsPayable() {
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("workbench");
+    const [isCaptureOpen, setIsCaptureOpen] = useState(false);
     const { toast } = useToast();
 
     const handleSeedData = async () => {
@@ -68,14 +75,24 @@ export default function AccountsPayable() {
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" onClick={handleSeedData}>
-                        Seed Demo Data
+                    <Link href="/ap/settings">
+                        <Button variant="outline">
+                            <Settings className="mr-2 h-4 w-4" /> Settings
+                        </Button>
+                    </Link>
+                    <Button
+                        onClick={() => setIsCaptureOpen(true)}
+                        className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-lg shadow-orange-500/20"
+                    >
+                        <Sparkles className="mr-2 h-4 w-4" /> AI Capture
                     </Button>
                     <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/20">
                         <Plus className="mr-2 h-4 w-4" /> New Invoice
                     </Button>
                 </div>
             </div>
+
+            <ApInvoiceCapture open={isCaptureOpen} onOpenChange={setIsCaptureOpen} />
 
             {/* Metric Cards - Premium Look */}
             <ApMetricCards />
@@ -89,6 +106,8 @@ export default function AccountsPayable() {
                         <TabsTrigger value="suppliers" className="rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary">Suppliers</TabsTrigger>
                         <TabsTrigger value="payments" className="rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary">Payments</TabsTrigger>
                         <TabsTrigger value="approvals" className="rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary">Approvals</TabsTrigger>
+                        <TabsTrigger value="reporting" className="rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary">Reporting</TabsTrigger>
+                        <TabsTrigger value="control" className="rounded-md data-[state=active]:bg-primary/10 data-[state=active]:text-primary">Control</TabsTrigger>
                     </TabsList>
                 </div>
 
@@ -110,6 +129,25 @@ export default function AccountsPayable() {
 
                 <TabsContent value="approvals" className="space-y-4 focus-visible:outline-none">
                     <ApApprovalList />
+                </TabsContent>
+
+                <TabsContent value="reporting" className="space-y-6 focus-visible:outline-none">
+                    <Tabs defaultValue="aging">
+                        <TabsList className="grid grid-cols-2 w-[300px] mb-4">
+                            <TabsTrigger value="aging">Aging Report</TabsTrigger>
+                            <TabsTrigger value="audit">Audit Trail</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="aging">
+                            <ApAgingReport />
+                        </TabsContent>
+                        <TabsContent value="audit">
+                            <ApAuditTrail />
+                        </TabsContent>
+                    </Tabs>
+                </TabsContent>
+
+                <TabsContent value="control" className="space-y-4 focus-visible:outline-none">
+                    <ApPeriodClose />
                 </TabsContent>
             </Tabs>
         </div>

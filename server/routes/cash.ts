@@ -66,4 +66,22 @@ router.post("/accounts/:id/reconcile", async (req, res) => {
     }
 });
 
+router.get("/accounts/:id/statement-lines", async (req, res) => {
+    try {
+        const lines = await cashService.listStatementLines(req.params.id);
+        res.json(lines);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list statement lines" });
+    }
+});
+
+router.get("/accounts/:id/transactions", async (req, res) => {
+    try {
+        const transactions = await cashService.listTransactions(req.params.id);
+        res.json(transactions);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list transactions" });
+    }
+});
+
 export default router;

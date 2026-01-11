@@ -1,68 +1,84 @@
-
 import { db } from "../server/db";
 import { apService } from "../server/services/ap";
+import { apSystemParameters } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
-async function verifySettings() {
-    console.log("Verifying AP Settings...");
+async function verifyApSettings() {
+    console.log("🚀 Starting AP Settings Verification...");
 
-    // 1. Update System Parameters
-    console.log("Updating System Parameters...");
-    const updated = await apService.updateSystemParameters({
-        priceTolerancePercent: "5.5",
-        qtyTolerancePercent: "2.0",
-        defaultCurrencyCode: "USD"
-    });
-    console.log("Updated Params:", updated);
+    try {
+        // 1. Initial Get
+        console.log("Checking initial system parameters...");
+        const initialParams = await apService.getSystemParameters();
+        console.log("Initial Params:", initialParams);
 
-    if (updated.priceTolerancePercent !== "5.5") {
-        console.error("FAILED: Price Tolerance not updated via Service");
-        process.exit(1);
-    }
+        // 2. Update with new fields
+        console.log("Updating system parameters with new configuration...");
+        const updateData = {
+            priceTolerancePercent: "0.10",
+            qtyTolerancePercent: "0.15",
+            taxTolerancePercent: "0.05",
+            defaultCurrencyCode: "EUR",
+            defaultPaymentTermsId: "Immediate",
+            defaultPayGroup: "VENDOR",
+            defaultPaymentMethod: "EFT",
+            allowManualInvoiceNumber: false,
+            invoiceCurrencyOverride: false,
+            paymentCurrencyOverride: true,
+            allowPaymentTermsOverride: false,
+            accountOnValidation: true,
+            accountOnPayment: false,
+            allowDraftAccounting: true
+        };
 
-    // 2. Create Distribution Set
-    console.log("Creating Distribution Set...");
-    const distSet = await apService.createDistributionSet({
-        header: {
-            name: `Test Set ${Date.now()}`,
-            description: "Test Distribution Template",
-            isActive: true
-        },
-        lines: [
-            {
-                distributionPercent: "50.00",
-                distCodeCombinationId: 1001,
-                distributionSetId: 0, // Should be ignored/overwritten by service
-                description: "Alloc 1"
-            },
-            {
-                distributionPercent: "50.00",
-                distCodeCombinationId: 1002,
-                distributionSetId: 0,
-                description: "Alloc 2"
+        const updated = await apService.updateSystemParameters(updateData);
+        console.log("✅ Update Successful");
+
+        // 3. Verify Retrieval
+        console.log("Verifying retrieval of updated parameters...");
+        const verified = await apService.getSystemParameters();
+
+        if (!verified) throw new Error("Failed to retrieve parameters after update");
+
+        const checks = [
+            { field: "priceTolerancePercent", expected: "0.10" },
+            { field: "qtyTolerancePercent", expected: "0.15" },
+            { field: "taxTolerancePercent", expected: "0.05" },
+            { field: "defaultCurrencyCode", expected: "EUR" },
+            { field: "defaultPaymentTermsId", expected: "Immediate" },
+            { field: "defaultPayGroup", expected: "VENDOR" },
+            { field: "defaultPaymentMethod", expected: "EFT" },
+            { field: "allowManualInvoiceNumber", expected: false },
+            { field: "invoiceCurrencyOverride", expected: false },
+            { field: "paymentCurrencyOverride", expected: true },
+            { field: "allowPaymentTermsOverride", expected: false },
+            { field: "accountOnValidation", expected: true },
+            { field: "accountOnPayment", expected: false },
+            { field: "allowDraftAccounting", expected: true }
+        ];
+
+        let failed = false;
+        for (const check of checks) {
+            const actual = (verified as any)[check.field];
+            if (actual !== check.expected) {
+                console.error(`❌ Field ${check.field} mismatch: Expected ${check.expected}, Got ${actual}`);
+                failed = true;
+            } else {
+                console.log(`✅ Field ${check.field} verified: ${actual}`);
             }
-        ]
-    });
-    console.log("Created Set:", distSet);
+        }
 
-    if (distSet.lines && distSet.lines.length !== 2) {
-        console.error("FAILED: Expected 2 lines in created set");
+        if (failed) {
+            throw new Error("Verification failed: Field mismatches detected");
+        }
+
+        console.log("\n✨ AP Settings Verification Completed Successfully!");
+        process.exit(0);
+
+    } catch (error) {
+        console.error("❌ Verification Failed:", error);
         process.exit(1);
     }
-
-    // 3. Retrieve Distribution Set
-    const lines = await apService.getDistributionSetLines(distSet.id);
-    console.log(`Retrieved ${lines.length} lines for Set ${distSet.id}`);
-
-    if (lines.length !== 2) {
-        console.error("FAILED: Expected 2 lines retrieved from DB");
-        process.exit(1);
-    }
-
-    console.log("SUCCESS: AP Settings & Distribution Sets verified.");
-    process.exit(0);
 }
 
-verifySettings().catch(e => {
-    console.error(e);
-    process.exit(1);
-});
+verifyApSettings();

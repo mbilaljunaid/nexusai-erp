@@ -1,16 +1,18 @@
 // Accounts Payable (AP) Service Layer
 import { storage } from "../storage";
 import { db } from "../db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, desc, gte, lte, or, not } from "drizzle-orm";
 import {
     type InsertApSupplier, type InsertApInvoice, type InsertApPayment, type ApSupplier, type ApInvoice, type ApPayment, type InsertApInvoiceLine, type InsertApInvoiceDistribution,
     apSuppliers, apInvoices, apInvoiceLines, apInvoiceDistributions, apPayments, apHolds,
     apSupplierSites, insertApSupplierSiteSchema, insertApSupplierSchema, insertApInvoiceSchema,
     apSystemParameters, apDistributionSets, apDistributionSetLines,
-    apPaymentBatches, apInvoicePayments,
+    apPaymentBatches, apInvoicePayments, glLedgers, glPeriods,
+    apAuditLogs, apPeriodStatuses, apPrepayApplications,
     type InsertApSystemParameters, type InsertApDistributionSet, type InsertApDistributionSetLine,
     type InsertApPaymentBatch
 } from "@shared/schema";
+import { slaService } from "./SlaService";
 
 export interface CreateInvoicePayload {
     header: InsertApInvoice;
@@ -272,16 +274,73 @@ export class ApService {
         const validationStatus = holds.length > 0 ? "NEEDS REVALIDATION" : "VALIDATED";
         const invoiceStatus = holds.length > 0 ? "DRAFT" : "VALIDATED";
 
+        // 5. Withholding Tax (WHT) Stub Calculation
+        let whtAmount = "0";
+        const [supplier] = await db.select().from(apSuppliers).where(eq(apSuppliers.id, invoice.supplierId)).limit(1);
+        if (validationStatus === "VALIDATED" && supplier?.allowWithholdingTax) {
+            // Calculate 10% WHT for demonstration
+            whtAmount = (headerAmount * 0.1).toFixed(2);
+        }
+
         await db.update(apInvoices)
             .set({
                 validationStatus,
                 invoiceStatus,
+                withholdingTaxAmount: whtAmount,
                 approvalStatus: validationStatus === "VALIDATED" ? "REQUIRED" : "NOT REQUIRED",
                 updatedAt: new Date()
             })
             .where(eq(apInvoices.id, invoiceId));
 
+        // Audit Logging
+        await this.logAuditAction("SYSTEM", "VALIDATE", "INVOICE", String(invoiceId),
+            `Invoice validated with status ${validationStatus}. WHT calculated: ${whtAmount}`);
+
+        // 6. Trigger Accounting if Validated
+        if (validationStatus === "VALIDATED") {
+            try {
+                // Fetch default ledger
+                const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+                const ledgerId = ledger?.id || "PRIMARY";
+
+                await slaService.createAccounting({
+                    eventClass: "AP_INVOICE_VALIDATED",
+                    entityId: String(invoiceId),
+                    entityTable: "ap_invoices",
+                    description: `Invoice ${invoice.invoiceNumber} Validated (WHT: ${whtAmount})`,
+                    amount: Number(invoice.invoiceAmount),
+                    currency: invoice.invoiceCurrencyCode,
+                    date: new Date(),
+                    ledgerId,
+                    sourceData: { supplierId: invoice.supplierId, withholdingAmount: whtAmount }
+                });
+            } catch (err) {
+                console.error(`[AP] Accounting failed for invoice ${invoiceId}:`, err);
+            }
+        }
+
         return { status: validationStatus, holds };
+    }
+
+    async generateAccounting(invoiceId: number) {
+        const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, invoiceId)).limit(1);
+        if (!invoice) throw new Error("Invoice not found");
+        if (invoice.validationStatus !== "VALIDATED") throw new Error("Only validated invoices can be accounted");
+
+        const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+        const ledgerId = ledger?.id || "PRIMARY";
+
+        return await slaService.createAccounting({
+            eventClass: "AP_INVOICE_VALIDATED",
+            entityId: String(invoiceId),
+            entityTable: "ap_invoices",
+            description: `Invoice ${invoice.invoiceNumber} Accounting`,
+            amount: Number(invoice.invoiceAmount),
+            currency: invoice.invoiceCurrencyCode,
+            date: new Date(),
+            ledgerId,
+            sourceData: { supplierId: invoice.supplierId }
+        });
     }
 
     async matchInvoiceToPO(invoiceId: number, matchData: { lineNumber: number, poHeaderId: string, poLineId: string, poUnitPrice: number, poQuantity: number }) {
@@ -337,7 +396,22 @@ export class ApService {
     }
 
     async applyPayment(invoiceId: string, paymentData: InsertApPayment): Promise<ApPayment | undefined> {
-        // ...Existing Logic...
+        return await db.transaction(async (tx) => {
+            const [payment] = await tx.insert(apPayments).values(paymentData).returning();
+
+            await tx.insert(apInvoicePayments).values({
+                paymentId: payment.id,
+                invoiceId: parseInt(invoiceId),
+                amount: payment.amount,
+                accountingDate: payment.paymentDate
+            });
+
+            await tx.update(apInvoices)
+                .set({ paymentStatus: "PAID" })
+                .where(eq(apInvoices.id, parseInt(invoiceId)));
+
+            return payment;
+        });
     }
 
     // --- PPR (Payment Process Request) Engine ---
@@ -351,27 +425,22 @@ export class ApService {
         return batch;
     }
 
-    async selectInvoicesForBatch(batchId: number) {
-        const [batch] = await db.select().from(apPaymentBatches).where(eq(apPaymentBatches.id, batchId)).limit(1);
+    async selectInvoicesForBatch(batchId: number, tx: any = db) {
+        const [batch] = await tx.select().from(apPaymentBatches).where(eq(apPaymentBatches.id, batchId)).limit(1);
         if (!batch) throw new Error("Batch not found");
 
         const selectionCriteria = [
             eq(apInvoices.paymentStatus, "UNPAID"),
             eq(apInvoices.validationStatus, "VALIDATED"),
-            sql`${apInvoices.dueDate} <= ${batch.checkDate}`
+            sql`(${apInvoices.dueDate} <= ${batch.checkDate} OR ${apInvoices.dueDate} IS NULL)`
         ];
 
-        if (batch.payGroup) {
-            // Assuming we add payGroup to apInvoices later, for now we filter by it if needed
-            // selectionCriteria.push(eq(apInvoices.payGroup, batch.payGroup));
-        }
-
         // Logic to EXCLUDE invoices with active holds
-        const invoicesWithHolds = db.select({ id: apHolds.invoice_id })
+        const invoicesWithHolds = tx.select({ id: apHolds.invoice_id })
             .from(apHolds)
             .where(sql`${apHolds.release_lookup_code} IS NULL`);
 
-        const selectedInvoices = await db.select()
+        const selectedInvoices = await tx.select()
             .from(apInvoices)
             .where(and(
                 ...selectionCriteria,
@@ -379,8 +448,8 @@ export class ApService {
             ));
 
         // Update batch with projected totals
-        const total = selectedInvoices.reduce((sum, inv) => sum + Number(inv.invoiceAmount), 0);
-        await db.update(apPaymentBatches)
+        const total = selectedInvoices.reduce((sum: number, inv: any) => sum + Number(inv.invoiceAmount), 0);
+        await tx.update(apPaymentBatches)
             .set({
                 totalAmount: total.toString(),
                 paymentCount: selectedInvoices.length,
@@ -396,7 +465,7 @@ export class ApService {
             const [batch] = await tx.select().from(apPaymentBatches).where(eq(apPaymentBatches.id, batchId)).limit(1);
             if (!batch || batch.status !== "SELECTED") throw new Error("Batch not ready for confirmation");
 
-            const selectedInvoices = await this.selectInvoicesForBatch(batchId);
+            const selectedInvoices = await this.selectInvoicesForBatch(batchId, tx);
 
             for (const invoice of selectedInvoices) {
                 // 1. Create Payment
@@ -429,8 +498,366 @@ export class ApService {
                 .set({ status: "CONFIRMED" })
                 .where(eq(apPaymentBatches.id, batchId));
 
+            // 5. Trigger Accounting for each payment
+            const [ledger] = await tx.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+            const ledgerId = ledger?.id || "PRIMARY";
+
+            for (const invoice of selectedInvoices) {
+                await slaService.createAccounting({
+                    eventClass: "AP_PAYMENT_CREATED",
+                    entityId: String(invoice.id),
+                    entityTable: "ap_invoices",
+                    description: `Payment for Invoice ${invoice.invoiceNumber}`,
+                    amount: Number(invoice.invoiceAmount),
+                    currency: invoice.invoiceCurrencyCode,
+                    date: batch.checkDate,
+                    ledgerId,
+                    sourceData: { supplierId: invoice.supplierId }
+                });
+            }
+
             return { success: true, count: selectedInvoices.length };
         });
+    }
+    async getBatchPayments(batchId: number) {
+        return await db.select()
+            .from(apPayments)
+            .where(eq(apPayments.batchId, batchId))
+            .orderBy(desc(apPayments.paymentDate));
+    }
+
+    // --- Audit Trail ---
+
+    async logAuditAction(userId: string, action: string, entity: string, entityId: string, details?: string, before?: any, after?: any) {
+        await db.insert(apAuditLogs).values({
+            userId,
+            action,
+            entity,
+            entityId,
+            details,
+            beforeState: before,
+            afterState: after
+        });
+    }
+
+    async getAuditTrail(filters: { entity?: string, entityId?: string, action?: string } = {}) {
+        let query = db.select().from(apAuditLogs);
+        const conditions = [];
+
+        if (filters.entity) conditions.push(eq(apAuditLogs.entity, filters.entity));
+        if (filters.entityId) conditions.push(eq(apAuditLogs.entityId, filters.entityId));
+        if (filters.action) conditions.push(eq(apAuditLogs.action, filters.action));
+
+        if (conditions.length > 0) {
+            query = query.where(and(...conditions)) as any;
+        }
+
+        return await query.orderBy(sql`${apAuditLogs.timestamp} DESC`);
+    }
+
+    // --- Aging Report ---
+
+    async getAgingReport() {
+        const results = await db.select({
+            supplierName: apSuppliers.name,
+            current: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} > NOW() THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days1_30: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() AND ${apInvoices.dueDate} > NOW() - INTERVAL '30 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days31_60: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '30 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '60 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days61_90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '60 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            daysOver90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            total: sql<number>`SUM(${apInvoices.invoiceAmount})`
+        })
+            .from(apInvoices)
+            .innerJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id))
+            .where(eq(apInvoices.paymentStatus, "UNPAID"))
+            .groupBy(apSuppliers.name);
+
+        return results;
+    }
+
+    // --- Period Close ---
+
+    async getPeriods() {
+        // Find GL periods and join with AP status
+        const periods = await db.select({
+            id: glPeriods.id,
+            periodName: glPeriods.periodName,
+            startDate: glPeriods.startDate,
+            endDate: glPeriods.endDate,
+            glStatus: glPeriods.status,
+            apStatus: apPeriodStatuses.status
+        })
+            .from(glPeriods)
+            .leftJoin(apPeriodStatuses, eq(glPeriods.id, apPeriodStatuses.periodId))
+            .orderBy(sql`${glPeriods.startDate} DESC`);
+
+        return periods.map(p => ({
+            ...p,
+            apStatus: p.apStatus || "OPEN" // Default to OPEN if no AP-specific record exists
+        }));
+    }
+
+    async closePeriod(periodId: string, userId: string) {
+        // 1. Check for unvalidated invoices
+        const unvalidated = await db.select().from(apInvoices).where(and(
+            eq(apInvoices.validationStatus, "NEVER VALIDATED"),
+            // In real app, we would filter by GL date in the period
+            // Assuming simplified period check for now
+        ));
+
+        if (unvalidated.length > 0) {
+            throw new Error(`Cannot close period: ${unvalidated.length} invoices are unvalidated.`);
+        }
+
+        // 3. Update or Insert AP Period Status
+        const [existing] = await db.select().from(apPeriodStatuses).where(eq(apPeriodStatuses.periodId, periodId)).limit(1);
+
+        if (existing) {
+            await db.update(apPeriodStatuses)
+                .set({ status: "CLOSED", closedDate: new Date(), closedBy: userId })
+                .where(eq(apPeriodStatuses.id, existing.id));
+        } else {
+            await db.insert(apPeriodStatuses).values({
+                periodId,
+                status: "CLOSED",
+                closedDate: new Date(),
+                closedBy: userId
+            });
+        }
+
+        await this.logAuditAction(userId, "PERIOD_CLOSE", "PERIOD", periodId, `AP Period closed`);
+
+        return { success: true };
+    }
+
+    // --- Prepayments & Credits ---
+
+    async listAvailablePrepayments(supplierId: number) {
+        return await db.select()
+            .from(apInvoices)
+            .where(and(
+                eq(apInvoices.supplierId, supplierId),
+                eq(apInvoices.invoiceType, "PREPAYMENT"),
+                eq(apInvoices.paymentStatus, "PAID"),
+                sql`${apInvoices.prepayAmountRemaining} > 0`
+            ));
+    }
+
+    async applyPrepayment(standardInvoiceId: number, prepayId: number, amount: number, userId: string) {
+        return await db.transaction(async (tx) => {
+            // 1. Fetch Invoices
+            const [standard] = await tx.select().from(apInvoices).where(eq(apInvoices.id, standardInvoiceId)).limit(1);
+            const [prepay] = await tx.select().from(apInvoices).where(eq(apInvoices.id, prepayId)).limit(1);
+
+            if (!standard || !prepay) throw new Error("Invoice not found");
+            if (Number(prepay.prepayAmountRemaining) < amount) throw new Error("Insufficient prepayment balance");
+
+            // 2. Create Application
+            await tx.insert(apPrepayApplications).values({
+                standardInvoiceId,
+                prepaymentInvoiceId: prepayId,
+                amountApplied: amount.toString(),
+                userId,
+                status: "APPLIED"
+            });
+
+            // 3. Update Prepayment Balance
+            const newRemaining = Number(prepay.prepayAmountRemaining) - amount;
+            await tx.update(apInvoices)
+                .set({ prepayAmountRemaining: newRemaining.toString() })
+                .where(eq(apInvoices.id, prepayId));
+
+            // 4. Update Standard Invoice Status? 
+            // In a real ERP, we would check if it's now fully "paid" by prepayments
+            const appliedTotal = await tx.select({
+                sum: sql<number>`SUM(${apPrepayApplications.amountApplied})`
+            })
+                .from(apPrepayApplications)
+                .where(and(
+                    eq(apPrepayApplications.standardInvoiceId, standardInvoiceId),
+                    eq(apPrepayApplications.status, "APPLIED")
+                ));
+
+            const totalPaid = Number(appliedTotal[0]?.sum || 0);
+            if (totalPaid >= Number(standard.invoiceAmount)) {
+                await tx.update(apInvoices)
+                    .set({ paymentStatus: "PAID" })
+                    .where(eq(apInvoices.id, standardInvoiceId));
+            } else if (totalPaid > 0) {
+                await tx.update(apInvoices)
+                    .set({ paymentStatus: "PARTIAL" })
+                    .where(eq(apInvoices.id, standardInvoiceId));
+            }
+
+            // 5. Audit
+            await this.logAuditAction(userId, "PREPAY_APPLIED", "INVOICE", String(standardInvoiceId),
+                `Applied $${amount} from Prepayment ${prepay.invoiceNumber}`);
+
+            // 6. SLA Accounting (Simplified)
+            try {
+                const [ledger] = await tx.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+                const ledgerId = ledger?.id || "PRIMARY";
+
+                await slaService.createAccounting({
+                    eventClass: "AP_PREPAY_APPLICATION",
+                    entityId: String(standardInvoiceId),
+                    entityTable: "ap_invoices",
+                    description: `Prepayment Application: ${prepay.invoiceNumber} to ${standard.invoiceNumber}`,
+                    amount,
+                    currency: standard.invoiceCurrencyCode,
+                    date: new Date(),
+                    ledgerId,
+                    sourceData: { prepayId, standardId: standardInvoiceId }
+                });
+            } catch (err) {
+                console.error("[AP] Prepay Accounting failed:", err);
+            }
+
+            return { success: true };
+        });
+    }
+
+    async getPrepayApplications(invoiceId: number) {
+        return await db.select({
+            id: apPrepayApplications.id,
+            prepaymentNumber: apInvoices.invoiceNumber,
+            amountApplied: apPrepayApplications.amountApplied,
+            accountingDate: apPrepayApplications.accountingDate,
+            status: apPrepayApplications.status,
+            prepaymentInvoiceId: apPrepayApplications.prepaymentInvoiceId
+        })
+            .from(apPrepayApplications)
+            .innerJoin(apInvoices, eq(apPrepayApplications.prepaymentInvoiceId, apInvoices.id))
+            .where(eq(apPrepayApplications.standardInvoiceId, invoiceId));
+    }
+
+    async unapplyPrepayment(applicationId: number, userId: string) {
+        return await db.transaction(async (tx) => {
+            const [app] = await tx.select().from(apPrepayApplications).where(eq(apPrepayApplications.id, applicationId)).limit(1);
+            if (!app || app.status !== "APPLIED") throw new Error("Application not found or already unapplied");
+
+            const amount = Number(app.amountApplied);
+
+            // 1. Restore Prepayment Balance
+            const [prepay] = await tx.select().from(apInvoices).where(eq(apInvoices.id, app.prepaymentInvoiceId)).limit(1);
+            if (prepay) {
+                const newRemaining = Number(prepay.prepayAmountRemaining) + amount;
+                await tx.update(apInvoices)
+                    .set({ prepayAmountRemaining: newRemaining.toString() })
+                    .where(eq(apInvoices.id, prepay.id));
+            }
+
+            // 2. Update Application Status
+            await tx.update(apPrepayApplications)
+                .set({ status: "UNAPPLIED" })
+                .where(eq(apPrepayApplications.id, applicationId));
+
+            // 3. Update Standard Invoice Status
+            const [standard] = await tx.select().from(apInvoices).where(eq(apInvoices.id, app.standardInvoiceId)).limit(1);
+            if (standard) {
+                const appliedTotal = await tx.select({
+                    sum: sql<number>`SUM(${apPrepayApplications.amountApplied})`
+                })
+                    .from(apPrepayApplications)
+                    .where(and(
+                        eq(apPrepayApplications.standardInvoiceId, app.standardInvoiceId),
+                        eq(apPrepayApplications.status, "APPLIED")
+                    ));
+
+                const totalPaid = Number(appliedTotal[0]?.sum || 0);
+                let newStatus = "UNPAID";
+                if (totalPaid > 0) newStatus = "PARTIAL";
+
+                await tx.update(apInvoices)
+                    .set({ paymentStatus: newStatus })
+                    .where(eq(apInvoices.id, app.standardInvoiceId));
+            }
+
+            // 4. Audit
+            await this.logAuditAction(userId, "PREPAY_UNAPPLIED", "INVOICE", String(app.standardInvoiceId),
+                `Unapplied $${amount} for Application ID ${applicationId}`);
+
+            return { success: true };
+        });
+    }
+
+    async voidPayment(paymentId: number, userId: string) {
+        return await db.transaction(async (tx) => {
+            // 1. Fetch Payment
+            const [payment] = await tx.select().from(apPayments).where(eq(apPayments.id, paymentId)).limit(1);
+            if (!payment || payment.status === "VOID") throw new Error("Payment not found or already voided");
+
+            // 2. Fetch Linked Invoices
+            const links = await tx.select().from(apInvoicePayments).where(eq(apInvoicePayments.paymentId, paymentId));
+
+            // 3. Mark Payment as VOID
+            await tx.update(apPayments)
+                .set({ status: "VOID" })
+                .where(eq(apPayments.id, paymentId));
+
+            // 4. Revert Invoices status
+            for (const link of links) {
+                // Check if there are other payments still active for this invoice
+                const otherPayments = await tx.select({
+                    sum: sql<number>`SUM(${apInvoicePayments.amount})`
+                })
+                    .from(apInvoicePayments)
+                    .innerJoin(apPayments, eq(apInvoicePayments.paymentId, apPayments.id))
+                    .where(and(
+                        eq(apInvoicePayments.invoiceId, link.invoiceId),
+                        not(eq(apPayments.status, "VOID"))
+                    ));
+
+                const remainingPaid = Number(otherPayments[0]?.sum || 0);
+                let newStatus = "UNPAID";
+                if (remainingPaid > 0) newStatus = "PARTIAL";
+
+                await tx.update(apInvoices)
+                    .set({ paymentStatus: newStatus as any })
+                    .where(eq(apInvoices.id, link.invoiceId));
+
+                // Audit for each invoice
+                await this.logAuditAction(userId, "PAYMENT_VOIDED", "INVOICE", String(link.invoiceId),
+                    `Payment ${payment.paymentNumber} voided, invoice restored to ${newStatus}`);
+            }
+
+            // 5. Audit for Payment
+            await this.logAuditAction(userId, "VOID", "PAYMENT", String(paymentId), `Payment VOIDED`);
+
+            // 6. SLA Accounting reversal
+            try {
+                const [ledger] = await tx.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+                const ledgerId = ledger?.id || "PRIMARY";
+
+                await slaService.createAccounting({
+                    eventClass: "AP_PAYMENT_VOIDED",
+                    entityId: String(paymentId),
+                    entityTable: "ap_payments",
+                    description: `Reversal for Payment ${payment.paymentNumber}`,
+                    amount: Number(payment.amount),
+                    currency: payment.currencyCode,
+                    date: new Date(),
+                    ledgerId,
+                    sourceData: { paymentId }
+                });
+            } catch (err) {
+                console.error("[AP] Void Accounting failed:", err);
+            }
+
+            return { success: true };
+        });
+    }
+
+    async clearPayment(paymentId: number, userId: string) {
+        const [payment] = await db.select().from(apPayments).where(eq(apPayments.id, paymentId)).limit(1);
+        if (!payment || payment.status !== "NEGOTIABLE") throw new Error("Payment not found or not negotiable");
+
+        await db.update(apPayments)
+            .set({ status: "CLEARED" })
+            .where(eq(apPayments.id, paymentId));
+
+        await this.logAuditAction(userId, "CLEAR", "PAYMENT", String(paymentId), `Payment marked as CLEARED`);
+        return { success: true };
     }
 }
 

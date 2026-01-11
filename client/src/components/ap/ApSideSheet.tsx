@@ -1,4 +1,3 @@
-
 import {
     Sheet,
     SheetContent,
@@ -6,7 +5,6 @@ import {
     SheetTitle,
     SheetDescription,
     SheetFooter,
-    SheetClose,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,13 +13,27 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ApSupplier, ApInvoice } from "@shared/schema";
 import { format } from "date-fns";
-import { CreditCard, AlertTriangle, Building2, FileText, CheckCircle2, XCircle, Activity, Layers, Receipt } from "lucide-react";
+import {
+    CreditCard,
+    AlertTriangle,
+    Building2,
+    FileText,
+    CheckCircle2,
+    XCircle,
+    Activity,
+    Layers,
+    Receipt,
+    Loader2,
+    Coins,
+    ReceiptText
+} from "lucide-react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ApPrepayApplication from "./ApPrepayApplication";
 
 interface ApSideSheetProps {
     open: boolean;
@@ -41,6 +53,7 @@ export function ApSideSheet({
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("details");
+    const [isPrepayDialogOpen, setIsPrepayDialogOpen] = useState(false);
 
     const toggleHoldMutation = useMutation({
         mutationFn: async ({ id, hold }: { id: number; hold: boolean }) => {
@@ -83,41 +96,62 @@ export function ApSideSheet({
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
-                <SheetHeader className="mb-6">
-                    <div className="flex items-center gap-2">
-                        <div className={`p-2 rounded-full ${type === "supplier" ? "bg-blue-100" : "bg-purple-100"}`}>
-                            {type === "supplier" ? (
-                                <Building2 className="h-5 w-5 text-blue-600" />
-                            ) : (
-                                <FileText className="h-5 w-5 text-purple-600" />
-                            )}
+                {type === "supplier" && supplier && (
+                    <SheetHeader className="pb-6 border-b bg-gradient-to-br from-background to-muted/20">
+                        <div className="flex items-center gap-4">
+                            <div className="h-12 w-12 rounded-xl bg-blue-600/10 flex items-center justify-center border border-blue-600/20 shadow-sm animate-in fade-in zoom-in duration-500">
+                                <Building2 className="h-6 w-6 text-blue-600" />
+                            </div>
+                            <div>
+                                <SheetTitle className="text-xl font-bold tracking-tight">
+                                    {supplier.name}
+                                </SheetTitle>
+                                <SheetDescription className="mt-1">
+                                    Supplier ID: {supplier.id} • Tax ID: {supplier.taxId || "N/A"}
+                                </SheetDescription>
+                            </div>
                         </div>
-                        <SheetTitle className="text-xl">
-                            {type === "supplier" ? supplier?.name : invoice?.invoiceNumber}
-                        </SheetTitle>
-                    </div>
-                    <SheetDescription>
-                        {type === "supplier"
-                            ? `Supplier ID: ${supplier?.id} • Tax ID: ${supplier?.taxId || "N/A"}`
-                            : `Invoice for Supplier #${invoice?.supplierId} • ${format(new Date(invoice?.createdAt || new Date()), "PPP")}`
-                        }
-                    </SheetDescription>
-                    {type === "supplier" && supplier?.creditHold && (
-                        <div className="mt-2 flex items-center gap-2 text-destructive bg-destructive/10 p-2 rounded-md border border-destructive/20">
-                            <AlertTriangle className="h-4 w-4" />
-                            <span className="text-sm font-medium">Credit Hold Active</span>
-                        </div>
-                    )}
-                </SheetHeader>
+                        {supplier.creditHold && (
+                            <div className="mt-4 flex items-center gap-2 text-destructive bg-destructive/10 p-2 rounded-md border border-destructive/20">
+                                <AlertTriangle className="h-4 w-4" />
+                                <span className="text-sm font-medium">Credit Hold Active</span>
+                            </div>
+                        )}
+                    </SheetHeader>
+                )}
 
-                <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 mb-4">
+                {type === "invoice" && invoice && (
+                    <SheetHeader className="pb-6 border-b bg-gradient-to-br from-background to-muted/20">
+                        <div className="flex items-center gap-4">
+                            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm animate-in fade-in zoom-in duration-500">
+                                {invoice.invoiceType === "PREPAYMENT" ? <Coins className="h-6 w-6 text-primary" /> : <ReceiptText className="h-6 w-6 text-primary" />}
+                            </div>
+                            <div>
+                                <SheetTitle className="text-xl font-bold tracking-tight">
+                                    {invoice.invoiceNumber || "Invoice Details"}
+                                </SheetTitle>
+                                <SheetDescription className="flex items-center gap-2 mt-1">
+                                    <Badge variant="outline" className="text-[10px] font-mono h-5">
+                                        {invoice.invoiceType}
+                                    </Badge>
+                                    <span>•</span>
+                                    <span className="text-xs font-medium">Supplier #{invoice.supplierId}</span>
+                                </SheetDescription>
+                            </div>
+                        </div>
+                    </SheetHeader>
+                )}
+
+                <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab} className="w-full mt-6">
+                    <TabsList className={`grid w-full mb-4 ${type === "invoice" ? "grid-cols-6" : "grid-cols-3"}`}>
                         <TabsTrigger value="details">Details</TabsTrigger>
                         {type === "invoice" ? (
                             <>
                                 <TabsTrigger value="lines">Lines</TabsTrigger>
                                 <TabsTrigger value="holds">Holds</TabsTrigger>
+                                <TabsTrigger value="prepayments">Advances</TabsTrigger>
                                 <TabsTrigger value="distributions">Distributions</TabsTrigger>
+                                <TabsTrigger value="accounting">Accounting</TabsTrigger>
                             </>
                         ) : (
                             <>
@@ -209,6 +243,14 @@ export function ApSideSheet({
                                         </p>
                                     </div>
                                     <div className="space-y-1">
+                                        <label className="text-xs text-muted-foreground uppercase text-amber-600">Withholding Tax</label>
+                                        <p className="text-sm font-bold text-amber-600">
+                                            {invoice.withholdingTaxAmount && Number(invoice.withholdingTaxAmount) > 0
+                                                ? new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.withholdingTaxAmount))
+                                                : "No WHT"}
+                                        </p>
+                                    </div>
+                                    <div className="space-y-1">
                                         <label className="text-xs text-muted-foreground uppercase">Accounting Status</label>
                                         <Badge variant="secondary" className="font-normal">{invoice.accountingStatus}</Badge>
                                     </div>
@@ -243,6 +285,12 @@ export function ApSideSheet({
                                         </div>
                                     </div>
                                 </ScrollArea>
+                            </TabsContent>
+                            <TabsContent value="accounting" className="space-y-4">
+                                {invoice && <InvoiceAccountingView invoiceId={invoice.id} />}
+                            </TabsContent>
+                            <TabsContent value="prepayments" className="space-y-4">
+                                {invoice && <InvoicePrepaymentsView invoiceId={invoice.id} />}
                             </TabsContent>
                         </>
                     )}
@@ -302,18 +350,102 @@ export function ApSideSheet({
                         </Button>
                     )}
                     {type === "invoice" && (
-                        <div className="w-full flex gap-2">
-                            <Button variant="outline" className="flex-1">
-                                Hold Invoice
-                            </Button>
-                            <Button className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-                                Validate & Post
-                            </Button>
+                        <div className="w-full flex flex-col gap-2">
+                            {invoice?.invoiceType === "STANDARD" && invoice?.paymentStatus !== "PAID" && (
+                                <Button
+                                    variant="outline"
+                                    className="w-full border-primary/20 hover:bg-primary/5 text-primary"
+                                    onClick={() => setIsPrepayDialogOpen(true)}
+                                >
+                                    <Coins className="h-4 w-4 mr-2" /> Apply Prepayment
+                                </Button>
+                            )}
+                            <div className="flex gap-2">
+                                <Button variant="outline" className="flex-1">
+                                    Hold Invoice
+                                </Button>
+                                <Button className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                                    Validate & Post
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </SheetFooter>
+
+                {invoice && (
+                    <ApPrepayApplication
+                        invoiceId={invoice.id}
+                        open={isPrepayDialogOpen}
+                        onOpenChange={setIsPrepayDialogOpen}
+                    />
+                )}
             </SheetContent>
         </Sheet>
+    );
+}
+
+function InvoicePrepaymentsView({ invoiceId }: { invoiceId: number }) {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+    const { data: applications, isLoading } = useQuery({
+        queryKey: [`/api/ap/invoices/${invoiceId}/prepay-applications`],
+    });
+
+    const unapplyMutation = useMutation({
+        mutationFn: async (id: number) => {
+            const res = await apiRequest("DELETE", `/api/ap/prepay-applications/${id}`);
+            if (!res.ok) throw new Error("Failed to unapply");
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/ap/invoices/${invoiceId}/prepay-applications`] });
+            queryClient.invalidateQueries({ queryKey: [`/api/ap/invoices/${invoiceId}`] });
+            toast({ title: "Prepayment Unapplied", description: "The advance has been decoupled." });
+        }
+    });
+
+    if (isLoading) return <Skeleton className="h-20 w-full" />;
+
+    return (
+        <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                <Coins className="h-4 w-4" /> Applied Advances
+            </h4>
+            {Array.isArray(applications) && applications.length > 0 ? (
+                applications.map((app: any) => (
+                    <div key={app.id} className="p-3 border rounded-lg bg-card group relative">
+                        <div className="flex justify-between items-center">
+                            <div className="space-y-1">
+                                <span className="font-mono text-xs font-bold">{app.prepaymentNumber}</span>
+                                <p className="text-[10px] text-muted-foreground">Applied on {format(new Date(app.accountingDate), "MMM dd, yyyy")}</p>
+                            </div>
+                            <div className="text-right flex items-center gap-4">
+                                <div className="space-y-1">
+                                    <span className="text-sm font-bold text-green-600">-${parseFloat(app.amountApplied).toLocaleString()}</span>
+                                    <Badge variant="outline" className="block text-[8px] h-4 mt-1">{app.status}</Badge>
+                                </div>
+                                {app.status === "APPLIED" && (
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={() => unapplyMutation.mutate(app.id)}
+                                        disabled={unapplyMutation.isPending}
+                                    >
+                                        {unapplyMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
+                    <Coins className="h-8 w-8 mx-auto mb-2 opacity-10" />
+                    <p className="text-xs">No prepayments applied to this invoice.</p>
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -384,3 +516,89 @@ function InvoiceHoldsView({ invoiceId }: { invoiceId: number }) {
     );
 }
 
+function InvoiceAccountingView({ invoiceId }: { invoiceId: number }) {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+    const { data: journals, isLoading } = useQuery({
+        queryKey: [`/api/ap/invoices/${invoiceId}/accounting`],
+    });
+
+    const generateMutation = useMutation({
+        mutationFn: async () => {
+            const res = await apiRequest("POST", `/api/ap/invoices/${invoiceId}/accounting`, {});
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/ap/invoices/${invoiceId}/accounting`] });
+            toast({ title: "Accounting Generated", description: "Subledger entries have been refreshed." });
+        },
+        onError: (err: any) => {
+            toast({ title: "Generation Failed", description: err.message, variant: "destructive" });
+        }
+    });
+
+    if (isLoading) return <div className="space-y-2"><Skeleton className="h-20 w-full" /><Skeleton className="h-20 w-full" /></div>;
+
+    return (
+        <div className="space-y-4">
+            <div className="flex justify-between items-center">
+                <h4 className="text-sm font-semibold text-muted-foreground">Subledger Journals</h4>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-[10px]"
+                    onClick={() => generateMutation.mutate()}
+                    disabled={generateMutation.isPending}
+                >
+                    {generateMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Activity className="h-3 w-3 mr-1" />}
+                    Regenerate
+                </Button>
+            </div>
+
+            {Array.isArray(journals) && journals.length > 0 ? (
+                journals.map((journal: any) => (
+                    <Card key={journal.id} className="overflow-hidden border-muted">
+                        <CardHeader className="p-3 bg-muted/30 border-b">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-2">
+                                    <Badge variant={journal.status === "Final" ? "default" : "secondary"} className="h-5 text-[10px]">
+                                        {journal.status}
+                                    </Badge>
+                                    <span className="text-xs font-mono">{journal.id.substring(0, 8)}</span>
+                                </div>
+                                <span className="text-[10px] text-muted-foreground">{format(new Date(journal.eventDate), "MMM dd, HH:mm")}</span>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <table className="w-full text-[10px]">
+                                <thead className="bg-muted/10 border-b">
+                                    <tr>
+                                        <th className="p-2 text-left">Account Class</th>
+                                        <th className="p-2 text-right">Debit</th>
+                                        <th className="p-2 text-right">Credit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {journal.lines?.map((line: any) => (
+                                        <tr key={line.id} className="border-b last:border-0 hover:bg-muted/5">
+                                            <td className="p-2 font-medium">{line.accountingClass}</td>
+                                            <td className="p-2 text-right">{line.enteredDr ? Number(line.enteredDr).toFixed(2) : ""}</td>
+                                            <td className="p-2 text-right">{line.enteredCr ? Number(line.enteredCr).toFixed(2) : ""}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </CardContent>
+                    </Card>
+                ))
+            ) : (
+                <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/5">
+                    <Receipt className="h-10 w-10 mx-auto opacity-10 mb-2" />
+                    <p className="text-sm font-medium text-muted-foreground">No accounting entries.</p>
+                    <p className="text-xs text-muted-foreground px-4">Accounting is generated automatically upon validation or payment.</p>
+                </div>
+            )}
+        </div>
+    );
+}
