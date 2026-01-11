@@ -321,14 +321,27 @@ export const glCrossValidationRules = pgTable("gl_cross_validation_rules_v2", {
     ledgerId: varchar("ledger_id").notNull(),
     ruleName: varchar("rule_name").notNull(),
     description: text("description"),
-    enabled: boolean("enabled").default(true),
+    isEnabled: boolean("is_enabled").default(true),
     errorMessage: text("error_message"),
-    includeFilter: text("include_filter"), // e.g., "Segment1=100" (Company 100)
-    excludeFilter: text("exclude_filter"), // e.g., "Segment3=5000" (R&D Expense)
+
+    // Logic: If CodeCombination matches 'conditionFilter', then it MUST match 'validationFilter'.
+    // If it does NOT match 'validationFilter', it is invalid.
+    conditionFilter: text("condition_filter"), // e.g. "Segment3=1000" (If Account is 1000)
+    validationFilter: text("validation_filter"), // e.g. "Segment2=000" (Then Dept must be 000)
+
+    // Legacy support or alternative logic
+    includeFilter: text("include_filter"),
+    excludeFilter: text("exclude_filter"),
+
+    errorAction: varchar("error_action").default("Error"), // Error, Warning
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertGlCrossValidationRuleSchema = createInsertSchema(glCrossValidationRules);
+export const insertGlCrossValidationRuleSchema = createInsertSchema(glCrossValidationRules).extend({
+    conditionFilter: z.string().optional(),
+    validationFilter: z.string().optional(),
+    errorAction: z.enum(["Error", "Warning"]).optional(),
+});
 export type InsertGlCrossValidationRule = z.infer<typeof insertGlCrossValidationRuleSchema>;
 export type GlCrossValidationRule = typeof glCrossValidationRules.$inferSelect;
 

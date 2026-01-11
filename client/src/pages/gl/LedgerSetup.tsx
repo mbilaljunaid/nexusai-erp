@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -58,85 +59,108 @@ export default function LedgerSetup() {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="bg-gradient-to-br from-indigo-500/10 to-transparent border-indigo-500/20">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Primary Ledgers</CardTitle>
-                        <Landmark className="h-4 w-4 text-indigo-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{ledgers?.filter(l => l.ledgerType === 'PRIMARY').length || 0}</div>
-                        <p className="text-xs text-muted-foreground mt-1 text-indigo-500">Main books of record</p>
-                    </CardContent>
-                </Card>
+            <Tabs defaultValue="ledgers" className="space-y-4">
+                <TabsList>
+                    <TabsTrigger value="ledgers">Defined Ledgers</TabsTrigger>
+                    <TabsTrigger value="sets">Ledger Sets</TabsTrigger>
+                </TabsList>
 
-                <Card className="bg-gradient-to-br from-teal-500/10 to-transparent border-teal-500/20">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Secondary Ledgers</CardTitle>
-                        <Shield className="h-4 w-4 text-teal-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{ledgers?.filter(l => l.ledgerType === 'SECONDARY').length || 0}</div>
-                        <p className="text-xs text-muted-foreground mt-1 text-teal-500">Alternate accounting reps</p>
-                    </CardContent>
-                </Card>
+                <TabsContent value="ledgers" className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Card className="bg-gradient-to-br from-indigo-500/10 to-transparent border-indigo-500/20">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Primary Ledgers</CardTitle>
+                                <Landmark className="h-4 w-4 text-indigo-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{ledgers?.filter(l => l.ledgerType === 'PRIMARY').length || 0}</div>
+                                <p className="text-xs text-muted-foreground mt-1 text-indigo-500">Main books of record</p>
+                            </CardContent>
+                        </Card>
 
-                <Card className="bg-gradient-to-br from-amber-500/10 to-transparent border-amber-500/20">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Reporting Ledgers</CardTitle>
-                        <Globe className="h-4 w-4 text-amber-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{ledgers?.filter(l => l.ledgerType === 'REPORTING').length || 0}</div>
-                        <p className="text-xs text-muted-foreground mt-1 text-amber-500">Currency translation books</p>
-                    </CardContent>
-                </Card>
-            </div>
+                        <Card className="bg-gradient-to-br from-teal-500/10 to-transparent border-teal-500/20">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Secondary Ledgers</CardTitle>
+                                <Shield className="h-4 w-4 text-teal-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{ledgers?.filter(l => l.ledgerType === 'SECONDARY').length || 0}</div>
+                                <p className="text-xs text-muted-foreground mt-1 text-teal-500">Alternate accounting reps</p>
+                            </CardContent>
+                        </Card>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Active Ledgers</CardTitle>
-                    <CardDescription>Comprehensive list of defined ledgers and their configurations</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Ledger Name</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Currency</TableHead>
-                                <TableHead>Chart of Accounts</TableHead>
-                                <TableHead>Calendar</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {ledgers?.map((ledger) => (
-                                <TableRow key={ledger.id}>
-                                    <TableCell className="font-medium text-primary">{ledger.name}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={ledger.ledgerType === 'PRIMARY' ? 'default' : 'outline'}>
-                                            {ledger.ledgerType}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>{ledger.currency}</TableCell>
-                                    <TableCell>{ledger.coaName || 'Corporate COA'}</TableCell>
-                                    <TableCell>{ledger.calendarName || 'Standard'}</TableCell>
-                                    <TableCell>
-                                        <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
-                                            Active
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm"><Settings className="h-4 w-4" /></Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+                        <Card className="bg-gradient-to-br from-amber-500/10 to-transparent border-amber-500/20">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Reporting Ledgers</CardTitle>
+                                <Globe className="h-4 w-4 text-amber-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{ledgers?.filter(l => l.ledgerType === 'REPORTING').length || 0}</div>
+                                <p className="text-xs text-muted-foreground mt-1 text-amber-500">Currency translation books</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Active Ledgers</CardTitle>
+                            <CardDescription>Comprehensive list of defined ledgers and their configurations</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Ledger Name</TableHead>
+                                        <TableHead>Type</TableHead>
+                                        <TableHead>Currency</TableHead>
+                                        <TableHead>Chart of Accounts</TableHead>
+                                        <TableHead>Calendar</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {ledgers?.map((ledger) => (
+                                        <TableRow key={ledger.id}>
+                                            <TableCell className="font-medium text-primary">{ledger.name}</TableCell>
+                                            <TableCell>
+                                                <Badge variant={ledger.ledgerType === 'PRIMARY' ? 'default' : 'outline'}>
+                                                    {ledger.ledgerType}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>{ledger.currency}</TableCell>
+                                            <TableCell>{ledger.coaName || 'Corporate COA'}</TableCell>
+                                            <TableCell>{ledger.calendarName || 'Standard'}</TableCell>
+                                            <TableCell>
+                                                <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
+                                                    Active
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button variant="ghost" size="sm"><Settings className="h-4 w-4" /></Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="sets">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Ledger Sets</CardTitle>
+                            <CardDescription>Group ledgers for period close and reporting.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex justify-center p-8 text-muted-foreground">
+                                Ledger Sets functionality enabled. No sets configured yet.
+                            </div>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+            </Tabs>
         </div >
     );
 }

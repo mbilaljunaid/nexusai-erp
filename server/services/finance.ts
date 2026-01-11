@@ -6,11 +6,12 @@ import {
     glRevaluations, glDailyRates, glPeriods, glCrossValidationRules, glAllocations, glIntercompanyRules,
     glAuditLogs, glDataAccessSets, glDataAccessSetAssignments,
     glLedgerSets, glLedgerSetAssignments, glLegalEntities, // Added for Chunk 3
+    glJournalBatches, glApprovalRules, glApprovalHistory, // Added for Chunk 3 Transactions
     glCloseTasks, // Added for Chunk 7
     apInvoices, arInvoices,
     glRecurringJournals, insertGlRecurringJournalSchema,
     glBudgetBalances, glBudgetControlRules, glBudgets,
-    glAllocationLines, glRevaluationRules, glLedgers, glSegments, glCoaStructures, glSegmentValues
+    glRevaluationEntries, glLedgers, glSegments, glCoaStructures, glSegmentValues
 } from "@shared/schema";
 import { eq, and, sql, inArray, gte, lte, desc, isNull, ne } from "drizzle-orm";
 import { db } from "../db"; // Direct DB access needed for complex transactions
@@ -45,9 +46,10 @@ export class FinanceService {
     }
 
 
-    async createLedger(data: any) {
-        return await storage.createGlLedger(data);
-    }
+
+
+    // ================= LEDGER SETS =================
+
 
     // ================= GL ACCOUNTS =================
     async listAccounts() {
@@ -142,6 +144,89 @@ export class FinanceService {
         }
 
         return await query.orderBy(desc(glJournals.postedDate), desc(glJournals.createdAt));
+    }
+
+    // ================= MASTER DATA VALIDATION =================
+
+    /**
+     * Validates a batch of journal lines against Cross-Validation Rules.
+     * CVR Logic: If a line matches `conditionFilter`, it MUST also match `validationFilter`.
+     */
+    async validateCrossValidationRules(lines: GlJournalLine[] | InsertGlJournalLine[], ledgerId: string) {
+        console.log(`[FINANCE] Validating ${lines.length} lines against CVRs for Ledger ${ledgerId}...`);
+
+        // 1. Fetch Active Rules
+        const rules = await db.select().from(glCrossValidationRules).where(
+            and(
+                eq(glCrossValidationRules.ledgerId, ledgerId),
+                eq(glCrossValidationRules.isEnabled, true)
+            )
+        );
+
+        if (rules.length === 0) return true; // No rules, all good.
+
+        // 2. Fetch Code Combinations for these lines
+        const uniqueAccountIds = [...new Set(lines.map(l => l.accountId))];
+        const combinations = await db.select().from(glCodeCombinations)
+            .where(inArray(glCodeCombinations.id, uniqueAccountIds));
+
+        const ccMap = new Map(combinations.map(c => [c.id, c]));
+
+        const validationErrors: string[] = [];
+        const validationWarnings: string[] = [];
+
+        for (const line of lines) {
+            const cc = ccMap.get(line.accountId);
+            if (!cc) {
+                // Should technically error if CC doesn't exist, but maybe new?
+                // For now skip or error.
+                continue;
+            }
+
+            for (const rule of rules) {
+                // Parse Filters
+                const conditionFn = this.parseFilter(rule.conditionFilter || rule.includeFilter || "*");
+                const validationFn = this.parseFilter(rule.validationFilter || "*");
+
+                // If using excludeFilter (Legacy/Reject logic): "If match exclude, then Fail"
+                // Standard CVR: If Condition AND NOT Validation -> Fail.
+
+                const matchesCondition = conditionFn(cc);
+                if (!matchesCondition) continue; // Rule doesn't apply to this line
+
+                // Rule Applies. Check Validation.
+                // If we also have a separate 'excludeFilter' (Block List logic)
+                if (rule.excludeFilter) {
+                    const excludeFn = this.parseFilter(rule.excludeFilter);
+                    if (excludeFn(cc)) {
+                        const msg = `CVR Violation '${rule.ruleName}': ${rule.errorMessage || "Combination is restricted"}`;
+                        if (rule.errorAction === "Warning") validationWarnings.push(msg);
+                        else validationErrors.push(msg);
+                        continue;
+                    }
+                }
+
+                if (rule.validationFilter) {
+                    const passesValidation = validationFn(cc);
+                    if (!passesValidation) {
+                        const msg = `CVR Violation '${rule.ruleName}': ${rule.errorMessage || "Combination violates validation rule"}`;
+                        if (rule.errorAction === "Warning") validationWarnings.push(msg);
+                        else validationErrors.push(msg);
+                    }
+                }
+            }
+        }
+
+        if (validationErrors.length > 0) {
+            throw new Error(`Cross-Validation Failures:\n${[...new Set(validationErrors)].join("\n")}`);
+        }
+
+        if (validationWarnings.length > 0) {
+            console.warn(`[FINANCE] CVR Warnings:`, validationWarnings);
+            // In a real app, we'd pass these back to UI.
+        }
+
+        return true;
     }
 
     // ================= GL JOURNALS =================
@@ -367,7 +452,10 @@ export class FinanceService {
             const lines = await storage.listGlJournalLines(journalId);
             if (lines.length === 0) throw new Error("No lines to post.");
 
+            if (lines.length === 0) throw new Error("No lines to post.");
+
             // 2. Heavy Validations & Updates
+            // 2.0 CVR Check (New)
             await this.validateCrossValidationRules(lines, journal.ledgerId);
 
             // 2.1 Data Access Check (DAS / Segment Security)
@@ -598,7 +686,7 @@ export class FinanceService {
         // 1. Fetch Allocation Rule
         const [rule] = await db.select().from(glAllocations).where(eq(glAllocations.id, allocationId));
         if (!rule) throw new Error("Allocation Rule not found");
-        if (!rule.enabled) throw new Error("Allocation Rule is disabled");
+        if (!rule.enabledFlag) throw new Error("Allocation Rule is disabled");
 
         // 2. Calculate Pool Amount (A)
         const poolAmount = await this.calculateBalance(rule.poolAccountFilter, periodName, rule.ledgerId);
@@ -805,69 +893,7 @@ export class FinanceService {
 
     // ================= AI CAPABILITIES =================
 
-    private async validateCrossValidationRules(lines: any[], ledgerId: string) {
-        console.log("Validating CVRs...");
 
-        const rules = await db.select().from(glCrossValidationRules)
-            .where(and(
-                eq(glCrossValidationRules.ledgerId, ledgerId),
-                eq(glCrossValidationRules.enabled, true)
-            ));
-
-        if (rules.length === 0) return true;
-
-        const ccids = [...new Set(lines.map(l => l.accountId))]; // Dedupe
-        if (ccids.length === 0) return true;
-
-        const combinations = await db.select().from(glCodeCombinations)
-            .where(inArray(glCodeCombinations.id, ccids));
-
-        const ccMap = new Map(combinations.map(c => [c.id, c]));
-
-        for (const line of lines) {
-            const cc = ccMap.get(line.accountId);
-            if (!cc) {
-                console.warn(`CCID ${line.accountId} missing in validation.`);
-                continue;
-            }
-
-            for (const rule of rules) {
-                // Logic: Block if (Include Matches AND Exclude Matches)
-
-                if (this.matchesFilter(cc, rule.includeFilter)) {
-                    if (this.matchesFilter(cc, rule.excludeFilter)) {
-                        throw new Error(`Cross Validation Rule Failed: '${rule.ruleName}'.${rule.errorMessage || "Invalid account combination."} `);
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-
-
-    private matchesFilter(cc: any, filter: string | null): boolean {
-        if (!filter || filter === "" || filter === "NONE") return false;
-        if (filter === "*" || filter === "ALL") return true;
-
-        // Support multi-condition (AND): "segment1=100; segment2=200"
-        // Semi-colon is usually a good separator for multi-segment filters in Oracle
-        const parts = filter.includes(";") ? filter.split(";") : filter.split(",");
-        const conditions = parts.map(s => s.trim()).filter(Boolean);
-
-        return conditions.every(condition => {
-            const pair = condition.split("=");
-            if (pair.length !== 2) return false;
-
-            const key = pair[0].trim();
-            const val = pair[1].trim();
-
-            // Try to resolve segment key (Standardize to segmentN, segmentN...)
-            // If the key is "Company", we'd ideally map it. For now, we support exact segmentN names.
-            const ccValue = cc[key] || cc[key.toLowerCase()];
-            return this.evaluateFilterValue(ccValue, val);
-        });
-    }
 
     /**
      * Submit a journal for approval.
@@ -2067,7 +2093,7 @@ export class FinanceService {
 
         // 2. Iterate rules and check matches
         for (const rule of rules) {
-            if (rule.enabled) {
+            if (rule.isEnabled) {
                 // We use matchesFilter which expects a cc-like object
                 const ccMock = { ...segments };
 
@@ -2089,6 +2115,19 @@ export class FinanceService {
 
 
     // ================= LEDGER SETS & LEGAL ENTITIES (Chunk 3) =================
+
+    async createLedger(data: any) {
+        const [ledger] = await db.insert(glLedgers).values({
+            name: data.name,
+            currency: data.currency,
+            coaId: data.coaId || "DEFAULT",
+            calendarId: data.calendarId || "Monthly",
+            ledgerType: data.ledgerType || "PRIMARY",
+            description: data.description,
+            enabled: true
+        }).returning();
+        return ledger;
+    }
 
     async createLedgerSet(data: { name: string; description?: string; ledgerId: string }) {
         // Create the Ledger Set definition
