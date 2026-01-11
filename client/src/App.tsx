@@ -338,6 +338,17 @@ const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
+const NettingWorkbench = lazy(() => import("@/pages/NettingWorkbench"));
+
+// Portal
+const CustomerPortalLayout = lazy(() => import("@/pages/portal/CustomerPortalLayout"));
+const PortalLogin = lazy(() => import("@/pages/portal/PortalLogin"));
+const PortalDashboard = lazy(() => import("@/pages/portal/PortalDashboard"));
+const PortalInvoices = lazy(() => import("@/pages/portal/PortalInvoices"));
+
+// AR Components
+const ArInvoiceList = lazy(() => import("@/components/ar/ArInvoiceList").then(module => ({ default: module.ArInvoiceList })));
+
 const FinancialReportsDashboard = lazy(() => import("@/pages/FinancialReportsDashboard"));
 const PurchaseRequisitions = lazy(() => import("@/pages/PurchaseRequisitions"));
 const GoodsReceiptPage = lazy(() => import("@/pages/GoodsReceiptPage"));
@@ -397,6 +408,10 @@ const KanbanBoard = lazy(() => import("@/pages/KanbanBoard"));
 const ChartOfAccounts = lazy(() => import("@/pages/ChartOfAccounts"));
 const APInvoices = lazy(() => import("@/pages/APInvoices"));
 const ARInvoices = lazy(() => import("@/pages/ARInvoices"));
+const ArPeriodClose = lazy(() => import("@/pages/ArPeriodClose"));
+const ArAnalytics = lazy(() => import("@/pages/ArAnalytics"));
+const ArReports = lazy(() => import("@/pages/ArReports"));
+const CustomerDetails = lazy(() => import("@/pages/CustomerDetails"));
 const EmployeesList = lazy(() => import("@/pages/EmployeesList"));
 const PayrollRuns = lazy(() => import("@/pages/PayrollRuns"));
 const OpportunitiesNew = lazy(() => import("@/pages/OpportunitiesNew"));
@@ -594,6 +609,23 @@ function Router() {
       <Route path="/finance/fixed-assets" component={FixedAssetsPage} />
       <Route path="/finance/accounts-payable" component={AccountsPayable} />
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
+      <Route path="/finance/ar/invoices" component={ArInvoiceList} />
+      <Route path="/finance/ar/analytics" component={ArAnalytics} />
+      <Route path="/finance/ar/reports" component={ArReports} />
+      <Route path="/finance/ar/customers/:id" component={CustomerDetails} />
+      <Route path="/finance/netting" component={NettingWorkbench} />
+
+      {/* Customer Portal Routes */}
+      <Route path="/portal/login" component={PortalLogin} />
+      <Route path="/portal">
+        <CustomerPortalLayout>
+          <Switch>
+            <Route path="/portal/dashboard" component={PortalDashboard} />
+            <Route path="/portal/invoices" component={PortalInvoices} />
+            <Route path="/portal" component={PortalDashboard} />
+          </Switch>
+        </CustomerPortalLayout>
+      </Route>
       <Route path="/gl/journals/new" component={JournalEntry} />
       <Route path="/gl/journals" component={JournalEntries} />
       <Route path="/gl/reports/builder" component={FSGBuilder} />
@@ -724,6 +756,7 @@ function Router() {
       <Route path="/gl/cvr" component={CVRManager} />
       <Route path="/gl/data-access" component={DataAccessManager} />
       <Route path="/gl/period-close" component={PeriodCloseDashboard} />
+      <Route path="/finance/ar/period-close" component={ArPeriodClose} />
       <Route path="/gl/trial-balance" component={TrialBalance} />
       <Route path="/gl/ledger-setup" component={LedgerSetup} />
 

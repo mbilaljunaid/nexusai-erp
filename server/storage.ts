@@ -1,3 +1,4 @@
+
 import {
   // Common & Core
   type User, type InsertUser, type UpsertUser,
@@ -110,10 +111,30 @@ import {
 
   // AR
   arCustomers, arInvoices, arReceipts, arRevenueSchedules,
+  arCustomerAccounts, arCustomerSites, arReceiptApplications,
   type ArCustomer, type InsertArCustomer,
+  type ArCustomerAccount, type InsertArCustomerAccount,
+  type ArCustomerSite, type InsertArCustomerSite,
   type ArInvoice, type InsertArInvoice,
   type ArReceipt, type InsertArReceipt,
-  type ArRevenueSchedule, type InsertArRevenueSchedule,
+  type ArReceiptApplication, type InsertArReceiptApplication,
+  arRevenueRules, type ArRevenueRule, type InsertArRevenueRule,
+  arRevenueSchedules, type ArRevenueSchedule, type InsertArRevenueSchedule,
+  arDunningTemplates, arCollections,
+  arDunningRuns,
+  arCollectorTasks,
+  arAdjustments, // Added
+  type ArDunningTemplate, type InsertArDunningTemplate,
+  type ArDunningRun, type InsertArDunningRun,
+  type ArCollectorTask, type InsertArCollectorTask,
+  type ArAdjustment, type InsertArAdjustment, // Added
+  type ArSystemOptions, type InsertArSystemOptions,
+
+  // Tax
+  taxCodes, taxJurisdictions, taxExemptions,
+  type TaxCode, type InsertTaxCode,
+  type TaxJurisdiction, type InsertTaxJurisdiction,
+  type TaxExemption, type InsertTaxExemption,
 
   // Cash Management
   cashBankAccounts, cashTransactions, cashStatementLines, cashReconciliationRules, cashMatchingGroups, cashStatementHeaders,
@@ -616,6 +637,18 @@ export interface IStorage {
   updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined>;
   deleteArCustomer(id: string): Promise<boolean>;
 
+  // AR Accounts
+  listArCustomerAccounts(customerId?: string): Promise<ArCustomerAccount[]>;
+  getArCustomerAccount(id: string): Promise<ArCustomerAccount | undefined>;
+  createArCustomerAccount(data: InsertArCustomerAccount): Promise<ArCustomerAccount>;
+  updateArCustomerAccount(id: string, data: Partial<InsertArCustomerAccount>): Promise<ArCustomerAccount | undefined>;
+
+  // AR Sites
+  listArCustomerSites(accountId: string): Promise<ArCustomerSite[]>;
+  getArCustomerSite(id: string): Promise<ArCustomerSite | undefined>;
+  createArCustomerSite(data: InsertArCustomerSite): Promise<ArCustomerSite>;
+  updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined>;
+
   listArInvoices(): Promise<ArInvoice[]>;
   getArInvoice(id: string): Promise<ArInvoice | undefined>;
   createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
@@ -625,6 +658,55 @@ export interface IStorage {
   listArReceipts(): Promise<ArReceipt[]>;
   getArReceipt(id: string): Promise<ArReceipt | undefined>;
   createArReceipt(data: InsertArReceipt): Promise<ArReceipt>;
+  updateArReceipt(id: string, r: Partial<InsertArReceipt>): Promise<ArReceipt | undefined>;
+  deleteArReceipt(id: string): Promise<boolean>;
+  updateArInvoiceStatus(id: string, status: string): Promise<ArInvoice | undefined>;
+
+  // AR System Options
+  getArSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined>;
+  upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions>;
+
+  // AR Revenue Recognition
+  listArRevenueRules(): Promise<ArRevenueRule[]>;
+  getArRevenueRule(id: string): Promise<ArRevenueRule | undefined>;
+  createArRevenueRule(data: InsertArRevenueRule): Promise<ArRevenueRule>;
+  createArRevenueSchedulesBulk(data: InsertArRevenueSchedule[]): Promise<ArRevenueSchedule[]>;
+  listArRevenueSchedules(status?: string): Promise<ArRevenueSchedule[]>;
+  getArRevenueSchedule(id: string): Promise<ArRevenueSchedule | undefined>;
+  updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>): Promise<ArRevenueSchedule | undefined>;
+  deleteArRevenueSchedule(id: string): Promise<boolean>;
+
+  // AR Collections
+  createArDunningTemplate(data: InsertArDunningTemplate): Promise<ArDunningTemplate>;
+  listArDunningTemplates(): Promise<ArDunningTemplate[]>;
+  getArDunningTemplate(id: string): Promise<ArDunningTemplate | undefined>;
+  createArDunningRun(data: InsertArDunningRun): Promise<ArDunningRun>;
+  createArCollectorTask(data: InsertArCollectorTask): Promise<ArCollectorTask>;
+  listArCollectorTasks(assignedTo?: string, status?: string): Promise<ArCollectorTask[]>;
+  listArCollectorTasks(assignedTo?: string, status?: string): Promise<ArCollectorTask[]>;
+  updateArCollectorTask(id: string, data: Partial<InsertArCollectorTask>): Promise<ArCollectorTask | undefined>;
+
+  // AR Adjustments
+  createArAdjustment(data: InsertArAdjustment): Promise<ArAdjustment>;
+  listArAdjustments(invoiceId?: string): Promise<ArAdjustment[]>;
+  updateArAdjustmentStatus(id: string, status: string): Promise<ArAdjustment | undefined>;
+
+  // AR Receipt Applications
+  listArReceiptApplications(receiptId?: string, invoiceId?: string): Promise<ArReceiptApplication[]>;
+  createArReceiptApplication(data: InsertArReceiptApplication): Promise<ArReceiptApplication>;
+  updateArReceiptApplication(id: string, data: Partial<InsertArReceiptApplication>): Promise<ArReceiptApplication | undefined>;
+
+  // AR Collections
+  createArDunningTemplate(data: InsertArDunningTemplate): Promise<ArDunningTemplate>;
+  listArDunningTemplates(): Promise<ArDunningTemplate[]>;
+  getArDunningTemplate(id: string): Promise<ArDunningTemplate | undefined>;
+  createArDunningRun(data: InsertArDunningRun): Promise<ArDunningRun>;
+  createArCollectorTask(data: InsertArCollectorTask): Promise<ArCollectorTask>;
+  listArCollectorTasks(assignedTo?: string, status?: string): Promise<ArCollectorTask[]>;
+  updateArCollectorTask(id: string, data: Partial<InsertArCollectorTask>): Promise<ArCollectorTask | undefined>;
+  createArReceiptApplication(data: InsertArReceiptApplication): Promise<ArReceiptApplication>;
+  updateArReceiptApplication(id: string, data: Partial<InsertArReceiptApplication>): Promise<ArReceiptApplication | undefined>;
+
   createSubscription(subscription: InsertSubscription): Promise<Subscription>;
   updateSubscription(id: string, subscription: Partial<InsertSubscription>): Promise<Subscription | undefined>;
 
@@ -633,10 +715,6 @@ export interface IStorage {
   getPoLine(id: string): Promise<PurchaseOrderLine | undefined>;
   createPo(po: InsertPurchaseOrder): Promise<PurchaseOrder>;
   createPoLine(line: InsertPurchaseOrderLine): Promise<PurchaseOrderLine>;
-
-  updateArReceipt(id: string, r: Partial<InsertArReceipt>): Promise<ArReceipt | undefined>;
-  deleteArReceipt(id: string): Promise<boolean>;
-  updateArInvoiceStatus(id: string, status: string): Promise<ArInvoice | undefined>;
 
   // Agentic AI
   createAgentExecution(exec: InsertAgentExecution): Promise<AgentExecution>;
@@ -691,6 +769,23 @@ export interface IStorage {
   upsertGlLedgerControl(data: InsertGlLedgerControl): Promise<GlLedgerControl>;
   listGlAutoPostRules(ledgerId: string): Promise<GlAutoPostRule[]>;
   createGlAutoPostRule(data: InsertGlAutoPostRule): Promise<GlAutoPostRule>;
+
+  // AR Period Control
+  listArPeriods(): Promise<ArPeriodStatus[]>;
+  getArPeriod(name: string): Promise<ArPeriodStatus | undefined>;
+  updateArPeriodStatus(name: string, status: string, auditId: string): Promise<ArPeriodStatus | undefined>;
+
+  // Tax
+  listTaxCodes(): Promise<TaxCode[]>;
+  getTaxCode(id: string): Promise<TaxCode | undefined>;
+  createTaxCode(data: InsertTaxCode): Promise<TaxCode>;
+  listTaxJurisdictions(): Promise<TaxJurisdiction[]>;
+  getTaxJurisdiction(id: string): Promise<TaxJurisdiction | undefined>;
+  createTaxJurisdiction(data: InsertTaxJurisdiction): Promise<TaxJurisdiction>;
+  listTaxExemptions(): Promise<TaxExemption[]>;
+  getTaxExemption(id: string): Promise<TaxExemption | undefined>;
+  createTaxExemption(data: InsertTaxExemption): Promise<TaxExemption>;
+  getApplicableTaxRate(invoiceId: string): Promise<number>;
 }
 
 
@@ -752,11 +847,8 @@ export class DatabaseStorage implements IStorage {
   private apPayments = new Map<string, ApPayment>();
   private apApprovals = new Map<string, ApApproval>();
 
-  // AR Maps
-  private arCustomers = new Map<string, ArCustomer>();
-  private arInvoices = new Map<string, ArInvoice>();
-  private arReceipts = new Map<string, ArReceipt>();
-  private arRevenueSchedules = new Map<string, ArRevenueSchedule>();
+  // AR Maps - DEPRECATED (Moved to DB)
+  // arCustomers, arInvoices, arReceipts, arRevenueSchedules moved to DB
 
   private currentId = 1;
   private agentCurrentId = 1;
@@ -1215,105 +1307,227 @@ export class DatabaseStorage implements IStorage {
     return updated;
   }
 
-  // AR Module Implementation
-  async listArCustomers() { return Array.from(this.arCustomers.values()); }
-  async getArCustomer(id: string) { return this.arCustomers.get(id); }
-  async createArCustomer(c: InsertArCustomer) {
-    const id = randomUUID();
-    const customer: ArCustomer = {
-      id, ...c,
-      taxId: c.taxId ?? null,
-      customerType: c.customerType ?? "Commercial",
-      creditLimit: String(c.creditLimit ?? "0"),
-      balance: String(c.balance ?? "0"),
-      address: c.address ?? null,
-      contactEmail: c.contactEmail ?? null,
-      creditHold: c.creditHold ?? false,
-      riskCategory: c.riskCategory ?? "Low",
-      parentCustomerId: c.parentCustomerId ?? null,
-      status: c.status ?? "Active",
-      createdAt: new Date()
-    };
-    this.arCustomers.set(id, customer);
-    return customer;
+  // AR Module Implementation (DB-Backed)
+  async listArCustomers() {
+    return await db.select().from(arCustomers);
   }
-  async updateArCustomer(id: string, c: Partial<InsertArCustomer>) {
-    const existing = this.arCustomers.get(id); if (!existing) return undefined;
-    const updated = { ...existing, ...c }; this.arCustomers.set(id, updated);
-    return updated;
+  async getArCustomer(id: string) {
+    const [res] = await db.select().from(arCustomers).where(eq(arCustomers.id, id));
+    return res;
   }
-  async deleteArCustomer(id: string) { return this.arCustomers.delete(id); }
+  async createArCustomer(data: InsertArCustomer) {
+    const [res] = await db.insert(arCustomers).values(data).returning();
+    return res;
+  }
+  async updateArCustomer(id: string, data: Partial<InsertArCustomer>) {
+    const [res] = await db.update(arCustomers).set(data).where(eq(arCustomers.id, id)).returning();
+    return res;
+  }
+  async deleteArCustomer(id: string) {
+    await db.delete(arCustomers).where(eq(arCustomers.id, id));
+    return true;
+  }
 
-  async listArInvoices() { return Array.from(this.arInvoices.values()); }
-  async getArInvoice(id: string) { return this.arInvoices.get(id); }
-  async createArInvoice(i: InsertArInvoice) {
-    const id = randomUUID();
-    const invoice: ArInvoice = {
-      id, ...i,
-      taxAmount: i.taxAmount ?? "0",
-      currency: i.currency ?? "USD",
-      dueDate: i.dueDate ?? null,
-      status: i.status ?? "Draft",
-      description: i.description ?? null,
-      glAccountId: i.glAccountId ?? null,
-      revenueScheduleId: i.revenueScheduleId ?? null,
-      recognitionStatus: i.recognitionStatus ?? "Pending",
-      createdAt: new Date()
-    };
-    this.arInvoices.set(id, invoice);
-    return invoice;
+  // AR Accounts
+  async listArCustomerAccounts(customerId?: string) {
+    if (customerId) {
+      return await db.select().from(arCustomerAccounts).where(eq(arCustomerAccounts.customerId, customerId));
+    }
+    return await db.select().from(arCustomerAccounts);
   }
-  async updateArInvoice(id: string, i: Partial<InsertArInvoice>) {
-    const existing = this.arInvoices.get(id); if (!existing) return undefined;
-    const updated = { ...existing, ...i }; this.arInvoices.set(id, updated);
-    return updated;
+  async getArCustomerAccount(id: string) {
+    const [res] = await db.select().from(arCustomerAccounts).where(eq(arCustomerAccounts.id, id));
+    return res;
   }
-  async deleteArInvoice(id: string) { return this.arInvoices.delete(id); }
+  async createArCustomerAccount(data: InsertArCustomerAccount) {
+    const [res] = await db.insert(arCustomerAccounts).values(data).returning();
+    return res;
+  }
+  async updateArCustomerAccount(id: string, data: Partial<InsertArCustomerAccount>) {
+    const [res] = await db.update(arCustomerAccounts).set(data).where(eq(arCustomerAccounts.id, id)).returning();
+    return res;
+  }
 
+  // AR Sites
+  async listArCustomerSites(accountId: string) {
+    return await db.select().from(arCustomerSites).where(eq(arCustomerSites.accountId, accountId));
+  }
+  async getArCustomerSite(id: string) {
+    const [res] = await db.select().from(arCustomerSites).where(eq(arCustomerSites.id, id));
+    return res;
+  }
+  async createArCustomerSite(data: InsertArCustomerSite) {
+    const [res] = await db.insert(arCustomerSites).values(data).returning();
+    return res;
+  }
+  async updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>) {
+    const [res] = await db.update(arCustomerSites).set(data).where(eq(arCustomerSites.id, id)).returning();
+    return res;
+  }
+
+  async listArInvoices() {
+    return await db.select().from(arInvoices);
+  }
+  async getArInvoice(id: string) {
+    const [res] = await db.select().from(arInvoices).where(eq(arInvoices.id, id));
+    return res;
+  }
+  async createArInvoice(data: InsertArInvoice) {
+    const [res] = await db.insert(arInvoices).values(data).returning();
+    return res;
+  }
+  async updateArInvoice(id: string, data: Partial<InsertArInvoice>) {
+    const [res] = await db.update(arInvoices).set(data).where(eq(arInvoices.id, id)).returning();
+    return res;
+  }
+  async deleteArInvoice(id: string) {
+    await db.delete(arInvoices).where(eq(arInvoices.id, id));
+    return true;
+  }
   async updateArInvoiceStatus(id: string, status: string) {
-    const inv = this.arInvoices.get(id);
-    if (!inv) return undefined;
-    inv.status = status;
-    this.arInvoices.set(id, inv);
-    return inv;
+    const [res] = await db.update(arInvoices).set({ status }).where(eq(arInvoices.id, id)).returning();
+    return res;
   }
 
-  async listArReceipts() { return Array.from(this.arReceipts.values()); }
-  async getArReceipt(id: string) { return this.arReceipts.get(id); }
-  async createArReceipt(r: InsertArReceipt) {
-    const id = this.currentId++;
-    const receipt: ArReceipt = { id: String(id), ...r, invoiceId: r.invoiceId ?? null, receiptDate: r.receiptDate ?? null, paymentMethod: r.paymentMethod ?? null, transactionId: r.transactionId ?? null, status: r.status ?? "Completed", createdAt: new Date() };
-    this.arReceipts.set(String(id), receipt);
-    return receipt;
+  async listArReceipts() {
+    return await db.select().from(arReceipts);
   }
-  async updateArReceipt(id: string, r: Partial<InsertArReceipt>) {
-    const existing = this.arReceipts.get(id); if (!existing) return undefined;
-    const updated = { ...existing, ...r }; this.arReceipts.set(id, updated);
-    return updated;
+  async getArReceipt(id: string) {
+    const [res] = await db.select().from(arReceipts).where(eq(arReceipts.id, id));
+    return res;
   }
-  async deleteArReceipt(id: string) { return this.arReceipts.delete(id); }
+  async createArReceipt(data: InsertArReceipt) {
+    const [res] = await db.insert(arReceipts).values(data).returning();
+    return res;
+  }
+  async updateArReceipt(id: string, data: Partial<InsertArReceipt>) {
+    const [res] = await db.update(arReceipts).set(data).where(eq(arReceipts.id, id)).returning();
+    return res;
+  }
+  async deleteArReceipt(id: string) {
+    await db.delete(arReceipts).where(eq(arReceipts.id, id));
+    return true;
+  }
 
-  // AR Revenue Schedule CRUD
-  async listArRevenueSchedules() { return Array.from(this.arRevenueSchedules.values()); }
-  async getArRevenueSchedule(id: string) { return this.arRevenueSchedules.get(id); }
+  // Receipt Applications
+  async listArReceiptApplications(receiptId?: string, invoiceId?: string) {
+    let query = db.select().from(arReceiptApplications);
+    if (receiptId && invoiceId) {
+      return await query.where(and(eq(arReceiptApplications.receiptId, receiptId), eq(arReceiptApplications.invoiceId, invoiceId)));
+    }
+    if (receiptId) return await query.where(eq(arReceiptApplications.receiptId, receiptId));
+    if (invoiceId) return await query.where(eq(arReceiptApplications.invoiceId, invoiceId));
+    return await query;
+  }
+  async createArReceiptApplication(data: InsertArReceiptApplication) {
+    const [res] = await db.insert(arReceiptApplications).values(data).returning();
+    return res;
+  }
+  async updateArReceiptApplication(id: string, data: Partial<InsertArReceiptApplication>) {
+    const [res] = await db.update(arReceiptApplications).set(data).where(eq(arReceiptApplications.id, id)).returning();
+    return res;
+  }
+
+  async listArRevenueSchedules() {
+    return await db.select().from(arRevenueSchedules);
+  }
+  async getArRevenueSchedule(id: string) {
+    const [res] = await db.select().from(arRevenueSchedules).where(eq(arRevenueSchedules.id, id));
+    return res;
+  }
   async createArRevenueSchedule(data: InsertArRevenueSchedule) {
-    const id = this.currentId++;
-    const schedule: ArRevenueSchedule = {
-      id, ...data,
-      amount: String(data.amount), // Cast number to numeric string
-      status: data.status ?? "Pending"
-    };
-    this.arRevenueSchedules.set(String(id), schedule);
-    return schedule;
+    const [res] = await db.insert(arRevenueSchedules).values(data).returning();
+    return res;
   }
   async updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>) {
-    const existing = this.arRevenueSchedules.get(id);
-    if (!existing) return undefined;
-    const updated = { ...existing, ...data } as ArRevenueSchedule;
-    this.arRevenueSchedules.set(id, updated);
-    return updated;
+    const [res] = await db.update(arRevenueSchedules).set(data).where(eq(arRevenueSchedules.id, id)).returning();
+    return res;
   }
-  async deleteArRevenueSchedule(id: string) { return this.arRevenueSchedules.delete(id); }
+  async deleteArRevenueSchedule(id: string) {
+    await db.delete(arRevenueSchedules).where(eq(arRevenueSchedules.id, id));
+    return true;
+  }
+
+  // Revenue Rules
+  async listArRevenueRules(): Promise<ArRevenueRule[]> {
+    return await db.select().from(arRevenueRules);
+  }
+
+  async getArRevenueRule(id: string): Promise<ArRevenueRule | undefined> {
+    const [rule] = await db.select().from(arRevenueRules).where(eq(arRevenueRules.id, id));
+    return rule;
+  }
+
+  async createArRevenueRule(data: InsertArRevenueRule): Promise<ArRevenueRule> {
+    const [rule] = await db.insert(arRevenueRules).values(data).returning();
+    return rule;
+  }
+
+  // Revenue Schedules (Bulk Create)
+  async createArRevenueSchedulesBulk(data: InsertArRevenueSchedule[]): Promise<ArRevenueSchedule[]> {
+    if (data.length === 0) return [];
+    return await db.insert(arRevenueSchedules).values(data).returning();
+  }
+
+  // AR Collections
+  async createArDunningTemplate(data: InsertArDunningTemplate) {
+    const [res] = await db.insert(arDunningTemplates).values(data).returning();
+    return res;
+  }
+  async listArDunningTemplates() {
+    return await db.select().from(arDunningTemplates);
+  }
+  async getArDunningTemplate(id: string) {
+    const [res] = await db.select().from(arDunningTemplates).where(eq(arDunningTemplates.id, id));
+    return res;
+  }
+  async createArDunningRun(data: InsertArDunningRun) {
+    const [res] = await db.insert(arDunningRuns).values(data).returning();
+    return res;
+  }
+  async createArCollectorTask(data: InsertArCollectorTask) {
+    const [res] = await db.insert(arCollectorTasks).values(data).returning();
+    return res;
+  }
+  async listArCollectorTasks(assignedTo?: string, status?: string) {
+    const conditions = [];
+    if (assignedTo) conditions.push(eq(arCollectorTasks.assignedToUser, assignedTo));
+    if (status) conditions.push(eq(arCollectorTasks.status, status));
+
+    if (conditions.length > 0) {
+      return await db.select().from(arCollectorTasks).where(and(...conditions));
+    }
+    return await db.select().from(arCollectorTasks);
+  }
+  async updateArCollectorTask(id: string, data: Partial<InsertArCollectorTask>) {
+    const [res] = await db.update(arCollectorTasks).set(data).where(eq(arCollectorTasks.id, id)).returning();
+    return res;
+  }
+
+  // AR Adjustments
+  async createArAdjustment(data: InsertArAdjustment) {
+    const [res] = await db.insert(arAdjustments).values(data).returning();
+    return res;
+  }
+
+  async listArAdjustments(invoiceId?: string) {
+    if (invoiceId) {
+      return await db.select().from(arAdjustments).where(eq(arAdjustments.invoiceId, invoiceId));
+    }
+    return await db.select().from(arAdjustments);
+  }
+
+  async updateArAdjustmentStatus(id: string, status: string) {
+    const [res] = await db.update(arAdjustments).set({ status }).where(eq(arAdjustments.id, id)).returning();
+    return res;
+  }
+
+  async listArRevenueSchedules(status?: string): Promise<ArRevenueSchedule[]> {
+    if (status) {
+      return await db.select().from(arRevenueSchedules).where(eq(arRevenueSchedules.status, status));
+    }
+    return await db.select().from(arRevenueSchedules);
+  }
 
   // Cash Management Implementation (DB-Backed)
   async listCashBankAccounts() {
@@ -1513,7 +1727,7 @@ export class DatabaseStorage implements IStorage {
       id: userData.id,
       email: userData.email ?? null,
       password: null,
-      name: userData.firstName && userData.lastName ? `${userData.firstName} ${userData.lastName}` : null,
+      name: userData.firstName && userData.lastName ? `${userData.firstName} ${userData.lastName} ` : null,
       firstName: userData.firstName ?? null,
       lastName: userData.lastName ?? null,
       profileImageUrl: userData.profileImageUrl ?? null,
@@ -1771,7 +1985,7 @@ export class DatabaseStorage implements IStorage {
       id,
       ...d,
       status: d.status ?? "active",
-      demoToken: `demo_${randomUUID()}`,
+      demoToken: `demo_${randomUUID()} `,
       createdAt: new Date(),
       expiresAt: d.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     };
@@ -2458,6 +2672,98 @@ export class DatabaseStorage implements IStorage {
   async createGlAutoPostRule(data: InsertGlAutoPostRule): Promise<GlAutoPostRule> {
     const [rule] = await db.insert(glAutoPostRules).values({ ...data, id: data.id || randomUUID() }).returning();
     return rule;
+  }
+
+  // Tax CRUD methods
+  async listTaxCodes(): Promise<TaxCode[]> {
+    return await db.select().from(taxCodes);
+  }
+
+  async getTaxCode(id: string): Promise<TaxCode | undefined> {
+    const [res] = await db.select().from(taxCodes).where(eq(taxCodes.id, id));
+    return res;
+  }
+
+  async createTaxCode(data: InsertTaxCode): Promise<TaxCode> {
+    const [res] = await db.insert(taxCodes).values(data).returning();
+    return res;
+  }
+
+  async listTaxJurisdictions(): Promise<TaxJurisdiction[]> {
+    return await db.select().from(taxJurisdictions);
+  }
+
+  async getTaxJurisdiction(id: string): Promise<TaxJurisdiction | undefined> {
+    const [res] = await db.select().from(taxJurisdictions).where(eq(taxJurisdictions.id, id));
+    return res;
+  }
+
+  async createTaxJurisdiction(data: InsertTaxJurisdiction): Promise<TaxJurisdiction> {
+    const [res] = await db.insert(taxJurisdictions).values(data).returning();
+    return res;
+  }
+
+  async listTaxExemptions(): Promise<TaxExemption[]> {
+    return await db.select().from(taxExemptions);
+  }
+
+  async getTaxExemption(id: string): Promise<TaxExemption | undefined> {
+    const [res] = await db.select().from(taxExemptions).where(eq(taxExemptions.id, id));
+    return res;
+  }
+
+  async createTaxExemption(data: InsertTaxExemption): Promise<TaxExemption> {
+    const [res] = await db.insert(taxExemptions).values(data).returning();
+    return res;
+  }
+
+  // Placeholder for tax calculation helper
+  async getApplicableTaxRate(invoiceId: string): Promise<number> {
+    // TODO: Implement logic to determine tax rate based on invoice, customer, site, and exemptions
+    return 0;
+  }
+
+  // AR Period Control
+  async listArPeriods(): Promise<ArPeriodStatus[]> {
+    return await db.select().from(arPeriodStatuses).orderBy(desc(arPeriodStatuses.periodName));
+  }
+
+  async getArPeriod(name: string): Promise<ArPeriodStatus | undefined> {
+    const [period] = await db.select().from(arPeriodStatuses).where(eq(arPeriodStatuses.periodName, name));
+    return period;
+  }
+
+  async updateArPeriodStatus(name: string, status: string, auditId: string): Promise<ArPeriodStatus | undefined> {
+    const [existing] = await db.select().from(arPeriodStatuses).where(eq(arPeriodStatuses.periodName, name));
+
+    if (existing) {
+      const [updated] = await db.update(arPeriodStatuses)
+        .set({ status, auditId, updatedAt: new Date() })
+        .where(eq(arPeriodStatuses.periodName, name))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(arPeriodStatuses)
+        .values({
+          periodName: name,
+          status,
+          auditId,
+          ledgerId: '1',
+          glPeriodId: name
+        })
+        .returning();
+      return created;
+    }
+  }
+
+
+  // AR System Options
+  async getArSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined> {
+    return await dbStorage.getArSystemOptions(ledgerId);
+  }
+
+  async upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions> {
+    return await dbStorage.upsertArSystemOptions(data);
   }
 }
 

@@ -15,6 +15,20 @@
       "when": 1768075053635,
       "tag": "0001_silly_krista_starr",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768127055721,
+      "tag": "0002_futuristic_ultimates",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1768127791489,
+      "tag": "0003_fair_iron_lad",
+      "breakpoints": true
     }
   ]
 }

@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { format } from "date-fns";
 import { useState } from "react";
 import { ArSideSheet } from "./ArSideSheet";
+import { CreateTransactionDialog } from "./CreateTransactionDialog";
 
 export function ArInvoiceList() {
     const { data: invoices, isLoading } = useQuery({
@@ -32,6 +33,9 @@ export function ArInvoiceList() {
 
     return (
         <>
+            <div className="flex justify-end mb-4">
+                <CreateTransactionDialog />
+            </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {invoices.map((inv: any) => (
                     <Card

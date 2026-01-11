@@ -60,7 +60,8 @@ import {
   type InsertGlJournalBatch,
   type InsertGlJournalApproval,
   type GlJournalBatch,
-  type GlJournalApproval
+  type GlJournalApproval,
+  arSystemOptions as arSystemOptionsTable
 } from "@shared/schema";
 import type {
   Campaign,
@@ -135,7 +136,8 @@ import type {
   CashTransaction, InsertCashTransaction,
   CashReconciliationRule, InsertCashReconciliationRule,
   CashMatchingGroup, InsertCashMatchingGroup,
-  CashBankAccount, InsertCashBankAccount
+  CashBankAccount, InsertCashBankAccount,
+  ArSystemOptions, InsertArSystemOptions
 } from "@shared/schema";
 
 /**
@@ -1203,4 +1205,20 @@ export const dbStorage = {
   async listFsgColumnSets(ledgerId: string): Promise<any[]> { return []; },
   async getFsgColumnSet(id: string): Promise<any> { return undefined; },
   async createFsgColumnSet(data: any): Promise<any> { return {}; },
+
+  // AR System Options
+  async getArSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined> {
+    const [options] = await db.select().from(arSystemOptionsTable).where(eq(arSystemOptionsTable.ledgerId, ledgerId));
+    return options;
+  },
+  async upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions> {
+    const [existing] = await db.select().from(arSystemOptionsTable).where(eq(arSystemOptionsTable.ledgerId, data.ledgerId));
+    if (existing) {
+      const [updated] = await db.update(arSystemOptionsTable).set({ ...data, updatedAt: new Date() }).where(eq(arSystemOptionsTable.id, existing.id)).returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(arSystemOptionsTable).values(data).returning();
+      return created;
+    }
+  },
 };

@@ -145,15 +145,75 @@ export const api = {
       list: () => fetch(`${API_BASE}/api/ar/customers`, { credentials: "include" }).then(r => r.json()),
       get: (id: string) => fetch(`${API_BASE}/api/ar/customers/${id}`, { credentials: "include" }).then(r => r.json()),
     },
+    accounts: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/accounts`, data).then(r => r.json()),
+      list: (customerId?: string) => fetch(`${API_BASE}/api/ar/accounts${customerId ? `?customerId=${customerId}` : ""}`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/ar/accounts/${id}`, { credentials: "include" }).then(r => r.json()),
+      toggleHold: (id: string, hold: boolean) => apiRequest("POST", `${API_BASE}/api/ar/accounts/${id}/hold`, { hold }).then(r => r.json()),
+    },
+    sites: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/sites`, data).then(r => r.json()),
+      list: (accountId: string) => fetch(`${API_BASE}/api/ar/sites?accountId=${accountId}`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/ar/sites/${id}`, { credentials: "include" }).then(r => r.json()),
+    },
     invoices: {
       create: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/invoices`, data).then(r => r.json()),
+      createCreditMemo: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/invoices/credit-memo`, data).then(r => r.json()),
+      createDebitMemo: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/invoices/debit-memo`, data).then(r => r.json()),
+      createChargeback: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/invoices/chargeback`, data).then(r => r.json()),
       list: () => fetch(`${API_BASE}/api/ar/invoices`, { credentials: "include" }).then(r => r.json()),
       get: (id: string) => fetch(`${API_BASE}/api/ar/invoices/${id}`, { credentials: "include" }).then(r => r.json()),
+      getAccounting: (id: string) => fetch(`${API_BASE}/api/ar/invoices/${id}/accounting`, { credentials: "include" }).then(r => r.json()),
+      createAdjustment: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/adjustments`, data).then(r => r.json()),
+      listAdjustments: (invoiceId: string) => fetch(`${API_BASE}/api/ar/adjustments?invoiceId=${invoiceId}`, { credentials: "include" }).then(r => r.json()),
     },
     receipts: {
       create: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/receipts`, data).then(r => r.json()),
       list: () => fetch(`${API_BASE}/api/ar/receipts`, { credentials: "include" }).then(r => r.json()),
+      getAccounting: (id: string) => fetch(`${API_BASE}/api/ar/receipts/${id}/accounting`, { credentials: "include" }).then(r => r.json()),
     },
+    revenueSchedules: {
+      list: (invoiceId?: string) => fetch(`${API_BASE}/api/ar/revenue-schedules${invoiceId ? `?invoiceId=${invoiceId}` : ""}`, { credentials: "include" }).then(r => r.json()),
+      recognize: (id: string | number) => apiRequest("POST", `${API_BASE}/api/ar/revenue-schedules/${id}/recognize`, {}).then(r => r.json()),
+    },
+    // Collections
+    dunning: {
+      templates: {
+        list: () => fetch(`${API_BASE}/api/ar/dunning/templates`, { credentials: "include" }).then(r => r.json()),
+        create: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/dunning/templates`, data).then(r => r.json()),
+      },
+      run: {
+        create: () => apiRequest("POST", `${API_BASE}/api/ar/dunning/run`, {}).then(r => r.json()),
+      }
+    },
+    collections: {
+      tasks: {
+        list: (assignedTo?: string, status?: string) => {
+          const params = new URLSearchParams();
+          if (assignedTo) params.append("assignedTo", assignedTo);
+          if (status) params.append("status", status);
+          return fetch(`${API_BASE}/api/ar/collections/tasks?${params.toString()}`, { credentials: "include" }).then(r => r.json());
+        },
+        update: (id: string, data: any) => apiRequest("PATCH", `${API_BASE}/api/ar/collections/tasks/${id}`, data).then(r => r.json()),
+        generateEmail: (id: string, invoiceId: string) => apiRequest("POST", `${API_BASE}/api/ar/collections/tasks/${id}/email`, { invoiceId }).then(r => r.json()),
+      }
+    },
+    // Period Close
+    periods: {
+      list: async () => {
+        const res = await apiRequest("GET", `${API_BASE}/api/ar/periods`);
+        return res.json();
+      },
+      close: async (name: string) => {
+        const res = await apiRequest("POST", `${API_BASE}/api/ar/periods/${name}/close`);
+        return res.json();
+      },
+      getReconciliation: async () => {
+        const res = await apiRequest("GET", `${API_BASE}/api/ar/reconciliation`);
+        return res.json();
+      }
+    },
+    seed: () => apiRequest("POST", `${API_BASE}/api/ar/seed`, {}).then(r => r.json()),
   },
 
   // Inventory
@@ -193,5 +253,22 @@ export const api = {
   health: {
     status: () => fetch(`${API_BASE}/api/health`, { credentials: "include" }).then(r => r.json()),
     diagnostics: () => fetch(`${API_BASE}/api/health/diagnostics`, { credentials: "include" }).then(r => r.json()),
+  },
+  // Tax
+  tax: {
+    codes: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/tax/codes`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/tax/codes`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/tax/codes/${id}`, { credentials: "include" }).then(r => r.json()),
+    },
+    jurisdictions: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/tax/jurisdictions`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/tax/jurisdictions`, { credentials: "include" }).then(r => r.json()),
+    },
+    exemptions: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/tax/exemptions`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/tax/exemptions`, { credentials: "include" }).then(r => r.json()),
+    },
+    calculate: (invoiceId: string) => apiRequest("POST", `${API_BASE}/api/tax/calculate/${invoiceId}`, {}).then(r => r.json()),
   },
 };

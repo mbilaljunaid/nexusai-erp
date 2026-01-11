@@ -4,7 +4,7 @@ import {
     slaMappingSets, slaMappingSetValues
 } from "@shared/schema";
 import { eq, and, desc, inArray } from "drizzle-orm";
-import { glCodeCombinations } from "@shared/schema";
+import { glCodeCombinations, glLedgers } from "@shared/schema";
 // Use dynamic import or careful structure to avoid circular deps if FinanceService imports this.
 // For now assuming Uni-directional: Sla -> Finance
 import { financeService } from "./finance";
@@ -100,7 +100,7 @@ export class SlaService {
                 currencyCode: event.currency,
                 description: "Payment - Cash Outflow"
             });
-        } else if (event.eventClass === "AR_INVOICE_COMPLETE") {
+        } else if (event.eventClass === "AR_INVOICE_CREATED") {
             const receivableCCID = await this.deriveAccount("RECEIVABLE", event.sourceData, event.ledgerId);
             linesToInsert.push({
                 headerId: header.id,
@@ -110,7 +110,137 @@ export class SlaService {
                 enteredDr: String(event.amount),
                 accountedDr: String(event.amount),
                 currencyCode: event.currency,
-                description: "Receivable Entry"
+                description: "Invoice - Receivable Entry"
+            });
+
+            // Determine if Deferred or Immediate Revenue
+            const isDeferred = !!event.sourceData.revenueRuleId;
+            const creditAccountType = isDeferred ? "DEFERRED_REVENUE" : "REVENUE";
+            const creditAccountClass = isDeferred ? "Deferred Revenue" : "Revenue";
+            const creditDesc = isDeferred ? "Invoice - Deferred Revenue" : "Invoice - Revenue Entry";
+
+            const revenueCCID = await this.deriveAccount(creditAccountType, event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: creditAccountClass,
+                codeCombinationId: revenueCCID,
+                enteredCr: String(event.amount),
+                accountedCr: String(event.amount),
+                currencyCode: event.currency,
+                description: creditDesc
+            });
+        } else if (event.eventClass === "AR_RECEIPT_CREATED") {
+            const cashCCID = await this.deriveAccount("CASH", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Cash",
+                codeCombinationId: cashCCID,
+                enteredDr: String(event.amount),
+                accountedDr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Receipt - Cash Entry"
+            });
+
+            const unappliedCCID = await this.deriveAccount("UNAPPLIED_CASH", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Unapplied Cash",
+                codeCombinationId: unappliedCCID,
+                enteredCr: String(event.amount),
+                accountedCr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Receipt - Unapplied Balance"
+            });
+        } else if (event.eventClass === "AR_RECEIPT_APPLIED") {
+            const unappliedCCID = await this.deriveAccount("UNAPPLIED_CASH", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Unapplied Cash",
+                codeCombinationId: unappliedCCID,
+                enteredDr: String(event.amount),
+                accountedDr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Application - Releasing Unapplied"
+            });
+
+            const receivableCCID = await this.deriveAccount("RECEIVABLE", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Receivable",
+                codeCombinationId: receivableCCID,
+                enteredCr: String(event.amount),
+                accountedCr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Application - Clearing Receivable"
+            });
+        } else if (event.eventClass === "AR_REVENUE_RECOGNIZED") {
+            // DR Deferred Revenue
+            const deferredCCID = await this.deriveAccount("DEFERRED_REVENUE", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Deferred Revenue",
+                codeCombinationId: deferredCCID,
+                enteredDr: String(event.amount),
+                accountedDr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Revenue Recognition - Release Deferred"
+            });
+
+            // CR Revenue
+            const revenueCCID = await this.deriveAccount("REVENUE", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Revenue",
+                codeCombinationId: revenueCCID,
+                enteredCr: String(event.amount),
+                accountedCr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Revenue Recognition - Realized Revenue"
+            });
+        } else if (event.eventClass === "AR_CM_CREATED") {
+            // Credit Memo: DR Revenue (Reversal), CR Receivable
+            const revenueCCID = await this.deriveAccount("REVENUE", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Revenue",
+                codeCombinationId: revenueCCID,
+                enteredDr: String(event.amount),
+                accountedDr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Credit Memo - Revenue Reversal"
+            });
+
+            const receivableCCID = await this.deriveAccount("RECEIVABLE", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Receivable",
+                codeCombinationId: receivableCCID,
+                enteredCr: String(event.amount),
+                accountedCr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Credit Memo - Receivable Credit"
+            });
+        } else if (event.eventClass === "AR_DM_CREATED") {
+            // Debit Memo: DR Receivable, CR Revenue
+            const receivableCCID = await this.deriveAccount("RECEIVABLE", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Receivable",
+                codeCombinationId: receivableCCID,
+                enteredDr: String(event.amount),
+                accountedDr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Debit Memo - Receivable Debit"
             });
 
             const revenueCCID = await this.deriveAccount("REVENUE", event.sourceData, event.ledgerId);
@@ -122,20 +252,65 @@ export class SlaService {
                 enteredCr: String(event.amount),
                 accountedCr: String(event.amount),
                 currencyCode: event.currency,
-                description: "Revenue Entry"
+                description: "Debit Memo - Revenue Entry"
+            });
+        } else if (event.eventClass === "AR_CB_CREATED") {
+            // Chargeback: DR Receivable (New), CR Receivable (Old)
+            const receivableCCID = await this.deriveAccount("RECEIVABLE", event.sourceData, event.ledgerId);
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Receivable",
+                codeCombinationId: receivableCCID,
+                enteredDr: String(event.amount),
+                accountedDr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Chargeback - New Receivable"
+            });
+
+            linesToInsert.push({
+                headerId: header.id,
+                lineNumber: lineNumber++,
+                accountingClass: "Receivable",
+                codeCombinationId: receivableCCID,
+                enteredCr: String(event.amount),
+                accountedCr: String(event.amount),
+                currencyCode: event.currency,
+                description: "Chargeback - Clearing Original Invoice"
             });
         }
 
         // 3. Apply Intercompany Balancing
         const balancedLines = await this.balanceBySegment(linesToInsert, event.ledgerId);
 
-        // 4. Insert Lines
-        if (balancedLines.length > 0) {
-            await db.insert(slaJournalLines).values(balancedLines);
+        // 3. Batch Insert Lines
+        if (linesToInsert.length > 0) {
+            await db.insert(slaJournalLines).values(linesToInsert);
+            console.log(`[SLA] Created SLA Journal ${header.id} with ${linesToInsert.length} lines.`);
         }
 
-        console.log(`[SLA] Created SLA Journal ${header.id} with ${linesToInsert.length} lines.`);
         return header;
+    }
+
+    // Helper for AR Events
+    async processArEvent(eventClass: string, entityId: string, sourceData: any) {
+        // Get Primary Ledger
+        const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+        const ledgerId = ledger?.id || "PRIMARY";
+
+        return this.createAccounting({
+            eventClass,
+            entityId,
+            entityTable: eventClass.includes("INVOICE") ? "ar_invoices" :
+                eventClass.includes("RECEIPT") ? "ar_receipts" :
+                    eventClass.includes("ADJUSTMENT") ? "ar_adjustments" : "unknown",
+            description: `SLA Journal for ${eventClass}`,
+            amount: Math.abs(Number(sourceData.amount || 0)), // Use ABS amount
+            currency: sourceData.currency || "USD",
+            date: new Date(),
+            ledgerId,
+            sourceData
+        });
     }
 
     /**
@@ -248,6 +423,8 @@ export class SlaService {
             segmentString = "01-000-12000-000-000-000-000-000-000-000";
         } else if (ruleType === "REVENUE") {
             segmentString = "01-000-40000-000-000-000-000-000-000-000";
+        } else if (ruleType === "UNAPPLIED_CASH") {
+            segmentString = "01-000-11001-000-000-000-000-000-000-000";
         }
 
         const cc = await financeService.getOrCreateCodeCombination(ledgerId, segmentString);

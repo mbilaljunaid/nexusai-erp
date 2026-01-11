@@ -25,7 +25,12 @@ import migrationRoutes from "./routes/migrationRoutes";
 import financeRouter from "./routes/finance";
 import { apRouter } from "./routes/ap";
 import arRouter from "./routes/ar";
-import cashRouter from "./routes/cash"; // Added Cash router
+import cashRouter from "./routes/cash";
+import taxRouter from "./routes/tax";
+import nettingRouter from "./routes/netting";
+import portalRouter from "./routes/portal";
+import arAiRouter from "./routes/ar-ai";
+import arReportRouter from "./routes/ar-reports";
 import { fixedAssetsRouter } from "./routes/fixedAssets";
 import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
@@ -40,19 +45,21 @@ export async function registerRoutes(
   // Seed admin user for Quick Login
   await seedAdminUser();
 
-  // Oracle  // Finance & ERP
+  // Core Finance & ERP Routes
   app.use("/api/finance", financeRouter);
   app.use("/api/ap", apRouter);
-  app.use("/api/ar", arRouter); // Assuming arRouter exists or will exist
-  app.use("/api/ap", apRouter); // Register AP routes
-  app.use("/api/ar", arRouter); // Register AR routes
-  app.use("/api/cash", cashRouter); // Register Cash routes
-  app.use("/api/fa", fixedAssetsRouter); // Register FA routes
+  app.use("/api/ar", arRouter);
+  app.use("/api/ar/ai", arAiRouter);
+  app.use("/api/ar", arReportRouter); // Shares prefix but mounts specific paths
+  app.use("/api/cash", cashRouter);
+  app.use("/api/tax", taxRouter);
+  app.use("/api/netting", nettingRouter);
+  app.use("/api/portal", portalRouter);
+  app.use("/api/fa", fixedAssetsRouter);
 
   // Agentic AI
   app.use("/api", aiRouter);
   await aiService.initialize();
-
 
   // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {
@@ -69,23 +76,17 @@ export async function registerRoutes(
     if (req.path.startsWith("/marketplace/apps")) return next();
     if (req.path.startsWith("/community")) return next();
 
-    // Dashboard and CRM logic might overlap with authenticated data, check logic inside modules if needed
-    // But for now we enforce RBAC on everything else
-
     // Use the extracted middleware
     enforceRBAC()(req as any, res, next);
   });
 
-  // Add API to fetch segments and values for picker.
+  // GL Helper Routes (Plan to move to GL module)
   app.post("/api/gl/validate-ccid", async (req, res) => {
-    // Placeholder for CCID validation
-    // In real app, checks segment combinations
     res.json({ valid: true });
   });
 
   app.get("/api/gl/ledgers/:id/structure", async (req, res) => {
     try {
-
       const segments = await storage.listGlSegments(req.params.id);
       const structure = await Promise.all(segments.sort((a, b) => a.segmentNumber - b.segmentNumber).map(async seg => {
         const values = await storage.listGlSegmentValues(seg.id);
@@ -101,7 +102,7 @@ export async function registerRoutes(
     }
   });
 
-  // ========== AUTH USER ENDPOINT (for frontend auth check) ==========
+  // Auth User Endpoint
   app.get("/api/auth/user", (req: any, res) => {
     if (req.isAuthenticated && req.isAuthenticated() && req.user) {
       const claims = req.user.claims || {};
@@ -126,13 +127,13 @@ export async function registerRoutes(
   registerCrmRoutes(app);
   registerFeedbackRoutes(app);
   registerCopilotRoutes(app);
-  registerFinanceRoutes(app); // New
-  registerHrRoutes(app);      // New
-  registerProjectRoutes(app); // New
-  registerManufacturingRoutes(app); // New
-  registerPlatformRoutes(app); // New
-  registerMarketplaceRoutes(app); // New
-  registerCommunityRoutes(app); // New
+  registerFinanceRoutes(app);
+  registerHrRoutes(app);
+  registerProjectRoutes(app);
+  registerManufacturingRoutes(app);
+  registerPlatformRoutes(app);
+  registerMarketplaceRoutes(app);
+  registerCommunityRoutes(app);
 
   // Register Legacy/Unrefactored Routes
   app.use(analyticsRoutes);
