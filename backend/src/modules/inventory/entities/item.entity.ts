@@ -30,6 +30,16 @@ export class Item {
     @Column({ type: 'decimal', precision: 18, scale: 4, default: 0 })
     quantityOnHand!: number;
 
+    // Planning Attributes
+    @Column({ type: 'decimal', precision: 18, scale: 4, nullable: true })
+    minQuantity?: number;
+
+    @Column({ type: 'decimal', precision: 18, scale: 4, nullable: true })
+    maxQuantity?: number;
+
+    @Column({ type: 'decimal', precision: 18, scale: 4, nullable: true })
+    reorderQuantity?: number; // Fixed Order Qty
+
     @CreateDateColumn()
     createdAt!: Date;
 

@@ -69,3 +69,19 @@
 - [x] Integrate Tax Engine for AP Invoices (Stubbed 10% Auto-Tax)
 - [x] Implement Payment Terms (Net 30, 2/10 Net 30) Logic
 - [x] Implement Accrual Accounting (Receipt Accruals to GL) (Status Tracking & Logging)
+
+## Inventory Re-platforming (Enterprise Readiness)
+- [x] **Phase 1: Transaction Engine**
+    - [x] Create Ledger Entities (`MaterialTransaction`, `OnHandBalance`, `Subinventory`, `Locator`)
+    - [x] Implement `InventoryTransactionService` (Atomic Updates)
+    - [x] Refactor Procurement `ReceiptService` to use Ledger
+- [x] **Phase 2: Item Control**
+    - [x] Create `Lot` and `Serial` Entities
+    - [x] Update Transaction Engine for Granular Tracking
+- [x] **Phase 3: Costing & Valuation**
+    - [x] Create `CstTransactionCost` (Cost Layers) Entity
+    - [x] Implement Inline Costing Logic (FIFO/Average foundations)
+- [x] **Phase 4: Planning & UI**
+    - [x] Add Planning Attributes to `Item` (Min/Max)
+    - [x] Implement `PlanningService` (Replenishment Logic)
+    - [x] Create `InventoryDashboard` (Command Center UI)

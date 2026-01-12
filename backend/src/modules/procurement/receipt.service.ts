@@ -8,6 +8,7 @@ import { PurchaseOrderLine } from './entities/purchase-order-line.entity';
 import { Item } from '../inventory/entities/item.entity';
 import { ApService } from './ap.service';
 import { GlIntegrationService } from './gl-integration.service';
+import { InventoryTransactionService } from '../inventory/inventory-transaction.service';
 
 @Injectable()
 export class ReceiptService {
@@ -26,6 +27,7 @@ export class ReceiptService {
         private itemRepo: Repository<Item>,
         private readonly apService: ApService,
         private readonly glService: GlIntegrationService,
+        private readonly invTxnService: InventoryTransactionService,
     ) { }
 
     async create(dto: any): Promise<ReceiptHeader> {
@@ -56,11 +58,17 @@ export class ReceiptService {
             await this.poLineRepo.save(poLine);
 
             if (lineDto.itemId) {
-                const item = await this.itemRepo.findOne({ where: { id: lineDto.itemId } });
-                if (item) {
-                    item.quantityOnHand = (parseFloat(item.quantityOnHand?.toString() || '0') + quantityReceived);
-                    await this.itemRepo.save(item);
-                }
+                // Update Inventory via Ledger Transaction
+                await this.invTxnService.executeTransaction({
+                    organizationId: lineDto.inventoryOrganizationId || 'ORG-1', // Default if missing
+                    itemId: lineDto.itemId,
+                    transactionType: 'PO Receipt',
+                    quantity: quantityReceived,
+                    subinventoryId: 'SUB-STORES', // Placeholder until Phase 3 (Receiving Layout)
+                    sourceDocumentType: 'PO',
+                    sourceDocumentId: lineDto.poLineId,
+                    reference: savedReceipt.receiptNumber
+                });
             }
 
             const receiptLine = this.receiptLineRepo.create({
@@ -115,11 +123,16 @@ export class ReceiptService {
         await this.receiptLineRepo.save(receiptLine);
 
         if (receiptLine.itemId) {
-            const item = await this.itemRepo.findOne({ where: { id: receiptLine.itemId } });
-            if (item) {
-                item.quantityOnHand = parseFloat(item.quantityOnHand?.toString() || '0') - qtyToReturn;
-                await this.itemRepo.save(item);
-            }
+            await this.invTxnService.executeTransaction({
+                organizationId: 'ORG-1',
+                itemId: receiptLine.itemId,
+                transactionType: 'Return to Vendor',
+                quantity: -qtyToReturn, // Negative for Issue
+                subinventoryId: 'SUB-STORES',
+                sourceDocumentType: 'PO Line', // or Receipt Line
+                sourceDocumentId: receiptLine.poLine.id,
+                reference: `Return: ${receiptLine.header.receiptNumber}`
+            });
         }
 
         const amount = qtyToReturn * Number(receiptLine.poLine.unitPrice);

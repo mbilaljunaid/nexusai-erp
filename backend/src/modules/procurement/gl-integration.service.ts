@@ -23,4 +23,10 @@ export class GlIntegrationService {
         const currentYear = new Date().getFullYear();
         await this.budgetService.releaseFunds(departmentId, amount, currentYear);
     }
+
+    async postJournal(entry: any): Promise<void> {
+        // Simulation of posting to GL Integration table or External GL
+        console.log("GL_JOURNAL_POSTED:", JSON.stringify(entry));
+        // In a real system, this would insert into `gl_interface` table
+    }
 }
