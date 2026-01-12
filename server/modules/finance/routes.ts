@@ -1,6 +1,6 @@
 import { Express, Request, Response } from "express";
 import { storage } from "../../storage";
-import { insertInvoiceSchema, insertPaymentSchema, insertRevenueForecastSchema, insertBudgetAllocationSchema } from "../../../shared/schema";
+import { insertInvoiceSchema, insertPaymentSchema, insertRevenueForecastSchema, insertBudgetAllocationSchema, insertGlAutoPostRuleSchema, insertGlDataAccessSetSchema } from "../../../shared/schema";
 import { financeService } from "../../services/finance";
 
 export function registerFinanceRoutes(app: Express) {
@@ -270,6 +270,82 @@ export function registerFinanceRoutes(app: Express) {
             res.status(204).end();
         } catch (error) {
             res.status(500).json({ error: "Failed to delete cross validation rule" });
+        }
+    });
+    // Auto-Post Rules (Chunk 5)
+    app.get("/api/gl/posting-rules", async (req, res) => {
+        try {
+            const ledgerId = (req.query.ledgerId as string) || "primary-ledger-001";
+            const rules = await storage.listGlAutoPostRules(ledgerId);
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list posting rules" });
+        }
+    });
+
+    app.post("/api/gl/posting-rules", async (req, res) => {
+        try {
+            const parseResult = insertGlAutoPostRuleSchema.safeParse(req.body);
+            if (!parseResult.success) {
+                return res.status(400).json({ error: parseResult.error });
+            }
+            const rule = await storage.createGlAutoPostRule(parseResult.data);
+            res.status(201).json(rule);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create posting rule" });
+        }
+    });
+
+    app.delete("/api/gl/posting-rules/:id", async (req, res) => {
+        try {
+            const success = await storage.deleteGlAutoPostRule(req.params.id);
+            if (!success) return res.status(404).json({ error: "Rule not found" });
+            res.status(204).end();
+        } catch (error) {
+            res.status(500).json({ error: "Failed to delete posting rule" });
+        }
+    });
+
+    // Data Access Sets (Chunk 4)
+    app.get("/api/gl/access-sets", async (req, res) => {
+        try {
+            const sets = await storage.listGlDataAccessSets();
+            res.json(sets);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list access sets" });
+        }
+    });
+
+    app.post("/api/gl/access-sets", async (req, res) => {
+        try {
+            const parseResult = insertGlDataAccessSetSchema.safeParse(req.body);
+            if (!parseResult.success) {
+                return res.status(400).json({ error: parseResult.error });
+            }
+            const set = await storage.createGlDataAccessSet(parseResult.data);
+            res.status(201).json(set);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create access set" });
+        }
+    });
+
+    // CVR Alias (For strict frontend parity)
+    app.get("/api/gl/cvr", async (req, res) => {
+        try {
+            const ledgerId = (req.query.ledgerId as string) || "primary-ledger-001";
+            const rules = await storage.listGlCrossValidationRules(ledgerId);
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to list CVRs" });
+        }
+    });
+
+    app.post("/api/gl/cvr", async (req, res) => {
+        try {
+            const rule = await storage.createGlCrossValidationRule(req.body);
+            res.status(201).json(rule);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create CVR" });
         }
     });
 }

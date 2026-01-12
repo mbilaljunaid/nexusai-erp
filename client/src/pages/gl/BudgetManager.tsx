@@ -190,62 +190,95 @@ export default function BudgetManager() {
                                 </TableBody>
                             </Table>
                         </CardContent>
-                    </Card>
-                </TabsContent>
+                    </Card>                </TabsContent>
 
-                <TabsContent value="rules" className="space-y-4">
+                <TabsContent value="versions" className="space-y-4">
                     <Card className="glass-morphism border-0 shadow-xl overflow-hidden">
                         <CardHeader className="border-b border-white/10 flex flex-row items-center justify-between py-6">
                             <div>
                                 <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                    <ShieldAlert className="h-5 w-5 text-amber-500" /> Budgetary Control Rules
+                                    <BadgeDollarSign className="h-5 w-5 text-emerald-400" /> Budget Versions & Control
                                 </CardTitle>
-                                <CardDescription className="text-gray-400">Assign control levels to account ranges or segments.</CardDescription>
+                                <CardDescription className="text-gray-400">Manage budget definitions and version control status.</CardDescription>
                             </div>
-                            <Button className="premium-button shadow-lg shadow-blue-500/20"><Plus className="w-4 h-4 mr-2" /> Add Control Rule</Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button className="premium-button shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700 text-white">
+                                        <Plus className="w-4 h-4 mr-2" /> Define New Budget
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Define New Control Budget</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-4 py-4">
+                                        <div className="space-y-2">
+                                            <Label>Budget Name</Label>
+                                            <Input placeholder="e.g. FY2026 Corporate Budget" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Ledger</Label>
+                                            <Select defaultValue="PRIMARY">
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="PRIMARY">Primary Ledger (USD)</SelectItem>
+                                                    <SelectItem value="SECONDARY">Secondary Ledger (EUR)</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Control Level</Label>
+                                            <Select defaultValue="track">
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="absolute">Absolute (Hard Stop)</SelectItem>
+                                                    <SelectItem value="advisory">Advisory (Warning)</SelectItem>
+                                                    <SelectItem value="track">Track Only (None)</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <Button variant="outline">Cancel</Button>
+                                        <Button onClick={() => toast({ title: "Budget Defined", description: "New budget definition created successfully." })}>Create Definition</Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </CardHeader>
                         <CardContent className="p-0">
                             <Table>
                                 <TableHeader className="bg-white/5">
                                     <TableRow className="border-white/5 hover:bg-transparent">
-                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Rule Name</TableHead>
-                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Control Level</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Budget Name</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Ledger</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Period Range</TableHead>
                                         <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Status</TableHead>
                                         <TableHead className="py-4 text-right pr-6">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {loading ? (
-                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={4} className="h-40 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto opacity-20" /></TableCell></TableRow>
-                                    ) : rules.length === 0 ? (
-                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={4} className="h-40 text-center text-gray-500 italic">No control rules defined.</TableCell></TableRow>
-                                    ) : (
-                                        rules.map((rule) => (
-                                            <TableRow key={rule.id} className="border-white/5 hover:bg-white/5">
-                                                <TableCell className="py-5 font-semibold text-white">{rule.ruleName}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline" className={`py-1 px-3 ${rule.controlLevel === "Absolute" ? "bg-red-500/10 border-red-500/20 text-red-500" :
-                                                            rule.controlLevel === "Advisory" ? "bg-amber-500/10 border-amber-500/20 text-amber-500" :
-                                                                "bg-blue-500/10 border-blue-500/20 text-blue-400"
-                                                        }`}>
-                                                        {rule.controlLevel}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell>
-                                                    {rule.enabled ? (
-                                                        <div className="flex items-center gap-1 text-emerald-400 text-xs font-bold">
-                                                            <CheckCircle2 className="h-3 w-3" /> Active
-                                                        </div>
-                                                    ) : (
-                                                        <span className="text-gray-600 text-xs">Disabled</span>
-                                                    )}
-                                                </TableCell>
-                                                <TableCell className="text-right pr-6">
-                                                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">Edit</Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    )}
+                                    <TableRow className="border-white/5 hover:bg-white/5">
+                                        <TableCell className="font-semibold text-white">FY2026 Corporate Base</TableCell>
+                                        <TableCell className="text-gray-400">Primary Ledger</TableCell>
+                                        <TableCell className="text-gray-400">Jan-26 to Dec-26</TableCell>
+                                        <TableCell><Badge className="bg-emerald-500/20 text-emerald-400 border-0">Open / Active</Badge></TableCell>
+                                        <TableCell className="text-right pr-6">
+                                            <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">Manage</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow className="border-white/5 hover:bg-white/5">
+                                        <TableCell className="font-semibold text-white">Q1 2026 Revised</TableCell>
+                                        <TableCell className="text-gray-400">Primary Ledger</TableCell>
+                                        <TableCell className="text-gray-400">Jan-26 to Mar-26</TableCell>
+                                        <TableCell><Badge className="bg-amber-500/20 text-amber-400 border-0">Draft</Badge></TableCell>
+                                        <TableCell className="text-right pr-6">
+                                            <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">Edit</Button>
+                                        </TableCell>
+                                    </TableRow>
                                 </TableBody>
                             </Table>
                         </CardContent>

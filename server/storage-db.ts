@@ -61,7 +61,13 @@ import {
   type InsertGlJournalApproval,
   type GlJournalBatch,
   type GlJournalApproval,
-  arSystemOptions as arSystemOptionsTable
+  arSystemOptions as arSystemOptionsTable,
+  glAutoPostRules as glAutoPostRulesTable,
+  glDataAccessSets as glDataAccessSetsTable,
+  type GlAutoPostRule,
+  type InsertGlAutoPostRule,
+  type GlDataAccessSet,
+  type InsertGlDataAccessSet
 } from "@shared/schema";
 import type {
   Campaign,
@@ -1220,5 +1226,42 @@ export const dbStorage = {
       const [created] = await db.insert(arSystemOptionsTable).values(data).returning();
       return created;
     }
+  },
+
+  // ========== GL AUTO POST RULES (Chunk 5) ==========
+  async listGlAutoPostRules(ledgerId: string): Promise<GlAutoPostRule[]> {
+    return await db
+      .select()
+      .from(glAutoPostRulesTable)
+      .where(eq(glAutoPostRulesTable.ledgerId, ledgerId));
+  },
+
+  async createGlAutoPostRule(rule: InsertGlAutoPostRule): Promise<GlAutoPostRule> {
+    const result = await db
+      .insert(glAutoPostRulesTable)
+      .values(rule)
+      .returning();
+    return result[0];
+  },
+
+  async deleteGlAutoPostRule(id: string): Promise<boolean> {
+    const result = await db
+      .delete(glAutoPostRulesTable)
+      .where(eq(glAutoPostRulesTable.id, id))
+      .returning();
+    return result.length > 0;
+  },
+
+  // ========== GL DATA ACCESS SETS (Chunk 4) ==========
+  async listGlDataAccessSets(): Promise<GlDataAccessSet[]> {
+    return await db.select().from(glDataAccessSetsTable);
+  },
+
+  async createGlDataAccessSet(set: InsertGlDataAccessSet): Promise<GlDataAccessSet> {
+    const result = await db
+      .insert(glDataAccessSetsTable)
+      .values(set)
+      .returning();
+    return result[0];
   },
 };

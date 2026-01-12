@@ -80,6 +80,7 @@ const operationsModules: MenuItem[] = [
 
 const financeModules: MenuItem[] = [
   { title: "General Ledger", icon: BookOpen, href: "/gl/journals", allowedRoles: ["admin", "editor"] },
+  { title: "Configuration Hub", icon: SettingsIcon, href: "/gl/config", allowedRoles: ["admin", "editor"] },
   { title: "Budget Manager", icon: BarChart3, href: "/gl/budgets", allowedRoles: ["admin", "editor"] },
   { title: "Financial Reporting", icon: BarChart3, href: "/gl/reports", allowedRoles: ["admin", "editor"] },
   { title: "Trial Balance", icon: LayoutGrid, href: "/gl/trial-balance", allowedRoles: ["admin", "editor"] },

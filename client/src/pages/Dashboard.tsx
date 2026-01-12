@@ -97,6 +97,7 @@ function AdminDashboard() {
   const displayTenants = tenantOverview.length > 0 ? tenantOverview : defaultTenants;
 
   const adminQuickLinks = [
+    { title: "GL Config", url: "/gl/config", icon: Database, color: "text-indigo-600" },
     { title: "User Management", url: "/user-management", icon: Users, color: "text-blue-600" },
     { title: "System Config", url: "/system-configuration", icon: Settings, color: "text-gray-600" },
     { title: "Tenant Admin", url: "/tenant-admin", icon: Building, color: "text-purple-600" },
@@ -268,6 +269,7 @@ function EditorDashboard() {
     { title: "Processes", url: "/process-hub", icon: Workflow, color: "text-blue-600" },
     { title: "Period Close", url: "/gl/period-close", icon: Archive, color: "text-emerald-600" },
     { title: "GL Reports", url: "/gl/reports", icon: FileText, color: "text-green-600" },
+    { title: "GL Config", url: "/gl/config", icon: Database, color: "text-indigo-600" },
     { title: "Team", url: "/hr/employees", icon: Users, color: "text-orange-600" },
   ];
 

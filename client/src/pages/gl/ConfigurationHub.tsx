@@ -45,14 +45,6 @@ const configTiles = [
         bgColor: "bg-purple-100/50"
     },
     {
-        title: "Currencies & Rates",
-        description: "Active currencies and exchange rate management",
-        icon: Globe,
-        path: "/gl/config/currencies",
-        color: "text-teal-600",
-        bgColor: "bg-teal-100/50"
-    },
-    {
         title: "Sources & Categories",
         description: "Journal origins and transaction types",
         icon: Tags,
@@ -60,7 +52,6 @@ const configTiles = [
         color: "text-amber-600",
         bgColor: "bg-amber-100/50"
     },
-    // New tiles for Accounting Intelligence
     {
         title: "Posting Rules",
         description: "Auto-post criteria for journals",
@@ -86,30 +77,6 @@ const configTiles = [
         bgColor: "bg-rose-100/50"
     },
     {
-        title: "Allocations Engine",
-        description: "Mass Allocation rules and pool definitions",
-        icon: Calculator,
-        path: "/gl/config/allocations",
-        color: "text-indigo-600",
-        bgColor: "bg-indigo-100/50"
-    },
-    {
-        title: "Security & Access",
-        description: "Data Access Sets and Segment Security",
-        icon: ShieldCheck,
-        path: "/gl/config/security",
-        color: "text-emerald-600",
-        bgColor: "bg-emerald-100/50"
-    },
-    {
-        title: "AI & Automation",
-        description: "Auto-Post rules and anomaly detection settings",
-        icon: Wand2,
-        path: "/gl/config/automation",
-        color: "text-fuchsia-600",
-        bgColor: "bg-fuchsia-100/50"
-    },
-    {
         title: "Posting Controls",
         description: "Suspense, Rounding, and Netting rules",
         icon: Settings,
@@ -121,7 +88,7 @@ const configTiles = [
         title: "Cross-Validation Rules",
         description: "Prevent invalid account combinations",
         icon: ShieldCheck,
-        path: "/gl/config/cvr",
+        path: "/gl/cvr",
         color: "text-rose-600",
         bgColor: "bg-rose-100/50"
     },
@@ -129,11 +96,10 @@ const configTiles = [
         title: "Data Access Sets",
         description: "Manage security policies and assignments",
         icon: Lock,
-        path: "/gl/config/das",
+        path: "/gl/data-access",
         color: "text-emerald-600",
         bgColor: "bg-emerald-100/50"
     },
-    // Master Data (Chunk 3 Enhancements)
     {
         title: "Chart of Accounts",
         description: "Define segments, labels, and structures",
@@ -174,7 +140,6 @@ const configTiles = [
         color: "text-cyan-600",
         bgColor: "bg-cyan-100/50"
     },
-    // Tools & Advanced Engines
     {
         title: "Journal Wizard",
         description: "High-volume spreadsheet style entry",
@@ -190,6 +155,14 @@ const configTiles = [
         path: "/gl/revaluation",
         color: "text-purple-600",
         bgColor: "bg-purple-100/50"
+    },
+    {
+        title: "Audit Logs",
+        description: "Track system changes and user activity",
+        icon: ShieldCheck,
+        path: "/gl/audit",
+        color: "text-slate-700",
+        bgColor: "bg-slate-200/50"
     }
 ];
 
