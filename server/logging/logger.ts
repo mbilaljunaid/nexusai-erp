@@ -109,6 +109,38 @@ export class Logger {
   }
 
   /**
+   * Info log
+   */
+  info(message: string, context?: Record<string, any>): LogEntry {
+    return this.log("info", message, context);
+  }
+
+  /**
+   * Warn log
+   */
+  warn(message: string, context?: Record<string, any>): LogEntry {
+    return this.log("warn", message, context);
+  }
+
+  /**
+   * Error log
+   */
+  error(message: string, error?: any, context?: Record<string, any>): LogEntry {
+    const mergedContext = { ...context, error };
+    if (error instanceof Error) {
+      return this.logError(message, error);
+    }
+    return this.log("error", message, mergedContext);
+  }
+
+  /**
+   * Debug log
+   */
+  debug(message: string, context?: Record<string, any>): LogEntry {
+    return this.log("debug", message, context);
+  }
+
+  /**
    * Get error count
    */
   getErrorCount(minutes: number = 60): number {

@@ -1,7 +1,7 @@
 
 import cron from "node-cron";
 import { cashService } from "../services/cash.service";
-import { logger } from "../utils/logger";
+import { logger } from "../logging/logger";
 
 /**
  * Autonomous Sweep Engine

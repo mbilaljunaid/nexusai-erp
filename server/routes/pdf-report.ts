@@ -2,7 +2,7 @@
 import { Router } from "express";
 import { generatePdfReport } from "../utils/pdf-report-generator";
 import { resolve } from "path";
-import { logger } from "../utils/logger";
+import { logger } from "../logging/logger";
 
 const router = Router();
 

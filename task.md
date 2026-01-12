@@ -92,3 +92,27 @@
     - [x] Implement `AvailableToPromiseService` (ATP Calculation)
     - [x] Create `CycleCount` Entities (Header/Entry)
     - [x] Implement `CycleCountService` (Snapshot & Adjustment)
+
+## Cost Management (Enterprise Parity)
+- [ ] **Phase 1: Foundation & Master Data**
+    - [ ] Create `CostManagementModule` Structure (Entity/Controller/Service)
+    - [ ] Implement `CostBook` & `CostOrganization` Entities
+    - [ ] Implement `CostElement` & `CostComponent` (Material, Overhead)
+    - [ ] Implement `CostProfile` (Valuation Method Rules)
+- [ ] **Phase 2: Receipt Accounting (The Bridge)**
+    - [ ] Implement `ReceiptAccounting` Listener (Receipt -> Accrual)
+    - [ ] Create `CmrReceiptDistribution` Entity (Dr Inv / Cr Accrual)
+    - [ ] Implement `InvoicePriceVariance` (IPV) Logic (AP Match -> Cost Adj)
+- [ ] **Phase 3: The Cost Processor (Engine)**
+    - [ ] Implement `CostProcessorService` (FIFO/Weighted Avg Algorithms)
+    - [ ] Implement `StandardCost` Definition & Rollup Logic
+    - [ ] Create `CstCostDistribution` Entity (The SLA Source)
+    - [ ] Implement `CostAdjustment` (Revaluation) Logic
+- [ ] **Phase 4: Subledger Accounting (SLA)**
+    - [ ] Implement `CreateAccounting` Engine (Distributions -> Journals)
+    - [ ] Integrate with `GlIntegrationService` (Post to GL)
+    - [ ] Implement `CostController` for UI Access
+- [ ] **Phase 5: Intelligence & Operations**
+    - [ ] Implement `CostPeriod` Control (Open/Close Logic)
+    - [ ] Create `CostDashboard` (Valuation, Margin, Variance)
+    - [ ] Implement `CostAnomalies` AI Agent (Margin Erosion Detection)

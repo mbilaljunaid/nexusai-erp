@@ -619,6 +619,7 @@ function Router() {
       <Route path="/finance/fixed-assets" component={AssetWorkbench} />
       <Route path="/finance/accounts-payable" component={AccountsPayable} />
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
+      <Route path="/procurement" component={ProcurementManagement} />
       <Route path="/finance/ar/invoices" component={ArInvoiceList} />
       <Route path="/finance/ar/analytics" component={ArAnalytics} />
       <Route path="/finance/ar/reports" component={ArReports} />

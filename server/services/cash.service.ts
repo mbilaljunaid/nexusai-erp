@@ -1,6 +1,6 @@
 // cash.service.ts - Service wrapper for cash related operations used by sweep engine
 import { zbaService } from "./zba";
-import { logger } from "../utils/logger";
+import { logger } from "../logging/logger";
 
 /**
  * CashService provides high‑level methods required by the automated sweep engine.
