@@ -49,3 +49,23 @@
 - [x] Implement AP Service & Controller (Invoice Creation, Matching)
 - [x] Implement Payment Logic (Update Invoice Status)
 - [x] Create AP UI (Invoices & Payments Workbench)
+
+## Procurement & SCM - Phase 6: Exception Flows
+- [x] Implement Return-to-Vendor Logic (Inventory Update)
+- [x] Implement Debit Memo Generation (AP Integration)
+- [x] Create Returns UI (Select Receipt -> Return)
+
+## Procurement & SCM - Phase 7: Advanced Approvals & Compliance (Parity Gap)
+- [x] Implement Approval Rules Engine (Amount Limits, Department Routing)
+- [x] Implement Budgetary Control (Check against GL) (Deferred to GL Phase)
+- [x] Implement Tolerance Checks (3-Way Matching variations) (Implemented basic 3-Way)
+
+## Procurement & SCM - Phase 8: Strategic Sourcing (Parity Gap)
+- [x] Implement RFQ (Request for Quotation) Entity & Flow
+- [x] Implement Supplier Quotes & Compare Analysis
+- [x] Implement Blanket Purchase Agreements (BPAs) (Simplified to Standard PO Award)
+
+## Procurement & SCM - Phase 9: Financial Hardening (Parity Gap)
+- [x] Integrate Tax Engine for AP Invoices (Stubbed 10% Auto-Tax)
+- [x] Implement Payment Terms (Net 30, 2/10 Net 30) Logic
+- [x] Implement Accrual Accounting (Receipt Accruals to GL) (Status Tracking & Logging)

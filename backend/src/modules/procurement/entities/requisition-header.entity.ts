@@ -13,9 +13,9 @@ export class RequisitionHeader {
     description?: string;
 
     @Column()
-    requesterId!: string; // Mock User ID for now
+    requesterId!: string;
 
-    @Column({ default: 'Draft' }) // Draft, Pending Approval, Approved, Rejected, PO Created
+    @Column({ default: 'Draft' })
     status!: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 2, default: 0 })
@@ -23,6 +23,9 @@ export class RequisitionHeader {
 
     @Column({ nullable: true })
     justification?: string;
+
+    @Column({ nullable: true })
+    currentApproverId?: string;
 
     @OneToMany(() => RequisitionLine, (line) => line.header, { cascade: true })
     lines!: RequisitionLine[];

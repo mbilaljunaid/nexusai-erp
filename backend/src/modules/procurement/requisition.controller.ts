@@ -1,9 +1,13 @@
 import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { RequisitionService } from './requisition.service';
+import { ApprovalService } from './approval.service';
 
 @Controller('procurement/requisitions')
 export class RequisitionController {
-    constructor(private readonly reqService: RequisitionService) { }
+    constructor(
+        private readonly reqService: RequisitionService,
+        private readonly approvalService: ApprovalService
+    ) { }
 
     @Post()
     create(@Body() dto: any) {
@@ -38,5 +42,10 @@ export class RequisitionController {
     @Post(':id/convert-to-po')
     convertToPO(@Param('id') id: string) {
         return this.reqService.convertToPO(id);
+    }
+
+    @Post('admin/seed-rules')
+    seedRules() {
+        return this.approvalService.seedDefaultRules();
     }
 }

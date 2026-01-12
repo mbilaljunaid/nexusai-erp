@@ -10,6 +10,11 @@ export class ReceiptController {
         return this.receiptService.create(dto);
     }
 
+    @Post('return')
+    returnItems(@Body() dto: any) {
+        return this.receiptService.returnItems(dto);
+    }
+
     @Get()
     findAll() {
         return this.receiptService.findAll();

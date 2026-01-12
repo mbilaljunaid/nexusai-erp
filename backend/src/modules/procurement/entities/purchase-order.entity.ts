@@ -11,23 +11,20 @@ export class PurchaseOrder {
   @Column({ unique: true })
   poNumber!: string;
 
-  @Column({ nullable: true })
-  description?: string;
-
   @ManyToOne(() => Supplier)
   supplier!: Supplier;
 
   @ManyToOne(() => SupplierSite)
   supplierSite!: SupplierSite;
 
-  @Column({ default: 'Draft' }) // Draft, Pending Approval, Open, Closed, Cancelled
+  @Column({ default: 'Draft' }) // Draft, Approved, Open, Closed, Cancelled
   status!: string;
 
   @Column({ type: 'decimal', precision: 18, scale: 2, default: 0 })
   totalAmount!: number;
 
   @Column({ nullable: true })
-  currencyCode?: string;
+  currentApproverId?: string;
 
   @OneToMany(() => PurchaseOrderLine, (line) => line.purchaseOrder, { cascade: true })
   lines!: PurchaseOrderLine[];

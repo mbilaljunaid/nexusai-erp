@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { RequisitionHeader } from './entities/requisition-header.entity';
 import { RequisitionLine } from './entities/requisition-line.entity';
 import { PurchaseOrderService } from './purchase-order.service';
+import { ApprovalService } from './approval.service';
 
 @Injectable()
 export class RequisitionService {
@@ -15,6 +16,7 @@ export class RequisitionService {
         @InjectRepository(RequisitionLine)
         private reqLineRepo: Repository<RequisitionLine>,
         private readonly poService: PurchaseOrderService,
+        private readonly approvalService: ApprovalService,
     ) { }
 
     async create(dto: any): Promise<RequisitionHeader> {
@@ -62,16 +64,32 @@ export class RequisitionService {
         if (req.status !== 'Draft' && req.status !== 'Rejected') {
             throw new BadRequestException(`Cannot submit requisition in status ${req.status}`);
         }
-        req.status = 'Pending Approval';
+
+        // Evaluate Rules
+        const approverId = await this.approvalService.evaluateRule('Requisition', Number(req.totalAmount));
+
+        if (approverId && approverId !== 'AUTO') {
+            req.status = 'Pending Approval';
+            req.currentApproverId = approverId;
+            this.logger.log(`Requisition ${req.reqNumber} ($${req.totalAmount}) routed to ${approverId}`);
+        } else {
+            req.status = 'Approved'; // Auto-approve
+            req.currentApproverId = undefined;
+            this.logger.log(`Requisition ${req.reqNumber} ($${req.totalAmount}) Auto-Approved`);
+        }
+
         return this.reqRepo.save(req);
     }
 
-    async approve(id: string): Promise<RequisitionHeader> {
+    async approve(id: string, approverId?: string): Promise<RequisitionHeader> {
         const req = await this.findOne(id);
         if (req.status !== 'Pending Approval') {
             throw new BadRequestException(`Cannot approve requisition in status ${req.status}`);
         }
+        // Validation: Check if request.user.id matches req.currentApproverId (Skipped for simple MVP, assuming caller is auth'd correctly)
+
         req.status = 'Approved';
+        req.currentApproverId = undefined;
         return this.reqRepo.save(req);
     }
 
@@ -81,6 +99,7 @@ export class RequisitionService {
             throw new BadRequestException(`Cannot reject requisition in status ${req.status}`);
         }
         req.status = 'Rejected';
+        req.currentApproverId = undefined;
         return this.reqRepo.save(req);
     }
 
@@ -125,12 +144,6 @@ export class RequisitionService {
             };
             const po = await this.poService.create(poDto);
             createdPOs.push(po);
-        }
-
-        if (linesWithoutSupplier.length > 0) {
-            // TODO: Handle lines without supplier (maybe create a PO with empty supplier or error?)
-            // For now, logging warning
-            this.logger.warn(`Skipping ${linesWithoutSupplier.length} lines without supplier for Req ${id}`);
         }
 
         if (createdPOs.length > 0) {

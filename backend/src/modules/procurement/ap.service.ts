@@ -33,13 +33,30 @@ export class ApService {
             po = await this.poRepo.findOne({ where: { id: dto.purchaseOrderId } }) || undefined;
         }
 
+        // Payment Terms Logic
+        const terms = dto.paymentTerms || supplier.paymentTerms || 'Net 30';
+        const invoiceDate = dto.invoiceDate ? new Date(dto.invoiceDate) : new Date();
+        let dueDate = new Date(invoiceDate);
+
+        // Simple parser for Terms
+        if (terms === 'Net 30') {
+            dueDate.setDate(dueDate.getDate() + 30);
+        } else if (terms === 'Immediate') {
+            // Same as invoice date
+        } else {
+            // Default to 30 if unknown
+            dueDate.setDate(dueDate.getDate() + 30);
+        }
+
         const invoice = this.invoiceRepo.create({
             invoiceNumber: dto.invoiceNumber,
             supplier,
             purchaseOrder: po,
             amount: dto.amount,
-            invoiceDate: dto.invoiceDate ? new Date(dto.invoiceDate) : new Date(),
-            status: 'Draft',
+            invoiceDate: invoiceDate,
+            dueDate: dueDate,
+            paymentTerms: terms,
+            status: dto.status || 'Draft',
         });
 
         const savedInvoice = await this.invoiceRepo.save(invoice);
@@ -57,6 +74,14 @@ export class ApService {
         return this.findOneInvoice(savedInvoice.id);
     }
 
+    async createDebitMemo(dto: any): Promise<ApInvoice> {
+        if (Number(dto.amount) > 0 && !dto.isCreditMemo) {
+            dto.amount = -1 * Number(dto.amount);
+        }
+        dto.status = 'Validated';
+        return this.createInvoice(dto);
+    }
+
     async findAllInvoices(): Promise<ApInvoice[]> {
         return this.invoiceRepo.find({ relations: ['supplier', 'purchaseOrder'] });
     }
@@ -71,17 +96,36 @@ export class ApService {
         const invoice = await this.findOneInvoice(id);
         if (invoice.status !== 'Draft') throw new BadRequestException(`Cannot validate invoice in status ${invoice.status}`);
 
-        // Simple validation: check if total matches lines (if lines exist)
-        const lineTotal = invoice.lines.reduce((sum, line) => sum + Number(line.amount), 0);
-        // Tolerance check?
-        if (invoice.lines.length > 0 && Math.abs(Number(invoice.amount) - lineTotal) > 0.01) {
-            // throw new BadRequestException(`Invoice amount ${invoice.amount} does not match line total ${lineTotal}`);
-            // For now, let's just warn or force update header? Or simply mark as Validated despite mismatch (hold).
-            this.logger.warn(`Invoice ${id} amount mismatch. Header: ${invoice.amount}, Lines: ${lineTotal}`);
+        // Automated Tax Logic
+        const hasTaxLine = invoice.lines.some(l => l.description.toLowerCase().includes('tax'));
+        if (!hasTaxLine && Number(invoice.amount) > 0) { // Don't tax credit memos automatically for MVP simplicity
+            const taxRate = 0.10; // 10% Stub
+            const netAmount = Number(invoice.amount);
+            const taxAmount = netAmount * taxRate;
+
+            // Add Tax Line
+            await this.invoiceLineRepo.save(this.invoiceLineRepo.create({
+                invoice,
+                description: 'Automated Tax (10%)',
+                amount: taxAmount
+            }));
+
+            // Update Header to include Tax
+            invoice.amount = netAmount + taxAmount;
+            this.logger.log(`Added automated tax of ${taxAmount} to Invoice ${invoice.invoiceNumber}`);
         }
 
-        invoice.status = 'Validated';
-        return this.invoiceRepo.save(invoice);
+        // Refresh lines to check total
+        const updatedInvoice = await this.findOneInvoice(id);
+        const lineTotal = updatedInvoice.lines.reduce((sum, line) => sum + Number(line.amount), 0);
+
+        // Simple tolerance check
+        if (Math.abs(Number(updatedInvoice.amount) - lineTotal) > 0.01) {
+            this.logger.warn(`Invoice ${id} amount mismatch. Header: ${updatedInvoice.amount}, Lines: ${lineTotal}`);
+        }
+
+        updatedInvoice.status = 'Validated';
+        return this.invoiceRepo.save(updatedInvoice);
     }
 
     async payInvoice(id: string, dto: any): Promise<ApPayment> {
@@ -99,9 +143,8 @@ export class ApService {
         });
         const savedPayment = await this.paymentRepo.save(payment);
 
-        // Check remaining balance
         const totalPaid = invoice.payments.reduce((sum, p) => sum + Number(p.amount), 0) + Number(dto.amount);
-        if (totalPaid >= Number(invoice.amount)) {
+        if (Math.abs(totalPaid) >= Math.abs(Number(invoice.amount))) {
             invoice.status = 'Paid';
         } else {
             invoice.status = 'Partially Paid';

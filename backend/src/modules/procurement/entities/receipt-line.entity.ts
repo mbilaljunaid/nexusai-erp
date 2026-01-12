@@ -19,6 +19,9 @@ export class ReceiptLine {
     @Column({ type: 'decimal', precision: 18, scale: 4 })
     quantityReceived!: number;
 
+    @Column({ type: 'decimal', precision: 18, scale: 4, default: 0 })
+    quantityReturned!: number;
+
     @Column({ nullable: true })
     inventoryOrganizationId?: string;
 

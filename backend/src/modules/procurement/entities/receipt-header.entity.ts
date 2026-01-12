@@ -19,6 +19,9 @@ export class ReceiptHeader {
     @Column({ default: 'Received' })
     status!: string;
 
+    @Column({ default: 'Pending' }) // Pending, Accounted
+    accountingStatus!: string;
+
     @OneToMany(() => ReceiptLine, (line) => line.header, { cascade: true })
     lines!: ReceiptLine[];
 

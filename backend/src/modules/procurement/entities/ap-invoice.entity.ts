@@ -24,6 +24,12 @@ export class ApInvoice {
     @Column()
     invoiceDate!: Date;
 
+    @Column({ nullable: true })
+    dueDate?: Date;
+
+    @Column({ nullable: true })
+    paymentTerms?: string;
+
     @Column({ default: 'Draft' }) // Draft, Validated, Paid, Cancelled
     status!: string;
 

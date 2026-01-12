@@ -27,6 +27,9 @@ export class Supplier {
     @Column({ nullable: true })
     supplierType?: string; // e.g., 'STANDARD', 'CONTRACTOR'
 
+    @Column({ default: 'Net 30' })
+    paymentTerms!: string;
+
     @OneToMany(() => SupplierSite, (site) => site.supplier, { cascade: true })
     sites!: SupplierSite[];
 
