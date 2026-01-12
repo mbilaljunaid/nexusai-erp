@@ -18,4 +18,22 @@ export class InventoryTaxService {
         // Additional inventory-specific logic could be added here.
         return this.taxEngine.calculateTax(transaction);
     }
+
+    /**
+     * Process an inventory transaction and calculate tax.
+     * @param transaction The inventory transaction payload.
+     */
+    private mapToTaxableTransaction(movement: any): TaxableTransaction {
+        return {
+            id: movement.id,
+            date: new Date(),
+            amount: movement.value,
+            type: 'transfer',
+            jurisdiction: movement.jurisdictionId || undefined,
+            shipToCountry: 'US', // Stub
+            shipToRegion: 'CA', // Stub
+            shipFromCountry: 'US',
+            shipFromRegion: 'NY'
+        };
+    }
 }

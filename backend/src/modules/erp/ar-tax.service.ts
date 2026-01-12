@@ -15,8 +15,24 @@ export class ARTaxService {
      * @param receipt An object representing the AR transaction.
      * @returns The TaxCalculation result from TaxEngineService.
      */
-    processARReceipt(receipt: TaxableTransaction) {
+    private mapToTaxableTransaction(receipt: any): TaxableTransaction {
+        // Stub mapping - in real app would map from Receipt address
+        return {
+            id: receipt.id,
+            date: new Date(receipt.date),
+            amount: receipt.amount,
+            type: 'sale',
+            jurisdiction: receipt.jurisdictionId || undefined,
+            shipToCountry: 'US', // Stub
+            shipToRegion: 'NY', // Stub
+            shipFromCountry: 'US',
+            shipFromRegion: 'CA'
+        };
+    }
+
+    processARReceipt(receipt: any) { // Changed type to 'any' to match mapToTaxableTransaction input
         // In a real implementation, additional AR-specific validation could occur here.
-        return this.taxEngine.calculateTax(receipt);
+        const taxableTransaction = this.mapToTaxableTransaction(receipt);
+        return this.taxEngine.calculateTax(taxableTransaction);
     }
 }

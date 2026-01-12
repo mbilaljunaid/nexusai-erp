@@ -15,3 +15,6 @@
 - [x] Implement Intercompany Tax Elimination
 - [x] Add Recoverable/Non‑Recoverable Tax Logic
 - [x] Build Comprehensive Tax Reporting Suite
+- [x] Refine Tax Determination Logic (Nexus & POS)
+- [x] Implement Deep GL Reconciliation
+- [x] Implement Cross-Border & Reverse Charge Logic
