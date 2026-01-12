@@ -107,6 +107,86 @@ export class MT940Parser implements BankStatementParser {
     }
 }
 
+export class Camt053Parser implements BankStatementParser {
+    canParse(content: string): boolean {
+        return content.includes("<camt.053") || content.includes("<Document") && content.includes("BkToCstmrStmt");
+    }
+
+    parse(content: string): ParsedStatement[] {
+        // In a real implementation, we would use an XML parser (e.g. fast-xml-parser).
+        // Since we are in a node environment without extra libs pre-installed, we will use a robust regex-based approach
+        // for this enterprise prototype to extract core fields.
+
+        const statements: ParsedStatement[] = [];
+
+        // Split by <Stmt> blocks
+        const stmtBlocks = content.split("<Stmt>");
+        stmtBlocks.shift(); // Remove content before first <Stmt>
+
+        for (const block of stmtBlocks) {
+            const statementNumber = this.getTagContent(block, "Id");
+            const accountId = this.getTagContent(block, "IBAN") || this.getTagContent(block, "Othr");
+
+            // Extract Balances (Opening OPBD, Closing CLBD)
+            const openingBalance = this.getBalanceByCode(block, "OPBD");
+            const closingBalance = this.getBalanceByCode(block, "CLBD");
+            const statementDate = new Date(this.getTagContent(block, "CreDtTm") || new Date());
+
+            const lines: any[] = [];
+            const entryBlocks = block.split("<Ntry>");
+            entryBlocks.shift();
+
+            for (const entry of entryBlocks) {
+                const amount = this.getTagContent(entry, "Amt");
+                const creditDebit = this.getTagContent(entry, "CdtDbtInd");
+                const isCredit = creditDebit === "CRDT";
+                const transDate = new Date(this.getTagContent(entry, "BookgDt") || this.getTagContent(entry, "Dt") || new Date());
+                const ref = this.getTagContent(entry, "AcctSvcrRef") || this.getTagContent(entry, "EndToEndId") || "ISO-" + Math.floor(Math.random() * 10000);
+                const desc = this.getTagContent(entry, "AddtlEntryInf") || "ISO 20022 Import";
+
+                lines.push({
+                    bankAccountId: accountId,
+                    transactionDate: transDate,
+                    amount: isCredit ? amount : `-${amount}`,
+                    description: desc,
+                    referenceNumber: ref
+                });
+            }
+
+            statements.push({
+                header: {
+                    bankAccountId: accountId,
+                    statementNumber: statementNumber,
+                    statementDate: statementDate,
+                    openingBalance: openingBalance,
+                    closingBalance: closingBalance,
+                    importFormat: "CAMT053"
+                },
+                lines
+            });
+        }
+
+        return statements;
+    }
+
+    private getTagContent(xml: string, tag: string): string {
+        const regex = new RegExp(`<${tag}[^>]*>([^<]+)</${tag}>`, 'i');
+        const match = xml.match(regex);
+        return match ? match[1].trim() : "";
+    }
+
+    private getBalanceByCode(xml: string, code: string): string {
+        // Look for block containing <Cd>OPBD</Cd> and then find the <Amt> within it
+        const blocks = xml.split("<Bal>");
+        for (const b of blocks) {
+            if (b.includes(`<Cd>${code}</Cd>`)) {
+                return this.getTagContent(b, "Amt");
+            }
+        }
+        return "0";
+    }
+}
+
 export class BAI2Parser implements BankStatementParser {
     canParse(content: string): boolean {
         return content.startsWith("01,") || content.includes("\n01,");
@@ -120,6 +200,7 @@ export class BAI2Parser implements BankStatementParser {
 
 export const parserFactory = {
     getParser(content: string): BankStatementParser {
+        if (new Camt053Parser().canParse(content)) return new Camt053Parser();
         if (new MT940Parser().canParse(content)) return new MT940Parser();
         if (new BAI2Parser().canParse(content)) return new BAI2Parser();
         throw new Error("Unknown statement format");

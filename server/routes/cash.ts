@@ -39,6 +39,16 @@ router.post("/accounts", async (req, res) => {
     }
 });
 
+router.post("/accounts/:id/approve", async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'] as string || "system";
+        const account = await cashService.approveBankAccount(req.params.id, userId);
+        res.json(account);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to approve bank account: " + (error as Error).message });
+    }
+});
+
 // Cash Position / Dashboard
 router.get("/position", async (req, res) => {
     try {

@@ -14,6 +14,7 @@ import { CashBankAccount } from "@shared/schema";
 import { Link } from "wouter";
 import { RevaluationDialog } from "./RevaluationDialog";
 import { BankAccountDialog } from "./BankAccountDialog";
+import { StatementDrilldownSheet } from "./StatementDrilldownSheet";
 
 export function BankAccountList() {
     const { data: accounts, isLoading } = useQuery<CashBankAccount[]>({
@@ -25,6 +26,7 @@ export function BankAccountList() {
     });
 
     const [selectedRevalAccount, setSelectedRevalAccount] = useState<{ id: string, name: string, currency: string } | null>(null);
+    const [selectedDrilldown, setSelectedDrilldown] = useState<{ id: string, name: string } | null>(null);
     const [accountDialog, setAccountDialog] = useState<{ isOpen: boolean, account?: any }>({ isOpen: false });
 
     if (isLoading) {
@@ -61,7 +63,11 @@ export function BankAccountList() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {accounts?.map(account => (
-                    <Card key={account.id} className="relative overflow-hidden group hover:shadow-lg transition-all border-l-4 border-l-primary/50">
+                    <Card
+                        key={account.id}
+                        className="relative overflow-hidden group hover:shadow-lg transition-all border-l-4 border-l-primary/50 cursor-pointer"
+                        onClick={() => setSelectedDrilldown({ id: account.id, name: account.name })}
+                    >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <div className="flex flex-col">
                                 <CardTitle className="text-lg font-bold flex items-center gap-2">
@@ -70,7 +76,10 @@ export function BankAccountList() {
                                         variant="ghost"
                                         size="icon"
                                         className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={() => setAccountDialog({ isOpen: true, account })}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setAccountDialog({ isOpen: true, account });
+                                        }}
                                     >
                                         <Edit3 className="h-3 w-3" />
                                     </Button>
@@ -102,7 +111,7 @@ export function BankAccountList() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Link href={`/cash/accounts/${account.id}/reconcile`}>
-                                        <Button variant="ghost" size="sm" className="h-7 px-2">
+                                        <Button variant="ghost" size="sm" className="h-7 px-2" onClick={(e) => e.stopPropagation()}>
                                             <RefreshCw className="h-3 w-3 mr-1" />
                                             Reconcile
                                         </Button>
@@ -112,7 +121,10 @@ export function BankAccountList() {
                                             variant="ghost"
                                             size="sm"
                                             className="h-7 px-2 text-primary"
-                                            onClick={() => setSelectedRevalAccount({ id: account.id, name: account.name, currency: account.currency || 'USD' })}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedRevalAccount({ id: account.id, name: account.name, currency: account.currency || 'USD' });
+                                            }}
                                         >
                                             <TrendingUp className="h-3 w-3 mr-1" />
                                             Revalue
@@ -139,6 +151,13 @@ export function BankAccountList() {
                         onClose={() => setSelectedRevalAccount(null)}
                     />
                 )}
+
+                <StatementDrilldownSheet
+                    accountId={selectedDrilldown?.id || null}
+                    accountName={selectedDrilldown?.name || ""}
+                    isOpen={!!selectedDrilldown}
+                    onClose={() => setSelectedDrilldown(null)}
+                />
 
                 {/* Empty State Card */}
                 {(!accounts || accounts.length === 0) && (
