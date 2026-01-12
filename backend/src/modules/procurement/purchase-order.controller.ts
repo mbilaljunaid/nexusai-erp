@@ -1,37 +1,47 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { PurchaseOrderService } from './purchase-order.service';
-import { CreatePurchaseOrderDto } from './dto/create-purchase-order.dto';
-import { PurchaseOrder } from './entities/purchase-order.entity';
 
-@Controller('api/procurement/purchase-orders')
+@Controller('procurement/purchase-orders')
 export class PurchaseOrderController {
-  constructor(private readonly poService: PurchaseOrderService) {}
+  constructor(private readonly poService: PurchaseOrderService) { }
 
   @Post()
-  create(@Body() createPoDto: CreatePurchaseOrderDto): Promise<PurchaseOrder> {
+  create(@Body() createPoDto: any) {
     return this.poService.create(createPoDto);
   }
 
   @Get()
-  findAll(): Promise<PurchaseOrder[]> {
+  findAll() {
     return this.poService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<PurchaseOrder | null> {
+  findOne(@Param('id') id: string) {
     return this.poService.findOne(id);
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updatePoDto: Partial<CreatePurchaseOrderDto>,
-  ): Promise<PurchaseOrder | null> {
+  update(@Param('id') id: string, @Body() updatePoDto: any) {
     return this.poService.update(id, updatePoDto);
   }
 
+  @Post(':id/approve')
+  approve(@Param('id') id: string) {
+    return this.poService.approve(id);
+  }
+
+  @Post(':id/open')
+  open(@Param('id') id: string) {
+    return this.poService.open(id);
+  }
+
+  @Post(':id/cancel')
+  cancel(@Param('id') id: string) {
+    return this.poService.cancel(id);
+  }
+
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id') id: string) {
     return this.poService.remove(id);
   }
 }
