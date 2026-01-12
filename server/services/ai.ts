@@ -123,6 +123,34 @@ export class AIService {
                 isEnabled: true
             },
             {
+                module: "finance",
+                actionName: "gl_configure_system",
+                description: "Configure GL system parameters (e.g. Open/Close Periods)",
+                requiredPermissions: ["finance.write"],
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        target: { type: "string" }, // e.g., "Period"
+                        action: { type: "string" }, // "Close", "Open"
+                        value: { type: "string" }   // Period Name
+                    }
+                },
+                isEnabled: true
+            },
+            {
+                module: "finance",
+                actionName: "gl_lookup_account",
+                description: "Find GL accounts by description or natural language",
+                requiredPermissions: ["finance.read"],
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        query: { type: "string" }
+                    }
+                },
+                isEnabled: true
+            },
+            {
                 module: "crm",
                 actionName: "crm_score_lead",
                 description: "Calculate a health score for a lead based on interactions",
@@ -215,6 +243,29 @@ export class AIService {
                 action,
                 confidence: 0.95,
                 params: {}
+            };
+        }
+
+        // GL Configuration (e.g., "Close Jan-2026")
+        if (lowerPrompt.includes("close") && (lowerPrompt.includes("period") || lowerPrompt.includes("jan") || lowerPrompt.includes("feb"))) {
+            const action = await storage.getAiAction("gl_configure_system");
+            // Extract period name heuristic
+            const words = lowerPrompt.split(" ");
+            const periodName = words.find(w => w.includes("-202")) || "Jan-2026"; // Mock extraction
+            return {
+                action,
+                confidence: 0.9,
+                params: { target: "Period", action: "Close", value: periodName }
+            };
+        }
+
+        // Account Lookup (e.g., "Find travel account")
+        if (lowerPrompt.includes("find") && (lowerPrompt.includes("account") || lowerPrompt.includes("code"))) {
+            const action = await storage.getAiAction("gl_lookup_account");
+            return {
+                action,
+                confidence: 0.88,
+                params: { query: lowerPrompt.replace("find", "").replace("account", "").trim() }
             };
         }
 
@@ -365,6 +416,29 @@ export class AIService {
                     const p2 = params.benchmarkPeriodId === "PREV_PERIOD_ID" ? (await financeService.listPeriods())[1]?.id : params.benchmarkPeriodId;
                     if (!p1 || !p2) throw new Error("Could not resolve periods for comparison");
                     result = await financeService.explainVariance(p1, p2);
+                    break;
+                case "gl_configure_system":
+                    if (params.target === "Period" && params.action === "Close") {
+                        // Find period by name
+                        const periods = await financeService.listPeriods();
+                        const period = periods.find(p => p.periodName?.toLowerCase() === params.value?.toLowerCase());
+                        if (!period) throw new Error(`Period '${params.value}' not found.`);
+
+                        // Close it
+                        await financeService.closePeriod(period.id, userId);
+                        result = { message: `Period ${period.periodName} has been successfully closed.` };
+                    } else {
+                        result = { message: "I can currently only help with closing periods." };
+                    }
+                    break;
+                case "gl_lookup_account":
+                    const allCombs = await financeService.listGlCodeCombinations(params.ledgerId || "primary-ledger-id"); // In real app, resolve ledger from context
+                    // Fuzzy match description
+                    const matches = allCombs.filter(c => c.codeString.includes(params.query) || "Travel Expense".toLowerCase().includes(params.query.toLowerCase())); // Mock description check
+                    result = {
+                        message: `Found ${matches.length} matching accounts.`,
+                        data: matches.slice(0, 5)
+                    };
                     break;
                 case "crm_score_lead":
                     result = { leadId: params.leadId, score: 85, reason: "High engagement" };

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
 import { log } from "../index";
+import { auditService } from "../services/audit_service";
 
 // Extend Express Request to include user info (populated by auth middleware)
 declare global {
@@ -37,19 +38,19 @@ export const auditMiddleware = (req: Request, res: Response, next: NextFunction)
                     // and potentially store in memory if specific critical actions
 
                     const auditEntry = {
-                        timestamp: new Date(),
                         userId,
                         action,
-                        resource,
+                        entityType: "API_RESOURCE",
+                        entityId: resource,
+                        oldValue: {}, // Can't capture easily in middleware without buffering
+                        newValue: { statusCode: res.statusCode, method: req.method },
                         status: success ? "SUCCESS" : "FAILURE",
-                        statusCode: res.statusCode,
-                        ip: req.ip,
+                        ipAddress: req.ip,
                         userAgent: req.get("user-agent"),
                     };
 
-                    log(`[AUDIT] ${JSON.stringify(auditEntry)}`, "audit");
-
-                    // Future: storage.createAuditLog(auditEntry);
+                    // Async persistence
+                    await auditService.logAction(auditEntry);
                 } catch (error) {
                     console.error("Failed to log audit event:", error);
                 }

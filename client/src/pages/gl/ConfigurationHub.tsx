@@ -12,7 +12,10 @@ import {
     Wand2,
     Calculator,
     Library,
-    Lock
+    Lock,
+    ListTree,
+    Building2,
+    Zap
 } from "lucide-react";
 import { Link as RouterLink } from "wouter";
 
@@ -129,6 +132,64 @@ const configTiles = [
         path: "/gl/config/das",
         color: "text-emerald-600",
         bgColor: "bg-emerald-100/50"
+    },
+    // Master Data (Chunk 3 Enhancements)
+    {
+        title: "Chart of Accounts",
+        description: "Define segments, labels, and structures",
+        icon: ListTree,
+        path: "/gl/coa-structures",
+        color: "text-blue-500",
+        bgColor: "bg-blue-100/50"
+    },
+    {
+        title: "Segment Values",
+        description: "Manage value sets and independent values",
+        icon: Tags,
+        path: "/gl/value-sets",
+        color: "text-indigo-500",
+        bgColor: "bg-indigo-100/50"
+    },
+    {
+        title: "Legal Entities",
+        description: "Manage legal entities and registrations",
+        icon: Building2,
+        path: "/gl/config/legal-entities",
+        color: "text-slate-600",
+        bgColor: "bg-slate-100/50"
+    },
+    {
+        title: "Budget Manager",
+        description: "Control budgets and encumbrances",
+        icon: Calculator,
+        path: "/gl/budgets",
+        color: "text-emerald-600",
+        bgColor: "bg-emerald-100/50"
+    },
+    {
+        title: "Segment Hierarchies",
+        description: "Define parent-child relationships for reporting",
+        icon: ListTree,
+        path: "/gl/hierarchies",
+        color: "text-cyan-600",
+        bgColor: "bg-cyan-100/50"
+    },
+    // Tools & Advanced Engines
+    {
+        title: "Journal Wizard",
+        description: "High-volume spreadsheet style entry",
+        icon: Zap,
+        path: "/gl/journals/wizard",
+        color: "text-amber-600",
+        bgColor: "bg-amber-100/50"
+    },
+    {
+        title: "Revaluation Engine",
+        description: "Unrealized FX gain/loss calculation",
+        icon: Globe,
+        path: "/gl/revaluation",
+        color: "text-purple-600",
+        bgColor: "bg-purple-100/50"
     }
 ];
 

@@ -17,17 +17,10 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { GLMetrics } from "./gl/components/GLMetrics";
-import { JournalSideSheet } from "./gl/components/JournalSideSheet";
+import { MetricCard } from "@/components/gl/premium/MetricCard";
+import { JournalGrid } from "@/components/gl/premium/JournalGrid";
+import { SideSheet } from "@/components/gl/premium/SideSheet";
 import { format } from "date-fns";
 
 export default function JournalEntries() {
@@ -94,7 +87,29 @@ export default function JournalEntries() {
       </div>
 
       {/* Premium Metrics Summary */}
-      <GLMetrics />
+      {/* Premium Metrics Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <MetricCard
+          title="Total Posted (MTD)"
+          value="$4.2M"
+          trend="up"
+          trendValue="+12%"
+          className="shadow-sm border-slate-200"
+        />
+        <MetricCard
+          title="Active Batches"
+          value={filteredJournals.length}
+          description="Across all ledgers"
+          className="shadow-sm border-slate-200"
+        />
+        <MetricCard
+          title="Pending Approval"
+          value="3"
+          trend="down"
+          trendValue="-2"
+          className="shadow-sm border-slate-200"
+        />
+      </div>
 
       {/* Premium Table Card */}
       <Card className="border-none shadow-xl shadow-slate-200/50 bg-white/80 backdrop-blur-sm overflow-hidden">
@@ -121,81 +136,51 @@ export default function JournalEntries() {
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-white">
-              <TableRow className="border-b border-slate-100 hover:bg-transparent">
-                <TableHead className="w-[100px] text-[10px] font-bold uppercase tracking-widest text-slate-400 pl-6">ID</TableHead>
-                <TableHead className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Batch Name</TableHead>
-                <TableHead className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Period</TableHead>
-                <TableHead className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Effective Date</TableHead>
-                <TableHead className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</TableHead>
-                <TableHead className="text-right text-[10px] font-bold uppercase tracking-widest text-slate-400 pr-6">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-32 text-center text-slate-400 animate-pulse font-medium italic">Synchronizing with Ledger...</TableCell>
-                </TableRow>
-              ) : filteredJournals.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-32 text-center text-slate-400 font-medium italic">No journal batches found in this criteria.</TableCell>
-                </TableRow>
-              ) : (
-                filteredJournals.map((journal) => (
-                  <TableRow
-                    key={journal.id}
-                    className="group cursor-pointer border-b border-slate-50 hover:bg-indigo-50/30 transition-colors"
-                    onClick={() => handleRowClick(journal)}
-                  >
-                    <TableCell className="font-mono text-xs text-slate-400 pl-6">#{journal.journalNumber}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-slate-700 group-hover:text-indigo-600 transition-colors">
-                          {journal.description || `Batch ${journal.journalNumber}`}
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-medium uppercase tracking-tight">{journal.source}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="bg-slate-50 text-slate-500 border-slate-100 rounded-md font-bold text-[10px]">
-                        {journal.periodId || 'JAN-26'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-slate-500 font-medium">
-                      {journal.accountingDate ? format(new Date(journal.accountingDate), "MMM dd, yyyy") : format(new Date(journal.createdAt), "MMM dd, yyyy")}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(journal.status)} className="px-2 py-0 text-[10px] font-bold tracking-tight">
-                        {journal.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right pr-6">
-                      <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity gap-2">
-                        {journal.status === 'Draft' && (
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 shadow-sm rounded-full" onClick={(e) => handlePost(e, journal)} title="Post Batch">
-                            <Play className="h-4 w-4" />
-                          </Button>
-                        )}
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-indigo-600 hover:bg-white shadow-sm rounded-full">
-                          <ChevronRight className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <JournalGrid
+            data={filteredJournals.map(j => ({
+              ...j,
+              effectiveDate: j.accountingDate || j.createdAt
+            }))}
+            onRowClick={handleRowClick}
+            loading={isLoading}
+          />
         </CardContent>
       </Card>
 
       {/* Side Sheet for Viewing Journal */}
-      <JournalSideSheet
-        isOpen={isSideSheetOpen}
-        onClose={() => setIsSideSheetOpen(false)}
-        journal={selectedJournal}
-      />
+      {/* Side Sheet for Viewing Journal */}
+      <SideSheet
+        open={isSideSheetOpen}
+        onOpenChange={setIsSideSheetOpen}
+        title={selectedJournal?.description || "Journal Details"}
+        description={`Batch #${selectedJournal?.journalNumber}`}
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <span className="text-sm text-muted-foreground">Period</span>
+              <p className="font-medium">{selectedJournal?.periodId}</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-sm text-muted-foreground">Total Debit</span>
+              <p className="font-medium">
+                {Number(selectedJournal?.totalDebit || 0).toLocaleString()} {selectedJournal?.currencyCode}
+              </p>
+            </div>
+          </div>
+          <div className="pt-4 border-t">
+            <h4 className="font-medium mb-2">Lines</h4>
+            <div className="text-sm text-muted-foreground italic">
+              {/* In a real scenario, we'd fetch lines here or pass them in */}
+              Line details would be loaded here.
+            </div>
+          </div>
+          <div className="pt-4 flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setIsSideSheetOpen(false)}>Close</Button>
+            <Button onClick={(e) => selectedJournal && handlePost(e, selectedJournal)}>Post Process</Button>
+          </div>
+        </div>
+      </SideSheet>
     </div>
   );
 }

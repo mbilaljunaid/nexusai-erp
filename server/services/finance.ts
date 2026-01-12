@@ -12,7 +12,8 @@ import {
     glRecurringJournals, insertGlRecurringJournalSchema,
     glBudgetBalances, glBudgetControlRules, glBudgets,
     glRevaluationEntries, glLedgers, glSegments, glCoaStructures, glSegmentValues,
-    glTranslationRules, glHistoricalRates, glAutoPostRules
+    glTranslationRules, glHistoricalRates, glAutoPostRules, glLedgerControls,
+    glPeriodCloseStatus, glPeriodCloseChecklistTemplates
 } from "@shared/schema";
 
 import { eq, and, sql, inArray, gte, lte, desc, isNull, ne } from "drizzle-orm";
@@ -922,6 +923,18 @@ export class FinanceService {
      * Approve a journal.
      */
     async approveJournal(journalId: string, approverId: string, action: "Approve" | "Reject") {
+        const journal = await storage.getGlJournal(journalId);
+        if (!journal) throw new Error("Journal not found");
+
+        // SEGREGATION OF DUTIES (SoD) CHECK
+        // A user cannot approve their own journal
+        if (action === "Approve" && journal.createdBy === approverId && approverId !== "system" && approverId !== "SYSTEM") {
+            // Check if strict SoD is enabled? For now, hard fail.
+            // Allow override if System Admin? assuming approverId is user ID.
+            // Using a specific error that can be caught.
+            throw new Error(`Security Violation: Segregation of Duties. You cannot approve your own journal.`);
+        }
+
         const status = action === "Approve" ? "Approved" : "Rejected";
 
         await db.update(glJournals)
@@ -1037,6 +1050,7 @@ export class FinanceService {
         const periods = await storage.listGlPeriods();
         const period = periods.find(p => p.periodName === periodName);
         if (!period) throw new Error(`Period ${periodName} not found.`);
+
 
         // 2. Get Exchange Rate
         const rateRow = await storage.getExchangeRate(foreignCurrency, periodName);
@@ -2191,13 +2205,9 @@ export class FinanceService {
 
 
     // Ledger Sets (Chunk 3)
-    async createLedgerSet(data: any) {
-        return await db.insert(glLedgerSets).values(data).returning();
-    }
 
-    async listLedgerSets() {
-        return await db.select().from(glLedgerSets);
-    }
+
+
 
     async createLedgerSetAssignment(data: any) {
         return await db.insert(glLedgerSetAssignments).values(data).returning();
@@ -2234,14 +2244,9 @@ export class FinanceService {
     }
 
     // Cross-Validation Rules (Chunk 4)
-    async listCrossValidationRules(ledgerId: string) {
-        return await db.select().from(glCrossValidationRules).where(eq(glCrossValidationRules.ledgerId, ledgerId));
-    }
 
-    async createCrossValidationRule(data: any) {
-        const [rule] = await db.insert(glCrossValidationRules).values(data).returning();
-        return rule;
-    }
+
+
 
     async updateCrossValidationRule(id: string, data: any) {
         const [rule] = await db.update(glCrossValidationRules).set(data).where(eq(glCrossValidationRules.id, id)).returning();
@@ -2315,16 +2320,144 @@ export class FinanceService {
 
     // Override or Enhance validateJournal (actually we added logic to validateCodeCombination previously)
     // We'll add a separate 'validatePeriodStatus' which should be called before posting.
+    // Strict Period Enforcement (Chunk 5)
     async validatePeriodStatus(ledgerId: string, date: Date) {
-        // Find period for this date
-        // TODO: This assumes we have a method to find period by date. 
-        // For MVP/Chunk 5, we'll implement a basic check against gl_periods if available, 
-        // or just return success if we lack the helpers.
-        // Let's assume we can fetch all periods and find the matching one.
+        // 1. Get Ledger Controls
+        const controls = await this.getLedgerControls(ledgerId);
 
-        // Implementation omitted for brevity in this step, returning true for now 
-        // until we hook up full Period Cache.
+        // 2. Find Period for Date
+        const periods = await db.select().from(glPeriods)
+            .where(eq(glPeriods.ledgerId, ledgerId));
+
+        // Simple date check (assuming consistent timezones or UTC)
+        const targetPeriod = periods.find(p => date >= p.startDate && date <= p.endDate);
+
+        if (!targetPeriod) {
+            // No period defined? 
+            if (controls?.preventFutureEntry) {
+                throw new Error("Date falls outside any defined period.");
+            }
+            return true; // Default allow if no calendar setup yet? Or fail? Standard ERP fails.
+        }
+
+        // 3. Strict Close Check
+        if (targetPeriod.status === "Closed" || targetPeriod.status === "Permanently Closed") {
+            if (controls?.enforcePeriodClose) {
+                throw new Error(`Period ${targetPeriod.periodName} is Closed.`);
+            }
+        }
+
+        // 4. Future Entry Check
+        if (targetPeriod.status === "Future-Entry") {
+            if (controls?.preventFutureEntry) {
+                throw new Error(`Cannot post to Future-Entry period ${targetPeriod.periodName}.`);
+            }
+            // If just warning, we can't easily return a warning from here without changing return type. 
+            // We'll assume "prevent" means Error, otherwise Allow.
+        }
+
+        // 5. Prior Period Check
+        // If period is Open but date is in the past rel to "current" period? 
+        // Typically strict close handles this. If it's Open, it's Open.
+        // But some systems have "Open for Adjustments" vs "Open".
+        // We'll skip complex relative date logic for now.
+
         return true;
+    }
+
+
+    // ================= PERIOD CLOSE MANAGEMENT (Chunk 6) =================
+
+    async getPeriodCloseStatus(ledgerId: string, periodId: string) {
+        // 1. Get Summary Status if exists
+        let [status] = await db.select().from(glPeriodCloseStatus)
+            .where(and(eq(glPeriodCloseStatus.ledgerId, ledgerId), eq(glPeriodCloseStatus.periodId, periodId)));
+
+        // 2. Calculate Real-time Metrics (Simple Version)
+        // Exceptions: Unposted Journals
+        // Exceptions: Unposted Journals
+        const [unpostedRes] = await db.select({ count: sql<number>`count(*)` }).from(glJournals)
+            .where(and(eq(glJournals.ledgerId, ledgerId), eq(glJournals.periodId, periodId), ne(glJournals.status, "Posted")));
+
+        // Checklist Progress
+        const tasks = await db.select().from(glCloseTasks)
+            .where(and(eq(glCloseTasks.ledgerId, ledgerId), eq(glCloseTasks.periodId, periodId)));
+
+        const completed = tasks.filter(t => t.status === "COMPLETED").length;
+        const total = tasks.length || 0; // If 0, maybe init from template?
+
+        // Auto-init tasks from template if empty
+        if (total === 0) {
+            // Fetch template
+            const templates = await db.select().from(glPeriodCloseChecklistTemplates)
+                .where(eq(glPeriodCloseChecklistTemplates.ledgerId, ledgerId));
+
+            if (templates.length > 0) {
+                // Bulk insert tasks
+                await db.insert(glCloseTasks).values(templates.map(t => ({
+                    ledgerId,
+                    periodId,
+                    taskName: t.taskName,
+                    description: t.description,
+                    status: "PENDING"
+                } as any)));
+                // Recalculate will happen next call or manually return adjusted stats
+                return {
+                    totalTasks: templates.length,
+                    completedTasks: 0,
+                    blockingExceptions: Number(unpostedRes.count),
+                    canClose: Number(unpostedRes.count) === 0 && templates.every(t => !t.isRequired) // simplistic
+                };
+            }
+        }
+
+        return {
+            totalTasks: total,
+            completedTasks: completed,
+            blockingExceptions: Number(unpostedRes.count),
+            canClose: Number(unpostedRes.count) === 0 && (total > 0 ? completed === total : true)
+        };
+    }
+
+
+
+
+
+    // List actual exception items
+    async listCloseExceptions(ledgerId: string, periodId: string) {
+        // For now, just unposted journals
+        const journals = await db.select().from(glJournals)
+            .where(and(eq(glJournals.ledgerId, ledgerId), eq(glJournals.periodId, periodId), ne(glJournals.status, "Posted")));
+
+        return journals.map(j => ({
+            type: "Unposted Journal",
+            reference: j.journalNumber,
+            amount: j.totalDebit,
+            source: j.source
+        }));
+    }
+
+    // Ledger Controls
+    async getLedgerControls(ledgerId: string) {
+        const [controls] = await db.select().from(glLedgerControls)
+            .where(eq(glLedgerControls.ledgerId, ledgerId));
+        return controls;
+    }
+
+    async updateLedgerControls(ledgerId: string, data: Partial<typeof glLedgerControls.$inferSelect>) {
+        const existing = await this.getLedgerControls(ledgerId);
+        if (existing) {
+            const [updated] = await db.update(glLedgerControls)
+                .set({ ...data, updatedAt: new Date() })
+                .where(eq(glLedgerControls.ledgerId, ledgerId))
+                .returning();
+            return updated;
+        } else {
+            const [created] = await db.insert(glLedgerControls)
+                .values({ ...data, ledgerId } as any)
+                .returning();
+            return created;
+        }
     }
 
 

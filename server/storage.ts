@@ -979,10 +979,22 @@ export class DatabaseStorage implements IStorage {
   async createGlSegmentValue(val: InsertGlSegmentValue) { return dbStorage.createGlSegmentValue(val); }
 
   // Missing IStorage Methods - Stubs
-  async createRevaluationEntry(r: InsertGlRevaluationEntry) { return {} as GlRevaluationEntry; }
-  async listRevaluationEntries(revaluationId: string) { return []; }
-  async createExchangeRate(r: InsertGlExchangeRate) { return {} as GlExchangeRate; }
-  async getExchangeRate(currency: string, periodName: string) { return undefined; }
+  async createRevaluationEntry(r: InsertGlRevaluationEntry) {
+    const [entry] = await db.insert(glRevaluationEntries).values({ ...r, id: r.id || randomUUID() }).returning();
+    return entry;
+  }
+  async listRevaluationEntries(ledgerId: string) {
+    return await db.select().from(glRevaluationEntries).where(eq(glRevaluationEntries.ledgerId, ledgerId));
+  }
+  async createExchangeRate(r: InsertGlExchangeRate) {
+    const [rate] = await db.insert(glExchangeRates).values({ ...r, id: r.id || randomUUID() }).returning();
+    return rate;
+  }
+  async getExchangeRate(currency: string, periodName: string): Promise<GlExchangeRate | undefined> {
+    const [rate] = await db.select().from(glExchangeRates)
+      .where(and(eq(glExchangeRates.currency, currency), eq(glExchangeRates.periodName, periodName)));
+    return rate;
+  }
   async listExchangeRates(from: string, to: string) { return []; }
 
   // Fixed Assets (Native Implementation)

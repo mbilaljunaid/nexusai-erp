@@ -437,6 +437,36 @@ export const insertGlCloseTaskSchema = createInsertSchema(glCloseTasks);
 export type InsertGlCloseTask = z.infer<typeof insertGlCloseTaskSchema>;
 export type GlCloseTask = typeof glCloseTasks.$inferSelect;
 
+// 14.1 Period Close Checklist Template
+export const glPeriodCloseChecklistTemplates = pgTable("gl_period_close_checklist_templates", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ledgerId: varchar("ledger_id").notNull(),
+    taskName: varchar("task_name").notNull(),
+    description: text("description"),
+    isRequired: boolean("is_required").default(true),
+    sequence: integer("sequence").default(10),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlPeriodCloseChecklistTemplateSchema = createInsertSchema(glPeriodCloseChecklistTemplates);
+export type InsertGlPeriodCloseChecklistTemplate = z.infer<typeof insertGlPeriodCloseChecklistTemplateSchema>;
+export type GlPeriodCloseChecklistTemplate = typeof glPeriodCloseChecklistTemplates.$inferSelect;
+
+// 14.2 Period Close Status (Dashboard Metrics)
+export const glPeriodCloseStatus = pgTable("gl_period_close_status", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ledgerId: varchar("ledger_id").notNull(),
+    periodId: varchar("period_id").notNull(),
+    totalTasks: integer("total_tasks").default(0),
+    completedTasks: integer("completed_tasks").default(0),
+    blockingExceptions: integer("blocking_exceptions").default(0),
+    lastUpdated: timestamp("last_updated").default(sql`now()`),
+});
+
+export const insertGlPeriodCloseStatusSchema = createInsertSchema(glPeriodCloseStatus);
+export type InsertGlPeriodCloseStatus = z.infer<typeof insertGlPeriodCloseStatusSchema>;
+export type GlPeriodCloseStatus = typeof glPeriodCloseStatus.$inferSelect;
+
 
 // 8. Code Combinations (CCID - The intersection)
 export const glCodeCombinations = pgTable("gl_code_combinations_v2", {

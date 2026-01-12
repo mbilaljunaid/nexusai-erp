@@ -9,6 +9,39 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export function ValidationControls() {
+    const [controls, setControls] = React.useState<any>({});
+    const [loading, setLoading] = React.useState(true);
+    const ledgerId = "primary-ledger-id"; // Hardcoded for MVP context
+
+    React.useEffect(() => {
+        fetch(`/api/gl/ledgers/${ledgerId}/controls`)
+            .then(res => res.json())
+            .then(data => {
+                setControls(data);
+                setLoading(false);
+            })
+            .catch(err => console.error("Failed to load controls", err));
+    }, []);
+
+    const updateControl = async (field: string, value: any) => {
+        // Optimistic update
+        const newControls = { ...controls, [field]: value };
+        setControls(newControls);
+
+        try {
+            await fetch(`/api/gl/ledgers/${ledgerId}/controls`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newControls)
+            });
+        } catch (e) {
+            console.error("Failed to update control", e);
+            // Revert on fail? For MVP, just log.
+        }
+    };
+
+    if (loading) return <div>Loading controls...</div>;
+
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div>
@@ -28,7 +61,10 @@ export function ValidationControls() {
                                 <Label className="text-base">Strict Period Close</Label>
                                 <p className="text-sm text-muted-foreground">Reject any entry dated in a 'Closed' period.</p>
                             </div>
-                            <Switch checked={true} />
+                            <Switch
+                                checked={controls.enforcePeriodClose ?? true}
+                                onCheckedChange={(checked) => updateControl("enforcePeriodClose", checked)}
+                            />
                         </div>
                         <Separator />
                         <div className="flex items-center justify-between">
@@ -36,7 +72,10 @@ export function ValidationControls() {
                                 <Label className="text-base">Future Entry Warning</Label>
                                 <p className="text-sm text-muted-foreground">Warn user when entering dates in future periods.</p>
                             </div>
-                            <Switch checked={true} />
+                            <Switch
+                                checked={controls.preventFutureEntry ?? false}
+                                onCheckedChange={(checked) => updateControl("preventFutureEntry", checked)}
+                            />
                         </div>
                         <Separator />
                         <div className="flex items-center justify-between">
@@ -44,7 +83,10 @@ export function ValidationControls() {
                                 <Label className="text-base">Allow Prior Period Entry</Label>
                                 <p className="text-sm text-muted-foreground">If period is Open, allow back-dated entries.</p>
                             </div>
-                            <Switch checked={true} />
+                            <Switch
+                                checked={controls.allowPriorPeriodEntry ?? true}
+                                onCheckedChange={(checked) => updateControl("allowPriorPeriodEntry", checked)}
+                            />
                         </div>
                     </CardContent>
                 </Card>
@@ -60,7 +102,10 @@ export function ValidationControls() {
                                 <Label className="text-base">Suspense Posting</Label>
                                 <p className="text-sm text-muted-foreground">Automatically balance unbalanced journals to Suspense.</p>
                             </div>
-                            <Switch checked={false} />
+                            <Switch
+                                checked={controls.enableSuspense ?? false}
+                                onCheckedChange={(checked) => updateControl("enableSuspense", checked)}
+                            />
                         </div>
                         <Separator />
                         <div className="flex items-center justify-between">
@@ -76,7 +121,10 @@ export function ValidationControls() {
                                 <Label className="text-base">Cross-Validation Enforcement</Label>
                                 <p className="text-sm text-muted-foreground">Block combinations defined in CVR Manager.</p>
                             </div>
-                            <Switch checked={true} disabled />
+                            <Switch
+                                checked={controls.enforceCvr ?? true}
+                                onCheckedChange={(checked) => updateControl("enforceCvr", checked)}
+                            />
                         </div>
                     </CardContent>
                 </Card>

@@ -16,9 +16,19 @@ async function verifyMultiLedger() {
         const primary = ledgers.find(l => l.ledgerCategory === 'PRIMARY');
         if (!primary) throw new Error("Primary Ledger not found!");
         console.log("✅ Primary Ledger found:", primary.name);
-
         // 2. Create Secondary Ledger
         console.log("➕ Creating Secondary Ledger...");
+        const existingSec = ledgers.find(l => l.name === "IFRS Secondary Ledger");
+        if (existingSec) {
+            // Clean up if exists
+            // We can't easily delete via financeService (no deleteLedger exposed?), so we'll skip or use raw DB delete if possible or just use existing
+            console.log("Secondary ledger already exists, using it:", existingSec.id);
+            // We might need to ensure legal entity and relationship don't conflict either
+            // Ideally we run a cleanup at start of script using direct DB access
+            await db.delete(glLedgers).where(eq(glLedgers.name, "IFRS Secondary Ledger"));
+            console.log("Deleted existing secondary ledger for clean test.");
+        }
+
         const secondary = await financeService.createLedger({
             name: "IFRS Secondary Ledger",
             currencyCode: "EUR",
@@ -30,6 +40,12 @@ async function verifyMultiLedger() {
 
         // 3. Create Legal Entity
         console.log("➕ Creating Legal Entity for Primary Ledger...");
+        const existingLE = await db.select().from(glLegalEntities).where(eq(glLegalEntities.name, "NexusAI UK Operations"));
+        if (existingLE.length > 0) {
+            await db.delete(glLegalEntities).where(eq(glLegalEntities.name, "NexusAI UK Operations"));
+            console.log("Deleted existing legal entity.");
+        }
+
         const legalEntity = await financeService.createLegalEntity({
             name: "NexusAI UK Operations",
             taxId: "GB-VAT-888",

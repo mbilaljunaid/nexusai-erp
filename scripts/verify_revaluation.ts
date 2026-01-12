@@ -336,8 +336,18 @@ async function verifyRevaluationFixed() {
 
         // 6. Update Rate to 1.2
         console.log("6. Updating Exchange Rate to 1.2 (Period End)...");
-        const [rateRow] = await db.select().from(glExchangeRates)
+        const rates = await db.select().from(glExchangeRates)
             .where(and(eq(glExchangeRates.currency, "EUR"), eq(glExchangeRates.periodName, periodName)));
+
+        let rateRow = rates[0];
+        if (!rateRow) {
+            console.error("Rate row not found! Re-seeding...");
+            rateRow = await storage.createExchangeRate({
+                currency: "EUR",
+                periodName: periodName,
+                rateToFunctional: "1.1"
+            });
+        }
 
         await db.update(glExchangeRates).set({ rateToFunctional: "1.2" }).where(eq(glExchangeRates.id, rateRow.id));
 

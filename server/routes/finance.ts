@@ -66,6 +66,48 @@ router.get("/gl/periods/:id/exceptions", async (req, res) => {
     res.json(exceptions);
 });
 
+// Period Close Management (Chunk 6)
+router.get("/gl/periods/:id/close-status", async (req, res) => {
+    try {
+        const ledgerId = (req.query.ledgerId as string) || "primary-ledger-id";
+        const status = await financeService.getPeriodCloseStatus(ledgerId, req.params.id);
+        res.json(status);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.get("/gl/periods/:id/close-exceptions", async (req, res) => {
+    try {
+        const ledgerId = (req.query.ledgerId as string) || "primary-ledger-id";
+        const exceptions = await financeService.listCloseExceptions(ledgerId, req.params.id);
+        res.json(exceptions);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.get("/gl/periods/:id/tasks", async (req, res) => {
+    try {
+        const ledgerId = (req.query.ledgerId as string) || "primary-ledger-id";
+        const tasks = await financeService.listCloseTasks(ledgerId, req.params.id);
+        res.json(tasks);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.post("/gl/tasks/:id/update", async (req, res) => {
+    try {
+        const userId = (req.user as any)?.id || "system";
+        const { status } = req.body;
+        const result = await financeService.updateCloseTask(req.params.id, status, userId);
+        res.json(result);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // GL Statistics
 router.get("/gl/stats", async (req, res) => {
     const stats = await financeService.getGLStats();
@@ -146,6 +188,25 @@ router.get("/gl/fsg/column-sets", async (req, res) => {
 router.post("/gl/fsg/column-sets", async (req, res) => {
     const set = await storage.createFsgColumnSet(req.body);
     res.json(set);
+});
+
+// Ledger Controls (Chunk 5)
+router.get("/gl/ledgers/:id/controls", async (req, res) => {
+    try {
+        const controls = await financeService.getLedgerControls(req.params.id);
+        res.json(controls || {}); // Return empty obj if none
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.post("/gl/ledgers/:id/controls", async (req, res) => {
+    try {
+        const updated = await financeService.updateLedgerControls(req.params.id, req.body);
+        res.json(updated);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 // FSG Rows (Children of Row Sets)

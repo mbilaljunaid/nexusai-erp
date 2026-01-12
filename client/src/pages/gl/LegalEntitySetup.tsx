@@ -7,7 +7,94 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Plus, Building2, ShieldCheck, CreditCard } from "lucide-react";
+
+function EntityForm({ onSubmit, ledgers, isLoading }: { onSubmit: (data: any) => void, ledgers: any[], isLoading: boolean }) {
+    const [formData, setFormData] = useState({
+        name: "",
+        taxId: "",
+        ledgerId: "",
+        countryCode: "US", // Default
+        addressLine1: "",
+        city: ""
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSubmit(formData);
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+            <div className="space-y-2">
+                <Label htmlFor="name">Entity Name</Label>
+                <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g. Nexus Corp - USA"
+                    required
+                />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="taxId">Tax / VAT ID</Label>
+                    <Input
+                        id="taxId"
+                        value={formData.taxId}
+                        onChange={e => setFormData({ ...formData, taxId: e.target.value })}
+                        placeholder="XX-XXXXXXX"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="country">Jurisdiction</Label>
+                    <Input
+                        id="country"
+                        value={formData.countryCode}
+                        onChange={e => setFormData({ ...formData, countryCode: e.target.value })}
+                        maxLength={2}
+                        placeholder="US"
+                    />
+                </div>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="address">Registered Address</Label>
+                <Input
+                    id="address"
+                    value={formData.addressLine1}
+                    onChange={e => setFormData({ ...formData, addressLine1: e.target.value })}
+                    placeholder="123 Corporate Blvd"
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="ledger">Primary Ledger</Label>
+                <Select
+                    value={formData.ledgerId}
+                    onValueChange={(val) => setFormData({ ...formData, ledgerId: val })}
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select Ledger" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {ledgers.map(l => (
+                            <SelectItem key={l.id} value={l.id.toString()}>{l.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <p className="text-[10px] text-muted-foreground">The primary ledger dictates the chart of accounts and currency.</p>
+            </div>
+            <DialogFooter>
+                <Button type="submit" disabled={isLoading} className="w-full">
+                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Register Entity
+                </Button>
+            </DialogFooter>
+        </form>
+    );
+}
 
 export default function LegalEntitySetup() {
     const { toast } = useToast();
@@ -53,12 +140,27 @@ export default function LegalEntitySetup() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Legal Entities</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Legal Entities</h1>
                     <p className="text-muted-foreground italic">Enterprise Structure: Organizational Units & Tax Registrations</p>
                 </div>
-                <Button onClick={() => setIsCreating(true)} className="gap-2">
-                    <Plus className="h-4 w-4" /> Register Entity
-                </Button>
+                <Dialog open={isCreating} onOpenChange={setIsCreating}>
+                    <DialogTrigger asChild>
+                        <Button className="gap-2 bg-[#0f172a]">
+                            <Plus className="h-4 w-4" /> Register Entity
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[500px]">
+                        <DialogHeader>
+                            <DialogTitle>Register New Legal Entity</DialogTitle>
+                            <CardDescription>Define a legal organization unit and map it to a primary ledger.</CardDescription>
+                        </DialogHeader>
+                        <EntityForm
+                            onSubmit={(data) => createEntityMutation.mutate(data)}
+                            ledgers={ledgers || []}
+                            isLoading={createEntityMutation.isPending}
+                        />
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

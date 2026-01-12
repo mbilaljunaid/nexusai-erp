@@ -52,6 +52,7 @@ const Projects = lazy(() => import("@/pages/Projects"));
 // Phase 2: Module Overviews
 const CRMModule = lazy(() => import("@/pages/CRMModule"));
 const FinanceModule = lazy(() => import("@/pages/FinanceModule"));
+const CloseDashboard = lazy(() => import("@/pages/gl/CloseDashboard")); // Added Chunk 6
 const HRModule = lazy(() => import("@/pages/HRModule"));
 const ERPModule = lazy(() => import("@/pages/ERPModule"));
 const ServiceModule = lazy(() => import("@/pages/ServiceModule"));
@@ -71,6 +72,7 @@ const FeaturesComparison = lazy(() => import("@/pages/FeaturesComparison"));
 // Phase 1: Enterprise Foundation (8 pages)
 const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
 const PlatformAdmin = lazy(() => import("@/pages/admin/PlatformAdmin"));
+const AccessControl = lazy(() => import("@/pages/admin/AccessControl"));
 const AdminRoles = lazy(() => import("@/pages/AdminRoles"));
 const APIGateway = lazy(() => import("@/pages/APIGateway"));
 const InvoiceGenerator = lazy(() => import("@/pages/InvoiceGenerator"));
@@ -574,6 +576,7 @@ import ApSettings from "@/components/ap/ApSettings";
 function Router() {
   return (
     <Switch>
+      <Route path="/" component={LandingPage} />
       <Route path="/form" component={FormPage} />
       <Route path="/ap/settings">
         <ProtectedRoute>
@@ -601,6 +604,7 @@ function Router() {
       <Route path="/modules" component={ModulesPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin" component={AdminConsole} />
+      <Route path="/admin/security" component={AccessControl} />
       <Route path="/admin-roles" component={AdminRoles} />
       <Route path="/demo" component={DemoManagement} />
       <Route path="/dashboard" component={Dashboard} />
@@ -643,7 +647,11 @@ function Router() {
       <Route path="/hr/:page?" component={HR} />
       <Route path="/projects/:page?" component={Projects} />
       <Route path="/crm-module" component={CRMModule} />
+      {/* Finance Module Routes */}
       <Route path="/finance-module" component={FinanceModule} />
+      <Route path="/gl/period-close" component={CloseDashboard} />
+
+      {/* HR Module Routes */}
       <Route path="/hr-module" component={HRModule} />
       <Route path="/erp-module" component={ERPModule} />
       <Route path="/service-module" component={ServiceModule} />
