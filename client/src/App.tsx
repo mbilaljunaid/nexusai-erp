@@ -321,16 +321,21 @@ const IntercompanyRules = lazy(() => import("@/pages/gl/IntercompanyRules"));
 const BudgetManager = lazy(() => import("@/pages/gl/BudgetManager"));
 const CVRManager = lazy(() => import("@/pages/gl/CVRManager"));
 const DataAccessManager = lazy(() => import("@/pages/gl/DataAccessManager"));
+const JournalWizard = lazy(() => import("@/pages/gl/JournalWizard"));
+const PostingRulesManager = lazy(() => import("@/pages/gl/PostingRulesManager").then(module => ({ default: module.PostingRulesManager })));
+const ValidationControls = lazy(() => import("@/pages/gl/ValidationControls").then(module => ({ default: module.ValidationControls })));
 const PeriodCloseDashboard = lazy(() => import("@/pages/gl/PeriodCloseDashboard"));
 const TrialBalance = lazy(() => import("@/pages/gl/TrialBalance"));
 const LedgerSetup = lazy(() => import("./pages/gl/LedgerSetup"));
-
+const LedgerSetSetup = lazy(() => import("./pages/gl/LedgerSetSetup"));
 const LegalEntitySetup = lazy(() => import("./pages/gl/LegalEntitySetup"));
 const ValueSetManager = lazy(() => import("./pages/gl/ValueSetManager"));
 const CoaStructureSetup = lazy(() => import("./pages/gl/CoaStructureSetup"));
 const HierarchyManager = lazy(() => import("./pages/gl/HierarchyManager"));
 const ConfigurationHub = lazy(() => import("./pages/gl/ConfigurationHub"));
 const CalendarSetup = lazy(() => import("./pages/gl/CalendarSetup"));
+const SlaRules = lazy(() => import("./pages/gl/SlaRules"));
+const TranslationRules = lazy(() => import("./pages/gl/TranslationRules"));
 const SourceCategorySetup = lazy(() => import("./pages/gl/SourceCategorySetup"));
 const LedgerControlSetup = lazy(() => import("./pages/gl/LedgerControlSetup"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
@@ -627,6 +632,9 @@ function Router() {
         </CustomerPortalLayout>
       </Route>
       <Route path="/gl/journals/new" component={JournalEntry} />
+      <Route path="/gl/journals/wizard" component={JournalWizard} />
+      <Route path="/gl/config/posting-rules" component={PostingRulesManager} />
+      <Route path="/gl/config/validations" component={ValidationControls} />
       <Route path="/gl/journals" component={JournalEntries} />
       <Route path="/gl/reports/builder" component={FSGBuilder} />
       <Route path="/gl/reports" component={FinancialReports} />
@@ -758,14 +766,16 @@ function Router() {
       <Route path="/gl/period-close" component={PeriodCloseDashboard} />
       <Route path="/finance/ar/period-close" component={ArPeriodClose} />
       <Route path="/gl/trial-balance" component={TrialBalance} />
-      <Route path="/gl/ledger-setup" component={LedgerSetup} />
-
-      <Route path="/gl/legal-entity-setup" component={LegalEntitySetup} />
+      <Route path="/gl/config/ledgers" component={LedgerSetup} />
+      <Route path="/gl/config/ledger-sets" component={LedgerSetSetup} />
+      <Route path="/gl/config/legal-entities" component={LegalEntitySetup} />
       <Route path="/gl/value-sets" component={ValueSetManager} />
       <Route path="/gl/coa-structures" component={CoaStructureSetup} />
       <Route path="/gl/hierarchies" component={HierarchyManager} />
       <Route path="/gl/config" component={ConfigurationHub} />
       <Route path="/gl/config/calendars" component={CalendarSetup} />
+      <Route path="/gl/config/sla" component={SlaRules} />
+      <Route path="/gl/config/translation" component={TranslationRules} />
       <Route path="/gl/config/sources" component={SourceCategorySetup} />
       <Route path="/gl/config/controls" component={LedgerControlSetup} />
 

@@ -13,6 +13,7 @@ import { z } from "zod";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
 import { storage } from "../storage";
+import { slaService } from "../services/SlaService";
 
 const router = Router();
 
@@ -543,6 +544,63 @@ router.post("/gl/access-set-assignments", async (req, res) => {
     const data = insertGlDataAccessSetAssignmentSchema.parse(req.body);
     const assignment = await financeService.createDataAccessSetAssignment(data);
     res.json(assignment);
+});
+
+// ================= CONFIGURATION & SETUP (CHUNK 2) =================
+
+// Translation Rules
+router.get("/gl/translation/rules", async (req, res) => {
+    const ledgerId = (req.query.ledgerId as string) || "PRIMARY";
+    const rules = await financeService.listTranslationRules(ledgerId);
+    res.json(rules);
+});
+
+router.post("/gl/translation/rules", async (req, res) => {
+    try {
+        const rule = await financeService.createTranslationRule(req.body);
+        res.json(rule);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+// SLA Rules
+router.get("/gl/sla/rules", async (req, res) => {
+    const rules = await slaService.listSlaRules();
+    res.json(rules);
+});
+
+router.post("/gl/sla/rules", async (req, res) => {
+    try {
+        const rule = await slaService.createSlaRule(req.body);
+        res.json(rule);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+// Ledger Sets
+router.get("/gl/ledger-sets", async (req, res) => {
+    const sets = await financeService.listLedgerSets();
+    res.json(sets);
+});
+
+router.post("/gl/ledger-sets", async (req, res) => {
+    try {
+        const set = await financeService.createLedgerSet(req.body);
+        res.json(set);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+router.post("/gl/ledger-sets/assignments", async (req, res) => {
+    try {
+        const assign = await financeService.createLedgerSetAssignment(req.body);
+        res.json(assign);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
 });
 
 export default router;

@@ -645,6 +645,23 @@ export const insertGlAllocationSchema = createInsertSchema(glAllocations);
 export type InsertGlAllocation = z.infer<typeof insertGlAllocationSchema>;
 export type GlAllocation = typeof glAllocations.$inferSelect;
 
+// Chunk 5: Auto-Post Rules
+export const glAutoPostRules = pgTable("gl_auto_post_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    criteriaName: text("criteria_name").notNull(),
+    ledgerId: varchar("ledger_id").notNull(),
+    source: varchar("source"), // Filter by Source
+    category: varchar("category"), // Filter by Category
+    amountLimit: numeric("amount_limit", { precision: 18, scale: 2 }), // Only auto-post if total < limit
+    effectiveDateFrom: timestamp("effective_date_from"), // Optional day range constraint? Or maybe just simple flags.
+    enabled: boolean("enabled").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGlAutoPostRuleSchema = createInsertSchema(glAutoPostRules);
+export type InsertGlAutoPostRule = z.infer<typeof insertGlAutoPostRuleSchema>;
+export type GlAutoPostRule = typeof glAutoPostRules.$inferSelect;
+
 // 16. Security: Data Access Sets
 export const glDataAccessSets = pgTable("gl_data_access_sets", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

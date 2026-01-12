@@ -58,6 +58,13 @@ export const glLedgerControls = pgTable("gl_ledger_controls", {
     autoPostJournals: boolean("auto_post_journals").default(false),
     autoReverseJournals: boolean("auto_reverse_journals").default(false),
 
+    // Period & Integrity Controls (Chunk 5)
+    enforcePeriodClose: boolean("enforce_period_close").default(true), // Reject if Closed
+    preventFutureEntry: boolean("prevent_future_entry").default(false), // Warn/Reject future dates
+    allowPriorPeriodEntry: boolean("allow_prior_period_entry").default(true), // Allow if Open
+    approvalLimit: numeric("approval_limit", { precision: 18, scale: 2 }), // e.g. 10000
+    enforceCvr: boolean("enforce_cvr").default(true),
+
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
@@ -66,22 +73,4 @@ export const insertGlLedgerControlSchema = createInsertSchema(glLedgerControls);
 export type InsertGlLedgerControl = z.infer<typeof insertGlLedgerControlSchema>;
 export type GlLedgerControl = typeof glLedgerControls.$inferSelect;
 
-// 4. Auto-Post Rules
-// Criteria for automatically posting journals
-export const glAutoPostRules = pgTable("gl_auto_post_rules", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    ruleName: varchar("rule_name").notNull(),
-    ledgerId: varchar("ledger_id").notNull(),
-    priority: integer("priority").default(1),
 
-    // Criteria (JSON)
-    // e.g. { "source": ["Manual"], "category": ["Adjustment"], "period": "Current" }
-    criteria: jsonb("criteria").notNull(),
-
-    enabled: boolean("enabled").default(true),
-    createdAt: timestamp("created_at").default(sql`now()`),
-});
-
-export const insertGlAutoPostRuleSchema = createInsertSchema(glAutoPostRules);
-export type InsertGlAutoPostRule = z.infer<typeof insertGlAutoPostRuleSchema>;
-export type GlAutoPostRule = typeof glAutoPostRules.$inferSelect;

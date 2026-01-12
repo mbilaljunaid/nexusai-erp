@@ -8,6 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar as CalendarIcon, Plus, Loader2, CheckCircle2, XCircle, AlertTriangle, Play } from "lucide-react";
 import { format } from "date-fns";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function CalendarSetup() {
     const { toast } = useToast();
@@ -72,6 +76,40 @@ export default function CalendarSetup() {
                     </Button>
                 </div>
             </div>
+
+            <Dialog open={isGenerating} onOpenChange={setIsGenerating}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Generate Accounting Calendar</DialogTitle>
+                        <DialogDescription>
+                            Create a new fiscal year or calendar definition.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                            <Label>Fiscal Year</Label>
+                            <Input defaultValue="2027" placeholder="YYYY" />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Period Frequency</Label>
+                            <Select defaultValue="Monthly">
+                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Monthly">Monthly (12 Periods)</SelectItem>
+                                    <SelectItem value="4-4-5">4-4-5 Retail</SelectItem>
+                                    <SelectItem value="Weekly">Weekly</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button onClick={() => {
+                            toast({ title: "Calendar Generated", description: "New fiscal year 2027 generated successfully." });
+                            setIsGenerating(false);
+                        }}>Generate Year</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="border-l-4 border-l-green-500 shadow-sm">
@@ -156,6 +194,6 @@ export default function CalendarSetup() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     );
 }

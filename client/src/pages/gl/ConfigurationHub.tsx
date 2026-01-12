@@ -11,7 +11,8 @@ import {
     ShieldCheck,
     Wand2,
     Calculator,
-    Library
+    Library,
+    Lock
 } from "lucide-react";
 import { Link as RouterLink } from "wouter";
 
@@ -20,9 +21,17 @@ const configTiles = [
         title: "Ledger Architecture",
         description: "Primary, Secondary, and Reporting ledgers setup",
         icon: Library,
-        path: "/gl/ledgers",
+        path: "/gl/config/ledgers",
         color: "text-blue-600",
         bgColor: "bg-blue-100/50"
+    },
+    {
+        title: "Ledger Sets",
+        description: "Group ledgers for consolidation and close",
+        icon: Layers,
+        path: "/gl/config/ledger-sets",
+        color: "text-indigo-600",
+        bgColor: "bg-indigo-100/50"
     },
     {
         title: "Accounting Calendars",
@@ -47,6 +56,23 @@ const configTiles = [
         path: "/gl/config/sources",
         color: "text-amber-600",
         bgColor: "bg-amber-100/50"
+    },
+    // New tiles for Accounting Intelligence
+    {
+        title: "Posting Rules",
+        description: "Auto-post criteria for journals",
+        icon: Zap,
+        path: "/gl/config/posting-rules",
+        color: "text-amber-500",
+        bgColor: "bg-amber-100/50"
+    },
+    {
+        title: "Validation Controls",
+        description: "Period strictness & Source freeze settings",
+        icon: ShieldCheck,
+        path: "/gl/config/validations",
+        color: "text-red-500",
+        bgColor: "bg-red-100/50"
     },
     {
         title: "Intercompany Rules",
@@ -87,6 +113,22 @@ const configTiles = [
         path: "/gl/config/controls",
         color: "text-slate-600",
         bgColor: "bg-slate-100/50"
+    },
+    {
+        title: "Cross-Validation Rules",
+        description: "Prevent invalid account combinations",
+        icon: ShieldCheck,
+        path: "/gl/config/cvr",
+        color: "text-rose-600",
+        bgColor: "bg-rose-100/50"
+    },
+    {
+        title: "Data Access Sets",
+        description: "Manage security policies and assignments",
+        icon: Lock,
+        path: "/gl/config/das",
+        color: "text-emerald-600",
+        bgColor: "bg-emerald-100/50"
     }
 ];
 

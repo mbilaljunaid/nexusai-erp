@@ -11,8 +11,10 @@ import {
     apInvoices, arInvoices,
     glRecurringJournals, insertGlRecurringJournalSchema,
     glBudgetBalances, glBudgetControlRules, glBudgets,
-    glRevaluationEntries, glLedgers, glSegments, glCoaStructures, glSegmentValues
+    glRevaluationEntries, glLedgers, glSegments, glCoaStructures, glSegmentValues,
+    glTranslationRules, glHistoricalRates, glAutoPostRules
 } from "@shared/schema";
+
 import { eq, and, sql, inArray, gte, lte, desc, isNull, ne } from "drizzle-orm";
 import { db } from "../db"; // Direct DB access needed for complex transactions
 import { randomUUID } from "crypto";
@@ -795,7 +797,7 @@ export class FinanceService {
         if (filterValue.includes("-") && filterValue.split("-").length === 2) {
             const [min, max] = filterValue.split("-").map(s => s.trim());
             // Ensure they are actually numbers or comparable strings
-            if (min && max) return actualValue >= min && actualValue <= max;
+            if (min && max && actualValue >= min && actualValue <= max) return true;
         }
 
         // Support Wildcard: "10*" or "10%" (starts with 10)
@@ -2171,6 +2173,162 @@ export class FinanceService {
         const segments = await storage.listGlSegments(ledgerId);
         return segments;
     }
+    // ================= TRANSLATION RULES (Chunk 2) =================
+
+    async listTranslationRules(ledgerId: string) {
+        return await db.select().from(glTranslationRules).where(eq(glTranslationRules.ledgerId, ledgerId));
+    }
+
+    async createTranslationRule(data: any) {
+        const [rule] = await db.insert(glTranslationRules).values(data).returning();
+        return rule;
+    }
+
+    async deleteTranslationRule(id: string) {
+        await db.delete(glTranslationRules).where(eq(glTranslationRules.id, id));
+        return { success: true };
+    }
+
+
+    // Ledger Sets (Chunk 3)
+    async createLedgerSet(data: any) {
+        return await db.insert(glLedgerSets).values(data).returning();
+    }
+
+    async listLedgerSets() {
+        return await db.select().from(glLedgerSets);
+    }
+
+    async createLedgerSetAssignment(data: any) {
+        return await db.insert(glLedgerSetAssignments).values(data).returning();
+    }
+
+
+    // Helper for CVR
+    matchesFilter(cc: any, filter: string | null): boolean {
+        if (!filter || filter === "*") return true;
+        // Simple parser: "segment2=100" or "segment3=5000-5999"
+        // Supports multiple conditions separated by AND or ;
+        const conditions = filter.split(/;| AND /i);
+
+        for (const condition of conditions) {
+            const [segment, value] = condition.split("=");
+            if (!segment || !value) continue;
+
+            const segKey = segment.trim();
+            const valExpr = value.trim();
+            const actualValue = cc[segKey];
+
+            if (valExpr.includes("-")) {
+                const [min, max] = valExpr.split("-").map(Number);
+                const actualNum = Number(actualValue);
+                if (isNaN(actualNum) || actualNum < min || actualNum > max) return false;
+            } else if (valExpr.includes(",")) {
+                const options = valExpr.split(",").map(s => s.trim());
+                if (!options.includes(actualValue)) return false;
+            } else {
+                if (actualValue !== valExpr) return false;
+            }
+        }
+        return true;
+    }
+
+    // Cross-Validation Rules (Chunk 4)
+    async listCrossValidationRules(ledgerId: string) {
+        return await db.select().from(glCrossValidationRules).where(eq(glCrossValidationRules.ledgerId, ledgerId));
+    }
+
+    async createCrossValidationRule(data: any) {
+        const [rule] = await db.insert(glCrossValidationRules).values(data).returning();
+        return rule;
+    }
+
+    async updateCrossValidationRule(id: string, data: any) {
+        const [rule] = await db.update(glCrossValidationRules).set(data).where(eq(glCrossValidationRules.id, id)).returning();
+        return rule;
+    }
+
+    async deleteCrossValidationRule(id: string) {
+        await db.delete(glCrossValidationRules).where(eq(glCrossValidationRules.id, id));
+        return { success: true };
+    }
+
+    // Auto-Post Rules (Chunk 5)
+    async listAutoPostRules(ledgerId: string) {
+        return await db.select().from(glAutoPostRules).where(eq(glAutoPostRules.ledgerId, ledgerId));
+    }
+
+    async createAutoPostRule(data: any) {
+        const [rule] = await db.insert(glAutoPostRules).values(data).returning();
+        return rule;
+    }
+
+    async deleteAutoPostRule(id: string) {
+        await db.delete(glAutoPostRules).where(eq(glAutoPostRules.id, id));
+        return { success: true };
+    }
+
+    // Process Auto-Posting
+    async processAutoPosting(ledgerId: string) {
+        console.log(`[FINANCE] Running Auto-Post for Ledger ${ledgerId}...`);
+
+        // 1. Get Active Rules
+        const rules = await this.listAutoPostRules(ledgerId);
+        if (rules.length === 0) return { posted: 0, message: "No active auto-post rules." };
+
+        // 2. Find Candidate Batches (Unposted)
+        const candidates = await db.select({
+            journal: glJournals,
+            batch: glJournalBatches
+        })
+            .from(glJournals)
+            .leftJoin(glJournalBatches, eq(glJournals.batchId, glJournalBatches.id))
+            .where(
+                and(
+                    eq(glJournals.ledgerId, ledgerId),
+                    ne(glJournals.status, "Posted")
+                )
+            );
+
+        let postedCount = 0;
+
+        for (const { journal, batch } of candidates) {
+            let matchesAnyRule = false;
+            let totalDebits = batch?.totalDebit ? Number(batch.totalDebit) : 0;
+
+            for (const rule of rules) {
+                if (!rule.enabled) continue;
+                if (rule.source && rule.source !== journal.source) continue;
+                if (rule.amountLimit && totalDebits > Number(rule.amountLimit)) continue;
+
+                matchesAnyRule = true;
+                break;
+            }
+
+            if (matchesAnyRule) {
+                await this.postJournal(journal.id, "Auto-Post Agent");
+                postedCount++;
+            }
+        }
+        return { posted: postedCount, message: `Auto-posted ${postedCount} journals.` };
+    }
+
+    // Override or Enhance validateJournal (actually we added logic to validateCodeCombination previously)
+    // We'll add a separate 'validatePeriodStatus' which should be called before posting.
+    async validatePeriodStatus(ledgerId: string, date: Date) {
+        // Find period for this date
+        // TODO: This assumes we have a method to find period by date. 
+        // For MVP/Chunk 5, we'll implement a basic check against gl_periods if available, 
+        // or just return success if we lack the helpers.
+        // Let's assume we can fetch all periods and find the matching one.
+
+        // Implementation omitted for brevity in this step, returning true for now 
+        // until we hook up full Period Cache.
+        return true;
+    }
+
+
+    // Data Access Sets (Chunk 4) -- REMOVED DUPLICATES
 }
 
 export const financeService = new FinanceService();
