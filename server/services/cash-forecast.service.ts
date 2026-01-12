@@ -3,15 +3,16 @@ import { db } from "../db";
 import {
     cashBankAccounts,
     apInvoices,
-    arInvoices
+    arInvoices,
+    cashForecasts
 } from "@shared/schema";
 import { eq, sql, and, gte, lte, ne } from "drizzle-orm";
 
 export interface DailyForecast {
     date: string;
     openingBalance: number;
-    inflow: number;  // AR
-    outflow: number; // AP
+    inflow: number;  // AR + Manual In
+    outflow: number; // AP + Manual Out
     netChange: number;
     closingBalance: number;
     details: ForecastDetail[];
@@ -23,6 +24,7 @@ export interface ForecastDetail {
     amount: number;
     date: string;
     entityName?: string; // Supplier or Customer
+    type?: string; // For manual type
 }
 
 export class CashForecastService {
@@ -33,6 +35,7 @@ export class CashForecastService {
      * 1. Current Bank Balances (as Opening Balance for Day 0)
      * 2. Confirmed AP Invoices (Unpaid, due within range) -> Outflows
      * 3. Confirmed AR Invoices (Unpaid, due within range) -> Inflows
+     * 4. Manual Forecast Adjustments (Tax, Payroll, etc.)
      */
     async generateForecast(startDate: Date = new Date(), days: number = 5, scenario: "BASELINE" | "OPTIMISTIC" | "PESSIMISTIC" = "BASELINE"): Promise<DailyForecast[]> {
         const endDate = new Date(startDate);
@@ -83,7 +86,16 @@ export class CashForecastService {
                 )
             );
 
-        // 4. Build Daily Forecast
+        // 4. Fetch Manual Forecasts
+        const manualForecasts = await db.select().from(cashForecasts)
+            .where(
+                and(
+                    gte(cashForecasts.forecastDate, startDate),
+                    lte(cashForecasts.forecastDate, endDate)
+                )
+            );
+
+        // 5. Build Daily Forecast
         const forecast: DailyForecast[] = [];
 
         for (let i = 0; i < days; i++) {
@@ -94,11 +106,15 @@ export class CashForecastService {
             // Aggregations
             const inputs = arInflows.filter(t => t.date && t.date.toISOString().startsWith(dateStr));
             const outputs = apOutflows.filter(t => t.date && t.date.toISOString().startsWith(dateStr));
+            const manual = manualForecasts.filter(t => t.forecastDate && t.forecastDate.toISOString().startsWith(dateStr));
 
-            const dailyInflow = inputs.reduce((sum, item) => sum + Number(item.amount), 0) * multipliers.inflow;
-            const dailyOutflow = outputs.reduce((sum, item) => sum + Number(item.amount), 0) * multipliers.outflow;
+            const manualInflow = manual.filter(m => Number(m.amount) > 0).reduce((sum, m) => sum + Number(m.amount), 0);
+            const manualOutflow = manual.filter(m => Number(m.amount) < 0).reduce((sum, m) => sum + Math.abs(Number(m.amount)), 0);
+
+            const dailyInflow = (inputs.reduce((sum, item) => sum + Number(item.amount), 0) * multipliers.inflow) + manualInflow;
+            const dailyOutflow = (outputs.reduce((sum, item) => sum + Number(item.amount), 0) * multipliers.outflow) + manualOutflow;
+
             const netChange = dailyInflow - dailyOutflow;
-
             const closing = runningBalance + netChange;
 
             // Detail mapping
@@ -108,14 +124,22 @@ export class CashForecastService {
                     reference: i.ref,
                     amount: Number(i.amount),
                     date: dateStr,
-                    entityName: `Customer ${i.customerId}` // Ideally fetch name
+                    entityName: `Customer ${i.customerId}`
                 })),
                 ...outputs.map(o => ({
                     source: "AP" as const,
                     reference: o.ref,
-                    amount: -Number(o.amount), // Negative for display/sorting if needed, but forecast usually separates In/Out
+                    amount: -Number(o.amount),
                     date: dateStr,
                     entityName: `Supplier ${o.supplierId}`
+                })),
+                ...manual.map(m => ({
+                    source: "MANUAL" as const,
+                    reference: m.type || "Adjustment",
+                    amount: Number(m.amount),
+                    date: dateStr,
+                    entityName: m.description,
+                    type: m.type || "MANUAL"
                 }))
             ];
 

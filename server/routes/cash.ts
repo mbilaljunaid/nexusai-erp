@@ -5,9 +5,12 @@ import { storage } from "../storage";
 import { cashImportService } from "../services/cash-import.service";
 import { cashForecastService } from "../services/cash-forecast.service";
 import { cashRevaluationService } from "../services/cash-revaluation.service";
-import { insertCashBankAccountSchema, insertCashStatementLineSchema, insertCashTransactionSchema } from "@shared/schema";
+import { insertCashBankAccountSchema, insertCashStatementLineSchema, insertCashTransactionSchema, cashRevaluationHistory } from "@shared/schema";
 import { ZodError } from "zod";
 import multer from "multer";
+import { db } from "../db";
+import { eq, desc } from "drizzle-orm";
+
 
 const router = Router();
 
@@ -209,16 +212,35 @@ router.delete("/reconciliation-rules/:id", async (req, res) => {
 });
 
 // Revaluation
+// Revaluation
 router.post("/accounts/:id/revalue", async (req, res) => {
     try {
         const userId = req.headers['x-user-id'] as string || "system";
-        const result = await cashRevaluationService.postRevaluation(req.params.id, userId);
+        const { rateOverride } = req.body;
+        const result = await cashRevaluationService.postRevaluation(
+            req.params.id,
+            userId,
+            rateOverride ? Number(rateOverride) : undefined
+        );
         res.json(result);
     } catch (error) {
         console.error("Revaluation error:", error);
         res.status(500).json({ message: "Failed to process revaluation: " + (error as Error).message });
     }
 });
+
+router.get("/accounts/:id/revalue/history", async (req, res) => {
+    try {
+        // Simple query for history (can be moved to service later)
+        const history = await db.select().from(cashRevaluationHistory)
+            .where(eq(cashRevaluationHistory.bankAccountId, req.params.id))
+            .orderBy(desc(cashRevaluationHistory.revaluationDate));
+        res.json(history);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch revaluation history" });
+    }
+});
+
 
 // Reconciliation Summary
 router.get("/reconcile/summary", async (req, res) => {
@@ -239,6 +261,39 @@ router.get("/accounts/:id/reconcile-report", async (req, res) => {
         res.status(500).json({ message: "Failed to generate reconciliation report" });
     }
 });
+
+// PDF Report
+import { generatePdfReport } from "../utils/pdf-report-generator";
+import { resolve } from "path";
+
+router.get("/accounts/:id/reconcile-report/pdf", async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'] as string || "system";
+        // 1. Fetch Data
+        const reportData = await cashService.getReconciliationReport(req.params.id);
+
+        // 2. Generate PDF
+        const filename = `reconcile-${req.params.id}-${Date.now()}.pdf`;
+        const outputPath = resolve(__dirname, `../../tmp/${filename}`);
+
+        // Ensure tmp dir exists
+        await generatePdfReport(reportData, outputPath);
+
+        // 3. Download
+        res.download(outputPath, filename, (err) => {
+            if (err) {
+                console.error("Download Error:", err);
+            }
+            // Optional: Delete file after download
+            // fs.unlinkSync(outputPath); 
+        });
+
+    } catch (error) {
+        console.error("PDF Generation Error:", error);
+        res.status(500).json({ message: "Failed to generate report" });
+    }
+});
+
 
 // ZBA Routes
 router.get("/zba/structures", async (req, res) => {
@@ -292,6 +347,37 @@ router.post("/zba/structures/:id/reject", async (req, res) => {
         res.json(structure);
     } catch (error) {
         res.status(500).json({ message: "Failed to reject ZBA structure" });
+    }
+});
+
+
+// Manual Forecasts
+router.get("/forecasts", async (req, res) => {
+    try {
+        const bankAccountId = req.query.bankAccountId as string;
+        const forecasts = await cashService.listForecasts(bankAccountId);
+        res.json(forecasts);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list forecasts" });
+    }
+});
+
+router.post("/forecasts", async (req, res) => {
+    try {
+        const forecast = await cashService.createForecast(req.body);
+        res.json(forecast);
+    } catch (error) {
+        console.error("Forecast Create Error", error);
+        res.status(500).json({ message: "Failed to create forecast" });
+    }
+});
+
+router.delete("/forecasts/:id", async (req, res) => {
+    try {
+        await cashService.deleteForecast(req.params.id);
+        res.status(204).end();
+    } catch (error) {
+        res.status(500).json({ message: "Failed to delete forecast" });
     }
 });
 

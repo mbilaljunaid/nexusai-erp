@@ -7,6 +7,10 @@ import { apiGateway } from "../api/apiGateway";
 import { integrationManager } from "../integrations/integrationManager";
 import { webhookManager } from "../webhooks/webhookManager";
 import { apiAuthManager } from "../auth/apiAuth";
+import pdfReportRouter from "../routes/pdf-report";
+
+
+
 
 const router = Router();
 
@@ -160,5 +164,8 @@ router.get("/webhooks/:webhookId/events", (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// PDF report route
+router.use('/pdf-report', pdfReportRouter);
 
 export default router;

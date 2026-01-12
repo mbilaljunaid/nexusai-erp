@@ -61,7 +61,12 @@ export function ReconciliationReportDialog({
                                 Detailed analysis of ledger vs. statement for {report?.account.name}
                             </DialogDescription>
                         </div>
-                        <Button variant="outline" size="sm" className="gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => window.open(`/api/cash/accounts/${bankAccountId}/reconcile-report/pdf`, '_blank')}
+                        >
                             <Download className="h-4 w-4" /> Export PDF
                         </Button>
                     </div>

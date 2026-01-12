@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { requestIdMiddleware, securityHeaders } from "./security";
 import { errorHandler } from "./middleware/error";
 import { auditMiddleware } from "./middleware/audit";
+import { initCronJobs } from "./cron/sweeper";
 
 const app = express();
 const httpServer = createServer(app);
@@ -77,6 +78,9 @@ app.use((req, res, next) => {
 (async () => {
   // Audit logging for mutations
   app.use(auditMiddleware);
+
+  // Initialize Cron Jobs (Autonomous Background Tasks)
+  initCronJobs();
 
   await registerRoutes(httpServer, app);
 

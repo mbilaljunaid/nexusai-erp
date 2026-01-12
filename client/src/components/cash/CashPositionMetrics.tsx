@@ -7,6 +7,8 @@ import { formatCurrency } from "@/lib/utils";
 
 interface CashPosition {
     totalBalance: number;
+    totalIntradayBalance: number;
+    projectedClosingBalance: number;
     totalUnreconciledAmount: number;
     totalUnreconciledCount: number;
     accounts: Array<{
@@ -46,9 +48,18 @@ export function CashPositionMetrics() {
             title: "Total Cash Balance",
             value: position?.totalBalance || 0,
             icon: <Wallet className="h-4 w-4 text-muted-foreground" />,
-            description: "Aggregate across all active accounts",
+            description: "Opening Ledger Balance",
             trend: "+2.5%",
             trendUp: true
+        },
+        {
+            title: "Intraday Movement",
+            value: position?.totalIntradayBalance || 0,
+            icon: <RefreshCcw className="h-4 w-4 text-blue-500" />,
+            description: "Real-time Intraday Updates",
+            trend: "Live",
+            trendUp: true,
+            isLive: true
         },
         {
             title: "Unreconciled Amount",
@@ -59,19 +70,11 @@ export function CashPositionMetrics() {
             trendUp: false
         },
         {
-            title: "Forecasted Liquidity (30d)",
-            value: (position?.totalBalance || 0) * 1.15, // Mocked for now, will link to forecast service
+            title: "Projected Closing",
+            value: position?.projectedClosingBalance || 0,
             icon: <ArrowUpRight className="h-4 w-4 text-emerald-500" />,
-            description: "Includes pending AP/AR flows",
-            trend: "+15%",
-            trendUp: true
-        },
-        {
-            title: "Working Capital Buffer",
-            value: (position?.totalBalance || 0) * 0.4,
-            icon: <RefreshCcw className="h-4 w-4 text-blue-500" />,
-            description: "Current liquidity coverage ratio",
-            trend: "Stable",
+            description: "Projected End of Day Balance",
+            trend: "Forecast",
             trendUp: true
         }
     ];
@@ -79,7 +82,7 @@ export function CashPositionMetrics() {
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {metrics.map((m, i) => (
-                <Card key={i} className="bg-card/50 backdrop-blur-sm border-primary/10 hover:border-primary/30 transition-all duration-300">
+                <Card key={i} className={`bg-card/50 backdrop-blur-sm transition-all duration-300 ${m.isLive ? 'border-primary/50 bg-primary/5' : 'border-primary/10 hover:border-primary/30'}`}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">{m.title}</CardTitle>
                         {m.icon}

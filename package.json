@@ -11,7 +11,9 @@
     "db:push": "drizzle-kit push",
     "test": "jest --passWithNoTests",
     "test:coverage": "jest --coverage --passWithNoTests",
-    "test:watch": "jest --watch --passWithNoTests"
+    "test:watch": "jest --watch --passWithNoTests",
+    "verify:cm": "ts-node scripts/verify_cm_phase3.ts",
+    "cron:sweep": "ts-node scripts/cron-sweeper.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -136,7 +138,7 @@
     "@types/ws": "^8.5.13",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.20",
-    "drizzle-kit": "^0.31.4",
+    "node-cron": "^3.0.3",
     "esbuild": "^0.25.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",

@@ -59,6 +59,7 @@ export const cashStatementLines = pgTable("cash_statement_lines", {
     description: text("description"),
     referenceNumber: varchar("reference_number", { length: 100 }),
     reconciled: boolean("reconciled").default(false),
+    isIntraday: boolean("is_intraday").default(false),
     matchingGroupId: varchar("matching_group_id"), // Link to reconciliation batch
     createdAt: timestamp("created_at").default(sql`now()`)
 });
@@ -146,3 +147,76 @@ export const insertCashZbaSweepSchema = createInsertSchema(cashZbaSweeps);
 export type InsertCashZbaSweep = z.infer<typeof insertCashZbaSweepSchema>;
 export type CashZbaSweep = typeof cashZbaSweeps.$inferSelect;
 
+// --- Phase 4: Master Data Normalization ---
+
+// Banks: Top-level financial institutions
+export const cashBanks = pgTable("cash_banks", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    bankName: varchar("bank_name", { length: 255 }).notNull().unique(), // e.g., "JPMorgan Chase"
+    countryCode: varchar("country_code", { length: 2 }), // ISO 3166-1 alpha-2
+    taxPayerId: varchar("tax_payer_id", { length: 50 }),
+    active: boolean("active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`)
+});
+
+export const insertCashBankSchema = createInsertSchema(cashBanks);
+export type InsertCashBank = z.infer<typeof insertCashBankSchema>;
+export type CashBank = typeof cashBanks.$inferSelect;
+
+// Bank Branches: Specific locations/entities of a bank
+export const cashBankBranches = pgTable("cash_bank_branches", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    bankId: varchar("bank_id").notNull(), // FK to cashBanks (logical)
+    branchName: varchar("branch_name", { length: 255 }).notNull(), // e.g., "New York Main"
+    routingNumber: varchar("routing_number", { length: 50 }), // ABA, Sort Code, etc.
+    bicCode: varchar("bic_code", { length: 11 }), // SWIFT/BIC
+    addressLine1: varchar("address_line1", { length: 255 }),
+    city: varchar("city", { length: 100 }),
+    state: varchar("state", { length: 100 }),
+    zipCode: varchar("zip_code", { length: 20 }),
+    active: boolean("active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`)
+});
+
+export const insertCashBankBranchSchema = createInsertSchema(cashBankBranches);
+export type InsertCashBankBranch = z.infer<typeof insertCashBankBranchSchema>;
+export type CashBankBranch = typeof cashBankBranches.$inferSelect;
+
+// Revaluation History: Log of FX revaluation events
+export const cashRevaluationHistory = pgTable("cash_revaluation_history", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    bankAccountId: varchar("bank_account_id").notNull(),
+    currency: varchar("currency", { length: 10 }).notNull(),
+    revaluationDate: timestamp("revaluation_date").default(sql`now()`),
+    systemRate: numeric("system_rate", { precision: 20, scale: 6 }).notNull(), // Rate from DB
+    usedRate: numeric("used_rate", { precision: 20, scale: 6 }).notNull(), // Rate actually used (override or system)
+    rateType: varchar("rate_type", { length: 20 }).default("Corporate"), // 'Corporate', 'Spot', 'User'
+    unrealizedGainLoss: numeric("unrealized_gain_loss", { precision: 20, scale: 2 }).notNull(),
+    postedJournalId: varchar("posted_journal_id"), // Link to GL/SLA
+    userId: varchar("user_id").default("system"),
+});
+
+export const insertCashRevaluationHistorySchema = createInsertSchema(cashRevaluationHistory);
+export type InsertCashRevaluationHistory = z.infer<typeof insertCashRevaluationHistorySchema>;
+export type CashRevaluationHistory = typeof cashRevaluationHistory.$inferSelect;
+
+
+
+
+// Forecast adjustments: Manual entries for cash forecasting
+export const cashForecasts = pgTable("cash_forecasts", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    bankAccountId: varchar("bank_account_id"), // Optional if global, but usually specific
+    forecastDate: timestamp("forecast_date").notNull(),
+    amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
+    currency: varchar("currency", { length: 10 }).default("USD"),
+    description: text("description").notNull(),
+    type: varchar("type", { length: 20 }).default("MANUAL"), // MANUAL, TAX, PAYROLL
+    createdAt: timestamp("created_at").default(sql`now()`)
+});
+
+export const insertCashForecastSchema = createInsertSchema(cashForecasts);
+export type InsertCashForecast = z.infer<typeof insertCashForecastSchema>;
+export type CashForecast = typeof cashForecasts.$inferSelect;

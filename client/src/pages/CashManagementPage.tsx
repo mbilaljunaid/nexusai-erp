@@ -97,8 +97,7 @@ export default function CashManagementPage() {
                       </div>
                       <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
                         <div
-                          className={cn("h-full", r.color)}
-                          style={{ width: `${r.pct}%` } as React.CSSProperties}
+                          className={cn("h-full", r.color, `w-[${r.pct}%]`)}
                         />
                       </div>
                     </div>

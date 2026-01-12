@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
 import { db } from "../db";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, desc } from "drizzle-orm";
 import { storage } from "../storage";
-import { InsertCashBankAccount, InsertCashStatementLine, InsertCashTransaction, InsertCashZbaStructure, cashStatementLines, cashTransactions, cashStatementHeaders, cashBankAccounts, cashZbaStructures, glDataAccessSets, glDataAccessSetAssignments } from "@shared/schema";
+import { InsertCashBankAccount, InsertCashStatementLine, InsertCashTransaction, InsertCashZbaStructure, cashStatementLines, cashTransactions, cashStatementHeaders, cashBankAccounts, cashZbaStructures, glDataAccessSets, glDataAccessSetAssignments, cashForecasts } from "@shared/schema";
 import { cashAccountingService } from "./cash-accounting.service";
 import { cashAuditService } from "./cash-audit.service";
 import { parserFactory } from "../utils/banking-parsers";
@@ -115,7 +115,8 @@ export class CashService {
                         ...line,
                         headerId: header.id,
                         bankAccountId: accountId,
-                        reconciled: false
+                        reconciled: false,
+                        isIntraday: (line as any).intraday || false
                     });
                 }
                 results.push(header);
@@ -144,6 +145,7 @@ export class CashService {
     async getCashPosition() {
         const accounts = await this.listBankAccounts();
         let totalBalance = 0;
+        let totalIntradayBalance = 0;
         let totalUnreconciledAmount = 0;
         let totalUnreconciledCount = 0;
 
@@ -156,12 +158,18 @@ export class CashService {
             const unreconciled = statementLines.filter(l => !l.reconciled);
             const unreconciledAmount = unreconciled.reduce((sum, l) => sum + Number(l.amount), 0);
 
+            // Calculate Intraday movement
+            const intradayLines = statementLines.filter(l => l.isIntraday);
+            const intradayMovement = intradayLines.reduce((sum, l) => sum + Number(l.amount), 0);
+            totalIntradayBalance += intradayMovement;
+
             totalUnreconciledAmount += unreconciledAmount;
             totalUnreconciledCount += unreconciled.length;
 
             accountDetails.push({
                 name: account.name,
                 balance,
+                intradayMovement,
                 unreconciledAmount,
                 unreconciledCount: unreconciled.length,
                 currency: account.currency
@@ -169,7 +177,9 @@ export class CashService {
         }
 
         return {
-            totalBalance,
+            totalBalance, // Opening/Current Ledger Balance
+            totalIntradayBalance, // Intraday Movement
+            projectedClosingBalance: totalBalance + totalIntradayBalance,
             totalUnreconciledAmount,
             totalUnreconciledCount,
             accounts: accountDetails
@@ -257,9 +267,11 @@ export class CashService {
             for (const rule of rules.sort((a, b) => (a.priority || 0) - (b.priority || 0))) {
                 const criteria = rule.matchingCriteria as any;
 
-                // 1. Amount Match (Usually required)
+                // 1. Amount Match (with Tolerance)
+                const amountTolerance = criteria.amountTolerance !== undefined ? Number(criteria.amountTolerance) : 0.01;
+
                 const candidates = unreconciledTrx.filter(t =>
-                    Math.abs(Number(t.amount) - Number(line.amount)) < 0.01 &&
+                    Math.abs(Number(t.amount) - Number(line.amount)) <= amountTolerance &&
                     !matches.find(m => m.transaction.id === t.id)
                 );
 
@@ -559,6 +571,25 @@ export class CashService {
         });
 
         return updated;
+    }
+
+    // Manual Forecast Management
+    async listForecasts(bankAccountId?: string) {
+        if (bankAccountId) {
+            return await db.select().from(cashForecasts)
+                .where(eq(cashForecasts.bankAccountId, bankAccountId))
+                .orderBy(desc(cashForecasts.forecastDate));
+        }
+        return await db.select().from(cashForecasts).orderBy(desc(cashForecasts.forecastDate));
+    }
+
+    async createForecast(data: any) {
+        const [forecast] = await db.insert(cashForecasts).values(data).returning();
+        return forecast;
+    }
+
+    async deleteForecast(id: string) {
+        await db.delete(cashForecasts).where(eq(cashForecasts.id, id));
     }
 }
 
