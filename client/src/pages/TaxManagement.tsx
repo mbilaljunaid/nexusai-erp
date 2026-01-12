@@ -6,14 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { FileText, Plus, MapPin, ShieldOff } from "lucide-react";
+import { FileText, Plus, MapPin, ShieldOff, LayoutDashboard } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
 
+import { TaxDashboardTab } from "./tax/TaxDashboardTab";
+
 export default function TaxManagement() {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("codes");
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   return (
     <div className="space-y-6 p-4">
@@ -22,16 +24,20 @@ export default function TaxManagement() {
           <FileText className="h-8 w-8" />
           Tax Management
         </h1>
-        <p className="text-muted-foreground mt-2">Configure tax jurisdictions, codes, and exemptions.</p>
+        <p className="text-muted-foreground mt-2">Monitor tax status and configure jurisdictions, codes, and exemptions.</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList>
+          <TabsTrigger value="dashboard" className="gap-2"><LayoutDashboard className="w-4 h-4" /> Dashboard</TabsTrigger>
           <TabsTrigger value="codes" className="gap-2"><FileText className="w-4 h-4" /> Tax Codes</TabsTrigger>
           <TabsTrigger value="jurisdictions" className="gap-2"><MapPin className="w-4 h-4" /> Jurisdictions</TabsTrigger>
           <TabsTrigger value="exemptions" className="gap-2"><ShieldOff className="w-4 h-4" /> Exemptions</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="dashboard" className="py-4">
+          <TaxDashboardTab />
+        </TabsContent>
         <TabsContent value="codes" className="py-4">
           <TaxCodesTab />
         </TabsContent>
