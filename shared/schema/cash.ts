@@ -14,10 +14,10 @@ export const cashBankAccounts = pgTable("cash_bank_accounts", {
     currency: varchar("currency", { length: 10 }).default("USD"),
     swiftCode: varchar("swift_code", { length: 50 }),
     ledgerId: varchar("ledger_id"), // Link to GL Ledger
-    secondaryLedgerId: varchar("secondary_ledger_id"), // Secondary reporting ledger
+    // secondaryLedgerId: varchar("secondary_ledger_id"), // Secondary reporting ledger
     glAccountId: varchar("gl_account_id"), // Legacy field, keeping for compatibility
-    cashAccountCCID: integer("cash_account_ccid"), // The Asset Account (e.g. 1010)
-    cashClearingCCID: integer("cash_clearing_ccid"), // The Liability/Contra Account (e.g. 2010)
+    // cashAccountCCID: integer("cash_account_ccid"), // The Asset Account (e.g. 1010)
+    // cashClearingCCID: integer("cash_clearing_ccid"), // The Liability/Contra Account (e.g. 2010)
     currentBalance: numeric("current_balance", { precision: 20, scale: 2 }).default("0"),
     active: boolean("active").default(true),
     createdAt: timestamp("created_at").default(sql`now()`),

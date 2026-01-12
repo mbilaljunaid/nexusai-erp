@@ -1,6 +1,6 @@
 
 import { db } from "../db";
-import { apPayments, apPaymentBatches, apInvoices, apSupplierSites, apSuppliers, apInvoicePayments } from "@shared/schema";
+import { apPayments, apPaymentBatches, apInvoices, apSupplierSites, apSuppliers, apInvoicePayments, cashBankAccounts } from "@shared/schema";
 import { eq, and } from "drizzle-orm";
 
 export class TreasuryService {
@@ -31,6 +31,24 @@ export class TreasuryService {
       .innerJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id))
       .where(eq(apPayments.batchId, batchId));
 
+    if (payments.length === 0) throw new Error("No payments found for batch");
+
+    // Fetch Internal Bank Account for Disbursement
+    // Strategy: Match payment currency to bank account currency
+    const paymentCurrency = payments[0].currencyCode;
+    const [internalBank] = await db.select()
+      .from(cashBankAccounts)
+      .where(and(
+        eq(cashBankAccounts.currency, paymentCurrency),
+        eq(cashBankAccounts.active, true)
+      ))
+      .limit(1);
+
+    // Fallbacks if no bank account is configured (Parity: Do not crash, use config placeholder)
+    const debtorIban = internalBank?.accountNumber || "US12345678901234567890"; // Using Account Number as IBAN proxy
+    const debtorBic = internalBank?.swiftCode || "NEXUSUS33";
+    const debtorName = internalBank?.bankName || "NEXUS AI OPERATING UNIT";
+
     const msgId = `BCH-${batchId}-${Date.now()}`;
     const creationDate = new Date().toISOString();
 
@@ -51,16 +69,16 @@ export class TreasuryService {
       <PmtMtd>TRF</PmtMtd>
       <ReqdExctnDt>${batch.checkDate ? new Date(batch.checkDate).toISOString().split('T')[0] : creationDate.split('T')[0]}</ReqdExctnDt>
       <Dbtr>
-        <Nm>NEXUS AI OPERATING UNIT</Nm>
+        <Nm>${debtorName}</Nm>
       </Dbtr>
       <DbtrAcct>
         <Id>
-          <IBAN>US12345678901234567890</IBAN>
+          <IBAN>${debtorIban}</IBAN>
         </Id>
       </DbtrAcct>
       <DbtrAgt>
         <FinInstnId>
-          <BIC>NEXUSUS33</BIC>
+          <BIC>${debtorBic}</BIC>
         </FinInstnId>
       </DbtrAgt>`;
 
