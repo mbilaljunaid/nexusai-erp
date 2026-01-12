@@ -10,6 +10,8 @@ import { RequisitionController } from './requisition.controller';
 import { RequisitionService } from './requisition.service';
 import { ApController } from './ap.controller';
 import { ApService } from './ap.service';
+import { SourcingController } from './sourcing.controller';
+import { SourcingService } from './sourcing.service';
 import { Supplier } from './entities/supplier.entity';
 import { SupplierSite } from './entities/supplier-site.entity';
 import { PurchaseOrder } from './entities/purchase-order.entity';
@@ -22,7 +24,15 @@ import { RequisitionLine } from './entities/requisition-line.entity';
 import { ApInvoice } from './entities/ap-invoice.entity';
 import { ApInvoiceLine } from './entities/ap-invoice-line.entity';
 import { ApPayment } from './entities/ap-payment.entity';
+import { ApprovalRule } from './entities/approval-rule.entity';
+import { RfqHeader } from './entities/rfq-header.entity';
+import { RfqLine } from './entities/rfq-line.entity';
+import { SupplierQuote } from './entities/supplier-quote.entity';
 import { Item } from '../inventory/entities/item.entity';
+import { Budget } from '../epm/entities/budget.entity';
+import { ApprovalService } from './approval.service';
+import { BudgetService } from '../epm/budget.service';
+import { GlIntegrationService } from './gl-integration.service';
 
 @Module({
   imports: [
@@ -39,11 +49,16 @@ import { Item } from '../inventory/entities/item.entity';
       ApInvoice,
       ApInvoiceLine,
       ApPayment,
-      Item
+      ApprovalRule,
+      RfqHeader,
+      RfqLine,
+      SupplierQuote,
+      Item,
+      Budget
     ]),
   ],
-  controllers: [PurchaseOrderController, SupplierController, ReceiptController, RequisitionController, ApController],
-  providers: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService],
-  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService],
+  controllers: [PurchaseOrderController, SupplierController, ReceiptController, RequisitionController, ApController, SourcingController],
+  providers: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService, BudgetService, GlIntegrationService],
+  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService],
 })
 export class ProcurementModule { }

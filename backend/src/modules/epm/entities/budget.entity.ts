@@ -20,6 +20,9 @@ export class Budget {
   @Column('decimal', { precision: 18, scale: 2, default: 0 })
   spentAmount!: number;
 
+  @Column('decimal', { precision: 18, scale: 2, default: 0 })
+  reservedAmount!: number; // Encumbrance
+
   @Column({ default: 'draft' })
   status!: string;
 

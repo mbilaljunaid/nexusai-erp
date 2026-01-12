@@ -7,6 +7,7 @@ import { PurchaseOrder } from './entities/purchase-order.entity';
 import { PurchaseOrderLine } from './entities/purchase-order-line.entity';
 import { Item } from '../inventory/entities/item.entity';
 import { ApService } from './ap.service';
+import { GlIntegrationService } from './gl-integration.service';
 
 @Injectable()
 export class ReceiptService {
@@ -24,6 +25,7 @@ export class ReceiptService {
         @InjectRepository(Item)
         private itemRepo: Repository<Item>,
         private readonly apService: ApService,
+        private readonly glService: GlIntegrationService,
     ) { }
 
     async create(dto: any): Promise<ReceiptHeader> {
@@ -41,6 +43,8 @@ export class ReceiptService {
 
         const savedReceipt = await this.receiptRepo.save(receipt);
         const receiptLines: ReceiptLine[] = [];
+
+        let totalReceiptAmount = 0;
 
         for (const lineDto of dto.lines) {
             const poLine = po.lines.find(l => l.id === lineDto.poLineId);
@@ -66,7 +70,10 @@ export class ReceiptService {
                 quantityReceived: quantityReceived,
                 inventoryOrganizationId: lineDto.inventoryOrganizationId
             });
-            receiptLines.push(await this.receiptLineRepo.save(receiptLine));
+            const savedLine = await this.receiptLineRepo.save(receiptLine);
+            receiptLines.push(savedLine);
+
+            totalReceiptAmount += (Number(quantityReceived) * Number(poLine.unitPrice));
         }
 
         const allFullyReceived = po.lines.every(l => Number(l.quantityReceived) >= Number(l.quantity));
@@ -77,8 +84,16 @@ export class ReceiptService {
 
         savedReceipt.lines = receiptLines;
 
-        // Simulate Receipt Accrual Accounting
-        this.logger.log(`[Accounting Event] Receipt ${savedReceipt.receiptNumber}: Dr Inventory / Cr Receipt Accruals`);
+        // GL Integration: Post Accrual Journal
+        await this.glService.postJournal({
+            source: 'Purchasing',
+            category: 'Receiving',
+            description: `Receipt ${savedReceipt.receiptNumber} Accrual`,
+            lines: [
+                { account: '1000-Inventory', debit: totalReceiptAmount },
+                { account: '2001-Accrual', credit: totalReceiptAmount }
+            ]
+        });
         // In future: savedReceipt.accountingStatus = 'Accounted';
 
         return savedReceipt;

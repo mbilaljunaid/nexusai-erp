@@ -6,6 +6,7 @@ import { ApInvoiceLine } from './entities/ap-invoice-line.entity';
 import { ApPayment } from './entities/ap-payment.entity';
 import { PurchaseOrder } from './entities/purchase-order.entity';
 import { Supplier } from './entities/supplier.entity';
+import { GlIntegrationService } from './gl-integration.service';
 
 @Injectable()
 export class ApService {
@@ -22,6 +23,7 @@ export class ApService {
         private poRepo: Repository<PurchaseOrder>,
         @InjectRepository(Supplier)
         private supplierRepo: Repository<Supplier>,
+        private readonly glService: GlIntegrationService,
     ) { }
 
     async createInvoice(dto: any): Promise<ApInvoice> {
@@ -125,7 +127,20 @@ export class ApService {
         }
 
         updatedInvoice.status = 'Validated';
-        return this.invoiceRepo.save(updatedInvoice);
+        const saved = await this.invoiceRepo.save(updatedInvoice);
+
+        // GL Integration: Post Journal for Invoice Liability
+        await this.glService.postJournal({
+            source: 'Payables',
+            category: 'Purchase Invoices',
+            description: `Invoice ${saved.invoiceNumber} Validation`,
+            lines: [
+                { account: '5000-Expense', debit: saved.amount },
+                { account: '2000-AP-Liability', credit: saved.amount }
+            ]
+        });
+
+        return saved;
     }
 
     async payInvoice(id: string, dto: any): Promise<ApPayment> {

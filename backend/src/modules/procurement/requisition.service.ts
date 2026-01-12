@@ -5,6 +5,7 @@ import { RequisitionHeader } from './entities/requisition-header.entity';
 import { RequisitionLine } from './entities/requisition-line.entity';
 import { PurchaseOrderService } from './purchase-order.service';
 import { ApprovalService } from './approval.service';
+import { GlIntegrationService } from './gl-integration.service';
 
 @Injectable()
 export class RequisitionService {
@@ -17,6 +18,7 @@ export class RequisitionService {
         private reqLineRepo: Repository<RequisitionLine>,
         private readonly poService: PurchaseOrderService,
         private readonly approvalService: ApprovalService,
+        private readonly glService: GlIntegrationService,
     ) { }
 
     async create(dto: any): Promise<RequisitionHeader> {
@@ -65,17 +67,29 @@ export class RequisitionService {
             throw new BadRequestException(`Cannot submit requisition in status ${req.status}`);
         }
 
-        // Evaluate Rules
-        const approverId = await this.approvalService.evaluateRule('Requisition', Number(req.totalAmount));
+        const totalAmount = Number(req.totalAmount);
 
-        if (approverId && approverId !== 'AUTO') {
-            req.status = 'Pending Approval';
-            req.currentApproverId = approverId;
-            this.logger.log(`Requisition ${req.reqNumber} ($${req.totalAmount}) routed to ${approverId}`);
-        } else {
-            req.status = 'Approved'; // Auto-approve
+        // 1. Budgetary Control (Check Funds)
+        // Assuming 'IT' department for MVP context. In real app, derived from Requester Department.
+        await this.glService.checkFunds(totalAmount, 'IT');
+
+        // 2. Evaluate Rules
+        const approvalResult = await this.approvalService.evaluateRule({
+            documentType: 'Requisition',
+            amount: totalAmount,
+            category: 'General'
+        });
+
+        if (approvalResult.action === 'AutoApprove') {
+            req.status = 'Approved';
             req.currentApproverId = undefined;
-            this.logger.log(`Requisition ${req.reqNumber} ($${req.totalAmount}) Auto-Approved`);
+            // Reserve Funds Immediately (Encumbrance)
+            await this.glService.reserveFunds(totalAmount, 'IT');
+            this.logger.log(`Requisition ${req.reqNumber} ($${req.totalAmount}) Auto-Approved and Funds Reserved`);
+        } else {
+            req.status = 'Pending Approval';
+            req.currentApproverId = approvalResult.approverId;
+            this.logger.log(`Requisition ${req.reqNumber} ($${req.totalAmount}) routed to ${approvalResult.approverId}`);
         }
 
         return this.reqRepo.save(req);
@@ -90,6 +104,11 @@ export class RequisitionService {
 
         req.status = 'Approved';
         req.currentApproverId = undefined;
+
+        // Reserve Funds (Encumbrance) on manual approval
+        // Assuming 'IT' department for MVP
+        await this.glService.reserveFunds(Number(req.totalAmount), 'IT');
+
         return this.reqRepo.save(req);
     }
 
