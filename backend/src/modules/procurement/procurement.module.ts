@@ -33,6 +33,8 @@ import { Budget } from '../epm/entities/budget.entity';
 import { ApprovalService } from './approval.service';
 import { BudgetService } from '../epm/budget.service';
 import { GlIntegrationService } from './gl-integration.service';
+import { AiController } from './ai.controller';
+import { ProcurementAiService } from './procurement-ai.service';
 
 @Module({
   imports: [
@@ -57,8 +59,8 @@ import { GlIntegrationService } from './gl-integration.service';
       Budget
     ]),
   ],
-  controllers: [PurchaseOrderController, SupplierController, ReceiptController, RequisitionController, ApController, SourcingController],
-  providers: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService, BudgetService, GlIntegrationService],
+  controllers: [PurchaseOrderController, SupplierController, ReceiptController, RequisitionController, ApController, SourcingController, AiController],
+  providers: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService, BudgetService, GlIntegrationService, ProcurementAiService],
   exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService],
 })
 export class ProcurementModule { }

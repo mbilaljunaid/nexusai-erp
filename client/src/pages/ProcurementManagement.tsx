@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, ShoppingCart, Truck, PackageCheck, FileText, CheckCircle, XCircle, ArrowRightLeft, DollarSign, Calendar, Undo2, Gavel } from "lucide-react";
+import { Plus, Trash2, ShoppingCart, Truck, PackageCheck, FileText, CheckCircle, XCircle, ArrowRightLeft, DollarSign, Calendar, Undo2, Gavel, BarChart3, BrainCircuit, Lightbulb } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export default function ProcurementManagement() {
   const { toast } = useToast();
-  const [viewType, setViewType] = useState("pos"); // pos, suppliers, receiving, requisitions, invoices, sourcing
+  const [viewType, setViewType] = useState("dashboard"); // dashboard, pos, suppliers, receiving, requisitions, invoices, sourcing, analytics, ai
   const [newPO, setNewPO] = useState({ poNumber: "", supplierId: "", status: "Draft", lines: [] as any[] });
   const [newLine, setNewLine] = useState({ description: "", quantity: "1", unitPrice: "0" });
   const [newSupplier, setNewSupplier] = useState({ supplierName: "", supplierNumber: "" });
@@ -42,6 +43,7 @@ export default function ProcurementManagement() {
   const { data: items = [] } = useQuery<any[]>({ queryKey: ["/api/inventory/items"], queryFn: () => fetch("/api/inventory/items").then(r => r.json()).catch(() => []) });
   const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/ap/invoices"], queryFn: () => fetch("/api/procurement/ap/invoices").then(r => r.json()).catch(() => []) });
   const { data: rfqs = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/sourcing/rfqs"], queryFn: () => fetch("/api/procurement/sourcing/rfqs").then(r => r.json()).catch(() => []) });
+  const { data: aiInsights = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/ai/insights"], queryFn: () => fetch("/api/procurement/ai/insights").then(r => r.json()).catch(() => []) });
 
   const createPOMutation = useMutation({
     mutationFn: (data: any) => {
@@ -82,21 +84,125 @@ export default function ProcurementManagement() {
 
   const addRFQLine = () => { if (!newRFQLine.description) return; setNewRFQ({ ...newRFQ, lines: [...newRFQ.lines, newRFQLine] }); setNewRFQLine({ description: "", targetQuantity: "" }); };
 
+  // Analytics Helpers
+  const spendBySupplier = suppliers.map((s: any) => {
+    const spend = pos.filter((p: any) => (p.supplierId === s.id || p.supplier?.id === s.id) && p.status !== 'Cancelled').reduce((sum: number, p: any) => sum + Number(p.totalAmount || p.amount), 0);
+    return { name: s.supplierName, amount: spend };
+  }).filter((s: any) => s.amount > 0);
+
+  const poStatusData = [
+    { name: 'Draft', value: pos.filter((p: any) => p.status === 'Draft').length, color: '#94a3b8' },
+    { name: 'Open', value: pos.filter((p: any) => p.status === 'Open').length, color: '#3b82f6' },
+    { name: 'Closed', value: pos.filter((p: any) => p.status === 'Closed').length, color: '#22c55e' },
+  ].filter(d => d.value > 0);
+
   return (
     <div className="space-y-6 p-4" data-testid="procurement-management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><ShoppingCart className="h-8 w-8" />Procurement & Supply Chain</h1>
-        <p className="text-muted-foreground mt-1">Manage Suppliers, POs, Receipts, Requisitions, Invoices, Returns, and Sourcing</p>
+        <h1 className="text-3xl font-bold flex items-center gap-2"><ShoppingCart className="h-8 w-8 text-primary" />Procurement & Supply Chain</h1>
+        <p className="text-muted-foreground mt-1">Enterprise Source-to-Pay Management</p>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
-        <Button variant={viewType === "pos" ? "default" : "outline"} onClick={() => setViewType("pos")}><ShoppingCart className="w-4 h-4 mr-2" /> Purchase Orders</Button>
+        <Button variant={viewType === "dashboard" ? "default" : "outline"} onClick={() => setViewType("dashboard")}><BarChart3 className="w-4 h-4 mr-2" /> Dashboard</Button>
+        <Button variant={viewType === "pos" ? "default" : "outline"} onClick={() => setViewType("pos")}><ShoppingCart className="w-4 h-4 mr-2" /> Orders</Button>
         <Button variant={viewType === "receiving" ? "default" : "outline"} onClick={() => setViewType("receiving")}><Truck className="w-4 h-4 mr-2" /> Receiving</Button>
         <Button variant={viewType === "requisitions" ? "default" : "outline"} onClick={() => setViewType("requisitions")}><FileText className="w-4 h-4 mr-2" /> Requisitions</Button>
-        <Button variant={viewType === "invoices" ? "default" : "outline"} onClick={() => setViewType("invoices")}><DollarSign className="w-4 h-4 mr-2" /> Invoices (AP)</Button>
-        <Button variant={viewType === "sourcing" ? "default" : "outline"} onClick={() => setViewType("sourcing")}><Gavel className="w-4 h-4 mr-2" /> Sourcing (RFQ)</Button>
+        <Button variant={viewType === "invoices" ? "default" : "outline"} onClick={() => setViewType("invoices")}><DollarSign className="w-4 h-4 mr-2" /> Invoices</Button>
+        <Button variant={viewType === "sourcing" ? "default" : "outline"} onClick={() => setViewType("sourcing")}><Gavel className="w-4 h-4 mr-2" /> Sourcing</Button>
+        <Button variant={viewType === "ai" ? "default" : "outline"} onClick={() => setViewType("ai")}><BrainCircuit className="w-4 h-4 mr-2" /> AI Insights</Button>
         <Button variant={viewType === "suppliers" ? "default" : "outline"} onClick={() => setViewType("suppliers")}>Suppliers</Button>
       </div>
+
+      {viewType === "dashboard" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => setViewType('pos')}>
+              <CardHeader className="p-4"><CardTitle className="text-sm font-medium text-muted-foreground">Open Orders</CardTitle></CardHeader>
+              <CardContent><div className="text-2xl font-bold">{pos.filter((p: any) => p.status === 'Open').length}</div></CardContent>
+            </Card>
+            <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => setViewType('receiving')}>
+              <CardHeader className="p-4"><CardTitle className="text-sm font-medium text-muted-foreground">Pending Receipts</CardTitle></CardHeader>
+              <CardContent><div className="text-2xl font-bold">{pos.filter((p: any) => p.status === 'Open' && p.lines.some((l: any) => Number(l.quantityReceived) < Number(l.quantity))).length}</div></CardContent>
+            </Card>
+            <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => setViewType('invoices')}>
+              <CardHeader className="p-4"><CardTitle className="text-sm font-medium text-muted-foreground">Draft Invoices</CardTitle></CardHeader>
+              <CardContent><div className="text-2xl font-bold">{invoices.filter((i: any) => i.status === 'Draft').length}</div></CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader><CardTitle>Spend by Supplier</CardTitle></CardHeader>
+              <CardContent className="h-[300px]">
+                {spendBySupplier.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={spendBySupplier}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" fontSize={12} />
+                      <YAxis prefix="$" fontSize={12} />
+                      <Tooltip />
+                      <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : <div className="h-full flex items-center justify-center text-muted-foreground">No spend data available</div>}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle>PO Status Breakdown</CardTitle></CardHeader>
+              <CardContent className="h-[300px]">
+                {poStatusData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={poStatusData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                        {poStatusData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : <div className="h-full flex items-center justify-center text-muted-foreground">No PO data available</div>}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {viewType === "ai" && (
+        <div className="space-y-4">
+          <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-900 border-blue-200 dark:border-blue-900">
+            <CardHeader><CardTitle className="flex items-center gap-2"><BrainCircuit className="text-indigo-600" /> NexusAI Procurement Agent</CardTitle><CardDescription>Real-time insights and autonomous suggestions</CardDescription></CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-4 items-start p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-blue-100 dark:border-slate-700">
+                <Lightbulb className="text-yellow-500 w-6 h-6 mt-1" />
+                <div>
+                  <h4 className="font-semibold text-sm">Supplier Risk Alert</h4>
+                  <p className="text-sm text-muted-foreground mt-1">Supplier <strong>Acme Corp</strong> has a 15% return rate on recent deliveries. Consider sourcing "Office Chairs" from <strong>Global Supplies Inc</strong> instead used in RFQ-123.</p>
+                  <Button size="sm" variant="outline" className="mt-2 text-xs">View Supplier Health</Button>
+                </div>
+              </div>
+              <div className="flex gap-4 items-start p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-blue-100 dark:border-slate-700">
+                <ShoppingCart className="text-blue-500 w-6 h-6 mt-1" />
+                <div>
+                  <h4 className="font-semibold text-sm">Re-order Suggestion</h4>
+                  <p className="text-sm text-muted-foreground mt-1">Inventory for <strong>Laptops (Item-101)</strong> is projected to run out in 14 days based on current consumption. Automated Requisition REQ-992 drafted.</p>
+                  <Button size="sm" className="mt-2 text-xs">Review Draft Requisition</Button>
+                </div>
+              </div>
+              <div className="flex gap-4 items-start p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-blue-100 dark:border-slate-700">
+                <DollarSign className="text-green-500 w-6 h-6 mt-1" />
+                <div>
+                  <h4 className="font-semibold text-sm">Early Payment Opportunity</h4>
+                  <p className="text-sm text-muted-foreground mt-1">You have 3 invoices eligible for <strong>2% discount</strong> if paid by Friday. Potential savings: $450.00.</p>
+                  <Button size="sm" variant="outline" className="mt-2 text-xs" onClick={() => setViewType('invoices')}>Go to Invoices</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {viewType === "sourcing" && (
         <div className="space-y-4">
@@ -149,7 +255,6 @@ export default function ProcurementManagement() {
         </div>
       )}
 
-      {/* Sourcing additions are above. Previous tabs below. */}
       {viewType === "receiving" && (
         <div className="space-y-4">
           {!receivingPO ? (
