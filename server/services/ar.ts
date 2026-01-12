@@ -25,12 +25,17 @@ import {
     InsertArAdjustment,
     ArAdjustment,
     InsertArSystemOptions,
-    ArSystemOptions
+    ArSystemOptions,
+    arReceiptApplications
 } from "@shared/schema";
+import { eq } from "drizzle-orm";
 import { financeService } from "./finance";
 import { slaService } from "./SlaService";
 import { db } from "../db";
 import { glLedgers } from "@shared/schema";
+import { DunningWorker } from "../worker/DunningWorker";
+import { arAiService } from "./ar-ai";
+
 
 export class ArService {
     // Customers (Party Level)
@@ -86,8 +91,8 @@ export class ArService {
     }
 
     // Invoices
-    async listInvoices(): Promise<ArInvoice[]> {
-        return await storage.listArInvoices();
+    async listInvoices(limit?: number, offset?: number): Promise<ArInvoice[]> {
+        return await storage.listArInvoices(limit, offset);
     }
 
     async createInvoice(data: InsertArInvoice): Promise<ArInvoice> {
@@ -395,8 +400,60 @@ export class ArService {
     }
 
     async unapplyReceipt(applicationId: string): Promise<void> {
-        // Implementation for unapplying (Reversal SLA, restore balances)
-        // Deferred for immediate priority but structure is here
+        // 1. Fetch Application
+        const [application] = await db.select().from(arReceiptApplications).where(eq(arReceiptApplications.id, applicationId));
+        if (!application) throw new Error("Receipt Application not found");
+        if (application.status === "Reversed") throw new Error("Application already reversed");
+
+        // 2. Fetch Receipt & Invoice
+        const receipt = await storage.getArReceipt(application.receiptId);
+        const invoice = await storage.getArInvoice(application.invoiceId);
+        if (!receipt || !invoice) throw new Error("Linked Receipt or Invoice not found");
+
+        const amountToUnapply = Number(application.amountApplied);
+
+        // 3. Update Application Status
+        await storage.updateArReceiptApplication(applicationId, { status: "Reversed" });
+
+        // 4. Restore Receipt Balance
+        const newUnapplied = Number(receipt.unappliedAmount) + amountToUnapply;
+        await storage.updateArReceipt(receipt.id, {
+            unappliedAmount: String(newUnapplied),
+            status: "Unapplied" // If it has balance, it's unapplied/partially applied
+        });
+
+        // 5. Update Invoice Status
+        // Re-calc total applied excluding this reversal
+        const allApps = await storage.listArReceiptApplications(undefined, invoice.id);
+        const validApps = allApps.filter(a => a.id !== applicationId && a.status !== "Reversed");
+        const totalApplied = validApps.reduce((sum, a) => sum + Number(a.amountApplied), 0);
+
+        // Determine status
+        let newStatus = "Sent";
+        if (totalApplied > 0) newStatus = "PartiallyPaid";
+        // Check if overdue? Leave as Sent/Partially for now, Dunning Update will catch overdue.
+
+        await storage.updateArInvoiceStatus(invoice.id, newStatus);
+
+        // 6. Trigger SLA Reversal (Negative Amount)
+        try {
+            const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+            const ledgerId = ledger?.id || "PRIMARY";
+
+            await slaService.createAccounting({
+                eventClass: "AR_RECEIPT_UNAPPLIED",
+                entityId: application.id,
+                entityTable: "ar_receipt_applications",
+                description: `Unapply Receipt: ${amountToUnapply} from ${invoice.invoiceNumber}`,
+                amount: -amountToUnapply, // Negative to reverse
+                currency: invoice.currency || "USD",
+                date: new Date(),
+                ledgerId,
+                sourceData: { receiptId: receipt.id, invoiceId: invoice.id, accountId: receipt.accountId }
+            });
+        } catch (err) {
+            console.error("[AR] SLA Accounting failed for unapplication:", err);
+        }
     }
 
     // Premium Features: Seeding
@@ -489,61 +546,14 @@ export class ArService {
         };
     }
 
-    async calculateCreditScore(accountId: string): Promise<number> {
-        // 1. Get History
-        const invoices = await storage.listArInvoices();
-        const accountInvoices = invoices.filter(i => i.accountId === accountId && i.status === "Paid");
-
-        let score = 100;
-
-        // 2. Penalize for Late Payments
-        // (Simple logic: -1 for every day late on avg, max -40)
-        let totalDaysLate = 0;
-        let invoiceCount = 0;
-
-        for (const inv of accountInvoices) {
-            // Need receipt date to calculate actual days late. 
-            // For now, let's assume if it was paid, we check if it was paid after due date.
-            // Since we don't have easy link to receipt date in invoice object without join, 
-            // we will approximate using current date if we were finding open ones, but here we want history.
-            // Simplified: If status is Paid, we assume it was paid. Ideally we need the receipt application date.
-            // Let's use a simpler metric: % of invoices that were overdue at anytime (status history?)
-            // Fallback: Use Current Overdue Status for immediate impact
-        }
-
-        const openInvoices = invoices.filter(i => i.accountId === accountId && i.status !== "Paid" && i.status !== "Cancelled");
-        const overdueInvoices = openInvoices.filter(i => i.dueDate && new Date(i.dueDate) < new Date());
-
-        // Penalty: -5 points for each overdue invoice
-        score -= (overdueInvoices.length * 5);
-
-        // 3. Utilization Penalty
-        const { outstanding } = await this.getAccountBalance(accountId);
-        const account = await storage.getArCustomerAccount(accountId);
-        const limit = Number(account?.creditLimit) || 0;
-
-        if (limit > 0) {
-            const utilization = outstanding / limit;
-            if (utilization > 0.9) score -= 20;
-            else if (utilization > 0.75) score -= 10;
-            else if (utilization > 0.5) score -= 5;
-        }
-
-        // 4. Update Account
-        score = Math.max(0, Math.min(100, score));
-
-        let risk = "Low";
-        if (score < 50) risk = "High";
-        else if (score < 75) risk = "Medium";
-
-        await storage.updateArCustomerAccount(accountId, {
-            creditScore: score,
-            lastScoreUpdate: new Date(),
-            riskCategory: risk
+    async calculateCreditScore(accountId: string): Promise<void> {
+        // Fire & Forget Async Worker
+        CreditScoreWorker.calculateScore(accountId).catch(err => {
+            console.error(`[BG] Credit Score calculation failed for ${accountId}:`, err);
         });
-
-        return score;
     }
+
+
     // ... (existing code)
 
     // Revenue Management
@@ -605,58 +615,23 @@ export class ArService {
         return await storage.getArDunningTemplate(id);
     }
 
+
+
     async createDunningRun(): Promise<{ run: ArDunningRun; tasks: number }> {
-        // 1. Identify Overdue Invoices
-        const allInvoices = await storage.listArInvoices();
-        const overdue = allInvoices.filter(inv => {
-            if (inv.status !== "Sent" && inv.status !== "PartiallyPaid" && inv.status !== "Overdue") return false;
-            // Check due date
-            if (!inv.dueDate) return false;
-            return new Date(inv.dueDate) < new Date();
-        });
-
-        // 2. Fetch Templates
-        const templates = await storage.listArDunningTemplates();
-        let tasksCreated = 0;
-
-        for (const inv of overdue) {
-            // Calculate days overdue
-            const dueDate = new Date(inv.dueDate!);
-            const now = new Date();
-            const diffTime = Math.abs(now.getTime() - dueDate.getTime());
-            const daysOverdue = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            // Find matching template (highest severity match)
-            const match = templates.find(t => daysOverdue >= (t.daysOverdueMin || 0) && daysOverdue <= (t.daysOverdueMax || 9999));
-
-            if (match) {
-                // Check if task exists for this invoice recently? (Simplification: just create task)
-                const existingTasks = await storage.listArCollectorTasks(undefined, "Open");
-                const alreadyHasTask = existingTasks.some(t => t.invoiceId === inv.id && t.taskType === "Email" && t.status === "Open");
-
-                if (!alreadyHasTask) {
-                    await storage.createArCollectorTask({
-                        customerId: inv.customerId,
-                        invoiceId: inv.id,
-                        taskType: "Email",
-                        priority: match.severity || "Medium",
-                        status: "Open",
-                        dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000) // Due tomorrow
-                    });
-                    tasksCreated++;
-                }
-            }
-        }
-
-        // 3. Create Run Record
+        // 1. Create Run Record (Status: New)
         const run = await storage.createArDunningRun({
             runDate: new Date(),
-            status: "Completed",
-            totalInvoicesProcessed: overdue.length,
-            totalLettersGenerated: tasksCreated
+            status: "New",
+            totalInvoicesProcessed: 0,
+            totalLettersGenerated: 0
         });
 
-        return { run, tasks: tasksCreated };
+        // 2. Trigger Worker (Fire & Forget)
+        DunningWorker.processRun(run.id).catch(err => {
+            console.error(`[BG] Dunning Run ${run.id} failed to start:`, err);
+        });
+
+        return { run, tasks: 0 }; // Return immediately
     }
 
     async listCollectorTasks(assignedTo?: string, status?: string): Promise<ArCollectorTask[]> {
@@ -731,17 +706,8 @@ export class ArService {
         if (!invoice) throw new Error("Invoice not found");
         const customer = await storage.getArCustomer(invoice.customerId);
 
-        // Mock AI Generation
-        return `Subject: Overdue Invoice ${invoice.invoiceNumber} - Action Required
-
-Dear ${customer?.name || "Customer"},
-
-This is a friendly reminder that invoice ${invoice.invoiceNumber} for amount ${invoice.currency} ${invoice.totalAmount} was due on ${new Date(invoice.dueDate!).toLocaleDateString()}.
-
-Please remit payment at your earliest convenience.
-
-Sincerely,
-Collections Team`;
+        // Real AI Generation via ArAiService
+        return await arAiService.generateCollectionEmail(invoice, customer);
     }
 
     // AR Period Close & Reconciliation

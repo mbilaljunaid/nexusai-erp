@@ -6,7 +6,7 @@ import { AiAction, InsertAiAction, InsertAiAuditLog } from "@shared/schema";
 import OpenAI from "openai";
 import ExcelJS from "exceljs";
 
-const openai = new OpenAI({
+export const openai = new OpenAI({
     baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || "https://api.openai.com/v1",
     apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY || "dummy-key",
 });

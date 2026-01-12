@@ -649,7 +649,7 @@ export interface IStorage {
   createArCustomerSite(data: InsertArCustomerSite): Promise<ArCustomerSite>;
   updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined>;
 
-  listArInvoices(): Promise<ArInvoice[]>;
+  listArInvoices(limit?: number, offset?: number): Promise<ArInvoice[]>;
   getArInvoice(id: string): Promise<ArInvoice | undefined>;
   createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
   updateArInvoice(id: string, data: Partial<InsertArInvoice>): Promise<ArInvoice | undefined>;
@@ -1377,8 +1377,17 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listArInvoices() {
-    return await db.select().from(arInvoices);
+  async listArInvoices(limit?: number, offset?: number) {
+    let query = db.select().from(arInvoices).orderBy(desc(arInvoices.createdAt));
+    if (limit !== undefined) {
+      // @ts-ignore
+      query = query.limit(limit);
+    }
+    if (offset !== undefined) {
+      // @ts-ignore
+      query = query.offset(offset);
+    }
+    return await query;
   }
   async getArInvoice(id: string) {
     const [res] = await db.select().from(arInvoices).where(eq(arInvoices.id, id));

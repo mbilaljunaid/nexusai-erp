@@ -2,6 +2,7 @@
 import { db } from "../db";
 import { arInvoices, arCustomerAccounts, arCustomers } from "@shared/schema";
 import { eq, and, isNotNull, desc } from "drizzle-orm";
+import { openai } from "./ai";
 
 interface AiPrediction {
     invoiceId: string;
@@ -100,6 +101,48 @@ export class ArAiService {
         }
 
         return { customerId, action: "None", priority: "Low", reasoning: "Account in good standing." };
+    }
+    async generateCollectionEmail(invoice: any, customer: any): Promise<string> {
+        try {
+            const prompt = `
+            You are a professional collections officer. Generate a polite but firm collections email for the following overdue invoice:
+            - Customer: ${customer?.name}
+            - Invoice Number: ${invoice.invoiceNumber}
+            - Due Date: ${new Date(invoice.dueDate).toLocaleDateString()}
+            - Amount: ${invoice.currency} ${invoice.totalAmount}
+            - Current Date: ${new Date().toLocaleDateString()}
+
+            The email should:
+            1. Clearly state the overdue amount and invoice number.
+            2. Request payment within 3 business days.
+            3. Provide a helpful tone but emphasize the urgency.
+            4. Include a clear subject line at the start.
+            `;
+
+            const response = await openai.chat.completions.create({
+                model: "gpt-4o",
+                messages: [
+                    { role: "system", content: "You are an expert accounts receivable and collections assistant." },
+                    { role: "user", content: prompt }
+                ],
+                temperature: 0.7
+            });
+
+            return response.choices[0].message.content || "Failed to generate email content.";
+        } catch (error) {
+            console.error("[AR-AI] Email Generation Failed:", error);
+            // Fallback
+            return `Subject: Follow-up on Overdue Invoice ${invoice.invoiceNumber}
+            
+Dear ${customer?.name},
+
+This is a reminder that invoice ${invoice.invoiceNumber} for ${invoice.currency} ${invoice.totalAmount} is overdue. 
+
+Please arrange for payment as soon as possible.
+
+Best regards,
+Finance Team`;
+        }
     }
 }
 

@@ -21,6 +21,7 @@ import { storage } from "../storage";
 import { ZodError } from "zod";
 import { db } from "../db";
 import { eq, and } from "drizzle-orm";
+import { RevenueWorker } from "../worker/RevenueWorker";
 
 const router = Router();
 
@@ -111,7 +112,11 @@ router.post("/sites", async (req, res) => {
 // Invoices
 router.get("/invoices", async (req, res) => {
     try {
-        const invoices = await arService.listInvoices();
+        const { limit, offset } = req.query;
+        const invoices = await arService.listInvoices(
+            limit ? Number(limit) : undefined,
+            offset ? Number(offset) : undefined
+        );
         res.json(invoices);
     } catch (error) {
         res.status(500).json({ message: "Failed to list invoices" });
@@ -464,6 +469,17 @@ router.post("/revenue/recognize", async (req, res) => {
     } catch (e) {
         console.error(e);
         res.status(500).json({ message: "Failed to recognize revenue" });
+    }
+});
+
+router.post("/revenue/sweep", async (req, res) => {
+    try {
+        const { periodDate } = req.body;
+        const targetDate = periodDate ? new Date(periodDate) : new Date();
+        const result = await RevenueWorker.processMonthlySweep(targetDate);
+        res.json({ message: "Revenue sweep complete", ...result });
+    } catch (e: any) {
+        res.status(500).json({ message: e.message || "Failed to sweep revenue" });
     }
 });
 
