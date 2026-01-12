@@ -149,12 +149,12 @@ import {
   type CashZbaSweep, type InsertCashZbaSweep,
   faTransactionHeaders,
   // Fixed Assets (DB)
-  faAdditions, faBooks, faTransactionHeaders as faTransactionsTable, faCategories,
-  type FaAddition, type InsertFaAddition,
+  faAssets, faBooks, faTransactions, faDepreciationHistory, faCategories,
+  type FaAsset, type InsertFaAsset,
   type FaBook, type InsertFaBook,
-  type FaTransactionHeader, type InsertFaTransactionHeader,
+  type FaTransaction, type InsertFaTransaction,
   type FaCategory, type InsertFaCategory,
-  type FaDepreciationSummary,
+  type FaDepreciationHistory,
 
   // SCM
   purchaseOrders, purchaseOrderLines,
@@ -293,12 +293,15 @@ export interface IStorage {
   createReportInstance(data: InsertGlReportInstance): Promise<GlReportInstance>;
 
   // Fixed Assets
-  listFaAssets(): Promise<FaAddition[]>;
-  getFaAsset(id: string): Promise<FaAddition | undefined>;
-  createFaAsset(data: InsertFaAddition): Promise<FaAddition>;
+  listFaAssets(): Promise<FaAsset[]>;
+  getFaAsset(id: string): Promise<FaAsset | undefined>;
+  createFaAsset(data: InsertFaAsset): Promise<FaAsset>;
+  // Books (Definitions)
   createFaBook(data: InsertFaBook): Promise<FaBook>;
-  listFaBooks(assetId: string): Promise<FaBook[]>;
-  createFaTransaction(data: InsertFaTransactionHeader): Promise<FaTransactionHeader>;
+  listFaBooks(): Promise<FaBook[]>;
+  // Transactions
+  createFaTransaction(data: InsertFaTransaction): Promise<FaTransaction>;
+  // Categories
   getFaCategory(id: string): Promise<FaCategory | undefined>;
   listFaCategories(): Promise<FaCategory[]>;
 
@@ -998,28 +1001,28 @@ export class DatabaseStorage implements IStorage {
   async listExchangeRates(from: string, to: string) { return []; }
 
   // Fixed Assets (Native Implementation)
-  async listFaAssets() { return await db.select().from(faAdditions); }
+  async listFaAssets() { return await db.select().from(faAssets); }
   async getFaAsset(id: string) {
-    const [res] = await db.select().from(faAdditions).where(eq(faAdditions.id, parseInt(id)));
+    const [res] = await db.select().from(faAssets).where(eq(faAssets.id, id));
     return res;
   }
-  async createFaAsset(data: InsertFaAddition) {
-    const [res] = await db.insert(faAdditions).values(data).returning();
+  async createFaAsset(data: InsertFaAsset) {
+    const [res] = await db.insert(faAssets).values(data).returning();
     return res;
   }
-  async listFaBooks(assetId: string) {
-    return await db.select().from(faBooks).where(eq(faBooks.assetId, parseInt(assetId)));
+  async listFaBooks() {
+    return await db.select().from(faBooks);
   }
   async createFaBook(data: InsertFaBook) {
     const [res] = await db.insert(faBooks).values(data).returning();
     return res;
   }
-  async createFaTransaction(data: InsertFaTransactionHeader) {
-    const [res] = await db.insert(faTransactionHeaders).values(data).returning();
+  async createFaTransaction(data: InsertFaTransaction) {
+    const [res] = await db.insert(faTransactions).values(data).returning();
     return res;
   }
   async getFaCategory(id: string) {
-    const [res] = await db.select().from(faCategories).where(eq(faCategories.id, parseInt(id)));
+    const [res] = await db.select().from(faCategories).where(eq(faCategories.id, id));
     return res;
   }
   async listFaCategories() { return await db.select().from(faCategories); }

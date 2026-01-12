@@ -1,7 +1,7 @@
 
 import { Router } from "express";
-import { fixedAssetsService } from "../services/fixedAssets";
-import { insertFaAdditionSchema, insertFaBookSchema } from "@shared/schema";
+import { faService } from "../services/fixedAssets";
+import { insertFaAssetSchema, insertFaBookSchema } from "@shared/schema";
 import { z } from "zod";
 
 export const fixedAssetsRouter = Router();
@@ -9,24 +9,15 @@ export const fixedAssetsRouter = Router();
 // Create Asset
 fixedAssetsRouter.post("/assets", async (req, res) => {
     try {
-        // Frontend sends { asset: ..., book: ... }
-        const schema = z.object({
-            asset: insertFaAdditionSchema.extend({
-                datePlacedInService: z.coerce.date(),
-                originalCost: z.coerce.string(),
-                salvageValue: z.coerce.string().optional()
-            }),
-            book: insertFaBookSchema.omit({ assetId: true }).extend({
-                datePlacedInService: z.coerce.date(),
-                cost: z.coerce.string(),
-                ytdDepreciation: z.coerce.string().optional(),
-                depreciationReserve: z.coerce.string().optional(),
-                netBookValue: z.coerce.string()
-            })
-        });
+        // Validation: Expect pure asset data or check complex input?
+        // Phase 1 Service creates asset and transaction.
+        // Frontend likely sends flattened asset data for now.
+        const data = insertFaAssetSchema.parse(req.body);
 
-        const data = schema.parse(req.body);
-        const result = await fixedAssetsService.createAsset(data.asset, data.book);
+        // For Phase 1, we might need to handle 'bookId' etc if not in body, 
+        // but `insertFaAssetSchema` requires them.
+
+        const result = await faService.createAsset(data);
         res.json(result);
     } catch (error) {
         res.status(400).json({ error: String(error) });
@@ -35,29 +26,96 @@ fixedAssetsRouter.post("/assets", async (req, res) => {
 
 // List Assets
 fixedAssetsRouter.get("/assets", async (req, res) => {
-    const assets = await fixedAssetsService.listAssets();
-    res.json(assets);
+    try {
+        const assets = await faService.listAssets();
+        res.json(assets);
+    } catch (error) {
+        res.status(500).json({ error: String(error) });
+    }
 });
 
-// Get Asset Detail
-fixedAssetsRouter.get("/assets/:id", async (req, res) => {
-    const result = await fixedAssetsService.getAssetDetail(req.params.id);
-    if (!result) return res.status(404).json({ error: "Asset not found" });
-    res.json(result);
+// Retire Asset
+fixedAssetsRouter.post("/assets/:id/retire", async (req, res) => {
+    try {
+        const schema = z.object({
+            bookId: z.string(),
+            retirementDate: z.coerce.date(),
+            proceeds: z.number(),
+            removalCost: z.number()
+        });
+        const data = schema.parse(req.body);
+        const result = await faService.retireAsset(req.params.id, data);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: String(error) });
+    }
+});
+
+// Mass Additions - Prepare (Scan)
+fixedAssetsRouter.post("/mass-additions/prepare", async (req, res) => {
+    try {
+        const result = await faService.prepareMassAdditions();
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: String(error) });
+    }
+});
+
+// Mass Additions - List
+fixedAssetsRouter.get("/mass-additions", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { faMassAdditions } = await import("@shared/schema");
+        const results = await db.select().from(faMassAdditions);
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ error: String(error) });
+    }
+});
+
+// Mass Additions - Post
+fixedAssetsRouter.post("/mass-additions/:id/post", async (req, res) => {
+    try {
+        const schema = z.object({
+            bookId: z.string(),
+            categoryId: z.string(),
+            assetNumber: z.string()
+        });
+        const data = schema.parse(req.body);
+        const result = await faService.postMassAddition(req.params.id, data);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: String(error) });
+    }
 });
 
 // Run Depreciation
 fixedAssetsRouter.post("/depreciation/run", async (req, res) => {
     try {
         const schema = z.object({
-            bookTypeCode: z.string(),
-            periodName: z.string()
+            bookId: z.string(),
+            periodName: z.string(),
+            periodEndDate: z.coerce.date()
         });
-        const { bookTypeCode, periodName } = schema.parse(req.body);
+        const { bookId, periodName, periodEndDate } = schema.parse(req.body);
 
-        const result = await fixedAssetsService.runDepreciation(bookTypeCode, periodName);
+        const result = await faService.runDepreciation(bookId, periodName, periodEndDate);
         res.json(result);
     } catch (error) {
         res.status(400).json({ error: String(error) });
+    }
+});
+
+// Roll Forward Report
+fixedAssetsRouter.get("/reports/roll-forward", async (req, res) => {
+    try {
+        const { bookId, periodName } = req.query;
+        if (!bookId || !periodName) {
+            return res.status(400).json({ error: "bookId and periodName are required" });
+        }
+        const result = await faService.getRollForwardReport(String(bookId), String(periodName));
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: String(error) });
     }
 });

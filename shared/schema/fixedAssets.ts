@@ -1,154 +1,300 @@
 
-import { pgTable, serial, text, varchar, numeric, timestamp, boolean, integer, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, numeric, boolean, integer, jsonb, date } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// 1. Asset Books (Corporate, Tax, etc.)
-export const faAssetBooks = pgTable("fa_asset_books", {
-    bookTypeCode: varchar("book_type_code", { length: 30 }).primaryKey(),
-    bookName: varchar("book_name", { length: 100 }).notNull(),
-    description: text("description"),
-    currentOpenPeriod: varchar("current_open_period", { length: 20 }), // e.g. "JAN-26"
-    active: boolean("active").default(true),
-    createdAt: timestamp("created_at").defaultNow()
-});
-
-export const insertFaAssetBookSchema = z.object({
-    bookTypeCode: z.string().min(1).max(30),
-    bookName: z.string().min(1),
-    description: z.string().optional(),
-    currentOpenPeriod: z.string().optional()
-});
-
-export type FaAssetBook = typeof faAssetBooks.$inferSelect;
-export type InsertFaAssetBook = typeof faAssetBooks.$inferInsert;
-
-// 2. Asset Categories
-export const faCategories = pgTable("fa_categories", {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 100 }).notNull(),
-    majorCategory: varchar("major_category", { length: 100 }), // e.g. "Furniture", "Computer"
-    defaultLifeMonths: integer("default_life_months"),
-    defaultMethodCode: varchar("default_method_code", { length: 30 }), // Link to Methods (e.g. STL)
-    active: boolean("active").default(true)
-});
-
-export const insertFaCategorySchema = z.object({
-    name: z.string().min(1),
-    majorCategory: z.string().optional(),
-    defaultLifeMonths: z.number().int().optional(),
-    defaultMethodCode: z.string().optional()
-});
-
-export type FaCategory = typeof faCategories.$inferSelect;
-export type InsertFaCategory = typeof faCategories.$inferInsert;
-
-// 3. Asset Additions (The Asset Header)
-export const faAdditions = pgTable("fa_additions", {
-    id: serial("id").primaryKey(),
-    assetNumber: varchar("asset_number", { length: 50 }).notNull().unique(),
-    description: text("description").notNull(),
-    tagNumber: varchar("tag_number", { length: 50 }),
-    categoryId: integer("category_id").notNull(), // FK to faCategories but enforce in app logic
-    manufacturer: varchar("manufacturer", { length: 100 }),
-    model: varchar("model", { length: 100 }),
-    serialNumber: varchar("serial_number", { length: 100 }),
-    datePlacedInService: timestamp("date_placed_in_service").notNull(),
-    originalCost: numeric("original_cost", { precision: 12, scale: 2 }).notNull(),
-    salvageValue: numeric("salvage_value", { precision: 12, scale: 2 }).default("0"),
-    units: integer("units").default(1),
-    status: varchar("status", { length: 30 }).default("Active"), // Active, Retired
-    location: varchar("location", { length: 100 }),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow()
-});
-
-export const insertFaAdditionSchema = z.object({
-    assetNumber: z.string().min(1),
-    description: z.string().min(1),
-    tagNumber: z.string().optional(),
-    categoryId: z.number().int(),
-    manufacturer: z.string().optional(),
-    model: z.string().optional(),
-    serialNumber: z.string().optional(),
-    datePlacedInService: z.string().or(z.date()), // Zod handles coercion usually or handle in service
-    originalCost: z.number(),
-    salvageValue: z.number().optional(),
-    units: z.number().int().optional(),
-    location: z.string().optional()
-});
-
-export type FaAddition = typeof faAdditions.$inferSelect;
-export type InsertFaAddition = typeof faAdditions.$inferInsert;
-
-// 4. Asset Books Association (Depreciation Rules per Book)
+// 1. Asset Books (Corporate, Tax, etc.) - The Master Definition of a Book
 export const faBooks = pgTable("fa_books", {
-    assetId: integer("asset_id").notNull(),
-    bookTypeCode: varchar("book_type_code", { length: 30 }).notNull(),
-    cost: numeric("cost", { precision: 12, scale: 2 }).notNull(), // Can differ from originalCost
-    depreciateFlag: boolean("depreciate_flag").default(true),
-    methodCode: varchar("method_code", { length: 30 }).notNull(), // STL, HY_STL, etc.
-    lifeInMonths: integer("life_in_months").notNull(),
-    datePlacedInService: timestamp("date_placed_in_service").notNull(),
-    ytdDepreciation: numeric("ytd_depreciation", { precision: 12, scale: 2 }).default("0"),
-    depreciationReserve: numeric("depreciation_reserve", { precision: 12, scale: 2 }).default("0"),
-    netBookValue: numeric("net_book_value", { precision: 12, scale: 2 }).notNull(), // Calc field stored
-    createdAt: timestamp("created_at").defaultNow()
-}, (table) => ({
-    pk: primaryKey({ columns: [table.assetId, table.bookTypeCode] })
-}));
-
-export const insertFaBookSchema = z.object({
-    assetId: z.number().int(),
-    bookTypeCode: z.string(),
-    cost: z.number(),
-    depreciateFlag: z.boolean().optional(),
-    methodCode: z.string(),
-    lifeInMonths: z.number().int(),
-    datePlacedInService: z.string().or(z.date()),
-    ytdDepreciation: z.number().optional(),
-    depreciationReserve: z.number().optional(),
-    netBookValue: z.number().optional()
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    bookCode: varchar("book_code", { length: 30 }).notNull().unique(), // e.g., CORP_USD
+    description: text("description").notNull(),
+    ledgerId: varchar("ledger_id").notNull(), // Link to GL
+    depreciationCalendar: varchar("depreciation_calendar", { length: 50 }).notNull(), // Monthly
+    prorateCalendar: varchar("prorate_calendar", { length: 50 }).default("MONTHLY"),
+    currentPeriodName: varchar("current_period_name"),
+    status: varchar("status", { length: 20 }).default("ACTIVE"), // ACTIVE, CLOSED
+    createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// 2. Asset Categories (Accounting Defaults)
+export const faCategories = pgTable("fa_categories", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    bookId: varchar("book_id").references(() => faBooks.id),
+    majorCategory: varchar("major_category", { length: 50 }).notNull(), // e.g., FURNITURE
+    minorCategory: varchar("minor_category", { length: 50 }),           // e.g., DESKS
+
+    // Default Accounts (CCIDs)
+    assetCostAccountCcid: varchar("asset_cost_account_ccid").notNull(),
+    assetClearingAccountCcid: varchar("asset_clearing_account_ccid"),
+    deprExpenseAccountCcid: varchar("depr_expense_account_ccid").notNull(),
+    accumDeprAccountCcid: varchar("accum_depr_account_ccid").notNull(),
+    cipCostAccountCcid: varchar("cip_cost_account_ccid"),
+
+    // Default Rules
+    defaultLifeYears: integer("default_life_years").notNull(),
+    defaultMethod: varchar("default_method", { length: 30 }).default("STL"), // STL, 200DB
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 3. Assets (Physical/Logical Reference)
+export const faAssets = pgTable("fa_assets", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    assetNumber: varchar("asset_number", { length: 50 }).notNull().unique(),
+    tagNumber: varchar("tag_number", { length: 50 }),
+    description: text("description").notNull(),
+    manufacturer: varchar("manufacturer"),
+    model: varchar("model"),
+    serialNumber: varchar("serial_number"),
+
+    // Links
+    categoryId: varchar("category_id").references(() => faCategories.id).notNull(),
+
+    // Overall Status
+    status: varchar("status", { length: 20 }).default("ACTIVE"), // ACTIVE, RETIRED, CIP
+
+    // Lease Reference (L4)
+    leaseId: varchar("lease_id"),
+
+    // Physical Verification (L3)
+    qrCode: text("qr_code"),
+    lastVerifiedAt: timestamp("last_verified_at"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 3a. Asset Financials (Multi-Book)
+export const faAssetBooks = pgTable("fa_asset_books", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    assetId: varchar("asset_id").references(() => faAssets.id).notNull(),
+    bookId: varchar("book_id").references(() => faBooks.id).notNull(),
+
+    // Financial Details (Independent per Book)
+    datePlacedInService: timestamp("date_placed_in_service").notNull(),
+    originalCost: numeric("original_cost", { precision: 20, scale: 2 }).notNull(),
+    salvageValue: numeric("salvage_value", { precision: 20, scale: 2 }).default("0"),
+    recoverableCost: numeric("recoverable_cost", { precision: 20, scale: 2 }).notNull(),
+
+    // Depreciation Rules (Independent per Book)
+    lifeYears: integer("life_years").notNull(),
+    lifeMonths: integer("life_months").default(0),
+    method: varchar("method", { length: 30 }).notNull(), // STL
+
+    // Book-Specific Status
+    status: varchar("status", { length: 20 }).default("ACTIVE"),
+    fullyReserved: boolean("fully_reserved").default(false),
+
+    // Advanced Depreciation (L3)
+    totalUnits: numeric("total_units", { precision: 20, scale: 2 }), // For Units of Production
+    unitsConsumed: numeric("units_consumed", { precision: 20, scale: 2 }).default("0"),
+    dbRate: numeric("db_rate", { precision: 5, scale: 2 }), // For Declining Balance (e.g. 2.0 for 200% DB)
+
+    // Current Assignment (Simplified - 1:1 for now)
+    locationId: varchar("location_id"),
+    ccid: varchar("ccid"), // GL Code Combination ID for depreciation expense
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 4. Transactions (Lifecycle Events)
+export const faTransactions = pgTable("fa_transactions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    assetBookId: varchar("asset_book_id").references(() => faAssetBooks.id).notNull(), // Link to specific asset in a book
+
+    transactionType: varchar("transaction_type", { length: 30 }).notNull(), // ADDITION, DEPRECIATION, ADJUSTMENT, RETIREMENT
+    transactionDate: timestamp("transaction_date").notNull(),
+    periodName: varchar("period_name"),
+
+    amount: numeric("amount", { precision: 20, scale: 2 }).notNull(), // Impact on NBV
+
+    // Audit
+    reference: varchar("reference"), // Source Invoice, etc.
+    description: text("description"),
+    status: varchar("status", { length: 20 }).default("POSTED"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 5. Depreciation History (Periodic)
+export const faDepreciationHistory = pgTable("fa_depreciation_history", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    assetBookId: varchar("asset_book_id").references(() => faAssetBooks.id).notNull(),
+    periodName: varchar("period_name").notNull(),
+
+    amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
+    ytdDepreciation: numeric("ytd_depreciation", { precision: 20, scale: 2 }).notNull(),
+    accumulatedDepreciation: numeric("accumulated_depreciation", { precision: 20, scale: 2 }).notNull(),
+    netBookValue: numeric("net_book_value", { precision: 20, scale: 2 }).notNull(),
+
+    isPostedToGl: boolean("is_posted_to_gl").default(false),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// Zod Schemas
+export const insertFaBookSchema = createInsertSchema(faBooks);
+export const insertFaCategorySchema = createInsertSchema(faCategories);
+export const insertFaAssetSchema = createInsertSchema(faAssets);
+export const insertFaAssetBookSchema = createInsertSchema(faAssetBooks);
+export const insertFaTransactionSchema = createInsertSchema(faTransactions);
 
 export type FaBook = typeof faBooks.$inferSelect;
 export type InsertFaBook = typeof faBooks.$inferInsert;
 
-// 5. Transaction Headers (History)
-export const faTransactionHeaders = pgTable("fa_transaction_headers", {
-    id: serial("id").primaryKey(),
-    assetId: integer("asset_id").notNull(),
-    bookTypeCode: varchar("book_type_code", { length: 30 }).notNull(),
-    transactionType: varchar("transaction_type", { length: 30 }).notNull(), // ADDITION, DEPRECIATION, ADJUSTMENT
-    transactionDate: timestamp("transaction_date").defaultNow(),
-    dateEffective: timestamp("date_effective"),
-    amount: numeric("amount", { precision: 12, scale: 2 }).default("0"), // Impact amount
-    comments: text("comments")
+export type FaCategory = typeof faCategories.$inferSelect;
+export type InsertFaCategory = typeof faCategories.$inferInsert;
+
+export type FaAsset = typeof faAssets.$inferSelect;
+export type InsertFaAsset = typeof faAssets.$inferInsert;
+
+export type FaAssetBook = typeof faAssetBooks.$inferSelect;
+export type InsertFaAssetBook = typeof faAssetBooks.$inferInsert;
+
+export type FaTransaction = typeof faTransactions.$inferSelect;
+export type InsertFaTransaction = typeof faTransactions.$inferInsert;
+
+export type FaDepreciationHistory = typeof faDepreciationHistory.$inferSelect;
+
+// 6. Retirements
+export const faRetirements = pgTable("fa_retirements", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    assetBookId: varchar("asset_book_id").references(() => faAssetBooks.id).notNull(),
+
+    retirementDate: timestamp("retirement_date").notNull(),
+    periodName: varchar("period_name").notNull(),
+
+    proceedsOfSale: numeric("proceeds_of_sale", { precision: 20, scale: 2 }).default("0"),
+    costOfRemoval: numeric("cost_of_removal", { precision: 20, scale: 2 }).default("0"),
+
+    netBookValueRetired: numeric("net_book_value_retired", { precision: 20, scale: 2 }).notNull(),
+    gainLossAmount: numeric("gain_loss_amount", { precision: 20, scale: 2 }).notNull(), // Proceeds - CostRemoval - NBV
+
+    // Approval Workflow (L11)
+    approvalStatus: varchar("approval_status", { length: 20 }).default("PENDING"), // PENDING, APPROVED, REJECTED
+    approvedBy: varchar("approved_by"),
+    approvedAt: timestamp("approved_at"),
+
+    status: varchar("status", { length: 20 }).default("PROCESSED"),
+    postingStatus: varchar("posting_status", { length: 20 }).default("UNPOSTED"), // To GL
+
+    createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertFaTransactionSchema = z.object({
-    assetId: z.number().int(),
-    bookTypeCode: z.string(),
-    transactionType: z.string(),
-    transactionDate: z.string().optional().nullable(),
-    dateEffective: z.string().optional().nullable(),
-    amount: z.number().optional(),
-    comments: z.string().optional()
+// 7. Mass Additions (Interface Table from AP)
+export const faMassAdditions = pgTable("fa_mass_additions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+
+    // Source Info
+    sourceType: varchar("source_type", { length: 20 }).default("AP_INVOICE"),
+    invoiceNumber: varchar("invoice_number", { length: 50 }),
+    invoiceLineNumber: integer("invoice_line_number"),
+    description: text("description").notNull(),
+    amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
+    date: timestamp("date").notNull(),
+    vendorName: varchar("vendor_name"),
+
+    // Asset Prep Info
+    status: varchar("status", { length: 20 }).default("QUEUE"), // QUEUE, POSTED, ON_HOLD
+    assetBookId: varchar("asset_book_id"), // User selects this
+    assetCategoryId: varchar("asset_category_id"), // User selects this
+
+    // Link to created asset
+    createdAssetId: varchar("created_asset_id"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export type FaTransactionHeader = typeof faTransactionHeaders.$inferSelect;
-export type InsertFaTransactionHeader = typeof faTransactionHeaders.$inferInsert;
+export const insertFaRetirementSchema = createInsertSchema(faRetirements);
+export const insertFaMassAdditionSchema = createInsertSchema(faMassAdditions);
 
-// 6. Depreciation Summary (Periodic)
-export const faDepreciationSummary = pgTable("fa_depreciation_summary", {
-    assetId: integer("asset_id").notNull(),
-    bookTypeCode: varchar("book_type_code", { length: 30 }).notNull(),
-    periodName: varchar("period_name", { length: 20 }).notNull(),
-    depreciationAmount: numeric("depreciation_amount", { precision: 12, scale: 2 }).notNull(),
-    ytdDepreciation: numeric("ytd_depreciation", { precision: 12, scale: 2 }).notNull(),
-    depreciationReserve: numeric("depreciation_reserve", { precision: 12, scale: 2 }).notNull(),
-    createdAt: timestamp("created_at").defaultNow()
-}, (table) => ({
-    pk: primaryKey({ columns: [table.assetId, table.bookTypeCode, table.periodName] })
-}));
+export type FaRetirement = typeof faRetirements.$inferSelect;
+export type InsertFaRetirement = typeof faRetirements.$inferInsert;
 
-export type FaDepreciationSummary = typeof faDepreciationSummary.$inferSelect;
+export type FaMassAddition = typeof faMassAdditions.$inferSelect;
+export type InsertFaMassAddition = typeof faMassAdditions.$inferInsert;
+
+// 7. Asset Transfers (L3)
+export const faTransfers = pgTable("fa_transfers", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    assetBookId: varchar("asset_book_id").references(() => faAssetBooks.id).notNull(),
+
+    transactionDate: timestamp("transaction_date").notNull(),
+
+    fromLocationId: varchar("from_location_id"),
+    toLocationId: varchar("to_location_id"),
+    fromCcid: varchar("from_ccid"),
+    toCcid: varchar("to_ccid"),
+
+    units: numeric("units").default("1"),
+
+    description: text("description"),
+    createdBy: varchar("created_by"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertFaTransferSchema = createInsertSchema(faTransfers);
+export type FaTransfer = typeof faTransfers.$inferSelect;
+export type InsertFaTransfer = typeof faTransfers.$inferInsert;
+
+// 8. Leases (L4 - IFRS 16)
+export const faLeases = pgTable("fa_leases", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    leaseNumber: varchar("lease_number").notNull().unique(),
+    description: text("description"),
+
+    lessor: varchar("lessor"),
+    leaseType: varchar("lease_type", { length: 30 }).notNull(), // OPERATING, FINANCE
+
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    termMonths: integer("term_months").notNull(),
+
+    monthlyPayment: numeric("monthly_payment", { precision: 20, scale: 2 }).notNull(),
+    interestRate: numeric("interest_rate", { precision: 5, scale: 2 }).notNull(), // Incremental Borrowing Rate
+
+    pvOfPayments: numeric("pv_of_payments", { precision: 20, scale: 2 }), // Calculated Lease Liability
+    status: varchar("status", { length: 20 }).default("ACTIVE"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertFaLeaseSchema = createInsertSchema(faLeases);
+export type FaLease = typeof faLeases.$inferSelect;
+export type InsertFaLease = typeof faLeases.$inferInsert;
+
+// 9. Physical Inventory (L3)
+export const faPhysicalInventory = pgTable("fa_physical_inventory", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    inventoryName: varchar("inventory_name").notNull(),
+    status: varchar("status", { length: 20 }).default("OPEN"), // OPEN, CLOSED, RECONCILED
+
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date"),
+
+    description: text("description"),
+    createdBy: varchar("created_by"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const faInventoryScans = pgTable("fa_inventory_scans", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    inventoryId: varchar("inventory_id").references(() => faPhysicalInventory.id).notNull(),
+    assetId: varchar("asset_id").references(() => faAssets.id).notNull(),
+
+    scanDate: timestamp("scan_date").default(sql`now()`),
+    scannedLocationId: varchar("scanned_location_id"),
+    scannedBy: varchar("scanned_by"),
+
+    condition: varchar("condition", { length: 50 }), // GOOD, DAMAGED, OBSOLETE
+    notes: text("notes"),
+
+    reconciliationStatus: varchar("reconciliation_status", { length: 20 }).default("PENDING"), // MATCH, MISMATCH, NEW
+});
+
+export const insertFaPhysicalInventorySchema = createInsertSchema(faPhysicalInventory);
+export const insertFaInventoryScanSchema = createInsertSchema(faInventoryScans);
+export type FaPhysicalInventory = typeof faPhysicalInventory.$inferSelect;
+export type FaInventoryScan = typeof faInventoryScans.$inferSelect;

@@ -194,6 +194,38 @@ export class AIService {
                 requiredPermissions: ["ar.read"],
                 inputSchema: { type: "object" },
                 isEnabled: true
+            },
+            {
+                module: "fa",
+                actionName: "fa_create_asset",
+                description: "Create a new Fixed Asset manually",
+                requiredPermissions: ["fa.write"],
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        assetNumber: { type: "string" },
+                        description: { type: "string" },
+                        categoryId: { type: "string" },
+                        originalCost: { type: "number" },
+                        bookId: { type: "string" }
+                    }
+                },
+                isEnabled: true
+            },
+            {
+                module: "fa",
+                actionName: "fa_run_depreciation",
+                description: "Run depreciation for a specific asset book and period",
+                requiredPermissions: ["fa.write"],
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        bookId: { type: "string" },
+                        periodName: { type: "string" },
+                        periodEndDate: { type: "string" }
+                    }
+                },
+                isEnabled: true
             }
         ];
 
@@ -340,6 +372,34 @@ export class AIService {
                     action: undefined,
                     confidence: 0.95,
                     params: { simulationType: "collection_run" }
+                };
+            }
+        }
+
+        // FA Context
+        if (context === "fa" || lowerPrompt.includes("asset") || lowerPrompt.includes("depreciat")) {
+            if (lowerPrompt.includes("create") || lowerPrompt.includes("add") || lowerPrompt.includes("new")) {
+                const action = await storage.getAiAction("fa_create_asset");
+                return {
+                    action: action as AiAction,
+                    confidence: 0.9,
+                    params: {
+                        description: "New Asset from AI",
+                        originalCost: 1000,
+                        categoryId: "FURNITURE" // Example
+                    }
+                };
+            }
+
+            if (lowerPrompt.includes("run") || lowerPrompt.includes("process") || lowerPrompt.includes("depreciation")) {
+                const action = await storage.getAiAction("fa_run_depreciation");
+                return {
+                    action: action as AiAction,
+                    confidence: 0.9,
+                    params: {
+                        bookId: "CORP-BOOK-1",
+                        periodName: "Jan-2026"
+                    }
                 };
             }
         }
@@ -494,6 +554,37 @@ export class AIService {
                             details: balanceData
                         };
                     }
+                    break;
+                case "fa_create_asset":
+                    // We need faService here
+                    const { faService } = await import("./fixedAssets");
+                    const assetData = {
+                        assetNumber: params.assetNumber || `AI-${Date.now()}`,
+                        description: params.description || "AI Created Asset",
+                        categoryId: params.categoryId || "COMPUTER", // Default
+                        bookId: params.bookId || "CORP-BOOK-1",
+                        originalCost: String(params.originalCost || 0),
+                        recoverableCost: String(params.originalCost || 0),
+                        datePlacedInService: new Date()
+                    };
+                    const faResult = await faService.createAsset(assetData);
+                    result = {
+                        message: `I've created asset ${faResult.assetNumber} for you.`,
+                        assetId: faResult.id,
+                        details: faResult
+                    };
+                    break;
+                case "fa_run_depreciation":
+                    const { faService: faSvc } = await import("./fixedAssets");
+                    const deprResult = await faSvc.runDepreciation(
+                        params.bookId || "CORP-BOOK-1",
+                        params.periodName || "Jan-2026",
+                        params.periodEndDate ? new Date(params.periodEndDate) : new Date()
+                    );
+                    result = {
+                        message: `Depreciation run completed for ${params.periodName}. Processed ${deprResult.assetsProcessed} assets.`,
+                        details: deprResult
+                    };
                     break;
                 default:
                     throw new Error(`No handler implementation for ${actionName}`);

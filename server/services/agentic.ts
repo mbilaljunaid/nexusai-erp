@@ -181,6 +181,36 @@ export class AgenticService {
             },
             { type: "object", properties: { period: { type: "string" } } }
         );
+
+        // Fixed Assets: Create Asset
+        this.registerAction(
+            "FA_CREATE_ASSET",
+            async (params, { userId }) => {
+                const { faService } = await import("./fixedAssets");
+                const result = await faService.createAsset({
+                    ...params,
+                    assetNumber: params.assetNumber || `AI-${Date.now()}`,
+                    datePlacedInService: params.datePlacedInService ? new Date(params.datePlacedInService) : new Date()
+                });
+                return { ...result, message: `Fixed Asset ${result.assetNumber} created successfully.` };
+            },
+            { type: "object", required: ["description", "categoryId", "originalCost"] }
+        );
+
+        // Fixed Assets: Run Depreciation
+        this.registerAction(
+            "FA_RUN_DEPRECIATION",
+            async (params) => {
+                const { faService } = await import("./fixedAssets");
+                const result = await faService.runDepreciation(
+                    params.bookId || "CORP-BOOK-1",
+                    params.periodName || "Jan-2026",
+                    params ? new Date(params.periodEndDate) : new Date()
+                );
+                return { ...result, message: `Depreciation run for ${params.periodName} completed.` };
+            },
+            { type: "object", required: ["periodName"] }
+        );
     }
 
     registerAction(code: string, handler: ActionHandler, schema: any, rollback?: RollbackHandler) {
@@ -270,6 +300,24 @@ export class AgenticService {
                 params: { period: "Jan-2026" },
                 confidence: 0.90
             };
+        }
+
+        // 5. Fixed Assets Context
+        if (context === "fa" || lowerText.includes("asset") || lowerText.includes("depreciat")) {
+            if (lowerText.includes("create") || lowerText.includes("new") || lowerText.includes("add")) {
+                return {
+                    actionCode: "FA_CREATE_ASSET",
+                    params: { description: "New AI Asset", categoryId: "FURNITURE", originalCost: 1000 },
+                    confidence: 0.90
+                };
+            }
+            if (lowerText.includes("run") || lowerText.includes("process") || lowerText.includes("depreciation")) {
+                return {
+                    actionCode: "FA_RUN_DEPRECIATION",
+                    params: { periodName: "Jan-2026" },
+                    confidence: 0.90
+                };
+            }
         }
 
         // Fallback or generic

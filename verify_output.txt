@@ -1,0 +1,14 @@
+/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/scripts/verify_fa_lifecycle.ts:96
+if (require.main === module) {
+^
+
+
+ReferenceError: require is not defined in ES module scope, you can use import instead
+    at /Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/scripts/verify_fa_lifecycle.ts (/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/scripts/verify_fa_lifecycle.ts:96:1)
+    at __require (file:///Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My%20Drive/Online%20Projects/13.%20NexusAIFirst/nexusai-erp/scripts/verify_fa_lifecycle.ts:1:254)
+    at <anonymous> (/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/scripts/verify_fa_lifecycle.ts:98:1)
+    at ModuleJob.run (node:internal/modules/esm/module_job:271:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+
+Node.js v22.14.0

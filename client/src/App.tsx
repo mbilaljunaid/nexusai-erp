@@ -343,6 +343,7 @@ const LedgerControlSetup = lazy(() => import("./pages/gl/LedgerControlSetup"));
 const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
 
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
+const AssetWorkbench = lazy(() => import("@/pages/fixed-assets/AssetWorkbench"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
 const NettingWorkbench = lazy(() => import("@/pages/NettingWorkbench"));
@@ -615,7 +616,7 @@ function Router() {
       <Route path="/erp/:page?" component={ERP} />
       <Route path="/finance/cash-management" component={CashManagementPage} />
       <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
-      <Route path="/finance/fixed-assets" component={FixedAssetsPage} />
+      <Route path="/finance/fixed-assets" component={AssetWorkbench} />
       <Route path="/finance/accounts-payable" component={AccountsPayable} />
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
       <Route path="/finance/ar/invoices" component={ArInvoiceList} />
