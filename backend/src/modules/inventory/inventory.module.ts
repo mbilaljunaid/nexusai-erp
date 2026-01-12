@@ -19,6 +19,10 @@ import { InventoryTransactionService } from './inventory-transaction.service';
 import { CstTransactionCost } from './entities/cst-transaction-cost.entity';
 import { CostingService } from './costing.service';
 import { PlanningService } from './planning.service';
+import { Reservation } from './entities/reservation.entity';
+import { ReservationService } from './reservation.service';
+import { CycleCountHeader, CycleCountEntry } from './entities/cycle-count.entity';
+import { CycleCountService } from './cycle-count.service';
 
 @Module({
   imports: [
@@ -31,11 +35,31 @@ import { PlanningService } from './planning.service';
       OnHandBalance,
       Lot,
       Serial,
-      CstTransactionCost
+      CstTransactionCost,
+      Reservation,
+      CycleCountHeader,
+      CycleCountEntry
     ]),
   ],
   controllers: [ProductController, ItemController, InventoryOrganizationController],
-  providers: [ProductService, ItemService, InventoryOrganizationService, InventoryTransactionService, CostingService, PlanningService],
-  exports: [ProductService, ItemService, InventoryTransactionService, CostingService, PlanningService],
+  providers: [
+    ProductService,
+    ItemService,
+    InventoryOrganizationService,
+    InventoryTransactionService,
+    CostingService,
+    PlanningService,
+    ReservationService,
+    CycleCountService
+  ],
+  exports: [
+    ProductService,
+    ItemService,
+    InventoryTransactionService,
+    CostingService,
+    PlanningService,
+    ReservationService,
+    CycleCountService
+  ],
 })
 export class InventoryModule { }

@@ -85,3 +85,10 @@
     - [x] Add Planning Attributes to `Item` (Min/Max)
     - [x] Implement `PlanningService` (Replenishment Logic)
     - [x] Create `InventoryDashboard` (Command Center UI)
+
+- [x] **Phase 5: Accuracy & Fulfillment (Blockers)**
+    - [x] Create `Reservation` Entity (Link Demand to Supply)
+    - [x] Implement `ReservationService` (Hard/Soft Allocation Logic)
+    - [x] Implement `AvailableToPromiseService` (ATP Calculation)
+    - [x] Create `CycleCount` Entities (Header/Entry)
+    - [x] Implement `CycleCountService` (Snapshot & Adjustment)
