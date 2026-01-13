@@ -234,3 +234,31 @@ ppmRouter.post("/transactions/import", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// Billing Rules
+ppmRouter.get("/projects/:id/billing-rules", async (req, res) => {
+    try {
+        const rules = await ppmService.getBillingRules(req.params.id);
+        res.json(rules);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+ppmRouter.post("/billing-rules", async (req, res) => {
+    try {
+        const rule = await ppmService.createBillingRule(req.body);
+        res.json(rule);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+ppmRouter.delete("/billing-rules/:id", async (req, res) => {
+    try {
+        await ppmService.deleteBillingRule(req.params.id);
+        res.json({ message: "Deleted" });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});

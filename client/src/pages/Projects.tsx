@@ -29,6 +29,7 @@ import TransactionImport from "./projects/TransactionImport";
 import ExpenditureTypeManager from "./projects/ExpenditureTypeManager";
 import BillRateManager from "./projects/BillRateManager";
 import ProjectTemplateManager from "./projects/ProjectTemplateManager";
+import BillingRulesManager from "./projects/BillingRulesManager";
 
 interface Project {
   id: string;
@@ -232,6 +233,8 @@ export default function Projects() {
       {activeNav === "rates" && <BillRateManager />}
 
       {activeNav === "templates" && <ProjectTemplateManager />}
+
+      {activeNav === "billing-rules" && <BillingRulesManager />}
     </div>
   );
 }

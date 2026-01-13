@@ -141,6 +141,7 @@
     "@types/ws": "^8.5.13",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.31.8",
     "esbuild": "^0.25.0",
     "node-cron": "^3.0.3",
     "postcss": "^8.4.47",

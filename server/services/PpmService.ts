@@ -12,7 +12,8 @@ import {
     type InsertPpmPerformanceSnapshot,
     inventoryTransactions, type InventoryTransaction,
     timeEntries, type TimeEntry,
-    ppmProjectAssets, ppmProjectTemplates, ppmBillRateSchedules, ppmBillRates
+    ppmProjectAssets, ppmProjectTemplates, ppmBillRateSchedules, ppmBillRates,
+    ppmBillingRules, type InsertPpmBillingRule
 } from "@shared/schema";
 import { eq, and, isNull, isNotNull, desc, inArray, sql, aliasedTable } from "drizzle-orm";
 
@@ -1013,6 +1014,28 @@ export class PpmService {
             ));
 
         return [...apLines, ...invLines, ...laborLines];
+    }
+
+    /**
+     * Get Billing Rules for a project
+     */
+    async getBillingRules(projectId: string) {
+        return await db.select().from(ppmBillingRules).where(eq(ppmBillingRules.projectId, projectId)).orderBy(desc(ppmBillingRules.createdAt));
+    }
+
+    /**
+     * Create a Billing Rule
+     */
+    async createBillingRule(data: InsertPpmBillingRule) {
+        const [rule] = await db.insert(ppmBillingRules).values(data).returning();
+        return rule;
+    }
+
+    /**
+     * Delete a Billing Rule
+     */
+    async deleteBillingRule(id: string) {
+        return await db.delete(ppmBillingRules).where(eq(ppmBillingRules.id, id));
     }
 }
 

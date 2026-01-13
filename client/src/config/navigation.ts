@@ -136,6 +136,7 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "ppm-types", title: "Expenditure Types", type: "link", path: "/projects/types" },
                     { id: "ppm-rates", title: "Bill Rate Schedules", type: "link", path: "/projects/rates" },
                     { id: "ppm-templates", title: "Project Templates", type: "link", path: "/projects/templates" },
+                    { id: "ppm-billing-rules", title: "Billing Rules", type: "link", path: "/projects/billing-rules" },
                     { id: "ppm-sla", title: "SLA Event Monitor", type: "link", path: "/projects/sla" },
                 ]
             },

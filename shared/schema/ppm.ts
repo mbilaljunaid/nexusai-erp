@@ -226,3 +226,19 @@ export const ppmBillRates = pgTable("ppm_bill_rates", {
 export const insertPpmBillRateSchema = createInsertSchema(ppmBillRates);
 export type InsertPpmBillRate = z.infer<typeof insertPpmBillRateSchema>;
 export type PpmBillRate = typeof ppmBillRates.$inferSelect;
+
+// 14. Billing Rules (Contract Logic)
+export const ppmBillingRules = pgTable("ppm_billing_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    projectId: varchar("project_id").notNull(),
+    ruleType: varchar("rule_type").notNull(), // FIXED_PRICE, TM, COST_PLUS
+    contractAmount: numeric("contract_amount", { precision: 18, scale: 2 }),
+    markupPercentage: numeric("markup_percentage", { precision: 5, scale: 2 }),
+    description: text("description"),
+    activeFlag: boolean("active_flag").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPpmBillingRuleSchema = createInsertSchema(ppmBillingRules);
+export type InsertPpmBillingRule = z.infer<typeof insertPpmBillingRuleSchema>;
+export type PpmBillingRule = typeof ppmBillingRules.$inferSelect;
