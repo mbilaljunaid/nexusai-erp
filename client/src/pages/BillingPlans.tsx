@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { queryClient } from "@/lib/queryClient";
 import { Check } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function BillingPlans() {
   const { data: plans = [] } = useQuery({
@@ -16,10 +17,10 @@ export default function BillingPlans() {
   });
 
   const subscribeMutation = useMutation({
-    mutationFn: (planId: string) => 
-      fetch("/api/subscriptions", { 
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
+    mutationFn: (planId: string) =>
+      fetch("/api/subscriptions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tenantId: "tenant1", planId })
       }).then(r => r.json()),
     onSuccess: () => {
@@ -30,12 +31,10 @@ export default function BillingPlans() {
   const currentPlanId = Array.isArray(currentSub) && currentSub.length > 0 ? currentSub[0].planId : null;
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Billing Plans</h1>
-        <p className="text-gray-600">Choose the perfect plan for your organization</p>
-      </div>
-
+    <StandardPage
+      title="Billing Plans"
+      subtitle="Choose the perfect plan for your organization"
+    >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {plans.map((plan: any) => (
           <Card key={plan.id} className={`p-6 relative flex flex-col ${currentPlanId === plan.id ? 'ring-2 ring-blue-500' : ''}`}>
@@ -44,7 +43,7 @@ export default function BillingPlans() {
                 Current Plan
               </div>
             )}
-            
+
             <h2 className="text-2xl font-bold mb-2" data-testid={`text-plan-name-${plan.id}`}>{plan.name}</h2>
             <div className="mb-6">
               <span className="text-4xl font-bold">${plan.price}</span>
@@ -65,7 +64,7 @@ export default function BillingPlans() {
                 Current Plan
               </Button>
             ) : (
-              <Button 
+              <Button
                 onClick={() => subscribeMutation.mutate(plan.id)}
                 className="w-full"
                 data-testid={`button-subscribe-${plan.id}`}
@@ -77,6 +76,6 @@ export default function BillingPlans() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

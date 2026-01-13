@@ -808,7 +808,7 @@ function Router() {
       <Route path="/gl/config/ledgers" component={LedgerSetup} />
 
       {/* Cost Management Routes */}
-      <Route path="/cost/dashboard" component={CostDashboard} />
+      <Route path="/cost" component={CostDashboard} />
       <Route path="/cost/scenarios" component={ScenarioManager} />
       <Route path="/cost/distributions" component={DistributionsViewer} />
       <Route path="/cost/lcm" component={LcmWorkbench} />

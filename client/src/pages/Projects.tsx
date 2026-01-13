@@ -15,13 +15,9 @@ import { Search, Filter, FolderKanban, CheckCircle2, Clock, AlertTriangle, Spark
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useRoute } from "wouter";
 
-function TaskEntryForm() {
-  return (
-    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
-      <p className="text-muted-foreground">Task Entry Form Placeholder</p>
-    </div>
-  );
-}
+import ProjectsDashboard from "./projects/ProjectsDashboard";
+import ProjectList from "./projects/ProjectList";
+import TaskList from "./projects/TaskList";
 
 interface Project {
   id: string;
@@ -130,47 +126,26 @@ export default function Projects() {
       )}
 
       {activeNav === "overview" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredProjects.map((project) => {
-            const config = statusConfig[project.status];
-            const StatusIcon = config.icon;
-            return (
-              <Card key={project.id} className="hover-elevate" data-testid={`card-project-${project.id}`}>
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-md bg-primary/10">
-                        <FolderKanban className="h-4 w-4 text-primary" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-base">{project.name}</CardTitle>
-                        <p className="text-xs text-muted-foreground mt-0.5">{project.description}</p>
-                      </div>
-                    </div>
-                    <Badge variant="secondary" className={config.color}>
-                      <StatusIcon className="h-3 w-3 mr-1" />
-                      {config.label}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-muted-foreground">Progress</span>
-                      <span className="font-medium">{project.progress}%</span>
-                    </div>
-                    <Progress value={project.progress} className="h-2" />
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+        <div className="space-y-6">
+          <ProjectsDashboard />
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-4">Active Projects</h2>
+            <ProjectList />
+          </div>
         </div>
       )}
 
       {activeNav === "kanban" && <KanbanBoard />}
 
-      {activeNav === "tasks" && <div className="space-y-4"><TaskEntryForm /></div>}
+      {activeNav === "tasks" && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Project Tasks</h2>
+            <AddTaskDialog />
+          </div>
+          <TaskList />
+        </div>
+      )}
 
       {activeNav === "resources" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -208,32 +183,8 @@ export default function Projects() {
                   <p className="text-muted-foreground mb-4">Select a project to record costs in general ledger</p>
                 </CardContent>
               </Card>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { id: "1", name: "Website Redesign", budget: 250000, spent: 185000, status: "In Progress", department: "Product" },
-                  { id: "2", name: "Mobile App Development", budget: 500000, spent: 320000, status: "In Progress", department: "Engineering" },
-                  { id: "3", name: "Cloud Migration", budget: 150000, spent: 145000, status: "Completed", department: "Infrastructure" },
-                ].map((proj) => (
-                  <Card key={proj.id} className="hover-elevate">
-                    <CardContent className="pt-6">
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <p className="font-semibold">{proj.name}</p>
-                          <Badge>{proj.status}</Badge>
-                        </div>
-                        <div className="flex justify-between text-sm text-muted-foreground">
-                          <span>Budget: ${proj.budget.toLocaleString()}</span>
-                          <span>Spent: ${proj.spent.toLocaleString()}</span>
-                        </div>
-                        <Progress value={(proj.spent / proj.budget) * 100} className="h-2" />
-                        <Button size="sm" className="w-full" data-testid={`button-gl-${proj.id}`}>
-                          Record GL Entry
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              {/* Reusing ProjectList logic here but for now just showing placeholder or the ProjectList */}
+              <ProjectList />
             </div>
           )}
         </div>

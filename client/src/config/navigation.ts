@@ -83,6 +83,19 @@ export const navigationConfig: SidebarNode[] = [
             { id: "ar", title: "Accounts Receivable", type: "link", icon: TrendingUp, path: "/finance/accounts-receivable", allowedRoles: ["admin", "editor"] },
             { id: "cash", title: "Cash Management", type: "link", icon: DollarSign, path: "/finance/cash-management", allowedRoles: ["admin", "editor"] },
             { id: "fixed-assets", title: "Fixed Assets", type: "link", icon: Building, path: "/finance/fixed-assets", allowedRoles: ["admin", "editor"] },
+            {
+                id: "cost-management",
+                title: "Cost Management",
+                type: "section",
+                icon: DollarSign,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "cost-dashboard", title: "Dashboard", type: "link", path: "/cost" },
+                    { id: "cost-distributions", title: "Cost Distributions", type: "link", path: "/cost/distributions" },
+                    { id: "cost-lcm", title: "Landed Cost", type: "link", path: "/cost/lcm" },
+                    { id: "cost-scenarios", title: "Scenario Manager", type: "link", path: "/cost/scenarios" },
+                ]
+            },
             { id: "tax", title: "Tax Management", type: "link", icon: Shield, path: "/finance/tax", allowedRoles: ["admin", "editor"] },
             { id: "netting", title: "Netting", type: "link", icon: ArrowRightLeft, path: "/finance/netting", allowedRoles: ["admin", "editor"] },
             {

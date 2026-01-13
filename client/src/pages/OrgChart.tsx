@@ -1,22 +1,25 @@
-import { Card } from "@/components/ui/card";
+import { StandardDashboard } from "@/components/ui/StandardDashboard";
+import { DashboardWidget } from "@/components/ui/DashboardWidget";
 import { Badge } from "@/components/ui/badge";
+import { Network } from "lucide-react";
 
 export default function OrgChart() {
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Org Chart</h1>
-        <p className="text-muted-foreground mt-2">Enterprise module loaded</p>
+    <StandardDashboard
+      header={{
+        title: "Org Chart",
+        description: "Enterprise module loaded"
+      }}
+    >
+      <div className="grid gap-4 md:grid-cols-1">
+        <DashboardWidget
+          title="Module Status"
+          type="metric"
+          icon={Network}
+          value={<Badge variant="default" className="text-base px-4 py-1">Ready</Badge>}
+          description="Module active and operational"
+        />
       </div>
-      <Card className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold">Org Chart</h2>
-            <p className="text-sm text-muted-foreground mt-1">Module status: Active</p>
-          </div>
-          <Badge variant="default">Ready</Badge>
-        </div>
-      </Card>
-    </div>
+    </StandardDashboard>
   );
 }

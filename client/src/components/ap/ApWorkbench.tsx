@@ -58,34 +58,19 @@ export default function ApWorkbench() {
                         </TabsContent>
 
                         <TabsContent value="matching">
-                            <FilteredInvoiceList filter="matching" />
+                            <ApInvoiceList statusFilter="matching" />
                         </TabsContent>
 
                         <TabsContent value="validation">
-                            <FilteredInvoiceList filter="validation" />
+                            <ApInvoiceList statusFilter="validation" />
                         </TabsContent>
 
                         <TabsContent value="holds">
-                            <FilteredInvoiceList filter="holds" />
+                            <ApInvoiceList statusFilter="holds" />
                         </TabsContent>
                     </Tabs>
                 </CardContent>
             </Card>
-        </div>
-    );
-}
-
-function FilteredInvoiceList({ filter }: { filter: string }) {
-    // This will be a specialized list view eventually
-    // For now, it's a placeholder showing how to reuse ApInvoiceList with props if we add them
-    return (
-        <div className="p-8 text-center border-2 border-dashed rounded-xl bg-muted/30">
-            <RefreshCw className="h-8 w-8 mx-auto mb-4 text-muted-foreground animate-spin-slow" />
-            <h3 className="text-lg font-medium">Coming Soon</h3>
-            <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-1">
-                Advanced filtering for {filter} is being implemented in the next sub-chunk.
-                Use the "All Invoices" tab to manage your entries.
-            </p>
         </div>
     );
 }

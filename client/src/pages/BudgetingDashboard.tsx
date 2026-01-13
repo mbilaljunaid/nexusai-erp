@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardDashboard } from "@/components/ui/StandardDashboard";
+import { DashboardWidget } from "@/components/ui/DashboardWidget";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, DollarSign, PieChart, AlertCircle } from "lucide-react";
 
 export default function BudgetingDashboard() {
   const { data: budgets = [] } = useQuery<any[]>({ queryKey: ["/api/epm/budgets"] });
@@ -9,17 +10,57 @@ export default function BudgetingDashboard() {
   const totalSpent = budgets.reduce((sum, b: any) => sum + parseFloat(b.spent || 0), 0);
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2"><TrendingUp className="w-8 h-8" />Budget Planning</h1>
-        <p className="text-muted-foreground">Manage budgets and forecasts</p>
+    <StandardDashboard
+        header={{
+            title: "Budget Planning",
+            description: "Manage budgets and forecasts"
+        }}
+    >
+          icon={Activity}
+          loading={isLoading}
+          type="metric"
+          className="text-red-600"
+          description="Attrition"
+        />
+        <DashboardWidget
+          title="Data Points"
+          value={metrics.length}
+          icon={TrendingUp}
+          loading={isLoading}
+          type="metric"
+          description="Network Nodes"
+        />
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Total Budget</p><p className="text-2xl font-bold">${totalBudget.toFixed(2)}</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Spent</p><p className="text-2xl font-bold text-orange-600">${totalSpent.toFixed(2)}</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Remaining</p><p className="text-2xl font-bold text-green-600">${(totalBudget - totalSpent).toFixed(2)}</p></CardContent></Card>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <DashboardWidget
+          title="Revenue by Service"
+          type="chart"
+        >
+          <div className="space-y-2 mt-2">
+            {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
+              <div key={m.id} className="p-3 border rounded-lg text-sm hover:bg-muted/50 transition-colors flex justify-between" data-testid={`svc-${m.id}`}>
+                <span className="font-medium">{m.service || "Service"}</span>
+                <span className="font-mono font-bold">${(m.revenue || 0).toFixed(0)}</span>
+              </div>
+            ))}
+          </div>
+        </DashboardWidget>
+
+        <DashboardWidget
+          title="Subscriber Growth"
+          type="chart"
+        >
+          <div className="space-y-2 mt-2">
+            {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
+              <div key={m.id} className="p-3 border rounded-lg text-sm hover:bg-muted/50 transition-colors flex justify-between items-center" data-testid={`growth-${m.id}`}>
+                <span className="font-medium">{m.plan || "Plan"}</span>
+                <Badge variant="default" className="font-mono text-xs">{m.subscribers || 0}+</Badge>
+              </div>
+            ))}
+          </div>
+        </DashboardWidget>
       </div>
-      <Card><CardHeader><CardTitle>Budgets</CardTitle></CardHeader><CardContent><div className="space-y-2">{budgets.map((b: any) => (<div key={b.id} className="flex justify-between items-center p-3 border rounded hover-elevate"><div><p className="font-semibold">{b.department}</p><p className="text-sm text-muted-foreground">Period: {b.period}</p></div><div className="text-right"><p className="font-semibold">${b.amount}</p><Badge variant={parseFloat(b.spent) > parseFloat(b.amount) ? "destructive" : "default"}>{((parseFloat(b.spent) / parseFloat(b.amount)) * 100).toFixed(0)}%</Badge></div></div>))}</div></CardContent></Card>
-    </div>
+    </StandardDashboard >
   );
 }

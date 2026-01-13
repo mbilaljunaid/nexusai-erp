@@ -34,6 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OpportunityProductList } from "@/components/crm/OpportunityProductList";
 import { OpportunityQuoteList } from "@/components/crm/OpportunityQuoteList";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { StandardTable } from "@/components/ui/StandardTable";
 
 // Helper to format currency
 const formatCurrency = (val: number | string) => {
@@ -192,45 +193,45 @@ export default function OpportunitiesDetail() {
             ))}
           </div>
         ) : viewMode === "list" ? (
-          <div className="grid gap-3">
-            {filteredOpps.map(opp => (
-              <Card
-                key={opp.id}
-                className="hover-elevate cursor-pointer border-muted/50 group"
-                onClick={() => setSelectedOpp(opp)}
-              >
-                <CardContent className="p-5 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
-                      <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold uppercase">
-                        {opp.name.substring(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-bold text-lg group-hover:text-primary transition-colors leading-none">{opp.name}</p>
-                      <p className="text-sm text-muted-foreground mt-1">{getAccountName(opp.accountId)}</p>
-                    </div>
+          <StandardTable
+            data={filteredOpps}
+            columns={[
+              {
+                header: "Name",
+                accessorKey: "name",
+                cell: (opp: Opportunity) => (
+                  <div>
+                    <div className="font-semibold">{opp.name}</div>
+                    <div className="text-xs text-muted-foreground">{getAccountName(opp.accountId)}</div>
                   </div>
-                  <div className="flex items-center gap-8">
-                    <Badge variant="outline" className="capitalize px-3 py-1 font-medium bg-muted/30">
-                      {opp.stage.replace('_', ' ')}
-                    </Badge>
-                    <div className="text-right">
-                      <p className="font-bold text-lg leading-none">{formatCurrency(opp.amount)}</p>
-                      <p className="text-xs text-muted-foreground mt-1 font-medium italic">{opp.probability}% probability</p>
-                    </div>
-                    <MoreVertical className="h-4 w-4 text-muted-foreground group-hover:text-foreground opacity-0 group-hover:opacity-100 transition-all" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-            {filteredOpps.length === 0 && (
-              <div className="text-center py-20 bg-muted/10 rounded-3xl border-2 border-dashed border-muted/30">
-                <Layers className="h-10 w-10 mx-auto text-muted-foreground opacity-30 mb-2" />
-                <p className="text-muted-foreground font-medium">No opportunities found.</p>
-              </div>
-            )}
-          </div>
+                )
+              },
+              {
+                header: "Stage",
+                accessorKey: "stage",
+                cell: (opp: Opportunity) => <Badge variant="outline" className="capitalize">{opp.stage.replace('_', ' ')}</Badge>
+              },
+              {
+                header: "Amount",
+                accessorKey: "amount",
+                className: "text-right",
+                cell: (opp: Opportunity) => <span className="font-medium">{formatCurrency(opp.amount)}</span>
+              },
+              {
+                header: "Probability",
+                accessorKey: "probability",
+                className: "text-right",
+                cell: (opp: Opportunity) => <span>{opp.probability}%</span>
+              },
+              {
+                header: "Close Date",
+                accessorKey: "closeDate",
+                cell: (opp: Opportunity) => opp.closeDate ? new Date(opp.closeDate).toLocaleDateString() : '-'
+              }
+            ]}
+            onRowClick={setSelectedOpp}
+            keyExtractor={(opp) => opp.id}
+          />
         ) : (
           /* Kanban View */
           <div className="flex gap-6 h-full overflow-x-auto pb-4 custom-scrollbar">

@@ -4,16 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { openFormInNewWindow } from "@/lib/formUtils";
-import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
-import { getFormMetadata } from "@/lib/formMetadata";
 import { Users, Briefcase, Clock, TrendingUp, BarChart3, Settings } from "lucide-react";
+import HrDashboard from "./hr/HrDashboard";
+import EmployeesList from "./EmployeesList";
 
 export default function HR() {
   const [activeNav, setActiveNav] = useState("overview");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
-  const employeesMetadata = getFormMetadata("employees");
-  
+
   const { data: employees = [] } = useQuery<any[]>({
     queryKey: ["/api/employees"],
     retry: false
@@ -48,9 +45,8 @@ export default function HR() {
           <button
             key={item.id}
             onClick={() => handleIconClick(item.formId)}
-            className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${
-              !item.formId ? "hover:border-primary hover-elevate" : "hover:bg-primary/10 hover:border-primary hover-elevate"
-            }`}
+            className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${!item.formId ? "hover:border-primary hover-elevate" : "hover:bg-primary/10 hover:border-primary hover-elevate"
+              }`}
             data-testid={`button-icon-${item.id}`}
           >
             <item.icon className={`w-6 h-6 ${item.color}`} />
@@ -60,52 +56,12 @@ export default function HR() {
       </div>
 
       {activeNav === "overview" && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">{employees.length}</p><p className="text-xs text-muted-foreground">Total Employees</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">95%</p><p className="text-xs text-muted-foreground">Attendance</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$2.1M</p><p className="text-xs text-muted-foreground">Monthly Payroll</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-2xl font-semibold">12</p><p className="text-xs text-muted-foreground">Open Positions</p></CardContent></Card>
-        </div>
+        <HrDashboard />
       )}
 
       {activeNav === "employees" && (
         <div className="space-y-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-1">
-              <CardTitle>Employees</CardTitle>
-              <Button onClick={() => openFormInNewWindow("employees", "Employees Form")} data-testid="button-add-employees">
-                + Add New
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormSearchWithMetadata
-                formMetadata={employeesMetadata}
-                value={searchQuery}
-                onChange={setSearchQuery}
-                data={employees}
-                onFilter={setFilteredEmployees}
-              />
-              <div className="space-y-2">
-                {filteredEmployees.length > 0 ? (
-                  filteredEmployees.map((emp: any, idx: number) => (
-                    <Card key={emp.id || idx} className="hover-elevate cursor-pointer">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-semibold">{emp.name || 'Employee'}</p>
-                            <p className="text-sm text-muted-foreground">{emp.department || 'Department'} • {emp.role || 'Role'}</p>
-                          </div>
-                          <Badge>{emp.status || 'Active'}</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : (
-                  <p className="text-muted-foreground text-center py-4">No employees found</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          <EmployeesList />
         </div>
       )}
 

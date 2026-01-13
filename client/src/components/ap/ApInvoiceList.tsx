@@ -12,19 +12,32 @@ import { ApSideSheet } from "./ApSideSheet";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
+// Extend the base type to include relations that might be returned by API
+interface ApInvoiceWithRelations extends ApInvoice {
+    holds?: any[];
+}
+
 async function fetchInvoices() {
     const res = await apiRequest("GET", "/api/ap/invoices");
     return res.json();
 }
 
-export function ApInvoiceList() {
+export function ApInvoiceList(props: { statusFilter?: string }) {
     const queryClient = useQueryClient();
     const { toast } = useToast();
-    const [selectedInvoice, setSelectedInvoice] = useState<ApInvoice | null>(null);
+    const [selectedInvoice, setSelectedInvoice] = useState<ApInvoiceWithRelations | null>(null);
 
-    const { data: invoices = [], isLoading } = useQuery<ApInvoice[]>({
+    const { data: invoices = [], isLoading } = useQuery<ApInvoiceWithRelations[]>({
         queryKey: ['/api/ap/invoices'],
         queryFn: fetchInvoices
+    });
+
+    const filteredInvoices = invoices.filter(invoice => {
+        if (!props.statusFilter) return true;
+        if (props.statusFilter === 'matching') return invoice.status === 'Needs Matching';
+        if (props.statusFilter === 'validation') return invoice.validationStatus !== 'VALIDATED';
+        if (props.statusFilter === 'holds') return invoice.holds && invoice.holds.length > 0;
+        return true;
     });
 
     const validateMutation = useMutation({
@@ -36,7 +49,7 @@ export function ApInvoiceList() {
             queryClient.invalidateQueries({ queryKey: ['/api/ap/invoices'] });
             toast({
                 title: "Validation Complete",
-                description: `Invoice status: ${data.status}. Holds: ${data.holds.length}`,
+                description: `Invoice status: ${data.status}. Holds: ${data.holds?.length || 0}`,
                 variant: data.status === "VALIDATED" ? "default" : "destructive",
             });
         },
@@ -45,7 +58,7 @@ export function ApInvoiceList() {
         }
     });
 
-    const columns: ColumnDef<ApInvoice>[] = [
+    const columns: ColumnDef<ApInvoiceWithRelations>[] = [
         {
             accessorKey: "invoiceNumber",
             header: "Invoice Number",
@@ -119,7 +132,7 @@ export function ApInvoiceList() {
     return (
         <>
             <StandardTable
-                data={invoices}
+                data={filteredInvoices}
                 columns={columns}
                 isLoading={isLoading}
                 filterColumn="invoiceNumber"
