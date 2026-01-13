@@ -1594,8 +1594,21 @@ export class DatabaseStorage implements IStorage {
     return true;
   }
 
-  async listCashStatementLines(bankAccountId: string) {
-    return await db.select().from(cashStatementLines).where(eq(cashStatementLines.bankAccountId, bankAccountId));
+  async listCashStatementLines(bankAccountId: string, limit?: number, offset?: number) {
+    let query = db.select().from(cashStatementLines)
+      .where(eq(cashStatementLines.bankAccountId, bankAccountId))
+      .orderBy(desc(cashStatementLines.transactionDate));
+
+    if (limit !== undefined && offset !== undefined) {
+      return await query.limit(limit).offset(offset);
+    }
+    return await query;
+  }
+  async getCashStatementLinesCount(bankAccountId: string): Promise<number> {
+    const [res] = await db.select({ count: count() })
+      .from(cashStatementLines)
+      .where(eq(cashStatementLines.bankAccountId, bankAccountId));
+    return res.count;
   }
   async createCashStatementLine(data: InsertCashStatementLine) {
     const [line] = await db.insert(cashStatementLines).values(data).returning();
@@ -1617,8 +1630,21 @@ export class DatabaseStorage implements IStorage {
     return header;
   }
 
-  async listCashTransactions(bankAccountId: string) {
-    return await db.select().from(cashTransactions).where(eq(cashTransactions.bankAccountId, bankAccountId));
+  async listCashTransactions(bankAccountId: string, limit?: number, offset?: number) {
+    let query = db.select().from(cashTransactions)
+      .where(eq(cashTransactions.bankAccountId, bankAccountId))
+      .orderBy(desc(cashTransactions.transactionDate));
+
+    if (limit !== undefined && offset !== undefined) {
+      return await query.limit(limit).offset(offset);
+    }
+    return await query;
+  }
+  async getCashTransactionsCount(bankAccountId: string): Promise<number> {
+    const [res] = await db.select({ count: count() })
+      .from(cashTransactions)
+      .where(eq(cashTransactions.bankAccountId, bankAccountId));
+    return res.count;
   }
   async createCashTransaction(data: InsertCashTransaction) {
     const [trx] = await db.insert(cashTransactions).values(data).returning();

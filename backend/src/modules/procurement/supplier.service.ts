@@ -22,8 +22,25 @@ export class SupplierService {
         return this.supplierRepository.save(supplier);
     }
 
-    async findAll(): Promise<Supplier[]> {
-        return this.supplierRepository.find({ relations: ['sites'] });
+    async findAll(query?: { search?: string; limit?: number; offset?: number }): Promise<{ data: Supplier[]; total: number }> {
+        const qb = this.supplierRepository.createQueryBuilder('supplier')
+            .leftJoinAndSelect('supplier.sites', 'site')
+            .orderBy('supplier.createdAt', 'DESC');
+
+        if (query?.search) {
+            qb.where('supplier.supplierName ILIKE :search OR supplier.supplierNumber ILIKE :search', { search: `%${query.search}%` });
+        }
+
+        if (query?.limit) {
+            qb.take(query.limit);
+        }
+
+        if (query?.offset) {
+            qb.skip(query.offset);
+        }
+
+        const [data, total] = await qb.getManyAndCount();
+        return { data, total };
     }
 
     async findOne(id: string): Promise<Supplier> {
@@ -57,5 +74,26 @@ export class SupplierService {
             supplier,
         });
         return this.siteRepository.save(site);
+    }
+
+    async getSites(supplierId: string): Promise<SupplierSite[]> {
+        return this.siteRepository.find({
+            where: { supplier: { id: supplierId } },
+            order: { createdAt: 'DESC' }
+        });
+    }
+
+    async updateSite(siteId: string, updateData: any): Promise<SupplierSite> {
+        const site = await this.siteRepository.findOne({ where: { id: siteId } });
+        if (!site) throw new NotFoundException(`Site with ID ${siteId} not found`);
+        Object.assign(site, updateData);
+        return this.siteRepository.save(site);
+    }
+
+    async removeSite(siteId: string): Promise<void> {
+        const result = await this.siteRepository.delete(siteId);
+        if (result.affected === 0) {
+            throw new NotFoundException(`Site with ID ${siteId} not found`);
+        }
     }
 }

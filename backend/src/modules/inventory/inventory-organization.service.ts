@@ -13,12 +13,16 @@ export class InventoryOrganizationService {
     ) { }
 
     async create(dto: any): Promise<InventoryOrganization> {
-        const org = this.orgRepository.create(dto);
-        return this.orgRepository.save(org);
+        const org = this.orgRepository.create(dto as any);
+        return this.orgRepository.save(org as any) as Promise<InventoryOrganization>;
     }
 
-    async findAll(): Promise<InventoryOrganization[]> {
-        return this.orgRepository.find();
+    async findAll(limit?: number, offset?: number): Promise<{ data: InventoryOrganization[], total: number }> {
+        const [orgs, total] = await this.orgRepository.findAndCount({
+            take: limit,
+            skip: offset,
+        });
+        return { data: orgs, total };
     }
 
     async findOne(id: string): Promise<InventoryOrganization> {

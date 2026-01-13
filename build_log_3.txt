@@ -1,0 +1,194 @@
+
+> rest-express@1.0.0 build
+> tsx script/build.ts
+
+building client...
+vite v5.4.20 building for production...
+transforming...
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+✓ 3073 modules transformed.
+x Build failed in 3.48s
+[vite:esbuild] Transform failed with 3 errors:
+/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BudgetingDashboard.tsx:24:9: ERROR: The character ">" is not valid inside a JSX element
+/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BudgetingDashboard.tsx:33:8: ERROR: Unexpected closing "div" tag does not match opening "StandardDashboard" tag
+/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BudgetingDashboard.tsx:35:11: ERROR: Expected ")" but found "className"
+file: /Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BudgetingDashboard.tsx:24:9
+
+The character ">" is not valid inside a JSX element
+22 |            className="text-red-600"
+23 |            description="Attrition"
+24 |          />
+   |           ^
+25 |          <DashboardWidget
+26 |            title="Data Points"
+
+Unexpected closing "div" tag does not match opening "StandardDashboard" tag
+31 |            description="Network Nodes"
+32 |          />
+33 |        </div>
+   |          ^
+34 |  
+35 |        <div className="grid gap-4 md:grid-cols-2">
+
+Expected ")" but found "className"
+33 |        </div>
+34 |  
+35 |        <div className="grid gap-4 md:grid-cols-2">
+   |             ^
+36 |          <DashboardWidget
+37 |            title="Revenue by Service"
+
+    at failureErrorWithLog (/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  errors: [Getter/Setter],
+  warnings: [Getter/Setter],
+  frame: '\n' +
+    'The character ">" is not valid inside a JSX element\n' +
+    '22 |            className="text-red-600"\n' +
+    '23 |            description="Attrition"\n' +
+    '24 |          />\n' +
+    '   |           ^\n' +
+    '25 |          <DashboardWidget\n' +
+    '26 |            title="Data Points"\n' +
+    '\n' +
+    'Unexpected closing "div" tag does not match opening "StandardDashboard" tag\n' +
+    '31 |            description="Network Nodes"\n' +
+    '32 |          />\n' +
+    '33 |        </div>\n' +
+    '   |          ^\n' +
+    '34 |  \n' +
+    '35 |        <div className="grid gap-4 md:grid-cols-2">\n' +
+    '\n' +
+    'Expected ")" but found "className"\n' +
+    '33 |        </div>\n' +
+    '34 |  \n' +
+    '35 |        <div className="grid gap-4 md:grid-cols-2">\n' +
+    '   |             ^\n' +
+    '36 |          <DashboardWidget\n' +
+    '37 |            title="Revenue by Service"\n',
+  loc: {
+    column: 9,
+    file: '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BudgetingDashboard.tsx',
+    length: 1,
+    line: 24,
+    lineText: '        />',
+    namespace: '',
+    suggestion: "{'>'}"
+  },
+  code: 'PLUGIN_ERROR',
+  plugin: 'vite:esbuild',
+  hook: 'transform',
+  id: '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BudgetingDashboard.tsx',
+  watchFiles: [
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/index.html',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/main.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/package.json',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/App.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/react-dom/client.js',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/react/jsx-runtime.js',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/index.css',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/react-dom/index.js',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/react/cjs/react-jsx-runtime.production.min.js',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/queryClient.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/react/index.js',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/JournalEntry.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/wouter/esm/index.js',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/node_modules/@tanstack/react-query/build/modern/index.js',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/FSGBuilder.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/LedgerSetup.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/FinancialReports.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/LegalEntitySetup.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/LedgerSetSetup.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/CoaStructureSetup.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/HierarchyManager.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/ValueSetManager.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/ConfigurationHub.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/SourceCategorySetup.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/CalendarSetup.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/SlaRules.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/TranslationRules.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ui/toaster.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/gl/LedgerControlSetup.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/GlobalLayout.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/RBACContext.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ThemeProvider.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/hooks/use-tour.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/GuidedTour.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/QuickTips.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ProtectedRoute.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/context/LedgerContext.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/AIChatWidget.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/not-found.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/LandingPage.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ap/ApSettings.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/AboutPage.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BlogPage.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BlogPostPage.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ui/tooltip.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ui/sidebar.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/LoginPage.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/DemoManagement.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/UseCases.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/IndustriesPage.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/ModuleDetail.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/IndustrySetup.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/EnvironmentManagement.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/SubscriptionManagement.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/pages/BillingManagement.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/config/navigation.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/data/featureRegistry.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/hooks/use-debounce.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/hooks/use-toast.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/hooks/useAuth.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/api.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/authUtils.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/conditionalLogicEngine.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/formMetadata.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/formUtils.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/i18n.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/industryConfig.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/moduleData.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/pageConfig.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/utils.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/lib/validationEngine.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/services/cost-management.service.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/services/uiFormatterService.test.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/services/uiFormatterService.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/types/formatter.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/types/sidebar.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ar/index.ts',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/__tests__/PublicProcessPages.test.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/AIAssistant.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/AICopilotWidget.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ActivityFeed.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/AddLeadDialog.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/AddTaskDialog.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/AnalyticsChart.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/AppSidebar.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/Breadcrumb.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/Breadcrumbs.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ContextualSearch.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/DashboardWidgets.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ExcelExportButton.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ExcelImportModal.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/ExportButton.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/FeedbackWidget.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/FlagContentDialog.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/Footer.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/FormDialog.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/FormSearch.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/FormSearchWithMetadata.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/FormattedValue.tsx',
+    '/Users/mbjunaid/Library/CloudStorage/GoogleDrive-mbilaljunaid@gmail.com/My Drive/Online Projects/13. NexusAIFirst/nexusai-erp/client/src/components/GlobalLayout.test.tsx',
+    ... 3747 more items
+  ]
+}

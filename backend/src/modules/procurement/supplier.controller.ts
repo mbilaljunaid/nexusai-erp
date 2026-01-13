@@ -36,4 +36,19 @@ export class SupplierController {
     addSite(@Param('id') id: string, @Body() siteData: any) {
         return this.supplierService.addSite(id, siteData);
     }
+
+    @Get(':id/sites')
+    getSites(@Param('id') id: string) {
+        return this.supplierService.getSites(id);
+    }
+
+    @Put('sites/:siteId')
+    updateSite(@Param('siteId') siteId: string, @Body() updateData: any) {
+        return this.supplierService.updateSite(siteId, updateData);
+    }
+
+    @Delete('sites/:siteId')
+    removeSite(@Param('siteId') siteId: string) {
+        return this.supplierService.removeSite(siteId);
+    }
 }

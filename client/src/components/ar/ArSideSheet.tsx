@@ -39,6 +39,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2, Receipt } from "lucide-react";
 import { ArAdjustmentDialog } from "./ArAdjustmentDialog"; // Import Dialog
 import { Button } from "@/components/ui/button"; // Import Button
+import { CreateCreditMemoDialog } from "./CreateCreditMemoDialog";
 
 interface ArSideSheetProps {
     isOpen: boolean;
@@ -94,7 +95,13 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
             </div>
 
             {/* Action Bar */}
+            {/* Action Bar */}
             <div className="flex gap-2">
+                <CreateCreditMemoDialog
+                    invoiceId={data.id}
+                    invoiceNumber={data.invoiceNumber}
+                    maxAmount={Number(data.totalAmount)} // Simple cap for now
+                />
                 <Button variant="outline" size="sm" onClick={() => setIsAdjustmentDialogOpen(true)}>
                     <Receipt className="w-4 h-4 mr-2" /> Adjust / Write-off
                 </Button>

@@ -24,6 +24,9 @@ import { ReservationService } from './reservation.service';
 import { CycleCountHeader, CycleCountEntry } from './entities/cycle-count.entity';
 import { CycleCountService } from './cycle-count.service';
 import { CostManagementModule } from '../cost-management/cost-management.module';
+import { LotService } from './lot.service';
+import { SerialService } from './serial.service';
+import { LotSerialController } from './lot-serial.controller';
 
 @Module({
   imports: [
@@ -43,7 +46,7 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
       CycleCountEntry
     ]),
   ],
-  controllers: [ProductController, ItemController, InventoryOrganizationController],
+  controllers: [ProductController, ItemController, InventoryOrganizationController, LotSerialController],
   providers: [
     ProductService,
     ItemService,
@@ -52,7 +55,9 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
     CostingService,
     PlanningService,
     ReservationService,
-    CycleCountService
+    CycleCountService,
+    LotService,
+    SerialService
   ],
   exports: [
     ProductService,
@@ -62,6 +67,8 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
     PlanningService,
     ReservationService,
     CycleCountService,
+    LotService,
+    SerialService,
     TypeOrmModule // Export repositories
   ],
 })

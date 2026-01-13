@@ -24,11 +24,25 @@ function StatCard({ title, value, icon, description }: StatCardProps) {
     );
 }
 
-export function AssetStatCards({ assets }: { assets: any[] }) {
-    const totalCost = assets.reduce((sum, a) => sum + Number(a.originalCost), 0);
-    const totalNBV = assets.reduce((sum, a) => sum + (Number(a.recoverableCost) - 0), 0); // Todo: subtract depr
-    const activeCount = assets.filter(a => a.status === 'ACTIVE').length;
-    const retiredCount = assets.filter(a => a.status === 'RETIRED').length;
+import { Loader2 } from "lucide-react";
+
+export function AssetStatCards({ stats, isLoading }: { stats?: any, isLoading?: boolean }) {
+    if (isLoading) {
+        return (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {[1, 2, 3, 4].map(i => (
+                    <Card key={i} className="animate-pulse">
+                        <CardHeader className="h-12" />
+                        <CardContent className="h-16" />
+                    </Card>
+                ))}
+            </div>
+        );
+    }
+
+    const totalNBV = parseFloat(stats?.totalRecoverable || "0");
+    const activeCount = stats?.activeCount || 0;
+    const retiredCount = stats?.retiredCount || 0;
 
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

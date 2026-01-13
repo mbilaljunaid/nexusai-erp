@@ -107,13 +107,20 @@ router.get("/gl/stats", async (req, res) => {
  */
 router.get("/gl/journals", async (req, res) => {
   try {
-    const { status, ledgerId, search } = req.query;
+    const { status, ledgerId, search, limit, offset } = req.query;
     const journals = await financeService.listJournals({
+      status: status as string,
+      ledgerId: ledgerId as string,
+      search: search as string,
+      limit: limit ? parseInt(limit as string) : undefined,
+      offset: offset ? parseInt(offset as string) : undefined
+    });
+    const count = await financeService.getJournalsCount({
       status: status as string,
       ledgerId: ledgerId as string,
       search: search as string
     });
-    res.json(journals);
+    res.json({ data: journals, total: count });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

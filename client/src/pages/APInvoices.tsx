@@ -8,14 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Plus, Trash2, CheckCircle, AlertCircle, Search } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { VendorPicker } from "@/components/finance/VendorPicker";
 import { PurchaseOrderPicker } from "@/components/procurement/PurchaseOrderPicker";
 import { ProjectPicker } from "@/components/finance/ProjectPicker";
 import { TaskPicker } from "@/components/finance/TaskPicker";
+import { ApInvoice } from "@shared/schema";
 
 export default function APInvoices() {
   const { toast } = useToast();
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [newInvoice, setNewInvoice] = useState({
     invoiceNumber: "",
     supplierId: "",
@@ -26,10 +29,13 @@ export default function APInvoices() {
     ppmTaskId: ""
   });
 
-  const { data: invoices = [], isLoading } = useQuery<any[]>({
-    queryKey: ["/api/ap/invoices"],
-    queryFn: () => fetch("/api/ap/invoices").then(r => r.json()),
+  const { data, isLoading } = useQuery<{ data: any[], total: number }>({
+    queryKey: ["/api/ap/invoices", page, pageSize],
+    queryFn: () => fetch(`/api/ap/invoices?limit=${pageSize}&offset=${(page - 1) * pageSize}`).then(r => r.json()),
   });
+
+  const invoices = data?.data || [];
+  const totalCount = data?.total || 0;
 
   const createMutation = useMutation({
     mutationFn: (data: any) => fetch("/api/ap/invoices", {
@@ -90,9 +96,10 @@ export default function APInvoices() {
     },
   });
 
-  const total = invoices.reduce((sum, i: any) => sum + parseFloat(i.invoiceAmount || 0), 0);
-  const validated = invoices.filter(i => i.validationStatus === "VALIDATED").reduce((sum, i: any) => sum + parseFloat(i.invoiceAmount || 0), 0);
-  const pending = total - validated;
+  // Note: Page-level summaries
+  const totalAmount = invoices.reduce((sum, i: any) => sum + parseFloat(i.invoiceAmount || 0), 0);
+  const validatedAmount = invoices.filter(i => i.validationStatus === "VALIDATED").reduce((sum, i: any) => sum + parseFloat(i.invoiceAmount || 0), 0);
+  const pendingAmount = totalAmount - validatedAmount;
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
     DRAFT: "secondary",
@@ -102,7 +109,7 @@ export default function APInvoices() {
     REJECTED: "destructive",
   };
 
-  const columns = [
+  const columns: Column<any>[] = [
     { header: "Invoice #", accessorKey: "invoiceNumber", className: "font-mono font-medium" },
     {
       header: "Supplier",
@@ -130,7 +137,6 @@ export default function APInvoices() {
     },
     {
       header: "Actions",
-      id: "actions",
       cell: (row: any) => (
         <div className="flex gap-2">
           {row.validationStatus !== "VALIDATED" && (
@@ -164,23 +170,23 @@ export default function APInvoices() {
       <div className="grid grid-cols-3 gap-4">
         <Card className="bg-primary/5 border-primary/20">
           <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Total Payables</p>
-            <p className="text-3xl font-bold">${total.toLocaleString()}</p>
+            <p className="text-muted-foreground text-sm">Page Total Payables</p>
+            <p className="text-3xl font-bold">${totalAmount.toLocaleString()}</p>
           </CardContent>
         </Card>
         <Card className="bg-green-50/50 border-green-200">
           <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Validated</p>
+            <p className="text-muted-foreground text-sm">Page Validated</p>
             <div className="flex items-center gap-2">
-              <p className="text-3xl font-bold text-green-600">${validated.toLocaleString()}</p>
+              <p className="text-3xl font-bold text-green-600">${validatedAmount.toLocaleString()}</p>
               <CheckCircle className="w-5 h-5 text-green-500" />
             </div>
           </CardContent>
         </Card>
         <Card className="bg-orange-50/50 border-orange-200">
           <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Action Required</p>
-            <p className="text-3xl font-bold text-orange-600">${pending.toLocaleString()}</p>
+            <p className="text-muted-foreground text-sm">Page Action Required</p>
+            <p className="text-3xl font-bold text-orange-600">${pendingAmount.toLocaleString()}</p>
           </CardContent>
         </Card>
       </div>
@@ -270,6 +276,10 @@ export default function APInvoices() {
               data={invoices}
               columns={columns}
               isLoading={isLoading}
+              page={page}
+              pageSize={pageSize}
+              totalItems={totalCount}
+              onPageChange={setPage}
               height={450}
               isVirtualized={true}
               keyExtractor={(row) => row.id}

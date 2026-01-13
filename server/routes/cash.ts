@@ -143,8 +143,11 @@ router.post("/reconcile/unmatch", async (req, res) => {
 
 router.get("/accounts/:id/statement-lines", async (req, res) => {
     try {
-        const lines = await cashService.listStatementLines(req.params.id);
-        res.json(lines);
+        const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+        const offset = req.query.offset ? parseInt(req.query.offset as string) : undefined;
+        const lines = await cashService.listStatementLines(req.params.id, limit, offset);
+        const count = await cashService.getStatementLinesCount(req.params.id);
+        res.json({ data: lines, total: count });
     } catch (error) {
         res.status(500).json({ message: "Failed to list statement lines" });
     }
@@ -152,8 +155,11 @@ router.get("/accounts/:id/statement-lines", async (req, res) => {
 
 router.get("/accounts/:id/transactions", async (req, res) => {
     try {
-        const transactions = await cashService.listTransactions(req.params.id);
-        res.json(transactions);
+        const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+        const offset = req.query.offset ? parseInt(req.query.offset as string) : undefined;
+        const transactions = await cashService.listTransactions(req.params.id, limit, offset);
+        const count = await cashService.getTransactionsCount(req.params.id);
+        res.json({ data: transactions, total: count });
     } catch (error) {
         res.status(500).json({ message: "Failed to list transactions" });
     }

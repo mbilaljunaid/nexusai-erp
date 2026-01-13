@@ -23,8 +23,12 @@ export interface CreateInvoicePayload {
 }
 
 export class ApService {
-    async listInvoices() {
-        return storage.listApInvoices();
+    async listInvoices(limit?: number, offset?: number) {
+        return storage.listApInvoices(limit, offset);
+    }
+
+    async getInvoicesCount(): Promise<number> {
+        return storage.getApInvoicesCount();
     }
 
     // Placeholder for seed (can be reimplemented fully later)

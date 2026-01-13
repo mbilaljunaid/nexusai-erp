@@ -6,11 +6,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
-import { FaAddition } from "@shared/schema";
 import { Loader2 } from "lucide-react";
 
+import { TransferAssetDialog } from "./TransferAssetDialog";
+import { RetireAssetDialog } from "./RetireAssetDialog";
+
 export function AssetList() {
-    const { data: assets, isLoading } = useQuery<FaAddition[]>({
+    const { data: assets, isLoading } = useQuery<any[]>({
         queryKey: ["/api/fa/assets"],
     });
 
@@ -32,6 +34,7 @@ export function AssetList() {
                             <TableHead className="text-right">Cost</TableHead>
                             <TableHead className="text-right">Units</TableHead>
                             <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -44,9 +47,15 @@ export function AssetList() {
                                 <TableCell className="text-right">{formatCurrency(Number(asset.originalCost))}</TableCell>
                                 <TableCell className="text-right">{asset.units}</TableCell>
                                 <TableCell>
-                                    <Badge variant={asset.status === "Active" ? "default" : "secondary"}>
+                                    <Badge variant={asset.status === "ACTIVE" ? "default" : "secondary"}>
                                         {asset.status}
                                     </Badge>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                    <div className="flex justify-end gap-2">
+                                        <TransferAssetDialog assetId={asset.id} assetNumber={asset.assetNumber} />
+                                        <RetireAssetDialog asset={asset} />
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

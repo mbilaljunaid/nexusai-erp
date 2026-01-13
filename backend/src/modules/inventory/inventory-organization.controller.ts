@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Inject, Query } from '@nestjs/common';
 import { InventoryOrganizationService } from './inventory-organization.service';
 
 @Controller('inventory/warehouses') // Mapping to existing frontend route preference
@@ -21,8 +21,8 @@ export class InventoryOrganizationController {
     }
 
     @Get()
-    findAll() {
-        return this.orgService.findAll();
+    findAll(@Query('limit') limit?: number, @Query('offset') offset?: number) {
+        return this.orgService.findAll(limit ? Number(limit) : undefined, offset ? Number(offset) : undefined);
     }
 
     @Get(':id')

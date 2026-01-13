@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Check, ChevronsUpDown, Search } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface VendorPickerProps {
     value: string;
@@ -25,13 +26,20 @@ interface VendorPickerProps {
 
 export function VendorPicker({ value, onChange, placeholder = "Select vendor..." }: VendorPickerProps) {
     const [open, setOpen] = useState(false);
+    const [search, setSearch] = useState("");
+    const debouncedSearch = useDebounce(search, 300);
 
-    const { data: vendors = [], isLoading } = useQuery<any[]>({
-        queryKey: ["/api/ap/suppliers"],
-        queryFn: () => fetch("/api/ap/suppliers").then(r => r.json()),
+    const { data, isLoading } = useQuery<any>({
+        queryKey: ["/api/procurement/suppliers", debouncedSearch],
+        queryFn: () => fetch(`/api/procurement/suppliers?limit=20&search=${debouncedSearch}`).then(r => r.json()),
+        // Keep previous data while fetching new data to avoid flickering
+        placeholderData: (previousData: any) => previousData,
     });
 
-    const selectedVendor = vendors.find((v) => String(v.id) === value);
+    const vendors = Array.isArray(data) ? data : (data?.data || []);
+
+    const selectedVendor = vendors.find((v: any) => String(v.id) === value)
+        || (value ? { name: "Loading...", id: value, supplierName: "Selected Vendor" } : null);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -42,20 +50,28 @@ export function VendorPicker({ value, onChange, placeholder = "Select vendor..."
                     aria-expanded={open}
                     className="w-full justify-between font-normal"
                 >
-                    {selectedVendor ? selectedVendor.name : placeholder}
+                    {selectedVendor ? (selectedVendor.supplierName || selectedVendor.name) : placeholder}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[300px] p-0" align="start">
-                <Command>
-                    <CommandInput placeholder="Search vendors..." />
+                <Command shouldFilter={false}>
+                    <CommandInput
+                        placeholder="Search vendors..."
+                        value={search}
+                        onValueChange={setSearch}
+                    />
                     <CommandList>
-                        <CommandEmpty>No vendor found.</CommandEmpty>
+                        <CommandEmpty>
+                            {isLoading ? "Loading..." : "No vendor found."}
+                        </CommandEmpty>
                         <CommandGroup>
-                            {vendors.map((vendor) => (
+                            {vendors.map((vendor: any) => (
                                 <CommandItem
                                     key={vendor.id}
-                                    value={vendor.name}
+                                    value={String(vendor.id)}
+                                    // Keywords are less relevant when server filtering, but good practice
+                                    keywords={[vendor.supplierName]}
                                     onSelect={() => {
                                         onChange(String(vendor.id));
                                         setOpen(false);
@@ -68,7 +84,7 @@ export function VendorPicker({ value, onChange, placeholder = "Select vendor..."
                                         )}
                                     />
                                     <div>
-                                        <p>{vendor.name}</p>
+                                        <p>{vendor.supplierName || vendor.name}</p>
                                         <p className="text-[10px] text-muted-foreground">{vendor.supplierNumber}</p>
                                     </div>
                                 </CommandItem>

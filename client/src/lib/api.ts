@@ -161,7 +161,10 @@ export const api = {
       createCreditMemo: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/invoices/credit-memo`, data).then(r => r.json()),
       createDebitMemo: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/invoices/debit-memo`, data).then(r => r.json()),
       createChargeback: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/invoices/chargeback`, data).then(r => r.json()),
-      list: () => fetch(`${API_BASE}/api/ar/invoices`, { credentials: "include" }).then(r => r.json()),
+      list: (params?: { limit?: number; offset?: number }) => {
+        const query = params ? `?limit=${params.limit}&offset=${params.offset}` : "";
+        return fetch(`${API_BASE}/api/ar/invoices${query}`, { credentials: "include" }).then(r => r.json());
+      },
       get: (id: string) => fetch(`${API_BASE}/api/ar/invoices/${id}`, { credentials: "include" }).then(r => r.json()),
       getAccounting: (id: string) => fetch(`${API_BASE}/api/ar/invoices/${id}/accounting`, { credentials: "include" }).then(r => r.json()),
       createAdjustment: (data: any) => apiRequest("POST", `${API_BASE}/api/ar/adjustments`, data).then(r => r.json()),
@@ -215,12 +218,64 @@ export const api = {
     },
     seed: () => apiRequest("POST", `${API_BASE}/api/ar/seed`, {}).then(r => r.json()),
   },
+  // Fixed Assets (FA)
+  fa: {
+    assets: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/fa/assets`, data).then(r => r.json()),
+      list: (params?: { limit?: number; offset?: number }) => {
+        const query = params ? `?limit=${params.limit}&offset=${params.offset}` : "";
+        return fetch(`${API_BASE}/api/fa/assets${query}`, { credentials: "include" }).then(r => r.json());
+      },
+      getStats: () => fetch(`${API_BASE}/api/fa/stats`, { credentials: "include" }).then(r => r.json()),
+      retire: (id: string, data: any) => apiRequest("POST", `${API_BASE}/api/fa/assets/${id}/retire`, data).then(r => r.json()),
+    },
+    massAdditions: {
+      prepare: () => apiRequest("POST", `${API_BASE}/api/fa/mass-additions/prepare`, {}).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/fa/mass-additions`, { credentials: "include" }).then(r => r.json()),
+      post: (id: string, data: any) => apiRequest("POST", `${API_BASE}/api/fa/mass-additions/${id}/post`, data).then(r => r.json()),
+    },
+    depreciation: {
+      run: (data: any) => apiRequest("POST", `${API_BASE}/api/fa/depreciation/run`, data).then(r => r.json()),
+    },
+    reports: {
+      rollForward: (bookId: string, periodName: string) =>
+        fetch(`${API_BASE}/api/fa/reports/roll-forward?bookId=${bookId}&periodName=${periodName}`, { credentials: "include" }).then(r => r.json()),
+    }
+  },
 
   // Inventory
   inventory: {
     products: {
       create: (data: any) => apiRequest("POST", `${API_BASE}/api/inventory/products`, data).then(r => r.json()),
       list: () => fetch(`${API_BASE}/api/inventory/products`, { credentials: "include" }).then(r => r.json()),
+    },
+    lots: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/inventory/lots`, data).then(r => r.json()),
+      list: (params?: { limit?: number; offset?: number; search?: string; status?: string; itemId?: string }) => {
+        const query = new URLSearchParams();
+        if (params?.limit) query.append("limit", params.limit.toString());
+        if (params?.offset) query.append("offset", params.offset.toString());
+        if (params?.search) query.append("search", params.search);
+        if (params?.status) query.append("status", params.status);
+        if (params?.itemId) query.append("itemId", params.itemId);
+        return fetch(`${API_BASE}/api/inventory/lots?${query.toString()}`, { credentials: "include" }).then(r => r.json());
+      },
+      get: (id: string) => fetch(`${API_BASE}/api/inventory/lots/${id}`, { credentials: "include" }).then(r => r.json()),
+      update: (id: string, data: any) => apiRequest("PUT", `${API_BASE}/api/inventory/lots/${id}`, data).then(r => r.json()),
+    },
+    serials: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/inventory/serials`, data).then(r => r.json()),
+      list: (params?: { limit?: number; offset?: number; search?: string; status?: string; itemId?: string }) => {
+        const query = new URLSearchParams();
+        if (params?.limit) query.append("limit", params.limit.toString());
+        if (params?.offset) query.append("offset", params.offset.toString());
+        if (params?.search) query.append("search", params.search);
+        if (params?.status) query.append("status", params.status);
+        if (params?.itemId) query.append("itemId", params.itemId);
+        return fetch(`${API_BASE}/api/inventory/serials?${query.toString()}`, { credentials: "include" }).then(r => r.json());
+      },
+      get: (id: string) => fetch(`${API_BASE}/api/inventory/serials/${id}`, { credentials: "include" }).then(r => r.json()),
+      update: (id: string, data: any) => apiRequest("PUT", `${API_BASE}/api/inventory/serials/${id}`, data).then(r => r.json()),
     },
   },
 
@@ -229,6 +284,19 @@ export const api = {
     purchaseOrders: {
       create: (data: any) => apiRequest("POST", `${API_BASE}/api/procurement/purchase-orders`, data).then(r => r.json()),
       list: () => fetch(`${API_BASE}/api/procurement/purchase-orders`, { credentials: "include" }).then(r => r.json()),
+    },
+    suppliers: {
+      create: (data: any) => apiRequest("POST", `${API_BASE}/api/procurement/suppliers`, data).then(r => r.json()),
+      list: () => fetch(`${API_BASE}/api/procurement/suppliers`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/procurement/suppliers/${id}`, { credentials: "include" }).then(r => r.json()),
+      update: (id: string, data: any) => apiRequest("PUT", `${API_BASE}/api/procurement/suppliers/${id}`, data).then(r => r.json()),
+      delete: (id: string) => apiRequest("DELETE", `${API_BASE}/api/procurement/suppliers/${id}`, undefined),
+      sites: {
+        create: (supplierId: string, data: any) => apiRequest("POST", `${API_BASE}/api/procurement/suppliers/${supplierId}/sites`, data).then(r => r.json()),
+        list: (supplierId: string) => fetch(`${API_BASE}/api/procurement/suppliers/${supplierId}/sites`, { credentials: "include" }).then(r => r.json()),
+        update: (siteId: string, data: any) => apiRequest("PUT", `${API_BASE}/api/procurement/suppliers/sites/${siteId}`, data).then(r => r.json()),
+        delete: (siteId: string) => apiRequest("DELETE", `${API_BASE}/api/procurement/suppliers/sites/${siteId}`, undefined),
+      }
     },
   },
 
@@ -271,4 +339,41 @@ export const api = {
     },
     calculate: (invoiceId: string) => apiRequest("POST", `${API_BASE}/api/tax/calculate/${invoiceId}`, {}).then(r => r.json()),
   },
+  // Cash Management (CM)
+  cash: {
+    accounts: {
+      list: () => fetch(`${API_BASE}/api/cash/accounts`, { credentials: "include" }).then(r => r.json()),
+      get: (id: string) => fetch(`${API_BASE}/api/cash/accounts/${id}`, { credentials: "include" }).then(r => r.json()),
+      getStatementLines: (id: string, params?: { limit?: number; offset?: number }) => {
+        const query = params ? `?limit=${params.limit}&offset=${params.offset}` : "";
+        return fetch(`${API_BASE}/api/cash/accounts/${id}/statement-lines${query}`, { credentials: "include" }).then(r => r.json());
+      },
+      getTransactions: (id: string, params?: { limit?: number; offset?: number }) => {
+        const query = params ? `?limit=${params.limit}&offset=${params.offset}` : "";
+        return fetch(`${API_BASE}/api/cash/accounts/${id}/transactions${query}`, { credentials: "include" }).then(r => r.json());
+      },
+      autoReconcile: (id: string) => apiRequest("POST", `${API_BASE}/api/cash/accounts/${id}/reconcile`, {}).then(r => r.json()),
+    },
+    reconcile: {
+      manual: (data: any) => apiRequest("POST", `${API_BASE}/api/cash/reconcile/manual`, data).then(r => r.json()),
+      unmatch: (matchingGroupId: string) => apiRequest("POST", `${API_BASE}/api/cash/reconcile/unmatch`, { matchingGroupId }).then(r => r.json()),
+    }
+  },
+  // General Ledger (GL)
+  gl: {
+    journals: {
+      list: (params?: { status?: string, ledgerId?: string, search?: string, limit?: number, offset?: number }) => {
+        const queryParams = new URLSearchParams();
+        if (params?.status) queryParams.append("status", params.status);
+        if (params?.ledgerId) queryParams.append("ledgerId", params.ledgerId);
+        if (params?.search) queryParams.append("search", params.search);
+        if (params?.limit) queryParams.append("limit", params.limit.toString());
+        if (params?.offset) queryParams.append("offset", params.offset.toString());
+        return fetch(`${API_BASE}/api/gl/journals?${queryParams.toString()}`, { credentials: "include" }).then(r => r.json());
+      },
+      get: (id: string) => fetch(`${API_BASE}/api/gl/journals/${id}`, { credentials: "include" }).then(r => r.json()),
+      post: (id: string | number) => apiRequest("POST", `${API_BASE}/api/finance/gl/journals/${id}/post`, {}).then(r => r.json()),
+      getStats: () => fetch(`${API_BASE}/api/gl/stats`, { credentials: "include" }).then(r => r.json()),
+    }
+  }
 };

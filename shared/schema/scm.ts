@@ -25,6 +25,29 @@ export const insertSupplierSchema = createInsertSchema(suppliers).extend({
 export type InsertSupplier = z.infer<typeof insertSupplierSchema>;
 export type Supplier = typeof suppliers.$inferSelect;
 
+export const supplierSites = pgTable("supplier_sites", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    supplierId: varchar("supplier_id").notNull(), // FK to suppliers
+    siteName: varchar("site_name").notNull(), // e.g., "HEADQUARTERS", "NYC-DISTRIBUTION"
+    address: text("address"),
+    isPurchasing: varchar("is_purchasing").default("true"), // "true" or "false"
+    isPay: varchar("is_pay").default("true"), // "true" or "false"
+    status: varchar("status").default("active"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertSupplierSiteSchema = createInsertSchema(supplierSites).extend({
+    supplierId: z.string().min(1),
+    siteName: z.string().min(1),
+    address: z.string().optional(),
+    isPurchasing: z.string().optional(),
+    isPay: z.string().optional(),
+    status: z.string().optional(),
+});
+
+export type InsertSupplierSite = z.infer<typeof insertSupplierSiteSchema>;
+export type SupplierSite = typeof supplierSites.$inferSelect;
+
 export const purchaseOrders = pgTable("purchase_orders", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     orderNumber: varchar("order_number").notNull().unique(),
@@ -79,6 +102,7 @@ export const inventory = pgTable("inventory", {
     quantity: integer("quantity").default(0),
     reorderLevel: integer("reorder_level"),
     location: varchar("location"),
+    trackingMethod: varchar("tracking_method").default("NONE"), // NONE, LOT, SERIAL, BOTH
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -102,6 +126,7 @@ export const inventoryTransactions = pgTable("inventory_transactions", {
     taskId: varchar("task_id"), // Linked to ppm_tasks
     transactionDate: timestamp("transaction_date").default(sql`now()`),
     referenceNumber: varchar("reference_number"),
+    lotSerialId: varchar("lot_serial_id"), // FK to inventory_lot_serial
     cost: numeric("cost", { precision: 18, scale: 2 }), // Cost of transaction
     createdAt: timestamp("created_at").default(sql`now()`),
 });
@@ -118,3 +143,25 @@ export const insertInventoryTransactionSchema = createInsertSchema(inventoryTran
 
 export type InsertInventoryTransaction = z.infer<typeof insertInventoryTransactionSchema>;
 export type InventoryTransaction = typeof inventoryTransactions.$inferSelect;
+
+export const inventoryLotSerial = pgTable("inventory_lot_serial", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    inventoryId: varchar("inventory_id").notNull(),
+    lotNumber: varchar("lot_number"),
+    serialNumber: varchar("serial_number"),
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).default("0"),
+    status: varchar("status").default("ACTIVE"), // ACTIVE, QUARANTINED, EXPIRED, RETIRED
+    expirationDate: timestamp("expiration_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertInventoryLotSerialSchema = createInsertSchema(inventoryLotSerial).extend({
+    inventoryId: z.string().min(1),
+    lotNumber: z.string().optional(),
+    serialNumber: z.string().optional(),
+    quantity: z.number().optional(),
+    status: z.string().optional(),
+});
+
+export type InsertInventoryLotSerial = z.infer<typeof insertInventoryLotSerialSchema>;
+export type InventoryLotSerial = typeof inventoryLotSerial.$inferSelect;

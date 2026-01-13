@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { VendorPicker } from "@/components/finance/VendorPicker";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
@@ -23,6 +24,7 @@ export function PurchaseOrderManager() {
         queryKey: ["/api/procurement/suppliers"],
         queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json()).catch(() => [])
     });
+
 
     const createPOMutation = useMutation({
         mutationFn: (data: any) => {
@@ -89,12 +91,10 @@ export function PurchaseOrderManager() {
                             onChange={(e) => setNewPO({ ...newPO, poNumber: e.target.value })}
                             data-testid="input-po-number"
                         />
-                        <Select value={newPO.supplierId} onValueChange={(v) => setNewPO({ ...newPO, supplierId: v })}>
-                            <SelectTrigger><SelectValue placeholder="Select Supplier" /></SelectTrigger>
-                            <SelectContent>
-                                {suppliers.map((s: any) => <SelectItem key={s.id} value={s.id}>{s.supplierName}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
+                        <VendorPicker
+                            value={newPO.supplierId}
+                            onChange={(v) => setNewPO({ ...newPO, supplierId: v })}
+                        />
                         <div className="flex items-center text-sm font-bold text-muted-foreground border px-3 rounded-md bg-muted/50">
                             Total: ${calculateTotal()}
                         </div>
@@ -157,7 +157,7 @@ export function PurchaseOrderManager() {
                                     <Badge variant={po.status === 'Draft' ? 'outline' : 'default'}>{po.status}</Badge>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                    {suppliers.find(s => s.id === (po.supplier?.id || po.supplierId))?.supplierName || "Unknown Supplier"} • ${po.totalAmount || po.amount} • {po.lines?.length || 0} Lines
+                                    {suppliers.find((s: any) => s.id === (po.supplier?.id || po.supplierId))?.supplierName || "Unknown Supplier"} • ${po.totalAmount || "0.00"} • {po.lines?.length || 0} Lines
                                 </p>
                             </div>
                             <div className="flex gap-2 items-center">

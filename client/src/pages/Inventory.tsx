@@ -3,20 +3,38 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Package, Warehouse, AlertTriangle, TrendingDown, Plus, Trash2 } from "lucide-react";
+import { Package, Warehouse, AlertTriangle, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { LotSerialManager } from "./inventory/LotSerialManager";
 
 export default function Inventory() {
   const { toast } = useToast();
   const [viewType, setViewType] = useState("items");
+  const [itemPage, setItemPage] = useState(1);
+  const [itemPageSize] = useState(10);
+  const [whPage, setWhPage] = useState(1);
+  const [whPageSize] = useState(10);
+
   const [newItem, setNewItem] = useState({ itemNumber: "", description: "", quantity: "0", categoryName: "" });
   const [newWarehouse, setNewWarehouse] = useState({ name: "", code: "", locationCode: "" });
 
-  const { data: items = [], isLoading: itemsLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/items"], queryFn: () => fetch("/api/inventory/items").then(r => r.json()).catch(() => []) });
-  const { data: warehouses = [], isLoading: whLoading } = useQuery<any[]>({ queryKey: ["/api/inventory/warehouses"], queryFn: () => fetch("/api/inventory/warehouses").then(r => r.json()).catch(() => []) });
+  const { data: itemsData, isLoading: itemsLoading } = useQuery<{ data: any[], total: number }>({
+    queryKey: ["/api/inventory/items", itemPage, itemPageSize],
+    queryFn: () => fetch(`/api/inventory/items?limit=${itemPageSize}&offset=${(itemPage - 1) * itemPageSize}`).then(r => r.json())
+  });
+
+  const { data: warehousesData, isLoading: whLoading } = useQuery<{ data: any[], total: number }>({
+    queryKey: ["/api/inventory/warehouses", whPage, whPageSize],
+    queryFn: () => fetch(`/api/inventory/warehouses?limit=${whPageSize}&offset=${(whPage - 1) * whPageSize}`).then(r => r.json())
+  });
+
+  const items = itemsData?.data || [];
+  const itemsTotal = itemsData?.total || 0;
+  const warehouses = warehousesData?.data || [];
+  const whTotal = warehousesData?.total || 0;
 
   const createItemMutation = useMutation({
     mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
@@ -52,8 +70,46 @@ export default function Inventory() {
     },
   });
 
-  // Basic mock check since we don't have quantity tracking in Item entity yet, assuming simple prop or 0
-  const lowStockItems = items.filter((item: any) => (item.quantity || 0) <= (item.reorderLevel || 10));
+  const lowStockItemsCount = items.filter((item: any) => (item.quantityOnHand || 0) <= (item.minQuantity || 10)).length;
+
+  const itemColumns: Column<any>[] = [
+    { header: "Item Number", accessorKey: "itemNumber" },
+    { header: "Description", accessorKey: "description" },
+    {
+      header: "Quantity",
+      accessorKey: "quantityOnHand",
+      cell: (val: any) => <span className="font-mono">{val}</span>
+    },
+    {
+      header: "Organization",
+      accessorKey: "organization",
+      cell: (val: any) => val?.name || "N/A"
+    },
+    {
+      header: "Actions",
+      accessorKey: "id",
+      cell: (id: any) => (
+        <Button size="icon" variant="ghost" onClick={() => deleteItemMutation.mutate(id)}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      )
+    }
+  ];
+
+  const whColumns: Column<any>[] = [
+    { header: "Name", accessorKey: "name" },
+    { header: "Code", accessorKey: "code" },
+    { header: "Location", accessorKey: "locationCode" },
+    {
+      header: "Actions",
+      accessorKey: "id",
+      cell: (id: any) => (
+        <Button size="icon" variant="ghost" onClick={() => deleteWhMutation.mutate(id)}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      )
+    }
+  ];
 
   return (
     <div className="space-y-6">
@@ -67,8 +123,8 @@ export default function Inventory() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Total Items</p>
-                <p className="text-2xl font-bold">{items.length}</p>
+                <p className="text-xs text-muted-foreground">Total Items (All)</p>
+                <p className="text-2xl font-bold">{itemsTotal}</p>
               </div>
               <Package className="h-8 w-8 text-blue-600" />
             </div>
@@ -78,8 +134,8 @@ export default function Inventory() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Warehouses</p>
-                <p className="text-2xl font-bold">{warehouses.length}</p>
+                <p className="text-xs text-muted-foreground">Warehouses (All)</p>
+                <p className="text-2xl font-bold">{whTotal}</p>
               </div>
               <Warehouse className="h-8 w-8 text-green-600" />
             </div>
@@ -89,8 +145,8 @@ export default function Inventory() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Low Stock</p>
-                <p className="text-2xl font-bold">{lowStockItems.length}</p>
+                <p className="text-xs text-muted-foreground">Low Stock (Page)</p>
+                <p className="text-2xl font-bold">{lowStockItemsCount}</p>
               </div>
               <AlertTriangle className="h-8 w-8 text-red-600" />
             </div>
@@ -101,6 +157,7 @@ export default function Inventory() {
       <div className="flex gap-2">
         <Button variant={viewType === "items" ? "default" : "outline"} onClick={() => setViewType("items")}>Items</Button>
         <Button variant={viewType === "warehouses" ? "default" : "outline"} onClick={() => setViewType("warehouses")}>Warehouses</Button>
+        <Button variant={viewType === "traceability" ? "default" : "outline"} onClick={() => setViewType("traceability")}>Traceability</Button>
       </div>
 
       {viewType === "items" && (
@@ -120,18 +177,16 @@ export default function Inventory() {
           </Card>
           <Card>
             <CardHeader><CardTitle className="text-base">Inventory Items</CardTitle></CardHeader>
-            <CardContent className="space-y-3">
-              {itemsLoading ? <p>Loading...</p> : items.length === 0 ? <p className="text-muted-foreground">No items</p> : items.map((item: any) => (
-                <div key={item.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between">
-                  <div>
-                    <h4 className="font-semibold">{item.itemNumber}</h4>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
-                  </div>
-                  <Button size="icon" variant="ghost" onClick={() => deleteItemMutation.mutate(item.id)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              ))}
+            <CardContent>
+              <StandardTable
+                data={items}
+                columns={itemColumns}
+                isLoading={itemsLoading}
+                page={itemPage}
+                pageSize={itemPageSize}
+                totalItems={itemsTotal}
+                onPageChange={setItemPage}
+              />
             </CardContent>
           </Card>
         </div>
@@ -152,24 +207,25 @@ export default function Inventory() {
               </Button>
             </CardContent>
           </Card>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {whLoading ? <p>Loading...</p> : warehouses.length === 0 ? <p className="text-muted-foreground">No warehouses</p> : warehouses.map((wh: any) => (
-              <Card key={wh.id} className="hover-elevate">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center justify-between">
-                    <span className="flex items-center gap-2"><Warehouse className="h-5 w-5 text-green-600" />{wh.name} ({wh.code})</span>
-                    <Button size="icon" variant="ghost" onClick={() => deleteWhMutation.mutate(wh.id)}>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{wh.locationCode}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <Card>
+            <CardHeader><CardTitle className="text-base">Warehouses</CardTitle></CardHeader>
+            <CardContent>
+              <StandardTable
+                data={warehouses}
+                columns={whColumns}
+                isLoading={whLoading}
+                page={whPage}
+                pageSize={whPageSize}
+                totalItems={whTotal}
+                onPageChange={setWhPage}
+              />
+            </CardContent>
+          </Card>
         </div>
+      )}
+
+      {viewType === "traceability" && (
+        <LotSerialManager />
       )}
     </div>
   );

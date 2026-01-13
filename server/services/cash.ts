@@ -83,12 +83,20 @@ export class CashService {
         return await storage.getCashBankAccount(id);
     }
 
-    async listStatementLines(accountId: string) {
-        return await storage.listCashStatementLines(accountId);
+    async listStatementLines(accountId: string, limit?: number, offset?: number) {
+        return await storage.listCashStatementLines(accountId, limit, offset);
     }
 
-    async listTransactions(accountId: string) {
-        return await storage.listCashTransactions(accountId);
+    async getStatementLinesCount(accountId: string): Promise<number> {
+        return await storage.getCashStatementLinesCount(accountId);
+    }
+
+    async listTransactions(accountId: string, limit?: number, offset?: number) {
+        return await storage.listCashTransactions(accountId, limit, offset);
+    }
+
+    async getTransactionsCount(accountId: string): Promise<number> {
+        return await storage.getCashTransactionsCount(accountId);
     }
 
     async importBankStatement(accountId: string, fileContent: string, userId: string = "system") {

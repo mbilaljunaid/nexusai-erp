@@ -22,15 +22,18 @@ export class ItemService {
             organization = await this.orgRepository.findOne({ where: { id: dto.organizationId } }) || undefined;
         }
 
-        const item = this.itemRepository.create({
-            ...dto,
-            organization,
-        });
-        return this.itemRepository.save(item);
+        const item = this.itemRepository.create(dto as any);
+        return this.itemRepository.save(item as any) as Promise<Item>;
     }
 
-    async findAll(): Promise<Item[]> {
-        return this.itemRepository.find({ relations: ['organization'] });
+    async findAll(limit?: number, offset?: number): Promise<{ data: Item[], total: number }> {
+        const [items, total] = await this.itemRepository.findAndCount({
+            relations: ['organization'],
+            take: limit,
+            skip: offset,
+            order: { createdAt: 'DESC' }
+        });
+        return { data: items, total };
     }
 
     async findOne(id: string): Promise<Item> {
@@ -47,7 +50,7 @@ export class ItemService {
     async update(id: string, updateData: any): Promise<Item> {
         const item = await this.findOne(id);
         Object.assign(item, updateData);
-        return this.itemRepository.save(item);
+        return this.itemRepository.save(item as any) as Promise<Item>;
     }
 
     async remove(id: string): Promise<void> {

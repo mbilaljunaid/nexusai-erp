@@ -121,7 +121,7 @@ export class FinanceService {
         };
     }
 
-    async listJournals(filters?: { status?: string, ledgerId?: string, search?: string }) {
+    async listJournals(filters?: { status?: string, ledgerId?: string, search?: string, limit?: number, offset?: number }) {
         let conditions = [];
 
         if (filters?.status) {
@@ -132,11 +132,8 @@ export class FinanceService {
             conditions.push(eq(glJournals.ledgerId, filters.ledgerId));
         }
 
-        // Note: Drizzle's like/ilike handling might need explicit sql operator in some versions, 
-        // using standardized approach here.
         if (filters?.search) {
-            // Checking description or journalNumber
-            const searchPattern = `% ${filters.search}% `;
+            const searchPattern = `%${filters.search}%`;
             conditions.push(sql`(${glJournals.description} ILIKE ${searchPattern} OR ${glJournals.journalNumber} ILIKE ${searchPattern})`);
         }
 
@@ -146,7 +143,39 @@ export class FinanceService {
             query.where(and(...conditions));
         }
 
-        return await query.orderBy(desc(glJournals.postedDate), desc(glJournals.createdAt));
+        query.orderBy(desc(glJournals.postedDate), desc(glJournals.createdAt));
+
+        if (filters?.limit !== undefined && filters?.offset !== undefined) {
+            return await query.limit(filters.limit).offset(filters.offset);
+        }
+
+        return await query;
+    }
+
+    async getJournalsCount(filters?: { status?: string, ledgerId?: string, search?: string }): Promise<number> {
+        let conditions = [];
+
+        if (filters?.status) {
+            conditions.push(eq(glJournals.status, filters.status));
+        }
+
+        if (filters?.ledgerId) {
+            conditions.push(eq(glJournals.ledgerId, filters.ledgerId));
+        }
+
+        if (filters?.search) {
+            const searchPattern = `%${filters.search}%`;
+            conditions.push(sql`(${glJournals.description} ILIKE ${searchPattern} OR ${glJournals.journalNumber} ILIKE ${searchPattern})`);
+        }
+
+        const query = db.select({ count: sql<number>`count(*)` }).from(glJournals);
+
+        if (conditions.length > 0) {
+            query.where(and(...conditions));
+        }
+
+        const [res] = await query;
+        return Number(res.count);
     }
 
     // ================= MASTER DATA VALIDATION =================

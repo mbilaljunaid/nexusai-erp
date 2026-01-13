@@ -123,8 +123,17 @@ apRouter.post("/suppliers/:id/hold", async (req, res) => {
 
 // Invoice CRUD
 apRouter.get("/invoices", async (req, res) => {
-    const list = await storage.listApInvoices();
-    res.json(list);
+    try {
+        const { limit, offset } = req.query;
+        const list = await apService.listInvoices(
+            limit ? Number(limit) : undefined,
+            offset ? Number(offset) : undefined
+        );
+        const total = await apService.getInvoicesCount();
+        res.json({ data: list, total });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 apRouter.get("/invoices/:id", async (req, res) => {

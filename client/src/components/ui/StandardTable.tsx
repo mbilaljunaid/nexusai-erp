@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { Loader2, Search } from "lucide-react";
 // @ts-ignore
 import * as ReactWindow from "react-window";
-const List = ReactWindow.FixedSizeList || (ReactWindow as any).default?.FixedSizeList;
+const List = (ReactWindow as any).FixedSizeList || (ReactWindow as any).default?.FixedSizeList || (ReactWindow as any).default;
 
 export interface Column<T> {
     header: string;
@@ -136,6 +136,17 @@ export function StandardTable<T>({
     const InnerElement = useMemo(() => React.forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} {...props} role="rowgroup">
             {children}
+            {/* If no children, render a hidden row to satisfy ARIA child requirement */}
+            {React.Children.count(children) === 0 && (
+                <div role="row" aria-hidden="true" className="invisible h-0" />
+            )}
+        </div>
+    )), []);
+
+    // Memoize the outer element to prevent remounting
+    const OuterElement = useMemo(() => React.forwardRef(({ children, ...props }: any, ref: any) => (
+        <div ref={ref} {...props} role="grid">
+            {children}
         </div>
     )), []);
 
@@ -146,7 +157,8 @@ export function StandardTable<T>({
 
         return (
             <div
-                style={style}
+                /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                style={style as any}
                 className={cn(
                     "flex border-b border-border bg-white transition-colors hover:bg-muted/30",
                     onRowClick && "cursor-pointer"
@@ -158,9 +170,9 @@ export function StandardTable<T>({
                     <div
                         key={colIdx}
                         className={cn("py-3 px-4 text-sm flex items-center shrink-0 overflow-hidden", col.className)}
+                        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
                         style={{
                             width: col.width || `${100 / columns.length}%`,
-                            "--col-width": col.width || `${100 / columns.length}%`
                         } as any}
                         role="gridcell"
                     >
@@ -225,9 +237,8 @@ export function StandardTable<T>({
                             <div className="w-full overflow-x-auto">
                                 <div
                                     className="min-w-full"
-                                    role="grid"
                                     aria-colcount={columns.length}
-                                    aria-rowcount={paginatedData.length}
+                                    aria-rowcount={paginatedData.length + 1}
                                 >
                                     {/* Header */}
                                     <div className="bg-muted/50 border-b border-border" role="rowgroup">
@@ -242,7 +253,7 @@ export function StandardTable<T>({
                                                     style={{
                                                         width: col.width || `${100 / columns.length}%`,
                                                         flexBasis: col.width || `${100 / columns.length}%`
-                                                    } as React.CSSProperties}
+                                                    }}
                                                     role="columnheader"
                                                 >
                                                     {col.header}
@@ -258,6 +269,7 @@ export function StandardTable<T>({
                                         width="100%"
                                         className="scrollbar-hide"
                                         innerElementType={InnerElement}
+                                        outerElementType={OuterElement}
                                     >
                                         {Row}
                                     </List>

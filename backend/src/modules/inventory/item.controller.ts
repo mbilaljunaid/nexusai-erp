@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
 import { ItemService } from './item.service';
 
 @Controller('inventory/items')
@@ -11,8 +11,8 @@ export class ItemController {
     }
 
     @Get()
-    findAll() {
-        return this.itemService.findAll();
+    findAll(@Query('limit') limit?: number, @Query('offset') offset?: number) {
+        return this.itemService.findAll(limit ? Number(limit) : undefined, offset ? Number(offset) : undefined);
     }
 
     @Get(':id')

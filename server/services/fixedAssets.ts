@@ -14,8 +14,8 @@ export class FaService {
     /**
      * List all Assets (Joined with Corporate Book details by default)
      */
-    async listAssets() {
-        return await db.select({
+    async listAssets(limit?: number, offset?: number) {
+        const query = db.select({
             id: faAssets.id,
             assetNumber: faAssets.assetNumber,
             tagNumber: faAssets.tagNumber,
@@ -35,6 +35,33 @@ export class FaService {
                 eq(faAssets.id, faAssetBooks.assetId),
                 eq(faAssetBooks.bookId, "CORP-BOOK-1") // Default for consolidated list view
             ));
+
+        if (limit !== undefined && offset !== undefined) {
+            return await query.limit(limit).offset(offset);
+        }
+        return await query;
+    }
+
+    async getAssetsCount() {
+        const [count] = await db.select({ value: sql<number>`count(*)` }).from(faAssets);
+        return count.value;
+    }
+
+    async getAssetsStats() {
+        // Query for counts and sums
+        const [stats] = await db.select({
+            totalCost: sql<string>`COALESCE(SUM(original_cost), 0)`,
+            totalRecoverable: sql<string>`COALESCE(SUM(recoverable_cost), 0)`,
+            activeCount: sql<number>`COUNT(*) FILTER (WHERE status = 'ACTIVE')`,
+            retiredCount: sql<number>`COUNT(*) FILTER (WHERE status = 'RETIRED')`
+        }).from(faAssetBooks).where(eq(faAssetBooks.bookId, "CORP-BOOK-1"));
+
+        return {
+            totalCost: stats.totalCost,
+            totalRecoverable: stats.totalRecoverable,
+            activeCount: stats.activeCount,
+            retiredCount: stats.retiredCount
+        };
     }
 
     /**

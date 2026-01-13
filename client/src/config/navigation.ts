@@ -45,7 +45,19 @@ export const navigationConfig: SidebarNode[] = [
         children: [
             { id: "dashboard", title: "Dashboard", type: "link", icon: LayoutDashboard, path: "/dashboard" },
             { id: "processes", title: "Processes", type: "link", icon: WorkflowIcon, path: "/processes" },
-            { id: "crm", title: "CRM", type: "link", icon: Users, path: "/crm", allowedRoles: ["admin", "editor"] },
+            {
+                id: "crm",
+                title: "CRM",
+                type: "section",
+                icon: Users,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "crm-dashboard", title: "Dashboard", type: "link", path: "/crm" },
+                    { id: "crm-orders", title: "Orders", type: "link", path: "/crm/orders" },
+                    { id: "crm-price-books", title: "Price Books", type: "link", path: "/crm/price-books" },
+                    { id: "crm-case-comments", title: "Case Comments", type: "link", path: "/crm/case-comments" },
+                ]
+            },
             { id: "erp", title: "ERP", type: "link", icon: DollarSign, path: "/erp", allowedRoles: ["admin", "editor"] },
             { id: "hr", title: "HR", type: "link", icon: Briefcase, path: "/hr", allowedRoles: ["admin", "editor"] },
             { id: "projects", title: "Projects", type: "link", icon: Zap, path: "/projects", allowedRoles: ["admin", "editor"] },
@@ -96,7 +108,18 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "cost-scenarios", title: "Scenario Manager", type: "link", path: "/cost/scenarios" },
                 ]
             },
-            { id: "tax", title: "Tax Management", type: "link", icon: Shield, path: "/finance/tax", allowedRoles: ["admin", "editor"] },
+            {
+                id: "tax",
+                title: "Tax Management",
+                type: "section",
+                icon: Shield,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "tax-codes", title: "Tax Codes", type: "link", path: "/finance/tax" },
+                    { id: "tax-jurisdictions", title: "Jurisdictions", type: "link", path: "/finance/tax/jurisdictions" },
+                    { id: "tax-exemptions", title: "Exemptions", type: "link", path: "/finance/tax/exemptions" },
+                ]
+            },
             { id: "netting", title: "Netting", type: "link", icon: ArrowRightLeft, path: "/finance/netting", allowedRoles: ["admin", "editor"] },
             {
                 id: "project-accounting",

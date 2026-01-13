@@ -5,15 +5,16 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-    Check, X, RefreshCw, Wand2, Calendar, LayoutList, ArrowRightLeft
+    Check, Wand2, Calendar, LayoutList, Loader2
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CashStatementLine, CashTransaction } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { api } from "@/lib/api";
 
 interface ReconciliationWorkbenchProps {
     accountId: string;
@@ -23,53 +24,138 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    // 1. Data Fetching
-    const { data: lines = [] } = useQuery<CashStatementLine[]>({
-        queryKey: [`/api/cash/accounts/${accountId}/statement-lines`],
+    // 1. Pagination State
+    const [linesPage, setLinesPage] = useState(1);
+    const [trxPage, setTrxPage] = useState(1);
+    const pageSize = 50;
+
+    // 2. Data Fetching
+    const { data: linesData, isLoading: isLoadingLines } = useQuery<{ data: CashStatementLine[], total: number }>({
+        queryKey: [`/api/cash/accounts/${accountId}/statement-lines`, linesPage],
+        queryFn: () => api.cash.accounts.getStatementLines(accountId, { limit: pageSize, offset: (linesPage - 1) * pageSize }),
     });
 
-    const { data: transactions = [] } = useQuery<CashTransaction[]>({
-        queryKey: [`/api/cash/accounts/${accountId}/transactions`],
+    const { data: trxData, isLoading: isLoadingTrx } = useQuery<{ data: CashTransaction[], total: number }>({
+        queryKey: [`/api/cash/accounts/${accountId}/transactions`, trxPage],
+        queryFn: () => api.cash.accounts.getTransactions(accountId, { limit: pageSize, offset: (trxPage - 1) * pageSize }),
     });
 
-    const unreconciledLines = useMemo(() => lines.filter(l => !l.reconciled), [lines]);
-    const unreconciledTrx = useMemo(() => transactions.filter(t => t.status === "Unreconciled"), [transactions]);
+    const unreconciledLines = useMemo(() => (linesData?.data || []).filter(l => !l.reconciled), [linesData]);
+    const unreconciledTrx = useMemo(() => (trxData?.data || []).filter(t => t.status === "Unreconciled"), [trxData]);
 
-    // 2. Selection State
+    // 3. Selection State
     const [selectedLines, setSelectedLines] = useState<Set<string>>(new Set());
     const [selectedTrx, setSelectedTrx] = useState<Set<string>>(new Set());
 
-    const toggleLine = (id: string) => {
+    const toggleLine = (id: string | number) => {
+        const sid = String(id);
         const newSet = new Set(selectedLines);
-        if (newSet.has(id)) newSet.delete(id);
-        else newSet.add(id);
+        if (newSet.has(sid)) newSet.delete(sid);
+        else newSet.add(sid);
         setSelectedLines(newSet);
     };
 
-    const toggleTrx = (id: string) => {
+    const toggleTrx = (id: string | number) => {
+        const sid = String(id);
         const newSet = new Set(selectedTrx);
-        if (newSet.has(id)) newSet.delete(id);
-        else newSet.add(id);
+        if (newSet.has(sid)) newSet.delete(sid);
+        else newSet.add(sid);
         setSelectedTrx(newSet);
     };
 
-    // 3. Computed Totals
+    // 4. Computed Totals
     const totalLinesAmount = useMemo(() => {
         return unreconciledLines
-            .filter(l => selectedLines.has(l.id))
+            .filter(l => selectedLines.has(String(l.id)))
             .reduce((sum, l) => sum + Number(l.amount), 0);
     }, [unreconciledLines, selectedLines]);
 
     const totalTrxAmount = useMemo(() => {
         return unreconciledTrx
-            .filter(t => selectedTrx.has(t.id))
+            .filter(t => selectedTrx.has(String(t.id)))
             .reduce((sum, t) => sum + Number(t.amount), 0);
     }, [unreconciledTrx, selectedTrx]);
 
     const difference = Math.abs(totalLinesAmount - totalTrxAmount);
     const canMatch = selectedLines.size > 0 && selectedTrx.size > 0 && difference < 0.01;
 
-    // 4. Mutations
+    // 5. Column Definitions
+    const lineColumns: Column<CashStatementLine>[] = [
+        {
+            header: "",
+            width: "40px",
+            cell: (item) => (
+                <Checkbox
+                    checked={selectedLines.has(String(item.id))}
+                    onCheckedChange={() => toggleLine(item.id)}
+                />
+            )
+        },
+        {
+            header: "Description",
+            accessorKey: "description",
+            width: "60%",
+            cell: (item) => (
+                <div className="flex flex-col">
+                    <span className="font-medium text-sm truncate">{item.description}</span>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> {new Date(item.transactionDate).toLocaleDateString()}
+                        {item.referenceNumber && <span className="ml-2">Ref: {item.referenceNumber}</span>}
+                    </span>
+                </div>
+            )
+        },
+        {
+            header: "Amount",
+            width: "30%",
+            className: "text-right font-mono font-bold",
+            cell: (item) => (
+                <span className={Number(item.amount) < 0 ? "text-red-600" : "text-green-600"}>
+                    {Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </span>
+            )
+        }
+    ];
+
+    const trxColumns: Column<CashTransaction>[] = [
+        {
+            header: "",
+            width: "40px",
+            cell: (item) => (
+                <Checkbox
+                    checked={selectedTrx.has(String(item.id))}
+                    onCheckedChange={() => toggleTrx(item.id)}
+                />
+            )
+        },
+        {
+            header: "Reference",
+            width: "60%",
+            cell: (item) => (
+                <div className="flex flex-col">
+                    <span className="font-medium text-sm truncate">
+                        {item.reference || 'No Ref'} <span className="text-xs text-muted-foreground">({item.sourceModule})</span>
+                    </span>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> {new Date(item.transactionDate!).toLocaleDateString()}
+                        {item.description && <span className="ml-2 truncate max-w-[150px]">{item.description}</span>}
+                    </span>
+                </div>
+            )
+        },
+        {
+            header: "Amount",
+            width: "30%",
+            className: "text-right font-mono font-bold",
+            cell: (item) => (
+                <span className={Number(item.amount) < 0 ? "text-red-600" : "text-green-600"}>
+                    {Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </span>
+            )
+        }
+    ];
+
+    // 6. Mutations
     const manualReconcileMutation = useMutation({
         mutationFn: async () => {
             const res = await apiRequest("POST", "/api/cash/reconcile/manual", {
@@ -113,7 +199,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                         Reconciliation Workbench
                     </h3>
                     <span className="text-sm text-muted-foreground">
-                        {unreconciledLines.length} Lines • {unreconciledTrx.length} Transactions Pending
+                        {linesData?.total || 0} Lines • {trxData?.total || 0} Transactions Pending
                     </span>
                 </div>
 
@@ -123,7 +209,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                         <div className="flex items-center gap-4 bg-muted px-4 py-2 rounded-md">
                             <div className="flex flex-col items-end">
                                 <span className="text-xs font-semibold uppercase text-muted-foreground">Selection Difference</span>
-                                <span className={`font-mono font-bold ${difference === 0 ? "text-green-600" : "text-red-500"}`}>
+                                <span className={`font-mono font-bold ${difference < 0.01 ? "text-green-600" : "text-red-500"}`}>
                                     {difference.toFixed(2)}
                                 </span>
                             </div>
@@ -132,14 +218,14 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                                 onClick={() => manualReconcileMutation.mutate()}
                                 disabled={!canMatch || manualReconcileMutation.isPending}
                             >
-                                <Check className="w-4 h-4 mr-2" />
+                                {manualReconcileMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Check className="w-4 h-4 mr-2" />}
                                 Match Selected
                             </Button>
                         </div>
                     )}
 
                     <Button
-                        variant="default"
+                        variant="outline"
                         onClick={() => autoReconcileMutation.mutate()}
                         disabled={autoReconcileMutation.isPending}
                     >
@@ -152,88 +238,48 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
             {/* Main Workbench Grid */}
             <div className="grid grid-cols-2 gap-4 flex-1 overflow-hidden">
                 {/* Left: Bank Statement Lines */}
-                <Card className="flex flex-col h-full overflow-hidden border-2 border-l-blue-500">
-                    <CardHeader className="py-3 bg-muted/30 border-b flex flex-row items-center justify-between">
+                <Card className="flex flex-col h-full overflow-hidden border-2 border-l-blue-500 bg-white">
+                    <CardHeader className="py-2 px-4 bg-muted/30 border-b flex flex-row items-center justify-between space-y-0">
                         <CardTitle className="text-sm font-medium">Bank Statement Lines</CardTitle>
                         <Badge variant="outline">{selectedLines.size} Selected</Badge>
                     </CardHeader>
-                    <CardContent className="flex-1 p-0 overflow-hidden">
-                        <ScrollArea className="h-full">
-                            <div className="divide-y">
-                                {unreconciledLines.length === 0 && (
-                                    <div className="p-8 text-center text-muted-foreground">No unreconciled lines.</div>
-                                )}
-                                {unreconciledLines.map(line => (
-                                    <div
-                                        key={line.id}
-                                        className={`p-3 flex items-start gap-3 hover:bg-muted/50 transition-colors cursor-pointer ${selectedLines.has(line.id) ? "bg-blue-50/50" : ""}`}
-                                        onClick={() => toggleLine(line.id)}
-                                    >
-                                        <Checkbox
-                                            checked={selectedLines.has(line.id)}
-                                            onCheckedChange={() => toggleLine(line.id)}
-                                        />
-                                        <div className="flex-1">
-                                            <div className="flex justify-between">
-                                                <span className="font-medium text-sm">{line.description}</span>
-                                                <span className={`font-mono font-bold ${Number(line.amount) < 0 ? "text-red-600" : "text-green-600"}`}>
-                                                    {Number(line.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between items-center mt-1">
-                                                <div className="flex gap-2 text-xs text-muted-foreground">
-                                                    <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(line.transactionDate).toLocaleDateString()}</span>
-                                                    {line.referenceNumber && <span>Ref: {line.referenceNumber}</span>}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </ScrollArea>
+                    <CardContent className="flex-1 p-0 overflow-hidden relative">
+                        <StandardTable
+                            /* @ts-ignore - Generic Type inference issue in some environments */
+                            data={unreconciledLines}
+                            columns={lineColumns}
+                            isLoading={isLoadingLines}
+                            isVirtualized={true}
+                            height={450}
+                            page={linesPage}
+                            pageSize={pageSize}
+                            totalItems={linesData?.total}
+                            onPageChange={setLinesPage}
+                            className="h-full border-0 shadow-none"
+                        />
                     </CardContent>
                 </Card>
 
                 {/* Right: System Transactions */}
-                <Card className="flex flex-col h-full overflow-hidden border-2 border-l-purple-500">
-                    <CardHeader className="py-3 bg-muted/30 border-b flex flex-row items-center justify-between">
+                <Card className="flex flex-col h-full overflow-hidden border-2 border-l-purple-500 bg-white">
+                    <CardHeader className="py-2 px-4 bg-muted/30 border-b flex flex-row items-center justify-between space-y-0">
                         <CardTitle className="text-sm font-medium">System Transactions</CardTitle>
                         <Badge variant="outline">{selectedTrx.size} Selected</Badge>
                     </CardHeader>
-                    <CardContent className="flex-1 p-0 overflow-hidden">
-                        <ScrollArea className="h-full">
-                            <div className="divide-y">
-                                {unreconciledTrx.length === 0 && (
-                                    <div className="p-8 text-center text-muted-foreground">No unreconciled transactions.</div>
-                                )}
-                                {unreconciledTrx.map(trx => (
-                                    <div
-                                        key={trx.id}
-                                        className={`p-3 flex items-start gap-3 hover:bg-muted/50 transition-colors cursor-pointer ${selectedTrx.has(trx.id) ? "bg-purple-50/50" : ""}`}
-                                        onClick={() => toggleTrx(trx.id)}
-                                    >
-                                        <Checkbox
-                                            checked={selectedTrx.has(trx.id)}
-                                            onCheckedChange={() => toggleTrx(trx.id)}
-                                        />
-                                        <div className="flex-1">
-                                            <div className="flex justify-between">
-                                                <span className="font-medium text-sm">{trx.reference || 'No Ref'} <span className="text-xs text-muted-foreground">({trx.sourceModule})</span></span>
-                                                <span className={`font-mono font-bold ${Number(trx.amount) < 0 ? "text-red-600" : "text-green-600"}`}>
-                                                    {Number(trx.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between items-center mt-1">
-                                                <div className="flex gap-2 text-xs text-muted-foreground">
-                                                    <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(trx.transactionDate!).toLocaleDateString()}</span>
-                                                    {trx.description && <span className="truncate max-w-[200px]">{trx.description}</span>}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </ScrollArea>
+                    <CardContent className="flex-1 p-0 overflow-hidden relative">
+                        <StandardTable
+                            /* @ts-ignore */
+                            data={unreconciledTrx}
+                            columns={trxColumns}
+                            isLoading={isLoadingTrx}
+                            isVirtualized={true}
+                            height={450}
+                            page={trxPage}
+                            pageSize={pageSize}
+                            totalItems={trxData?.total}
+                            onPageChange={setTrxPage}
+                            className="h-full border-0 shadow-none"
+                        />
                     </CardContent>
                 </Card>
             </div>
