@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ import { Link, useRoute } from "wouter";
 import ProjectsDashboard from "./projects/ProjectsDashboard";
 import ProjectList from "./projects/ProjectList";
 import TaskList from "./projects/TaskList";
+import ProjectFinancialDetail from "./projects/ProjectFinancialDetail";
 
 interface Project {
   id: string;
@@ -76,21 +78,25 @@ export default function Projects() {
     return matchesSearch && matchesStatus;
   });
 
+  const { data: summary } = useQuery<any>({
+    queryKey: ['/api/ppm/summary'],
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-semibold flex items-center gap-2"><FolderKanban className="h-8 w-8" />Project Management</h1>
-          <p className="text-muted-foreground text-sm">Manage projects, sprints, and tasks with team collaboration</p>
+          <h1 className="text-3xl font-semibold flex items-center gap-2"><FolderKanban className="h-8 w-8" />Project Portfolio Management</h1>
+          <p className="text-muted-foreground text-sm">Manage projects, costs, and performance across the enterprise</p>
         </div>
         <AddTaskDialog />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">{projects.length}</p><p className="text-xs text-muted-foreground">Total Projects</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">{projects.filter(p => p.status === "on_track").length}</p><p className="text-xs text-muted-foreground">On Track</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">{tasks.length}</p><p className="text-xs text-muted-foreground">Tasks</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">12</p><p className="text-xs text-muted-foreground">Team Members</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">{summary?.projectCount || '0'}</p><p className="text-xs text-muted-foreground">Total Projects</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">${parseFloat(summary?.totalBudget || "0").toLocaleString()}</p><p className="text-xs text-muted-foreground">Budget Portfolio</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">${parseFloat(summary?.totalBurdenedCost || "0").toLocaleString()}</p><p className="text-xs text-muted-foreground">Actual Cost (ITD)</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">1.02</p><p className="text-xs text-muted-foreground">Avg. Portfolio CPI</p></CardContent></Card>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
@@ -168,25 +174,28 @@ export default function Projects() {
 
       {activeNav === "analytics" && (
         <div className="space-y-4">
-          {selectedProject ? (
-            <ProjectToGLForm
-              project={selectedProject}
-              onClose={() => setSelectedProject(null)}
-            />
-          ) : (
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Project Analytics & Costing</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">Select a project to record costs in general ledger</p>
-                </CardContent>
-              </Card>
-              {/* Reusing ProjectList logic here but for now just showing placeholder or the ProjectList */}
-              <ProjectList />
-            </div>
-          )}
+          {(() => {
+            const queryParams = new URLSearchParams(window.location.search);
+            const projectId = queryParams.get("id");
+
+            if (projectId) {
+              return <ProjectFinancialDetail projectId={projectId} />;
+            }
+
+            return (
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Project Portfolio Analytics</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4">Select a project below to view detailed Earned Value performance metrics and financial health.</p>
+                  </CardContent>
+                </Card>
+                <ProjectList />
+              </div>
+            );
+          })()}
         </div>
       )}
 

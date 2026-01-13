@@ -145,6 +145,11 @@ export const apInvoiceLines = pgTable("ap_invoice_lines", {
     discardedFlag: boolean("discarded_flag").default(false),
     cancelledFlag: boolean("cancelled_flag").default(false),
 
+    // PPM Integration
+    ppmProjectId: varchar("ppm_project_id"),
+    ppmTaskId: varchar("ppm_task_id"),
+    ppmExpenditureItemId: varchar("ppm_exp_item_id"), // Linked item after collection
+
     createdAt: timestamp("created_at").defaultNow()
 });
 

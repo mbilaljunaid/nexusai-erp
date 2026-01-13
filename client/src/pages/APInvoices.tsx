@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { StandardTable } from "@/components/ui/StandardTable";
 import { VendorPicker } from "@/components/finance/VendorPicker";
 import { PurchaseOrderPicker } from "@/components/procurement/PurchaseOrderPicker";
+import { ProjectPicker } from "@/components/finance/ProjectPicker";
+import { TaskPicker } from "@/components/finance/TaskPicker";
 
 export default function APInvoices() {
   const { toast } = useToast();
@@ -19,7 +21,9 @@ export default function APInvoices() {
     supplierId: "",
     invoiceAmount: "",
     status: "DRAFT",
-    poHeaderId: ""
+    poHeaderId: "",
+    ppmProjectId: "",
+    ppmTaskId: ""
   });
 
   const { data: invoices = [], isLoading } = useQuery<any[]>({
@@ -43,13 +47,29 @@ export default function APInvoices() {
           lineNumber: 1,
           amount: data.invoiceAmount,
           poHeaderId: data.poHeaderId,
-          lineType: "ITEM"
-        }] : []
+          lineType: "ITEM",
+          ppmProjectId: data.ppmProjectId || null,
+          ppmTaskId: data.ppmTaskId || null
+        }] : [{
+          lineNumber: 1,
+          amount: data.invoiceAmount,
+          lineType: "ITEM",
+          ppmProjectId: data.ppmProjectId || null,
+          ppmTaskId: data.ppmTaskId || null
+        }]
       })
     }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ap/invoices"] });
-      setNewInvoice({ invoiceNumber: "", supplierId: "", invoiceAmount: "", status: "DRAFT", poHeaderId: "" });
+      setNewInvoice({
+        invoiceNumber: "",
+        supplierId: "",
+        invoiceAmount: "",
+        status: "DRAFT",
+        poHeaderId: "",
+        ppmProjectId: "",
+        ppmTaskId: ""
+      });
       toast({ title: "Invoice created" });
     },
   });
@@ -205,6 +225,24 @@ export default function APInvoices() {
                 supplierId={newInvoice.supplierId}
                 onChange={(v) => setNewInvoice({ ...newInvoice, poHeaderId: v })}
               />
+            </div>
+            <div className="pt-2 border-t space-y-3">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider px-1">Project Costing</p>
+              <div className="space-y-1">
+                <label className="text-xs font-medium px-1">Project</label>
+                <ProjectPicker
+                  value={newInvoice.ppmProjectId}
+                  onChange={(v) => setNewInvoice({ ...newInvoice, ppmProjectId: v, ppmTaskId: "" })}
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium px-1">Task</label>
+                <TaskPicker
+                  projectId={newInvoice.ppmProjectId}
+                  value={newInvoice.ppmTaskId}
+                  onChange={(v) => setNewInvoice({ ...newInvoice, ppmTaskId: v })}
+                />
+              </div>
             </div>
             <Button
               onClick={() => createMutation.mutate(newInvoice)}

@@ -2,96 +2,123 @@ import React from 'react';
 import { StandardTable } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useQuery } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import { Eye, TrendingUp } from "lucide-react";
+import { Link } from "wouter";
 
 interface Project {
     id: string;
+    projectNumber: string;
     name: string;
     description: string;
-    status: "on_track" | "at_risk" | "delayed";
-    progress: number;
-    tasks: { total: number; completed: number };
-    team: { name: string; initials: string }[];
-    dueDate: string;
+    status: string;
+    budget: string;
+    percentComplete: string;
+    projectType: string;
+    startDate: string;
+    dueDate?: string;
 }
 
 export default function ProjectList() {
-    // Mock Projects Data
-    const projects: Project[] = [
-        { id: "1", name: "Website Redesign", description: "Complete overhaul of the company website with new branding", status: "on_track", progress: 65, tasks: { total: 24, completed: 16 }, team: [{ name: "Alex Chen", initials: "AC" }, { name: "Maria Garcia", initials: "MG" }], dueDate: "Dec 30, 2024" },
-        { id: "2", name: "Mobile App Development", description: "Native mobile app for iOS and Android platforms", status: "at_risk", progress: 40, tasks: { total: 48, completed: 19 }, team: [{ name: "James Wilson", initials: "JW" }], dueDate: "Jan 15, 2025" },
-        { id: "3", name: "ERP Migration", description: "Migrate legacy systems", status: "on_track", progress: 85, tasks: { total: 100, completed: 85 }, team: [{ name: "Sarah Jones", initials: "SJ" }], dueDate: "Feb 20, 2025" },
-    ];
+    const { data: projects, isLoading } = useQuery<Project[]>({
+        queryKey: ['/api/ppm/projects'],
+    });
 
-    const statusConfig = {
-        on_track: { label: "On Track", variant: "default" as const }, // Badge variant
-        at_risk: { label: "At Risk", variant: "destructive" as const },
-        delayed: { label: "Delayed", variant: "secondary" as const },
+    const statusConfig: Record<string, { label: string, variant: "default" | "destructive" | "secondary" | "outline" }> = {
+        ACTIVE: { label: "Active", variant: "default" },
+        DRAFT: { label: "Draft", variant: "secondary" },
+        CLOSED: { label: "Closed", variant: "outline" },
+        ON_TRACK: { label: "On Track", variant: "default" },
+        AT_RISK: { label: "At Risk", variant: "destructive" },
+        DELAYED: { label: "Delayed", variant: "destructive" },
     };
 
     const columns: any[] = [
+        {
+            header: "Number",
+            accessorKey: "projectNumber",
+            cell: (proj: Project) => <span className="font-mono text-xs">{proj.projectNumber}</span>
+        },
         {
             header: "Project",
             accessorKey: "name",
             cell: (proj: Project) => (
                 <div>
                     <div className="font-semibold">{proj.name}</div>
-                    <div className="text-xs text-muted-foreground">{proj.description}</div>
+                    <div className="text-xs text-muted-foreground line-clamp-1">{proj.description}</div>
                 </div>
             )
+        },
+        {
+            header: "Type",
+            accessorKey: "projectType",
+            cell: (proj: Project) => <Badge variant="outline">{proj.projectType}</Badge>
         },
         {
             header: "Status",
             accessorKey: "status",
-            cell: (proj: Project) => (
-                <Badge variant={statusConfig[proj.status].variant}>
-                    {statusConfig[proj.status].label}
-                </Badge>
-            )
+            cell: (proj: Project) => {
+                const config = statusConfig[proj.status] || { label: proj.status, variant: "secondary" };
+                return (
+                    <Badge variant={config.variant}>
+                        {config.label}
+                    </Badge>
+                );
+            }
         },
         {
             header: "Progress",
-            accessorKey: "progress",
-            cell: (proj: Project) => (
-                <div className="w-[150px] space-y-1">
-                    <div className="flex justify-between text-xs">
-                        <span>{proj.progress}%</span>
+            accessorKey: "percentComplete",
+            cell: (proj: Project) => {
+                const progress = parseFloat(proj.percentComplete || "0");
+                return (
+                    <div className="w-[120px] space-y-1">
+                        <div className="flex justify-between text-[10px]">
+                            <span>{progress}%</span>
+                        </div>
+                        <Progress value={progress} className="h-1.5" />
                     </div>
-                    <Progress value={proj.progress} className="h-2" />
-                </div>
+                );
+            }
+        },
+        {
+            header: "Budget",
+            accessorKey: "budget",
+            cell: (proj: Project) => (
+                <span className="font-medium">
+                    ${parseFloat(proj.budget || "0").toLocaleString()}
+                </span>
             )
         },
         {
-            header: "Team",
-            accessorKey: "team",
+            header: "Actions",
+            id: "actions",
             cell: (proj: Project) => (
-                <div className="flex -space-x-2">
-                    {proj.team.map((member, i) => (
-                        <Avatar key={i} className="h-6 w-6 border-2 border-background">
-                            <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
-                                {member.initials}
-                            </AvatarFallback>
-                        </Avatar>
-                    ))}
+                <div className="flex gap-2">
+                    <Link to={`/projects/analytics?id=${proj.id}`}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <TrendingUp className="h-4 w-4 text-blue-500" />
+                        </Button>
+                    </Link>
+                    <Link to={`/projects/tasks?id=${proj.id}`}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                    </Link>
                 </div>
-            )
-        },
-        {
-            header: "Due Date",
-            accessorKey: "dueDate",
-            cell: (proj: Project) => (
-                <span className="text-sm">{proj.dueDate}</span>
             )
         }
     ];
 
     return (
         <StandardTable
-            data={projects}
+            data={projects || []}
             columns={columns}
             keyExtractor={(p) => p.id}
             filterColumn="name"
             filterPlaceholder="Filter projects..."
+            isLoading={isLoading}
         />
     );
 }

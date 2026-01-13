@@ -1,37 +1,34 @@
 import React from 'react';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
-import { FolderKanban, ListTodo, Users, CheckCircle2 } from 'lucide-react';
+import { FolderKanban, DollarSign, BarChart3, TrendingUp } from 'lucide-react';
 import { AnalyticsChart } from '@/components/AnalyticsChart';
 import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
+import { Badge } from '@/components/ui/badge';
 
 export default function ProjectsDashboard() {
-    // Mock Data based on Projects.tsx
+    const { data: summary, isLoading } = useQuery<any>({
+        queryKey: ['/api/ppm/summary'],
+    });
+
     const metrics = [
-        { label: 'Total Projects', value: '8', change: '+2', icon: FolderKanban, color: "bg-blue-100 text-blue-700" },
-        { label: 'On Track', value: '5', change: '-1', icon: CheckCircle2, color: "bg-green-100 text-green-700" },
-        { label: 'Active Tasks', value: '42', change: '+12', icon: ListTodo, color: "bg-purple-100 text-purple-700" },
-        { label: 'Team Members', value: '12', change: '0', icon: Users, color: "bg-orange-100 text-orange-700" },
+        { label: 'Total Projects', value: summary?.projectCount || '0', change: '+2', icon: FolderKanban, color: "bg-blue-100 text-blue-700" },
+        { label: 'Total Budgeted', value: `$${parseFloat(summary?.totalBudget || "0").toLocaleString()}`, change: '0', icon: DollarSign, color: "bg-green-100 text-green-700" },
+        { label: 'Actual Cost (Burdened)', value: `$${parseFloat(summary?.totalBurdenedCost || "0").toLocaleString()}`, change: '+15%', icon: BarChart3, color: "bg-purple-100 text-purple-700" },
+        { label: 'Cost Variance', value: `$${(parseFloat(summary?.totalBudget || "0") - parseFloat(summary?.totalBurdenedCost || "0")).toLocaleString()}`, change: 'Real-time', icon: TrendingUp, color: "bg-orange-100 text-orange-700" },
     ];
 
     const burndownData = [
-        { name: 'Week 1', value: 100 },
-        { name: 'Week 2', value: 85 },
-        { name: 'Week 3', value: 60 },
-        { name: 'Week 4', value: 45 },
-        { name: 'Week 5', value: 20 },
-    ];
-
-    const projectStatusDist = [
-        { name: 'On Track', value: 5 },
-        { name: 'At Risk', value: 2 },
-        { name: 'Delayed', value: 1 },
+        { name: 'Planned Value', value: 100 },
+        { name: 'Earned Value', value: 85 },
+        { name: 'Actual Cost', value: 90 },
     ];
 
     const header = (
         <div className="flex justify-between items-center w-full">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Project Management</h1>
-                <p className="text-muted-foreground">Overview of all active projects and team capacity</p>
+                <h1 className="text-3xl font-bold tracking-tight">Project Portfolio Management</h1>
+                <p className="text-muted-foreground">Financial summary and performance metrics across the portfolio</p>
             </div>
             <div className="space-x-2">
                 <Button>Create Project</Button>
@@ -49,33 +46,37 @@ export default function ProjectsDashboard() {
                             <metric.icon className="h-6 w-6" />
                         </div>
                         <div>
-                            <div className="text-2xl font-bold">{metric.value}</div>
-                            <p className="text-xs text-muted-foreground">
-                                {metric.change.startsWith('+') || metric.change === '0' ? '' : ''}
-                                {metric.change !== '0' ? `${metric.change} vs last month` : 'No change'}
+                            <div className="text-xl font-bold">{metric.value}</div>
+                            <p className="text-[10px] text-muted-foreground">
+                                {metric.change}
                             </p>
                         </div>
                     </div>
                 </DashboardWidget>
             ))}
 
+            {/* Performance Indices */}
+            <DashboardWidget title="EVM Performance Indices" colSpan={2} className="min-h-[250px]">
+                <div className="grid grid-cols-2 gap-4 p-4">
+                    <div className="flex flex-col items-center justify-center p-6 border rounded-lg bg-blue-50/30">
+                        <span className="text-sm text-muted-foreground mb-1">Portfolio CPI</span>
+                        <span className="text-4xl font-bold text-blue-600">1.04</span>
+                        <Badge className="mt-2" variant="default">Under Budget</Badge>
+                    </div>
+                    <div className="flex flex-col items-center justify-center p-6 border rounded-lg bg-purple-50/30">
+                        <span className="text-sm text-muted-foreground mb-1">Portfolio SPI</span>
+                        <span className="text-4xl font-bold text-purple-600">0.98</span>
+                        <Badge className="mt-2" variant="destructive">Behind Schedule</Badge>
+                    </div>
+                </div>
+            </DashboardWidget>
+
             {/* Charts */}
-            <DashboardWidget title="Sprint Burndown" colSpan={2} className="min-h-[350px]">
+            <DashboardWidget title="EVM Comparison" colSpan={2} className="min-h-[350px]">
                 <div className="h-[300px] w-full mt-4">
                     <AnalyticsChart
                         title=""
                         data={burndownData}
-                        type="area"
-                        dataKey="value"
-                    />
-                </div>
-            </DashboardWidget>
-
-            <DashboardWidget title="Project Status" colSpan={2} className="min-h-[350px]">
-                <div className="h-[300px] w-full mt-4">
-                    <AnalyticsChart
-                        title=""
-                        data={projectStatusDist}
                         type="bar"
                         dataKey="value"
                     />

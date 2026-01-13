@@ -32,6 +32,7 @@ import portalRouter from "./routes/portal";
 import arAiRouter from "./routes/ar-ai";
 import arReportRouter from "./routes/ar-reports";
 import { fixedAssetsRouter } from "./routes/fixedAssets";
+import { ppmRouter } from "./routes/ppm";
 import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
 
@@ -56,6 +57,7 @@ export async function registerRoutes(
   app.use("/api/netting", nettingRouter);
   app.use("/api/portal", portalRouter);
   app.use("/api/fa", fixedAssetsRouter);
+  app.use("/api/ppm", ppmRouter);
 
   // Agentic AI
   app.use("/api", aiRouter);
