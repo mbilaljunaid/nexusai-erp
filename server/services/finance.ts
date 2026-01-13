@@ -1300,7 +1300,7 @@ export class FinanceService {
     }
 
     // ================= REPORTING =================
-    async calculateTrialBalance(ledgerId: string, periodId?: string) {
+    async calculateTrialBalance(ledgerId: string, periodId?: string, limit?: number, offset?: number) {
         // 1. Get Code Combinations for this ledger
         const ccs = await storage.listGlCodeCombinations(ledgerId);
         const ccMap = new Map(ccs.map(cc => [cc.id, cc]));
@@ -1331,8 +1331,16 @@ export class FinanceService {
             }
         }
 
-        // 4. Format Result (CCID Level)
-        const rows = ccs.map(cc => {
+        // 4. Format Result (CCID Level) and Sort
+        const sortedCCs = [...ccs].sort((a, b) => a.code.localeCompare(b.code));
+        const totalRows = sortedCCs.length;
+
+        // Apply Pagination
+        const start = offset ?? 0;
+        const end = limit ? start + limit : totalRows;
+        const paginatedCCs = sortedCCs.slice(start, end);
+
+        const rows = paginatedCCs.map(cc => {
             const balance = ccBalances.get(cc.id) || { debit: 0, credit: 0 };
             const net = balance.debit - balance.credit;
             return {
@@ -1348,10 +1356,15 @@ export class FinanceService {
                 // Determine display balance based on normal balance
                 displayBalance: ["Asset", "Expense"].includes(cc.accountType || "") ? net : -net
             };
-        }).sort((a, b) => a.code.localeCompare(b.code));
+        });
 
         return {
             rows,
+            pagination: {
+                total: totalRows,
+                limit: limit ?? totalRows,
+                offset: offset ?? 0
+            },
             summary: {
                 totalDebit: grandTotalDebit,
                 totalCredit: grandTotalCredit,

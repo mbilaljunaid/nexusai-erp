@@ -111,6 +111,8 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "ppm-assets", title: "Capital Assets", type: "link", path: "/projects/assets" },
                     { id: "ppm-burden", title: "Burden Schedules", type: "link", path: "/projects/burden" },
                     { id: "ppm-types", title: "Expenditure Types", type: "link", path: "/projects/types" },
+                    { id: "ppm-rates", title: "Bill Rate Schedules", type: "link", path: "/projects/rates" },
+                    { id: "ppm-templates", title: "Project Templates", type: "link", path: "/projects/templates" },
                     { id: "ppm-sla", title: "SLA Event Monitor", type: "link", path: "/projects/sla" },
                 ]
             },

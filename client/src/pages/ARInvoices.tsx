@@ -8,36 +8,45 @@ import { Badge } from "@/components/ui/badge";
 import { CreditCard, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { ArInvoice } from "@shared/schema";
 
 export default function ARInvoices() {
   const { toast } = useToast();
   const [newInvoice, setNewInvoice] = useState({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
-  const { data: invoices = [], isLoading } = useQuery<any[]>({ 
-    queryKey: ["/api/finance/ar-invoices"],
-    queryFn: () => fetch("/api/finance/ar-invoices").then(r => r.json()),
+  const { data, isLoading } = useQuery<{ data: ArInvoice[], total: number }>({
+    queryKey: ["/api/ar/invoices", page, pageSize],
+    queryFn: () => fetch(`/api/ar/invoices?limit=${pageSize}&offset=${(page - 1) * pageSize}`).then(r => r.json()),
   });
 
+  const invoices = data?.data || [];
+  const totalCount = data?.total || 0;
+
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/finance/ar-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/ar/invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/finance/ar-invoices"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
       setNewInvoice({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
       toast({ title: "Invoice created" });
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/finance/ar-invoices/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/ar/invoices/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/finance/ar-invoices"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
       toast({ title: "Invoice deleted" });
     },
   });
 
-  const total = invoices.reduce((sum, i: any) => sum + parseFloat(i.invoiceAmount || 0), 0);
-  const received = invoices.reduce((sum, i: any) => sum + parseFloat(i.receivedAmount || 0), 0);
-  const outstanding = total - received;
+  // Note: These summaries now only reflect the CURRENT PAGE
+  // For a real app, we'd have a separate stats endpoint
+  const totalAmount = invoices.reduce((sum, i) => sum + parseFloat(String(i.totalAmount || 0)), 0);
+  const receivedAmount = invoices.reduce((sum, i) => sum + parseFloat(String(i.paidAmount || 0)), 0);
+  const outstandingAmount = totalAmount - receivedAmount;
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
     draft: "secondary",
@@ -46,6 +55,38 @@ export default function ARInvoices() {
     paid: "outline",
     cancelled: "secondary",
   };
+
+  const columns: Column<ArInvoice>[] = [
+    {
+      header: "Invoice #",
+      accessorKey: "invoiceNumber",
+      className: "font-semibold"
+    },
+    {
+      header: "Customer",
+      accessorKey: "customerId"
+    },
+    {
+      header: "Amount",
+      cell: (inv) => `$${inv.totalAmount}`
+    },
+    {
+      header: "Status",
+      cell: (inv) => (
+        <Badge variant={statusColors[inv.status || "issued"] || "default"}>
+          {inv.status}
+        </Badge>
+      )
+    },
+    {
+      header: "Actions",
+      cell: (inv) => (
+        <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(inv.id)} data-testid={`button-delete-${inv.id}`}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      )
+    }
+  ];
 
   return (
     <div className="space-y-4">
@@ -60,20 +101,20 @@ export default function ARInvoices() {
       <div className="grid grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Total AR</p>
-            <p className="text-2xl font-bold">${total.toFixed(2)}</p>
+            <p className="text-muted-foreground text-sm">Page Total AR</p>
+            <p className="text-2xl font-bold">${totalAmount.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Received</p>
-            <p className="text-2xl font-bold text-green-600">${received.toFixed(2)}</p>
+            <p className="text-muted-foreground text-sm">Page Received</p>
+            <p className="text-2xl font-bold text-green-600">${receivedAmount.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Outstanding</p>
-            <p className="text-2xl font-bold text-orange-600">${outstanding.toFixed(2)}</p>
+            <p className="text-muted-foreground text-sm">Page Outstanding</p>
+            <p className="text-2xl font-bold text-orange-600">${outstandingAmount.toFixed(2)}</p>
           </CardContent>
         </Card>
       </div>
@@ -105,29 +146,16 @@ export default function ARInvoices() {
           <CardTitle>Customer Invoices</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            {isLoading ? (
-              <p className="text-center py-4">Loading...</p>
-            ) : invoices.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">No invoices</p>
-            ) : (
-              invoices.map((inv: any) => (
-                <div key={inv.id} className="flex items-center justify-between p-3 border rounded hover-elevate" data-testid={`invoice-${inv.id}`}>
-                  <div className="flex-1">
-                    <p className="font-semibold">{inv.invoiceNumber}</p>
-                    <p className="text-sm text-muted-foreground">{inv.customerId}</p>
-                  </div>
-                  <div className="flex gap-3 items-center">
-                    <p className="font-semibold">${inv.invoiceAmount}</p>
-                    <Badge variant={statusColors[inv.status] || "default"}>{inv.status}</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(inv.id)} data-testid={`button-delete-${inv.id}`}>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          <StandardTable
+            data={invoices}
+            columns={columns}
+            isLoading={isLoading}
+            page={page}
+            pageSize={pageSize}
+            totalItems={totalCount}
+            onPageChange={setPage}
+            keyExtractor={(i) => i.id}
+          />
         </CardContent>
       </Card>
     </div>

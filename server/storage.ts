@@ -205,7 +205,7 @@ import {
 import { dbStorage } from "./storage-db";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { eq, desc, and, sql, ne } from "drizzle-orm";
+import { eq, desc, and, sql, ne, count } from "drizzle-orm";
 
 export interface IStorage {
   // Legal Entity operations
@@ -653,6 +653,7 @@ export interface IStorage {
   updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined>;
 
   listArInvoices(limit?: number, offset?: number): Promise<ArInvoice[]>;
+  getArInvoicesCount(): Promise<number>;
   getArInvoice(id: string): Promise<ArInvoice | undefined>;
   createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
   updateArInvoice(id: string, data: Partial<InsertArInvoice>): Promise<ArInvoice | undefined>;
@@ -1053,8 +1054,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Enterprise Invoice Methods
-  async listApInvoices(): Promise<ApInvoice[]> {
-    return await db.select().from(apInvoices);
+  async listApInvoices(limit?: number, offset?: number): Promise<ApInvoice[]> {
+    let query = db.select().from(apInvoices).orderBy(desc(apInvoices.createdAt));
+    if (limit !== undefined) {
+      // @ts-ignore
+      query = query.limit(limit);
+    }
+    if (offset !== undefined) {
+      // @ts-ignore
+      query = query.offset(offset);
+    }
+    return await query;
+  }
+
+  async getApInvoicesCount(): Promise<number> {
+    const [res] = await db.select({ count: count() }).from(apInvoices);
+    return res.count;
   }
 
   async getApInvoice(id: string): Promise<ApInvoice | undefined> {
@@ -1375,7 +1390,7 @@ export class DatabaseStorage implements IStorage {
     const [res] = await db.insert(arCustomerSites).values(data).returning();
     return res;
   }
-  async updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>) {
+  async updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined> {
     const [res] = await db.update(arCustomerSites).set(data).where(eq(arCustomerSites.id, id)).returning();
     return res;
   }
@@ -1391,6 +1406,11 @@ export class DatabaseStorage implements IStorage {
       query = query.offset(offset);
     }
     return await query;
+  }
+
+  async getArInvoicesCount(): Promise<number> {
+    const [res] = await db.select({ count: count() }).from(arInvoices);
+    return res.count;
   }
   async getArInvoice(id: string) {
     const [res] = await db.select().from(arInvoices).where(eq(arInvoices.id, id));

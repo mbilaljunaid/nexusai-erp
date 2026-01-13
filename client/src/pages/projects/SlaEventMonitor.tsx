@@ -20,10 +20,25 @@ interface CostDistribution {
     taskNumber: string;
 }
 
+interface SlaResponse {
+    items: CostDistribution[];
+    total: number;
+}
+
 export default function SlaEventMonitor() {
     const [searchTerm, setSearchTerm] = useState("");
-    const { data: distributions, isLoading } = useQuery<CostDistribution[]>({
-        queryKey: ['/api/ppm/sla/distributions'],
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(20);
+
+    const { data: results, isLoading } = useQuery<SlaResponse>({
+        queryKey: ['/api/ppm/sla/distributions', page, pageSize, searchTerm],
+        queryFn: async ({ queryKey }) => {
+            const [url, p, ps, search] = queryKey;
+            const offset = (Number(p) - 1) * Number(ps);
+            const res = await fetch(`${url}?limit=${ps}&offset=${offset}${search ? `&projectId=${search}` : ''}`);
+            if (!res.ok) throw new Error("Failed to fetch SLA data");
+            return res.json();
+        }
     });
 
     const columns: Column<CostDistribution>[] = [
@@ -40,12 +55,12 @@ export default function SlaEventMonitor() {
         },
         {
             header: "Debit Account", accessorKey: "drAccount", cell: (item) => (
-                <div className="font-mono text-xs">{item.drAccount}</div>
+                <div className="font-mono text-[10px] break-all max-w-[200px]">{item.drAccount || 'Unassigned'}</div>
             )
         },
         {
             header: "Credit Account", accessorKey: "crAccount", cell: (item) => (
-                <div className="font-mono text-xs">{item.crAccount}</div>
+                <div className="font-mono text-[10px] break-all max-w-[200px]">{item.crAccount || 'Unassigned'}</div>
             )
         },
         {
@@ -58,18 +73,12 @@ export default function SlaEventMonitor() {
         },
         {
             header: "Source", cell: (item) => (
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-muted-foreground whitespace-nowrap">
                     {item.projectName} / {item.taskNumber}
                 </div>
             )
         }
     ];
-
-    const filteredData = distributions?.filter(item =>
-        item.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.drAccount.includes(searchTerm) ||
-        item.crAccount.includes(searchTerm)
-    ) || [];
 
     return (
         <div className="space-y-6">
@@ -84,20 +93,12 @@ export default function SlaEventMonitor() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                     <CardHeader className="py-4">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Debits</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Activity</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            ${filteredData.reduce((acc, curr) => acc + parseFloat(curr.amount), 0).toLocaleString()}
+                            {results?.total || 0} Events
                         </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="py-4">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Events Processed</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{filteredData.length}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -107,7 +108,18 @@ export default function SlaEventMonitor() {
                     <CardContent>
                         <div className="flex items-center gap-2">
                             <CheckCircle2 className="h-5 w-5 text-green-500" />
-                            <span className="font-medium">Up to Date</span>
+                            <span className="font-medium">All Posted</span>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="py-4">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">System Health</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                            <span className="font-medium">Operational</span>
                         </div>
                     </CardContent>
                 </Card>
@@ -118,7 +130,7 @@ export default function SlaEventMonitor() {
                     <div className="relative flex-1 max-w-sm">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder="Search accounts or projects..."
+                            placeholder="Filter by Project ID..."
                             className="pl-8"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -126,10 +138,13 @@ export default function SlaEventMonitor() {
                     </div>
                 </div>
                 <StandardTable
-                    data={filteredData}
+                    data={results?.items || []}
                     columns={columns}
                     isLoading={isLoading}
-                    pageSize={20}
+                    page={page}
+                    pageSize={pageSize}
+                    totalItems={results?.total}
+                    onPageChange={setPage}
                 />
             </Card>
         </div>

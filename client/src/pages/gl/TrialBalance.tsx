@@ -30,11 +30,14 @@ export default function TrialBalance() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCCID, setSelectedCCID] = useState<string | null>(null);
     const [selectedPeriod, setSelectedPeriod] = useState("PRIMARY_DEC23"); // Mock selection for now
+    const [page, setPage] = useState(1);
+    const pageSize = 25;
 
     const { data: report, isLoading } = useQuery({
-        queryKey: ["/api/gl/reporting/trial-balance", { periodId: selectedPeriod }],
+        queryKey: ["/api/gl/reporting/trial-balance", { periodId: selectedPeriod, page, limit: pageSize }],
         queryFn: async () => {
-            const res = await fetch(`/api/gl/reporting/trial-balance?periodId=${selectedPeriod}`);
+            const offset = (page - 1) * pageSize;
+            const res = await fetch(`/api/gl/reporting/trial-balance?periodId=${selectedPeriod}&limit=${pageSize}&offset=${offset}`);
             if (!res.ok) throw new Error("Failed to fetch trial balance");
             return res.json();
         }
@@ -181,11 +184,14 @@ export default function TrialBalance() {
                         <div className="border rounded-lg overflow-hidden">
                             <StandardTable
                                 data={report?.rows || []}
+                                totalItems={report?.pagination?.total || 0}
+                                page={page}
+                                pageSize={pageSize}
+                                onPageChange={setPage}
                                 keyExtractor={(row: TrialBalanceRow) => row.ccid}
                                 isLoading={isLoading}
                                 onRowClick={(row: TrialBalanceRow) => setSelectedCCID(row.ccid)}
-                                isVirtualized={true}
-                                height={500}
+                                isVirtualized={false} // Disabled for paginated high-level view
                                 filterColumn="code"
                                 filterPlaceholder="Filter by combinations..."
                                 columns={[

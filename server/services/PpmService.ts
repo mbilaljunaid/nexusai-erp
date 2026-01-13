@@ -14,7 +14,7 @@ import {
     timeEntries, type TimeEntry,
     ppmProjectAssets, ppmProjectTemplates, ppmBillRateSchedules, ppmBillRates
 } from "@shared/schema";
-import { eq, and, isNull, isNotNull, desc, inArray, sql as drizzleSql } from "drizzle-orm";
+import { eq, and, isNull, isNotNull, desc, inArray, sql, aliasedTable } from "drizzle-orm";
 
 export class PpmService {
     /**
@@ -804,54 +804,41 @@ export class PpmService {
     /**
      * Get Assets for a project or all assets
      */
-    async getProjectAssets(projectId?: string) {
+    async getProjectAssets(projectId?: string, limit: number = 20, offset: number = 0) {
+        let baseQuery = db.select().from(ppmProjectAssets);
+        let countQuery = db.select({ count: sql<number>`count(*)` }).from(ppmProjectAssets);
+
         if (projectId) {
-            const assets = await db.select().from(ppmProjectAssets).where(eq(ppmProjectAssets.projectId, projectId));
-            return assets;
+            baseQuery = baseQuery.where(eq(ppmProjectAssets.projectId, projectId));
+            countQuery = countQuery.where(eq(ppmProjectAssets.projectId, projectId));
         }
-        const assets = await db.select().from(ppmProjectAssets).orderBy(desc(ppmProjectAssets.createdAt));
-        return assets;
+
+        const assets = await baseQuery
+            .limit(limit)
+            .offset(offset)
+            .orderBy(desc(ppmProjectAssets.createdAt));
+
+        const [totalCount] = await countQuery;
+
+        return {
+            items: assets,
+            total: Number(totalCount.count)
+        };
     }
 
     /**
      * Get Cost Distributions (SLA Events)
      */
-    async getCostDistributions(projectId?: string, expenditureItemId?: string) {
-        let whereClause = undefined;
+    async getCostDistributions(projectId?: string, expenditureItemId?: string, limit: number = 20, offset: number = 0) {
+        // Aliases for joining glCodeCombinations twice (Debit and Credit)
+        const drCc = aliasedTable(glCodeCombinations, "dr_cc");
+        const crCc = aliasedTable(glCodeCombinations, "cr_cc");
 
-        if (expenditureItemId) {
-            whereClause = eq(ppmCostDistributions.expenditureItemId, expenditureItemId);
-        } else if (projectId) {
-            // We need to filter by project, which requires joining
-            // For simplicity in this ORM usage, we'll fetch items for the project first then filter distributions
-            // OR use a direct join query if building from distributions
-            // Let's construct a cleaner join:
-            return await db.select({
-                id: ppmCostDistributions.id,
-                amount: ppmCostDistributions.amount,
-                drAccount: ppmCostDistributions.drCodeCombinationId,
-                crAccount: ppmCostDistributions.crCodeCombinationId,
-                status: ppmCostDistributions.status,
-                lineType: ppmCostDistributions.lineType,
-                accountingDate: ppmCostDistributions.createdAt, // Using createdAt as proxy for accounting date if not exists
-                expenditureItemDate: ppmExpenditureItems.expenditureItemDate,
-                projectName: ppmProjects.name,
-                taskNumber: ppmTasks.taskNumber
-            })
-                .from(ppmCostDistributions)
-                .innerJoin(ppmExpenditureItems, eq(ppmCostDistributions.expenditureItemId, ppmExpenditureItems.id))
-                .innerJoin(ppmTasks, eq(ppmExpenditureItems.taskId, ppmTasks.id))
-                .innerJoin(ppmProjects, eq(ppmTasks.projectId, ppmProjects.id))
-                .where(eq(ppmProjects.id, projectId))
-                .orderBy(desc(ppmCostDistributions.createdAt));
-        }
-
-        // Default or by Item ID
-        const query = db.select({
+        const baseQuery = db.select({
             id: ppmCostDistributions.id,
             amount: ppmCostDistributions.amount,
-            drAccount: ppmCostDistributions.drCodeCombinationId,
-            crAccount: ppmCostDistributions.crCodeCombinationId,
+            drAccount: drCc.code, // Joined Segment Labels (AUDIT-FIN-004)
+            crAccount: crCc.code, // Joined Segment Labels (AUDIT-FIN-004)
             status: ppmCostDistributions.status,
             lineType: ppmCostDistributions.lineType,
             accountingDate: ppmCostDistributions.createdAt,
@@ -862,13 +849,95 @@ export class PpmService {
             .from(ppmCostDistributions)
             .innerJoin(ppmExpenditureItems, eq(ppmCostDistributions.expenditureItemId, ppmExpenditureItems.id))
             .innerJoin(ppmTasks, eq(ppmExpenditureItems.taskId, ppmTasks.id))
+            .innerJoin(ppmProjects, eq(ppmTasks.projectId, ppmProjects.id))
+            .leftJoin(drCc, eq(ppmCostDistributions.drCodeCombinationId, drCc.id))
+            .leftJoin(crCc, eq(ppmCostDistributions.crCodeCombinationId, crCc.id));
+
+        let finalQuery = baseQuery;
+
+        // Count Query for Pagination (AUDIT-FIN-002)
+        const countQuery = db.select({ count: sql<number>`count(*)` })
+            .from(ppmCostDistributions)
+            .innerJoin(ppmExpenditureItems, eq(ppmCostDistributions.expenditureItemId, ppmExpenditureItems.id))
+            .innerJoin(ppmTasks, eq(ppmExpenditureItems.taskId, ppmTasks.id))
             .innerJoin(ppmProjects, eq(ppmTasks.projectId, ppmProjects.id));
 
         if (expenditureItemId) {
-            return await query.where(eq(ppmCostDistributions.expenditureItemId, expenditureItemId));
+            finalQuery = finalQuery.where(eq(ppmCostDistributions.expenditureItemId, expenditureItemId));
+        } else if (projectId) {
+            finalQuery = finalQuery.where(eq(ppmProjects.id, projectId));
         }
 
-        return await query.limit(50).orderBy(desc(ppmCostDistributions.createdAt));
+        const items = await finalQuery
+            .limit(limit)
+            .offset(offset)
+            .orderBy(desc(ppmCostDistributions.createdAt));
+
+        const [totalCount] = await countQuery;
+
+        return {
+            items,
+            total: Number(totalCount.count)
+        };
+    }
+
+    /**
+     * Get all bill rate schedules
+     */
+    async getBillRateSchedules() {
+        return await db.select().from(ppmBillRateSchedules).orderBy(desc(ppmBillRateSchedules.createdAt));
+    }
+
+    /**
+     * Create a new bill rate schedule
+     */
+    async createBillRateSchedule(data: any) {
+        const [schedule] = await db.insert(ppmBillRateSchedules).values(data).returning();
+        return schedule;
+    }
+
+    /**
+     * Get rates for a specific schedule
+     */
+    async getBillRates(scheduleId: string) {
+        return await db.select({
+            id: ppmBillRates.id,
+            scheduleId: ppmBillRates.scheduleId,
+            personId: ppmBillRates.personId,
+            jobTitle: ppmBillRates.jobTitle,
+            expenditureType: ppmExpenditureTypes.name,
+            expenditureTypeId: ppmBillRates.expenditureTypeId,
+            rate: ppmBillRates.rate,
+            startDate: ppmBillRates.startDate,
+            endDate: ppmBillRates.endDate
+        })
+            .from(ppmBillRates)
+            .leftJoin(ppmExpenditureTypes, eq(ppmBillRates.expenditureTypeId, ppmExpenditureTypes.id))
+            .where(eq(ppmBillRates.scheduleId, scheduleId))
+            .orderBy(desc(ppmBillRates.createdAt));
+    }
+
+    /**
+     * Add a rate to a schedule
+     */
+    async addBillRate(data: any) {
+        const [rate] = await db.insert(ppmBillRates).values(data).returning();
+        return rate;
+    }
+
+    /**
+     * Get all project templates
+     */
+    async getProjectTemplates() {
+        return await db.select().from(ppmProjectTemplates).orderBy(desc(ppmProjectTemplates.createdAt));
+    }
+
+    /**
+     * Create a new project template
+     */
+    async createProjectTemplate(data: any) {
+        const [template] = await db.insert(ppmProjectTemplates).values(data).returning();
+        return template;
     }
 
     /**
@@ -878,7 +947,7 @@ export class PpmService {
         // 1. AP Invoice Lines
         const apLines = await db.select({
             id: apInvoiceLines.id,
-            source: drizzleSql<string>`'AP'`,
+            source: sql<string>`'AP'`,
             date: apInvoices.invoiceDate,
             description: apInvoiceLines.description,
             amount: apInvoiceLines.amount,
@@ -897,9 +966,53 @@ export class PpmService {
                 eq(apInvoices.validationStatus, "VALIDATED")
             ));
 
-        // Future: Add Inventory and Labor pending transactions here
+        // 2. Inventory Material Issues (ISSUE type, linked to project, not yet costed)
+        const invLines = await db.select({
+            id: inventoryTransactions.id,
+            source: sql<string>`'INVENTORY'`,
+            date: inventoryTransactions.transactionDate,
+            description: inventoryTransactions.referenceNumber,
+            amount: sql<string>`(${inventoryTransactions.quantity} * ${inventoryTransactions.cost})::numeric`,
+            currency: sql<string>`'USD'`,
+            projectName: ppmProjects.name,
+            taskNumber: ppmTasks.taskNumber
+        })
+            .from(inventoryTransactions)
+            .innerJoin(ppmProjects, eq(inventoryTransactions.projectId, ppmProjects.id))
+            .innerJoin(ppmTasks, eq(inventoryTransactions.taskId, ppmTasks.id))
+            .leftJoin(ppmExpenditureItems, and(
+                eq(ppmExpenditureItems.transactionSource, "INVENTORY"),
+                eq(ppmExpenditureItems.transactionReference, inventoryTransactions.id)
+            ))
+            .where(and(
+                eq(inventoryTransactions.transactionType, "ISSUE"),
+                isNull(ppmExpenditureItems.id)
+            ));
 
-        return apLines;
+        // 3. Labor / Time Entries (APPROVED status, linked to project, not yet costed)
+        const laborLines = await db.select({
+            id: timeEntries.id,
+            source: sql<string>`'LABOR'`,
+            date: timeEntries.date,
+            description: timeEntries.description,
+            amount: sql<string>`(${timeEntries.hours} * ${timeEntries.costRate})::numeric`,
+            currency: sql<string>`'USD'`,
+            projectName: ppmProjects.name,
+            taskNumber: ppmTasks.taskNumber
+        })
+            .from(timeEntries)
+            .innerJoin(ppmProjects, eq(timeEntries.projectId, ppmProjects.id))
+            .innerJoin(ppmTasks, eq(timeEntries.taskId, ppmTasks.id))
+            .leftJoin(ppmExpenditureItems, and(
+                eq(ppmExpenditureItems.transactionSource, "LABOR"),
+                eq(ppmExpenditureItems.transactionReference, timeEntries.id)
+            ))
+            .where(and(
+                eq(timeEntries.status, "APPROVED"),
+                isNull(ppmExpenditureItems.id)
+            ));
+
+        return [...apLines, ...invLines, ...laborLines];
     }
 }
 

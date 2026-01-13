@@ -95,6 +95,10 @@ export class ArService {
         return await storage.listArInvoices(limit, offset);
     }
 
+    async getInvoicesCount(): Promise<number> {
+        return await storage.getArInvoicesCount();
+    }
+
     async createInvoice(data: InsertArInvoice): Promise<ArInvoice> {
         // 1. Credit Check Enforce
         if (data.accountId) {

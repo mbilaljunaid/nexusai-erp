@@ -107,6 +107,62 @@ ppmRouter.post("/expenditure-types", async (req, res) => {
     }
 });
 
+// Bill Rate Schedules & Rates
+ppmRouter.get("/bill-rate-schedules", async (req, res) => {
+    try {
+        const schedules = await ppmService.getBillRateSchedules();
+        res.json(schedules);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+ppmRouter.post("/bill-rate-schedules", async (req, res) => {
+    try {
+        const schedule = await ppmService.createBillRateSchedule(req.body);
+        res.json(schedule);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+ppmRouter.get("/bill-rate-schedules/:id/rates", async (req, res) => {
+    try {
+        const rates = await ppmService.getBillRates(req.params.id);
+        res.json(rates);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+ppmRouter.post("/bill-rates", async (req, res) => {
+    try {
+        const rate = await ppmService.addBillRate(req.body);
+        res.json(rate);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Project Templates
+ppmRouter.get("/project-templates", async (req, res) => {
+    try {
+        const templates = await ppmService.getProjectTemplates();
+        res.json(templates);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+ppmRouter.post("/project-templates", async (req, res) => {
+    try {
+        const template = await ppmService.createProjectTemplate(req.body);
+        res.json(template);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Get burden schedules
 ppmRouter.get("/burden-schedules", async (req, res) => {
     try {
@@ -121,8 +177,10 @@ ppmRouter.get("/burden-schedules", async (req, res) => {
 ppmRouter.get("/assets", async (req, res) => {
     try {
         const projectId = req.query.projectId as string | undefined;
-        const assets = await ppmService.getProjectAssets(projectId);
-        res.json(assets);
+        const limit = parseInt(req.query.limit as string || "20");
+        const offset = parseInt(req.query.offset as string || "0");
+        const result = await ppmService.getProjectAssets(projectId, limit, offset);
+        res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
@@ -133,9 +191,11 @@ ppmRouter.get("/sla/distributions", async (req, res) => {
     try {
         const projectId = req.query.projectId as string | undefined;
         const expenditureItemId = req.query.expenditureItemId as string | undefined;
+        const limit = parseInt(req.query.limit as string || "20");
+        const offset = parseInt(req.query.offset as string || "0");
 
-        const distributions = await ppmService.getCostDistributions(projectId, expenditureItemId);
-        res.json(distributions);
+        const result = await ppmService.getCostDistributions(projectId, expenditureItemId, limit, offset);
+        res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
@@ -154,9 +214,22 @@ ppmRouter.get("/transactions/pending", async (req, res) => {
 // Trigger import of pending transactions
 ppmRouter.post("/transactions/import", async (req, res) => {
     try {
-        const results = await ppmService.collectFromAP();
-        // Future: also call collectFromInventory, collectFromLabor
-        res.json({ message: "Import completed", count: results.length, items: results });
+        // Collect from all sources (AUDIT-FIN-005)
+        const apResults = await ppmService.collectFromAP();
+        const invResults = await ppmService.collectFromInventory();
+        const laborResults = await ppmService.collectFromLabor();
+
+        const totalItems = apResults.length + invResults.length + laborResults.length;
+
+        res.json({
+            message: "Import completed",
+            count: totalItems,
+            details: {
+                ap: apResults.length,
+                inventory: invResults.length,
+                labor: laborResults.length
+            }
+        });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

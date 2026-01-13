@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { StandardTable, type Column } from "@/components/ui/StandardTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building, ArrowUpRight, DollarSign } from "lucide-react";
+import { Building, ArrowUpRight, DollarSign, CheckCircle2 } from "lucide-react";
 
 interface ProjectAsset {
     id: string;
@@ -19,9 +19,24 @@ interface ProjectAsset {
     createdAt: string;
 }
 
+interface AssetResponse {
+    items: ProjectAsset[];
+    total: number;
+}
+
 export default function AssetWorkbench() {
-    const { data: assets, isLoading } = useQuery<ProjectAsset[]>({
-        queryKey: ['/api/ppm/assets'],
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(10);
+
+    const { data: results, isLoading } = useQuery<AssetResponse>({
+        queryKey: ['/api/ppm/assets', page, pageSize],
+        queryFn: async ({ queryKey }) => {
+            const [url, p, ps] = queryKey;
+            const offset = (Number(p) - 1) * Number(ps);
+            const res = await fetch(`${url}?limit=${ps}&offset=${offset}`);
+            if (!res.ok) throw new Error("Failed to fetch assets");
+            return res.json();
+        }
     });
 
     const columns: Column<ProjectAsset>[] = [
@@ -77,23 +92,24 @@ export default function AssetWorkbench() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total CIP Value</CardTitle>
+                        <CardTitle className="text-sm font-medium">Total CIP Portfolio</CardTitle>
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            ${assets ? assets.reduce((acc, curr) => acc + parseFloat(curr.cost), 0).toLocaleString() : '0.00'}
+                            {results?.total || 0} Assets
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Pending Interface</CardTitle>
+                        <CardTitle className="text-sm font-medium">System Readiness</CardTitle>
                         <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
-                            {assets ? assets.filter(a => a.status === 'NEW').length : 0}
+                        <div className="flex items-center gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                            <span className="font-medium">Operational</span>
                         </div>
                     </CardContent>
                 </Card>
@@ -101,10 +117,13 @@ export default function AssetWorkbench() {
 
             <Card className="border-0 shadow-none bg-transparent">
                 <StandardTable
-                    data={assets || []}
+                    data={results?.items || []}
                     columns={columns}
                     isLoading={isLoading}
-                    pageSize={10}
+                    page={page}
+                    pageSize={pageSize}
+                    totalItems={results?.total}
+                    onPageChange={setPage}
                     onRowClick={(item) => console.log('View asset', item.id)}
                 />
             </Card>

@@ -117,7 +117,8 @@ router.get("/invoices", async (req, res) => {
             limit ? Number(limit) : undefined,
             offset ? Number(offset) : undefined
         );
-        res.json(invoices);
+        const total = await arService.getInvoicesCount();
+        res.json({ data: invoices, total });
     } catch (error) {
         res.status(500).json({ message: "Failed to list invoices" });
     }

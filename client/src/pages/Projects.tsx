@@ -26,6 +26,9 @@ import BurdenManager from "./projects/BurdenManager";
 import AssetWorkbench from "./projects/AssetWorkbench";
 import SlaEventMonitor from "./projects/SlaEventMonitor";
 import TransactionImport from "./projects/TransactionImport";
+import ExpenditureTypeManager from "./projects/ExpenditureTypeManager";
+import BillRateManager from "./projects/BillRateManager";
+import ProjectTemplateManager from "./projects/ProjectTemplateManager";
 
 interface Project {
   id: string;
@@ -223,6 +226,12 @@ export default function Projects() {
       {activeNav === "sla" && <SlaEventMonitor />}
 
       {activeNav === "import" && <TransactionImport />}
+
+      {activeNav === "types" && <ExpenditureTypeManager />}
+
+      {activeNav === "rates" && <BillRateManager />}
+
+      {activeNav === "templates" && <ProjectTemplateManager />}
     </div>
   );
 }

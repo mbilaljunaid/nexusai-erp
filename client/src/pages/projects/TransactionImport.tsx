@@ -36,10 +36,10 @@ export default function TransactionImport() {
         onSuccess: (data) => {
             toast({
                 title: "Import Successful",
-                description: `Successfully imported ${data.count} items.`,
+                description: `Imported ${data.count} items (AP: ${data.details.ap}, Inv: ${data.details.inventory}, Labor: ${data.details.labor})`,
             });
             queryClient.invalidateQueries({ queryKey: ['/api/ppm/transactions/pending'] });
-            queryClient.invalidateQueries({ queryKey: ['/api/ppm/expenditures'] }); // Refresh inquiry grid too
+            queryClient.invalidateQueries({ queryKey: ['/api/ppm/expenditures'] });
         },
         onError: (error: Error) => {
             toast({
@@ -148,7 +148,6 @@ export default function TransactionImport() {
                     columns={columns}
                     isLoading={isLoading}
                     pageSize={20}
-                    emptyMessage="No pending transactions found for import."
                 />
             </Card>
         </div>

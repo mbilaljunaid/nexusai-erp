@@ -198,10 +198,12 @@ router.get("/gl/reconciliation", async (req, res) => {
  */
 router.get("/gl/trial-balance", async (req, res) => {
   try {
-    const { ledgerId, periodId } = req.query;
+    const { ledgerId, periodId, limit, offset } = req.query;
     const report = await financeService.calculateTrialBalance(
       (ledgerId as string) || "PRIMARY",
-      periodId as string
+      periodId as string,
+      limit ? parseInt(limit as string) : undefined,
+      offset ? parseInt(offset as string) : undefined
     );
     res.json(report);
   } catch (error: any) {
@@ -215,10 +217,12 @@ router.get("/gl/trial-balance", async (req, res) => {
  */
 router.get("/gl/reporting/trial-balance", async (req, res) => {
   try {
-    const { ledgerId, periodId } = req.query;
+    const { ledgerId, periodId, limit, offset } = req.query;
     const report = await financeService.calculateTrialBalance(
       (ledgerId as string) || "PRIMARY",
-      periodId as string
+      periodId as string,
+      limit ? parseInt(limit as string) : undefined,
+      offset ? parseInt(offset as string) : undefined
     );
     res.json(report);
   } catch (error: any) {
