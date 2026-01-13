@@ -16,76 +16,9 @@ import ProductsDetail from "./ProductsDetail";
 import QuotesDetail from "./QuotesDetail";
 import CasesDetail from "./CasesDetail";
 import AnalyticsDetail from "./AnalyticsDetail";
-interface CRMMetrics {
-  totalLeads: number;
-  pipelineValue: string;
-  winRate: string;
-  avgSalesCycle: string;
-}
+import CrmDashboard from "./crm/CrmDashboard";
 
-interface Opportunity {
-  id: string;
-  name: string;
-  accountId?: string;
-  amount: number | string;
-  stage: string;
-}
 
-function CRMOverview() {
-  const { data: metrics, isLoading } = useQuery<CRMMetrics>({
-    queryKey: ["/api/crm/metrics"],
-  });
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4" data-testid="crm-metrics">
-      <Card><CardContent className="p-4"><p className="text-2xl font-semibold" data-testid="text-total-leads">{isLoading ? "..." : (metrics?.totalLeads ?? 0)}</p><p className="text-xs text-muted-foreground">Total Leads</p></CardContent></Card>
-      <Card><CardContent className="p-4"><p className="text-2xl font-semibold" data-testid="text-pipeline-value">{isLoading ? "..." : (metrics?.pipelineValue || "$0")}</p><p className="text-xs text-muted-foreground">Pipeline Value</p></CardContent></Card>
-      <Card><CardContent className="p-4"><p className="text-2xl font-semibold" data-testid="text-win-rate">{isLoading ? "..." : (metrics?.winRate || "0%")}</p><p className="text-xs text-muted-foreground">Avg Win Rate</p></CardContent></Card>
-      <Card><CardContent className="p-4"><p className="text-2xl font-semibold" data-testid="text-sales-cycle">{isLoading ? "..." : (metrics?.avgSalesCycle || "0 days")}</p><p className="text-xs text-muted-foreground">Avg Sales Cycle</p></CardContent></Card>
-    </div>
-  );
-}
-
-function OpportunitiesSection() {
-  const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
-    queryKey: ["/api/crm/opportunities"],
-  });
-
-  return (
-    <div className="space-y-4">
-      <Breadcrumb items={[
-        { label: "CRM", path: "/crm" },
-        { label: "Opportunities", path: "/crm/opportunities" },
-      ]} />
-      <Card>
-        <CardHeader>
-          <CardTitle>Sales Opportunities</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <p className="text-muted-foreground">Track and manage sales opportunities and deals</p>
-          <div className="space-y-2">
-            {isLoading ? (
-              <div className="p-3 text-muted-foreground">Loading opportunities...</div>
-            ) : opportunities.length > 0 ? (
-              opportunities.map((opp) => (
-                <div key={opp.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between" data-testid={`card-opportunity-${opp.id}`}>
-                  <div>
-                    <p className="font-semibold">{opp.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {/* TODO: Resolve account name from accountId if available */}
-                      {opp.accountId ? "Account " + opp.accountId.substring(0, 6) : "Unknown Account"} - ${Number(opp.amount).toLocaleString()} - {opp.stage}
-                    </p>
-                  </div>
-                </div>
-              ))) : (
-              <div className="p-3 text-muted-foreground">No opportunities found.</div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
 
 export default function CRM() {
   const [match, params] = useRoute("/crm/:page?");
@@ -161,7 +94,7 @@ export default function CRM() {
         ))}
       </div>
 
-      {activeNav === "overview" && <CRMOverview />}
+      {activeNav === "overview" && <CrmDashboard />}
 
       {activeNav === "opportunities" && <OpportunitiesDetail />}
 

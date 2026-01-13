@@ -4,8 +4,9 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar"; // removed unused SidebarTrigger
+import GlobalLayout from "@/components/GlobalLayout"; // default import
+// import { AppSidebar } from "@/components/AppSidebar"; // removed unused import
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { RBACProvider } from "@/components/RBACContext";
@@ -15,7 +16,7 @@ import { HelpButton } from "@/components/HelpButton";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { WhatsNew } from "@/components/WhatsNew";
 import { NotificationCenter as NotificationCenterWidget } from "@/components/NotificationCenter";
-import { QuickTipsProvider, TipsToggle } from "@/components/QuickTips";
+import { QuickTipsProvider } from "@/components/QuickTips"; // restored
 import { AIChatWidget } from "@/components/AIChatWidget";
 import { LedgerProvider } from "@/context/LedgerContext";
 import { LedgerSelector } from "@/components/LedgerSelector";
@@ -800,7 +801,7 @@ function Router() {
       <Route path="/gl/budgets" component={BudgetManager} />
       <Route path="/gl/cvr" component={CVRManager} />
       <Route path="/gl/data-access" component={DataAccessManager} />
-      <Route path="/gl/period-close" component={PeriodCloseDashboard} />
+
       <Route path="/finance/ar/period-close" component={ArPeriodClose} />
       <Route path="/gl/trial-balance" component={TrialBalance} />
       <Route path="/gl/trial-balance" component={TrialBalance} />
@@ -831,32 +832,15 @@ function Router() {
 
 function AuthenticatedLayout() {
   return (
-    <QuickTipsProvider>
-      <div className="flex h-screen w-full">
-        <AppSidebar />
-        <div className="flex flex-col flex-1">
-          <header className="flex items-center justify-between p-2 border-b gap-2">
-            <SidebarTrigger data-testid="button-sidebar-toggle" />
-            <div className="flex items-center gap-1">
-              <LedgerSelector />
-              <NotificationCenterWidget />
-              <WhatsNew />
-              <TipsToggle />
-              <HelpButton />
-              <ThemeToggle />
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto">
-            <Suspense fallback={<div className="p-4">Loading...</div>}>
-              <Router />
-            </Suspense>
-          </main>
-        </div>
-        <AIChatWidgetWrapper />
-      </div>
-    </QuickTipsProvider>
+    <GlobalLayout>
+      <Suspense fallback={<div className="p-4">Loading...</div>}>
+        <Router />
+      </Suspense>
+      <AIChatWidgetWrapper />
+    </GlobalLayout>
   );
 }
+
 
 function AIChatWidgetWrapper() {
   const [location] = useLocation();
@@ -904,11 +888,13 @@ export default function App() {
           <ThemeProvider>
             <TooltipProvider>
               <TourProvider>
-                <SidebarProvider style={style}>
-                  {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <ProtectedRoute><AuthenticatedLayout /></ProtectedRoute>}
-                  <GuidedTourOverlay />
-                  <Toaster />
-                </SidebarProvider>
+                <QuickTipsProvider>
+                  <SidebarProvider style={style}>
+                    {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <ProtectedRoute><AuthenticatedLayout /></ProtectedRoute>}
+                    <GuidedTourOverlay />
+                    <Toaster />
+                  </SidebarProvider>
+                </QuickTipsProvider>
               </TourProvider>
             </TooltipProvider>
           </ThemeProvider>

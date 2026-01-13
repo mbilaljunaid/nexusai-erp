@@ -27,18 +27,18 @@ export function Footer() {
   const [isProcessesOpen, setIsProcessesOpen] = useState(false);
 
   return (
-    <footer className="bg-slate-900 dark:bg-black text-slate-100 py-12 border-t border-slate-800">
+    <footer className="bg-slate-900 dark:bg-black text-slate-100 py-2 border-t border-slate-800 text-xs">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2">
           {/* Company Info */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-4">NexusAIFirst</h3>
+            <h3 className="text-sm font-bold text-white mb-1">NexusAIFirst</h3>
             <p className="text-sm text-slate-300">Enterprise resource planning platform designed for modern businesses</p>
           </div>
 
           {/* Product */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Product</h4>
+            <h4 className="font-semibold text-white mb-1">Product</h4>
             <ul className="space-y-2 text-sm text-slate-300">
               <li><Link href="/">Home</Link></li>
               <li><Link href="/features">Features</Link></li>
@@ -50,7 +50,7 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Company</h4>
+            <h4 className="font-semibold text-white mb-1">Company</h4>
             <ul className="space-y-2 text-sm text-slate-300">
               <li><Link href="/about">About</Link></li>
               <li><Link href="/demo">Demo</Link></li>
@@ -60,7 +60,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Contact</h4>
+            <h4 className="font-semibold text-white mb-1">Contact</h4>
             <ul className="space-y-2 text-sm text-slate-300">
               <li><Link href="/contact">Contact Us</Link></li>
               <li><Link href="/demo">Request Demo</Link></li>
@@ -70,14 +70,14 @@ export function Footer() {
         </div>
 
         {/* Process Flows - Collapsible */}
-        <div className="border-t border-slate-800 pt-8">
+        <div className="border-t border-slate-800 pt-2">
           <button
             onClick={() => setIsProcessesOpen(!isProcessesOpen)}
             className="flex items-center gap-2 mb-4 text-white font-semibold hover:text-blue-400 transition-colors"
             data-testid="button-processes-toggle"
           >
             <span>Process Flows (18 Processes)</span>
-            <ChevronDown 
+            <ChevronDown
               className={`w-5 h-5 transition-transform ${isProcessesOpen ? 'rotate-180' : ''}`}
               data-testid="icon-chevron-processes"
             />
@@ -86,8 +86,8 @@ export function Footer() {
           {isProcessesOpen && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {processes.map((process) => (
-                <Link 
-                  key={process.href} 
+                <Link
+                  key={process.href}
                   href={process.href}
                   className="text-sm text-slate-400 hover:text-blue-400 transition-colors flex items-center gap-2"
                   data-testid={`link-process-${process.name.toLowerCase().replace(/\s+/g, '-')}`}
@@ -100,7 +100,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
+        <div className="border-t border-slate-800 mt-2 pt-2 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
           <p>&copy; 2025 NexusAIFirst. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link href="/privacy" className="hover:text-slate-200 transition-colors">Privacy Policy</Link>

@@ -30,6 +30,8 @@ import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2, Save, Send, MoreHorizontal, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
 import { cn } from "@/lib/utils";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { AuditSidebar, AuditEvent } from "@/components/audit/AuditSidebar";
 
 interface JournalLine {
     id: string; // temp id for UI
@@ -64,6 +66,12 @@ export default function JournalEntry() {
 
     const [activeLineId, setActiveLineId] = useState<string | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [isAuditOpen, setIsAuditOpen] = useState(false);
+
+    // Mock Audit Data
+    const auditEvents: AuditEvent[] = [
+        { id: "1", action: "create", actor: "System", timestamp: new Date().toISOString(), details: "Draft initialized" }
+    ];
 
     // Derived State (Real-time Balancing)
     const totals = useMemo(() => {
@@ -139,18 +147,18 @@ export default function JournalEntry() {
     const activeLine = lines.find(l => l.id === activeLineId);
 
     return (
-        <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500">
-            {/* Top Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
-                        New Journal Entry
-                    </h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Create manual journal entries for the {activeLedger?.name || "Primary"} Ledger ({header.currencyCode}).
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
+        <StandardPage
+            title="New Journal Entry"
+            breadcrumbs={[
+                { label: "General Ledger", href: "/gl/journals" },
+                { label: "Journals", href: "/gl/journals" },
+                { label: "New Entry" }
+            ]}
+            actions={
+                <>
+                    <Button variant="ghost" onClick={() => setIsAuditOpen(true)}>
+                        History
+                    </Button>
                     <Button variant="outline" onClick={() => createMutation.mutate('Draft')} disabled={createMutation.isPending}>
                         <Save className="mr-2 h-4 w-4" /> Save Draft
                     </Button>
@@ -161,8 +169,11 @@ export default function JournalEntry() {
                     >
                         <Send className="mr-2 h-4 w-4" /> Post Journal
                     </Button>
-                </div>
-            </div>
+                </>
+            }
+            className="animate-in fade-in duration-500"
+        >
+            <AuditSidebar open={isAuditOpen} onOpenChange={setIsAuditOpen} events={auditEvents} />
 
             {/* Metric Cards (Real-time Balance) */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -321,6 +332,7 @@ export default function JournalEntry() {
             {/* Line Detail Side Sheet */}
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetContent className="sm:max-w-[540px] flex flex-col h-full">
+                    {/* ... Sheet Content as before ... */}
                     <SheetHeader className="pb-6 border-b">
                         <SheetTitle className="flex items-center gap-2">
                             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
@@ -401,7 +413,7 @@ export default function JournalEntry() {
                     </SheetFooter>
                 </SheetContent>
             </Sheet>
-        </div>
+        </StandardPage>
     );
 }
 

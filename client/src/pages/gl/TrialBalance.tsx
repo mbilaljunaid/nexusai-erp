@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
-} from "@/components/ui/table";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +12,18 @@ import {
 } from "lucide-react";
 
 import { format } from "date-fns";
+import { FormattedValue } from "@/components/FormattedValue";
+
+interface TrialBalanceRow {
+    ccid: string;
+    code: string;
+    accountType: string;
+    segment2: string;
+    segment3: string;
+    totalDebit: number;
+    totalCredit: number;
+    netBalance: number;
+}
 
 export default function TrialBalance() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -125,13 +135,13 @@ export default function TrialBalance() {
                         <div className="flex justify-between items-center text-sm">
                             <span className="text-muted-foreground">Total Debits</span>
                             <span className="font-mono font-bold">
-                                {report?.reduce((acc: number, row: any) => acc + row.totalDebit, 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) || "0.00"}
+                                {report?.reduce((acc: number, row: TrialBalanceRow) => acc + row.totalDebit, 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) || "0.00"}
                             </span>
                         </div>
                         <div className="flex justify-between items-center text-sm">
                             <span className="text-muted-foreground">Total Credits</span>
                             <span className="font-mono font-bold">
-                                {report?.reduce((acc: number, row: any) => acc + row.totalCredit, 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) || "0.00"}
+                                {report?.reduce((acc: number, row: TrialBalanceRow) => acc + row.totalCredit, 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) || "0.00"}
                             </span>
                         </div>
                         <div className="pt-2 border-t flex justify-between items-center text-sm">
@@ -157,7 +167,7 @@ export default function TrialBalance() {
                         </div>
                         <div className="flex items-center gap-4">
                             <Badge variant="outline" className="px-3 py-1">
-                                Ledger: Primary US
+                                Ledger: <FormattedValue value="1" type="ledger" className="ml-1" />
                             </Badge>
                             <Badge variant="secondary" className="px-3 py-1">
                                 Period: Dec-2023
@@ -172,51 +182,61 @@ export default function TrialBalance() {
                         </div>
                     ) : (
                         <div className="border rounded-lg overflow-hidden">
-                            <Table>
-                                <TableHeader className="bg-muted/50">
-                                    <TableRow>
-                                        <TableHead className="w-[300px]">Code Combination</TableHead>
-                                        <TableHead>Type</TableHead>
-                                        <TableHead className="text-right">Debit</TableHead>
-                                        <TableHead className="text-right">Credit</TableHead>
-                                        <TableHead className="text-right">Net Balance</TableHead>
-                                        <TableHead className="w-[50px]"></TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {filteredReport?.map((row: any) => (
-                                        <TableRow
-                                            key={row.ccid}
-                                            className="hover:bg-accent/5 transition-colors cursor-pointer group"
-                                            onClick={() => setSelectedCCID(row.ccid)}
-                                        >
-                                            <TableCell className="font-medium font-mono text-sm">
-                                                {row.code}
+                            <StandardTable
+                                data={filteredReport || []}
+                                keyExtractor={(row: TrialBalanceRow) => row.ccid}
+                                isLoading={isLoading}
+                                onRowClick={(row: TrialBalanceRow) => setSelectedCCID(row.ccid)}
+                                columns={[
+                                    {
+                                        header: "Code Combination",
+                                        accessorKey: "code",
+                                        cell: (row: TrialBalanceRow) => (
+                                            <div className="flex flex-col">
+                                                <span className="font-medium font-mono text-sm">{row.code}</span>
                                                 <div className="text-xs text-muted-foreground font-sans mt-1">
                                                     Store: {row.segment2} | Account: {row.segment3}
                                                 </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={row.accountType === "Asset" ? "default" : "secondary"} className="text-[10px] uppercase">
-                                                    {row.accountType}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right tabular-nums">
-                                                {row.totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                            </TableCell>
-                                            <TableCell className="text-right tabular-nums">
-                                                {row.totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                            </TableCell>
-                                            <TableCell className={`text-right font-bold tabular-nums ${row.netBalance < 0 ? "text-red-500" : ""}`}>
+                                            </div>
+                                        )
+                                    },
+                                    {
+                                        header: "Type",
+                                        accessorKey: "accountType",
+                                        cell: (row: TrialBalanceRow) => (
+                                            <Badge variant={row.accountType === "Asset" ? "default" : "secondary"} className="text-[10px] uppercase">
+                                                {row.accountType}
+                                            </Badge>
+                                        )
+                                    },
+                                    {
+                                        header: "Debit",
+                                        accessorKey: "totalDebit",
+                                        className: "text-right tabular-nums",
+                                        cell: (row: TrialBalanceRow) => row.totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                    },
+                                    {
+                                        header: "Credit",
+                                        accessorKey: "totalCredit",
+                                        className: "text-right tabular-nums",
+                                        cell: (row: TrialBalanceRow) => row.totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                    },
+                                    {
+                                        header: "Net Balance",
+                                        accessorKey: "netBalance",
+                                        className: "text-right font-bold tabular-nums",
+                                        cell: (row: TrialBalanceRow) => (
+                                            <span className={row.netBalance < 0 ? "text-red-500" : ""}>
                                                 {row.netBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                            </TableCell>
-                                            <TableCell>
-                                                <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                            </span>
+                                        )
+                                    },
+                                    {
+                                        header: "",
+                                        cell: () => <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    }
+                                ]}
+                            />
                         </div>
                     )}
                 </CardContent>

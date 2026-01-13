@@ -1,13 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DashboardWidget } from "@/components/layout/StandardDashboard";
 import {
     FileText,
     Clock,
     DollarSign,
     AlertTriangle,
-    TrendingUp,
-    ArrowUpRight,
-    ArrowDownRight
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -72,36 +70,36 @@ export function ApMetricCards() {
 
     if (isLoading) {
         return (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <>
                 {[1, 2, 3, 4].map((i) => (
-                    <Card key={i}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <DashboardWidget key={i} colSpan={1}>
+                        <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <Skeleton className="h-4 w-[100px]" />
                             <Skeleton className="h-4 w-4 rounded-full" />
-                        </CardHeader>
-                        <CardContent>
+                        </div>
+                        <div className="mt-2">
                             <Skeleton className="h-8 w-[60px] mb-2" />
                             <Skeleton className="h-3 w-[80px]" />
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </DashboardWidget>
                 ))}
-            </div>
+            </>
         );
     }
 
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <>
             {cards.map((card, idx) => (
-                <Card key={idx} className="relative overflow-hidden border-l-4" style={{ borderLeftColor: card.color.includes('red') ? '#ef4444' : card.color.includes('emerald') ? '#10b981' : card.color.includes('amber') ? '#f59e0b' : '#3b82f6' }}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                <DashboardWidget key={idx} colSpan={1} className="relative overflow-hidden border-l-4" style={{ borderLeftColor: card.color.includes('red') ? '#ef4444' : card.color.includes('emerald') ? '#10b981' : card.color.includes('amber') ? '#f59e0b' : '#3b82f6' } as any}>
+                    <div className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <h3 className="text-sm font-medium text-muted-foreground">
                             {card.title}
-                        </CardTitle>
+                        </h3>
                         <div className={`p-2 rounded-full ${card.bg}`}>
                             <card.icon className={`h-4 w-4 ${card.color}`} />
                         </div>
-                    </CardHeader>
-                    <CardContent>
+                    </div>
+                    <div>
                         <div className="text-2xl font-bold tracking-tight">{card.value}</div>
                         <p className="text-xs text-muted-foreground mt-1 font-medium">
                             {card.subtext}
@@ -110,9 +108,9 @@ export function ApMetricCards() {
                         <div className="absolute -right-4 -bottom-4 opacity-5">
                             <card.icon className="h-24 w-24" />
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </DashboardWidget>
             ))}
-        </div>
+        </>
     );
 }

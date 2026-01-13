@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Search, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,9 +36,10 @@ import {
   TrendingUp,
   CheckCircle2,
   Clock,
-  MoreVertical,
 } from "lucide-react";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
 
+// ... existing subcomponents ...
 function LeadConvertModal({ lead, onSuccess }: { lead: Lead; onSuccess: () => void }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
@@ -195,7 +196,6 @@ function LeadEntryForm() {
 }
 
 export default function LeadsDetail() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const queryClient = useQueryClient();
   const { data: leads = [], isLoading } = useQuery<Lead[]>({
@@ -203,16 +203,62 @@ export default function LeadsDetail() {
     select: (data) => Array.isArray(data) ? data : []
   });
 
-  const filteredLeads = leads.filter(l =>
-    l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (l.email && l.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (l.company && l.company.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
   const metrics = [
     { label: "Total Leads", value: leads.length, icon: Users, color: "text-blue-600" },
     { label: "New Leads", value: leads.filter(l => l.status === 'new').length, icon: Clock, color: "text-orange-600" },
     { label: "Converted", value: leads.filter(l => l.status === 'converted').length, icon: CheckCircle2, color: "text-green-600" },
+  ];
+
+  const columns: Column<Lead>[] = [
+    {
+      header: "Lead Name",
+      accessorKey: "name",
+      cell: (lead) => (
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-primary/5 text-primary text-xs">
+              {lead.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="font-semibold">{lead.name}</div>
+            <div className="text-xs text-muted-foreground">{lead.company}</div>
+          </div>
+        </div>
+      )
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: (lead) => (
+        <Badge variant={lead.status === 'converted' ? 'secondary' : 'default'} className={lead.status === 'converted' ? 'bg-green-100/50 text-green-700' : ''}>
+          {lead.status}
+        </Badge>
+      )
+    },
+    {
+      header: "Contact",
+      cell: (lead) => (
+        <div className="text-sm">
+          <div>{lead.email}</div>
+          <div className="text-xs text-muted-foreground">{lead.phone}</div>
+        </div>
+      )
+    },
+    {
+      header: "Actions",
+      cell: (lead) => (
+        <div onClick={(e) => e.stopPropagation()}>
+          <LeadConvertModal
+            lead={lead}
+            onSuccess={() => {
+              queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+              queryClient.invalidateQueries({ queryKey: ["/api/crm/metrics"] });
+            }}
+          />
+        </div>
+      )
+    }
   ];
 
   return (
@@ -270,79 +316,15 @@ export default function LeadsDetail() {
         ))}
       </div>
 
-      {/* Filters and List */}
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
-          <div className="relative flex-1 group max-w-xl">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input
-              placeholder="Search leads by name, email, or company..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-11 bg-muted/30 border-none shadow-none focus-visible:ring-2 focus-visible:ring-primary/20"
-            />
-          </div>
-        </div>
-
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
-              <Card key={i} className="h-48 animate-pulse bg-muted/20" />
-            ))}
-          </div>
-        ) : filteredLeads.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredLeads.map((l) => (
-              <Card
-                key={l.id}
-                className="hover-elevate group cursor-pointer border-muted/50 overflow-hidden"
-                onClick={() => setSelectedLead(l)}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
-                      <AvatarFallback className="bg-primary/5 text-primary font-bold">
-                        {l.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <Badge
-                      variant={l.status === 'converted' ? 'secondary' : 'default'}
-                      className={l.status === 'converted' ? 'bg-green-100/50 text-green-700 hover:bg-green-100/50' : ''}
-                    >
-                      {l.status}
-                    </Badge>
-                  </div>
-
-                  <div className="space-y-1">
-                    <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{l.name}</h3>
-                    <p className="text-sm text-muted-foreground truncate">{l.company || "Independent"}</p>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-muted/50 flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Contact</p>
-                      <p className="text-sm font-medium">{l.email || "No email"}</p>
-                    </div>
-                    <LeadConvertModal
-                      lead={l}
-                      onSuccess={() => {
-                        queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
-                        queryClient.invalidateQueries({ queryKey: ["/api/crm/metrics"] });
-                      }}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed border-muted/50">
-            <Users className="h-12 w-12 text-muted-foreground mb-4 opacity-50" />
-            <p className="text-lg font-medium text-muted-foreground">No leads found</p>
-            <p className="text-sm text-muted-foreground mt-1">Try a different search or create a new lead.</p>
-          </div>
-        )}
-      </div>
+      <StandardTable
+        data={leads}
+        columns={columns}
+        isLoading={isLoading}
+        onRowClick={setSelectedLead}
+        keyExtractor={(lead) => String(lead.id)}
+        filterColumn="name"
+        filterPlaceholder="Filter leads..."
+      />
 
       {/* Detail Sheet */}
       <Sheet open={!!selectedLead} onOpenChange={(open) => !open && setSelectedLead(null)}>

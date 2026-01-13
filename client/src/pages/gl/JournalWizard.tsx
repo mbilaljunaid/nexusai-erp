@@ -1,118 +1,258 @@
-
 import React, { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Wizard, WizardStep } from "@/components/layout/Wizard";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Assuming Textarea component exists
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { Save, Upload, FileSpreadsheet, CheckCircle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Trash2, Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function JournalWizard() {
     const { toast } = useToast();
-    const [pasteData, setPasteData] = useState("");
-    const [parsedLines, setParsedLines] = useState<any[]>([]);
-
-    // Parse Tab-Separated Values (Excel Copy/Paste)
-    const handleParse = () => {
-        if (!pasteData) return;
-        const rows = pasteData.trim().split("\n");
-        const lines = rows.map((row) => {
-            const cols = row.split("\t");
-            // Assuming format: Account | Debit | Credit | Description
-            return {
-                accountId: cols[0], // In real app, would need to resolve segment string to ID
-                debit: cols[1] || "0",
-                credit: cols[2] || "0",
-                description: cols[3] || "Imported Line"
-            };
-        });
-        setParsedLines(lines);
-        toast({ title: "Parsed", description: `${lines.length} lines ready for review.` });
-    };
-
-    const postMutation = useMutation({
-        mutationFn: async () => {
-            // Mock submission
-            return new Promise(resolve => setTimeout(resolve, 1000));
-        },
-        onSuccess: () => {
-            toast({ title: "Success", description: "Journal Batch created from Wizard." });
-            setParsedLines([]);
-            setPasteData("");
-        }
+    const [headerData, setHeaderData] = useState({
+        journalName: "",
+        ledger: "Primary US Ledger",
+        period: "JAN-26",
+        category: "Manual",
+        currency: "USD"
     });
 
-    return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-                        <FileSpreadsheet className="h-8 w-8 text-green-600" />
-                        Journal Wizard
-                    </h1>
-                    <p className="text-muted-foreground mt-2">
-                        High-volume entry via Spreadsheet Copy/Paste.
-                    </p>
-                </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" onClick={handleParse}>Parse Clipboard</Button>
-                    <Button onClick={() => postMutation.mutate()} disabled={parsedLines.length === 0 || postMutation.isPending}>
-                        <Upload className="mr-2 h-4 w-4" /> Upload Batch
-                    </Button>
-                </div>
+    const [lines, setLines] = useState([
+        { id: 1, account: "", debit: 0, credit: 0, description: "" },
+        { id: 2, account: "", debit: 0, credit: 0, description: "" }
+    ]);
+
+    // Step 1: Journal Header
+    const Step1 = (
+        <div className="grid grid-cols-2 gap-6 max-w-2xl">
+            <div className="space-y-2">
+                <Label>Journal Name</Label>
+                <Input
+                    value={headerData.journalName}
+                    onChange={(e) => setHeaderData({ ...headerData, journalName: e.target.value })}
+                    placeholder="e.g., Monthly Accrual"
+                />
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Step 1: Paste Data</CardTitle>
-                        <CardDescription>Copy from Excel (Account | Debit | Credit | Description) and paste here.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Textarea
-                            className="min-h-[300px] font-mono text-xs"
-                            placeholder={`01-100-5000\t100.00\t0.00\tOffice Supplies\n01-000-1100\t0.00\t100.00\tCash Payment`}
-                            value={pasteData}
-                            onChange={(e) => setPasteData(e.target.value)}
-                        />
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Step 2: Review</CardTitle>
-                        <CardDescription>
-                            {parsedLines.length > 0 ? `${parsedLines.length} lines parsed.` : "Waiting for data..."}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[300px] overflow-auto border rounded-md p-0">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Account</TableHead>
-                                    <TableHead className="text-right">Debit</TableHead>
-                                    <TableHead className="text-right">Credit</TableHead>
-                                    <TableHead>Desc</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {parsedLines.map((line, i) => (
-                                    <TableRow key={i}>
-                                        <TableCell className="font-mono text-xs">{line.accountId}</TableCell>
-                                        <TableCell className="text-right">{line.debit}</TableCell>
-                                        <TableCell className="text-right">{line.credit}</TableCell>
-                                        <TableCell className="text-xs truncate max-w-[100px]">{line.description}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+            <div className="space-y-2">
+                <Label>Ledger</Label>
+                <Select value={headerData.ledger} onValueChange={(v) => setHeaderData({ ...headerData, ledger: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Primary US Ledger">Primary US Ledger</SelectItem>
+                        <SelectItem value="Primary UK Ledger">Primary UK Ledger</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="space-y-2">
+                <Label>Accounting Period</Label>
+                <Select value={headerData.period} onValueChange={(v) => setHeaderData({ ...headerData, period: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="JAN-26">JAN-26</SelectItem>
+                        <SelectItem value="FEB-26">FEB-26</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="space-y-2">
+                <Label>Category</Label>
+                <Select value={headerData.category} onValueChange={(v) => setHeaderData({ ...headerData, category: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Manual">Manual</SelectItem>
+                        <SelectItem value="Accrual">Accrual</SelectItem>
+                        <SelectItem value="Adjustment">Adjustment</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
         </div>
+    );
+
+    // Step 2: Journal Lines
+    const handleLineChange = (id: number, field: string, value: any) => {
+        setLines(lines.map(l => l.id === id ? { ...l, [field]: value } : l));
+    };
+
+    const addLine = () => {
+        setLines([...lines, { id: lines.length + 1, account: "", debit: 0, credit: 0, description: "" }]);
+    };
+
+    const removeLine = (id: number) => {
+        setLines(lines.filter(l => l.id !== id));
+    };
+
+    const totalDebit = lines.reduce((acc, l) => acc + Number(l.debit), 0);
+    const totalCredit = lines.reduce((acc, l) => acc + Number(l.credit), 0);
+
+    const Step2 = (
+        <div className="space-y-4">
+            <div className="flex justify-between items-center bg-muted/20 p-4 rounded-lg border">
+                <div className="space-x-8 text-sm">
+                    <span>Total Debit: <strong>{totalDebit.toFixed(2)}</strong></span>
+                    <span>Total Credit: <strong>{totalCredit.toFixed(2)}</strong></span>
+                    <span className={totalDebit !== totalCredit ? "text-destructive font-bold" : "text-green-600 font-bold"}>
+                        Variance: {Math.abs(totalDebit - totalCredit).toFixed(2)}
+                    </span>
+                </div>
+                <Button variant="outline" size="sm" onClick={addLine}><Plus className="w-4 h-4 mr-2" /> Add Line</Button>
+            </div>
+
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="w-[300px]">Account</TableHead>
+                        <TableHead>Debit</TableHead>
+                        <TableHead>Credit</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead className="w-[50px]"></TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {lines.map((line) => (
+                        <TableRow key={line.id}>
+                            <TableCell>
+                                <Input
+                                    value={line.account}
+                                    onChange={(e) => handleLineChange(line.id, "account", e.target.value)}
+                                    placeholder="01-000-1110-0000-000"
+                                />
+                            </TableCell>
+                            <TableCell>
+                                <Input
+                                    type="number"
+                                    value={line.debit}
+                                    onChange={(e) => handleLineChange(line.id, "debit", Number(e.target.value))}
+                                />
+                            </TableCell>
+                            <TableCell>
+                                <Input
+                                    type="number"
+                                    value={line.credit}
+                                    onChange={(e) => handleLineChange(line.id, "credit", Number(e.target.value))}
+                                />
+                            </TableCell>
+                            <TableCell>
+                                <Input
+                                    value={line.description}
+                                    onChange={(e) => handleLineChange(line.id, "description", e.target.value)}
+                                />
+                            </TableCell>
+                            <TableCell>
+                                <Button variant="ghost" size="icon" onClick={() => removeLine(line.id)}>
+                                    <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
+    );
+
+    // Step 3: Review
+    const Step3 = (
+        <div className="space-y-6 max-w-3xl">
+            <div className="grid grid-cols-2 gap-4 text-sm border p-4 rounded-lg">
+                <div>
+                    <span className="text-muted-foreground block">Journal Name</span>
+                    <span className="font-medium">{headerData.journalName}</span>
+                </div>
+                <div>
+                    <span className="text-muted-foreground block">Ledger</span>
+                    <span className="font-medium">{headerData.ledger}</span>
+                </div>
+                <div>
+                    <span className="text-muted-foreground block">Period</span>
+                    <span className="font-medium">{headerData.period}</span>
+                </div>
+                <div>
+                    <span className="text-muted-foreground block">Category</span>
+                    <span className="font-medium">{headerData.category}</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 className="font-semibold mb-2">Lines Summary</h3>
+                <div className="border rounded-md">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Account</TableHead>
+                                <TableHead className="text-right">Debit</TableHead>
+                                <TableHead className="text-right">Credit</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {lines.map((line) => (
+                                <TableRow key={line.id}>
+                                    <TableCell className="font-mono text-xs">{line.account}</TableCell>
+                                    <TableCell className="text-right">{line.debit.toFixed(2)}</TableCell>
+                                    <TableCell className="text-right">{line.credit.toFixed(2)}</TableCell>
+                                </TableRow>
+                            ))}
+                            <TableRow className="bg-muted/50 font-bold">
+                                <TableCell>Total</TableCell>
+                                <TableCell className="text-right">{totalDebit.toFixed(2)}</TableCell>
+                                <TableCell className="text-right">{totalCredit.toFixed(2)}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </div>
+            </div>
+        </div>
+    );
+
+    const steps: WizardStep[] = [
+        {
+            id: "header",
+            label: "Batch Header",
+            component: Step1,
+            validationFn: () => {
+                if (!headerData.journalName) {
+                    toast({ title: "Validation Error", description: "Journal Name is required", variant: "destructive" });
+                    return false;
+                }
+                return true;
+            }
+        },
+        {
+            id: "lines",
+            label: "Journal Lines",
+            component: Step2,
+            validationFn: () => {
+                if (Math.abs(totalDebit - totalCredit) > 0.01) {
+                    toast({ title: "Validation Error", description: "Journal must be balanced", variant: "destructive" });
+                    return false;
+                }
+                if (lines.length === 0) {
+                    toast({ title: "Validation Error", description: "At least one line is required", variant: "destructive" });
+                    return false;
+                }
+                return true;
+            }
+        },
+        {
+            id: "review",
+            label: "Review & Submit",
+            component: Step3
+        }
+    ];
+
+    const handleComplete = () => {
+        toast({ title: "Success", description: "Journal Entry Created Successfully" });
+        // Navigate away or reset
+    };
+
+    return (
+        <StandardPage title="Create Journal (Wizard)">
+            <p className="text-muted-foreground mb-4">Create a new journal entry using the guided wizard.</p>
+            <div className="bg-white p-6 rounded-lg shadow-sm border min-h-[600px]">
+                <Wizard
+                    steps={steps}
+                    onComplete={handleComplete}
+                />
+            </div>
+        </StandardPage>
     );
 }

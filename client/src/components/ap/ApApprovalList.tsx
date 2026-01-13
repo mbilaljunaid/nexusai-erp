@@ -1,14 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { StandardTable } from "@/components/ui/StandardTable";
+import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import { CheckCircle, XCircle, Clock, FileText, ArrowRight } from "lucide-react";
+import { CheckCircle, XCircle, Clock } from "lucide-react";
 
 export function ApApprovalList() {
     const queryClient = useQueryClient();
     const { data: invoices, isLoading } = useQuery({
-        queryKey: ['/api/ap/invoices'], // We filter locally for now, or use a dedicated endpoint
+        queryKey: ['/api/ap/invoices'],
         queryFn: () => api.ap.invoices.list()
     });
 
@@ -23,65 +24,64 @@ export function ApApprovalList() {
         }
     });
 
-    if (isLoading) {
-        return <div className="p-4 text-center">Loading approvals...</div>;
-    }
+    const columns: ColumnDef<any>[] = [
+        {
+            accessorKey: "invoiceNumber",
+            header: "Invoice",
+            cell: ({ row }) => (
+                <div className="flex flex-col">
+                    <span className="font-semibold">{row.original.invoiceNumber}</span>
+                    <span className="text-xs text-muted-foreground">{row.original.description}</span>
+                </div>
+            )
+        },
+        {
+            accessorKey: "amount",
+            header: "Amount",
+            cell: ({ row }) => (
+                <span className="font-bold">
+                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: row.original.currency }).format(Number(row.original.amount))}
+                </span>
+            )
+        },
+        {
+            accessorKey: "status",
+            header: "Status",
+            cell: () => (
+                <div className="flex items-center text-amber-500 gap-1">
+                    <Clock className="h-4 w-4" />
+                    <span>Approval Required</span>
+                </div>
+            )
+        },
+        {
+            id: "actions",
+            header: "Actions",
+            cell: ({ row }) => (
+                <div className="flex gap-2 justify-end">
+                    <Button variant="outline" size="sm" className="text-xs h-8">
+                        <XCircle className="h-3 w-3 mr-1" /> Reject
+                    </Button>
+                    <Button
+                        size="sm"
+                        className="text-xs h-8"
+                        disabled={approveMutation.isPending}
+                        onClick={() => approveMutation.mutate(row.original.id)}
+                    >
+                        <CheckCircle className="h-3 w-3 mr-1" /> Approve
+                    </Button>
+                </div>
+            )
+        }
+    ];
 
     return (
-        <div className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {pendingInvoices.map((invoice: any) => (
-                    <Card key={invoice.id} className="hover:shadow-lg transition-shadow border-l-4 border-l-amber-500">
-                        <CardHeader className="pb-2">
-                            <div className="flex justify-between items-start">
-                                <div>
-                                    <CardTitle className="text-base flex items-center gap-2">
-                                        <Clock className="h-4 w-4 text-amber-500" />
-                                        Approval Required
-                                    </CardTitle>
-                                    <CardDescription className="text-xs mt-1">
-                                        Invoice: {invoice.invoiceNumber}
-                                    </CardDescription>
-                                </div>
-                                <Badge variant="outline" className="border-amber-500 text-amber-500">
-                                    SLA: 2 Days Left
-                                </Badge>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4 mt-2">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-muted-foreground">Amount</span>
-                                    <span className="font-bold text-lg">
-                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.currency }).format(Number(invoice.amount))}
-                                    </span>
-                                </div>
-
-                                <div className="flex gap-2 justify-end">
-                                    <Button variant="outline" size="sm" className="text-xs">
-                                        <XCircle className="h-3 w-3 mr-1" /> Reject
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        className="text-xs"
-                                        disabled={approveMutation.isPending}
-                                        onClick={() => approveMutation.mutate(invoice.id)}
-                                    >
-                                        <CheckCircle className="h-3 w-3 mr-1" /> Approve
-                                    </Button>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-                {pendingInvoices.length === 0 && (
-                    <div className="col-span-full flex flex-col items-center justify-center py-10 text-muted-foreground border-2 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900/50">
-                        <CheckCircle className="h-10 w-10 mb-2 text-green-500" />
-                        <p>You're all caught up!</p>
-                        <p className="text-sm">No pending approvals found.</p>
-                    </div>
-                )}
-            </div>
-        </div>
+        <StandardTable
+            data={pendingInvoices}
+            columns={columns}
+            isLoading={isLoading}
+            filterColumn="invoiceNumber"
+            filterPlaceholder="Filter pending approvals..."
+        />
     );
 }

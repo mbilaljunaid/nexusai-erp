@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Edit2, Mail, Phone, MapPin, Calendar, DollarSign, TrendingUp, Heart, Share2, MoreVertical, ArrowLeft, Star, BarChart3, Activity } from "lucide-react";
 import { useLocation } from "wouter";
+import CrmAuditTrail from "@/components/crm/CrmAuditTrail";
 
 export default function LeadDetail() {
   const [, setLocation] = useLocation();
@@ -62,7 +63,7 @@ export default function LeadDetail() {
         <Card><CardHeader><CardTitle>Contact Information</CardTitle></CardHeader><CardContent><div className="space-y-2"><p className="flex items-center gap-2"><Mail className="h-4 w-4" />{lead?.email}</p><p className="flex items-center gap-2"><Phone className="h-4 w-4" />{lead?.phone}</p><p className="flex items-center gap-2"><MapPin className="h-4 w-4" />{lead?.location}</p></div></CardContent></Card>
       )}
       {activeNav === "activity" && (
-        <Card><CardHeader><CardTitle>Activity</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Recent interactions and touchpoints</p></CardContent></Card>
+        <CrmAuditTrail entityId={leadId} />
       )}
       {activeNav === "scoring" && (
         <Card><CardHeader><CardTitle>Lead Scoring</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Score: {lead?.score || 0}/100</p><p className="text-sm text-muted-foreground mt-2">Based on engagement, company size, and budget</p></CardContent></Card>

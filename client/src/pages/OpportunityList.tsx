@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Filter, Download, Trash2 } from "lucide-react";
-import { Link } from "wouter";
+import { Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
 
 export default function OpportunityList() {
   const { toast } = useToast();
@@ -49,16 +49,42 @@ export default function OpportunityList() {
     return colors[stage] || "bg-gray-100 text-gray-800";
   };
 
+  const columns: Column<any>[] = [
+    {
+      header: "Name",
+      accessorKey: "name",
+      className: "font-medium text-blue-600"
+    },
+    {
+      header: "Account",
+      accessorKey: "account"
+    },
+    {
+      header: "Value",
+      accessorKey: "value",
+      cell: (opp) => <span className="font-bold">${opp.value}</span>
+    },
+    {
+      header: "Stage",
+      accessorKey: "stage",
+      cell: (opp) => <Badge className={getStageColor(opp.stage)}>{opp.stage}</Badge>
+    },
+    {
+      header: "Actions",
+      cell: (opp) => (
+        <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(opp.id); }}>
+          <Trash2 className="w-4 h-4 text-red-500" />
+        </Button>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-3xl font-bold">Opportunities</h1>
           <p className="text-muted-foreground mt-1">Manage your sales pipeline and forecast revenue</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" data-testid="button-filter"><Filter className="h-4 w-4" /></Button>
-          <Button variant="outline" size="icon" data-testid="button-export"><Download className="h-4 w-4" /></Button>
         </div>
       </div>
 
@@ -85,34 +111,14 @@ export default function OpportunityList() {
         </CardContent>
       </Card>
 
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search opportunities..." className="pl-10" data-testid="input-search" />
-        </div>
-      </div>
-
-      <div className="grid gap-4">
-        {isLoading ? <p>Loading...</p> : opportunities.length === 0 ? <p className="text-muted-foreground">No opportunities</p> : (opportunities.map((opp: any) => (
-          <Card key={opp.id} className="hover:bg-muted/50 transition" data-testid={`opportunity-${opp.id}`}>
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-blue-600">{opp.name}</h3>
-                  <p className="text-sm text-muted-foreground">{opp.account}</p>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <p className="text-xl font-bold">${opp.value}</p>
-                  <Badge className={getStageColor(opp.stage)}>{opp.stage}</Badge>
-                  <Button size="icon" variant="ghost" data-testid={`button-delete-${opp.id}`}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )))}
-      </div>
+      <StandardTable
+        data={opportunities}
+        columns={columns}
+        isLoading={isLoading}
+        keyExtractor={(item) => item.id}
+        filterColumn="name"
+        filterPlaceholder="Search opportunities..."
+      />
     </div>
   );
 }

@@ -106,8 +106,16 @@ try {
   await nestApp.init();
 
   // Mount the NestJS Express instance into the main app
-  // This allows NestJS to handle its routes while sharing the port
-  app.use(nestApp.getHttpAdapter().getInstance());
+  // This allows NestJS to handle its routes while sharing the port.
+  // We wrap it to only handle /api requests so it doesn't 404 frontend routes.
+  const nestHandler = nestApp.getHttpAdapter().getInstance();
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
+      nestHandler(req, res, next);
+    } else {
+      next();
+    }
+  });
 
   // Enable Global Prefix if needed, but CostController has explicit route
   // await nestApp.setGlobalPrefix('api'); 
