@@ -112,7 +112,20 @@
     - [ ] Implement `CreateAccounting` Engine (Distributions -> Journals)
     - [ ] Integrate with `GlIntegrationService` (Post to GL)
     - [ ] Implement `CostController` for UI Access
-- [ ] **Phase 5: Intelligence & Operations**
-    - [ ] Implement `CostPeriod` Control (Open/Close Logic)
-    - [ ] Create `CostDashboard` (Valuation, Margin, Variance)
-    - [ ] Implement `CostAnomalies` AI Agent (Margin Erosion Detection)
+- [ ] **Phase 5: Operationalization & SLA (The Loop Closer)**
+    - [ ] **Backend Migration**: Bootstrap NestJS in `server/index.ts` (Enable APIs)
+    - [ ] **SLA Engine**: Implement `CreateAccounting` Service (Distributions -> GL Journals)
+    - [ ] **GL Integration**: Post Journals to General Ledger
+    - [ ] **Period Close**: Implement `CostPeriod` Open/Close Logic
+- [ ] **Phase 6: Standard Costing & Planning**
+    - [ ] Implement `StandardCost` Definition & Rollup Logic
+    - [ ] Create `CostScenario` for "What-If" Analysis
+    - [ ] Implement `CostUpdate` Process (Revaluation Inventory)
+- [ ] **Phase 7: Landed Cost Management (LCM)**
+    - [ ] Create `LandedCost` Entity (Freight, Duty, Insurance)
+    - [ ] Implement `ChargeAllocation` Logic (Weight/Value/Qty)
+    - [ ] Integrate with `ReceiptAccounting` (Adjust Unit Cost)
+- [ ] **Phase 8: Manufacturing & WIP Costing**
+    - [ ] Integrate with `WorkOrder` (Material Issue/Completion)
+    - [ ] Implement `ResourceAbsorption` (Labor/Overhead)
+    - [ ] Calculate `WIPVariance` (Standard vs Actual)

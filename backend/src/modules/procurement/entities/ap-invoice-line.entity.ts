@@ -10,7 +10,7 @@ export class ApInvoiceLine {
     @ManyToOne(() => ApInvoice, (invoice) => invoice.lines)
     invoice!: ApInvoice;
 
-    @Column()
+    @Column({ type: 'varchar' })
     description!: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 2 })

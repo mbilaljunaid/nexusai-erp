@@ -769,6 +769,27 @@ function Router() {
       <Route path="/gl/intercompany" component={IntercompanyRules} />
       <Route path="/gl/revaluation" component={Revaluation} />
 
+      {/* Supply Chain & Operations Routes (Restored) */}
+      <Route path="/inventory" component={InventoryDashboard} />
+      <Route path="/inventory/management" component={InventoryManagement} />
+      <Route path="/warehouse" component={WarehouseManagement} />
+      <Route path="/supply-chain" component={SupplyChain} />
+      <Route path="/supply-chain/optimization" component={SupplyChainOptimization} />
+      <Route path="/manufacturing/shop-floor" component={ShopFloor} />
+      <Route path="/manufacturing/work-orders" component={WorkOrder} />
+      <Route path="/manufacturing/quality" component={QualityControl} />
+      <Route path="/manufacturing/mrp" component={MRPDashboard} />
+      <Route path="/order-fulfillment" component={OrderFulfillment} />
+      <Route path="/transportation" component={TransportationManagementSystem} />
+
+      {/* Finance Orphans */}
+      <Route path="/finance/tax" component={TaxManagement} />
+      <Route path="/finance/expense-management" component={ExpenseManagement} />
+
+      {/* Other Orphans */}
+      <Route path="/project-management" component={Projects} />
+      <Route path="/compliance" component={Compliance} />
+
       {/* New Finance Routes */}
       <Route path="/gl/budgets" component={BudgetManager} />
       <Route path="/gl/cvr" component={CVRManager} />

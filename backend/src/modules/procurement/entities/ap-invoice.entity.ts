@@ -9,7 +9,7 @@ export class ApInvoice {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     invoiceNumber!: string;
 
     @ManyToOne(() => Supplier)
@@ -21,16 +21,16 @@ export class ApInvoice {
     @Column({ type: 'decimal', precision: 18, scale: 2 })
     amount!: number;
 
-    @Column()
+    @Column({ type: 'timestamp' })
     invoiceDate!: Date;
 
-    @Column({ nullable: true })
+    @Column({ type: 'timestamp', nullable: true })
     dueDate?: Date;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     paymentTerms?: string;
 
-    @Column({ default: 'Draft' }) // Draft, Validated, Paid, Cancelled
+    @Column({ type: 'varchar', default: 'Draft' }) // Draft, Validated, Paid, Cancelled
     status!: string;
 
     @OneToMany(() => ApInvoiceLine, (line) => line.invoice, { cascade: true })

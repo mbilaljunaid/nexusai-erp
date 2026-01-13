@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -75,40 +76,72 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
-  // Audit logging for mutations
-  app.use(auditMiddleware);
+// Audit logging for mutations
+app.use(auditMiddleware);
 
-  // Initialize Cron Jobs (Autonomous Background Tasks)
-  initCronJobs();
+// Initialize Cron Jobs (Autonomous Background Tasks)
+initCronJobs();
 
-  await registerRoutes(httpServer, app);
+await registerRoutes(httpServer, app);
 
-  // Centralized Error Handling
-  app.use(errorHandler);
+// Centralized Error Handling
+app.use(errorHandler);
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  } else {
-    const { setupVite } = await import("./vite");
-    await setupVite(httpServer, app);
-  }
+// START: NestJS Bridge
+try {
+  const { NestFactory } = await import('@nestjs/core');
+  const { ExpressAdapter } = await import('@nestjs/platform-express');
+  const { AppModule } = await import('../backend/src/app.module');
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || "5000", 10);
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-    },
-    () => {
-      log(`serving on port ${port}`);
-    },
+  // Create standalone NestJS app (Sub-App Strategy)
+  // We disable bodyParser because the main app already handles it, 
+  // but NestJS might need its own if mounted? Actually, mounted apps usually inherit?
+  // Use bodyParser: true for safety, verify later.
+  const nestApp = await NestFactory.create(
+    AppModule,
+    { logger: ['error', 'warn'] }
   );
-})();
+
+  // Initialize NestJS (starts the container, resolves dependencies)
+  await nestApp.init();
+
+  // Mount the NestJS Express instance into the main app
+  // This allows NestJS to handle its routes while sharing the port
+  app.use(nestApp.getHttpAdapter().getInstance());
+
+  // Enable Global Prefix if needed, but CostController has explicit route
+  // await nestApp.setGlobalPrefix('api'); 
+
+  // Initialize (Registers routes) but DOES NOT Listen (we use httpServer below)
+  await nestApp.init();
+  log('NestJS Bridge Initialized');
+} catch (err) {
+  console.error('Failed to initialize NestJS Bridge:', err);
+}
+// END: NestJS Bridge
+
+// importantly only setup vite in development and after
+// setting up all the other routes so the catch-all route
+// doesn't interfere with the other routes
+if (process.env.NODE_ENV === "production") {
+  serveStatic(app);
+} else {
+  const { setupVite } = await import("./vite");
+  await setupVite(httpServer, app);
+}
+
+// ALWAYS serve the app on the port specified in the environment variable PORT
+// Other ports are firewalled. Default to 5000 if not specified.
+// this serves both the API and the client.
+// It is the only port that is not firewalled.
+const port = parseInt(process.env.PORT || "5000", 10);
+httpServer.listen(
+  {
+    port,
+    host: "0.0.0.0",
+  },
+  () => {
+    log(`serving on port ${port}`);
+  },
+);
+

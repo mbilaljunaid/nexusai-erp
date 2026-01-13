@@ -17,13 +17,27 @@ const InventoryDashboard = () => {
   // Mock Data (Simulating API Responses)
   const { data: stats, isLoading } = useQuery({
     queryKey: ['inventoryStats'],
-    queryFn: async () => ({
-      totalValuation: 1250000,
-      lowStockItems: 15,
-      stockOuts: 3,
-      pendingReceipts: 8,
-      inventoryTurns: 4.2
-    })
+    queryFn: async () => {
+      // Fetch Real Valuation
+      // First, get valid Organization ID
+      const orgRes = await fetch('/inventory/warehouses');
+      const warehouses = orgRes.ok ? await orgRes.json() : [];
+      const orgId = warehouses.length > 0 ? warehouses[0].id : null;
+
+      let valuation = 0;
+      if (orgId) {
+        const valRes = await fetch(`/api/cost-management/valuation/${orgId}`);
+        valuation = valRes.ok ? await valRes.json() : 0;
+      }
+
+      return {
+        totalValuation: valuation, // REAL DATA
+        lowStockItems: 15,
+        stockOuts: 3,
+        pendingReceipts: 8,
+        inventoryTurns: 4.2
+      };
+    }
   });
 
   const { data: transactions } = useQuery({

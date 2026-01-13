@@ -12,13 +12,13 @@ export class CycleCountHeader {
     @ManyToOne(() => InventoryOrganization)
     organization!: InventoryOrganization;
 
-    @Column()
+    @Column({ type: 'varchar' })
     cycleCountName!: string;
 
     @ManyToOne(() => Subinventory, { nullable: true })
     subinventory?: Subinventory; // Scope: specific subinventory or null for all
 
-    @Column({ default: 'Draft' })
+    @Column({ type: 'varchar', default: 'Draft' })
     status!: string; // 'Draft', 'InProgress', 'Completed', 'Approved'
 
     @CreateDateColumn()
@@ -53,7 +53,7 @@ export class CycleCountEntry {
     @Column('decimal', { precision: 18, scale: 4, nullable: true })
     countedQuantity?: number;
 
-    @Column({ default: 'Pending' })
+    @Column({ type: 'varchar', default: 'Pending' })
     status!: string; // 'Pending', 'Counted', 'Recount', 'Adjusted'
 
     @UpdateDateColumn()

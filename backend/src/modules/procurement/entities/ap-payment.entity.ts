@@ -6,7 +6,7 @@ export class ApPayment {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     paymentNumber!: string;
 
     @ManyToOne(() => ApInvoice, (invoice) => invoice.payments)
@@ -15,10 +15,10 @@ export class ApPayment {
     @Column({ type: 'decimal', precision: 18, scale: 2 })
     amount!: number;
 
-    @Column()
+    @Column({ type: 'timestamp' })
     paymentDate!: Date;
 
-    @Column()
+    @Column({ type: 'varchar' })
     paymentMethod!: string; // Check, Wire, EFT
 
     @CreateDateColumn()

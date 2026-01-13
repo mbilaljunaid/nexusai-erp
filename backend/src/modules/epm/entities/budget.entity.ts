@@ -5,13 +5,13 @@ export class Budget {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   departmentId!: string;
 
-  @Column()
+  @Column({ type: 'int' })
   year!: number;
 
-  @Column()
+  @Column({ type: 'int' })
   quarter!: number;
 
   @Column('decimal', { precision: 18, scale: 2 })
@@ -23,10 +23,10 @@ export class Budget {
   @Column('decimal', { precision: 18, scale: 2, default: 0 })
   reservedAmount!: number; // Encumbrance
 
-  @Column({ default: 'draft' })
+  @Column({ type: 'varchar', default: 'draft' })
   status!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   notes?: string;
 
   @CreateDateColumn()

@@ -7,19 +7,19 @@ export class ReceiptHeader {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     receiptNumber!: string;
 
     @ManyToOne(() => PurchaseOrder)
     purchaseOrder!: PurchaseOrder;
 
-    @Column()
+    @Column({ type: 'timestamp' })
     receiptDate!: Date;
 
-    @Column({ default: 'Received' })
+    @Column({ type: 'varchar', default: 'Received' })
     status!: string;
 
-    @Column({ default: 'Pending' }) // Pending, Accounted
+    @Column({ type: 'varchar', default: 'Pending' }) // Pending, Accounted
     accountingStatus!: string;
 
     @OneToMany(() => ReceiptLine, (line) => line.header, { cascade: true })

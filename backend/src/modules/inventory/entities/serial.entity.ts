@@ -13,16 +13,16 @@ export class Serial {
     @ManyToOne(() => Item)
     item!: Item;
 
-    @Column()
+    @Column({ type: 'varchar' })
     serialNumber!: string;
 
-    @Column({ default: 'Active' })
+    @Column({ type: 'varchar', default: 'Active' })
     status!: string; // Active, Issued, Resides in Stores
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     currentSubinventoryId?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     currentLocatorId?: string;
 
     @CreateDateColumn()

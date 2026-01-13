@@ -18,13 +18,13 @@ export class Reservation {
     item!: Item;
 
     // Demand Source (What needs the stock?)
-    @Column()
+    @Column({ type: 'varchar' })
     demandSourceType!: string; // 'Sales Order', 'Work Order', 'Transfer Order'
 
-    @Column()
+    @Column({ type: 'varchar' })
     demandSourceHeaderId!: string; // e.g., Order ID
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     demandSourceLineId?: string; // e.g., Order Line ID
 
     // Supply Source (Where is the stock?)
@@ -45,10 +45,10 @@ export class Reservation {
     @Column('decimal', { precision: 18, scale: 4 })
     quantity!: number;
 
-    @Column()
+    @Column({ type: 'varchar' })
     uom!: string;
 
-    @Column({ default: 'Hard' })
+    @Column({ type: 'varchar', default: 'Hard' })
     reservationType!: string; // 'Hard', 'Soft'
 
     @CreateDateColumn()

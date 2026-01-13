@@ -2,7 +2,9 @@
   "include": [
     "client/src/**/*",
     "shared/**/*",
-    "server/**/*"
+    "server/**/*",
+    "backend/**/*",
+    "script/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -12,6 +14,8 @@
     "client/src/__tests__/**/*"
   ],
   "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
     "target": "ES2022",

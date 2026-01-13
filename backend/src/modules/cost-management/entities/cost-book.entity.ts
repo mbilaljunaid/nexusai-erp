@@ -1,21 +1,21 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity('inv_organizations')
-export class InventoryOrganization {
+@Entity('cst_cost_books')
+export class CostBook {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
     @Column({ type: 'varchar', unique: true })
-    code!: string; // e.g., 'M1', 'SEA-WH'
+    costBookCode!: string; // e.g., 'primary_book', 'ifrs_book'
 
     @Column({ type: 'varchar' })
-    name!: string;
+    description!: string;
 
-    @Column({ type: 'varchar', nullable: true })
-    locationCode?: string;
+    @Column({ type: 'varchar' })
+    currencyCode!: string; // USD, EUR
 
     @Column({ type: 'boolean', default: true })
-    active!: boolean;
+    isActive!: boolean;
 
     @CreateDateColumn()
     createdAt!: Date;

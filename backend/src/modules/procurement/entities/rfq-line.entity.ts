@@ -10,7 +10,7 @@ export class RfqLine {
     @ManyToOne(() => RfqHeader, (header) => header.lines)
     header!: RfqHeader;
 
-    @Column()
+    @Column({ type: 'varchar' })
     description!: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 4 })

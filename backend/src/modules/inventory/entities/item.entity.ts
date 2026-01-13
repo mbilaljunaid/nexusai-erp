@@ -6,22 +6,22 @@ export class Item {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     itemNumber!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     description!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     primaryUomCode?: string; // e.g., 'EA', 'BOX'
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     categoryName?: string;
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     inventoryItem!: boolean;
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     purchasable!: boolean;
 
     @ManyToOne(() => InventoryOrganization)

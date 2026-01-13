@@ -6,28 +6,28 @@ export class Supplier {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     supplierNumber!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     supplierName!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     taxRegistrationNumber?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     dunsNumber?: string;
 
     @Column({ type: 'text', nullable: true })
     description?: string;
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     active!: boolean;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     supplierType?: string; // e.g., 'STANDARD', 'CONTRACTOR'
 
-    @Column({ default: 'Net 30' })
+    @Column({ type: 'varchar', default: 'Net 30' })
     paymentTerms!: string;
 
     @OneToMany(() => SupplierSite, (site) => site.supplier, { cascade: true })

@@ -13,6 +13,7 @@ import { MarketingModule } from './modules/marketing/marketing.module';
 import { FinanceModule } from './modules/finance/finance.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { ProcurementModule } from './modules/procurement/procurement.module';
+import { CostManagementModule } from './modules/cost-management/cost-management.module';
 import { AIModule } from './modules/ai/ai.module';
 import { HealthModule } from './modules/health/health.module';
 import { IndustriesModule } from './modules/industries/industries.module';
@@ -68,6 +69,7 @@ import { AuditModule } from './modules/audit/audit.module';
     FinanceModule,
     InventoryModule,
     ProcurementModule,
+    CostManagementModule,
     AIModule,
     HealthModule,
     IndustriesModule,
@@ -91,4 +93,4 @@ import { AuditModule } from './modules/audit/audit.module';
     AuditModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

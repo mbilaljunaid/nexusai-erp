@@ -5,16 +5,16 @@ export class Invoice {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   invoiceNumber!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   customerId!: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   invoiceDate!: Date;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   dueDate!: Date;
 
   @Column('decimal', { precision: 18, scale: 2 })
@@ -23,10 +23,10 @@ export class Invoice {
   @Column('decimal', { precision: 18, scale: 2, default: 0 })
   paidAmount!: number;
 
-  @Column({ default: 'draft' })
+  @Column({ type: 'varchar', default: 'draft' })
   status!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   description?: string;
 
   @CreateDateColumn()

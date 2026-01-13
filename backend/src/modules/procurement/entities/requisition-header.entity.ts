@@ -6,25 +6,25 @@ export class RequisitionHeader {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     reqNumber!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     description?: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     requesterId!: string;
 
-    @Column({ default: 'Draft' })
+    @Column({ type: 'varchar', default: 'Draft' })
     status!: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 2, default: 0 })
     totalAmount!: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     justification?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     currentApproverId?: string;
 
     @OneToMany(() => RequisitionLine, (line) => line.header, { cascade: true })

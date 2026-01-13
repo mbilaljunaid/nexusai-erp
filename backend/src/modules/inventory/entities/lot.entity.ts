@@ -13,13 +13,13 @@ export class Lot {
     @ManyToOne(() => Item)
     item!: Item;
 
-    @Column()
+    @Column({ type: 'varchar' })
     lotNumber!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'timestamp', nullable: true })
     expirationDate?: Date;
 
-    @Column({ default: 'Active' })
+    @Column({ type: 'varchar', default: 'Active' })
     status!: string; // Active, On Hold, Expired
 
     @CreateDateColumn()

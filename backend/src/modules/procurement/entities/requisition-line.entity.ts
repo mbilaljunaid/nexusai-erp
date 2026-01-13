@@ -9,13 +9,13 @@ export class RequisitionLine {
     @ManyToOne(() => RequisitionHeader, (header) => header.lines)
     header!: RequisitionHeader;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     itemId?: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     description!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     categoryName?: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 4 })
@@ -24,7 +24,7 @@ export class RequisitionLine {
     @Column({ type: 'decimal', precision: 18, scale: 4 })
     unitPrice!: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     supplierId?: string; // Suggested Supplier
 
     @CreateDateColumn()

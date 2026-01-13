@@ -17,16 +17,16 @@ export class MaterialTransaction {
     @ManyToOne(() => Item)
     item!: Item;
 
-    @Column()
+    @Column({ type: 'varchar' })
     transactionType!: string; // 'PO Receipt', 'Subinv Transfer', 'Misc Issue', 'Sales Order Issue'
 
-    @Column()
+    @Column({ type: 'timestamp' })
     transactionDate!: Date;
 
     @Column('decimal', { precision: 18, scale: 4 })
     quantity!: number; // Positive for Receipt, Negative for Issue
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     uom!: string;
 
     @ManyToOne(() => Subinventory, { nullable: true })
@@ -48,13 +48,13 @@ export class MaterialTransaction {
     @ManyToOne(() => Locator, { nullable: true })
     transferLocator?: Locator;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     sourceDocumentType?: string; // 'PO', 'SO', 'WO'
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     sourceDocumentId?: string; // e.g. PO Line ID
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     reference?: string;
 
     @CreateDateColumn()

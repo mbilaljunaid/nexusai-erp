@@ -7,13 +7,13 @@ export class RfqHeader {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     rfqNumber!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     title!: string;
 
-    @Column({ default: 'Draft' }) // Draft, Active, Closed, Awarded
+    @Column({ type: 'varchar', default: 'Draft' }) // Draft, Active, Closed, Awarded
     status!: string;
 
     @Column({ type: 'timestamp', nullable: true })

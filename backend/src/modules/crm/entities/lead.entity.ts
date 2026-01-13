@@ -5,28 +5,28 @@ export class Lead {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   firstName!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   lastName!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   email!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   phone!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   companyName!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   industry!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   source?: string;
 
-  @Column({ default: 'new' })
+  @Column({ type: 'varchar', default: 'new' })
   status!: string;
 
   @Column('decimal', { precision: 18, scale: 2, nullable: true })

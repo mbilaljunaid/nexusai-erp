@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
@@ -23,9 +23,11 @@ import { Reservation } from './entities/reservation.entity';
 import { ReservationService } from './reservation.service';
 import { CycleCountHeader, CycleCountEntry } from './entities/cycle-count.entity';
 import { CycleCountService } from './cycle-count.service';
+import { CostManagementModule } from '../cost-management/cost-management.module';
 
 @Module({
   imports: [
+    forwardRef(() => CostManagementModule),
     TypeOrmModule.forFeature([
       Item,
       InventoryOrganization,
@@ -59,7 +61,8 @@ import { CycleCountService } from './cycle-count.service';
     CostingService,
     PlanningService,
     ReservationService,
-    CycleCountService
+    CycleCountService,
+    TypeOrmModule // Export repositories
   ],
 })
 export class InventoryModule { }

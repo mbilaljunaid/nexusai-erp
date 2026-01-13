@@ -5,25 +5,25 @@ export class GLEntry {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   journalDate!: Date;
 
-  @Column()
+  @Column({ type: 'varchar' })
   description!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   debitAccount!: string;
 
   @Column('decimal', { precision: 18, scale: 2 })
   debitAmount!: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   creditAccount!: string;
 
   @Column('decimal', { precision: 18, scale: 2 })
   creditAmount!: number;
 
-  @Column({ default: 'draft' })
+  @Column({ type: 'varchar', default: 'draft' })
   status!: string;
 
   @CreateDateColumn()

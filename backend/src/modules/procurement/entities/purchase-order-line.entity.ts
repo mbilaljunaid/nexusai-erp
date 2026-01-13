@@ -7,16 +7,16 @@ export class PurchaseOrderLine {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'int' })
     lineNumber!: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     itemId?: string; // Reference to Item ID (loose coupling or relation if cross-module)
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     itemDescription?: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     categoryName!: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 4 })
@@ -28,7 +28,7 @@ export class PurchaseOrderLine {
     @Column({ type: 'decimal', precision: 18, scale: 4 })
     unitPrice!: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     uom!: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 2 })

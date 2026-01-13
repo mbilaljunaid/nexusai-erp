@@ -6,31 +6,31 @@ export class SupplierSite {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     siteName!: string; // e.g., 'HEADQUARTERS', 'NY-SALES'
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     isPurchasing!: boolean;
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     isPay!: boolean;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     addressLine1?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     addressLine2?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     city?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     state?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     postalCode?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     country?: string;
 
     @ManyToOne(() => Supplier, (supplier) => supplier.sites)

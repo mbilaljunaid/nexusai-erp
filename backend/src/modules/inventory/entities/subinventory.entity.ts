@@ -6,22 +6,22 @@ export class Subinventory {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     code!: string; // e.g., 'RAW', 'FG', 'STORES'
 
-    @Column()
+    @Column({ type: 'varchar' })
     name!: string;
 
     @ManyToOne(() => InventoryOrganization)
     organization!: InventoryOrganization;
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     active!: boolean;
 
-    @Column({ default: false })
+    @Column({ type: 'boolean', default: false })
     assetInventory!: boolean; // If false, expensed on receipt
 
-    @Column({ default: false })
+    @Column({ type: 'boolean', default: false })
     locatorControl!: boolean; // If true, txns must specify Locator
 
     @CreateDateColumn()

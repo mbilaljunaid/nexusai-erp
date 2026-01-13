@@ -13,7 +13,7 @@ export class ReceiptLine {
     @ManyToOne(() => PurchaseOrderLine)
     poLine!: PurchaseOrderLine;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     itemId?: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 4 })
@@ -22,7 +22,7 @@ export class ReceiptLine {
     @Column({ type: 'decimal', precision: 18, scale: 4, default: 0 })
     quantityReturned!: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     inventoryOrganizationId?: string;
 
     @CreateDateColumn()

@@ -9,19 +9,19 @@ export class Locator {
     @ManyToOne(() => Subinventory)
     subinventory!: Subinventory;
 
-    @Column()
+    @Column({ type: 'varchar' })
     code!: string; // Combined (e.g. 1.1.1) or Row/Rack/Bin
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     row?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     rack?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     bin?: string;
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     active!: boolean;
 
     @CreateDateColumn()

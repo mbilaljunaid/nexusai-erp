@@ -6,7 +6,7 @@ export class PurchaseOrderDistribution {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'int' })
     distributionNumber!: number;
 
     @Column({ type: 'decimal', precision: 18, scale: 4 })
@@ -15,8 +15,8 @@ export class PurchaseOrderDistribution {
     @Column({ type: 'decimal', precision: 18, scale: 2 })
     amount!: number;
 
-    @Column({ nullable: true })
-    chargeAccountParams?: string; // Storing as JSON or string params for GL integration for now
+    @Column({ type: 'varchar', nullable: true }) // Storing as JSON or string params for GL integration for now
+    chargeAccountParams?: string;
 
     @ManyToOne(() => PurchaseOrderLine, (line) => line.distributions)
     line!: PurchaseOrderLine;

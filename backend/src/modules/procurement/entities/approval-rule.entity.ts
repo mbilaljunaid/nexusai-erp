@@ -5,10 +5,10 @@ export class ApprovalRule {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     ruleName!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     documentType!: string; // 'Requisition' | 'PurchaseOrder'
 
     @Column({ type: 'decimal', precision: 18, scale: 2, default: 0 })
@@ -17,13 +17,13 @@ export class ApprovalRule {
     @Column({ type: 'decimal', precision: 18, scale: 2, nullable: true })
     maxAmount?: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     categoryFilter?: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     approverId!: string; // User ID or Role
 
-    @Column({ default: 1 })
+    @Column({ type: 'int', default: 1 })
     priority!: number;
 
     @CreateDateColumn()

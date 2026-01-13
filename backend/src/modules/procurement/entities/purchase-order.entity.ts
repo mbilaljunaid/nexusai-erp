@@ -8,7 +8,7 @@ export class PurchaseOrder {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   poNumber!: string;
 
   @ManyToOne(() => Supplier)
@@ -17,13 +17,13 @@ export class PurchaseOrder {
   @ManyToOne(() => SupplierSite)
   supplierSite!: SupplierSite;
 
-  @Column({ default: 'Draft' }) // Draft, Approved, Open, Closed, Cancelled
+  @Column({ type: 'varchar', default: 'Draft' }) // Draft, Approved, Open, Closed, Cancelled
   status!: string;
 
   @Column({ type: 'decimal', precision: 18, scale: 2, default: 0 })
   totalAmount!: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   currentApproverId?: string;
 
   @OneToMany(() => PurchaseOrderLine, (line) => line.purchaseOrder, { cascade: true })

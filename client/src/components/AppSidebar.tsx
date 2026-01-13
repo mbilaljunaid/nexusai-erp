@@ -52,6 +52,7 @@ import {
   BookOpen,
   ArrowRightLeft,
   RefreshCw,
+  Warehouse,
 } from "lucide-react";
 
 type UserRole = "admin" | "editor" | "viewer";
@@ -93,8 +94,20 @@ const financeModules: MenuItem[] = [
   { title: "Revaluation", icon: RefreshCw, href: "/gl/revaluation", allowedRoles: ["admin", "editor"] },
   { title: "Accounts Payable", icon: DollarSign, href: "/finance/accounts-payable", allowedRoles: ["admin", "editor"] },
   { title: "Accounts Receivable", icon: TrendingUp, href: "/finance/accounts-receivable", allowedRoles: ["admin", "editor"] },
+  { title: "Cash Management", icon: DollarSign, href: "/finance/cash-management", allowedRoles: ["admin", "editor"] },
+  { title: "Fixed Assets", icon: Building, href: "/finance/fixed-assets", allowedRoles: ["admin", "editor"] },
+  { title: "Tax Management", icon: Shield, href: "/finance/tax", allowedRoles: ["admin", "editor"] },
+  { title: "Netting", icon: ArrowRightLeft, href: "/finance/netting", allowedRoles: ["admin", "editor"] },
   { title: "Procurement", icon: ShoppingCart, href: "/procurement", allowedRoles: ["admin", "editor"] },
   { title: "Governance", icon: Lock, href: "/governance", allowedRoles: ["admin"] },
+];
+
+const supplyChainModules: MenuItem[] = [
+  { title: "Inventory Dashboard", icon: Package, href: "/inventory" },
+  { title: "Warehouse Mgmt", icon: Warehouse, href: "/warehouse", allowedRoles: ["admin", "editor"] },
+  { title: "Supply Chain", icon: Truck, href: "/supply-chain", allowedRoles: ["admin", "editor"] },
+  { title: "Order Fulfillment", icon: ShoppingCart, href: "/order-fulfillment", allowedRoles: ["admin", "editor"] },
+  { title: "Transportation", icon: Truck, href: "/transportation", allowedRoles: ["admin", "editor"] },
 ];
 
 const intelligenceModules: MenuItem[] = [
@@ -106,6 +119,9 @@ const intelligenceModules: MenuItem[] = [
 const operationalModules: MenuItem[] = [
   { title: "Service", icon: Package, href: "/service", allowedRoles: ["admin", "editor"] },
   { title: "Manufacturing", icon: Factory, href: "/manufacturing", allowedRoles: ["admin", "editor"] },
+  { title: "Shop Floor", icon: Cog, href: "/manufacturing/shop-floor", allowedRoles: ["admin", "editor"] },
+  { title: "Work Orders", icon: Briefcase, href: "/manufacturing/work-orders", allowedRoles: ["admin", "editor"] },
+  { title: "Quality Control", icon: Shield, href: "/manufacturing/quality", allowedRoles: ["admin", "editor"] },
   { title: "Logistics", icon: Truck, href: "/logistics", allowedRoles: ["admin", "editor"] },
 ];
 
@@ -161,6 +177,7 @@ export function AppSidebar() {
   const [coreExpanded, setCoreExpanded] = useState(true);
   const [opsExpanded, setOpsExpanded] = useState(true);
   const [finExpanded, setFinExpanded] = useState(userRole === "admin" || userRole === "editor");
+  const [scmExpanded, setScmExpanded] = useState(true);
   const [intExpanded, setIntExpanded] = useState(true);
   const [opModExpanded, setOpModExpanded] = useState(userRole === "admin" || userRole === "editor");
   const [autoExpanded, setAutoExpanded] = useState(false);
@@ -254,8 +271,9 @@ export function AppSidebar() {
         {renderMenuGroup("Core Business", coreBusinessModules, coreExpanded, setCoreExpanded)}
         {renderMenuGroup("Operations & Admin", operationsModules, opsExpanded, setOpsExpanded)}
         {renderMenuGroup("Finance & Compliance", financeModules, finExpanded, setFinExpanded)}
+        {renderMenuGroup("Supply Chain & Logistics", supplyChainModules, scmExpanded, setScmExpanded)}
         {renderMenuGroup("Intelligence & Integration", intelligenceModules, intExpanded, setIntExpanded)}
-        {renderMenuGroup("Service & Supply", operationalModules, opModExpanded, setOpModExpanded)}
+        {renderMenuGroup("Service & Operations", operationalModules, opModExpanded, setOpModExpanded)}
         {renderMenuGroup("Workflow & Automation", automationModules, autoExpanded, setAutoExpanded)}
         {renderMenuGroup("Education & Marketing", educationModules, eduExpanded, setEduExpanded)}
         {userRole === "admin" && renderMenuGroup("Platform Admin", adminOnlyModules, adminExpanded, setAdminExpanded)}

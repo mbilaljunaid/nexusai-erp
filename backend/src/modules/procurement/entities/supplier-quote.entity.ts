@@ -16,7 +16,7 @@ export class SupplierQuote {
     @Column({ type: 'decimal', precision: 18, scale: 2 })
     quoteAmount!: number;
 
-    @Column({ default: 'Submitted' }) // Submitted, Awarded, Rejected
+    @Column({ type: 'varchar', default: 'Submitted' }) // Submitted, Awarded, Rejected
     status!: string;
 
     @CreateDateColumn()

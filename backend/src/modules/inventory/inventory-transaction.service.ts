@@ -11,6 +11,7 @@ import { Lot } from './entities/lot.entity';
 import { Serial } from './entities/serial.entity';
 import { CstTransactionCost } from './entities/cst-transaction-cost.entity';
 import { CostingService } from './costing.service';
+import { CmrReceiptDistribution } from '../cost-management/entities/cmr-receipt-distribution.entity';
 
 export interface CreateTransactionDto {
     organizationId: string;
@@ -29,6 +30,9 @@ export interface CreateTransactionDto {
     reference?: string;
 }
 
+import { ReceiptAccountingService } from '../cost-management/receipt-accounting.service';
+import { CostProcessorService } from '../cost-management/cost-processor.service';
+
 @Injectable()
 export class InventoryTransactionService {
     private readonly logger = new Logger(InventoryTransactionService.name);
@@ -43,7 +47,9 @@ export class InventoryTransactionService {
         @InjectRepository(Subinventory)
         private subinvRepo: Repository<Subinventory>,
         private dataSource: DataSource,
-        private readonly costingService: CostingService
+        private readonly costingService: CostingService,
+        private readonly receiptAccountingService: ReceiptAccountingService,
+        private readonly costProcessorService: CostProcessorService
     ) { }
 
     async executeTransaction(dto: CreateTransactionDto): Promise<MaterialTransaction> {
@@ -107,8 +113,9 @@ export class InventoryTransactionService {
             }
 
             // 5. Costing (Inline for Atomicity)
-            // Use manager to save cost record to ensure it rolls back if txn fails.
             const unitCost = 10.0; // Placeholder: Fetch from Item Cost or Source Doc
+
+            // Legacy Costing (Keep for now or deprecate?)
             const costRecord = new CstTransactionCost();
             costRecord.organization = txn.organization;
             costRecord.item = txn.item;
@@ -118,6 +125,75 @@ export class InventoryTransactionService {
             costRecord.totalCost = Number(txn.quantity) * unitCost;
             costRecord.quantityRemaining = Number(txn.quantity) > 0 ? Number(txn.quantity) : 0;
             await manager.save(CstTransactionCost, costRecord);
+
+            // Phase 2: Receipt Accounting (New)
+            if (dto.transactionType === 'PO Receipt') {
+                // Must use the services that are aware of the transaction scope? 
+                // Wait, injecting the service into this Transactional scope means the service's own repo calls might not be in the same transaction 
+                // unless I pass the manager to it. 
+                // The current ReceiptAccountingService uses injected Repository, which is outside this transaction manager.
+                // For valid atomicity, I should modify ReceiptAccountingService to accept a manager OR manage the distribution creation here.
+                // However, TypeORM's declarative transaction (@Transaction) is not used here.
+                // Standard NestJS pattern: Reuse the manager.
+
+                // For now, I will call the service assuming it can handle it or I'll just do it after. 
+                // But it should be atomic.
+
+                // Let's stick to calling the service, but since I can't easily pass the manager to a standard service method without refactoring it to accept it...
+                // I will add a TODO or just call it. If it fails, the main txn rolls back but the service's standalone txn (if any) might persist or fail independently.
+                // Actually, if the service just does `repo.save()`, it uses the default connection. It won't wait for this `manager` to commit.
+                // It might fail FK check if `txn` is not committed yet!
+
+                // CRITICAL FIX: The `txn` is saved via `manager.save(txn)` at line 98. It is NOT committed yet.
+                // If `ReceiptAccountingService` tries to save distributions pointing to `txn.id` using the default connection, 
+                // it will fail with FK Violation because `txn` is not visible outside this transaction.
+
+                // SOLUTION: I should instantiate the distribution entity here and save it using `manager`.
+                // OR refactor `ReceiptAccountingService` to accept an `EntityManager`.
+
+                // I'll instantiate here for now to ensure atomicity without complex refactoring.
+                // Actually I need to import CmrReceiptDistribution here then.
+                // To avoid circular dependency or messy imports, I will defer to the service IF I can pass the manager.
+                // Let's try to update ReceiptAccountingService to take a manager optionally?
+                // Or just write the logic here since it's "embedded" for now?
+
+                // Better approach: Since I already injected the service, I'll use it BUT I need to pass the manager.
+                // I'll update the Instruction to include `manager` in the call if I can, or just implement the logic inline as I did with CstTransactionCost for now, 
+                // OR calling the service AFTER the transaction logic? No, must be atomic.
+
+                // I'll choose to implement the logic inline here using `manager.save(CmrReceiptDistribution, ...)` 
+                // assuming I can import the entity.
+
+                // Wait, I didn't import the entity in the previous step.
+                // I'll stick to the existing pattern: Import the entity and use manager.
+            }
+
+            // Phase 2: Receipt Accounting (Atomically)
+            if (dto.transactionType === 'PO Receipt') {
+                const totalAmount = Number(txn.quantity) * unitCost;
+
+                // Debit Inventory
+                const dr = new CmrReceiptDistribution();
+                dr.transaction = txn;
+                dr.accountingLineType = 'Inventory Valuation';
+                dr.amount = totalAmount;
+                dr.currencyCode = 'USD';
+                dr.status = 'Draft';
+                await manager.save(CmrReceiptDistribution, dr);
+
+                // Credit Accrual
+                const cr = new CmrReceiptDistribution();
+                cr.transaction = txn;
+                cr.accountingLineType = 'Accrual';
+                cr.amount = -totalAmount; // Credit
+                cr.currencyCode = 'USD';
+                cr.status = 'Draft';
+                await manager.save(CmrReceiptDistribution, cr);
+
+                // Phase 3: Cost Processor (Update Average Cost)
+                // Called within the transaction manager for atomicity.
+                await this.costProcessorService.processTransactionCost(txn, manager);
+            }
 
             // 6. Aggregate Update
             await manager.increment(Item, { id: dto.itemId }, 'quantityOnHand', dto.quantity);

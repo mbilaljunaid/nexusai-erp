@@ -17,7 +17,7 @@ export class CstTransactionCost {
     @ManyToOne(() => MaterialTransaction)
     transaction!: MaterialTransaction;
 
-    @Column()
+    @Column({ type: 'varchar' })
     costMethod!: string; // 'FIFO', 'Average', 'Standard'
 
     @Column('decimal', { precision: 18, scale: 4 })

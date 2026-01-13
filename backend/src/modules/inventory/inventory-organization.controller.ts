@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Inject } from '@nestjs/common';
 import { InventoryOrganizationService } from './inventory-organization.service';
 
 @Controller('inventory/warehouses') // Mapping to existing frontend route preference
 export class InventoryOrganizationController {
-    constructor(private readonly orgService: InventoryOrganizationService) { }
+    constructor(
+        @Inject(InventoryOrganizationService)
+        private readonly orgService: InventoryOrganizationService
+    ) { }
 
     @Post()
     create(@Body() dto: any) {
