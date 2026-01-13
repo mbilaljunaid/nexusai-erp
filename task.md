@@ -129,3 +129,15 @@
     - [x] Integrate with `WorkOrder` (Material Issue/Completion)
     - [x] Implement `ResourceAbsorption` (Labor/Overhead)
     - [x] Calculate `WIPVariance` (Standard vs Actual)
+
+- [x] **Phase 9: Cost Management UI**
+    - [x] Implement `CostDashboard` (Valuation, Margin)
+    - [x] Implement `ScenarioManager` (Standard Cost Definition)
+    - [x] Implement `DistributionsViewer` (Subledger Drilldown)
+    - [x] Implement `LcmWorkbench` (Charge Allocation)
+
+- [ ] **Phase 10: Cost Management AI (The Brain)**
+    - [ ] Implement `CostAnomalyService` (Rule-based detection)
+    - [ ] Define `AnomalyRule` (IPV > 10%, WIP Efficiency < 80%)
+    - [ ] Implement `CostPredicter` (Moving Average Forecast) - *Optional*
+    - [ ] Create `verify_cost_ai.ts` script

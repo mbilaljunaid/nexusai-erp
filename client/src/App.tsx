@@ -348,6 +348,12 @@ const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
 const NettingWorkbench = lazy(() => import("@/pages/NettingWorkbench"));
 
+// Cost Management
+const CostDashboard = lazy(() => import("@/pages/cost-management/CostDashboard"));
+const ScenarioManager = lazy(() => import("@/pages/cost-management/ScenarioManager"));
+const DistributionsViewer = lazy(() => import("@/pages/cost-management/DistributionsViewer"));
+const LcmWorkbench = lazy(() => import("@/pages/cost-management/LcmWorkbench"));
+
 // Portal
 const CustomerPortalLayout = lazy(() => import("@/pages/portal/CustomerPortalLayout"));
 const PortalLogin = lazy(() => import("@/pages/portal/PortalLogin"));
@@ -797,7 +803,14 @@ function Router() {
       <Route path="/gl/period-close" component={PeriodCloseDashboard} />
       <Route path="/finance/ar/period-close" component={ArPeriodClose} />
       <Route path="/gl/trial-balance" component={TrialBalance} />
+      <Route path="/gl/trial-balance" component={TrialBalance} />
       <Route path="/gl/config/ledgers" component={LedgerSetup} />
+
+      {/* Cost Management Routes */}
+      <Route path="/cost/dashboard" component={CostDashboard} />
+      <Route path="/cost/scenarios" component={ScenarioManager} />
+      <Route path="/cost/distributions" component={DistributionsViewer} />
+      <Route path="/cost/lcm" component={LcmWorkbench} />
       <Route path="/gl/config/ledger-sets" component={LedgerSetSetup} />
       <Route path="/gl/config/legal-entities" component={LegalEntitySetup} />
       <Route path="/gl/value-sets" component={ValueSetManager} />

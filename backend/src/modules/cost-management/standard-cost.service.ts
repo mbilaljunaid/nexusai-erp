@@ -1,4 +1,4 @@
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, OnModuleInit, Inject } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
 import { CostScenario } from './entities/cost-scenario.entity';
@@ -8,9 +8,10 @@ import { CostElement } from './entities/cost-element.entity';
 import { CostOrganization } from './entities/cost-organization.entity';
 import { CstItemCost } from './entities/cst-item-cost.entity';
 import { CostBook } from './entities/cost-book.entity';
+import { ApprovalService } from './approval.service';
 
 @Injectable()
-export class StandardCostService {
+export class StandardCostService implements OnModuleInit {
     private readonly logger = new Logger(StandardCostService.name);
 
     constructor(
@@ -23,8 +24,15 @@ export class StandardCostService {
         @InjectRepository(CostOrganization)
         private costOrgRepo: Repository<CostOrganization>,
         @InjectDataSource()
-        private dataSource: DataSource
+        private dataSource: DataSource,
+        @Inject(ApprovalService)
+        private approvalService: ApprovalService
     ) { }
+
+    onModuleInit() {
+        // Register callback for auto-publishing upon approval
+        this.approvalService.registerCallback('COST_SCENARIO', this.executePublish.bind(this));
+    }
 
     async createScenario(costOrgId: string, name: string, description?: string): Promise<CostScenario> {
         const scenario = this.scenarioRepo.create({
@@ -70,7 +78,10 @@ export class StandardCostService {
         return parseFloat(result?.total || '0');
     }
 
-    async publishScenario(scenarioId: string): Promise<void> {
+    /**
+     * Request to publish. Triggers approval if needed.
+     */
+    async publishScenario(scenarioId: string, requesterId: string = 'SYS'): Promise<any> {
         const scenario = await this.scenarioRepo.findOne({
             where: { id: scenarioId },
             relations: ['costOrganization']
@@ -79,6 +90,28 @@ export class StandardCostService {
         if (scenario.scenarioType === 'Frozen' || scenario.scenarioType === 'Historical') {
             throw new BadRequestException(`Cannot publish ${scenario.scenarioType} scenario.`);
         }
+
+        // --- APPROVAL LOGIC ---
+        // Mock Config: Require approval for all
+        const approvalRequired = true;
+
+        if (approvalRequired) {
+            this.logger.log(`Approval Required for Scenario ${scenario.name}. Creating Request...`);
+            return this.approvalService.submitRequest(requesterId, 'COST_SCENARIO', scenarioId, { action: 'PUBLISH' });
+        } else {
+            return this.executePublish(scenarioId);
+        }
+    }
+
+    /**
+     * Execute Logic (Called directly or via Approval Callback)
+     */
+    async executePublish(scenarioId: string): Promise<void> {
+        const scenario = await this.scenarioRepo.findOne({
+            where: { id: scenarioId },
+            relations: ['costOrganization']
+        });
+        if (!scenario) throw new BadRequestException('Scenario not found (in execute)');
 
         const costOrgId = scenario.costOrganization.id;
         this.logger.log(`Publishing Scenario ${scenario.name} for Org ${costOrgId}`);
@@ -95,33 +128,18 @@ export class StandardCostService {
                 relations: ['item', 'costElement']
             });
 
-            // 2. Update CstItemCost (Active Costs)
-            // Strategy: Loop and upsert. For bulk, we'd use raw SQL or batching.
-            // MVP: Loop is fine for < 1000 items. 
-            // Careful: CstItemCost tracks 'Active Standard'. If we delete, we lose history?
-            // Actually CstItemCost is just the CURRENT cost table. History is in snapshots or txn logs.
-            // We'll upsert.
-
-            // Refactored Logic:
-            // 1. Aggregate new costs by Item
+            // 2. Aggregate new costs by Item
             const itemTotals = new Map<string, number>();
             for (const nc of newCosts) {
                 const current = itemTotals.get(nc.item.id) || 0;
                 itemTotals.set(nc.item.id, current + Number(nc.unitCost));
             }
 
-            // 2. Update Active Costs
-            // Resolve Default Cost Book
-            // In a real system, this comes from Cost Profile or Default setup.
-            // MVP: Pick the first CostBook available.
+            // 3. Update Active Costs
             const costBook = await queryRunner.manager.findOne(CostBook, {
                 where: {}
             });
-
-            // If specific cost book logic is needed, add it here.
-            // valid uuid fallback for test if none found (but should exist)
             const costBookId = costBook ? costBook.id : '00000000-0000-0000-0000-000000000000';
-
             const targetInvOrgId = scenario.costOrganization.inventoryOrganizationId;
 
             for (const [itemId, totalCost] of itemTotals) {
@@ -146,12 +164,12 @@ export class StandardCostService {
                 await queryRunner.manager.save(active);
             }
 
-            // 3. Mark Scenario as Current
+            // 4. Mark Scenario as Current
             scenario.scenarioType = 'Current';
             scenario.effectiveDate = new Date();
             await queryRunner.manager.save(scenario);
 
-            // 4. Archive old Current
+            // 5. Archive old Current
             await queryRunner.manager.createQueryBuilder()
                 .update(CostScenario)
                 .set({ scenarioType: 'Historical' })

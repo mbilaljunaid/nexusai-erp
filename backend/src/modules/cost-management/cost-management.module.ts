@@ -25,6 +25,10 @@ import { Item } from '../inventory/entities/item.entity';
 import { CstStandardCost } from './entities/cst-standard-cost.entity';
 import { CostScenario } from './entities/cost-scenario.entity';
 import { LandedCostCharge } from './entities/landed-cost.entity';
+import { CostAnomaly } from './entities/cost-anomaly.entity';
+import { CostAnomalyService } from './cost-anomaly.service';
+import { ApprovalRequest } from './entities/approval-request.entity';
+import { ApprovalService } from './approval.service';
 import { GLEntry } from '../erp/entities/gl-entry.entity';
 import { StandardCostService } from './standard-cost.service';
 import { GlIntegrationService } from '../finance/gl-integration.service';
@@ -39,7 +43,7 @@ import { WipCostingService } from './wip-costing.service';
             CostBook,
             CostPeriod, CmrReceiptDistribution, MaterialTransaction,
             CstItemCost, GLEntry, CostOrganization, InventoryOrganization, Item,
-            CstStandardCost, CostScenario, LandedCostCharge,
+            CstStandardCost, CostScenario, LandedCostCharge, CostAnomaly, ApprovalRequest,
             CstCostDistribution, OnHandBalance, CostBook, CostElement, CostProfile,
             WorkOrder, WipTransaction
         ]),
@@ -57,7 +61,9 @@ import { WipCostingService } from './wip-costing.service';
         LcmService,
         WipCostingService,
         SlaService,
-        CostProcessorService
+        CostProcessorService,
+        CostAnomalyService,
+        ApprovalService
     ],
     exports: [
         CostManagementService,
@@ -69,7 +75,9 @@ import { WipCostingService } from './wip-costing.service';
         StandardCostService,
         GlIntegrationService,
         LcmService,
-        WipCostingService
+        WipCostingService,
+        CostAnomalyService,
+        ApprovalService
     ],
 })
 export class CostManagementModule { }
