@@ -76,3 +76,32 @@ export const insertPayrollConfigSchema = createInsertSchema(payrollConfigs).exte
 
 export type InsertPayrollConfig = z.infer<typeof insertPayrollConfigSchema>;
 export type PayrollConfig = typeof payrollConfigs.$inferSelect;
+
+export const timeEntries = pgTable("time_entries", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    employeeId: varchar("employee_id").notNull(),
+    projectId: varchar("project_id").notNull(), // Linked to ppm_projects
+    taskId: varchar("task_id").notNull(), // Linked to ppm_tasks
+    date: timestamp("date").notNull(),
+    hours: numeric("hours", { precision: 5, scale: 2 }).notNull(),
+    description: varchar("description"),
+    billableFlag: boolean("billable_flag").default(false),
+    costRate: numeric("cost_rate", { precision: 18, scale: 2 }), // Hourly cost
+    status: varchar("status").default("SUBMITTED"), // SUBMITTED, APPROVED, PROCESSED
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertTimeEntrySchema = createInsertSchema(timeEntries).extend({
+    employeeId: z.string().min(1),
+    projectId: z.string().min(1),
+    taskId: z.string().min(1),
+    date: z.date(),
+    hours: z.string().regex(/^\d+(\.\d{1,2})?$/), // string for numeric
+    description: z.string().optional(),
+    billableFlag: z.boolean().optional(),
+    costRate: z.string().optional(),
+    status: z.string().optional(),
+});
+
+export type InsertTimeEntry = z.infer<typeof insertTimeEntrySchema>;
+export type TimeEntry = typeof timeEntries.$inferSelect;

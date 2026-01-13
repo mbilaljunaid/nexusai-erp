@@ -211,6 +211,25 @@ export class AgenticService {
             },
             { type: "object", required: ["periodName"] }
         );
+
+        // PPM: Analyze Project Health (Phase 8)
+        this.registerAction(
+            "PPM_ANALYZE_HEALTH",
+            async (params) => {
+                const { ppmService } = await import("./PpmService");
+                const projectId = params.projectId;
+                if (!projectId) throw new Error("projectId is required");
+
+                const result = await ppmService.checkProjectAlerts(projectId);
+
+                let message = result.status === "HEALTHY"
+                    ? `Project ${projectId} is healthy.`
+                    : `Project ${projectId} is AT RISK with ${result.alerts.length} alerts.`;
+
+                return { ...result, message };
+            },
+            { type: "object", required: ["projectId"] }
+        );
     }
 
     registerAction(code: string, handler: ActionHandler, schema: any, rollback?: RollbackHandler) {
@@ -315,6 +334,18 @@ export class AgenticService {
                 return {
                     actionCode: "FA_RUN_DEPRECIATION",
                     params: { periodName: "Jan-2026" },
+                    confidence: 0.90
+                };
+            }
+        }
+
+        // 6. PPM Context
+        if (context === "ppm" || lowerText.includes("project") || lowerText.includes("budget") || lowerText.includes("burn rate")) {
+            if (lowerText.includes("health") || lowerText.includes("status") || lowerText.includes("risk")) {
+                const idMatch = text.match(/project\s+(?:#|id)?\s*([a-zA-Z0-9-]+)/i);
+                return {
+                    actionCode: "PPM_ANALYZE_HEALTH",
+                    params: { projectId: idMatch ? idMatch[1] : "default-project-id" },
                     confidence: 0.90
                 };
             }

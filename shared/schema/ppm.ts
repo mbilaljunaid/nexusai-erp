@@ -180,3 +180,49 @@ export const ppmPerformanceSnapshots = pgTable("ppm_performance_snapshots", {
 export const insertPpmPerformanceSnapshotSchema = createInsertSchema(ppmPerformanceSnapshots);
 export type InsertPpmPerformanceSnapshot = z.infer<typeof insertPpmPerformanceSnapshotSchema>;
 export type PpmPerformanceSnapshot = typeof ppmPerformanceSnapshots.$inferSelect;
+
+// 11. Project Templates (Configuration L8)
+export const ppmProjectTemplates = pgTable("ppm_project_templates", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(),
+    description: text("description"),
+    projectType: varchar("project_type").notNull(),
+    defaultBurdenScheduleId: varchar("default_burden_schedule_id"),
+    activeFlag: boolean("active_flag").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPpmProjectTemplateSchema = createInsertSchema(ppmProjectTemplates);
+export type InsertPpmProjectTemplate = z.infer<typeof insertPpmProjectTemplateSchema>;
+export type PpmProjectTemplate = typeof ppmProjectTemplates.$inferSelect;
+
+// 12. Bill Rate Schedules (Master Data L9)
+export const ppmBillRateSchedules = pgTable("ppm_bill_rate_schedules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(), // e.g., "Standard Corporate Rates 2026"
+    currencyCode: varchar("currency_code").default("USD"),
+    description: text("description"),
+    activeFlag: boolean("active_flag").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPpmBillRateScheduleSchema = createInsertSchema(ppmBillRateSchedules);
+export type InsertPpmBillRateSchedule = z.infer<typeof insertPpmBillRateScheduleSchema>;
+export type PpmBillRateSchedule = typeof ppmBillRateSchedules.$inferSelect;
+
+// 13. Bill Rates (Master Data L9)
+export const ppmBillRates = pgTable("ppm_bill_rates", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    scheduleId: varchar("schedule_id").notNull(),
+    personId: varchar("person_id"), // Optional: Employee specific rate
+    jobTitle: varchar("job_title"),  // Optional: Role specific rate
+    expenditureTypeId: varchar("expenditure_type_id"), // Optional: Non-labor rate
+    rate: numeric("rate", { precision: 18, scale: 2 }).notNull(),
+    startDate: timestamp("start_date").default(sql`now()`),
+    endDate: timestamp("end_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPpmBillRateSchema = createInsertSchema(ppmBillRates);
+export type InsertPpmBillRate = z.infer<typeof insertPpmBillRateSchema>;
+export type PpmBillRate = typeof ppmBillRates.$inferSelect;

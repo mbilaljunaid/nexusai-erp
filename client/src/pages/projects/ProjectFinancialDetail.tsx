@@ -18,7 +18,16 @@ export default function ProjectFinancialDetail({ projectId }: Props) {
     if (isLoading) return <div>Loading project performance...</div>;
     if (!project) return <div>Project not found</div>;
 
-    const { metrics } = project.performance;
+    // Safe destructuring with defaults
+    const metrics = project.performance?.metrics || {
+        plannedValue: "0",
+        earnedValue: "0",
+        actualCost: "0",
+        cpi: 0,
+        spi: 0,
+        eac: "0",
+        etc: "0"
+    };
 
     const evMetrics = [
         { label: "Planned Value (PV)", value: metrics.plannedValue, icon: Clock, color: "text-blue-500" },

@@ -44,6 +44,8 @@ export const purchaseOrderLines = pgTable("purchase_order_lines", {
     quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
     unitPrice: numeric("unit_price", { precision: 18, scale: 4 }).notNull(),
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    projectId: varchar("project_id"), // Linked to ppm_projects
+    taskId: varchar("task_id"), // Linked to ppm_tasks
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -61,6 +63,8 @@ export const insertPurchaseOrderLineSchema = createInsertSchema(purchaseOrderLin
     quantity: z.number(),
     unitPrice: z.number(),
     amount: z.number(),
+    projectId: z.string().optional(),
+    taskId: z.string().optional(),
 });
 
 export type InsertPurchaseOrder = z.infer<typeof insertPurchaseOrderSchema>;
@@ -88,3 +92,29 @@ export const insertInventorySchema = createInsertSchema(inventory).extend({
 
 export type InsertInventory = z.infer<typeof insertInventorySchema>;
 export type Inventory = typeof inventory.$inferSelect;
+
+export const inventoryTransactions = pgTable("inventory_transactions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    inventoryId: varchar("inventory_id").notNull(),
+    transactionType: varchar("transaction_type").notNull(), // RECEIPT, ISSUE, TRANSFER, ADJUSTMENT
+    quantity: integer("quantity").notNull(),
+    projectId: varchar("project_id"), // Linked to ppm_projects
+    taskId: varchar("task_id"), // Linked to ppm_tasks
+    transactionDate: timestamp("transaction_date").default(sql`now()`),
+    referenceNumber: varchar("reference_number"),
+    cost: numeric("cost", { precision: 18, scale: 2 }), // Cost of transaction
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertInventoryTransactionSchema = createInsertSchema(inventoryTransactions).extend({
+    inventoryId: z.string().min(1),
+    transactionType: z.string().min(1),
+    quantity: z.number(),
+    projectId: z.string().optional(),
+    taskId: z.string().optional(),
+    referenceNumber: z.string().optional(),
+    cost: z.number().optional(),
+});
+
+export type InsertInventoryTransaction = z.infer<typeof insertInventoryTransactionSchema>;
+export type InventoryTransaction = typeof inventoryTransactions.$inferSelect;

@@ -158,14 +158,7 @@ export function StandardTable<T>({
                     >
                         {col.cell
                             ? (typeof col.cell === "function"
-                                ? col.cell(new Proxy(item as any, {
-                                    get(target, prop) {
-                                        if (prop === "row") return { original: item };
-                                        if (prop === "getValue") return () => col.accessorKey ? item[col.accessorKey as keyof T] : undefined;
-                                        if (prop === "column") return { id: col.accessorKey };
-                                        return target[prop];
-                                    }
-                                }))
+                                ? col.cell(item)
                                 : col.cell)
                             : col.accessorKey
                                 ? (item[col.accessorKey as keyof T] as React.ReactNode)
@@ -284,9 +277,9 @@ export function StandardTable<T>({
                             ) : (
                                 paginatedData.map((item, idx) => (
                                     <TableRow
-                                        key={keyExtractor ? keyExtractor(item) : (item as any).id || idx}
+                                        key={keyExtractor ? keyExtractor(item || {} as T) : (item as any)?.id || idx}
                                         className={cn("group transition-colors hover:bg-muted/30", onRowClick && "cursor-pointer")}
-                                        onClick={() => onRowClick && onRowClick(item)}
+                                        onClick={() => item && onRowClick && onRowClick(item)}
                                     >
                                         {columns.map((col, colIdx) => (
                                             <TableCell key={colIdx} className={cn("py-3 text-sm", col.className)}>

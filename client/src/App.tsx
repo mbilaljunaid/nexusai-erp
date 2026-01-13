@@ -484,7 +484,6 @@ const KnowledgeGraph = lazy(() => import("@/pages/KnowledgeGraph"));
 const IoT = lazy(() => import("@/pages/IoT"));
 const MobileApps = lazy(() => import("@/pages/MobileApps"));
 const SupplyChain = lazy(() => import("@/pages/SupplyChain"));
-const Inventory = lazy(() => import("@/pages/Inventory"));
 const QualityManagement = lazy(() => import("@/pages/QualityManagement"));
 const DocumentManagement = lazy(() => import("@/pages/DocumentManagement"));
 const ExpenseManagement = lazy(() => import("@/pages/ExpenseManagement"));
@@ -794,7 +793,6 @@ function Router() {
       <Route path="/finance/expense-management" component={ExpenseManagement} />
 
       {/* Other Orphans */}
-      <Route path="/project-management" component={Projects} />
       <Route path="/compliance" component={Compliance} />
 
       {/* New Finance Routes */}
@@ -803,7 +801,6 @@ function Router() {
       <Route path="/gl/data-access" component={DataAccessManager} />
 
       <Route path="/finance/ar/period-close" component={ArPeriodClose} />
-      <Route path="/gl/trial-balance" component={TrialBalance} />
       <Route path="/gl/trial-balance" component={TrialBalance} />
       <Route path="/gl/config/ledgers" component={LedgerSetup} />
 
