@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Handshake, Plus, Trash2 } from "lucide-react";
+import { Handshake, Plus, Trash2, BadgeDollarSign, Clock, CheckCircle2, FileText, Activity } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function VehicleSalesDeals() {
   const { toast } = useToast();
@@ -36,78 +37,120 @@ export default function VehicleSalesDeals() {
 
   const completed = deals.filter((d: any) => d.status === "completed").length;
   const totalSales = deals.reduce((sum: number, d: any) => sum + (parseFloat(d.salePrice) || 0), 0);
+  const pendingCount = deals.filter((d: any) => d.status === "pending").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Handshake className="h-8 w-8" />
-          Vehicle Sales & Deal Closing
-        </h1>
-        <p className="text-muted-foreground mt-2">Quotation, deal structuring, F&I packages, approvals, and contracts</p>
-      </div>
-
-      <div className="grid grid-cols-4 gap-3">
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Total Deals</p>
-            <p className="text-2xl font-bold">{deals.length}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Pending</p>
-            <p className="text-2xl font-bold text-yellow-600">{deals.filter((d: any) => d.status === "pending").length}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Completed</p>
-            <p className="text-2xl font-bold text-green-600">{completed}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Total Sales</p>
-            <p className="text-2xl font-bold">${(totalSales / 1000000).toFixed(1)}M</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card data-testid="card-new-deal">
-        <CardHeader><CardTitle className="text-base">Create Deal</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-5 gap-2">
-            <Input placeholder="Deal ID" value={newDeal.dealId} onChange={(e) => setNewDeal({ ...newDeal, dealId: e.target.value })} data-testid="input-did" className="text-sm" />
-            <Input placeholder="Customer ID" value={newDeal.customerId} onChange={(e) => setNewDeal({ ...newDeal, customerId: e.target.value })} data-testid="input-cid" className="text-sm" />
-            <Input placeholder="VIN" value={newDeal.vin} onChange={(e) => setNewDeal({ ...newDeal, vin: e.target.value })} data-testid="input-vin" className="text-sm" />
-            <Input placeholder="Sale Price" type="number" value={newDeal.salePrice} onChange={(e) => setNewDeal({ ...newDeal, salePrice: e.target.value })} data-testid="input-price" className="text-sm" />
-            <Button disabled={createMutation.isPending || !newDeal.dealId} size="sm" data-testid="button-create">
-              <Plus className="w-3 h-3" />
-            </Button>
+    <StandardDashboard
+      header={
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight font-heading">Vehicle Sales & Deal Closing</h1>
+          <p className="text-muted-foreground mt-1">DMS orchestration, multi-party deal structuring, F&I integration, and contract management</p>
+        </div>
+      }
+    >
+      <DashboardWidget title="Active Pipeline" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-blue-100/50">
+            <Handshake className="h-4 w-4 text-blue-600" />
           </div>
-        </CardContent>
-      </Card>
+          <div>
+            <div className="text-2xl font-bold tracking-tight">{deals.length}</div>
+            <p className="text-xs text-muted-foreground">Total deal flow</p>
+          </div>
+        </div>
+      </DashboardWidget>
 
-      <Card>
-        <CardHeader><CardTitle className="text-base">Deals</CardTitle></CardHeader>
-        <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : deals.length === 0 ? <p className="text-muted-foreground text-center py-4">No deals</p> : deals.map((d: any) => (
-            <div key={d.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`deal-${d.id}`}>
-              <div className="flex-1">
-                <p className="font-semibold">{d.dealId}</p>
-                <p className="text-xs text-muted-foreground">{d.vin} • ${d.salePrice}</p>
+      <DashboardWidget title="Pending Approvals" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-amber-100/50">
+            <Clock className="h-4 w-4 text-amber-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-amber-600">{pendingCount}</div>
+            <p className="text-xs text-muted-foreground">Awaiting F&I</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="Closed Deals" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-emerald-100/50">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-emerald-600">{completed}</div>
+            <p className="text-xs text-muted-foreground">Finalized contracts</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="Gross Proceeds" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-indigo-100/50">
+            <BadgeDollarSign className="h-4 w-4 text-indigo-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-indigo-600">${(totalSales / 1000000).toFixed(1)}M</div>
+            <p className="text-xs text-muted-foreground">Cumulative value</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="Structure New Deal" colSpan={4} icon={Plus}>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Deal Number</label>
+            <Input placeholder="DEAL-000" value={newDeal.dealId} onChange={(e) => setNewDeal({ ...newDeal, dealId: e.target.value })} data-testid="input-did" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Customer Ref</label>
+            <Input placeholder="CUST-ID" value={newDeal.customerId} onChange={(e) => setNewDeal({ ...newDeal, customerId: e.target.value })} data-testid="input-cid" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Stock VIN</label>
+            <Input placeholder="17-Digit VIN" value={newDeal.vin} onChange={(e) => setNewDeal({ ...newDeal, vin: e.target.value })} data-testid="input-vin" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Sale Price</label>
+            <Input placeholder="0.00" type="number" value={newDeal.salePrice} onChange={(e) => setNewDeal({ ...newDeal, salePrice: e.target.value })} data-testid="input-price" />
+          </div>
+          <Button onClick={() => createMutation.mutate(newDeal)} disabled={createMutation.isPending || !newDeal.dealId} className="w-full" data-testid="button-create">
+            {createMutation.isPending ? <Activity className="h-4 w-4 animate-spin" /> : "Initiate Closing"}
+          </Button>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget colSpan={4} title="Dealership Ledger" icon={FileText}>
+        <div className="space-y-3">
+          {isLoading ? (
+            Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
+          ) : deals.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8 font-medium">No deals staged in the contemporary window</p>
+          ) : (
+            deals.map((d: any) => (
+              <div key={d.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4" data-testid={`deal-${d.id}`}>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold">{d.dealId}</p>
+                    <Badge variant="outline" className="text-[10px] uppercase font-mono tracking-tighter">
+                      VIN: {d.vin?.substring(0, 8)}...
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Customer: {d.customerId} • Sale Price: ${parseFloat(d.salePrice).toLocaleString()}</p>
+                </div>
+                <div className="flex flex-row items-center gap-3">
+                  <Badge variant={d.status === "completed" ? "default" : "secondary"} className="text-[10px] uppercase font-mono">
+                    {d.status}
+                  </Badge>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(d.id)} data-testid={`button-delete-${d.id}`}>
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant={d.status === "completed" ? "default" : "secondary"} className="text-xs">{d.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${d.id}`} className="h-7 w-7">
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    </div>
+            ))
+          )}
+        </div>
+      </DashboardWidget>
+    </StandardDashboard>
   );
 }

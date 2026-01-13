@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Plus, Trash2 } from "lucide-react";
+import { TrendingUp, Plus, Trash2, Calendar, Target, ShieldCheck, Activity } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RevenueForecasting() {
   const { toast } = useToast();
@@ -36,16 +37,18 @@ export default function RevenueForecasting() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><TrendingUp className="w-8 h-8" />Revenue Forecasting</h1>
-        <p className="text-muted-foreground mt-1">Advanced revenue projections and scenarios</p>
-      </div>
-
-      <Card data-testid="card-new-forecast">
-        <CardHeader><CardTitle className="text-base">Create Forecast</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-3 gap-3">
+    <StandardDashboard
+      header={
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight font-heading">Revenue Forecasting</h1>
+          <p className="text-muted-foreground mt-1">Advanced revenue projections, scenario modeling, and predictive analytics</p>
+        </div>
+      }
+    >
+      <DashboardWidget title="Create New Forecast" colSpan={4} icon={Plus}>
+        <div className="flex flex-col md:flex-row gap-4 items-end">
+          <div className="flex-1 space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Period</label>
             <Select value={newForecast.period} onValueChange={(v) => setNewForecast({ ...newForecast, period: v })}>
               <SelectTrigger data-testid="select-period"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -55,7 +58,13 @@ export default function RevenueForecasting() {
                 <SelectItem value="Q4">Q4</SelectItem>
               </SelectContent>
             </Select>
-            <Input placeholder="Baseline revenue" type="number" value={newForecast.baseline} onChange={(e) => setNewForecast({ ...newForecast, baseline: e.target.value })} data-testid="input-baseline" />
+          </div>
+          <div className="flex-1 space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Baseline Revenue</label>
+            <Input placeholder="Enter amount" type="number" value={newForecast.baseline} onChange={(e) => setNewForecast({ ...newForecast, baseline: e.target.value })} data-testid="input-baseline" />
+          </div>
+          <div className="flex-1 space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Confidence Level</label>
             <Select value={newForecast.confidence} onValueChange={(v) => setNewForecast({ ...newForecast, confidence: v })}>
               <SelectTrigger data-testid="select-confidence"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -66,30 +75,54 @@ export default function RevenueForecasting() {
               </SelectContent>
             </Select>
           </div>
-          <Button disabled={createMutation.isPending || !newForecast.baseline} className="w-full" data-testid="button-create-forecast">
-            <Plus className="w-4 h-4 mr-2" /> Create Forecast
+          <Button
+            onClick={() => createMutation.mutate(newForecast)}
+            disabled={createMutation.isPending || !newForecast.baseline}
+            className="md:w-auto w-full px-8"
+            data-testid="button-create-forecast"
+          >
+            {createMutation.isPending ? "Generating..." : "Generate Forecast"}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </DashboardWidget>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {isLoading ? <p>Loading...</p> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No forecasts</p> : forecasts.slice(0, 3).map((f: any) => (
-          <Card key={f.id} data-testid={`forecast-${f.id}`}>
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{f.period} Forecast</p>
-                  <p className="text-3xl font-bold mt-1">${(f.baseline / 1000000).toFixed(1)}M</p>
-                  <Badge className="mt-2" variant="secondary">{f.confidence || 85}% confidence</Badge>
+      {isLoading ? (
+        Array(4).fill(0).map((_, i) => (
+          <DashboardWidget key={i} colSpan={1}>
+            <Skeleton className="h-24 w-full" />
+          </DashboardWidget>
+        ))
+      ) : forecasts.length === 0 ? (
+        <DashboardWidget colSpan={4}>
+          <p className="text-muted-foreground text-center py-8 font-medium">No active forecasts found. Generate one to see projections.</p>
+        </DashboardWidget>
+      ) : (
+        forecasts.map((f: any) => (
+          <DashboardWidget
+            key={f.id}
+            colSpan={1}
+            title={`${f.period} Forecast`}
+            action={
+              <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(f.id)} data-testid={`button-delete-${f.id}`}>
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            }
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="text-3xl font-bold tracking-tight">${(f.baseline / 1000000).toFixed(1)}M</div>
+                <div className="p-2 rounded-full bg-blue-100/50">
+                  <TrendingUp className="h-4 w-4 text-blue-600" />
                 </div>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${f.id}`}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="font-mono text-[10px] uppercase">{f.confidence || 85}% Confidence</Badge>
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">AI Projecton</span>
+              </div>
+            </div>
+          </DashboardWidget>
+        ))
+      )}
+    </StandardDashboard>
   );
 }

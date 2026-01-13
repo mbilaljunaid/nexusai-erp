@@ -1,1 +1,98 @@
-import { useQuery } from "@tanstack/react-query"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { DollarSign } from "lucide-react"; export default function RevenueAssurance() { const { data: revenue = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/telecom-revenue"], queryFn: () => fetch("/api/telecom-revenue").then(r => r.json()).catch(() => []), }); const totalRev = revenue.reduce((sum: number, r: any) => sum + (parseFloat(r.amount) || 0), 0); const projected = revenue.reduce((sum: number, r: any) => sum + (parseFloat(r.projected) || 0), 0); return ( <div className="space-y-6 p-4"> <div> <h1 className="text-3xl font-bold flex items-center gap-2"> <DollarSign className="h-8 w-8" /> Revenue Assurance & Forecasting </h1> <p className="text-muted-foreground mt-2">Revenue tracking, forecasting, promotion ROI, marketing spend, billing accuracy, trend analysis</p> </div> <div className="grid grid-cols-4 gap-3"> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Revenue</p><p className="text-2xl font-bold text-green-600">${(totalRev / 1000).toFixed(0)}K</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Projected</p><p className="text-2xl font-bold text-blue-600">${(projected / 1000).toFixed(0)}K</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Variance</p><p className="text-2xl font-bold">${((projected - totalRev) / 1000).toFixed(0)}K</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Accuracy %</p><p className="text-2xl font-bold">{revenue.length > 0 ? ((totalRev / projected) * 100).toFixed(0) : 0}%</p></CardContent></Card> </div> <Card> <CardHeader><CardTitle className="text-base">Revenue Tracking</CardTitle></CardHeader> <CardContent className="space-y-2"> {isLoading ? <p>Loading...</p> : revenue.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : revenue.slice(0, 10).map((r: any) => ( <div key={r.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`rev-${r.id}`}> <div className="flex-1"><p className="font-semibold">{r.sourceId}</p><p className="text-xs text-muted-foreground">Projected: ${r.projected}</p></div> <Badge variant="default" className="text-xs">${r.amount}</Badge> </div> ))} </CardContent> </Card> </div> ); }
+import { useQuery } from "@tanstack/react-query";
+import { Badge } from "@/components/ui/badge";
+import { DollarSign, TrendingUp, BarChart3, Target, Activity } from "lucide-react";
+import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export default function RevenueAssurance() {
+    const { data: revenue = [], isLoading } = useQuery<any[]>({
+        queryKey: ["/api/telecom-revenue"],
+        queryFn: () => fetch("/api/telecom-revenue").then(r => r.json()).catch(() => []),
+    });
+
+    const totalRev = revenue.reduce((sum: number, r: any) => sum + (parseFloat(r.amount) || 0), 0);
+    const projected = revenue.reduce((sum: number, r: any) => sum + (parseFloat(r.projected) || 0), 0);
+    const accuracy = projected > 0 ? (totalRev / projected) * 100 : 0;
+
+    return (
+        <StandardDashboard
+            header={
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight font-heading">Revenue Assurance & Forecasting</h1>
+                    <p className="text-muted-foreground mt-1">Revenue tracking, forecasting, promotion ROI, marketing spend, and billing accuracy analysis</p>
+                </div>
+            }
+        >
+            <DashboardWidget title="Total Revenue" colSpan={1}>
+                <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-full bg-emerald-100/50">
+                        <DollarSign className="h-4 w-4 text-emerald-600" />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold tracking-tight text-emerald-600">${(totalRev / 1000).toFixed(0)}K</div>
+                        <p className="text-xs text-muted-foreground">Actual collected revenue</p>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            <DashboardWidget title="Projected" colSpan={1}>
+                <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-full bg-blue-100/50">
+                        <BarChart3 className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold tracking-tight text-blue-600">${(projected / 1000).toFixed(0)}K</div>
+                        <p className="text-xs text-muted-foreground">Forecasted target</p>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            <DashboardWidget title="Variance" colSpan={1}>
+                <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-full bg-amber-100/50">
+                        <TrendingUp className="h-4 w-4 text-amber-600" />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold tracking-tight text-amber-600">${((projected - totalRev) / 1000).toFixed(0)}K</div>
+                        <p className="text-xs text-muted-foreground">Target gap</p>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            <DashboardWidget title="Accuracy %" colSpan={1}>
+                <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-full bg-slate-100/50">
+                        <Target className="h-4 w-4 text-slate-600" />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold tracking-tight">{accuracy.toFixed(0)}%</div>
+                        <p className="text-xs text-muted-foreground">Forecast precision</p>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            <DashboardWidget colSpan={4} title="Revenue Tracking">
+                <div className="space-y-3">
+                    {isLoading ? (
+                        Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
+                    ) : revenue.length === 0 ? (
+                        <p className="text-muted-foreground text-center py-4">No data available</p>
+                    ) : (
+                        revenue.slice(0, 10).map((r: any) => (
+                            <div key={r.id} className="p-3 border rounded-lg text-sm hover:bg-accent/50 transition-colors flex items-center justify-between" data-testid={`rev-${r.id}`}>
+                                <div className="flex-1">
+                                    <p className="font-semibold">{r.sourceId}</p>
+                                    <p className="text-xs text-muted-foreground">Projected: ${r.projected}</p>
+                                </div>
+                                <Badge variant="default" className="text-xs font-mono">
+                                    ${r.amount}
+                                </Badge>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </DashboardWidget>
+        </StandardDashboard>
+    );
+}
+

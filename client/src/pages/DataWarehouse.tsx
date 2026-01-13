@@ -1,122 +1,111 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { getFormMetadata } from "@/lib/formMetadata";
-import { Database, Zap, BarChart3, Briefcase } from "lucide-react";
+import { Database, Zap, BarChart3, Briefcase, Server, Globe, Activity } from "lucide-react";
+import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DataWarehouse() {
   const formMetadata = getFormMetadata("data-warehouse");
-  const { data: lakes = [] } = useQuery({
+
+  const { data: lakes = [], isLoading: lakesLoading } = useQuery({
     queryKey: ["/api/data-warehouse/lakes"],
-  }) as { data: any[] };
+  }) as { data: any[], isLoading: boolean };
 
-  const { data: pipelines = [] } = useQuery({
+  const { data: pipelines = [], isLoading: pipelinesLoading } = useQuery({
     queryKey: ["/api/etl/pipelines"],
-  }) as { data: any[] };
+  }) as { data: any[], isLoading: boolean };
 
-  const { data: dashboards = [] } = useQuery({
+  const { data: dashboards = [], isLoading: dashboardsLoading } = useQuery({
     queryKey: ["/api/bi/dashboards"],
-  }) as { data: any[] };
+  }) as { data: any[], isLoading: boolean };
 
-  const { data: jobs = [] } = useQuery({
+  const { data: jobs = [], isLoading: jobsLoading } = useQuery({
     queryKey: ["/api/field-service/jobs"],
-  }) as { data: any[] };
+  }) as { data: any[], isLoading: boolean };
+
+  const isLoading = lakesLoading || pipelinesLoading || dashboardsLoading || jobsLoading;
 
   return (
-    <div className="space-y-6 p-4">
-      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2" data-testid="title-data-warehouse">
-          <Database className="h-8 w-8" />
-          Data Warehouse & Advanced BI
-        </h1>
-        <p className="text-muted-foreground mt-2">Cloud data warehouse, ETL pipelines, and advanced analytics</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card data-testid="card-metric-data-lakes">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center justify-between" data-testid="title-data-lakes">
-              Data Lakes
-              <Database className="h-4 w-4" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="text-lakes-count">{lakes.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">BigQuery, Snowflake, Redshift</p>
-          </CardContent>
-        </Card>
-
-        <Card data-testid="card-metric-pipelines">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center justify-between" data-testid="title-pipelines">
-              ETL Pipelines
-              <Zap className="h-4 w-4" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="text-pipelines-count">{pipelines.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Active data flows</p>
-          </CardContent>
-        </Card>
-
-        <Card data-testid="card-metric-dashboards">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center justify-between" data-testid="title-dashboards">
-              BI Dashboards
-              <BarChart3 className="h-4 w-4" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="text-dashboards-count">{dashboards.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Analytics views</p>
-          </CardContent>
-        </Card>
-
-        <Card data-testid="card-metric-field-jobs">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center justify-between" data-testid="title-field-jobs">
-              Field Service
-              <Briefcase className="h-4 w-4" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="text-field-jobs-count">{jobs.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Active jobs</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle data-testid="title-capabilities">Platform Capabilities</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="font-medium" data-testid="text-cap-data-warehouse">Cloud Data Warehouse</span>
-            <Badge data-testid="badge-cap-warehouse">BigQuery, Snowflake, Redshift</Badge>
+    <StandardDashboard
+      header={
+        <div className="space-y-4">
+          <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight font-heading" data-testid="title-data-warehouse">Data Warehouse & Advanced BI</h1>
+            <p className="text-muted-foreground mt-1">Unified cloud data warehouse, ETL pipeline management, and advanced visualization layer</p>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="font-medium" data-testid="text-cap-etl">ETL Pipelines</span>
-            <Badge variant="secondary" data-testid="badge-cap-etl">Scheduled data flows</Badge>
+        </div>
+      }
+    >
+      <DashboardWidget title="Data Lakes" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-blue-100/50">
+            <Database className="h-4 w-4 text-blue-600" />
           </div>
-          <div className="flex items-center justify-between">
-            <span className="font-medium" data-testid="text-cap-analytics">Advanced Analytics</span>
-            <Badge variant="secondary" data-testid="badge-cap-analytics">50+ visualizations</Badge>
+          <div>
+            <div className="text-2xl font-bold tracking-tight" data-testid="text-lakes-count">{lakes.length}</div>
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">BigQuery, Snowflake</p>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="font-medium" data-testid="text-cap-field-service">Field Service Management</span>
-            <Badge variant="secondary" data-testid="badge-cap-field">Location tracking</Badge>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="ETL Pipelines" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-amber-100/50">
+            <Zap className="h-4 w-4 text-amber-600" />
           </div>
-          <div className="flex items-center justify-between">
-            <span className="font-medium" data-testid="text-cap-payroll">Global Payroll</span>
-            <Badge variant="secondary" data-testid="badge-cap-payroll">150+ countries</Badge>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-amber-600" data-testid="text-pipelines-count">{pipelines.length}</div>
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Active data flows</p>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="BI Dashboards" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-indigo-100/50">
+            <BarChart3 className="h-4 w-4 text-indigo-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-indigo-600" data-testid="text-dashboards-count">{dashboards.length}</div>
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Operational views</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="Field Service" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-emerald-100/50">
+            <Briefcase className="h-4 w-4 text-emerald-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-emerald-600" data-testid="text-field-jobs-count">{jobs.length}</div>
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Dispatched jobs</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget colSpan={4} title="Platform Capabilities" icon={Activity}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 pt-2">
+          {[
+            { label: "Cloud Data Warehouse", val: "BigQuery, Snowflake, Redshift", icon: Server },
+            { label: "ETL Pipelines", val: "Scheduled data flows", icon: Zap },
+            { label: "Advanced Analytics", val: "50+ visualizations", icon: BarChart3 },
+            { label: "Field Service Management", val: "Location tracking", icon: Briefcase },
+            { label: "Global Payroll", val: "150+ countries", icon: Globe },
+          ].map((cap, idx) => (
+            <div key={idx} className="flex items-center justify-between p-3 border rounded-lg bg-accent/30 hover:bg-accent/50 transition-colors">
+              <div className="flex items-center gap-3">
+                <cap.icon className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium text-sm">{cap.label}</span>
+              </div>
+              <Badge variant="secondary" className="text-[10px] uppercase font-mono tracking-tighter">{cap.val}</Badge>
+            </div>
+          ))}
+        </div>
+      </DashboardWidget>
+    </StandardDashboard>
   );
 }

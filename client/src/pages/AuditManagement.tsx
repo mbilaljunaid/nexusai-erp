@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Clipboard, Plus, Trash2 } from "lucide-react";
+import { Clipboard, Plus, Trash2, CheckCircle2, Timer, AlertCircle, Activity, ShieldCheck } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AuditManagement() {
   const { toast } = useToast();
@@ -15,7 +16,7 @@ export default function AuditManagement() {
 
   const { data: audits = [], isLoading } = useQuery({
     queryKey: ["/api/audits"],
-    queryFn: () => fetch("/api/audits").then(r => r.json()),
+    queryFn: () => fetch("/api/audits").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
@@ -52,48 +53,66 @@ export default function AuditManagement() {
   };
 
   return (
-    <div className="space-y-6 p-4" data-testid="audit-management">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Clipboard className="h-8 w-8" />
-          Audit Management
-        </h1>
-        <p className="text-muted-foreground mt-2">Track audit findings, corrective actions, and compliance</p>
-      </div>
+    <StandardDashboard
+      header={
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight font-heading">Audit Management</h1>
+          <p className="text-muted-foreground mt-1">Track audit findings, corrective actions, and regulatory compliance across the enterprise</p>
+        </div>
+      }
+    >
+      <DashboardWidget title="Total Audits" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-blue-100/50">
+            <Clipboard className="h-4 w-4 text-blue-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight">{metrics.total}</div>
+            <p className="text-xs text-muted-foreground">Master records</p>
+          </div>
+        </div>
+      </DashboardWidget>
 
-      <div className="grid grid-cols-4 gap-3">
-        <Card className="p-3" data-testid="card-total-audits">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Total Audits</p>
-            <p className="text-2xl font-bold">{metrics.total}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3" data-testid="card-closed">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Closed</p>
-            <p className="text-2xl font-bold text-green-600">{metrics.closed}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3" data-testid="card-in-progress">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">In Progress</p>
-            <p className="text-2xl font-bold text-blue-600">{metrics.inProgress}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3" data-testid="card-open">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Open</p>
-            <p className="text-2xl font-bold text-red-600">{metrics.open}</p>
-          </CardContent>
-        </Card>
-      </div>
+      <DashboardWidget title="Closed" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-emerald-100/50">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-emerald-600">{metrics.closed}</div>
+            <p className="text-xs text-muted-foreground">Remediated issues</p>
+          </div>
+        </div>
+      </DashboardWidget>
 
-      <Card data-testid="card-new-audit">
-        <CardHeader>
-          <CardTitle className="text-base">Create Audit Record</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+      <DashboardWidget title="In Progress" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-indigo-100/50">
+            <Timer className="h-4 w-4 text-indigo-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-indigo-600">{metrics.inProgress}</div>
+            <p className="text-xs text-muted-foreground">Active workflow</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="Open" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-red-100/50">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-red-600">{metrics.open}</div>
+            <p className="text-xs text-muted-foreground">Pending action</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="Create Audit Record" colSpan={4} icon={Plus}>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</label>
             <Select value={newAudit.auditType} onValueChange={(v) => setNewAudit({ ...newAudit, auditType: v })}>
               <SelectTrigger data-testid="select-audit-type">
                 <SelectValue />
@@ -105,6 +124,9 @@ export default function AuditManagement() {
                 <SelectItem value="Compliance">Compliance</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Module</label>
             <Select value={newAudit.module} onValueChange={(v) => setNewAudit({ ...newAudit, module: v })}>
               <SelectTrigger data-testid="select-module">
                 <SelectValue />
@@ -117,58 +139,68 @@ export default function AuditManagement() {
               </SelectContent>
             </Select>
           </div>
-          <Input placeholder="Audit findings" value={newAudit.findings} onChange={(e) => setNewAudit({ ...newAudit, findings: e.target.value })} data-testid="input-findings" />
-          <Select value={newAudit.severity} onValueChange={(v) => setNewAudit({ ...newAudit, severity: v })}>
-            <SelectTrigger data-testid="select-severity">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Low</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={() => createMutation.mutate(newAudit)} disabled={createMutation.isPending || !newAudit.findings} className="w-full" data-testid="button-create-audit">
-            <Plus className="w-4 h-4 mr-2" /> Create Audit
-          </Button>
-        </CardContent>
-      </Card>
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Findings</label>
+            <Input placeholder="Enter brief summary" value={newAudit.findings} onChange={(e) => setNewAudit({ ...newAudit, findings: e.target.value })} data-testid="input-findings" />
+          </div>
+          <div className="flex gap-2">
+            <div className="flex-1 space-y-2">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Severity</label>
+              <Select value={newAudit.severity} onValueChange={(v) => setNewAudit({ ...newAudit, severity: v })}>
+                <SelectTrigger data-testid="select-severity">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={() => createMutation.mutate(newAudit)} disabled={createMutation.isPending || !newAudit.findings} className="px-6" data-testid="button-create-audit">
+              {createMutation.isPending ? <Activity className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            </Button>
+          </div>
+        </div>
+      </DashboardWidget>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Audit Findings</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+      <DashboardWidget colSpan={4} title="Audit Audit Directory" icon={ShieldCheck}>
+        <div className="space-y-3">
           {isLoading ? (
-            <div className="text-center py-4">Loading...</div>
+            Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
           ) : audits.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">No audits found</div>
+            <p className="text-muted-foreground text-center py-8 font-medium">No audit findings registered</p>
           ) : (
             audits.map((a: any) => (
-              <div key={a.id} className="p-3 border rounded-lg hover-elevate" data-testid={`audit-item-${a.id}`}>
-                <div className="flex justify-between mb-2">
-                  <h3 className="font-semibold">{a.auditType} Audit</h3>
-                  <div className="flex gap-2">
-                    <Badge variant={a.severity === "high" ? "destructive" : a.severity === "medium" ? "secondary" : "default"}>{a.severity}</Badge>
-                    <Badge>{a.status}</Badge>
+              <div key={a.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4" data-testid={`audit-item-${a.id}`}>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold">{a.auditType} Audit</h3>
+                    <Badge variant={a.severity === "high" ? "destructive" : a.severity === "medium" ? "secondary" : "default"} className="text-[10px] uppercase font-mono">
+                      {a.severity}
+                    </Badge>
                   </div>
+                  <p className="text-sm text-muted-foreground">Module: {a.module} • {a.findings}</p>
                 </div>
-                <p className="text-sm text-muted-foreground mb-2">Module: {a.module} • Findings: {a.findings}</p>
-                <div className="flex gap-2">
+
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-[10px] uppercase font-mono bg-background">
+                    {a.status}
+                  </Badge>
                   {a.status !== "closed" && (
-                    <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: a.id, status: a.status === "open" ? "in-progress" : "closed" })} data-testid={`button-update-${a.id}`}>
-                      {a.status === "open" ? "Start" : "Close"}
+                    <Button size="sm" variant="outline" className="h-8" onClick={() => updateStatusMutation.mutate({ id: a.id, status: a.status === "open" ? "in-progress" : "closed" })} data-testid={`button-update-${a.id}`}>
+                      {a.status === "open" ? "Start Audit" : "Sign Off"}
                     </Button>
                   )}
-                  <Button size="sm" variant="ghost" onClick={() => deleteMutation.mutate(a.id)} data-testid={`button-delete-${a.id}`}>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(a.id)} data-testid={`button-delete-${a.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
             ))
           )}
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </DashboardWidget>
+    </StandardDashboard>
   );
 }

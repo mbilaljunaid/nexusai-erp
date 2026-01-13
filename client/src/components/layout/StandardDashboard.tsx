@@ -1,15 +1,17 @@
 import React, { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
 
 export interface DashboardWidgetProps {
     children: ReactNode;
     className?: string;
     colSpan?: 1 | 2 | 3 | 4; // Responsive columns span
     title?: string;
+    icon?: LucideIcon;
     action?: ReactNode;
 }
 
-export function DashboardWidget({ children, className, colSpan = 1, title, action }: DashboardWidgetProps) {
+export function DashboardWidget({ children, className, colSpan = 1, title, icon: Icon, action }: DashboardWidgetProps) {
     // col-span logic matches Tailwind grid-cols-4
     const colSpanClass = {
         1: "md:col-span-1",
@@ -20,9 +22,12 @@ export function DashboardWidget({ children, className, colSpan = 1, title, actio
 
     return (
         <div className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", colSpanClass, className)}>
-            {(title || action) && (
+            {(title || action || Icon) && (
                 <div className="flex items-center justify-between p-6 pb-2">
-                    {title && <h3 className="text-lg font-semibold leading-none tracking-tight">{title}</h3>}
+                    <div className="flex items-center gap-2">
+                        {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
+                        {title && <h3 className="text-lg font-semibold leading-none tracking-tight">{title}</h3>}
+                    </div>
                     {action && <div>{action}</div>}
                 </div>
             )}

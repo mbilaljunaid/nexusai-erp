@@ -1,1 +1,98 @@
-import { useQuery } from "@tanstack/react-query"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { Tag } from "lucide-react"; export default function TradePromotions() { const { data: promos = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/cpg-promotions"], queryFn: () => fetch("/api/cpg-promotions").then(r => r.json()).catch(() => []), }); const active = promos.filter((p: any) => p.status === "active").length; const totalBudget = promos.reduce((sum: number, p: any) => sum + (parseFloat(p.budget) || 0), 0); return ( <div className="space-y-6 p-4"> <div> <h1 className="text-3xl font-bold flex items-center gap-2"> <Tag className="h-8 w-8" /> Trade Promotions & Marketing </h1> <p className="text-muted-foreground mt-2">Campaign builder, discount types, budget allocation, redemption tracking, trade spend management</p> </div> <div className="grid grid-cols-4 gap-3"> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Campaigns</p><p className="text-2xl font-bold">{promos.length}</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Active</p><p className="text-2xl font-bold text-green-600">{active}</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Budget</p><p className="text-2xl font-bold">${(totalBudget / 1000).toFixed(0)}K</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Customers</p><p className="text-2xl font-bold">{new Set(promos.map((p: any) => p.customerId)).size}</p></CardContent></Card> </div> <Card> <CardHeader><CardTitle className="text-base">Promotions</CardTitle></CardHeader> <CardContent className="space-y-2"> {isLoading ? <p>Loading...</p> : promos.length === 0 ? <p className="text-muted-foreground text-center py-4">No promotions</p> : promos.slice(0, 10).map((p: any) => ( <div key={p.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`promo-${p.id}`}> <div className="flex-1"><p className="font-semibold">{p.promoId}</p><p className="text-xs text-muted-foreground">{p.discount}% off • Budget: ${p.budget}</p></div> <Badge variant={p.status === "active" ? "default" : "secondary"} className="text-xs">{p.status}</Badge> </div> ))} </CardContent> </Card> </div> ); }
+import { useQuery } from "@tanstack/react-query";
+import { Badge } from "@/components/ui/badge";
+import { Tag, CheckCircle, DollarSign, Users, Activity } from "lucide-react";
+import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export default function TradePromotions() {
+    const { data: promos = [], isLoading } = useQuery<any[]>({
+        queryKey: ["/api/cpg-promotions"],
+        queryFn: () => fetch("/api/cpg-promotions").then(r => r.json()).catch(() => []),
+    });
+
+    const activeCount = promos.filter((p: any) => p.status === "active").length;
+    const totalBudget = promos.reduce((sum: number, p: any) => sum + (parseFloat(p.budget) || 0), 0);
+    const uniqueCustomers = new Set(promos.map((p: any) => p.customerId)).size;
+
+    return (
+        <StandardDashboard
+            header={
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight font-heading">Trade Promotions & Marketing</h1>
+                    <p className="text-muted-foreground mt-1">Campaign builder, discount types, budget allocation, and trade spend management</p>
+                </div>
+            }
+        >
+            <DashboardWidget title="Campaigns" colSpan={1}>
+                <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-full bg-blue-100/50">
+                        <Tag className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold tracking-tight">{promos.length}</div>
+                        <p className="text-xs text-muted-foreground">Total records</p>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            <DashboardWidget title="Active" colSpan={1}>
+                <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-full bg-emerald-100/50">
+                        <CheckCircle className="h-4 w-4 text-emerald-600" />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold tracking-tight text-emerald-600">{activeCount}</div>
+                        <p className="text-xs text-muted-foreground">Running now</p>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            <DashboardWidget title="Total Budget" colSpan={1}>
+                <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-full bg-indigo-100/50">
+                        <DollarSign className="h-4 w-4 text-indigo-600" />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold tracking-tight text-indigo-600">${(totalBudget / 1000).toFixed(0)}K</div>
+                        <p className="text-xs text-muted-foreground">Allocated spend</p>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            <DashboardWidget title="Customers" colSpan={1}>
+                <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-full bg-orange-100/50">
+                        <Users className="h-4 w-4 text-orange-600" />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold tracking-tight">{uniqueCustomers}</div>
+                        <p className="text-xs text-muted-foreground">Targeted accounts</p>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            <DashboardWidget colSpan={4} title="Recent Promotions" icon={Activity}>
+                <div className="space-y-3">
+                    {isLoading ? (
+                        Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
+                    ) : promos.length === 0 ? (
+                        <p className="text-muted-foreground text-center py-4">No promotions found</p>
+                    ) : (
+                        promos.slice(0, 10).map((p: any) => (
+                            <div key={p.id} className="p-3 border rounded-lg text-sm hover:bg-accent/50 transition-colors flex items-center justify-between" data-testid={`promo-${p.id}`}>
+                                <div className="flex-1">
+                                    <p className="font-semibold">{p.promoId}</p>
+                                    <p className="text-xs text-muted-foreground">{p.discount}% off • Budget: ${p.budget}</p>
+                                </div>
+                                <Badge variant={p.status === "active" ? "default" : "secondary"} className="text-xs font-mono uppercase">
+                                    {p.status}
+                                </Badge>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </DashboardWidget>
+        </StandardDashboard>
+    );
+}
+

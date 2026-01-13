@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase } from "lucide-react";
+import { Briefcase, CreditCard, CheckCircle2, AlertCircle, List } from "lucide-react";
+import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TelecomFinanceCompliance() {
   const { data: transactions = [], isLoading } = useQuery({
@@ -14,58 +15,85 @@ export default function TelecomFinanceCompliance() {
   const pending = transactions.filter((t: any) => t.status === "pending").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Briefcase className="h-8 w-8" />
-          Finance, Tax & Compliance
-        </h1>
-        <p className="text-muted-foreground mt-2">GL integration, tax reporting, revenue recognition, and audit trails</p>
-      </div>
+    <StandardDashboard
+      header={
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight font-heading">Finance, Tax & Compliance</h1>
+          <p className="text-muted-foreground mt-1">GL integration, tax reporting, revenue recognition, and audit trails</p>
+        </div>
+      }
+    >
+      <DashboardWidget title="Total Revenue" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-blue-100/50">
+            <CreditCard className="h-4 w-4 text-blue-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight">${(totalRevenue / 1000).toFixed(1)}K</div>
+            <p className="text-xs text-muted-foreground">Across all transactions</p>
+          </div>
+        </div>
+      </DashboardWidget>
 
-      <div className="grid grid-cols-4 gap-3">
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Total Revenue</p>
-            <p className="text-2xl font-bold">${(totalRevenue / 1000).toFixed(1)}K</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Posted</p>
-            <p className="text-2xl font-bold text-green-600">{posted}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Pending</p>
-            <p className="text-2xl font-bold text-yellow-600">{pending}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Transactions</p>
-            <p className="text-2xl font-bold">{transactions.length}</p>
-          </CardContent>
-        </Card>
-      </div>
+      <DashboardWidget title="Posted" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-emerald-100/50">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-emerald-600">{posted}</div>
+            <p className="text-xs text-muted-foreground">Completed entries</p>
+          </div>
+        </div>
+      </DashboardWidget>
 
-      <Card>
-        <CardHeader><CardTitle className="text-base">Recent Transactions</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : transactions.length === 0 ? <p className="text-muted-foreground text-center py-4">No transactions</p> : transactions.slice(0, 10).map((t: any) => (
-            <div key={t.id} className="p-2 border rounded text-sm hover-elevate flex justify-between items-center" data-testid={`txn-${t.id}`}>
-              <div className="flex-1">
-                <p className="font-semibold">{t.invoiceId || "Transaction"}</p>
-                <p className="text-xs text-muted-foreground">GL: {t.glAccount} • Tax: ${(t.taxAmount || 0).toFixed(2)}</p>
+      <DashboardWidget title="Pending" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-amber-100/50">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight text-amber-600">{pending}</div>
+            <p className="text-xs text-muted-foreground">Awaiting verification</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget title="Transactions" colSpan={1}>
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-full bg-slate-100/50">
+            <List className="h-4 w-4 text-slate-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold tracking-tight">{transactions.length}</div>
+            <p className="text-xs text-muted-foreground">Total count</p>
+          </div>
+        </div>
+      </DashboardWidget>
+
+      <DashboardWidget colSpan={4} title="Recent Transactions">
+        <div className="space-y-3">
+          {isLoading ? (
+            Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)
+          ) : transactions.length === 0 ? (
+            <p className="text-muted-foreground text-center py-4">No transactionsFound</p>
+          ) : (
+            transactions.slice(0, 10).map((t: any) => (
+              <div key={t.id} className="p-3 border rounded-lg text-sm hover:bg-accent/50 transition-colors flex justify-between items-center" data-testid={`txn-${t.id}`}>
+                <div className="flex-1">
+                  <p className="font-semibold">{t.invoiceId || "Transaction"}</p>
+                  <p className="text-xs text-muted-foreground">GL: {t.glAccount} • Tax: ${(t.taxAmount || 0).toFixed(2)}</p>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Badge variant={t.status === "posted" ? "default" : "secondary"} className="text-xs font-mono">
+                    ${t.amount}
+                  </Badge>
+                </div>
               </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant={t.status === "posted" ? "default" : "secondary"} className="text-xs">${t.amount}</Badge>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    </div>
+            ))
+          )}
+        </div>
+      </DashboardWidget>
+    </StandardDashboard>
   );
 }
