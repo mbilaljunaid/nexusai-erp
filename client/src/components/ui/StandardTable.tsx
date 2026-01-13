@@ -20,7 +20,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Loader2, Search } from "lucide-react";
 // @ts-ignore
-import { FixedSizeList as List } from "react-window";
+import * as ReactWindow from "react-window";
+const List = ReactWindow.FixedSizeList || (ReactWindow as any).default?.FixedSizeList;
 
 export interface Column<T> {
     header: string;
@@ -131,6 +132,13 @@ export function StandardTable<T>({
         }
     }, [filterValue, isClientSidePagination, onPageChange, page]);
 
+    // Memoize the inner element to prevent remounting
+    const InnerElement = useMemo(() => React.forwardRef(({ children, ...props }: any, ref: any) => (
+        <div ref={ref} {...props} role="rowgroup">
+            {children}
+        </div>
+    )), []);
+
     // Virtualized Row Renderer
     const Row = React.useCallback(({ index, style }: { index: number; style: React.CSSProperties }) => {
         const item = paginatedData[index];
@@ -156,18 +164,32 @@ export function StandardTable<T>({
                         } as any}
                         role="gridcell"
                     >
-                        {col.cell
-                            ? (typeof col.cell === "function"
-                                ? col.cell(item)
-                                : col.cell)
-                            : col.accessorKey
-                                ? (item[col.accessorKey as keyof T] as React.ReactNode)
-                                : null}
+                        {(() => {
+                            try {
+                                if (col.cell && typeof col.cell === "function") {
+                                    return col.cell(item);
+                                }
+                                if (col.cell) return col.cell;
+                                if (col.accessorKey) return (item[col.accessorKey as keyof T] as React.ReactNode);
+                                return null;
+                            } catch (e) {
+                                return <span className="text-red-500 text-xs">Error</span>;
+                            }
+                        })()}
                     </div>
                 ))}
             </div>
         );
     }, [paginatedData, onRowClick, columns]);
+
+    if (isLoading && paginatedData.length === 0) {
+        return (
+            <div className="h-64 flex flex-col items-center justify-center gap-2 text-muted-foreground" role="status">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                <span className="text-sm font-medium">Loading data...</span>
+            </div>
+        );
+    }
 
     return (
         <div className={cn("space-y-4", className)}>
@@ -235,11 +257,7 @@ export function StandardTable<T>({
                                         itemSize={itemSize}
                                         width="100%"
                                         className="scrollbar-hide"
-                                        innerElementType={React.forwardRef(({ children, ...props }: any, ref) => (
-                                            <div ref={ref} {...props} role="rowgroup">
-                                                {children}
-                                            </div>
-                                        ))}
+                                        innerElementType={InnerElement}
                                     >
                                         {Row}
                                     </List>
@@ -283,11 +301,18 @@ export function StandardTable<T>({
                                     >
                                         {columns.map((col, colIdx) => (
                                             <TableCell key={colIdx} className={cn("py-3 text-sm", col.className)}>
-                                                {col.cell
-                                                    ? col.cell(item)
-                                                    : col.accessorKey
-                                                        ? (item[col.accessorKey] as React.ReactNode)
-                                                        : null}
+                                                {(() => {
+                                                    try {
+                                                        if (col.cell && typeof col.cell === "function") {
+                                                            return col.cell(item);
+                                                        }
+                                                        if (col.cell) return col.cell;
+                                                        if (col.accessorKey) return (item[col.accessorKey] as React.ReactNode);
+                                                        return null;
+                                                    } catch (e) {
+                                                        return <span className="text-red-500 text-xs">Error</span>;
+                                                    }
+                                                })()}
                                             </TableCell>
                                         ))}
                                     </TableRow>

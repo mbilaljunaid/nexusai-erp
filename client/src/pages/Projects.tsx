@@ -20,6 +20,12 @@ import ProjectsDashboard from "./projects/ProjectsDashboard";
 import ProjectList from "./projects/ProjectList";
 import TaskList from "./projects/TaskList";
 import ProjectFinancialDetail from "./projects/ProjectFinancialDetail";
+import AccountingDashboard from "./projects/AccountingDashboard";
+import ExpenditureInquiry from "./projects/ExpenditureInquiry";
+import BurdenManager from "./projects/BurdenManager";
+import AssetWorkbench from "./projects/AssetWorkbench";
+import SlaEventMonitor from "./projects/SlaEventMonitor";
+import TransactionImport from "./projects/TransactionImport";
 
 interface Project {
   id: string;
@@ -204,6 +210,19 @@ export default function Projects() {
           <Card><CardHeader><CardTitle>Project Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure workflows and team roles</p></CardContent></Card>
         </div>
       )}
+
+      {/* Accounting Persona Routes */}
+      {activeNav === "accounting" && <AccountingDashboard />}
+
+      {activeNav === "costs" && <ExpenditureInquiry />}
+
+      {activeNav === "assets" && <AssetWorkbench />}
+
+      {activeNav === "burden" && <BurdenManager />}
+
+      {activeNav === "sla" && <SlaEventMonitor />}
+
+      {activeNav === "import" && <TransactionImport />}
     </div>
   );
 }

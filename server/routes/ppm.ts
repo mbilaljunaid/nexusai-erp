@@ -71,3 +71,93 @@ ppmRouter.get("/projects/:id/performance", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// Get paginated expenditure items
+ppmRouter.get("/expenditures", async (req, res) => {
+    try {
+        const page = parseInt(req.query.page as string || "1");
+        const limit = parseInt(req.query.limit as string || "20");
+        const projectId = req.query.projectId as string | undefined;
+
+        const results = await ppmService.getExpenditureItems(page, limit, projectId);
+        res.json(results);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get expenditure types
+ppmRouter.get("/expenditure-types", async (req, res) => {
+    try {
+        const types = await ppmService.getExpenditureTypes();
+        res.json(types);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Create expenditure type
+ppmRouter.post("/expenditure-types", async (req, res) => {
+    try {
+        const { name, unitOfMeasure, description } = req.body;
+        const type = await ppmService.createExpenditureType(name, unitOfMeasure, description);
+        res.json(type);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get burden schedules
+ppmRouter.get("/burden-schedules", async (req, res) => {
+    try {
+        const schedules = await ppmService.getBurdenSchedules();
+        res.json(schedules);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get project assets
+ppmRouter.get("/assets", async (req, res) => {
+    try {
+        const projectId = req.query.projectId as string | undefined;
+        const assets = await ppmService.getProjectAssets(projectId);
+        res.json(assets);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get SLA cost distributions
+ppmRouter.get("/sla/distributions", async (req, res) => {
+    try {
+        const projectId = req.query.projectId as string | undefined;
+        const expenditureItemId = req.query.expenditureItemId as string | undefined;
+
+        const distributions = await ppmService.getCostDistributions(projectId, expenditureItemId);
+        res.json(distributions);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get pending transactions for import
+ppmRouter.get("/transactions/pending", async (req, res) => {
+    try {
+        const transactions = await ppmService.getPendingTransactions();
+        res.json(transactions);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Trigger import of pending transactions
+ppmRouter.post("/transactions/import", async (req, res) => {
+    try {
+        const results = await ppmService.collectFromAP();
+        // Future: also call collectFromInventory, collectFromLabor
+        res.json({ message: "Import completed", count: results.length, items: results });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});

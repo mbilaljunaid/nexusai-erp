@@ -99,6 +99,22 @@ export const navigationConfig: SidebarNode[] = [
             { id: "tax", title: "Tax Management", type: "link", icon: Shield, path: "/finance/tax", allowedRoles: ["admin", "editor"] },
             { id: "netting", title: "Netting", type: "link", icon: ArrowRightLeft, path: "/finance/netting", allowedRoles: ["admin", "editor"] },
             {
+                id: "project-accounting",
+                title: "Project Accounting",
+                type: "section",
+                icon: Zap,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ppm-dashboard", title: "Accounting Dashboard", type: "link", path: "/projects/accounting" },
+                    { id: "ppm-import", title: "Transaction Review", type: "link", path: "/projects/import" },
+                    { id: "ppm-expenditures", title: "Expenditure Inquiry", type: "link", path: "/projects/costs" },
+                    { id: "ppm-assets", title: "Capital Assets", type: "link", path: "/projects/assets" },
+                    { id: "ppm-burden", title: "Burden Schedules", type: "link", path: "/projects/burden" },
+                    { id: "ppm-types", title: "Expenditure Types", type: "link", path: "/projects/types" },
+                    { id: "ppm-sla", title: "SLA Event Monitor", type: "link", path: "/projects/sla" },
+                ]
+            },
+            {
                 id: "procurement",
                 title: "Procurement",
                 type: "section", // Changed to section to allow children
