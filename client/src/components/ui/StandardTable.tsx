@@ -19,12 +19,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Loader2, Search } from "lucide-react";
+// @ts-ignore
+import { FixedSizeList as List } from "react-window";
 
 export interface Column<T> {
     header: string;
     accessorKey?: keyof T;
     cell?: (item: T) => React.ReactNode;
     className?: string;
+    width?: string;
 }
 
 export interface StandardTableProps<T> {
@@ -46,6 +49,11 @@ export interface StandardTableProps<T> {
     // Filtering
     filterColumn?: keyof T;
     filterPlaceholder?: string;
+
+    // Virtualization
+    isVirtualized?: boolean;
+    height?: number;   // Height of the table container when virtualized
+    itemSize?: number; // Height of each row
 }
 
 /**
@@ -57,6 +65,7 @@ export interface StandardTableProps<T> {
  * - Loading state
  * - Empty state
  * - Client-side Filtering (Simple)
+ * - Virtualization support for large datasets
  */
 export function StandardTable<T>({
     data,
@@ -70,7 +79,10 @@ export function StandardTable<T>({
     className,
     isLoading = false,
     filterColumn,
-    filterPlaceholder = "Filter..."
+    filterPlaceholder = "Filter...",
+    isVirtualized = false,
+    height = 400,
+    itemSize = 52
 }: StandardTableProps<T>) {
     const [localPage, setLocalPage] = useState(1);
     const [filterValue, setFilterValue] = useState("");
@@ -89,20 +101,16 @@ export function StandardTable<T>({
     }, [data, filterColumn, filterValue]);
 
     // Pagination Logic
-    // If external pagination is used (totalItems provided), we rely on props.
-    // Otherwise we assume client-side pagination on filteredData.
     const isClientSidePagination = propTotalItems === undefined;
     const totalCount = isClientSidePagination ? filteredData.length : (propTotalItems ?? filteredData.length);
     const totalPages = Math.ceil(totalCount / pageSize);
 
     const paginatedData = useMemo(() => {
-        if (!isClientSidePagination) return filteredData; // Server handles pagination, filteredData is just the current chunk (assumed) OR ignored if server filtering
-        // Actually for mixed mode: if totalItems is passed, we assume 'data' is ALREADY the current page.
-        // So we just return data.
-        // If totalItems is NOT passed, we paginate 'filteredData'.
+        if (isVirtualized) return filteredData; // Virtualization handles its own windowing
+        if (!isClientSidePagination) return filteredData;
         const start = (page - 1) * pageSize;
         return filteredData.slice(start, start + pageSize);
-    }, [filteredData, page, pageSize, isClientSidePagination]);
+    }, [filteredData, page, pageSize, isClientSidePagination, isVirtualized]);
 
     // Handle Page Change
     const handlePageChange = (newPage: number) => {
@@ -121,9 +129,52 @@ export function StandardTable<T>({
             setLocalPage(1);
             if (onPageChange) onPageChange(1);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filterValue]);
+    }, [filterValue, isClientSidePagination, onPageChange, page]);
 
+    // Virtualized Row Renderer
+    const Row = React.useCallback(({ index, style }: { index: number; style: React.CSSProperties }) => {
+        const item = paginatedData[index];
+        if (!item) return null;
+
+        return (
+            <div
+                style={style}
+                className={cn(
+                    "flex border-b border-border bg-white transition-colors hover:bg-muted/30",
+                    onRowClick && "cursor-pointer"
+                )}
+                onClick={() => onRowClick && onRowClick(item)}
+                role="row"
+            >
+                {columns.map((col: any, colIdx) => (
+                    <div
+                        key={colIdx}
+                        className={cn("py-3 px-4 text-sm flex items-center shrink-0 overflow-hidden", col.className)}
+                        style={{
+                            width: col.width || `${100 / columns.length}%`,
+                            "--col-width": col.width || `${100 / columns.length}%`
+                        } as any}
+                        role="gridcell"
+                    >
+                        {col.cell
+                            ? (typeof col.cell === "function"
+                                ? col.cell(new Proxy(item as any, {
+                                    get(target, prop) {
+                                        if (prop === "row") return { original: item };
+                                        if (prop === "getValue") return () => col.accessorKey ? item[col.accessorKey as keyof T] : undefined;
+                                        if (prop === "column") return { id: col.accessorKey };
+                                        return target[prop];
+                                    }
+                                }))
+                                : col.cell)
+                            : col.accessorKey
+                                ? (item[col.accessorKey as keyof T] as React.ReactNode)
+                                : null}
+                    </div>
+                ))}
+            </div>
+        );
+    }, [paginatedData, onRowClick, columns]);
 
     return (
         <div className={cn("space-y-4", className)}>
@@ -143,103 +194,160 @@ export function StandardTable<T>({
             )}
 
             <div className="rounded-md border bg-white shadow-sm overflow-hidden">
-                <Table>
-                    <TableHeader>
-                        <TableRow className="bg-muted/50 hover:bg-muted/50">
-                            {columns.map((col, idx) => (
-                                <TableHead key={idx} className={cn("h-10 text-xs font-semibold uppercase tracking-wider text-muted-foreground", col.className)}>
-                                    {col.header}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
+                {isVirtualized ? (
+                    <>
                         {isLoading ? (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                        <span>Loading data...</span>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
+                            <div className="h-64 flex flex-col items-center justify-center gap-2 text-muted-foreground" role="status">
+                                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                                <span className="text-sm font-medium">Loading data...</span>
+                            </div>
                         ) : paginatedData.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
-                                    No results found.
-                                </TableCell>
-                            </TableRow>
+                            <div className="h-64 flex flex-col items-center justify-center gap-2 text-muted-foreground" role="status">
+                                <Search className="h-6 w-6 opacity-20" />
+                                <span className="text-sm">No results found.</span>
+                            </div>
                         ) : (
-                            paginatedData.map((item, idx) => (
-                                <TableRow
-                                    key={keyExtractor ? keyExtractor(item) : (item as any).id || idx}
-                                    className={cn("group transition-colors hover:bg-muted/30", onRowClick && "cursor-pointer")}
-                                    onClick={() => onRowClick && onRowClick(item)}
+                            <div className="w-full overflow-x-auto">
+                                <div
+                                    className="min-w-full"
+                                    role="grid"
+                                    aria-colcount={columns.length}
+                                    aria-rowcount={paginatedData.length}
                                 >
-                                    {columns.map((col, colIdx) => (
-                                        <TableCell key={colIdx} className={cn("py-3 text-sm", col.className)}>
-                                            {col.cell
-                                                ? col.cell(item)
-                                                : col.accessorKey
-                                                    ? (item[col.accessorKey] as React.ReactNode)
-                                                    : null}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
+                                    {/* Header */}
+                                    <div className="bg-muted/50 border-b border-border" role="rowgroup">
+                                        <div className="flex w-full" role="row">
+                                            {columns.map((col, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className={cn(
+                                                        "h-10 px-4 flex items-center text-xs font-semibold uppercase tracking-wider text-muted-foreground shrink-0",
+                                                        col.className
+                                                    )}
+                                                    style={{
+                                                        width: col.width || `${100 / columns.length}%`,
+                                                        flexBasis: col.width || `${100 / columns.length}%`
+                                                    } as React.CSSProperties}
+                                                    role="columnheader"
+                                                >
+                                                    {col.header}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    {/* Virtualized List */}
+                                    <List
+                                        height={height}
+                                        itemCount={paginatedData.length}
+                                        itemSize={itemSize}
+                                        width="100%"
+                                        className="scrollbar-hide"
+                                        innerElementType={React.forwardRef(({ children, ...props }: any, ref) => (
+                                            <div ref={ref} {...props} role="rowgroup">
+                                                {children}
+                                            </div>
+                                        ))}
+                                    >
+                                        {Row}
+                                    </List>
+                                </div>
+                            </div>
                         )}
-                    </TableBody>
-                </Table>
+                    </>
+                ) : (
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="bg-muted/50 hover:bg-muted/50">
+                                {columns.map((col, idx) => (
+                                    <TableHead key={idx} className={cn("h-10 text-xs font-semibold uppercase tracking-wider text-muted-foreground", col.className)}>
+                                        {col.header}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                        <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                            <span>Loading data...</span>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ) : paginatedData.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
+                                        No results found.
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                paginatedData.map((item, idx) => (
+                                    <TableRow
+                                        key={keyExtractor ? keyExtractor(item) : (item as any).id || idx}
+                                        className={cn("group transition-colors hover:bg-muted/30", onRowClick && "cursor-pointer")}
+                                        onClick={() => onRowClick && onRowClick(item)}
+                                    >
+                                        {columns.map((col, colIdx) => (
+                                            <TableCell key={colIdx} className={cn("py-3 text-sm", col.className)}>
+                                                {col.cell
+                                                    ? col.cell(item)
+                                                    : col.accessorKey
+                                                        ? (item[col.accessorKey] as React.ReactNode)
+                                                        : null}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <Pagination>
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious
-                                onClick={() => handlePageChange(page - 1)}
-                                className={cn("cursor-pointer", page <= 1 && "pointer-events-none opacity-50")}
-                            />
-                        </PaginationItem>
+            {/* Pagination Controls - Only show if not virtualized OR specifically requested */}
+            {
+                !isVirtualized && totalPages > 1 && (
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    onClick={() => handlePageChange(page - 1)}
+                                    className={cn("cursor-pointer", page <= 1 && "pointer-events-none opacity-50")}
+                                />
+                            </PaginationItem>
 
-                        {/* Simplified Pagination Logic */}
-                        {Array.from({ length: totalPages }).map((_, i) => {
-                            const p = i + 1;
-                            // Show first, last, current, and neighbors
-                            if (
-                                p === 1 ||
-                                p === totalPages ||
-                                (p >= page - 1 && p <= page + 1)
-                            ) {
-                                return (
-                                    <PaginationItem key={p}>
-                                        <PaginationLink
-                                            isActive={p === page}
-                                            onClick={() => handlePageChange(p)}
-                                            className="cursor-pointer"
-                                        >
-                                            {p}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                );
-                            }
-                            // Ellipsis Logic
-                            if (p === page - 2 || p === page + 2) {
-                                return <PaginationItem key={p}><PaginationEllipsis /></PaginationItem>;
-                            }
-                            return null;
-                        })}
+                            {Array.from({ length: totalPages }).map((_, i) => {
+                                const p = i + 1;
+                                if (p === 1 || p === totalPages || (p >= page - 1 && p <= page + 1)) {
+                                    return (
+                                        <PaginationItem key={p}>
+                                            <PaginationLink
+                                                isActive={p === page}
+                                                onClick={() => handlePageChange(p)}
+                                                className="cursor-pointer"
+                                            >
+                                                {p}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    );
+                                }
+                                if (p === page - 2 || p === page + 2) {
+                                    return <PaginationItem key={p}><PaginationEllipsis /></PaginationItem>;
+                                }
+                                return null;
+                            })}
 
-                        <PaginationItem>
-                            <PaginationNext
-                                onClick={() => handlePageChange(page + 1)}
-                                className={cn("cursor-pointer", page >= totalPages && "pointer-events-none opacity-50")}
-                            />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            )}
-        </div>
+                            <PaginationItem>
+                                <PaginationNext
+                                    onClick={() => handlePageChange(page + 1)}
+                                    className={cn("cursor-pointer", page >= totalPages && "pointer-events-none opacity-50")}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                )
+            }
+        </div >
     );
 }

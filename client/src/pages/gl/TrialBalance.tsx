@@ -13,6 +13,7 @@ import {
 
 import { format } from "date-fns";
 import { FormattedValue } from "@/components/FormattedValue";
+import { cn } from "@/lib/utils";
 
 interface TrialBalanceRow {
     ccid: string;
@@ -59,11 +60,6 @@ export default function TrialBalance() {
         },
         enabled: !!selectedCCID
     });
-
-    const filteredReport = report?.filter((row: any) =>
-        row.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        row.segment3?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     return (
         <div className="p-6 space-y-6">
@@ -135,25 +131,26 @@ export default function TrialBalance() {
                         <div className="flex justify-between items-center text-sm">
                             <span className="text-muted-foreground">Total Debits</span>
                             <span className="font-mono font-bold">
-                                {report?.reduce((acc: number, row: TrialBalanceRow) => acc + row.totalDebit, 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) || "0.00"}
+                                {(report?.summary?.totalDebit || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </span>
                         </div>
                         <div className="flex justify-between items-center text-sm">
                             <span className="text-muted-foreground">Total Credits</span>
                             <span className="font-mono font-bold">
-                                {report?.reduce((acc: number, row: TrialBalanceRow) => acc + row.totalCredit, 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) || "0.00"}
+                                {(report?.summary?.totalCredit || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </span>
                         </div>
                         <div className="pt-2 border-t flex justify-between items-center text-sm">
                             <span className="font-bold">Net Difference</span>
-                            <span className="font-mono font-bold text-primary">0.00</span>
+                            <span className={cn("font-mono font-bold", (report?.summary?.netDifference || 0) !== 0 ? "text-destructive" : "text-primary")}>
+                                {(report?.summary?.netDifference || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </span>
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
             <Card className="shadow-sm">
-
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div className="relative w-80">
@@ -183,18 +180,23 @@ export default function TrialBalance() {
                     ) : (
                         <div className="border rounded-lg overflow-hidden">
                             <StandardTable
-                                data={filteredReport || []}
+                                data={report?.rows || []}
                                 keyExtractor={(row: TrialBalanceRow) => row.ccid}
                                 isLoading={isLoading}
                                 onRowClick={(row: TrialBalanceRow) => setSelectedCCID(row.ccid)}
+                                isVirtualized={true}
+                                height={500}
+                                filterColumn="code"
+                                filterPlaceholder="Filter by combinations..."
                                 columns={[
                                     {
                                         header: "Code Combination",
                                         accessorKey: "code",
+                                        width: "35%",
                                         cell: (row: TrialBalanceRow) => (
                                             <div className="flex flex-col">
                                                 <span className="font-medium font-mono text-sm">{row.code}</span>
-                                                <div className="text-xs text-muted-foreground font-sans mt-1">
+                                                <div className="text-xs text-muted-foreground font-sans mt-0.5 truncate">
                                                     Store: {row.segment2} | Account: {row.segment3}
                                                 </div>
                                             </div>
@@ -203,6 +205,7 @@ export default function TrialBalance() {
                                     {
                                         header: "Type",
                                         accessorKey: "accountType",
+                                        width: "15%",
                                         cell: (row: TrialBalanceRow) => (
                                             <Badge variant={row.accountType === "Asset" ? "default" : "secondary"} className="text-[10px] uppercase">
                                                 {row.accountType}
@@ -212,18 +215,21 @@ export default function TrialBalance() {
                                     {
                                         header: "Debit",
                                         accessorKey: "totalDebit",
+                                        width: "15%",
                                         className: "text-right tabular-nums",
                                         cell: (row: TrialBalanceRow) => row.totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })
                                     },
                                     {
                                         header: "Credit",
                                         accessorKey: "totalCredit",
+                                        width: "15%",
                                         className: "text-right tabular-nums",
                                         cell: (row: TrialBalanceRow) => row.totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })
                                     },
                                     {
                                         header: "Net Balance",
                                         accessorKey: "netBalance",
+                                        width: "15%",
                                         className: "text-right font-bold tabular-nums",
                                         cell: (row: TrialBalanceRow) => (
                                             <span className={row.netBalance < 0 ? "text-red-500" : ""}>
@@ -233,6 +239,7 @@ export default function TrialBalance() {
                                     },
                                     {
                                         header: "",
+                                        width: "5%",
                                         cell: () => <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     }
                                 ]}
@@ -253,9 +260,8 @@ export default function TrialBalance() {
                         <SheetDescription>
                             Individual journal lines contributing to the balance for:
                             <div className="mt-2 p-3 bg-muted rounded-md font-mono text-xs break-all">
-                                {filteredReport?.find((r: any) => r.ccid === selectedCCID)?.code}
+                                {report?.rows?.find((r: any) => r.ccid === selectedCCID)?.code}
                             </div>
-
                         </SheetDescription>
                     </SheetHeader>
 

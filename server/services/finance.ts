@@ -1311,20 +1311,28 @@ export class FinanceService {
 
         // 3. Aggregate Lines
         const ccBalances = new Map<string, { debit: number, credit: number }>();
+        let grandTotalDebit = 0;
+        let grandTotalCredit = 0;
 
         for (const journal of postedJournals) {
             const lines = await storage.listGlJournalLines(journal.id);
             for (const line of lines) {
+                const debit = Number(line.debit || 0);
+                const credit = Number(line.credit || 0);
+
                 const current = ccBalances.get(line.accountId) || { debit: 0, credit: 0 };
                 ccBalances.set(line.accountId, {
-                    debit: current.debit + Number(line.debit || 0),
-                    credit: current.credit + Number(line.credit || 0)
+                    debit: current.debit + debit,
+                    credit: current.credit + credit
                 });
+
+                grandTotalDebit += debit;
+                grandTotalCredit += credit;
             }
         }
 
         // 4. Format Result (CCID Level)
-        const report = ccs.map(cc => {
+        const rows = ccs.map(cc => {
             const balance = ccBalances.get(cc.id) || { debit: 0, credit: 0 };
             const net = balance.debit - balance.credit;
             return {
@@ -1340,10 +1348,16 @@ export class FinanceService {
                 // Determine display balance based on normal balance
                 displayBalance: ["Asset", "Expense"].includes(cc.accountType || "") ? net : -net
             };
-        });
+        }).sort((a, b) => a.code.localeCompare(b.code));
 
-        // Usually TB shows all CCIDs, but we can filter empty ones in frontend if needed
-        return report.sort((a, b) => a.code.localeCompare(b.code));
+        return {
+            rows,
+            summary: {
+                totalDebit: grandTotalDebit,
+                totalCredit: grandTotalCredit,
+                netDifference: grandTotalDebit - grandTotalCredit
+            }
+        };
     }
 
     async getBalanceDrillDown(ccid: string, periodId: string) {
