@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { InventoryOrganization } from '../../inventory/entities/inventory-organization.entity';
-import { CostBook } from './cost-book.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { CstCostDistribution } from './cst-cost-distribution.entity';
+import { CstItemCost } from './cst-item-cost.entity';
+// Avoid importing CmrReceiptDistribution if not needed, or use string/lazy
 
 @Entity('cst_cost_organizations')
 export class CostOrganization {
@@ -8,26 +9,14 @@ export class CostOrganization {
     id!: string;
 
     @Column({ type: 'varchar' })
-    costOrgName!: string;
+    code!: string;
 
     @Column({ type: 'varchar' })
-    costOrgCode!: string;
+    name!: string;
 
-    // Link to Inventory Org (1-to-1 or Many-to-1 depending on topology)
-    // Usually 1 Inventory Org belongs to 1 Cost Org
-    @ManyToOne(() => InventoryOrganization)
-    inventoryOrganization!: InventoryOrganization;
-
-    // Link to Primary Cost Book
-    @ManyToOne(() => CostBook)
-    primaryCostBook!: CostBook;
-
-    @Column({ type: 'boolean', default: true })
-    isActive!: boolean;
+    @Column({ type: 'varchar' })
+    inventoryOrganizationId!: string; // Link to Inventory Org
 
     @CreateDateColumn()
     createdAt!: Date;
-
-    @UpdateDateColumn()
-    updatedAt!: Date;
 }

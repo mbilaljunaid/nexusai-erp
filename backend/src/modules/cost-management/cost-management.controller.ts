@@ -1,11 +1,12 @@
-import { Controller, Get, Param, Query, Inject } from '@nestjs/common';
+import { Controller, Get, Param, Query, Inject, Post, Body } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CstItemCost } from './entities/cst-item-cost.entity';
 import { CstCostDistribution } from './entities/cst-cost-distribution.entity';
 import { CostManagementService } from './cost-management.service';
 import { SlaService } from './sla.service';
-import { Post, Body } from '@nestjs/common';
+import { CostPeriodService } from './cost-period.service';
+import { ReconciliationService } from './reconciliation.service';
 
 @Controller('api/cost-management')
 export class CostManagementController {
@@ -17,7 +18,11 @@ export class CostManagementController {
         @Inject(CostManagementService)
         private costManagementService: CostManagementService,
         @Inject(SlaService)
-        private slaService: SlaService
+        private slaService: SlaService,
+        @Inject(CostPeriodService)
+        private periodService: CostPeriodService,
+        @Inject(ReconciliationService)
+        private reconService: ReconciliationService
     ) { }
 
     @Get('item-costs/:orgId')
@@ -48,7 +53,7 @@ export class CostManagementController {
     }
 
     @Get('distributions')
-    async getDistributions(@Query('transactionId') transactionId: string) {
+    async getDistributions(@Query('transactionId') transactionId?: string) {
         const query = this.distributionRepo.createQueryBuilder('dist')
             .leftJoinAndSelect('dist.transaction', 'txn')
             .leftJoinAndSelect('txn.item', 'item')
@@ -65,5 +70,22 @@ export class CostManagementController {
     async runSla(@Body() body: { orgId?: string }) {
         const count = await this.slaService.createAccounting(body.orgId);
         return { message: 'SLA Run Completed', processedCount: count };
+    }
+
+    @Post('periods/open')
+    async openPeriod(@Body() body: { orgId: string, periodName: string }) {
+        const period = await this.periodService.openPeriod(body.orgId, body.periodName);
+        return { message: 'Period Opened', period };
+    }
+
+    @Post('periods/close')
+    async closePeriod(@Body() body: { orgId: string, periodName: string }) {
+        const period = await this.periodService.closePeriod(body.orgId, body.periodName);
+        return { message: 'Period Closed', period };
+    }
+
+    @Get('reconciliation/:orgId')
+    async reconcile(@Param('orgId') orgId: string) {
+        return this.reconService.reconcileInventory(orgId);
     }
 }

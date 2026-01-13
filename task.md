@@ -94,38 +94,38 @@
     - [x] Implement `CycleCountService` (Snapshot & Adjustment)
 
 ## Cost Management (Enterprise Parity)
-- [ ] **Phase 1: Foundation & Master Data**
-    - [ ] Create `CostManagementModule` Structure (Entity/Controller/Service)
-    - [ ] Implement `CostBook` & `CostOrganization` Entities
-    - [ ] Implement `CostElement` & `CostComponent` (Material, Overhead)
-    - [ ] Implement `CostProfile` (Valuation Method Rules)
-- [ ] **Phase 2: Receipt Accounting (The Bridge)**
-    - [ ] Implement `ReceiptAccounting` Listener (Receipt -> Accrual)
-    - [ ] Create `CmrReceiptDistribution` Entity (Dr Inv / Cr Accrual)
-    - [ ] Implement `InvoicePriceVariance` (IPV) Logic (AP Match -> Cost Adj)
-- [ ] **Phase 3: The Cost Processor (Engine)**
-    - [ ] Implement `CostProcessorService` (FIFO/Weighted Avg Algorithms)
-    - [ ] Implement `StandardCost` Definition & Rollup Logic
-    - [ ] Create `CstCostDistribution` Entity (The SLA Source)
-    - [ ] Implement `CostAdjustment` (Revaluation) Logic
-- [ ] **Phase 4: Subledger Accounting (SLA)**
-    - [ ] Implement `CreateAccounting` Engine (Distributions -> Journals)
-    - [ ] Integrate with `GlIntegrationService` (Post to GL)
-    - [ ] Implement `CostController` for UI Access
-- [ ] **Phase 5: Operationalization & SLA (The Loop Closer)**
-    - [ ] **Backend Migration**: Bootstrap NestJS in `server/index.ts` (Enable APIs)
-    - [ ] **SLA Engine**: Implement `CreateAccounting` Service (Distributions -> GL Journals)
-    - [ ] **GL Integration**: Post Journals to General Ledger
-    - [ ] **Period Close**: Implement `CostPeriod` Open/Close Logic
-- [ ] **Phase 6: Standard Costing & Planning**
-    - [ ] Implement `StandardCost` Definition & Rollup Logic
-    - [ ] Create `CostScenario` for "What-If" Analysis
-    - [ ] Implement `CostUpdate` Process (Revaluation Inventory)
-- [ ] **Phase 7: Landed Cost Management (LCM)**
-    - [ ] Create `LandedCost` Entity (Freight, Duty, Insurance)
-    - [ ] Implement `ChargeAllocation` Logic (Weight/Value/Qty)
-    - [ ] Integrate with `ReceiptAccounting` (Adjust Unit Cost)
-- [ ] **Phase 8: Manufacturing & WIP Costing**
-    - [ ] Integrate with `WorkOrder` (Material Issue/Completion)
-    - [ ] Implement `ResourceAbsorption` (Labor/Overhead)
-    - [ ] Calculate `WIPVariance` (Standard vs Actual)
+- [x] **Phase 1: Foundation & Master Data**
+    - [x] Create `CostManagementModule` Structure (Entity/Controller/Service)
+    - [x] Implement `CostBook` & `CostOrganization` Entities
+    - [x] Implement `CostElement` & `CostComponent` (Material, Overhead)
+    - [x] Implement `CostProfile` (Valuation Method Rules)
+- [x] **Phase 2: Receipt Accounting (The Bridge)**
+    - [x] Implement `ReceiptAccounting` Listener (Receipt -> Accrual)
+    - [x] Create `CmrReceiptDistribution` Entity (Dr Inv / Cr Accrual)
+    - [x] Implement `InvoicePriceVariance` (IPV) Logic (AP Match -> Cost Adj)
+- [x] **Phase 3: The Cost Processor (Engine)**
+    - [x] Implement `CostProcessorService` (FIFO/Weighted Avg Algorithms)
+    - [x] Implement `StandardCost` Definition & Rollup Logic
+    - [x] Create `CstCostDistribution` Entity (The SLA Source)
+    - [x] Implement `CostAdjustment` (Revaluation) Logic
+- [x] **Phase 4: Subledger Accounting (SLA)**
+    - [x] Implement `CreateAccounting` Engine (Distributions -> Journals)
+    - [x] Integrate with `GlIntegrationService` (Post to GL)
+    - [x] Implement `CostController` for UI Access
+- [x] **Phase 5: Operationalization & SLA (The Loop Closer)**
+    - [x] **Backend Migration**: Bootstrap NestJS in `server/index.ts` (Enable APIs)
+    - [x] **SLA Engine**: Implement `CreateAccounting` Service (Distributions -> GL Journals)
+    - [x] **GL Integration**: Post Journals to General Ledger
+    - [x] **Period Close**: Implement `CostPeriod` Open/Close Logic
+- [x] **Phase 6: Standard Costing & Planning**
+    - [x] Implement `StandardCost` Definition & Rollup Logic
+    - [x] Create `CostScenario` for "What-If" Analysis
+    - [x] Implement `CostUpdate` Process (Revaluation Inventory)
+- [x] **Phase 7: Landed Cost Management (LCM)**
+    - [x] Create `LandedCost` Entity (Freight, Duty, Insurance)
+    - [x] Implement `ChargeAllocation` Logic (Weight/Value/Qty)
+    - [x] Integrate with `ReceiptAccounting` (Adjust Unit Cost)
+- [x] **Phase 8: Manufacturing & WIP Costing**
+    - [x] Integrate with `WorkOrder` (Material Issue/Completion)
+    - [x] Implement `ResourceAbsorption` (Labor/Overhead)
+    - [x] Calculate `WIPVariance` (Standard vs Actual)

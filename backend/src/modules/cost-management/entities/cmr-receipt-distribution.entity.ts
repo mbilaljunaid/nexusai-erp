@@ -14,7 +14,7 @@ export class CmrReceiptDistribution {
     costOrganization!: CostOrganization;
 
     @Column({ type: 'varchar' })
-    accountingLineType!: string; // 'Accrual', 'Inventory Valuation', 'IPV', 'ERV' (Exchange Rate Variance)
+    accountingLineType!: string;
 
     @Column('decimal', { precision: 18, scale: 4 })
     amount!: number;
@@ -23,13 +23,13 @@ export class CmrReceiptDistribution {
     currencyCode!: string;
 
     @Column('decimal', { precision: 18, scale: 4, nullable: true })
-    accountedAmount?: number; // In Functional Currency
+    accountedAmount?: number;
 
     @Column({ type: 'varchar', nullable: true })
-    glAccountId?: string; // Link to GL Code Combination
+    glAccountId?: string;
 
     @Column({ type: 'varchar', default: 'Draft' })
-    status!: string; // Draft, Final, Posted
+    status!: string;
 
     @CreateDateColumn()
     createdAt!: Date;
