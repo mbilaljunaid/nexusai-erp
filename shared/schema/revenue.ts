@@ -59,6 +59,22 @@ export const revenueContracts = pgTable("revenue_contracts", {
 
 export const insertRevenueContractSchema = createInsertSchema(revenueContracts);
 
+// Contract History (Snapshots)
+export const revenueContractVersions = pgTable("revenue_contract_versions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    contractId: varchar("contract_id").notNull(), // Link to the master contract
+    versionNumber: integer("version_number").notNull(),
+    snapshotDate: timestamp("snapshot_date").default(sql`now()`),
+    changeReason: text("change_reason"), // "Added Seat", "Price Change"
+
+    // Snapshot fields (subset of key fields)
+    totalTransactionPrice: numeric("total_transaction_price", { precision: 18, scale: 2 }),
+    totalAllocatedPrice: numeric("total_allocated_price", { precision: 18, scale: 2 }),
+    status: varchar("status"),
+});
+
+export const insertRevenueContractVersionSchema = createInsertSchema(revenueContractVersions);
+
 // ==========================================
 // 3. PERFORMANCE OBLIGATIONS (POBs)
 // ==========================================

@@ -35,6 +35,9 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { Link } from "wouter";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RevenueContractTimeline } from "@/components/revenue/RevenueContractTimeline";
 
 export default function RevenueContractDetail() {
     const { id } = useParams<{ id: string }>();
@@ -129,6 +132,13 @@ export default function RevenueContractDetail() {
             <div className="flex justify-between items-start">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
+                        <Link href="/revenue/contracts">
+                            <Button variant="ghost" size="sm" className="-ml-3 text-muted-foreground hover:text-slate-900">
+                                ← Back
+                            </Button>
+                        </Link>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
                         <h1 className="text-3xl font-bold tracking-tight text-slate-900">{contract.contractNumber}</h1>
                         <Badge variant="secondary">{contract.status}</Badge>
                     </div>
@@ -204,31 +214,58 @@ export default function RevenueContractDetail() {
                 </Card>
             </div>
 
-            <Card className="border-none shadow-sm overflow-hidden">
-                <CardHeader className="bg-white border-b">
-                    <CardTitle>Performance Obligations (POBs)</CardTitle>
-                    <CardDescription>Unit level delivery items for this contract.</CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <StandardTable
-                        data={contract.performanceObligations || []}
-                        columns={pobColumns}
-                    />
-                </CardContent>
-            </Card>
+            <Tabs defaultValue="overview" className="w-full">
+                <TabsList>
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="schedule">Recognition Schedule</TabsTrigger>
+                    <TabsTrigger value="audit">Audit & History</TabsTrigger>
+                </TabsList>
 
-            <Card className="border-none shadow-sm overflow-hidden">
-                <CardHeader className="bg-white border-b">
-                    <CardTitle>Recognition Schedules</CardTitle>
-                    <CardDescription>Scheduled revenue realization across fiscal periods.</CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <StandardTable
-                        data={contract.revenueRecognitions || []}
-                        columns={recognitionColumns}
-                    />
-                </CardContent>
-            </Card>
+                <TabsContent value="overview" className="space-y-4 mt-4">
+                    <Card className="border-none shadow-sm overflow-hidden">
+                        <CardHeader className="bg-white border-b">
+                            <CardTitle>Performance Obligations (POBs)</CardTitle>
+                            <CardDescription>Unit level delivery items for this contract.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <StandardTable
+                                data={contract.performanceObligations || []}
+                                columns={pobColumns}
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="schedule" className="mt-4">
+                    <Card className="border-none shadow-sm overflow-hidden">
+                        <CardHeader className="bg-white border-b">
+                            <CardTitle>Recognition Schedules</CardTitle>
+                            <CardDescription>Scheduled revenue realization across fiscal periods.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <StandardTable
+                                data={contract.revenueRecognitions || []}
+                                columns={recognitionColumns}
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="audit" className="mt-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <RevenueContractTimeline contractId={id} />
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Change Log</CardTitle>
+                                <CardDescription>Detailed field-level audit trail.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="text-sm text-muted-foreground flex items-center justify-center h-48 border-dashed border-2 rounded m-6">
+                                Detailed field changes not available in this view.
+                            </CardContent>
+                        </Card>
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

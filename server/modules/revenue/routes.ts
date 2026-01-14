@@ -1,13 +1,13 @@
 import { db } from "@db";
 import {
     revenueContracts, performanceObligations, revenueRecognitions,
-    revenueSourceEvents, revenueSspBooks, revenueSspLines,
+    revenueSourceEvents, revenueContractVersions, revenueSspBooks, revenueSspLines,
     revenuePeriods
 } from "@db/schema/revenue";
 import { revenueGlAccounts as revAcctSchema } from "@db/schema/revenue_accounting";
 import { products, accounts } from "@shared/schema/crm";
 import { glLedgers } from "@shared/schema/finance";
-import { eq, desc, and, lte, gte } from "drizzle-orm";
+import { eq, desc, and, lte, gte, sql } from "drizzle-orm";
 import { revenueService } from "../../services/RevenueService";
 import type { Express, Request, Response } from "express";
 
@@ -60,6 +60,15 @@ export function registerRevenueRoutes(app: Express) {
             // We need to join with accounts (Customer) and glLedgers.
             // Note: Imports must be added to top of file.
 
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 50;
+            const offset = (page - 1) * limit;
+
+            // Get total count
+            const [{ count }] = await db.select({ count: sql<number>`count(*)` })
+                .from(revenueContracts);
+
+            // Get paginated data
             const contracts = await db.select({
                 ...revenueContracts,
                 customerName: accounts.name,
@@ -69,9 +78,18 @@ export function registerRevenueRoutes(app: Express) {
                 .leftJoin(accounts, eq(revenueContracts.customerId, accounts.id))
                 .leftJoin(glLedgers, eq(revenueContracts.ledgerId, glLedgers.id))
                 .orderBy(desc(revenueContracts.createdAt))
-                .limit(50); // Pagination needed later
+                .limit(limit)
+                .offset(offset);
 
-            res.json(contracts);
+            res.json({
+                data: contracts,
+                meta: {
+                    total: Number(count),
+                    page,
+                    limit,
+                    totalPages: Math.ceil(Number(count) / limit)
+                }
+            });
         } catch (error) {
             console.error("Error fetching revenue contracts:", error);
             res.status(500).json({ error: "Failed to fetch contracts" });
@@ -108,6 +126,22 @@ export function registerRevenueRoutes(app: Express) {
         } catch (error) {
             console.error("Error fetching contract details:", error);
             res.status(500).json({ error: "Failed to fetch contract details" });
+        }
+    });
+
+    // 3. Get Contract History
+    app.get("/api/revenue/contracts/:id/history", async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const history = await db.select()
+                .from(revenueContractVersions)
+                .where(eq(revenueContractVersions.contractId, id))
+                .orderBy(desc(revenueContractVersions.versionNumber));
+
+            res.json(history);
+        } catch (error) {
+            console.error("Error fetching contract history:", error);
+            res.status(500).json({ error: "Failed to fetch contract history" });
         }
     });
 
@@ -435,6 +469,50 @@ export function registerRevenueRoutes(app: Express) {
             res.json(rule);
         } catch (error) {
             res.status(500).json({ error: "Failed to create POB rule" });
+        }
+    });
+
+    // 8. Audit Center Routes
+    app.get("/api/revenue/audit/trace/:sourceId", async (req: Request, res: Response) => {
+        try {
+            const { sourceId } = req.params;
+
+            // 1. Find Source Event
+            const sourceEvent = await db.query.revenueSourceEvents.findFirst({
+                where: eq(revenueSourceEvents.sourceId, sourceId)
+            });
+
+            if (!sourceEvent) {
+                return res.status(404).json({ error: "Source Event not found" });
+            }
+
+            // 2. Find Contract
+            let contract = null;
+            let pobs = [];
+            let recognitions = [];
+
+            if (sourceEvent.contractId) {
+                contract = await db.query.revenueContracts.findFirst({
+                    where: eq(revenueContracts.id, sourceEvent.contractId)
+                });
+
+                if (contract) {
+                    pobs = await db.select().from(performanceObligations).where(eq(performanceObligations.contractId, contract.id));
+                    recognitions = await db.select().from(revenueRecognitions).where(eq(revenueRecognitions.contractId, contract.id));
+                }
+            }
+
+            // 3. Assemble Trace
+            res.json({
+                sourceEvent,
+                contract,
+                pobs,
+                recognitions,
+                // In future: GL Journals
+            });
+        } catch (error) {
+            console.error("Audit Trace Error:", error);
+            res.status(500).json({ error: "Failed to build audit trace" });
         }
     });
 }

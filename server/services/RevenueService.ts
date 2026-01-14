@@ -3,7 +3,7 @@ import {
     revenueContracts, performanceObligations, revenueRecognitions,
     revenueSourceEvents, revenueSspBooks, revenueSspLines,
     revenueIdentificationRules, performanceObligationRules,
-    revenuePeriods
+    revenuePeriods, revenueContractVersions
 } from "@db/schema";
 import { eq, and, sum, desc, sql, lte, gte } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
@@ -442,7 +442,18 @@ export class RevenueService {
         const newLtdShouldBe = ltdRecognized * ratio;
         const catchupAmount = newLtdShouldBe - ltdRecognized;
 
-        // 5. Update Contract & POBs (Increment Version for Audit)
+        // 5. Create History Snapshot (Phase D)
+        await db.insert(revenueContractVersions).values({
+            contractId: contractId,
+            versionNumber: contract.versionNumber || 1,
+            snapshotDate: new Date(),
+            changeReason: modificationData.reason,
+            totalTransactionPrice: contract.totalTransactionPrice,
+            totalAllocatedPrice: contract.totalAllocatedPrice,
+            status: contract.status || "Active"
+        });
+
+        // 6. Update Contract & POBs (Increment Version for Audit)
         const nextVersion = (contract.versionNumber || 1) + 1;
 
         await db.update(revenueContracts)

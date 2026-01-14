@@ -29,13 +29,14 @@ type RevenueContract = typeof revenueContracts.$inferSelect & {
 import { useToast } from "@/hooks/use-toast";
 
 export default function RevenueContractWorkbench() {
-    const [filter, setFilter] = useState("all");
+    const [page, setPage] = useState(1);
+    const LIMIT = 10;
     const { toast } = useToast();
 
-    const { data: contracts, isLoading } = useQuery({
-        queryKey: ["revenueContracts"],
+    const { data: result, isLoading } = useQuery({
+        queryKey: ["revenueContracts", page],
         queryFn: async () => {
-            const res = await fetch("/api/revenue/contracts");
+            const res = await fetch(`/api/revenue/contracts?page=${page}&limit=${LIMIT}`);
             if (!res.ok) {
                 const error = await res.json();
                 toast({
@@ -45,9 +46,12 @@ export default function RevenueContractWorkbench() {
                 });
                 throw new Error("Failed to fetch contracts");
             }
-            return res.json() as Promise<RevenueContract[]>;
+            return res.json() as Promise<{ data: RevenueContract[], meta: { total: number, totalPages: number } }>;
         }
     });
+
+    const contracts = result?.data || [];
+    const meta = result?.meta;
 
     const columns: ColumnDef<RevenueContract>[] = [
         {
@@ -182,12 +186,13 @@ export default function RevenueContractWorkbench() {
                         <FileText className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{contracts?.length || 0}</div>
+                        <div className="text-2xl font-bold">{meta?.total || contracts.length}</div>
+                        <p className="text-xs text-muted-foreground">Across all pages</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Active Contracts</CardTitle>
+                        <CardTitle className="text-sm font-medium">Active (Page)</CardTitle>
                         <Activity className="h-4 w-4 text-green-500" />
                     </CardHeader>
                     <CardContent>
@@ -196,7 +201,7 @@ export default function RevenueContractWorkbench() {
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Transaction Value</CardTitle>
+                        <CardTitle className="text-sm font-medium">Value (Page)</CardTitle>
                         <DollarSign className="h-4 w-4 text-blue-500" />
                     </CardHeader>
                     <CardContent>
@@ -217,13 +222,36 @@ export default function RevenueContractWorkbench() {
             <Card>
                 <CardHeader>
                     <CardTitle>Contract List</CardTitle>
-                    <CardDescription>Manaage performance obligations and revenue schedules.</CardDescription>
+                    <CardDescription>Manage performance obligations and revenue schedules.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <StandardTable
                         data={contracts || []}
                         columns={columns}
                     />
+                    <div className="flex items-center justify-between space-x-2 py-4">
+                        <div className="text-sm text-muted-foreground">
+                            Page {page} of {meta?.totalPages || 1}
+                        </div>
+                        <div className="space-x-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                            >
+                                Previous
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setPage(p => p + 1)}
+                                disabled={page >= (meta?.totalPages || 1)}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
         </div>

@@ -595,6 +595,7 @@ const RevenueAccountingSetup = lazy(() => import("@/pages/RevenueAccountingSetup
 const RevenueAssurance = lazy(() => import("@/pages/RevenueAssurance"));
 const RevenueForecasting = lazy(() => import("@/pages/RevenueForecasting"));
 const RevenueOptimization = lazy(() => import("@/pages/RevenueOptimization"));
+const RevenueAuditConsole = lazy(() => import("@/pages/RevenueAuditConsole"));
 
 // Automotive Pack
 const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
@@ -798,6 +799,7 @@ function Router() {
       <Route path="/revenue/waterfall" component={RevenueWaterfall} />
       <Route path="/revenue/deferred" component={DeferredRevenueMatrix} />
       <Route path="/revenue/events" component={RevenueSourceEvents} />
+      <Route path="/revenue/audit" component={RevenueAuditConsole} />
       <Route path="/revenue/setup" component={RevenueAccountingSetup} />
       <Route path="/revenue/assurance" component={RevenueAssurance} />
       <Route path="/revenue/forecasting" component={RevenueForecasting} />
