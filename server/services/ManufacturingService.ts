@@ -4,10 +4,12 @@ import { eq, and, sql, desc } from "drizzle-orm";
 import {
     bom, bomItems, workCenters, resources, routings, routingOperations,
     productionOrders, productionTransactions, qualityInspections,
+    productionCalendars, shifts, standardOperations,
     type InsertBom, type InsertBomItem, type InsertWorkCenter,
     type InsertResource, type InsertRouting, type InsertRoutingOperation,
     type InsertProductionOrder, type InsertProductionTransaction,
-    type InsertQualityInspection
+    type InsertQualityInspection, type InsertProductionCalendar,
+    type InsertShift, type InsertStandardOperation
 } from "@shared/schema";
 
 export class ManufacturingService {
@@ -28,6 +30,33 @@ export class ManufacturingService {
 
     async createResource(data: InsertResource) {
         const [result] = await db.insert(resources).values(data).returning();
+        return result;
+    }
+
+    async getCalendars() {
+        return await db.select().from(productionCalendars).orderBy(productionCalendars.calendarCode);
+    }
+
+    async createCalendar(data: InsertProductionCalendar) {
+        const [result] = await db.insert(productionCalendars).values(data).returning();
+        return result;
+    }
+
+    async getShifts(calendarId: string) {
+        return await db.select().from(shifts).where(eq(shifts.calendarId, calendarId)).orderBy(shifts.startTime);
+    }
+
+    async createShift(data: InsertShift) {
+        const [result] = await db.insert(shifts).values(data).returning();
+        return result;
+    }
+
+    async getStandardOperations() {
+        return await db.select().from(standardOperations).orderBy(standardOperations.code);
+    }
+
+    async createStandardOperation(data: InsertStandardOperation) {
+        const [result] = await db.insert(standardOperations).values(data).returning();
         return result;
     }
 

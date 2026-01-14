@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, integer, boolean, numeric } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -25,10 +25,12 @@ export const bomItems = pgTable("bom_items", {
 
 export const workCenters = pgTable("work_centers", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    code: varchar("code").notNull().unique(), // Added explicit code column if missing in recent view
     name: varchar("name").notNull(),
     description: text("description"),
     capacity: integer("capacity"),
     status: varchar("status").default("active"),
+    calendarId: varchar("calendar_id"), // L8 Integration: Link to Production Calendar
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -56,6 +58,7 @@ export const routingOperations = pgTable("routing_operations", {
     routingId: varchar("routing_id").notNull(),
     operationSeq: integer("operation_seq").notNull(),
     workCenterId: varchar("work_center_id").notNull(),
+    standardOperationId: varchar("standard_operation_id"), // L9 Integration: Link to Standard Op
     description: varchar("description"),
     setupTime: numeric("setup_time", { precision: 10, scale: 2 }).default("0"),
     runTime: numeric("run_time", { precision: 10, scale: 2 }).default("0"),
@@ -95,6 +98,51 @@ export const qualityInspections = pgTable("quality_inspections", {
     inspector: varchar("inspector"),
     status: varchar("status").default("pending"), // pending, passed, failed
     findings: text("findings"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== CONFIGURATION (L8) ==========
+
+export const productionCalendars = pgTable("production_calendars", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    calendarCode: varchar("calendar_code").notNull().unique(),
+    description: text("description"),
+    isDefault: boolean("is_default").default(false),
+    status: varchar("status").default("active"),
+    weekendDays: varchar("weekend_days").default("SAT,SUN"), // Comma separated, e.g. "SAT,SUN"
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const calendarExceptions = pgTable("calendar_exceptions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    calendarId: varchar("calendar_id").notNull(), // FK to production_calendars
+    exceptionDate: timestamp("exception_date").notNull(),
+    exceptionType: varchar("exception_type").notNull(), // HOLIDAY, OVERTIME
+    description: varchar("description"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const shifts = pgTable("shifts", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    calendarId: varchar("calendar_id").notNull(), // FK to production_calendars
+    shiftCode: varchar("shift_code").notNull(), // e.g. "SHIFT-1"
+    startTime: varchar("start_time").notNull(), // e.g. "08:00"
+    endTime: varchar("end_time").notNull(), // e.g. "16:00"
+    breakDuration: integer("break_duration").default(0), // minutes
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== STANDARDIZATION (L9) ==========
+
+export const standardOperations = pgTable("standard_operations", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    code: varchar("code").notNull().unique(),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    defaultWorkCenterId: varchar("default_work_center_id"),
+    defaultSetupTime: numeric("default_setup_time", { precision: 10, scale: 2 }).default("0"),
+    defaultRunTime: numeric("default_run_time", { precision: 10, scale: 2 }).default("0"),
+    status: varchar("status").default("active"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -153,6 +201,10 @@ export const insertProductionOrderSchema = createInsertSchema(productionOrders).
 export const insertProductionTransactionSchema = createInsertSchema(productionTransactions);
 export const insertQualityInspectionSchema = createInsertSchema(qualityInspections);
 
+export const insertProductionCalendarSchema = createInsertSchema(productionCalendars);
+export const insertShiftSchema = createInsertSchema(shifts);
+export const insertStandardOperationSchema = createInsertSchema(standardOperations);
+
 export type Bom = typeof bom.$inferSelect;
 export type InsertBom = z.infer<typeof insertBomSchema>;
 export type BomItem = typeof bomItems.$inferSelect;
@@ -171,3 +223,10 @@ export type ProductionTransaction = typeof productionTransactions.$inferSelect;
 export type InsertProductionTransaction = z.infer<typeof insertProductionTransactionSchema>;
 export type QualityInspection = typeof qualityInspections.$inferSelect;
 export type InsertQualityInspection = z.infer<typeof insertQualityInspectionSchema>;
+
+export type ProductionCalendar = typeof productionCalendars.$inferSelect;
+export type InsertProductionCalendar = z.infer<typeof insertProductionCalendarSchema>;
+export type Shift = typeof shifts.$inferSelect;
+export type InsertShift = z.infer<typeof insertShiftSchema>;
+export type StandardOperation = typeof standardOperations.$inferSelect;
+export type InsertStandardOperation = z.infer<typeof insertStandardOperationSchema>;

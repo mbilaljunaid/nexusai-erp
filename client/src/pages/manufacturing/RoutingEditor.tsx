@@ -20,6 +20,7 @@ interface RoutingOperation {
     description: string;
     workCenterId: string;
     resourceId: string;
+    standardOperationId?: string; // L9 Integration
     setupTime: number;
     runTime: number;
 }
@@ -58,6 +59,10 @@ export default function RoutingEditor() {
         queryKey: ["/api/scm/inventory"],
     });
 
+    const { data: standardOps = [] } = useQuery<any[]>({
+        queryKey: ["/api/manufacturing/standard-operations"],
+    });
+
     const createMutation = useMutation({
         mutationFn: async (data: any) => {
             const res = await fetch("/api/manufacturing/routings", {
@@ -81,7 +86,9 @@ export default function RoutingEditor() {
         const nextSeq = operations.length > 0 ? Math.max(...operations.map(o => o.operationSeq)) + 10 : 10;
         setOperations([...operations, {
             operationSeq: nextSeq,
+            operationSeq: nextSeq,
             description: "",
+            standardOperationId: "",
             workCenterId: "",
             resourceId: "",
             setupTime: 0,
@@ -185,7 +192,28 @@ export default function RoutingEditor() {
                                             <Label className="text-xs uppercase text-muted-foreground">Seq</Label>
                                             <Input type="number" value={op.operationSeq} onChange={e => updateOperation(idx, "operationSeq", parseInt(e.target.value))} />
                                         </div>
-                                        <div className="md:col-span-3">
+                                        <div className="md:col-span-2">
+                                            <Label className="text-xs uppercase text-muted-foreground">Standard Op</Label>
+                                            <Select value={op.standardOperationId} onValueChange={val => {
+                                                const std = standardOps.find((s: any) => s.id === val);
+                                                const updated = [...operations];
+                                                updated[idx] = {
+                                                    ...updated[idx],
+                                                    standardOperationId: val,
+                                                    description: std?.name || updated[idx].description,
+                                                    setupTime: std?.defaultSetupTime ? parseFloat(std.defaultSetupTime) : updated[idx].setupTime,
+                                                    runTime: std?.defaultRunTime ? parseFloat(std.defaultRunTime) : updated[idx].runTime,
+                                                    workCenterId: std?.defaultWorkCenterId || updated[idx].workCenterId
+                                                };
+                                                setOperations(updated);
+                                            }}>
+                                                <SelectTrigger className="h-10"><SelectValue placeholder="Template..." /></SelectTrigger>
+                                                <SelectContent>
+                                                    {standardOps.map((s: any) => <SelectItem key={s.id} value={s.id}>{s.code}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="md:col-span-2">
                                             <Label className="text-xs uppercase text-muted-foreground">Description</Label>
                                             <Input value={op.description} onChange={e => updateOperation(idx, "description", e.target.value)} placeholder="e.g. Rough Sanding" />
                                         </div>
@@ -215,7 +243,7 @@ export default function RoutingEditor() {
                                             <Label className="text-xs uppercase text-muted-foreground">Run (m)</Label>
                                             <Input type="number" value={op.runTime} onChange={e => updateOperation(idx, "runTime", parseFloat(e.target.value))} />
                                         </div>
-                                        <div className="md:col-span-2 flex justify-end pt-5">
+                                        <div className="md:col-span-1 flex justify-end pt-5">
                                             <Button variant="ghost" size="icon" className="text-red-500" onClick={() => setOperations(operations.filter((_, i) => i !== idx))}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>

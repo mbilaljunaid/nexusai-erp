@@ -71,7 +71,10 @@ const WorkOrderList = lazy(() => import("@/pages/manufacturing/WorkOrderList"));
 const ShopFloorTerminal = lazy(() => import("@/pages/manufacturing/ShopFloorTerminal"));
 const QualityManager = lazy(() => import("@/pages/manufacturing/QualityManager"));
 const MRPWorkbench = lazy(() => import("@/pages/manufacturing/MRPWorkbench"));
+const MRPWorkbench = lazy(() => import("@/pages/manufacturing/MRPWorkbench"));
 const ProductionGantt = lazy(() => import("@/pages/manufacturing/ProductionGantt"));
+const CalendarManager = lazy(() => import("@/pages/manufacturing/CalendarManager")); // L8
+const StandardOpLibrary = lazy(() => import("@/pages/manufacturing/StandardOpLibrary")); // L9
 const AnalyticsModule = lazy(() => import("@/pages/AnalyticsModule"));
 const AdminConsoleModule = lazy(() => import("@/pages/AdminConsoleModule"));
 const ComplianceModule = lazy(() => import("@/pages/ComplianceModule"));
@@ -685,7 +688,10 @@ function Router() {
       <Route path="/manufacturing/shop-floor" component={ShopFloorTerminal} />
       <Route path="/manufacturing/quality" component={QualityManager} />
       <Route path="/manufacturing/mrp" component={MRPWorkbench} />
+      <Route path="/manufacturing/mrp" component={MRPWorkbench} />
       <Route path="/manufacturing/gantt" component={ProductionGantt} />
+      <Route path="/manufacturing/calendars" component={CalendarManager} />
+      <Route path="/manufacturing/standard-operations" component={StandardOpLibrary} />
       <Route path="/analytics-module" component={AnalyticsModule} />
       <Route path="/admin-console-module" component={AdminConsoleModule} />
       <Route path="/compliance-module" component={ComplianceModule} />

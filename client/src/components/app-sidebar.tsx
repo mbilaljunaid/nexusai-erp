@@ -114,6 +114,10 @@ export function AppSidebar() {
         { title: "MRP Dashboard", url: "/mrp-dashboard", icon: BarChart3 },
         { title: "Shop Floor", url: "/shop-floor", icon: Factory },
         { title: "Quality Control", url: "/quality-control", icon: Lock },
+        { title: "Production Calendars", url: "/manufacturing/calendars", icon: Clock },
+        { title: "Standard Operations", url: "/manufacturing/standard-operations", icon: FileText },
+        { title: "Work Centers", url: "/manufacturing/work-centers", icon: Factory },
+        { title: "Routings", url: "/manufacturing/routings", icon: Workflow },
       ],
     },
     {

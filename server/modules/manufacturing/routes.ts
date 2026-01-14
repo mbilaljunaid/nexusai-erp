@@ -3,7 +3,8 @@ import { manufacturingService } from "../../services/ManufacturingService";
 import {
     insertProductionOrderSchema, insertBomSchema, insertRoutingSchema,
     insertWorkCenterSchema, insertResourceSchema, insertProductionTransactionSchema,
-    insertQualityInspectionSchema
+    insertQualityInspectionSchema, insertProductionCalendarSchema,
+    insertShiftSchema, insertStandardOperationSchema
 } from "../../../shared/schema";
 
 export function registerManufacturingRoutes(app: Express) {
@@ -142,6 +143,68 @@ export function registerManufacturingRoutes(app: Express) {
             const parseResult = insertResourceSchema.safeParse(req.body);
             if (!parseResult.success) return res.status(400).json({ error: parseResult.error });
             const result = await manufacturingService.createResource(parseResult.data);
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // Setup: Calendars & Shifts (L8)
+    app.get("/api/manufacturing/calendars", async (req, res) => {
+        try {
+            const calendars = await manufacturingService.getCalendars();
+            res.json(calendars);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/manufacturing/calendars", async (req, res) => {
+        try {
+            const parseResult = insertProductionCalendarSchema.safeParse(req.body);
+            if (!parseResult.success) return res.status(400).json({ error: parseResult.error });
+            const result = await manufacturingService.createCalendar(parseResult.data);
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get("/api/manufacturing/calendars/:id/shifts", async (req, res) => {
+        try {
+            const shifts = await manufacturingService.getShifts(req.params.id);
+            res.json(shifts);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/manufacturing/shifts", async (req, res) => {
+        try {
+            const parseResult = insertShiftSchema.safeParse(req.body);
+            if (!parseResult.success) return res.status(400).json({ error: parseResult.error });
+            const result = await manufacturingService.createShift(parseResult.data);
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // Standardization: Standard Operations (L9)
+    app.get("/api/manufacturing/standard-operations", async (req, res) => {
+        try {
+            const ops = await manufacturingService.getStandardOperations();
+            res.json(ops);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/manufacturing/standard-operations", async (req, res) => {
+        try {
+            const parseResult = insertStandardOperationSchema.safeParse(req.body);
+            if (!parseResult.success) return res.status(400).json({ error: parseResult.error });
+            const result = await manufacturingService.createStandardOperation(parseResult.data);
             res.status(201).json(result);
         } catch (error: any) {
             res.status(500).json({ error: error.message });

@@ -45,12 +45,22 @@ export default function ProductionGantt() {
         return d;
     });
 
-    const getOrdersForWCOnDay = (wcId: string, date: Date) => {
-        return workOrders.filter(wo => {
-            if (!wo.workCenterId) return false;
-            const woDate = new Date(wo.scheduledDate!);
-            return wo.workCenterId === wcId && woDate.toDateString() === date.toDateString();
+    // Optimization: Pre-group orders by WorkCenter and Date to avoid O(N^3) filtering in render loop
+    const ordersMap = React.useMemo(() => {
+        const map = new Map<string, WorkOrder[]>();
+        workOrders.forEach(wo => {
+            if (!wo.workCenterId || !wo.scheduledDate) return;
+            const dateStr = new Date(wo.scheduledDate).toDateString();
+            const key = `${wo.workCenterId}|${dateStr}`;
+            if (!map.has(key)) map.set(key, []);
+            map.get(key)!.push(wo);
         });
+        return map;
+    }, [workOrders]);
+
+    const getOrdersForWCOnDay = (wcId: string, date: Date) => {
+        const key = `${wcId}|${date.toDateString()}`;
+        return ordersMap.get(key) || [];
     };
 
     return (

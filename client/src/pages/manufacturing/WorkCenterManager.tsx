@@ -9,6 +9,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 interface WorkCenter {
@@ -16,7 +23,15 @@ interface WorkCenter {
     name: string;
     description: string;
     capacity: number;
+    capacity: number;
+    calendarId?: string; // L8 Integration
     status: "active" | "inactive" | "maintenance";
+}
+
+interface Calendar {
+    id: string;
+    calendarCode: string;
+    description?: string;
 }
 
 export default function WorkCenterManager() {
@@ -27,6 +42,10 @@ export default function WorkCenterManager() {
 
     const { data: centers = [], isLoading } = useQuery<WorkCenter[]>({
         queryKey: ["/api/manufacturing/work-centers"],
+    });
+
+    const { data: calendars = [] } = useQuery<Calendar[]>({
+        queryKey: ["/api/manufacturing/calendars"],
     });
 
     const mutation = useMutation({
@@ -100,6 +119,7 @@ export default function WorkCenterManager() {
             name: formData.get("name") as string,
             description: formData.get("description") as string,
             capacity: parseInt(formData.get("capacity") as string),
+            calendarId: formData.get("calendarId") as string,
             status: formData.get("status") as any || "active"
         };
         mutation.mutate(data);
@@ -132,6 +152,21 @@ export default function WorkCenterManager() {
                             <div className="space-y-2">
                                 <Label htmlFor="capacity">Capacity (units/day)</Label>
                                 <Input id="capacity" name="capacity" type="number" defaultValue={editingCenter?.capacity} required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="calendarId">Production Calendar</Label>
+                                <Select name="calendarId" defaultValue={editingCenter?.calendarId}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select calendar..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {calendars.map((cal) => (
+                                            <SelectItem key={cal.id} value={cal.id}>
+                                                {cal.calendarCode}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <Button type="submit" className="w-full" disabled={mutation.isPending}>
                                 {mutation.isPending ? "Saving..." : "Save Work Center"}
