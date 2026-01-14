@@ -1,7 +1,7 @@
-# ProjectOye ERP - Enterprise AI-First Platform
+# Nexus Enterprise Platform - Enterprise AI-First Platform
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![GitHub Stars](https://img.shields.io/github/stars/mbilaljunaid/nexusai-erp)](https://github.com/mbilaljunaid/nexusai-erp/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/mbilaljunaid/nexusai-erp)](NexusAIFirsthttps://github.com/mbilaljunaid/nexusai-erp/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/mbilaljunaid/nexusai-erp)](https://github.com/mbilaljunaid/nexusai-erp/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
@@ -210,9 +210,9 @@ With the requirement that you:
 
 ---
 
-**Platform**: ProjectOye ERP  
+**Platform**: NexusAIFirst ERP  
 **Version**: 2.0.0  
 **Status**: Tier-1 Enterprise Ready (Production)  
 **License**: [AGPL-3.0](./LICENSE)
 
-Made with care by the ProjectOye community
+Made with care by the NexusAIFirst community
