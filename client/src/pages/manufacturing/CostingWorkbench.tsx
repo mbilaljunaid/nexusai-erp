@@ -57,7 +57,20 @@ export default function CostingWorkbench() {
 
     // Table Columns
     const costColumns: Column<StandardCost>[] = [
-        { header: "Product ID", accessorKey: "targetId" },
+        {
+            header: "Product / Resource",
+            accessorKey: "targetId",
+            cell: (row) => {
+                if (row.targetType === "RESOURCE") return <span className="font-mono text-xs">{row.targetId}</span>;
+                const item = inventory.find(i => i.id === row.targetId);
+                return (
+                    <div>
+                        <div className="font-medium text-sm">{item ? item.itemName : "Unknown Item"}</div>
+                        <div className="text-xs text-muted-foreground font-mono">{item ? item.sku : row.targetId}</div>
+                    </div>
+                );
+            }
+        },
         {
             header: "Unit Cost",
             accessorKey: "unitCost",

@@ -23,10 +23,20 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, type ColumnDef } from "@/components/ui/StandardTable";
+import { StandardTable, type Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { StandardPage } from "@/components/layout/StandardPage";
+
+interface Calendar {
+    id: string;
+    calendarCode: string;
+    description: string;
+    weekendDays: string;
+    status: string;
+    createdAt: string;
+}
 
 export default function CalendarManager() {
     const { toast } = useToast();
@@ -43,7 +53,7 @@ export default function CalendarManager() {
         status: "active"
     });
 
-    const { data: calendars, isLoading } = useQuery({
+    const { data: calendars, isLoading } = useQuery<Calendar[]>({
         queryKey: ["/api/manufacturing/calendars"],
     });
 
@@ -72,7 +82,7 @@ export default function CalendarManager() {
         }
     });
 
-    const columns: ColumnDef<any>[] = [
+    const columns: Column<Calendar>[] = [
         {
             header: "Calendar Code",
             accessorKey: "calendarCode",
@@ -115,14 +125,10 @@ export default function CalendarManager() {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Production Calendars</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Define factory working days, weekend policies, and exception schedules.
-                    </p>
-                </div>
+        <StandardPage
+            title="Production Calendars"
+            breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Setup" }, { label: "Calendars" }]}
+            actions={
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                         <Button>
@@ -203,9 +209,9 @@ export default function CalendarManager() {
                         </form>
                     </SheetContent>
                 </Sheet>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-3">
+            }
+        >
+            <div className="grid gap-6 md:grid-cols-3 mb-6">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Active Calendars</CardTitle>
@@ -247,13 +253,13 @@ export default function CalendarManager() {
                         data={calendars || []}
                         columns={columns}
                         isLoading={isLoading}
-                        page={page}
+                        page={page + 1}
                         pageSize={10}
                         totalItems={calendars?.length || 0}
-                        onPageChange={setPage}
+                        onPageChange={(p) => setPage(p - 1)}
                     />
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

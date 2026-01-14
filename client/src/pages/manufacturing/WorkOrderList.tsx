@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable } from "@/components/ui/StandardTable";
+import { StandardTable, type Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { openFormInNewWindow } from "@/lib/formUtils";
@@ -91,7 +91,6 @@ export default function WorkOrderList() {
         },
         {
             header: "Actions",
-            id: "actions",
             cell: (row: WorkOrder) => (
                 <div className="flex gap-2">
                     {row.status === "planned" && (

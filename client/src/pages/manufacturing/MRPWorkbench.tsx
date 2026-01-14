@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable } from "@/components/ui/StandardTable";
+import { StandardTable, type Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -90,7 +90,7 @@ export default function MRPWorkbench() {
         }
     });
 
-    const columns = [
+    const columns: Column<MrpRecommendation>[] = [
         {
             header: "Product",
             accessorKey: "productId",

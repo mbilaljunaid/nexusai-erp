@@ -1,6 +1,7 @@
 import { db } from "../db";
-import { formulas, formulaIngredients, manufacturingBatches, batchTransactions, recipes } from "../../shared/schema/manufacturing";
-import { eq, sql } from "drizzle-orm";
+import { formulas, formulaIngredients, manufacturingBatches, batchTransactions, recipes, qualityResults } from "../../shared/schema/manufacturing";
+import { eq, sql, desc, inArray } from "drizzle-orm";
+import { type InsertQualityResult } from "../../shared/schema/manufacturing";
 
 export class ManufacturingProcessService {
     /**
@@ -117,6 +118,47 @@ export class ManufacturingProcessService {
             variance,
             yieldPercentage: (actual / target) * 100
         };
+    }
+
+    /**
+     * Retrieves the genealogy tree for a specific lot.
+     * Backwards traceability: What went into this?
+     * Forwards traceability: Where did this go?
+     */
+    async getBatchGenealogy(lotNumber: string) {
+        // Find the primary transaction for this lot
+        const transactions = await db.select().from(batchTransactions).where(eq(batchTransactions.lotNumber, lotNumber));
+        if (transactions.length === 0) return [];
+
+        // For now, let's return the transactions and their immediate parents
+        const parentLotIds = transactions.map(t => t.parentLotId).filter(Boolean) as string[];
+
+        let parentTransactions: any[] = [];
+        if (parentLotIds.length > 0) {
+            parentTransactions = await db.select().from(batchTransactions).where(inArray(batchTransactions.lotNumber, parentLotIds));
+        }
+
+        // Downstream usage
+        const childTransactions = await db.select().from(batchTransactions).where(eq(batchTransactions.parentLotId, lotNumber));
+
+        return [...transactions, ...parentTransactions, ...childTransactions];
+    }
+
+    /**
+     * Quality Results (LIMS)
+     */
+    async getQualityResults(inspectionId: string) {
+        return await db.select().from(qualityResults).where(eq(qualityResults.inspectionId, inspectionId));
+    }
+
+    async saveQualityResults(inspectionId: string, results: InsertQualityResult[]) {
+        return await db.transaction(async (tx) => {
+            // Clear existing results for this inspection
+            await tx.delete(qualityResults).where(eq(qualityResults.inspectionId, inspectionId));
+            if (results.length > 0) {
+                await tx.insert(qualityResults).values(results);
+            }
+        });
     }
 }
 

@@ -34,28 +34,50 @@ export default function QualityManager() {
         queryKey: ["/api/manufacturing/quality-inspections", page, pageSize],
         queryFn: async () => {
             const offset = (page - 1) * pageSize;
-            const res = await fetch(`/api/manufacturing/quality-inspections?limit=${pageSize}&offset=${offset}`);
+            const res = await fetch(`/api/manufacturing/inspections?limit=${pageSize}&offset=${offset}`); // Use the correct route from server
             return res.json();
         }
+    });
+
+    // Fetch detailed results when an inspection is selected
+    const { data: limsResults = [], refetch: refetchLims } = useQuery<any[]>({
+        queryKey: ["/api/manufacturing/quality-results", selectedInspection?.id],
+        queryFn: async () => {
+            const res = await fetch(`/api/manufacturing/quality-results/${selectedInspection?.id}`);
+            return res.json();
+        },
+        enabled: !!selectedInspection?.id
     });
 
     const inspections = data?.items || [];
     const totalItems = data?.total || 0;
 
     const updateMutation = useMutation({
-        mutationFn: async ({ id, status, findings }: { id: string, status: string, findings?: string }) => {
-            const res = await fetch(`/api/manufacturing/quality-inspections/${id}/status`, {
+        mutationFn: async ({ id, status, findings, results }: { id: string, status: string, findings?: string, results?: any[] }) => {
+            // Update status
+            const resStatus = await fetch(`/api/manufacturing/inspections/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status, findings })
             });
-            if (!res.ok) throw new Error("Failed to update inspection");
-            return res.json();
+            if (!resStatus.ok) throw new Error("Failed to update inspection status");
+
+            // Update detailed results
+            if (results && results.length > 0) {
+                const resResults = await fetch(`/api/manufacturing/quality-results/${id}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(results)
+                });
+                if (!resResults.ok) throw new Error("Failed to save LIMS results");
+            }
+
+            return resStatus.json();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/quality-inspections"] });
             setIsSheetOpen(false);
-            toast({ title: "Updated", description: "Inspection result recorded." });
+            toast({ title: "Updated", description: "Inspection result and LIMS data synchronized." });
         }
     });
 
@@ -99,7 +121,28 @@ export default function QualityManager() {
     const handleUpdate = (status: string) => {
         if (!selectedInspection) return;
         const findings = (document.getElementById("findings") as HTMLTextAreaElement).value;
-        updateMutation.mutate({ id: selectedInspection.id, status, findings });
+
+        // Collect LIMS results from inputs
+        const results = [
+            {
+                inspectionId: selectedInspection.id,
+                parameterName: "Purity",
+                minValue: 98.0,
+                maxValue: 100.0,
+                actualValue: parseFloat((document.getElementById("purity-val") as HTMLInputElement).value),
+                result: parseFloat((document.getElementById("purity-val") as HTMLInputElement).value) >= 98.0 ? "PASS" : "FAIL"
+            },
+            {
+                inspectionId: selectedInspection.id,
+                parameterName: "pH Level",
+                minValue: 6.5,
+                maxValue: 7.5,
+                actualValue: parseFloat((document.getElementById("ph-val") as HTMLInputElement).value),
+                result: (parseFloat((document.getElementById("ph-val") as HTMLInputElement).value) >= 6.5 && parseFloat((document.getElementById("ph-val") as HTMLInputElement).value) <= 7.5) ? "PASS" : "FAIL"
+            }
+        ];
+
+        updateMutation.mutate({ id: selectedInspection.id, status, findings, results });
     };
 
     return (
@@ -151,17 +194,17 @@ export default function QualityManager() {
                                     <div className="grid grid-cols-3 gap-2 items-center">
                                         <span className="text-xs font-medium">Purity (%)</span>
                                         <div className="text-xs text-muted-foreground">Min: 98.0</div>
-                                        <Input className="h-8 text-right font-mono" defaultValue="99.2" />
+                                        <Input id="purity-val" className="h-8 text-right font-mono" defaultValue={limsResults.find(r => r.parameterName === "Purity")?.actualValue || "99.2"} />
                                     </div>
                                     <div className="grid grid-cols-3 gap-2 items-center">
                                         <span className="text-xs font-medium">pH Level</span>
                                         <div className="text-xs text-muted-foreground">Range: 6.5-7.5</div>
-                                        <Input className="h-8 text-right font-mono" defaultValue="7.1" />
+                                        <Input id="ph-val" className="h-8 text-right font-mono" defaultValue={limsResults.find(r => r.parameterName === "pH Level")?.actualValue || "7.1"} />
                                     </div>
                                     <div className="grid grid-cols-3 gap-2 items-center">
                                         <span className="text-xs font-medium">Density</span>
                                         <div className="text-xs text-muted-foreground">Target: 0.85</div>
-                                        <Input className="h-8 text-right font-mono" defaultValue="0.84" />
+                                        <Input id="density-val" className="h-8 text-right font-mono" defaultValue={limsResults.find(r => r.parameterName === "Density")?.actualValue || "0.84"} />
                                     </div>
                                 </div>
                             </div>

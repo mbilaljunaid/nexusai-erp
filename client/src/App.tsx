@@ -78,6 +78,7 @@ const CostingWorkbench = lazy(() => import("@/pages/manufacturing/CostingWorkben
 const WIPDashboard = lazy(() => import("@/pages/manufacturing/WIPDashboard")); // L20
 const MFGVarianceAnalysis = lazy(() => import("@/pages/manufacturing/VarianceAnalysis")); // L20
 const FormulaDesigner = lazy(() => import("@/pages/manufacturing/FormulaDesigner")); // Phase 22
+const RecipeManager = lazy(() => import("@/pages/manufacturing/RecipeManager")); // Phase 25
 const BatchWorkbench = lazy(() => import("@/pages/manufacturing/BatchWorkbench")); // Phase 22
 const BatchGenealogy = lazy(() => import("@/pages/manufacturing/BatchGenealogy")); // Phase 24
 const AnalyticsModule = lazy(() => import("@/pages/AnalyticsModule"));
@@ -703,6 +704,7 @@ function Router() {
       <Route path="/manufacturing/wip" component={WIPDashboard} />
       <Route path="/manufacturing/variances" component={MFGVarianceAnalysis} />
       <Route path="/manufacturing/formulas" component={FormulaDesigner} />
+      <Route path="/manufacturing/recipes" component={RecipeManager} />
       <Route path="/manufacturing/batches" component={BatchWorkbench} />
       <Route path="/manufacturing/genealogy" component={BatchGenealogy} />
       <Route path="/analytics-module" component={AnalyticsModule} />

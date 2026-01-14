@@ -285,6 +285,18 @@
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
   }
+
+  /* AI-First UI Augmentations */
+  .ai-card {
+    @apply border-indigo-500/30 shadow-sm shadow-indigo-500/10 hover:shadow-indigo-500/20 hover:border-indigo-500/50 transition-all duration-300;
+  }
+  
+  .ai-glow-border {
+    position: relative;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  }
 }
 
 @keyframes slideInFromBottom {

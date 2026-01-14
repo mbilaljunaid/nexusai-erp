@@ -246,7 +246,7 @@ export default function FormulaDesigner() {
                                 </div>
                             </div>
 
-                            <Card shadow="sm">
+                            <Card className="shadow-sm">
                                 <CardContent className="p-0">
                                     <div className="divide-y">
                                         {ingredients.map((ing, idx) => (

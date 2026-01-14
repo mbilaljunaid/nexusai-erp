@@ -25,6 +25,11 @@ export default function BatchGenealogy() {
 
     const { data: genealogyData = [], isLoading } = useQuery<GenealogyNode[]>({
         queryKey: ["/api/manufacturing/batches/genealogy", activeLot],
+        queryFn: async () => {
+            const res = await fetch(`/api/manufacturing/batches/genealogy?lotNumber=${activeLot}`);
+            if (!res.ok) throw new Error("Failed to fetch genealogy");
+            return res.json();
+        },
         enabled: !!activeLot
     });
 
@@ -115,30 +120,55 @@ export default function BatchGenealogy() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="min-h-[400px] flex items-center justify-center border-2 border-dashed rounded-lg bg-muted/30">
-                                <div className="text-center space-y-4">
-                                    <div className="flex items-center justify-center gap-8">
-                                        <div className="p-4 bg-background border rounded-lg shadow-sm w-48 text-center relative">
-                                            <Badge className="absolute -top-2 -right-2">Parent</Badge>
-                                            <Package className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                                            <div className="text-xs font-mono mb-1">RAW-MAT-001</div>
-                                            <div className="text-sm font-bold">LOT-A1</div>
-                                        </div>
-                                        <ArrowRight className="h-6 w-6 text-muted-foreground" />
-                                        <div className="p-6 bg-primary/10 border-2 border-primary rounded-xl shadow-md w-56 text-center scale-110 relative">
+                                <div className="text-center space-y-8 w-full">
+                                    <div className="flex flex-wrap items-center justify-center gap-8">
+                                        {/* Backwards (Parents) */}
+                                        {genealogyData.filter(n => n.transactionType === "FEED" || (n.lotNumber !== activeLot && n.parentLotId === undefined)).map((node, i) => (
+                                            <div key={i} className="flex items-center gap-4">
+                                                <div className="p-4 bg-background border rounded-lg shadow-sm w-48 text-center relative hover:border-indigo-500 transition-colors">
+                                                    <Badge className="absolute -top-2 -right-2" variant="secondary">Material</Badge>
+                                                    <Package className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                                                    <div className="text-[10px] font-mono mb-1 truncate">{node.productName}</div>
+                                                    <div className="text-sm font-bold">{node.lotNumber}</div>
+                                                </div>
+                                                <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                                            </div>
+                                        ))}
+
+                                        {/* Target Lot */}
+                                        <div className="p-6 bg-indigo-50 border-2 border-indigo-600 rounded-xl shadow-md w-56 text-center scale-110 relative animate-in fade-in zoom-in duration-300">
                                             <Badge className="absolute -top-3 -right-3" variant="default">Active Target</Badge>
-                                            <FlaskConical className="h-10 w-10 mx-auto mb-2 text-primary" />
-                                            <div className="text-xs font-mono mb-1 text-primary/70">WIP-CHEM-X</div>
-                                            <div className="text-lg font-bold">{activeLot}</div>
+                                            <FlaskConical className="h-10 w-10 mx-auto mb-2 text-indigo-600" />
+                                            <div className="text-xs font-mono mb-1 text-indigo-700">ACTIVE TRACE</div>
+                                            <div className="text-lg font-bold text-indigo-900">{activeLot}</div>
                                         </div>
-                                        <ArrowRight className="h-6 w-6 text-muted-foreground" />
-                                        <div className="p-4 bg-background border rounded-lg shadow-sm w-48 text-center opacity-50">
-                                            <Package className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                                            <div className="text-xs font-mono mb-1 text-muted-foreground">FIN-PROD-99</div>
-                                            <div className="text-sm font-bold">PENDING</div>
-                                        </div>
+
+                                        {/* Forwards (Children) */}
+                                        {genealogyData.filter(n => n.parentLotId === activeLot).map((node, i) => (
+                                            <div key={i} className="flex items-center gap-4">
+                                                <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                                                <div className="p-4 bg-background border rounded-lg shadow-sm w-48 text-center relative hover:border-green-500 transition-colors">
+                                                    <Badge className="absolute -top-2 -right-2" variant="default">Yield</Badge>
+                                                    <Package className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                                                    <div className="text-[10px] font-mono mb-1 truncate">{node.productName}</div>
+                                                    <div className="text-sm font-bold">{node.lotNumber}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        {genealogyData.filter(n => n.parentLotId === activeLot).length === 0 && (
+                                            <div className="flex items-center gap-4 opacity-30">
+                                                <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                                                <div className="p-4 bg-background border rounded-lg shadow-sm w-48 text-center border-dashed">
+                                                    <Package className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                                                    <div className="text-xs font-mono mb-1">END OF LINE</div>
+                                                    <div className="text-sm font-bold italic text-muted-foreground">No downstream</div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                    <p className="text-sm text-muted-foreground max-w-md">
-                                        Interactive tree view showing material consumption (Backwards) and product yield (Forwards).
+                                    <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                                        Multi-level genealogy showing raw material inputs and downstream product usage.
                                     </p>
                                 </div>
                             </CardContent>

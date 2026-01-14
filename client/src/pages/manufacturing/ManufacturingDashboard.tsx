@@ -17,33 +17,59 @@ interface Stats {
     averageEfficiency: number;
 }
 
+// Define types for Work Order and Quality Inspection data
+interface WorkOrder {
+    id: string;
+    status: 'planned' | 'released' | 'in_progress' | 'completed';
+    // Add other relevant work order properties if known
+}
+
+interface QualityInspection {
+    id: string;
+    status: 'pending' | 'approved' | 'rejected';
+    // Add other relevant quality inspection properties if known
+}
+
 export default function ManufacturingDashboard() {
-    const { data: woData, isLoading: woLoading } = useQuery({
+    const { data: woData, isLoading: woLoading } = useQuery<{ items: WorkOrder[] }>({
         queryKey: ["/api/manufacturing/work-orders"],
         queryFn: async () => {
             const res = await fetch("/api/manufacturing/work-orders?limit=100");
+            if (!res.ok) {
+                throw new Error("Failed to fetch work orders");
+            }
             return res.json();
         }
     });
 
-    const { data: qData, isLoading: qLoading } = useQuery({
+    const { data: qData, isLoading: qLoading } = useQuery<QualityInspection[]>({
         queryKey: ["/api/manufacturing/quality-inspections"],
+        queryFn: async () => {
+            const res = await fetch("/api/manufacturing/quality-inspections");
+            if (!res.ok) {
+                throw new Error("Failed to fetch quality inspections");
+            }
+            return res.json();
+        }
     });
 
-    const workOrders = woData?.items || [];
+    // Add type guards for data availability
+    const workOrders: WorkOrder[] = woData?.items && Array.isArray(woData.items) ? woData.items : [];
+    const qualityInspections: QualityInspection[] = Array.isArray(qData) ? qData : [];
+
     const stats: Stats = {
-        activeWorkOrders: workOrders.filter((wo: any) => wo.status === 'in_progress').length,
-        completedToday: workOrders.filter((wo: any) => wo.status === 'completed').length,
-        pendingQuality: (qData || []).filter((q: any) => q.status === 'pending').length,
+        activeWorkOrders: workOrders.filter((wo: WorkOrder) => wo.status === 'in_progress').length,
+        completedToday: workOrders.filter((wo: WorkOrder) => wo.status === 'completed').length,
+        pendingQuality: qualityInspections.filter((q: QualityInspection) => q.status === 'pending').length,
         averageEfficiency: 94.2 // Still mocked until OEE engine is built
     };
 
     // Prepare chart data: Distribution by Status
     const statusDistribution = [
-        { name: 'Planned', count: workOrders.filter((w: any) => w.status === 'planned').length, color: '#94a3b8' },
-        { name: 'Released', count: workOrders.filter((w: any) => w.status === 'released').length, color: '#60a5fa' },
-        { name: 'In Progress', count: workOrders.filter((w: any) => w.status === 'in_progress').length, color: '#fbbf24' },
-        { name: 'Completed', count: workOrders.filter((w: any) => w.status === 'completed').length, color: '#4ade80' },
+        { name: 'Planned', count: workOrders.filter((w: WorkOrder) => w.status === 'planned').length, color: '#94a3b8' },
+        { name: 'Released', count: workOrders.filter((w: WorkOrder) => w.status === 'released').length, color: '#60a5fa' },
+        { name: 'In Progress', count: workOrders.filter((w: WorkOrder) => w.status === 'in_progress').length, color: '#fbbf24' },
+        { name: 'Completed', count: workOrders.filter((w: WorkOrder) => w.status === 'completed').length, color: '#4ade80' },
     ];
 
     if (woLoading || qLoading) {
@@ -66,7 +92,7 @@ export default function ManufacturingDashboard() {
             breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Overview" }]}
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <Card className="bg-blue-50 border-blue-100">
+                <Card className="ai-card bg-blue-50/30">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-blue-700">Active Work Orders</CardTitle>
                         <Activity className="h-4 w-4 text-blue-500" />
@@ -77,7 +103,7 @@ export default function ManufacturingDashboard() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-green-50 border-green-100">
+                <Card className="ai-card bg-green-50/30">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-green-700">Completed (Today)</CardTitle>
                         <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -88,7 +114,7 @@ export default function ManufacturingDashboard() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-amber-50 border-amber-100">
+                <Card className="ai-card bg-amber-50/30">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-amber-700">Pending Quality</CardTitle>
                         <ClipboardList className="h-4 w-4 text-amber-500" />
@@ -99,7 +125,7 @@ export default function ManufacturingDashboard() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-indigo-50 border-indigo-100">
+                <Card className="ai-card bg-indigo-50/30">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-indigo-700">OEE Performance</CardTitle>
                         <Settings2 className="h-4 w-4 text-indigo-500" />

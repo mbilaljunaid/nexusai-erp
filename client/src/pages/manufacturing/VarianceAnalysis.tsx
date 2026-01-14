@@ -10,6 +10,7 @@ import {
     AlertCircle, ArrowUpRight, ArrowDownRight, FileSpreadsheet
 } from "lucide-react";
 import type { VarianceJournal } from "@shared/schema";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function VarianceAnalysis() {
     // Fetch Data
@@ -31,9 +32,9 @@ export default function VarianceAnalysis() {
         {
             header: "Amount",
             accessorKey: "amount",
-            cell: ({ row }) => (
-                <span className={Number(row.original.amount) > 0 ? "text-red-500 font-medium" : "text-green-500 font-medium"}>
-                    ${Number(row.original.amount).toFixed(2)}
+            cell: (row) => (
+                <span className={Number(row.amount) > 0 ? "text-red-500 font-medium" : "text-green-500 font-medium"}>
+                    ${Number(row.amount).toFixed(2)}
                 </span>
             )
         },
@@ -41,17 +42,19 @@ export default function VarianceAnalysis() {
         {
             header: "GL Posted",
             accessorKey: "glPosted",
-            cell: ({ row }) => row.original.glPosted ? "✅" : "⏳"
+            cell: (row) => row.glPosted ? "✅" : "⏳"
         }
     ];
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-start">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Variance Analysis</h1>
-                    <p className="text-muted-foreground">Monitor and investigate manufacturing cost deviations.</p>
-                </div>
+        <StandardPage
+            title="Variance Analysis"
+            breadcrumbs={[
+                { label: "Manufacturing", href: "/manufacturing" },
+                { label: "Financials" },
+                { label: "Variance Analysis" }
+            ]}
+            actions={
                 <div className="flex gap-2">
                     <Card className="px-4 py-2 flex flex-row items-center gap-3">
                         <div className="bg-red-100 p-2 rounded-full">
@@ -72,8 +75,8 @@ export default function VarianceAnalysis() {
                         </div>
                     </Card>
                 </div>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <Card className="lg:col-span-1">
                     <CardHeader>
@@ -120,7 +123,7 @@ export default function VarianceAnalysis() {
                 </Card>
             </div>
 
-            <Card className="border-red-200 bg-red-50/20">
+            <Card className="border-red-200 bg-red-50/20 mt-6">
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
                         <AlertCircle className="h-5 w-5 text-red-600" />
@@ -144,6 +147,6 @@ export default function VarianceAnalysis() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -220,6 +220,29 @@ export const navigationConfig: SidebarNode[] = [
                             { id: "mfg-routings", title: "Routing Master", type: "link", path: "/manufacturing/routings" },
                             { id: "mfg-wc", title: "Work Centers", type: "link", path: "/manufacturing/work-centers" },
                             { id: "mfg-resources", title: "Resources", type: "link", path: "/manufacturing/resources" },
+                            { id: "mfg-std-ops", title: "Standard Operations", type: "link", path: "/manufacturing/standard-operations" },
+                            { id: "mfg-calendars", title: "Calendars", type: "link", path: "/manufacturing/calendars" },
+                        ]
+                    },
+                    {
+                        id: "mfg-process",
+                        title: "Process Manufacturing",
+                        type: "group",
+                        children: [
+                            { id: "mfg-formulas", title: "Formula Designer", type: "link", path: "/manufacturing/formulas" },
+                            { id: "mfg-recipes", title: "Recipe Manager", type: "link", path: "/manufacturing/recipes" },
+                            { id: "mfg-batches", title: "Batch Workbench", type: "link", path: "/manufacturing/batches" },
+                            { id: "mfg-genealogy", title: "Lot Genealogy", type: "link", path: "/manufacturing/genealogy" },
+                        ]
+                    },
+                    {
+                        id: "mfg-finance",
+                        title: "Costing & Control",
+                        type: "group",
+                        children: [
+                            { id: "mfg-costing", title: "Costing Workbench", type: "link", path: "/manufacturing/costing" },
+                            { id: "mfg-wip", title: "WIP Valuation", type: "link", path: "/manufacturing/wip" },
+                            { id: "mfg-variance", title: "Variance Analysis", type: "link", path: "/manufacturing/variances" },
                         ]
                     },
                 ]

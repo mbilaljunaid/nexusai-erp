@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable } from "@/components/ui/StandardTable";
+import { StandardTable, type Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -48,7 +48,7 @@ export default function ResourceManager() {
         }
     });
 
-    const columns = [
+    const columns: Column<Resource>[] = [
         {
             header: "Code",
             accessorKey: "resourceCode",
@@ -87,10 +87,10 @@ export default function ResourceManager() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
-        const data = {
+        const data: Partial<Resource> = {
             resourceCode: formData.get("resourceCode") as string,
             name: formData.get("name") as string,
-            type: formData.get("type") as any,
+            type: formData.get("type") as Resource["type"],
             capacityPerHour: parseFloat(formData.get("capacity") as string),
             costPerHour: parseFloat(formData.get("cost") as string),
             status: "active"
