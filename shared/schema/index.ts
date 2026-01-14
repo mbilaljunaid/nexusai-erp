@@ -31,9 +31,12 @@ export * from "./sla";
 export * from "./gl-config";
 export * from "./tax";
 export * from "./netting";
-export * from "./netting";
 export * from "./translation";
 export * from "./roles";
 export * from "./ppm";
 export * from "./revenue";
+export * from "./revenue_accounting";
+export * from "./revenue_periods";
+export * from "./revenue_rules";
+export * from "./cost_ai";
 

@@ -9,6 +9,11 @@ import {
     insertOverheadRuleSchema
 } from "../../../shared/schema";
 import { manufacturingCostingService } from "../../services/ManufacturingCostingService";
+import { costAnomalyService } from "../../services/CostAnomalyService";
+import { costPredicter } from "../../services/CostPredicter";
+import { db } from "../../db";
+import { costAnomalies } from "../../../shared/schema";
+import { desc, eq } from "drizzle-orm";
 
 export function registerManufacturingRoutes(app: Express) {
     // Work Orders
@@ -325,6 +330,29 @@ export function registerManufacturingRoutes(app: Express) {
 
             const journals = await manufacturingService.getVarianceJournals(limit, offset, { startDate, endDate });
             res.json(journals);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // ========== COST AI (Phase 10) ==========
+
+    app.get("/api/manufacturing/cost-anomalies", async (req, res) => {
+        try {
+            const results = await db.select().from(costAnomalies)
+                .orderBy(desc(costAnomalies.createdAt))
+                .limit(50);
+            res.json(results);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get("/api/manufacturing/cost-predictions/:productId", async (req, res) => {
+        try {
+            const result = await costPredicter.predictStandardCost(req.params.productId);
+            if (!result) return res.status(404).json({ error: "No prediction data available for this item" });
+            res.json(result);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }

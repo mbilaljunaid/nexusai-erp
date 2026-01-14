@@ -136,8 +136,52 @@
     - [x] Implement `DistributionsViewer` (Subledger Drilldown)
     - [x] Implement `LcmWorkbench` (Charge Allocation)
 
-- [ ] **Phase 10: Cost Management AI (The Brain)**
-    - [ ] Implement `CostAnomalyService` (Rule-based detection)
-    - [ ] Define `AnomalyRule` (IPV > 10%, WIP Efficiency < 80%)
-    - [ ] Implement `CostPredicter` (Moving Average Forecast) - *Optional*
-    - [ ] Create `verify_cost_ai.ts` script
+- [x] **Phase 10: Cost Management AI (The Brain)**
+    - [x] Implement `CostAnomalyService` (Rule-based detection)
+    - [x] Define `AnomalyRule` (IPV > 10%, WIP Efficiency < 80%)
+    - [x] Implement `CostPredicter` (Moving Average Forecast)
+    - [x] Create `verify_cost_ai.ts` script
+
+## Revenue Management (Enterprise Readiness)
+- [x] **Phase 29: Revenue Reporting & Waterfalls**
+    - [x] Implement `getRevenueWaterfall` Service Method
+    - [x] Implement `getDeferredRevenue` Service Method
+    - [x] Implement Reporting API Endpoints
+    - [x] Create `RevenueWaterfall` UI Page
+    - [x] Create `DeferredRevenueMatrix` UI Page
+
+- [x] **Phase 30: Revenue Event Processing**
+    - [x] Create `POST /api/revenue/events` (Ingestion)
+    - [x] Create `POST /api/revenue/jobs/process-events` (Job Trigger)
+    - [x] Create `RevenueSourceEvents` UI Page
+    - [x] Connect "Run Allocation Engine" Button in Workbench
+
+- [x] **Phase 31: Revenue Accounting & SLA Integration**
+    - [x] Create `revenue_accounting` schema
+    - [x] Refactor `RevenueAccountingService` to use SLA
+    - [x] Update `SlaService` for Revenue events
+    - [x] Create `RevenueAccountingSetup` UI
+
+- [x] **Phase 32: Revenue Contract Modifications**
+    - [x] Implement `processContractModification` in `RevenueService`
+    - [x] Create `POST /api/revenue/contracts/:id/modify` API
+    - [x] Create `RevenueContractDetail` UI Page
+    - [x] Implement Catch-up Calculation Logic
+
+- [x] **Phase 33: Revenue Period Close & Validation**
+    - [x] Create `revenue_periods` schema
+    - [x] Implement `validatePeriodOpen` logic
+    - [x] Add Period Close API endpoints
+    - [x] Create `RevenuePeriodClose` workbench
+
+## Revenue Module Remediation (Tier-1 Parity)
+- [x] **Phase A: Foundation & Integration**
+    - [x] Schema Expansion: Add `legalEntityId`, `orgId`, and `versionNumber` to `revenue_contracts`
+    - [x] Order-to-Revenue Link: Bidirectional drill-down between Source Events and Sales Orders
+- [/] **Phase B: Config & Rules**
+    - [/] Rule Engine: Implement UI and logic for Contract Identification and POB Rules
+    - [ ] SSP Manager UI: Build master-data screens for `revenue_ssp_books`
+- [ ] **Phase C: UX Cleanup (PR-ENFORCE-001)**
+    - [ ] UUID Replacement: Resolve raw IDs across all Revenue grids (show Names)
+    - [ ] Sidebar Integration: Register orphaned pages (Assurance, Forecasting, Optimization)
+    - [ ] Scalable Grids: Implement server-side pagination for Contracts Workbench

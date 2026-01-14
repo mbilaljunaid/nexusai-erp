@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { queryClient } from "@/lib/queryClient";
 import {
     Card,
     CardContent,
@@ -9,7 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable, type ColumnDef } from "@/components/ui/StandardTable";
+import { StandardTable } from "@/components/ui/StandardTable";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     BarChart,
@@ -17,7 +20,9 @@ import {
     FileText,
     DollarSign
 } from "lucide-react";
-import type { RevenueContract } from "@shared/schema/revenue";
+import { revenueContracts } from "@shared/schema/revenue";
+// Infer type since we don't have explicit Zod export for Select yet, or use any for now to unblock
+type RevenueContract = typeof revenueContracts.$inferSelect;
 import { useToast } from "@/hooks/use-toast";
 
 export default function RevenueContractWorkbench() {
@@ -45,17 +50,38 @@ export default function RevenueContractWorkbench() {
         {
             header: "Contract #",
             accessorKey: "contractNumber",
-            cell: (info) => <span className="font-mono font-medium">{info.getValue()}</span>
+            cell: (info: any) => (
+                <Link href={`/revenue/contracts/${info.row.original.id}`}>
+                    <a className="font-mono font-medium text-blue-600 hover:underline cursor-pointer">
+                        {info.getValue()}
+                    </a>
+                </Link>
+            )
         },
         {
             header: "Customer",
             accessorKey: "customerId", // Ideally fetched with name
-            cell: (info) => info.getValue() || "Unknown"
+            cell: (info: any) => info.getValue() || "Unknown"
+        },
+        {
+            header: "Entity",
+            accessorKey: "legalEntityId",
+            cell: (info: any) => <Badge variant="outline">{info.getValue() || "PRIMARY"}</Badge>
+        },
+        {
+            header: "Org",
+            accessorKey: "orgId",
+            cell: (info: any) => <span className="text-xs">{info.getValue() || "OU-01"}</span>
+        },
+        {
+            header: "Ver",
+            accessorKey: "versionNumber",
+            cell: (info: any) => <Badge variant="secondary" className="px-1 text-[10px]">v{info.getValue() || 1}</Badge>
         },
         {
             header: "Status",
             accessorKey: "status",
-            cell: (info) => {
+            cell: (info: any) => {
                 const status = info.getValue();
                 return (
                     <Badge variant={status === "Active" ? "default" : "secondary"}>
@@ -67,25 +93,27 @@ export default function RevenueContractWorkbench() {
         {
             header: "Total Price",
             accessorKey: "totalTransactionPrice",
-            cell: (info) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(info.getValue() || 0))
+            cell: (info: any) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(info.getValue() || 0))
         },
         {
             header: "Allocated",
             accessorKey: "totalAllocatedPrice",
-            cell: (info) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(info.getValue() || 0))
+            cell: (info: any) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(info.getValue() || 0))
         },
         {
             header: "Created",
             accessorKey: "createdAt",
-            cell: (info) => new Date(info.getValue()).toLocaleDateString()
+            cell: (info: any) => new Date(info.getValue()).toLocaleDateString()
         },
         {
             header: "Actions",
             id: "actions",
-            cell: (info) => (
-                <Button variant="ghost" size="sm" onClick={() => window.location.href = `/revenue/contracts/${info.row.original.id}`}>
-                    View Details
-                </Button>
+            cell: (info: any) => (
+                <Link href={`/revenue/contracts/${info.row.original.id}`}>
+                    <Button variant="ghost" size="sm">
+                        View Details
+                    </Button>
+                </Link>
             )
         }
     ];
@@ -97,6 +125,29 @@ export default function RevenueContractWorkbench() {
     const activeCount = contracts?.filter((c) => c.status === 'Active').length || 0;
     const totalValue = contracts?.reduce((sum, c) => sum + Number(c.totalTransactionPrice || 0), 0) || 0;
 
+    const processMutation = useMutation({
+        mutationFn: async () => {
+            const res = await fetch("/api/revenue/jobs/process-events", { method: "POST" });
+            if (!res.ok) throw new Error("Processing failed");
+            return res.json();
+        },
+        onSuccess: (data: any) => {
+            toast({
+                title: "Allocation Complete",
+                description: data.message || "Events processed successfully.",
+            });
+            // Refresh contracts
+            queryClient.invalidateQueries({ queryKey: ["revenueContracts"] });
+        },
+        onError: () => {
+            toast({
+                title: "Processing Failed",
+                description: "Failed to run allocation engine.",
+                variant: "destructive"
+            });
+        }
+    });
+
     return (
         <div className="p-6 space-y-6">
             <div className="flex justify-between items-center">
@@ -105,7 +156,13 @@ export default function RevenueContractWorkbench() {
                     <p className="text-muted-foreground mt-1">Asc 606 / IFRS 15 Management Workbench</p>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline">Run Allocation Engine</Button>
+                    <Button
+                        variant="outline"
+                        onClick={() => processMutation.mutate()}
+                        disabled={processMutation.isPending}
+                    >
+                        {processMutation.isPending ? "Processing..." : "Run Allocation Engine"}
+                    </Button>
                     <Button>+ New Contract</Button>
                 </div>
             </div>

@@ -107,6 +107,16 @@ export class SlaService {
             const revenueType = isDeferred ? "DEFERRED_REVENUE" : "REVENUE";
             const revenueCCID = await this.deriveAccount(revenueType, event.sourceData, event.ledgerId, event.eventClass);
             linesToInsert.push(this.makeLine(header.id, lineNumber++, isDeferred ? "Deferred Revenue" : "Revenue", revenueCCID, undefined, String(event.amount), event.currency, isDeferred ? "Deferred Revenue" : "Revenue Entry"));
+        } else if (event.eventClass === "REVENUE_RECOGNITION") {
+            // Deferred Revenue (Dr) - Reducing the liability
+            const deferredCCID = event.sourceData.deferredRevenueAccountCCID ||
+                await this.deriveAccount("DEFERRED_REVENUE", event.sourceData, event.ledgerId, event.eventClass);
+            linesToInsert.push(this.makeLine(header.id, lineNumber++, "Deferred Revenue", deferredCCID, String(event.amount), undefined, event.currency, "Recognition - Liability Relief"));
+
+            // Real Revenue (Cr) - Increasing the income
+            const revenueCCID = event.sourceData.revenueAccountCCID ||
+                await this.deriveAccount("REVENUE", event.sourceData, event.ledgerId, event.eventClass);
+            linesToInsert.push(this.makeLine(header.id, lineNumber++, "Revenue", revenueCCID, undefined, String(event.amount), event.currency, "Recognition - Income Realization"));
         }
         // ... (Keep other hardcoded flows but use updated deriveAccount) ...
 
@@ -168,20 +178,22 @@ export class SlaService {
 
         const lines = await db.select().from(slaJournalLines).where(eq(slaJournalLines.headerId, slaHeaderId));
 
-        const journal = await financeService.createJournal({
-            ledgerId: header.ledgerId,
-            periodName: "Jan-26",
+        const journalData = {
+            ledgerId: header.ledgerId || "PRIMARY",
             source: "SLA",
             category: header.eventClassId || "Manual",
-            currencyCode: header.currencyCode,
+            currencyCode: header.currencyCode || "USD",
             description: header.description || "SLA Import",
-            lines: lines.map(l => ({
-                accountId: l.codeCombinationId!,
-                enteredDr: l.enteredDr ? Number(l.enteredDr) : 0,
-                enteredCr: l.enteredCr ? Number(l.enteredCr) : 0,
-                description: l.description || ""
-            }))
-        }, userId);
+        };
+
+        const linesData = lines.map(l => ({
+            accountId: l.codeCombinationId!,
+            enteredDebit: l.enteredDr?.toString() || "0",
+            enteredCredit: l.enteredCr?.toString() || "0",
+            description: l.description || ""
+        }));
+
+        const journal = await financeService.createJournal(journalData as any, linesData as any, userId);
 
         await db.update(slaJournalHeaders).set({
             transferStatus: "Transferred",

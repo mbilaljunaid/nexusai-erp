@@ -62,6 +62,15 @@ export function AppSidebar() {
         { title: "Budget Planning", url: "/budget-planning", icon: DollarSign },
         { title: "Financial Reports", url: "/financial-reports", icon: BarChart3 },
         { title: "Cost Optimization", url: "/cost-optimization", icon: TrendingUp },
+        { title: "Financial Reports", url: "/financial-reports", icon: BarChart3 },
+        { title: "Cost Optimization", url: "/cost-optimization", icon: TrendingUp },
+      ],
+    },
+    {
+      label: "Revenue Management (ASC 606)",
+      items: [
+        { title: "Revenue Workbench", url: "/revenue/contracts", icon: DollarSign },
+        { title: "SSP Manager", url: "/revenue/ssp", icon: Settings },
       ],
     },
     {

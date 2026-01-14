@@ -24,7 +24,7 @@ interface SSPBook extends RevenueSspBook {
 }
 
 interface SSPLine extends RevenueSspLine {
-    // Add UI-specific fields if needed
+    itemName?: string;
 }
 
 export default function SSPManager() {
@@ -120,8 +120,9 @@ export default function SSPManager() {
 
     const lineColumns: ColumnDef<SSPLine>[] = [
         {
-            header: "Item ID",
-            accessorKey: "itemId",
+            header: "Item Name",
+            accessorKey: "itemName",
+            cell: (info) => info.getValue() || <span className="text-muted-foreground font-mono">{info.row.original.itemId}</span>
         },
         {
             header: "SSP Value",

@@ -370,7 +370,8 @@ const NettingWorkbench = lazy(() => import("@/pages/NettingWorkbench"));
 
 // Cost Management
 const CostDashboard = lazy(() => import("@/pages/cost-management/CostDashboard"));
-const ScenarioManager = lazy(() => import("@/pages/cost-management/ScenarioManager"));
+const CostInsights = lazy(() => import("@/pages/CostInsights"));
+const CostScenarioManager = lazy(() => import("@/pages/CostScenarioManager"));
 const DistributionsViewer = lazy(() => import("@/pages/cost-management/DistributionsViewer"));
 const LcmWorkbench = lazy(() => import("@/pages/cost-management/LcmWorkbench"));
 
@@ -584,7 +585,13 @@ const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTrac
 
 // Revenue Management
 const RevenueContractWorkbench = lazy(() => import("@/pages/RevenueContractWorkbench"));
+const RevenueContractDetail = lazy(() => import("@/pages/RevenueContractDetail"));
+const RevenuePeriodClose = lazy(() => import("@/pages/RevenuePeriodClose"));
 const SSPManager = lazy(() => import("@/pages/SSPManager"));
+const RevenueWaterfall = lazy(() => import("@/pages/RevenueWaterfall"));
+const DeferredRevenueMatrix = lazy(() => import("@/pages/DeferredRevenueMatrix"));
+const RevenueSourceEvents = lazy(() => import("@/pages/RevenueSourceEvents"));
+const RevenueAccountingSetup = lazy(() => import("@/pages/RevenueAccountingSetup"));
 
 // Automotive Pack
 const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
@@ -653,7 +660,6 @@ function Router() {
       <Route path="/finance/ar/analytics" component={ArAnalytics} />
       <Route path="/finance/ar/reports" component={ArReports} />
       <Route path="/finance/ar/customers/:id" component={CustomerDetails} />
-      <Route path="/finance/netting" component={NettingWorkbench} />
 
       {/* Customer Portal Routes */}
       <Route path="/portal/login" component={PortalLogin} />
@@ -782,7 +788,13 @@ function Router() {
 
       {/* Revenue Management */}
       <Route path="/revenue/contracts" component={RevenueContractWorkbench} />
+      <Route path="/revenue/contracts/:id" component={RevenueContractDetail} />
+      <Route path="/revenue/periods" component={RevenuePeriodClose} />
       <Route path="/revenue/ssp" component={SSPManager} />
+      <Route path="/revenue/waterfall" component={RevenueWaterfall} />
+      <Route path="/revenue/deferred" component={DeferredRevenueMatrix} />
+      <Route path="/revenue/events" component={RevenueSourceEvents} />
+      <Route path="/revenue/setup" component={RevenueAccountingSetup} />
 
       {/* Public Documentation Routes */}
       <Route path="/docs/process-flows" component={ProcessFlowsPage} />
@@ -855,7 +867,8 @@ function Router() {
 
       {/* Cost Management Routes */}
       <Route path="/cost" component={CostDashboard} />
-      <Route path="/cost/scenarios" component={ScenarioManager} />
+      <Route path="/cost/dashboard" component={CostDashboard} />
+      <Route path="/cost/insights" component={CostInsights} />
       <Route path="/cost/distributions" component={DistributionsViewer} />
       <Route path="/cost/lcm" component={LcmWorkbench} />
       <Route path="/gl/config/ledger-sets" component={LedgerSetSetup} />

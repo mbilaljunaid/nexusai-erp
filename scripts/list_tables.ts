@@ -1,19 +1,19 @@
 
-import "dotenv/config";
-import { db } from "../server/db";
-import { sql } from "drizzle-orm";
+import pg from "pg";
 
-async function main() {
-    console.log("Listing tables...");
-    const result = await db.execute(sql`
-        SELECT table_name 
-        FROM information_schema.tables 
-        WHERE table_schema = 'public'
-        ORDER BY table_name;
-    `);
-
-    console.log("Tables found:", result.rows.map(r => r.table_name));
-    process.exit(0);
+async function listTables() {
+    const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+    try {
+        const res = await pool.query(`
+            SELECT tablename 
+            FROM pg_catalog.pg_tables 
+            WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'
+        `);
+        console.log("Database Tables:");
+        res.rows.forEach(row => console.log(` - ${row.tablename}`));
+    } finally {
+        await pool.end();
+    }
 }
 
-main();
+listTables();

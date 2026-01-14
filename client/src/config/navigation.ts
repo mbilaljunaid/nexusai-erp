@@ -102,10 +102,28 @@ export const navigationConfig: SidebarNode[] = [
                 icon: DollarSign,
                 allowedRoles: ["admin", "editor"],
                 children: [
-                    { id: "cost-dashboard", title: "Dashboard", type: "link", path: "/cost" },
+                    { id: "cost-dashboard", title: "Cost Dashboard", type: "link", path: "/cost/dashboard" },
+                    { id: "cost-insights", title: "Cost Insights", type: "link", path: "/cost/insights", icon: Sparkles },
+                    { id: "cost-setup", title: "Cost Setup", type: "link", path: "/cost/setup", icon: SettingsIcon },
                     { id: "cost-distributions", title: "Cost Distributions", type: "link", path: "/cost/distributions" },
                     { id: "cost-lcm", title: "Landed Cost", type: "link", path: "/cost/lcm" },
                     { id: "cost-scenarios", title: "Scenario Manager", type: "link", path: "/cost/scenarios" },
+                ]
+            },
+            {
+                id: "revenue",
+                title: "Revenue Management",
+                type: "section",
+                icon: DollarSign,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "rev-workbench", title: "Contracts Workbench", type: "link", path: "/revenue/contracts" },
+                    { id: "rev-ssp", title: "SSP Manager", type: "link", path: "/revenue/ssp" },
+                    { id: "rev-waterfall", title: "Revenue Waterfall", type: "link", path: "/revenue/waterfall" },
+                    { id: "rev-deferred", title: "Deferred Revenue", type: "link", path: "/revenue/deferred" },
+                    { id: "rev-events", title: "Source Events", type: "link", path: "/revenue/events", icon: Radio },
+                    { id: "rev-setup", title: "Accounting Setup", type: "link", path: "/revenue/setup", icon: SettingsIcon },
+                    { id: "rev-periods", title: "Period Close", type: "link", path: "/revenue/periods", icon: Lock },
                 ]
             },
             {

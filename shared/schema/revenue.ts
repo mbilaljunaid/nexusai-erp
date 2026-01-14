@@ -46,11 +46,14 @@ export const revenueContracts = pgTable("revenue_contracts", {
     status: varchar("status").default("Draft"), // Draft, Active, Frozen, Closed
     customerId: varchar("customer_id").notNull(),
     ledgerId: varchar("ledger_id").notNull(),
+    legalEntityId: varchar("legal_entity_id"), // Added for Phase A
+    orgId: varchar("org_id"),                 // Added for Phase A
     currency: varchar("currency").default("USD"),
     totalTransactionPrice: numeric("total_transaction_price", { precision: 18, scale: 2 }).default("0"),
     totalAllocatedPrice: numeric("total_allocated_price", { precision: 18, scale: 2 }).default("0"),
     approvalStatus: varchar("approval_status").default("Pending"),
     contractSignDate: timestamp("contract_sign_date"),
+    versionNumber: integer("version_number").default(1), // Added for Phase A
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -126,6 +129,10 @@ export const revenueSourceEvents = pgTable("revenue_source_events", {
     quantity: numeric("quantity", { precision: 18, scale: 2 }),
     amount: numeric("amount", { precision: 18, scale: 2 }),
     currency: varchar("currency"),
+    // Ingested reference (e.g. Sales Order #, Billing Doc #)
+    referenceNumber: varchar("reference_number"), // Added for Phase A
+    legalEntityId: varchar("legal_entity_id"),     // Added for Phase A
+    orgId: varchar("org_id"),                     // Added for Phase A
 
     // Processing Status
     processingStatus: varchar("processing_status").default("Pending"), // Pending, Processed, Error, Ignored

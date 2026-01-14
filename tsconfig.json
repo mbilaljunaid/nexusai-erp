@@ -45,6 +45,15 @@
       ],
       "@shared/*": [
         "./shared/*"
+      ],
+      "@db/*": [
+        "./server/db/*"
+      ],
+      "@db": [
+        "./server/db.ts"
+      ],
+      "@db/schema": [
+        "./shared/schema/index.ts"
       ]
     }
   }
