@@ -3,8 +3,9 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Search, FileText, ArrowRight, Database } from "lucide-react";
+import { Search, FileText, ArrowRight, Database, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardTable } from "@/components/ui/StandardTable";
 import { format } from "date-fns";
@@ -87,7 +88,12 @@ export default function RevenueAuditConsole() {
                             </CardHeader>
                             <CardContent className="pt-4 space-y-2 text-sm">
                                 <div className="flex justify-between"><span className="text-muted-foreground">Source System:</span> <span className="font-medium">{auditTrace.sourceEvent.sourceSystem}</span></div>
-                                <div className="flex justify-between"><span className="text-muted-foreground">Source ID:</span> <span className="font-mono">{auditTrace.sourceEvent.sourceId}</span></div>
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Source ID:</span>
+                                    <Link to={`/billing/invoices/${auditTrace.sourceEvent.sourceId}`} className="font-mono text-indigo-600 hover:underline flex items-center gap-1">
+                                        {auditTrace.sourceEvent.sourceId} <ExternalLink className="h-3 w-3" />
+                                    </Link>
+                                </div>
                                 <div className="flex justify-between"><span className="text-muted-foreground">Amount:</span> <span className="font-medium">{auditTrace.sourceEvent.amount} {auditTrace.sourceEvent.currency}</span></div>
                                 <div className="flex justify-between"><span className="text-muted-foreground">Event Date:</span> <span>{new Date(auditTrace.sourceEvent.eventDate).toLocaleDateString()}</span></div>
                                 <div className="flex justify-between"><span className="text-muted-foreground">Status:</span> <Badge>{auditTrace.sourceEvent.processingStatus}</Badge></div>

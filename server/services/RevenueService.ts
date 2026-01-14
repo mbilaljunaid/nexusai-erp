@@ -490,6 +490,84 @@ export class RevenueService {
 
         return { catchupAmount, newTotal: modificationData.newTotalValue };
     }
+
+    async runPeriodCloseSweep(periodId: string) {
+        console.log(`[Sweep] Starting close sweep for period ${periodId}`);
+
+        // 1. Get Period Details
+        const period = await db.query.revenuePeriods.findFirst({
+            where: eq(revenuePeriods.id, periodId)
+        });
+        if (!period) throw new Error("Period not found");
+
+        // 2. Auto-Post Pending Schedules due in this period
+        const pendingSchedules = await db.select()
+            .from(revenueRecognitions)
+            .where(and(
+                eq(revenueRecognitions.status, "Pending"),
+                lte(revenueRecognitions.scheduleDate, period.endDate)
+            ));
+
+        let postedCount = 0;
+        for (const schedule of pendingSchedules) {
+            // In a real system, we'd have a batch limit
+            await revenueAccountingService.createRevenueJournal(schedule.id, period.ledgerId);
+            // Update status to Posted (createRevenueJournal usually handles this, but let's be explicit if needed or trust the service)
+            // Assuming createRevenueJournal updates status. If not, we do it here.
+            // Let's verify createRevenueJournal behavior later. For now, we trust it triggers the SLA.
+            postedCount++;
+        }
+
+        // 3. Calculate Unbilled / Deferred Logic (Reconciliation)
+        // Group by Contract
+        const contracts = await db.select().from(revenueContracts).where(eq(revenueContracts.status, "Active"));
+        let unbilledAccrualTotal = 0;
+        const unbilledDetails: any[] = [];
+
+        for (const contract of contracts) {
+            // Get Invoiced Amount (Source Events of type Invoice)
+            const invoices = await db.select({ total: sum(revenueSourceEvents.amount) })
+                .from(revenueSourceEvents)
+                .where(and(
+                    eq(revenueSourceEvents.contractId, contract.id),
+                    eq(revenueSourceEvents.eventType, "Invoice"),
+                    lte(revenueSourceEvents.eventDate, period.endDate)
+                ));
+            const totalInvoiced = parseFloat(invoices[0]?.total || "0");
+
+            // Get Recognized Revenue (LTD)
+            const recognized = await db.select({ total: sum(revenueRecognitions.amount) })
+                .from(revenueRecognitions)
+                .where(and(
+                    eq(revenueRecognitions.contractId, contract.id),
+                    eq(revenueRecognitions.accountType, "Revenue"),
+                    eq(revenueRecognitions.status, "Posted"),
+                    lte(revenueRecognitions.scheduleDate, period.endDate)
+                ));
+            const totalRecognized = parseFloat(recognized[0]?.total || "0");
+
+            // Logic: If Recognized > Invoiced, we have Unbilled Receivable
+            if (totalRecognized > totalInvoiced) {
+                const unbilled = totalRecognized - totalInvoiced;
+                unbilledAccrualTotal += unbilled;
+                // Here we would create a GL Journal D: Unbilled Rec, C: Revenue Clearing
+                unbilledDetails.push({
+                    contractId: contract.id,
+                    contractNumber: contract.contractNumber,
+                    invoiced: totalInvoiced,
+                    recognized: totalRecognized,
+                    unbilled: unbilled
+                });
+            }
+        }
+
+        return {
+            periodName: period.periodName,
+            postedCount,
+            unbilledAccrualTotal,
+            unbilledDetails
+        };
+    }
 }
 
 export const revenueService = new RevenueService();

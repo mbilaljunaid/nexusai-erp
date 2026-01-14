@@ -415,6 +415,20 @@ export function registerRevenueRoutes(app: Express) {
         }
     });
 
+    app.post("/api/revenue/periods/:id/sweep", async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const result = await revenueService.runPeriodCloseSweep(id);
+            res.json({
+                message: "Period Close Sweep completed successfully",
+                ...result
+            });
+        } catch (error: any) {
+            console.error("Sweep Error:", error);
+            res.status(500).json({ error: error.message || "Failed to run period sweep" });
+        }
+    });
+
     // 7. Rule Manager Routes
     // Identification Rules
     app.get("/api/revenue/rules/identification", async (req: Request, res: Response) => {
@@ -513,6 +527,20 @@ export function registerRevenueRoutes(app: Express) {
         } catch (error) {
             console.error("Audit Trace Error:", error);
             res.status(500).json({ error: "Failed to build audit trace" });
+        }
+    });
+
+    // 9. Forecasting
+    app.get("/api/revenue/forecasting/projection", async (req: Request, res: Response) => {
+        try {
+            const months = parseInt(req.query.months as string) || 6;
+            // Lazy load service to avoid circular deps if needed, or import at top
+            const { revenueForecastingService } = await import("../../services/RevenueForecastingService");
+            const result = await revenueForecastingService.generateForecast(months);
+            res.json(result);
+        } catch (error) {
+            console.error("Forecasting Error:", error);
+            res.status(500).json({ error: "Failed to generate forecast" });
         }
     });
 }

@@ -19,7 +19,8 @@ import {
     LockKeyhole,
     CheckCircle2,
     AlertCircle,
-    Info
+    Info,
+    SearchCheck
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -33,6 +34,27 @@ export default function RevenuePeriodClose() {
             const res = await fetch("/api/revenue/periods");
             if (!res.ok) throw new Error("Failed to fetch periods");
             return res.json();
+        }
+    });
+
+    const sweepMutation = useMutation({
+        mutationFn: async (periodId: string) => {
+            const res = await fetch(`/api/revenue/periods/${periodId}/sweep`, { method: "POST" });
+            if (!res.ok) throw new Error("Sweep failed");
+            return res.json();
+        },
+        onSuccess: (data: any) => {
+            toast({
+                title: "Sweep Complete",
+                description: `Processed: ${data.postedCount || 0}, Unbilled Accrual: $${data.unbilledAccrualTotal || 0}`,
+            });
+        },
+        onError: (error: any) => {
+            toast({
+                title: "Sweep Failed",
+                description: error.message,
+                variant: "destructive"
+            });
         }
     });
 
@@ -105,15 +127,27 @@ export default function RevenuePeriodClose() {
             cell: (info: any) => {
                 const period = info.row.original;
                 return (
-                    <Button
-                        variant="soft"
-                        size="sm"
-                        disabled={period.status !== "Open" || closeMutation.isPending}
-                        onClick={() => closeMutation.mutate(period.id)}
-                    >
-                        <LockKeyhole className="h-4 w-4 mr-2" />
-                        Close Period
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={period.status !== "Open" || sweepMutation.isPending}
+                            onClick={() => sweepMutation.mutate(period.id)}
+                            title="Run Sweep: Auto-post schedules & calculate unbilled"
+                        >
+                            <SearchCheck className="h-4 w-4 mr-2" />
+                            Run Sweep
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            disabled={period.status !== "Open" || closeMutation.isPending}
+                            onClick={() => closeMutation.mutate(period.id)}
+                        >
+                            <LockKeyhole className="h-4 w-4 mr-2" />
+                            Close
+                        </Button>
+                    </div>
                 );
             }
         }

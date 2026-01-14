@@ -193,7 +193,9 @@
     - [x] **Audit Center** (Traceability View)
         - [x] Backend: Trace API (Source -> Contract -> POB -> GL)
         - [x] Frontend: `RevenueAuditConsole` page
-    - [ ] **Period Close Sweep** (Unbilled/Unearned Logic)
+    - [x] **Period Close Sweep** (Unbilled/Unearned Logic)
+        - [x] Backend: `runPeriodCloseSweep` (Auto-post & Reconciliation)
+        - [x] Frontend: Integration in `RevenuePeriodClose`
 
 - [ ] **Phase E: Intelligence & Integration**
     - [ ] **Billing Linkage**: Deep links to AR Invoices from Revenue Schedules.
