@@ -22,7 +22,10 @@ import {
 } from "lucide-react";
 import { revenueContracts } from "@shared/schema/revenue";
 // Infer type since we don't have explicit Zod export for Select yet, or use any for now to unblock
-type RevenueContract = typeof revenueContracts.$inferSelect;
+type RevenueContract = typeof revenueContracts.$inferSelect & {
+    customerName?: string;
+    ledgerName?: string;
+};
 import { useToast } from "@/hooks/use-toast";
 
 export default function RevenueContractWorkbench() {
@@ -60,8 +63,13 @@ export default function RevenueContractWorkbench() {
         },
         {
             header: "Customer",
-            accessorKey: "customerId", // Ideally fetched with name
-            cell: (info: any) => info.getValue() || "Unknown"
+            accessorKey: "customerName",
+            cell: (info: any) => info.getValue() || info.row.original.customerId || "Unknown"
+        },
+        {
+            header: "Ledger",
+            accessorKey: "ledgerName",
+            cell: (info: any) => <span className="text-xs">{info.getValue() || info.row.original.ledgerId}</span>
         },
         {
             header: "Entity",

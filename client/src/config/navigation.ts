@@ -119,11 +119,15 @@ export const navigationConfig: SidebarNode[] = [
                 children: [
                     { id: "rev-workbench", title: "Contracts Workbench", type: "link", path: "/revenue/contracts" },
                     { id: "rev-ssp", title: "SSP Manager", type: "link", path: "/revenue/ssp" },
+                    { id: "rev-rules", title: "Revenue Rules", type: "link", path: "/revenue/rules", icon: Shield },
                     { id: "rev-waterfall", title: "Revenue Waterfall", type: "link", path: "/revenue/waterfall" },
                     { id: "rev-deferred", title: "Deferred Revenue", type: "link", path: "/revenue/deferred" },
                     { id: "rev-events", title: "Source Events", type: "link", path: "/revenue/events", icon: Radio },
                     { id: "rev-setup", title: "Accounting Setup", type: "link", path: "/revenue/setup", icon: SettingsIcon },
                     { id: "rev-periods", title: "Period Close", type: "link", path: "/revenue/periods", icon: Lock },
+                    { id: "rev-forecast", title: "Forecasting", type: "link", path: "/revenue/forecasting", icon: BarChart3 },
+                    { id: "rev-assurance", title: "Assurance", type: "link", path: "/revenue/assurance", icon: Shield },
+                    { id: "rev-optimization", title: "Optimization", type: "link", path: "/revenue/optimization", icon: Zap },
                 ]
             },
             {

@@ -135,6 +135,36 @@ export default function SSPManager() {
         }
     ];
 
+    const [isLineDialogOpen, setIsLineDialogOpen] = useState(false);
+    const [newLineData, setNewLineData] = useState({ itemId: "", sspValue: "", minQuantity: "0" });
+
+    const createLineMutation = useMutation({
+        mutationFn: async (data: typeof newLineData) => {
+            if (!selectedBook) throw new Error("No book selected");
+            const res = await fetch("/api/revenue/ssp/lines", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    bookId: selectedBook,
+                    itemId: data.itemId,
+                    sspValue: data.sspValue,
+                    minQuantity: data.minQuantity
+                })
+            });
+            if (!res.ok) throw new Error("Failed to add line");
+            return res.json();
+        },
+        onSuccess: () => {
+            toast({ title: "Success", description: "SSP Line added successfully." });
+            queryClient.invalidateQueries({ queryKey: ["sspLines", selectedBook] });
+            setIsLineDialogOpen(false);
+            setNewLineData({ itemId: "", sspValue: "", minQuantity: "0" });
+        },
+        onError: () => {
+            toast({ title: "Error", description: "Failed to add SSP line", variant: "destructive" });
+        }
+    });
+
     if (booksLoading) return <div className="p-8"><Skeleton className="h-64 w-full" /></div>;
 
     return (
@@ -191,7 +221,49 @@ export default function SSPManager() {
                                     ? `Lines for ${sspBooks?.find((b: any) => b.id === selectedBook)?.name}`
                                     : "Select a Book to View Lines"}
                             </CardTitle>
-                            {selectedBook && <Button variant="outline" size="sm">+ Add Line</Button>}
+                            {selectedBook && (
+                                <Dialog open={isLineDialogOpen} onOpenChange={setIsLineDialogOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" size="sm">+ Add Line</Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Add SSP Line</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="space-y-4 py-4">
+                                            <div className="space-y-2">
+                                                <Label>Item ID</Label>
+                                                <Input
+                                                    value={newLineData.itemId}
+                                                    onChange={(e) => setNewLineData({ ...newLineData, itemId: e.target.value })}
+                                                    placeholder="Product UUID or SKU"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>SSP Value ($)</Label>
+                                                <Input
+                                                    type="number"
+                                                    value={newLineData.sspValue}
+                                                    onChange={(e) => setNewLineData({ ...newLineData, sspValue: e.target.value })}
+                                                    placeholder="0.00"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Min Quantity</Label>
+                                                <Input
+                                                    type="number"
+                                                    value={newLineData.minQuantity}
+                                                    onChange={(e) => setNewLineData({ ...newLineData, minQuantity: e.target.value })}
+                                                    placeholder="0"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <Button onClick={() => createLineMutation.mutate(newLineData)}>Add Line</Button>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
                         </CardHeader>
                         <CardContent>
                             {selectedBook ? (

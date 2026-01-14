@@ -5,7 +5,8 @@ import {
     revenuePeriods
 } from "@db/schema/revenue";
 import { revenueGlAccounts as revAcctSchema } from "@db/schema/revenue_accounting";
-import { products } from "@shared/schema/crm";
+import { products, accounts } from "@shared/schema/crm";
+import { glLedgers } from "@shared/schema/finance";
 import { eq, desc, and, lte, gte } from "drizzle-orm";
 import { revenueService } from "../../services/RevenueService";
 import type { Express, Request, Response } from "express";
@@ -54,11 +55,21 @@ export function registerRevenueRoutes(app: Express) {
     // 1. Get All Contracts (Workbench List)
     app.get("/api/revenue/contracts", async (req: Request, res: Response) => {
         try {
-            // In real world, pagination is mandatory for >1M contracts.
-            // Implementing basic limit for now.
-            const contracts = await db.select().from(revenueContracts)
+            // Import schemas dynamically if not at top-level to assure no circular deps, 
+            // or just use what we have.
+            // We need to join with accounts (Customer) and glLedgers.
+            // Note: Imports must be added to top of file.
+
+            const contracts = await db.select({
+                ...revenueContracts,
+                customerName: accounts.name,
+                ledgerName: glLedgers.name,
+            })
+                .from(revenueContracts)
+                .leftJoin(accounts, eq(revenueContracts.customerId, accounts.id))
+                .leftJoin(glLedgers, eq(revenueContracts.ledgerId, glLedgers.id))
                 .orderBy(desc(revenueContracts.createdAt))
-                .limit(50);
+                .limit(50); // Pagination needed later
 
             res.json(contracts);
         } catch (error) {
@@ -367,6 +378,63 @@ export function registerRevenueRoutes(app: Express) {
         } catch (error: any) {
             console.error("Period Close Error:", error);
             res.status(500).json({ error: error.message || "Failed to close period" });
+        }
+    });
+
+    // 7. Rule Manager Routes
+    // Identification Rules
+    app.get("/api/revenue/rules/identification", async (req: Request, res: Response) => {
+        try {
+            const rules = await db.select().from(revenueIdentificationRules)
+                .orderBy(desc(revenueIdentificationRules.priority));
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch identification rules" });
+        }
+    });
+
+    app.post("/api/revenue/rules/identification", async (req: Request, res: Response) => {
+        try {
+            const [rule] = await db.insert(revenueIdentificationRules).values({
+                name: req.body.name,
+                description: req.body.description,
+                groupingCriteria: req.body.groupingCriteria, // Array of strings
+                priority: parseInt(req.body.priority || "1"),
+                status: "Active"
+            }).returning();
+            res.json(rule);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create identification rule" });
+        }
+    });
+
+    // POB Rules
+    app.get("/api/revenue/rules/pob", async (req: Request, res: Response) => {
+        try {
+            const rules = await db.select().from(performanceObligationRules)
+                .orderBy(desc(performanceObligationRules.priority));
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch POB rules" });
+        }
+    });
+
+    app.post("/api/revenue/rules/pob", async (req: Request, res: Response) => {
+        try {
+            const [rule] = await db.insert(performanceObligationRules).values({
+                name: req.body.name,
+                description: req.body.description,
+                attributeName: req.body.attributeName,
+                attributeValue: req.body.attributeValue,
+                pobName: req.body.pobName,
+                satisfactionMethod: req.body.satisfactionMethod || "Ratable",
+                defaultDurationMonths: parseInt(req.body.defaultDurationMonths || "12"),
+                priority: parseInt(req.body.priority || "1"),
+                status: "Active"
+            }).returning();
+            res.json(rule);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to create POB rule" });
         }
     });
 }

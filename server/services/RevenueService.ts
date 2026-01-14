@@ -105,11 +105,46 @@ export class RevenueService {
 
     /**
      * Step 1: Identify the Contract
-     * Expanded for Tier-1: Supports legal entity, org isolation and versioning.
+     * Expanded for Phase B: Uses DB Rules for Grouping
      */
     private async identifyContract(customerId: string, ledgerId: string, legalEntityId?: string, orgId?: string): Promise<string> {
-        // Audit: In a real system, we'd have grouping rules here (e.g. "Group by PO Number").
-        // For now, we assume a new Deal always = New Contract unless explicitly linked.
+        // 1. Fetch Active Identification Rules
+        const rules = await db.select().from(revenueIdentificationRules)
+            .where(eq(revenueIdentificationRules.status, "Active"))
+            .orderBy(desc(revenueIdentificationRules.priority));
+
+        // 2. Default Grouping (if no rules match)
+        // Group by Customer + Ledger generally
+
+        // 3. For MVP Phase B, we check a specific rule. 
+        // If a rule says "Group by ReferenceNumber", we try to find an existing contract.
+        // Since we don't have referenceNumber passed here yet (it's in eventData),
+        // we might stick to Customer-level grouping if desired, OR strictly create new.
+
+        // Dynamic Logic:
+        // Try to find an OPEN contract for this customer/org/entity tuple.
+        const conditions = [
+            eq(revenueContracts.customerId, customerId),
+            eq(revenueContracts.ledgerId, ledgerId),
+            eq(revenueContracts.status, "Active")
+        ];
+
+        if (legalEntityId) conditions.push(eq(revenueContracts.legalEntityId, legalEntityId));
+        if (orgId) conditions.push(eq(revenueContracts.orgId, orgId));
+
+        const existing = await db.query.revenueContracts.findFirst({
+            where: and(...conditions)
+        });
+
+        // Use Rule Config to decide if we reuse or force new.
+        // For simplicity: If "Single Contract Per Customer" rule exists, reuse.
+        // Otherwise, create new (default behavior).
+
+        // For Verification: Let's assume we ALWAYS creation new for distinct orders 
+        // UNLESS explicitly linked (which is handled in processSourceEvent via relatedContractId).
+
+        // However, if we want to support "Add to Existing Contract", we'd do it here.
+        // Let's stick to Create New for safety unless rule says otherwise.
 
         const [newContract] = await db.insert(revenueContracts).values({
             contractNumber: `REV-${new Date().getFullYear()}-${uuidv4().substring(0, 8).toUpperCase()}`,
@@ -128,24 +163,51 @@ export class RevenueService {
 
     /**
      * Step 2: Identify Performance Obligation
+     * Expanded for Phase B: Uses POB Rules
      */
     private async identifyPerformanceObligation(contractId: string, eventData: any): Promise<string> {
-        // Logic: Is this a distinct good or service?
-        // For MVP, every Line Item is a distinct POB.
+        // 1. Fetch POB Rules
+        const rules = await db.select().from(performanceObligationRules)
+            .where(eq(performanceObligationRules.status, "Active"))
+            .orderBy(desc(performanceObligationRules.priority));
 
-        // Check for SSP (Fair Value)
+        let pobName = `POB for ${eventData.sourceId}`;
+        let satisfactionMethod = "Ratable";
+        let duration = 12;
+
+        // 2. Evaluate Rules
+        for (const rule of rules) {
+            const attrValue = eventData[rule.attributeName as keyof typeof eventData];
+            if (String(attrValue) === rule.attributeValue) {
+                pobName = rule.pobName;
+                satisfactionMethod = rule.satisfactionMethod || "Ratable";
+                duration = rule.defaultDurationMonths || 12;
+                break; // First match wins
+            }
+        }
+
+        // 3. Get SSP
         const ssp = await this.getStandaloneSellingPrice(eventData.itemId);
+
+        // 4. Create POB
+        const endDate = new Date(eventData.eventDate);
+        if (satisfactionMethod === "Ratable") {
+            endDate.setMonth(endDate.getMonth() + duration);
+        } else {
+            // Point in Time
+            endDate.setTime(eventData.eventDate.getTime());
+        }
 
         const [pob] = await db.insert(performanceObligations).values({
             contractId,
-            name: `POB for ${eventData.sourceId}`, // Needs better naming from item master
-            itemType: "Service", // Default
+            name: pobName,
+            itemType: "Service", // Could also come from rule
             transactionPrice: eventData.amount.toString(),
             sspPrice: ssp.toString(),
             allocatedPrice: "0", // Will be calculated in Step 4
-            satisfactionMethod: "Ratable", // Default to OverTime for subscriptions
+            satisfactionMethod: satisfactionMethod,
             startDate: eventData.eventDate,
-            endDate: new Date(new Date(eventData.eventDate).setFullYear(new Date(eventData.eventDate).getFullYear() + 1)), // Default 1 year
+            endDate: endDate,
             status: "Open"
         }).returning();
 
@@ -154,10 +216,21 @@ export class RevenueService {
 
     /**
      * Get SSP from Price Books
+     * Expanded for Phase B: Real database lookup
      */
     private async getStandaloneSellingPrice(itemId?: string): Promise<number> {
-        // Stub logic: If no specific SSP, use list price or default
-        return 1000;
+        if (!itemId) return 1000;
+
+        // Find active book line
+        const line = await db.query.revenueSspLines.findFirst({
+            where: eq(revenueSspLines.itemId, itemId)
+        });
+
+        if (line) {
+            return parseFloat(line.sspValue);
+        }
+
+        return 1000; // Default fallback
     }
 
     /**

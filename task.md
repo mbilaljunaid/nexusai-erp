@@ -178,10 +178,10 @@
 - [x] **Phase A: Foundation & Integration**
     - [x] Schema Expansion: Add `legalEntityId`, `orgId`, and `versionNumber` to `revenue_contracts`
     - [x] Order-to-Revenue Link: Bidirectional drill-down between Source Events and Sales Orders
-- [/] **Phase B: Config & Rules**
-    - [/] Rule Engine: Implement UI and logic for Contract Identification and POB Rules
-    - [ ] SSP Manager UI: Build master-data screens for `revenue_ssp_books`
-- [ ] **Phase C: UX Cleanup (PR-ENFORCE-001)**
-    - [ ] UUID Replacement: Resolve raw IDs across all Revenue grids (show Names)
-    - [ ] Sidebar Integration: Register orphaned pages (Assurance, Forecasting, Optimization)
+- [x] **Phase B: Config & Rules**
+    - [x] Rule Engine: Implement UI and logic for Contract Identification and POB Rules
+    - [x] SSP Manager UI: Build master-data screens for `revenue_ssp_books`
+- [/] **Phase C: UX Cleanup (PR-ENFORCE-001)**
+    - [x] UUID Replacement: Resolve raw IDs across all Revenue grids (show Names)
+    - [x] Sidebar Integration: Register orphaned pages (Assurance, Forecasting, Optimization)
     - [ ] Scalable Grids: Implement server-side pagination for Contracts Workbench

@@ -299,7 +299,6 @@ const SalesAnalytics = lazy(() => import("@/pages/SalesAnalytics"));
 const FinancialAnalytics = lazy(() => import("@/pages/FinancialAnalytics"));
 const OperationalAnalytics = lazy(() => import("@/pages/OperationalAnalytics"));
 const LeadScoringAnalytics = lazy(() => import("@/pages/LeadScoringAnalytics"));
-const RevenueForecasting = lazy(() => import("@/pages/RevenueForecasting"));
 const ChurnRiskAnalysis = lazy(() => import("@/pages/ChurnRiskAnalysis"));
 const ExportManager = lazy(() => import("@/pages/ExportManager"));
 const ScheduledReports = lazy(() => import("@/pages/ScheduledReports"));
@@ -585,6 +584,7 @@ const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTrac
 
 // Revenue Management
 const RevenueContractWorkbench = lazy(() => import("@/pages/RevenueContractWorkbench"));
+const RevenueRuleManager = lazy(() => import("@/pages/RevenueRuleManager"));
 const RevenueContractDetail = lazy(() => import("@/pages/RevenueContractDetail"));
 const RevenuePeriodClose = lazy(() => import("@/pages/RevenuePeriodClose"));
 const SSPManager = lazy(() => import("@/pages/SSPManager"));
@@ -592,6 +592,9 @@ const RevenueWaterfall = lazy(() => import("@/pages/RevenueWaterfall"));
 const DeferredRevenueMatrix = lazy(() => import("@/pages/DeferredRevenueMatrix"));
 const RevenueSourceEvents = lazy(() => import("@/pages/RevenueSourceEvents"));
 const RevenueAccountingSetup = lazy(() => import("@/pages/RevenueAccountingSetup"));
+const RevenueAssurance = lazy(() => import("@/pages/RevenueAssurance"));
+const RevenueForecasting = lazy(() => import("@/pages/RevenueForecasting"));
+const RevenueOptimization = lazy(() => import("@/pages/RevenueOptimization"));
 
 // Automotive Pack
 const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
@@ -791,10 +794,14 @@ function Router() {
       <Route path="/revenue/contracts/:id" component={RevenueContractDetail} />
       <Route path="/revenue/periods" component={RevenuePeriodClose} />
       <Route path="/revenue/ssp" component={SSPManager} />
+      <Route path="/revenue/rules" component={RevenueRuleManager} />
       <Route path="/revenue/waterfall" component={RevenueWaterfall} />
       <Route path="/revenue/deferred" component={DeferredRevenueMatrix} />
       <Route path="/revenue/events" component={RevenueSourceEvents} />
       <Route path="/revenue/setup" component={RevenueAccountingSetup} />
+      <Route path="/revenue/assurance" component={RevenueAssurance} />
+      <Route path="/revenue/forecasting" component={RevenueForecasting} />
+      <Route path="/revenue/optimization" component={RevenueOptimization} />
 
       {/* Public Documentation Routes */}
       <Route path="/docs/process-flows" component={ProcessFlowsPage} />
