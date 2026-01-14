@@ -1,10 +1,10 @@
-import { db } from "@db";
+import { db } from "../db";
 import {
     revenueContracts, performanceObligations, revenueRecognitions,
     revenueSourceEvents, revenueSspBooks, revenueSspLines,
     revenueIdentificationRules, performanceObligationRules,
     revenuePeriods, revenueContractVersions
-} from "@db/schema";
+} from "../../shared/schema";
 import { eq, and, sum, desc, sql, lte, gte } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 import { revenueAccountingService } from "./RevenueAccountingService";
@@ -566,6 +566,82 @@ export class RevenueService {
             postedCount,
             unbilledAccrualTotal,
             unbilledDetails
+        };
+        return {
+            periodName: period.periodName,
+            postedCount,
+            unbilledAccrualTotal,
+            unbilledDetails
+        };
+    }
+
+    /**
+     * INTELLIGENCE: Contract Risk Analysis
+     * Scans a contract for potential revenue risks.
+     */
+    async analyzeContractRisk(contractId: string) {
+        // 1. Fetch Contract & Financials
+        const contract = await db.query.revenueContracts.findFirst({
+            where: eq(revenueContracts.id, contractId)
+        });
+        if (!contract) throw new Error("Contract not found");
+
+        const totalValue = parseFloat(contract.totalAllocatedPrice || "0");
+
+        // Get Deferred Balance (Liability)
+        const recognitions = await db.select({
+            amount: sum(revenueRecognitions.amount).mapWith(Number)
+        }).from(revenueRecognitions)
+            .where(and(
+                eq(revenueRecognitions.contractId, contractId),
+                eq(revenueRecognitions.accountType, "Revenue"),
+                eq(revenueRecognitions.status, "Posted")
+            ));
+
+        const recognized = recognitions[0]?.amount || 0;
+        const liability = totalValue - recognized;
+
+        // Get Last Billing Date
+        const lastBilling = await db.select()
+            .from(revenueSourceEvents)
+            .where(and(eq(revenueSourceEvents.contractId, contractId), eq(revenueSourceEvents.eventType, "Invoice")))
+            .orderBy(desc(revenueSourceEvents.eventDate))
+            .limit(1);
+
+        const risks = [];
+
+        // Rule 1: High Liability Stagnation (> 80% unearned)
+        const liabilityRatio = totalValue > 0 ? (liability / totalValue) : 0;
+        if (liabilityRatio > 0.80) {
+            risks.push({
+                type: "HIGH_LIABILITY",
+                severity: "MEDIUM",
+                description: `Contract has ${Math.round(liabilityRatio * 100)}% unearned revenue. Check for project stalls.`
+            });
+        }
+
+        // Rule 2: Churn Risk (No Billing for 90 Days)
+        if (lastBilling.length > 0) {
+            const daysSinceBilling = Math.floor((new Date().getTime() - lastBilling[0].eventDate.getTime()) / (1000 * 3600 * 24));
+            if (daysSinceBilling > 90 && liability > 0) {
+                risks.push({
+                    type: "CHURN_RISK",
+                    severity: "HIGH",
+                    description: `No billing activity for ${daysSinceBilling} days on active contract.`
+                });
+            }
+        } else if (liability > 0) {
+            // Use creation date if no billings yet
+            // (Skipping for V1 simplicity, assume active contracts usually have billings)
+        }
+
+        return {
+            contractId,
+            totalValue,
+            recognized,
+            liability,
+            riskScore: risks.length * 25, // Simple score
+            risks
         };
     }
 }

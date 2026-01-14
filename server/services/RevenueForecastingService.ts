@@ -1,6 +1,6 @@
 
-import { db } from "@db";
-import { revenueRecognitions } from "@db/schema/revenue";
+import { db } from "../db";
+import { revenueRecognitions } from "../../shared/schema/revenue";
 import { sql, and, gte, lte, eq } from "drizzle-orm";
 import { subMonths, addMonths, startOfMonth, format } from "date-fns";
 
@@ -31,8 +31,10 @@ export class RevenueForecastingService {
         const dataPoints = history.map((h, index) => ({
             x: index,
             y: parseFloat(h.amount as any || 0),
-            period: h.period
+            period: h.period,
+            date: h.period // or log date if available
         }));
+        console.log("DEBUG FORECAST INPUT:", JSON.stringify(dataPoints, null, 2));
 
         // 2. Train Model (Simple Linear Regression: y = mx + c)
         const n = dataPoints.length;

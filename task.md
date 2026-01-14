@@ -178,6 +178,21 @@
 - [x] **Phase A: Foundation & Integration**
     - [x] Schema Expansion: Add `legalEntityId`, `orgId`, and `versionNumber` to `revenue_contracts`
     - [x] Order-to-Revenue Link: Bidirectional drill-down between Source Events and Sales Orders
+- [x] **Status Update**: Event status correctly transitioned from `Pending` -> `Invoiced`.
+
+### AI Verification (`verify_billing_intelligence.ts`)
+- [x] **High Value Detection**: Successfully identified >$10k event.
+- [x] **Duplicate Detection**: Successfully flagged potential duplicate (same customer, amount, date).
+
+## 3. Intelligence Features
+We added `billing_anomalies` table and a rule-based AI agent to `BillingService`:
+*   **High Value Rule**: Flags any event > $10,000.
+*   **Duplicate Rule**: Flags events with identical Amount + Customer + Date.
+*   **Workbench Integration**: Users can run "AI Scan" and see flagged items.
+*   **Deep Linking**: Added direct links to Source Systems (Projects/Orders).
+
+## 4. Next Steps
+*   **Rule Engine**: Implement the logic for "Recurring" and "Usage" based billing.
 - [x] **Phase B: Config & Rules**
     - [x] Rule Engine: Implement UI and logic for Contract Identification and POB Rules
     - [x] SSP Manager UI: Build master-data screens for `revenue_ssp_books`
@@ -198,5 +213,21 @@
         - [x] Frontend: Integration in `RevenuePeriodClose`
 
 - [ ] **Phase E: Intelligence & Integration**
-    - [ ] **Billing Linkage**: Deep links to AR Invoices from Revenue Schedules.
-    - [ ] **Forecasting Engine**: Implement AI prediction logic for revenue waterfalls.
+    - [/] Implement `RevenueForecastingService` (Linear Regression)
+    - [/] Implement `analyzeContractRisk` (Risk Agent)
+    - [ ] Create `RevenueIntelligence` Dashboard
+
+## Enterprise Billing (Parity Gap)
+- [ ] **Phase 1: Foundation (Schema & Backend)**
+- [x] Create `billing_enterprise` schema (`billing_events`, `batches`, `rules`)
+    - [x] Implement `BillingService` (Core Logic)
+    - [x] Implement `BillingRuleEngine` (Recurring, Milestone)
+    - [x] Implement `AutoInvoiceService` (Batch Processor)
+- [x] **Phase 2: Billing Operations (UI)**
+    - [x] Create `BillingDashboard` (Metrics & KPI)
+    - [x] Create `BillingWorkbench` (Event Grid)
+    - [x] Create `BillingRulesManager` (Configuration)
+    - [x] Create `RunAutoInvoice` Console
+- [x] **Phase 3: Intelligence & Integration**
+    - [x] Implement `BillingAnomaly` detection (AI)
+    - [x] Deep link integration with Sales Orders

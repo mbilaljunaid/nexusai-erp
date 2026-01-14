@@ -133,8 +133,38 @@ export const insertArInvoiceSchema = createInsertSchema(arInvoices).extend({
     sourceTransactionId: z.string().optional().nullable(),
 });
 
+
 export type InsertArInvoice = z.infer<typeof insertArInvoiceSchema>;
 export type ArInvoice = typeof arInvoices.$inferSelect;
+
+// AR Invoice Lines
+export const arInvoiceLines = pgTable("ar_invoice_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(),
+    lineNumber: integer("line_number").notNull(),
+    description: text("description").notNull(),
+    quantity: numeric("quantity").default("1"),
+    unitPrice: numeric("unit_price", { precision: 18, scale: 2 }).default("0"),
+    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    taxAmount: numeric("tax_amount", { precision: 18, scale: 2 }).default("0"),
+    taxCode: varchar("tax_code"),
+    glAccount: varchar("gl_account"), // Revenue Account
+    billingEventId: varchar("billing_event_id"), // Link back to source event
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArInvoiceLineSchema = createInsertSchema(arInvoiceLines).extend({
+    invoiceId: z.string().min(1),
+    lineNumber: z.number().int(),
+    description: z.string().min(1),
+    quantity: z.string().optional(),
+    unitPrice: z.string().optional(),
+    amount: z.string().min(1),
+    taxAmount: z.string().optional(),
+});
+
+export type InsertArInvoiceLine = z.infer<typeof insertArInvoiceLineSchema>;
+export type ArInvoiceLine = typeof arInvoiceLines.$inferSelect;
 
 // AR Receipts (Incoming Payments)
 export const arReceipts = pgTable("ar_receipts", {

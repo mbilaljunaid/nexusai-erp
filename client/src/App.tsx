@@ -370,7 +370,7 @@ const NettingWorkbench = lazy(() => import("@/pages/NettingWorkbench"));
 // Cost Management
 const CostDashboard = lazy(() => import("@/pages/cost-management/CostDashboard"));
 const CostInsights = lazy(() => import("@/pages/CostInsights"));
-const CostScenarioManager = lazy(() => import("@/pages/CostScenarioManager"));
+// const CostScenarioManager = lazy(() => import("@/pages/CostScenarioManager"));
 const DistributionsViewer = lazy(() => import("@/pages/cost-management/DistributionsViewer"));
 const LcmWorkbench = lazy(() => import("@/pages/cost-management/LcmWorkbench"));
 
@@ -613,6 +613,10 @@ const AutomotiveReporting = lazy(() => import("@/pages/AutomotiveReporting"));
 
 import ApSettings from "@/components/ap/ApSettings";
 
+const EnterpriseBillingDashboard = lazy(() => import("@/pages/billing/BillingDashboard"));
+const BillingWorkbench = lazy(() => import("@/pages/billing/BillingWorkbench"));
+const BillingRulesManager = lazy(() => import("@/pages/billing/BillingRulesManager"));
+const RevenueIntelligence = lazy(() => import("@/pages/revenue/RevenueIntelligence").then(module => ({ default: module.RevenueIntelligence })));
 
 function Router() {
   return (
@@ -659,6 +663,9 @@ function Router() {
       <Route path="/finance/fixed-assets" component={AssetWorkbench} />
       <Route path="/finance/accounts-payable" component={APInvoices} />
       <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
+      <Route path="/finance/billing" component={EnterpriseBillingDashboard} />
+      <Route path="/finance/billing/workbench" component={BillingWorkbench} />
+      <Route path="/finance/billing/rules" component={BillingRulesManager} />
       <Route path="/procurement" component={ProcurementManagement} />
       <Route path="/finance/ar/invoices" component={ArInvoiceList} />
       <Route path="/finance/ar/analytics" component={ArAnalytics} />
@@ -802,6 +809,7 @@ function Router() {
       <Route path="/revenue/audit" component={RevenueAuditConsole} />
       <Route path="/revenue/setup" component={RevenueAccountingSetup} />
       <Route path="/revenue/assurance" component={RevenueAssurance} />
+      <Route path="/revenue/intelligence" component={RevenueIntelligence} />
       <Route path="/revenue/forecasting" component={RevenueForecasting} />
       <Route path="/revenue/optimization" component={RevenueOptimization} />
 

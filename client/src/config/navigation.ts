@@ -96,6 +96,18 @@ export const navigationConfig: SidebarNode[] = [
             { id: "cash", title: "Cash Management", type: "link", icon: DollarSign, path: "/finance/cash-management", allowedRoles: ["admin", "editor"] },
             { id: "fixed-assets", title: "Fixed Assets", type: "link", icon: Building, path: "/finance/fixed-assets", allowedRoles: ["admin", "editor"] },
             {
+                id: "billing",
+                title: "Billing & Invoicing",
+                type: "section",
+                icon: DollarSign,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "billing-dashboard", title: "Billing Dashboard", type: "link", path: "/finance/billing" },
+                    { id: "billing-workbench", title: "Billing Workbench", type: "link", path: "/finance/billing/workbench" },
+                    { id: "billing-rules", title: "Billing Rules", type: "link", path: "/finance/billing/rules" },
+                ]
+            },
+            {
                 id: "cost-management",
                 title: "Cost Management",
                 type: "section",

@@ -40,6 +40,8 @@ import { ppmRouter } from "./routes/ppm";
 import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
 
+import { billingRouter } from "./modules/billing/billing.controller";
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -62,6 +64,9 @@ export async function registerRoutes(
   app.use("/api/portal", portalRouter);
   app.use("/api/fa", fixedAssetsRouter);
   app.use("/api/ppm", ppmRouter);
+
+  // Enterprise Billing
+  app.use("/api/billing", billingRouter);
 
   // Agentic AI
   app.use("/api", aiRouter);
