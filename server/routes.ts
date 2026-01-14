@@ -13,6 +13,8 @@ import { registerFinanceRoutes } from "./modules/finance/routes";
 import { registerHrRoutes } from "./modules/hr/routes";
 import { registerProjectRoutes } from "./modules/project/routes";
 import { registerManufacturingRoutes } from "./modules/manufacturing/routes";
+import { registerScmRoutes } from "./modules/scm/routes";
+import { registerManufacturingPlanningRoutes } from "./modules/manufacturing/planningRoutes";
 import { registerPlatformRoutes } from "./modules/platform/routes";
 import { registerMarketplaceRoutes } from "./modules/marketplace/routes";
 import { registerCommunityRoutes } from "./modules/community/routes";
@@ -133,6 +135,8 @@ export async function registerRoutes(
   registerHrRoutes(app);
   registerProjectRoutes(app);
   registerManufacturingRoutes(app);
+  registerScmRoutes(app);
+  registerManufacturingPlanningRoutes(app);
   registerPlatformRoutes(app);
   registerMarketplaceRoutes(app);
   registerCommunityRoutes(app);

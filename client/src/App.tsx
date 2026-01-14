@@ -62,6 +62,16 @@ const ServiceModule = lazy(() => import("@/pages/ServiceModule"));
 const ProjectsModule = lazy(() => import("@/pages/ProjectsModule"));
 const MarketingModule = lazy(() => import("@/pages/MarketingModule"));
 const ManufacturingModule = lazy(() => import("@/pages/ManufacturingModule"));
+const ManufacturingDashboard = lazy(() => import("@/pages/manufacturing/ManufacturingDashboard"));
+const BOMDesigner = lazy(() => import("@/pages/manufacturing/BOMDesigner"));
+const RoutingEditor = lazy(() => import("@/pages/manufacturing/RoutingEditor"));
+const WorkCenterManager = lazy(() => import("@/pages/manufacturing/WorkCenterManager"));
+const ResourceManager = lazy(() => import("@/pages/manufacturing/ResourceManager"));
+const WorkOrderList = lazy(() => import("@/pages/manufacturing/WorkOrderList"));
+const ShopFloorTerminal = lazy(() => import("@/pages/manufacturing/ShopFloorTerminal"));
+const QualityManager = lazy(() => import("@/pages/manufacturing/QualityManager"));
+const MRPWorkbench = lazy(() => import("@/pages/manufacturing/MRPWorkbench"));
+const ProductionGantt = lazy(() => import("@/pages/manufacturing/ProductionGantt"));
 const AnalyticsModule = lazy(() => import("@/pages/AnalyticsModule"));
 const AdminConsoleModule = lazy(() => import("@/pages/AdminConsoleModule"));
 const ComplianceModule = lazy(() => import("@/pages/ComplianceModule"));
@@ -666,6 +676,16 @@ function Router() {
       <Route path="/projects-module" component={ProjectsModule} />
       <Route path="/marketing-module" component={MarketingModule} />
       <Route path="/manufacturing-module" component={ManufacturingModule} />
+      <Route path="/manufacturing/dashboard" component={ManufacturingDashboard} />
+      <Route path="/manufacturing/bom" component={BOMDesigner} />
+      <Route path="/manufacturing/routings" component={RoutingEditor} />
+      <Route path="/manufacturing/work-centers" component={WorkCenterManager} />
+      <Route path="/manufacturing/resources" component={ResourceManager} />
+      <Route path="/manufacturing/work-orders" component={WorkOrderList} />
+      <Route path="/manufacturing/shop-floor" component={ShopFloorTerminal} />
+      <Route path="/manufacturing/quality" component={QualityManager} />
+      <Route path="/manufacturing/mrp" component={MRPWorkbench} />
+      <Route path="/manufacturing/gantt" component={ProductionGantt} />
       <Route path="/analytics-module" component={AnalyticsModule} />
       <Route path="/admin-console-module" component={AdminConsoleModule} />
       <Route path="/compliance-module" component={ComplianceModule} />

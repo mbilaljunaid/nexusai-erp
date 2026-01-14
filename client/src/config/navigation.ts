@@ -184,10 +184,46 @@ export const navigationConfig: SidebarNode[] = [
         type: "section",
         children: [
             { id: "service", title: "Service", type: "link", icon: Package, path: "/service", allowedRoles: ["admin", "editor"] },
-            { id: "manufacturing", title: "Manufacturing", type: "link", icon: Factory, path: "/manufacturing", allowedRoles: ["admin", "editor"] },
-            { id: "shop-floor", title: "Shop Floor", type: "link", icon: Cog, path: "/manufacturing/shop-floor", allowedRoles: ["admin", "editor"] },
-            { id: "work-orders", title: "Work Orders", type: "link", icon: Briefcase, path: "/manufacturing/work-orders", allowedRoles: ["admin", "editor"] },
-            { id: "quality", title: "Quality Control", type: "link", icon: Shield, path: "/manufacturing/quality", allowedRoles: ["admin", "editor"] },
+            {
+                id: "manufacturing",
+                title: "Manufacturing",
+                type: "section",
+                icon: Factory,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "mfg-hub", title: "MES Hub", type: "link", path: "/manufacturing" },
+                    {
+                        id: "mfg-planning",
+                        title: "Intelligence",
+                        type: "group",
+                        children: [
+                            { id: "mfg-mrp", title: "MRP Workbench", type: "link", path: "/manufacturing/mrp" },
+                            { id: "mfg-gantt", title: "Production Schedule", type: "link", path: "/manufacturing/gantt" },
+                        ]
+                    },
+                    {
+                        id: "mfg-execution",
+                        title: "Execution",
+                        type: "group",
+                        children: [
+                            { id: "mfg-wo", title: "Work Orders", type: "link", path: "/manufacturing/work-orders" },
+                            { id: "mfg-shop", title: "Shop Floor", type: "link", path: "/manufacturing/shop-floor" },
+                            { id: "mfg-quality", title: "Quality Control", type: "link", path: "/manufacturing/quality" },
+                        ]
+                    },
+                    {
+                        id: "mfg-engineering",
+                        title: "Engineering",
+                        type: "group",
+                        children: [
+                            { id: "mfg-bom", title: "BOM Designer", type: "link", path: "/manufacturing/bom" },
+                            { id: "mfg-routings", title: "Routing Master", type: "link", path: "/manufacturing/routings" },
+                            { id: "mfg-wc", title: "Work Centers", type: "link", path: "/manufacturing/work-centers" },
+                            { id: "mfg-resources", title: "Resources", type: "link", path: "/manufacturing/resources" },
+                        ]
+                    },
+                ]
+            },
             { id: "logistics", title: "Logistics", type: "link", icon: Truck, path: "/logistics", allowedRoles: ["admin", "editor"] },
         ],
     },

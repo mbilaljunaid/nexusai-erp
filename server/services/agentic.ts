@@ -230,6 +230,56 @@ export class AgenticService {
             },
             { type: "object", required: ["projectId"] }
         );
+
+        // Manufacturing: Analyze Yield (Phase 15)
+        this.registerAction(
+            "MFG_ANALYZE_YIELD",
+            async (params) => {
+                const { db } = await import("../db");
+                const { productionTransactions } = await import("@shared/schema");
+                const productId = params.productId;
+                if (!productId) throw new Error("productId is required");
+
+                const transactions = await db.select().from(productionTransactions).where(eq(productionTransactions.productId, productId));
+                const totalComplete = transactions.filter(t => t.transactionType === "COMPLETE").reduce((sum, t) => sum + parseFloat(t.quantity.toString()), 0);
+                const totalScrap = transactions.filter(t => t.transactionType === "SCRAP").reduce((sum, t) => sum + parseFloat(t.quantity.toString()), 0);
+
+                const yieldRate = totalComplete + totalScrap > 0 ? (totalComplete / (totalComplete + totalScrap)) * 100 : 100;
+
+                return {
+                    productId,
+                    totalComplete,
+                    totalScrap,
+                    yieldRate: yieldRate.toFixed(2) + "%",
+                    aiInsight: `Yield analysis for ${productId} shows a ${yieldRate.toFixed(2)}% success rate. ${totalScrap > 0 ? "Consider investigating the 'SCRAP' transactions recorded for potential machine calibration issues." : "Production efficiency is optimal."}`,
+                    message: `Yield analysis for ${productId} completed.`
+                };
+            },
+            { type: "object", required: ["productId"] }
+        );
+
+        // Manufacturing: Predict Shortage (Phase 15)
+        this.registerAction(
+            "MFG_PREDICT_SHORTAGE",
+            async (params) => {
+                const { manufacturingPlanningService } = await import("./ManufacturingPlanningService");
+                const plans = await manufacturingPlanningService.getMrpPlans();
+                const latestPlan = plans[0];
+                if (!latestPlan) return { message: "No active MRP plans found to analyze shortages." };
+
+                const recs = await manufacturingPlanningService.getRecommendations(latestPlan.id);
+                const pos = recs.filter(r => r.recommendationType === "PLANNED_PO");
+
+                return {
+                    planName: latestPlan.planName,
+                    shortageCount: pos.length,
+                    affectedItems: pos.map(p => p.productId),
+                    aiInsight: `I've predicted ${pos.length} potential component shortages based on the latest '${latestPlan.planName}' MRP run. Critical items include: ${pos.slice(0, 3).map(p => p.productId).join(", ")}.`,
+                    message: `Shortage prediction for ${latestPlan.planName} completed.`
+                };
+            },
+            { type: "object", properties: {} }
+        );
     }
 
     registerAction(code: string, handler: ActionHandler, schema: any, rollback?: RollbackHandler) {
@@ -346,6 +396,25 @@ export class AgenticService {
                 return {
                     actionCode: "PPM_ANALYZE_HEALTH",
                     params: { projectId: idMatch ? idMatch[1] : "default-project-id" },
+                    confidence: 0.90
+                };
+            }
+        }
+
+        // 7. Manufacturing Context
+        if (context === "manufacturing" || lowerText.includes("production") || lowerText.includes("factory") || lowerText.includes("mfg")) {
+            if (lowerText.includes("yield") || lowerText.includes("scrap") || lowerText.includes("efficiency")) {
+                const idMatch = text.match(/item\s+(?:#|id)?\s*([a-zA-Z0-9-]+)/i) || text.match(/for\s+([a-zA-Z0-9-]+)/i);
+                return {
+                    actionCode: "MFG_ANALYZE_YIELD",
+                    params: { productId: idMatch ? idMatch[1] : "default-product" },
+                    confidence: 0.90
+                };
+            }
+            if (lowerText.includes("shortage") || lowerText.includes("stock out") || lowerText.includes("predict")) {
+                return {
+                    actionCode: "MFG_PREDICT_SHORTAGE",
+                    params: {},
                     confidence: 0.90
                 };
             }
