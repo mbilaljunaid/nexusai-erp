@@ -582,6 +582,10 @@ const PackagingTraceability = lazy(() => import("@/pages/PackagingTraceability")
 const FBDemandPlanning = lazy(() => import("@/pages/FBDemandPlanning"));
 const SustainabilityTraceability = lazy(() => import("@/pages/SustainabilityTraceability"));
 
+// Revenue Management
+const RevenueContractWorkbench = lazy(() => import("@/pages/RevenueContractWorkbench"));
+const SSPManager = lazy(() => import("@/pages/SSPManager"));
+
 // Automotive Pack
 const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
 const AutomotiveDealerInventory = lazy(() => import("@/pages/AutomotiveDealerInventory"));
@@ -775,6 +779,10 @@ function Router() {
       <Route path="/public/processes/customer-returns" component={PublicCustomerReturnsProcess} />
       <Route path="/public/processes/vendor-performance" component={PublicVendorPerformanceProcess} />
       <Route path="/public/processes/subscription-billing" component={PublicSubscriptionBillingProcess} />
+
+      {/* Revenue Management */}
+      <Route path="/revenue/contracts" component={RevenueContractWorkbench} />
+      <Route path="/revenue/ssp" component={SSPManager} />
 
       {/* Public Documentation Routes */}
       <Route path="/docs/process-flows" component={ProcessFlowsPage} />

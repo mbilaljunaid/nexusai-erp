@@ -19,6 +19,7 @@ import { registerManufacturingProcessRoutes } from "./modules/manufacturing/proc
 import { registerPlatformRoutes } from "./modules/platform/routes";
 import { registerMarketplaceRoutes } from "./modules/marketplace/routes";
 import { registerCommunityRoutes } from "./modules/community/routes";
+import { registerRevenueRoutes } from "./modules/revenue/routes";
 
 // Import existing routes files that were already modularized (if any)
 import analyticsRoutes from "./routes/analyticsRoutes";
@@ -141,7 +142,9 @@ export async function registerRoutes(
   registerManufacturingProcessRoutes(app);
   registerPlatformRoutes(app);
   registerMarketplaceRoutes(app);
+  registerMarketplaceRoutes(app);
   registerCommunityRoutes(app);
+  registerRevenueRoutes(app);
 
   // Register Legacy/Unrefactored Routes
   app.use(analyticsRoutes);

@@ -145,6 +145,7 @@ import type {
   CashBankAccount, InsertCashBankAccount,
   ArSystemOptions, InsertArSystemOptions
 } from "@shared/schema";
+import { revenueService } from "./services/RevenueService";
 
 /**
  * Database storage operations for Phase 2
@@ -524,6 +525,27 @@ export const dbStorage = {
         totalAmount: order.totalAmount ? String(order.totalAmount) : '0'
       })
       .returning();
+
+    // Hook: Revenue Management (ASC 606)
+    if (result[0] && order.accountId) {
+      try {
+        await revenueService.processSourceEvent({
+          sourceSystem: "OrderManagement",
+          sourceId: result[0].id,
+          eventType: "Booking",
+          customerId: order.accountId, // Using Account as Customer Proxy
+          ledgerId: "1", // Default Ledger for now
+          amount: Number(result[0].totalAmount || 0),
+          currency: "USD",
+          eventDate: result[0].effectiveDate || new Date(),
+          relatedContractId: undefined
+        });
+      } catch (err) {
+        console.error("Failed to process revenue event for order:", result[0].id, err);
+        // Don't block order creation
+      }
+    }
+
     return result[0];
   },
 
