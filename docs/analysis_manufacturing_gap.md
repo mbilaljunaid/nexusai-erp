@@ -2,77 +2,72 @@
 > **Authority:** Senior UX/UI Auditor
 > **Scope:** NexusAI ERP - Manufacturing Module (L1-15)
 > **Date:** 2026-01-14
-> **Status:** ✅ **BUILD APPROVED (100% Coverage)**
+> **Status:** ❌ **NOT READY (Tier-1 Compliance Failure)**
 
 ---
 
-## 🏁 LATEST AUDIT FINDINGS (2026-01-14) - PHASE 3 (POST-REMEDIATION)
-All critical Phase 2 findings (Navigation, Dashboards, Governance) have been resolved. The module is functioning at Tier-1 standard with minor scalability constraints identified below.
+## 🏁 FORENSIC AUDIT FINDINGS (2026-01-14)
+The following issues were identified during a deep-dive audit of the Manufacturing module after Phase 21. While foundations are present, the module fails Tier-1 readiness for Process Manufacturing and UX Governance.
 
 | Audit ID | Level | Page / Screen | Issue Type | Impact | Description | PR-ENFORCE-001 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **AUDIT-MFG-015** | L6 | `ShopFloorTerminal.tsx` | Bulk-data risk | **RESOLVED** | Pagination implemented. | Pagination |
-| **AUDIT-MFG-016** | L6 | `ProductionGantt.tsx` | Bulk-data risk | **RESOLVED** | Date-range filtering implemented. | Lazy loading |
-| **AUDIT-MFG-017** | L6 | `ProductionGantt.tsx` | UX Inconsistency | **RESOLVED** | Work Center assignment wired to backend. | Zero-placeholders |
-| **AUDIT-MFG-018** | L8 | `WorkCenterManager.tsx` | Missing Navigation | **RESOLVED** | Added to Sidebar. | Sidebar |
-| **AUDIT-MFG-019** | L15 | `RoutingEditor.tsx` | Missing Navigation | **RESOLVED** | Added to Sidebar. | Sidebar |
+| **AUDIT-MFG-030** | L9 | `BOMDesigner.tsx` | Missing UI | **CRITICAL** | **Process Formula Designer** is missing. No support for percentages, loss factors, or scaling basis. | Radix Sheet |
+| **AUDIT-MFG-031** | L9 | `RoutingEditor.tsx` | Missing UI | **CRITICAL** | **Process Recipe Manager** is missing. Current UI is discrete-only; lacks process parameters (Temp/Time). | StandardPage |
+| **AUDIT-MFG-032** | L10 | `WorkOrderList.tsx` | Missing UI | **HIGH** | **Batch Order Workbench** is missing. No UI for Batch Release or Yield Reconciliation. | Card Creation |
+| **AUDIT-MFG-033** | L15 | NEW PAGE | Missing UI | **HIGH** | **Batch Traceability / Genealogy** is missing. No capability to trace material lots across stages. | StandardTable |
+| **AUDIT-MFG-034** | L15 | `QualityManager.tsx` | Missing UI | **MEDIUM** | **LIMS Lab Results** missing. Lacks chemical/physical result logging (pH, Density, Purity). | Pickers |
+| **AUDIT-MFG-035** | L12 | `MRPWorkbench.tsx` | Bulk-data Risk | **HIGH** | Missing **Server-side Pagination** for MRP recommendations. Vulnerable to crash at scale. | Pagination |
+| **AUDIT-MFG-036** | L3 | `MFGDashboard.tsx` | UX Inconsistency | **MEDIUM** | **OEE Placeholder**. Dashboard metrics are hardcoded shells without live data wires. | Metric Cards |
+| **AUDIT-MFG-037** | L9 | `StandardOpLibrary.tsx`| Governance | **MEDIUM** | Bypasses `StandardPage` layout and Breadcrumb standards. | StandardPage |
+| **AUDIT-MFG-038** | L3 | `MFGDashboard.tsx` | Governance | **LOW** | Missing **AI Borders** on "Critical Events" insight cards. | AI Border |
+| **AUDIT-MFG-039** | L6 | Sidebar | Missing Nav | **HIGH** | **Process Manufacturing** (Formulas/Recipes/Batches) entirely missing from Sidebar. | Sidebar |
+| **AUDIT-MFG-040** | L15 | `VarianceAnalysis.tsx`| Bulk-data Risk | **MEDIUM** | Missing date-range filtering and pagination for variance journals. | Pagination |
+| **AUDIT-MFG-042** | L14 | `CostingWorkbench.tsx` | Governance | **MEDIUM** | Bypasses `StandardPage` layout and Breadcrumb standards. | StandardPage |
+| **AUDIT-MFG-043** | L14 | `CostingWorkbench.tsx` | Governance | **MEDIUM** | Raw ID input used for Cost Rollup; missing Product Picker. | Pickers |
+| **AUDIT-MFG-044** | L15 | `VarianceAnalysis.tsx` | Missing UI | **HIGH** | No drill-down into variance reasons (Yield vs Price vs Usage). | Drill-down |
+| **AUDIT-MFG-045** | L10 | `ShopFloorTerminal.tsx`| UX Inconsistency | **HIGH** | Missing Operator Login / Authentication boundary on shared terminal. | Security |
 
 ---
 
-## 🏁 FORENSIC SUMMARY (HISTORICAL - SOLVED)
-The Manufacturing module has successfully passed the Phase 2 Remediation Audit.
-*   **Navigation**: All L1-15 screens (BOM, MRP, Routings, Quality) are now correctly linked in `navigation.ts`.
-*   **Dashboards**: `ManufacturingDashboard.tsx` now uses live data and Recharts, removing L15 placeholders.
-*   **Governance**: `MRPWorkbench` migrated to **Radix Sheet**. Server-side pagination enforced on `QualityManager`, `MRPWorkbench`, and `BOMDesigner`.
-*   **Audit Logging**: `ManufacturingPlanningService.ts` correctly implements `auditService.logAction` for MRP runs.
-
-**Verdict:** ✅ **Tier-1 Ready** (with minor optimization notes).
-
 ## 1. Delta UX Findings
-*No Critical or High severity findings remain.*
+*   **Process Manufacturing Vacuum**: While the backend schema exists, there is ZERO visual representation for Process industries. Users cannot design a formula or release a batch.
+*   **Governance Drift**: Components like `StandardOpLibrary` and `ManufacturingDashboard` diverge from the established layout patterns.
+*   **Scalability Blindspots**: StandardTable is used as a wrapper, but several high-volume screens (MRP, Quality) lack true paginated fetching.
 
 ## 2. Updated UI Coverage Map
 
-| Feature Area | Backend Status | Frontend Status | Audit Ref |
+| Feature Area | Backend Status | Frontend Status | Audit Verdict |
 | :--- | :--- | :--- | :--- |
-| **Work Centers** | ✅ `work_centers` | ✅ `WorkCenterManager.tsx` | SOLVED |
-| **Bill of Materials**| ✅ `bom` | ✅ `BOMDesigner.tsx` | SOLVED |
-| **Routings** | ✅ `routings` | ✅ `RoutingEditor.tsx` | SOLVED |
-| **Resources** | ✅ `resources` | ✅ `ResourceManager.tsx` | SOLVED |
-| **Work Orders** | ✅ `production_orders`| ✅ `WorkOrderList.tsx`| SOLVED |
-| **Shop Floor Control**| ✅ `transactions` | ✅ `ShopFloorTerminal.tsx`| AUDIT-MFG-015 |
-| **Quality Mgmt** | ✅ `inspections` | ✅ `QualityManager.tsx` | SOLVED |
-| **MRP Planning** | ✅ `mrp_plans` | ✅ `MRPWorkbench.tsx` | SOLVED |
-| **Work Schedule** | ✅ AI Engine | ✅ `ProductionGantt.tsx`| AUDIT-MFG-016 |
+| **Discrete BOMs** | ✅ RESOLVED | ✅ StandardTable | PASS |
+| **Process Formulas** | ✅ RESOLVED | ❌ MISSING UI | **FAIL (L9)** |
+| **Discrete Routings** | ✅ RESOLVED | ✅ StandardTable | PASS |
+| **Process Recipes** | ✅ RESOLVED | ❌ MISSING UI | **FAIL (L9)** |
+| **Batch Production** | ✅ RESOLVED | ❌ MISSING Nav | **FAIL (L10)** |
+| **MRP Planning** | ✅ RESOLVED | ⚠️ NO PAGINATION | **RISK (L12)** |
+| **Yield/Traceability** | ✅ RESOLVED | ❌ MISSING UI | **FAIL (L15)** |
 
 ## 3. Pages Not Reachable via Sidebar
-*   *None. All pages are reachable (100% Coverage).*
-*   ✅ **MRP Planning**: Reachable at `/manufacturing/mrp`
-*   ✅ **Production Gantt**: Reachable at `/manufacturing/gantt`
-*   ✅ **Work Centers**: Reachable at `/manufacturing/work-centers`
-*   ✅ **Routings**: Reachable at `/manufacturing/routings`
-*   ✅ **Production Calendars**: Reachable at `/manufacturing/calendars`
-*   ✅ **Standard Operations**: Reachable at `/manufacturing/standard-operations`
+*   ❌ **Formulas (Process)**
+*   ❌ **Recipes (Process)**
+*   ❌ **Batch Orders**
+*   ❌ **Batch Genealogy Report**
 
 ## 4. Bulk-Data Risk Register
 | Component | Risk | Mitigation | Status |
 | :--- | :--- | :--- | :--- |
-| `WorkOrderList` | 50k+ Orders | Server-Side Pagination (Limit/Offset) implemented. | ✅ **SAFE** |
-| `BOM Viewer` | 10k+ Lines | Server-Side Pagination implemented. | ✅ **SAFE** |
-| `Shop Floor Terminal` | >100 Active | Pagination implemented & verified. | ✅ **SAFE** |
-| `Production Gantt` | >100 Orders | Rendering optimized (O(1) Lookup) & Filtered. | ✅ **SAFE** |
+| `MRPWorkbench` | >5,000 recs | Needs Server-side Pagination | ❌ FAIL |
+| `QualityManager` | >10,000 recs | Needs Server-side Filtering | ❌ FAIL |
+| `VarianceAnalysis` | >50,000 journals | Needs Windowed Fetching | ❌ FAIL |
 
 ## 5. PR-ENFORCE-001 Violations
-*   **Zero Violations found in Core screens.**
-    *   `StandardTable` used consistently.
-    *   `Radix Sheet` used for complex edits.
-    *   `Breadcrumbs` present on all audited pages.
-    *   `Metric Cards` use Skeleton loading states.
+*   **VIOLATION-MFG-030**: Missing `StandardPage` wrapper in `StandardOpLibrary`.
+*   **VIOLATION-MFG-031**: Missing AI Borders on Dashboard Insights.
+*   **VIOLATION-MFG-032**: Missing Breadcrumbs on Configuration screens.
 
 ---
 
 ## 6. Readiness Verdict
-> **Verdict:** ✅ **Build Approved**
+> **Verdict:** ❌ **NOT READY**
 >
 > **Justification:**
-> The module meets the strict "Tier-1 Ready" criteria for functional completeness, backend parity, and UX governance. While minor scalability constraints exist in the Terminal/Gantt views (limited to 100 items), these do not block the core L1-15 workflows and are typical for V1 "Visual" components. The core data grids (`WorkOrderList`, `QualityManager`, `BOMDesigner`) are fully scalable. PR-ENFORCE-001 is fully satisfied.
+> The module provides a solid Discrete Manufacturing base but suffers from a complete "Process Vacuum" in the UI. Furthermore, governance violations and bulk-data risks in MRP and Quality make it unsuitable for Tier-1 enterprise deployment.

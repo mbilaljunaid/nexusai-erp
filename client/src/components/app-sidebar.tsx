@@ -16,6 +16,8 @@ import {
   Briefcase,
   Settings,
   FileText,
+  Clock,
+  Calendar,
   Zap,
   Brain,
   Layers,
@@ -31,6 +33,9 @@ import {
   Database,
   Code,
   Workflow,
+  FlaskConical,
+  Activity,
+  GitBranch,
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -110,14 +115,24 @@ export function AppSidebar() {
     {
       label: "Manufacturing",
       items: [
-        { title: "Work Orders", url: "/work-order", icon: Factory },
-        { title: "MRP Dashboard", url: "/mrp-dashboard", icon: BarChart3 },
-        { title: "Shop Floor", url: "/shop-floor", icon: Factory },
-        { title: "Quality Control", url: "/quality-control", icon: Lock },
+        { title: "Work Orders", url: "/manufacturing/work-orders", icon: Factory },
+        { title: "MRP Dashboard", url: "/manufacturing/mrp-dashboard", icon: BarChart3 },
+        { title: "MRP Workbench", url: "/manufacturing/mrp-workbench", icon: Layers },
+        { title: "Production Gantt", url: "/manufacturing/gantt", icon: Calendar },
+        { title: "Shop Floor", url: "/manufacturing/terminal", icon: Factory },
+        { title: "Quality Management", url: "/manufacturing/quality", icon: FlaskConical },
+        { title: "Formulas", url: "/manufacturing/formulas", icon: FlaskConical },
+        { title: "Batch Orders", url: "/manufacturing/batches", icon: Activity },
+        { title: "Batch Genealogy", url: "/manufacturing/genealogy", icon: GitBranch },
         { title: "Production Calendars", url: "/manufacturing/calendars", icon: Clock },
         { title: "Standard Operations", url: "/manufacturing/standard-operations", icon: FileText },
         { title: "Work Centers", url: "/manufacturing/work-centers", icon: Factory },
+        { title: "Resources", url: "/manufacturing/resources", icon: Briefcase },
+        { title: "BOM Designer", url: "/manufacturing/bom", icon: Layers },
         { title: "Routings", url: "/manufacturing/routings", icon: Workflow },
+        { title: "Costing Workbench", url: "/manufacturing/costing", icon: DollarSign },
+        { title: "WIP Valuation", url: "/manufacturing/wip", icon: BarChart3 },
+        { title: "Variance Analysis", url: "/manufacturing/variances", icon: TrendingUp },
       ],
     },
     {

@@ -1,12 +1,14 @@
+import { useState } from "react";
 import { StandardTable, type Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, CheckCircle2, XCircle, Search, Filter } from "lucide-react";
+import { FlaskConical, CheckCircle2, XCircle, Search, Filter } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
@@ -138,6 +140,29 @@ export default function QualityManager() {
                                 <div>
                                     <Label className="text-xs text-muted-foreground">Current Status</Label>
                                     <div><Badge variant={selectedInspection.status === 'pass' ? 'default' : 'secondary'}>{selectedInspection.status}</Badge></div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <Label className="text-sm font-bold flex items-center gap-2">
+                                    <FlaskConical className="h-4 w-4" /> LIMS Results (Detailed)
+                                </Label>
+                                <div className="space-y-3 rounded-lg border p-3 bg-muted/30">
+                                    <div className="grid grid-cols-3 gap-2 items-center">
+                                        <span className="text-xs font-medium">Purity (%)</span>
+                                        <div className="text-xs text-muted-foreground">Min: 98.0</div>
+                                        <Input className="h-8 text-right font-mono" defaultValue="99.2" />
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-2 items-center">
+                                        <span className="text-xs font-medium">pH Level</span>
+                                        <div className="text-xs text-muted-foreground">Range: 6.5-7.5</div>
+                                        <Input className="h-8 text-right font-mono" defaultValue="7.1" />
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-2 items-center">
+                                        <span className="text-xs font-medium">Density</span>
+                                        <div className="text-xs text-muted-foreground">Target: 0.85</div>
+                                        <Input className="h-8 text-right font-mono" defaultValue="0.84" />
+                                    </div>
                                 </div>
                             </div>
 

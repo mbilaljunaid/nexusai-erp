@@ -22,6 +22,8 @@ interface WorkOrder {
 export default function ShopFloorTerminal() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [operator, setOperator] = useState<string | null>(null);
+    const [loginId, setLoginId] = useState("");
     const [selectedOrder, setSelectedOrder] = useState<WorkOrder | null>(null);
     const [isTrxDialogOpen, setIsTrxDialogOpen] = useState(false);
     const [trxType, setTrxType] = useState<"COMPLETE" | "SCRAP">("COMPLETE");
@@ -83,10 +85,63 @@ export default function ShopFloorTerminal() {
         });
     };
 
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        // In a real system, this would validate against an HR/Security system
+        if (loginId.trim()) {
+            setOperator(loginId);
+            toast({ title: "Logged In", description: `Operator ${loginId} session active.` });
+        }
+    };
+
+    if (!operator) {
+        return (
+            <StandardPage
+                title="Shop Floor Terminal"
+                breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Execution" }, { label: "Terminal" }]}
+            >
+                <div className="flex items-center justify-center py-20">
+                    <Card className="w-full max-w-md">
+                        <CardHeader>
+                            <CardTitle className="text-2xl flex items-center">
+                                <User className="mr-2 h-6 w-6" /> Operator Login
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handleLogin} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="login">Operator Badge ID / Name</Label>
+                                    <Input
+                                        id="login"
+                                        placeholder="Enter ID or swipe badge..."
+                                        value={loginId}
+                                        onChange={(e) => setLoginId(e.target.value)}
+                                        autoFocus
+                                    />
+                                </div>
+                                <Button type="submit" className="w-full" disabled={!loginId.trim()}>
+                                    Access Terminal
+                                </Button>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+            </StandardPage>
+        );
+    }
+
     return (
         <StandardPage
-            title="Shop Floor Terminal"
+            title={`Shop Floor Terminal - Station #01`}
             breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Execution" }, { label: "Terminal" }]}
+            actions={
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center text-sm font-medium bg-secondary px-3 py-1 rounded-full">
+                        <User className="mr-2 h-4 w-4" /> {operator}
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setOperator(null)}>Logout</Button>
+                </div>
+            }
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {activeOrders.map(wo => (
@@ -109,7 +164,7 @@ export default function ShopFloorTerminal() {
                                 </div>
                                 <div className="flex items-center text-sm text-muted-foreground">
                                     <User className="mr-2 h-4 w-4" />
-                                    <span>Assigned: Unassigned</span>
+                                    <span>Session: <strong>{operator}</strong></span>
                                 </div>
                             </div>
                         </CardContent>

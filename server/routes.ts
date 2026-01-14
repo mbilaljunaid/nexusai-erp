@@ -15,6 +15,7 @@ import { registerProjectRoutes } from "./modules/project/routes";
 import { registerManufacturingRoutes } from "./modules/manufacturing/routes";
 import { registerScmRoutes } from "./modules/scm/routes";
 import { registerManufacturingPlanningRoutes } from "./modules/manufacturing/planningRoutes";
+import { registerManufacturingProcessRoutes } from "./modules/manufacturing/processRoutes";
 import { registerPlatformRoutes } from "./modules/platform/routes";
 import { registerMarketplaceRoutes } from "./modules/marketplace/routes";
 import { registerCommunityRoutes } from "./modules/community/routes";
@@ -137,6 +138,7 @@ export async function registerRoutes(
   registerManufacturingRoutes(app);
   registerScmRoutes(app);
   registerManufacturingPlanningRoutes(app);
+  registerManufacturingProcessRoutes(app);
   registerPlatformRoutes(app);
   registerMarketplaceRoutes(app);
   registerCommunityRoutes(app);

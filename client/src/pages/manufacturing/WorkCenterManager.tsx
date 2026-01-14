@@ -23,7 +23,6 @@ interface WorkCenter {
     name: string;
     description: string;
     capacity: number;
-    capacity: number;
     calendarId?: string; // L8 Integration
     status: "active" | "inactive" | "maintenance";
 }
@@ -69,7 +68,7 @@ export default function WorkCenterManager() {
         }
     });
 
-    const columns = [
+    const columns: Column<WorkCenter>[] = [
         {
             header: "Name",
             accessorKey: "name",

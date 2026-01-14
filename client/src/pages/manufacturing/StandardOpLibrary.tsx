@@ -25,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { StandardTable, type Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface StandardOp {
     id: string;
@@ -148,14 +149,14 @@ export default function StandardOpLibrary() {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Standard Operations Library</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Reusable operation templates to standardize manufacturing routings (L9).
-                    </p>
-                </div>
+        <StandardPage
+            title="Standard Operations Library"
+            breadcrumbs={[
+                { label: "Manufacturing", href: "/manufacturing" },
+                { label: "Engineering" },
+                { label: "Standard Operations" }
+            ]}
+            actions={
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                         <Button>
@@ -258,7 +259,8 @@ export default function StandardOpLibrary() {
                         </form>
                     </SheetContent>
                 </Sheet>
-            </div>
+            }
+        >
 
             <div className="grid gap-6 md:grid-cols-3">
                 <Card>
@@ -301,6 +303,6 @@ export default function StandardOpLibrary() {
                     />
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

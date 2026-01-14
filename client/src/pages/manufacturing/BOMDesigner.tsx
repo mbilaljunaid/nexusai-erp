@@ -4,12 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Box, Save, Layout } from "lucide-react";
+import { Plus, Trash2, Box, Save, Layout, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
 
 interface InventoryItem {
     id: string;
@@ -35,8 +36,7 @@ interface BomHeader {
 export default function BOMDesigner() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const [selectedBom, setSelectedBom] = useState<string | null>(null);
-    const [isDesigning, setIsDesigning] = useState(false);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
 
     // Form State
     const [newBomProduct, setNewBomProduct] = useState("");
@@ -60,6 +60,10 @@ export default function BOMDesigner() {
 
     const { data: inventory = [] } = useQuery<InventoryItem[]>({
         queryKey: ["/api/scm/inventory"],
+        queryFn: async () => {
+            const res = await fetch("/api/scm/inventory");
+            return res.json();
+        }
     });
 
     const createMutation = useMutation({
@@ -74,12 +78,17 @@ export default function BOMDesigner() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/bom"] });
-            setIsDesigning(false);
-            setBomComponents([]);
-            setNewBomNumber("");
+            setIsSheetOpen(false);
+            resetForm();
             toast({ title: "Success", description: "BOM saved successfully" });
         }
     });
+
+    const resetForm = () => {
+        setBomComponents([]);
+        setNewBomNumber("");
+        setNewBomProduct("");
+    };
 
     const addComponent = () => {
         setBomComponents([...bomComponents, { componentId: "", quantity: 1, uom: "EA" }]);
@@ -142,114 +151,108 @@ export default function BOMDesigner() {
         }
     ];
 
-    if (isDesigning) {
-        return (
-            <StandardPage
-                title="Design New BOM"
-                breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "BOMs", href: "/manufacturing/bom" }, { label: "Designer" }]}
-                actions={
-                    <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => setIsDesigning(false)}>Cancel</Button>
-                        <Button onClick={handleSave} disabled={createMutation.isPending}>
-                            <Save className="mr-2 h-4 w-4" /> {createMutation.isPending ? "Saving..." : "Save BOM"}
-                        </Button>
-                    </div>
-                }
-            >
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <Card className="lg:col-span-1">
-                        <CardHeader><CardTitle>BOM Header</CardTitle></CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="space-y-2">
-                                <Label>BOM Number</Label>
-                                <Input value={newBomNumber} onChange={e => setNewBomNumber(e.target.value)} placeholder="BOM-XXXX" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Target Product</Label>
-                                <Select value={newBomProduct} onValueChange={setNewBomProduct}>
-                                    <SelectTrigger><SelectValue placeholder="Select Product" /></SelectTrigger>
-                                    <SelectContent>
-                                        {inventory.map(item => (
-                                            <SelectItem key={item.id} value={item.id}>{item.itemName} ({item.sku})</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="lg:col-span-2">
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>Components / Ingredients</CardTitle>
-                            <Button size="sm" variant="outline" onClick={addComponent}>
-                                <Plus className="h-4 w-4 mr-1" /> Add Component
-                            </Button>
-                        </CardHeader>
-                        <CardContent>
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="border-b">
-                                        <th className="text-left pb-2">Component</th>
-                                        <th className="text-left pb-2 w-24">Qty</th>
-                                        <th className="text-left pb-2 w-24">UOM</th>
-                                        <th className="pb-2 w-10"></th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y">
-                                    {bomComponents.map((comp, idx) => (
-                                        <tr key={idx} className="group">
-                                            <td className="py-2 pr-2">
-                                                <Select value={comp.componentId} onValueChange={val => updateComponent(idx, "componentId", val)}>
-                                                    <SelectTrigger className="h-8"><SelectValue placeholder="Select Component" /></SelectTrigger>
-                                                    <SelectContent>
-                                                        {inventory.map(item => (
-                                                            <SelectItem key={item.id} value={item.id}>{item.itemName}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </td>
-                                            <td className="py-2 pr-2">
-                                                <Input type="number" className="h-8" value={comp.quantity} onChange={e => updateComponent(idx, "quantity", parseFloat(e.target.value))} />
-                                            </td>
-                                            <td className="py-2 pr-2">
-                                                <Select value={comp.uom} onValueChange={val => updateComponent(idx, "uom", val)}>
-                                                    <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="EA">Each</SelectItem>
-                                                        <SelectItem value="KG">KG</SelectItem>
-                                                        <SelectItem value="L">Liters</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </td>
-                                            <td className="py-2">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => removeComponent(idx)}>
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {bomComponents.length === 0 && (
-                                        <tr>
-                                            <td colSpan={4} className="py-8 text-center text-muted-foreground">No components added. Click "Add Component" to start.</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </CardContent>
-                    </Card>
-                </div>
-            </StandardPage>
-        );
-    }
-
     return (
         <StandardPage
             title="Bill of Materials"
-            breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Engineering" }, { label: "BOMs" }]}
+            breadcrumbs={[
+                { label: "Manufacturing", href: "/manufacturing" },
+                { label: "Engineering" },
+                { label: "BOMs" }
+            ]}
             actions={
-                <Button onClick={() => setIsDesigning(true)}>
-                    <Plus className="mr-2 h-4 w-4" /> Create BOM
-                </Button>
+                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                    <SheetTrigger asChild>
+                        <Button onClick={() => { resetForm(); setIsSheetOpen(true); }}>
+                            <Plus className="mr-2 h-4 w-4" /> Create BOM
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent className="sm:max-w-xl overflow-y-auto">
+                        <SheetHeader>
+                            <SheetTitle>Design New BOM</SheetTitle>
+                            <SheetDescription>
+                                Define the product header and required components for this Bill of Materials.
+                            </SheetDescription>
+                        </SheetHeader>
+
+                        <div className="space-y-6 mt-6 pb-20">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>BOM Number</Label>
+                                    <Input value={newBomNumber} onChange={e => setNewBomNumber(e.target.value)} placeholder="BOM-XXXX" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Target Product</Label>
+                                    <Select value={newBomProduct} onValueChange={setNewBomProduct}>
+                                        <SelectTrigger><SelectValue placeholder="Select Product" /></SelectTrigger>
+                                        <SelectContent>
+                                            {inventory.map(item => (
+                                                <SelectItem key={item.id} value={item.id}>{item.itemName} ({item.sku})</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+
+                            <Card>
+                                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                    <CardTitle className="text-sm font-medium">Components / Ingredients</CardTitle>
+                                    <Button size="sm" variant="outline" onClick={addComponent}>
+                                        <Plus className="h-4 w-4 mr-1" /> Add
+                                    </Button>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {bomComponents.map((comp, idx) => (
+                                            <div key={idx} className="flex gap-2 items-end border-b pb-3 group">
+                                                <div className="flex-1 space-y-1">
+                                                    <Label className="text-[10px] uppercase">Component</Label>
+                                                    <Select value={comp.componentId} onValueChange={val => updateComponent(idx, "componentId", val)}>
+                                                        <SelectTrigger className="h-8"><SelectValue placeholder="Select Comp" /></SelectTrigger>
+                                                        <SelectContent>
+                                                            {inventory.map(item => (
+                                                                <SelectItem key={item.id} value={item.id}>{item.itemName}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                <div className="w-20 space-y-1">
+                                                    <Label className="text-[10px] uppercase">Qty</Label>
+                                                    <Input type="number" className="h-8" value={comp.quantity} onChange={e => updateComponent(idx, "quantity", parseFloat(e.target.value))} />
+                                                </div>
+                                                <div className="w-24 space-y-1">
+                                                    <Label className="text-[10px] uppercase">UOM</Label>
+                                                    <Select value={comp.uom} onValueChange={val => updateComponent(idx, "uom", val)}>
+                                                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="EA">Each</SelectItem>
+                                                            <SelectItem value="KG">KG</SelectItem>
+                                                            <SelectItem value="L">Liters</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 mb-0" onClick={() => removeComponent(idx)}>
+                                                    <X className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        ))}
+                                        {bomComponents.length === 0 && (
+                                            <div className="py-8 text-center text-xs text-muted-foreground border-dashed border-2 rounded-md">
+                                                No components added.
+                                            </div>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t flex justify-end gap-2">
+                                <Button variant="outline" onClick={() => setIsSheetOpen(false)}>Cancel</Button>
+                                <Button onClick={handleSave} disabled={createMutation.isPending}>
+                                    <Save className="mr-2 h-4 w-4" /> {createMutation.isPending ? "Saving..." : "Save BOM"}
+                                </Button>
+                            </div>
+                        </div>
+                    </SheetContent>
+                </Sheet>
             }
         >
             <StandardTable

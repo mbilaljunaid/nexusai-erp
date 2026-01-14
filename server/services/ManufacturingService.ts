@@ -5,11 +5,14 @@ import {
     bom, bomItems, workCenters, resources, routings, routingOperations,
     productionOrders, productionTransactions, qualityInspections,
     productionCalendars, shifts, standardOperations,
+    costElements, standardCosts, wipBalances, varianceJournals,
     type InsertBom, type InsertBomItem, type InsertWorkCenter,
     type InsertResource, type InsertRouting, type InsertRoutingOperation,
     type InsertProductionOrder, type InsertProductionTransaction,
     type InsertQualityInspection, type InsertProductionCalendar,
-    type InsertShift, type InsertStandardOperation
+    type InsertShift, type InsertStandardOperation,
+    type InsertCostElement, type InsertStandardCost,
+    type InsertWipBalance, type InsertVarianceJournal
 } from "@shared/schema";
 
 export class ManufacturingService {
@@ -202,6 +205,29 @@ export class ManufacturingService {
             .where(eq(qualityInspections.id, id))
             .returning();
         return updated;
+    }
+
+    // ========== COSTING & WIP (L20) ==========
+
+    async getCostElements() {
+        return await db.select().from(costElements).orderBy(costElements.code);
+    }
+
+    async createCostElement(data: InsertCostElement) {
+        const [result] = await db.insert(costElements).values(data).returning();
+        return result;
+    }
+
+    async getStandardCosts() {
+        return await db.select().from(standardCosts).orderBy(desc(standardCosts.effectiveDate));
+    }
+
+    async getWipBalances() {
+        return await db.select().from(wipBalances).orderBy(desc(wipBalances.lastUpdated));
+    }
+
+    async getVarianceJournals() {
+        return await db.select().from(varianceJournals).orderBy(desc(varianceJournals.transactionDate));
     }
 }
 

@@ -4,8 +4,11 @@ import {
     insertProductionOrderSchema, insertBomSchema, insertRoutingSchema,
     insertWorkCenterSchema, insertResourceSchema, insertProductionTransactionSchema,
     insertQualityInspectionSchema, insertProductionCalendarSchema,
-    insertShiftSchema, insertStandardOperationSchema
+    insertShiftSchema, insertStandardOperationSchema,
+    insertCostElementSchema, insertStandardCostSchema,
+    insertOverheadRuleSchema
 } from "../../../shared/schema";
+import { manufacturingCostingService } from "../../services/ManufacturingCostingService";
 
 export function registerManufacturingRoutes(app: Express) {
     // Work Orders
@@ -251,6 +254,70 @@ export function registerManufacturingRoutes(app: Express) {
             const { status, findings } = req.body;
             const result = await manufacturingService.updateInspectionStatus(req.params.id, status, findings);
             res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // ========== COSTING & WIP (L20) ==========
+
+    // Cost Elements
+    app.get("/api/manufacturing/cost-elements", async (req, res) => {
+        try {
+            const elements = await manufacturingService.getCostElements(); // Need to implement this in service too
+            res.json(elements);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/manufacturing/cost-elements", async (req, res) => {
+        try {
+            const parseResult = insertCostElementSchema.safeParse(req.body);
+            if (!parseResult.success) return res.status(400).json({ error: parseResult.error });
+            const result = await manufacturingService.createCostElement(parseResult.data);
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // Standard Costs
+    app.get("/api/manufacturing/standard-costs", async (req, res) => {
+        try {
+            const costs = await manufacturingService.getStandardCosts();
+            res.json(costs);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/manufacturing/standard-costs/rollup", async (req, res) => {
+        try {
+            const { productId } = req.body;
+            if (!productId) return res.status(400).json({ error: "Product ID is required" });
+            const totalCost = await manufacturingCostingService.calculateStandardCost(productId);
+            res.json({ productId, totalCost });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // WIP Balances
+    app.get("/api/manufacturing/wip-balances", async (req, res) => {
+        try {
+            const balances = await manufacturingService.getWipBalances();
+            res.json(balances);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // Variance Journals
+    app.get("/api/manufacturing/variance-journals", async (req, res) => {
+        try {
+            const journals = await manufacturingService.getVarianceJournals();
+            res.json(journals);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }

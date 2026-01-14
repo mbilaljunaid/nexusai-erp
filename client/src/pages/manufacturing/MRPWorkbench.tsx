@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
-import { Play, CheckCircle, Boxes, Package, AlertTriangle, Calendar } from "lucide-react";
+import { Play, CheckCircle, Boxes, Package, AlertTriangle, Calendar, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -206,6 +206,10 @@ export default function MRPWorkbench() {
                                 columns={columns}
                                 isLoading={recsLoading}
                                 keyExtractor={(item) => item.id}
+                                page={page}
+                                pageSize={pageSize}
+                                totalItems={totalRecs}
+                                onPageChange={setPage}
                                 filterColumn="productId"
                                 filterPlaceholder="Filter by product..."
                             />
@@ -222,4 +226,3 @@ export default function MRPWorkbench() {
     );
 }
 
-import { Plus } from "lucide-react";

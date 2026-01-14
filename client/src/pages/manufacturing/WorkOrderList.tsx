@@ -50,7 +50,7 @@ export default function WorkOrderList() {
         }
     });
 
-    const columns = [
+    const columns: Column<WorkOrder>[] = [
         {
             header: "Order #",
             accessorKey: "orderNumber",

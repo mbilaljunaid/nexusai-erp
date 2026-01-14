@@ -101,6 +101,18 @@ export const qualityInspections = pgTable("quality_inspections", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
+export const qualityResults = pgTable("mfg_quality_results", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    inspectionId: varchar("inspection_id").notNull(),
+    parameterName: varchar("parameter_name").notNull(), // e.g. "Purity", "Weight"
+    minValue: numeric("min_value", { precision: 18, scale: 4 }),
+    maxValue: numeric("max_value", { precision: 18, scale: 4 }),
+    actualValue: numeric("actual_value", { precision: 18, scale: 4 }).notNull(),
+    uom: varchar("uom"),
+    result: varchar("result").notNull(), // PASS, FAIL
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
 // ========== CONFIGURATION (L8) ==========
 
 export const productionCalendars = pgTable("production_calendars", {
@@ -183,6 +195,118 @@ export const mrpRecommendations = pgTable("mfg_mrp_recommendations", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
+// ========== COSTING & WIP (L20) ==========
+
+export const costElements = pgTable("mfg_cost_elements", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    code: varchar("code").notNull().unique(), // e.g., "MAT-STEEL", "LAB-ASSEMBLY"
+    name: varchar("name").notNull(),
+    type: varchar("type").notNull(), // MATERIAL, LABOR, OVERHEAD, OUTSIDE_PROCESSING
+    fixedOrVariable: varchar("fixed_or_variable").default("VARIABLE"),
+    glAccountId: varchar("gl_account_id"), // Link to General Ledger
+    status: varchar("status").default("active"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const overheadRules = pgTable("mfg_overhead_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    costElementId: varchar("cost_element_id").notNull(), // FK to costElements
+    basis: varchar("basis").notNull(), // LABOR_HOURS, MACHINE_HOURS, MATERIAL_VALUE, FLAT_RATE
+    rateOrPercentage: numeric("rate_or_percentage", { precision: 10, scale: 4 }).notNull(),
+    status: varchar("status").default("active"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const standardCosts = pgTable("mfg_standard_costs", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    targetType: varchar("target_type").notNull(), // ITEM, RESOURCE
+    targetId: varchar("target_id").notNull(), // Inventory Item ID or Resource ID
+    costElementId: varchar("cost_element_id").notNull(),
+    unitCost: numeric("unit_cost", { precision: 18, scale: 4 }).notNull(),
+    effectiveDate: timestamp("effective_date").default(sql`now()`),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const wipBalances = pgTable("mfg_wip_balances", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    productionOrderId: varchar("production_order_id").notNull(),
+    costElementId: varchar("cost_element_id").notNull(),
+    balance: numeric("balance", { precision: 18, scale: 4 }).default("0"),
+    lastUpdated: timestamp("last_updated").default(sql`now()`),
+});
+
+export const varianceJournals = pgTable("mfg_variance_journals", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    productionOrderId: varchar("production_order_id").notNull(),
+    varianceType: varchar("variance_type").notNull(), // MATERIAL_USAGE, LABOR_EFFICIENCY, OVERHEAD_VOLUME
+    amount: numeric("amount", { precision: 18, scale: 4 }).notNull(),
+    description: text("description"),
+    glPosted: boolean("gl_posted").default(false),
+    transactionDate: timestamp("transaction_date").default(sql`now()`),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== PROCESS MANUFACTURING (L1/L21) ==========
+
+export const formulas = pgTable("mfg_formulas", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    formulaNumber: varchar("formula_number").notNull().unique(),
+    productId: varchar("product_id").notNull(), // Target Product
+    name: varchar("name").notNull(),
+    version: varchar("version").default("1.0"),
+    status: varchar("status").default("active"),
+    totalBatchSize: numeric("total_batch_size", { precision: 18, scale: 4 }).notNull(),
+    uom: varchar("uom").notNull(),
+    instructions: text("instructions"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const formulaIngredients = pgTable("mfg_formula_ingredients", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    formulaId: varchar("formula_id").notNull(),
+    productId: varchar("product_id").notNull(), // Ingredient
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
+    percentage: numeric("percentage", { precision: 5, scale: 2 }),
+    lossFactor: numeric("loss_factor", { precision: 5, scale: 2 }).default("0"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const recipes = pgTable("mfg_recipes", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    recipeNumber: varchar("recipe_number").notNull().unique(),
+    formulaId: varchar("formula_id").notNull(),
+    routingId: varchar("routing_id"), // Process Routing
+    name: varchar("name").notNull(),
+    description: text("description"),
+    status: varchar("status").default("active"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const manufacturingBatches = pgTable("mfg_batches", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    batchNumber: varchar("batch_number").notNull().unique(),
+    recipeId: varchar("recipe_id").notNull(),
+    targetQuantity: numeric("target_quantity", { precision: 18, scale: 4 }).notNull(),
+    actualQuantity: numeric("actual_quantity", { precision: 18, scale: 4 }).default("0"),
+    status: varchar("status").default("planned"), // planned, released, wip, completed, closed
+    startDate: timestamp("start_date"),
+    endDate: timestamp("end_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const batchTransactions = pgTable("mfg_batch_transactions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    batchId: varchar("batch_id").notNull(),
+    transactionType: varchar("transaction_type").notNull(), // FEED, YIELD, LOSS, BYPRODUCT
+    productId: varchar("product_id").notNull(),
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
+    lotNumber: varchar("lot_number"),
+    parentLotId: varchar("parent_lot_id"), // For Genealogy (Tree traversing)
+    transactionDate: timestamp("transaction_date").default(sql`now()`),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
 // ========== ZOD SCHEMAS & TYPES ==========
 
 export const insertDemandForecastSchema = createInsertSchema(demandForecasts);
@@ -204,6 +328,19 @@ export const insertQualityInspectionSchema = createInsertSchema(qualityInspectio
 export const insertProductionCalendarSchema = createInsertSchema(productionCalendars);
 export const insertShiftSchema = createInsertSchema(shifts);
 export const insertStandardOperationSchema = createInsertSchema(standardOperations);
+
+export const insertCostElementSchema = createInsertSchema(costElements);
+export const insertOverheadRuleSchema = createInsertSchema(overheadRules);
+export const insertStandardCostSchema = createInsertSchema(standardCosts);
+export const insertWipBalanceSchema = createInsertSchema(wipBalances);
+export const insertVarianceJournalSchema = createInsertSchema(varianceJournals);
+
+export const insertFormulaSchema = createInsertSchema(formulas);
+export const insertFormulaIngredientSchema = createInsertSchema(formulaIngredients);
+export const insertRecipeSchema = createInsertSchema(recipes);
+export const insertManufacturingBatchSchema = createInsertSchema(manufacturingBatches);
+export const insertBatchTransactionSchema = createInsertSchema(batchTransactions);
+export const insertQualityResultSchema = createInsertSchema(qualityResults);
 
 export type Bom = typeof bom.$inferSelect;
 export type InsertBom = z.infer<typeof insertBomSchema>;
@@ -230,3 +367,27 @@ export type Shift = typeof shifts.$inferSelect;
 export type InsertShift = z.infer<typeof insertShiftSchema>;
 export type StandardOperation = typeof standardOperations.$inferSelect;
 export type InsertStandardOperation = z.infer<typeof insertStandardOperationSchema>;
+
+export type CostElement = typeof costElements.$inferSelect;
+export type InsertCostElement = z.infer<typeof insertCostElementSchema>;
+export type OverheadRule = typeof overheadRules.$inferSelect;
+export type InsertOverheadRule = z.infer<typeof insertOverheadRuleSchema>;
+export type StandardCost = typeof standardCosts.$inferSelect;
+export type InsertStandardCost = z.infer<typeof insertStandardCostSchema>;
+export type WipBalance = typeof wipBalances.$inferSelect;
+export type InsertWipBalance = z.infer<typeof insertWipBalanceSchema>;
+export type VarianceJournal = typeof varianceJournals.$inferSelect;
+export type InsertVarianceJournal = z.infer<typeof insertVarianceJournalSchema>;
+
+export type Formula = typeof formulas.$inferSelect;
+export type InsertFormula = z.infer<typeof insertFormulaSchema>;
+export type FormulaIngredient = typeof formulaIngredients.$inferSelect;
+export type InsertFormulaIngredient = z.infer<typeof insertFormulaIngredientSchema>;
+export type Recipe = typeof recipes.$inferSelect;
+export type InsertRecipe = z.infer<typeof insertRecipeSchema>;
+export type ManufacturingBatch = typeof manufacturingBatches.$inferSelect;
+export type InsertManufacturingBatch = z.infer<typeof insertManufacturingBatchSchema>;
+export type BatchTransaction = typeof batchTransactions.$inferSelect;
+export type InsertBatchTransaction = z.infer<typeof insertBatchTransactionSchema>;
+export type QualityResult = typeof qualityResults.$inferSelect;
+export type InsertQualityResult = z.infer<typeof insertQualityResultSchema>;

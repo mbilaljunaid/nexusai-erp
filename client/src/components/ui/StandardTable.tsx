@@ -26,6 +26,7 @@ const List = (ReactWindow as any).FixedSizeList || (ReactWindow as any).default?
 export interface Column<T> {
     header: string;
     accessorKey?: keyof T;
+    id?: string;
     cell?: (item: T) => React.ReactNode;
     className?: string;
     width?: string;

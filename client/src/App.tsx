@@ -71,10 +71,15 @@ const WorkOrderList = lazy(() => import("@/pages/manufacturing/WorkOrderList"));
 const ShopFloorTerminal = lazy(() => import("@/pages/manufacturing/ShopFloorTerminal"));
 const QualityManager = lazy(() => import("@/pages/manufacturing/QualityManager"));
 const MRPWorkbench = lazy(() => import("@/pages/manufacturing/MRPWorkbench"));
-const MRPWorkbench = lazy(() => import("@/pages/manufacturing/MRPWorkbench"));
 const ProductionGantt = lazy(() => import("@/pages/manufacturing/ProductionGantt"));
 const CalendarManager = lazy(() => import("@/pages/manufacturing/CalendarManager")); // L8
 const StandardOpLibrary = lazy(() => import("@/pages/manufacturing/StandardOpLibrary")); // L9
+const CostingWorkbench = lazy(() => import("@/pages/manufacturing/CostingWorkbench")); // L20
+const WIPDashboard = lazy(() => import("@/pages/manufacturing/WIPDashboard")); // L20
+const MFGVarianceAnalysis = lazy(() => import("@/pages/manufacturing/VarianceAnalysis")); // L20
+const FormulaDesigner = lazy(() => import("@/pages/manufacturing/FormulaDesigner")); // Phase 22
+const BatchWorkbench = lazy(() => import("@/pages/manufacturing/BatchWorkbench")); // Phase 22
+const BatchGenealogy = lazy(() => import("@/pages/manufacturing/BatchGenealogy")); // Phase 24
 const AnalyticsModule = lazy(() => import("@/pages/AnalyticsModule"));
 const AdminConsoleModule = lazy(() => import("@/pages/AdminConsoleModule"));
 const ComplianceModule = lazy(() => import("@/pages/ComplianceModule"));
@@ -680,18 +685,26 @@ function Router() {
       <Route path="/marketing-module" component={MarketingModule} />
       <Route path="/manufacturing-module" component={ManufacturingModule} />
       <Route path="/manufacturing/dashboard" component={ManufacturingDashboard} />
+      <Route path="/manufacturing/mrp-dashboard" component={ManufacturingDashboard} />
       <Route path="/manufacturing/bom" component={BOMDesigner} />
       <Route path="/manufacturing/routings" component={RoutingEditor} />
       <Route path="/manufacturing/work-centers" component={WorkCenterManager} />
       <Route path="/manufacturing/resources" component={ResourceManager} />
       <Route path="/manufacturing/work-orders" component={WorkOrderList} />
       <Route path="/manufacturing/shop-floor" component={ShopFloorTerminal} />
+      <Route path="/manufacturing/terminal" component={ShopFloorTerminal} />
       <Route path="/manufacturing/quality" component={QualityManager} />
-      <Route path="/manufacturing/mrp" component={MRPWorkbench} />
-      <Route path="/manufacturing/mrp" component={MRPWorkbench} />
+      <Route path="/manufacturing/mrp-workbench" component={MRPWorkbench} />
       <Route path="/manufacturing/gantt" component={ProductionGantt} />
+
       <Route path="/manufacturing/calendars" component={CalendarManager} />
       <Route path="/manufacturing/standard-operations" component={StandardOpLibrary} />
+      <Route path="/manufacturing/costing" component={CostingWorkbench} />
+      <Route path="/manufacturing/wip" component={WIPDashboard} />
+      <Route path="/manufacturing/variances" component={MFGVarianceAnalysis} />
+      <Route path="/manufacturing/formulas" component={FormulaDesigner} />
+      <Route path="/manufacturing/batches" component={BatchWorkbench} />
+      <Route path="/manufacturing/genealogy" component={BatchGenealogy} />
       <Route path="/analytics-module" component={AnalyticsModule} />
       <Route path="/admin-console-module" component={AdminConsoleModule} />
       <Route path="/compliance-module" component={ComplianceModule} />
