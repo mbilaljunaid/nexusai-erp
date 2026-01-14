@@ -11,12 +11,47 @@ import {
 } from "lucide-react";
 import type { VarianceJournal } from "@shared/schema";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useState } from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { DateRange } from "react-day-picker";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function VarianceAnalysis() {
-    // Fetch Data
-    const { data: journals = [] } = useQuery<VarianceJournal[]>({
-        queryKey: ["/api/manufacturing/variance-journals"]
+    // State
+    const [page, setPage] = useState(0);
+    const [dateRange, setDateRange] = useState<DateRange | undefined>({
+        from: new Date(new Date().setDate(new Date().getDate() - 30)),
+        to: new Date(),
     });
+    const limit = 50;
+
+    // Fetch Data
+    const { data } = useQuery<{ items: VarianceJournal[], total: number }>({
+        queryKey: ["/api/manufacturing/variance-journals", page, limit, dateRange?.from, dateRange?.to],
+        queryFn: async () => {
+            const params = new URLSearchParams({
+                limit: limit.toString(),
+                offset: (page * limit).toString(),
+            });
+            if (dateRange?.from) params.append("startDate", dateRange.from.toISOString());
+            if (dateRange?.to) params.append("endDate", dateRange.to.toISOString());
+
+            const res = await fetch(`/api/manufacturing/variance-journals?${params}`);
+            if (!res.ok) throw new Error("Failed to fetch variance journals");
+            return res.json();
+        }
+    });
+
+    const journals = data?.items || [];
+    const totalItems = data?.total || 0;
 
     // Chart Data
     const varianceSummary = [
@@ -55,7 +90,46 @@ export default function VarianceAnalysis() {
                 { label: "Variance Analysis" }
             ]}
             actions={
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <div className={cn("grid gap-2")}>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    id="date"
+                                    variant={"outline"}
+                                    className={cn(
+                                        "w-[300px] justify-start text-left font-normal",
+                                        !dateRange && "text-muted-foreground"
+                                    )}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {dateRange?.from ? (
+                                        dateRange.to ? (
+                                            <>
+                                                {format(dateRange.from, "LLL dd, y")} -{" "}
+                                                {format(dateRange.to, "LLL dd, y")}
+                                            </>
+                                        ) : (
+                                            format(dateRange.from, "LLL dd, y")
+                                        )
+                                    ) : (
+                                        <span>Pick a date</span>
+                                    )}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    initialFocus
+                                    mode="range"
+                                    defaultMonth={dateRange?.from}
+                                    selected={dateRange}
+                                    onSelect={setDateRange}
+                                    numberOfMonths={2}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+
                     <Card className="px-4 py-2 flex flex-row items-center gap-3">
                         <div className="bg-red-100 p-2 rounded-full">
                             <ArrowUpRight className="h-5 w-5 text-red-600" />
@@ -118,6 +192,10 @@ export default function VarianceAnalysis() {
                         <StandardTable
                             columns={columns}
                             data={journals}
+                            page={page}
+                            onPageChange={setPage}
+                            totalItems={totalItems}
+                            itemsPerPage={limit}
                         />
                     </CardContent>
                 </Card>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -14,9 +15,20 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function WIPDashboard() {
     // Fetch Data
-    const { data: wipBalances = [] } = useQuery<WipBalance[]>({
-        queryKey: ["/api/manufacturing/wip-balances"]
+    const [page, setPage] = useState(0);
+    const limit = 50;
+
+    const { data } = useQuery<{ items: WipBalance[], total: number }>({
+        queryKey: ["/api/manufacturing/wip-balances", page, limit],
+        queryFn: async () => {
+            const res = await fetch(`/api/manufacturing/wip-balances?limit=${limit}&offset=${page * limit}`);
+            if (!res.ok) throw new Error("Failed to fetch WIP balances");
+            return res.json();
+        }
     });
+
+    const wipBalances = data?.items || [];
+    const totalItems = data?.total || 0;
 
     // Mock trend data for chart
     const trendData = [
@@ -124,6 +136,10 @@ export default function WIPDashboard() {
                         <StandardTable
                             columns={columns}
                             data={wipBalances}
+                            page={page}
+                            onPageChange={setPage}
+                            totalItems={totalItems}
+                            itemsPerPage={limit}
                         />
                     </CardContent>
                 </Card>

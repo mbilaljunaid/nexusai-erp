@@ -306,7 +306,9 @@ export function registerManufacturingRoutes(app: Express) {
     // WIP Balances
     app.get("/api/manufacturing/wip-balances", async (req, res) => {
         try {
-            const balances = await manufacturingService.getWipBalances();
+            const limit = parseInt(req.query.limit as string) || 50;
+            const offset = parseInt(req.query.offset as string) || 0;
+            const balances = await manufacturingService.getWipBalances(limit, offset);
             res.json(balances);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -316,7 +318,12 @@ export function registerManufacturingRoutes(app: Express) {
     // Variance Journals
     app.get("/api/manufacturing/variance-journals", async (req, res) => {
         try {
-            const journals = await manufacturingService.getVarianceJournals();
+            const limit = parseInt(req.query.limit as string) || 50;
+            const offset = parseInt(req.query.offset as string) || 0;
+            const startDate = req.query.startDate as string;
+            const endDate = req.query.endDate as string;
+
+            const journals = await manufacturingService.getVarianceJournals(limit, offset, { startDate, endDate });
             res.json(journals);
         } catch (error: any) {
             res.status(500).json({ error: error.message });

@@ -222,12 +222,32 @@ export class ManufacturingService {
         return await db.select().from(standardCosts).orderBy(desc(standardCosts.effectiveDate));
     }
 
-    async getWipBalances() {
-        return await db.select().from(wipBalances).orderBy(desc(wipBalances.lastUpdated));
+    async getWipBalances(limit = 50, offset = 0) {
+        const items = await db.select().from(wipBalances).orderBy(desc(wipBalances.lastUpdated)).limit(limit).offset(offset);
+        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(wipBalances);
+        return { items, total: Number(countResult.count) };
     }
 
-    async getVarianceJournals() {
-        return await db.select().from(varianceJournals).orderBy(desc(varianceJournals.transactionDate));
+    async getVarianceJournals(limit = 50, offset = 0, filters?: { startDate?: string; endDate?: string }) {
+        let whereClause = undefined;
+        if (filters?.startDate && filters?.endDate) {
+            whereClause = and(
+                sql`${varianceJournals.transactionDate} >= ${filters.startDate}::date`,
+                sql`${varianceJournals.transactionDate} <= ${filters.endDate}::date`
+            );
+        }
+
+        const items = await db.select().from(varianceJournals)
+            .where(whereClause)
+            .orderBy(desc(varianceJournals.transactionDate))
+            .limit(limit)
+            .offset(offset);
+
+        const [countResult] = await db.select({ count: sql<number>`count(*)` })
+            .from(varianceJournals)
+            .where(whereClause);
+
+        return { items, total: Number(countResult.count) };
     }
 }
 

@@ -1,4 +1,4 @@
-# NexusAIFirst ERP - Enterprise AI-First Platform
+# ProjectOye ERP - Enterprise AI-First Platform
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub Stars](https://img.shields.io/github/stars/mbilaljunaid/nexusai-erp)](https://github.com/mbilaljunaid/nexusai-erp/stargazers)
@@ -50,6 +50,12 @@ Manufacturing, Retail, Finance, Healthcare, Construction, Wholesale, Telecommuni
 
 ### 12-Language Support
 English, Spanish, French, German, Chinese, Japanese, Arabic, Portuguese, Hindi, Russian, Thai, Indonesian
+
+### 🏭 Tier-1 Manufacturing & Costing (New in v2.0)
+*   **Discrete & Process**: Mixed-mode manufacturing support (BOMs & Formulas).
+*   **Cost Accounting**: Standard Costing, WIP Valuation, Pivot-based Variance Analysis.
+*   **Governance**: Server-side pagination for high-volume transactions (>100k records).
+*   **Execution**: Shop Floor Terminal, Batch Genealogy, Quality Control (LIMS).
 
 ## Quick Start
 
@@ -204,9 +210,9 @@ With the requirement that you:
 
 ---
 
-**Platform**: NexusAIFirst ERP  
+**Platform**: ProjectOye ERP  
 **Version**: 2.0.0  
-**Status**: Production Ready  
+**Status**: Tier-1 Enterprise Ready (Production)  
 **License**: [AGPL-3.0](./LICENSE)
 
-Made with care by the NexusAIFirst community
+Made with care by the ProjectOye community

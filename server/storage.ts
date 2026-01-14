@@ -1566,12 +1566,7 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listArRevenueSchedules(status?: string): Promise<ArRevenueSchedule[]> {
-    if (status) {
-      return await db.select().from(arRevenueSchedules).where(eq(arRevenueSchedules.status, status));
-    }
-    return await db.select().from(arRevenueSchedules);
-  }
+
 
   // Cash Management Implementation (DB-Backed)
   async listCashBankAccounts() {
