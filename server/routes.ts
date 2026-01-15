@@ -20,6 +20,8 @@ import { registerPlatformRoutes } from "./modules/platform/routes";
 import { registerMarketplaceRoutes } from "./modules/marketplace/routes";
 import { registerCommunityRoutes } from "./modules/community/routes";
 import { registerRevenueRoutes } from "./modules/revenue/routes";
+import { maintenanceRouter } from "./modules/maintenance/routes";
+
 
 // Import existing routes files that were already modularized (if any)
 import analyticsRoutes from "./routes/analyticsRoutes";
@@ -65,7 +67,9 @@ export async function registerRoutes(
   app.use("/api/netting", nettingRouter);
   app.use("/api/portal", portalRouter);
   app.use("/api/fa", fixedAssetsRouter);
+  app.use("/api/maintenance", maintenanceRouter);
   app.use("/api/ppm", ppmRouter);
+
 
   // Enterprise Billing
   app.use("/api/billing", billingRouter);

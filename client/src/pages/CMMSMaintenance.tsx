@@ -8,30 +8,41 @@ import { Badge } from "@/components/ui/badge";
 import { Wrench, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import MaintenanceDetailSheet from "@/components/maintenance/MaintenanceDetailSheet";
+
 
 export default function CMMSMaintenance() {
   const { toast } = useToast();
-  const [newMWO, setNewMWO] = useState({ equipmentId: "", maintenanceType: "preventive", priority: "normal", estimatedHours: "2", status: "scheduled" });
+  const [selectedWorkOrderId, setSelectedWorkOrderId] = useState<string | null>(null);
+  const [newMWO, setNewMWO] = useState({ assetId: "", maintenanceType: "PREVENTIVE", priority: "NORMAL", estimatedHours: "2", status: "DRAFT" });
+
+
 
   const { data: workOrders = [], isLoading } = useQuery({
-    queryKey: ["/api/maintenance-wo"],
-    queryFn: () => fetch("/api/maintenance-wo").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/maintenance/work-orders"],
+    queryFn: () => fetch("/api/maintenance/work-orders").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/maintenance-wo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/maintenance/work-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/maintenance-wo"] });
-      setNewMWO({ equipmentId: "", maintenanceType: "preventive", priority: "normal", estimatedHours: "2", status: "scheduled" });
+      queryClient.invalidateQueries({ queryKey: ["/api/maintenance/work-orders"] });
+      setNewMWO({ assetId: "", maintenanceType: "PREVENTIVE", priority: "NORMAL", estimatedHours: "2", status: "DRAFT" });
+
       toast({ title: "Maintenance WO created" });
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/maintenance-wo/${id}`, { method: "DELETE" }),
+    // Hard delete not supported yet, status update to CANCELLED
+    mutationFn: (id: string) => fetch(`/api/maintenance/work-orders/${id}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "CANCELLED" })
+    }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/maintenance-wo"] });
-      toast({ title: "WO deleted" });
+      queryClient.invalidateQueries({ queryKey: ["/api/maintenance/work-orders"] });
+      toast({ title: "WO Cancelled" });
     },
   });
 
@@ -80,13 +91,14 @@ export default function CMMSMaintenance() {
         <CardHeader><CardTitle className="text-base">Create Maintenance WO</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-5 gap-2">
-            <Input placeholder="Equipment ID" value={newMWO.equipmentId} onChange={(e) => setNewMWO({ ...newMWO, equipmentId: e.target.value })} data-testid="input-equipid" className="text-sm" />
+            <Input placeholder="Asset ID (UUID)" value={newMWO.assetId} onChange={(e) => setNewMWO({ ...newMWO, assetId: e.target.value })} data-testid="input-equipid" className="text-sm" />
+
             <Select value={newMWO.maintenanceType} onValueChange={(v) => setNewMWO({ ...newMWO, maintenanceType: v })}>
               <SelectTrigger data-testid="select-type" className="text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="preventive">Preventive</SelectItem>
-                <SelectItem value="corrective">Corrective</SelectItem>
-                <SelectItem value="predictive">Predictive</SelectItem>
+                <SelectItem value="PREVENTIVE">Preventive</SelectItem>
+                <SelectItem value="CORRECTIVE">Corrective</SelectItem>
+                <SelectItem value="EMERGENCY">Emergency</SelectItem>
               </SelectContent>
             </Select>
             <Select value={newMWO.priority} onValueChange={(v) => setNewMWO({ ...newMWO, priority: v })}>
@@ -99,7 +111,8 @@ export default function CMMSMaintenance() {
               </SelectContent>
             </Select>
             <Input placeholder="Est Hours" type="number" value={newMWO.estimatedHours} onChange={(e) => setNewMWO({ ...newMWO, estimatedHours: e.target.value })} data-testid="input-hours" className="text-sm" />
-            <Button onClick={() => createMutation.mutate(newMWO)} disabled={createMutation.isPending || !newMWO.equipmentId} size="sm" data-testid="button-create-mwo">
+            <Button onClick={() => createMutation.mutate(newMWO)} disabled={createMutation.isPending || !newMWO.assetId} size="sm" data-testid="button-create-mwo">
+
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -110,9 +123,11 @@ export default function CMMSMaintenance() {
         <CardHeader><CardTitle className="text-base">Maintenance Work Orders</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {isLoading ? <p>Loading...</p> : workOrders.length === 0 ? <p className="text-muted-foreground text-center py-4">No MWOs</p> : workOrders.map((w: any) => (
-            <div key={w.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`mwo-${w.id}`}>
+            <div key={w.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between cursor-pointer" data-testid={`mwo-${w.id}`} onClick={() => setSelectedWorkOrderId(w.id)}>
+
               <div className="flex-1">
-                <p className="font-semibold">{w.equipmentId}</p>
+                <p className="font-semibold">{w.assetId}</p>
+
                 <p className="text-xs text-muted-foreground">{w.maintenanceType} • {w.estimatedHours}h • Priority: {w.priority}</p>
               </div>
               <div className="flex gap-2 items-center">
@@ -125,6 +140,12 @@ export default function CMMSMaintenance() {
           ))}
         </CardContent>
       </Card>
-    </div>
+
+      <MaintenanceDetailSheet
+        workOrderId={selectedWorkOrderId}
+        open={!!selectedWorkOrderId}
+        onOpenChange={(open) => !open && setSelectedWorkOrderId(null)}
+      />
+    </div >
   );
 }

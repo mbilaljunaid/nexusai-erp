@@ -1,70 +1,40 @@
-# Implementation Plan - Phase V: Financial Integrity (Tax & GL)
+# Implementation Plan: Maintenance Quality & Safety (Phase C)
 
-## Goal Description
-Implement the missing "Financial Integrity" layer for the Billing Module. This includes:
-1.  **Tax Calculation**: A service to calculate tax on billing events (initially flat rate/stubbed, extensible for Vertex).
-2.  **SLA (Subledger Accounting) Integration**: A mechanism to derive Accounting Entries (Dr/Cr) from Billing Events and post them to the GL Interface.
-3.  **Approvals**: A basic workflow state machine for High-Value invoices.
-
-## User Review Required
-> [!IMPORTANT]
-> **Tax Logic**: We will implement a simple "10% Flat Tax" or "Region-based" stub for now. Real tax integration (Vertex/Avalara) is out of scope but the interface must be compatible.
-
-> [!WARNING]
-> **GL Integration**: We will write to a `gl_interface` or `journal_entries` table. Ensure `JournalService` exists or we mock the hand-off.
+## Goal
+Implement a Quality Assurance (QA) and Safety layer to ensure maintenance work meets compliance standards and is performed safely using Permits and Inspection Checklists.
 
 ## Proposed Changes
 
-### Billing Module
-#### [NEW] [TaxService.ts](file:///server/modules/billing/TaxService.ts)
-*   `calculateTax(event)`: Returns tax amount and lines.
+### 1. Schema Definition
+#### [NEW] `shared/schema/maintenance_quality.ts`
+*   `maint_inspection_definitions`: Templates for checklists (e.g., "Annual Forklift Inspection").
+    *   `questions`: JSONB (Array of {id, text, type, options}).
+*   `maint_inspections`: Execution record linked to an Asset or Work Order.
+    *   `results`: JSONB (Answers).
+    *   `status`: PASS/FAIL.
+*   `maint_permits`: Safety documents (e.g., "Hot Work Permit").
+    *   `type`: HOT_WORK, COLD_WORK, CONFINED_SPACE.
+    *   `status`: ACTIVE, CLOSED.
+    *   `work_order_id`: FK.
 
-#### [NEW] [BillingAccountingService.ts](file:///server/modules/billing/BillingAccountingService.ts)
-*   `createAccounting(event)`: Derives Dr AR / Cr Revenue.
-*   `postToGL(accountingEntries)`: Sends to General Ledger.
+### 2. Backend Service
+#### [NEW] `server/services/MaintenanceQualityService.ts`
+*   `createInspectionFromTemplate(templateId, assetId, woId)`: Instantiates a checklist.
+*   `submitInspectionResults(inspectionId, answers)`: Validates and scores the inspection.
+*   `createWorkPermit(data)`: Generates a permit for a WO.
 
-#### [MODIFY] [BillingService.ts](file:///server/modules/billing/BillingService.ts)
-*   Integrate `TaxService` into `processEvent`.
-*   Integrate `BillingAccountingService` into `runAutoInvoice`.
+### 3. Frontend UI
+#### [MODIFY] `client/src/components/maintenance/MaintenanceDetailSheet.tsx`
+*   Add **"Safety & Quality"** Tab.
+*   **Permits Section**: List active permits. Button to "Generate Permit".
+*   **Inspections Section**: List required inspections. Button to "Perform Inspection".
+    *   **InspectionRunner**: A modal/drawer to answer questions (Yes/No/Text).
 
-#### [MODIFY] [schema/billing.ts](file:///shared/schema/billing_enterprise.ts)
-*   Add `taxAmount`, `taxLines` to `BillingEvent`.
-*   Add `glStatus`, `glDate` to `ArInvoice`.
-
-## Verification Plan
-
-### Automated Tests
-1.  **Tax Calculation**: Verify 10% tax is added to new events.
-2.  **Accounting Generation**: Verify Dr/Cr lines are created for an invoice.
-3.  **GL Posting**: Verify entries appear in `gl_interface` (or equivalent).
-
-### Manual Verification
-1.  Create a Billing Event via Dashboard.
-2.  Run `AutoInvoice`.
-3.  Check "Tax" field on Invoice.
-4.  Check "Accounting" tab/status on Invoice (if UI exists) or DB.
-
-# Phase VI: Adjustments & Credits Implementation Plan
-
-## Goal Description
-Implement the ability to issue Credit Memos, Debit Memos, and perform Invoice Adjustments.
-
-## User Review Required
-> [!IMPORTANT]
-> **Workflow**: Credit Memos > $1000 require approval. For now, we will implement the backend logic and a basic "Approve" button.
-
-## Proposed Changes
-### Billing Module
-#### [NEW] [CreditMemoService.ts](file:///server/modules/billing/CreditMemoService.ts)
-*   `createCreditMemo(invoiceId, amount, reason)`: Creates a CM linked to original Invoice.
-*   `applyCredit(creditNoteId, invoiceId)`: Applies CM balance to open Invoice.
-
-#### [MODIFY] [schema/ar.ts](file:///shared/schema/ar.ts)
-*   Ensure `arAdjustments` table exists or create it.
-*   Ensure `arCreditMemos` logic is supported (via `transactionClass` in `arInvoices`).
-
-## Verification Plan
-1.  **Create Invoice**: $1000.
-2.  **Create CM**: $100.
-3.  **Verify Balance**: Invoice balance should be $900.
-
+## Verification
+*   **Script**: `scripts/verify_quality_flow.ts`
+    1.  Create Inspection Template (Seed).
+    2.  Create WO.
+    3.  Generate Inspection from Template.
+    4.  Submit Results (Pass).
+    5.  Create Safety Permit.
+    6.  Verify Links.

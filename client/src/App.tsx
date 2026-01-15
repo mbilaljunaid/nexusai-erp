@@ -435,7 +435,12 @@ const PLMEngineeringChangeControl = lazy(() => import("@/pages/PLMEngineeringCha
 const MRPMPSPlanning = lazy(() => import("@/pages/MRPMPSPlanning"));
 const ShopFloorDataCollection = lazy(() => import("@/pages/ShopFloorDataCollection"));
 const CMMSMaintenance = lazy(() => import("@/pages/CMMSMaintenance"));
+const PMManager = lazy(() => import("@/pages/PMManager"));
+const ServiceRequestPortal = lazy(() => import("@/pages/ServiceRequestPortal"));
+const ServiceRequestQueue = lazy(() => import("@/pages/ServiceRequestQueue"));
 const InspectionPlansITP = lazy(() => import("@/pages/InspectionPlansITP"));
+
+
 const NCRCAMAManagement = lazy(() => import("@/pages/NCRCAMAManagement"));
 const ProductionSchedulingGantt = lazy(() => import("@/pages/ProductionSchedulingGantt"));
 const ToolingManagement = lazy(() => import("@/pages/ToolingManagement"));
@@ -636,7 +641,12 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
+      <Route path="/maintenance/pm" component={PMManager} />
+      <Route path="/maintenance/requests" component={ServiceRequestPortal} />
+      <Route path="/maintenance/triage" component={ServiceRequestQueue} />
       <Route path="/form" component={FormPage} />
+
+
       <Route path="/ap/settings">
         <ProtectedRoute>
           <ApSettings />
