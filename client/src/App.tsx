@@ -413,6 +413,17 @@ const StoreOperationsDashboard = lazy(() => import("@/pages/StoreOperationsDashb
 const OmniChannelOrders = lazy(() => import("@/pages/OmniChannelOrders"));
 const MerchandisePlanning = lazy(() => import("@/pages/MerchandisePlanning"));
 const SalesOrderManagement = lazy(() => import("@/pages/SalesOrderManagement"));
+const OrderWorkbench = lazy(() => import("@/pages/order/OrderWorkbench").then(module => ({ default: module.OrderWorkbench })));
+const OrderEntry = lazy(() => import("@/pages/order/OrderEntry").then(module => ({ default: module.OrderEntry })));
+const ShipmentWorkbench = lazy(() => import("@/pages/order/ShipmentWorkbench").then(module => ({ default: module.ShipmentWorkbench })));
+const ReturnsWorkbench = lazy(() => import("@/pages/order/ReturnsWorkbench").then(module => ({ default: module.ReturnsWorkbench })));
+const OrderConfigManager = lazy(() => import("@/pages/order/OrderConfigManager").then(module => ({ default: module.OrderConfigManager })));
+const PriceListManager = lazy(() => import("@/pages/order/PriceListManager").then(module => ({ default: module.PriceListManager })));
+
+
+
+
+
 const PricingRebatesEngine = lazy(() => import("@/pages/PricingRebatesEngine"));
 const SupplierCollaborationPortal = lazy(() => import("@/pages/SupplierCollaborationPortal"));
 const FreightManagement = lazy(() => import("@/pages/FreightManagement"));
@@ -787,6 +798,20 @@ function Router() {
       <Route path="/public/processes/procure-to-pay" component={PublicProcureToPayProcess} />
       <Route path="/public/processes/order-to-cash" component={PublicOrderToCashProcess} />
       <Route path="/public/processes/hire-to-retire" component={PublicHireToRetireProcess} />
+
+      {/* Order Management Module */}
+      <Route path="/order-management" component={OrderWorkbench} />
+      <Route path="/order-management/create" component={OrderEntry} />
+      <Route path="/order-management/:id" component={OrderEntry} />
+      <Route path="/order-management/fulfillment" component={ShipmentWorkbench} />
+      <Route path="/order-management/returns" component={ReturnsWorkbench} />
+      <Route path="/order-management/config" component={OrderConfigManager} />
+      <Route path="/order-management/pricing" component={PriceListManager} />
+
+
+
+
+
       <Route path="/public/processes/month-end-consolidation" component={PublicMonthEndProcess} />
       <Route path="/public/processes/compliance-risk" component={PublicComplianceProcess} />
       <Route path="/public/processes/inventory-management" component={PublicInventoryProcess} />

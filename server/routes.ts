@@ -41,6 +41,8 @@ import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
 
 import { billingRouter } from "./modules/billing/billing.controller";
+import { orderRouter } from "./modules/order/order.controller";
+
 
 export async function registerRoutes(
   httpServer: Server,
@@ -67,6 +69,10 @@ export async function registerRoutes(
 
   // Enterprise Billing
   app.use("/api/billing", billingRouter);
+
+  // Order Management
+  app.use("/api/order-management", orderRouter);
+
 
   // Agentic AI
   app.use("/api", aiRouter);

@@ -283,4 +283,60 @@ We added `billing_anomalies` table and a rule-based AI agent to `BillingService`
     - [x] Implement `ExchangeRateService` (Multi-Currency Support)
     - [x] Implement `CreditCheckService` (Event Validation)
     - [x] Implement Tiered Approvals Logic (> $10k VP Rule)
-    - [x] Automate RevRec Schedules for Subscriptions (ASC 606)
+
+## Order Management Remediation (Level-15 Audit)
+- [x] **Phase 1: Order Management Foundation**
+    - [x] Schema: Create `order_management.ts` (Headers, Lines, Holds, PriceAdjustments)
+    - [x] Backend: Implement `OrderManagementService` (CRUD, State Machine)
+    - [x] Testing: Verify Schema Creation and Basic CRUD
+- [x] **Phase 2: Order Execution & Pricing**
+    - [x] Logic: Implement `PricingService` (Price Lists, Discounts)
+    - [x] UI: Create `OrderWorkbench` (List View)
+    - [x] UI: Create `OrderEntry` (Complex Form with Lines)
+- [x] **Phase 3: Fulfillment & Orchestration**
+    - [x] Logic: Implement `ReservationService` (Inventory Integration)
+    - [x] Logic: Implement `FulfillmentService` (Pick/Pack/Ship)
+    - [x] UI: Create `ShipmentWorkbench`
+- [x] **Phase 4: Financial Integration (O2C)**
+    - [x] Logic: Implement `transferToAR` (Invoice Generation)
+    - [x] Logic: Link `CreditCheckService` to Booking Event
+- [x] **Phase 5: Advanced Capabilities**
+    - [x] Logic: Implement Margin-based Approvals
+    - [x] UI: Returns Management (RMA) workflow
+
+- [x] **Phase 6: Enterprise Hardening (Phase K)**
+    - [x] UI: Create `OrderConfigManager` (Order Types, Holds)
+    - [x] UI: Create `PriceListManager` (Items & Prices)
+    - [x] Logic: Implement `DropShipService` (Order -> PO Link)
+    - [x] AI: Implement `FulfillmentOptimizer` (Warehouse Suggestions)
+    - [x] Security: Implement Row-Level Security (Multi-Org)
+
+- [x] **Phase 7: Configuration Persistence (Final Parity)**
+    - [x] Schema: Create `om_transaction_types` and `om_holds_def`
+    - [x] Schema: Create `om_price_lists` and `om_price_list_items`
+    - [x] Backend: Implement `OrderConfigService` (CRUD for Types/Holds)
+    - [x] Backend: Implement `PriceListService` (CRUD for Pricing)
+    - [x] UI: Connect `OrderConfigManager` to real API
+    - [x] UI: Connect `PriceListManager` to real API
+
+- [x] **Phase 8: Advanced Supply Chain (Remediation)**
+    - [x] Integration: Connect `DropShipService` to Procurement (Generate PO)
+    - [x] Integration: Connect `FulfillmentService` to Cost Management (COGS)
+    - [x] AI: Upgrade `FulfillmentOptimizer` to Real Model (Stock Logic)
+    - [x] Back-to-Back: Implement Work Order Generation for Make-to-Order
+
+- [x] **Phase 9: Project Integration (Integration)**
+    - [x] Schema: Add `project_id`, `task_id` to `om_order_lines`
+    - [x] Integration: Link Order Entry to `PpmService`
+    - [x] Billing: Ensure Project Tags persisted in Order Lines
+
+- [x] **Phase 10: Deep Integrations (Hardening)**
+    - [x] Inventory: Connect `ReservationService` to `inv_on_hand_balances` (mapped to `inventory`)
+    - [x] Billing: Connect `transferToAR` to `BillingService.createInvoice` (Process Event)
+    - [x] Pricing: Connect `PricingService` to `om_price_lists` / `price_books`
+
+- [x] **Phase 11: Final Verification & Launch (Go-Live)**
+    - [x] Regression: Execute Master Suite (`verify_order_management_final.ts`) covering all flows
+    - [x] UI Polish: Ensure Name resolution (no UUIDs) in Workbenches
+    - [x] Documentation: Finalize Walkthrough and Handover
+
