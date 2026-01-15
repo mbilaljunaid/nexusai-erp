@@ -21,6 +21,7 @@ import { registerMarketplaceRoutes } from "./modules/marketplace/routes";
 import { registerCommunityRoutes } from "./modules/community/routes";
 import { registerRevenueRoutes } from "./modules/revenue/routes";
 import { maintenanceRouter } from "./modules/maintenance/routes";
+import treasuryRouter from "./modules/treasury/routes";
 
 
 // Import existing routes files that were already modularized (if any)
@@ -69,6 +70,7 @@ export async function registerRoutes(
   app.use("/api/fa", fixedAssetsRouter);
   app.use("/api/maintenance", maintenanceRouter);
   app.use("/api/ppm", ppmRouter);
+  app.use("/api/treasury", treasuryRouter);
 
 
   // Enterprise Billing

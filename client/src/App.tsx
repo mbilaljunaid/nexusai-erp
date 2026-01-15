@@ -359,13 +359,14 @@ const SlaRules = lazy(() => import("./pages/gl/SlaRules"));
 const TranslationRules = lazy(() => import("./pages/gl/TranslationRules"));
 const SourceCategorySetup = lazy(() => import("./pages/gl/SourceCategorySetup"));
 const LedgerControlSetup = lazy(() => import("./pages/gl/LedgerControlSetup"));
-const CashManagementPage = lazy(() => import("@/pages/CashManagementPage"));
+const TreasuryCommandCenter = lazy(() => import("@/pages/TreasuryCommandCenter"));
 
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const AssetWorkbench = lazy(() => import("@/pages/fixed-assets/AssetWorkbench"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
 const NettingWorkbench = lazy(() => import("@/pages/NettingWorkbench"));
+const TreasuryPage = lazy(() => import("@/pages/BankingTreasury"));
 
 // Cost Management
 const CostDashboard = lazy(() => import("@/pages/cost-management/CostDashboard"));
@@ -691,7 +692,8 @@ function Router() {
       <Route path="/crm/contacts" component={ContactsDetail} />
       <Route path="/crm/:page?" component={CRM} />
       <Route path="/erp/:page?" component={ERP} />
-      <Route path="/finance/cash-management" component={CashManagementPage} />
+      <Route path="/finance/cash-management" component={TreasuryCommandCenter} />
+      <Route path="/finance/treasury" component={TreasuryCommandCenter} />
       <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
       <Route path="/finance/fixed-assets" component={AssetWorkbench} />
       <Route path="/finance/accounts-payable" component={APInvoices} />
@@ -974,7 +976,7 @@ function AIChatWidgetWrapper() {
   let context = "general";
   if (location.includes("/accounts-payable")) context = "ap";
   else if (location.includes("/accounts-receivable")) context = "ar";
-  else if (location.includes("/cash-management")) context = "cash";
+  else if (location.includes("/cash-management") || location.includes("/treasury")) context = "treasury";
   else if (location.includes("/finance") || location.includes("/gl")) context = "finance";
   else if (location.includes("/crm")) context = "crm";
   else if (location.includes("/hr")) context = "hr";

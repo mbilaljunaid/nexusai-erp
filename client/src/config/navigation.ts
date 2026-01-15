@@ -95,7 +95,7 @@ export const navigationConfig: SidebarNode[] = [
             { id: "gl-revaluation", title: "Revaluation", type: "link", icon: RefreshCw, path: "/gl/revaluation", allowedRoles: ["admin", "editor"] },
             { id: "ap", title: "Accounts Payable", type: "link", icon: DollarSign, path: "/finance/accounts-payable", allowedRoles: ["admin", "editor"] },
             { id: "ar", title: "Accounts Receivable", type: "link", icon: TrendingUp, path: "/finance/accounts-receivable", allowedRoles: ["admin", "editor"] },
-            { id: "cash", title: "Cash Management", type: "link", icon: DollarSign, path: "/finance/cash-management", allowedRoles: ["admin", "editor"] },
+            { id: "treasury", title: "Treasury Command Center", type: "link", icon: Briefcase, path: "/finance/treasury", allowedRoles: ["admin", "editor"] },
             { id: "fixed-assets", title: "Fixed Assets", type: "link", icon: Building, path: "/finance/fixed-assets", allowedRoles: ["admin", "editor"] },
             {
                 id: "billing",
@@ -159,7 +159,6 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "tax-exemptions", title: "Exemptions", type: "link", path: "/finance/tax/exemptions" },
                 ]
             },
-            { id: "netting", title: "Netting", type: "link", icon: ArrowRightLeft, path: "/finance/netting", allowedRoles: ["admin", "editor"] },
             {
                 id: "project-accounting",
                 title: "Project Accounting",

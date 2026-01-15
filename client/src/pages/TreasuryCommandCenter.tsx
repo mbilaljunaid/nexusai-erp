@@ -6,21 +6,22 @@ import BankReconciliation from "@/components/cash/BankReconciliation";
 import { ReconciliationRuleManager } from "@/components/cash/ReconciliationRuleManager";
 import { PeriodCloseDashboard } from "@/components/cash/PeriodCloseDashboard";
 import { ZbaManager } from "@/components/cash/ZbaManager";
+import { TreasuryWorkbench } from "@/components/treasury/TreasuryWorkbench";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Wallet, ArrowRightLeft, ShieldCheck, Settings2, Lock, Landmark, LayoutDashboard, AlertCircle, RefreshCcw } from "lucide-react";
 
-export default function CashManagementPage() {
+export default function TreasuryCommandCenter() {
   return (
     <div className="p-8 space-y-8">
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
             <Landmark className="w-8 h-8 text-primary" />
-            Enterprise Cash Management
+            Treasury Command Center
           </h1>
           <p className="text-muted-foreground mt-2">
-            Monitor liquidity, manage bank accounts, and streamline reconciliations with AI precision.
+            The mission control for global liquidity, risk management, and in-house banking.
           </p>
         </div>
       </div>
@@ -124,8 +125,15 @@ export default function CashManagementPage() {
           <PeriodCloseDashboard />
         </TabsContent>
 
-        <TabsContent value="treasury">
-          <ZbaManager />
+        <TabsContent value="treasury" className="space-y-6">
+          <TreasuryWorkbench />
+          <div className="pt-8 border-t">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <RefreshCcw className="w-5 h-5 text-primary" />
+              Automated Sweeps (ZBA)
+            </h3>
+            <ZbaManager />
+          </div>
         </TabsContent>
 
         <TabsContent value="audit">
