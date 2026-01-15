@@ -35,7 +35,9 @@ import {
     ArrowRightLeft,
     RefreshCw,
     Warehouse,
+    Wrench,
 } from "lucide-react";
+
 
 export const navigationConfig: SidebarNode[] = [
     {
@@ -285,8 +287,24 @@ export const navigationConfig: SidebarNode[] = [
                 ]
             },
             { id: "logistics", title: "Logistics", type: "link", icon: Truck, path: "/logistics", allowedRoles: ["admin", "editor"] },
+            {
+                id: "maintenance",
+                title: "Maintenance & Reliability",
+                type: "section",
+                icon: Wrench,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "maint-dashboard", title: "Maintenance Hub", type: "link", path: "/maintenance" },
+                    { id: "maint-planning", title: "Planning Board", type: "link", path: "/maintenance/planning" },
+                    { id: "maint-dispatch", title: "Dispatch Console", type: "link", path: "/maintenance/dispatch" },
+                    { id: "maint-pm", title: "PM Manager", type: "link", path: "/maintenance/pm" },
+                    { id: "maint-requests", title: "Service Requests", type: "link", path: "/maintenance/requests" },
+                    { id: "maint-triage", title: "Request Queue", type: "link", path: "/maintenance/triage" },
+                ]
+            },
         ],
     },
+
     {
         id: "workflow-automation",
         title: "Workflow & Automation",

@@ -113,8 +113,9 @@ export default function DispatchConsole() {
                                                             </div>
                                                             <p className="text-sm font-medium mb-1">{wo.description}</p>
                                                             <div className="text-xs text-muted-foreground flex gap-4">
-                                                                <span className="flex items-center"><Briefcase className="w-3 h-3 mr-1" /> Asset: {wo.assetId?.substring(0, 8)}...</span>
+                                                                <span className="flex items-center"><Briefcase className="w-3 h-3 mr-1" /> Asset: {wo.asset?.assetNumber || 'Unassigned'}</span>
                                                             </div>
+
                                                         </div>
 
                                                         <div className="flex items-center gap-2">
