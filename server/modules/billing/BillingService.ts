@@ -3,15 +3,44 @@ import { billingEvents, billingBatches, billingRules, billingProfiles, billingAn
 import { arInvoices, arInvoiceLines, arCustomers } from "@shared/schema/ar";
 import { eq, and, isNull, inArray, sql } from "drizzle-orm";
 
+import { taxService } from "./TaxService";
+import { billingAccountingService } from "./BillingAccountingService";
+import { creditCheckService } from "./CreditCheckService";
+import { arRevenueSchedules } from "@shared/schema/ar";
+
 export class BillingService {
 
     // Ingest a raw event (from API or internal call)
     async processEvent(data: typeof billingEvents.$inferInsert) {
         // Validation logic here (check customer exists, etc.)
+
+        // 1. Calculate Tax (Stub)
+        const { taxAmount, taxLines } = await taxService.calculateTax(data as any);
+
+        // 2. Credit Check
+        // If fail, we still ingest but set status to "Hold" or similar.
+        // For strictness: "OnAccount" or "Hold".
+        const creditCheck = await creditCheckService.checkCredit(data.customerId, Number(data.amount));
+        const initialStatus = creditCheck.pass ? "Pending" : "Hold";
+        const errorCode = creditCheck.pass ? null : "CREDIT_HOLD";
+        const errorMessage = creditCheck.pass ? null : creditCheck.message;
+
         const [event] = await db.insert(billingEvents).values({
             ...data,
-            status: "Pending",
+            taxAmount: taxAmount,
+            taxLines: taxLines,
+            status: initialStatus,
+            errorCode,
+            errorMessage
         }).returning();
+
+        // 3. Generate Event Accounting (Accrue Unbilled)
+        // Only if passed credit check? 
+        // Accrual usually happens regardless of credit hold (it's legally due), 
+        // but Revenue Recog might be blocked. 
+        // Let's accrue it.
+        await billingAccountingService.createEventAccounting(event.id);
+
         return event;
     }
 
@@ -150,7 +179,36 @@ export class BillingService {
             // It sends 1000 queries but largely in parallel pipelines. 
             // Much faster than await-in-loop.
 
-            // 7. Complete Batch
+            // 7. Generate Invoice Accounting (AR / Revenue / Tax)
+            const accountingPromises = createdInvoices.map(async (inv) => {
+                await billingAccountingService.createInvoiceAccounting(inv.id);
+
+                // 8. Revenue Recognition Schedules (Auto-Ratability)
+                // Heuristic: If description contains "Subscription", spread over 12 months.
+                if (inv.description?.toLowerCase().includes("subscription") || inv.description?.toLowerCase().includes("batch")) {
+                    const months = 12;
+                    const monthlyAmount = (Number(inv.amount) / months).toFixed(2);
+
+                    const schedules = [];
+                    for (let i = 0; i < months; i++) {
+                        const date = new Date();
+                        date.setMonth(date.getMonth() + i);
+                        schedules.push({
+                            invoiceId: inv.id,
+                            scheduleDate: date,
+                            amount: monthlyAmount,
+                            status: "Pending",
+                            periodName: date.toLocaleString('default', { month: 'short', year: '2-digit' })
+                        });
+                    }
+                    if (schedules.length > 0) {
+                        await db.insert(arRevenueSchedules).values(schedules);
+                    }
+                }
+            });
+            await Promise.all(accountingPromises);
+
+            // 8. Complete Batch
             await db.update(billingBatches)
                 .set({
                     status: "Completed",

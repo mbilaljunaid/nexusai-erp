@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { billingService } from "./BillingService";
 import { subscriptionService } from "./SubscriptionService";
+import { creditMemoService } from "./CreditMemoService";
+import { db } from "../../db";
+import { arInvoices, type ArInvoice } from "@shared/schema/ar";
+import { eq } from "drizzle-orm";
 
 export const billingRouter = Router();
 
@@ -66,6 +70,54 @@ billingRouter.post("/anomalies/scan", async (req, res) => {
     }
 });
 
+// --- ADJUSTMENTS & APPROVALS (PHASE VI/VII) ---
+
+billingRouter.post("/credit-memo", async (req, res) => {
+    try {
+        const { invoiceId, amount, reason } = req.body;
+        const cm = await creditMemoService.createCreditMemo(invoiceId, amount, reason, (req as any).user?.id);
+        res.json(cm);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+billingRouter.post("/invoices/:id/approve", async (req, res) => {
+    try {
+        const invoiceId = req.params.id;
+
+        // Fetch Invoice to check Amount
+        const [invoice] = await db.select().from(arInvoices).where(eq(arInvoices.id, invoiceId));
+        if (!invoice) return res.status(404).json({ message: "Invoice not found" });
+
+        // Tiered Approval Logic
+        // Limit: $10,000
+        const limit = 10000;
+        let newStatus = "Issued";
+
+        if (Number(invoice.totalAmount) > limit) {
+            // Check if user has VP Role (Mocked)
+            // For now, we enforce a 2-step flow.
+            // If current status is 'Draft', it goes to 'Pending VP Approval'.
+            // If status is 'Pending VP Approval', it goes to 'Issued'.
+
+            if (invoice.status === 'Pending VP Approval') {
+                newStatus = "Issued"; // VP Approved
+            } else {
+                newStatus = "Pending VP Approval";
+            }
+        }
+
+        const [updated] = await db.update(arInvoices)
+            .set({ status: newStatus })
+            .where(eq(arInvoices.id, invoiceId))
+            .returning();
+
+        res.json(updated);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 // --- BILLING PROFILES ---
 

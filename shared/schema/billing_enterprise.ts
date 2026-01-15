@@ -99,7 +99,12 @@ export const billingEvents = pgTable("billing_events", {
     // Classification
     ruleId: varchar("rule_id"), // Applied rule
     taxCode: varchar("tax_code"),
+    taxAmount: numeric("tax_amount", { precision: 18, scale: 2 }).default("0"),
+    taxLines: jsonb("tax_lines"), // Stores detailed tax breakdown
     glAccount: varchar("gl_account"), // Revenue Account (Segment 1-5 usually)
+    glStatus: varchar("gl_status").default("Pending"), // Pending, Created, Posted
+    glDate: timestamp("gl_date"),
+    glImportRef: varchar("gl_import_ref"), // Reference to GL Import Batch
 
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
@@ -112,7 +117,11 @@ export const insertBillingEventSchema = createInsertSchema(billingEvents).extend
     eventDate: z.preprocess((arg) => {
         if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
     }, z.date()),
-    amount: z.string().min(1)
+    amount: z.string().min(1),
+    taxAmount: z.string().optional(),
+    taxLines: z.any().optional(),
+    glStatus: z.string().optional(),
+    glDate: z.date().optional(),
 });
 
 

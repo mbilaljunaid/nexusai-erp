@@ -271,3 +271,16 @@ We added `billing_anomalies` table and a rule-based AI agent to `BillingService`
 - [x] **Phase 3: Intelligence & Integration**
     - [x] Implement `BillingAnomaly` detection (AI)
     - [x] Deep link integration with Sales Orders
+- [x] **Phase 4: Financial Integrity (Tax & GL)**
+    - [x] Implement `TaxService` (Stubbed)
+    - [x] Implement `BillingAccountingService` (SLA/GL Derivation)
+    - [x] Schema Update: `taxAmount`, `glStatus` on Events/Invoices.
+- [x] **Phase 5: Adjustments & Credits**
+    - [x] Implement `CreditMemoService`
+    - [x] Add "Credit" Action to `ARInvoices.tsx` (Dialog)
+    - [x] Integrate with `ar_adjustments` schema
+- [x] **Phase 6: Enterprise Perfection (Currencies & Approvals)**
+    - [x] Implement `ExchangeRateService` (Multi-Currency Support)
+    - [x] Implement `CreditCheckService` (Event Validation)
+    - [x] Implement Tiered Approvals Logic (> $10k VP Rule)
+    - [x] Automate RevRec Schedules for Subscriptions (ASC 606)

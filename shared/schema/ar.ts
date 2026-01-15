@@ -107,6 +107,9 @@ export const arInvoices = pgTable("ar_invoices", {
     revenueScheduleId: varchar("revenue_schedule_id"),
     revenueRuleId: varchar("revenue_rule_id"), // Link to defining rule
     recognitionStatus: varchar("recognition_status").default("Pending"), // Pending, InProgress, Completed
+    glStatus: varchar("gl_status").default("Pending"), // Pending, Created, Posted
+    glDate: timestamp("gl_date"), // Accounting Date
+    glPostedDate: timestamp("gl_posted_date"),
     transactionClass: varchar("transaction_class").default("INV"), // INV, CM (Credit Memo), DM (Debit Memo), CB (Chargeback)
     sourceTransactionId: varchar("source_transaction_id"), // Original invoice for CM/CB
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -130,6 +133,9 @@ export const insertArInvoiceSchema = createInsertSchema(arInvoices).extend({
     revenueScheduleId: z.string().optional().nullable(),
     revenueRuleId: z.string().optional().nullable(),
     recognitionStatus: z.string().optional(),
+    glStatus: z.string().optional(),
+    glDate: z.date().optional(),
+    glPostedDate: z.date().optional(),
     transactionClass: z.string().optional(),
     sourceTransactionId: z.string().optional().nullable(),
 });

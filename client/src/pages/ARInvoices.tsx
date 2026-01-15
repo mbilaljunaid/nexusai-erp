@@ -10,12 +10,16 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { ArInvoice } from "@shared/schema";
+import { CreditMemoDialog } from "@/components/billing/CreditMemoDialog";
+import { CheckCircle, AlertTriangle } from "lucide-react";
 
 export default function ARInvoices() {
   const { toast } = useToast();
   const [newInvoice, setNewInvoice] = useState({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
   const [page, setPage] = useState(1);
   const pageSize = 10;
+  // State for Credit Memo Dialog
+  const [selectedInvoiceForCredit, setSelectedInvoiceForCredit] = useState<ArInvoice | null>(null);
 
   const { data, isLoading } = useQuery<{ data: ArInvoice[], total: number }>({
     queryKey: ["/api/ar/invoices", page, pageSize],
@@ -42,10 +46,18 @@ export default function ARInvoices() {
     },
   });
 
+  const approveMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/billing/invoices/${id}/approve`, { method: "POST" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
+      toast({ title: "Invoice Approved" });
+    }
+  });
+
   // Note: These summaries now only reflect the CURRENT PAGE
   // For a real app, we'd have a separate stats endpoint
   const totalAmount = invoices.reduce((sum, i) => sum + parseFloat(String(i.totalAmount || 0)), 0);
-  const receivedAmount = invoices.reduce((sum, i) => sum + parseFloat(String(i.paidAmount || 0)), 0);
+  const receivedAmount = invoices.reduce((sum, i) => sum + (i.status === 'Paid' ? parseFloat(String(i.totalAmount || 0)) : 0), 0);
   const outstandingAmount = totalAmount - receivedAmount;
 
   const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -79,11 +91,37 @@ export default function ARInvoices() {
       )
     },
     {
+      header: "Tax",
+      accessorKey: "taxAmount",
+      cell: (inv) => inv.taxAmount ? `$${inv.taxAmount}` : '-'
+    },
+    {
+      header: "Accounting",
+      accessorKey: "glStatus",
+      cell: (inv) => (
+        <Badge variant="outline" className={inv.glStatus === 'Posted' ? "bg-green-50 text-green-700" : "bg-yellow-50 text-yellow-700"}>
+          {inv.glStatus || 'Pending'}
+        </Badge>
+      )
+    },
+    {
       header: "Actions",
       cell: (inv) => (
-        <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(inv.id)} data-testid={`button-delete-${inv.id}`}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
+        <div className="flex gap-2">
+          {inv.status === 'Draft' && (
+            <Button size="sm" variant="outline" className="h-8 text-green-600" onClick={() => approveMutation.mutate(inv.id)}>
+              <CheckCircle className="w-4 h-4 mr-1" /> Approve
+            </Button>
+          )}
+          {(inv.status === 'Issued' || inv.status === 'Approved') && (
+            <Button size="sm" variant="outline" className="h-8 text-orange-600" onClick={() => setSelectedInvoiceForCredit(inv)}>
+              <AlertTriangle className="w-4 h-4 mr-1" /> Credit
+            </Button>
+          )}
+          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteMutation.mutate(inv.id)} data-testid={`button-delete-${inv.id}`}>
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
       )
     }
   ];
@@ -158,6 +196,17 @@ export default function ARInvoices() {
           />
         </CardContent>
       </Card>
-    </div>
+
+      {selectedInvoiceForCredit && (
+        <CreditMemoDialog
+          open={!!selectedInvoiceForCredit}
+          onOpenChange={(op) => !op && setSelectedInvoiceForCredit(null)}
+          invoiceId={selectedInvoiceForCredit.id}
+          invoiceNumber={selectedInvoiceForCredit.invoiceNumber}
+          maxAmount={Number(selectedInvoiceForCredit.totalAmount)}
+        />
+      )
+      }
+    </div >
   );
 }
