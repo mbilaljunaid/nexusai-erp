@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Circle, Clock, PlayCircle, Plus } from "lucide-react";
+import { CheckCircle2, Circle, Clock, PlayCircle, Plus, AlertTriangle, ShoppingBag, HeartPulse } from "lucide-react";
+
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -75,7 +76,14 @@ export default function MaintenanceDetailSheet({ workOrderId, open, onOpenChange
         }
     });
 
+    const { data: health } = useQuery({
+        queryKey: ["/api/maintenance/assets", wo?.assetId, "health"],
+        queryFn: () => fetch(`/api/maintenance/assets/${wo.assetId}/health`).then(r => r.json()),
+        enabled: !!wo?.assetId
+    });
+
     if (!workOrderId) return null;
+
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -117,7 +125,19 @@ export default function MaintenanceDetailSheet({ workOrderId, open, onOpenChange
                             <Card>
                                 <CardHeader className="py-3"><CardTitle className="text-sm">Asset Information</CardTitle></CardHeader>
                                 <CardContent className="text-sm space-y-1">
+                                    <div className="flex justify-between items-center pb-2 border-b">
+                                        <div className="flex items-center gap-2">
+                                            <HeartPulse className={`h-4 w-4 ${health?.healthScore < 50 ? 'text-red-500' : health?.healthScore < 80 ? 'text-yellow-500' : 'text-green-500'}`} />
+                                            <span className="font-bold">Health Score:</span>
+                                        </div>
+                                        <Badge variant="outline" className={health?.healthScore < 50 ? 'bg-red-50 text-red-700' : health?.healthScore < 80 ? 'bg-yellow-50 text-yellow-700' : 'bg-green-50 text-green-700'}>
+                                            {health?.healthScore}% - {health?.status}
+                                        </Badge>
+                                    </div>
+                                    <div className="flex justify-between mt-2"><span className="text-muted-foreground text-xs">MTBF:</span> <span className="text-xs font-medium">{health?.mtbfHours || 'N/A'} hrs</span></div>
+                                    <div className="flex justify-between"><span className="text-muted-foreground text-xs">MTTR:</span> <span className="text-xs font-medium">{health?.mttrHours || 'N/A'} hrs</span></div>
                                     <div className="flex justify-between"><span className="text-muted-foreground">Asset Number:</span> <span>{wo.asset?.assetNumber}</span></div>
+
                                     <div className="flex justify-between"><span className="text-muted-foreground">Description:</span> <span>{wo.asset?.description}</span></div>
                                     <div className="flex justify-between"><span className="text-muted-foreground">Category:</span> <span>{wo.asset?.categoryId}</span></div>
                                 </CardContent>
@@ -199,8 +219,12 @@ export default function MaintenanceDetailSheet({ workOrderId, open, onOpenChange
                         <Separator className="my-4" />
 
                         {/* Quality & Safety */}
+                        <ReliabilityAnalysisSection workOrder={wo} onUpdate={() => queryClient.invalidateQueries({ queryKey: ["/api/maintenance/work-orders", workOrderId] })} />
+
+                        <Separator className="my-4" />
                         <PermitsSection workOrderId={wo.id} />
                         <InspectionsSection workOrderId={wo.id} />
+
 
                     </ScrollArea>
 
@@ -241,29 +265,48 @@ function MaterialsSection({ workOrderId, materials, status, onUpdate }: { workOr
         onError: (e: any) => toast({ title: "Issue Failed", description: e.message, variant: "destructive" })
     });
 
+    const raisePRMutation = useMutation({
+        mutationFn: (matId: string) => fetch(`/api/maintenance/materials/${matId}/raise-pr`, {
+            method: "POST"
+        }).then(async r => { if (!r.ok) throw new Error((await r.json()).error); return r.json() }),
+        onSuccess: () => { toast({ title: "Purchase Requisition Raised" }); onUpdate(); },
+        onError: (e: any) => toast({ title: "PR Failed", description: e.message, variant: "destructive" })
+    });
+
     return (
         <div>
             <h3 className="text-sm font-semibold mb-2">Spare Parts & Materials</h3>
             <div className="space-y-2">
                 {materials.map((mat: any) => (
                     <div key={mat.id} className="flex items-center justify-between p-3 border rounded-md bg-card">
-                        <div>
+                        <div className="flex-1">
                             <p className="text-sm font-medium">Item: {mat.inventoryId.substring(0, 8)}... (Ref)</p>
-                            {/* In real app, expand `inventory` relation to show name */}
                             <div className="text-xs text-muted-foreground flex gap-3">
                                 <span>Planned: {mat.plannedQuantity}</span>
                                 <span className={mat.actualQuantity >= mat.plannedQuantity ? "text-green-600 font-bold" : ""}>
                                     Actual: {mat.actualQuantity}
                                 </span>
+                                {mat.purchaseRequisitionLineId && (
+                                    <Badge variant="outline" className="text-[9px] h-4 bg-blue-50">PR Linked</Badge>
+                                )}
                             </div>
                         </div>
-                        {status === "IN_PROGRESS" && mat.actualQuantity < mat.plannedQuantity && (
-                            <Button size="sm" variant="outline" onClick={() => issueMatMutation.mutate(mat.id)}>
-                                Issue
-                            </Button>
-                        )}
+                        <div className="flex gap-2">
+                            {status === "IN_PROGRESS" && mat.actualQuantity < mat.plannedQuantity && !mat.purchaseRequisitionLineId && (
+                                <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => raisePRMutation.mutate(mat.id)}>
+                                    <ShoppingBag className="h-3 w-3" />
+                                    Procure
+                                </Button>
+                            )}
+                            {status === "IN_PROGRESS" && mat.actualQuantity < mat.plannedQuantity && (
+                                <Button size="sm" variant="outline" className="h-8" onClick={() => issueMatMutation.mutate(mat.id)}>
+                                    Issue
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 ))}
+
 
                 {/* Add Material Form */}
                 {(status === "DRAFT" || status === "RELEASED" || status === "IN_PROGRESS") && (
@@ -379,5 +422,106 @@ function ResourcesSection({ workOrderId, resources, status, onUpdate }: { workOr
         </div>
     )
 }
+
+function ReliabilityAnalysisSection({ workOrder, onUpdate }: { workOrder: any, onUpdate: () => void }) {
+    const { toast } = useToast();
+
+    const { data: problems } = useQuery({
+        queryKey: ["/api/maintenance/failure-codes", "PROBLEM"],
+        queryFn: () => fetch("/api/maintenance/failure-codes?type=PROBLEM").then(r => r.json())
+    });
+
+    const { data: causes } = useQuery({
+        queryKey: ["/api/maintenance/failure-codes", "CAUSE", workOrder.failureProblemId],
+        queryFn: () => fetch(`/api/maintenance/failure-codes?type=CAUSE&parentId=${workOrder.failureProblemId}`).then(r => r.json()),
+        enabled: !!workOrder.failureProblemId
+    });
+
+    const { data: remedies } = useQuery({
+        queryKey: ["/api/maintenance/failure-codes", "REMEDY", workOrder.failureCauseId],
+        queryFn: () => fetch(`/api/maintenance/failure-codes?type=REMEDY&parentId=${workOrder.failureCauseId}`).then(r => r.json()),
+        enabled: !!workOrder.failureCauseId
+    });
+
+    const updateFailureMutation = useMutation({
+        mutationFn: (data: any) => fetch(`/api/maintenance/work-orders/${workOrder.id}/failure`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }).then(r => r.json()),
+        onSuccess: () => {
+            onUpdate();
+            toast({ title: "Failure Analysis Updated" });
+        }
+    });
+
+    return (
+        <Card className="border-orange-100 bg-orange-50/20">
+            <CardHeader className="py-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-orange-600" />
+                    Reliability Analysis (RCAs)
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-3">
+                    <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Problem</label>
+                        <Select
+                            value={workOrder.failureProblemId || ""}
+                            onValueChange={(val) => updateFailureMutation.mutate({ problemId: val, causeId: null, remedyId: null })}
+                        >
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                                <SelectValue placeholder="Select Problem" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {problems?.map((p: any) => (
+                                    <SelectItem key={p.id} value={p.id}>{p.code}: {p.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Cause</label>
+                        <Select
+                            value={workOrder.failureCauseId || ""}
+                            onValueChange={(val) => updateFailureMutation.mutate({ causeId: val, remedyId: null })}
+                            disabled={!workOrder.failureProblemId}
+                        >
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                                <SelectValue placeholder="Select Cause" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {causes?.map((c: any) => (
+                                    <SelectItem key={c.id} value={c.id}>{c.code}: {c.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Remedy</label>
+                        <Select
+                            value={workOrder.failureRemedyId || ""}
+                            onValueChange={(val) => updateFailureMutation.mutate({ remedyId: val })}
+                            disabled={!workOrder.failureCauseId}
+                        >
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                                <SelectValue placeholder="Select Remedy" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {remedies?.map((r: any) => (
+                                    <SelectItem key={r.id} value={r.id}>{r.code}: {r.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
 
 

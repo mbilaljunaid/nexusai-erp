@@ -12,6 +12,8 @@ import {
 } from "@shared/schema";
 import { eq, and, desc, sql, lt, or, isNull, inArray } from "drizzle-orm"; // Added inArray
 import { maintenanceCostingService } from "./MaintenanceCostingService";
+import { maintenanceFinancialService } from "./MaintenanceFinancialService";
+
 
 
 // Import Schema Definitions locally if they were in same file, but we use strict imports for services.
@@ -131,6 +133,9 @@ export class MaintenanceService {
      */
     async updateWorkOrderStatus(id: string, status: string) {
         // 1. Validation Logic
+        const [wo] = await db.select().from(maintWorkOrders).where(eq(maintWorkOrders.id, id));
+        if (!wo) throw new Error("Work Order not found");
+
         if (status === "COMPLETED") {
             const pendingOps = await db.select().from(maintWorkOrderOperations)
                 .where(and(
@@ -143,7 +148,7 @@ export class MaintenanceService {
             }
         }
 
-        return await db.update(maintWorkOrders)
+        const [updatedWo] = await db.update(maintWorkOrders)
             .set({
                 status,
                 updatedAt: new Date(),
@@ -152,7 +157,30 @@ export class MaintenanceService {
             })
             .where(eq(maintWorkOrders.id, id))
             .returning();
+
+        // 2. Financial Integration (Phase F)
+        if (status === "COMPLETED" && (updatedWo.type === "CAPITAL" || updatedWo.type === "OVERHAUL")) {
+            await maintenanceFinancialService.capitalizeOverhaul(id);
+        }
+
+        return updatedWo;
     }
+
+
+    /**
+     * Update Work Order Failure Information
+     */
+    async updateWorkOrderFailure(id: string, failureData: { failureProblemId?: string, failureCauseId?: string, failureRemedyId?: string }) {
+        const [wo] = await db.update(maintWorkOrders)
+            .set({
+                ...failureData,
+                updatedAt: new Date()
+            })
+            .where(eq(maintWorkOrders.id, id))
+            .returning();
+        return wo;
+    }
+
 
     /**
      * Add Operation to Work Order

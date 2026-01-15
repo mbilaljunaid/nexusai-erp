@@ -22,9 +22,11 @@ export const maintWorkOrderMaterials = pgTable("maint_work_order_materials", {
 
     // Status
     isReserved: varchar("is_reserved").default("false"), // "true", "false"
+    purchaseRequisitionLineId: varchar("pr_line_id"), // Link to scm_purchase_requisition_lines
 
     createdAt: timestamp("created_at").default(sql`now()`),
 });
+
 
 export const maintWorkOrderMaterialsRelations = relations(maintWorkOrderMaterials, ({ one }) => ({
     workOrder: one(maintWorkOrders, {

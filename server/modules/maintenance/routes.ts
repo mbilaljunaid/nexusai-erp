@@ -7,6 +7,12 @@ import { maintenanceQualityService } from "../../services/MaintenanceQualityServ
 import { maintenanceAccountingService } from "../../services/MaintenanceAccountingService";
 import { maintenanceMeterService } from "../../services/MaintenanceMeterService";
 import { maintenanceLibraryService } from "../../services/MaintenanceLibraryService";
+import { failureAnalysisService } from "../../services/FailureAnalysisService";
+import { maintenanceSCMService } from "../../services/MaintenanceSCMService";
+import { assetHealthService } from "../../services/AssetHealthService";
+
+
+
 
 
 
@@ -403,7 +409,53 @@ router.post("/library/definitions/:id/apply/:workOrderId", async (req, res) => {
     }
 });
 
+// --- Failure Analysis ---
+router.get("/failure-codes", async (req, res) => {
+    try {
+        const { type, parentId } = req.query;
+        const codes = await failureAnalysisService.listFailureCodes(type as string, parentId as string);
+        res.json(codes);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.patch("/work-orders/:id/failure", async (req, res) => {
+    try {
+        const { problemId, causeId, remedyId } = req.body;
+        const wo = await maintenanceService.updateWorkOrderFailure(req.params.id, {
+            failureProblemId: problemId,
+            failureCauseId: causeId,
+            failureRemedyId: remedyId
+        });
+        res.json(wo);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/materials/:id/raise-pr", async (req, res) => {
+    try {
+        const result = await maintenanceSCMService.raisePRForMaterial(req.params.id);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/assets/:id/health", async (req, res) => {
+    try {
+        const health = await assetHealthService.getAssetHealth(req.params.id);
+        res.json(health);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 export const maintenanceRouter = router;
+
+
+
 
 
 

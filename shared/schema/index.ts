@@ -53,6 +53,8 @@ export * from "./maintenance_planning";
 export * from "./maintenance_quality";
 export * from "./maintenance_meters";
 export * from "./maintenance_library";
+export * from "./maintenance_failure";
+
 
 
 

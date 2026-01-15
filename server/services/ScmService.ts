@@ -1,21 +1,37 @@
+
 import { db } from "../db";
-import { eq, desc } from "drizzle-orm";
-import { inventory, type InsertInventory } from "@shared/schema";
+import { purchaseRequisitions, purchaseRequisitionLines } from "../../shared/schema/scm";
+import { eq, sql } from "drizzle-orm";
 
-export class ScmService {
-    async listInventory() {
-        return await db.select().from(inventory).orderBy(inventory.itemName);
+export class SCMService {
+    async createRequisition(data: any) {
+        const [req] = await db.insert(purchaseRequisitions).values({
+            ...data,
+            requisitionNumber: data.requisitionNumber || `REQ-${Date.now()}`
+        }).returning();
+        return req;
     }
 
-    async createInventoryItem(data: InsertInventory) {
-        const [result] = await db.insert(inventory).values(data).returning();
-        return result;
+    async addRequisitionLine(requisitionId: string, data: any) {
+        const lines = await db.select().from(purchaseRequisitionLines).where(eq(purchaseRequisitionLines.requisitionId, requisitionId));
+        const lineNum = lines.length + 1;
+
+        const [line] = await db.insert(purchaseRequisitionLines).values({
+            ...data,
+            requisitionId,
+            lineNumber: lineNum
+        }).returning();
+
+        return line;
     }
 
-    async getInventoryItem(id: string) {
-        const [result] = await db.select().from(inventory).where(eq(inventory.id, id)).limit(1);
-        return result;
+    async getRequisition(id: string) {
+        const [req] = await db.select().from(purchaseRequisitions).where(eq(purchaseRequisitions.id, id));
+        if (!req) return null;
+
+        const lines = await db.select().from(purchaseRequisitionLines).where(eq(purchaseRequisitionLines.requisitionId, id));
+        return { ...req, lines };
     }
 }
 
-export const scmService = new ScmService();
+export const scmService = new SCMService();

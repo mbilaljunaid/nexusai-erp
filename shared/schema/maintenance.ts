@@ -74,9 +74,15 @@ export const maintWorkOrders = pgTable("maint_work_orders", {
     // Costing Integration
     costedFlag: boolean("costed_flag").default(false),
 
+    // Failure Analysis (Optional)
+    failureProblemId: varchar("failure_problem_id"),
+    failureCauseId: varchar("failure_cause_id"),
+    failureRemedyId: varchar("failure_remedy_id"),
+
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
+
 
 // 6. Work Order Operations (Execution Steps)
 export const maintWorkOrderOperations = pgTable("maint_work_order_operations", {

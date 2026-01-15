@@ -1,139 +1,132 @@
 
 import { db } from "../db";
-import { eq, and, sql, inArray } from "drizzle-orm";
-
-import { maintWorkOrderCosts, glCodeCombinations } from "@shared/schema";
-import { financeService } from "./finance";
+import { eq } from "drizzle-orm";
+import { maintWorkOrderCosts, slaJournalHeaders, slaJournalLines, glLedgers, glCodeCombinations } from "@shared/schema";
 
 export class MaintenanceAccountingService {
 
     /**
-     * Post unposted costs for a Work Order to GL
+     * Create Accounting for a Cost Record (Material or Labor)
+     * Triggers SLA Interface to create Journals
      */
-    async postWorkOrderCosts(workOrderId: string, userId: string = "system") {
-        console.log(`[MAINT-ACC] Posting costs for WO ${workOrderId}...`);
+    async createAccountingForCost(costId: string) {
+        console.log(`🧾 Creating Accounting for Cost ID: ${costId}`);
 
-        // 1. Fetch Unposted Costs
-        const unpostedCosts = await db.select().from(maintWorkOrderCosts).where(
-            and(
-                eq(maintWorkOrderCosts.workOrderId, workOrderId),
-                sql`${maintWorkOrderCosts.glJournalId} IS NULL`
-            )
-        );
-
-
-        if (unpostedCosts.length === 0) {
-            return { message: "No unposted costs found." };
-        }
-
-        // 2. Aggregate by Type (Material vs Labor)
-        let totalMaterial = 0;
-        let totalLabor = 0;
-
-        unpostedCosts.forEach(c => {
-            const amount = parseFloat(c.totalCost || "0");
-            if (c.costType === "MATERIAL") totalMaterial += amount;
-            else if (c.costType === "LABOR") totalLabor += amount;
+        // 1. Fetch Cost Record
+        const cost = await db.query.maintWorkOrderCosts.findFirst({
+            where: eq(maintWorkOrderCosts.id, costId),
+            with: {
+                workOrder: true
+            }
         });
 
-        // 3. Prepare Journal Lines
-        // Hardcoded Account Mapping for Demo
-        const ledgerId = "PRIMARY";
-        const expenseAccount = await this.getOrCreateAccount(ledgerId, "01-000-5000-000"); // Maintenance Expense
-        const inventoryAccount = await this.getOrCreateAccount(ledgerId, "01-000-1000-000"); // Inventory Asset
-        const laborAbsorbAccount = await this.getOrCreateAccount(ledgerId, "01-000-2000-000"); // Labor Liability
-
-        const lines = [];
-
-        // Debit Maintenance Expense (Material + Labor)
-        const totalExpense = totalMaterial + totalLabor;
-        if (totalExpense > 0) {
-            lines.push({
-                accountId: expenseAccount, // Resolved CCID
-                debit: totalExpense.toFixed(2),
-                credit: "0",
-                description: `Maintenance Expense for WO ${workOrderId}`,
-                currencyCode: "USD"
-            });
+        if (!cost) throw new Error(`Cost not found: ${costId}`);
+        if (cost.glStatus === 'POSTED') {
+            console.log("Skipping, already accounted.");
+            return;
         }
 
-        // Credit Inventory (Material)
-        if (totalMaterial > 0) {
-            lines.push({
-                accountId: inventoryAccount,
-                debit: "0",
-                credit: totalMaterial.toFixed(2),
-                description: `Material Issue for WO ${workOrderId}`,
-                currencyCode: "USD"
-            });
+
+        // 2. Fetch Primary Ledger (Mock: "1" or first available)
+        // In real world, we get from Org -> Ledger
+        // We'll query glLedgers.
+        const ledger = await db.query.glLedgers.findFirst();
+        if (!ledger) throw new Error("No GL Ledger defined in system.");
+
+        // 3. Determine Accounts (Hardcoded for MVP Parity)
+        // Ideally comes from SLA Rules Engine
+        let drAccount = "";
+        let crAccount = "";
+        let eventClass = "";
+
+        if (cost.costType === "MATERIAL") {
+            eventClass = "MAINT_MATERIAL_ISSUE";
+            drAccount = "6000-000-M-EXP"; // Maintenance Expense
+            crAccount = "1200-000-INV";   // Inventory Asset
+        } else if (cost.costType === "LABOR") {
+            eventClass = "MAINT_RESOURCE_CHARGING";
+            drAccount = "6000-000-L-EXP"; // Maintenance Labor Expense
+            crAccount = "5000-000-ABS";   // Labor Absorption
+        } else {
+            console.warn("Unknown cost type for accounting:", cost.costType);
+            return;
         }
 
-        // Credit Labor Absorption (Labor)
-        if (totalLabor > 0) {
-            lines.push({
-                accountId: laborAbsorbAccount,
-                debit: "0",
-                credit: totalLabor.toFixed(2),
-                description: `Labor Absorption for WO ${workOrderId}`,
-                currencyCode: "USD"
-            });
-        }
+        // 4. Resolve CCIDs (Mock resolution or simple lookup)
+        // We'll create or find these CCIDs. For this script, we'll assume we pass the raw code
+        // But the schema requires `code_combination_id`. 
+        // Let's assume we find/create them.
+        const drCcid = await this.getOrCreateCcid(drAccount, ledger.id);
+        const crCcid = await this.getOrCreateCcid(crAccount, ledger.id);
 
-        // 4. Create Journal
-        if (lines.length > 0) {
-            // Find an open period
-            const periods = await financeService.listPeriods(ledgerId);
-            const openPeriod = periods.find(p => p.status === "Open");
-            // If no open period, fallback or error? For demo, use first or create/mock.
-            const periodId = openPeriod?.id;
 
-            const journal = await financeService.createJournal({
-                ledgerId,
-                journalNumber: `MAINT-${workOrderId}-${Date.now()}`,
-                description: `Maintenance Costs for WO ${workOrderId}`,
-                source: "Maintenance",
-                currencyCode: "USD",
-                status: "Posted", // We request Auto-post
-                periodId
-            }, lines, userId);
+        // 5. Create SLA Journal
+        // Header
+        const [header] = await db.insert(slaJournalHeaders).values({
+            ledgerId: ledger.id,
+            eventClassId: eventClass,
+            entityId: cost.id,
+            entityTable: "maint_work_order_costs",
+            eventDate: new Date(),
+            glDate: new Date(),
+            currencyCode: "USD", // Default
+            status: "Final",
+            description: `Auto-Accounting for WO: ${cost.workOrder?.workOrderNumber} - ${cost.description}`
+        }).returning();
 
-            // 5. Update Costs with Journal ID
-            const costIds = unpostedCosts.map(c => c.id);
-            await db.update(maintWorkOrderCosts)
-                .set({
-                    glJournalId: journal.id,
-                    postedAt: new Date()
-                })
-                .where(inArray(maintWorkOrderCosts.id, costIds));
+        // Lines
+        const amount = cost.totalCost || "0";
 
-            return { success: true, journalId: journal.id, linesPosted: lines.length };
-        }
+        // Debit Line
+        await db.insert(slaJournalLines).values({
+            headerId: header.id,
+            lineNumber: 1,
+            accountingClass: "EXPENSE",
+            codeCombinationId: drCcid,
+            enteredDr: amount,
+            accountedDr: amount,
+            currencyCode: "USD",
+            description: cost.description
+        });
 
-        return { message: "No net impact to post." };
+        // Credit Line
+        await db.insert(slaJournalLines).values({
+            headerId: header.id,
+            lineNumber: 2,
+            accountingClass: "ACCRUAL", // or ASSET
+            codeCombinationId: crCcid,
+            enteredCr: amount,
+            accountedCr: amount,
+            currencyCode: "USD",
+            description: "Offset Account"
+        });
+
+        // 6. Update Cost Status
+        await db.update(maintWorkOrderCosts)
+            .set({ glStatus: "POSTED" })
+            .where(eq(maintWorkOrderCosts.id, cost.id));
+
+
+        console.log(`✅ Journal Created: ${header.id}`);
     }
 
-    /**
-     * Helper to get CCID for demo
-     */
-    private async getOrCreateAccount(ledgerId: string, code: string): Promise<string> {
-        // Check exact match
-        const [existing] = await db.select().from(glCodeCombinations).where(
-            and(eq(glCodeCombinations.code, code), eq(glCodeCombinations.ledgerId, ledgerId))
-        );
-        if (existing) return existing.id;
+    // Helper to mock CCID fetch
+    async getOrCreateCcid(code: string, ledgerId: string) {
+        // Try find
+        const found = await db.query.glCodeCombinations.findFirst({
+            where: eq(glCodeCombinations.code, code)
+        });
+        if (found) return found.id;
 
-        // Create if missing
-        const parts = code.split("-");
-        const [newAcc] = await db.insert(glCodeCombinations).values({
-            code,
+        // Create
+        const [neu] = await db.insert(glCodeCombinations).values({
             ledgerId,
-            segment1: parts[0],
-            segment2: parts[1],
-            segment3: parts[2],
-            segment4: parts[3],
+            code,
+            segment1: code.split('-')[0],
+            accountType: "EXPENSE", // Simplified
             enabledFlag: true
         }).returning();
-        return newAcc.id;
+        return neu.id;
     }
 }
 

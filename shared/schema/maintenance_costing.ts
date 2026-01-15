@@ -1,5 +1,6 @@
 import { pgTable, text, timestamp, varchar, boolean, integer, numeric, uuid, date, pgEnum } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
+
 import { createInsertSchema } from "drizzle-zod";
 import { users } from "./common";
 import { maintWorkOrders } from "./maintenance";
@@ -18,9 +19,9 @@ export const maintGlStatusEnum = pgEnum("maint_gl_status", [
 ]);
 
 export const maintWorkOrderCosts = pgTable("maint_work_order_costs", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    workOrderId: uuid("work_order_id").references(() => maintWorkOrders.id).notNull(),
-    costType: maintCostTypeEnum("cost_type").notNull(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    workOrderId: varchar("work_order_id").references(() => maintWorkOrders.id).notNull(),
+    costType: varchar("cost_type", { length: 30 }).notNull(), // MATERIAL, LABOR...
     description: text("description"), // e.g. "Bearing 6205 x 2"
     quantity: numeric("quantity"),
     unitCost: numeric("unit_cost"),
@@ -28,9 +29,10 @@ export const maintWorkOrderCosts = pgTable("maint_work_order_costs", {
     currency: varchar("currency", { length: 3 }).default("USD"),
     sourceReference: varchar("source_reference"), // ID of material issue or labor log
     date: timestamp("date").defaultNow(),
-    glStatus: maintGlStatusEnum("gl_status").default("PENDING"),
+    glStatus: varchar("gl_status", { length: 20 }).default("PENDING"),
     createdAt: timestamp("created_at").defaultNow(),
 });
+
 
 export const maintWorkOrderCostsRelations = relations(maintWorkOrderCosts, ({ one }) => ({
     workOrder: one(maintWorkOrders, {

@@ -165,3 +165,34 @@ export const insertInventoryLotSerialSchema = createInsertSchema(inventoryLotSer
 
 export type InsertInventoryLotSerial = z.infer<typeof insertInventoryLotSerialSchema>;
 export type InventoryLotSerial = typeof inventoryLotSerial.$inferSelect;
+
+export const purchaseRequisitions = pgTable("purchase_requisitions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    requisitionNumber: varchar("requisition_number").notNull().unique(),
+    requesterId: varchar("requester_id"),
+    description: text("description"),
+    status: varchar("status").default("draft"), // DRAFT, PENDING, APPROVED, REJECTED, CLOSED
+    sourceModule: varchar("source_module").default("SCM"), // SCM, MAINTENANCE, PROJECT
+    sourceId: varchar("source_id"), // e.g., work_order_id
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const purchaseRequisitionLines = pgTable("purchase_requisition_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    requisitionId: varchar("requisition_id").notNull(),
+    lineNumber: integer("line_number").notNull(),
+    itemId: varchar("item_id"), // NULL for non-catalog items
+    itemDescription: text("item_description").notNull(),
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
+    unitOfMeasure: varchar("unit_of_measure"),
+    estimatedPrice: numeric("estimated_price", { precision: 18, scale: 4 }),
+    status: varchar("status").default("PENDING"), // PENDING, PO_CREATED, CANCELLED
+    needByDate: timestamp("need_by_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPurchaseRequisitionSchema = createInsertSchema(purchaseRequisitions);
+export const insertPurchaseRequisitionLineSchema = createInsertSchema(purchaseRequisitionLines);
+
+export type PurchaseRequisition = typeof purchaseRequisitions.$inferSelect;
+export type PurchaseRequisitionLine = typeof purchaseRequisitionLines.$inferSelect;

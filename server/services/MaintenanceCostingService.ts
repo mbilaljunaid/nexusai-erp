@@ -3,7 +3,13 @@ import { db } from "../db";
 import { eq, sum } from "drizzle-orm";
 import { maintWorkOrderCosts, maintWorkOrderMaterials, maintWorkOrderResources, inventory, users } from "@shared/schema";
 
+import { db } from "../db";
+import { eq, sum } from "drizzle-orm";
+import { maintWorkOrderCosts, maintWorkOrderMaterials, maintWorkOrderResources, inventory, users } from "@shared/schema";
+import { maintenanceAccountingService } from "./MaintenanceAccountingService";
+
 export class MaintenanceCostingService {
+
 
     /**
      * Calculate and record material cost when an item is issued
@@ -35,7 +41,7 @@ export class MaintenanceCostingService {
 
         console.log(`💰 Recording Material Cost: ${issuedQty} x $${unitCost} = $${totalCost}`);
 
-        return await db.insert(maintWorkOrderCosts).values({
+        const [inserted] = await db.insert(maintWorkOrderCosts).values({
             workOrderId,
             costType: "MATERIAL",
             description: `Material Issue: ${materialRecord.inventoryId}`, // Todo: Get Item Name
@@ -44,7 +50,18 @@ export class MaintenanceCostingService {
             totalCost: totalCost.toString(),
             sourceReference: materialRecord.id // Link to WO Material Record
         }).returning();
+
+        // Trigger Accounting (Real-time)
+        // In prod, this might be async/queue
+        try {
+            await maintenanceAccountingService.createAccountingForCost(inserted.id);
+        } catch (e) {
+            console.error("Failed to create accounting for material cost:", e);
+        }
+
+        return inserted;
     }
+
 
     /**
      * Calculate and record labor cost when hours are logged
@@ -58,7 +75,7 @@ export class MaintenanceCostingService {
 
         console.log(`💰 Recording Labor Cost: ${hoursLogged}hrs x $${hourlyRate} = $${totalCost}`);
 
-        return await db.insert(maintWorkOrderCosts).values({
+        const [inserted] = await db.insert(maintWorkOrderCosts).values({
             workOrderId,
             costType: "LABOR",
             description: `Labor: ${hoursLogged} hrs (Tech Ref: ${laborRecord.userId})`,
@@ -67,7 +84,17 @@ export class MaintenanceCostingService {
             totalCost: totalCost.toString(),
             sourceReference: laborRecord.id
         }).returning();
+
+        // Trigger Accounting
+        try {
+            await maintenanceAccountingService.createAccountingForCost(inserted.id);
+        } catch (e) {
+            console.error("Failed to create accounting for labor cost:", e);
+        }
+
+        return inserted;
     }
+
 
     /**
      * Get aggregated costs for a Work Order

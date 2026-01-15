@@ -1,6 +1,6 @@
 
-import { pgTable, text, serial, integer, boolean, timestamp, uuid, jsonb, decimal } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { pgTable, text, serial, integer, boolean, timestamp, uuid, jsonb, decimal, varchar } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
 import { faAssets } from "./fixedAssets";
 
 
@@ -8,8 +8,8 @@ import { faAssets } from "./fixedAssets";
 export const maintMeters = pgTable("maint_asset_meters", {
 
 
-    id: uuid("id").defaultRandom().primaryKey(),
-    assetId: uuid("asset_id").notNull(), // Linked to Fixed Asset
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    assetId: varchar("asset_id").notNull(), // Linked to Fixed Asset
     name: text("name").notNull(), // e.g. "Engine Hours", "Odometer", "Cycle Count"
     description: text("description"),
     unitOfMeasure: text("unit_of_measure").notNull(), // e.g. "Hours", "KM", "Cycles"
@@ -29,8 +29,8 @@ export const maintMeters = pgTable("maint_asset_meters", {
 // 2. Meter Readings (Log)
 export const maintMeterReadings = pgTable("maint_asset_meter_readings", {
 
-    id: uuid("id").defaultRandom().primaryKey(),
-    meterId: uuid("meter_id").notNull(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    meterId: varchar("meter_id").notNull(),
 
     readingValue: decimal("reading_value", { precision: 15, scale: 2 }).notNull(),
     readingDate: timestamp("reading_date").defaultNow().notNull(),
@@ -39,9 +39,10 @@ export const maintMeterReadings = pgTable("maint_asset_meter_readings", {
     deltaValue: decimal("delta_value", { precision: 15, scale: 2 }),
 
     source: text("source").default("MANUAL"), // MANUAL, IOT, WO_COMPLETION
-    workOrderId: uuid("work_order_id"), // If captured during a WO
+    workOrderId: varchar("work_order_id"), // If captured during a WO
     createdById: text("created_by_id"),
 });
+
 
 // Relations
 export const maintMetersRelations = relations(maintMeters, ({ one, many }) => ({
