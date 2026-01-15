@@ -14,6 +14,8 @@ export default function PlanningBoard() {
     const queryClient = useQueryClient();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [viewMode, setViewMode] = useState<"week" | "month">("week");
+    const [showForecast, setShowForecast] = useState(false);
+
 
     // Calculate Range
     const startDate = startOfWeek(currentDate);
@@ -24,6 +26,13 @@ export default function PlanningBoard() {
         queryKey: ["/api/maintenance/planning/schedule", startDate.toISOString(), endDate.toISOString()],
         queryFn: () => fetch(`/api/maintenance/planning/schedule?start=${startDate.toISOString()}&end=${endDate.toISOString()}`).then(r => r.json())
     });
+
+    const { data: forecast, isLoading: loadingForecast } = useQuery({
+        queryKey: ["/api/maintenance/planning/forecast", startDate.toISOString(), endDate.toISOString()],
+        queryFn: () => fetch(`/api/maintenance/planning/forecast?start=${startDate.toISOString()}&end=${endDate.toISOString()}`).then(r => r.json()),
+        enabled: showForecast
+    });
+
 
     const { data: workCenters } = useQuery({
         queryKey: ["/api/maintenance/work-centers"],
@@ -53,10 +62,20 @@ export default function PlanningBoard() {
     if (isLoading) return <div className="p-8"><Skeleton className="h-64 w-full" /></div>;
 
     const getOpsForDay = (date: Date) => {
-        return schedule?.scheduled.filter((op: any) =>
+        const ops = schedule?.scheduled.filter((op: any) =>
             new Date(op.scheduledDate).toDateString() === date.toDateString()
         ) || [];
+
+        if (showForecast && forecast) {
+            const fCasts = forecast.filter((f: any) =>
+                new Date(f.date).toDateString() === date.toDateString()
+            );
+            return [...ops, ...fCasts];
+        }
+
+        return ops;
     };
+
 
     return (
         <div className="p-6 space-y-6">
@@ -72,7 +91,20 @@ export default function PlanningBoard() {
                         <span className="text-sm font-medium">{format(startDate, "MMM d")} - {format(endDate, "MMM d, yyyy")}</span>
                     </div>
                     <Button variant="outline" size="sm" onClick={() => setCurrentDate(addDays(currentDate, 7))}><ChevronRight className="h-4 w-4" /></Button>
+                    <div className="flex items-center space-x-2 ml-4">
+                        <input
+                            type="checkbox"
+                            id="showForecast"
+                            checked={showForecast}
+                            onChange={(e) => setShowForecast(e.target.checked)}
+                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="showForecast" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            Show PM Forecast
+                        </label>
+                    </div>
                 </div>
+
             </div>
 
             <div className="grid grid-cols-7 gap-4">
@@ -84,18 +116,22 @@ export default function PlanningBoard() {
                         <div className="bg-muted/20 min-h-[400px] rounded-b-lg p-2 space-y-2 border border-t-0">
                             {/* Render Cards */}
                             {getOpsForDay(day).map((op: any) => (
-                                <Card key={op.id} className="cursor-pointer hover:shadow-md transition-shadow border-l-4 border-l-blue-500">
+                                <Card key={op.id} className={`cursor-pointer hover:shadow-md transition-shadow border-l-4 ${op.type === 'PM' ? 'border-l-green-500 border-dashed bg-green-50/50' : 'border-l-blue-500'}`}>
                                     <CardContent className="p-3">
-                                        <div className="text-xs font-bold text-muted-foreground mb-1">{op.workOrder?.workOrderNumber}</div>
-                                        <div className="text-sm font-medium leading-tight mb-2">{op.description}</div>
+                                        <div className="text-xs font-bold text-muted-foreground mb-1 flex justify-between">
+                                            <span>{op.workOrder?.workOrderNumber || "FORECAST"}</span>
+                                            {op.type === 'PM' && <span className="text-[10px] bg-green-100 text-green-800 px-1 rounded">PROPOSED</span>}
+                                        </div>
+                                        <div className="text-sm font-medium leading-tight mb-2">{op.description || op.title}</div>
                                         <div className="flex justify-between items-center">
                                             <div className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 w-fit">
-                                                {op.workCenterId ? workCenters?.find((wc: any) => wc.id === op.workCenterId)?.code : "No WC"}
+                                                {op.workCenterId ? workCenters?.find((wc: any) => wc.id === op.workCenterId)?.code : (op.asset || "No WC")}
                                             </div>
                                         </div>
                                     </CardContent>
                                 </Card>
                             ))}
+
 
                             {getOpsForDay(day).length === 0 && (
                                 <div className="text-center text-xs text-muted-foreground py-8">No ops</div>

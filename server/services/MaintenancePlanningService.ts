@@ -1,7 +1,8 @@
 
 import { db } from "../db";
 import { eq, and, gte, lte, or, isNull } from "drizzle-orm";
-import { maintWorkOrders, maintWorkOrderOperations, maintWorkCenters } from "@shared/schema";
+import { maintWorkOrders, maintWorkOrderOperations, maintWorkCenters, maintPMDefinitions } from "@shared/schema";
+
 
 export class MaintenancePlanningService {
 
@@ -107,6 +108,72 @@ export class MaintenancePlanningService {
 
         return loadMap;
     }
+
+
+    /**
+     * Get PM Forecast
+     * Simulates PM generation for a future range
+     */
+    async getForecast(startDate: Date, endDate: Date) {
+        const events: any[] = [];
+        const pms = await db.query.maintPMDefinitions.findMany({
+            where: and(
+                eq(maintPMDefinitions.active, true),
+                eq(maintPMDefinitions.triggerType, "TIME")
+            ),
+            with: {
+                asset: true
+            }
+        });
+
+        for (const pm of pms) {
+            // Determine base date (Last Generated or Effective Start)
+            let baseDate = pm.lastGeneratedDate ? new Date(pm.lastGeneratedDate) : new Date(pm.effectiveStartDate || startDate);
+            const freq = pm.frequency || 0;
+            const uom = pm.frequencyUom;
+
+            if (freq <= 0 || !uom) continue;
+
+            // Loop and add interval until we surpass endDate
+            // Avoid infinite loops
+            let cursor = new Date(baseDate);
+            // Advance cursor to at least startDate if it's behind
+            // Effectively finding the first occurrence >= startDate?
+            // Actually, we should just step forward.
+            // But if last generated was 1 year ago, and we ask for next month, we might iterate 52 times for weekly.
+            // That's acceptable for now.
+
+            // Safety limit
+            let iterations = 0;
+            while (iterations < 1000) {
+                // Add Interval
+                if (uom === "DAY") cursor.setDate(cursor.getDate() + freq);
+                if (uom === "WEEK") cursor.setDate(cursor.getDate() + (freq * 7));
+                if (uom === "MONTH") cursor.setMonth(cursor.getMonth() + freq);
+                if (uom === "YEAR") cursor.setFullYear(cursor.getFullYear() + freq);
+
+                iterations++;
+
+                if (cursor > endDate) break;
+
+                if (cursor >= startDate) {
+                    events.push({
+                        id: `forecast-${pm.id}-${iterations}`,
+                        type: "PM",
+                        date: new Date(cursor),
+                        title: pm.name,
+                        asset: pm.asset ? `${pm.asset.assetNumber} - ${pm.asset.description}` : "Unknown Asset",
+                        description: `Forecasted PM: ${pm.name}`
+
+                    });
+                }
+            }
+        }
+
+        // Sort by date
+        return events.sort((a, b) => a.date.getTime() - b.date.getTime());
+    }
 }
+
 
 export const maintenancePlanningService = new MaintenancePlanningService();

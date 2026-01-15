@@ -1,22 +1,26 @@
-# Maintenance Quality & Safety (Phase C)
+# Maintenance Feature Parity (Gaps)
 
-- [ ] **Schema Definition**
-    - [ ] Define `maint_inspection_definitions` (Templates) <!-- id: 0 -->
-    - [ ] Define `maint_inspections` (Execution Results) <!-- id: 1 -->
-    - [ ] Define `maint_permits` (Safety Permits) <!-- id: 2 -->
-    - [ ] Export schema in `index.ts` <!-- id: 3 -->
-    - [ ] Create bootstrap script <!-- id: 4 -->
+- [x] **Step 1: Meters & Library (Foundation)**
+    - [x] Schema: `shared/schema/maintenance_meters.ts` <!-- id: 1 -->
+    - [x] Schema: `shared/schema/maintenance_library.ts` <!-- id: 2 -->
+    - [x] Service: `MaintenanceMeterService` (Record readings) <!-- id: 3 -->
+    - [x] Service: `MaintenanceLibraryService` (Apply templates) <!-- id: 4 -->
+    - [x] Verify: `scripts/verify_parity_step1.ts` (Passed with manual path) <!-- id: 5 -->
 
-- [ ] **Backend Service Implementation**
-    - [ ] Create `MaintenanceQualityService.ts` <!-- id: 5 -->
-    - [ ] Implement `createInspection` (from Template) <!-- id: 6 -->
-    - [ ] Implement `completeInspection` (Pass/Fail) <!-- id: 7 -->
-    - [ ] Implement `createPermit` <!-- id: 8 -->
+- [x] **Step 2: Advanced PM Definitions**
+    - [x] Schema: Update `maint_pm_definitions` (Meter fields, Floating) <!-- id: 6 -->
+    - [x] Schema: Fix `maint_work_definitions` reference in PM <!-- id: 7 -->
+    - [x] Service: Update `MaintenanceService.generatePMWorkOrders` to handle Meter & Floating logic <!-- id: 8 -->
+    - [x] Verify: `scripts/verify_parity_step2.ts` <!-- id: 9 -->
 
-- [ ] **Frontend Implementation**
-    - [ ] Create `InspectionSheet` component (Checklist UI) <!-- id: 9 -->
-    - [ ] Create `PermitPanel` component (Safety Info) <!-- id: 10 -->
-    - [ ] Add "Safety & Quality" tab to `MaintenanceDetailSheet` <!-- id: 11 -->
 
-- [ ] **Verification**
-    - [ ] Script: `scripts/verify_quality_flow.ts` <!-- id: 12 -->
+- [x] **Step 3: Triage Dispatch Console**
+    - [x] UI: `DispatchConsole.tsx` (Finish implementation with real data) <!-- id: 10 -->
+    - [x] Route: Add to Sidebar/Navigation <!-- id: 11 -->
+    - [x] Verify: Manual UI Test <!-- id: 12 -->
+
+- [x] **Step 4: Forecasting Visualization**
+    - [x] UI: `PlanningBoard.tsx` (Forecast Mode) <!-- id: 13 -->
+    - [x] Service: `MaintenanceService.getForecast(horizon)` <!-- id: 14 -->
+    - [x] Verify: Manual UI Test <!-- id: 15 -->
+

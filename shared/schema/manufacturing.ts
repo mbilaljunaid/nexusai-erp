@@ -125,7 +125,8 @@ export const productionCalendars = pgTable("production_calendars", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const calendarExceptions = pgTable("calendar_exceptions", {
+export const calendarExceptions = pgTable("mfg_calendar_exceptions", {
+
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     calendarId: varchar("calendar_id").notNull(), // FK to production_calendars
     exceptionDate: timestamp("exception_date").notNull(),
@@ -134,7 +135,14 @@ export const calendarExceptions = pgTable("calendar_exceptions", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
+// LEGACY SUPPORT
+export const calendarExceptionsLegacy = pgTable("calendar_exceptions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    calendarId: varchar("calendar_id"),
+});
+
 export const shifts = pgTable("shifts", {
+
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     calendarId: varchar("calendar_id").notNull(), // FK to production_calendars
     shiftCode: varchar("shift_code").notNull(), // e.g. "SHIFT-1"

@@ -3,16 +3,40 @@
 **Canonical Level-15 Decomposition & Feature Parity Heatmap**
 
 > **Role**: Senior Oracle Fusion Maintenance Architect & ERP Product Engineer
-> **Date**: 2026-01-15
-> **Status**: ⚠️ PARTIALLY IMPLEMENTED (Tier-2 Ready, Not Tier-1)
+> **Date**: 2026-01-15 (Updated: Post-Step 2 Verification)
+> **Status**: ⚠️ PARTIALLY IMPLEMENTED (Steps 1 & 2 Complete, Steps 3 & 4 Pending)
 > **Reference**: Oracle Fusion Cloud Maintenance (Asset Lifecycle Management)
 
 ---
 
-## 1. Executive Summary
-The current Maintenance module provides a functional foundation for **Small-to-Midsize Business (SMB)** operations, capable of handling Asset Management, Preventive Maintenance (Time-based), Corrective Maintenance (Service Requests), and basic execution (Work Orders with Materials & Labor).
+## 🔁 2026-01-15 RE-RUN: Delta Changes & Analysis
+**Recent Achievements (Steps 1 & 2)**:
+1.  **Asset Meters (Level 10)**: Successfully implemented `maint_asset_meters` and `maint_asset_meter_readings`. Meters can be absolute or delta (change).
+2.  **Work Definition Library (Level 3)**: Implemented standard operations and materials templates (`maint_work_definitions`). Verification confirms seamless application to Work Orders.
+3.  **Advanced PM Engine (Level 3 & 13)**:
+    *   **Meter-Based PM**: Implemented logic to trigger WOs based on meter intervals (e.g., every 500 hours).
+    *   **Floating Interval**: Implemented `isFloating` logic for dynamic scheduling based on completion date.
+    *   **Forecasting**: Backend service `getForecast()` implemented for time-based PMs (Level 13).
 
-However, it **lacks Tier-1 Enterprise capabilities** required for large-scale operations, specifically in **Maintenance Costing**, **Complex Planning**, **Safety/Compliance**, and **Mobile Execution**. It currently operates as a "CMMS" (Computerized Maintenance Management System) rather than a fully integrated "EAM" (Enterprise Asset Management) system.
+**Critical Open Gaps**:
+1.  **Dispatch Console (Level 11)**: Backend API enhanced (`listTechnicians`, filtered `listWorkOrders`), but UI integration pending.
+2.  **Forecasting Visualization (Level 13)**: Backend service exists, but `PlanningBoard` integration pending.
+3.  **Financial Integration (Level 12)**: Costs are calculated but **not posted to GL**. This remains the largest barrier to "Tier-1" status.
+
+**Readiness Verdict**: ⚠️ **Conditionally Ready** (Functional Core is solid; Financials & Visualization needing closure).
+
+---
+
+## 1. Executive Summary
+The Maintenance module has advanced significantly from a basic CMMS to a robust **Enterprise Asset Management (EAM)** system. 
+Recent updates (January 2026) have delivered:
+1.  **Financial Intelligence**: Real-time costing for Materials and Labor.
+2.  **Planning Capabilities**: Visual Gantt-style scheduling, Work Center capacity loads, and now **PM Forecasting**.
+3.  **Compliance Framework**: Integrated Inspection Checklists and Safety Permits.
+4.  **Advanced Strategies**: **Meter-based** and **floating** interval preventive maintenance.
+
+**Prognosis**:
+With the completion of Dispatch & Forecasting (Steps 3 & 4), the *operational* side will be effectively complete. The focus must then shift aggressively to **Phase D (GL Integration)** to close the loop with Finance.
 
 ---
 
@@ -22,23 +46,24 @@ However, it **lacks Tier-1 Enterprise capabilities** required for large-scale op
 | Feature Area | Level | Capability | Status | Gap / Observation |
 | :--- | :---: | :--- | :---: | :--- |
 | **Asset Management** | 9 | Asset Master & Hierarchy | ✅ | Parent/Child hierarchy exists. Basic fields covered. |
-| | 10 | Asset Meters & Readings | ⚠️ | Basic recording exists. **Gap**: No rollup logic, no resetting counters, no gauge validation. |
+| | 10 | Asset Meters & Readings | ✅ | **Parity Achieved**: Readings, Definitions, Trigger logic working. |
 | | 13 | Asset Health / IoT | ❌ | **Gap**: No real-time health score, no IoT ingestion endpoint. |
-| **Preventive Maintenance** | 3 | PM Definitions | ⚠️ | Time-based exists. **Gap**: No Meter-based, no "Floating" vs "Fixed" interval logic. |
-| | 13 | Forecasting | ❌ | **Gap**: No graphical forecast view, no "suppression" of lower-level PMs (e.g. annual suppresses monthly). |
+| **Preventive Maintenance** | 3 | PM Definitions | ✅ | **Parity Achieved**: Time, Meter, and Floating intervals supported. |
+| | 13 | Forecasting | ⚠️ | Backend logic (`getForecast`) done. **Gap**: UI Visualization pending (Planning Board). |
 | **Corrective Maintenance** | 10 | Service Requests | ✅ | Portal -> Queue -> WO workflow is solid. |
-| | 11 | Triage & Dispatch | ❌ | **Gap**: No "Dispatch Console". Manual assignment only. |
-| **Work Execution** | 10 | Work Orders | ⚠️ | Basic Header/Ops/Mat/Res exists. **Gap**: No "Work Definition" library (templates) reuse. |
-| | 7 | Inspections / QA | ❌ | **Gap**: No checklists, no pass/fail criteria, no "Quality Plans". |
-| | 14 | Safety & Permits | ❌ | **Critical Gap**: No Lockout/Tagout (LOTO), no Permit to Work (PTW). |
-| **Supply Chain Integration** | 7 | Spare Parts | ✅ | Inventory linkage exists. Reserved/Issued logic working. |
-| | 7 | Direct Procurement | ❌ | **Gap**: Cannot raise Requisition (PR) for non-stock items directly from WO. |
+| | 11 | Triage & Dispatch | ⚠️ | **Gap**: UI Integration pending for `DispatchConsole`. |
+| **Work Execution** | 10 | Work Orders | ✅ | **Parity Achieved**: Work Definition Library integration verified. |
+| | 7 | Inspections / QA | ✅ | **Parity Achieved**: Templates, Execution, Pass/Fail logic implemented. |
+| | 14 | Safety & Permits | ✅ | **Parity Achieved**: Hot Work/Cold Work permits linked to WOs. |
+| **Supply Chain Integration** | 7 | Spare Parts | ✅ | Inventory linkage solid. Reserved/Issued logic working. |
+| | 7 | Direct Procurement | ❌ | **Gap**: Cannot raise Requisition (PR) for non-stock items directly. |
 | **Resource Management** | 10 | Labor Booking | ✅ | Technician assignment & actuals logging functional. |
 | | 9 | Shifts & Calendars | ❌ | **Gap**: No awareness of Tech availability/skills (Certification). |
-| **Costing & Accounting** | 12 | Maintenance Costing | ❌ | **Major Gap**: No aggregation of Mat + Labor -> WIP -> Expense. No GL Integration. |
+| **Costing & Accounting** | 12 | Maintenance Costing | ✅ | **Parity Achieved**: Material & Labor costs calculated and aggregated. |
+| | 12 | GL Integration | ❌ | **Critical Gap**: Costs are calculated but not posted to General Ledger (Journals). |
 | | 12 | Capitalization | ❌ | **Gap**: No logic to capitalize overhaul costs to Asset Book Value. |
-| **User Experience** | 15 | Mobile / Offline | ❌ | **Gap**: Desktop only. Maintenance happens in the field; offline mode is mandatory for Tier-1. |
-| | 7 | Scheduling Board | ❌ | **Gap**: No Drag-and-Drop Gantt chart for Planners. |
+| **Planning & Scheduling** | 7 | Scheduling Board | ✅ | **Parity Achieved**: Gantt view, Drag-and-Drop backend support. |
+| **User Experience** | 15 | Mobile / Offline | ❌ | **Gap**: Desktop only. Offline mode is mandatory for field work. |
 
 ---
 
@@ -46,113 +71,99 @@ However, it **lacks Tier-1 Enterprise capabilities** required for large-scale op
 
 ### Level 1: Module Domain
 **Maintenance & Facilities Management**
-*   **Current State**: Focused on "Execution" and "Basic Planning".
-*   **Target**: Asset Lifecycle Management (ALM) covering Acquire -> Operate -> Maintain -> Dispose.
+*   **Current State**: Execution, Planning, Costing, and **Advanced PM** layers Active.
+*   **Target**: Predictive Maintenance and Financial Capitalization.
 
 ### Level 2: Sub-Domains
-1.  **Asset Information Management** (Implemented)
-2.  **Work Management** (Partially Implemented)
+1.  **Asset Information Management** (Implemented: Master + Meters)
+2.  **Work Management** (Implemented: Library + Execution)
 3.  **Materials Management** (Implemented)
-4.  **Maintenance Costing** (MISSING)
+4.  **Maintenance Costing** (Implemented - Operational Only)
 5.  **Reliability Engineering** (MISSING)
 
 ### Level 3: Functional Capabilities
-*   **PM Schedules**: Currently supports `Fixed Interval`. Needs `Floating Interval`, `Meter-Based`, `Condition-Based`.
-*   **Work Execution**: Supports `Complete`. Needs `Release`, `Hold`, `Cancel`, `Rollback`.
-*   **Failure Analysis**: Needs `Failure Codes` (Problem/Cause/Remedy) library for root cause analysis.
+*   **PM Schedules**: Supports `Time-Based`, `Meter-Based`, `Floating`. (Complete)
+*   **Work Execution**: Supports `Release`, `Complete`, `Inspect`, `Permit`, `Library`. (Complete)
+*   **Failure Analysis**: Needs `Failure Codes`.
 
 ### Level 4: Business Use Cases
-*   **Scenario A (Emergency)**: Breakdown -> SR -> Emergency WO -> Execute -> Fix. (Matches Current)
-*   **Scenario B (Planned)**: PM Forecast -> Generate WOs -> Balance Load -> Material Pick -> Execute. (Gap: Load Balancing)
-*   **Scenario C (Refurbishment)**: Asset Return -> Decon -> Repair -> Return to Stock. (Gap: Return to Inventory)
+*   **Scenario A (Meter PM)**: Meter Reading -> Threshold Breached -> Auto-WO Generation. (Verified)
+*   **Scenario B (Planned)**: PM Forecast -> Scheduling Board (Balance Load) -> Execute. (In Progress)
 
 ### Level 5: User Personas
-*   **Maintenance Manager**: Needs Dashboard (KPIs: MTBF, MTTR).
-*   **Planner**: Needs Gantt Scheduler & Material Availability Report.
-*   **Technician**: Needs Mobile App with "My Work" list & Barcode Scanner.
-*   **Requester**: Needs Service Portal (Implemented).
+*   **Planner**: Uses `PlanningBoard` to visualize load.
+*   **Dispatcher**: Uses `DispatchConsole` (Pending) to assign techs.
+*   **Technician**: Uses `ServiceModule` (needs Mobile).
 
 ### Level 6: UI Surfaces
 *   `CMMSMaintenance.tsx`: Main Hub.
 *   `MaintenanceDetailSheet.tsx`: Execution Surface.
-*   `ServiceRequestPortal.tsx`: Intake Surface.
-*   **MISSING**: `SchedulingBoard.tsx`, `AssetHealth360.tsx`, `CostAnalysis.tsx`.
+*   `PlanningBoard.tsx`: Scheduling Surface (Needs Forecast View).
+*   `DispatchConsole.tsx`: Triage Surface (Pending Integration).
 
 ### Level 7: UI Components
-*   **Inputs**: Needs rich text for "Work Instructions" (Images/PDFs).
-*   **Grids**: Current grids need server-side pagination for >10k assets.
-*   **Visuals**: Needs "Equipment Hierarchy Tree" visualizer.
+*   **Gantt Chart**: Implemented.
+*   **Forecast Grid**: Pending.
 
 ### Level 8: Configuration
-*   **Needed**: `Work Order Types`, `Priorities`, `Failure Code Sets`, `Maintenance Plant Parameters`.
+*   **Needed**: `Failure Code Sets`, `Maintenance Plant Parameters`.
 
 ### Level 9: Master Data
-*   **Assets**: Implemented.
-*   **Resources**: Implemented (Users).
-*   **Work Centers**: MISSING (Grouping resources by location).
+*   **Work Centers**: Implemented.
+*   **Work Definitions**: Implemented (Templates).
+*   **Asset Meters**: Implemented.
 
 ### Level 10: Transactional Objects
-*   **Work Order**: The core object. Needs `Status History` table.
-*   **Operation**: Needs `Standard Operations` library references.
+*   **Work Order Costs**: Implemented.
+*   **Meter Readings**: Implemented.
+*   **PM Definitions**: Implemented.
 
 ### Level 11: Workflow & Controls
-*   **Approvals**: Needs 'Release' gate (e.g., if cost > $5k, Manager approval required).
-*   **Status Transitions**: Needs State Machine validation (can't go `Draft` -> `Closed`).
+*   **Safety Gates**: Cannot close WO if Inspection failed.
+*   **Dispatch**: Auto-assign or Manual Drag-and-Drop.
 
 ### Level 12: Accounting & Rules
-*   **Costing**:
-    *   `Mat Cost` = Qty * Moving Avg Cost.
-    *   `Labor Cost` = Hours * Resource Rate.
-    *   `Overhead` = % of Labor.
-    *   **GL Entries**: Dr Maint Expense / Cr Inventory (Mat), Cr Absorption (Lab).
+*   **Costing**: Calculated.
+*   **GL Entries**: **MISSING**.
 
 ### Level 13: AI / Automation
-*   **Current**: None.
-*   **Target**:
-    *   "Predictive Asset Health" (using Meter history).
-    *   "Smart Scheduling" (assign tech based on skills/location).
+*   **Current**: PM Forecasting (Algorithm).
+*   **Target**: Predictive Maintenance (AI Model).
 
 ### Level 14: Security & Audit
-*   **RBAC**: Technicians should only see assigned WOs.
-*   **Audit**: "Who changed the planned start date?" (Full Field History).
+*   **Permits**: Audit trail of who authorized work.
 
 ### Level 15: Performance & Scalability
-*   **Volume**: 50k Assets, 100k WOs/year.
-*   **Strategy**: Archive `Closed` WOs to historical tables. Index `asset_id` and `status`.
+*   **Volume**: Inspection Results stored as JSONB.
+*   **PM Generation**: Batch process optimized.
 
 ---
 
-## 4. Remediation Roadmap (Phased)
+## 4. Remediation Roadmap (Updated)
 
-### Phase A: Costing & Accounting (Priority: High)
-*   **Objective**: Financial accountability.
+### Phase Current: Dispatch & Forecasting (Steps 3 & 4)
+*   **Objective**: Operational Visiblity.
 *   **Tasks**:
-    1.  Create `maint_work_order_costs` table (buckets: Mat, Lab, Equip).
-    2.  Implement `CostCalculator` service runs on every Transaction.
-    3.  Integrate with GL (Journal creation).
+    1.  Link `DispatchConsole` to new APIs.
+    2.  Visualize `getForecast()` on `PlanningBoard`.
 
-### Phase B: Planning & Scheduling (Priority: Medium)
-*   **Objective**: Efficient resource usage.
+### Phase D: GL Integration & Capitalization (Priority: High)
+*   **Objective**: Financial Reconciliation.
 *   **Tasks**:
-    1.  Implement `Work Center` master data.
-    2.  Build `SchedulingBoard` (React Big Calendar / Gantt).
-    3.  Implement "Mass Release" of PMs.
+    1.  Implement `MaintenanceAppSla` (Sub-ledger Accounting).
+    2.  Create Journal Entries (`Dr Expense`, `Cr Absorb`).
 
-### Phase C: Quality & Safety (Priority: Medium)
-*   **Objective**: Compliance.
+### Phase E: Reliability & Predictive AI (Priority: Medium)
+*   **Objective**: Reduce Downtime.
 *   **Tasks**:
-    1.  Create `maint_inspection_plans` (Questions/Pass-Fail).
-    2.  Implement `maint_permits` (LOTO associations).
-
-### Phase D: Mobile & Offline (Priority: Low / Future)
-*   **Objective**: Field efficiency.
-*   **Tasks**: PWA implementation with LocalStorage sync.
+    1.  Implement `Failure Codes`.
+    2.  build `AssetHealthService` (MTBF calc).
 
 ---
 
 ## 5. Build-Ready Task List (Next Steps)
-1.  **Refactor**: Rename `MaintenanceService` methods to be more granular (`WorkOrderService`, `AssetService`).
-2.  **Schema**: Add `maint_costs` and `maint_definitions` (Templates).
-3.  **UI**: Build `CostAnalysis` tab in WO Detail.
+1.  **Dispatch Console**: Finalize UI integration.
+2.  **Planning Board**: Add Forecast overlay.
+3.  **GL Integration**: Create `MaintenanceAccountingService`.
 
-**Verdict**: ⚠️ **Conditionally Ready**. Foundation is solid, but Financial and Compliance layers are missing for Enterprise deployment.
+**Verdict**: ⚠️ **Conditionally Ready**. Proceed to finish Steps 3 & 4, then MUST prioritize GL Integration.

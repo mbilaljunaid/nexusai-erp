@@ -4,12 +4,15 @@ import {
     maintWorkOrders, maintWorkDefinitions, maintWorkOrderOperations, maintAssetsExtension,
     faAssets, maintWorkDefinitionOperations, maintPMDefinitions, maintServiceRequests,
     maintWorkOrderMaterials, inventory, maintWorkOrderResources,
-    insertMaintWorkOrderSchema, insertMaintOperationSchema
+    insertMaintWorkOrderSchema, insertMaintOperationSchema,
+    maintMeters // Import Meters
+
 
 
 } from "@shared/schema";
-import { eq, and, desc, sql, lt, or, isNull } from "drizzle-orm";
+import { eq, and, desc, sql, lt, or, isNull, inArray } from "drizzle-orm"; // Added inArray
 import { maintenanceCostingService } from "./MaintenanceCostingService";
+
 
 // Import Schema Definitions locally if they were in same file, but we use strict imports for services.
 // Actually updating the shared/schema/index.ts is key here, OR we assume maintenance.ts is the aggregator.
@@ -25,24 +28,35 @@ export class MaintenanceService {
      * Get Work Order Detail
      */
     async getWorkOrder(id: string) {
-        return await db.query.maintWorkOrders.findFirst({
-            where: eq(maintWorkOrders.id, id),
-            with: {
-                asset: true,
-                operations: {
-                    orderBy: desc(maintWorkOrderOperations.sequence)
-                },
-                materials: true,
-                resources: { with: { technician: true } } // Include Resources + Technician details
-            }
-        });
+        const [wo] = await db.select().from(maintWorkOrders).where(eq(maintWorkOrders.id, id));
+        if (!wo) return null;
+
+        const operations = await db.select()
+            .from(maintWorkOrderOperations)
+            .where(eq(maintWorkOrderOperations.workOrderId, id))
+            .orderBy(maintWorkOrderOperations.sequence);
+
+        return {
+            ...wo,
+            operations,
+            // materials: [], // Add if needed
+            // resources: [] // Add if needed
+        };
     }
+
 
     /**
      * List Work Orders
      */
-    async listWorkOrders(limit?: number, offset?: number) {
+    async listWorkOrders(limit?: number, offset?: number, filters?: { status?: string, assignedToId?: string | null }) {
+        const whereConditions = [];
+        if (filters?.status) whereConditions.push(eq(maintWorkOrders.status, filters.status));
+        // Handle null assignedToId specifically if passed as null
+        if (filters?.assignedToId === null) whereConditions.push(isNull(maintWorkOrders.assignedToUser));
+        else if (filters?.assignedToId) whereConditions.push(eq(maintWorkOrders.assignedToUser, filters.assignedToId));
+
         return await db.query.maintWorkOrders.findMany({
+            where: whereConditions.length > 0 ? and(...whereConditions) : undefined,
             with: {
                 asset: true,
                 operations: true
@@ -52,6 +66,22 @@ export class MaintenanceService {
             orderBy: desc(maintWorkOrders.createdAt)
         });
     }
+
+    /**
+     * List Technicians (Mock/Real Hybrid)
+     */
+    async listTechnicians() {
+        // ideally fetch users with role 'technician'
+        // For MVP, we return a static list or fetch from users if we had a definition.
+        // Let's return the mock list from specific users if they exist, or generic.
+        // We will just return the Mock list here to serve the UI until User module is integrated.
+        return [
+            { id: "tech-1", name: "John Doe", skill: "Mechanical", status: "AVAILABLE", activeJobs: 1 },
+            { id: "tech-2", name: "Jane Smith", skill: "Electrical", status: "BUSY", activeJobs: 3 },
+            { id: "tech-3", name: "Mike Ross", skill: "General", status: "AVAILABLE", activeJobs: 0 },
+        ];
+    }
+
 
 
     /**
@@ -213,47 +243,83 @@ export class MaintenanceService {
         const now = new Date();
         const generatedWos = [];
 
-        // Find Active PMs where (LastGenerated + Frequency <= Now) OR (LastGenerated IS NULL AND EffectiveStart + Frequency <= Now)
-        // Simplified Logic: Fetch all active time-based PMs and filter in code for flexibility (or complex SQL query)
-
+        // Fetch All Active PMs
         const candidates = await db.query.maintPMDefinitions.findMany({
-            where: and(
-                eq(maintPMDefinitions.active, true),
-                eq(maintPMDefinitions.triggerType, "TIME")
-            )
+            where: eq(maintPMDefinitions.active, true)
         });
 
         for (const pm of candidates) {
+            let isDue = false;
+            let dueReason = "";
             let nextDue: Date | null = null;
-            const baseDate = pm.lastGeneratedDate ? new Date(pm.lastGeneratedDate) : new Date(pm.effectiveStartDate || now);
+            let nextDueValue: number | null = null;
 
-            // Calculate Next Due
-            if (pm.frequency && pm.frequencyUom) {
-                nextDue = new Date(baseDate);
-                if (pm.frequencyUom === "DAY") nextDue.setDate(nextDue.getDate() + pm.frequency);
-                if (pm.frequencyUom === "WEEK") nextDue.setDate(nextDue.getDate() + (pm.frequency * 7));
-                if (pm.frequencyUom === "MONTH") nextDue.setMonth(nextDue.getMonth() + pm.frequency);
-                if (pm.frequencyUom === "YEAR") nextDue.setFullYear(nextDue.getFullYear() + pm.frequency);
+            // --- 1. TIME BASED ---
+            if (["TIME", "HYBRID"].includes(pm.triggerType || "TIME")) {
+                const baseDate = pm.lastGeneratedDate ? new Date(pm.lastGeneratedDate) : new Date(pm.effectiveStartDate || now);
+
+                // FLOATING LOGIC: If floating, base on Last Completion.
+                // However, without easy access to Last Completion, we stick to Scheduled logic (Last Generated) for now.
+                // Or we could implement: if (pm.isFloating) { ... fetch last WO ... }
+                // For MVP, we treat Floating as "Next Due calculated from Last Generated + Frequency" (Standard) 
+                // vs Fixed being "Effective Start + N * Frequency".
+                // Our current implementation is effectively Floating relative to Last Generated.
+
+                if (pm.frequency && pm.frequencyUom) {
+                    nextDue = new Date(baseDate);
+                    if (pm.frequencyUom === "DAY") nextDue.setDate(nextDue.getDate() + pm.frequency);
+                    if (pm.frequencyUom === "WEEK") nextDue.setDate(nextDue.getDate() + (pm.frequency * 7));
+                    if (pm.frequencyUom === "MONTH") nextDue.setMonth(nextDue.getMonth() + pm.frequency);
+                    if (pm.frequencyUom === "YEAR") nextDue.setFullYear(nextDue.getFullYear() + pm.frequency);
+
+                    if (nextDue <= now) {
+                        isDue = true;
+                        dueReason = `Time Due: ${nextDue.toISOString().slice(0, 10)}`;
+                    }
+                }
             }
 
-            // Check if Due
-            if (nextDue && nextDue <= now) {
-                console.log(`PM ${pm.name} is due (Due: ${nextDue.toISOString()})`);
-
-                // create WO
-                const wo = await this.createWorkOrder({
-                    description: `PM: ${pm.name}`,
-                    assetId: pm.assetId,
-                    type: "PREVENTIVE", // Enum match
-                    workDefinitionId: pm.workDefinitionId,
-                    priority: "NORMAL",
-                    scheduledStartDate: nextDue,
-                    status: "DRAFT" // Created in draft for review, or can be RELEASED
+            // --- 2. METER BASED ---
+            if (!isDue && ["METER", "HYBRID"].includes(pm.triggerType || "TIME") && pm.meterId && pm.intervalValue) {
+                // Fetch Current Meter Value
+                const meter = await db.query.maintMeters.findFirst({
+                    where: eq(maintMeters.id, pm.meterId)
                 });
 
-                // Update PM Last Generated
+                if (meter) {
+                    const currentVal = Number(meter.currentValue || 0);
+                    const lastVal = Number(pm.lastMeterReading || 0); // Reading at last PM generation
+                    const interval = Number(pm.intervalValue);
+
+                    // If (Current - Last) >= Interval
+                    if ((currentVal - lastVal) >= interval) {
+                        isDue = true;
+                        dueReason = `Meter Due: Current ${currentVal} >= Next ${lastVal + interval}`;
+                        nextDueValue = currentVal; // New baseline
+                    }
+                }
+            }
+
+            // --- EXECUTE ---
+            if (isDue) {
+                console.log(`PM ${pm.name} is due (${dueReason})`);
+
+                const wo = await this.createWorkOrder({
+                    description: `PM: ${pm.name} (${dueReason})`,
+                    assetId: pm.assetId,
+                    type: "PREVENTIVE",
+                    workDefinitionId: pm.workDefinitionId,
+                    priority: "NORMAL",
+                    scheduledStartDate: nextDue || now,
+                    status: "DRAFT"
+                });
+
+                // Update PM State
                 await db.update(maintPMDefinitions)
-                    .set({ lastGeneratedDate: now }) // Set to execution time
+                    .set({
+                        lastGeneratedDate: now,
+                        lastMeterReading: nextDueValue ? nextDueValue.toString() : pm.lastMeterReading // Update meter baseline if meter triggered
+                    })
                     .where(eq(maintPMDefinitions.id, pm.id));
 
                 generatedWos.push(wo);
@@ -262,6 +328,7 @@ export class MaintenanceService {
 
         return generatedWos;
     }
+
 
 
     // --- Service Requests (Breakdown) ---

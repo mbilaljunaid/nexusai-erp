@@ -4,6 +4,8 @@ import { relations, sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { faAssets } from "./fixedAssets";
+import { maintWorkDefinitions } from "./maintenance_library";
+
 
 // 1. Maintenance Parameters (Module Configuration)
 export const maintParameters = pgTable("maint_parameters", {
@@ -44,40 +46,9 @@ export const maintAssetsExtension = pgTable("maint_assets_extension", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-// 3. Maintenance Work Definitions (Templates/Standard Jobs)
-export const maintWorkDefinitions = pgTable("maint_work_definitions", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    name: varchar("name", { length: 100 }).notNull(),
-    description: text("description"),
-    version: integer("version").default(1),
+// 3. Work Definitions removed (moved to maintenance_library.ts)
+// 4. Work Definition Operations removed (moved to maintenance_library.ts)
 
-    // Type & Status
-    type: varchar("type", { length: 30 }).default("STANDARD"), // STANDARD, PREVENTIVE
-    status: varchar("status", { length: 20 }).default("ACTIVE"), // DRAFT, ACTIVE, OBSOLETE
-
-    // Applicability
-    assetId: varchar("asset_id").references(() => faAssets.id), // Specific to an asset?
-    categoryId: varchar("category_id"), // Or a category?
-
-    createdAt: timestamp("created_at").default(sql`now()`),
-    updatedAt: timestamp("updated_at").default(sql`now()`),
-});
-
-// 4. Work Definition Operations (Steps)
-export const maintWorkDefinitionOperations = pgTable("maint_work_definition_ops", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    workDefinitionId: varchar("work_definition_id").references(() => maintWorkDefinitions.id).notNull(),
-
-    sequence: integer("sequence").notNull(), // 10, 20, 30
-    operationCode: varchar("operation_code", { length: 30 }), // OP-10
-    description: text("description").notNull(),
-
-    // Resources (Simplified)
-    laborHours: numeric("labor_hours", { precision: 10, scale: 2 }).default("0"),
-    technicianCount: integer("technician_count").default(1),
-
-    createdAt: timestamp("created_at").default(sql`now()`),
-});
 
 // 5. Maintenance Work Orders (Execution)
 export const maintWorkOrders = pgTable("maint_work_orders", {
@@ -130,30 +101,8 @@ export const maintWorkOrderOperations = pgTable("maint_work_order_operations", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-// 7. Meter Readings (Condition Monitoring)
-export const maintMeters = pgTable("maint_meters", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    name: varchar("name").notNull(),
-    uom: varchar("uom", { length: 20 }).notNull(), // KM, HOURS, CYCLES
+// 7. Meters and Readings removed (moved to maintenance_meters.ts)
 
-    assetId: varchar("asset_id").references(() => faAssets.id).notNull(),
-
-    createdAt: timestamp("created_at").default(sql`now()`),
-});
-
-export const maintMeterReadings = pgTable("maint_meter_readings", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    meterId: varchar("meter_id").references(() => maintMeters.id).notNull(),
-
-    readingDate: timestamp("reading_date").default(sql`now()`),
-    readingValue: numeric("reading_value", { precision: 20, scale: 2 }).notNull(),
-    deltaValue: numeric("delta_value", { precision: 20, scale: 2 }), // Difference from last reading
-
-    reportedByUserId: varchar("reported_by_user_id"),
-    workOrderId: varchar("work_order_id").references(() => maintWorkOrders.id), // If taken during WO
-
-    createdAt: timestamp("created_at").default(sql`now()`),
-});
 
 
 
@@ -179,7 +128,8 @@ export const maintWorkOrderOperationsRelations = relations(maintWorkOrderOperati
 // Zod Schemas
 export const insertMaintWorkDefinitionSchema = createInsertSchema(maintWorkDefinitions);
 export const insertMaintWorkOrderSchema = createInsertSchema(maintWorkOrders);
-export const insertMaintOperationSchema = createInsertSchema(maintWorkDefinitionOperations);
+// export const insertMaintOperationSchema = createInsertSchema(maintWorkDefinitionOperations); // Removed, see maintenance_library.ts
+
 export const insertMaintAssetExtSchema = createInsertSchema(maintAssetsExtension);
 
 export type MaintWorkOrder = typeof maintWorkOrders.$inferSelect;

@@ -4,7 +4,11 @@ import { relations, sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { faAssets } from "./fixedAssets";
-import { maintWorkDefinitions, maintMeters } from "./maintenance";
+import { maintMeters } from "./maintenance_meters";
+import { maintWorkOrders } from "./maintenance";
+import { maintWorkDefinitions } from "./maintenance_library";
+
+
 
 // ... [Existing tables: maintParameters, maintAssetsExtension, maintWorkDefinitions, etc.] ...
 
@@ -25,6 +29,8 @@ export const maintPMDefinitions = pgTable("maint_pm_definitions", {
 
     // Recurrence Logic
     triggerType: varchar("trigger_type", { length: 20 }).default("TIME"), // TIME, METER, HYBRID
+    isFloating: boolean("is_floating").default(false), // If true, Next Due = Completion Date + Interval (Dynamic)
+
 
     // Time Based
     frequency: integer("frequency"), // e.g. 1, 3, 6, 12

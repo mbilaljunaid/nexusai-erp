@@ -3,6 +3,13 @@ import { Router } from "express";
 import { maintenanceService } from "../../services/MaintenanceService";
 import { maintenanceCostingService } from "../../services/MaintenanceCostingService";
 import { maintenancePlanningService } from "../../services/MaintenancePlanningService";
+import { maintenanceQualityService } from "../../services/MaintenanceQualityService";
+import { maintenanceAccountingService } from "../../services/MaintenanceAccountingService";
+import { maintenanceMeterService } from "../../services/MaintenanceMeterService";
+import { maintenanceLibraryService } from "../../services/MaintenanceLibraryService";
+
+
+
 
 
 
@@ -11,12 +18,30 @@ const router = Router();
 // Work Orders
 router.get("/work-orders", async (req, res) => {
     try {
-        const wos = await maintenanceService.listWorkOrders();
+        const { limit, offset, status, assignedToId } = req.query;
+        const wos = await maintenanceService.listWorkOrders(
+            Number(limit) || undefined,
+            Number(offset) || undefined,
+            {
+                status: status as string,
+                assignedToId: assignedToId === 'null' ? null : (assignedToId as string)
+            }
+        );
         res.json(wos);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 });
+
+router.get("/supervisors/technicians", async (req, res) => {
+    try {
+        const techs = await maintenanceService.listTechnicians();
+        res.json(techs);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 router.post("/work-orders", async (req, res) => {
     try {
@@ -200,6 +225,16 @@ router.get("/work-orders/:id/costs", async (req, res) => {
     }
 });
 
+router.post("/work-orders/:id/costs/post", async (req, res) => {
+    try {
+        const result = await maintenanceAccountingService.postWorkOrderCosts(req.params.id, "system"); // TODO: Use req.user.id
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 // --- Planning ---
 
 router.get("/planning/schedule", async (req, res) => {
@@ -212,6 +247,18 @@ router.get("/planning/schedule", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+router.get("/planning/forecast", async (req, res) => {
+    try {
+        const start = new Date(req.query.start as string || new Date().toISOString());
+        const end = new Date(req.query.end as string || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString());
+        const forecast = await maintenancePlanningService.getForecast(start, end);
+        res.json(forecast);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 router.patch("/operations/:id/schedule", async (req, res) => {
     try {
@@ -232,7 +279,133 @@ router.get("/work-centers", async (req, res) => {
     }
 });
 
+// --- Quality & Safety ---
+
+router.get("/quality/templates", async (req, res) => {
+    try {
+        const tmpls = await maintenanceQualityService.listInspectionTemplates();
+        res.json(tmpls);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/quality/inspections", async (req, res) => {
+    try {
+        const insp = await maintenanceQualityService.createInspection(req.body);
+        res.json(insp);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.patch("/quality/inspections/:id", async (req, res) => {
+    try {
+        const { results, status } = req.body;
+        const insp = await maintenanceQualityService.submitInspectionResults(req.params.id, results, status);
+        res.json(insp);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/work-orders/:id/inspections", async (req, res) => {
+    try {
+        const insps = await maintenanceQualityService.getInspectionsForWorkOrder(req.params.id);
+        res.json(insps);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Permits
+router.post("/work-orders/:id/permits", async (req, res) => {
+    try {
+        const permit = await maintenanceQualityService.createPermit({ ...req.body, workOrderId: req.params.id });
+        res.json(permit);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/work-orders/:id/permits", async (req, res) => {
+    try {
+        const permits = await maintenanceQualityService.getPermitsForWorkOrder(req.params.id);
+        res.json(permits);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// --- Meters ---
+router.post("/meters", async (req, res) => {
+    try {
+        const meter = await maintenanceMeterService.createMeter(req.body);
+        res.json(meter);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/assets/:id/meters", async (req, res) => {
+    try {
+        const meters = await maintenanceMeterService.getMetersForAsset(req.params.id);
+        res.json(meters);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/meters/:id/readings", async (req, res) => {
+    try {
+        const { value, source, workOrderId } = req.body;
+        const reading = await maintenanceMeterService.logReading(req.params.id, value, source, workOrderId);
+        res.json(reading);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/meters/:id/readings", async (req, res) => {
+    try {
+        const readings = await maintenanceMeterService.getReadingHistory(req.params.id);
+        res.json(readings);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// --- Library (Work Definitions) ---
+router.get("/library/definitions", async (req, res) => {
+    try {
+        const defs = await maintenanceLibraryService.listWorkDefinitions();
+        res.json(defs);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/library/definitions", async (req, res) => {
+    try {
+        const def = await maintenanceLibraryService.createWorkDefinition(req.body);
+        res.json(def);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/library/definitions/:id/apply/:workOrderId", async (req, res) => {
+    try {
+        const result = await maintenanceLibraryService.applyWorkDefinition(req.params.workOrderId, req.params.id);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 export const maintenanceRouter = router;
+
+
 
 
 

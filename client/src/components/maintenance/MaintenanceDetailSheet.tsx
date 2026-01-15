@@ -11,6 +11,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CostAnalysisSection } from "./CostAnalysisSection";
+import { PermitsSection, InspectionsSection } from "./QualityComponents";
+
 
 
 import { useToast } from "@/hooks/use-toast";
@@ -193,7 +195,15 @@ export default function MaintenanceDetailSheet({ workOrderId, open, onOpenChange
 
                         {/* Costs */}
                         <CostAnalysisSection workOrderId={wo.id} />
+
+                        <Separator className="my-4" />
+
+                        {/* Quality & Safety */}
+                        <PermitsSection workOrderId={wo.id} />
+                        <InspectionsSection workOrderId={wo.id} />
+
                     </ScrollArea>
+
 
                 )}
             </SheetContent>

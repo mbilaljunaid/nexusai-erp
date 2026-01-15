@@ -442,7 +442,9 @@ const InspectionPlansITP = lazy(() => import("@/pages/InspectionPlansITP"));
 
 
 const NCRCAMAManagement = lazy(() => import("@/pages/NCRCAMAManagement"));
+const DispatchConsole = lazy(() => import("@/components/maintenance/DispatchConsole"));
 const ProductionSchedulingGantt = lazy(() => import("@/pages/ProductionSchedulingGantt"));
+
 const ToolingManagement = lazy(() => import("@/pages/ToolingManagement"));
 const WIPTrackingDashboard = lazy(() => import("@/pages/WIPTrackingDashboard"));
 const SupplierQualityScorecard = lazy(() => import("@/pages/SupplierQualityScorecard"));
@@ -644,7 +646,9 @@ function Router() {
       <Route path="/maintenance/pm" component={PMManager} />
       <Route path="/maintenance/requests" component={ServiceRequestPortal} />
       <Route path="/maintenance/triage" component={ServiceRequestQueue} />
+      <Route path="/maintenance/dispatch" component={DispatchConsole} />
       <Route path="/form" component={FormPage} />
+
 
 
       <Route path="/ap/settings">
