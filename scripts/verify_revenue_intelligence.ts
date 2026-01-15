@@ -19,14 +19,17 @@ async function verifyRevenueIntelligence() {
         const today = new Date();
         const baseAmount = 10000;
 
-        // Create an upward trend (Month 1: 10k, Month 2: 12k...)
-        for (let i = 12; i > 0; i--) {
+        // Create an upward trend (Month 0 to 11)
+        for (let i = 11; i >= 0; i--) {
             await db.insert(revenueRecognitions).values({
                 contractId: "temp-hist",
                 pobId: "temp-hist-pob",
                 periodName: `Hist-${i}`,
-                scheduleDate: subMonths(today, i),
-                amount: (baseAmount + (12 - i) * 1000).toString(), // +1k per month trend
+                scheduleDate: addMonths(subMonths(today, i), 0), // Use exactly similar logic, but make sure it falls inside.
+                // Actually, simply using subMonths(today, i) where i < 12 is generally safe.
+                // But the service calculates StartDate EXACTLY at invocation.
+                // Let's use subMonths(today, i) but ensure today is "fresh" and maybe add a day to be safe from equality checks.
+                amount: (baseAmount + (12 - i) * 1000).toString(),
                 accountType: "Revenue",
                 status: "Posted",
                 eventType: "Schedule",
@@ -34,7 +37,7 @@ async function verifyRevenueIntelligence() {
             });
         }
 
-        const forecast = await revenueForecastingService.generateForecast(6);
+        const forecast = await revenueForecastingService.generateForecast(6, "temp-hist");
         console.log(`   - Slope: ${forecast.model.slope.toFixed(2)} (Should be ~1000)`);
         console.log(`   - 6-Month Projection: ${forecast.forecast[5].amount.toFixed(2)}`);
 

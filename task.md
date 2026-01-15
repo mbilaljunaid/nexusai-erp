@@ -212,13 +212,53 @@ We added `billing_anomalies` table and a rule-based AI agent to `BillingService`
         - [x] Backend: `runPeriodCloseSweep` (Auto-post & Reconciliation)
         - [x] Frontend: Integration in `RevenuePeriodClose`
 
-- [ ] **Phase E: Intelligence & Integration**
-    - [/] Implement `RevenueForecastingService` (Linear Regression)
-    - [/] Implement `analyzeContractRisk` (Risk Agent)
-    - [ ] Create `RevenueIntelligence` Dashboard
+- [x] **Phase E: Intelligence & Integration**
+    - [x] Implement `RevenueForecastingService` (Linear Regression)
+    - [x] Implement `analyzeContractRisk` (Risk Agent)
+    - [x] Create `RevenueIntelligence` Dashboard
+
+- [x] **Phase F: Subscription Management (Enterprise)**
+    - [x] Schema: `billing_subscription.ts` (Contracts, Products, Lifecycle)
+    - [x] Backend: `SubscriptionService` (CRUD + Lifecycle Actions)
+    - [x] UI: `SubscriptionWorkbench` (Create, Amend, Renew)
+    - [x] Integration: Drive Billing Events from Subscriptions (Stubbed)
+
+- [x] **Phase G: Deep Integration (Subscriptions -> Billing)**
+    - [x] Backend: Implement `generateBillingEvents` (Real Logic)
+    - [x] UI: Add "Run Cycle" to Subscription Workbench
+    - [x] Verification: Subscription -> Billing Event -> Invoice Flow
+
+- [x] **Phase H: Advanced Billing & UX (Profiles + Names)**
+    - [x] Backend: Update `AutoInvoice` to respect `billing_profiles` (Terms, Currency)
+    - [x] UX: Replace `customerId` UUIDs with Names in `SubscriptionWorkbench`
+    - [x] UX: Add `CustomerPicker` to `SubscriptionWorkbench` (Create Dialog)
+
+## Billing Remediation (Forensic Audit 2026-01-15)
+- [x] **Phase I: Billing Master Data & Navigation**
+    - [x] Navigation: Add `SubscriptionWorkbench` to Sidebar (`navigation.ts`)
+    - [x] Navigation: Add `BillingProfileManager` to Sidebar
+    - [x] UI: Create `BillingProfileManager.tsx` (Terms/Currency)
+    - [x] Backend: Implement `billingProfiles` CRUD API
+    - [x] Verification: Verify Profile Logic (`scripts/verify_billing_profiles.ts`)
+
+- [x] **Phase II: Performance (The Engine)**
+    - [x] Backend: Refactor `runAutoInvoice` to use Batch Processing
+    - [x] Verification: Benchmark 1000+ events (Verified with simulated batch)
+
+- [x] **Phase III: Intelligence (The Value)**
+    - [x] UI: Build `BillingAnomalyDashboard`
+    - [x] Backend: Connect detection signals
+
+- [x] **Phase IV: Deep UX & Metrics (100% Parity) - UX HARDENING**
+    - [x] Backend: Implement `getDashboardMetrics` (Unbilled, Invoiced, Suspense).
+    - [x] UI: Connect `BillingDashboard.tsx` to real API.
+    - [x] UX: Resolve UUIDs in `BillingWorkbench.tsx` (Customer Names).
+    - [x] **UX Compliance**: Add Breadcrumbs to Dashboard, Workbench, and Anomaly views.
+    - [x] **Functional Gap**: Implement "Create Manual Event" Side-Sheet.
+    - [x] **UX Pattern**: Implement "View Details" Side-Sheet in Workbench.
 
 ## Enterprise Billing (Parity Gap)
-- [ ] **Phase 1: Foundation (Schema & Backend)**
+- [x] **Phase 1: Foundation (Schema & Backend)**
 - [x] Create `billing_enterprise` schema (`billing_events`, `batches`, `rules`)
     - [x] Implement `BillingService` (Core Logic)
     - [x] Implement `BillingRuleEngine` (Recurring, Milestone)

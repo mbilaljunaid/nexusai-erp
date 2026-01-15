@@ -9,21 +9,27 @@ export class RevenueForecastingService {
     /**
      * Generate 6-month Revenue Forecast using Linear Regression
      */
-    async generateForecast(monthsToProject: number = 6) {
+    async generateForecast(monthsToProject: number = 6, contractId?: string) {
         // 1. Fetch Historical Data (Last 12 Months)
         const endDate = new Date();
         const startDate = subMonths(endDate, 12);
+
+        const conditions = [
+            eq(revenueRecognitions.accountType, "Revenue"),
+            gte(revenueRecognitions.scheduleDate, startDate),
+            lte(revenueRecognitions.scheduleDate, endDate)
+        ];
+
+        if (contractId) {
+            conditions.push(eq(revenueRecognitions.contractId, contractId));
+        }
 
         const history = await db.select({
             period: revenueRecognitions.periodName,
             amount: sql<number>`sum(${revenueRecognitions.amount})`
         })
             .from(revenueRecognitions)
-            .where(and(
-                eq(revenueRecognitions.accountType, "Revenue"),
-                gte(revenueRecognitions.scheduleDate, startDate),
-                lte(revenueRecognitions.scheduleDate, endDate)
-            ))
+            .where(and(...conditions))
             .groupBy(revenueRecognitions.periodName, revenueRecognitions.scheduleDate)
             .orderBy(revenueRecognitions.scheduleDate);
 
@@ -31,10 +37,8 @@ export class RevenueForecastingService {
         const dataPoints = history.map((h, index) => ({
             x: index,
             y: parseFloat(h.amount as any || 0),
-            period: h.period,
-            date: h.period // or log date if available
+            period: h.period
         }));
-        console.log("DEBUG FORECAST INPUT:", JSON.stringify(dataPoints, null, 2));
 
         // 2. Train Model (Simple Linear Regression: y = mx + c)
         const n = dataPoints.length;

@@ -104,6 +104,9 @@ export const navigationConfig: SidebarNode[] = [
                 children: [
                     { id: "billing-dashboard", title: "Billing Dashboard", type: "link", path: "/finance/billing" },
                     { id: "billing-workbench", title: "Billing Workbench", type: "link", path: "/finance/billing/workbench" },
+                    { id: "subscription-workbench", title: "Subscription Workbench", type: "link", path: "/finance/billing/subscriptions" },
+                    { id: "billing-profiles", title: "Billing Profiles", type: "link", path: "/finance/billing/profiles" },
+                    { id: "billing-anomalies", title: "Billing Intelligence", type: "link", path: "/finance/billing/anomalies", icon: Brain },
                     { id: "billing-rules", title: "Billing Rules", type: "link", path: "/finance/billing/rules" },
                 ]
             },

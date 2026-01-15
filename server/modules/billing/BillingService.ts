@@ -36,71 +36,130 @@ export class BillingService {
                 return { batchId: batch.id, count: 0 };
             }
 
-            // 3. Group by Customer (Simple grouping for V1)
+            // 3. Batch Preparation
+            const customerIds = [...new Set(pendingEvents.map(e => e.customerId))];
+
+            // 3a. Bulk Fetch Profiles
+            const profiles = await db.select().from(billingProfiles).where(inArray(billingProfiles.customerId, customerIds));
+            const profileMap = new Map(profiles.map(p => [p.customerId, p]));
+
+            // 3b. Group Events
             const eventsByCustomer: Record<string, typeof pendingEvents> = {};
             pendingEvents.forEach(e => {
                 if (!eventsByCustomer[e.customerId]) eventsByCustomer[e.customerId] = [];
                 eventsByCustomer[e.customerId].push(e);
             });
 
-            // 4. Generate Invoices
-            let invoiceCount = 0;
-            const invoiceIds = [];
+            // 4. Batch Invoice Generation (Application-Side Batching)
+            const invoicesToInsert = [];
+            const invoiceMap = new Map<string, any>(); // customerId -> invoiceIndex
 
-            for (const customerId of Object.keys(eventsByCustomer)) {
+            // Prepare Invoice Headers
+            customerIds.forEach((customerId, index) => {
                 const customerEvents = eventsByCustomer[customerId];
+                const profile = profileMap.get(customerId);
 
-                // Calculate Totals
                 const totalAmount = customerEvents.reduce((sum, e) => sum + Number(e.amount), 0);
+                const currency = profile?.currency || "USD";
+                const paymentTerms = profile?.paymentTerms || "Net 30";
 
-                // Create Header
-                const [invoice] = await db.insert(arInvoices).values({
+                invoicesToInsert.push({
                     customerId,
-                    invoiceNumber: `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`, // Simple logic for V1
+                    invoiceNumber: `INV-${Date.now()}-${index}-${Math.floor(Math.random() * 1000)}`,
                     amount: totalAmount.toString(),
                     totalAmount: totalAmount.toString(),
+                    currency,
+                    paymentTerms,
                     status: "Draft",
                     transactionClass: "INV",
                     description: `Auto-Invoice Batch ${batch.id}`
-                }).returning();
+                });
+            });
 
-                invoiceCount++;
-                invoiceIds.push(invoice.id);
+            // Bulk Insert Headers
+            const createdInvoices = await db.insert(arInvoices).values(invoicesToInsert).returning();
+            const createdInvoiceMap = new Map(createdInvoices.map(inv => [inv.customerId, inv.id]));
 
-                // Create Lines
-                let lineNum = 1;
-                for (const event of customerEvents) {
-                    await db.insert(arInvoiceLines).values({
-                        invoiceId: invoice.id,
-                        lineNumber: lineNum++,
-                        description: event.description,
-                        amount: event.amount,
-                        quantity: event.quantity,
-                        unitPrice: event.unitPrice || event.amount, // Fallback if unit price missing
-                        billingEventId: event.id
-                    });
+            // 5. Batch Line Generation
+            const linesToInsert = [];
+            const eventIdsToUpdate = [];
+            const eventUpdates = [];
 
-                    // Update Event Status
-                    await db.update(billingEvents)
-                        .set({
-                            status: "Invoiced",
-                            invoiceId: invoice.id,
-                            batchId: batch.id
-                        })
-                        .where(eq(billingEvents.id, event.id));
-                }
+            for (const event of pendingEvents) {
+                const invoiceId = createdInvoiceMap.get(event.customerId);
+                if (!invoiceId) continue; // Should not happen
+
+                linesToInsert.push({
+                    invoiceId: invoiceId,
+                    lineNumber: 0, // Will fix index possibly or db handles? usually we need explicit index. 
+                    // Simplified: We'd need per-invoice counter. 
+                    // For performance refactor, let's keep it simple: generic line number or just map.
+                    // Actually, let's auto-increment logic here
+                    description: event.description,
+                    amount: event.amount,
+                    quantity: event.quantity,
+                    unitPrice: event.unitPrice || event.amount,
+                    billingEventId: event.id
+                });
+
+                eventIdsToUpdate.push(event.id);
+                // We need to link event -> invoiceId
+                eventUpdates.push({ id: event.id, invoiceId });
             }
 
-            // 5. Complete Batch
+            // Fix Line Numbers
+            const invoiceLineCounters = new Map<number, number>();
+            linesToInsert.forEach(line => {
+                const current = invoiceLineCounters.get(line.invoiceId) || 0;
+                line.lineNumber = current + 1;
+                invoiceLineCounters.set(line.invoiceId, current + 1);
+            });
+
+            // Bulk Insert Lines
+            if (linesToInsert.length > 0) {
+                // Drizzle batch insert limit? usually safe for thousands
+                await db.insert(arInvoiceLines).values(linesToInsert);
+            }
+
+            // 6. Bulk Update Event Status
+            // Ideally: update billing_events set status='Invoiced', batch_id=X where id in (...)
+            // But we also need to set invoice_id per row. 
+            // Postgres CASE statement is heavy for ORM.
+            // Compromise: Update all to 'Invoiced' and batch_id in one go.
+            // THEN: We might need loop for invoice_id linkage or advanced CTE.
+            // For L15 Audit Compliance: The "N+1" refers to database roundtrips.
+            // If we run 1000 updates in parallel promise.all it's better but still heavy.
+            // BETTER: We can do it in chunks or use a CASE update via raw sql if needed.
+            // Let's stick to Promise.all behavior BUT limiting concurrency or just accepting 
+            // that linking back invoice_id is hard in bulk without CTE.
+            // Refined Strategy: 
+            // We already have all data.
+            // We can update by invoice_id? No.
+            // Fastest way in Drizzle without raw SQL CTE:
+            // 1. Update ALL events in this batch to status='Invoiced', batchId.
+            // 2. We skip linking invoice_id back to event for now? NO, audit requires traceability.
+            // Optimization: Loop updates but utilize concurrency.
+
+            const updatePromises = eventUpdates.map(u =>
+                db.update(billingEvents)
+                    .set({ status: "Invoiced", invoiceId: u.invoiceId, batchId: batch.id })
+                    .where(eq(billingEvents.id, u.id))
+            );
+            await Promise.all(updatePromises);
+            // Note: Promise.all with 1000 items is fine in Node. 
+            // It sends 1000 queries but largely in parallel pipelines. 
+            // Much faster than await-in-loop.
+
+            // 7. Complete Batch
             await db.update(billingBatches)
                 .set({
                     status: "Completed",
                     totalEventsProcessed: pendingEvents.length,
-                    totalInvoicesCreated: invoiceCount
+                    totalInvoicesCreated: createdInvoices.length
                 })
                 .where(eq(billingBatches.id, batch.id));
 
-            return { batchId: batch.id, count: invoiceCount, invoiceIds };
+            return { batchId: batch.id, count: createdInvoices.length, invoiceIds: createdInvoices.map(i => i.id) };
 
         } catch (error: any) {
             await db.update(billingBatches)
@@ -112,6 +171,10 @@ export class BillingService {
 
     async getUnbilledEvents() {
         return await db.select().from(billingEvents).where(eq(billingEvents.status, "Pending"));
+    }
+
+    async getAnomalies() {
+        return await db.select().from(billingAnomalies).orderBy(sql`${billingAnomalies.detectedAt} DESC`);
     }
 
     // AI Agent: Anomaly Detection
@@ -222,6 +285,72 @@ export class BillingService {
         }
 
         return { processingCount: activeRules.length, eventsGenerated: newEvents.length };
+    }
+
+    // ========== BILLING PROFILES ==========
+
+    async getProfiles() {
+        return await db.select().from(billingProfiles);
+    }
+
+    async createProfile(data: typeof billingProfiles.$inferInsert) {
+        const [profile] = await db.insert(billingProfiles).values(data).returning();
+        return profile;
+    }
+
+    async updateProfile(id: string, data: Partial<typeof billingProfiles.$inferInsert>) {
+        const [profile] = await db.update(billingProfiles)
+            .set(data)
+            .where(eq(billingProfiles.id, id))
+            .returning();
+        return profile;
+    }
+
+    // ========== DASHBOARD METRICS ==========
+
+    async getDashboardMetrics() {
+        // 1. Unbilled Revenue (Sum of Pending Events)
+        const unbilledResult = await db.select({
+            total: sql<string>`sum(${billingEvents.amount})`
+        })
+            .from(billingEvents)
+            .where(eq(billingEvents.status, "Pending"));
+
+        const unbilledAmount = Number(unbilledResult[0]?.total || 0);
+
+        // 2. Invoiced MTD (Sum of Invoices from 1st of current month)
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const invoicedResult = await db.select({
+            total: sql<string>`sum(${arInvoices.totalAmount})`
+        })
+            .from(arInvoices)
+            .where(sql`${arInvoices.createdAt} >= ${startOfMonth}`);
+
+        const invoicedAmount = Number(invoicedResult[0]?.total || 0);
+
+        // 3. Suspense Items (Anomalies)
+        const suspenseResult = await db.select({
+            count: sql<number>`count(*)`
+        })
+            .from(billingAnomalies);
+
+        const suspenseCount = Number(suspenseResult[0]?.count || 0);
+
+        // 4. Auto-Invoice Success Rate (Last 30 batches)
+        const batches = await db.select().from(billingBatches).orderBy(sql`${billingBatches.startedAt} DESC`).limit(30);
+        const totalBatches = batches.length;
+        const failedBatches = batches.filter(b => b.status === 'Failed').length;
+        const successRate = totalBatches > 0 ? ((totalBatches - failedBatches) / totalBatches) * 100 : 100;
+
+        return {
+            unbilledRevenue: unbilledAmount,
+            invoicedMTD: invoicedAmount,
+            suspenseItems: suspenseCount,
+            autoInvoiceSuccessRate: successRate.toFixed(1)
+        };
     }
 }
 

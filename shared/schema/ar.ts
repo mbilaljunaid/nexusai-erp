@@ -99,6 +99,7 @@ export const arInvoices = pgTable("ar_invoices", {
     taxAmount: numeric("tax_amount", { precision: 18, scale: 2 }).default("0"),
     totalAmount: numeric("total_amount", { precision: 18, scale: 2 }).notNull(),
     currency: varchar("currency").default("USD"),
+    paymentTerms: varchar("payment_terms").default("Net 30"),
     dueDate: timestamp("due_date"),
     status: varchar("status").default("Draft"), // Draft, Sent, PartiallyPaid, Paid, Overdue, Cancelled
     description: text("description"),

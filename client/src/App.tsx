@@ -616,6 +616,9 @@ import ApSettings from "@/components/ap/ApSettings";
 const EnterpriseBillingDashboard = lazy(() => import("@/pages/billing/BillingDashboard"));
 const BillingWorkbench = lazy(() => import("@/pages/billing/BillingWorkbench"));
 const BillingRulesManager = lazy(() => import("@/pages/billing/BillingRulesManager"));
+const BillingProfileManager = lazy(() => import("@/pages/billing/BillingProfileManager"));
+const SubscriptionWorkbench = lazy(() => import("@/pages/billing/SubscriptionWorkbench").then(module => ({ default: module.SubscriptionWorkbench })));
+const BillingAnomalyDashboard = lazy(() => import("@/pages/billing/BillingAnomalyDashboard"));
 const RevenueIntelligence = lazy(() => import("@/pages/revenue/RevenueIntelligence").then(module => ({ default: module.RevenueIntelligence })));
 
 function Router() {
@@ -666,6 +669,9 @@ function Router() {
       <Route path="/finance/billing" component={EnterpriseBillingDashboard} />
       <Route path="/finance/billing/workbench" component={BillingWorkbench} />
       <Route path="/finance/billing/rules" component={BillingRulesManager} />
+      <Route path="/finance/billing/profiles" component={BillingProfileManager} />
+      <Route path="/finance/billing/anomalies" component={BillingAnomalyDashboard} />
+      <Route path="/finance/billing/subscriptions" component={SubscriptionWorkbench} />
       <Route path="/procurement" component={ProcurementManagement} />
       <Route path="/finance/ar/invoices" component={ArInvoiceList} />
       <Route path="/finance/ar/analytics" component={ArAnalytics} />

@@ -1,36 +1,31 @@
-# Implementation Plan - Revenue Intelligence (Phase E)
+# Implementation Plan - Phase I: Billing Remediation
 
-This phase introduces AI-driven insights for the Revenue Management module, enabling finance teams to predict future revenue and identify risky contracts.
+## Goal
+Achieve Tier-1 parity for Billing Master Data and Navigation by exposing the Subscription Workbench and creating a Billing Profile Manager.
 
 ## User Review Required
-> [!NOTE]
-> This phase adds "Read-Only" intelligence features. No changes to core accounting logic or schema are required, making this a safe, high-value addition.
+> [!IMPORTANT]
+> This phase adds new sidebar items and a new configuration screen.
 
 ## Proposed Changes
 
-### Backend Logic
-#### [MODIFY] server/modules/revenue/RevenueService.ts
-- Add `analyzeContractRisk(contractId)` method.
-- Logic:
-    - **High Liability Risk**: Contract Liability > 80% of Total Value (Stalled projects).
-    - **Churn Risk**: No billing events for > 90 days on active contract.
-    - **Revenue Spikes**: Single month recognition > 30% of total contract.
+### Navigation (`client/src/config/navigation.ts`)
+- [MODIFY] Add `SubscriptionWorkbench` to "Billing & Invoicing" section.
+- [MODIFY] Add `BillingProfileManager` to "Billing & Invoicing" section (or Setup).
 
-#### [MODIFY] server/modules/revenue/revenue.controller.ts
-- Expose `GET /api/revenue/intelligence/forecast` (uses `RevenueForecastingService`).
-- Expose `GET /api/revenue/intelligence/risk-analysis` (uses new `analyzeContractRisk`).
+### Frontend Components
+#### [NEW] `client/src/pages/billing/BillingProfileManager.tsx`
+- **Purpose:** Manage customer-specific billing preferences (Payment Terms, Currency, Tax Exemptions).
+- **Features:** Grid view of profiles, Edit Dialog.
+- **Data Source:** `billingProfiles` table (already exists).
+- **Integration:** Link to `arCustomers`.
 
-### Frontend UI
-#### [NEW] client/src/pages/revenue/RevenueIntelligence.tsx
-- **Forecast Chart**: Visualizes 12-month historical vs. 6-month predicted revenue.
-- **Risk Radar**: List of contracts flagged by the Risk Agent.
-- **Key Metrics**: "Predicted Quarter End", "High Risk Contracts".
+### Backend
+- **No backend changes** required for this phase (Schema `billing_enterprise.ts` already has `billingProfiles`).
 
 ## Verification Plan
-
-### Automated Tests
-- Run `scripts/verify_revenue_intelligence.ts`
-    - Seed historical revenue data.
-    - Seed a "Risky Contract" (e.g., active but no billings).
-    - Assert Forecast returns valid regression points.
-    - Assert Risk Analysis flags the risky contract.
+### Manual Verification
+1.  **Sidebar Check:** Verify "Billing Workbench", "Subscription Workbench", and "Billing Profiles" appear in Sidebar.
+2.  **Navigation:** Click links and verify pages load.
+3.  **Profile Creation:** Create a Billing Profile for a customer, set Terms to "Net 60", and Save.
+4.  **Persistence:** Refresh page and verify settings persist.

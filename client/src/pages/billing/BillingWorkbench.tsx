@@ -9,6 +9,14 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { BillingEvent } from "@shared/schema/billing_enterprise";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function BillingWorkbench() {
     const { toast } = useToast();
@@ -20,6 +28,14 @@ export default function BillingWorkbench() {
         queryKey: ["/api/billing/events/pending"],
         queryFn: () => fetch("/api/billing/events/pending").then(r => r.json()),
     });
+
+    // Fetch Customers for Name Resolution
+    const { data: customers = [] } = useQuery({
+        queryKey: ["/api/customers"], // Assuming this exists or using profiles
+        queryFn: () => fetch("/api/billing/profiles").then(r => r.json()) // Fallback to profiles if customers API not direct
+    });
+
+    const customerMap = new Map(customers.map((c: any) => [c.customerId, c.customerName || "Unknown"]));
 
     // Run Auto-Invoice Mutation
     const autoInvoiceMutation = useMutation({
@@ -71,7 +87,13 @@ export default function BillingWorkbench() {
         },
         {
             header: "Customer",
-            accessorKey: "customerId" // In real app, would join with Customer Name
+            accessorKey: "customerId",
+            cell: (e) => (
+                <div className="flex flex-col">
+                    <span className="font-medium">{customerMap.get(e.customerId) || "External Customer"}</span>
+                    <span className="text-xs text-muted-foreground font-mono">{e.customerId.substring(0, 8)}...</span>
+                </div>
+            )
         },
         {
             header: "Description",
@@ -93,6 +115,22 @@ export default function BillingWorkbench() {
 
     return (
         <div className="space-y-6">
+            <Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/finance/billing">Billing</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>Workbench</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Billing Workbench</h1>
@@ -151,9 +189,16 @@ export default function BillingWorkbench() {
                         totalItems={events.length}
                         onPageChange={setPage}
                         keyExtractor={(e) => e.id}
+                        onRowClick={(e) => setSelectedEvent(e)}
                     />
                 </CardContent>
             </Card>
+
+            <BillingEventDetailSheet
+                event={selectedEvent}
+                open={!!selectedEvent}
+                onOpenChange={(open) => !open && setSelectedEvent(null)}
+            />
         </div>
     );
 }
