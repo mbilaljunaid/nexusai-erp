@@ -134,64 +134,142 @@ router.get("/risk-limits", async (req, res) => {
         res.json(limits);
     } catch (error) {
         res.status(500).json({ message: "Failed to list risk limits" });
-        // --- Cash Forecasting & AI Routes ---
+    }
+});
 
-        router.post("/forecast/generate", async (req, res) => {
-            try {
-                const result = await cashForecastService.generateForecast(90); // Default 90 days
-                res.json(result);
-            } catch (error) {
-                console.error("Forecast Generation Error", error);
-                res.status(500).json({ message: "Failed to generate forecast" });
-            }
-        });
+// --- Phase 5: Advanced Parity & Compliance ---
 
-        router.get("/forecast", async (req, res) => {
-            try {
-                const data = await cashForecastService.getForecastData();
-                res.json(data);
-            } catch (error) {
-                res.status(500).json({ message: "Failed to fetch forecast data" });
-            }
-        });
+router.get("/risk-metrics", async (req, res) => {
+    try {
+        const metrics = await treasuryService.calculateRiskMetrics();
+        res.json(metrics);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch risk metrics" });
+    }
+});
 
-        router.get("/anomalies", async (req, res) => {
-            try {
-                const anomalies = await cashForecastService.detectAnomalies();
-                res.json(anomalies);
-            } catch (error) {
-                res.status(500).json({ message: "Failed to detect anomalies" });
-            }
-        });
+router.post("/deals/:id/confirm", async (req, res) => {
+    try {
+        const userId = req.headers["x-user-id"] as string || "SYSTEM_BO"; // Mock BO user if header missing
+        const deal = await treasuryService.confirmDeal(req.params.id, userId);
+        res.json(deal);
+    } catch (error) {
+        if (error instanceof Error && error.message.includes("Violation")) {
+            res.status(403).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Failed to confirm deal" });
+        }
+    }
+});
 
-        // --- In-House Banking & Netting Routes ---
+router.post("/fx-deals/:id/confirm", async (req, res) => {
+    try {
+        const userId = req.headers["x-user-id"] as string || "SYSTEM_BO";
+        const deal = await treasuryService.confirmDeal(req.params.id, userId, true);
+        res.json(deal);
+    } catch (error) {
+        if (error instanceof Error && error.message.includes("Violation")) {
+            res.status(403).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Failed to confirm FX deal" });
+        }
+    }
+});
 
-        router.post("/netting/batches", async (req, res) => {
-            try {
-                const batch = await nettingService.createNettingBatch(new Date()); // Auto-settle today's eligible
-                res.json(batch);
-            } catch (error) {
-                console.error("Netting Create Error", error);
-                res.status(500).json({ message: "Failed to create netting batch" });
-            }
-        });
+router.post("/deals/:id/settle", async (req, res) => {
+    try {
+        const deal = await treasuryService.settleDeal(req.params.id);
+        res.json(deal);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to settle deal" });
+    }
+});
 
-        router.get("/netting/batches/:id/positions", async (req, res) => {
-            try {
-                const positions = await nettingService.getNetPositions(req.params.id);
-                res.json(positions);
-            } catch (error) {
-                res.status(500).json({ message: "Failed to fetch positions" });
-            }
-        });
+router.post("/fx-deals/:id/settle", async (req, res) => {
+    try {
+        const deal = await treasuryService.settleDeal(req.params.id, true);
+        res.json(deal);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to settle FX deal" });
+    }
+});
 
-        router.post("/netting/batches/:id/settle", async (req, res) => {
-            try {
-                const result = await nettingService.settleBatch(req.params.id);
-                res.json(result);
-            } catch (error) {
-                res.status(500).json({ message: "Failed to settle batch" });
-            }
-        });
+router.get("/hedges", async (req, res) => {
+    try {
+        const dealId = req.query.dealId as string;
+        const hedges = await treasuryService.listHedgeRelationships(dealId);
+        res.json(hedges);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list hedge relationships" });
+    }
+});
 
-        export default router;
+router.post("/hedges", async (req, res) => {
+    try {
+        const { dealId, sourceType, sourceId, amount } = req.body;
+        const hedge = await treasuryService.createHedgeRelationship(dealId, sourceType, sourceId, amount);
+        res.status(201).json(hedge);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to create hedge relationship" });
+    }
+});
+
+router.post("/forecast/generate", async (req, res) => {
+    try {
+        const result = await cashForecastService.generateForecast(90); // Default 90 days
+        res.json(result);
+    } catch (error) {
+        console.error("Forecast Generation Error", error);
+        res.status(500).json({ message: "Failed to generate forecast" });
+    }
+});
+
+router.get("/forecast", async (req, res) => {
+    try {
+        const data = await cashForecastService.getForecastData();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch forecast data" });
+    }
+});
+
+router.get("/anomalies", async (req, res) => {
+    try {
+        const anomalies = await cashForecastService.detectAnomalies();
+        res.json(anomalies);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to detect anomalies" });
+    }
+});
+
+// --- In-House Banking & Netting Routes ---
+
+router.post("/netting/batches", async (req, res) => {
+    try {
+        const batch = await nettingService.createNettingBatch(new Date()); // Auto-settle today's eligible
+        res.json(batch);
+    } catch (error) {
+        console.error("Netting Create Error", error);
+        res.status(500).json({ message: "Failed to create netting batch" });
+    }
+});
+
+router.get("/netting/batches/:id/positions", async (req, res) => {
+    try {
+        const positions = await nettingService.getNetPositions(req.params.id);
+        res.json(positions);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch positions" });
+    }
+});
+
+router.post("/netting/batches/:id/settle", async (req, res) => {
+    try {
+        const result = await nettingService.settleBatch(req.params.id);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to settle batch" });
+    }
+});
+
+export default router;

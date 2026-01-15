@@ -14,6 +14,7 @@ export function RiskDashboard() {
     const { data: limits = [] } = useQuery<any[]>({ queryKey: ['/api/treasury/risk-limits'] });
     const { data: fxDeals = [] } = useQuery<any[]>({ queryKey: ['/api/treasury/fx-deals'] });
     const { data: counterparties = [] } = useQuery<any[]>({ queryKey: ['/api/treasury/counterparties'] });
+    const { data: riskMetrics } = useQuery<any>({ queryKey: ['/api/treasury/risk-metrics'] });
 
     // Compute Utilization
     const utilization = limits.map(limit => {
@@ -89,6 +90,39 @@ export function RiskDashboard() {
                             Run Revaluation
                         </Button>
                     </CardHeader>
+                </Card>
+
+                {/* Advanced Intelligence Metrics */}
+                <Card className="bg-blue-600 text-white">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium opacity-80 text-blue-100">Portfolio Duration</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{riskMetrics?.portfolioDuration || "0.0"} Months</div>
+                        <p className="text-xs text-blue-100 opacity-70 mt-1">Weighted Avg Maturity</p>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-slate-900 text-white">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-slate-400">Value at Risk (VaR 95%)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold text-red-400">
+                            ${Number(riskMetrics?.valueAtRisk95 || 0).toLocaleString()}
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">1-Day Potential Loss Proxy</p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Active Hedges</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{riskMetrics?.activeHedges || 0}</div>
+                        <p className="text-xs text-muted-foreground mt-1">Hedged Exposures</p>
+                    </CardContent>
                 </Card>
             </div>
 

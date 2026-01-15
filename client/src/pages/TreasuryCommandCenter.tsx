@@ -7,9 +7,11 @@ import { ReconciliationRuleManager } from "@/components/cash/ReconciliationRuleM
 import { PeriodCloseDashboard } from "@/components/cash/PeriodCloseDashboard";
 import { ZbaManager } from "@/components/cash/ZbaManager";
 import { TreasuryWorkbench } from "@/components/treasury/TreasuryWorkbench";
+import { BackOfficeWorkbench } from "@/components/treasury/BackOfficeWorkbench";
+import { PaymentTransmissionHub } from "@/components/treasury/PaymentTransmissionHub";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Wallet, ArrowRightLeft, ShieldCheck, Settings2, Lock, Landmark, LayoutDashboard, AlertCircle, RefreshCcw } from "lucide-react";
+import { Wallet, ArrowRightLeft, ShieldCheck, Settings2, Lock, Landmark, LayoutDashboard, AlertCircle, RefreshCcw, ShieldAlert, Globe } from "lucide-react";
 
 export default function TreasuryCommandCenter() {
   return (
@@ -45,6 +47,12 @@ export default function TreasuryCommandCenter() {
           </TabsTrigger>
           <TabsTrigger value="treasury" className="gap-2">
             <Landmark className="w-4 h-4" /> Treasury Ops
+          </TabsTrigger>
+          <TabsTrigger value="backoffice" className="gap-2">
+            <ShieldAlert className="w-4 h-4" /> Back Office
+          </TabsTrigger>
+          <TabsTrigger value="payments" className="gap-2">
+            <Globe className="w-4 h-4" /> Payments
           </TabsTrigger>
           <TabsTrigger value="audit" className="gap-2">
             <ShieldCheck className="w-4 h-4" /> Audit Logs
@@ -134,6 +142,14 @@ export default function TreasuryCommandCenter() {
             </h3>
             <ZbaManager />
           </div>
+        </TabsContent>
+
+        <TabsContent value="backoffice">
+          <BackOfficeWorkbench />
+        </TabsContent>
+
+        <TabsContent value="payments">
+          <PaymentTransmissionHub />
         </TabsContent>
 
         <TabsContent value="audit">

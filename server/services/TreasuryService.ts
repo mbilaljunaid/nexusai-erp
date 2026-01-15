@@ -3,10 +3,11 @@ import { db } from "../db";
 import {
   apPayments, apPaymentBatches, apInvoices, apSupplierSites, apSuppliers, apInvoicePayments, cashBankAccounts,
   treasuryCounterparties, treasuryDeals, treasuryInstallments, treasuryFxDeals, treasuryMarketRates, treasuryRiskLimits,
+  treasuryHedgeRelationships, treasuryPaymentMessages,
   type InsertTreasuryCounterparty, type InsertTreasuryDeal, type TreasuryDeal, type TreasuryCounterparty,
   type InsertTreasuryFxDeal, type TreasuryFxDeal, type InsertTreasuryMarketRate, type InsertTreasuryRiskLimit
 } from "@shared/schema";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, desc, sql, not } from "drizzle-orm";
 
 export class TreasuryService {
   /**
@@ -172,11 +173,13 @@ export class TreasuryService {
     return { ...deal, installments };
   }
 
-  async createDeal(data: InsertTreasuryDeal): Promise<TreasuryDeal> {
+  async createDeal(data: InsertTreasuryDeal, traderId?: string): Promise<TreasuryDeal> {
     const [deal] = await db.insert(treasuryDeals)
       .values({
         ...data,
-        status: data.status || 'DRAFT'
+        status: data.status || 'DRAFT',
+        traderId: traderId || data.traderId,
+        confirmationStatus: 'PENDING'
       })
       .returning();
 
@@ -186,6 +189,53 @@ export class TreasuryService {
     }
 
     return deal;
+  }
+
+  async confirmDeal(id: string, userId: string, isFx: boolean = false): Promise<any> {
+    const table = isFx ? treasuryFxDeals : treasuryDeals;
+
+    const [deal] = await db.select()
+      .from(table)
+      // @ts-ignore
+      .where(eq(table.id, id))
+      .limit(1);
+
+    if (!deal) throw new Error("Deal not found");
+
+    // SoD Check: Confirming user cannot be the trader
+    if (deal.traderId === userId) {
+      throw new Error("Segregation of Duties Violation: Trader cannot confirm their own deal.");
+    }
+
+    const [updated] = await db.update(table)
+      .set({
+        // @ts-ignore
+        confirmationStatus: 'CONFIRMED',
+        status: 'CONFIRMED',
+        backOfficeUserId: userId,
+        updatedAt: new Date()
+      })
+      // @ts-ignore
+      .where(eq(table.id, id))
+      .returning();
+
+    return updated;
+  }
+
+  async settleDeal(id: string, isFx: boolean = false): Promise<any> {
+    const table = isFx ? treasuryFxDeals : treasuryDeals;
+    const [updated] = await db.update(table)
+      .set({
+        // @ts-ignore
+        settlementStatus: 'SETTLED',
+        status: 'SETTLED',
+        updatedAt: new Date()
+      })
+      // @ts-ignore
+      .where(eq(table.id, id))
+      .returning();
+
+    return updated;
   }
 
   async updateDealStatus(id: string, status: string): Promise<TreasuryDeal> {
@@ -240,7 +290,7 @@ export class TreasuryService {
 
   // --- FX & Risk Management ---
 
-  async createFxDeal(data: InsertTreasuryFxDeal): Promise<TreasuryFxDeal> {
+  async createFxDeal(data: InsertTreasuryFxDeal, traderId?: string): Promise<TreasuryFxDeal> {
     // 1. Check Risk Limits
     await this.checkLimitBreach(data.counterpartyId, Number(data.buyAmount), data.buyCurrency);
 
@@ -249,6 +299,8 @@ export class TreasuryService {
       .values({
         ...data,
         status: data.status || 'DRAFT',
+        traderId: traderId || data.traderId,
+        confirmationStatus: 'PENDING',
         tradeDate: data.tradeDate ? new Date(data.tradeDate) : new Date()
       })
       .returning();
@@ -336,6 +388,63 @@ export class TreasuryService {
 
   async listRiskLimits(): Promise<TreasuryRiskLimit[]> {
     return await db.select().from(treasuryRiskLimits).where(eq(treasuryRiskLimits.active, true));
+  }
+
+  // --- Phase 5: Hedge Accounting ---
+
+  async createHedgeRelationship(dealId: string, sourceType: string, sourceId: string, amount: number) {
+    const [hedge] = await db.insert(treasuryHedgeRelationships)
+      .values({
+        dealId,
+        sourceType,
+        sourceId,
+        hedgeAmount: amount.toFixed(2),
+        status: 'ACTIVE'
+      })
+      .returning();
+    return hedge;
+  }
+
+  async listHedgeRelationships(dealId?: string) {
+    let query = db.select().from(treasuryHedgeRelationships);
+    if (dealId) {
+      // @ts-ignore
+      query = query.where(eq(treasuryHedgeRelationships.dealId, dealId));
+    }
+    return await query.orderBy(desc(treasuryHedgeRelationships.createdAt));
+  }
+
+  // --- Phase 5: Risk Intelligence ---
+
+  async calculateRiskMetrics() {
+    // Simplified metrics for Tier-1 parity visualization
+    const deals = await db.select().from(treasuryDeals).where(eq(treasuryDeals.status, 'ACTIVE'));
+    const fxDeals = await db.select().from(treasuryFxDeals).where(eq(treasuryFxDeals.status, 'CONFIRMED'));
+
+    // Portfolio Duration (Simplified: Weighted average maturity in months)
+    let totalPrincipal = 0;
+    let weightedMaturity = 0;
+
+    deals.forEach(d => {
+      const p = Number(d.principalAmount);
+      totalPrincipal += p;
+      if (d.termMonths) {
+        weightedMaturity += p * d.termMonths;
+      }
+    });
+
+    const portfolioDuration = totalPrincipal > 0 ? (weightedMaturity / totalPrincipal).toFixed(1) : "0";
+
+    // Value at Risk (VaR) Placeholder - using 5% of total FX exposure as a proxy
+    const totalFxExposure = fxDeals.reduce((sum, d) => sum + Number(d.buyAmount), 0);
+    const var95 = (totalFxExposure * 0.05).toFixed(2);
+
+    return {
+      portfolioDuration, // Months
+      valueAtRisk95: var95,
+      totalCounterparties: (await this.listCounterparties()).length,
+      activeHedges: (await db.select().from(treasuryHedgeRelationships).where(eq(treasuryHedgeRelationships.status, 'ACTIVE'))).length
+    };
   }
 }
 

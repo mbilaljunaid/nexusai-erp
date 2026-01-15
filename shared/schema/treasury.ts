@@ -44,6 +44,10 @@ export const treasuryDeals = pgTable("treasury_deals", {
 
     // Status & Logic
     status: varchar("status", { length: 20 }).default("DRAFT"), // 'DRAFT', 'CONFIRMED', 'ACTIVE', 'MATURED', 'CANCELLED'
+    confirmationStatus: varchar("confirmation_status", { length: 20 }).default("PENDING"), // Phase 5
+    settlementStatus: varchar("settlement_status", { length: 20 }).default("PENDING"), // Phase 5
+    traderId: varchar("trader_id"), // Phase 5
+    backOfficeUserId: varchar("back_office_user_id"), // Phase 5
     valuationMethod: varchar("valuation_method", { length: 20 }).default("AMORTIZED_COST"),
 
     legalEntityId: varchar("legal_entity_id"),
@@ -107,6 +111,10 @@ export const treasuryFxDeals = pgTable("treasury_fx_deals", {
     tradeDate: timestamp("trade_date").default(sql`now()`),
 
     status: varchar("status", { length: 20 }).default("DRAFT"), // 'DRAFT', 'CONFIRMED', 'SETTLED', 'CANCELLED'
+    confirmationStatus: varchar("confirmation_status", { length: 20 }).default("PENDING"), // Phase 5
+    settlementStatus: varchar("settlement_status", { length: 20 }).default("PENDING"), // Phase 5
+    traderId: varchar("trader_id"), // Phase 5
+    backOfficeUserId: varchar("back_office_user_id"), // Phase 5
 
     // Valuation
     markToMarket: numeric("mark_to_market", { precision: 20, scale: 2 }).default("0"),
@@ -225,3 +233,26 @@ export const treasuryNettingLines = pgTable("treasury_netting_lines", {
 
 export const insertTreasuryNettingLineSchema = createInsertSchema(treasuryNettingLines);
 export type TreasuryNettingLine = typeof treasuryNettingLines.$inferSelect;
+
+// Phase 5: Hedge Relationships
+export const treasuryHedgeRelationships = pgTable("treasury_hedge_relationships", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    dealId: varchar("deal_id").notNull(),
+    sourceType: varchar("source_type", { length: 20 }).notNull(), // AP_INVOICE, AR_INVOICE
+    sourceId: varchar("source_id").notNull(),
+    hedgeAmount: numeric("hedge_amount", { precision: 20, scale: 2 }).notNull(),
+    status: varchar("status", { length: 20 }).default("ACTIVE"), // ACTIVE, CLOSED
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// Phase 5: Payment Transmission (ISO 20022/SWIFT)
+export const treasuryPaymentMessages = pgTable("treasury_payment_messages", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    batchId: varchar("batch_id"),
+    messageType: varchar("message_type", { length: 20 }).notNull(), // pain.001, pain.002
+    xmlContent: text("xml_content"),
+    externalReference: varchar("external_reference", { length: 100 }),
+    status: varchar("status", { length: 20 }).default("SENT"), // SENT, ACCEPTED, REJECTED
+    errorDetails: text("error_details"),
+    sentAt: timestamp("sent_at").default(sql`now()`),
+});
