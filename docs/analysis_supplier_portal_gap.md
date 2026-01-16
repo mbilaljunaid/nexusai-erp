@@ -7,8 +7,8 @@
 | **SLM** | Supplier Self-Registration | ✅ 100% | Full multi-step onboarding implemented. | `ExternalSupplierRegistration.tsx`, `SupplierPortalService` |
 | **SLM** | Qualification & Onboarding | ✅ 100% | Integrated document management for certifications. | `SupplierOnboardingWorkbench.tsx`, `Documents.tsx` |
 | **iSupplier** | **External Collaboration Portal** | ✅ 100% | Fixed previous gap: External Login, Dashboard, Orders, ASNs. | `supplierPortalExternal.ts`, `Dashboard.tsx` |
-| **iSupplier** | ASN (Advanced Shipment Notice) | ✅ 100% | Schema, Backend, and Multi-line UI implemented. | `asn_headers`, `ASNs.tsx`, `CreateASNModal.tsx` |
-| **iSupplier** | Self-Service Invoicing (Flip PO) | ✅ 100% | "Create Invoice" from PO flow verified. | `InvoiceService.tsx`, `Orders.tsx` (Action) |
+| **iSupplier** | ASN (Advanced Shipment Notice) | ✅ 100% | Full flow verified. | `asn_headers`, `ASNs.tsx`, `CreateASNModal.tsx` |
+| **iSupplier** | Self-Service Invoicing (Flip PO) | ✅ 100% | Verified via regression test. | `InvoiceService.tsx`, `Orders.tsx` (Action) |
 | **PCM** | Contract Authoring & Repository | ✅ 100% | Master data, clauses, and internal workbench ready. | `procurementContracts`, `ContractWorkbench.tsx` |
 | **PCM** | AI Clause Compliance Analysis | ✅ 100% | GPT-4 comparison of amended vs standard clauses. | `ContractService.analyzeContractCompliance` |
 | **PCM** | Contract Consumption Tracking | ✅ 100% | Spend validation and UI dashboard integration implemented. | `validatePOCompliance`, `ContractWorkbench` (Consumption Tab) |

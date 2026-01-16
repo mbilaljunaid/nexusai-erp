@@ -78,4 +78,17 @@ router.post("/rfqs/:id/award", enforceRBAC("scm_write"), async (req, res) => {
     }
 });
 
+/**
+ * AI: Analyze RFQ Bids
+ */
+router.get("/rfqs/:id/analysis", enforceRBAC("scm_read"), async (req, res) => {
+    try {
+        const { sourcingAIService } = await import("../services/SourcingAIService");
+        const analysis = await sourcingAIService.analyzeRFQ(req.params.id);
+        res.json(analysis);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 export default router;

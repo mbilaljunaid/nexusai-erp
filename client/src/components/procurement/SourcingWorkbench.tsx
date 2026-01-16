@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Gavel, Plus, Search, Calendar, ChevronRight, FileText, CheckCircle2, Trophy, Eye } from "lucide-react";
+import { Gavel, Plus, Search, Calendar, ChevronRight, FileText, CheckCircle2, Trophy, Eye, Brain, AlertTriangle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +39,11 @@ export default function SourcingWorkbench() {
     const { data: bidsComparison } = useQuery({
         queryKey: [`/api/sourcing/rfqs/${selectedRFQ?.id}/compare-bids`],
         enabled: !!selectedRFQ && (selectedRFQ?.status === 'PUBLISHED' || selectedRFQ?.status === 'EVALUATING' || selectedRFQ?.status === 'AWARDED')
+    }) as any;
+
+    const { data: rfqAnalysis } = useQuery({
+        queryKey: [`/api/sourcing/rfqs/${selectedRFQ?.id}/analysis`],
+        enabled: !!selectedRFQ && (selectedRFQ?.status === 'PUBLISHED' || selectedRFQ?.status === 'EVALUATING')
     }) as any;
 
     const createRFQMutation = useMutation({
@@ -252,6 +257,7 @@ export default function SourcingWorkbench() {
                         <TabsList className="bg-muted/50 p-1">
                             <TabsTrigger value="details">RFQ Details</TabsTrigger>
                             <TabsTrigger value="evaluation">Bid Evaluation</TabsTrigger>
+                            <TabsTrigger value="ai-insights" className="gap-2"><Brain className="w-3 h-3" /> AI Insights</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="details" className="mt-4 space-y-6">
@@ -360,9 +366,148 @@ export default function SourcingWorkbench() {
                                 </ScrollArea>
                             )}
                         </TabsContent>
+
+                        <TabsContent value="ai-insights" className="mt-4">
+                            {!rfqAnalysis || rfqAnalysis.totalBids === 0 ? (
+                                <div className="text-center py-20 bg-muted/10 border-2 border-dashed rounded-xl">
+                                    <Brain className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+                                    <h3 className="text-sm font-bold">No data for AI Analysis</h3>
+                                    <p className="text-xs text-muted-foreground mt-1">Wait for suppliers to submit bids.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-4 gap-4">
+                                        <Card className="bg-blue-50/50 border-blue-100">
+                                            <CardContent className="p-4">
+                                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Lowest Bid</p>
+                                                <p className="text-2xl font-bold text-blue-700">${rfqAnalysis.lowestBid.toLocaleString()}</p>
+                                            </CardContent>
+                                        </Card>
+                                        <Card className="bg-indigo-50/50 border-indigo-100">
+                                            <CardContent className="p-4">
+                                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Average Bid</p>
+                                                <p className="text-2xl font-bold text-indigo-700">${rfqAnalysis.averageBid.toLocaleString()}</p>
+                                            </CardContent>
+                                        </Card>
+                                        <Card className="bg-amber-50/50 border-amber-100">
+                                            <CardContent className="p-4">
+                                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Price Variance</p>
+                                                <p className="text-2xl font-bold text-amber-700">
+                                                    {((rfqAnalysis.highestBid - rfqAnalysis.lowestBid) / rfqAnalysis.lowestBid * 100).toFixed(1)}%
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                        <Card className="bg-purple-50/50 border-purple-100">
+                                            <CardContent className="p-4">
+                                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Est. Savings</p>
+                                                <p className="text-2xl font-bold text-purple-700">
+                                                    ${(rfqAnalysis.averageBid - rfqAnalysis.lowestBid).toLocaleString()}
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <Card className="border-red-100 shadow-sm">
+                                            <CardHeader className="pb-2 bg-red-50/30">
+                                                <CardTitle className="text-sm font-bold flex items-center gap-2 text-red-700">
+                                                    <AlertTriangle className="w-4 h-4" /> Risk Analysis
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="p-0">
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead className="text-[10px] h-8">Supplier</TableHead>
+                                                            <TableHead className="text-[10px] h-8">Flags</TableHead>
+                                                            <TableHead className="text-[10px] h-8 text-right">Risk Score</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {rfqAnalysis.riskAnalysis.filter((r: any) => r.riskScore > 0).length === 0 ? (
+                                                            <TableRow>
+                                                                <TableCell colSpan={3} className="text-center text-xs text-muted-foreground py-8">
+                                                                    No significant risks detected by AI.
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ) : (
+                                                            rfqAnalysis.riskAnalysis
+                                                                .filter((r: any) => r.riskScore > 0)
+                                                                .map((risk: any) => (
+                                                                    <TableRow key={risk.bidId}>
+                                                                        <TableCell className="text-xs font-medium">{risk.supplierId}</TableCell>
+                                                                        <TableCell>
+                                                                            <div className="flex gap-1 flex-wrap">
+                                                                                {risk.flags.map((flag: string, i: number) => (
+                                                                                    <Badge key={i} variant="destructive" className="text-[9px] px-1 py-0 h-4">{flag}</Badge>
+                                                                                ))}
+                                                                            </div>
+                                                                        </TableCell>
+                                                                        <TableCell className="text-xs font-bold text-right text-red-600">{risk.riskScore}/100</TableCell>
+                                                                    </TableRow>
+                                                                ))
+                                                        )}
+                                                    </TableBody>
+                                                </Table>
+                                            </CardContent>
+                                        </Card>
+
+                                        <Card className="border-green-100 shadow-sm">
+                                            <CardHeader className="pb-2 bg-green-50/30">
+                                                <CardTitle className="text-sm font-bold flex items-center gap-2 text-green-700">
+                                                    <CheckCircle2 className="w-4 h-4" /> AI Recommendation
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="p-4 space-y-4">
+                                                {(() => {
+                                                    // Simple recommendation logic: Lowest price with Risk Score < 20
+                                                    const bestBid = bidsComparison
+                                                        ?.filter((b: any) => {
+                                                            const analysis = rfqAnalysis.riskAnalysis.find((r: any) => r.bidId === b.id);
+                                                            return !analysis || analysis.riskScore < 20;
+                                                        })
+                                                        .sort((a: any, b: any) => a.totalBidAmount - b.totalBidAmount)[0];
+
+                                                    if (!bestBid) return <p className="text-sm text-muted-foreground">AI could not find a low-risk recommendation.</p>;
+
+                                                    return (
+                                                        <>
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="bg-green-100 p-2 rounded-full">
+                                                                    <Trophy className="w-5 h-5 text-green-700" />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground uppercase font-bold">Top Candidate</p>
+                                                                    <p className="text-lg font-bold">{bestBid.supplierId}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="bg-muted/30 p-3 rounded text-xs space-y-1">
+                                                                <div className="flex justify-between">
+                                                                    <span className="text-muted-foreground">Total Bid:</span>
+                                                                    <span className="font-bold">${bestBid.totalBidAmount.toLocaleString()}</span>
+                                                                </div>
+                                                                <div className="flex justify-between">
+                                                                    <span className="text-muted-foreground">Savings vs Avg:</span>
+                                                                    <span className="font-bold text-green-600">
+                                                                        ${(rfqAnalysis.averageBid - bestBid.totalBidAmount).toLocaleString()}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <Button size="sm" className="w-full bg-green-600 hover:bg-green-700 text-white" onClick={() => awardRFQMutation.mutate(bestBid.id)}>
+                                                                Award to {bestBid.supplierId}
+                                                            </Button>
+                                                        </>
+                                                    );
+                                                })()}
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                </div>
+                            )}
+                        </TabsContent>
                     </Tabs>
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     );
 }

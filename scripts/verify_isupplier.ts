@@ -5,7 +5,7 @@ import { suppliers, supplierUserIdentities, purchaseOrders, asnHeaders, asnLines
 import { apInvoices, apInvoiceLines } from "../shared/schema/ap";
 import { eq } from "drizzle-orm";
 
-const BASE_URL = `http://localhost:${process.env.PORT || 5001}`;
+const BASE_URL = `http://localhost:${process.env.PORT || 5000}`;
 
 async function main() {
     console.log("🔍 Verifying iSupplier Portal Flow...");
