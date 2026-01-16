@@ -54,6 +54,16 @@ constructionRouter.post("/contracts/:id/lines", async (req, res) => {
     }
 });
 
+// Bulk Import SOV Lines
+constructionRouter.post("/contracts/:id/bulk-import", async (req, res) => {
+    try {
+        const result = await constructionService.bulkImportLines(req.params.id, req.body.lines);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // -- Variations --
 
 // Create Variation
@@ -137,6 +147,156 @@ constructionRouter.post("/pay-apps/:id/calculate", async (req, res) => {
     } catch (error: any) {
         console.error(error);
         res.status(500).json({ error: "Failed to recalculate pay app" });
+    }
+});
+
+// -- Certification Workflow (L11) --
+
+constructionRouter.post("/pay-apps/:id/submit", async (req, res) => {
+    try {
+        const app = await constructionService.submitPayApp(req.params.id);
+        res.json(app);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/pay-apps/:id/approve-architect", async (req, res) => {
+    try {
+        const app = await constructionService.approveByArchitect(req.params.id, req.body.user || "Architect-User");
+        res.json(app);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/pay-apps/:id/approve-engineer", async (req, res) => {
+    try {
+        const app = await constructionService.approveByEngineer(req.params.id, req.body.user || "Engineer-User");
+        res.json(app);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/pay-apps/:id/certify", async (req, res) => {
+    try {
+        const app = await constructionService.certifyPayApp(req.params.id, req.body.user || "GC-User");
+        res.json(app);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// -- Setup & Config --
+
+constructionRouter.get("/setup", async (req, res) => {
+    try {
+        const setup = await constructionService.getSetup();
+        res.json(setup);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// -- Phase 6: Field Operations --
+
+// Daily Logs
+constructionRouter.post("/projects/:projectId/daily-logs", async (req, res) => {
+    try {
+        const log = await constructionService.createDailyLog({
+            ...req.body,
+            projectId: req.params.projectId,
+            logDate: new Date(req.body.logDate)
+        });
+        res.status(201).json(log);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.get("/projects/:projectId/daily-logs", async (req, res) => {
+    try {
+        const logs = await constructionService.getDailyLogs(req.params.projectId);
+        res.json(logs);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// RFIs
+constructionRouter.post("/projects/:projectId/rfis", async (req, res) => {
+    try {
+        const rfi = await constructionService.createRFI({
+            ...req.body,
+            projectId: req.params.projectId
+        });
+        res.status(201).json(rfi);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.get("/projects/:projectId/rfis", async (req, res) => {
+    try {
+        const rfis = await constructionService.getRFIs(req.params.projectId);
+        res.json(rfis);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Submittals
+constructionRouter.post("/projects/:projectId/submittals", async (req, res) => {
+    try {
+        const sub = await constructionService.createSubmittal({
+            ...req.body,
+            projectId: req.params.projectId
+        });
+        res.status(201).json(sub);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.get("/projects/:projectId/submittals", async (req, res) => {
+    try {
+        const subs = await constructionService.getSubmittals(req.params.projectId);
+        res.json(subs);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Compliance
+constructionRouter.post("/contracts/:id/compliance", async (req, res) => {
+    try {
+        const resu = await constructionService.createComplianceRecord({
+            ...req.body,
+            contractId: req.params.id
+        });
+        res.status(201).json(resu);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.get("/contracts/:id/compliance", async (req, res) => {
+    try {
+        const records = await constructionService.getComplianceRecords(req.params.id);
+        res.json(records);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/setup", async (req, res) => {
+    try {
+        const { configKey, configValue, category, description } = req.body;
+        const entry = await constructionService.updateSetup(configKey, configValue, category, description);
+        res.json(entry);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
     }
 });
 

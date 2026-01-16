@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Hammer, FileText, DollarSign, Refreshcw } from "lucide-react";
+import { Plus, Hammer, FileText, DollarSign, RefreshCw } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VariationManager from "@/components/construction/VariationManager";
 
@@ -155,6 +155,36 @@ export default function ConstructionContractWorkbench() {
             description: formData.get("description"),
             scheduledValue: formData.get("scheduledValue"),
         });
+    };
+
+    const [isBulkOpen, setIsBulkOpen] = useState(false);
+    const bulkImportMutation = useMutation({
+        mutationFn: async (lines: any[]) => {
+            const res = await fetch(`/api/construction/contracts/${selectedContractId}/bulk-import`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ lines })
+            });
+            if (!res.ok) throw new Error("Bulk import failed");
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["construction-contract-detail"] });
+            setIsBulkOpen(false);
+            toast({ title: "Import Successful", description: "Schedule of values updated with bulk lines." });
+        }
+    });
+
+    const handleBulkImport = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const csv = formData.get("csvData") as string;
+        // Simple Parser: LineNumber, Description, Value
+        const lines = csv.split("\n").filter(row => row.trim()).map(row => {
+            const [num, desc, val] = row.split(",").map(s => s.trim());
+            return { lineNumber: parseInt(num), description: desc, scheduledValue: val };
+        });
+        bulkImportMutation.mutate(lines);
     };
 
     return (
@@ -297,42 +327,70 @@ export default function ConstructionContractWorkbench() {
                                         <div className="p-4 flex justify-between items-center bg-muted/20 border-b">
                                             <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Schedule of Values (SOV)</h3>
 
-                                            <Dialog open={isAddLineOpen} onOpenChange={setIsAddLineOpen}>
-                                                <DialogTrigger asChild>
-                                                    <Button size="sm" variant="outline" className="h-8">
-                                                        <Plus className="h-3.5 w-3.5 mr-1" /> Add Line
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>Add SOV Line Item</DialogTitle>
-                                                    </DialogHeader>
-                                                    <form onSubmit={handleAddLine} className="space-y-4">
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <div className="space-y-2">
-                                                                <Label>Line #</Label>
-                                                                <Input
-                                                                    name="lineNumber"
-                                                                    type="number"
-                                                                    defaultValue={(activeContract.lines?.length || 0) + 1}
-                                                                    required
-                                                                />
+                                            <div className="flex gap-2">
+                                                <Dialog open={isBulkOpen} onOpenChange={setIsBulkOpen}>
+                                                    <DialogTrigger asChild>
+                                                        <Button size="sm" variant="secondary" className="h-8">
+                                                            <RefreshCw className="h-3.5 w-3.5 mr-1" /> Bulk Import
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogHeader>
+                                                            <DialogTitle>Bulk Import SOV (CSV)</DialogTitle>
+                                                            <CardDescription>Format: LineNumber, Description, Value (One per line)</CardDescription>
+                                                        </DialogHeader>
+                                                        <form onSubmit={handleBulkImport} className="space-y-4">
+                                                            <Textarea
+                                                                name="csvData"
+                                                                placeholder="1, Excavation, 50000&#10;2, Foundation, 75000"
+                                                                className="min-h-[200px] font-mono text-xs"
+                                                            />
+                                                            <DialogFooter>
+                                                                <Button type="submit" disabled={bulkImportMutation.isPending}>
+                                                                    {bulkImportMutation.isPending ? "Importing..." : "Process Import"}
+                                                                </Button>
+                                                            </DialogFooter>
+                                                        </form>
+                                                    </DialogContent>
+                                                </Dialog>
+
+                                                <Dialog open={isAddLineOpen} onOpenChange={setIsAddLineOpen}>
+                                                    <DialogTrigger asChild>
+                                                        <Button size="sm" variant="outline" className="h-8">
+                                                            <Plus className="h-3.5 w-3.5 mr-1" /> Add Line
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogHeader>
+                                                            <DialogTitle>Add SOV Line Item</DialogTitle>
+                                                        </DialogHeader>
+                                                        <form onSubmit={handleAddLine} className="space-y-4">
+                                                            <div className="grid grid-cols-2 gap-4">
+                                                                <div className="space-y-2">
+                                                                    <Label>Line #</Label>
+                                                                    <Input
+                                                                        name="lineNumber"
+                                                                        type="number"
+                                                                        defaultValue={(activeContract.lines?.length || 0) + 1}
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <Label>Scheduled Value ($)</Label>
+                                                                    <Input name="scheduledValue" type="number" step="0.01" required />
+                                                                </div>
                                                             </div>
                                                             <div className="space-y-2">
-                                                                <Label>Scheduled Value ($)</Label>
-                                                                <Input name="scheduledValue" type="number" step="0.01" required />
+                                                                <Label>Description of Work</Label>
+                                                                <Textarea name="description" placeholder="e.g. Concrete Foundations Phase 1" required />
                                                             </div>
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <Label>Description of Work</Label>
-                                                            <Textarea name="description" placeholder="e.g. Concrete Foundations Phase 1" required />
-                                                        </div>
-                                                        <DialogFooter>
-                                                            <Button type="submit" disabled={addLineMutation.isPending}>Add Item</Button>
-                                                        </DialogFooter>
-                                                    </form>
-                                                </DialogContent>
-                                            </Dialog>
+                                                            <DialogFooter>
+                                                                <Button type="submit" disabled={addLineMutation.isPending}>Add Item</Button>
+                                                            </DialogFooter>
+                                                        </form>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
                                         </div>
 
                                         <Table>

@@ -631,6 +631,8 @@ const RevenueAuditConsole = lazy(() => import("@/pages/RevenueAuditConsole"));
 const ConstructionContractWorkbench = lazy(() => import("@/components/construction/ConstructionContractWorkbench"));
 const ConstructionBillingWorkbench = lazy(() => import("@/components/construction/ConstructionBillingWorkbench"));
 const ConstructionExecutiveDashboard = lazy(() => import("@/components/construction/ConstructionExecutiveDashboard"));
+const ConstructionSetup = lazy(() => import("@/components/construction/ConstructionSetup"));
+const ConstructionSiteManagement = lazy(() => import("@/components/construction/ConstructionSiteManagement"));
 
 // Automotive Pack
 const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
@@ -776,6 +778,8 @@ function Router() {
       <Route path="/construction/contracts" component={ConstructionContractWorkbench} />
       <Route path="/construction/billing" component={ConstructionBillingWorkbench} />
       <Route path="/construction/insights" component={ConstructionExecutiveDashboard} />
+      <Route path="/construction/setup" component={ConstructionSetup} />
+      <Route path="/construction/site-management" component={ConstructionSiteManagement} />
       <Route path="/marketing-module" component={MarketingModule} />
       <Route path="/manufacturing-module" component={ManufacturingModule} />
       <Route path="/manufacturing/dashboard" component={ManufacturingDashboard} />

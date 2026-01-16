@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, DollarSign, Calculator, Lock, Calendar } from "lucide-react";
+import { Plus, DollarSign, Calculator, Lock, Calendar, ShieldCheck } from "lucide-react";
 import { format } from "date-fns";
 
 interface PayApp {
@@ -29,6 +29,10 @@ interface PayApp {
     retentionAmount: string;
     currentPaymentDue: string;
     status: string;
+    isLocked: boolean;
+    architectApprovedBy?: string;
+    engineerApprovedBy?: string;
+    certifiedBy?: string;
 }
 
 interface PayAppLine {
@@ -133,12 +137,29 @@ export default function ConstructionBillingWorkbench() {
     };
 
     const handleLineUpdate = (lineId: string, field: string, value: string) => {
-        // Debounce could be added here
+        if (activeApp?.isLocked) return;
         updateLineMutation.mutate({
             id: lineId,
             data: { [field]: value }
         });
     };
+
+    const certMutation = useMutation({
+        mutationFn: async ({ action }: { action: string }) => {
+            const res = await fetch(`/api/construction/pay-apps/${selectedPayAppId}/${action}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user: "Manager-User" }) // In a real app, this would be from auth context
+            });
+            if (!res.ok) throw new Error("Certification action failed");
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["construction-pay-apps"] });
+            queryClient.invalidateQueries({ queryKey: ["construction-pay-app-detail", selectedPayAppId] });
+            toast({ title: "Status Updated", description: "The application status has been progressed." });
+        }
+    });
 
     return (
         <div className="p-6 space-y-6">
@@ -255,17 +276,57 @@ export default function ConstructionBillingWorkbench() {
                                         <div className="text-2xl font-bold text-green-600">${Number(activeApp.currentPaymentDue).toLocaleString()}</div>
                                     </CardContent>
                                 </Card>
-                                <Card className="flex items-center justify-center">
-                                    <Button variant="outline" className="gap-2">
-                                        <Lock className="h-4 w-4" /> Certify & Lock
-                                    </Button>
+                                <Card className="flex flex-col items-center justify-center p-4 gap-2">
+                                    <div className="flex gap-2 w-full">
+                                        {activeApp.status === "DRAFT" && (
+                                            <Button
+                                                className="flex-1"
+                                                onClick={() => certMutation.mutate({ action: "submit" })}
+                                            >
+                                                Submit for Review
+                                            </Button>
+                                        )}
+                                        {activeApp.status === "SUBMITTED" && (
+                                            <Button
+                                                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                                                onClick={() => certMutation.mutate({ action: "approve-architect" })}
+                                            >
+                                                Architect Approve
+                                            </Button>
+                                        )}
+                                        {activeApp.status === "ARCHITECT_APPROVED" && (
+                                            <Button
+                                                className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+                                                onClick={() => certMutation.mutate({ action: "approve-engineer" })}
+                                            >
+                                                Engineer Approve
+                                            </Button>
+                                        )}
+                                        {activeApp.status === "ENGINEER_APPROVED" && (
+                                            <Button
+                                                className="flex-1 bg-green-600 hover:bg-green-700 gap-2"
+                                                onClick={() => certMutation.mutate({ action: "certify" })}
+                                            >
+                                                <Lock className="h-4 w-4" /> Certify & Lock
+                                            </Button>
+                                        )}
+                                        {activeApp.isLocked && (
+                                            <Badge variant="secondary" className="w-full text-center py-2 gap-2 justify-center">
+                                                <ShieldCheck className="h-4 w-4" /> Locked for Audit
+                                            </Badge>
+                                        )}
+                                    </div>
+                                    {activeApp.status === "CERTIFIED" && !activeApp.isLocked && (
+                                        <p className="text-[10px] text-muted-foreground italic">Pending final lock sequence</p>
+                                    )}
                                 </Card>
                             </div>
 
                             {/* G703 Detail Grid */}
                             <Card className="flex-1">
-                                <CardHeader className="py-3 border-b">
+                                <CardHeader className="py-3 border-b flex flex-row justify-between items-center">
                                     <CardTitle className="text-base">Detail Sheet (G703)</CardTitle>
+                                    {activeApp.isLocked && <Badge variant="destructive">Read-Only</Badge>}
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     <Table>
@@ -289,6 +350,7 @@ export default function ConstructionBillingWorkbench() {
                                                         <Input
                                                             className="text-right font-mono h-8 w-32 ml-auto"
                                                             defaultValue={line.totalCompletedToDate}
+                                                            disabled={activeApp.isLocked}
                                                             onBlur={(e) => handleLineUpdate(line.id, "totalCompletedToDate", e.target.value)}
                                                         />
                                                     </TableCell>

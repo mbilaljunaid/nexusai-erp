@@ -73,7 +73,9 @@ export const navigationConfig: SidebarNode[] = [
                 children: [
                     { id: "const-contracts", title: "Contracts", type: "link", path: "/construction/contracts" },
                     { id: "const-billing", title: "Billing (Pay Apps)", type: "link", path: "/construction/billing" },
+                    { id: "const-site", title: "Site Management", type: "link", path: "/construction/site-management" },
                     { id: "const-insights", title: "AI Insights", type: "link", path: "/construction/insights", icon: Sparkles },
+                    { id: "const-setup", title: "Setup (Rules)", type: "link", path: "/construction/setup" },
                 ]
             },
         ],

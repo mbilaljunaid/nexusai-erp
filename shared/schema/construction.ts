@@ -5,6 +5,20 @@ import { z } from "zod";
 
 // ========== CONSTRUCTION MANAGEMENT MODULE ==========
 
+// 0. Configuration & Setup
+export const constructionSetup = pgTable("construction_setup", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    configKey: varchar("config_key").notNull().unique(), // e.g. 'DEFAULT_RETENTION'
+    configValue: text("config_value").notNull(),
+    category: varchar("category").default("GENERAL"), // GENERAL, BILLING, VARIATIONS
+    description: text("description"),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertConstructionSetupSchema = createInsertSchema(constructionSetup);
+export type InsertConstructionSetup = z.infer<typeof insertConstructionSetupSchema>;
+export type ConstructionSetup = typeof constructionSetup.$inferSelect;
+
 // 1. Construction Contracts (Prime & Subcontracts)
 export const constructionContracts = pgTable("construction_contracts", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -74,7 +88,8 @@ export const constructionPayApps = pgTable("construction_pay_apps", {
     applicationNumber: integer("application_number").notNull(),
     periodStart: timestamp("period_start").notNull(),
     periodEnd: timestamp("period_end").notNull(),
-    status: varchar("status").default("DRAFT"), // DRAFT, CERTIFIED, PAID
+    status: varchar("status").default("DRAFT"), // DRAFT, SUBMITTED, ARCHITECT_APPROVED, ENGINEER_APPROVED, CERTIFIED, PAID
+    isLocked: boolean("is_locked").default(false), // Locked for audit once certified
 
     // Financials
     totalCompleted: numeric("total_completed", { precision: 18, scale: 2 }).default("0.00"), // Work in Place + Stored Materials
@@ -82,7 +97,11 @@ export const constructionPayApps = pgTable("construction_pay_apps", {
     previousPayments: numeric("previous_payments", { precision: 18, scale: 2 }).default("0.00"),
     currentPaymentDue: numeric("current_payment_due", { precision: 18, scale: 2 }).default("0.00"),
 
-    certifiedBy: varchar("certified_by"), // Architect/Engineer
+    architectApprovedBy: varchar("architect_approved_by"),
+    architectApprovedDate: timestamp("architect_approved_date"),
+    engineerApprovedBy: varchar("engineer_approved_by"),
+    engineerApprovedDate: timestamp("engineer_approved_date"),
+    certifiedBy: varchar("certified_by"), // GC / Final Certification
     certifiedDate: timestamp("certified_date"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });

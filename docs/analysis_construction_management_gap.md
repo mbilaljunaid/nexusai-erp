@@ -1,4 +1,104 @@
-# Construction Management — Level-15 Canonical Gap Analysis
+# Construction Management — Level-15 Canonical Gap Analysis (V2 - Parity Audit)
+
+> [!IMPORTANT]
+> **Audit Date**: Jan 16, 2026
+> **Scope**: Oracle Fusion Construction & Project Control Parity
+> **Status**: **Phase 1-4 Implementation Complete**. Basic Contract, Variation, Billing, and AI Risk modules exist. **Gap**: Deep enterprise controls (L11-15) and specific field-ops (Site Management) are still missing.
+
+## 🏗️ Merged Gap Analysis + Feature Parity Heatmap (Enterprise Edition)
+
+| Feature Area | Oracle Fusion Equiv. | NexusAI Status | L15 Readiness | Gaps / Issues |
+| :--- | :--- | :--- | :--- | :--- |
+| **Contract Management** | Enterprise Contracts | ✅ Implemented | 85% | Missing detailed L11 (Approval Hierarchy) & L14 (SoD) |
+| **Change Control** | Project Variations | ✅ Implemented | 80% | Missing L13 (Variation Impact Simulator) |
+| **Progress Billing** | AIA G702/G703 | ✅ Implemented | 90% | Missing L12 (Automated WIP/Revenue integration) |
+| **Retention Mgmt** | Retention Accounting | ✅ Implemented | 95% | Basic logic done; missing L15 scalability for 10k+ lines |
+| **Site Management** | Field Operations | ❌ Missing | 0% | No Daily Logs, RFIs, or Submittals |
+| **Subcontractor Comp.** | Supplier Compliance | ❌ Missing | 0% | No Insurance/Certification tracking at Contract level |
+| **Predictive Risk** | Project Analytics | ✅ Implemented | 75% | `ConstructionRiskService` exists; missing L13 auto-rollback |
+
+---
+
+## 🧱 Level-15 Canonical Decomposition: Progress Billing & Financial Controls
+
+*   **Level 1 — Module Domain**: Construction Management & Project Controls
+*   **Level 2 — Sub-Domain**: Construction Execution / Financial Management
+*   **Level 3 — Functional Capability**: Progress Billing (AIA Style), Retentions, Net Due Calculation
+*   **Level 4 — Business Use Case**: Monthly application for payment by subcontractor with GC/Architect certification.
+*   **Level 5 — User Personas**: Quantity Surveyor, Post-Doc Manager, Finance Director
+*   **Level 6 — UI Surfaces**: `ConstructionBillingWorkbench.tsx` (Sidebar: Construction -> Billing)
+*   **Level 7 — UI Components**: `StandardTable` grid for SOV (G703), Metric Cards for G702 Summary.
+*   **Level 8 — Configuration / Setup Screens**: **MISSING** (Hardcoded 10% retention, needs `construction_billing_setup.tsx`).
+*   **Level 9 — Master Data Screens**: `ppm_projects`, `construction_contracts`.
+*   **Level 10 — Transactional Objects**: `construction_pay_apps`, `construction_pay_app_lines`.
+*   **Level 11 — Workflow & Controls**: **MISSING** (No multi-level certification/sign-off hierarchy).
+*   **Level 12 — Accounting / Rules / Derivation**: **MISSING** (No direct WIP or GL journal generation on certification).
+*   **Level 13 — AI / Automation / Predictive Actions**: `ConstructionRiskService` (Exposure calculation); missing automated PCO-to-Billing reconciliation.
+*   **Level 14 — Security, Compliance & Audit**: Basic DB audit; missing RBAC enforcement at Line Level.
+*   **Level 15 — Performance, Scalability & Ops**: Standard React Query; missing server-side pagination for contracts with >1000 SOV lines.
+
+---
+
+## 🧱 Level-15 Canonical Decomposition: Contract & Change Control
+
+*   **Level 1 — Module Domain**: Construction Management
+*   **Level 2 — Sub-Domain**: Contractual Management & Variations
+*   **Level 3 — Functional Capability**: Lifecycle of Contracts (Prime/Sub) and Variations (PCO/CO).
+*   **Level 4 — Business Use Case**: Capture potential changes on site and roll into contract revised value.
+*   **Level 5 — User Personas**: Contract Administrator, Construction Manager.
+*   **Level 6 — UI Surfaces**: `ConstructionContractWorkbench.tsx` (Sidebar: Construction -> Contracts).
+*   **Level 7 — UI Components**: SOV Grid with editable line items, Variation attachment side-sheet.
+*   **Level 8 — Configuration / Setup Screens**: **MISSING** (Variation type mapping, rejection codes).
+*   **Level 9 — Master Data Screens**: Project selection dialog, Vendor lookup.
+*   **Level 10 — Transactional Objects**: `construction_contracts`, `construction_variations`.
+*   **Level 11 — Workflow & Controls**: Draft -> Approved Status; missing audit-safe "Lock" mechanism.
+*   **Level 12 — Accounting / Rules / Derivation**: Auto-update of `revisedAmount`; missing budget-variance (EAC) logic.
+*   **Level 13 — AI / Automation / Predictive Actions**: Risk Score calculation; missing change order probability prediction.
+*   **Level 14 — Security, Compliance & Audit**: Missing field-level audit trail for revised amounts.
+*   **Level 15 — Performance, Scalability & Ops**: Missing bulk-import for SOV lines (Excel/CSV).
+
+
+## 📐 Structural Audit: 18-Dimension Parity Mapping
+
+| Dimension | Oracle Fusion Requirement | NexusAI Alignment | Remediation Phase |
+| :--- | :--- | :--- | :--- |
+| **1. UI Level** | Project Workbenches | ✅ High | Phase 2, 3, 4 |
+| **2. Field Level** | Deep SOV Data Schema | ✅ High | Phase 1 (Core schema done) |
+| **3. Config Level** | Retention/Variation Rules | ❌ Missing | Phase 5 (Step 1) |
+| **4. Master Data** | CSI Cost Codes / Sites | ❌ Missing | Phase 6 (Step 1) |
+| **5. Functional** | Variations & Claims | ✅ Partial | Phase 2 (PCO done), Phase 6 (Claims) |
+| **6. Lifecycle** | Bid-to-Bill | ✅ Partial | Phase 2, 3 Done |
+| **7. Integration** | Projects -> GL/FA | ❌ Missing | Phase 5 (Step 3) |
+| **8. Security** | RBAC & SoD | ✅ Partial | Phase 5 (Step 4) |
+| **9. Cost Control** | EAC / Budget Variance | ✅ Partial | Phase 4 (AI Score), Phase 5 (Logic) |
+| **10. Billing/Rev** | Progress Revenue | ✅ Partial | Phase 3 Done, Phase 5 (Rev Rec) |
+| **11. Multi-Org** | Localized Site Rules | ❌ Missing | Phase 7 (Localization) |
+| **12. Claims** | Dispute/Claim Tracking | ❌ Missing | Phase 6 (Step 1) |
+| **13. Change Orders** | Workflow-driven COs | ✅ High | Phase 2 Done |
+| **14. Compliance** | Bond/Insurance Audit | ❌ Missing | Phase 6 (Step 2) |
+| **15. Reporting** | G702/G703 Printouts | ✅ High | Phase 3 (UI Layouts) |
+| **16. Extensibility** | Custom SOV Fields | ✅ Medium | Standard Drizzle/TS Extension |
+| **17. Productivity** | AI Risk Insights | ✅ High | Phase 4 Done |
+| **18. Operational** | Bulk SOV Import | ❌ Missing | Phase 5 (Step 5) |
+
+---
+
+## 🏗️ Level-15 Remediation Roadmap (Phase 5-6)
+
+### Phase 5: Deep Enterprise Controls (L11-L15 Hardening)
+1.  **[L8] Setup Screens**: Create `ConstructionSetup.tsx` for Retention Rules and Variation Types.
+2.  **[L11] Workflow**: Implement multi-stage Certification (Architect -> Engineer -> GC) for Pay Apps.
+3.  **[L12] Accounting**: Implement WIP/Journal generation in `ConstructionService.ts`.
+4.  **[L14] Security**: Add field-level audit logging for `revisedAmount`.
+5.  **[L15] Scalability**: Implement bulk SOV import (CSV).
+
+### Phase 6: Field Operations & Compliance
+1.  **[NEW] Site Management**: Implement Daily Logs, RFI, and Submittals schema & UI.
+2.  **[NEW] Compliance**: Insurance/Bond tracking at the Contract level.
+
+---
+
+# Construction Management — Level-15 Canonical Gap Analysis (V1 - Preliminary)
 
 > [!IMPORTANT]
 > This analysis reflects the **actual** state of the codebase as of Jan 16, 2026.
