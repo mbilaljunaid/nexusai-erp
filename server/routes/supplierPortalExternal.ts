@@ -7,7 +7,26 @@ import { scorecardService } from "../services/ScorecardService";
 import { apInvoices, apInvoiceLines } from "../../shared/schema/ap";
 import { eq, desc, and } from "drizzle-orm";
 
+import multer from "multer";
+import path from "path";
+import { documentService } from "../services/DocumentService";
+import { sourcingService } from "../services/SourcingService";
+import { supplierDocuments as supplierDocsSchema, sourcingRfqs } from "../../shared/schema/scm";
+
 const router = Router();
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = documentService.ensureUploadDir();
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 // Middleware: Require Portal Token
 const requireSupplierAuth = async (req: any, res: any, next: any) => {
@@ -31,10 +50,14 @@ const requireSupplierAuth = async (req: any, res: any, next: any) => {
     }
 };
 
+import { rateLimiter } from "../middleware/rateLimit";
+
+
 /**
  * PUBLIC: Login with Email & Token
+ * Rate limited: 10 attempts per minute
  */
-router.post("/login", async (req, res) => {
+router.post("/login", rateLimiter(60 * 1000, 10), async (req, res) => {
     const { email, token } = req.body;
 
     // In a real app, we would verify email/password first, then check token.
@@ -62,6 +85,42 @@ router.get("/me", requireSupplierAuth, async (req: any, res) => {
     try {
         const [supplier] = await db.select().from(suppliers).where(eq(suppliers.id, req.supplierId));
         res.json(supplier);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+/**
+ * PROTECTED: List Supplier Documents
+ */
+router.get("/documents", requireSupplierAuth, async (req: any, res) => {
+    try {
+        const docs = await documentService.getSupplierDocuments(req.supplierId);
+        res.json(docs);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+/**
+ * PROTECTED: Upload Supplier Document
+ */
+router.post("/documents", requireSupplierAuth, upload.single("file"), async (req: any, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+        const { documentType, expiryDate } = req.body;
+
+        const doc = await documentService.uploadSupplierDocument({
+            supplierId: req.supplierId,
+            documentType: documentType || 'OTHER',
+            fileName: req.file.originalname,
+            filePath: req.file.path,
+            expiryDate: expiryDate ? new Date(expiryDate) : null,
+            status: 'ACTIVE'
+        });
+
+        res.json({ message: "Document uploaded successfully", doc });
     } catch (e: any) {
         res.status(500).json({ error: e.message });
     }
@@ -267,6 +326,55 @@ router.post("/orders/:id/invoice", requireSupplierAuth, async (req: any, res) =>
         }
 
         res.json({ message: "Invoice Created", invoiceId: invoice.id });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+/**
+ * PROTECTED: List Open RFQs for this Supplier
+ */
+router.get("/rfqs", requireSupplierAuth, async (req: any, res) => {
+    try {
+        const rfqs = await db.select()
+            .from(sourcingRfqs)
+            .where(eq(sourcingRfqs.status, 'PUBLISHED'))
+            .orderBy(desc(sourcingRfqs.createdAt));
+
+        res.json(rfqs);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+/**
+ * PROTECTED: Get RFQ details for bidding
+ */
+router.get("/rfqs/:id", requireSupplierAuth, async (req: any, res) => {
+    try {
+        const rfq = await sourcingService.getRFQDetails(req.params.id);
+        if (!rfq || rfq.status !== 'PUBLISHED') {
+            return res.status(404).json({ error: "RFQ not found or not open for bidding" });
+        }
+        res.json(rfq);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+/**
+ * PROTECTED: Submit a Bid for an RFQ
+ */
+router.post("/rfqs/:id/bid", requireSupplierAuth, async (req: any, res) => {
+    try {
+        const { notes, lines } = req.body;
+        const bid = await sourcingService.submitBid({
+            rfqId: req.params.id,
+            supplierId: req.supplierId,
+            notes,
+            lines
+        });
+        res.json({ message: "Bid submitted successfully", bid });
     } catch (e: any) {
         res.status(500).json({ error: e.message });
     }

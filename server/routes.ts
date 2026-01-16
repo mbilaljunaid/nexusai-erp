@@ -45,6 +45,8 @@ import { aiService } from "./services/ai";
 import { supplierPortalRouter } from "./routes/supplierPortal";
 import contractPortalRouter from "./routes/contractPortal";
 import { supplierPortalExternalRouter } from "./routes/supplierPortalExternal";
+import sourcingRouter from "./routes/sourcing";
+import { procurementRouter } from "./modules/scm/procurementRoutes";
 
 import { billingRouter } from "./modules/billing/billing.controller";
 import { orderRouter } from "./modules/order/order.controller";
@@ -74,6 +76,8 @@ export async function registerRoutes(
   app.use("/api/supplier-portal", supplierPortalRouter);
   app.use("/api/contract-portal", contractPortalRouter);
   app.use("/api/portal/supplier", supplierPortalExternalRouter);
+  app.use("/api/sourcing", sourcingRouter);
+  app.use("/api/procurement", procurementRouter);
 
   app.use("/api/portal", portalRouter); // Generic Portal (Customer)
   app.use("/api/fa", fixedAssetsRouter);

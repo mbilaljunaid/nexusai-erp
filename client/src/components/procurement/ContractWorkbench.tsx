@@ -5,11 +5,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, Plus, ShieldCheck, AlertTriangle, BookOpen, Search, User, Calendar, CreditCard } from "lucide-react";
+import { FileText, Plus, ShieldCheck, AlertTriangle, BookOpen, Search, User, Calendar, CreditCard, FileDown, PenTool } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ContractWorkbench() {
@@ -18,6 +19,7 @@ export default function ContractWorkbench() {
     const [selectedContract, setSelectedContract] = useState<any>(null);
     const [isNewContractOpen, setIsNewContractOpen] = useState(false);
     const [analysisResults, setAnalysisResults] = useState<any>(null);
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     // Mock supplier ID for now (usually obtained from context or selection)
     const supplierId = "any";
@@ -44,6 +46,43 @@ export default function ContractWorkbench() {
             toast({ title: "Error", description: err.message, variant: "destructive" });
         }
     });
+
+    const generatePdfMutation = useMutation({
+        mutationFn: async (id: string) => {
+            setIsGeneratingPdf(true);
+            const res = await fetch(`/api/contract-portal/contracts/${id}/generate-pdf`, { method: "POST" });
+            if (!res.ok) throw new Error("PDF Generation failed");
+            return res.json();
+        },
+        onSuccess: () => {
+            toast({ title: "Success", description: "Contract PDF generated successfully." });
+            queryClient.invalidateQueries({ queryKey: [`/api/contract-portal/contracts/${selectedContract?.id}`] });
+            setIsGeneratingPdf(false);
+        },
+        onError: (err: any) => {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
+            setIsGeneratingPdf(false);
+        }
+    });
+
+    const sendEsignMutation = useMutation({
+        mutationFn: async (id: string) => {
+            const res = await fetch(`/api/contract-portal/contracts/${id}/esign`, { method: "POST" });
+            if (!res.ok) throw new Error("E-Signature request failed");
+            return res.json();
+        },
+        onSuccess: () => {
+            toast({ title: "E-Signature Sent", description: "Contract has been sent for signature." });
+            queryClient.invalidateQueries({ queryKey: [`/api/contract-portal/contracts/${selectedContract?.id}`] });
+        },
+        onError: (err: any) => {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
+        }
+    });
+
+    const downloadPdf = (id: string) => {
+        window.open(`/api/contract-portal/contracts/${id}/download-pdf`, "_blank");
+    };
 
     const contractDetails = useQuery({
         queryKey: [`/api/contract-portal/contracts/${selectedContract?.id}`],
@@ -82,14 +121,14 @@ export default function ContractWorkbench() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {contracts?.length === 0 ? (
+                                        {(contracts as any)?.length === 0 ? (
                                             <TableRow>
                                                 <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
                                                     No contracts found for this supplier.
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
-                                            contracts?.map((c: any) => (
+                                            (contracts as any)?.map((c: any) => (
                                                 <TableRow key={c.id} className="group hover:bg-muted/30 transition-colors">
                                                     <TableCell className="font-mono text-xs font-bold text-primary">{c.contractNumber}</TableCell>
                                                     <TableCell className="font-medium text-sm">{c.title}</TableCell>
@@ -137,7 +176,7 @@ export default function ContractWorkbench() {
                             </div>
                             <ScrollArea className="h-[400px]">
                                 <div className="space-y-3">
-                                    {clauses?.map((clause: any) => (
+                                    {(clauses as any)?.map((clause: any) => (
                                         <div key={clause.id} className="p-3 border rounded-lg bg-muted/10 hover:border-primary/50 transition-colors cursor-pointer group">
                                             <div className="flex justify-between items-start">
                                                 <p className="text-xs font-bold">{clause.title}</p>
@@ -158,9 +197,33 @@ export default function ContractWorkbench() {
             <Dialog open={!!selectedContract} onOpenChange={() => setSelectedContract(null)}>
                 <DialogContent className="max-w-4xl max-h-[90vh]">
                     <DialogHeader>
-                        <div className="flex items-center gap-3">
-                            <Badge variant="outline" className="font-mono text-[10px]">{selectedContract?.contractNumber}</Badge>
-                            <DialogTitle>{selectedContract?.title}</DialogTitle>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <Badge variant="outline" className="font-mono text-[10px]">{selectedContract?.contractNumber}</Badge>
+                                <DialogTitle>{selectedContract?.title}</DialogTitle>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 gap-2 border-primary/50 text-primary hover:bg-primary/5"
+                                    onClick={() => sendEsignMutation.mutate(selectedContract?.id)}
+                                    disabled={(contractDetails.data as any)?.esignStatus === 'PENDING'}
+                                >
+                                    <PenTool className="w-3.5 h-3.5" />
+                                    Send for E-Signature
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 gap-2"
+                                    onClick={() => generatePdfMutation.mutate(selectedContract?.id)}
+                                    disabled={isGeneratingPdf}
+                                >
+                                    <FileDown className="w-3.5 h-3.5" />
+                                    {isGeneratingPdf ? "Generating..." : "Export as PDF"}
+                                </Button>
+                            </div>
                         </div>
                         <DialogDescription>Review individual clauses and run AI compliance checks.</DialogDescription>
                     </DialogHeader>
@@ -168,6 +231,7 @@ export default function ContractWorkbench() {
                     <Tabs defaultValue="terms" className="mt-4">
                         <TabsList className="bg-muted/50 p-1">
                             <TabsTrigger value="terms">Agreement Terms</TabsTrigger>
+                            <TabsTrigger value="consumption">Consumption Tracking</TabsTrigger>
                             <TabsTrigger value="compliance">AI Compliance Analysis</TabsTrigger>
                         </TabsList>
 
@@ -175,7 +239,7 @@ export default function ContractWorkbench() {
                             <div className="grid grid-cols-3 gap-6">
                                 <div className="col-span-1 border-r pr-6 space-y-4">
                                     <h4 className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Header Information</h4>
-                                    <div className="space-y-3">
+                                    <div className="space-y-4">
                                         <div className="flex flex-col gap-1">
                                             <span className="text-[10px] text-muted-foreground flex items-center gap-1"><User className="w-3 h-3" /> Supplier ID</span>
                                             <span className="text-sm font-medium">{selectedContract?.supplierId}</span>
@@ -189,10 +253,43 @@ export default function ContractWorkbench() {
                                         </div>
                                         <div className="flex flex-col gap-1">
                                             <span className="text-[10px] text-muted-foreground flex items-center gap-1"><CreditCard className="w-3 h-3" /> Amount Limit</span>
-                                            <span className="text-sm font-bold text-primary">
-                                                ${Number(selectedContract?.totalAmountLimit).toLocaleString()}
-                                            </span>
+                                            <div className="space-y-2">
+                                                <span className="text-sm font-bold text-primary">
+                                                    ${Number(selectedContract?.totalAmountLimit).toLocaleString()}
+                                                </span>
+                                                {contractDetails.data && (
+                                                    <div className="pt-2">
+                                                        <div className="flex justify-between text-[9px] mb-1">
+                                                            <span>Spent: ${Number((contractDetails.data as any).currentSpend || 0).toLocaleString()}</span>
+                                                            <span>{Math.round((Number((contractDetails.data as any).currentSpend || 0) / Number(selectedContract?.totalAmountLimit)) * 100)}%</span>
+                                                        </div>
+                                                        <Progress
+                                                            value={(Number((contractDetails.data as any).currentSpend || 0) / Number(selectedContract?.totalAmountLimit)) * 100}
+                                                            className="h-1 bg-muted"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-[10px] text-muted-foreground flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> E-Signature Status</span>
+                                            <Badge variant="outline" className="w-fit text-[10px] h-5">
+                                                {(contractDetails.data as any)?.esignStatus || 'NOT_STARTED'}
+                                            </Badge>
+                                        </div>
+                                        {(contractDetails.data as any)?.pdfFilePath && (
+                                            <div className="pt-2">
+                                                <Button
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    className="w-full text-[10px] h-7 gap-1.5"
+                                                    onClick={() => downloadPdf(selectedContract?.id)}
+                                                >
+                                                    <FileDown className="w-3 h-3" />
+                                                    Download PDF
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -201,13 +298,13 @@ export default function ContractWorkbench() {
                                         <div className="space-y-6">
                                             {contractDetails.isLoading ? (
                                                 <p className="text-xs italic">Loading clauses...</p>
-                                            ) : contractDetails.data?.terms?.length === 0 ? (
+                                            ) : (contractDetails.data as any)?.terms?.length === 0 ? (
                                                 <div className="text-center py-12 bg-muted/10 border-2 border-dashed rounded-lg">
                                                     <p className="text-xs text-muted-foreground">No clauses added to this contract yet.</p>
                                                     <Button variant="link" size="sm">Add from Library</Button>
                                                 </div>
                                             ) : (
-                                                contractDetails.data?.terms?.map((term: any) => (
+                                                (contractDetails.data as any)?.terms?.map((term: any) => (
                                                     <div key={term.id} className="space-y-3">
                                                         <div className="flex justify-between items-center bg-muted/30 p-2 px-3 rounded-md">
                                                             <h5 className="text-xs font-bold text-primary">{term.clauseTitle}</h5>
@@ -227,6 +324,62 @@ export default function ContractWorkbench() {
                                             )}
                                         </div>
                                     </ScrollArea>
+                                </div>
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="consumption" className="mt-4">
+                            <div className="space-y-4">
+                                <Card className="bg-muted/10 border-none shadow-none">
+                                    <CardContent className="p-4 flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-3 bg-primary/10 rounded-full">
+                                                <CreditCard className="w-5 h-5 text-primary" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] uppercase font-bold text-muted-foreground">Total Consumption</p>
+                                                <p className="text-lg font-bold">
+                                                    ${Number((contractDetails.data as any)?.currentSpend || 0).toLocaleString()} / ${Number(selectedContract?.totalAmountLimit || 0).toLocaleString()}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <Badge variant={Number((contractDetails.data as any)?.currentSpend) > Number(selectedContract?.totalAmountLimit) ? "destructive" : "secondary"}>
+                                            {Number((contractDetails.data as any)?.currentSpend) > Number(selectedContract?.totalAmountLimit) ? "LIMIT EXCEEDED" : "WITHIN LIMIT"}
+                                        </Badge>
+                                    </CardContent>
+                                </Card>
+
+                                <div className="rounded-lg border overflow-hidden">
+                                    <Table>
+                                        <TableHeader className="bg-muted/50">
+                                            <TableRow>
+                                                <TableHead>PO Number</TableHead>
+                                                <TableHead>Date</TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead className="text-right">Amount</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {(!contractDetails.data || (contractDetails.data as any).linkedPOs?.length === 0) ? (
+                                                <TableRow>
+                                                    <TableCell colSpan={4} className="text-center py-12 text-muted-foreground">
+                                                        No Purchase Orders linked to this contract yet.
+                                                    </TableCell>
+                                                </TableRow>
+                                            ) : (
+                                                (contractDetails.data as any).linkedPOs?.map((po: any) => (
+                                                    <TableRow key={po.id}>
+                                                        <TableCell className="font-mono text-xs text-primary">{po.orderNumber}</TableCell>
+                                                        <TableCell className="text-xs">{new Date(po.createdAt).toLocaleDateString()}</TableCell>
+                                                        <TableCell>
+                                                            <Badge variant="outline" className="text-[10px]">{po.status}</Badge>
+                                                        </TableCell>
+                                                        <TableCell className="text-right font-medium">${Number(po.totalAmount).toLocaleString()}</TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             </div>
                         </TabsContent>

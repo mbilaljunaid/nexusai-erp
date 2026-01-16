@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { LogOut, Package2, Home, Truck, ShoppingCart } from "lucide-react";
+import { LogOut, Package2, Home, Truck, ShoppingCart, FileText, BarChart3, Gavel } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { useLocation, Link } from "wouter";
 
@@ -41,8 +41,20 @@ export default function SupplierPortalLayout({ children }: { children: ReactNode
                         </Link>
                         <Link href="/portal/supplier/performance">
                             <a className="flex items-center text-slate-600 hover:text-primary transition-colors">
-                                <Package2 className="mr-2 h-4 w-4" />
+                                <BarChart3 className="mr-2 h-4 w-4" />
                                 Performance
+                            </a>
+                        </Link>
+                        <Link href="/portal/supplier/sourcing">
+                            <a className="flex items-center text-slate-600 hover:text-primary transition-colors">
+                                <Gavel className="mr-2 h-4 w-4" />
+                                Sourcing
+                            </a>
+                        </Link>
+                        <Link href="/portal/supplier/documents">
+                            <a className="flex items-center text-slate-600 hover:text-primary transition-colors">
+                                <FileText className="mr-2 h-4 w-4" />
+                                Documents
                             </a>
                         </Link>
                     </nav>

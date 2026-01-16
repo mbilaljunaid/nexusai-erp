@@ -3,13 +3,15 @@ import { supplierPortalService } from "../services/SupplierPortalService";
 import { enforceRBAC } from "../middleware/auth";
 import { ROLES } from "../../shared/schema/roles";
 
+import { rateLimiter } from "../middleware/rateLimit";
+
 export const supplierPortalRouter = Router();
 
 /**
  * PUBLIC: Submit registration request
- * Accessible by prospective suppliers without an account
+ * Rate limited: 5 requests per 15 minutes
  */
-supplierPortalRouter.post("/register", async (req, res) => {
+supplierPortalRouter.post("/register", rateLimiter(15 * 60 * 1000, 5), async (req, res) => {
     try {
         const request = await supplierPortalService.submitRegistration(req.body);
         res.json(request);

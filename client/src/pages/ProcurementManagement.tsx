@@ -8,7 +8,8 @@ import { SupplierManager } from "@/components/procurement/SupplierManager";
 import { ReceiptManager } from "@/components/procurement/ReceiptManager";
 import { RequisitionManager } from "@/components/procurement/RequisitionManager";
 import { InvoiceWorkbench } from "@/components/procurement/InvoiceWorkbench";
-import { SourcingManager } from "@/components/procurement/SourcingManager";
+import SourcingWorkbench from "@/components/procurement/SourcingWorkbench";
+import ContractWorkbench from "@/components/procurement/ContractWorkbench";
 import { ProcurementAI } from "@/components/procurement/ProcurementAI";
 
 export default function ProcurementManagement() {
@@ -40,6 +41,9 @@ export default function ProcurementManagement() {
         <Button variant={viewType === "invoices" ? "default" : "outline"} onClick={() => setViewType("invoices")}>
           <DollarSign className="w-4 h-4 mr-2" /> Invoices
         </Button>
+        <Button variant={viewType === "contracts" ? "default" : "outline"} onClick={() => setViewType("contracts")}>
+          <FileText className="w-4 h-4 mr-2" /> Contracts
+        </Button>
         <Button variant={viewType === "sourcing" ? "default" : "outline"} onClick={() => setViewType("sourcing")}>
           <Gavel className="w-4 h-4 mr-2" /> Sourcing
         </Button>
@@ -57,7 +61,8 @@ export default function ProcurementManagement() {
         {viewType === "receiving" && <ReceiptManager />}
         {viewType === "requisitions" && <RequisitionManager />}
         {viewType === "invoices" && <InvoiceWorkbench />}
-        {viewType === "sourcing" && <SourcingManager />}
+        {viewType === "contracts" && <ContractWorkbench />}
+        {viewType === "sourcing" && <SourcingWorkbench />}
         {viewType === "ai" && <ProcurementAI onViewChange={setViewType} />}
         {viewType === "suppliers" && <SupplierManager />}
       </div>

@@ -386,6 +386,8 @@ const SupplierDashboard = lazy(() => import("@/pages/supplier-portal/Dashboard")
 const SupplierOrders = lazy(() => import("@/pages/supplier-portal/Orders"));
 const SupplierASNs = lazy(() => import("@/pages/supplier-portal/ASNs"));
 const SupplierPerformance = lazy(() => import("@/pages/supplier-portal/Performance"));
+const SupplierDocuments = lazy(() => import("@/pages/supplier-portal/Documents"));
+const SupplierSourcing = lazy(() => import("@/pages/supplier-portal/Sourcing"));
 
 // AR Components
 const ArInvoiceList = lazy(() => import("@/components/ar/ArInvoiceList").then(module => ({ default: module.ArInvoiceList })));
@@ -739,6 +741,8 @@ function Router() {
             <Route path="/portal/supplier/orders" component={SupplierOrders} />
             <Route path="/portal/supplier/asns" component={SupplierASNs} />
             <Route path="/portal/supplier/performance" component={SupplierPerformance} />
+            <Route path="/portal/supplier/sourcing" component={SupplierSourcing} />
+            <Route path="/portal/supplier/documents" component={SupplierDocuments} />
             <Route path="/portal/supplier" component={SupplierDashboard} />
           </Switch>
         </SupplierPortalLayout>

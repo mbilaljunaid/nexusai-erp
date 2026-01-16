@@ -49,9 +49,16 @@ export default function PurchaseOrders() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-lg">{po.poNumber}</CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1">Vendor: {po.vendorId}</p>
+                    <p className="text-sm text-muted-foreground mt-1">Vendor: {po.supplierName || po.vendorId || "Unknown"}</p>
                   </div>
-                  <Badge variant={statusColors[po.status] || "default"}>{po.status}</Badge>
+                  <div className="flex items-center gap-2">
+                    {po.complianceStatus === 'NON_COMPLIANT' && (
+                      <div className="flex items-center gap-1 text-destructive bg-destructive/10 px-2 py-0.5 rounded text-[10px] font-bold animate-pulse">
+                        <Plus className="w-3 h-3 rotate-45" /> COMPLIANCE ALERT: {po.complianceReason}
+                      </div>
+                    )}
+                    <Badge variant={statusColors[po.status] || "default"}>{po.status}</Badge>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -98,8 +105,18 @@ export default function PurchaseOrders() {
             .filter((p: any) => p.status === "draft")
             .map((po: any) => (
               <Card key={po.id}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">{po.poNumber}</CardTitle>
+                <CardHeader className="pb-3 px-6 pt-6">
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="text-base">{po.poNumber}</CardTitle>
+                    {po.complianceStatus === 'NON_COMPLIANT' && (
+                      <Badge variant="destructive" className="text-[10px] animate-pulse">NON-COMPLIANT</Badge>
+                    )}
+                  </div>
+                  {po.complianceStatus === 'NON_COMPLIANT' && (
+                    <p className="text-[10px] text-destructive font-semibold mt-1 italic border-l-2 border-destructive pl-2">
+                      {po.complianceReason}
+                    </p>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">

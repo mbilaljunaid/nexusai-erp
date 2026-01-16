@@ -55,6 +55,8 @@ export const purchaseOrders = pgTable("purchase_orders", {
     totalAmount: numeric("total_amount", { precision: 18, scale: 2 }),
     status: varchar("status").default("draft"),
     dueDate: timestamp("due_date"),
+    complianceStatus: varchar("compliance_status").default("COMPLIANT"), // COMPLIANT, NON_COMPLIANT
+    complianceReason: text("compliance_reason"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -244,8 +246,26 @@ export const procurementContracts = pgTable("procurement_contracts", {
     endDate: timestamp("end_date"),
     totalAmountLimit: numeric("total_amount_limit", { precision: 18, scale: 2 }),
     paymentTerms: varchar("payment_terms"),
+    esignStatus: varchar("esign_status").default("NOT_STARTED"), // NOT_STARTED, PENDING, SIGNED, DECLINED
+    esignEnvelopeId: varchar("esign_envelope_id"),
+    pdfFilePath: varchar("pdf_file_path"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+export const supplierDocuments = pgTable("scm_supplier_documents", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    supplierId: varchar("supplier_id").notNull(),
+    documentType: varchar("document_type").notNull(), // W-9, INSURANCE, CERTIFICATION, OTHER
+    fileName: varchar("file_name").notNull(),
+    filePath: varchar("file_path").notNull(),
+    expiryDate: timestamp("expiry_date"),
+    status: varchar("status").default("ACTIVE"), // ACTIVE, EXPIRED, ARCHIVED
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertSupplierDocumentSchema = createInsertSchema(supplierDocuments);
+export type SupplierDocument = typeof supplierDocuments.$inferSelect;
+export type InsertSupplierDocument = z.infer<typeof insertSupplierDocumentSchema>;
 
 export const contractClauses = pgTable("contract_clauses", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -346,3 +366,56 @@ export const insertQualityEventSchema = createInsertSchema(supplierQualityEvents
 
 export type SupplierScorecard = typeof supplierScorecards.$inferSelect;
 export type SupplierQualityEvent = typeof supplierQualityEvents.$inferSelect;
+
+// ========== NEGOTIATION & SOURCING (RFQ & BIDS) ==========
+export const sourcingRfqs = pgTable("scm_sourcing_rfqs", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    rfqNumber: varchar("rfq_number").notNull().unique(),
+    title: varchar("title").notNull(),
+    description: text("description"),
+    status: varchar("status").default("DRAFT"), // DRAFT, PUBLISHED, EVALUATING, AWARDED, CLOSED
+    closeDate: timestamp("close_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const sourcingRfqLines = pgTable("scm_sourcing_rfq_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    rfqId: varchar("rfq_id").notNull(),
+    lineNumber: integer("line_number").notNull(),
+    itemDescription: text("item_description").notNull(),
+    targetQuantity: numeric("target_quantity", { precision: 18, scale: 4 }).notNull(),
+    unitOfMeasure: varchar("uom"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const sourcingBids = pgTable("scm_sourcing_bids", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    rfqId: varchar("rfq_id").notNull(),
+    supplierId: varchar("supplier_id").notNull(),
+    bidStatus: varchar("bid_status").default("DRAFT"), // DRAFT, SUBMITTED, WITHDRAWN
+    submissionDate: timestamp("submission_date"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const sourcingBidLines = pgTable("scm_sourcing_bid_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    bidId: varchar("bid_id").notNull(),
+    rfqLineId: varchar("rfq_line_id").notNull(),
+    offeredPrice: numeric("offered_price", { precision: 18, scale: 4 }).notNull(),
+    offeredQuantity: numeric("offered_quantity", { precision: 18, scale: 4 }).notNull(),
+    supplierLeadTime: integer("supplier_lead_time"), // in days
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertSourcingRfqSchema = createInsertSchema(sourcingRfqs);
+export const insertSourcingRfqLineSchema = createInsertSchema(sourcingRfqLines);
+export const insertSourcingBidSchema = createInsertSchema(sourcingBids);
+export const insertSourcingBidLineSchema = createInsertSchema(sourcingBidLines);
+
+export type SourcingRfq = typeof sourcingRfqs.$inferSelect;
+export type SourcingRfqLine = typeof sourcingRfqLines.$inferSelect;
+export type SourcingBid = typeof sourcingBids.$inferSelect;
+export type SourcingBidLine = typeof sourcingBidLines.$inferSelect;
+export type InsertSourcingRfq = z.infer<typeof insertSourcingRfqSchema>;
+export type InsertSourcingBid = z.infer<typeof insertSourcingBidSchema>;

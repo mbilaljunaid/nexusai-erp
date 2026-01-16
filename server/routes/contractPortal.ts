@@ -93,4 +93,44 @@ router.post("/clauses/seed", enforceRBAC("scm_write"), async (req, res) => {
     }
 });
 
+/**
+ * Generate Contract PDF
+ */
+router.post("/contracts/:id/generate-pdf", enforceRBAC("scm_write"), async (req, res) => {
+    try {
+        const filePath = await contractService.generateContractPDF(req.params.id);
+        res.json({ message: "PDF Generated Successfully", path: filePath });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+/**
+ * Download Contract PDF
+ */
+router.get("/contracts/:id/download-pdf", enforceRBAC("scm_read"), async (req, res) => {
+    try {
+        const contract = await contractService.getContractDetails(req.params.id);
+        if (!contract || !(contract as any).pdfFilePath) {
+            return res.status(404).json({ error: "PDF not found for this contract" });
+        }
+        res.download((contract as any).pdfFilePath);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+/**
+ * Send for E-Signature (Mock)
+ */
+router.post("/contracts/:id/esign", enforceRBAC("scm_write"), async (req, res) => {
+    try {
+        const envelopeId = `ENV-${Date.now()}`;
+        const updated = await contractService.updateEsignStatus(req.params.id, 'PENDING', envelopeId);
+        res.json({ message: "Sent for E-Signature", contract: updated });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 export default router;
