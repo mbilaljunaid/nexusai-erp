@@ -365,8 +365,6 @@ const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const AssetWorkbench = lazy(() => import("@/pages/fixed-assets/AssetWorkbench"));
 const FixedAssetsPage = lazy(() => import("@/pages/FixedAssetsPage"));
 const TaxManagement = lazy(() => import("@/pages/TaxManagement"));
-const NettingWorkbench = lazy(() => import("@/pages/NettingWorkbench"));
-const TreasuryPage = lazy(() => import("@/pages/BankingTreasury"));
 
 // Cost Management
 const CostDashboard = lazy(() => import("@/pages/cost-management/CostDashboard"));
@@ -427,6 +425,7 @@ const PriceListManager = lazy(() => import("@/pages/order/PriceListManager").the
 
 const PricingRebatesEngine = lazy(() => import("@/pages/PricingRebatesEngine"));
 const SupplierCollaborationPortal = lazy(() => import("@/pages/SupplierCollaborationPortal"));
+const ExternalSupplierRegistration = lazy(() => import("@/pages/ExternalSupplierRegistration"));
 const FreightManagement = lazy(() => import("@/pages/FreightManagement"));
 const CreditManagementCollections = lazy(() => import("@/pages/CreditManagementCollections"));
 const SalesCommissionManagement = lazy(() => import("@/pages/SalesCommissionManagement"));
@@ -682,6 +681,7 @@ function Router() {
       <Route path="/careers" component={CareersPage} />
       <Route path="/modules" component={ModulesPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/supplier/register" component={ExternalSupplierRegistration} />
       <Route path="/admin" component={AdminConsole} />
       <Route path="/admin/security" component={AccessControl} />
       <Route path="/admin-roles" component={AdminRoles} />
@@ -1002,7 +1002,7 @@ export default function App() {
   const style = { "--sidebar-width": "18rem" } as React.CSSProperties;
 
   // Public routes don't show sidebar - includes dynamic routes
-  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/contribution", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/community", "/marketplace/services", "/marketplace/apps", "/marketplace/jobs"];
+  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/contribution", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/community", "/marketplace/services", "/marketplace/apps", "/marketplace/jobs", "/supplier/register"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/") || location.startsWith("/blog/") || location.startsWith("/marketplace/jobs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
 

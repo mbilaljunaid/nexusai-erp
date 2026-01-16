@@ -54,6 +54,9 @@
       ],
       "@db/schema": [
         "./shared/schema/index.ts"
+      ],
+      "@db/schema/*": [
+        "./shared/schema/*"
       ]
     }
   }

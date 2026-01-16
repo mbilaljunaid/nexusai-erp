@@ -42,6 +42,8 @@ import { fixedAssetsRouter } from "./routes/fixedAssets";
 import { ppmRouter } from "./routes/ppm";
 import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
+import { supplierPortalRouter } from "./routes/supplierPortal";
+import contractPortalRouter from "./routes/contractPortal";
 
 import { billingRouter } from "./modules/billing/billing.controller";
 import { orderRouter } from "./modules/order/order.controller";
@@ -79,6 +81,10 @@ export async function registerRoutes(
   // Order Management
   app.use("/api/order-management", orderRouter);
 
+  // Supplier Portal
+  app.use("/api/supplier-portal", supplierPortalRouter);
+  app.use("/api/contract-portal", contractPortalRouter);
+
 
   // Agentic AI
   app.use("/api", aiRouter);
@@ -89,7 +95,8 @@ export async function registerRoutes(
     // Exemptions for public/auth routes
     const publicPaths = [
       "/health", "/login", "/logout", "/callback", "/auth", "/demos",
-      "/copilot", "/feedback", "/marketplace/categories"
+      "/copilot", "/feedback", "/marketplace/categories",
+      "/api/supplier-portal/register"
     ];
 
     // Check if path or prefix is public

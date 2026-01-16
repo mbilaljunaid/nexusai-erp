@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
     Plus, Search, Filter, ArrowUpRight, ArrowDownRight,
     Briefcase, Landmark, Calendar, RefreshCcw, Loader2,
-    CheckCircle2, Clock, AlertCircle
+    CheckCircle2, Clock, AlertCircle, Scale
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -142,6 +142,7 @@ export function TreasuryWorkbench() {
                     <Button variant="outline" className="gap-2" onClick={() => setActiveTab("counterparties")}>
                         <Landmark className="w-4 h-4" /> Institutions
                     </Button>
+                    <Button className="gap-2" onClick={() => setIsEntryOpen(true)}>
                         <Plus className="w-4 h-4" /> New Deal
                     </Button>
                     <FxDealEntry />
@@ -212,7 +213,7 @@ export function TreasuryWorkbench() {
                         </Card>
                     </div>
 
-                    <Card border-primary/20>
+                    <Card className="border-primary/20">
                         <CardContent className="p-0">
                             <StandardTable
                                 data={deals}
@@ -231,24 +232,24 @@ export function TreasuryWorkbench() {
 
                 <TabsContent value="analytics" className="pt-4">
                     <div className="p-4 bg-muted/20 rounded-xl border-dashed border-muted-foreground/10 mb-8">
-                       <RiskDashboard />
+                        <RiskDashboard />
                     </div>
-                    
+
                     <div className="space-y-4">
                         <h3 className="text-xl font-bold tracking-tight">Liquidity Forecasting</h3>
                         <CashForecastDashboard />
                     </div>
                 </TabsContent>
-                
-                <TabsContent value="netting" className="pt-4">
-                     <NettingWorkbench />
-                </TabsContent>
-            </Tabs >
 
-        <DealEntrySheet
-            open={isEntryOpen}
-            onClose={() => setIsEntryOpen(false)}
-        />
-        </div >
+                <TabsContent value="netting" className="pt-4">
+                    <NettingWorkbench />
+                </TabsContent>
+            </Tabs>
+
+            <DealEntrySheet
+                open={isEntryOpen}
+                onClose={() => setIsEntryOpen(false)}
+            />
+        </div>
     );
 }

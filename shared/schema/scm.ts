@@ -4,7 +4,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // ========== SUPPLY CHAIN MODULE ==========
-export const suppliers = pgTable("suppliers", {
+export const suppliers = pgTable("scm_suppliers", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     name: varchar("name").notNull(),
     email: varchar("email"),
@@ -25,9 +25,9 @@ export const insertSupplierSchema = createInsertSchema(suppliers).extend({
 export type InsertSupplier = z.infer<typeof insertSupplierSchema>;
 export type Supplier = typeof suppliers.$inferSelect;
 
-export const supplierSites = pgTable("supplier_sites", {
+export const supplierSites = pgTable("scm_supplier_sites", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    supplierId: varchar("supplier_id").notNull(), // FK to suppliers
+    supplierId: varchar("supplier_id").notNull(), // FK to scm_suppliers
     siteName: varchar("site_name").notNull(), // e.g., "HEADQUARTERS", "NYC-DISTRIBUTION"
     address: text("address"),
     isPurchasing: varchar("is_purchasing").default("true"), // "true" or "false"
@@ -196,3 +196,78 @@ export const insertPurchaseRequisitionLineSchema = createInsertSchema(purchaseRe
 
 export type PurchaseRequisition = typeof purchaseRequisitions.$inferSelect;
 export type PurchaseRequisitionLine = typeof purchaseRequisitionLines.$inferSelect;
+
+// ========== SUPPLIER ONBOARDING & PORTAL IDENTITY ==========
+export const supplierOnboardingRequests = pgTable("supplier_onboarding_requests", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    companyName: varchar("company_name").notNull(),
+    taxId: varchar("tax_id").notNull(),
+    contactEmail: varchar("contact_email").notNull(),
+    phone: varchar("phone"),
+    businessClassification: varchar("business_classification"),
+    status: varchar("status").default("PENDING"),
+    notes: text("notes"),
+    submittedAt: timestamp("submitted_at").default(sql`now()`),
+    reviewedAt: timestamp("reviewed_at"),
+    reviewerId: varchar("reviewer_id"),
+    bankAccountName: varchar("bank_account_name"),
+    bankAccountNumber: varchar("bank_account_number"),
+    bankRoutingNumber: varchar("bank_routing_number"),
+});
+
+export const supplierUserIdentities = pgTable("supplier_user_identities", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id").notNull(),
+    supplierId: varchar("supplier_id").notNull(),
+    portalToken: varchar("portal_token").unique(),
+    role: varchar("role").default("ADMIN"),
+    status: varchar("status").default("ACTIVE"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertSupplierOnboardingSchema = createInsertSchema(supplierOnboardingRequests);
+export const insertSupplierUserIdentitySchema = createInsertSchema(supplierUserIdentities);
+
+export type SupplierOnboardingRequest = typeof supplierOnboardingRequests.$inferSelect;
+export type InsertSupplierOnboardingRequest = z.infer<typeof insertSupplierOnboardingSchema>;
+export type SupplierUserIdentity = typeof supplierUserIdentities.$inferSelect;
+export type InsertSupplierUserIdentity = z.infer<typeof insertSupplierUserIdentitySchema>;
+
+// ========== PROCUREMENT CONTRACTS & COMPLIANCE ==========
+export const procurementContracts = pgTable("procurement_contracts", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    supplierId: varchar("supplier_id").notNull(),
+    contractNumber: varchar("contract_number").notNull().unique(),
+    title: varchar("title").notNull(),
+    status: varchar("status").default("DRAFT"), // DRAFT, ACTIVE, EXPIRED, CANCELLED
+    startDate: timestamp("start_date"),
+    endDate: timestamp("end_date"),
+    totalAmountLimit: numeric("total_amount_limit", { precision: 18, scale: 2 }),
+    paymentTerms: varchar("payment_terms"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const contractClauses = pgTable("contract_clauses", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    title: varchar("title").notNull(),
+    clauseText: text("clause_text").notNull(),
+    category: varchar("category").notNull(), // LEGAL, PAYMENT, TERMINATION, COMPLIANCE
+    isMandatory: varchar("is_mandatory").default("false"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const contractTerms = pgTable("contract_terms", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    contractId: varchar("contract_id").notNull(),
+    clauseId: varchar("clause_id").notNull(),
+    amendedText: text("amended_text"), // Overrides standard library text
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertProcurementContractSchema = createInsertSchema(procurementContracts);
+export const insertContractClauseSchema = createInsertSchema(contractClauses);
+export const insertContractTermSchema = createInsertSchema(contractTerms);
+
+export type ProcurementContract = typeof procurementContracts.$inferSelect;
+export type ContractClause = typeof contractClauses.$inferSelect;
+export type ContractTerm = typeof contractTerms.$inferSelect;

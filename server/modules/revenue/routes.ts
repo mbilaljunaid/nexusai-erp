@@ -2,11 +2,10 @@ import { db } from "@db";
 import {
     revenueContracts, performanceObligations, revenueRecognitions,
     revenueSourceEvents, revenueContractVersions, revenueSspBooks, revenueSspLines,
-    revenuePeriods
-} from "@db/schema/revenue";
-import { revenueGlAccounts as revAcctSchema } from "@db/schema/revenue_accounting";
-import { products, accounts } from "@shared/schema/crm";
-import { glLedgers } from "@shared/schema/finance";
+    revenuePeriods, revenueGlAccounts as revAcctSchema,
+    products, accounts, glLedgers,
+    revenueIdentificationRules, performanceObligationRules
+} from "@shared/schema";
 import { eq, desc, and, lte, gte, sql } from "drizzle-orm";
 import { revenueService } from "../../services/RevenueService";
 import type { Express, Request, Response } from "express";

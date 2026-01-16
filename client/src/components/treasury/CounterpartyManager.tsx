@@ -107,7 +107,7 @@ export function CounterpartyManager() {
     ];
 
     return (
-        <Card border-primary /10 >
+        <Card className="border-primary/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                 <div className="flex items-center gap-4">
                     <div className="relative">
@@ -137,7 +137,7 @@ export function CounterpartyManager() {
                             Register a bank, broker, or financial issuer for treasury deals.
                         </DialogDescription>
                     </DialogHeader>
-                    
+
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit((v) => mutation.mutate(v))} className="space-y-4">
                             <FormField
@@ -216,6 +216,6 @@ export function CounterpartyManager() {
                     </Form>
                 </DialogContent>
             </Dialog>
-        </Card >
+        </Card>
     );
 }

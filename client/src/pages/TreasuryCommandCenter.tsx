@@ -106,7 +106,8 @@ export default function TreasuryCommandCenter() {
                       </div>
                       <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
                         <div
-                          className={cn("h-full", r.color, `w-[${r.pct}%]`)}
+                          className={cn("h-full", r.color)}
+                          style={{ width: `${r.pct}%` }}
                         />
                       </div>
                     </div>

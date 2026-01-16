@@ -1,14 +1,18 @@
-
 import { Router } from "express";
 import { treasuryService } from "../../services/TreasuryService";
 import { cashForecastService } from "../../services/CashForecastService";
 import { nettingService } from "../../services/NettingService";
-import { insertTreasuryCounterpartySchema, insertTreasuryDealSchema, insertTreasuryFxDealSchema, insertTreasuryMarketRateSchema } from "@shared/schema";
+import {
+    insertTreasuryCounterpartySchema,
+    insertTreasuryDealSchema,
+    insertTreasuryFxDealSchema,
+    insertTreasuryMarketRateSchema
+} from "@shared/schema";
 import { ZodError } from "zod";
 
 const router = Router();
 
-// Counterparties
+// --- Counterparties ---
 router.get("/counterparties", async (req, res) => {
     try {
         const counterparties = await treasuryService.listCounterparties();
@@ -32,7 +36,7 @@ router.post("/counterparties", async (req, res) => {
     }
 });
 
-// Deals
+// --- Deals ---
 router.get("/deals", async (req, res) => {
     try {
         const filters = {
@@ -93,7 +97,6 @@ router.get("/fx-deals", async (req, res) => {
 
 router.post("/fx-deals", async (req, res) => {
     try {
-        // Validate date strings if necessary or rely on Zod coerce
         const data = insertTreasuryFxDealSchema.parse(req.body);
         const deal = await treasuryService.createFxDeal(data);
         res.status(201).json(deal);
@@ -150,7 +153,7 @@ router.get("/risk-metrics", async (req, res) => {
 
 router.post("/deals/:id/confirm", async (req, res) => {
     try {
-        const userId = req.headers["x-user-id"] as string || "SYSTEM_BO"; // Mock BO user if header missing
+        const userId = req.headers["x-user-id"] as string || "SYSTEM_BO";
         const deal = await treasuryService.confirmDeal(req.params.id, userId);
         res.json(deal);
     } catch (error) {
@@ -207,16 +210,18 @@ router.get("/hedges", async (req, res) => {
 router.post("/hedges", async (req, res) => {
     try {
         const { dealId, sourceType, sourceId, amount } = req.body;
-        const hedge = await treasuryService.createHedgeRelationship(dealId, sourceType, sourceId, amount);
+        const hedge = await treasuryService.createHedgeRelationship(dealId, sourceType, sourceId, Number(amount));
         res.status(201).json(hedge);
     } catch (error) {
         res.status(500).json({ message: "Failed to create hedge relationship" });
     }
 });
 
+// --- Cash Forecasting & AI Routes ---
+
 router.post("/forecast/generate", async (req, res) => {
     try {
-        const result = await cashForecastService.generateForecast(90); // Default 90 days
+        const result = await cashForecastService.generateForecast(90);
         res.json(result);
     } catch (error) {
         console.error("Forecast Generation Error", error);
@@ -246,7 +251,7 @@ router.get("/anomalies", async (req, res) => {
 
 router.post("/netting/batches", async (req, res) => {
     try {
-        const batch = await nettingService.createNettingBatch(new Date()); // Auto-settle today's eligible
+        const batch = await nettingService.createNettingBatch(new Date());
         res.json(batch);
     } catch (error) {
         console.error("Netting Create Error", error);
