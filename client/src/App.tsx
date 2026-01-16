@@ -379,6 +379,14 @@ const PortalLogin = lazy(() => import("@/pages/portal/PortalLogin"));
 const PortalDashboard = lazy(() => import("@/pages/portal/PortalDashboard"));
 const PortalInvoices = lazy(() => import("@/pages/portal/PortalInvoices"));
 
+// Supplier Portal - Phase 3
+const SupplierPortalLayout = lazy(() => import("@/layouts/SupplierPortalLayout"));
+const SupplierLogin = lazy(() => import("@/pages/supplier-portal/Login"));
+const SupplierDashboard = lazy(() => import("@/pages/supplier-portal/Dashboard"));
+const SupplierOrders = lazy(() => import("@/pages/supplier-portal/Orders"));
+const SupplierASNs = lazy(() => import("@/pages/supplier-portal/ASNs"));
+const SupplierPerformance = lazy(() => import("@/pages/supplier-portal/Performance"));
+
 // AR Components
 const ArInvoiceList = lazy(() => import("@/components/ar/ArInvoiceList").then(module => ({ default: module.ArInvoiceList })));
 
@@ -720,6 +728,20 @@ function Router() {
             <Route path="/portal" component={PortalDashboard} />
           </Switch>
         </CustomerPortalLayout>
+      </Route>
+
+      {/* Supplier Portal Routes - Phase 3 */}
+      <Route path="/portal/supplier/login" component={SupplierLogin} />
+      <Route path="/portal/supplier">
+        <SupplierPortalLayout>
+          <Switch>
+            <Route path="/portal/supplier/dashboard" component={SupplierDashboard} />
+            <Route path="/portal/supplier/orders" component={SupplierOrders} />
+            <Route path="/portal/supplier/asns" component={SupplierASNs} />
+            <Route path="/portal/supplier/performance" component={SupplierPerformance} />
+            <Route path="/portal/supplier" component={SupplierDashboard} />
+          </Switch>
+        </SupplierPortalLayout>
       </Route>
       <Route path="/gl/journals/new" component={JournalEntry} />
       <Route path="/gl/journals/wizard" component={JournalWizard} />

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { contractService } from "../services/ContractService";
-import { enforceRBAC } from "../middleware/rbac";
+import { enforceRBAC } from "../middleware/auth";
 import { db } from "../db";
 import { contractClauses } from "../../shared/schema/scm";
 

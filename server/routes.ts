@@ -44,6 +44,7 @@ import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
 import { supplierPortalRouter } from "./routes/supplierPortal";
 import contractPortalRouter from "./routes/contractPortal";
+import { supplierPortalExternalRouter } from "./routes/supplierPortalExternal";
 
 import { billingRouter } from "./modules/billing/billing.controller";
 import { orderRouter } from "./modules/order/order.controller";
@@ -68,7 +69,13 @@ export async function registerRoutes(
   app.use("/api/cash", cashRouter);
   app.use("/api/tax", taxRouter);
   app.use("/api/netting", nettingRouter);
-  app.use("/api/portal", portalRouter);
+
+  // Supplier Portal (Specific before generic)
+  app.use("/api/supplier-portal", supplierPortalRouter);
+  app.use("/api/contract-portal", contractPortalRouter);
+  app.use("/api/portal/supplier", supplierPortalExternalRouter);
+
+  app.use("/api/portal", portalRouter); // Generic Portal (Customer)
   app.use("/api/fa", fixedAssetsRouter);
   app.use("/api/maintenance", maintenanceRouter);
   app.use("/api/ppm", ppmRouter);
@@ -81,9 +88,6 @@ export async function registerRoutes(
   // Order Management
   app.use("/api/order-management", orderRouter);
 
-  // Supplier Portal
-  app.use("/api/supplier-portal", supplierPortalRouter);
-  app.use("/api/contract-portal", contractPortalRouter);
 
 
   // Agentic AI
@@ -96,7 +100,7 @@ export async function registerRoutes(
     const publicPaths = [
       "/health", "/login", "/logout", "/callback", "/auth", "/demos",
       "/copilot", "/feedback", "/marketplace/categories",
-      "/api/supplier-portal/register"
+      "/api/supplier-portal/register", "/portal/supplier"
     ];
 
     // Check if path or prefix is public

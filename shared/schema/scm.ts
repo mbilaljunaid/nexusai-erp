@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, timestamp, numeric, integer } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, numeric, integer, boolean } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -271,3 +271,78 @@ export const insertContractTermSchema = createInsertSchema(contractTerms);
 export type ProcurementContract = typeof procurementContracts.$inferSelect;
 export type ContractClause = typeof contractClauses.$inferSelect;
 export type ContractTerm = typeof contractTerms.$inferSelect;
+
+// ========== ASN (ADVANCE SHIPMENT NOTICE) ==========
+export const asnHeaders = pgTable("asn_headers", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    asnNumber: varchar("asn_number").notNull().unique(),
+    supplierId: varchar("supplier_id").notNull(),
+    poId: varchar("po_id").notNull(), // Link to purchaseOrders
+    shipmentNumber: varchar("shipment_number"),
+    shippedDate: timestamp("shipped_date"),
+    expectedArrivalDate: timestamp("expected_arrival_date"),
+    carrier: varchar("carrier"),
+    trackingNumber: varchar("tracking_number"),
+    status: varchar("status").default("SHIPPED"), // SHIPPED, DELIVERED, RECEIVED
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const asnLines = pgTable("asn_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    asnId: varchar("asn_id").notNull(),
+    poLineId: varchar("po_line_id").notNull(), // Link to purchaseOrderLines
+    itemId: varchar("item_id"),
+    quantityShipped: numeric("quantity_shipped", { precision: 18, scale: 4 }).notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAsnHeaderSchema = createInsertSchema(asnHeaders).extend({
+    asnNumber: z.string().min(1),
+    supplierId: z.string().min(1),
+    poId: z.string().min(1),
+    shipmentNumber: z.string().optional(),
+    shippedDate: z.string().optional(), // Receive as string from JSON
+    expectedArrivalDate: z.string().optional(),
+    carrier: z.string().optional(),
+    trackingNumber: z.string().optional(),
+});
+
+export const insertAsnLineSchema = createInsertSchema(asnLines).extend({
+    asnId: z.string().min(1),
+    poLineId: z.string().min(1),
+    quantityShipped: z.number(),
+});
+
+export type AsnHeader = typeof asnHeaders.$inferSelect;
+export type AsnLine = typeof asnLines.$inferSelect;
+export type InsertAsnHeader = z.infer<typeof insertAsnHeaderSchema>;
+export type InsertAsnLine = z.infer<typeof insertAsnLineSchema>;
+
+// ========== SUPPLIER PERFORMANCE (SCORECARDS) ==========
+export const supplierScorecards = pgTable("supplier_scorecards", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    supplierId: varchar("supplier_id").notNull(),
+    period: varchar("period").notNull(), // e.g., "2025-Q1", "2025-01"
+    overallScore: integer("overall_score").default(0),
+    deliveryScore: integer("delivery_score").default(0),
+    qualityScore: integer("quality_score").default(0),
+    responsivenessScore: integer("responsiveness_score").default(0),
+    generatedAt: timestamp("generated_at").default(sql`now()`),
+});
+
+export const supplierQualityEvents = pgTable("supplier_quality_events", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    supplierId: varchar("supplier_id").notNull(),
+    eventId: varchar("event_id"), // Reference to external ID if needed
+    type: varchar("type").notNull(), // DEFECT, DELAY, NON_COMPLIANCE
+    severity: varchar("severity").default("MEDIUM"), // LOW, MEDIUM, CRITICAL
+    description: text("description"),
+    eventDate: timestamp("event_date").default(sql`now()`),
+    resolved: boolean("resolved").default(false),
+});
+
+export const insertScorecardSchema = createInsertSchema(supplierScorecards);
+export const insertQualityEventSchema = createInsertSchema(supplierQualityEvents);
+
+export type SupplierScorecard = typeof supplierScorecards.$inferSelect;
+export type SupplierQualityEvent = typeof supplierQualityEvents.$inferSelect;
