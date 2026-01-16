@@ -36,6 +36,7 @@ import {
     RefreshCw,
     Warehouse,
     Wrench,
+    Hammer,
 } from "lucide-react";
 
 
@@ -63,6 +64,18 @@ export const navigationConfig: SidebarNode[] = [
             { id: "erp", title: "ERP", type: "link", icon: DollarSign, path: "/erp", allowedRoles: ["admin", "editor"] },
             { id: "hr", title: "HR", type: "link", icon: Briefcase, path: "/hr", allowedRoles: ["admin", "editor"] },
             { id: "projects", title: "Projects", type: "link", icon: Zap, path: "/projects", allowedRoles: ["admin", "editor"] },
+            {
+                id: "construction",
+                title: "Construction",
+                type: "section",
+                icon: Hammer,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "const-contracts", title: "Contracts", type: "link", path: "/construction/contracts" },
+                    { id: "const-billing", title: "Billing (Pay Apps)", type: "link", path: "/construction/billing" },
+                    { id: "const-insights", title: "AI Insights", type: "link", path: "/construction/insights", icon: Sparkles },
+                ]
+            },
         ],
     },
     {

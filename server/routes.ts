@@ -40,6 +40,7 @@ import arAiRouter from "./routes/ar-ai";
 import arReportRouter from "./routes/ar-reports";
 import { fixedAssetsRouter } from "./routes/fixedAssets";
 import { ppmRouter } from "./routes/ppm";
+import { constructionRouter } from "./routes/construction";
 import aiRouter from "./routes/ai";
 import { aiService } from "./services/ai";
 import { supplierPortalRouter } from "./routes/supplierPortal";
@@ -83,6 +84,7 @@ export async function registerRoutes(
   app.use("/api/fa", fixedAssetsRouter);
   app.use("/api/maintenance", maintenanceRouter);
   app.use("/api/ppm", ppmRouter);
+  app.use("/api/construction", constructionRouter);
   app.use("/api/treasury", treasuryRouter);
 
 

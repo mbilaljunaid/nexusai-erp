@@ -1,0 +1,28 @@
+🏗️  Verifying Construction Management Core...
+
+1. Finding Project...
+   - Linked to existing Project: b791e5c9-cd35-423a-a6b2-137535a046a2
+
+2. Creating Prime Contract...
+   - Created Contract: fb51dcc5-0880-42cf-bf2f-6c55f0769a6e (Number: CTR-1768580458009)
+
+3. Adding SOV Lines...
+   - Added Line 1 ($50k) and Line 2 ($150k)
+
+4. Verifying Contract Total...
+   - Original Amount: 200000.00
+   - Revised Amount:  200000.00
+   - ✅ Rollup Correct (200,000)
+
+5. Creating Variation (PCO)...
+   - Created Variation: 4a0e6e81-aacb-45c0-a8e5-d5b8febd5a37 ($10,000)
+
+6. Approving Variation...
+   - Variation Approved
+
+7. Verifying Revised Contract Amount...
+   - Final Revised Amount: 210000.00
+   - ✅ Revised Amount Correct (Original 200k + Var 10k)
+
+✅ VERIFICATION COMPLETE: Construction Core is Functional.
+
