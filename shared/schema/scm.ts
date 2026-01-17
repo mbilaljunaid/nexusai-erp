@@ -97,15 +97,41 @@ export type PurchaseOrder = typeof purchaseOrders.$inferSelect;
 export type InsertPurchaseOrderLine = z.infer<typeof insertPurchaseOrderLineSchema>;
 export type PurchaseOrderLine = typeof purchaseOrderLines.$inferSelect;
 
-export const inventory = pgTable("inventory", {
+// 0. Inventory Organizations (Warehouse)
+export const inventoryOrganizations = pgTable("inv_organizations", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    itemName: varchar("item_name").notNull(),
-    sku: varchar("sku").unique(),
-    quantity: integer("quantity").default(0),
-    reorderLevel: integer("reorder_level"),
-    location: varchar("location"),
-    trackingMethod: varchar("tracking_method").default("NONE"), // NONE, LOT, SERIAL, BOTH
-    createdAt: timestamp("created_at").default(sql`now()`),
+    code: varchar("code").notNull().unique(),
+    name: varchar("name").notNull(),
+    active: boolean("active").default(true),
+    createdAt: timestamp("createdAt").default(sql`now()`),
+});
+
+export const inventory = pgTable("inv_items", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    itemNumber: varchar("itemNumber").notNull(),
+    description: varchar("description"),
+    primaryUomCode: varchar("primaryUomCode"),
+    organizationId: varchar("organizationId"), // FK to inv_organizations
+    quantityOnHand: numeric("quantityOnHand", { precision: 18, scale: 4 }).default("0"),
+    createdAt: timestamp("createdAt").default(sql`now()`),
+});
+
+export const inventorySubinventories = pgTable("inv_subinventories", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    organizationId: varchar("organizationId"),
+    code: varchar("code").notNull(),
+    name: varchar("name").notNull(),
+    active: boolean("active").default(true),
+    createdAt: timestamp("createdAt").default(sql`now()`),
+});
+
+export const inventoryLocators = pgTable("inv_locators", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    subinventoryId: varchar("subinventoryId"),
+    code: varchar("code").notNull(),
+    zoneId: varchar("zone_id"), // Added for WMS
+    active: boolean("active").default(true),
+    createdAt: timestamp("createdAt").default(sql`now()`),
 });
 
 export const insertInventorySchema = createInsertSchema(inventory).extend({
@@ -119,18 +145,20 @@ export const insertInventorySchema = createInsertSchema(inventory).extend({
 export type InsertInventory = z.infer<typeof insertInventorySchema>;
 export type Inventory = typeof inventory.$inferSelect;
 
-export const inventoryTransactions = pgTable("inventory_transactions", {
+export const inventoryTransactions = pgTable("inv_material_transactions", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    inventoryId: varchar("inventory_id").notNull(),
-    transactionType: varchar("transaction_type").notNull(), // RECEIPT, ISSUE, TRANSFER, ADJUSTMENT
-    quantity: integer("quantity").notNull(),
-    projectId: varchar("project_id"), // Linked to ppm_projects
-    taskId: varchar("task_id"), // Linked to ppm_tasks
-    transactionDate: timestamp("transaction_date").default(sql`now()`),
-    referenceNumber: varchar("reference_number"),
-    lotSerialId: varchar("lot_serial_id"), // FK to inventory_lot_serial
-    cost: numeric("cost", { precision: 18, scale: 2 }), // Cost of transaction
-    createdAt: timestamp("created_at").default(sql`now()`),
+    // organizationId: varchar("organizationId"), 
+    itemId: varchar("itemId").notNull(),
+    transactionType: varchar("transactionType").notNull(),
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
+    uom: varchar("uom"),
+    subinventoryId: varchar("subinventoryId"),
+    locatorId: varchar("locatorId"),
+    transactionDate: timestamp("transactionDate").default(sql`now()`),
+    sourceDocumentType: varchar("sourceDocumentType"),
+    sourceDocumentId: varchar("sourceDocumentId"),
+    reference: varchar("reference"),
+    createdAt: timestamp("createdAt").default(sql`now()`),
 });
 
 export const insertInventoryTransactionSchema = createInsertSchema(inventoryTransactions).extend({
@@ -419,3 +447,98 @@ export type SourcingBid = typeof sourcingBids.$inferSelect;
 export type SourcingBidLine = typeof sourcingBidLines.$inferSelect;
 export type InsertSourcingRfq = z.infer<typeof insertSourcingRfqSchema>;
 export type InsertSourcingBid = z.infer<typeof insertSourcingBidSchema>;
+
+// ========== WAREHOUSE MANAGEMENT SYSTEM (WMS) ==========
+
+// 1. Zones (Logical Grouping of Locators)
+export const wmsZones = pgTable("wms_zones", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    warehouseId: varchar("warehouse_id").notNull(), // Inventory Organization ID
+    zoneCode: varchar("zone_code").notNull(),
+    zoneName: varchar("zone_name").notNull(),
+    zoneType: varchar("zone_type").default("STORAGE"), // STORAGE, RECEIVING, STAGING, PICKING, PACKING
+    isTemperatureControlled: boolean("is_temperature_controlled").default(false),
+    priority: integer("priority").default(0), // For directed putaway/picking
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 2. Handling Units (LPNs / Containers)
+export const wmsHandlingUnits = pgTable("wms_handling_units", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    lpnNumber: varchar("lpn_number").notNull().unique(), // License Plate Number
+    warehouseId: varchar("warehouse_id").notNull(),
+    parentLpnId: varchar("parent_lpn_id"), // Nested LPNs (Box on Pallet)
+    type: varchar("type").default("BOX"), // PALLET, BOX, TOTE, CONTAINER
+    status: varchar("status").default("ACTIVE"), // ACTIVE, SHIPPED, CONSUMED, VOID
+    currentLocationId: varchar("current_location_id"), // Inventory Locator ID
+    weight: numeric("weight", { precision: 18, scale: 4 }),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 2.1 LPN Contents
+export const wmsLpnContents = pgTable("wms_lpn_contents", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    lpnId: varchar("lpn_id").notNull(), // FK to wms_handling_units
+    itemId: varchar("item_id").notNull(),
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
+    uom: varchar("uom"),
+    lotNumber: varchar("lot_number"),
+    serialNumber: varchar("serial_number"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 3. WMS Waves (Outbound Release Groups)
+export const wmsWaves = pgTable("wms_waves", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    waveNumber: varchar("wave_number").notNull().unique(),
+    warehouseId: varchar("warehouse_id").notNull(),
+    status: varchar("status").default("PLANNED"), // PLANNED, RELEASED, PICKING, COMPLETED
+    description: text("description"),
+    releaseDate: timestamp("release_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 4. WMS Tasks (Execution Unit)
+export const wmsTasks = pgTable("wms_tasks", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    taskNumber: varchar("task_number").unique(), // Auto-generated
+    warehouseId: varchar("warehouse_id").notNull(),
+    taskType: varchar("task_type").notNull(), // PICK, PUTAWAY, REPLENISH, COUNT, MOVE
+    status: varchar("status").default("PENDING"), // PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, CANCELLED
+
+    // Source (What triggered this?)
+    sourceDocType: varchar("source_doc_type"), // ORDER, RECEIPT, WAVE, MANUAL
+    sourceDocId: varchar("source_doc_id"),
+    sourceLineId: varchar("source_line_id"),
+
+    // Item Details
+    itemId: varchar("item_id").notNull(),
+    quantityPlanned: numeric("quantity_planned", { precision: 18, scale: 4 }).notNull(),
+    quantityActual: numeric("quantity_actual", { precision: 18, scale: 4 }),
+    uom: varchar("uom"),
+
+    // Location (From -> To)
+    fromLocatorId: varchar("from_locator_id"),
+    toLocatorId: varchar("to_locator_id"),
+    fromLpnId: varchar("from_lpn_id"),
+    toLpnId: varchar("to_lpn_id"),
+
+    // Execution
+    assignedUserId: varchar("assigned_user_id"),
+    priority: integer("priority").default(5),
+    completedAt: timestamp("completed_at"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertWmsZoneSchema = createInsertSchema(wmsZones);
+export const insertWmsHandlingUnitSchema = createInsertSchema(wmsHandlingUnits);
+export const insertWmsLpnContentSchema = createInsertSchema(wmsLpnContents);
+export const insertWmsWaveSchema = createInsertSchema(wmsWaves);
+export const insertWmsTaskSchema = createInsertSchema(wmsTasks);
+
+export type WmsZone = typeof wmsZones.$inferSelect;
+export type WmsHandlingUnit = typeof wmsHandlingUnits.$inferSelect;
+export type WmsLpnContent = typeof wmsLpnContents.$inferSelect;
+export type WmsWave = typeof wmsWaves.$inferSelect;
+export type WmsTask = typeof wmsTasks.$inferSelect;
+

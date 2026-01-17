@@ -51,6 +51,7 @@ import { procurementRouter } from "./modules/scm/procurementRoutes";
 
 import { billingRouter } from "./modules/billing/billing.controller";
 import { orderRouter } from "./modules/order/order.controller";
+import { wmsRoutes } from "./modules/inventory/wms-routes";
 
 
 export async function registerRoutes(
@@ -95,6 +96,9 @@ export async function registerRoutes(
   app.use("/api/order-management", orderRouter);
 
 
+
+  // WMS (Warehouse Management)
+  app.use("/api/wms", wmsRoutes);
 
   // Agentic AI
   app.use("/api", aiRouter);
