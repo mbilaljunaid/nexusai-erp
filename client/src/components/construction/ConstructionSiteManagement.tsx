@@ -21,9 +21,11 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import {
     ClipboardList, MessageSquare, FileUp, AlertTriangle,
-    Plus, Sun, Cloud, CloudRain, Thermometer
+    Plus, Sun, Cloud, CloudRain, Thermometer, ShieldAlert
 } from "lucide-react";
 import { format } from "date-fns";
+import { StandardTable, Column } from "../tables/StandardTable";
+import ConstructionClaimsManager from "./ConstructionClaimsManager";
 
 interface DailyLog {
     id: string;
@@ -54,6 +56,7 @@ export default function ConstructionSiteManagement() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
 
     // --- Data Fetching ---
     const { data: projects = [] } = useQuery<any[]>({
@@ -87,6 +90,15 @@ export default function ConstructionSiteManagement() {
         enabled: !!selectedProjectId,
         queryFn: async () => {
             const res = await fetch(`/api/construction/projects/${selectedProjectId}/submittals`);
+            return res.json();
+        }
+    });
+
+    const { data: contracts = [] } = useQuery<any[]>({
+        queryKey: ["construction-contracts", selectedProjectId],
+        enabled: !!selectedProjectId,
+        queryFn: async () => {
+            const res = await fetch(`/api/construction/projects/${selectedProjectId}/contracts`);
             return res.json();
         }
     });
@@ -180,6 +192,9 @@ export default function ConstructionSiteManagement() {
                     <TabsTrigger value="compliance" className="data-[state=active]:border-primary data-[state=active]:bg-transparent border-b-2 border-transparent rounded-none px-4 py-2">
                         <AlertTriangle className="h-4 w-4 mr-2" /> Compliance
                     </TabsTrigger>
+                    <TabsTrigger value="claims" className="data-[state=active]:border-primary data-[state=active]:bg-transparent border-b-2 border-transparent rounded-none px-4 py-2">
+                        <ShieldAlert className="h-4 w-4 mr-2" /> Claims & Disputes
+                    </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="logs" className="space-y-4">
@@ -219,38 +234,36 @@ export default function ConstructionSiteManagement() {
                         <h2 className="text-xl font-semibold">Requests for Information</h2>
                         <Button size="sm"><Plus className="h-4 w-4 mr-1" /> New RFI</Button>
                     </div>
-                    <Card>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>RFI #</TableHead>
-                                    <TableHead>Subject</TableHead>
-                                    <TableHead>Importance</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Created At</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {rfis.map(rfi => (
-                                    <TableRow key={rfi.id}>
-                                        <TableCell className="font-mono">{rfi.rfiNumber}</TableCell>
-                                        <TableCell className="font-medium">{rfi.subject}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={rfi.importance === "URGENT" ? "destructive" : "outline"}>
-                                                {rfi.importance}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant={rfi.status === "OPEN" ? "default" : "secondary"}>
-                                                {rfi.status}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>{format(new Date(rfi.createdAt), "PP")}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </Card>
+                    <StandardTable
+                        data={rfis}
+                        columns={[
+                            { header: "RFI #", accessorKey: "rfiNumber", sortable: true },
+                            { header: "Subject", accessorKey: "subject" },
+                            {
+                                header: "Importance",
+                                accessorKey: "importance",
+                                cell: (item: RFI) => (
+                                    <Badge variant={item.importance === "URGENT" ? "destructive" : "outline"}>
+                                        {item.importance}
+                                    </Badge>
+                                )
+                            },
+                            {
+                                header: "Status",
+                                accessorKey: "status",
+                                cell: (item: RFI) => (
+                                    <Badge variant={item.status === "OPEN" ? "default" : "secondary"}>
+                                        {item.status}
+                                    </Badge>
+                                )
+                            },
+                            {
+                                header: "Created At",
+                                accessorKey: "createdAt",
+                                cell: (item: RFI) => format(new Date(item.createdAt), "PP")
+                            }
+                        ]}
+                    />
                 </TabsContent>
 
                 <TabsContent value="submittals" className="space-y-4">
@@ -258,32 +271,27 @@ export default function ConstructionSiteManagement() {
                         <h2 className="text-xl font-semibold">Project Submittals</h2>
                         <Button size="sm"><Plus className="h-4 w-4 mr-1" /> New Submittal</Button>
                     </div>
-                    <Card>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Submittal #</TableHead>
-                                    <TableHead>Description</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Received</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {submittals.map(sub => (
-                                    <TableRow key={sub.id}>
-                                        <TableCell className="font-mono">{sub.submittalNumber}</TableCell>
-                                        <TableCell className="font-medium">{sub.description}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={sub.status === "APPROVED" ? "default" : "outline"}>
-                                                {sub.status}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>{format(new Date(sub.createdAt), "PP")}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </Card>
+                    <StandardTable
+                        data={submittals}
+                        columns={[
+                            { header: "Submittal #", accessorKey: "submittalNumber", sortable: true },
+                            { header: "Description", accessorKey: "description" },
+                            {
+                                header: "Status",
+                                accessorKey: "status",
+                                cell: (item: Submittal) => (
+                                    <Badge variant={item.status === "APPROVED" ? "default" : "outline"}>
+                                        {item.status}
+                                    </Badge>
+                                )
+                            },
+                            {
+                                header: "Received",
+                                accessorKey: "createdAt",
+                                cell: (item: Submittal) => format(new Date(item.createdAt), "PP")
+                            }
+                        ]}
+                    />
                 </TabsContent>
 
                 <TabsContent value="compliance" className="space-y-4">
@@ -291,47 +299,71 @@ export default function ConstructionSiteManagement() {
                         <h2 className="text-xl font-semibold">Contractual Compliance Audit</h2>
                         <Button size="sm" variant="outline"><Plus className="h-4 w-4 mr-1" /> New Entry</Button>
                     </div>
-                    <Card>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Contract</TableHead>
-                                    <TableHead>Document Type</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Expiry Date</TableHead>
-                                    <TableHead>Compliance</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {compliance.map(c => {
-                                    const isExpired = new Date(c.expiryDate) < new Date();
+                    <StandardTable
+                        data={compliance}
+                        columns={[
+                            { header: "Contract", accessorKey: "contractNumber" },
+                            { header: "Document Type", accessorKey: "documentType" },
+                            {
+                                header: "Status",
+                                accessorKey: "status",
+                                cell: (item: any) => (
+                                    <Badge variant={item.status === "ACTIVE" ? "default" : "secondary"}>
+                                        {item.status}
+                                    </Badge>
+                                )
+                            },
+                            {
+                                header: "Expiry Date",
+                                accessorKey: "expiryDate",
+                                cell: (item: any) => {
+                                    const isExpired = new Date(item.expiryDate) < new Date();
                                     return (
-                                        <TableRow key={c.id}>
-                                            <TableCell className="font-medium">{c.contractNumber}</TableCell>
-                                            <TableCell>{c.documentType}</TableCell>
-                                            <TableCell>
-                                                <Badge variant={c.status === "ACTIVE" ? "default" : "secondary"}>
-                                                    {c.status}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className={isExpired ? "text-destructive font-bold" : ""}>
-                                                {format(new Date(c.expiryDate), "PP")}
-                                            </TableCell>
-                                            <TableCell>
-                                                {isExpired && c.isMandatoryForPayment ? (
-                                                    <Badge variant="destructive" className="flex items-center gap-1 w-fit">
-                                                        <AlertTriangle className="h-3 w-3" /> Payment Blocked
-                                                    </Badge>
-                                                ) : (
-                                                    <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Compliant</Badge>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
+                                        <span className={isExpired ? "text-destructive font-bold" : ""}>
+                                            {format(new Date(item.expiryDate), "PP")}
+                                        </span>
                                     );
-                                })}
-                            </TableBody>
-                        </Table>
-                    </Card>
+                                }
+                            },
+                            {
+                                header: "Compliance",
+                                accessorKey: "isMandatoryForPayment",
+                                cell: (item: any) => {
+                                    const isExpired = new Date(item.expiryDate) < new Date();
+                                    return (isExpired && item.isMandatoryForPayment) ? (
+                                        <Badge variant="destructive" className="flex items-center gap-1 w-fit">
+                                            <AlertTriangle className="h-3 w-3" /> Payment Blocked
+                                        </Badge>
+                                    ) : (
+                                        <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Compliant</Badge>
+                                    );
+                                }
+                            }
+                        ]}
+                    />
+                </TabsContent>
+
+                <TabsContent value="claims" className="space-y-4 pt-4">
+                    <div className="flex items-center gap-4 mb-4">
+                        <Select value={selectedContractId || ""} onValueChange={setSelectedContractId}>
+                            <SelectTrigger className="w-[300px]">
+                                <SelectValue placeholder="Select Contract for Claims" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {contracts.map(c => (
+                                    <SelectItem key={c.id} value={c.id}>{c.contractNumber} - {c.subject}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {selectedContractId ? (
+                        <ConstructionClaimsManager contractId={selectedContractId} />
+                    ) : (
+                        <Card className="h-48 flex items-center justify-center text-muted-foreground border-dashed">
+                            Select a contract to manage project claims and disputes.
+                        </Card>
+                    )}
                 </TabsContent>
             </Tabs>
         </div>

@@ -1,30 +1,37 @@
-
 # Implementation Plan: Maintenance GL Integration (Phase D)
 
-## Goal
-Achieve financial parity by posting Maintenance Costs (Material & Labor) to the General Ledger via the SLA (Sub-ledger Accounting) framework.
-This ensures that every nut, bolt, and hour of labor consumed in maintenance is reflected in the company's financial statements.
+## Phase 1-4: Foundation & AI (✅ Complete)
+- [x] Schema Core, Contracts UI, Billing, AI Risk.
 
-## Proposed Changes
+## Phase 5: Deep Enterprise Controls (✅ Complete)
+- [x] Construction Setup, Multi-stage certification, WIP Accounting, Bulk Import.
 
-### 1. SLA Configuration (Seed Data)
-We need to define the "Events" that trigger accounting in Maintenance.
-*   **Event Class**: `MAINT_MATERIAL_ISSUE`
-*   **Event Class**: `MAINT_RESOURCE_CHARGING` (Labor)
+## Phase 6: Field Operations & Compliance (✅ Complete)
+- [x] Site Management (Logs/RFIs), Compliance Payment Gate.
 
-### 2. Backend Service
-#### [NEW] `server/services/MaintenanceAccountingService.ts`
-*   `createAccountingForCost(costId)`:
-    *   Fetches the `maint_work_order_costs` record.
-    *   Determines the **Debit** Account (Maintenance Expense) and **Credit** Account (Inventory Asset / Labor Absorption).
-    *   Creates `sla_journal_headers` and `sla_journal_lines`.
-    *   Updates `maint_work_order_costs` with `accounting_status = 'ACCOUNTED'`.
+## Phase 7: Master Data & UI Perfection (Level-7, Level-9)
+### Goal
+Closing UI/UX consistency gaps and establishing reusable master data libraries.
 
-#### [MODIFY] `server/services/MaintenanceCostingService.ts`
-*   Trigger `MaintenanceAccountingService.createAccountingForCost()` immediately after calculating a cost (real-time accounting) or via a batch process. For this MVF (Minimum Viable Feature), we'll do real-time.
+### Changes
+#### [NEW] shared/schema/construction_master.ts
+- `construction_cost_codes`: Global CSI MasterFormat / Standard library support.
+#### [NEW] client/src/components/construction/ConstructionCostCodeLibrary.tsx
+- Centralized management of standard costing categories.
+#### [MODIFY] Construction Workbenches
+- Upgrade `ConstructionContractWorkbench.tsx`, `ConstructionBillingWorkbench.tsx`, and `ConstructionSiteManagement.tsx` to the `StandardTable` grid pattern for L15 scalability (server-side sorting/filtering).
 
-### 3. Frontend UI
-#### [MODIFY] `client/src/components/maintenance/MaintenanceDetailSheet.tsx`
+## Phase 8: Strategic Claims & Project Control (Level-11 to Level-15)
+### Goal
+Achieve full Oracle Fusion parity for complex dispute management and localized project rules.
+
+### Changes
+#### [NEW] `construction_claims` Schema
+- Dispute tracking, claim impact assessment, and formal settlement workflow.
+#### [MODIFY] ConstructionSetup.tsx
+- Implement "Site-Level Regulatory Overrides" (Localization support for tax/regional rules).
+#### [AI] Variation Impact Simulator (L13)
+- Predictive simulation of change order impact on schedule vs. cost trade-offs.
 *   In the **Costs** tab, add a column or indicator for "Accounting Status" (Draft vs Accounted).
 *   Add a "View Journals" button (optional drill-down).
 

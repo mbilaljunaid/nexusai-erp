@@ -72,10 +72,11 @@ export const navigationConfig: SidebarNode[] = [
                 allowedRoles: ["admin", "editor"],
                 children: [
                     { id: "const-contracts", title: "Contracts", type: "link", path: "/construction/contracts" },
-                    { id: "const-billing", title: "Billing (Pay Apps)", type: "link", path: "/construction/billing" },
-                    { id: "const-site", title: "Site Management", type: "link", path: "/construction/site-management" },
+                    { id: "const-billing", title: "Billing Workbench", type: "link", path: "/construction/billing", icon: DollarSign },
+                    { id: "const-resources", title: "Resource Workbench", type: "link", path: "/construction/resources", icon: Truck },
+                    { id: "const-setup", title: "Setup", type: "link", path: "/construction/setup", icon: SettingsIcon },
+                    { id: "const-cost-codes", title: "Cost Code Library", type: "link", path: "/construction/cost-codes", icon: Wrench },
                     { id: "const-insights", title: "AI Insights", type: "link", path: "/construction/insights", icon: Sparkles },
-                    { id: "const-setup", title: "Setup (Rules)", type: "link", path: "/construction/setup" },
                 ]
             },
         ],

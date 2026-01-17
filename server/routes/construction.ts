@@ -253,7 +253,6 @@ constructionRouter.post("/projects/:projectId/submittals", async (req, res) => {
             ...req.body,
             projectId: req.params.projectId
         });
-        res.status(201).json(sub);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
@@ -263,6 +262,34 @@ constructionRouter.get("/projects/:projectId/submittals", async (req, res) => {
     try {
         const subs = await constructionService.getSubmittals(req.params.projectId);
         res.json(subs);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// -- Cost Codes --
+constructionRouter.get("/cost-codes", async (req, res) => {
+    try {
+        const codes = await constructionService.getCostCodes();
+        res.json(codes);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/cost-codes", async (req, res) => {
+    try {
+        const code = await constructionService.createCostCode(req.body);
+        res.json(code);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.put("/cost-codes/:id", async (req, res) => {
+    try {
+        const code = await constructionService.updateCostCode(req.params.id, req.body);
+        res.json(code);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
@@ -311,3 +338,93 @@ constructionRouter.get("/projects/:projectId/risk", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch risk analysis" });
     }
 });
+
+// -- Claims & Disputes --
+constructionRouter.get("/contracts/:id/claims", async (req, res) => {
+    try {
+        const claims = await constructionService.getClaims(req.params.id);
+        res.json(claims);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/contracts/:id/claims", async (req, res) => {
+    try {
+        const claim = await constructionService.createClaim({
+            ...req.body,
+            contractId: req.params.id
+        });
+        res.json(claim);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.patch("/claims/:id/settle", async (req, res) => {
+    try {
+        const { amountApproved } = req.body;
+        const claim = await constructionService.settleClaim(req.params.id, amountApproved);
+        res.json(claim);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/contracts/:id/variations/simulate", async (req, res) => {
+    try {
+        const analysis = await constructionRiskService.simulateVariationImpact(req.params.id, req.body);
+        res.json(analysis);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// -- Resources & Equipment --
+constructionRouter.get("/resources", async (req, res) => {
+    try {
+        const resources = await constructionService.getResources();
+        res.json(resources);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/resources", async (req, res) => {
+    try {
+        const resource = await constructionService.createResource(req.body);
+        res.json(resource);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.get("/projects/:id/resource-allocations", async (req, res) => {
+    try {
+        const allocations = await constructionService.getResourceAllocations(req.params.id);
+        res.json(allocations);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.post("/resource-allocations", async (req, res) => {
+    try {
+        const allocation = await constructionService.allocateResource(req.body);
+        res.json(allocation);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+constructionRouter.get("/resources/:id/telemetry", async (req, res) => {
+    try {
+        const telemetry = await constructionService.getResourceUsageTelemetry(req.params.id);
+        if (!telemetry) return res.status(404).json({ error: "Telemetry not available for this resource type" });
+        res.json(telemetry);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+export default constructionRouter;

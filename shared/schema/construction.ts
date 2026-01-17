@@ -54,6 +54,7 @@ export const constructionContractLines = pgTable("construction_contract_lines", 
     quantity: numeric("quantity", { precision: 18, scale: 4 }).default("1"),
     unitRate: numeric("unit_rate", { precision: 18, scale: 2 }).default("0.00"),
     scheduledValue: numeric("scheduled_value", { precision: 18, scale: 2 }).notNull(),
+    costCodeId: varchar("cost_code_id"), // Link to construction_cost_codes
     status: varchar("status").default("APPROVED"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });

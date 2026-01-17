@@ -23,6 +23,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Hammer, FileText, DollarSign, RefreshCw } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VariationManager from "@/components/construction/VariationManager";
+import { StandardTable, Column } from "../tables/StandardTable";
+import { CostCode } from "@shared/schema";
 
 interface Project {
     id: string;
@@ -47,6 +49,7 @@ interface ContractLine {
     lineNumber: number;
     description: string;
     scheduledValue: string;
+    costCodeId?: string;
     status: string;
 }
 
@@ -92,6 +95,15 @@ export default function ConstructionContractWorkbench() {
         queryFn: async () => {
             const res = await fetch(`/api/construction/contracts/${selectedContractId}`);
             if (!res.ok) throw new Error("Failed to fetch contract details");
+            return res.json();
+        }
+    });
+
+    const { data: costCodes = [] } = useQuery<CostCode[]>({
+        queryKey: ["construction-cost-codes"],
+        queryFn: async () => {
+            const res = await fetch("/api/construction/cost-codes");
+            if (!res.ok) throw new Error("Failed to fetch cost codes");
             return res.json();
         }
     });
@@ -154,6 +166,7 @@ export default function ConstructionContractWorkbench() {
             lineNumber: parseInt(formData.get("lineNumber") as string),
             description: formData.get("description"),
             scheduledValue: formData.get("scheduledValue"),
+            costCodeId: formData.get("costCodeId"),
         });
     };
 
@@ -381,6 +394,21 @@ export default function ConstructionContractWorkbench() {
                                                                 </div>
                                                             </div>
                                                             <div className="space-y-2">
+                                                                <Label>Cost Code</Label>
+                                                                <Select name="costCodeId">
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Assign Cost Code" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        {costCodes.map(cc => (
+                                                                            <SelectItem key={cc.id} value={cc.id}>
+                                                                                {cc.code} - {cc.name}
+                                                                            </SelectItem>
+                                                                        ))}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </div>
+                                                            <div className="space-y-2">
                                                                 <Label>Description of Work</Label>
                                                                 <Textarea name="description" placeholder="e.g. Concrete Foundations Phase 1" required />
                                                             </div>
@@ -393,38 +421,32 @@ export default function ConstructionContractWorkbench() {
                                             </div>
                                         </div>
 
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="w-[80px]">Line</TableHead>
-                                                    <TableHead>Description</TableHead>
-                                                    <TableHead className="text-right">Scheduled Value</TableHead>
-                                                    <TableHead className="w-[100px]">Status</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {activeContract.lines && activeContract.lines.length > 0 ? (
-                                                    activeContract.lines.map((line) => (
-                                                        <TableRow key={line.id}>
-                                                            <TableCell className="font-medium">{line.lineNumber}</TableCell>
-                                                            <TableCell>{line.description}</TableCell>
-                                                            <TableCell className="text-right font-mono">
-                                                                ${Number(line.scheduledValue).toLocaleString()}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <Badge variant="outline" className="text-xs">{line.status}</Badge>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                ) : (
-                                                    <TableRow>
-                                                        <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
-                                                            No schedule of values defined. Add lines to build the contract sum.
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </Table>
+                                        <StandardTable
+                                            data={activeContract.lines || []}
+                                            columns={[
+                                                { header: "Line", accessorKey: "lineNumber", sortable: true },
+                                                {
+                                                    header: "Cost Code",
+                                                    accessorKey: "costCodeId",
+                                                    cell: (item: ContractLine) => {
+                                                        const cc = costCodes.find(c => c.id === item.costCodeId);
+                                                        return cc ? <Badge variant="secondary">{cc.code}</Badge> : "-";
+                                                    }
+                                                },
+                                                { header: "Description", accessorKey: "description" },
+                                                {
+                                                    header: "Scheduled Value",
+                                                    accessorKey: "scheduledValue",
+                                                    cell: (item: ContractLine) => `$${Number(item.scheduledValue).toLocaleString()}`,
+                                                    sortable: true
+                                                },
+                                                {
+                                                    header: "Status",
+                                                    accessorKey: "status",
+                                                    cell: (item: ContractLine) => <Badge variant="outline">{item.status}</Badge>
+                                                }
+                                            ]}
+                                        />
                                     </TabsContent>
 
                                     <TabsContent value="variations" className="flex-1 overflow-auto m-0 p-4">

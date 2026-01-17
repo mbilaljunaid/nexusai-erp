@@ -18,8 +18,10 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, DollarSign, Calculator, Lock, Calendar, ShieldCheck } from "lucide-react";
+import { Plus, DollarSign, Calculator, Lock, Calendar, ShieldCheck, History } from "lucide-react";
 import { format } from "date-fns";
+import { StandardTable, Column } from "../tables/StandardTable";
+import { CostCode } from "@shared/schema";
 
 interface PayApp {
     id: string;
@@ -90,6 +92,14 @@ export default function ConstructionBillingWorkbench() {
         enabled: !!selectedPayAppId,
         queryFn: async () => {
             const res = await fetch(`/api/construction/pay-apps/${selectedPayAppId}`);
+            return res.json();
+        }
+    });
+
+    const { data: costCodes = [] } = useQuery<CostCode[]>({
+        queryKey: ["construction-cost-codes"],
+        queryFn: async () => {
+            const res = await fetch("/api/construction/cost-codes");
             return res.json();
         }
     });
@@ -316,9 +326,11 @@ export default function ConstructionBillingWorkbench() {
                                             </Badge>
                                         )}
                                     </div>
-                                    {activeApp.status === "CERTIFIED" && !activeApp.isLocked && (
-                                        <p className="text-[10px] text-muted-foreground italic">Pending final lock sequence</p>
-                                    )}
+                                    <div className="flex flex-col gap-1 text-[10px] text-muted-foreground">
+                                        {activeApp.architectApprovedBy && <p>Architect: {activeApp.architectApprovedBy}</p>}
+                                        {activeApp.engineerApprovedBy && <p>Engineer: {activeApp.engineerApprovedBy}</p>}
+                                        {activeApp.certifiedBy && <p>GC: {activeApp.certifiedBy}</p>}
+                                    </div>
                                 </Card>
                             </div>
 
@@ -329,41 +341,49 @@ export default function ConstructionBillingWorkbench() {
                                     {activeApp.isLocked && <Badge variant="destructive">Read-Only</Badge>}
                                 </CardHeader>
                                 <CardContent className="p-0">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Description of Work</TableHead>
-                                                <TableHead className="text-right">Scheduled Value</TableHead>
-                                                <TableHead className="text-right bg-muted/20">Total Completed</TableHead>
-                                                <TableHead className="text-right">%</TableHead>
-                                                <TableHead className="text-right">Balance to Finish</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {activeApp.lines?.map(line => (
-                                                <TableRow key={line.id}>
-                                                    <TableCell className="font-medium">{line.description}</TableCell>
-                                                    <TableCell className="text-right font-mono text-muted-foreground">
-                                                        ${Number(line.scheduledValue).toLocaleString()}
-                                                    </TableCell>
-                                                    <TableCell className="text-right bg-muted/10 p-1">
-                                                        <Input
-                                                            className="text-right font-mono h-8 w-32 ml-auto"
-                                                            defaultValue={line.totalCompletedToDate}
-                                                            disabled={activeApp.isLocked}
-                                                            onBlur={(e) => handleLineUpdate(line.id, "totalCompletedToDate", e.target.value)}
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell className="text-right font-mono">
-                                                        {Number(line.percentageComplete).toFixed(1)}%
-                                                    </TableCell>
-                                                    <TableCell className="text-right font-mono text-muted-foreground">
-                                                        ${(Number(line.scheduledValue) - Number(line.totalCompletedToDate)).toLocaleString()}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
+                                    <StandardTable
+                                        data={activeApp.lines || []}
+                                        columns={[
+                                            { header: "Description", accessorKey: "description" },
+                                            {
+                                                header: "Cost Code",
+                                                accessorKey: "costCodeId",
+                                                cell: (item: any) => {
+                                                    const cc = costCodes.find(c => c.id === item.costCodeId);
+                                                    return cc ? <Badge variant="secondary">{cc.code}</Badge> : "-";
+                                                }
+                                            },
+                                            {
+                                                header: "Scheduled Value",
+                                                accessorKey: "scheduledValue",
+                                                cell: (item: any) => `$${Number(item.scheduledValue).toLocaleString()}`,
+                                                sortable: true
+                                            },
+                                            {
+                                                header: "Total Completed",
+                                                accessorKey: "totalCompletedToDate",
+                                                cell: (item: any) => (
+                                                    <Input
+                                                        className="text-right font-mono h-8 w-32 ml-auto"
+                                                        defaultValue={item.totalCompletedToDate}
+                                                        disabled={activeApp.isLocked}
+                                                        onBlur={(e) => handleLineUpdate(item.id, "totalCompletedToDate", e.target.value)}
+                                                    />
+                                                )
+                                            },
+                                            {
+                                                header: "%",
+                                                accessorKey: "percentageComplete",
+                                                cell: (item: any) => `${Number(item.percentageComplete).toFixed(1)}%`,
+                                                sortable: true
+                                            },
+                                            {
+                                                header: "Balance",
+                                                accessorKey: "balance",
+                                                cell: (item: any) => `$${(Number(item.scheduledValue) - Number(item.totalCompletedToDate)).toLocaleString()}`
+                                            }
+                                        ]}
+                                    />
                                 </CardContent>
                             </Card>
                         </>

@@ -79,4 +79,39 @@ export class ConstructionRiskService {
             exposure: pendingAmount.toString()
         };
     }
+
+    async simulateVariationImpact(contractId: string, variationData: { amount: number, type: string, description: string }) {
+        const contract = await db.select().from(constructionContracts).where(eq(constructionContracts.id, contractId));
+        if (!contract.length) throw new Error("Contract not found");
+
+        const history = await db.select().from(constructionVariations).where(eq(constructionVariations.contractId, contractId));
+
+        // 1. Cost Impact Analysis
+        const avgVariation = history.length > 0
+            ? history.reduce((s, v) => s + Number(v.amount || 0), 0) / history.length
+            : 0;
+
+        const costRiskScore = variationData.amount > avgVariation * 2 ? "HIGH" :
+            variationData.amount > avgVariation ? "MEDIUM" : "LOW";
+
+        // 2. Schedule Impact Prediction (Simulated AI Logic)
+        let predictedDelayDays = 0;
+        if (variationData.type === "SCOPE_CHANGE") predictedDelayDays = 14;
+        if (variationData.type === "UNFORESEEN") predictedDelayDays = 7;
+        if (variationData.amount > 100000) predictedDelayDays += 21;
+
+        // 3. Recommended Actions
+        const recommendations = [];
+        if (costRiskScore === "HIGH") recommendations.push("Conduct secondary architectural review to verify scope necessity.");
+        if (predictedDelayDays > 10) recommendations.push("Verify critical path impact with site scheduler.");
+        recommendations.push("Ensure evidence (photos/logs) are attached to the variation before approval.");
+
+        return {
+            costRiskScore,
+            predictedDelayDays,
+            financialImpactPercent: (variationData.amount / 1000000) * 100, // Normalized to typical contract size
+            recommendations,
+            simulationTimestamp: new Date().toISOString()
+        };
+    }
 }

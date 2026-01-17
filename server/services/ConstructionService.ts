@@ -16,11 +16,14 @@ import {
     glCodeCombinations,
     glPeriods,
     glAccounts,
-    constructionDailyLogs,
     constructionDailyLabor,
     constructionRFIs,
     constructionSubmittals,
-    constructionCompliance
+    constructionCompliance,
+    constructionCostCodes,
+    constructionClaims,
+    constructionResources,
+    constructionResourceAllocations
 } from "@shared/schema";
 import { eq, desc, sum, sql, and } from "drizzle-orm";
 import { FinanceService } from "./finance";
@@ -521,5 +524,101 @@ export class ConstructionService {
         return await db.select().from(constructionSubmittals)
             .where(eq(constructionSubmittals.projectId, projectId))
             .orderBy(desc(constructionSubmittals.createdAt));
+    }
+
+    // -- Cost Code Master Data --
+
+    async createCostCode(data: any) {
+        const [res] = await db.insert(constructionCostCodes).values(data).returning();
+        return res;
+    }
+
+    async getCostCodes() {
+        return await db.select().from(constructionCostCodes).orderBy(constructionCostCodes.code);
+    }
+
+    async updateCostCode(id: string, data: any) {
+        const [res] = await db.update(constructionCostCodes)
+            .set({ ...data, updatedAt: new Date() })
+            .where(eq(constructionCostCodes.id, id))
+            .returning();
+        return res;
+    }
+
+    async deleteCostCode(id: string) {
+        return await db.delete(constructionCostCodes).where(eq(constructionCostCodes.id, id));
+    }
+
+    // -- Claims & Dispute Management --
+
+    async createClaim(data: any) {
+        const [res] = await db.insert(constructionClaims).values(data).returning();
+        return res;
+    }
+
+    async getClaims(contractId: string) {
+        return await db.select().from(constructionClaims).where(eq(constructionClaims.contractId, contractId)).orderBy(desc(constructionClaims.createdAt));
+    }
+
+    async updateClaim(id: string, data: any) {
+        const [res] = await db.update(constructionClaims)
+            .set({ ...data, updatedAt: new Date() })
+            .where(eq(constructionClaims.id, id))
+            .returning();
+        return res;
+    }
+
+    async settleClaim(id: string, approvedAmount: string) {
+        const [res] = await db.update(constructionClaims)
+            .set({
+                amountApproved: approvedAmount,
+                status: "SETTLED",
+                settledDate: new Date(),
+                updatedAt: new Date()
+            })
+            .where(eq(constructionClaims.id, id))
+            .returning();
+        return res;
+    }
+
+    // -- Resource & Equipment Management --
+
+    async createResource(data: any) {
+        const [res] = await db.insert(constructionResources).values(data).returning();
+        return res;
+    }
+
+    async getResources() {
+        return await db.select().from(constructionResources).orderBy(constructionResources.name);
+    }
+
+    async allocateResource(data: any) {
+        const [res] = await db.insert(constructionResourceAllocations).values(data).returning();
+        return res;
+    }
+
+    async getResourceAllocations(projectId: string) {
+        return await db.select()
+            .from(constructionResourceAllocations)
+            .where(eq(constructionResourceAllocations.projectId, projectId))
+            .orderBy(desc(constructionResourceAllocations.startDate));
+    }
+
+    // -- Equipment Telemetry (L14) --
+
+    async getResourceUsageTelemetry(resourceId: string) {
+        const resource = await db.select().from(constructionResources).where(eq(constructionResources.id, resourceId));
+        if (!resource.length || resource[0].type !== "EQUIPMENT") return null;
+
+        // Mock telemetry data: simulated sensor pulses for engine hours and fuel level
+        return {
+            resourceId,
+            timestamp: new Date().toISOString(),
+            engineHours: Math.floor(Math.random() * 5000) + 100, // Simulated life hours
+            fuelLevel: Math.floor(Math.random() * 100), // 0-100%
+            loadFactor: (Math.random() * 0.9).toFixed(2), // 0-1 engine load
+            efficiencyScore: (Math.random() * 20 + 80).toFixed(1), // 80-100%
+            alerts: Math.random() > 0.9 ? ["Oil pressure warning", "Filter replacement due"] : []
+        };
     }
 }

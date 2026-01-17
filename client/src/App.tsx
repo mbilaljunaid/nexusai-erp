@@ -632,7 +632,9 @@ const ConstructionContractWorkbench = lazy(() => import("@/components/constructi
 const ConstructionBillingWorkbench = lazy(() => import("@/components/construction/ConstructionBillingWorkbench"));
 const ConstructionExecutiveDashboard = lazy(() => import("@/components/construction/ConstructionExecutiveDashboard"));
 const ConstructionSetup = lazy(() => import("@/components/construction/ConstructionSetup"));
+const ConstructionResourceWorkbench = lazy(() => import("@/components/construction/ConstructionResourceWorkbench"));
 const ConstructionSiteManagement = lazy(() => import("@/components/construction/ConstructionSiteManagement"));
+const ConstructionCostCodeLibrary = lazy(() => import("@/components/construction/ConstructionCostCodeLibrary"));
 
 // Automotive Pack
 const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
@@ -777,8 +779,10 @@ function Router() {
       <Route path="/projects-module" component={ProjectsModule} />
       <Route path="/construction/contracts" component={ConstructionContractWorkbench} />
       <Route path="/construction/billing" component={ConstructionBillingWorkbench} />
+      <Route path="/construction/cost-codes" component={ConstructionCostCodeLibrary} />
       <Route path="/construction/insights" component={ConstructionExecutiveDashboard} />
       <Route path="/construction/setup" component={ConstructionSetup} />
+      <Route path="/construction/resources" component={ConstructionResourceWorkbench} />
       <Route path="/construction/site-management" component={ConstructionSiteManagement} />
       <Route path="/marketing-module" component={MarketingModule} />
       <Route path="/manufacturing-module" component={ManufacturingModule} />
