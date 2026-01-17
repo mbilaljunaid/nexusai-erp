@@ -5,8 +5,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
-} from "@/components/ui/dialog";
+    Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetDescription
+} from "@/components/ui/sheet";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -87,29 +88,35 @@ export default function ConstructionCostCodeLibrary() {
 
     return (
         <div className="p-6 space-y-6">
+            <Breadcrumbs items={[
+                { label: "ERP", path: "/erp" },
+                { label: "Construction", path: "/construction/insights" },
+                { label: "Cost Codes", path: "/construction/cost-codes" }
+            ]} />
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Cost Code Library</h1>
                     <p className="text-muted-foreground">Manage standard CSI MasterFormat and regional cost codes.</p>
                 </div>
 
-                <Dialog open={isAddOpen || !!editingCode} onOpenChange={(open) => {
+                <Sheet open={isAddOpen || !!editingCode} onOpenChange={(open) => {
                     if (!open) {
                         setIsAddOpen(false);
                         setEditingCode(null);
                     }
                 }}>
-                    <DialogTrigger asChild>
+                    <SheetTrigger asChild>
                         <Button onClick={() => setIsAddOpen(true)}>
                             <Plus className="mr-2 h-4 w-4" />
                             Add Cost Code
                         </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>{editingCode ? "Edit Cost Code" : "Add New Cost Code"}</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                    </SheetTrigger>
+                    <SheetContent side="right">
+                        <SheetHeader>
+                            <SheetTitle>{editingCode ? "Edit Cost Code" : "Add New Cost Code"}</SheetTitle>
+                            <SheetDescription>Configure a standard cost code for use across the enterprise.</SheetDescription>
+                        </SheetHeader>
+                        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                             <div className="grid gap-2">
                                 <Label htmlFor="code">Code</Label>
                                 <Input id="code" name="code" defaultValue={editingCode?.code || ""} placeholder="e.g. 03-30-00" required />
@@ -126,14 +133,14 @@ export default function ConstructionCostCodeLibrary() {
                                 <Label htmlFor="description">Description</Label>
                                 <Input id="description" name="description" defaultValue={editingCode?.description || ""} />
                             </div>
-                            <DialogFooter>
-                                <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+                            <SheetFooter className="pt-4">
+                                <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="w-full">
                                     {editingCode ? "Update" : "Create"}
                                 </Button>
-                            </DialogFooter>
+                            </SheetFooter>
                         </form>
-                    </DialogContent>
-                </Dialog>
+                    </SheetContent>
+                </Sheet>
             </div>
 
             <Card>

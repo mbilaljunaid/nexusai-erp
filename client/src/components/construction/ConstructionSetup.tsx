@@ -19,6 +19,7 @@ import {
     RotateCcw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 interface SetupEntry {
     id: string;
@@ -64,6 +65,11 @@ export default function ConstructionSetup() {
 
     return (
         <div className="p-6 space-y-6 bg-slate-50/50 min-h-screen">
+            <Breadcrumbs items={[
+                { label: "ERP", path: "/erp" },
+                { label: "Construction", path: "/construction/insights" },
+                { label: "Setup", path: "/construction/setup" }
+            ]} />
             <div className="flex justify-between items-end">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Construction Setup</h1>

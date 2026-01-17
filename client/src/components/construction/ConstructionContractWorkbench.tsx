@@ -11,8 +11,9 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
-} from "@/components/ui/dialog";
+    Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetDescription
+} from "@/components/ui/sheet";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -202,6 +203,12 @@ export default function ConstructionContractWorkbench() {
 
     return (
         <div className="p-6 space-y-6">
+            <Breadcrumbs items={[
+                { label: "ERP", path: "/erp" },
+                { label: "Construction", path: "/construction/insights" },
+                { label: "Contracts", path: "/construction/contracts" }
+            ]} />
+
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Contract Workbench</h1>
@@ -230,15 +237,16 @@ export default function ConstructionContractWorkbench() {
                 <Card className="col-span-4 h-[calc(100vh-200px)] flex flex-col">
                     <CardHeader className="pb-3 border-b flex flex-row justify-between items-center">
                         <CardTitle className="text-lg">Contracts</CardTitle>
-                        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                            <DialogTrigger asChild>
+                        <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                            <SheetTrigger asChild>
                                 <Button size="sm"><Plus className="h-4 w-4 mr-1" /> New</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Create Prime Contract</DialogTitle>
-                                </DialogHeader>
-                                <form onSubmit={handleCreateContract} className="space-y-4">
+                            </SheetTrigger>
+                            <SheetContent side="right">
+                                <SheetHeader>
+                                    <SheetTitle>Create Prime Contract</SheetTitle>
+                                    <SheetDescription>Initialize a new contract for the selected project.</SheetDescription>
+                                </SheetHeader>
+                                <form onSubmit={handleCreateContract} className="space-y-4 pt-4">
                                     <div className="space-y-2">
                                         <Label>Contract Number</Label>
                                         <Input name="contractNumber" required placeholder="CN-2026-001" />
@@ -251,14 +259,14 @@ export default function ConstructionContractWorkbench() {
                                         <Label>Vendor (Contractor)</Label>
                                         <Input name="vendorId" placeholder="Vendor ID / Name" />
                                     </div>
-                                    <DialogFooter>
-                                        <Button type="submit" disabled={createContractMutation.isPending}>
+                                    <SheetFooter className="pt-4">
+                                        <Button type="submit" disabled={createContractMutation.isPending} className="w-full">
                                             {createContractMutation.isPending ? "Creating..." : "Create Draft"}
                                         </Button>
-                                    </DialogFooter>
+                                    </SheetFooter>
                                 </form>
-                            </DialogContent>
-                        </Dialog>
+                            </SheetContent>
+                        </Sheet>
                     </CardHeader>
                     <CardContent className="flex-1 overflow-auto p-0">
                         {isLoadingContracts ? (
@@ -341,43 +349,44 @@ export default function ConstructionContractWorkbench() {
                                             <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Schedule of Values (SOV)</h3>
 
                                             <div className="flex gap-2">
-                                                <Dialog open={isBulkOpen} onOpenChange={setIsBulkOpen}>
-                                                    <DialogTrigger asChild>
+                                                <Sheet open={isBulkOpen} onOpenChange={setIsBulkOpen}>
+                                                    <SheetTrigger asChild>
                                                         <Button size="sm" variant="secondary" className="h-8">
                                                             <RefreshCw className="h-3.5 w-3.5 mr-1" /> Bulk Import
                                                         </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>Bulk Import SOV (CSV)</DialogTitle>
-                                                            <CardDescription>Format: LineNumber, Description, Value (One per line)</CardDescription>
-                                                        </DialogHeader>
-                                                        <form onSubmit={handleBulkImport} className="space-y-4">
+                                                    </SheetTrigger>
+                                                    <SheetContent side="right">
+                                                        <SheetHeader>
+                                                            <SheetTitle>Bulk Import SOV (CSV)</SheetTitle>
+                                                            <SheetDescription>Format: LineNumber, Description, Value (One per line)</SheetDescription>
+                                                        </SheetHeader>
+                                                        <form onSubmit={handleBulkImport} className="space-y-4 pt-4">
                                                             <Textarea
                                                                 name="csvData"
                                                                 placeholder="1, Excavation, 50000&#10;2, Foundation, 75000"
                                                                 className="min-h-[200px] font-mono text-xs"
                                                             />
-                                                            <DialogFooter>
-                                                                <Button type="submit" disabled={bulkImportMutation.isPending}>
+                                                            <SheetFooter className="pt-4">
+                                                                <Button type="submit" disabled={bulkImportMutation.isPending} className="w-full">
                                                                     {bulkImportMutation.isPending ? "Importing..." : "Process Import"}
                                                                 </Button>
-                                                            </DialogFooter>
+                                                            </SheetFooter>
                                                         </form>
-                                                    </DialogContent>
-                                                </Dialog>
+                                                    </SheetContent>
+                                                </Sheet>
 
-                                                <Dialog open={isAddLineOpen} onOpenChange={setIsAddLineOpen}>
-                                                    <DialogTrigger asChild>
+                                                <Sheet open={isAddLineOpen} onOpenChange={setIsAddLineOpen}>
+                                                    <SheetTrigger asChild>
                                                         <Button size="sm" variant="outline" className="h-8">
                                                             <Plus className="h-3.5 w-3.5 mr-1" /> Add Line
                                                         </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>Add SOV Line Item</DialogTitle>
-                                                        </DialogHeader>
-                                                        <form onSubmit={handleAddLine} className="space-y-4">
+                                                    </SheetTrigger>
+                                                    <SheetContent side="right">
+                                                        <SheetHeader>
+                                                            <SheetTitle>Add SOV Line Item</SheetTitle>
+                                                            <SheetDescription>Add a new line item to the Schedule of Values.</SheetDescription>
+                                                        </SheetHeader>
+                                                        <form onSubmit={handleAddLine} className="space-y-4 pt-4">
                                                             <div className="grid grid-cols-2 gap-4">
                                                                 <div className="space-y-2">
                                                                     <Label>Line #</Label>
@@ -412,12 +421,12 @@ export default function ConstructionContractWorkbench() {
                                                                 <Label>Description of Work</Label>
                                                                 <Textarea name="description" placeholder="e.g. Concrete Foundations Phase 1" required />
                                                             </div>
-                                                            <DialogFooter>
-                                                                <Button type="submit" disabled={addLineMutation.isPending}>Add Item</Button>
-                                                            </DialogFooter>
+                                                            <SheetFooter className="pt-4">
+                                                                <Button type="submit" disabled={addLineMutation.isPending} className="w-full">Add Item</Button>
+                                                            </SheetFooter>
                                                         </form>
-                                                    </DialogContent>
-                                                </Dialog>
+                                                    </SheetContent>
+                                                </Sheet>
                                             </div>
                                         </div>
 

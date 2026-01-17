@@ -10,8 +10,9 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
-} from "@/components/ui/dialog";
+    Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetDescription
+} from "@/components/ui/sheet";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Label } from "@/components/ui/label";
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
@@ -173,6 +174,11 @@ export default function ConstructionBillingWorkbench() {
 
     return (
         <div className="p-6 space-y-6">
+            <Breadcrumbs items={[
+                { label: "ERP", path: "/erp" },
+                { label: "Construction", path: "/construction/insights" },
+                { label: "Billing", path: "/construction/billing" }
+            ]} />
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Billing Workbench</h1>
@@ -207,15 +213,16 @@ export default function ConstructionBillingWorkbench() {
                 <Card className="col-span-3 h-[calc(100vh-200px)]">
                     <CardHeader className="pb-3 border-b flex flex-row justify-between items-center">
                         <CardTitle className="text-base">Applications</CardTitle>
-                        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                            <DialogTrigger asChild>
+                        <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                            <SheetTrigger asChild>
                                 <Button size="icon" variant="ghost"><Plus className="h-4 w-4" /></Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>New Pay Application</DialogTitle>
-                                </DialogHeader>
-                                <form onSubmit={handleCreate} className="space-y-4">
+                            </SheetTrigger>
+                            <SheetContent side="right">
+                                <SheetHeader>
+                                    <SheetTitle>New Pay Application</SheetTitle>
+                                    <SheetDescription>Initialize a new progress billing application for this contract.</SheetDescription>
+                                </SheetHeader>
+                                <form onSubmit={handleCreate} className="space-y-4 pt-4">
                                     <div className="space-y-2">
                                         <Label>App #</Label>
                                         <Input name="applicationNumber" type="number" defaultValue={(payApps.length || 0) + 1} />
@@ -228,12 +235,12 @@ export default function ConstructionBillingWorkbench() {
                                         <Label>Period End</Label>
                                         <Input name="periodEnd" type="date" required />
                                     </div>
-                                    <DialogFooter>
-                                        <Button type="submit">Create</Button>
-                                    </DialogFooter>
+                                    <SheetFooter className="pt-4">
+                                        <Button type="submit" className="w-full">Create</Button>
+                                    </SheetFooter>
                                 </form>
-                            </DialogContent>
-                        </Dialog>
+                            </SheetContent>
+                        </Sheet>
                     </CardHeader>
                     <CardContent className="p-0">
                         {payApps.map(app => (

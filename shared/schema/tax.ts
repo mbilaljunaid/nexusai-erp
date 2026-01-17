@@ -1,6 +1,6 @@
 // shared/schema/tax.ts
 import { pgTable, serial, varchar, numeric, integer, foreignKey, boolean } from "drizzle-orm/pg-core";
-import { arCustomers } from "@shared/schema";
+import { arCustomers } from "./ar";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 

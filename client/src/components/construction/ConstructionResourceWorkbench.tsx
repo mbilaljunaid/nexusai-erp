@@ -6,8 +6,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
-} from "@/components/ui/dialog";
+    Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetDescription
+} from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -18,6 +18,7 @@ import { Truck, Users, Box, Plus, Calendar, Settings2, Activity, Gauge, Fuel, Al
 import { format } from "date-fns";
 import { StandardTable, Column } from "../tables/StandardTable";
 import { ConstructionResource, ConstructionResourceAllocation } from "@shared/schema";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export default function ConstructionResourceWorkbench() {
     const { toast } = useToast();
@@ -132,6 +133,11 @@ export default function ConstructionResourceWorkbench() {
 
     return (
         <div className="p-6 space-y-6">
+            <Breadcrumbs items={[
+                { label: "ERP", path: "/erp" },
+                { label: "Construction", path: "/construction/insights" },
+                { label: "Resources", path: "/construction/resources" }
+            ]} />
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Resource Workbench</h1>
@@ -150,18 +156,19 @@ export default function ConstructionResourceWorkbench() {
                         </SelectContent>
                     </Select>
 
-                    <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                        <DialogTrigger asChild>
+                    <Sheet open={isAddOpen} onOpenChange={setIsAddOpen}>
+                        <SheetTrigger asChild>
                             <Button>
                                 <Plus className="mr-2 h-4 w-4" />
                                 Add Resource
                             </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Register New Resource</DialogTitle>
-                            </DialogHeader>
-                            <form onSubmit={handleCreate} className="space-y-4">
+                        </SheetTrigger>
+                        <SheetContent side="right" className="sm:max-w-md">
+                            <SheetHeader>
+                                <SheetTitle>Register New Resource</SheetTitle>
+                                <SheetDescription>Add a new Labor, Equipment, or Material resource to the central directory.</SheetDescription>
+                            </SheetHeader>
+                            <form onSubmit={handleCreate} className="space-y-4 pt-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="type">Resource Type</Label>
                                     <Select name="type" required>
@@ -187,12 +194,12 @@ export default function ConstructionResourceWorkbench() {
                                     <Label htmlFor="hourlyRate">Standard Hourly Rate ($)</Label>
                                     <Input id="hourlyRate" name="hourlyRate" type="number" step="0.01" />
                                 </div>
-                                <DialogFooter>
-                                    <Button type="submit" disabled={createResourceMutation.isPending}>Register</Button>
-                                </DialogFooter>
+                                <SheetFooter className="pt-4">
+                                    <Button type="submit" disabled={createResourceMutation.isPending} className="w-full">Register</Button>
+                                </SheetFooter>
                             </form>
-                        </DialogContent>
-                    </Dialog>
+                        </SheetContent>
+                    </Sheet>
                 </div>
             </div>
 
@@ -259,15 +266,15 @@ export default function ConstructionResourceWorkbench() {
                 </Card>
             </div>
 
-            <Dialog open={!!telemetryResource} onOpenChange={(open) => !open && setTelemetryResource(null)}>
-                <DialogContent className="max-w-md">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
+            <Sheet open={!!telemetryResource} onOpenChange={(open) => !open && setTelemetryResource(null)}>
+                <SheetContent side="right" className="sm:max-w-md">
+                    <SheetHeader>
+                        <SheetTitle className="flex items-center gap-2">
                             <Activity className="h-5 w-5 text-blue-600 font-bold" />
                             Live Telemetry: {telemetryResource?.name}
-                        </DialogTitle>
-                        <CardDescription>Real-time sensor data from equipment IoT gateway.</CardDescription>
-                    </DialogHeader>
+                        </SheetTitle>
+                        <SheetDescription>Real-time sensor data from equipment IoT gateway.</SheetDescription>
+                    </SheetHeader>
                     {isLoadingTelemetry ? (
                         <div className="h-48 flex items-center justify-center">
                             <Activity className="h-8 w-8 text-muted-foreground animate-pulse" />
@@ -329,8 +336,8 @@ export default function ConstructionResourceWorkbench() {
                             No telemetry data available.
                         </div>
                     )}
-                </DialogContent>
-            </Dialog>
+                </SheetContent>
+            </Sheet>
         </div>
     );
 }

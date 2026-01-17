@@ -10,8 +10,8 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
-} from "@/components/ui/dialog";
+    Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetDescription
+} from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -115,15 +115,16 @@ export default function VariationManager({ contractId }: VariationManagerProps) 
         <div className="space-y-4">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-medium">Change Management (PCOs & COs)</h3>
-                <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                    <DialogTrigger asChild>
+                <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                    <SheetTrigger asChild>
                         <Button size="sm"><Plus className="h-4 w-4 mr-1" /> Create PCO</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Create Potential Change Order (PCO)</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleCreate} className="space-y-4">
+                    </SheetTrigger>
+                    <SheetContent side="right" className="sm:max-w-md">
+                        <SheetHeader>
+                            <SheetTitle>Create Potential Change Order (PCO)</SheetTitle>
+                            <SheetDescription>Draft a new potential change to the contract scope or amount.</SheetDescription>
+                        </SheetHeader>
+                        <form onSubmit={handleCreate} className="space-y-4 pt-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label>PCO Number</Label>
@@ -146,12 +147,12 @@ export default function VariationManager({ contractId }: VariationManagerProps) 
                                 <Label>Schedule Impact (Days)</Label>
                                 <Input name="scheduleImpactDays" type="number" defaultValue="0" />
                             </div>
-                            <DialogFooter>
-                                <Button type="submit" disabled={createVariationMutation.isPending}>Create Draft</Button>
-                            </DialogFooter>
+                            <SheetFooter className="pt-4">
+                                <Button type="submit" disabled={createVariationMutation.isPending} className="w-full">Create Draft</Button>
+                            </SheetFooter>
                         </form>
-                    </DialogContent>
-                </Dialog>
+                    </SheetContent>
+                </Sheet>
             </div>
 
             <Card>

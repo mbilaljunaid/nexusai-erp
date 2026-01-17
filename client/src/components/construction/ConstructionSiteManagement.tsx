@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { useToast } from "@/hooks/use-toast";
 import {
     ClipboardList, MessageSquare, FileUp, AlertTriangle,
@@ -156,6 +157,11 @@ export default function ConstructionSiteManagement() {
 
     return (
         <div className="p-6 space-y-6">
+            <Breadcrumbs items={[
+                { label: "ERP", path: "/erp" },
+                { label: "Construction", path: "/construction/insights" },
+                { label: "Site Management", path: "/construction/site-management" }
+            ]} />
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Site Management</h1>

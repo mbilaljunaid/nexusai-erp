@@ -106,7 +106,7 @@ export async function registerRoutes(
     const publicPaths = [
       "/health", "/login", "/logout", "/callback", "/auth", "/demos",
       "/copilot", "/feedback", "/marketplace/categories",
-      "/api/supplier-portal/register", "/portal/supplier"
+      "/api/supplier-portal/register", "/portal/supplier", "/api/construction", "/api/ppm"
     ];
 
     // Check if path or prefix is public

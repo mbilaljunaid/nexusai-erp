@@ -246,13 +246,13 @@ constructionRouter.get("/projects/:projectId/rfis", async (req, res) => {
     }
 });
 
-// Submittals
 constructionRouter.post("/projects/:projectId/submittals", async (req, res) => {
     try {
         const sub = await constructionService.createSubmittal({
             ...req.body,
             projectId: req.params.projectId
         });
+        res.status(201).json(sub);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
@@ -373,7 +373,7 @@ constructionRouter.patch("/claims/:id/settle", async (req, res) => {
 
 constructionRouter.post("/contracts/:id/variations/simulate", async (req, res) => {
     try {
-        const analysis = await constructionRiskService.simulateVariationImpact(req.params.id, req.body);
+        const analysis = await riskService.simulateVariationImpact(req.params.id, req.body);
         res.json(analysis);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -399,9 +399,9 @@ constructionRouter.post("/resources", async (req, res) => {
     }
 });
 
-constructionRouter.get("/projects/:id/resource-allocations", async (req, res) => {
+constructionRouter.get("/projects/:projectId/resource-allocations", async (req, res) => {
     try {
-        const allocations = await constructionService.getResourceAllocations(req.params.id);
+        const allocations = await constructionService.getResourceAllocations(req.params.projectId);
         res.json(allocations);
     } catch (error: any) {
         res.status(500).json({ error: error.message });

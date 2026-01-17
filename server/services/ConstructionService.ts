@@ -23,7 +23,8 @@ import {
     constructionCostCodes,
     constructionClaims,
     constructionResources,
-    constructionResourceAllocations
+    constructionResourceAllocations,
+    constructionDailyLogs
 } from "@shared/schema";
 import { eq, desc, sum, sql, and } from "drizzle-orm";
 import { FinanceService } from "./finance";

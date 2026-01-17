@@ -6,8 +6,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
-} from "@/components/ui/dialog";
+    Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetDescription
+} from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -137,18 +137,19 @@ export default function ConstructionClaimsManager({ contractId }: Props) {
                     <p className="text-sm text-muted-foreground">Log and settle contractual disputes, variations, and extension-of-time (EOT) claims.</p>
                 </div>
 
-                <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                    <DialogTrigger asChild>
+                <Sheet open={isAddOpen} onOpenChange={setIsAddOpen}>
+                    <SheetTrigger asChild>
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />
                             Log New Claim
                         </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Submit Contractual Claim</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                    </SheetTrigger>
+                    <SheetContent side="right" className="sm:max-w-md">
+                        <SheetHeader>
+                            <SheetTitle>Submit Contractual Claim</SheetTitle>
+                            <SheetDescription>Log a new contractual dispute or extension-of-time request.</SheetDescription>
+                        </SheetHeader>
+                        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="claimNumber">Claim Number</Label>
@@ -180,14 +181,14 @@ export default function ConstructionClaimsManager({ contractId }: Props) {
                                 <Label htmlFor="description">Detailed Description & Impact</Label>
                                 <Textarea id="description" name="description" rows={4} />
                             </div>
-                            <DialogFooter>
-                                <Button type="submit" disabled={createMutation.isPending}>
+                            <SheetFooter className="pt-4">
+                                <Button type="submit" disabled={createMutation.isPending} className="w-full">
                                     Submit Claim
                                 </Button>
-                            </DialogFooter>
+                            </SheetFooter>
                         </form>
-                    </DialogContent>
-                </Dialog>
+                    </SheetContent>
+                </Sheet>
             </div>
 
             <Card>
@@ -219,12 +220,12 @@ export default function ConstructionClaimsManager({ contractId }: Props) {
                 </CardContent>
             </Card>
 
-            <Dialog open={!!settlingClaim} onOpenChange={(open) => !open && setSettlingClaim(null)}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Settle Claim: {settlingClaim?.claimNumber}</DialogTitle>
-                        <CardDescription>Enter the final approved amount to settle this dispute.</CardDescription>
-                    </DialogHeader>
+            <Sheet open={!!settlingClaim} onOpenChange={(open) => !open && setSettlingClaim(null)}>
+                <SheetContent side="right" className="sm:max-w-md">
+                    <SheetHeader>
+                        <SheetTitle>Settle Claim: {settlingClaim?.claimNumber}</SheetTitle>
+                        <SheetDescription>Enter the final approved amount to settle this dispute.</SheetDescription>
+                    </SheetHeader>
                     {settlingClaim && (
                         <form onSubmit={handleSettle} className="space-y-4 pt-4">
                             <div className="p-4 bg-muted rounded-md space-y-2 text-sm">
@@ -239,16 +240,16 @@ export default function ConstructionClaimsManager({ contractId }: Props) {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="amountApproved">Approved Amount ($)</Label>
-                                <Input id="amountApproved" name="amountApproved" type="number" step="0.01" defaultValue={settlingClaim.amountClaimed} required />
+                                <Input id="amountApproved" name="amountApproved" type="number" step="0.01" defaultValue={settlingClaim.amountClaimed || ""} required />
                             </div>
-                            <DialogFooter>
-                                <Button type="button" variant="outline" onClick={() => setSettlingClaim(null)}>Cancel</Button>
-                                <Button type="submit" disabled={settleMutation.isPending}>Confirm Settlement</Button>
-                            </DialogFooter>
+                            <SheetFooter className="pt-4 flex flex-col gap-2">
+                                <Button type="submit" disabled={settleMutation.isPending} className="w-full">Confirm Settlement</Button>
+                                <Button type="button" variant="outline" onClick={() => setSettlingClaim(null)} className="w-full">Cancel</Button>
+                            </SheetFooter>
                         </form>
                     )}
-                </DialogContent>
-            </Dialog>
+                </SheetContent>
+            </Sheet>
         </div>
     );
 }
