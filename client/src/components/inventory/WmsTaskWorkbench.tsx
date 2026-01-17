@@ -25,20 +25,30 @@ type WmsTask = {
     createdAt: string;
 };
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 export const WmsTaskWorkbench = () => {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [page, setPage] = useState(1);
+    const limit = 50;
     const [selectedTask, setSelectedTask] = useState<WmsTask | null>(null);
     const [scanQuantity, setScanQuantity] = useState("");
+    const [activeTab, setActiveTab] = useState("PICK"); // Default to Picking
 
-    const { data: tasks, isLoading } = useQuery({
-        queryKey: ["wmsTasks"],
+    const { data: taskData, isLoading } = useQuery({
+        queryKey: ["wmsTasks", page, activeTab], // Refetch on tab change
         queryFn: async () => {
-            const res = await fetch("/api/wms/tasks");
+            // If tab is ALL, don't filter by type
+            const typeParam = activeTab === "ALL" ? "" : `&taskType=${activeTab}`;
+            const res = await fetch(`/api/wms/tasks?page=${page}&limit=${limit}${typeParam}`);
             if (!res.ok) throw new Error("Failed to fetch tasks");
             return res.json();
         }
     });
+
+    const tasks = taskData?.data || [];
+    const totalPages = taskData?.totalPages || 1;
 
     const completeMutation = useMutation({
         mutationFn: async ({ id, qty }: { id: string, qty: number }) => {
@@ -125,13 +135,47 @@ export const WmsTaskWorkbench = () => {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <StandardTable
-                    data={tasks || []}
-                    columns={columns}
-                    isLoading={isLoading}
-                    filterColumn="taskNumber"
-                    filterPlaceholder="Search Task #"
-                />
+                <Tabs defaultValue="PICK" value={activeTab} onValueChange={(val) => { setActiveTab(val); setPage(1); }}>
+                    <div className="flex justify-between items-center mb-4">
+                        <TabsList>
+                            <TabsTrigger value="PICK">Picking</TabsTrigger>
+                            <TabsTrigger value="PUTAWAY">Putaway (Inbound)</TabsTrigger>
+                            <TabsTrigger value="COUNT">Cycle Counts</TabsTrigger>
+                            <TabsTrigger value="ALL">All Tasks</TabsTrigger>
+                        </TabsList>
+                    </div>
+
+                    <TabsContent value={activeTab}> {/* Single content area updated by query */}
+                        <StandardTable
+                            data={tasks || []}
+                            columns={columns}
+                            isLoading={isLoading}
+                            filterColumn="taskNumber"
+                            filterPlaceholder="Search Task #"
+                        />
+                        <div className="flex items-center justify-end space-x-2 py-4">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                disabled={page === 1 || isLoading}
+                            >
+                                Previous
+                            </Button>
+                            <div className="text-sm font-medium">
+                                Page {page} of {totalPages}
+                            </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                disabled={page === totalPages || isLoading}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </CardContent>
         </Card>
     );

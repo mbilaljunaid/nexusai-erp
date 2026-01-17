@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Ship, Play, Plus } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2, Ship, Play, Plus, BookTemplate } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -24,8 +25,13 @@ type WmsWave = {
 export const WavePlanningConsole = () => {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const [warehouseId, setWarehouseId] = useState("ORG-001"); // Default for prototype
+    const [warehouseId, setWarehouseId] = useState("ORG-001");
     const [orderLimit, setOrderLimit] = useState("50");
+
+    // Template State
+    const [saveAsTemplate, setSaveAsTemplate] = useState(false);
+    const [templateName, setTemplateName] = useState("");
+    const [selectedTemplate, setSelectedTemplate] = useState("");
 
     const { data: waves, isLoading } = useQuery({
         queryKey: ["wmsWaves", warehouseId],
@@ -37,39 +43,70 @@ export const WavePlanningConsole = () => {
         enabled: !!warehouseId
     });
 
+    const { data: templates } = useQuery({
+        queryKey: ["wmsWaveTemplates", warehouseId],
+        queryFn: async () => {
+            const res = await fetch(`/api/wms/wave-templates?warehouseId=${warehouseId}`);
+            if (!res.ok) throw new Error("Failed");
+            return res.json();
+        },
+        enabled: !!warehouseId
+    });
+
     const createWaveMutation = useMutation({
         mutationFn: async () => {
+            // 1. Create Wave
             const res = await fetch("/api/wms/waves", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ warehouseId, limit: parseInt(orderLimit) })
             });
-            if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.error || "Failed to create wave");
+            if (!res.ok) throw new Error("Failed to create wave");
+            const data = await res.json();
+
+            // 2. Save Template if checked
+            if (saveAsTemplate && templateName) {
+                await fetch("/api/wms/wave-templates", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        warehouseId,
+                        name: templateName,
+                        criteria: { limit: parseInt(orderLimit) }
+                    })
+                });
             }
-            return res.json();
+            return data;
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["wmsWaves"] });
-            toast({ title: "Wave Generatod", description: `Created Wave ${data.wave.waveNumber} with ${data.lineCount} tasks.` });
+            queryClient.invalidateQueries({ queryKey: ["wmsWaveTemplates"] });
+            toast({ title: "Wave Generated", description: `Created Wave ${data.wave.waveNumber} with ${data.lineCount} tasks.` });
+            setSaveAsTemplate(false);
+            setTemplateName("");
         },
         onError: (err) => {
             toast({ title: "Wave Failed", description: err.message, variant: "destructive" });
         }
     });
 
+    const loadTemplate = (tmplId: string) => {
+        const tmpl = templates.find((t: any) => t.id === tmplId);
+        if (tmpl) {
+            const criteria = JSON.parse(tmpl.criteriaJson);
+            setOrderLimit(criteria.limit?.toString() || "50");
+            setSelectedTemplate(tmplId);
+        }
+    };
+
     const releaseWaveMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`/api/wms/waves/${id}/release`, {
-                method: "POST"
-            });
-            if (!res.ok) throw new Error("Failed to release wave");
-            return res.json();
+            const res = await fetch(`/api/wms/waves/${id}/release`, { method: "POST" });
+            if (!res.ok) throw new Error("Failed");
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["wmsWaves"] });
-            toast({ title: "Wave Released", description: "Tasks are now available for picking." });
+            toast({ title: "Wave Released" });
         }
     });
 
@@ -97,8 +134,7 @@ export const WavePlanningConsole = () => {
                             onClick={() => releaseWaveMutation.mutate(item.id)}
                             disabled={releaseWaveMutation.isPending}
                         >
-                            {releaseWaveMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="mr-2 h-4 w-4" />}
-                            Release
+                            <Play className="mr-2 h-4 w-4" /> Release
                         </Button>
                     )}
                 </div>
@@ -111,7 +147,7 @@ export const WavePlanningConsole = () => {
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle className="flex items-center gap-2">
-                        <Ship className="h-6 w-6" />
+                        <Ship className="h-6 w-6 text-blue-600" />
                         Wave Planning Console
                     </CardTitle>
                     <CardDescription>Group eligible orders into waves for optimized release.</CardDescription>
@@ -127,6 +163,21 @@ export const WavePlanningConsole = () => {
                             <DialogTitle>Generate New Wave</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4 pt-4">
+                            {/* Template Loader */}
+                            <div className="space-y-2">
+                                <Label>Load Template</Label>
+                                <Select value={selectedTemplate} onValueChange={loadTemplate}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a template..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {templates?.map((t: any) => (
+                                            <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
                             <div className="grid gap-2">
                                 <Label>Warehouse</Label>
                                 <Input value={warehouseId} disabled />
@@ -139,6 +190,19 @@ export const WavePlanningConsole = () => {
                                     onChange={(e) => setOrderLimit(e.target.value)}
                                 />
                             </div>
+
+                            <div className="flex items-center space-x-2 py-2">
+                                <Checkbox id="saveTempl" checked={saveAsTemplate} onCheckedChange={(c) => setSaveAsTemplate(!!c)} />
+                                <Label htmlFor="saveTempl">Save as Template?</Label>
+                            </div>
+                            {saveAsTemplate && (
+                                <Input
+                                    placeholder="Template Name (e.g. Standard Overnight)"
+                                    value={templateName}
+                                    onChange={(e) => setTemplateName(e.target.value)}
+                                />
+                            )}
+
                             <Button
                                 onClick={() => createWaveMutation.mutate()}
                                 disabled={createWaveMutation.isPending}
@@ -152,9 +216,6 @@ export const WavePlanningConsole = () => {
                 </Dialog>
             </CardHeader>
             <CardContent>
-                <div className="mb-4 flex gap-4">
-                    {/* Filters can go here */}
-                </div>
                 <StandardTable
                     data={waves || []}
                     columns={columns}

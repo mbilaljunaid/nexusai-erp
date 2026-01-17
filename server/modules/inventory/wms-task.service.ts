@@ -14,8 +14,13 @@ export class WmsTaskService {
         return task;
     }
 
-    async listTasks(filters: { warehouseId?: string, taskType?: string, status?: string }) {
-        let query = db.select().from(wmsTasks);
+    async listTasks(filters: {
+        warehouseId?: string, taskType?: string, status?: string,
+        page?: number, limit?: number
+    }) {
+        const page = filters.page || 1;
+        const limit = filters.limit || 50;
+        const offset = (page - 1) * limit;
 
         // Build dynamic filters
         const conditions = [];
@@ -23,11 +28,61 @@ export class WmsTaskService {
         if (filters.taskType) conditions.push(eq(wmsTasks.taskType, filters.taskType));
         if (filters.status) conditions.push(eq(wmsTasks.status, filters.status));
 
+        // Count Total
+        let countQuery = db.select({ count: sql<number>`count(*)` }).from(wmsTasks);
+        if (conditions.length > 0) {
+            countQuery = countQuery.where(and(...conditions)) as any;
+        }
+        const [totalRes] = await countQuery;
+        const total = Number(totalRes.count);
+
+        // OPTIMIZATION: For PICK tasks, sort by Path (Zone Priority -> Locator Code)
+        if (filters.taskType === 'PICK') {
+            const result = await db.select({
+                id: wmsTasks.id,
+                taskNumber: wmsTasks.taskNumber,
+                warehouseId: wmsTasks.warehouseId,
+                taskType: wmsTasks.taskType,
+                status: wmsTasks.status,
+                sourceDocType: wmsTasks.sourceDocType,
+                sourceDocId: wmsTasks.sourceDocId,
+                sourceLineId: wmsTasks.sourceLineId,
+                itemId: wmsTasks.itemId,
+                quantityPlanned: wmsTasks.quantityPlanned,
+                quantityActual: wmsTasks.quantityActual,
+                uom: wmsTasks.uom,
+                fromLocatorId: wmsTasks.fromLocatorId,
+                toLocatorId: wmsTasks.toLocatorId,
+                fromLpnId: wmsTasks.fromLpnId,
+                toLpnId: wmsTasks.toLpnId,
+                assignedUserId: wmsTasks.assignedUserId,
+                priority: wmsTasks.priority,
+                completedAt: wmsTasks.completedAt,
+                createdAt: wmsTasks.createdAt
+            })
+                .from(wmsTasks)
+                .leftJoin(inventoryLocators, eq(wmsTasks.fromLocatorId, inventoryLocators.id))
+                .leftJoin(wmsZones, eq(inventoryLocators.zoneId, wmsZones.id))
+                .where(and(...conditions))
+                .orderBy(
+                    wmsZones.priority,
+                    inventoryLocators.code,
+                    wmsTasks.createdAt
+                )
+                .limit(limit)
+                .offset(offset);
+
+            return { data: result, total, page, limit, totalPages: Math.ceil(total / limit) };
+        }
+
+        // Standard Query
+        let query = db.select().from(wmsTasks);
         if (conditions.length > 0) {
             query = query.where(and(...conditions)) as any;
         }
+        const data = await query.orderBy(desc(wmsTasks.createdAt)).limit(limit).offset(offset);
 
-        return await query.orderBy(desc(wmsTasks.createdAt));
+        return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
     }
 
     async completeTask(taskId: string, userId: string, actualQuantity: number, toLocatorId?: string) {

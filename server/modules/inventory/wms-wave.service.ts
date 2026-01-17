@@ -1,6 +1,6 @@
 
 import { db } from "@db";
-import { wmsWaves, wmsTasks, omOrderLines, omOrderHeaders } from "@shared/schema/scm"; // Assuming schema access
+import { wmsWaves, wmsTasks, omOrderLines, omOrderHeaders, wmsWaveTemplates } from "@shared/schema/scm"; // Assuming schema access
 // We need access to omOrderLines/Headers if they are in 'scm'. 
 // Wait, omOrderLines was in 'order_management.ts' in previous steps (viewed_file).
 // Let's check imports.
@@ -95,6 +95,18 @@ export class WmsWaveService {
         // For now, we assume PENDING tasks are visible to workers once Wave is released.
 
         return wave;
+    }
+
+    async createTemplate(data: { warehouseId: string, name: string, criteria: any }) {
+        return await db.insert(wmsWaveTemplates).values({
+            warehouseId: data.warehouseId,
+            name: data.name,
+            criteriaJson: JSON.stringify(data.criteria)
+        }).returning();
+    }
+
+    async listTemplates(warehouseId: string) {
+        return await db.select().from(wmsWaveTemplates).where(eq(wmsWaveTemplates.warehouseId, warehouseId));
     }
 }
 

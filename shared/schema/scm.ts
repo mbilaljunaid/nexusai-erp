@@ -542,3 +542,62 @@ export type WmsLpnContent = typeof wmsLpnContents.$inferSelect;
 export type WmsWave = typeof wmsWaves.$inferSelect;
 export type WmsTask = typeof wmsTasks.$inferSelect;
 
+
+// 5. Dock Management (Yard)
+export const wmsDockAppointments = pgTable("wms_dock_appointments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    warehouseId: varchar("warehouse_id").notNull(),
+    dockNumber: varchar("dock_number").notNull(),
+    carrier: varchar("carrier").notNull(),
+    appointmentTime: timestamp("appointment_time").notNull(),
+    durationMinutes: integer("duration_minutes").default(60),
+    status: varchar("status").default("SCHEDULED"), // SCHEDULED, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED
+    referenceNumber: varchar("reference_number"), // PO or Shipment #
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertWmsDockAppointmentSchema = createInsertSchema(wmsDockAppointments);
+export type WmsDockAppointment = typeof wmsDockAppointments.$inferSelect;
+
+// 6. Configurable Rules (Strategies)
+export const wmsStrategies = pgTable("wms_strategies", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    warehouseId: varchar("warehouse_id").notNull(),
+    type: varchar("type").notNull(), // PICKING, PUTAWAY
+    name: varchar("name").notNull(), // e.g. "Standard FIFO", "Frozen LIFO"
+    description: varchar("description"),
+    algorithm: varchar("algorithm").notNull(), // FIFO, LIFO, FEFO, ZONE_BASED
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertWmsStrategySchema = createInsertSchema(wmsStrategies);
+export type WmsStrategy = typeof wmsStrategies.$inferSelect;
+
+// 7. Handling Unit Types (Master Data)
+export const wmsHandlingUnitTypes = pgTable("wms_handling_unit_types", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    warehouseId: varchar("warehouse_id").notNull(),
+    code: varchar("code").notNull(), // e.g., "PALLET-STD", "BOX-S", "BOX-M"
+    description: varchar("description"),
+    length: numeric("length"),
+    width: numeric("width"),
+    height: numeric("height"),
+    maxWeight: numeric("max_weight"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertWmsHandlingUnitTypeSchema = createInsertSchema(wmsHandlingUnitTypes);
+export type WmsHandlingUnitType = typeof wmsHandlingUnitTypes.$inferSelect;
+
+// 8. Wave Templates (Saved Criteria)
+export const wmsWaveTemplates = pgTable("wms_wave_templates", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    warehouseId: varchar("warehouse_id").notNull(),
+    name: varchar("name").notNull(),
+    criteriaJson: text("criteria_json").notNull(), // JSON string of criteria
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertWmsWaveTemplateSchema = createInsertSchema(wmsWaveTemplates);
+export type WmsWaveTemplate = typeof wmsWaveTemplates.$inferSelect;
