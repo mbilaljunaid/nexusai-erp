@@ -59,6 +59,7 @@ export default function ConstructionContractWorkbench() {
     const queryClient = useQueryClient();
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isAddLineOpen, setIsAddLineOpen] = useState(false);
 
@@ -90,7 +91,7 @@ export default function ConstructionContractWorkbench() {
         }
     });
 
-    const { data: activeContract } = useQuery<Contract & { lines: ContractLine[] }>({
+    const { data: activeContract } = useQuery<Contract>({
         queryKey: ["construction-contract-detail", selectedContractId],
         enabled: !!selectedContractId,
         queryFn: async () => {
@@ -99,6 +100,21 @@ export default function ConstructionContractWorkbench() {
             return res.json();
         }
     });
+
+    const { data: linesData = { lines: [], total: 0 }, isLoading: isLoadingLines } = useQuery<{ lines: ContractLine[], total: number, page: number, limit: number }>({
+        queryKey: ["construction-contract-lines", selectedContractId, page],
+        enabled: !!selectedContractId,
+        queryFn: async () => {
+            const res = await fetch(`/api/construction/contracts/${selectedContractId}/lines?page=${page}&limit=10`);
+            if (!res.ok) throw new Error("Failed to fetch contract lines");
+            return res.json();
+        }
+    });
+
+    // Reset page when contract changes
+    useEffect(() => {
+        setPage(1);
+    }, [selectedContractId]);
 
     const { data: costCodes = [] } = useQuery<CostCode[]>({
         queryKey: ["construction-cost-codes"],
@@ -393,7 +409,7 @@ export default function ConstructionContractWorkbench() {
                                                                     <Input
                                                                         name="lineNumber"
                                                                         type="number"
-                                                                        defaultValue={(activeContract.lines?.length || 0) + 1}
+                                                                        defaultValue={(linesData.total || 0) + 1}
                                                                         required
                                                                     />
                                                                 </div>
@@ -431,7 +447,13 @@ export default function ConstructionContractWorkbench() {
                                         </div>
 
                                         <StandardTable
-                                            data={activeContract.lines || []}
+                                            data={linesData.lines}
+                                            isLoading={isLoadingLines}
+                                            pagination={{
+                                                currentPage: page,
+                                                totalPages: Math.ceil(linesData.total / 10),
+                                                onPageChange: (p) => setPage(p)
+                                            }}
                                             columns={[
                                                 { header: "Line", accessorKey: "lineNumber", sortable: true },
                                                 {

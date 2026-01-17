@@ -6,10 +6,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
-} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { StandardTable } from "../tables/StandardTable";
 import {
     Settings2,
     ShieldCheck,
@@ -85,46 +83,35 @@ export default function ConstructionSetup() {
                         <CardDescription>Enterprise settings for construction projects.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Category</TableHead>
-                                    <TableHead>Key</TableHead>
-                                    <TableHead>Value</TableHead>
-                                    <TableHead>Description</TableHead>
-                                    <TableHead className="text-right">Action</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {isLoading ? (
-                                    <TableRow><TableCell colSpan={5} className="text-center py-10">Loading configuration...</TableCell></TableRow>
-                                ) : configs.length === 0 ? (
-                                    <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground italic">No configurations found.</TableCell></TableRow>
-                                ) : (
-                                    configs.map(config => (
-                                        <TableRow key={config.id}>
-                                            <TableCell>
-                                                <Badge variant="outline">{config.category}</Badge>
-                                            </TableCell>
-                                            <TableCell className="font-mono text-xs">{config.configKey}</TableCell>
-                                            <TableCell>
-                                                <Input
-                                                    className="h-8"
-                                                    defaultValue={config.configValue}
-                                                    onBlur={(e) => handleUpdate(config.configKey, e.target.value, config.category, config.description)}
-                                                />
-                                            </TableCell>
-                                            <TableCell className="text-xs text-muted-foreground">{config.description}</TableCell>
-                                            <TableCell className="text-right">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                    <RotateCcw className="h-3 w-3" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
+                        <StandardTable
+                            data={configs}
+                            isLoading={isLoading}
+                            columns={[
+                                {
+                                    header: "Category",
+                                    accessorKey: "category",
+                                    cell: (item: SetupEntry) => <Badge variant="outline">{item.category}</Badge>
+                                },
+                                { header: "Key", accessorKey: "configKey" },
+                                {
+                                    header: "Value",
+                                    accessorKey: "configValue",
+                                    cell: (item: SetupEntry) => (
+                                        <Input
+                                            className="h-8 max-w-[200px]"
+                                            defaultValue={item.configValue}
+                                            onBlur={(e) => handleUpdate(item.configKey, e.target.value, item.category, item.description)}
+                                        />
+                                    )
+                                },
+                                { header: "Description", accessorKey: "description" }
+                            ]}
+                            actions={(item: SetupEntry) => (
+                                <Button variant="ghost" size="icon" className="h-8 w-8" title="Reset to default">
+                                    <RotateCcw className="h-3 w-3" />
+                                </Button>
+                            )}
+                        />
                     </CardContent>
                 </Card>
 

@@ -28,12 +28,24 @@ constructionRouter.get("/projects/:projectId/contracts", async (req, res) => {
     }
 });
 
-// Get Contract Detail (with lines/variations)
+// Get Contract Detail
 constructionRouter.get("/contracts/:id", async (req, res) => {
     try {
         const contract = await constructionService.getContract(req.params.id);
         if (!contract) return res.status(404).json({ error: "Contract not found" });
         res.json(contract);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get Paginated Contract Lines (L15)
+constructionRouter.get("/contracts/:id/lines", async (req, res) => {
+    try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 50;
+        const result = await constructionService.getContractLines(req.params.id, page, limit);
+        res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
@@ -115,7 +127,7 @@ constructionRouter.get("/contracts/:id/pay-apps", async (req, res) => {
     }
 });
 
-// Get Single Pay App with Lines
+// Get Single Pay App
 constructionRouter.get("/pay-apps/:id", async (req, res) => {
     try {
         const app = await constructionService.getPayApp(req.params.id);
@@ -124,6 +136,18 @@ constructionRouter.get("/pay-apps/:id", async (req, res) => {
     } catch (error: any) {
         console.error(error);
         res.status(500).json({ error: "Failed to fetch pay application details" });
+    }
+});
+
+// Get Paginated Pay App Lines (L15)
+constructionRouter.get("/pay-apps/:id/lines", async (req, res) => {
+    try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 50;
+        const result = await constructionService.getPayAppLines(req.params.id, page, limit);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
     }
 });
 

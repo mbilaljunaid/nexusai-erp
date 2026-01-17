@@ -56,6 +56,7 @@ export default function ConstructionBillingWorkbench() {
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
     const [selectedPayAppId, setSelectedPayAppId] = useState<string | null>(null);
+    const [linePage, setLinePage] = useState(1);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
 
     // Fetch Projects
@@ -88,7 +89,7 @@ export default function ConstructionBillingWorkbench() {
         }
     });
 
-    const { data: activeApp } = useQuery<PayApp & { lines: PayAppLine[] }>({
+    const { data: activeApp } = useQuery<PayApp>({
         queryKey: ["construction-pay-app-detail", selectedPayAppId],
         enabled: !!selectedPayAppId,
         queryFn: async () => {
@@ -96,6 +97,20 @@ export default function ConstructionBillingWorkbench() {
             return res.json();
         }
     });
+
+    const { data: linesData = { lines: [], total: 0 }, isLoading: isLoadingLines } = useQuery<{ lines: PayAppLine[], total: number, page: number, limit: number }>({
+        queryKey: ["construction-pay-app-lines", selectedPayAppId, linePage],
+        enabled: !!selectedPayAppId,
+        queryFn: async () => {
+            const res = await fetch(`/api/construction/pay-apps/${selectedPayAppId}/lines?page=${linePage}&limit=10`);
+            return res.json();
+        }
+    });
+
+    // Reset line page when pay app changes
+    useEffect(() => {
+        setLinePage(1);
+    }, [selectedPayAppId]);
 
     const { data: costCodes = [] } = useQuery<CostCode[]>({
         queryKey: ["construction-cost-codes"],
@@ -345,11 +360,17 @@ export default function ConstructionBillingWorkbench() {
                             <Card className="flex-1">
                                 <CardHeader className="py-3 border-b flex flex-row justify-between items-center">
                                     <CardTitle className="text-base">Detail Sheet (G703)</CardTitle>
-                                    {activeApp.isLocked && <Badge variant="destructive">Read-Only</Badge>}
+                                    {activeApp?.isLocked && <Badge variant="destructive">Read-Only</Badge>}
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     <StandardTable
-                                        data={activeApp.lines || []}
+                                        data={linesData.lines}
+                                        isLoading={isLoadingLines}
+                                        pagination={{
+                                            currentPage: linePage,
+                                            totalPages: Math.ceil(linesData.total / 10),
+                                            onPageChange: (p) => setLinePage(p)
+                                        }}
                                         columns={[
                                             { header: "Description", accessorKey: "description" },
                                             {
@@ -373,7 +394,7 @@ export default function ConstructionBillingWorkbench() {
                                                     <Input
                                                         className="text-right font-mono h-8 w-32 ml-auto"
                                                         defaultValue={item.totalCompletedToDate}
-                                                        disabled={activeApp.isLocked}
+                                                        disabled={activeApp?.isLocked}
                                                         onBlur={(e) => handleLineUpdate(item.id, "totalCompletedToDate", e.target.value)}
                                                     />
                                                 )

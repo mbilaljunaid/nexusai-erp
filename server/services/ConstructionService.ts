@@ -28,6 +28,7 @@ import {
 } from "@shared/schema";
 import { eq, desc, sum, sql, and } from "drizzle-orm";
 import { FinanceService } from "./finance";
+import { slaService } from "./SlaService";
 
 const financeService = new FinanceService();
 
@@ -109,11 +110,20 @@ export class ConstructionService {
         return line;
     }
 
-    async getContractLines(contractId: string) {
-        return await db.select()
+    async getContractLines(contractId: string, page: number = 1, limit: number = 50) {
+        const offset = (page - 1) * limit;
+        const lines = await db.select()
             .from(constructionContractLines)
             .where(eq(constructionContractLines.contractId, contractId))
-            .orderBy(constructionContractLines.lineNumber);
+            .orderBy(constructionContractLines.lineNumber)
+            .limit(limit)
+            .offset(offset);
+
+        const [count] = await db.select({ value: sql<number>`count(*)` })
+            .from(constructionContractLines)
+            .where(eq(constructionContractLines.contractId, contractId));
+
+        return { lines, total: Number(count.value), page, limit };
     }
 
     async bulkImportLines(contractId: string, lines: any[]) {
@@ -194,8 +204,10 @@ export class ConstructionService {
             total: sum(constructionVariations.amount)
         })
             .from(constructionVariations)
-            .where(eq(constructionVariations.contractId, contractId))
-            .where(eq(constructionVariations.status, "APPROVED"));
+            .where(and(
+                eq(constructionVariations.contractId, contractId),
+                eq(constructionVariations.status, "APPROVED")
+            ));
 
         const variationTotal = Number(variationResult[0]?.total || 0);
         const original = Number(contract.originalAmount || 0);
@@ -214,12 +226,12 @@ export class ConstructionService {
             .returning();
 
         // 2. Initialize Lines based on Contract Lines (SOV)
-        const contractLines = await this.getContractLines(data.contractId);
+        const { lines: contractLines } = await this.getContractLines(data.contractId, 1, 1000);
 
         // Fetch previous pay app lines to calculate previous progress (if any)
         // For simplicity in this first pass, assuming generic initialization
 
-        const lineInserts = contractLines.map(line => ({
+        const lineInserts = contractLines.map((line: any) => ({
             payAppId: payApp.id,
             contractLineId: line.id,
             workCompletedThisPeriod: "0",
@@ -247,8 +259,11 @@ export class ConstructionService {
             .from(constructionPayApps)
             .where(eq(constructionPayApps.id, id));
 
-        if (!app) return null;
+        return app || null;
+    }
 
+    async getPayAppLines(payAppId: string, page: number = 1, limit: number = 50) {
+        const offset = (page - 1) * limit;
         const lines = await db.select({
             id: constructionPayAppLines.id,
             contractLineId: constructionPayAppLines.contractLineId,
@@ -261,9 +276,15 @@ export class ConstructionService {
         })
             .from(constructionPayAppLines)
             .leftJoin(constructionContractLines, eq(constructionPayAppLines.contractLineId, constructionContractLines.id))
-            .where(eq(constructionPayAppLines.payAppId, id));
+            .where(eq(constructionPayAppLines.payAppId, payAppId))
+            .limit(limit)
+            .offset(offset);
 
-        return { ...app, lines };
+        const [count] = await db.select({ value: sql<number>`count(*)` })
+            .from(constructionPayAppLines)
+            .where(eq(constructionPayAppLines.payAppId, payAppId));
+
+        return { lines, total: Number(count.value), page, limit };
     }
 
     async updatePayAppLine(lineId: string, data: Partial<InsertConstructionPayAppLine>) {
@@ -434,47 +455,73 @@ export class ConstructionService {
             return;
         }
 
-        // 3. Prepare Journal
+        // 3. Prepare SLA Event (L12 Enhancement)
         const amount = Number(app.totalCompleted || 0);
         const retention = Number(app.retentionAmount || 0);
-        const netDue = Number(app.currentPaymentDue || 0);
-
         if (amount === 0) return;
 
-        const lines = [
-            {
-                accountId: wipCCID,
-                description: `Pay App #${app.applicationNumber} - Progress `,
-                debit: amount.toString(),
-                credit: "0"
-            },
-            {
-                accountId: apCCID,
-                description: `Pay App #${app.applicationNumber} - AP Accrual `,
-                debit: "0",
-                credit: netDue.toString()
-            }
-        ];
-
-        if (retention > 0 && retCCID) {
-            lines.push({
-                accountId: retCCID,
-                description: `Pay App #${app.applicationNumber} - Retainage `,
-                debit: "0",
-                credit: retention.toString()
+        try {
+            await slaService.createAccounting({
+                eventClass: "CONSTRUCTION_PAY_APP",
+                entityId: app.id,
+                entityTable: "construction_pay_apps",
+                description: `Construction Progress Billing: App #${app.applicationNumber}`,
+                amount: amount,
+                currency: "USD",
+                date: new Date(),
+                ledgerId: "PRIMARY",
+                sourceData: {
+                    ...app,
+                    wipAccountDefault: wipAccountCode,
+                    apAccountDefault: apAccrualAccountCode,
+                    retAccountDefault: retainageAccountCode
+                }
             });
+            console.log(`[L12] SLA Accounting created for Pay App #${app.applicationNumber}`);
+        } catch (error) {
+            console.error(`[L12] SLA Accounting failed:`, error);
+            // Fallback to legacy manual journal if SLA fails (for robustness)
+            const wipCCID = await getCCID(wipAccountCode);
+            const apCCID = await getCCID(apAccrualAccountCode);
+            const retCCID = await getCCID(retainageAccountCode);
+
+            if (!wipCCID || !apCCID) return;
+
+            const lines = [
+                {
+                    accountId: wipCCID,
+                    description: `Pay App #${app.applicationNumber} - Progress (Manual)`,
+                    debit: amount.toString(),
+                    credit: "0"
+                },
+                {
+                    accountId: apCCID,
+                    description: `Pay App #${app.applicationNumber} - AP Accrual (Manual)`,
+                    debit: "0",
+                    credit: (Number(app.currentPaymentDue || 0)).toString()
+                }
+            ];
+            if (retention > 0 && retCCID) {
+                lines.push({
+                    accountId: retCCID,
+                    description: `Pay App #${app.applicationNumber} - Retainage (Manual)`,
+                    debit: "0",
+                    credit: retention.toString()
+                });
+            }
+
+            // 4. Create Journal (Manual Fallback)
+            await financeService.createJournal({
+                journalNumber: `CONST-M-${app.applicationNumber}-${Date.now()}`,
+                description: `Construction Progress Billing: App #${app.applicationNumber} (Manual)`,
+                ledgerId: app.ledgerId || "PRIMARY",
+                source: "CONSTRUCTION",
+                status: "Posted",
+                currencyCode: "USD"
+            }, lines, userId);
+
+            console.log(`[L12] Posted Manual WIP Journal for Pay App #${app.applicationNumber}`);
         }
-
-        // 4. Create Journal
-        await financeService.createJournal({
-            journalNumber: `CONST - ${app.applicationNumber} -${Date.now()} `,
-            description: `Construction Progress Billing: App #${app.applicationNumber} `,
-            ledgerId: "PRIMARY",
-            source: "CONSTRUCTION",
-            status: "Posted" // Auto-post if possible
-        }, lines, userId);
-
-        console.log(`[L12] Posted WIP Journal for Pay App #${app.applicationNumber} `);
     }
 
     // -- Phase 6: Field Operations & Compliance --
