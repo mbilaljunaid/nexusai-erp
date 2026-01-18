@@ -51,8 +51,11 @@ import { procurementRouter } from "./modules/scm/procurementRoutes";
 
 import { billingRouter } from "./modules/billing/billing.controller";
 import { orderRouter } from "./modules/order/order.controller";
+import { lcmRoutes } from "./modules/lcm/lcm-routes";
 import { wmsRoutes } from "./modules/inventory/wms-routes";
 
+
+import { registerPpmRoutes } from "./modules/ppm/routes";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -86,6 +89,7 @@ export async function registerRoutes(
   app.use("/api/maintenance", maintenanceRouter);
   app.use("/api/ppm", ppmRouter);
   app.use("/api/construction", constructionRouter);
+  app.use("/api/lcm", lcmRoutes);
   app.use("/api/treasury", treasuryRouter);
 
 

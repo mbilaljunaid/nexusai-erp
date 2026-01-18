@@ -19,7 +19,9 @@ import {
     TrendingUp,
     Workflow,
     GitBranch,
+    Search,
     ShoppingCart,
+    Ship,
     GraduationCap,
     Bell,
     Grid3x3,
@@ -144,6 +146,31 @@ export const navigationConfig: SidebarNode[] = [
                 ]
             },
             {
+                id: "lcm-workbench",
+                title: "Landed Cost",
+                type: "link",
+                icon: Ship,
+                path: "/lcm",
+                allowedRoles: ["admin", "editor"],
+            },
+            {
+                id: "inventory-management",
+                title: "Inventory Management",
+                type: "section",
+                icon: Package,
+                allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "inv-dashboard", title: "Dashboard", type: "link", path: "/inventory/dashboard" },
+                    { id: "inv-items", title: "Items", type: "link", path: "/inventory/items" },
+                    { id: "inv-transactions", title: "Transactions", type: "link", path: "/inventory/transactions" },
+                    { id: "inv-adjustments", title: "Adjustments", type: "link", path: "/inventory/adjustments" },
+                    { id: "inv-counts", title: "Cycle Counts", type: "link", path: "/inventory/counts" },
+                    { id: "inv-transfers", title: "Transfers", type: "link", path: "/inventory/transfers" },
+                    { id: "inv-locations", title: "Locations", type: "link", path: "/inventory/locations" },
+                    { id: "inv-setup", title: "Setup", type: "link", path: "/inventory/setup", icon: SettingsIcon },
+                ]
+            },
+            {
                 id: "revenue",
                 title: "Revenue Management",
                 type: "section",
@@ -182,7 +209,7 @@ export const navigationConfig: SidebarNode[] = [
                 icon: Zap,
                 allowedRoles: ["admin", "editor"],
                 children: [
-                    { id: "ppm-dashboard", title: "Accounting Dashboard", type: "link", path: "/projects/accounting" },
+                    { id: "ppm-dashboard", title: "Accounting Dashboard", type: "link", path: "/ppm/workbench" },
                     { id: "ppm-import", title: "Transaction Review", type: "link", path: "/projects/import" },
                     { id: "ppm-expenditures", title: "Expenditure Inquiry", type: "link", path: "/projects/costs" },
                     { id: "ppm-assets", title: "Capital Assets", type: "link", path: "/projects/assets" },

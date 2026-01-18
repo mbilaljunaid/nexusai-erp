@@ -150,6 +150,11 @@ export const apInvoiceLines = pgTable("ap_invoice_lines", {
     ppmTaskId: varchar("ppm_task_id"),
     ppmExpenditureItemId: varchar("ppm_exp_item_id"), // Linked item after collection
 
+    // Landed Cost Integration
+    isLandedCost: boolean("is_landed_cost").default(false),
+    tradeOperationId: varchar("trade_operation_id"), // FK to lcm_trade_operations
+    costComponentId: varchar("cost_component_id"), // FK to lcm_cost_components
+
     createdAt: timestamp("created_at").defaultNow()
 });
 

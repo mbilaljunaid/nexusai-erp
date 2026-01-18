@@ -660,6 +660,8 @@ const SubscriptionWorkbench = lazy(() => import("@/pages/billing/SubscriptionWor
 const BillingAnomalyDashboard = lazy(() => import("@/pages/billing/BillingAnomalyDashboard"));
 const RevenueIntelligence = lazy(() => import("@/pages/revenue/RevenueIntelligence").then(module => ({ default: module.RevenueIntelligence })));
 
+import { PpmWorkbench } from "@/components/ppm/PpmWorkbench";
+
 function Router() {
   return (
     <Switch>
@@ -995,6 +997,7 @@ function Router() {
       <Route path="/gl/config/controls" component={LedgerControlSetup} />
 
 
+      <Route path="/ppm/workbench" component={PpmWorkbench} />
       <Route component={NotFound} />
     </Switch>
   );

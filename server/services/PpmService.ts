@@ -514,7 +514,7 @@ export class PpmService {
         let actualCost = 0;
         if (taskIds.length > 0) {
             const results = await db.select({
-                total: drizzleSql<string>`sum(COALESCE(burdened_cost, raw_cost))`
+                total: sql<string>`sum(COALESCE(burdened_cost, raw_cost))`
             })
                 .from(ppmExpenditureItems)
                 .where(inArray(ppmExpenditureItems.taskId, taskIds));
@@ -603,7 +603,7 @@ export class PpmService {
         // Validation Rules
         if (newStatus === "CLOSED") {
             // Check for uncosted items
-            const uncostedItems = await db.select({ count: drizzleSql<number>`count(*)` })
+            const uncostedItems = await db.select({ count: sql<number>`count(*)` })
                 .from(ppmExpenditureItems)
                 .where(and(
                     inArray(ppmExpenditureItems.taskId, db.select({ id: ppmTasks.id }).from(ppmTasks).where(eq(ppmTasks.projectId, projectId))),
@@ -615,7 +615,7 @@ export class PpmService {
             }
 
             // Check for CIP assets not interfaced (optional strict rule)
-            const pendingAssets = await db.select({ count: drizzleSql<number>`count(*)` })
+            const pendingAssets = await db.select({ count: sql<number>`count(*)` })
                 .from(ppmAssetLines)
                 .where(and(
                     eq(ppmAssetLines.status, "NEW"),
@@ -767,7 +767,7 @@ export class PpmService {
             .offset(offset)
             .orderBy(desc(ppmExpenditureItems.expenditureItemDate));
 
-        const totalResult = await db.select({ count: drizzleSql<number>`count(*)` })
+        const totalResult = await db.select({ count: sql<number>`count(*)` })
             .from(ppmExpenditureItems)
             .where(whereClause);
 
