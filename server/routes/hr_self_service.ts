@@ -1,12 +1,16 @@
 import { Router } from "express";
 import { db } from "../db";
 import { hrPersons, hrAssignments } from "../../shared/schema/hr_worker";
+import { hrDocuments } from "../../shared/schema/hr_documents";
 import { hrmPerfGoals, hrmPerfDocuments } from "../../shared/schema/talent_performance";
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { approvalEngine } from "../workflow/approvalEngine";
 import { TimeLaborService } from "../services/TimeLaborService";
 import { ManagerAnalyticsService } from "../services/ManagerAnalyticsService";
 import { AIQueryService } from "../services/AIQueryService";
+import { DelegationService } from "../services/DelegationService";
+import { PayrollService } from "../services/PayrollService";
+import { hrmPayElements } from "../../shared/schema/rewards_payroll";
 
 const router = Router();
 
@@ -295,6 +299,19 @@ const getPersonId = async (req: any) => {
     return await TimeLaborService.getPersonIdForUser(userId, tenantId);
 };
 
+const getAssignmentId = async (req: any) => {
+    const personId = await getPersonId(req);
+    if (!personId) return null;
+    const tenantId = req.user?.tenantId || "default";
+    const [assignment] = await db.select().from(hrAssignments)
+        .where(and(
+            eq(hrAssignments.personId, personId),
+            eq(hrAssignments.tenantId, tenantId)
+        ))
+        .limit(1);
+    return assignment?.id || null;
+};
+
 // GET /api/hr-self-service/me/time-periods
 router.get("/me/time-periods", async (req: any, res) => {
     try {
@@ -403,6 +420,259 @@ router.post("/me/ai/chat", async (req: any, res) => {
 
         const response = await AIQueryService.processQuery(message, personId, tenantId);
         res.json({ response });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// === DELEGATION (PROXY) API ===
+
+// GET /api/hr-self-service/me/delegation
+router.get("/me/delegation", async (req: any, res) => {
+    try {
+        const personId = await getPersonId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!personId) return res.status(404).json({ error: "Person record not found" });
+
+        const proxies = await DelegationService.getActiveProxiesForManager(personId, tenantId);
+        res.json(proxies);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST /api/hr-self-service/me/delegation
+router.post("/me/delegation", async (req: any, res) => {
+    try {
+        const personId = await getPersonId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!personId) return res.status(404).json({ error: "Person record not found" });
+
+        const proxy = await DelegationService.createProxy({
+            ...req.body,
+            managerId: personId,
+            tenantId
+        });
+        res.json(proxy);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// DELETE /api/hr-self-service/me/delegation/:id
+router.delete("/me/delegation/:id", async (req: any, res) => {
+    try {
+        const proxy = await DelegationService.revokeProxy(req.params.id);
+        res.json(proxy);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/eligible-proxies
+router.get("/eligible-proxies", async (req: any, res) => {
+    try {
+        const tenantId = req.user?.tenantId || "default";
+        const personId = await getPersonId(req);
+
+        // List all other people in the same tenant
+        const others = await db.select({
+            id: hrPersons.id,
+            name: sql<string>`${hrPersons.firstName} || ' ' || ${hrPersons.lastName}`,
+            email: hrPersons.email
+        })
+            .from(hrPersons)
+            .where(and(
+                eq(hrPersons.tenantId, tenantId),
+                personId ? sql`${hrPersons.id} != ${personId}` : sql`true`
+            ));
+
+        res.json(others);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/me/payroll/deductions
+router.get("/me/payroll/deductions", async (req: any, res) => {
+    try {
+        const assignmentId = await getAssignmentId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!assignmentId) return res.status(404).json({ error: "Assignment not found" });
+
+        const deductions = await PayrollService.getVoluntaryDeductions(assignmentId, tenantId);
+        res.json(deductions);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST /api/hr-self-service/me/payroll/deductions
+router.post("/me/payroll/deductions", async (req: any, res) => {
+    try {
+        const assignmentId = await getAssignmentId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!assignmentId) return res.status(404).json({ error: "Assignment not found" });
+
+        const deduction = await PayrollService.createVoluntaryDeduction({
+            ...req.body,
+            assignmentId,
+            tenantId
+        });
+        res.json(deduction);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// DELETE /api/hr-self-service/me/payroll/deductions/:id
+router.delete("/me/payroll/deductions/:id", async (req: any, res) => {
+    try {
+        const deduction = await PayrollService.deleteVoluntaryDeduction(req.params.id);
+        res.json(deduction);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/me/payroll/retro-pay
+router.get("/me/payroll/retro-pay", async (req: any, res) => {
+    try {
+        const assignmentId = await getAssignmentId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!assignmentId) return res.status(404).json({ error: "Assignment not found" });
+
+        const history = await PayrollService.getRetroPayHistory(assignmentId, tenantId);
+        res.json(history);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/payroll/eligible-elements
+router.get("/payroll/eligible-elements", async (req: any, res) => {
+    try {
+        const tenantId = req.user?.tenantId || "default";
+        // List only voluntary deduction elements
+        const elements = await db.select()
+            .from(hrmPayElements)
+            .where(and(
+                eq(hrmPayElements.tenantId, tenantId),
+                eq(hrmPayElements.classification, "DEDUCTION")
+                // In real app, we might filter by 'VOLUNTARY' flag if it existed
+            ));
+        res.json(elements);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/me/payroll/deductions
+router.get("/me/payroll/deductions", async (req: any, res) => {
+    try {
+        const assignmentId = await getAssignmentId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!assignmentId) return res.status(404).json({ error: "Assignment not found" });
+
+        const deductions = await PayrollService.getVoluntaryDeductions(assignmentId, tenantId);
+        res.json(deductions);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST /api/hr-self-service/me/payroll/deductions
+router.post("/me/payroll/deductions", async (req: any, res) => {
+    try {
+        const assignmentId = await getAssignmentId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!assignmentId) return res.status(404).json({ error: "Assignment not found" });
+
+        const deduction = await PayrollService.createVoluntaryDeduction({
+            ...req.body,
+            assignmentId,
+            tenantId
+        });
+        res.json(deduction);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// DELETE /api/hr-self-service/me/payroll/deductions/:id
+router.delete("/me/payroll/deductions/:id", async (req: any, res) => {
+    try {
+        const deduction = await PayrollService.deleteVoluntaryDeduction(req.params.id);
+        res.json(deduction);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/me/payroll/retro-pay
+router.get("/me/payroll/retro-pay", async (req: any, res) => {
+    try {
+        const assignmentId = await getAssignmentId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!assignmentId) return res.status(404).json({ error: "Assignment not found" });
+
+        const history = await PayrollService.getRetroPayHistory(assignmentId, tenantId);
+        res.json(history);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/payroll/eligible-elements
+router.get("/payroll/eligible-elements", async (req: any, res) => {
+    try {
+        const tenantId = req.user?.tenantId || "default";
+        // List only voluntary deduction elements
+        const elements = await db.select()
+            .from(hrmPayElements)
+            .where(and(
+                eq(hrmPayElements.tenantId, tenantId),
+                eq(hrmPayElements.classification, "DEDUCTION")
+            ));
+        res.json(elements);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/me/compliance/forms
+router.get("/me/compliance/forms", async (req: any, res) => {
+    try {
+        const personId = await getPersonId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!personId) return res.status(404).json({ error: "Person not found" });
+
+        const docs = await db.select().from(hrDocuments)
+            .where(and(
+                eq(hrDocuments.personId, personId),
+                eq(hrDocuments.tenantId, tenantId),
+                inArray(hrDocuments.documentType, ["TAX_FORM", "STATUTORY_FORM", "COMPLIANCE_FORM"])
+            ));
+        res.json(docs);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST /api/hr-self-service/me/compliance/forms
+router.post("/me/compliance/forms", async (req: any, res) => {
+    try {
+        const personId = await getPersonId(req);
+        const tenantId = req.user?.tenantId || "default";
+        if (!personId) return res.status(404).json({ error: "Person not found" });
+
+        const [doc] = await db.insert(hrDocuments).values({
+            ...req.body,
+            personId,
+            tenantId,
+            createdBy: req.user.id
+        }).returning();
+        res.json(doc);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

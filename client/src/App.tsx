@@ -196,6 +196,9 @@ function Router() {
         <Route path="/me/documents" component={PersonalDetails} />
         <Route path="/me/benefits/enroll" component={lazy(() => import("@/pages/hr/selfservice/BenefitsEnrollment"))} />
         <Route path="/me/time-card" component={MyTimeCard} />
+        <Route path="/me/delegation" component={lazy(() => import("@/pages/hr/selfservice/DelegationWorkbench"))} />
+        <Route path="/me/payroll/deductions" component={lazy(() => import("@/pages/hr/selfservice/VoluntaryDeductions"))} />
+        <Route path="/me/compliance/forms" component={lazy(() => import("@/pages/hr/selfservice/StatutoryForms"))} />
         <Route path="/my-team" component={MSSDashboard} />
 
         {/* Public Catch-all */}
