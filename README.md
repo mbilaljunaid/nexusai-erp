@@ -57,6 +57,23 @@ English, Spanish, French, German, Chinese, Japanese, Arabic, Portuguese, Hindi, 
 *   **Governance**: Server-side pagination for high-volume transactions (>100k records).
 *   **Execution**: Shop Floor Terminal, Batch Genealogy, Quality Control (LIMS).
 
+## Recent Refactoring (January 2025)
+
+### Phase 1: Frontend Routing ✅ COMPLETE
+
+The application has been refactored from a monolithic routing structure to a modern, modular architecture:
+
+- **348 routes** organized into 19 lazy-loaded modules
+- **78% reduction** in App.tsx complexity
+- **Significant performance improvements** through code splitting
+- **Better maintainability** with clear module boundaries
+
+See [Phase 1 Summary](docs/PHASE1_ROUTING_MIGRATION_SUMMARY.md) for details.
+
+### Coming Next: Phase 2 - Backend Standardization
+
+Standardizing backend architecture across all modules following the Service-Controller-Route pattern.
+
 ## Quick Start
 
 ```bash

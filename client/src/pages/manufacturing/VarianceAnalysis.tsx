@@ -1,0 +1,230 @@
+import { useQuery } from "@tanstack/react-query";
+import {
+    Card, CardContent, CardHeader, CardTitle, CardDescription
+} from "@/components/ui/card";
+import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import {
+    PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend
+} from "recharts";
+import {
+    AlertCircle, ArrowUpRight, ArrowDownRight, FileSpreadsheet
+} from "lucide-react";
+import type { VarianceJournal } from "@shared/schema";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { useState } from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { DateRange } from "react-day-picker";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+
+export default function VarianceAnalysis() {
+    // State
+    const [page, setPage] = useState(0);
+    const [dateRange, setDateRange] = useState<DateRange | undefined>({
+        from: new Date(new Date().setDate(new Date().getDate() - 30)),
+        to: new Date(),
+    });
+    const limit = 50;
+
+    // Fetch Data
+    const { data } = useQuery<{ items: VarianceJournal[], total: number }>({
+        queryKey: ["/api/manufacturing/variance-journals", page, limit, dateRange?.from, dateRange?.to],
+        queryFn: async () => {
+            const params = new URLSearchParams({
+                limit: limit.toString(),
+                offset: (page * limit).toString(),
+            });
+            if (dateRange?.from) params.append("startDate", dateRange.from.toISOString());
+            if (dateRange?.to) params.append("endDate", dateRange.to.toISOString());
+
+            const res = await fetch(`/api/manufacturing/variance-journals?${params}`);
+            if (!res.ok) throw new Error("Failed to fetch variance journals");
+            return res.json();
+        }
+    });
+
+    const journals = data?.items || [];
+    const totalItems = data?.total || 0;
+
+    // Chart Data
+    const varianceSummary = [
+        { name: "Material Usage", value: 4500, color: "#3b82f6" },
+        { name: "Labor Efficiency", value: 2100, color: "#10b981" },
+        { name: "Overhead Volume", value: 1200, color: "#8b5cf6" },
+        { name: "Yield Variance", value: 800, color: "#f59e0b" },
+    ];
+
+    const columns: Column<VarianceJournal>[] = [
+        { header: "Order ID", accessorKey: "productionOrderId" },
+        { header: "Type", accessorKey: "varianceType" },
+        {
+            header: "Amount",
+            accessorKey: "amount",
+            cell: (row) => (
+                <span className={Number(row.amount) > 0 ? "text-red-500 font-medium" : "text-green-500 font-medium"}>
+                    ${Number(row.amount).toFixed(2)}
+                </span>
+            )
+        },
+        { header: "Description", accessorKey: "description" },
+        {
+            header: "GL Posted",
+            accessorKey: "glPosted",
+            cell: (row) => row.glPosted ? "✅" : "⏳"
+        }
+    ];
+
+    return (
+        <StandardPage
+            title="Variance Analysis"
+            breadcrumbs={[
+                { label: "Manufacturing", href: "/manufacturing" },
+                { label: "Financials" },
+                { label: "Variance Analysis" }
+            ]}
+            actions={
+                <div className="flex gap-2 items-center">
+                    <div className={cn("grid gap-2")}>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    id="date"
+                                    variant={"outline"}
+                                    className={cn(
+                                        "w-[300px] justify-start text-left font-normal",
+                                        !dateRange && "text-muted-foreground"
+                                    )}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {dateRange?.from ? (
+                                        dateRange.to ? (
+                                            <>
+                                                {format(dateRange.from, "LLL dd, y")} -{" "}
+                                                {format(dateRange.to, "LLL dd, y")}
+                                            </>
+                                        ) : (
+                                            format(dateRange.from, "LLL dd, y")
+                                        )
+                                    ) : (
+                                        <span>Pick a date</span>
+                                    )}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    initialFocus
+                                    mode="range"
+                                    defaultMonth={dateRange?.from}
+                                    selected={dateRange}
+                                    onSelect={setDateRange}
+                                    numberOfMonths={2}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+
+                    <Card className="px-4 py-2 flex flex-row items-center gap-3">
+                        <div className="bg-red-100 p-2 rounded-full">
+                            <ArrowUpRight className="h-5 w-5 text-red-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-muted-foreground">Net Variance</p>
+                            <p className="text-xl font-bold text-red-600">+$8,600</p>
+                        </div>
+                    </Card>
+                    <Card className="px-4 py-2 flex flex-row items-center gap-3">
+                        <div className="bg-green-100 p-2 rounded-full">
+                            <ArrowDownRight className="h-5 w-5 text-green-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-muted-foreground">Recovered</p>
+                            <p className="text-xl font-bold text-green-600">-$1,200</p>
+                        </div>
+                    </Card>
+                </div>
+            }
+        >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card className="lg:col-span-1">
+                    <CardHeader>
+                        <CardTitle>Variance Distribution</CardTitle>
+                        <CardDescription>Breakdown by variance category.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={varianceSummary}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                >
+                                    {varianceSummary.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </CardContent>
+                </Card>
+
+                <Card className="lg:col-span-2">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Variance Journals</CardTitle>
+                            <CardDescription>System-generated postings for cost deviations.</CardDescription>
+                        </div>
+                        <FileSpreadsheet className="h-5 w-5 text-muted-foreground cursor-pointer hover:text-primary transition-colors" />
+                    </CardHeader>
+                    <CardContent>
+                        <StandardTable
+                            columns={columns}
+                            data={journals}
+                            page={page}
+                            onPageChange={setPage}
+                            totalItems={totalItems}
+                            itemsPerPage={limit}
+                        />
+                    </CardContent>
+                </Card>
+            </div>
+
+            <Card className="border-red-200 bg-red-50/20 mt-6">
+                <CardHeader className="pb-3">
+                    <div className="flex items-center gap-2">
+                        <AlertCircle className="h-5 w-5 text-red-600" />
+                        <CardTitle className="text-red-900">Critical Yield Alerts</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        {[1, 2].map((i) => (
+                            <div key={i} className="flex justify-between items-center bg-white p-3 rounded-lg border border-red-100 shadow-sm">
+                                <div className="space-y-1">
+                                    <p className="text-sm font-semibold">Order #WO-2024-00{i} - Significant Waste</p>
+                                    <p className="text-xs text-muted-foreground">Work Center: CC-STAMPING-01. Actual usage 25% above standard.</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-sm font-bold text-red-600">+$2,450.00</p>
+                                    <p className="text-[10px] text-muted-foreground">2 hours ago</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        </StandardPage>
+    );
+}

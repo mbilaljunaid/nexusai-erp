@@ -1,0 +1,299 @@
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { IconNavigation } from "@/components/IconNavigation";
+import { PurchaseOrderForm } from "@/components/forms/PurchaseOrderForm";
+import { PurchaseRequisitionForm } from "@/components/forms/PurchaseRequisitionForm";
+import { RFQForm } from "@/components/forms/RFQForm";
+import { VendorToInvoiceForm } from "@/components/forms/VendorToInvoiceForm";
+import { GLEntryForm } from "@/components/forms/GLEntryForm";
+import { InvoiceEntryForm } from "@/components/forms/InvoiceEntryForm";
+import { FormSearch } from "@/components/FormSearch";
+import { useQuery } from "@tanstack/react-query";
+import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users, Mail, ClipboardList } from "lucide-react";
+import { Link, useRoute } from "wouter";
+
+export default function ERP() {
+  const [match, params] = useRoute("/erp/:page");
+  const [activeNav, setActiveNav] = useState("overview");
+  const [selectedVendor, setSelectedVendor] = useState<any>(null);
+
+  useEffect(() => {
+    if (params?.page) {
+      setActiveNav(params.page);
+    }
+  }, [params?.page]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
+  const [filteredGLEntries, setFilteredGLEntries] = useState<any[]>([]);
+  const [filteredVendors, setFilteredVendors] = useState<any[]>([]);
+
+  const { data: glEntries = [] } = useQuery<any[]>({ queryKey: ["/api/ledger"], retry: false });
+  const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"], retry: false });
+  const { data: pos = [] } = useQuery<any[]>({ queryKey: ["/api/purchase-orders"], retry: false });
+  const { data: vendors = [] } = useQuery<any[]>({ queryKey: ["/api/vendors"], retry: false });
+  const { data: requisitions = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/requisitions"], retry: false });
+  const { data: rfqs = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/rfqs"], retry: false });
+
+  // Navigation Items - Updated to link to Premium Modules where available
+  const navItems = [
+    { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500", path: "/erp" },
+    { id: "gl", label: "General Ledger", icon: DollarSign, color: "text-green-500", path: "/gl/journals" },
+    { id: "ap", label: "Accounts Payable", icon: FileText, color: "text-orange-500", path: "/finance/accounts-payable" },
+    { id: "ar", label: "Accounts Receivable", icon: TrendingUp, color: "text-purple-500", path: "/finance/accounts-receivable" },
+    { id: "cash", label: "Cash Management", icon: DollarSign, color: "text-emerald-500", path: "/finance/cash-management" },
+    { id: "assets", label: "Fixed Assets", icon: Warehouse, color: "text-indigo-500", path: "/finance/fixed-assets" },
+    { id: "requisitions", label: "Requisitions", icon: ClipboardList, color: "text-blue-600", path: "/erp/requisitions" },
+    { id: "rfqs", label: "RFQs", icon: Mail, color: "text-teal-500", path: "/erp/rfqs" },
+    { id: "po", label: "Purchase Orders", icon: ShoppingCart, color: "text-pink-500", path: "/erp/po" },
+    { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500", path: "/erp/inventory" },
+    { id: "quality", label: "Quality Control", icon: Zap, color: "text-cyan-500", path: "/erp/quality" },
+    { id: "suppliers", label: "Suppliers", icon: Users, color: "text-indigo-500", path: "/erp/suppliers" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500", path: "/erp/settings" },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold flex items-center gap-2"><Warehouse className="w-8 h-8" />ERP & Finance</h1>
+        <p className="text-muted-foreground text-sm">Manage financials, inventory, procurement, and supply chain</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$2.4M</p><p className="text-xs text-muted-foreground">Total Assets</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$856K</p><p className="text-xs text-muted-foreground">Monthly Revenue</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$523K</p><p className="text-xs text-muted-foreground">Inventory Value</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-2xl font-semibold">342</p><p className="text-xs text-muted-foreground">POs This Month</p></CardContent></Card>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {navItems.map((item) => {
+          return (
+            <Link key={item.id} to={item.path}>
+              <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
+                <item.icon className={`w-6 h-6 ${item.color}`} />
+                <span className="text-sm font-medium text-center">{item.label}</span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      {activeNav === "overview" && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card><CardHeader><CardTitle className="text-base">Financial Summary</CardTitle></CardHeader><CardContent><div className="space-y-2"><p className="text-sm">Assets: $2.4M</p><p className="text-sm">Liabilities: $1.2M</p><p className="text-sm">Equity: $1.2M</p></div></CardContent></Card>
+          <Card><CardHeader><CardTitle className="text-base">KPIs</CardTitle></CardHeader><CardContent><div className="space-y-2"><p className="text-sm">Gross Margin: 42%</p><p className="text-sm">Current Ratio: 1.8x</p><p className="text-sm">Inventory Turnover: 4.2x</p></div></CardContent></Card>
+        </div>
+      )}
+
+      {/* Premium Module Link: General Ledger is now at /finance */}
+
+      {/* Premium Module Link: AP is now at /finance/accounts-payable */}
+
+      {/* Premium Module Link: AR is now at /finance/accounts-receivable */}
+
+      {activeNav === "requisitions" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <FormSearch
+              placeholder="Search requisitions by number or department..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['requisitionNumber', 'department']}
+              data={requisitions as any[]}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-new-requisition">+ New Requisition</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((r: any, idx: number) => (
+                <Card key={r.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{r.requisitionNumber}</p><p className="text-sm text-muted-foreground">{r.department}</p></div><Badge>{r.status || 'PENDING'}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No requisitions found</p></CardContent></Card>
+            )}
+          </div>
+          <PurchaseRequisitionForm />
+        </div>
+      )}
+
+      {activeNav === "rfqs" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <FormSearch
+              placeholder="Search RFQs by number or scope..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['rfqNumber', 'scope']}
+              data={rfqs as any[]}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-new-rfq">+ New RFQ</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((r: any, idx: number) => (
+                <Card key={r.id || idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{r.rfqNumber}</p><p className="text-sm text-muted-foreground">{r.scope?.substring(0, 50)}</p></div><Badge>{r.status || 'SENT'}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No RFQs found</p></CardContent></Card>
+            )}
+          </div>
+          <RFQForm />
+        </div>
+      )}
+
+      {activeNav === "po" && (
+        <div className="space-y-4">
+          <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4">
+            <p className="text-sm font-medium text-blue-900 dark:text-blue-100">PO Workflow: Create a requisition → Send RFQ to vendors → Convert to Purchase Order → Invoice linked to PO</p>
+          </Card>
+          <div className="flex gap-2 items-center">
+            <FormSearch
+              placeholder="Search POs by ID or vendor..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['id', 'vendor']}
+              data={pos as any[]}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-new-po">+ New PO</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((p: any, idx: number) => (
+                <Card key={idx} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-start"><div className="flex-1"><p className="font-semibold">PO {p.id}</p><p className="text-sm text-muted-foreground">{p.vendor}</p><p className="text-xs text-muted-foreground mt-1">Linked Invoices: {Math.floor(Math.random() * 5)}</p></div><Badge>${(p.amount || 0).toLocaleString()}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No purchase orders found</p></CardContent></Card>
+            )}
+          </div>
+          <PurchaseOrderForm />
+        </div>
+      )}
+
+      {activeNav === "inventory" && (
+        <div className="space-y-4">
+          <div className="flex gap-2 items-center">
+            <FormSearch
+              placeholder="Search inventory by product name..."
+              value={searchQuery}
+              onChange={setSearchQuery}
+              searchFields={['name']}
+              data={[{ id: 1, name: "Widget A", qty: 145, value: 14500 }, { id: 2, name: "Widget B", qty: 89, value: 8900 }]}
+              onFilter={(filtered) => setFilteredInvoices(filtered)}
+            />
+            <Button data-testid="button-adjust-stock">+ Adjust Stock</Button>
+          </div>
+          <div className="space-y-2">
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((i: any) => (
+                <Card key={i.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.name}</p><p className="text-sm text-muted-foreground">Qty: {i.qty}</p></div><Badge>${i.value.toLocaleString()}</Badge></div></CardContent></Card>
+              ))
+            ) : (
+              <Card><CardContent className="p-4"><p className="text-muted-foreground">No inventory items found</p></CardContent></Card>
+            )}
+          </div>
+          <div>Adjustment Entry Form</div>
+        </div>
+      )}
+
+      {activeNav === "quality" && <div className="space-y-4"><div>Adjustment Entry Form</div></div>}
+
+      {activeNav === "suppliers" && (
+        <div className="space-y-4">
+          {selectedVendor ? (
+            <VendorToInvoiceForm vendor={selectedVendor} onClose={() => setSelectedVendor(null)} />
+          ) : (
+            <>
+              <div className="flex gap-2 items-center">
+                <FormSearch
+                  placeholder="Search suppliers by name or location..."
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  searchFields={['vendorName', 'email']}
+                  data={vendors as any[]}
+                  onFilter={setFilteredVendors}
+                />
+                <Button data-testid="button-new-supplier">+ New Supplier</Button>
+              </div>
+              <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-blue-900 dark:text-blue-100">
+                    Click "Create Invoice" to generate a supplier invoice with AP GL entries (2100) for complete vendor invoice processing.
+                  </p>
+                </CardContent>
+              </Card>
+              <div className="space-y-2">
+                {[
+                  { id: "1", vendorName: "ABC Manufacturing", vendorCode: "V-001", paymentTerms: "Net 30", status: "Active", category: "Materials" },
+                  { id: "2", vendorName: "Tech Components Ltd", vendorCode: "V-002", paymentTerms: "Net 45", status: "Active", category: "Technology" },
+                  { id: "3", vendorName: "Global Logistics", vendorCode: "V-003", paymentTerms: "Net 15", status: "Active", category: "Services" },
+                ].map((v: any) => (
+                  <Card key={v.id} className="hover-elevate">
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-semibold">{v.vendorName}</p>
+                          <p className="text-sm text-muted-foreground">{v.vendorCode} • {v.category} • {v.paymentTerms}</p>
+                        </div>
+                        <Button size="sm" data-testid={`button-invoice-${v.id}`}>
+                          Create Invoice
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <div>Vendor Entry Form</div>
+            </>
+          )}
+        </div>
+      )}
+
+      {activeNav === "settings" && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>ERP Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="font-semibold mb-2">System Configuration</p>
+                <p className="text-sm text-muted-foreground">Configure financials, inventory, and supply chain settings</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">GL Configuration</p>
+                  <Button size="sm" variant="outline" className="mt-2" data-testid="button-gl-settings">
+                    Configure GL
+                  </Button>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">Inventory Settings</p>
+                  <Button size="sm" variant="outline" className="mt-2" data-testid="button-inventory-settings">
+                    Configure Inventory
+                  </Button>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">Procurement Rules</p>
+                  <Button size="sm" variant="outline" className="mt-2" data-testid="button-procurement-settings">
+                    Configure Procurement
+                  </Button>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">Approval Workflows</p>
+                  <Button size="sm" variant="outline" className="mt-2" data-testid="button-workflow-settings">
+                    Configure Workflows
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}

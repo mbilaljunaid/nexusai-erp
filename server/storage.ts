@@ -1,0 +1,2877 @@
+
+import {
+  // Common & Core
+  type User, type InsertUser, type UpsertUser,
+  type Tenant, type InsertTenant,
+  type Role, type InsertRole,
+  type Plan, type InsertPlan,
+  type Subscription, type InsertSubscription,
+  type Payment, type InsertPayment,
+  type AuditLog, type InsertAuditLog,
+} from "@shared/schema";
+import {
+  // CRM
+  type Account, type InsertAccount,
+  type Contact, type InsertContact,
+  type Opportunity, type InsertOpportunity,
+  type Lead, type InsertLead,
+  type Case, type InsertCase,
+  type CaseComment, type InsertCaseComment,
+  type Interaction, type InsertInteraction,
+
+
+  // Project Management
+  type Project, type InsertProject,
+  type WorkOrder, type InsertWorkOrder,
+  type Sprint, type InsertSprint,
+  type Issue, type InsertIssue,
+
+  // HR
+  type Employee, type InsertEmployee,
+
+  // Field Service & Mobile
+  type FieldServiceJob, type InsertFieldServiceJob,
+  type MobileDevice, type InsertMobileDevice,
+  type OfflineSync, type InsertOfflineSync,
+
+  // AI & Agentic
+  aiActions, aiAuditLogs,
+  type AiAction, type InsertAiAction,
+  type AiAuditLog, type InsertAiAuditLog,
+  agentActions, agentExecutions, agentAuditLogs,
+  type AgentAction, type InsertAgentAction,
+  type AgentExecution, type InsertAgentExecution,
+  type AgentAuditLog, type InsertAgentAuditLog,
+  type AiCredits, type InsertAiCredits,
+
+  // Financials - GL
+  glAccounts, glPeriods, glJournals, glJournalLines, glJournalBatches, glJournalApprovals,
+  glLedgers, glLegalEntities, glLedgerRelationships, glLedgerSets, glLedgerSetAssignments,
+  glBalances, glDailyRates, glDailyRates as glDailyRatesTable, // Alias if needed
+  glExchangeRates, glRevaluations, glRevaluationEntries,
+  glCoaStructures, glSegments, glSegmentValues, glValueSets, glSegmentHierarchies,
+  glCrossValidationRules, glDataAccessSets, glDataAccessSetAssignments,
+  glBudgets, glBudgetBalances, glBudgetControlRules,
+  glReportDefinitions, glReportRows, glReportColumns,
+  glFsgRowSets, glFsgColumnSets, glReportSchedules, glReportInstances,
+  glIntercompanyRules, glAuditLogs, glCloseTasks,
+
+  type GlAccount, type InsertGlAccount,
+  type GlPeriod, type InsertGlPeriod,
+  type GlJournal, type InsertGlJournal,
+  type GlJournalLine, type InsertGlJournalLine,
+  type GlJournalBatch, type InsertGlJournalBatch,
+  type GlJournalApproval, type InsertGlJournalApproval,
+  type GlLedger, type InsertGlLedger,
+  type GlLegalEntity, type InsertGlLegalEntity,
+  type GlLedgerRelationship, type InsertGlLedgerRelationship,
+  type GlLedgerSet, type InsertGlLedgerSet,
+  type GlLedgerSetAssignment, type InsertGlLedgerSetAssignment,
+  type GlBalance, type InsertGlBalance,
+  type GlDailyRate, type InsertGlDailyRate,
+  type GlExchangeRate, type InsertGlExchangeRate,
+  type GlRevaluation, type InsertGlRevaluation,
+  type GlRevaluationEntry, type InsertGlRevaluationEntry,
+  type GlCoaStructure, type InsertGlCoaStructure,
+  type GlSegment, type InsertGlSegment,
+  type GlSegmentValue, type InsertGlSegmentValue,
+  type GlValueSet, type InsertGlValueSet,
+  type GlSegmentHierarchy, type InsertGlSegmentHierarchy,
+  type GlCrossValidationRule, type InsertGlCrossValidationRule,
+  type GlDataAccessSet, type InsertGlDataAccessSet,
+  type GlDataAccessSetAssignment, type InsertGlDataAccessSetAssignment,
+  type GlBudget, type InsertGlBudget,
+  type GlBudgetBalance, type InsertGlBudgetBalance,
+  type GlBudgetControlRule, type InsertGlBudgetControlRule,
+  type GlReportDefinition, type InsertGlReportDefinition,
+  type GlReportRow, type InsertGlReportRow,
+  type GlReportColumn, type InsertGlReportColumn,
+  type GlFsgRowSet, type InsertGlFsgRowSet,
+  type GlFsgColumnSet, type InsertGlFsgColumnSet,
+  type GlReportSchedule, type InsertGlReportSchedule,
+  type GlReportInstance, type InsertGlReportInstance,
+  type GlIntercompanyRule, type InsertGlIntercompanyRule,
+  type GlAuditLog, type InsertGlAuditLog,
+  type GlCloseTask, type InsertGlCloseTask,
+  glRecurringJournals, type GlRecurringJournal, type InsertGlRecurringJournal,
+
+  // GL Config (Chunk 8)
+  glJournalSources, glJournalCategories, glLedgerControls, glAutoPostRules,
+  type GlJournalSource, type InsertGlJournalSource,
+  type GlJournalCategory, type InsertGlJournalCategory,
+  type GlLedgerControl, type InsertGlLedgerControl,
+  type GlAutoPostRule, type InsertGlAutoPostRule,
+
+
+
+  // AP
+  apSuppliers, apInvoices, apInvoiceLines, apInvoiceDistributions, apPayments, apApprovals,
+  type ApSupplier, type InsertApSupplier,
+  type ApInvoice, type InsertApInvoice, type ApInvoiceLine, type InsertApInvoiceLine,
+  type ApInvoiceDistribution, type InsertApInvoiceDistribution,
+  type ApPayment, type InsertApPayment,
+  type ApApproval, type InsertApApproval,
+
+  // AR
+  arCustomers, arInvoices, arReceipts,
+  arCustomerAccounts, arCustomerSites, arReceiptApplications,
+  type ArCustomer, type InsertArCustomer,
+  type ArCustomerAccount, type InsertArCustomerAccount,
+  type ArCustomerSite, type InsertArCustomerSite,
+  type ArInvoice, type InsertArInvoice,
+  type ArReceipt, type InsertArReceipt,
+  type ArReceiptApplication, type InsertArReceiptApplication,
+  arRevenueRules, type ArRevenueRule, type InsertArRevenueRule,
+  arRevenueSchedules, type ArRevenueSchedule, type InsertArRevenueSchedule,
+  arDunningTemplates, // Removed arCollections if not exists
+  arDunningRuns,
+  arCollectorTasks,
+  arAdjustments,
+  type ArDunningTemplate, type InsertArDunningTemplate,
+  type ArDunningRun, type InsertArDunningRun,
+  type ArCollectorTask, type InsertArCollectorTask,
+  type ArAdjustment, type InsertArAdjustment,
+  arPeriodStatuses, type ArPeriodStatus, type InsertArPeriodStatus,
+  type ArSystemOptions, type InsertArSystemOptions,
+
+  // Tax
+  taxCodes, taxJurisdictions, taxExemptions,
+  type TaxCode, type InsertTaxCode,
+  type TaxJurisdiction, type InsertTaxJurisdiction,
+  type TaxExemption, type InsertTaxExemption,
+
+  // Cash Management
+  cashBankAccounts, cashTransactions, cashStatementLines, cashReconciliationRules, cashMatchingGroups, cashStatementHeaders,
+  cashZbaStructures, cashZbaSweeps,
+  type CashBankAccount, type InsertCashBankAccount,
+  type CashTransaction, type InsertCashTransaction,
+  type CashStatementLine, type InsertCashStatementLine,
+  type CashStatementHeader, type InsertCashStatementHeader,
+  type CashReconciliationRule, type InsertCashReconciliationRule,
+  type CashMatchingGroup, type InsertCashMatchingGroup,
+  type CashZbaStructure, type InsertCashZbaStructure,
+  type CashZbaSweep, type InsertCashZbaSweep,
+  // Removed faTransactionHeaders
+  // Fixed Assets (DB)
+  faAssets, faBooks, faTransactions, faDepreciationHistory, faCategories,
+  type FaAsset, type InsertFaAsset,
+  type FaBook, type InsertFaBook,
+  type FaTransaction, type InsertFaTransaction,
+  type FaCategory, type InsertFaCategory,
+  type FaDepreciationHistory,
+
+  // SCM
+  purchaseOrders, purchaseOrderLines,
+  type PurchaseOrder, type InsertPurchaseOrder,
+  type PurchaseOrderLine, type InsertPurchaseOrderLine,
+
+  // Others
+  type CopilotConversation, type InsertCopilotConversation,
+  type CopilotMessage, type InsertCopilotMessage,
+  type RevenueForecast, type InsertRevenueForecast,
+  budgetAllocations, type BudgetAllocation, type InsertBudgetAllocation,
+  type TimeSeriesData, type InsertTimeSeriesData,
+  type ForecastModel, type InsertForecastModel,
+  type Scenario, type InsertScenario,
+  type ScenarioVariable, type InsertScenarioVariable,
+  type DashboardWidget, type InsertDashboardWidget,
+  type Report, type InsertReport,
+  type App, type InsertApp,
+  type AppReview, type InsertAppReview,
+  type AppInstallation, type InsertAppInstallation,
+  type Connector, type InsertConnector,
+  type ConnectorInstance, type InsertConnectorInstance,
+  type WebhookEvent, type InsertWebhookEvent,
+  type AbacRule, type InsertAbacRule,
+  type EncryptedField, type InsertEncryptedField,
+  type ComplianceConfig, type InsertComplianceConfig,
+  type DataLake, type InsertDataLake,
+  type EtlPipeline, type InsertEtlPipeline,
+  type BiDashboard, type InsertBiDashboard,
+  type PayrollConfig, type InsertPayrollConfig,
+  type Demo, type InsertDemo,
+  type Partner, type InsertPartner,
+  type UserFeedback, type InsertUserFeedback,
+  type Industry, type InsertIndustry,
+  type IndustryDeployment, type InsertIndustryDeployment,
+  type CommunitySpace, type InsertCommunitySpace,
+  type CommunityPost, type InsertCommunityPost,
+  type CommunityComment, type InsertCommunityComment,
+  type CommunityVote, type InsertCommunityVote,
+  type UserTrustLevel, type InsertUserTrustLevel,
+  type ReputationEvent, type InsertReputationEvent,
+  type CommunityBadgeProgress, type InsertCommunityBadgeProgress,
+  invoices as legacyInvoices, type Invoice, type InsertInvoice,
+  glCodeCombinations, type GlCodeCombination, type InsertGlCodeCombination,
+  type FaAssetBook
+} from "@shared/schema";
+
+import { dbStorage } from "./storage-db";
+import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq, desc, and, sql, ne, count } from "drizzle-orm";
+
+export interface IStorage {
+  // Legal Entity operations
+  listGlLegalEntities(): Promise<GlLegalEntity[]>;
+  getGlLegalEntity(id: string): Promise<GlLegalEntity | undefined>; // GL Legal Entities
+  createGlLegalEntity(entity: InsertGlLegalEntity): Promise<GlLegalEntity>;
+  updateGlLegalEntity(id: string, data: Partial<InsertGlLegalEntity>): Promise<GlLegalEntity | undefined>;
+
+  // Ledger Relationship operations
+  listLedgerRelationships(): Promise<GlLedgerRelationship[]>;
+  createLedgerRelationship(data: InsertGlLedgerRelationship): Promise<GlLedgerRelationship>;
+
+  // Master Data (Chunk 4)
+  listValueSets(): Promise<GlValueSet[]>;
+  createValueSet(data: InsertGlValueSet): Promise<GlValueSet>;
+  listCoaStructures(): Promise<GlCoaStructure[]>;
+  createCoaStructure(data: InsertGlCoaStructure): Promise<GlCoaStructure>;
+  listSegments(coaStructureId: string): Promise<GlSegment[]>;
+  createSegment(data: InsertGlSegment): Promise<GlSegment>;
+  listSegmentValues(valueSetId: string): Promise<GlSegmentValue[]>;
+  createSegmentValue(data: InsertGlSegmentValue): Promise<GlSegmentValue>;
+  listSegmentHierarchies(valueSetId: string): Promise<GlSegmentHierarchy[]>;
+  createSegmentHierarchy(data: InsertGlSegmentHierarchy): Promise<GlSegmentHierarchy>;
+
+  // CVR & Security (Chunk 4 Part 2)
+  listCrossValidationRules(ledgerId: string): Promise<GlCrossValidationRule[]>;
+  createCrossValidationRule(data: InsertGlCrossValidationRule): Promise<GlCrossValidationRule>;
+  listDataAccessSets(): Promise<GlDataAccessSet[]>;
+  createDataAccessSet(data: InsertGlDataAccessSet): Promise<GlDataAccessSet>;
+  createDataAccessSetAssignment(data: InsertGlDataAccessSetAssignment): Promise<GlDataAccessSetAssignment>;
+
+  // AR Revenue Schedule operations
+  listArRevenueSchedules(): Promise<ArRevenueSchedule[]>;
+  getArRevenueSchedule(id: string): Promise<ArRevenueSchedule | undefined>;
+  createArRevenueSchedule(data: InsertArRevenueSchedule): Promise<ArRevenueSchedule>;
+  updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>): Promise<ArRevenueSchedule | undefined>;
+  deleteArRevenueSchedule(id: string): Promise<boolean>;
+
+  // Cash Management
+  listCashBankAccounts(): Promise<CashBankAccount[]>;
+  getCashBankAccount(id: string): Promise<CashBankAccount | undefined>;
+  createCashBankAccount(data: InsertCashBankAccount): Promise<CashBankAccount>;
+  updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>): Promise<CashBankAccount | undefined>;
+  deleteCashBankAccount(id: string): Promise<boolean>;
+
+  listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]>;
+  createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine>;
+  updateCashStatementLine(id: string, data: Partial<InsertCashStatementLine>): Promise<CashStatementLine>;
+
+  // Statement Headers
+  listCashStatementHeaders(bankAccountId: string): Promise<CashStatementHeader[]>;
+  createCashStatementHeader(data: InsertCashStatementHeader): Promise<CashStatementHeader>;
+  updateCashStatementHeader(id: string, data: Partial<InsertCashStatementHeader>): Promise<CashStatementHeader>;
+
+  listCashTransactions(bankAccountId: string): Promise<CashTransaction[]>;
+  createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction>;
+  updateCashTransaction(id: string, data: Partial<InsertCashTransaction>): Promise<CashTransaction>;
+
+  // Rules & Matching
+  listCashReconciliationRules(ledgerId: string): Promise<CashReconciliationRule[]>;
+  createCashReconciliationRule(data: InsertCashReconciliationRule): Promise<CashReconciliationRule>;
+  updateCashReconciliationRule(id: string, data: Partial<InsertCashReconciliationRule>): Promise<CashReconciliationRule>;
+  deleteCashReconciliationRule(id: string): Promise<void>;
+  createCashMatchingGroup(data: InsertCashMatchingGroup): Promise<CashMatchingGroup>;
+
+  // ZBA
+  listCashZbaStructures(): Promise<CashZbaStructure[]>;
+  createCashZbaStructure(data: InsertCashZbaStructure): Promise<CashZbaStructure>;
+  updateCashZbaStructure(id: string, data: Partial<InsertCashZbaStructure>): Promise<CashZbaStructure>;
+  createCashZbaSweep(data: InsertCashZbaSweep): Promise<CashZbaSweep>;
+  listCashZbaSweeps(structureId?: string): Promise<CashZbaSweep[]>;
+
+  // Financial Reporting (FSG+)
+  listFsgRowSets(ledgerId: string): Promise<GlFsgRowSet[]>;
+  getFsgRowSet(id: string): Promise<GlFsgRowSet | undefined>;
+  createFsgRowSet(data: InsertGlFsgRowSet): Promise<GlFsgRowSet>;
+
+  listFsgColumnSets(ledgerId: string): Promise<GlFsgColumnSet[]>;
+  getFsgColumnSet(id: string): Promise<GlFsgColumnSet | undefined>;
+  createFsgColumnSet(data: InsertGlFsgColumnSet): Promise<GlFsgColumnSet>;
+
+  // Reporting Lifecycle
+  listReportSchedules(): Promise<GlReportSchedule[]>;
+  createReportSchedule(data: InsertGlReportSchedule): Promise<GlReportSchedule>;
+  createReportInstance(data: InsertGlReportInstance): Promise<GlReportInstance>;
+
+  // Fixed Assets
+  listFaAssets(): Promise<FaAsset[]>;
+  getFaAsset(id: string): Promise<FaAsset | undefined>;
+  createFaAsset(data: InsertFaAsset): Promise<FaAsset>;
+  // Books (Definitions)
+  createFaBook(data: InsertFaBook): Promise<FaBook>;
+  listFaBooks(): Promise<FaBook[]>;
+  // Transactions
+  createFaTransaction(data: InsertFaTransaction): Promise<FaTransaction>;
+  // Categories
+  getFaCategory(id: string): Promise<FaCategory | undefined>;
+  listFaCategories(): Promise<FaCategory[]>;
+
+  // User operations (IMPORTANT: mandatory for Replit Auth)
+  upsertUser(user: UpsertUser): Promise<User>;
+  getTenant(id: string): Promise<Tenant | undefined>;
+  listTenants(): Promise<Tenant[]>;
+  createTenant(tenant: InsertTenant): Promise<Tenant>;
+
+  getRole(id: string): Promise<Role | undefined>;
+  listRoles(tenantId?: string): Promise<Role[]>;
+  createRole(role: InsertRole): Promise<Role>;
+
+  getPlan(id: string): Promise<Plan | undefined>;
+  listPlans(): Promise<Plan[]>;
+  createPlan(plan: InsertPlan): Promise<Plan>;
+
+  getSubscription(id: string): Promise<Subscription | undefined>;
+  listSubscriptions(tenantId?: string): Promise<Subscription[]>;
+  createSubscription(sub: InsertSubscription): Promise<Subscription>;
+
+  getPayment(id: string): Promise<Payment | undefined>;
+  listPayments(invoiceId?: string): Promise<Payment[]>;
+  createPayment(payment: InsertPayment): Promise<Payment>;
+
+  getDemo(id: string): Promise<Demo | undefined>;
+  listDemos(): Promise<Demo[]>;
+  createDemo(demo: InsertDemo): Promise<Demo>;
+  deleteDemo(id: string): Promise<boolean>;
+  updateDemo(id: string, demo: Partial<InsertDemo>): Promise<Demo | undefined>;
+
+  getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  listUsers(): Promise<User[]>;
+  createUser(user: InsertUser): Promise<User>;
+
+  getProject(id: string): Promise<Project | undefined>;
+  listProjects(ownerId?: string): Promise<Project[]>;
+  createProject(project: InsertProject): Promise<Project>;
+
+  getInvoice(id: string): Promise<Invoice | undefined>;
+  listInvoices(customerId?: string): Promise<Invoice[]>;
+  createInvoice(invoice: InsertInvoice): Promise<Invoice>;
+
+  getLead(id: string): Promise<Lead | undefined>;
+  // Case Management
+  listCases(filters?: { accountId?: string; contactId?: string }): Promise<Case[]>;
+  getCase(id: string): Promise<Case | undefined>;
+  createCase(data: InsertCase): Promise<Case>;
+  updateCase(id: string, data: Partial<InsertCase>): Promise<Case | undefined>;
+  listCaseComments(caseId: string): Promise<CaseComment[]>;
+  createCaseComment(data: InsertCaseComment): Promise<CaseComment>;
+
+  // Interaction Methods
+  listInteractions(entityType: string, entityId: string): Promise<Interaction[]>;
+  createInteraction(interaction: InsertInteraction): Promise<Interaction>;
+
+  // Lead Management
+  getLead(id: string): Promise<Lead | undefined>;
+  listLeads(): Promise<Lead[]>;
+  createLead(lead: InsertLead): Promise<Lead>;
+  convertLead(leadId: string, ownerId?: string): Promise<{ account: Account; contact: Contact; opportunity: Opportunity }>;
+
+
+  getWorkOrder(id: string): Promise<WorkOrder | undefined>;
+  listWorkOrders(): Promise<WorkOrder[]>;
+  createWorkOrder(order: InsertWorkOrder): Promise<WorkOrder>;
+
+  getEmployee(id: string): Promise<Employee | undefined>;
+  listEmployees(department?: string): Promise<Employee[]>;
+  createEmployee(employee: InsertEmployee): Promise<Employee>;
+
+  getMobileDevice(id: string): Promise<MobileDevice | undefined>;
+  listMobileDevices(userId?: string): Promise<MobileDevice[]>;
+  createMobileDevice(device: InsertMobileDevice): Promise<MobileDevice>;
+  registerMobileDevice(device: InsertMobileDevice): Promise<MobileDevice>;
+  updateMobileDeviceSync(deviceId: string): Promise<MobileDevice | undefined>;
+
+  getOfflineSync(id: string): Promise<OfflineSync | undefined>;
+  listOfflineSync(deviceId?: string): Promise<OfflineSync[]>;
+  createOfflineSync(sync: InsertOfflineSync): Promise<OfflineSync>;
+  getOfflineSyncQueue(deviceId: string): Promise<OfflineSync[]>;
+  addToOfflineQueue(sync: InsertOfflineSync): Promise<OfflineSync>;
+
+  getCopilotConversation(id: string): Promise<CopilotConversation | undefined>;
+  listCopilotConversations(userId?: string): Promise<CopilotConversation[]>;
+  createCopilotConversation(conv: InsertCopilotConversation): Promise<CopilotConversation>;
+
+  getCopilotMessage(id: string): Promise<CopilotMessage | undefined>;
+  listCopilotMessages(conversationId?: string): Promise<CopilotMessage[]>;
+  createCopilotMessage(msg: InsertCopilotMessage): Promise<CopilotMessage>;
+
+  getRevenueForecast(id: string): Promise<RevenueForecast | undefined>;
+  listRevenueForecasts(): Promise<RevenueForecast[]>;
+  createRevenueForecast(forecast: InsertRevenueForecast): Promise<RevenueForecast>;
+
+  getBudgetAllocation(id: string): Promise<BudgetAllocation | undefined>;
+  listBudgetAllocations(year?: number): Promise<BudgetAllocation[]>;
+  createBudgetAllocation(budget: InsertBudgetAllocation): Promise<BudgetAllocation>;
+
+  getTimeSeriesData(id: string): Promise<TimeSeriesData | undefined>;
+  listTimeSeriesData(): Promise<TimeSeriesData[]>;
+  createTimeSeriesData(data: InsertTimeSeriesData): Promise<TimeSeriesData>;
+
+  getForecastModel(id: string): Promise<ForecastModel | undefined>;
+  listForecastModels(): Promise<ForecastModel[]>;
+  createForecastModel(model: InsertForecastModel): Promise<ForecastModel>;
+
+  getScenario(id: string): Promise<Scenario | undefined>;
+  listScenarios(): Promise<Scenario[]>;
+  createScenario(scenario: InsertScenario): Promise<Scenario>;
+
+  getScenarioVariable(id: string): Promise<ScenarioVariable | undefined>;
+  listScenarioVariables(scenarioId?: string): Promise<ScenarioVariable[]>;
+  createScenarioVariable(variable: InsertScenarioVariable): Promise<ScenarioVariable>;
+  getScenarioVariables(scenarioId: string): Promise<ScenarioVariable[]>;
+  addScenarioVariable(variable: InsertScenarioVariable): Promise<ScenarioVariable>;
+
+  getDashboardWidget(id: string): Promise<DashboardWidget | undefined>;
+  listDashboardWidgets(dashboardId?: string): Promise<DashboardWidget[]>;
+  createDashboardWidget(widget: InsertDashboardWidget): Promise<DashboardWidget>;
+
+  getReport(id: string): Promise<Report | undefined>;
+  listReports(): Promise<Report[]>;
+  createReport(report: InsertReport): Promise<Report>;
+
+  getAuditLog(id: string): Promise<AuditLog | undefined>;
+  listAuditLogs(): Promise<AuditLog[]>;
+  createAuditLog(log: InsertAuditLog): Promise<AuditLog>;
+
+  getApp(id: string): Promise<App | undefined>;
+  listApps(): Promise<App[]>;
+  createApp(app: InsertApp): Promise<App>;
+
+  getAppReview(id: string): Promise<AppReview | undefined>;
+  listAppReviews(appId?: string): Promise<AppReview[]>;
+  createAppReview(review: InsertAppReview): Promise<AppReview>;
+
+  getAppInstallation(id: string): Promise<AppInstallation | undefined>;
+  listAppInstallations(userId?: string): Promise<AppInstallation[]>;
+  createAppInstallation(inst: InsertAppInstallation): Promise<AppInstallation>;
+
+  getConnector(id: string): Promise<Connector | undefined>;
+  listConnectors(): Promise<Connector[]>;
+  createConnector(connector: InsertConnector): Promise<Connector>;
+
+  getConnectorInstance(id: string): Promise<ConnectorInstance | undefined>;
+  listConnectorInstances(userId?: string): Promise<ConnectorInstance[]>;
+  createConnectorInstance(instance: InsertConnectorInstance): Promise<ConnectorInstance>;
+
+  getWebhookEvent(id: string): Promise<WebhookEvent | undefined>;
+  listWebhookEvents(): Promise<WebhookEvent[]>;
+  createWebhookEvent(event: InsertWebhookEvent): Promise<WebhookEvent>;
+
+  getAbacRule(id: string): Promise<AbacRule | undefined>;
+  listAbacRules(): Promise<AbacRule[]>;
+  createAbacRule(rule: InsertAbacRule): Promise<AbacRule>;
+
+  getEncryptedField(id: string): Promise<EncryptedField | undefined>;
+  listEncryptedFields(): Promise<EncryptedField[]>;
+  createEncryptedField(field: InsertEncryptedField): Promise<EncryptedField>;
+
+  getComplianceConfig(id: string): Promise<ComplianceConfig | undefined>;
+  listComplianceConfigs(): Promise<ComplianceConfig[]>;
+  createComplianceConfig(config: InsertComplianceConfig): Promise<ComplianceConfig>;
+
+  getSprint(id: string): Promise<Sprint | undefined>;
+  listSprints(projectId?: string): Promise<Sprint[]>;
+  createSprint(sprint: InsertSprint): Promise<Sprint>;
+
+  getIssue(id: string): Promise<Issue | undefined>;
+  listIssues(sprintId?: string): Promise<Issue[]>;
+  createIssue(issue: InsertIssue): Promise<Issue>;
+
+  getDataLake(id: string): Promise<DataLake | undefined>;
+  listDataLakes(): Promise<DataLake[]>;
+  createDataLake(lake: InsertDataLake): Promise<DataLake>;
+
+  getEtlPipeline(id: string): Promise<EtlPipeline | undefined>;
+  listEtlPipelines(): Promise<EtlPipeline[]>;
+  createEtlPipeline(pipeline: InsertEtlPipeline): Promise<EtlPipeline>;
+
+  getBiDashboard(id: string): Promise<BiDashboard | undefined>;
+  listBiDashboards(): Promise<BiDashboard[]>;
+  createBiDashboard(dashboard: InsertBiDashboard): Promise<BiDashboard>;
+
+  getFieldServiceJob(id: string): Promise<FieldServiceJob | undefined>;
+  listFieldServiceJobs(status?: string): Promise<FieldServiceJob[]>;
+  createFieldServiceJob(job: InsertFieldServiceJob): Promise<FieldServiceJob>;
+
+  getPayrollConfig(id: string): Promise<PayrollConfig | undefined>;
+  listPayrollConfigs(): Promise<PayrollConfig[]>;
+  createPayrollConfig(config: InsertPayrollConfig): Promise<PayrollConfig>;
+
+  getPartner(id: string): Promise<Partner | undefined>;
+  listPartners(filters?: { type?: string; tier?: string; isApproved?: boolean; search?: string }): Promise<Partner[]>;
+  createPartner(partner: InsertPartner): Promise<Partner>;
+  updatePartner(id: string, partner: Partial<InsertPartner>): Promise<Partner | undefined>;
+  deletePartner(id: string): Promise<boolean>;
+
+  getUserFeedback(id: string): Promise<UserFeedback | undefined>;
+  listUserFeedback(): Promise<UserFeedback[]>;
+  createUserFeedback(feedback: InsertUserFeedback): Promise<UserFeedback>;
+
+  // Industry operations
+  getIndustry(id: string): Promise<Industry | undefined>;
+  listIndustries(): Promise<Industry[]>;
+  createIndustry(industry: InsertIndustry): Promise<Industry>;
+
+  // Industry Deployment operations
+  getIndustryDeployment(id: string): Promise<IndustryDeployment | undefined>;
+  listIndustryDeployments(tenantId?: string): Promise<IndustryDeployment[]>;
+  createIndustryDeployment(deployment: InsertIndustryDeployment): Promise<IndustryDeployment>;
+  updateIndustryDeployment(id: string, deployment: Partial<InsertIndustryDeployment>): Promise<IndustryDeployment | undefined>;
+  deleteIndustryDeployment(id: string): Promise<boolean>;
+
+  // Community Space operations
+  getCommunitySpace(id: string): Promise<CommunitySpace | undefined>;
+  getCommunitySpaceBySlug(slug: string): Promise<CommunitySpace | undefined>;
+  listCommunitySpaces(): Promise<CommunitySpace[]>;
+  createCommunitySpace(space: InsertCommunitySpace): Promise<CommunitySpace>;
+
+  // Community Post operations
+  getCommunityPost(id: string): Promise<CommunityPost | undefined>;
+  listCommunityPosts(spaceId?: string): Promise<CommunityPost[]>;
+  createCommunityPost(post: InsertCommunityPost): Promise<CommunityPost>;
+  updateCommunityPost(id: string, post: Partial<InsertCommunityPost>): Promise<CommunityPost | undefined>;
+
+  // Community Comment operations
+  getCommunityComment(id: string): Promise<CommunityComment | undefined>;
+  listCommunityComments(postId: string): Promise<CommunityComment[]>;
+  createCommunityComment(comment: InsertCommunityComment): Promise<CommunityComment>;
+
+  // Community Vote operations
+  getCommunityVote(userId: string, targetType: string, targetId: string): Promise<CommunityVote | undefined>;
+  createCommunityVote(vote: InsertCommunityVote): Promise<CommunityVote>;
+  deleteCommunityVote(userId: string, targetType: string, targetId: string): Promise<boolean>;
+
+
+  // Oracle Fusion Parity - Financials (GL)
+  getGlAccount(id: string): Promise<GlAccount | undefined>;
+  listGlAccounts(): Promise<GlAccount[]>;
+  createGlAccount(account: InsertGlAccount): Promise<GlAccount>;
+
+  getGlPeriod(id: string): Promise<GlPeriod | undefined>;
+  listGlPeriods(): Promise<GlPeriod[]>;
+  createGlPeriod(period: InsertGlPeriod): Promise<GlPeriod>;
+  updateGlPeriod(id: string, updates: Partial<GlPeriod>): Promise<GlPeriod>;
+
+  getGlJournal(id: string): Promise<GlJournal | undefined>;
+  listGlJournals(periodId?: string, ledgerId?: string): Promise<GlJournal[]>;
+  createGlJournal(journal: InsertGlJournal): Promise<GlJournal>;
+
+  listGlJournalLines(journalId: string): Promise<GlJournalLine[]>;
+  createGlJournalLine(line: InsertGlJournalLine): Promise<GlJournalLine>;
+
+
+  // GL Updates
+  updateGlJournal(id: string, updates: Partial<GlJournal>): Promise<GlJournal>;
+  updateGlJournalLine(id: string, updates: Partial<GlJournalLine>): Promise<GlJournalLine>;
+
+  // Advanced GL (Phase 2)
+  getGlLedger(id: string): Promise<GlLedger | undefined>;
+  listGlLedgers(): Promise<GlLedger[]>;
+  createGlLedger(ledger: InsertGlLedger): Promise<GlLedger>;
+
+  listGlSegments(ledgerId: string): Promise<GlSegment[]>;
+  createGlSegment(segment: InsertGlSegment): Promise<GlSegment>;
+
+  listGlSegmentValues(segmentId: string): Promise<GlSegmentValue[]>;
+  createGlSegmentValue(val: InsertGlSegmentValue): Promise<GlSegmentValue>;
+
+  // GL Support
+  getGlPeriod(id: string): Promise<GlPeriod | undefined>;
+  getGlBalancesForPeriod(ledgerId: string, periodName: string): Promise<GlBalance[]>;
+  listGlCodeCombinations(ledgerId: string): Promise<GlCodeCombination[]>;
+  getOrCreateCodeCombination(ledgerId: string, segments: string[]): Promise<GlCodeCombination>;
+
+  listGlDailyRates(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate[]>;
+  createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate>;
+
+  // Revaluation
+  createRevaluation(data: InsertGlRevaluation): Promise<GlRevaluation>;
+  listRevaluations(ledgerId: string): Promise<GlRevaluation[]>;
+  // Revaluation Engine methods
+  createRevaluationEntry(data: InsertGlRevaluationEntry): Promise<GlRevaluationEntry>;
+  listRevaluationEntries(ledgerId: string): Promise<GlRevaluationEntry[]>;
+  createExchangeRate(data: InsertGlExchangeRate): Promise<GlExchangeRate>;
+  getExchangeRate(currency: string, periodName: string): Promise<GlExchangeRate | undefined>;
+
+  // AP Module
+  listApSuppliers(): Promise<ApSupplier[]>;
+  getApSupplier(id: string): Promise<ApSupplier | undefined>;
+  createApSupplier(supplier: InsertApSupplier): Promise<ApSupplier>;
+  updateApSupplier(id: string, supplier: Partial<InsertApSupplier>): Promise<ApSupplier | undefined>;
+  deleteApSupplier(id: string): Promise<boolean>;
+  // GL Advanced Reporting (Phase 3 Chunk 2)
+  createGlLedgerSet(set: InsertGlLedgerSet): Promise<GlLedgerSet>;
+  getGlLedgerSet(id: string): Promise<GlLedgerSet | undefined>;
+  addLedgerToSet(assignment: InsertGlLedgerSetAssignment): Promise<GlLedgerSetAssignment>;
+  getLedgerSetMembers(setId: string): Promise<GlLedger[]>;
+
+  getGlBalances(ledgerId: string, periodName: string, currencyCode: string): Promise<GlBalance[]>;
+  upsertGlBalance(balance: InsertGlBalance): Promise<GlBalance>; // Helper to update if exists
+  getGlDailyRate(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate | undefined>;
+
+  // Legacy Finance
+  listInvoices(): Promise<Invoice[]>;
+  getApInvoice(id: string): Promise<ApInvoice | undefined>;
+
+  // Enterprise AP Interface
+  createApInvoiceHeader(invoice: InsertApInvoice): Promise<ApInvoice>;
+  createApInvoiceLine(line: InsertApInvoiceLine): Promise<ApInvoiceLine>;
+  createApInvoiceDistribution(dist: InsertApInvoiceDistribution): Promise<ApInvoiceDistribution>;
+  getApInvoiceLines(invoiceId: number): Promise<ApInvoiceLine[]>;
+
+  updateApInvoice(id: string, invoice: Partial<InsertApInvoice>): Promise<ApInvoice | undefined>;
+  deleteApInvoice(id: string): Promise<boolean>;
+
+  listApPayments(): Promise<ApPayment[]>;
+  getApPayment(id: string): Promise<ApPayment | undefined>;
+  createApPayment(data: InsertApPayment): Promise<ApPayment>;
+  updateApPayment(id: string, data: Partial<InsertApPayment>): Promise<ApPayment | undefined>;
+  deleteApPayment(id: string): Promise<boolean>;
+
+  listApApprovals(): Promise<ApApproval[]>;
+  getApApproval(id: string): Promise<ApApproval | undefined>;
+  createApApproval(data: InsertApApproval): Promise<ApApproval>;
+  updateApApproval(id: string, data: Partial<InsertApApproval>): Promise<ApApproval | undefined>;
+  deleteApApproval(id: string): Promise<boolean>;
+
+  // AR Module
+  listArCustomers(): Promise<ArCustomer[]>;
+  getArCustomer(id: string): Promise<ArCustomer | undefined>;
+  createArCustomer(data: InsertArCustomer): Promise<ArCustomer>;
+  updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined>;
+  deleteArCustomer(id: string): Promise<boolean>;
+
+  // AR Accounts
+  listArCustomerAccounts(customerId?: string): Promise<ArCustomerAccount[]>;
+  getArCustomerAccount(id: string): Promise<ArCustomerAccount | undefined>;
+  createArCustomerAccount(data: InsertArCustomerAccount): Promise<ArCustomerAccount>;
+  updateArCustomerAccount(id: string, data: Partial<InsertArCustomerAccount>): Promise<ArCustomerAccount | undefined>;
+
+  // AR Sites
+  listArCustomerSites(accountId: string): Promise<ArCustomerSite[]>;
+  getArCustomerSite(id: string): Promise<ArCustomerSite | undefined>;
+  createArCustomerSite(data: InsertArCustomerSite): Promise<ArCustomerSite>;
+  updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined>;
+
+  listArInvoices(limit?: number, offset?: number): Promise<ArInvoice[]>;
+  getArInvoicesCount(): Promise<number>;
+  getArInvoice(id: string): Promise<ArInvoice | undefined>;
+  createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
+  updateArInvoice(id: string, data: Partial<InsertArInvoice>): Promise<ArInvoice | undefined>;
+  deleteArInvoice(id: string): Promise<boolean>;
+
+  listArReceipts(): Promise<ArReceipt[]>;
+  getArReceipt(id: string): Promise<ArReceipt | undefined>;
+  createArReceipt(data: InsertArReceipt): Promise<ArReceipt>;
+  updateArReceipt(id: string, r: Partial<InsertArReceipt>): Promise<ArReceipt | undefined>;
+  deleteArReceipt(id: string): Promise<boolean>;
+  updateArInvoiceStatus(id: string, status: string): Promise<ArInvoice | undefined>;
+
+  // AR System Options
+  getArSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined>;
+  upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions>;
+
+  // AR Revenue Recognition
+  listArRevenueRules(): Promise<ArRevenueRule[]>;
+  getArRevenueRule(id: string): Promise<ArRevenueRule | undefined>;
+  createArRevenueRule(data: InsertArRevenueRule): Promise<ArRevenueRule>;
+  createArRevenueSchedulesBulk(data: InsertArRevenueSchedule[]): Promise<ArRevenueSchedule[]>;
+  listArRevenueSchedules(status?: string): Promise<ArRevenueSchedule[]>;
+  getArRevenueSchedule(id: string): Promise<ArRevenueSchedule | undefined>;
+  updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>): Promise<ArRevenueSchedule | undefined>;
+  deleteArRevenueSchedule(id: string): Promise<boolean>;
+
+  // AR Collections
+  createArDunningTemplate(data: InsertArDunningTemplate): Promise<ArDunningTemplate>;
+  listArDunningTemplates(): Promise<ArDunningTemplate[]>;
+  getArDunningTemplate(id: string): Promise<ArDunningTemplate | undefined>;
+  createArDunningRun(data: InsertArDunningRun): Promise<ArDunningRun>;
+  createArCollectorTask(data: InsertArCollectorTask): Promise<ArCollectorTask>;
+  listArCollectorTasks(assignedTo?: string, status?: string): Promise<ArCollectorTask[]>;
+  listArCollectorTasks(assignedTo?: string, status?: string): Promise<ArCollectorTask[]>;
+  updateArCollectorTask(id: string, data: Partial<InsertArCollectorTask>): Promise<ArCollectorTask | undefined>;
+
+  // AR Adjustments
+  createArAdjustment(data: InsertArAdjustment): Promise<ArAdjustment>;
+  listArAdjustments(invoiceId?: string): Promise<ArAdjustment[]>;
+  updateArAdjustmentStatus(id: string, status: string): Promise<ArAdjustment | undefined>;
+
+  // AR Receipt Applications
+  listArReceiptApplications(receiptId?: string, invoiceId?: string): Promise<ArReceiptApplication[]>;
+  createArReceiptApplication(data: InsertArReceiptApplication): Promise<ArReceiptApplication>;
+  updateArReceiptApplication(id: string, data: Partial<InsertArReceiptApplication>): Promise<ArReceiptApplication | undefined>;
+
+  // AR Collections
+  createArDunningTemplate(data: InsertArDunningTemplate): Promise<ArDunningTemplate>;
+  listArDunningTemplates(): Promise<ArDunningTemplate[]>;
+  getArDunningTemplate(id: string): Promise<ArDunningTemplate | undefined>;
+  createArDunningRun(data: InsertArDunningRun): Promise<ArDunningRun>;
+  createArCollectorTask(data: InsertArCollectorTask): Promise<ArCollectorTask>;
+  listArCollectorTasks(assignedTo?: string, status?: string): Promise<ArCollectorTask[]>;
+  updateArCollectorTask(id: string, data: Partial<InsertArCollectorTask>): Promise<ArCollectorTask | undefined>;
+  createArReceiptApplication(data: InsertArReceiptApplication): Promise<ArReceiptApplication>;
+  updateArReceiptApplication(id: string, data: Partial<InsertArReceiptApplication>): Promise<ArReceiptApplication | undefined>;
+
+  createSubscription(subscription: InsertSubscription): Promise<Subscription>;
+  updateSubscription(id: string, subscription: Partial<InsertSubscription>): Promise<Subscription | undefined>;
+
+  // SCM
+  getPo(id: string): Promise<PurchaseOrder | undefined>;
+  getPoLine(id: string): Promise<PurchaseOrderLine | undefined>;
+  createPo(po: InsertPurchaseOrder): Promise<PurchaseOrder>;
+  createPoLine(line: InsertPurchaseOrderLine): Promise<PurchaseOrderLine>;
+
+  // Agentic AI
+  createAgentExecution(exec: InsertAgentExecution): Promise<AgentExecution>;
+  updateAgentExecution(id: number, updates: Partial<AgentExecution>): Promise<AgentExecution>;
+  createAgentAuditLog(log: InsertAgentAuditLog): Promise<AgentAuditLog>;
+
+  // FSG (Financial Statement Generator)
+  createReportDefinition(data: InsertGlReportDefinition): Promise<GlReportDefinition>;
+  getReportDefinition(id: string): Promise<GlReportDefinition | undefined>;
+  listReportDefinitions(ledgerId?: string): Promise<GlReportDefinition[]>;
+  createReportRow(data: InsertGlReportRow): Promise<GlReportRow>;
+  getReportRows(definitionId: string): Promise<GlReportRow[]>;
+  createReportColumn(data: InsertGlReportColumn): Promise<GlReportColumn>;
+  getReportColumns(definitionId: string): Promise<GlReportColumn[]>;
+  getFsgRows(rowSetId: string): Promise<GlReportRow[]>;
+  createFsgRow(data: InsertGlReportRow): Promise<GlReportRow>;
+  getFsgColumns(columnSetId: string): Promise<GlReportColumn[]>;
+  createFsgColumn(data: InsertGlReportColumn): Promise<GlReportColumn>;
+
+  // Budgeting
+  createGlBudget(data: InsertGlBudget): Promise<GlBudget>;
+  listGlBudgets(ledgerId: string): Promise<GlBudget[]>;
+  getGlBudget(id: string): Promise<GlBudget | undefined>;
+
+  createGlBudgetBalance(data: InsertGlBudgetBalance): Promise<GlBudgetBalance>;
+  getGlBudgetBalance(budgetId: string, periodName: string, codeCombinationId: string): Promise<GlBudgetBalance | undefined>;
+  listGlBudgetBalances(budgetId: string, periodName?: string): Promise<GlBudgetBalance[]>;
+  upsertGlBudgetBalance(data: InsertGlBudgetBalance): Promise<GlBudgetBalance>;
+
+  createGlBudgetControlRule(data: InsertGlBudgetControlRule): Promise<GlBudgetControlRule>;
+  listGlBudgetControlRules(ledgerId: string): Promise<GlBudgetControlRule[]>;
+
+  // Period Management
+  getUnpostedJournalsCount(periodId: string): Promise<number>;
+  listGlAuditLogs(ledgerId?: string): Promise<GlAuditLog[]>;
+
+  // Cross Validation Rules (CVR)
+  listGlCrossValidationRules(ledgerId: string): Promise<GlCrossValidationRule[]>;
+  createGlCrossValidationRule(rule: InsertGlCrossValidationRule): Promise<GlCrossValidationRule>;
+  updateGlCrossValidationRule(id: string, updates: Partial<GlCrossValidationRule>): Promise<GlCrossValidationRule | undefined>;
+  deleteGlCrossValidationRule(id: string): Promise<boolean>;
+  getGlDataAccessSet(id: string): Promise<GlDataAccessSet | undefined>;
+  listGlDataAccessSetAssignments(userId: string): Promise<GlDataAccessSetAssignment[]>;
+
+  // Period Close Tasks
+  listCloseTasks(ledgerId: string, periodId: string): Promise<GlCloseTask[]>;
+  updateCloseTask(id: string, updates: Partial<GlCloseTask>): Promise<GlCloseTask>;
+  createCloseTask(task: InsertGlCloseTask): Promise<GlCloseTask>;
+
+  // GL Config (Chunk 8)
+  listGlJournalSources(): Promise<GlJournalSource[]>;
+  createGlJournalSource(data: InsertGlJournalSource): Promise<GlJournalSource>;
+  listGlJournalCategories(): Promise<GlJournalCategory[]>;
+  createGlJournalCategory(data: InsertGlJournalCategory): Promise<GlJournalCategory>;
+  getGlLedgerControl(ledgerId: string): Promise<GlLedgerControl | undefined>;
+  upsertGlLedgerControl(data: InsertGlLedgerControl): Promise<GlLedgerControl>;
+  listGlAutoPostRules(ledgerId: string): Promise<GlAutoPostRule[]>;
+  createGlAutoPostRule(data: InsertGlAutoPostRule): Promise<GlAutoPostRule>;
+
+  // AR Period Control
+  listArPeriods(): Promise<ArPeriodStatus[]>;
+  getArPeriod(name: string): Promise<ArPeriodStatus | undefined>;
+  updateArPeriodStatus(name: string, status: string, auditId: string): Promise<ArPeriodStatus | undefined>;
+
+  // Tax
+  listTaxCodes(): Promise<TaxCode[]>;
+  getTaxCode(id: string): Promise<TaxCode | undefined>;
+  createTaxCode(data: InsertTaxCode): Promise<TaxCode>;
+  listTaxJurisdictions(): Promise<TaxJurisdiction[]>;
+  getTaxJurisdiction(id: string): Promise<TaxJurisdiction | undefined>;
+  createTaxJurisdiction(data: InsertTaxJurisdiction): Promise<TaxJurisdiction>;
+  listTaxExemptions(): Promise<TaxExemption[]>;
+  getTaxExemption(id: string): Promise<TaxExemption | undefined>;
+  createTaxExemption(data: InsertTaxExemption): Promise<TaxExemption>;
+  getApplicableTaxRate(invoiceId: string): Promise<number>;
+}
+
+
+export class DatabaseStorage implements IStorage {
+  private tenants = new Map<string, Tenant>();
+  private roles = new Map<string, Role>();
+  private plans = new Map<string, Plan>();
+  private subscriptions = new Map<string, Subscription>();
+  private payments = new Map<string, Payment>();
+  private users = new Map<string, User>();
+  private projects = new Map<string, Project>();
+  private invoices = new Map<string, Invoice>();
+  private leads = new Map<string, Lead>();
+  private workOrders = new Map<string, WorkOrder>();
+  private employees = new Map<string, Employee>();
+  private mobileDevices = new Map<string, MobileDevice>();
+  private offlineSyncQueue = new Map<string, OfflineSync>();
+  private copilotConversations = new Map<string, CopilotConversation>();
+  private copilotMessages = new Map<string, CopilotMessage>();
+  private revenueForecasts = new Map<string, RevenueForecast>();
+  private budgetAllocations = new Map<string, BudgetAllocation>();
+  private timeSeriesData = new Map<string, TimeSeriesData>();
+  private forecastModels = new Map<string, ForecastModel>();
+  private scenarios = new Map<string, Scenario>();
+  private scenarioVariables = new Map<string, ScenarioVariable>();
+  private dashboardWidgets = new Map<string, DashboardWidget>();
+  private reports = new Map<string, Report>();
+  private auditLogs = new Map<string, AuditLog>();
+  private apps = new Map<string, App>();
+  private appReviews = new Map<string, AppReview>();
+  private appInstallations = new Map<string, AppInstallation>();
+  private connectors = new Map<string, Connector>();
+  private connectorInstances = new Map<string, ConnectorInstance>();
+  private webhookEvents = new Map<string, WebhookEvent>();
+  private abacRules = new Map<string, AbacRule>();
+  private encryptedFields = new Map<string, EncryptedField>();
+  private complianceConfigs = new Map<string, ComplianceConfig>();
+  private sprints = new Map<string, Sprint>();
+  private issues = new Map<string, Issue>();
+  private dataLakes = new Map<string, DataLake>();
+  private etlPipelines = new Map<string, EtlPipeline>();
+  private biDashboards = new Map<string, BiDashboard>();
+  private fieldServiceJobs = new Map<string, FieldServiceJob>();
+  private payrollConfigs = new Map<string, PayrollConfig>();
+  private partners = new Map<string, Partner>();
+  private userFeedbackStore = new Map<string, UserFeedback>();
+  private industries = new Map<string, Industry>();
+  private industryDeployments = new Map<string, IndustryDeployment>();
+  private cases = new Map<string, Case>();
+  private caseComments = new Map<string, CaseComment>();
+  private interactions = new Map<string, Interaction>();
+  private accounts = new Map<string, Account>();
+  private contacts = new Map<string, Contact>();
+  private opportunities = new Map<string, Opportunity>();
+
+  // AP Maps
+  private apSuppliers = new Map<string, ApSupplier>();
+  private apInvoices = new Map<string, ApInvoice>();
+  private apPayments = new Map<string, ApPayment>();
+  private apApprovals = new Map<string, ApApproval>();
+
+  // AR Maps - DEPRECATED (Moved to DB)
+  // arCustomers, arInvoices, arReceipts, arRevenueSchedules moved to DB
+
+  private currentId = 1;
+  private agentCurrentId = 1;
+
+  // Agentic AI Maps
+  private agentExecutions = new Map<number, AgentExecution>();
+  private agentAuditLogs = new Map<number, AgentAuditLog>();
+
+  // Cash Maps
+  private cashBankAccounts = new Map<string, CashBankAccount>();
+  private cashStatementLines = new Map<string, CashStatementLine>();
+  private cashTransactions = new Map<string, CashTransaction>();
+
+  // Fixed Asset Maps
+  private faAssets = new Map<string, FaAsset>();
+  private faAssetBooks = new Map<string, FaAssetBook>();
+  private faBooks = new Map<string, FaBook>(); // Key: assetId-bookTypeCode
+  private faCategories = new Map<string, FaCategory>();
+  private faTransactions = new Map<string, FaTransaction>();
+  private faDepreciation = new Map<string, FaDepreciationHistory>();
+
+
+
+  // GL Implementation (DB-Backed)
+  async getGlAccount(id: string) {
+    const res = await db.select().from(glAccounts).where(eq(glAccounts.id, id));
+    return res[0];
+  }
+  async listGlAccounts() {
+    return await db.select().from(glAccounts);
+  }
+  async createGlAccount(a: InsertGlAccount) {
+    const res = await db.insert(glAccounts).values(a).returning();
+    return res[0];
+  }
+  // SCM
+  async getPo(id: string) {
+    const [po] = await db.select().from(purchaseOrders).where(eq(purchaseOrders.id, id));
+    return po;
+  }
+
+  async getPoLine(id: string) {
+    const [line] = await db.select().from(purchaseOrderLines).where(eq(purchaseOrderLines.id, id));
+    return line;
+  }
+
+  async createPo(po: InsertPurchaseOrder) {
+    const [newPo] = await db.insert(purchaseOrders).values(po).returning();
+    return newPo;
+  }
+
+  async createPoLine(line: InsertPurchaseOrderLine) {
+    const [newLine] = await db.insert(purchaseOrderLines).values({
+      ...line,
+      quantity: String(line.quantity),
+      unitPrice: String(line.unitPrice),
+      amount: String(line.amount)
+    }).returning();
+    return newLine;
+  }
+  async listGlPeriods() {
+    return await db.select().from(glPeriods);
+  }
+  async createGlPeriod(p: InsertGlPeriod) {
+    const res = await db.insert(glPeriods).values(p).returning();
+    return res[0];
+  }
+  async updateGlPeriod(id: string, updates: Partial<GlPeriod>) {
+    const res = await db.update(glPeriods).set(updates).where(eq(glPeriods.id, id)).returning();
+    return res[0];
+  }
+
+  async getGlJournal(id: string) {
+    const res = await db.select().from(glJournals).where(eq(glJournals.id, id));
+    return res[0];
+  }
+  async listGlJournals(periodId?: string, ledgerId?: string) {
+    let conditions = [];
+    if (periodId) conditions.push(eq(glJournals.periodId, periodId));
+    if (ledgerId) conditions.push(eq(glJournals.ledgerId, ledgerId));
+
+    if (conditions.length > 0) {
+      return await db.select().from(glJournals)
+        .where(and(...conditions))
+        .orderBy(desc(glJournals.createdAt));
+    }
+    return await db.select().from(glJournals).orderBy(desc(glJournals.createdAt));
+  }
+  async createGlJournal(j: InsertGlJournal) {
+    const res = await db.insert(glJournals).values(j).returning();
+    return res[0];
+  }
+
+  async listGlJournalLines(journalId: string) {
+    return await db.select().from(glJournalLines).where(eq(glJournalLines.journalId, journalId));
+  }
+  async createGlJournalLine(l: InsertGlJournalLine) {
+    const res = await db.insert(glJournalLines).values(l).returning();
+    return res[0];
+  }
+
+  // Advanced GL (Batches & Approvals)
+  async createGlJournalBatch(b: InsertGlJournalBatch) {
+    const res = await db.insert(glJournalBatches).values(b).returning();
+    return res[0];
+  }
+  async getGlJournalBatch(id: string) {
+    const res = await db.select().from(glJournalBatches).where(eq(glJournalBatches.id, id));
+    return res[0];
+  }
+
+  async getGlLedger(id: string) {
+    const [res] = await db.select().from(glLedgers).where(eq(glLedgers.id, id));
+    return res;
+  }
+  async listGlLedgers() {
+    return await db.select().from(glLedgers);
+  }
+  async createGlLedger(ledger: InsertGlLedger) {
+    const [res] = await db.insert(glLedgers).values(ledger).returning();
+    return res;
+  }
+
+  // Delegated to storage-db.ts (Chunk 4 Legacy/Compat Helpers)
+  async listGlSegments(ledgerId: string) { return dbStorage.listGlSegments(ledgerId); }
+  async createGlSegment(segment: InsertGlSegment) { return dbStorage.createGlSegment(segment); }
+  async listGlSegmentValues(segmentId: string) { return dbStorage.listGlSegmentValues(segmentId); }
+  async createGlSegmentValue(val: InsertGlSegmentValue) { return dbStorage.createGlSegmentValue(val); }
+
+  // Missing IStorage Methods - Stubs
+  async createRevaluationEntry(r: InsertGlRevaluationEntry) {
+    const [entry] = await db.insert(glRevaluationEntries).values({ ...r, id: r.id || randomUUID() }).returning();
+    return entry;
+  }
+  async listRevaluationEntries(ledgerId: string) {
+    return await db.select().from(glRevaluationEntries).where(eq(glRevaluationEntries.ledgerId, ledgerId));
+  }
+  async createExchangeRate(r: InsertGlExchangeRate) {
+    const [rate] = await db.insert(glExchangeRates).values({ ...r, id: r.id || randomUUID() }).returning();
+    return rate;
+  }
+  async getExchangeRate(currency: string, periodName: string): Promise<GlExchangeRate | undefined> {
+    const [rate] = await db.select().from(glExchangeRates)
+      .where(and(eq(glExchangeRates.currency, currency), eq(glExchangeRates.periodName, periodName)));
+    return rate;
+  }
+  async listExchangeRates(from: string, to: string) { return []; }
+
+  // Fixed Assets (Native Implementation)
+  async listFaAssets() { return await db.select().from(faAssets); }
+  async getFaAsset(id: string) {
+    const [res] = await db.select().from(faAssets).where(eq(faAssets.id, id));
+    return res;
+  }
+  async createFaAsset(data: InsertFaAsset) {
+    const [res] = await db.insert(faAssets).values(data).returning();
+    return res;
+  }
+  async listFaBooks() {
+    return await db.select().from(faBooks);
+  }
+  async createFaBook(data: InsertFaBook) {
+    const [res] = await db.insert(faBooks).values(data).returning();
+    return res;
+  }
+  async createFaTransaction(data: InsertFaTransaction) {
+    const [res] = await db.insert(faTransactions).values(data).returning();
+    return res;
+  }
+  async getFaCategory(id: string) {
+    const [res] = await db.select().from(faCategories).where(eq(faCategories.id, id));
+    return res;
+  }
+  async listFaCategories() { return await db.select().from(faCategories); }
+
+  // PARTNER / AP METHODS
+  async listApSuppliers(): Promise<ApSupplier[]> {
+    return await db.select().from(apSuppliers);
+  }
+
+  async getApSupplier(id: string): Promise<ApSupplier | undefined> {
+    const [supplier] = await db.select().from(apSuppliers).where(eq(apSuppliers.id, parseInt(id)));
+    return supplier;
+  }
+
+  async createApSupplier(supplier: InsertApSupplier): Promise<ApSupplier> {
+    const [newSupplier] = await db.insert(apSuppliers).values(supplier).returning();
+    return newSupplier;
+  }
+
+  async updateApSupplier(id: string, supplier: Partial<InsertApSupplier>): Promise<ApSupplier | undefined> {
+    const [updated] = await db.update(apSuppliers).set(supplier).where(eq(apSuppliers.id, parseInt(id))).returning();
+    return updated;
+  }
+
+  async deleteApSupplier(id: string): Promise<boolean> {
+    const [deleted] = await db.delete(apSuppliers).where(eq(apSuppliers.id, parseInt(id))).returning();
+    return !!deleted;
+  }
+
+  // Enterprise Invoice Methods
+  async listApInvoices(limit?: number, offset?: number): Promise<ApInvoice[]> {
+    let query = db.select().from(apInvoices).orderBy(desc(apInvoices.createdAt));
+    if (limit !== undefined) {
+      // @ts-ignore
+      query = query.limit(limit);
+    }
+    if (offset !== undefined) {
+      // @ts-ignore
+      query = query.offset(offset);
+    }
+    return await query;
+  }
+
+  async getApInvoicesCount(): Promise<number> {
+    const [res] = await db.select({ count: count() }).from(apInvoices);
+    return res.count;
+  }
+
+  async getApInvoice(id: string): Promise<ApInvoice | undefined> {
+    const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, parseInt(id)));
+    return invoice;
+  }
+
+  // NOTE: This creates Header ONLY. Use Service for Orchestration.
+  async createApInvoiceHeader(invoice: InsertApInvoice): Promise<ApInvoice> {
+    const [newInvoice] = await db.insert(apInvoices).values(invoice).returning();
+    return newInvoice;
+  }
+
+  async createApInvoiceLine(line: InsertApInvoiceLine): Promise<ApInvoiceLine> {
+    const [newLine] = await db.insert(apInvoiceLines).values(line).returning();
+    return newLine;
+  }
+
+  async createApInvoiceDistribution(dist: InsertApInvoiceDistribution): Promise<ApInvoiceDistribution> {
+    const [newDist] = await db.insert(apInvoiceDistributions).values(dist).returning();
+    return newDist;
+  }
+
+  async getApInvoiceLines(invoiceId: number): Promise<ApInvoiceLine[]> {
+    return await db.select().from(apInvoiceLines).where(eq(apInvoiceLines.invoiceId, invoiceId));
+  }
+
+  async updateApInvoice(id: string, invoice: Partial<InsertApInvoice>): Promise<ApInvoice | undefined> {
+    const [updated] = await db.update(apInvoices).set(invoice).where(eq(apInvoices.id, parseInt(id))).returning();
+    return updated;
+  }
+
+  async deleteApInvoice(id: string): Promise<boolean> {
+    // Service must handle cascade
+    await db.delete(apInvoiceDistributions).where(eq(apInvoiceDistributions.invoiceId, parseInt(id)));
+    await db.delete(apInvoiceLines).where(eq(apInvoiceLines.invoiceId, parseInt(id)));
+    const [deleted] = await db.delete(apInvoices).where(eq(apInvoices.id, parseInt(id))).returning();
+    return !!deleted;
+  }
+
+  // Payments
+  async listApPayments(): Promise<ApPayment[]> {
+    return await db.select().from(apPayments);
+  }
+  async getApPayment(id: string) { return dbStorage.getApPayment(id); }
+  async createApPayment(data: InsertApPayment) { return dbStorage.createApPayment(data); }
+  async updateApPayment(id: string, data: Partial<InsertApPayment>) { return dbStorage.updateApPayment(id, data); }
+  async deleteApPayment(id: string) { return dbStorage.deleteApPayment(id); }
+
+  async listApApprovals(): Promise<ApApproval[]> {
+    return await db.select().from(apApprovals);
+  }
+
+  async listGlJournalBatches() {
+    return await db.select().from(glJournalBatches);
+  }
+  async updateGlJournalBatch(id: string, b: Partial<InsertGlJournalBatch>) {
+    const res = await db.update(glJournalBatches).set(b).where(eq(glJournalBatches.id, id)).returning();
+    return res[0];
+  }
+
+  async createGlJournalApproval(a: InsertGlJournalApproval) {
+    const res = await db.insert(glJournalApprovals).values(a).returning();
+    return res[0];
+  }
+  async listGlJournalApprovals(journalId: string) {
+    return await db.select().from(glJournalApprovals).where(eq(glJournalApprovals.journalId, journalId));
+  }
+  async updateGlJournalApproval(id: string, a: Partial<InsertGlJournalApproval>) {
+    const res = await db.update(glJournalApprovals).set(a).where(eq(glJournalApprovals.id, id)).returning();
+    return res[0];
+  }
+
+  // GL Advanced Reporting
+  async createGlLedgerSet(set: InsertGlLedgerSet) {
+    const [newSet] = await db.insert(glLedgerSets).values(set).returning();
+    return newSet;
+  }
+
+  async getGlLedgerSet(id: string) {
+    const [set] = await db.select().from(glLedgerSets).where(eq(glLedgerSets.id, id));
+    return set;
+  }
+
+  async addLedgerToSet(assignment: InsertGlLedgerSetAssignment) {
+    const [newAssignment] = await db.insert(glLedgerSetAssignments).values(assignment).returning();
+    return newAssignment;
+  }
+
+  async getLedgerSetMembers(setId: string) {
+    const members = await db.select({
+      ledger: glLedgers
+    })
+      .from(glLedgerSetAssignments)
+      .innerJoin(glLedgers, eq(glLedgerSetAssignments.ledgerId, glLedgers.id))
+      .where(eq(glLedgerSetAssignments.ledgerSetId, setId));
+
+    return members.map(m => m.ledger);
+  }
+
+  async getGlBalances(ledgerId: string, periodName: string, currencyCode: string) {
+    return await db.select().from(glBalances)
+      .where(and(
+        eq(glBalances.ledgerId, ledgerId),
+        eq(glBalances.periodName, periodName),
+        eq(glBalances.currencyCode, currencyCode)
+      ));
+  }
+
+  async upsertGlBalance(balance: InsertGlBalance) {
+    const [existing] = await db.select().from(glBalances)
+      .where(and(
+        eq(glBalances.ledgerId, balance.ledgerId),
+        eq(glBalances.periodName, balance.periodName),
+        eq(glBalances.codeCombinationId, balance.codeCombinationId),
+        eq(glBalances.currencyCode, balance.currencyCode)
+      ));
+
+    if (existing) {
+      const [updated] = await db.update(glBalances)
+        .set(balance)
+        .where(eq(glBalances.id, existing.id))
+        .returning();
+      return updated;
+    } else {
+      const [inserted] = await db.insert(glBalances).values(balance).returning();
+      return inserted;
+    }
+  }
+
+  async getGlDailyRate(from: string, to: string, date: Date) {
+    const [rate] = await db.select().from(glDailyRates)
+      .where(and(
+        eq(glDailyRates.fromCurrency, from),
+        eq(glDailyRates.toCurrency, to)
+      ))
+      .orderBy(desc(glDailyRates.createdAt));
+    return rate;
+  }
+  async listGlDailyRates(from: string, to: string, date: Date) {
+    return dbStorage.listGlDailyRates(from, to, date);
+  }
+
+  async createGlDailyRate(rate: InsertGlDailyRate) {
+    const [newRate] = await db.insert(glDailyRates).values(rate).returning();
+    return newRate;
+  }
+
+  // Reporting (FSG)
+  async createReportDefinition(data: InsertGlReportDefinition) {
+    const [res] = await db.insert(glReportDefinitions).values(data).returning();
+    return res;
+  }
+  async getReportDefinition(id: string) {
+    const [res] = await db.select().from(glReportDefinitions).where(eq(glReportDefinitions.id, id));
+    return res;
+  }
+  async listReportDefinitions(ledgerId?: string) {
+    if (ledgerId) {
+      return db.select().from(glReportDefinitions).where(eq(glReportDefinitions.ledgerId, ledgerId));
+    }
+    return db.select().from(glReportDefinitions);
+  }
+  async createReportRow(data: InsertGlReportRow): Promise<GlReportRow> {
+    const [row] = await db.insert(glReportRows).values(data).returning();
+    return row;
+  }
+
+  async getReportRows(definitionId: string): Promise<GlReportRow[]> {
+    const def = await this.getReportDefinition(definitionId);
+    if (!def) return [];
+    return db.select().from(glReportRows).where(eq(glReportRows.rowSetId, def.rowSetId)).orderBy(glReportRows.rowNumber);
+  }
+
+  async createReportColumn(data: InsertGlReportColumn): Promise<GlReportColumn> {
+    const [col] = await db.insert(glReportColumns).values(data).returning();
+    return col;
+  }
+
+  async getReportColumns(definitionId: string): Promise<GlReportColumn[]> {
+    const def = await this.getReportDefinition(definitionId);
+    if (!def) return [];
+    return db.select().from(glReportColumns).where(eq(glReportColumns.columnSetId, def.columnSetId)).orderBy(glReportColumns.columnNumber);
+  }
+  async listGlAuditLogs() {
+    return db.select().from(glAuditLogs);
+  }
+  // Removed duplicate FSG methods which essentially duplicate ReportRow methods or use wrong table
+  // Use getReportRows/Cols instead.
+
+  async getGlCodeCombination(id: string) {
+    const res = await db.select().from(glCodeCombinations).where(eq(glCodeCombinations.id, id));
+    return res[0];
+  }
+  async createGlCodeCombination(cc: InsertGlCodeCombination) {
+    const res = await db.insert(glCodeCombinations).values(cc).returning();
+    return res[0];
+  }
+
+
+  // Platform Admin
+  async listTenants(): Promise<Tenant[]> {
+    return Array.from(this.tenants.values());
+  }
+
+  async getTenant(id: string): Promise<Tenant | undefined> {
+    return this.tenants.get(id);
+  }
+
+  async createTenant(tenant: InsertTenant): Promise<Tenant> {
+    const id = randomUUID();
+    const newTenant: Tenant = {
+      ...tenant,
+      id,
+      status: tenant.status ?? "active",
+      description: tenant.description ?? null,
+      logoUrl: tenant.logoUrl ?? null,
+      settings: tenant.settings ?? {},
+      createdAt: new Date(),
+      updatedAt: null
+    };
+    this.tenants.set(id, newTenant);
+    return newTenant;
+  }
+
+  async getRole(id: string): Promise<Role | undefined> { return this.roles.get(id); }
+  async listRoles(tenantId?: string): Promise<Role[]> {
+    const list = Array.from(this.roles.values());
+    return tenantId ? list.filter(r => r.tenantId === tenantId) : list;
+  }
+  async createRole(role: InsertRole): Promise<Role> {
+    const id = randomUUID();
+    const newRole: Role = { id, ...role as any, createdAt: new Date() };
+    this.roles.set(id, newRole);
+    return newRole;
+  }
+
+  async getPlan(id: string): Promise<Plan | undefined> { return this.plans.get(id); }
+  async listPlans(): Promise<Plan[]> { return Array.from(this.plans.values()); }
+  async createPlan(plan: InsertPlan): Promise<Plan> {
+    const id = randomUUID();
+    const newPlan: Plan = { id, ...plan as any, createdAt: new Date() };
+    this.plans.set(id, newPlan);
+    return newPlan;
+  }
+
+
+  // Missing IStorage Methods - AP Approvals
+  async getApApproval(id: string) {
+    const [res] = await db.select().from(apApprovals).where(eq(apApprovals.id, parseInt(id)));
+    return res;
+  }
+  async createApApproval(data: InsertApApproval) {
+    const [res] = await db.insert(apApprovals).values(data).returning();
+    return res;
+  }
+  async updateApApproval(id: string, data: Partial<InsertApApproval>) {
+    // stub
+    throw new Error("MemStorage.updateApApproval not implemented");
+    return undefined as unknown as ApApproval; // Unreachable but satisfies type
+  }
+
+
+
+  async deleteApApproval(id: string) {
+    await db.delete(apApprovals).where(eq(apApprovals.id, parseInt(id)));
+    return true;
+  }
+
+  // Subscription Update
+  async updateSubscription(id: string, subscription: Partial<InsertSubscription>) {
+    // MemStorage implementation for now as Subscription table might be missing or mocked
+    // Actually, subscriptions likely exists in schema or storage-db. But interface requires it.
+    // Assuming MemStorage for subscriptions as listsSubscriptions is native Memory above (lines 1254 in previous view)
+    const existing = this.subscriptions.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...subscription };
+    this.subscriptions.set(id, updated);
+    return updated;
+  }
+
+  // AR Module Implementation (DB-Backed)
+  async listArCustomers() {
+    return await db.select().from(arCustomers);
+  }
+  async getArCustomer(id: string) {
+    const [res] = await db.select().from(arCustomers).where(eq(arCustomers.id, id));
+    return res;
+  }
+  async createArCustomer(data: InsertArCustomer) {
+    const [res] = await db.insert(arCustomers).values(data).returning();
+    return res;
+  }
+  async updateArCustomer(id: string, data: Partial<InsertArCustomer>) {
+    const [res] = await db.update(arCustomers).set(data).where(eq(arCustomers.id, id)).returning();
+    return res;
+  }
+  async deleteArCustomer(id: string) {
+    await db.delete(arCustomers).where(eq(arCustomers.id, id));
+    return true;
+  }
+
+  // AR Accounts
+  async listArCustomerAccounts(customerId?: string) {
+    if (customerId) {
+      return await db.select().from(arCustomerAccounts).where(eq(arCustomerAccounts.customerId, customerId));
+    }
+    return await db.select().from(arCustomerAccounts);
+  }
+  async getArCustomerAccount(id: string) {
+    const [res] = await db.select().from(arCustomerAccounts).where(eq(arCustomerAccounts.id, id));
+    return res;
+  }
+  async createArCustomerAccount(data: InsertArCustomerAccount) {
+    const [res] = await db.insert(arCustomerAccounts).values(data).returning();
+    return res;
+  }
+  async updateArCustomerAccount(id: string, data: Partial<InsertArCustomerAccount>) {
+    const [res] = await db.update(arCustomerAccounts).set(data).where(eq(arCustomerAccounts.id, id)).returning();
+    return res;
+  }
+
+  // AR Sites
+  async listArCustomerSites(accountId: string) {
+    return await db.select().from(arCustomerSites).where(eq(arCustomerSites.accountId, accountId));
+  }
+  async getArCustomerSite(id: string) {
+    const [res] = await db.select().from(arCustomerSites).where(eq(arCustomerSites.id, id));
+    return res;
+  }
+  async createArCustomerSite(data: InsertArCustomerSite) {
+    const [res] = await db.insert(arCustomerSites).values(data).returning();
+    return res;
+  }
+  async updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined> {
+    const [res] = await db.update(arCustomerSites).set(data).where(eq(arCustomerSites.id, id)).returning();
+    return res;
+  }
+
+  async listArInvoices(limit?: number, offset?: number) {
+    let query = db.select().from(arInvoices).orderBy(desc(arInvoices.createdAt));
+    if (limit !== undefined) {
+      // @ts-ignore
+      query = query.limit(limit);
+    }
+    if (offset !== undefined) {
+      // @ts-ignore
+      query = query.offset(offset);
+    }
+    return await query;
+  }
+
+  async getArInvoicesCount(): Promise<number> {
+    const [res] = await db.select({ count: count() }).from(arInvoices);
+    return res.count;
+  }
+  async getArInvoice(id: string) {
+    const [res] = await db.select().from(arInvoices).where(eq(arInvoices.id, id));
+    return res;
+  }
+  async createArInvoice(data: InsertArInvoice) {
+    const [res] = await db.insert(arInvoices).values(data).returning();
+    return res;
+  }
+  async updateArInvoice(id: string, data: Partial<InsertArInvoice>) {
+    const [res] = await db.update(arInvoices).set(data).where(eq(arInvoices.id, id)).returning();
+    return res;
+  }
+  async deleteArInvoice(id: string) {
+    await db.delete(arInvoices).where(eq(arInvoices.id, id));
+    return true;
+  }
+  async updateArInvoiceStatus(id: string, status: string) {
+    const [res] = await db.update(arInvoices).set({ status }).where(eq(arInvoices.id, id)).returning();
+    return res;
+  }
+
+  async listArReceipts() {
+    return await db.select().from(arReceipts);
+  }
+  async getArReceipt(id: string) {
+    const [res] = await db.select().from(arReceipts).where(eq(arReceipts.id, id));
+    return res;
+  }
+  async createArReceipt(data: InsertArReceipt) {
+    const [res] = await db.insert(arReceipts).values(data).returning();
+    return res;
+  }
+  async updateArReceipt(id: string, data: Partial<InsertArReceipt>) {
+    const [res] = await db.update(arReceipts).set(data).where(eq(arReceipts.id, id)).returning();
+    return res;
+  }
+  async deleteArReceipt(id: string) {
+    await db.delete(arReceipts).where(eq(arReceipts.id, id));
+    return true;
+  }
+
+  // Receipt Applications
+  async listArReceiptApplications(receiptId?: string, invoiceId?: string) {
+    let query = db.select().from(arReceiptApplications);
+    if (receiptId && invoiceId) {
+      return await query.where(and(eq(arReceiptApplications.receiptId, receiptId), eq(arReceiptApplications.invoiceId, invoiceId)));
+    }
+    if (receiptId) return await query.where(eq(arReceiptApplications.receiptId, receiptId));
+    if (invoiceId) return await query.where(eq(arReceiptApplications.invoiceId, invoiceId));
+    return await query;
+  }
+  async createArReceiptApplication(data: InsertArReceiptApplication) {
+    const [res] = await db.insert(arReceiptApplications).values(data).returning();
+    return res;
+  }
+  async updateArReceiptApplication(id: string, data: Partial<InsertArReceiptApplication>) {
+    const [res] = await db.update(arReceiptApplications).set(data).where(eq(arReceiptApplications.id, id)).returning();
+    return res;
+  }
+
+  async listArRevenueSchedules() {
+    return await db.select().from(arRevenueSchedules);
+  }
+  async getArRevenueSchedule(id: string) {
+    const [res] = await db.select().from(arRevenueSchedules).where(eq(arRevenueSchedules.id, id));
+    return res;
+  }
+  async createArRevenueSchedule(data: InsertArRevenueSchedule) {
+    const [res] = await db.insert(arRevenueSchedules).values(data).returning();
+    return res;
+  }
+  async updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>) {
+    const [res] = await db.update(arRevenueSchedules).set(data).where(eq(arRevenueSchedules.id, id)).returning();
+    return res;
+  }
+  async deleteArRevenueSchedule(id: string) {
+    await db.delete(arRevenueSchedules).where(eq(arRevenueSchedules.id, id));
+    return true;
+  }
+
+  // Revenue Rules
+  async listArRevenueRules(): Promise<ArRevenueRule[]> {
+    return await db.select().from(arRevenueRules);
+  }
+
+  async getArRevenueRule(id: string): Promise<ArRevenueRule | undefined> {
+    const [rule] = await db.select().from(arRevenueRules).where(eq(arRevenueRules.id, id));
+    return rule;
+  }
+
+  async createArRevenueRule(data: InsertArRevenueRule): Promise<ArRevenueRule> {
+    const [rule] = await db.insert(arRevenueRules).values(data).returning();
+    return rule;
+  }
+
+  // Revenue Schedules (Bulk Create)
+  async createArRevenueSchedulesBulk(data: InsertArRevenueSchedule[]): Promise<ArRevenueSchedule[]> {
+    if (data.length === 0) return [];
+    return await db.insert(arRevenueSchedules).values(data).returning();
+  }
+
+  // AR Collections
+  async createArDunningTemplate(data: InsertArDunningTemplate) {
+    const [res] = await db.insert(arDunningTemplates).values(data).returning();
+    return res;
+  }
+  async listArDunningTemplates() {
+    return await db.select().from(arDunningTemplates);
+  }
+  async getArDunningTemplate(id: string) {
+    const [res] = await db.select().from(arDunningTemplates).where(eq(arDunningTemplates.id, id));
+    return res;
+  }
+  async createArDunningRun(data: InsertArDunningRun) {
+    const [res] = await db.insert(arDunningRuns).values(data).returning();
+    return res;
+  }
+  async createArCollectorTask(data: InsertArCollectorTask) {
+    const [res] = await db.insert(arCollectorTasks).values(data).returning();
+    return res;
+  }
+  async listArCollectorTasks(assignedTo?: string, status?: string) {
+    const conditions = [];
+    if (assignedTo) conditions.push(eq(arCollectorTasks.assignedToUser, assignedTo));
+    if (status) conditions.push(eq(arCollectorTasks.status, status));
+
+    if (conditions.length > 0) {
+      return await db.select().from(arCollectorTasks).where(and(...conditions));
+    }
+    return await db.select().from(arCollectorTasks);
+  }
+  async updateArCollectorTask(id: string, data: Partial<InsertArCollectorTask>) {
+    const [res] = await db.update(arCollectorTasks).set(data).where(eq(arCollectorTasks.id, id)).returning();
+    return res;
+  }
+
+  // AR Adjustments
+  async createArAdjustment(data: InsertArAdjustment) {
+    const [res] = await db.insert(arAdjustments).values(data).returning();
+    return res;
+  }
+
+  async listArAdjustments(invoiceId?: string) {
+    if (invoiceId) {
+      return await db.select().from(arAdjustments).where(eq(arAdjustments.invoiceId, invoiceId));
+    }
+    return await db.select().from(arAdjustments);
+  }
+
+  async updateArAdjustmentStatus(id: string, status: string) {
+    const [res] = await db.update(arAdjustments).set({ status }).where(eq(arAdjustments.id, id)).returning();
+    return res;
+  }
+
+
+
+  // Cash Management Implementation (DB-Backed)
+  async listCashBankAccounts() {
+    return await db.select().from(cashBankAccounts);
+  }
+  async getCashBankAccount(id: string) {
+    const [acc] = await db.select().from(cashBankAccounts).where(eq(cashBankAccounts.id, id));
+    return acc;
+  }
+  async createCashBankAccount(data: InsertCashBankAccount) {
+    const [acc] = await db.insert(cashBankAccounts).values(data).returning();
+    return acc;
+  }
+  async updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>) {
+    const [acc] = await db.update(cashBankAccounts).set(data).where(eq(cashBankAccounts.id, id)).returning();
+    return acc;
+  }
+  async deleteCashBankAccount(id: string) {
+    await db.delete(cashBankAccounts).where(eq(cashBankAccounts.id, id));
+    return true;
+  }
+
+  async listCashStatementLines(bankAccountId: string, limit?: number, offset?: number) {
+    let query = db.select().from(cashStatementLines)
+      .where(eq(cashStatementLines.bankAccountId, bankAccountId))
+      .orderBy(desc(cashStatementLines.transactionDate));
+
+    if (limit !== undefined && offset !== undefined) {
+      return await query.limit(limit).offset(offset);
+    }
+    return await query;
+  }
+  async getCashStatementLinesCount(bankAccountId: string): Promise<number> {
+    const [res] = await db.select({ count: count() })
+      .from(cashStatementLines)
+      .where(eq(cashStatementLines.bankAccountId, bankAccountId));
+    return res.count;
+  }
+  async createCashStatementLine(data: InsertCashStatementLine) {
+    const [line] = await db.insert(cashStatementLines).values(data).returning();
+    return line;
+  }
+  async updateCashStatementLine(id: string, data: Partial<InsertCashStatementLine>) {
+    const [res] = await db.update(cashStatementLines).set(data).where(eq(cashStatementLines.id, id)).returning();
+    return res;
+  }
+  async createCashStatementHeader(data: InsertCashStatementHeader) {
+    const [header] = await db.insert(cashStatementHeaders).values(data).returning();
+    return header;
+  }
+  async listCashStatementHeaders(bankAccountId: string) {
+    return await db.select().from(cashStatementHeaders).where(eq(cashStatementHeaders.bankAccountId, bankAccountId));
+  }
+  async updateCashStatementHeader(id: string, data: Partial<InsertCashStatementHeader>) {
+    const [header] = await db.update(cashStatementHeaders).set(data).where(eq(cashStatementHeaders.id, id)).returning();
+    return header;
+  }
+
+  async listCashTransactions(bankAccountId: string, limit?: number, offset?: number) {
+    let query = db.select().from(cashTransactions)
+      .where(eq(cashTransactions.bankAccountId, bankAccountId))
+      .orderBy(desc(cashTransactions.transactionDate));
+
+    if (limit !== undefined && offset !== undefined) {
+      return await query.limit(limit).offset(offset);
+    }
+    return await query;
+  }
+  async getCashTransactionsCount(bankAccountId: string): Promise<number> {
+    const [res] = await db.select({ count: count() })
+      .from(cashTransactions)
+      .where(eq(cashTransactions.bankAccountId, bankAccountId));
+    return res.count;
+  }
+  async createCashTransaction(data: InsertCashTransaction) {
+    const [trx] = await db.insert(cashTransactions).values(data).returning();
+    return trx;
+  }
+  async updateCashTransaction(id: string, data: Partial<InsertCashTransaction>) {
+    const [res] = await db.update(cashTransactions).set(data).where(eq(cashTransactions.id, id)).returning();
+    return res;
+  }
+
+  // FSG Implementation
+  async listFsgRowSets(ledgerId: string) {
+    return await db.select().from(glFsgRowSets).where(eq(glFsgRowSets.ledgerId, ledgerId));
+  }
+  async getFsgRowSet(id: string) {
+    const [res] = await db.select().from(glFsgRowSets).where(eq(glFsgRowSets.id, id));
+    return res;
+  }
+  async createFsgRowSet(data: InsertGlFsgRowSet) {
+    const [res] = await db.insert(glFsgRowSets).values(data).returning();
+    return res;
+  }
+
+  async listFsgColumnSets(ledgerId: string) {
+    return await db.select().from(glFsgColumnSets).where(eq(glFsgColumnSets.ledgerId, ledgerId));
+  }
+  async getFsgColumnSet(id: string) {
+    const [res] = await db.select().from(glFsgColumnSets).where(eq(glFsgColumnSets.id, id));
+    return res;
+  }
+  async createFsgColumnSet(data: InsertGlFsgColumnSet) {
+    const [res] = await db.insert(glFsgColumnSets).values(data).returning();
+    return res;
+  }
+
+  async listReportSchedules() {
+    return await db.select().from(glReportSchedules);
+  }
+  async createReportSchedule(data: InsertGlReportSchedule) {
+    const [res] = await db.insert(glReportSchedules).values(data).returning();
+    return res;
+  }
+  async createReportInstance(data: InsertGlReportInstance) {
+    const [res] = await db.insert(glReportInstances).values(data).returning();
+    return res;
+  }
+
+  async listCashReconciliationRules(ledgerId: string) {
+    return await db.select().from(cashReconciliationRules).where(eq(cashReconciliationRules.ledgerId, ledgerId));
+  }
+  async createCashReconciliationRule(data: InsertCashReconciliationRule) {
+    const [rule] = await db.insert(cashReconciliationRules).values(data).returning();
+    return rule;
+  }
+  async updateCashReconciliationRule(id: string, data: Partial<InsertCashReconciliationRule>) {
+    const [rule] = await db.update(cashReconciliationRules).set(data).where(eq(cashReconciliationRules.id, id)).returning();
+    return rule;
+  }
+  async deleteCashReconciliationRule(id: string) {
+    await db.delete(cashReconciliationRules).where(eq(cashReconciliationRules.id, id));
+  }
+  async createCashMatchingGroup(data: InsertCashMatchingGroup) {
+    const [group] = await db.insert(cashMatchingGroups).values(data).returning();
+    return group;
+  }
+
+  // ZBA
+  async listCashZbaStructures() {
+    return await db.select().from(cashZbaStructures);
+  }
+  async createCashZbaStructure(data: InsertCashZbaStructure) {
+    const [res] = await db.insert(cashZbaStructures).values(data).returning();
+    return res;
+  }
+  async updateCashZbaStructure(id: string, data: Partial<InsertCashZbaStructure>) {
+    const [res] = await db.update(cashZbaStructures).set(data).where(eq(cashZbaStructures.id, id)).returning();
+    return res;
+  }
+  async createCashZbaSweep(data: InsertCashZbaSweep) {
+    const [res] = await db.insert(cashZbaSweeps).values(data).returning();
+    return res;
+  }
+  async listCashZbaSweeps(structureId?: string) {
+    if (structureId) {
+      return await db.select().from(cashZbaSweeps).where(eq(cashZbaSweeps.structureId, structureId)).orderBy(desc(cashZbaSweeps.sweepDate));
+    }
+    return await db.select().from(cashZbaSweeps).orderBy(desc(cashZbaSweeps.sweepDate));
+  }
+
+
+  // Agentic AI Implementation
+  private aiActions = new Map<string, AiAction>();
+  private aiAuditLogs = new Map<string, AiAuditLog>();
+
+  async getAiAction(actionName: string) {
+    return Array.from(this.aiActions.values()).find(a => a.actionName === actionName);
+  }
+  async listAiActions() { return Array.from(this.aiActions.values()); }
+  async createAiAction(a: InsertAiAction) { const id = randomUUID(); const action: AiAction = { id, ...a, description: a.description ?? null, requiredPermissions: a.requiredPermissions ?? null, inputSchema: a.inputSchema ?? null, isEnabled: a.isEnabled ?? true, createdAt: new Date() }; this.aiActions.set(id, action); return action; }
+
+  async createAiAuditLog(l: InsertAiAuditLog) { const id = randomUUID(); const log: AiAuditLog = { id, ...l, userId: l.userId ?? null, inputPrompt: l.inputPrompt ?? null, structuredIntent: l.structuredIntent ?? null, errorMessage: l.errorMessage ?? null, executionTimeMs: l.executionTimeMs ?? null, timestamp: new Date() }; this.aiAuditLogs.set(id, log); return log; }
+  async listAiAuditLogs(limit = 100) { return Array.from(this.aiAuditLogs.values()).sort((a, b) => b.timestamp!.getTime() - a.timestamp!.getTime()).slice(0, limit); }
+
+  // Interaction Methods
+  async listInteractions(entityType: string, entityId: string) {
+    if (entityType === "lead") return []; // Stub
+    if (entityType === "account") return []; // Stub
+    if (entityType === "contact") return []; // Stub
+    if (entityType === "opportunity") return []; // Stub
+    return [];
+  }
+  async createInteraction(i: InsertInteraction) {
+    // Stub implementation for MemStorage
+    return {} as Interaction;
+  }
+
+  async convertLead(leadId: string, ownerId?: string): Promise<{ account: Account; contact: Contact; opportunity: Opportunity }> {
+    // Stub implementation for MemStorage
+    throw new Error("Lead conversion not supported in MemStorage");
+  }
+
+  // Analytics Stubs
+  async getPipelineMetrics() { return []; }
+  async getRevenueMetrics() { return []; }
+  async getLeadSourceMetrics() { return []; }
+  async getCaseMetrics() { return []; }
+  async getSubscription(id: string) { return this.subscriptions.get(id); }
+  async listSubscriptions(tenantId?: string) { const list = Array.from(this.subscriptions.values()); return tenantId ? list.filter(s => s.tenantId === tenantId) : list; }
+  async createSubscription(s: InsertSubscription) { const id = randomUUID(); const sub: Subscription = { id, ...s as any, createdAt: new Date() }; this.subscriptions.set(id, sub); return sub; }
+
+  async getPayment(id: string) { return this.payments.get(id); }
+  async listPayments(invoiceId?: string) { const list = Array.from(this.payments.values()); return invoiceId ? list.filter(p => p.invoiceId === invoiceId) : list; }
+  async createPayment(p: InsertPayment) { const id = randomUUID(); const payment: Payment = { id, ...p as any, createdAt: new Date() }; this.payments.set(id, payment); return payment; }
+
+
+  async getUser(id: string) { return this.users.get(id); }
+  async getUserByEmail(email: string) {
+    return Array.from(this.users.values()).find(u => u.email === email);
+  }
+  async listUsers() { return Array.from(this.users.values()); }
+  async createUser(u: InsertUser) { const id = randomUUID(); const user: User = { id, ...u as any, createdAt: new Date() }; this.users.set(id, user); return user; }
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const existing = this.users.get(userData.id);
+    if (existing) {
+      const updated: User = { ...existing, ...userData, updatedAt: new Date() };
+      this.users.set(userData.id, updated);
+      return updated;
+    }
+    const user: User = {
+      id: userData.id,
+      email: userData.email ?? null,
+      password: null,
+      name: userData.firstName && userData.lastName ? `${userData.firstName} ${userData.lastName} ` : null,
+      firstName: userData.firstName ?? null,
+      lastName: userData.lastName ?? null,
+      profileImageUrl: userData.profileImageUrl ?? null,
+      role: "user",
+      tenantId: userData.tenantId ?? null, // Added tenantId
+      permissions: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.users.set(userData.id, user);
+    return user;
+  }
+
+  async getProject(id: string) { return this.projects.get(id); }
+  async listProjects(ownerId?: string) { const list = Array.from(this.projects.values()); return ownerId ? list.filter(p => p.ownerId === ownerId) : list; }
+  async createProject(p: InsertProject) { const id = randomUUID(); const project: Project = { id, ...p, createdAt: new Date(), description: p.description ?? null }; this.projects.set(id, project); return project; }
+
+  async getInvoice(id: string) { return this.invoices.get(id); }
+  async listInvoices(customerId?: string) { const list = Array.from(this.invoices.values()); return customerId ? list.filter(i => i.customerId === customerId) : list; }
+  async createInvoice(i: InsertInvoice) { const id = randomUUID(); const invoice: Invoice = { id, invoiceNumber: i.invoiceNumber, customerId: i.customerId ?? null, amount: i.amount, dueDate: i.dueDate ?? null, status: i.status ?? "draft", createdAt: new Date() }; this.invoices.set(id, invoice); return invoice; }
+
+  // Case Methods
+  async listCases(filters?: { accountId?: string; contactId?: string }) {
+    let cases = Array.from(this.cases.values());
+    if (filters?.accountId) cases = cases.filter(c => c.accountId === filters.accountId);
+    if (filters?.contactId) cases = cases.filter(c => c.contactId === filters.contactId);
+    return cases;
+  }
+  async getCase(id: string) { return this.cases.get(id); }
+  async createCase(data: InsertCase) {
+    const id = randomUUID();
+    const newCase: Case = {
+      id,
+      ...data,
+      description: data.description ?? null,
+      status: data.status ?? 'New',
+      priority: data.priority ?? 'Medium',
+      origin: data.origin ?? 'Web',
+      accountId: data.accountId ?? null,
+      contactId: data.contactId ?? null,
+      userId: data.userId ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.cases.set(id, newCase);
+    return newCase;
+  }
+  async updateCase(id: string, data: Partial<InsertCase>) {
+    const existing = this.cases.get(id);
+    if (!existing) return undefined;
+    const updated: Case = { ...existing, ...data, updatedAt: new Date() };
+    this.cases.set(id, updated);
+    return updated;
+  }
+  async listCaseComments(caseId: string) {
+    return Array.from(this.caseComments.values()).filter(c => c.caseId === caseId);
+  }
+  async createCaseComment(data: InsertCaseComment) {
+    const id = randomUUID();
+    const comment: CaseComment = {
+      id,
+      ...data,
+      isPublic: data.isPublic ?? false,
+      createdById: data.createdById ?? null,
+      createdAt: new Date()
+    };
+    this.caseComments.set(id, comment);
+    return comment;
+  }
+
+  async getLead(id: string) { return this.leads.get(id); }
+  async listLeads() { return Array.from(this.leads.values()); }
+  async createLead(l: InsertLead) {
+    const id = randomUUID();
+    const lead: Lead = {
+      id,
+      name: l.name,
+      firstName: l.firstName ?? null,
+      lastName: l.lastName ?? l.name.split(' ').pop() ?? "", // Fallback
+      salutation: l.salutation ?? null,
+      title: l.title ?? null,
+      company: l.company ?? null,
+
+      email: l.email ?? null,
+      phone: l.phone ?? null,
+      mobilePhone: l.mobilePhone ?? null,
+      website: l.website ?? null,
+
+      street: l.street ?? null,
+      city: l.city ?? null,
+      state: l.state ?? null,
+      postalCode: l.postalCode ?? null,
+      country: l.country ?? null,
+
+      leadSource: l.leadSource ?? null,
+      status: l.status ?? "new",
+      industry: l.industry ?? null,
+      rating: l.rating ?? null,
+      annualRevenue: l.annualRevenue ? String(l.annualRevenue) : null,
+      numberOfEmployees: l.numberOfEmployees ?? null,
+
+      score: l.score ?? "0",
+      isConverted: 0,
+      convertedDate: null,
+      convertedAccountId: null,
+      convertedContactId: null,
+      convertedOpportunityId: null,
+
+      description: l.description ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ownerId: l.ownerId ?? null
+    };
+    this.leads.set(id, lead);
+    return lead;
+  }
+
+  async getWorkOrder(id: string) { return this.workOrders.get(id); }
+  async listWorkOrders() { return Array.from(this.workOrders.values()); }
+  async createWorkOrder(w: InsertWorkOrder) { const id = randomUUID(); const wo: WorkOrder = { id, title: w.title, status: w.status ?? null, description: w.description ?? null, assignedTo: w.assignedTo ?? null, dueDate: w.dueDate ?? null, createdAt: new Date() }; this.workOrders.set(id, wo); return wo; }
+
+  async getEmployee(id: string) { return this.employees.get(id); }
+  async listEmployees(department?: string) { const list = Array.from(this.employees.values()); return department ? list.filter(e => e.department === department) : list; }
+  async createEmployee(e: InsertEmployee) { const id = randomUUID(); const emp: Employee = { id, firstName: e.firstName, lastName: e.lastName, email: e.email ?? null, department: e.department ?? null, hireDate: e.hireDate ?? null, status: e.status ?? "active", createdAt: new Date() }; this.employees.set(id, emp); return emp; }
+
+  async getMobileDevice(id: string) { return this.mobileDevices.get(id); }
+  async listMobileDevices(userId?: string) { const list = Array.from(this.mobileDevices.values()); return userId ? list.filter(d => d.userId === userId) : list; }
+  async createMobileDevice(d: InsertMobileDevice) { const id = randomUUID(); const dev: MobileDevice = { id, userId: d.userId, deviceId: d.deviceId, deviceName: d.deviceName ?? null, platform: d.platform ?? null, pushToken: d.pushToken ?? null, lastSyncAt: d.lastSyncAt ?? null, createdAt: new Date(), updatedAt: new Date(), isActive: d.isActive ?? true }; this.mobileDevices.set(id, dev); return dev; }
+  async registerMobileDevice(d: InsertMobileDevice) { return this.createMobileDevice(d); }
+  async updateMobileDeviceSync(deviceId: string) { return this.mobileDevices.get(deviceId); }
+
+  async getOfflineSync(id: string) { return this.offlineSyncQueue.get(id); }
+  async listOfflineSync(deviceId?: string) { const list = Array.from(this.offlineSyncQueue.values()); return deviceId ? list.filter(s => s.deviceId === deviceId) : list; }
+  async createOfflineSync(s: InsertOfflineSync) { const id = randomUUID(); const sync: OfflineSync = { id, deviceId: s.deviceId, entityType: s.entityType, entityId: s.entityId, action: s.action, data: s.data ?? null, syncStatus: s.syncStatus ?? "pending", syncedAt: s.syncedAt ?? null, createdAt: new Date() }; this.offlineSyncQueue.set(id, sync); return sync; }
+  async getOfflineSyncQueue(deviceId: string) { return this.listOfflineSync(deviceId); }
+  async addToOfflineQueue(s: InsertOfflineSync) { return this.createOfflineSync(s); }
+
+  async getCopilotConversation(id: string) { return this.copilotConversations.get(id); }
+  async listCopilotConversations(userId?: string) { const list = Array.from(this.copilotConversations.values()); return userId ? list.filter(c => c.userId === userId) : list; }
+  async createCopilotConversation(c: InsertCopilotConversation) { const id = randomUUID(); const conv: CopilotConversation = { id, userId: c.userId, title: c.title ?? null, status: c.status ?? "active", createdAt: new Date(), updatedAt: new Date() }; this.copilotConversations.set(id, conv); return conv; }
+
+  async getCopilotMessage(id: string) { return this.copilotMessages.get(id); }
+  async listCopilotMessages(conversationId?: string) { const list = Array.from(this.copilotMessages.values()); return conversationId ? list.filter(m => m.conversationId === conversationId) : list; }
+  async createCopilotMessage(m: InsertCopilotMessage) { const id = randomUUID(); const msg: CopilotMessage = { id, conversationId: m.conversationId, role: m.role ?? null, content: m.content, createdAt: new Date() }; this.copilotMessages.set(id, msg); return msg; }
+
+  private reportDefinitions = new Map<string, GlReportDefinition>();
+  private reportRows = new Map<string, GlReportRow>();
+  private reportColumns = new Map<string, GlReportColumn>();
+
+  // Methods handled by MemStorage above or removed if duplicated
+
+
+  async getRevenueForecast(id: string) { return this.revenueForecasts.get(id); }
+  async listRevenueForecasts() { return Array.from(this.revenueForecasts.values()); }
+  async createRevenueForecast(f: InsertRevenueForecast) { const id = randomUUID(); const forecast: RevenueForecast = { id, ...f as any, createdAt: new Date() }; this.revenueForecasts.set(id, forecast); return forecast; }
+
+  async getBudgetAllocation(id: string) { return this.budgetAllocations.get(id); }
+  async listBudgetAllocations(year?: number): Promise<BudgetAllocation[]> {
+    if (year) {
+      // Filter in memory for now as year is not a direct column on BudgetAllocation in some schemas, or if it is, utilize db filtering
+      // Checking schema of BudgetAllocation: often has periodName or explicit year. If missing, return all.
+      // For DatabaseStorage, we return all for now or implement strict filtering if column exists.
+      // Based on MemStorage behavior (b.year), we assume the property exists in runtime data or is derived.
+      return await db.select().from(budgetAllocations);
+    }
+    return await db.select().from(budgetAllocations);
+  }
+  async createBudgetAllocation(b: InsertBudgetAllocation) {
+    const [budget] = await db.insert(budgetAllocations).values(b).returning();
+    return budget;
+  }
+
+  async getTimeSeriesData(id: string) { return Array.from(this.timeSeriesData.values()).filter(t => (t as any).metric === id)[0]; }
+  async listTimeSeriesData() { return Array.from(this.timeSeriesData.values()); }
+  async createTimeSeriesData(d: InsertTimeSeriesData) { const id = randomUUID(); const data: TimeSeriesData = { id, ...d as any, createdAt: new Date() }; this.timeSeriesData.set(id, data); return data; }
+
+  async getForecastModel(id: string) { return this.forecastModels.get(id); }
+  async listForecastModels() { return Array.from(this.forecastModels.values()); }
+  async createForecastModel(m: InsertForecastModel) { const id = randomUUID(); const model: ForecastModel = { id, name: m.name, type: m.type, isActive: m.isActive ?? true, parameters: m.parameters ?? null, accuracy: m.accuracy ?? null, createdAt: new Date(), updatedAt: new Date() }; this.forecastModels.set(id, model); return model; }
+
+  async getScenario(id: string) { return this.scenarios.get(id); }
+  async listScenarios() { return Array.from(this.scenarios.values()); }
+  async createScenario(s: InsertScenario) { const id = randomUUID(); const scenario: Scenario = { id, name: s.name, description: s.description ?? null, status: s.status ?? "active", type: s.type ?? null, baselineId: s.baselineId ?? null, createdAt: new Date(), updatedAt: new Date() }; this.scenarios.set(id, scenario); return scenario; }
+
+  async getScenarioVariable(id: string) { return this.scenarioVariables.get(id); }
+  async listScenarioVariables(scenarioId?: string) { const list = Array.from(this.scenarioVariables.values()); return scenarioId ? list.filter(v => v.scenarioId === scenarioId) : list; }
+  async createScenarioVariable(v: InsertScenarioVariable) { const id = randomUUID(); const variable: ScenarioVariable = { id, ...v as any, createdAt: new Date() }; this.scenarioVariables.set(id, variable); return variable; }
+  async getScenarioVariables(scenarioId: string) { return this.listScenarioVariables(scenarioId); }
+  async addScenarioVariable(v: InsertScenarioVariable) { return this.createScenarioVariable(v); }
+
+  async getDashboardWidget(id: string) { return this.dashboardWidgets.get(id); }
+  async listDashboardWidgets(dashboardId?: string) { const list = Array.from(this.dashboardWidgets.values()); return dashboardId ? list.filter(w => (w as any).dashboardId === dashboardId) : list; }
+  async createDashboardWidget(w: InsertDashboardWidget) { const id = randomUUID(); const widget: DashboardWidget = { id, userId: w.userId, widgetType: w.widgetType, title: w.title, config: w.config ?? null, position: w.position ?? 0, size: w.size ?? "medium", isVisible: w.isVisible ?? true, createdAt: new Date(), updatedAt: new Date() }; this.dashboardWidgets.set(id, widget); return widget; }
+
+  async getReport(id: string) { return this.reports.get(id); }
+  async listReports() { return Array.from(this.reports.values()); }
+  async createReport(r: InsertReport) { const id = randomUUID(); const report: Report = { id, name: r.name, description: r.description ?? null, type: r.type ?? null, category: r.category ?? null, config: r.config ?? null, module: r.module ?? null, isFavorite: r.isFavorite ?? false, isPublic: r.isPublic ?? false, createdBy: r.createdBy ?? null, lastRunAt: r.lastRunAt ?? null, createdAt: new Date(), updatedAt: new Date() }; this.reports.set(id, report); return report; }
+
+  async getAuditLog(id: string) { return this.auditLogs.get(id); }
+  async listAuditLogs() { return Array.from(this.auditLogs.values()); }
+  async createAuditLog(l: InsertAuditLog) { const id = randomUUID(); const log: AuditLog = { id, userId: l.userId ?? null, action: l.action, entityType: l.entityType ?? null, entityId: l.entityId ?? null, oldValue: l.oldValue ?? null, newValue: l.newValue ?? null, ipAddress: l.ipAddress ?? null, userAgent: l.userAgent ?? null, createdAt: new Date() }; this.auditLogs.set(id, log); return log; }
+
+  async getApp(id: string) { return this.apps.get(id); }
+  async listApps() { return Array.from(this.apps.values()); }
+  async createApp(a: InsertApp) { const id = randomUUID(); const app: App = { id, name: a.name, description: a.description ?? null, status: a.status ?? "active", version: a.version ?? "1.0.0", createdAt: new Date(), updatedAt: new Date() }; this.apps.set(id, app); return app; }
+
+  async getAppReview(id: string) { return this.appReviews.get(id); }
+  async listAppReviews(appId?: string) { const list = Array.from(this.appReviews.values()); return appId ? list.filter(r => r.appId === appId) : list; }
+  async createAppReview(r: InsertAppReview) { const id = randomUUID(); const review: AppReview = { id, appId: r.appId, userId: r.userId, rating: r.rating, title: r.title ?? null, content: r.content ?? null, createdAt: new Date() }; this.appReviews.set(id, review); return review; }
+
+  async getAppInstallation(id: string) { return this.appInstallations.get(id); }
+  async listAppInstallations(userId?: string) { const list = Array.from(this.appInstallations.values()); return userId ? list.filter(i => i.installedBy === userId) : list; }
+  async createAppInstallation(i: InsertAppInstallation) { const id = randomUUID(); const inst: AppInstallation = { id, tenantId: i.tenantId, appId: i.appId, status: i.status ?? "active", installedBy: i.installedBy, installedAt: new Date() }; this.appInstallations.set(id, inst); return inst; }
+
+  async getConnector(id: string) { return this.connectors.get(id); }
+  async listConnectors() { return Array.from(this.connectors.values()); }
+  async createConnector(c: InsertConnector) { const id = randomUUID(); const connector: Connector = { id, name: c.name, type: c.type, status: c.status ?? "active", config: c.config ?? null, createdAt: new Date(), updatedAt: new Date() }; this.connectors.set(id, connector); return connector; }
+
+  async getConnectorInstance(id: string) { return this.connectorInstances.get(id); }
+  async listConnectorInstances(userId?: string) { return Array.from(this.connectorInstances.values()); }
+  async createConnectorInstance(i: InsertConnectorInstance) { const id = randomUUID(); const instance: ConnectorInstance = { id, connectorId: i.connectorId, tenantId: i.tenantId, status: i.status ?? "active", config: i.config ?? null, credentials: i.credentials ?? null, lastSyncAt: i.lastSyncAt ?? null, createdAt: new Date(), updatedAt: new Date() }; this.connectorInstances.set(id, instance); return instance; }
+
+  async getWebhookEvent(id: string) { return this.webhookEvents.get(id); }
+  async listWebhookEvents() { return Array.from(this.webhookEvents.values()); }
+  async createWebhookEvent(e: InsertWebhookEvent) { const id = randomUUID(); const event: WebhookEvent = { id, connectorInstanceId: e.connectorInstanceId, eventType: e.eventType, payload: e.payload ?? null, status: e.status ?? "pending", processedAt: e.processedAt ?? null, createdAt: new Date() }; this.webhookEvents.set(id, event); return event; }
+
+  async getAbacRule(id: string) { return this.abacRules.get(id); }
+  async listAbacRules() { return Array.from(this.abacRules.values()); }
+  async createAbacRule(r: InsertAbacRule) { const id = randomUUID(); const rule: AbacRule = { id, name: r.name, action: r.action, resource: r.resource, conditions: r.conditions ?? null, effect: r.effect ?? "allow", priority: r.priority ?? 0, isActive: r.isActive ?? true, createdAt: new Date(), updatedAt: new Date() }; this.abacRules.set(id, rule); return rule; }
+
+  async getEncryptedField(id: string) { return this.encryptedFields.get(id); }
+  async listEncryptedFields() { return Array.from(this.encryptedFields.values()); }
+  async createEncryptedField(f: InsertEncryptedField) { const id = randomUUID(); const field: EncryptedField = { id, entityType: f.entityType, entityId: f.entityId, fieldName: f.fieldName, encryptedValue: f.encryptedValue ?? null, keyVersion: f.keyVersion ?? null, createdAt: new Date(), updatedAt: new Date() }; this.encryptedFields.set(id, field); return field; }
+
+  async getComplianceConfig(id: string) { return this.complianceConfigs.get(id); }
+  async listComplianceConfigs() { return Array.from(this.complianceConfigs.values()); }
+  async createComplianceConfig(c: InsertComplianceConfig) { const id = randomUUID(); const cfg: ComplianceConfig = { id, tenantId: c.tenantId, framework: c.framework, settings: c.settings ?? null, isActive: c.isActive ?? true, createdAt: new Date(), updatedAt: new Date() }; this.complianceConfigs.set(id, cfg); return cfg; }
+
+  async getSprint(id: string) { return this.sprints.get(id); }
+  async listSprints(projectId?: string) { const list = Array.from(this.sprints.values()); return projectId ? list.filter(s => s.projectId === projectId) : list; }
+  async createSprint(s: InsertSprint) { const id = randomUUID(); const sprint: Sprint = { id, name: s.name, projectId: s.projectId, status: s.status ?? "planned", startDate: s.startDate ?? null, endDate: s.endDate ?? null, goal: s.goal ?? null, velocity: s.velocity ?? null, createdAt: new Date(), updatedAt: new Date() }; this.sprints.set(id, sprint); return sprint; }
+
+  async getIssue(id: string) { return this.issues.get(id); }
+  async listIssues(sprintId?: string) { const list = Array.from(this.issues.values()); return sprintId ? list.filter(i => i.sprintId === sprintId) : list; }
+  async createIssue(i: InsertIssue) { const id = randomUUID(); const issue: Issue = { id, title: i.title, projectId: i.projectId, sprintId: i.sprintId ?? null, description: i.description ?? null, status: i.status ?? "open", type: i.type ?? "task", priority: i.priority ?? "medium", assigneeId: i.assigneeId ?? null, reporterId: i.reporterId ?? null, storyPoints: i.storyPoints ?? null, dueDate: i.dueDate ?? null, createdAt: new Date(), updatedAt: new Date() }; this.issues.set(id, issue); return issue; }
+
+  async getDataLake(id: string) { return this.dataLakes.get(id); }
+  async listDataLakes() { return Array.from(this.dataLakes.values()); }
+  async createDataLake(l: InsertDataLake) { const id = randomUUID(); const lake: DataLake = { id, name: l.name, description: l.description ?? null, storageType: l.storageType ?? null, connectionConfig: l.connectionConfig ?? null, status: l.status ?? "active", createdAt: new Date(), updatedAt: new Date() }; this.dataLakes.set(id, lake); return lake; }
+
+  async getEtlPipeline(id: string) { return this.etlPipelines.get(id); }
+  async listEtlPipelines() { return Array.from(this.etlPipelines.values()); }
+  async createEtlPipeline(p: InsertEtlPipeline) { const id = randomUUID(); const pipeline: EtlPipeline = { id, name: p.name, description: p.description ?? null, sourceConfig: p.sourceConfig ?? null, transformConfig: p.transformConfig ?? null, destinationConfig: p.destinationConfig ?? null, schedule: p.schedule ?? null, status: p.status ?? "active", lastRunAt: p.lastRunAt ?? null, createdAt: new Date(), updatedAt: new Date() }; this.etlPipelines.set(id, pipeline); return pipeline; }
+
+  async getBiDashboard(id: string) { return this.biDashboards.get(id); }
+  async listBiDashboards() { return Array.from(this.biDashboards.values()); }
+  async createBiDashboard(d: InsertBiDashboard) { const id = randomUUID(); const dash: BiDashboard = { id, name: d.name, description: d.description ?? null, layout: d.layout ?? null, widgets: d.widgets ?? null, filters: d.filters ?? null, isPublic: d.isPublic ?? false, createdBy: d.createdBy ?? null, createdAt: new Date(), updatedAt: new Date() }; this.biDashboards.set(id, dash); return dash; }
+
+  async getFieldServiceJob(id: string) { return this.fieldServiceJobs.get(id); }
+  async listFieldServiceJobs(status?: string) { const list = Array.from(this.fieldServiceJobs.values()); return status ? list.filter(j => j.status === status) : list; }
+  async createFieldServiceJob(j: InsertFieldServiceJob) { const id = randomUUID(); const job: FieldServiceJob = { id, jobNumber: j.jobNumber, customerId: j.customerId ?? null, technicianId: j.technicianId ?? null, status: j.status ?? "scheduled", priority: j.priority ?? "medium", jobType: j.jobType ?? null, scheduledDate: j.scheduledDate ?? null, completedDate: j.completedDate ?? null, location: j.location ?? null, notes: j.notes ?? null, createdAt: new Date(), updatedAt: new Date() }; this.fieldServiceJobs.set(id, job); return job; }
+
+  async getPayrollConfig(id: string) { return this.payrollConfigs.get(id); }
+  async listPayrollConfigs() { return Array.from(this.payrollConfigs.values()); }
+  async createPayrollConfig(c: InsertPayrollConfig) { const id = randomUUID(); const cfg: PayrollConfig = { id, tenantId: c.tenantId, payPeriod: c.payPeriod ?? "monthly", payDay: c.payDay ?? null, taxSettings: c.taxSettings ?? null, benefitSettings: c.benefitSettings ?? null, overtimeRules: c.overtimeRules ?? null, isActive: c.isActive ?? true, createdAt: new Date(), updatedAt: new Date() }; this.payrollConfigs.set(id, cfg); return cfg; }
+
+  // Demo Management
+  private demos = new Map<string, Demo>();
+
+  async getDemo(id: string) { return this.demos.get(id); }
+  async listDemos() { return Array.from(this.demos.values()); }
+  async createDemo(d: InsertDemo) {
+    const id = randomUUID();
+    const demo: Demo = {
+      id,
+      ...d,
+      status: d.status ?? "active",
+      demoToken: `demo_${randomUUID()} `,
+      createdAt: new Date(),
+      expiresAt: d.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    };
+    this.demos.set(id, demo);
+    return demo;
+  }
+  async deleteDemo(id: string) {
+    return this.demos.delete(id);
+  }
+  async updateDemo(id: string, d: Partial<InsertDemo>) {
+    const demo = this.demos.get(id);
+    if (!demo) return undefined;
+    const updated: Demo = { ...demo, ...d };
+    this.demos.set(id, updated);
+    return updated;
+  }
+
+  // Partner Management
+  async getPartner(id: string) { return this.partners.get(id); }
+  async listPartners(filters?: { type?: string; tier?: string; isApproved?: boolean; search?: string }) {
+    let list = Array.from(this.partners.values());
+    if (filters?.type) list = list.filter(p => p.type === filters.type);
+    if (filters?.tier) list = list.filter(p => p.tier === filters.tier);
+    if (filters?.isApproved !== undefined) list = list.filter(p => p.isApproved === filters.isApproved);
+    if (filters?.search) {
+      const s = filters.search.toLowerCase();
+      list = list.filter(p => p.name.toLowerCase().includes(s) || p.company.toLowerCase().includes(s));
+    }
+    return list.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  async createPartner(p: InsertPartner) {
+    const id = randomUUID();
+    const partner: Partner = {
+      id,
+      name: p.name,
+      email: p.email,
+      company: p.company ?? "Unknown",
+      description: p.description ?? null,
+      website: p.website ?? null,
+      phone: p.phone ?? null,
+      type: p.type || "partner",
+      tier: p.tier || "silver",
+      isActive: p.isActive ?? true,
+      isApproved: p.isApproved ?? false,
+      logo: p.logo ?? null,
+      specializations: p.specializations ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.partners.set(id, partner);
+    return partner;
+  }
+  async updatePartner(id: string, p: Partial<InsertPartner>) {
+    const partner = this.partners.get(id);
+    if (!partner) return undefined;
+    const updated: Partner = { ...partner, ...p, updatedAt: new Date() };
+    this.partners.set(id, updated);
+    return updated;
+  }
+  async deletePartner(id: string) {
+    return this.partners.delete(id);
+  }
+
+  async getUserFeedback(id: string) { return this.userFeedbackStore.get(id); }
+  async listUserFeedback() { return Array.from(this.userFeedbackStore.values()).sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()); }
+  async createUserFeedback(f: InsertUserFeedback) {
+    const id = randomUUID();
+    const feedback: UserFeedback = {
+      id,
+      ...f,
+      userId: f.userId ?? null,
+      category: f.category ?? null,
+      attachmentUrl: f.attachmentUrl ?? null,
+      status: f.status || "new",
+      priority: f.priority || "medium",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.userFeedbackStore.set(id, feedback);
+    return feedback;
+  }
+
+  // Industry Management
+  async getIndustry(id: string) { return this.industries.get(id); }
+  async listIndustries() { return Array.from(this.industries.values()); }
+  async createIndustry(i: InsertIndustry) {
+    const id = randomUUID();
+    const industry: Industry = { id, ...i as any, createdAt: new Date() };
+    this.industries.set(id, industry);
+    return industry;
+  }
+
+  // Industry Deployment Management
+  async getIndustryDeployment(id: string) { return this.industryDeployments.get(id); }
+  async listIndustryDeployments(tenantId?: string) {
+    const list = Array.from(this.industryDeployments.values());
+    return tenantId ? list.filter(d => d.tenantId === tenantId) : list;
+  }
+  async createIndustryDeployment(d: InsertIndustryDeployment) {
+    const id = randomUUID();
+    const deployment: IndustryDeployment = { id, ...d as any, createdAt: new Date(), updatedAt: new Date() };
+    this.industryDeployments.set(id, deployment);
+    return deployment;
+  }
+  async updateIndustryDeployment(id: string, d: Partial<InsertIndustryDeployment>) {
+    const deployment = this.industryDeployments.get(id);
+    if (!deployment) return undefined;
+    const updated: IndustryDeployment = { ...deployment, ...d as any, updatedAt: new Date() };
+    this.industryDeployments.set(id, updated);
+    return updated;
+  }
+  async deleteIndustryDeployment(id: string) {
+    return this.industryDeployments.delete(id);
+  }
+
+  // Community Space Management
+  private communitySpaces = new Map<string, CommunitySpace>();
+  private communityPosts = new Map<string, CommunityPost>();
+  private communityComments = new Map<string, CommunityComment>();
+  private communityVotes = new Map<string, CommunityVote>();
+  private userTrustLevels = new Map<string, UserTrustLevel>();
+  private reputationEventsStore = new Map<string, ReputationEvent>();
+  private communityBadgeProgressStore = new Map<string, CommunityBadgeProgress>();
+
+  async getCommunitySpace(id: string) { return this.communitySpaces.get(id); }
+  async getCommunitySpaceBySlug(slug: string) {
+    return Array.from(this.communitySpaces.values()).find(s => s.slug === slug);
+  }
+  async listCommunitySpaces() {
+    return Array.from(this.communitySpaces.values()).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  }
+  async createCommunitySpace(s: InsertCommunitySpace) {
+    const id = randomUUID();
+    const space: CommunitySpace = { id, ...s as any, createdAt: new Date() };
+    this.communitySpaces.set(id, space);
+    return space;
+  }
+
+  async getCommunityPost(id: string) { return this.communityPosts.get(id); }
+  async listCommunityPosts(spaceId?: string) {
+    const list = Array.from(this.communityPosts.values());
+    const filtered = spaceId ? list.filter(p => p.spaceId === spaceId) : list;
+    return filtered.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+  async createCommunityPost(p: InsertCommunityPost) {
+    const id = randomUUID();
+    const post: CommunityPost = {
+      id,
+      ...p as any,
+      upvotes: 0,
+      downvotes: 0,
+      viewCount: 0,
+      answerCount: 0,
+      isPinned: false,
+      isLocked: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.communityPosts.set(id, post);
+    return post;
+  }
+  async updateCommunityPost(id: string, p: Partial<InsertCommunityPost>) {
+    const post = this.communityPosts.get(id);
+    if (!post) return undefined;
+    const updated: CommunityPost = { ...post, ...p as any, updatedAt: new Date() };
+    this.communityPosts.set(id, updated);
+    return updated;
+  }
+
+  async getCommunityComment(id: string) { return this.communityComments.get(id); }
+  async listCommunityComments(postId: string) {
+    return Array.from(this.communityComments.values())
+      .filter(c => c.postId === postId)
+      .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
+  }
+  async createCommunityComment(c: InsertCommunityComment) {
+    const id = randomUUID();
+    const comment: CommunityComment = {
+      id,
+      ...c as any,
+      upvotes: 0,
+      downvotes: 0,
+      isAccepted: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.communityComments.set(id, comment);
+    return comment;
+  }
+
+  async getCommunityVote(userId: string, targetType: string, targetId: string) {
+    return Array.from(this.communityVotes.values()).find(
+      v => v.userId === userId && v.targetType === targetType && v.targetId === targetId
+    );
+  }
+  async createCommunityVote(v: InsertCommunityVote) {
+    const id = randomUUID();
+    const vote: CommunityVote = { id, ...v as any, createdAt: new Date() };
+    this.communityVotes.set(id, vote);
+    return vote;
+  }
+  async deleteCommunityVote(userId: string, targetType: string, targetId: string) {
+    const vote = await this.getCommunityVote(userId, targetType, targetId);
+    if (vote) {
+      this.communityVotes.delete(vote.id);
+      return true;
+    }
+    return false;
+  }
+
+  async getUserTrustLevel(userId: string) {
+    return Array.from(this.userTrustLevels.values()).find(t => t.userId === userId);
+  }
+  async createUserTrustLevel(t: InsertUserTrustLevel) {
+    const id = randomUUID();
+    const trust: UserTrustLevel = {
+      id,
+      ...t as any,
+      trustLevel: 0,
+      totalReputation: 0,
+      postsToday: 0,
+      answersToday: 0,
+      spacesJoinedToday: 0,
+      isShadowBanned: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.userTrustLevels.set(id, trust);
+    return trust;
+  }
+  async updateUserTrustLevel(userId: string, t: Partial<InsertUserTrustLevel>) {
+    const trust = await this.getUserTrustLevel(userId);
+    if (!trust) return undefined;
+    const updated: UserTrustLevel = { ...trust, ...t as any, updatedAt: new Date() };
+    this.userTrustLevels.set(trust.id, updated);
+    return updated;
+  }
+
+  async listReputationEvents(userId: string) {
+    return Array.from(this.reputationEventsStore.values())
+      .filter(e => e.userId === userId)
+      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+  async createReputationEvent(e: InsertReputationEvent) {
+    const id = randomUUID();
+    const event: ReputationEvent = { id, ...e as any, createdAt: new Date() };
+    this.reputationEventsStore.set(id, event);
+    return event;
+  }
+
+  async getCommunityBadgeProgress(userId: string, badgeCategory: string) {
+    return Array.from(this.communityBadgeProgressStore.values()).find(
+      b => b.userId === userId && b.badgeCategory === badgeCategory
+    );
+  }
+  async listCommunityBadgeProgress(userId: string) {
+    return Array.from(this.communityBadgeProgressStore.values()).filter(b => b.userId === userId);
+  }
+  async createCommunityBadgeProgress(p: InsertCommunityBadgeProgress) {
+    const id = randomUUID();
+    const progress: CommunityBadgeProgress = {
+      id,
+      ...p as any,
+      currentCount: 0,
+      currentLevel: "none",
+      updatedAt: new Date()
+    };
+    this.communityBadgeProgressStore.set(id, progress);
+    return progress;
+  }
+  async updateCommunityBadgeProgress(userId: string, badgeCategory: string, p: Partial<InsertCommunityBadgeProgress>) {
+    const progress = await this.getCommunityBadgeProgress(userId, badgeCategory);
+    if (!progress) return undefined;
+    const updated: CommunityBadgeProgress = { ...progress, ...p as any, updatedAt: new Date() };
+    this.communityBadgeProgressStore.set(progress.id, updated);
+    return updated;
+  }
+
+  // Agentic AI Implementation
+  async createAgentExecution(exec: InsertAgentExecution): Promise<AgentExecution> {
+    const id = this.agentCurrentId++;
+    const newExec: AgentExecution = {
+      ...exec,
+      id,
+      actionCode: exec.actionCode || null,
+      status: exec.status || "PENDING",
+      confidenceScore: exec.confidenceScore || "0",
+      executedBy: exec.executedBy || "system",
+      createdAt: new Date(),
+      completedAt: null,
+      errorMessage: null,
+      parameters: exec.parameters || {}
+    };
+    this.agentExecutions.set(id, newExec);
+    return newExec;
+  }
+
+  async updateAgentExecution(id: number, updates: Partial<AgentExecution>): Promise<AgentExecution> {
+    const existing = this.agentExecutions.get(id);
+    if (!existing) throw new Error("Execution not found");
+    const updated = { ...existing, ...updates };
+    this.agentExecutions.set(id, updated);
+    return updated;
+  }
+
+  async createAgentAuditLog(log: InsertAgentAuditLog): Promise<AgentAuditLog> {
+    const id = this.agentCurrentId++;
+    const newLog: AgentAuditLog = {
+      ...log,
+      id,
+      createdAt: new Date(),
+      dataSnapshot: log.dataSnapshot || null,
+      executionId: log.executionId || null
+    };
+    this.agentAuditLogs.set(id, newLog);
+    return newLog;
+  }
+
+
+  // FSG Implementation (Hybrid - DB Backed)
+
+  // GL Support (Hybrid)
+  async getGlPeriod(id: string): Promise<GlPeriod | undefined> {
+    const [period] = await db.select().from(glPeriods).where(eq(glPeriods.id, id));
+    return period;
+  }
+
+  async getGlBalancesForPeriod(ledgerId: string, periodName: string): Promise<GlBalance[]> {
+    return db.select().from(glBalances).where(
+      and(
+        eq(glBalances.ledgerId, ledgerId),
+        eq(glBalances.periodName, periodName)
+      )
+    );
+  }
+
+  async listGlCodeCombinations(ledgerId: string): Promise<GlCodeCombination[]> {
+    return db.select().from(glCodeCombinations).where(eq(glCodeCombinations.ledgerId, ledgerId));
+  }
+
+  async getOrCreateCodeCombination(ledgerId: string, segments: string[] | string): Promise<GlCodeCombination> {
+    const segmentArray = Array.isArray(segments) ? segments : segments.split("-");
+
+    // 1. Check if exists (Code is unique globally)
+    const code = segmentArray.join("-");
+    const existing = await db.select().from(glCodeCombinations)
+      .where(eq(glCodeCombinations.code, code));
+
+    if (existing.length > 0) return existing[0];
+
+    // 2. Create if not
+    const [newCc] = await db.insert(glCodeCombinations).values({
+      ledgerId,
+      segment1: segmentArray[0] || "",
+      segment2: segmentArray[1] || "",
+      segment3: segmentArray[2] || "",
+      segment4: segmentArray[3] || "",
+      segment5: segmentArray[4] || "",
+      segment6: segmentArray[5] || "",
+      segment7: segmentArray[6] || "",
+      segment8: segmentArray[7] || "",
+      segment9: segmentArray[8] || "",
+      segment10: segmentArray[9] || "",
+      code: code,
+      enabledFlag: true,
+      startDateActive: new Date(),
+      summaryFlag: false,
+      accountType: "Asset" // Default, real logic should lookup nature of segment3
+    }).returning();
+
+    return newCc;
+  }
+
+  // Intercompany Rules
+  async createIntercompanyRule(data: InsertGlIntercompanyRule): Promise<GlIntercompanyRule> {
+    const [rule] = await db.insert(glIntercompanyRules).values(data).returning();
+    return rule;
+  }
+
+  async listIntercompanyRules(): Promise<GlIntercompanyRule[]> {
+    return db.select().from(glIntercompanyRules);
+  }
+
+  async getIntercompanyRule(fromCompany: string, toCompany: string): Promise<GlIntercompanyRule | undefined> {
+    const [rule] = await db.select().from(glIntercompanyRules).where(
+      and(
+        eq(glIntercompanyRules.fromCompany, fromCompany),
+        eq(glIntercompanyRules.toCompany, toCompany),
+        eq(glIntercompanyRules.enabled, true)
+      )
+    );
+    return rule;
+  }
+
+  // Revaluation
+  async createRevaluation(data: InsertGlRevaluation): Promise<GlRevaluation> {
+    const [rev] = await db.insert(glRevaluations).values(data).returning();
+    return rev;
+  }
+
+  async listRevaluations(ledgerId: string): Promise<GlRevaluation[]> {
+    return db.select().from(glRevaluations).where(eq(glRevaluations.ledgerId, ledgerId)).orderBy(desc(glRevaluations.createdAt));
+  }
+
+  // Budgeting Implementation
+  async createGlBudget(data: InsertGlBudget): Promise<GlBudget> {
+    const [budget] = await db.insert(glBudgets).values(data).returning();
+    return budget;
+  }
+
+  async updateGlJournal(id: string, updates: Partial<GlJournal>): Promise<GlJournal> {
+    const [updated] = await db.update(glJournals).set(updates).where(eq(glJournals.id, id)).returning();
+    if (!updated) throw new Error("Journal not found: " + id);
+    return updated;
+  }
+
+  async updateGlJournalLine(id: string, updates: Partial<GlJournalLine>): Promise<GlJournalLine> {
+    const [updated] = await db.update(glJournalLines).set(updates).where(eq(glJournalLines.id, id)).returning();
+    if (!updated) throw new Error("Journal line not found: " + id);
+    return updated;
+  }
+
+  async listGlBudgets(ledgerId: string): Promise<GlBudget[]> {
+    return db.select().from(glBudgets).where(eq(glBudgets.ledgerId, ledgerId));
+  }
+
+  async getGlBudget(id: string): Promise<GlBudget | undefined> {
+    const [budget] = await db.select().from(glBudgets).where(eq(glBudgets.id, id));
+    return budget;
+  }
+
+  async createGlBudgetBalance(data: InsertGlBudgetBalance): Promise<GlBudgetBalance> {
+    const [balance] = await db.insert(glBudgetBalances).values(data).returning();
+    return balance;
+  }
+
+  async getGlBudgetBalance(budgetId: string, periodName: string, codeCombinationId: string): Promise<GlBudgetBalance | undefined> {
+    const [balance] = await db.select().from(glBudgetBalances).where(
+      and(
+        eq(glBudgetBalances.budgetId, budgetId),
+        eq(glBudgetBalances.periodName, periodName),
+        eq(glBudgetBalances.codeCombinationId, codeCombinationId)
+      )
+    );
+    return balance;
+  }
+
+  async listGlBudgetBalances(budgetId: string, periodName?: string): Promise<GlBudgetBalance[]> {
+    if (periodName) {
+      return db.select().from(glBudgetBalances).where(
+        and(
+          eq(glBudgetBalances.budgetId, budgetId),
+          eq(glBudgetBalances.periodName, periodName)
+        )
+      );
+    }
+    return db.select().from(glBudgetBalances).where(eq(glBudgetBalances.budgetId, budgetId));
+  }
+
+  async upsertGlBudgetBalance(data: InsertGlBudgetBalance): Promise<GlBudgetBalance> {
+    const existing = await this.getGlBudgetBalance(data.budgetId, data.periodName, data.codeCombinationId);
+    if (existing) {
+      const [updated] = await db.update(glBudgetBalances)
+        .set({
+          budgetAmount: data.budgetAmount,
+          actualAmount: data.actualAmount,
+          encumbranceAmount: data.encumbranceAmount,
+          updatedAt: new Date()
+        })
+        .where(eq(glBudgetBalances.id, existing.id))
+        .returning();
+      return updated;
+    }
+    return this.createGlBudgetBalance(data);
+  }
+
+  async createGlBudgetControlRule(data: InsertGlBudgetControlRule): Promise<GlBudgetControlRule> {
+    const [rule] = await db.insert(glBudgetControlRules).values(data).returning();
+    return rule;
+  }
+
+  async listGlBudgetControlRules(ledgerId: string): Promise<GlBudgetControlRule[]> {
+    return db.select().from(glBudgetControlRules).where(eq(glBudgetControlRules.ledgerId, ledgerId));
+  }
+
+  // Cross Validation Rules (CVR)
+  async listGlCrossValidationRules(ledgerId: string): Promise<GlCrossValidationRule[]> {
+    return await db.select().from(glCrossValidationRules).where(eq(glCrossValidationRules.ledgerId, ledgerId));
+  }
+
+  async createGlCrossValidationRule(rule: InsertGlCrossValidationRule): Promise<GlCrossValidationRule> {
+    const [newRule] = await db.insert(glCrossValidationRules).values(rule).returning();
+    return newRule;
+  }
+
+  async updateGlCrossValidationRule(id: string, updates: Partial<GlCrossValidationRule>): Promise<GlCrossValidationRule | undefined> {
+    const [updated] = await db.update(glCrossValidationRules).set(updates).where(eq(glCrossValidationRules.id, id)).returning();
+    return updated;
+  }
+
+  async deleteGlCrossValidationRule(id: string): Promise<boolean> {
+    const [deleted] = await db.delete(glCrossValidationRules).where(eq(glCrossValidationRules.id, id)).returning();
+    return !!deleted;
+  }
+
+  // Period Management Helpers
+  async getUnpostedJournalsCount(periodId: string): Promise<number> {
+    const [res] = await db.select({
+      count: sql<number>`count(*)`
+    })
+      .from(glJournals)
+      .where(
+        and(
+          eq(glJournals.periodId, periodId),
+          ne(glJournals.status, "Posted")
+        )
+      );
+    return Number(res.count);
+  }
+
+  async getGlDataAccessSet(id: string): Promise<GlDataAccessSet | undefined> {
+    const [res] = await db.select().from(glDataAccessSets).where(eq(glDataAccessSets.id, id));
+    return res;
+  }
+
+  async listGlDataAccessSetAssignments(userId: string): Promise<GlDataAccessSetAssignment[]> {
+    return await db.select().from(glDataAccessSetAssignments).where(eq(glDataAccessSetAssignments.userId, userId));
+  }
+  // Legal Entities
+  async listGlLegalEntities(): Promise<GlLegalEntity[]> {
+    return db.select().from(glLegalEntities);
+  }
+
+  async getGlLegalEntity(id: string): Promise<GlLegalEntity | undefined> {
+    const [entity] = await db.select().from(glLegalEntities).where(eq(glLegalEntities.id, id));
+    return entity;
+  }
+
+
+  async createGlLegalEntity(entity: InsertGlLegalEntity): Promise<GlLegalEntity> {
+    const [res] = await db.insert(glLegalEntities).values(entity).returning();
+    return res;
+  }
+
+  async updateGlLegalEntity(id: string, data: Partial<InsertGlLegalEntity>): Promise<GlLegalEntity | undefined> {
+    const [updated] = await db.update(glLegalEntities)
+      .set(data)
+      .where(eq(glLegalEntities.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Ledger Relationships
+  async listLedgerRelationships(): Promise<GlLedgerRelationship[]> {
+    return db.select().from(glLedgerRelationships);
+  }
+
+  async createLedgerRelationship(data: InsertGlLedgerRelationship): Promise<GlLedgerRelationship> {
+    const [rel] = await db.insert(glLedgerRelationships).values({
+      ...data,
+      id: data.id || randomUUID()
+    }).returning();
+    return rel;
+  }
+
+  // Master Data (Chunk 4)
+  async listValueSets(): Promise<GlValueSet[]> {
+    return db.select().from(glValueSets);
+  }
+  async createValueSet(data: InsertGlValueSet): Promise<GlValueSet> {
+    const [res] = await db.insert(glValueSets).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listCoaStructures(): Promise<GlCoaStructure[]> {
+    return db.select().from(glCoaStructures);
+  }
+  async createCoaStructure(data: InsertGlCoaStructure): Promise<GlCoaStructure> {
+    const [res] = await db.insert(glCoaStructures).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listSegments(coaStructureId: string): Promise<GlSegment[]> {
+    return db.select().from(glSegments).where(eq(glSegments.coaStructureId, coaStructureId));
+  }
+  async createSegment(data: InsertGlSegment): Promise<GlSegment> {
+    const [res] = await db.insert(glSegments).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listSegmentValues(valueSetId: string): Promise<GlSegmentValue[]> {
+    return db.select().from(glSegmentValues).where(eq(glSegmentValues.valueSetId, valueSetId));
+  }
+  async createSegmentValue(data: InsertGlSegmentValue): Promise<GlSegmentValue> {
+    const [res] = await db.insert(glSegmentValues).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listSegmentHierarchies(valueSetId: string): Promise<GlSegmentHierarchy[]> {
+    return db.select().from(glSegmentHierarchies).where(eq(glSegmentHierarchies.valueSetId, valueSetId));
+  }
+  async createSegmentHierarchy(data: InsertGlSegmentHierarchy): Promise<GlSegmentHierarchy> {
+    const [res] = await db.insert(glSegmentHierarchies).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+
+  // CVR & Security (Chunk 4 Part 2)
+  async listCrossValidationRules(ledgerId: string): Promise<GlCrossValidationRule[]> {
+    return db.select().from(glCrossValidationRules).where(eq(glCrossValidationRules.ledgerId, ledgerId));
+  }
+  async createCrossValidationRule(data: InsertGlCrossValidationRule): Promise<GlCrossValidationRule> {
+    const [res] = await db.insert(glCrossValidationRules).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async listDataAccessSets(): Promise<GlDataAccessSet[]> {
+    return db.select().from(glDataAccessSets);
+  }
+  async createDataAccessSet(data: InsertGlDataAccessSet): Promise<GlDataAccessSet> {
+    const [res] = await db.insert(glDataAccessSets).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+  async createDataAccessSetAssignment(data: InsertGlDataAccessSetAssignment): Promise<GlDataAccessSetAssignment> {
+    const [res] = await db.insert(glDataAccessSetAssignments).values({ ...data, id: data.id || randomUUID() }).returning();
+    return res;
+  }
+
+  // Period Close Tasks Implementation
+  async listCloseTasks(ledgerId: string, periodId: string): Promise<GlCloseTask[]> {
+    return db.select().from(glCloseTasks).where(
+      and(
+        eq(glCloseTasks.ledgerId, ledgerId),
+        eq(glCloseTasks.periodId, periodId)
+      )
+    );
+  }
+
+  async updateCloseTask(id: string, updates: Partial<GlCloseTask>): Promise<GlCloseTask> {
+    const [updated] = await db.update(glCloseTasks).set(updates).where(eq(glCloseTasks.id, id)).returning();
+    if (!updated) throw new Error("Close Task not found: " + id);
+    return updated;
+  }
+
+  async createCloseTask(task: InsertGlCloseTask): Promise<GlCloseTask> {
+    const [newTask] = await db.insert(glCloseTasks).values(task).returning();
+    return newTask;
+  }
+
+  // GL Config (Chunk 8)
+  async listGlJournalSources(): Promise<GlJournalSource[]> {
+    return await db.select().from(glJournalSources).orderBy(glJournalSources.name);
+  }
+
+  async createGlJournalSource(data: InsertGlJournalSource): Promise<GlJournalSource> {
+    const [source] = await db.insert(glJournalSources).values({ ...data, id: data.id || randomUUID() }).returning();
+    return source;
+  }
+
+  async listGlJournalCategories(): Promise<GlJournalCategory[]> {
+    return await db.select().from(glJournalCategories).orderBy(glJournalCategories.name);
+  }
+
+  async createGlJournalCategory(data: InsertGlJournalCategory): Promise<GlJournalCategory> {
+    const [category] = await db.insert(glJournalCategories).values({ ...data, id: data.id || randomUUID() }).returning();
+    return category;
+  }
+
+  async getGlLedgerControl(ledgerId: string): Promise<GlLedgerControl | undefined> {
+    const [control] = await db.select().from(glLedgerControls).where(eq(glLedgerControls.ledgerId, ledgerId));
+    return control;
+  }
+
+  async upsertGlLedgerControl(data: InsertGlLedgerControl): Promise<GlLedgerControl> {
+    const [existing] = await db.select().from(glLedgerControls).where(eq(glLedgerControls.ledgerId, data.ledgerId));
+    if (existing) {
+      const [updated] = await db.update(glLedgerControls).set(data).where(eq(glLedgerControls.ledgerId, data.ledgerId)).returning();
+      return updated;
+    }
+    const [created] = await db.insert(glLedgerControls).values({ ...data, id: data.id || randomUUID() }).returning();
+    return created;
+  }
+
+  async listGlAutoPostRules(ledgerId: string): Promise<GlAutoPostRule[]> {
+    return await db.select().from(glAutoPostRules).where(eq(glAutoPostRules.ledgerId, ledgerId)).orderBy(glAutoPostRules.priority);
+  }
+
+  async createGlAutoPostRule(data: InsertGlAutoPostRule): Promise<GlAutoPostRule> {
+    const [rule] = await db.insert(glAutoPostRules).values({ ...data, id: data.id || randomUUID() }).returning();
+    return rule;
+  }
+
+  // Tax CRUD methods
+  async listTaxCodes(): Promise<TaxCode[]> {
+    return await db.select().from(taxCodes);
+  }
+
+  async getTaxCode(id: string): Promise<TaxCode | undefined> {
+    const [res] = await db.select().from(taxCodes).where(eq(taxCodes.id, parseInt(id)));
+    return res;
+  }
+
+  async createTaxCode(data: InsertTaxCode): Promise<TaxCode> {
+    const [res] = await db.insert(taxCodes).values(data).returning();
+    return res;
+  }
+
+  async listTaxJurisdictions(): Promise<TaxJurisdiction[]> {
+    return await db.select().from(taxJurisdictions);
+  }
+
+  async getTaxJurisdiction(id: string): Promise<TaxJurisdiction | undefined> {
+    const [res] = await db.select().from(taxJurisdictions).where(eq(taxJurisdictions.id, parseInt(id)));
+    return res;
+  }
+
+  async createTaxJurisdiction(data: InsertTaxJurisdiction): Promise<TaxJurisdiction> {
+    const [res] = await db.insert(taxJurisdictions).values(data).returning();
+    return res;
+  }
+
+  async listTaxExemptions(): Promise<TaxExemption[]> {
+    return await db.select().from(taxExemptions);
+  }
+
+  async getTaxExemption(id: string): Promise<TaxExemption | undefined> {
+    const [res] = await db.select().from(taxExemptions).where(eq(taxExemptions.id, parseInt(id)));
+    return res;
+  }
+
+  async createTaxExemption(data: InsertTaxExemption): Promise<TaxExemption> {
+    const [res] = await db.insert(taxExemptions).values(data).returning();
+    return res;
+  }
+
+  // Placeholder for tax calculation helper
+  async getApplicableTaxRate(invoiceId: string): Promise<number> {
+    // TODO: Implement logic to determine tax rate based on invoice, customer, site, and exemptions
+    return 0;
+  }
+
+  // AR Period Control
+  async listArPeriods(): Promise<ArPeriodStatus[]> {
+    return await db.select().from(arPeriodStatuses).orderBy(desc(arPeriodStatuses.periodName));
+  }
+
+  async getArPeriod(name: string): Promise<ArPeriodStatus | undefined> {
+    const [period] = await db.select().from(arPeriodStatuses).where(eq(arPeriodStatuses.periodName, name));
+    return period;
+  }
+
+  async updateArPeriodStatus(name: string, status: string, auditId: string): Promise<ArPeriodStatus | undefined> {
+    const [existing] = await db.select().from(arPeriodStatuses).where(eq(arPeriodStatuses.periodName, name));
+
+    if (existing) {
+      const [updated] = await db.update(arPeriodStatuses)
+        .set({ status, auditId, updatedAt: new Date() })
+        .where(eq(arPeriodStatuses.periodName, name))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(arPeriodStatuses)
+        .values({
+          periodName: name,
+          status,
+          auditId,
+          ledgerId: '1',
+          glPeriodId: name
+        })
+        .returning();
+      return created;
+    }
+  }
+
+
+  // AR System Options
+  async getArSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined> {
+    return await dbStorage.getArSystemOptions(ledgerId);
+  }
+
+  async upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions> {
+    return await dbStorage.upsertArSystemOptions(data);
+  }
+}
+
+
+export const storage = new DatabaseStorage();
+

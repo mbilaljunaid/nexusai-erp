@@ -48,3 +48,25 @@ Achieve full Oracle Fusion parity for complex dispute management and localized p
     2.  Verify `sla_journal_headers` created.
     3.  Verify Debits = Credits.
     4.  Verify Links to GL Ledgers.
+
+## Phase 11: Period Close & Reporting
+### Goal
+Implement Period Close controls (Sweep, Validation) and Account Analysis reporting to ensure data integrity and auditability.
+
+### Changes
+#### [NEW] server/modules/sla/period-close.service.ts
+- `closePeriod`: Validates all events are accounted.
+- `sweepUnaccountedEvents`: Moves unaccounted events to the next open period.
+- `validateEventDate`: Prevents accounting in closed periods.
+
+#### [NEW] server/modules/sla/reporting.service.ts
+- `getAccountAnalysisReport`: Generates detailed transaction listing by Account, Period, Source.
+
+#### [NEW] scripts/verify_period_close.ts
+- Test strict period close validation.
+- Test sweep mechanism.
+- Test accounting date validation.
+
+### Schema
+- `sla_period_statuses` (Already Exists in shared/schema/sla).
+- `gl_periods` (Already Exists in shared/schema/finance).

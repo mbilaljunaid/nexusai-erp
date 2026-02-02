@@ -1,0 +1,79 @@
+import { pgTable, varchar, timestamp, boolean, integer, date, text, jsonb } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
+import { hrPersons } from "./hr_worker";
+
+// ========== LEARNING MODULE ==========
+
+// 1. COURSES (The Catalog Item)
+export const hrmLearningCourses = pgTable("hrm_learning_courses", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    title: varchar("title").notNull(),
+    description: text("description"),
+
+    // Categorization
+    category: varchar("category"), // e.g. "Compliance", "Technical", "Leadership"
+    provider: varchar("provider"), // e.g. "Internal", "Udemy", "LinkedIn"
+
+    durationMinutes: integer("duration_minutes"),
+
+    status: varchar("status").default("ACTIVE"), // ACTIVE, ARCHIVED
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// 2. OFFERINGS (Specific Instances/Classes of a Course)
+export const hrmLearningOfferings = pgTable("hrm_learning_offerings", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    courseId: varchar("course_id").notNull().references(() => hrmLearningCourses.id),
+
+    title: varchar("title").notNull(), // e.g. "Q1 2026 Session"
+
+    type: varchar("type").default("SELF_PACED"), // SELF_PACED, INSTRUCTOR_LED, BLENDED
+
+    startDate: date("start_date"),
+    endDate: date("end_date"),
+
+    instructorId: varchar("instructor_id").references(() => hrPersons.id),
+    location: varchar("location"), // e.g. "Room 304" or URL
+
+    capacity: integer("capacity"),
+    enrolledCount: integer("enrolled_count").default(0),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// 3. ENROLLMENTS (Learner Records)
+export const hrmLearningEnrollments = pgTable("hrm_learning_enrollments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    offeringId: varchar("offering_id").notNull().references(() => hrmLearningOfferings.id),
+    personId: varchar("person_id").notNull().references(() => hrPersons.id),
+
+    status: varchar("status").default("ENROLLED"), // ENROLLED, IN_PROGRESS, COMPLETED, DROPPED, WAITLISTED
+
+    progressPercent: integer("progress_percent").default(0),
+    score: integer("score"),
+
+    completionDate: date("completion_date"),
+    certificateUrl: text("certificate_url"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// SCHEMAS
+export const insertLearningCourseSchema = createInsertSchema(hrmLearningCourses);
+export const insertLearningOfferingSchema = createInsertSchema(hrmLearningOfferings);
+export const insertLearningEnrollmentSchema = createInsertSchema(hrmLearningEnrollments);
+
+export type LearningCourse = typeof hrmLearningCourses.$inferSelect;
+export type LearningOffering = typeof hrmLearningOfferings.$inferSelect;
+export type LearningEnrollment = typeof hrmLearningEnrollments.$inferSelect;
