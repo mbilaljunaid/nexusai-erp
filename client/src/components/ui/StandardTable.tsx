@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { i18n } from "@/lib/i18n";
 import {
     Table,
     TableBody,
@@ -276,7 +277,7 @@ export function StandardTable<T>({
                         )}
                     </>
                 ) : (
-                    <Table>
+                    <Table aria-label={i18n.t('hr.table', 'Data Table')} role="grid">
                         <TableHeader className="sticky top-0 z-10 bg-muted/50 backdrop-blur-sm">
                             <TableRow className="hover:bg-transparent">
                                 {columns.map((col, idx) => (

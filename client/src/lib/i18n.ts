@@ -25,6 +25,12 @@ const translations: Record<Language, Translations> = {
     'form.delete': 'Delete',
     'message.success': 'Operation successful',
     'message.error': 'Operation failed',
+    'hr.time.card': 'My Time Card',
+    'hr.time.worked': 'Hours Worked',
+    'hr.time.overtime': 'Overtime',
+    'hr.absence.balance': 'Leave Balances',
+    'hr.personal.details': 'Personal Details',
+    'hr.team.analytics': 'Team Analytics'
   },
   es: {
     'nav.dashboard': 'Panel',
@@ -39,6 +45,12 @@ const translations: Record<Language, Translations> = {
     'form.delete': 'Eliminar',
     'message.success': 'Operación exitosa',
     'message.error': 'Operación fallida',
+    'hr.time.card': 'Mi Tarjeta de Tiempo',
+    'hr.time.worked': 'Horas Trabajadas',
+    'hr.time.overtime': 'Horas Extras',
+    'hr.absence.balance': 'Saldos de Licencia',
+    'hr.personal.details': 'Detalles Personales',
+    'hr.team.analytics': 'Analítica del Equipo'
   },
   fr: {
     'nav.dashboard': 'Tableau de bord',

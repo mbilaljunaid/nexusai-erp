@@ -16,6 +16,7 @@ export const hrmBenPrograms = pgTable("hrm_ben_programs", {
     description: varchar("description"),
 
     status: varchar("status").default("ACTIVE"),
+    legislationCode: varchar("legislation_code").default("US"), // Global Support (US, UK, AE, etc)
 
     // Enrollment Window
     openEnrollmentStart: date("open_enrollment_start"),

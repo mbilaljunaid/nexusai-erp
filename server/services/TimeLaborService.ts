@@ -11,6 +11,12 @@ import { eq, and, inArray, desc, sql } from "drizzle-orm";
 import { TimeRuleEngine } from "./TimeRuleEngine";
 
 export class TimeLaborService {
+    static async getPersonIdForUser(userId: string, tenantId: string) {
+        if (!userId) return null;
+        const [person] = await db.select().from(hrPersons)
+            .where(and(eq(hrPersons.userId, userId), eq(hrPersons.tenantId, tenantId)));
+        return person?.id;
+    }
 
     // 1. TIME PERIODS
     static async createTimePeriod(tenantId: string, name: string, startDate: string, endDate: string) {
@@ -595,6 +601,18 @@ export class TimeLaborService {
     // 10. ACCRUALS (Leave Balances)
     static async getLeaveBalances(tenantId: string, personId: string) {
         return await db.select().from(hrmLeaveBalances).where(and(eq(hrmLeaveBalances.tenantId, tenantId), eq(hrmLeaveBalances.personId, personId)));
+    }
+
+    static async getAbsenceHistory(tenantId: string, personId: string) {
+        // Fetch absences from time entries with SICK/VACATION types
+        return await db.select().from(hrmTimeEntries)
+            .innerJoin(hrmTimeSheets, eq(hrmTimeEntries.timesheetId, hrmTimeSheets.id))
+            .where(and(
+                eq(hrmTimeSheets.personId, personId),
+                eq(hrmTimeSheets.tenantId, tenantId),
+                inArray(hrmTimeEntries.timeType, ["SICK", "VACATION"])
+            ))
+            .orderBy(desc(hrmTimeEntries.date));
     }
 
     static async addAccrual(tenantId: string, personId: string, leaveType: string, hours: number) {

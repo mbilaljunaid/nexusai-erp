@@ -67,6 +67,8 @@ import JobRequisitionDetail from "@/pages/recruitment/JobRequisitionDetail";
 import PerformanceManagement from "@/pages/PerformanceManagement";
 import ESSDashboard from "@/pages/hr/selfservice/ESSDashboard";
 import PersonalDetails from "@/pages/hr/selfservice/PersonalDetails";
+import MyTimeCard from "@/pages/hr/selfservice/MyTimeCard";
+import { AIGuide } from "@/components/hr/AIGuide";
 import MSSDashboard from "@/pages/hr/selfservice/MSSDashboard";
 
 function Router() {
@@ -192,6 +194,8 @@ function Router() {
         <Route path="/me" component={ESSDashboard} />
         <Route path="/me/profile" component={PersonalDetails} />
         <Route path="/me/documents" component={PersonalDetails} />
+        <Route path="/me/benefits/enroll" component={lazy(() => import("@/pages/hr/selfservice/BenefitsEnrollment"))} />
+        <Route path="/me/time-card" component={MyTimeCard} />
         <Route path="/my-team" component={MSSDashboard} />
 
         {/* Public Catch-all */}
@@ -265,6 +269,7 @@ export default function App() {
                     {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <ProtectedRoute><AuthenticatedLayout /></ProtectedRoute>}
                     <GuidedTourOverlay />
                     <Toaster />
+                    <AIGuide />
                   </SidebarProvider>
                 </QuickTipsProvider>
               </TourProvider>

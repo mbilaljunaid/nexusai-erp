@@ -15,12 +15,23 @@ import {
    CalendarDays,
    Network,
    TrendingUp,
-   ArrowUpRight
+   ArrowUpRight,
+   MoreHorizontal,
+   ExternalLink,
+   Banknote,
+   Zap as ZapIcon
 } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { OrgChart } from "@/components/hr/OrgChart";
 import { ManagerActionDialog } from "@/components/hr/ManagerActionDialog";
+import { WorkforceAnalyticsCard } from "@/components/hr/WorkforceAnalyticsCard";
+import {
+   DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 export default function MSSDashboard() {
    const [isActionOpen, setIsActionOpen] = React.useState(false);
@@ -32,6 +43,10 @@ export default function MSSDashboard() {
 
    const { data: teamDocs } = useQuery<any[]>({
       queryKey: ["/api/hr-self-service/team/performance"],
+   });
+
+   const { data: analytics } = useQuery<any>({
+      queryKey: ["/api/hr-self-service/team/analytics"],
    });
 
    const teamStats = [
@@ -119,26 +134,41 @@ export default function MSSDashboard() {
                         </CardHeader>
                         <CardContent className="p-0">
                            <div className="divide-y divide-zinc-50 dark:divide-zinc-900">
-                              {teamMembers.map((member, i) => (
+                              {(teamDocs || teamMembers).map((member, i) => (
                                  <div key={i} className="flex items-center justify-between p-6 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50 transition-colors">
                                     <div className="flex items-center gap-4">
-                                       <Avatar className="h-12 w-12 border border-zinc-200 dark:border-zinc-800">
+                                       <Avatar className="h-12 w-12 border border-zinc-200 dark:border-zinc-800 font-bold bg-teal-500/10 text-teal-600">
                                           <AvatarImage src={member.avatar} />
-                                          <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                          <AvatarFallback>{member.name.split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
                                        </Avatar>
                                        <div>
                                           <p className="font-semibold">{member.name}</p>
-                                          <p className="text-sm text-muted-foreground">{member.role}</p>
+                                          <p className="text-sm text-muted-foreground">{member.role || "Direct Report"}</p>
                                        </div>
                                     </div>
                                     <div className="flex items-center gap-6">
                                        <div className="text-right hidden sm:block">
-                                          <p className="text-sm font-medium">{member.status}</p>
-                                          <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-tight py-0">Remote OK</Badge>
+                                          <p className="text-sm font-medium">{member.status || "Active"}</p>
+                                          <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-tight py-0 text-teal-600 border-teal-600/20">Active</Badge>
                                        </div>
-                                       <Button variant="ghost" size="icon">
-                                          <ChevronRight className="h-5 w-5 text-zinc-400" />
-                                       </Button>
+                                       <DropdownMenu>
+                                          <DropdownMenuTrigger asChild>
+                                             <Button variant="ghost" size="icon">
+                                                <MoreHorizontal className="h-5 w-5 text-zinc-400" />
+                                             </Button>
+                                          </DropdownMenuTrigger>
+                                          <DropdownMenuContent align="end" className="w-48">
+                                             <DropdownMenuItem className="gap-2">
+                                                <ExternalLink className="h-4 w-4" /> View Profile
+                                             </DropdownMenuItem>
+                                             <DropdownMenuItem className="gap-2">
+                                                <Banknote className="h-4 w-4" /> Payroll History
+                                             </DropdownMenuItem>
+                                             <DropdownMenuItem className="gap-2">
+                                                <TrendingUp className="h-4 w-4" /> Talent Review
+                                             </DropdownMenuItem>
+                                          </DropdownMenuContent>
+                                       </DropdownMenu>
                                     </div>
                                  </div>
                               ))}
@@ -195,22 +225,10 @@ export default function MSSDashboard() {
             </div>
 
             <div className="space-y-6">
-               <Card className="bg-zinc-900 text-white shadow-xl">
-                  <CardHeader>
-                     <CardTitle className="text-lg flex items-center gap-2">
-                        <Target className="h-5 w-5 text-teal-400" /> Hiring Spotlight
-                     </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                     <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                        <p className="text-sm font-medium">Senior Software Architect</p>
-                        <p className="text-xs text-zinc-400 mt-1">Status: Interviewing (4 candidates)</p>
-                        <div className="w-full bg-white/10 h-1.5 mt-3 rounded-full overflow-hidden">
-                           <div className="bg-teal-500 h-full w-[75%]" />
-                        </div>
-                     </div>
-                  </CardContent>
-               </Card>
+               <WorkforceAnalyticsCard
+                  metrics={analytics?.metrics}
+                  skillGaps={analytics?.skillGaps}
+               />
 
                <Card className="border-dashed border-2 border-zinc-200 dark:border-zinc-800 bg-transparent">
                   <CardHeader>
