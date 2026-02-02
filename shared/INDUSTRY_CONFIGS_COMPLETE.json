@@ -1,0 +1,483 @@
+{
+  "industries": [
+    {
+      "id": 1,
+      "name": "Automotive",
+      "slug": "automotive",
+      "modules": ["Production", "Dealership", "Sales CRM", "After-Sales Service", "Finance", "HR", "Supply Chain", "BI"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Dealer tracking", "Service appointments", "Warranty management"]
+    },
+    {
+      "id": 2,
+      "name": "Banking & Finance",
+      "slug": "banking",
+      "modules": ["Deposits", "Loans", "Treasury", "Payments", "CRM", "Finance", "Compliance", "Risk"],
+      "apis": 12,
+      "demoRecords": 500,
+      "features": ["Loan processing", "Interest calculation", "Payment processing"]
+    },
+    {
+      "id": 3,
+      "name": "Healthcare & Life Sciences",
+      "slug": "healthcare",
+      "modules": ["Patient Management", "Clinical", "Billing", "Pharmacy", "HR", "Finance", "Compliance"],
+      "apis": 11,
+      "demoRecords": 500,
+      "features": ["Patient records", "Clinical workflows", "Insurance claims"]
+    },
+    {
+      "id": 4,
+      "name": "Education & E-Learning",
+      "slug": "education",
+      "modules": ["Admissions", "Enrollment", "Academics", "HR", "Finance", "Portal", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Grade processing", "Enrollment", "Course management"]
+    },
+    {
+      "id": 5,
+      "name": "Retail & E-Commerce",
+      "slug": "retail",
+      "modules": ["POS", "Inventory", "Orders", "Omnichannel", "CRM", "Finance", "HR", "BI"],
+      "apis": 12,
+      "demoRecords": 500,
+      "features": ["Order fulfillment", "Inventory management", "Customer loyalty"]
+    },
+    {
+      "id": 6,
+      "name": "Manufacturing & Operations",
+      "slug": "manufacturing",
+      "modules": ["Production", "BOM", "MRP", "Quality", "Supply Chain", "Finance", "HR"],
+      "apis": 11,
+      "demoRecords": 500,
+      "features": ["Work orders", "Quality inspection", "Inventory tracking"]
+    },
+    {
+      "id": 7,
+      "name": "Logistics & Transportation",
+      "slug": "logistics",
+      "modules": ["Shipments", "Warehousing", "Fleet", "Billing", "CRM", "Finance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Shipment tracking", "Fleet management", "Route optimization"]
+    },
+    {
+      "id": 8,
+      "name": "Telecom & Technology",
+      "slug": "telecom",
+      "modules": ["Subscriber Management", "Billing", "Network", "CRM", "Service", "Finance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Subscription management", "Bill generation", "Network monitoring"]
+    },
+    {
+      "id": 9,
+      "name": "Insurance",
+      "slug": "insurance",
+      "modules": ["Policy", "Underwriting", "Claims", "Billing", "CRM", "Finance", "Compliance"],
+      "apis": 11,
+      "demoRecords": 500,
+      "features": ["Policy management", "Claims processing", "Underwriting automation"]
+    },
+    {
+      "id": 10,
+      "name": "Fashion & Apparel",
+      "slug": "fashion",
+      "modules": ["Design", "Inventory", "Orders", "Retail", "CRM", "Finance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Size charts", "Design versioning", "Trend analysis"]
+    },
+    {
+      "id": 11,
+      "name": "Government & Public Sector",
+      "slug": "government",
+      "modules": ["Citizen Services", "Permits", "Finance", "HR", "Projects", "Compliance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Permit management", "Grant tracking", "Budget compliance"]
+    },
+    {
+      "id": 12,
+      "name": "Hospitality & Travel",
+      "slug": "hospitality",
+      "modules": ["Reservations", "Property Mgmt", "Billing", "CRM", "HR", "Finance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Booking management", "Guest services", "Revenue optimization"]
+    },
+    {
+      "id": 13,
+      "name": "Pharmaceuticals & Life Sciences",
+      "slug": "pharma",
+      "modules": ["Formulation", "Batch", "LIMS", "Inventory", "Supply Chain", "Finance", "Compliance"],
+      "apis": 11,
+      "demoRecords": 500,
+      "features": ["Batch tracking", "Lab integration", "Compliance documentation"]
+    },
+    {
+      "id": 14,
+      "name": "CPG (Consumer Packaged Goods)",
+      "slug": "cpg",
+      "modules": ["Demand Planning", "Production", "Inventory", "Sales", "CRM", "Finance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Promotion management", "Trade planning", "Demand forecasting"]
+    },
+    {
+      "id": 15,
+      "name": "Energy & Utilities",
+      "slug": "energy",
+      "modules": ["Meter Management", "Billing", "Asset Mgmt", "CRM", "Finance", "Compliance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Meter reading", "Consumption forecasting", "Outage management"]
+    },
+    {
+      "id": 16,
+      "name": "Audit & Compliance",
+      "slug": "audit",
+      "modules": ["Risk Assessment", "Controls", "Audit Planning", "Evidence", "Finance", "Reporting"],
+      "apis": 8,
+      "demoRecords": 500,
+      "features": ["Audit workflows", "Issue tracking", "Evidence management"]
+    },
+    {
+      "id": 17,
+      "name": "Business Services",
+      "slug": "business-services",
+      "modules": ["Projects", "Resources", "Billing", "CRM", "Finance", "HR", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Project tracking", "Time tracking", "Billing automation"]
+    },
+    {
+      "id": 18,
+      "name": "Carrier & Shipping",
+      "slug": "carrier",
+      "modules": ["Shipments", "Fleet", "Billing", "CRM", "Finance", "Analytics"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Rate calculation", "Tracking", "Delivery confirmation"]
+    },
+    {
+      "id": 19,
+      "name": "Clinical & Healthcare",
+      "slug": "clinical",
+      "modules": ["Patient", "Clinical", "Lab", "Pharmacy", "Finance", "Compliance"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["EHR", "Workflow automation", "Integration with devices"]
+    },
+    {
+      "id": 20,
+      "name": "Credit & Lending",
+      "slug": "credit",
+      "modules": ["Applications", "Underwriting", "Disbursement", "Collections", "Finance", "Analytics"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Loan origination", "Credit scoring", "Collections management"]
+    },
+    {
+      "id": 21,
+      "name": "Equipment & Manufacturing",
+      "slug": "equipment",
+      "modules": ["Design", "Production", "Quality", "Maintenance", "Sales", "Finance"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Equipment lifecycle", "Maintenance scheduling", "Performance analytics"]
+    },
+    {
+      "id": 22,
+      "name": "Events & Conferences",
+      "slug": "events",
+      "modules": ["Planning", "Registration", "Ticketing", "Vendor Mgmt", "Finance", "Analytics"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Registration workflow", "Ticketing", "Attendee tracking"]
+    },
+    {
+      "id": 23,
+      "name": "Export & Import",
+      "slug": "export-import",
+      "modules": ["Documentation", "Compliance", "Logistics", "Billing", "Finance", "Analytics"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Trade documentation", "Compliance tracking", "Shipment coordination"]
+    },
+    {
+      "id": 24,
+      "name": "Finance & Investment",
+      "slug": "finance-investment",
+      "modules": ["Portfolio", "Trading", "Risk", "Compliance", "Analytics", "Reporting"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Portfolio management", "Risk assessment", "Performance tracking"]
+    },
+    {
+      "id": 25,
+      "name": "Food & Beverage",
+      "slug": "food-beverage",
+      "modules": ["Recipes", "Production", "Inventory", "Quality", "Sales", "Finance", "Analytics"],
+      "apis": 11,
+      "demoRecords": 500,
+      "features": ["Recipe management", "Batch tracking", "Quality control"]
+    },
+    {
+      "id": 26,
+      "name": "Freight & Logistics",
+      "slug": "freight",
+      "modules": ["Shipments", "Warehousing", "Billing", "CRM", "Finance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Freight rate calculation", "Multi-leg shipments", "EDI integration"]
+    },
+    {
+      "id": 27,
+      "name": "Laboratory Services",
+      "slug": "laboratory",
+      "modules": ["LIMS", "Testing", "Quality", "Reporting", "Finance"],
+      "apis": 8,
+      "demoRecords": 500,
+      "features": ["Test ordering", "Result tracking", "Quality assurance"]
+    },
+    {
+      "id": 28,
+      "name": "Laboratory Technology",
+      "slug": "lab-tech",
+      "modules": ["Equipment", "Calibration", "Results", "Analytics"],
+      "apis": 7,
+      "demoRecords": 500,
+      "features": ["Equipment integration", "Data management", "Compliance tracking"]
+    },
+    {
+      "id": 29,
+      "name": "Marketing & Advertising",
+      "slug": "marketing",
+      "modules": ["Campaigns", "Email", "Social", "Analytics", "CRM", "Finance"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Campaign management", "Lead scoring", "Attribution modeling"]
+    },
+    {
+      "id": 30,
+      "name": "Media & Entertainment",
+      "slug": "media",
+      "modules": ["Content", "Production", "Distribution", "Billing", "Analytics"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Content management", "Rights management", "Distribution tracking"]
+    },
+    {
+      "id": 31,
+      "name": "Pharmacy & Pharmaceuticals",
+      "slug": "pharmacy",
+      "modules": ["Inventory", "Dispensing", "Compliance", "Billing", "Patient Mgmt"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Prescription management", "Inventory control", "Regulatory compliance"]
+    },
+    {
+      "id": 32,
+      "name": "Portal & Digital Services",
+      "slug": "portal",
+      "modules": ["Portal", "Services", "Payments", "Analytics", "Support"],
+      "apis": 8,
+      "demoRecords": 500,
+      "features": ["Self-service portal", "Document management", "Service requests"]
+    },
+    {
+      "id": 33,
+      "name": "Property & Real Estate",
+      "slug": "property",
+      "modules": ["Listings", "Leasing", "Maintenance", "Finance", "Tenant Mgmt"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Property management", "Lease tracking", "Maintenance scheduling"]
+    },
+    {
+      "id": 34,
+      "name": "Real Estate & Construction",
+      "slug": "real-estate-construction",
+      "modules": ["Projects", "Budgeting", "Procurement", "Quality", "Finance", "HR"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Project tracking", "Cost management", "Safety compliance"]
+    },
+    {
+      "id": 35,
+      "name": "Security & Defense",
+      "slug": "security",
+      "modules": ["Access Control", "Incident Mgmt", "Compliance", "Training", "Analytics"],
+      "apis": 8,
+      "demoRecords": 500,
+      "features": ["Access management", "Incident tracking", "Audit logging"]
+    },
+    {
+      "id": 36,
+      "name": "Shipment Management",
+      "slug": "shipment",
+      "modules": ["Orders", "Packing", "Labeling", "Tracking", "Delivery"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Multi-carrier integration", "Label generation", "Real-time tracking"]
+    },
+    {
+      "id": 37,
+      "name": "Shipping & Maritime",
+      "slug": "shipping",
+      "modules": ["Vessels", "Cargo", "Ports", "Billing", "Compliance"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Vessel tracking", "Cargo management", "Port coordination"]
+    },
+    {
+      "id": 38,
+      "name": "Training & Development",
+      "slug": "training",
+      "modules": ["Courses", "Enrollment", "Assessments", "Certifications", "Analytics"],
+      "apis": 8,
+      "demoRecords": 500,
+      "features": ["Learning management", "Progress tracking", "Certification tracking"]
+    },
+    {
+      "id": 39,
+      "name": "Transportation & Mobility",
+      "slug": "transportation",
+      "modules": ["Fleet", "Routing", "Maintenance", "Billing", "Compliance"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Fleet management", "Route optimization", "Driver management"]
+    },
+    {
+      "id": 40,
+      "name": "Travel & Tourism",
+      "slug": "travel",
+      "modules": ["Packages", "Bookings", "Itineraries", "Billing", "CRM"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Package management", "Booking engine", "Itinerary planning"]
+    },
+    {
+      "id": 41,
+      "name": "Vehicle & Automotive",
+      "slug": "vehicle",
+      "modules": ["Fleet", "Maintenance", "Telematics", "Billing", "Analytics"],
+      "apis": 9,
+      "demoRecords": 500,
+      "features": ["Vehicle tracking", "Maintenance scheduling", "Fuel management"]
+    },
+    {
+      "id": 42,
+      "name": "Warehouse & Storage",
+      "slug": "warehouse",
+      "modules": ["Inventory", "Operations", "Billing", "Analytics"],
+      "apis": 8,
+      "demoRecords": 500,
+      "features": ["Inventory management", "Putaway optimization", "Cycle counting"]
+    },
+    {
+      "id": 43,
+      "name": "Wholesale & Distribution",
+      "slug": "wholesale",
+      "modules": ["Inventory", "Orders", "Logistics", "CRM", "Finance", "Analytics"],
+      "apis": 10,
+      "demoRecords": 500,
+      "features": ["Distribution management", "Order management", "Customer portal"]
+    }
+  ],
+  "coreModules": [
+    {
+      "id": 1,
+      "name": "Financial Management & ERP",
+      "slug": "finance",
+      "description": "GL, budgets, forecasts, cash management"
+    },
+    {
+      "id": 2,
+      "name": "Inventory & Supply Chain",
+      "slug": "inventory",
+      "description": "Stock, SKUs, procurement, demand planning"
+    },
+    {
+      "id": 3,
+      "name": "Sales & CRM",
+      "slug": "crm",
+      "description": "Leads, opportunities, accounts, pipeline"
+    },
+    {
+      "id": 4,
+      "name": "HR & Payroll",
+      "slug": "hr",
+      "description": "Employees, leave, compensation, payroll"
+    },
+    {
+      "id": 5,
+      "name": "Projects & Resources",
+      "slug": "projects",
+      "description": "Tasks, sprints, resources, timesheets"
+    },
+    {
+      "id": 6,
+      "name": "Compliance & Governance",
+      "slug": "compliance",
+      "description": "Rules, risks, audits, policies"
+    },
+    {
+      "id": 7,
+      "name": "Analytics & BI",
+      "slug": "analytics",
+      "description": "Dashboards, reports, predictive analytics"
+    },
+    {
+      "id": 8,
+      "name": "AI & Automation",
+      "slug": "ai",
+      "description": "Copilot, automation workflows, NLP"
+    },
+    {
+      "id": 9,
+      "name": "Web & Portals",
+      "slug": "web",
+      "description": "Website builder, customer portal"
+    },
+    {
+      "id": 10,
+      "name": "Communications",
+      "slug": "communications",
+      "description": "Email, SMS, notifications, templates"
+    },
+    {
+      "id": 11,
+      "name": "Integration Hub",
+      "slug": "integration",
+      "description": "APIs, webhooks, connectors, sync"
+    },
+    {
+      "id": 12,
+      "name": "Quality & Testing",
+      "slug": "quality",
+      "description": "QC, defects, inspections, compliance"
+    },
+    {
+      "id": 13,
+      "name": "Financial Consolidation",
+      "slug": "consolidation",
+      "description": "Budget consolidation, period close"
+    },
+    {
+      "id": 14,
+      "name": "Mobile & Field Service",
+      "slug": "mobile",
+      "description": "Mobile app, offline sync, field teams"
+    },
+    {
+      "id": 15,
+      "name": "Business Process Management",
+      "slug": "bpm",
+      "description": "Workflows, approvals, process automation"
+    }
+  ]
+}

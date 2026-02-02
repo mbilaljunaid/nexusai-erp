@@ -1,0 +1,192 @@
+# AR Gap Analysis
+
+## 1. Baseline Codebase Review
+*Performed a deep dive into the existing AR module codebase to understand current implementations, data models, and UI components.*
+- Reviewed `shared/schema/ar.ts` and `shared/schema/arRevenueSchedule.ts`.
+- Analyzed `server/services/ar.ts` for logic and accounting flows.
+- Mapped endpoints in `server/routes/ar.ts`.
+- Evaluated UI pages under `client/src/pages/` and components under `client/src/components/ar/`.
+
+## 2. ORACLE FUSION AR PARITY ANALYSIS
+
+### Dimension 1: Form / UI Level
+- **Status**: Partially Implemented
+- **Current**: Basic Shadcn UI with tabs for Invoices, Customers, and Receipts. Metric cards provide high-level visibility.
+- **Gap**: Missing advanced grid features (filtering by multiple dimensions, bulk actions, column customization). No "Sales Region" or "Credit Manager" specific dashboards.
+- **Oracle Parity**: High (Visuals) / Low (Functionality).
+
+### Dimension 2: Field Level
+- **Status**: Partially Implemented
+- **Current**: Standard header fields for invoices and basic customer metadata.
+- **Gap**: Missing line-level details (items, UOM, quantities), tax classification codes at line level, and Descriptive Flexfields (DFFs) for custom data.
+- **Oracle Parity**: Low.
+
+### Dimension 3: Configuration Level
+- **Status**: Missing
+- **Current**: No configuration UI or backend structures for AR System Options.
+- **Gap**: Missing AutoInvoice sources, Transaction Types, Receipt Methods, and Remit-to Address configurations.
+- **Oracle Parity**: Zero.
+
+### Dimension 4: Master Data Level
+- **Status**: Partially Implemented
+- **Current**: Simple `ar_customers` table with basic attributes.
+- **Gap**: Missing **Customer Sites** and **Account-Site-Address** architecture; Oracle mandates a three-tier model (Registry ID -> Account -> Site). Missing Collection Profiles and Bank Account assignments for customers.
+- **Oracle Parity**: Low.
+
+### Dimension 5: Granular Functional Level
+- **Status**: Partially Implemented
+- **Current**: Create invoice/receipt functionality.
+- **Gap**: Missing **Credit Memos**, **Debit Memos**, **Adjustments**, and **Chargebacks**. Application logic is limited to a simple 1:1 receipt-to-invoice link.
+- **Oracle Parity**: Low.
+
+### Dimension 6: Process Level
+- **Status**: Partially Implemented
+- **Current**: Synchronous journal posting on creation.
+- **Gap**: Missing **Approval Workflows** (BPM), **Batch Import** (AutoInvoice), and **Automated Payment Processing**.
+- **Oracle Parity**: Low.
+
+### Dimension 7: Integration Level
+- **Status**: Partially Implemented
+- **Current**: Hardcoded GL journal creation in `ArService`.
+- **Gap**: Missing **SLA (Subledger Accounting)** engine integration (using mapping sets/rules). Missing integration with Cash Management for manual reconciliation of receipts.
+- **Oracle Parity**: Low.
+
+### Dimension 8: Security & Controls Level
+- **Status**: Missing
+- **Current**: No specific AR security partitioning found.
+- **Gap**: Missing **Data Access Sets (DAS)** to restrict access by Ledger/Business Unit. No Segregation of Duties (SoD) for high-value adjustments.
+- **Oracle Parity**: Zero.
+
+### Dimension 9: Accounting Rules & Revenue Recognition Level
+- **Status**: Partially Implemented
+- **Current**: Basic `ar_revenue_schedules` implementation.
+- **Gap**: Missing complex rules like **ASC 606** multi-element arrangements, deferred revenue accounting, and rule-based SLA derivations.
+- **Oracle Parity**: Low.
+
+### Dimension 10: Transaction Lifecycle Management Level
+- **Status**: Partially Implemented
+- **Current**: basic status flow (Draft -> Paid).
+- **Gap**: Missing **Incomplete/Complete** status logic, **Reversal** processing, and **Audit Trail** for status changes.
+- **Oracle Parity**: Medium.
+
+### Dimension 11: Customer & Site Management Level
+- **Status**: Partially Implemented
+- **Current**: Flat customer record.
+- **Gap**: Missing **Address/Site** partitioning. Oracle AR uses sites to define "Bill-To" vs "Ship-To" locations.
+- **Oracle Parity**: Low.
+
+### Dimension 12: Receipt & Application Level
+- **Status**: Partially Implemented
+- **Current**: Simple application to a single invoice.
+- **Gap**: Missing **Multi-Application** (applying one receipt to multiple invoices), **On-Account** receipts, and **Unapplied** receipt management.
+- **Oracle Parity**: Low.
+
+### Dimension 13: Credit Management Level
+- **Status**: Partially Implemented
+- **Current**: Credit hold flag and manual credit limit.
+- **Gap**: Missing **Automated Credit Reviews**, **Credit Scoring**, and integration with external credit bureaus.
+- **Oracle Parity**: Low.
+
+### Dimension 14: Adjustments, Write-offs & Refunds Level
+- **Status**: Missing
+- **Current**: No logic for writing off small balances or issuing refunds via AR.
+- **Gap**: Missing **Adjustment Approvals** and automated **Small Balance Write-off** jobs.
+- **Oracle Parity**: Zero.
+
+### Dimension 15: Tax Determination & Integration Level
+- **Status**: Partially Implemented
+- **Current**: Manual `taxAmount` entry.
+- **Gap**: Missing **Tax Engine (Vertex/Avalara)** integration or automated rule-based tax calculation (Oracle Tax).
+- **Oracle Parity**: Low.
+
+### Dimension 16: Intercompany & Cross-BU AR Level
+- **Status**: Missing
+- **Gap**: No support for **Intercompany Netting** or transactions across balancing segments.
+- **Oracle Parity**: Zero.
+
+### Dimension 17: Reconciliation & Close Level
+- **Status**: Missing
+- **Gap**: No **Period Close Dashboard** or **AR to GL Reconciliation** reports. No "Close Period" lock functionality.
+- **Oracle Parity**: Zero.
+
+### Dimension 18: Performance & Scalability Level
+- **Status**: Partially Implemented
+- **Current**: Standard Drizzle ORM usage.
+- **Gap**: Missing database indices on `invoice_number`, `customer_id`, and `gl_account_id` for high-volume performance.
+- **Oracle Parity**: Medium.
+
+### Dimension 19: Reporting & Analytics Level
+- **Status**: Partially Implemented
+- **Current**: Aging report and metric cards.
+- **Gap**: Missing **DSO (Days Sales Outstanding)** analytics, **Collection Effectiveness Index (CEI)**, and audit reports.
+- **Oracle Parity**: Low.
+
+### Dimension 20: Compliance & Audit Readiness Level
+- **Status**: Missing
+- **Gap**: No comprehensive audit logging in AR (unlike AP/CM). Missing electronic signature support for invoice delivery.
+- **Oracle Parity**: Zero.
+
+### Dimension 21: Extensibility & Customization Level
+- **Status**: Missing
+- **Gap**: No hooks for custom business rules or field extensions.
+- **Oracle Parity**: Zero.
+
+### Dimension 22: User Productivity & UX Level
+- **Status**: Partially Implemented
+- **Current**: Clean, modern UI.
+- **Gap**: Missing **Power User** tools (keyboard shortcuts, mass actions, Excel-like grid interaction).
+- **Oracle Parity**: Medium (UX) / Low (Productivity).
+
+### Dimension 23: Operational & Implementation Readiness Level
+- **Status**: Partially Implemented
+- **Current**: Functional prototype.
+- **Gap**: Not ready for enterprise production due to lack of SLA, DAS, and robust tax/accounting.
+- **Oracle Parity**: Low.
+
+---
+
+## 3. FEATURE GAP REMEDIATION IMPACTS
+
+| GAP | Business Impact | Enterprise Adoption Risk | Remediation Approach (Oracle-Aligned) |
+| :--- | :--- | :--- | :--- |
+| **Hardcoded SLA** | Financial inaccuracy; Auditor rejection. | High | Implement a centralized SLA engine using mapping sets. |
+| **No Site Architecture**| Impossible to manage multi-location customers. | High | Refactor `ar_customers` to support Accounts and Sites (Bill-To/Ship-To). |
+| **Simple Receipts** | Cannot handle parent/child payment distribution. | Medium | Implement Receipt Application detail tables (1:M). |
+| **No Security (DAS)** | Data leaks between Business Units/Ledgers. | High | Enforce Ledger-level partitioning via Data Access Sets in routes. |
+| **Manual Tax** | Compliance risk; potential fines. | Medium | Integrate with a tax engine or implement rule-based tax calculation. |
+
+---
+
+## 4. FEATURE PARITY HEATMAP
+
+| Oracle Fusion AR Feature | Current Implementation | Parity Status |
+| :--- | :--- | :--- |
+| **Workbench Dashboard** | Basic Metric Cards | ⚠️ Partial |
+| **Customer Hierarchy** | Simple Parent Column | ⚠️ Partial |
+| **Account-Site Architecture**| Missing | ❌ Missing |
+| **AutoInvoice (Import)** | Missing | ❌ Missing |
+| **Receipt Application** | 1:1 Simple Apply | ⚠️ Partial |
+| **Revenue Recognition** | Basic Schedules | ⚠️ Partial |
+| **Credit Management** | Basic Limit/Hold | ⚠️ Partial |
+| **Subledger Accounting** | Hardcoded | ❌ Differently (Poor) |
+| **Aging Analytics** | Standard Report | ✅ Fully Implemented |
+| **Data Access Set Security** | Missing | ❌ Missing |
+
+---
+
+## 5. INITIAL REMEDIATION ROADMAP (PHASES)
+
+### Phase 1: Core Foundation & Master Data
+- Refactor customer records into Account/Site model.
+- Implement Data Access Set (DAS) security for all AR routes.
+- Build AR System Options configuration UI.
+
+### Phase 2: Transaction & Receipt Lifecycle
+- Implement Invoice Line and Distribution logic.
+- Support Credit Memos and Debit Memos.
+- Enable complex Receipt Application (1:N, On-Account, Unapplied).
+
+### Phase 3: Reporting, Collections & AI
+- Integrate SLA for rule-based accounting.
+- Expand Aging Analytics with DSO and CEI metrics.
+- Implement AI-driven collection prioritization agents and risk scoring.

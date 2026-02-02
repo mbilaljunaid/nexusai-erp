@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexusai-api
+  namespace: nexusai
+  labels:
+    app: nexusai-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nexusai-api
+  template:
+    metadata:
+      labels:
+        app: nexusai-api
+    spec:
+      containers:
+      - name: api
+        image: nexusai/api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+          name: http
+        env:
+        - name: DB_HOST
+          value: "postgres.nexusai.svc.cluster.local"
+        - name: REDIS_HOST
+          value: "redis.nexusai.svc.cluster.local"
+        - name: NODE_ENV
+          value: "production"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

@@ -1,0 +1,92 @@
+import { SidebarNode } from "@/types/sidebar";
+import {
+    LayoutDashboard,
+    Users,
+    BarChart3,
+    Settings as SettingsIcon,
+    Sparkles,
+    DollarSign,
+    Zap,
+    Shield,
+    Factory,
+    Package,
+    Briefcase,
+    Store,
+    MessageCircle,
+    Cog,
+    Brain,
+    TrendingUp,
+    Workflow,
+    GitBranch,
+    Search,
+    ShoppingCart,
+    Ship,
+    GraduationCap,
+    Bell,
+    Grid3x3,
+    LayoutGrid,
+    Database,
+    Lock,
+    Radio,
+    Truck,
+    Workflow as WorkflowIcon,
+    Building,
+    LogOut,
+    BookOpen,
+    ArrowRightLeft,
+    RefreshCw,
+    Warehouse,
+    Wrench,
+    Hammer,
+    Activity,
+    FileText,
+} from "lucide-react";
+
+
+export const navigationConfig: SidebarNode[] = [
+    {
+        id: "core-business",
+        title: "Core Business",
+        type: "section",
+        children: [
+            { id: "dashboard", title: "Dashboard", type: "link", icon: LayoutDashboard, path: "/dashboard" },
+            { id: "processes", title: "Processes", type: "link", icon: WorkflowIcon, path: "/processes" },
+            { id: "crm", title: "CRM & Sales", type: "link", icon: Users, path: "/crm", allowedRoles: ["admin", "editor"] },
+            { id: "finance", title: "Finance", type: "link", icon: DollarSign, path: "/finance", allowedRoles: ["admin", "editor"] },
+            { id: "hr", title: "HR & Talent", type: "link", icon: Briefcase, path: "/hr", allowedRoles: ["admin", "editor"] },
+            { id: "projects", title: "Projects", type: "link", icon: Zap, path: "/projects", allowedRoles: ["admin", "editor"] },
+            { id: "construction", title: "Construction", type: "link", icon: Hammer, path: "/construction", allowedRoles: ["admin", "editor"] },
+        ],
+    },
+    {
+        id: "operations-admin",
+        title: "Operations & Admin",
+        type: "section",
+        children: [
+            { id: "operations", title: "Operations", type: "link", icon: Cog, path: "/operations", allowedRoles: ["admin", "editor"] },
+            { id: "supply-chain", title: "Supply Chain", type: "link", icon: Package, path: "/scm", allowedRoles: ["admin", "editor"] },
+            { id: "costing", title: "Cost Management", type: "link", icon: DollarSign, path: "/scm/costing/dashboard", allowedRoles: ["admin", "editor"] },
+            { id: "inventory", title: "Inventory", type: "link", icon: Warehouse, path: "/inventory", allowedRoles: ["admin", "editor"] },
+            { id: "manufacturing", title: "Manufacturing", type: "link", icon: Factory, path: "/manufacturing", allowedRoles: ["admin", "editor"] },
+            { id: "maintenance", title: "Maintenance", type: "link", icon: Wrench, path: "/maintenance", allowedRoles: ["admin", "editor"] },
+        ],
+    },
+    {
+        id: "intelligence-automation",
+        title: "Intelligence",
+        type: "section",
+        children: [
+            { id: "analytics", title: "Analytics", type: "link", icon: BarChart3, path: "/analytics" },
+            { id: "ai", title: "AI", type: "link", icon: Sparkles, path: "/ai", allowedRoles: ["admin", "editor"] },
+        ],
+    },
+    {
+        id: "platform-admin-section",
+        title: "Platform",
+        type: "section",
+        children: [
+            { id: "admin", title: "Admin", type: "link", icon: Shield, path: "/admin", allowedRoles: ["admin"] },
+            { id: "system-config", title: "Settings", type: "link", icon: SettingsIcon, path: "/system-configuration", allowedRoles: ["admin"] },
+        ]
+    }
+];
