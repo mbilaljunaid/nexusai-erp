@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, GraduationCap, PlayCircle, Plus, Download, Sparkles } from "lucide-react";
+import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,33 +79,69 @@ export default function LearningManagement() {
     },
   });
 
-  // Enroll Mutation
+  // Enroll / Request Mutation
   const enrollMutation = useMutation({
-    mutationFn: async (courseId: string) => {
-      // 1. Create Offering (Just-in-time for MVP demo) or Find one
-      // For simplicity, we'll create a default "Self Paced" offering if one doesn't exist, 
-      // but in real app we'd let user pick dates. This is a simplified "Start Now" flow.
-
+    mutationFn: async (course: any) => {
+      // 1. Create Offering (Simplified)
       const offeringRes = await fetch("/api/learning/offerings", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          courseId,
-          title: "Self Paced Session",
+          courseId: course.id,
+          title: "Self Paced Session", // Default
           startDate: new Date().toISOString()
         })
       });
       const offering = await offeringRes.json();
 
+      // 2. Check Price for Approval
+      const isPaid = Number(offering.price) > 0;
+      const endpoint = isPaid
+        ? `/api/learning/enrollments/${offering.id}/request-approval` // Technically we need enrollment first, but let's assume we create enrollment as PENDING
+        : "/api/learning/enroll";
+
+      // For this demo: We assume "enroll" endpoint creates ENROLLED status if clean, or PENDING if logic dictates.
+      // But our Plan said: Enroll -> Pending Approval.
+      // Let's stick to: Create Enrollment normally. Backend sets status based on flow?
+      // OR: Frontend explicitly requests approval?
+
+      // REVISED FLOW:
+      // A. Create Enrollment (Default Enrolled for free, or Pending if logic exists)
+      // B. If Paid, we call request-approval.
+
+      // Simplified for this step:
+      // We will call "/api/learning/enroll". If it returns "PENDING_APPROVAL" or needs it?
+
+      // Let's implement the logic from the Plan:
+      // POST /api/learning/enroll
+      // body: { personId, offeringId, requestApproval: isPaid }
+
       const res = await fetch("/api/learning/enroll", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personId: "current_user", offeringId: offering.id }),
+        body: JSON.stringify({
+          personId: "current_user",
+          offeringId: offering.id,
+          status: isPaid ? "PENDING_APPROVAL" : "ENROLLED"
+        }),
       });
+
       if (!res.ok) throw new Error("Failed to enroll");
-      return res.json();
+      const enrollment = await res.json();
+
+      // If PENDING, we might want to trigger the workflow explicitly or trust the enrollment creation did it?
+      // Let's trust logic.
+
+      if (isPaid) {
+        await fetch(`/api/learning/enrollments/${enrollment.id}/request-approval`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: "current_user" })
+        });
+      }
+
+      return enrollment;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-learning"] });
-      toast({ title: "Enrolled Successfully" });
+      toast({ title: "Request Processed", description: "Enrollment status updated." });
       setActiveTab("my-learning");
     },
   });
@@ -297,15 +334,20 @@ export default function LearningManagement() {
                       {(enrollments?.find((e: any) => e.courseTitle === course.title)) && <Badge className="bg-emerald-100 text-emerald-800">Enrolled</Badge>}
                     </div>
                     <CardTitle className="mt-2">{course.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">{course.description}</CardDescription>
+                    <div className="flex justify-between items-center mt-1">
+                      <CardDescription className="line-clamp-2">{course.description}</CardDescription>
+                      {Number(course.price) > 0 && <Badge variant="secondary">{course.currency} {course.price}</Badge>}
+                    </div>
                   </CardHeader>
                   <CardContent className="mt-auto pt-0">
                     <Button
                       className="w-full mt-4"
-                      disabled={!!enrollments?.find((e: any) => e.courseTitle === course.title)} // Simple check by title for now
-                      onClick={() => enrollMutation.mutate(course.id)}
+                      disabled={!!enrollments?.find((e: any) => e.courseTitle === course.title)}
+                      onClick={() => enrollMutation.mutate(course)}
                     >
-                      {enrollments?.find((e: any) => e.courseTitle === course.title) ? "Continue Learning" : "Enroll Now"}
+                      {enrollments?.find((e: any) => e.courseTitle === course.title)
+                        ? "Continue Learning"
+                        : (Number(course.price) > 0 ? "Request Approval" : "Enroll Now")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -339,8 +381,12 @@ export default function LearningManagement() {
                       <Button variant="outline" onClick={() => window.open(`/api/learning/enrollments/${enrollment.enrollmentId}/certificate`, '_blank')}>
                         <Download className="mr-2 h-4 w-4" /> Certificate
                       </Button>
+                    ) : enrollment.status === 'PENDING_APPROVAL' ? (
+                      <Button variant="outline" disabled>
+                        Pending Approval
+                      </Button>
                     ) : (
-                      <Button variant="outline">Resume</Button>
+                      <Button variant="outline" onClick={() => window.location.href = `/talent/learning/play/${enrollment.enrollmentId}`}>Resume</Button>
                     )}
                   </div>
                 </CardContent>

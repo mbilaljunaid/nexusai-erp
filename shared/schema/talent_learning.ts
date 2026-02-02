@@ -1,4 +1,4 @@
-import { pgTable, varchar, timestamp, boolean, integer, date, text, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, varchar, timestamp, boolean, integer, date, text, jsonb, numeric } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { hrPersons } from "./hr_worker";
@@ -62,6 +62,10 @@ export const hrmLearningOfferings = pgTable("hrm_learning_offerings", {
 
     capacity: integer("capacity"),
     enrolledCount: integer("enrolled_count").default(0),
+
+    // Financials
+    price: numeric("price").default("0"),
+    currency: varchar("currency").default("USD"),
 
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),

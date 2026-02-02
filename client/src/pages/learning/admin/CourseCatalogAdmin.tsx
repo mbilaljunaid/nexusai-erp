@@ -38,8 +38,9 @@ export default function CourseCatalogAdmin() {
     const { data: auditLogs } = useQuery({
         queryKey: ["learning-audit-logs"],
         queryFn: async () => {
-            const res = await fetch("/api/learning/admin/audit-logs");
-            if (!res.ok) return [];
+            // Mocking Price update for existing items if missing in fetch, or ensuring backend returns it
+            const res = await fetch(`/api/learning/courses?q=${searchQuery}`);
+            if (!res.ok) throw new Error("Failed to fetch catalog");
             return res.json();
         }
     });
@@ -61,6 +62,11 @@ export default function CourseCatalogAdmin() {
             header: "Validity",
             accessorKey: "validityMonths",
             cell: (item) => item.validityMonths ? `${item.validityMonths} Months` : "-"
+        },
+        {
+            header: "Price",
+            accessorKey: "price",
+            cell: (item) => Number(item.price) > 0 ? `${item.currency} ${item.price}` : "Free"
         },
         { header: "Created At", accessorKey: "createdAt", cell: (item) => new Date(item.createdAt).toLocaleDateString() },
         {

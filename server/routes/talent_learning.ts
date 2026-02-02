@@ -305,4 +305,31 @@ router.get("/learning/admin/audit-logs", async (req, res) => {
     }
 });
 
+// WORKFLOW & APPROVALS
+import { LearningWorkflowService } from "../services/LearningWorkflowService";
+
+router.post("/learning/enrollments/:id/request-approval", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const userId = (req as any).user?.id || (req.body.userId); // Allow passing for testing
+        const result = await LearningWorkflowService.requestApproval(req.params.id, userId, tenantId);
+        res.json(result);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post("/learning/approvals/:requestId/decide", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const approverId = (req as any).user?.id || (req.body.approverId);
+        const { decision, comments } = req.body; // APPROVE or REJECT
+
+        const result = await LearningWorkflowService.decideRequest(req.params.requestId, approverId, decision, comments, tenantId);
+        res.json(result);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 export default router;

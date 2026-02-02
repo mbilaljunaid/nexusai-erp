@@ -5,7 +5,7 @@ import { eq, desc, ilike, and } from "drizzle-orm";
 export class LearningService {
 
     // COURSES (Catalog)
-    static async searchCatalog(tenantId: string, filters: { query?: string, category?: string, provider?: string } = {}) {
+    static async searchCatalog(tenantId: string, filters: { query?: string, category?: string, provider?: string, page?: number, pageSize?: number } = {}) {
         let conditions = [eq(hrmLearningCourses.tenantId, tenantId)];
 
         if (filters.query) {
@@ -18,9 +18,25 @@ export class LearningService {
             conditions.push(eq(hrmLearningCourses.provider, filters.provider));
         }
 
-        return await db.select().from(hrmLearningCourses)
+        // Count Total
+        const [countResult] = await db.select({ count: sql<number>`count(*)` })
+            .from(hrmLearningCourses)
+            .where(and(...conditions));
+
+        const total = Number(countResult.count);
+
+        // Pagination
+        const page = filters.page || 1;
+        const pageSize = filters.pageSize || 100; // Default large for backward compat if not provided
+        const offset = (page - 1) * pageSize;
+
+        const data = await db.select().from(hrmLearningCourses)
             .where(and(...conditions))
-            .orderBy(desc(hrmLearningCourses.createdAt));
+            .orderBy(desc(hrmLearningCourses.createdAt))
+            .limit(pageSize)
+            .offset(offset);
+
+        return { data, total };
     }
 
     static async createCourse(data: any) {
