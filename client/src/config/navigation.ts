@@ -40,10 +40,20 @@ import {
     Hammer,
     Activity,
     FileText,
+    User,
 } from "lucide-react";
 
 
 export const navigationConfig: SidebarNode[] = [
+    {
+        id: "me-myteam",
+        title: "Me & My Team",
+        type: "section",
+        children: [
+            { id: "me", title: "Me", type: "link", icon: User, path: "/me" },
+            { id: "my-team", title: "My Team", type: "link", icon: Users, path: "/my-team", allowedRoles: ["admin", "editor"] },
+        ],
+    },
     {
         id: "core-business",
         title: "Core Business",

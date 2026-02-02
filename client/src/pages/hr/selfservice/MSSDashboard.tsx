@@ -1,0 +1,229 @@
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+   Users,
+   UserPlus,
+   BarChart3,
+   ClipboardCheck,
+   AlertCircle,
+   ChevronRight,
+   Target,
+   CalendarDays,
+   Network,
+   TrendingUp,
+   ArrowUpRight
+} from "lucide-react";
+import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { OrgChart } from "@/components/hr/OrgChart";
+import { ManagerActionDialog } from "@/components/hr/ManagerActionDialog";
+
+export default function MSSDashboard() {
+   const [isActionOpen, setIsActionOpen] = React.useState(false);
+   const [actionType, setActionType] = React.useState<"PROMOTE" | "TRANSFER">("PROMOTE");
+
+   const { data: orgData } = useQuery<any[]>({
+      queryKey: ["/api/hr-self-service/organization/chart"],
+   });
+
+   const { data: teamDocs } = useQuery<any[]>({
+      queryKey: ["/api/hr-self-service/team/performance"],
+   });
+
+   const teamStats = [
+      { label: "Total Team", value: "12", icon: Users, color: "text-blue-500" },
+      { label: "Pending Approvals", value: "3", icon: AlertCircle, color: "text-red-500" },
+      { label: "Active Requisitions", value: "2", icon: UserPlus, color: "text-green-500" },
+      { label: "Retention Risk", value: "Low", icon: BarChart3, color: "text-teal-500" },
+   ];
+
+   const teamMembers = [
+      { name: "Alice Smith", role: "Product Designer", status: "In Office", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100" },
+      { name: "Bob Johnson", role: "Frontend Dev", status: "On Leave", avatar: "" },
+      { name: "Carol White", role: "Backend Dev", status: "Remote", avatar: "" },
+   ];
+
+   return (
+      <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 pb-12">
+         <div className="flex justify-between items-end">
+            <div>
+               <h1 className="text-3xl font-bold tracking-tight">My Team</h1>
+               <p className="text-muted-foreground mt-1 text-lg">Manage your directs, approvals, and hiring.</p>
+            </div>
+            <div className="flex gap-3">
+               <Button variant="outline" className="border-teal-500/20 text-teal-600 hover:bg-teal-500/5">
+                  <UserPlus className="h-4 w-4 mr-2" /> Request Requisition
+               </Button>
+               <Button
+                  className="bg-teal-600 hover:bg-teal-700"
+                  onClick={() => {
+                     setActionType("PROMOTE");
+                     setIsActionOpen(true);
+                  }}
+               >
+                  <ArrowUpRight className="h-4 w-4 mr-2" /> Transfer/Promote
+               </Button>
+            </div>
+         </div>
+
+         <ManagerActionDialog
+            isOpen={isActionOpen}
+            onClose={() => setIsActionOpen(false)}
+            type={actionType}
+         />
+
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {teamStats.map((stat, i) => (
+               <Card key={i} className="border-none shadow-sm bg-background/50 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-800/50">
+                  <CardContent className="p-6 flex items-center justify-between">
+                     <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-1">{stat.label}</p>
+                        <p className="text-2xl font-bold">{stat.value}</p>
+                     </div>
+                     <div className={`p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 ${stat.color}`}>
+                        <stat.icon className="h-6 w-6" />
+                     </div>
+                  </CardContent>
+               </Card>
+            ))}
+         </div>
+
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-6">
+               <Tabs defaultValue="list" className="w-full">
+                  <div className="flex items-center justify-between mb-4">
+                     <TabsList className="bg-zinc-100/50 dark:bg-zinc-800/50 p-1">
+                        <TabsTrigger value="list" className="flex items-center gap-2">
+                           <Users className="h-4 w-4" /> Team List
+                        </TabsTrigger>
+                        <TabsTrigger value="org" className="flex items-center gap-2">
+                           <Network className="h-4 w-4" /> Org Chart
+                        </TabsTrigger>
+                        <TabsTrigger value="perf" className="flex items-center gap-2">
+                           <TrendingUp className="h-4 w-4" /> Performance
+                        </TabsTrigger>
+                     </TabsList>
+                  </div>
+
+                  <TabsContent value="list">
+                     <Card className="border-zinc-200/50 dark:border-zinc-800/50 shadow-md">
+                        <CardHeader className="flex flex-row items-center justify-between border-b border-zinc-50 dark:border-zinc-900">
+                           <CardTitle className="text-xl flex items-center gap-2">
+                              <Users className="h-5 w-5 text-teal-600" /> Direct Reports
+                           </CardTitle>
+                           <Button variant="ghost" size="sm" className="text-teal-600">Quick Filters</Button>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                           <div className="divide-y divide-zinc-50 dark:divide-zinc-900">
+                              {teamMembers.map((member, i) => (
+                                 <div key={i} className="flex items-center justify-between p-6 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50 transition-colors">
+                                    <div className="flex items-center gap-4">
+                                       <Avatar className="h-12 w-12 border border-zinc-200 dark:border-zinc-800">
+                                          <AvatarImage src={member.avatar} />
+                                          <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                       </Avatar>
+                                       <div>
+                                          <p className="font-semibold">{member.name}</p>
+                                          <p className="text-sm text-muted-foreground">{member.role}</p>
+                                       </div>
+                                    </div>
+                                    <div className="flex items-center gap-6">
+                                       <div className="text-right hidden sm:block">
+                                          <p className="text-sm font-medium">{member.status}</p>
+                                          <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-tight py-0">Remote OK</Badge>
+                                       </div>
+                                       <Button variant="ghost" size="icon">
+                                          <ChevronRight className="h-5 w-5 text-zinc-400" />
+                                       </Button>
+                                    </div>
+                                 </div>
+                              ))}
+                           </div>
+                        </CardContent>
+                     </Card>
+                  </TabsContent>
+
+                  <TabsContent value="org">
+                     <Card>
+                        <CardHeader>
+                           <CardTitle>Supervisory Hierarchy</CardTitle>
+                           <CardDescription>Interactive organization chart based on assignments.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="max-h-[600px] overflow-auto">
+                           {orgData ? <OrgChart data={orgData} /> : <div className="p-12 text-center text-muted-foreground italic">Loading hierarchy...</div>}
+                        </CardContent>
+                     </Card>
+                  </TabsContent>
+
+                  <TabsContent value="perf">
+                     <Card>
+                        <CardHeader>
+                           <CardTitle>Team Performance Summary</CardTitle>
+                           <CardDescription>Overview of goal completion and current ratings.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {teamDocs?.map((perf: any) => (
+                                 <div key={perf.personId} className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800">
+                                    <div className="flex justify-between items-start mb-4">
+                                       <div>
+                                          <p className="font-semibold">{perf.name}</p>
+                                          <p className="text-xs text-muted-foreground">{perf.status}</p>
+                                       </div>
+                                       <Badge variant="secondary" className="bg-teal-500/10 text-teal-600 border-none">Rating: {perf.rating}</Badge>
+                                    </div>
+                                    <div className="space-y-2">
+                                       <div className="flex justify-between text-xs">
+                                          <span>Goal Completion</span>
+                                          <span>{perf.goalsCompletion}%</span>
+                                       </div>
+                                       <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                                          <div className="bg-teal-500 h-full transition-all duration-500" style={{ width: `${perf.goalsCompletion}%` }} />
+                                       </div>
+                                    </div>
+                                 </div>
+                              ))}
+                           </div>
+                        </CardContent>
+                     </Card>
+                  </TabsContent>
+               </Tabs>
+            </div>
+
+            <div className="space-y-6">
+               <Card className="bg-zinc-900 text-white shadow-xl">
+                  <CardHeader>
+                     <CardTitle className="text-lg flex items-center gap-2">
+                        <Target className="h-5 w-5 text-teal-400" /> Hiring Spotlight
+                     </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                     <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                        <p className="text-sm font-medium">Senior Software Architect</p>
+                        <p className="text-xs text-zinc-400 mt-1">Status: Interviewing (4 candidates)</p>
+                        <div className="w-full bg-white/10 h-1.5 mt-3 rounded-full overflow-hidden">
+                           <div className="bg-teal-500 h-full w-[75%]" />
+                        </div>
+                     </div>
+                  </CardContent>
+               </Card>
+
+               <Card className="border-dashed border-2 border-zinc-200 dark:border-zinc-800 bg-transparent">
+                  <CardHeader>
+                     <CardTitle className="text-lg font-medium text-muted-foreground flex items-center gap-2">
+                        <CalendarDays className="h-5 w-5" /> Team Calendar
+                     </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                     <p className="text-sm text-center text-muted-foreground py-8 italic">No upcoming absences this week.</p>
+                  </CardContent>
+               </Card>
+            </div>
+         </div>
+      </div>
+   );
+}

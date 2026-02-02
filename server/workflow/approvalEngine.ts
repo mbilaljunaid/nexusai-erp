@@ -1,7 +1,6 @@
-/**
- * Approval Engine - Phase 4
- * Manages approval workflows and decisions
- */
+import { db } from "../db";
+import { hrAuditApprovals } from "@shared/schema/hr_audit";
+import { eq, sql, and } from "drizzle-orm";
 
 export interface ApprovalRequest {
   id: string;
@@ -14,47 +13,50 @@ export interface ApprovalRequest {
   requiredApprovals: number;
   currentApprovals: number;
   rejectionReason?: string;
+  tenantId?: string;
 }
 
 export class ApprovalEngine {
-  private approvalRequests: Map<string, ApprovalRequest> = new Map();
-
   /**
    * Create approval request
    */
-  createApprovalRequest(
+  async createApprovalRequest(
     formId: string,
     recordId: string,
     requestedBy: string,
     approvers: string[],
-    requiredApprovals: number = 1
-  ): ApprovalRequest {
-    const request: ApprovalRequest = {
-      id: `APR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    requiredApprovals: number = 1,
+    tenantId: string = "default_tenant"
+  ): Promise<ApprovalRequest> {
+    const id = `APR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const requestData = {
+      id,
+      tenantId,
       formId,
       recordId,
       requestedBy,
       requestedAt: new Date(),
-      status: "pending",
+      status: "pending" as const,
       approvers: approvers.map((userId) => ({ userId })),
       requiredApprovals,
       currentApprovals: 0,
     };
 
-    this.approvalRequests.set(request.id, request);
-    return request;
+    const [inserted] = await db.insert(hrAuditApprovals).values(requestData).returning();
+    return inserted as any as ApprovalRequest;
   }
 
   /**
    * Approve request
    */
-  approveRequest(requestId: string, approverUserId: string, notes?: string): { success: boolean; approved?: boolean } {
-    const request = this.approvalRequests.get(requestId);
+  async approveRequest(requestId: string, approverUserId: string, notes?: string): Promise<{ success: boolean; approved?: boolean }> {
+    const [request] = await db.select().from(hrAuditApprovals).where(eq(hrAuditApprovals.id, requestId));
     if (!request) {
       return { success: false };
     }
 
-    const approver = request.approvers.find((a) => a.userId === approverUserId);
+    const approvers = request.approvers as any[];
+    const approver = approvers.find((a) => a.userId === approverUserId);
     if (!approver) {
       return { success: false };
     }
@@ -62,13 +64,19 @@ export class ApprovalEngine {
     approver.approved = true;
     approver.approvedAt = new Date();
     approver.notes = notes;
-    request.currentApprovals++;
 
-    // Check if all required approvals obtained
-    const approved = request.currentApprovals >= request.requiredApprovals;
-    if (approved) {
-      request.status = "approved";
-    }
+    const currentApprovals = request.currentApprovals! + 1;
+    const approved = currentApprovals >= request.requiredApprovals!;
+    const status = approved ? "approved" : "pending";
+
+    await db.update(hrAuditApprovals)
+      .set({
+        approvers,
+        currentApprovals,
+        status,
+        updatedAt: new Date()
+      } as any)
+      .where(eq(hrAuditApprovals.id, requestId));
 
     return { success: true, approved };
   }
@@ -76,14 +84,19 @@ export class ApprovalEngine {
   /**
    * Reject request
    */
-  rejectRequest(requestId: string, approverUserId: string, reason: string): { success: boolean } {
-    const request = this.approvalRequests.get(requestId);
+  async rejectRequest(requestId: string, approverUserId: string, reason: string): Promise<{ success: boolean }> {
+    const [request] = await db.select().from(hrAuditApprovals).where(eq(hrAuditApprovals.id, requestId));
     if (!request) {
       return { success: false };
     }
 
-    request.status = "rejected";
-    request.rejectionReason = reason;
+    await db.update(hrAuditApprovals)
+      .set({
+        status: "rejected",
+        rejectionReason: reason,
+        updatedAt: new Date()
+      } as any)
+      .where(eq(hrAuditApprovals.id, requestId));
 
     return { success: true };
   }
@@ -91,37 +104,39 @@ export class ApprovalEngine {
   /**
    * Get approval request
    */
-  getApprovalRequest(requestId: string): ApprovalRequest | null {
-    return this.approvalRequests.get(requestId) || null;
+  async getApprovalRequest(requestId: string): Promise<ApprovalRequest | null> {
+    const [request] = await db.select().from(hrAuditApprovals).where(eq(hrAuditApprovals.id, requestId));
+    return request as any as ApprovalRequest || null;
   }
 
   /**
    * Get pending approvals for user
    */
-  getPendingApprovalsForUser(userId: string): ApprovalRequest[] {
-    const pending: ApprovalRequest[] = [];
-    for (const request of this.approvalRequests.values()) {
-      if (
-        request.status === "pending" &&
-        request.approvers.some((a) => a.userId === userId && !a.approved)
-      ) {
-        pending.push(request);
-      }
-    }
-    return pending;
+  async getPendingApprovalsForUser(userId: string): Promise<ApprovalRequest[]> {
+    // Since approvers is JSONB, we can use JSONB containment or just fetch and filter for now given low volume
+    // Ideally: .where(sql`${hrAuditApprovals.approvers} @> ${JSON.stringify([{userId}])}`)
+    // For now, simpler fetch and filter or use the containment operator.
+
+    // Containment operator @> check if JSONB contains another JSONB
+    const results = await db.select().from(hrAuditApprovals).where(and(
+      eq(hrAuditApprovals.status, "pending"),
+      sql`${hrAuditApprovals.approvers} @> ${JSON.stringify([{ userId }])}`
+    ));
+
+    // Refinement: The containment check might be too broad if we want specifically "not yet approved".
+    return results.filter(r => {
+      const approver = (r.approvers as any[]).find(a => a.userId === userId);
+      return approver && !approver.approved;
+    }) as any as ApprovalRequest[];
   }
 
   /**
    * Get approval requests for form record
    */
-  getApprovalsForRecord(formId: string, recordId: string): ApprovalRequest[] {
-    const requests: ApprovalRequest[] = [];
-    for (const request of this.approvalRequests.values()) {
-      if (request.formId === formId && request.recordId === recordId) {
-        requests.push(request);
-      }
-    }
-    return requests;
+  async getApprovalsForRecord(formId: string, recordId: string): Promise<ApprovalRequest[]> {
+    const results = await db.select().from(hrAuditApprovals)
+      .where(and(eq(hrAuditApprovals.formId, formId), eq(hrAuditApprovals.recordId, recordId)));
+    return results as any as ApprovalRequest[];
   }
 }
 

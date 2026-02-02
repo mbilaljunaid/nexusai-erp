@@ -65,6 +65,9 @@ import { PpmWorkbench } from "@/components/ppm/PpmWorkbench";
 import RecruitmentManagement from "@/pages/RecruitmentManagement"; // Static import
 import JobRequisitionDetail from "@/pages/recruitment/JobRequisitionDetail";
 import PerformanceManagement from "@/pages/PerformanceManagement";
+import ESSDashboard from "@/pages/hr/selfservice/ESSDashboard";
+import PersonalDetails from "@/pages/hr/selfservice/PersonalDetails";
+import MSSDashboard from "@/pages/hr/selfservice/MSSDashboard";
 
 function Router() {
   const [location] = useLocation();
@@ -185,6 +188,11 @@ function Router() {
         {/* Reporting */}
         <Route path="/reports*" component={ReportRoutes} />
         <Route path="/features" component={ReportRoutes} />
+
+        <Route path="/me" component={ESSDashboard} />
+        <Route path="/me/profile" component={PersonalDetails} />
+        <Route path="/me/documents" component={PersonalDetails} />
+        <Route path="/my-team" component={MSSDashboard} />
 
         {/* Public Catch-all */}
         <Route component={PublicRoutes} />

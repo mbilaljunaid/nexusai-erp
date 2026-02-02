@@ -48,6 +48,7 @@ import successionRouter from "./routes/talent_succession";
 import learningRouter from "./routes/talent_learning";
 import profileRouter from "./routes/talent_profile";
 import rewardsRouter from "./routes/rewards";
+import hrSelfServiceRouter from "./routes/hr_self_service";
 
 import { constructionRouter } from "./modules/construction/routes";
 import aiRouter from "./routes/ai";
@@ -139,6 +140,7 @@ export async function registerRoutes(
   app.use("/api/lcm", lcmRouter);
   app.use("/api/treasury", treasuryRouter);
   app.use("/api/wfm", wfmRouter);
+  app.use("/api/hr-self-service", hrSelfServiceRouter);
   app.use("/api/treasury", treasuryRouter);
   app.use("/api/transportation", transportationRouter);
   app.use("/api/lease", leaseDirectRouter); // Lease Management
