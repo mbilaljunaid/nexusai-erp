@@ -99,17 +99,7 @@ export default function MyTime() {
             timeType: type,
             durationMinutes: minutes
         });
-    });
-};
-
-const getBalance = (type: string) => {
-    // Mock or Fetch
-    // We need to fetch balances if not already
-    // But for now let's use the hook we added earlier or mock it if I lost the hook
-    // I likely lost the hook in previous bad edit. 
-    // Let's re-add the hook check.
-    return "0.0";
-};
+    };
 
 if (isLoading) return <div className="p-8">Loading Timesheet...</div>;
 

@@ -172,7 +172,7 @@ export default function CompensationDashboard() {
                     <Card className="p-8 text-center text-muted-foreground">
                         Worker Salary Assignment View coming soon.
                         <br />
-                Use "Recruitment > Offers" to create initial salary records.
+                        Use "Recruitment {'>'} Offers" to create initial salary records.
                     </Card>
                 </TabsContent>
             </Tabs>

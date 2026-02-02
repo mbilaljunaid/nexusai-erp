@@ -191,7 +191,7 @@ export default function PayrollWorkbench() {
                                                 <div key={i} className="p-3 border rounded-md bg-amber-50 border-amber-200 text-sm">
                                                     <div className="font-semibold text-amber-800">{a.type}</div>
                                                     <div className="text-amber-700">{a.description}</div>
-                                                    {a.variancePercent && <div className="text-xs mt-1 text-amber-600">Variance: {a.variancePercent.toFixed(1)}% ({a.previousNet} -> {a.currentNet})</div>}
+                                                    {a.variancePercent && <div className="text-xs mt-1 text-amber-600">Variance: {a.variancePercent.toFixed(1)}% ({a.previousNet} {'>'} {a.currentNet})</div>}
                                                 </div>
                                             ))}
                                         </div>
