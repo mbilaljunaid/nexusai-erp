@@ -18,7 +18,7 @@ export const hrmLearningCourses = pgTable("hrm_learning_courses", {
     provider: varchar("provider"), // e.g. "Internal", "Udemy", "LinkedIn"
 
     durationMinutes: integer("duration_minutes"),
-    
+
     // Compliance & Validity
     validityMonths: integer("validity_months"), // e.g. 12 for annual compliance
     renewalRule: varchar("renewal_rule"), // e.g. "FIXED_DATE", "ROLLING_FROM_COMPLETION"
@@ -36,7 +36,7 @@ export const hrmLearningContentItems = pgTable("hrm_learning_content_items", {
 
     title: varchar("title").notNull(),
     type: varchar("type").notNull(), // SCORM_12, VIDEO, PDF, LINK
-    
+
     url: text("url"), // Path to file or external link
     launchData: text("launch_data"), // specialized launch params
 
@@ -104,15 +104,35 @@ export const hrmLearningCertifications = pgTable("hrm_learning_certifications", 
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
+// 5. AUDIT LOGS
+export const hrmLearningAuditLogs = pgTable("hrm_learning_audit_logs", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    entityType: varchar("entity_type").notNull(), // ENROLLMENT, COURSE
+    entityId: varchar("entity_id").notNull(),
+
+    action: varchar("action").notNull(), // UPDATE, CREATE, AUTO_RENEWAL
+
+    previousValue: text("previous_value"),
+    newValue: text("new_value"),
+
+    actorId: varchar("actor_id"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
 // SCHEMAS
 export const insertLearningCourseSchema = createInsertSchema(hrmLearningCourses);
 export const insertLearningOfferingSchema = createInsertSchema(hrmLearningOfferings);
 export const insertLearningEnrollmentSchema = createInsertSchema(hrmLearningEnrollments);
 export const insertLearningContentItemSchema = createInsertSchema(hrmLearningContentItems);
 export const insertLearningCertificationSchema = createInsertSchema(hrmLearningCertifications);
+export const insertLearningAuditLogSchema = createInsertSchema(hrmLearningAuditLogs);
 
 export type LearningCourse = typeof hrmLearningCourses.$inferSelect;
 export type LearningOffering = typeof hrmLearningOfferings.$inferSelect;
 export type LearningEnrollment = typeof hrmLearningEnrollments.$inferSelect;
 export type LearningContentItem = typeof hrmLearningContentItems.$inferSelect;
 export type LearningCertification = typeof hrmLearningCertifications.$inferSelect;
+export type LearningAuditLog = typeof hrmLearningAuditLogs.$inferSelect;

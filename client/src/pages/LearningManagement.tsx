@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, GraduationCap, PlayCircle, Plus, Download } from "lucide-react";
+import { BookOpen, GraduationCap, PlayCircle, Plus, Download, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,6 +34,17 @@ export default function LearningManagement() {
     queryFn: async () => {
       const res = await fetch(`/api/learning/courses?q=${searchQuery}&category=${categoryFilter}&provider=${providerFilter}`);
       if (!res.ok) throw new Error("Failed to fetch catalog");
+      return res.json();
+    }
+  });
+
+  // Fetch Recommendations
+  const { data: recommendations } = useQuery({
+    queryKey: ["learning-recommendations"],
+    queryFn: async () => {
+      // Fallback for MVP if user context is missing in strict fetch
+      const res = await fetch("/api/learning/recommendations?personId=current_user");
+      if (!res.ok) return [];
       return res.json();
     }
   });
@@ -149,6 +160,50 @@ export default function LearningManagement() {
             </DialogContent>
           </Dialog>
         </div>
+      </div>
+
+      {/* AI RECOMMENDATIONS BANNER */}
+      {recommendations && recommendations.length > 0 && (
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-6 text-white shadow-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="h-5 w-5 text-yellow-300" />
+            <h2 className="text-lg font-semibold">Recommended for You</h2>
+          </div>
+          <p className="opacity-90 max-w-2xl mb-4">Based on your recent activity and role, we think you'd excel in these courses.</p>
+          <div className="grid gap-4 md:grid-cols-3">
+            {recommendations.slice(0, 3).map((rec: any) => (
+              <div key={rec.id} className="bg-white/10 backdrop-blur-sm p-4 rounded border border-white/20 hover:bg-white/20 transition cursor-pointer" onClick={() => setActiveTab("catalog")}>
+                <div className="font-semibold">{rec.title}</div>
+                <div className="text-xs opacity-75 mt-1">{rec.category} • {rec.provider}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Active Learning */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {enrollments?.filter((e: any) => e.status !== 'COMPLETED').map((enrollment: any) => (
+          <Card key={enrollment.id} className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium truncate" title={enrollment.title}>
+                {enrollment.title}
+              </CardTitle>
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{enrollment.progressPercent || 0}%</div>
+              <p className="text-xs text-muted-foreground mb-4">
+                {enrollment.status}
+              </p>
+              <Link href={`/talent/learning/play/${enrollment.id}`}>
+                <Button className="w-full" size="sm">
+                  <PlayCircle className="mr-2 h-4 w-4" /> Continue
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

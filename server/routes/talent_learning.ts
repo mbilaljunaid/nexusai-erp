@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { LearningService } from "../services/LearningService";
 import { db } from "../db";
-import { sql } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { hrmLearningCourses } from "@shared/schema/talent_learning";
 import PDFDocument from "pdfkit";
 
@@ -218,6 +218,88 @@ router.post("/learning/manager/assign", async (req, res) => {
         });
 
         res.json(enrollment);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// AI SERVICES
+import { LearningAI } from "../services/LearningAI";
+
+router.get("/learning/recommendations", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const personId = (req as any).user?.id;
+
+        if (!personId) return res.status(400).json({ error: "User Context Required" });
+
+        const recs = await LearningAI.getRecommendations(personId, tenantId);
+        res.json(recs);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post("/learning/ai/extract-skills", async (req, res) => {
+    try {
+        const { text } = req.body;
+        const skills = await LearningAI.extractSkills(text);
+        res.json({ skills });
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CONTENT DELIVERY (PLAYER)
+import { ContentDeliveryService } from "../services/ContentDeliveryService";
+
+router.get("/learning/player/:enrollmentId/launch", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const userId = (req as any).user?.id; // In real app, this comes from auth middleware
+        if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+        const launchData = await ContentDeliveryService.getLaunchData(req.params.enrollmentId, tenantId, userId);
+        res.json(launchData);
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post("/learning/player/:enrollmentId/progress", async (req, res) => {
+    try {
+        const result = await ContentDeliveryService.trackProgress(req.params.enrollmentId, req.body);
+        res.json(result);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// DEEP COMPLIANCE
+import { RecertificationService } from "../services/RecertificationService";
+import { hrmLearningAuditLogs } from "@shared/schema/talent_learning";
+
+router.post("/learning/admin/compliance/run-check", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const result = await RecertificationService.checkExpirations(tenantId);
+        res.json(result);
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get("/learning/admin/audit-logs", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const logs = await db.select().from(hrmLearningAuditLogs)
+            .where(eq(hrmLearningAuditLogs.tenantId, tenantId))
+            .orderBy(desc(hrmLearningAuditLogs.createdAt))
+            .limit(50);
+        res.json(logs);
     } catch (err: any) {
         res.status(500).json({ error: err.message });
     }

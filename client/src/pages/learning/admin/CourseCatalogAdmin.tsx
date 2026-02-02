@@ -1,21 +1,45 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, ShieldCheck, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CourseCatalogAdmin() {
     const [searchQuery, setSearchQuery] = useState("");
+    const { toast } = useToast();
 
+    // Run Compliance Job
+    const runComplianceCheck = async () => {
+        try {
+            const res = await fetch("/api/learning/admin/compliance/run-check", { method: "POST" });
+            if (!res.ok) throw new Error("Failed to run check");
+            toast({ title: "Compliance Check Initiated", description: "Recertification job is running in background." });
+        } catch (err: any) {
+            toast({ title: "Error", description: "Failed to start compliance job.", variant: "destructive" });
+        }
+    };
+
+    // Fetch Courses
     const { data: courses, isLoading } = useQuery({
         queryKey: ["learning-courses", searchQuery],
         queryFn: async () => {
             const res = await fetch(`/api/learning/courses?q=${searchQuery}`);
             if (!res.ok) throw new Error("Failed to fetch catalog");
+            return res.json();
+        }
+    });
+
+    // Fetch Audit Logs
+    const { data: auditLogs } = useQuery({
+        queryKey: ["learning-audit-logs"],
+        queryFn: async () => {
+            const res = await fetch("/api/learning/admin/audit-logs");
+            if (!res.ok) return [];
             return res.json();
         }
     });
@@ -48,27 +72,61 @@ export default function CourseCatalogAdmin() {
         }
     ];
 
+    const auditColumns: Column<any>[] = [
+        { header: "Date", accessorKey: "createdAt", cell: (item) => new Date(item.createdAt).toLocaleString() },
+        { header: "Action", accessorKey: "action" },
+        { header: "Entity", accessorKey: "entityType" },
+        { header: "Entity ID", accessorKey: "entityId", className: "font-mono text-xs" },
+        { header: "Actor", accessorKey: "actorId" },
+        { header: "Details", accessorKey: "newValue", className: "truncate max-w-[200px]" },
+    ];
+
     return (
         <div className="p-8 space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Course Catalog Management</h1>
-                    <p className="text-muted-foreground">Manage courses, offerings, and compliance rules.</p>
+                    <h1 className="text-2xl font-bold tracking-tight">Learning Administration</h1>
+                    <p className="text-muted-foreground">Manage courses, compliance, and system logs.</p>
                 </div>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" /> New Course
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={runComplianceCheck}>
+                        <ShieldCheck className="mr-2 h-4 w-4" /> Run Compliance Check
+                    </Button>
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" /> New Course
+                    </Button>
+                </div>
             </div>
 
-            <div className="bg-white rounded-md border">
-                <StandardTable
-                    data={courses || []}
-                    columns={columns}
-                    isLoading={isLoading}
-                    filterColumn="title"
-                    filterPlaceholder="Search courses..."
-                />
-            </div>
+            <Tabs defaultValue="courses" className="space-y-4">
+                <TabsList>
+                    <TabsTrigger value="courses">Course Catalog</TabsTrigger>
+                    <TabsTrigger value="audit">Audit Logs</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="courses" className="space-y-4">
+                    <div className="bg-white rounded-md border">
+                        <StandardTable
+                            data={courses || []}
+                            columns={columns}
+                            isLoading={isLoading}
+                            filterColumn="title"
+                            filterPlaceholder="Search courses..."
+                        />
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="audit" className="space-y-4">
+                    <div className="bg-white rounded-md border">
+                        <StandardTable
+                            data={auditLogs || []}
+                            columns={auditColumns}
+                            filterColumn="action"
+                            filterPlaceholder="Filter by Action..."
+                        />
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

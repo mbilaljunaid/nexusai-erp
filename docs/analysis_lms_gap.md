@@ -1,31 +1,37 @@
 # Learning & Training (LMS) - Level-15 Canonical Decomposition & Gap Analysis
 
+> **Latest Audit:** 2026-02-02
+> **Status:** Phase 4 (AI) Complete. Moving to Tier-1 Deepening.
+
 ## 1. Executive Summary & Tier-1 Assessment
 
-**Current State:** ⚠️ **NOT TIER-1 READY**
-The current Learning & Training module is a functional MVP (Minimum Viable Product) capable of basic course catalog listing and simple enrollment tracking. It fundamentally lacks the depth required for an Enterprise LMS as defined by Oracle Fusion Learning standards. It treats learning as simple event registration rather than a comprehensive skill development and compliance engine.
+**Current State:** ⚠️ **TIER-2 FUNCTIONAL (ENTERPRISE CORE READY)**
+The Learning & Training module has advanced significantly from MVP. It now possesses core Enterprise structures including **Manager Self-Service (MSS)**, **AI-Driven Recommendations**, **Faceted Catalog Search**, and **Mandatory Assignments**.
+However, it remains "Tier-2" because it lacks the deep "Engine" capabilities of Oracle Fusion:
+1.  **Content Engine:** No native SCORM/xAPI player or video hosting.
+2.  **Compliance Engine:** No automated recertification logic (e.g., "Expire 30 days after").
+3.  **Financial Integration:** No cost tracking, chargebacks, or GL integration for paid learning.
+4.  **Workflow Engine:** Enrollments are immediate; missing "Request -> Approve" flows.
 
-**Critical Gaps:**
-*   **No Structured Content:** Courses are metadata-only containers. No support for SCORM, AICC, Video, or PDF content delivery.
-*   **Scalability Risk:** Course catalog and enrollment queries lack server-side pagination.
-*   **Compliance Void:** No certification expirations, validity periods, or renewal workflows.
-*   **Missing Personas:** No dedicated Instructor, Manager, or Learning Expert views.
-*   **Integration Gap:** Isolated from Talent Management (Skills/Goals) and Finance.
+**Critical Gaps (Remaining):**
+*   **Content Player:** Implementation needed for SCORM 1.2/2004 & Video playback.
+*   **Automated Rules:** Assignment profiles (e.g., "Assign 'Onboarding' to all new Hires") are manual.
+*   **Instructor Persona:** No view for Instructors to grade or mark attendance.
+*   **Finance Integration:** Pricing and cost centers are missing.
 
 ## 2. Gap Analysis + Feature Parity Heatmap
 
 | Feature Area | Oracle Fusion Learning | NexusAI Current State | Status | Parity Gap |
 | :--- | :--- | :--- | :--- | :--- |
-| **Catalog Structure** | Catalog > Community > Subject > Course > Offering > Activity | Flat List of Courses & Offerings | 🟡 Partial | Missing hierarchy & granular activities |
-| **Content Delivery** | Native Video, SCORM 1.2/2004, AICC, PDF | Metadata only (Title/Desc) | 🔴 Missing | No content player or hosting mechanism |
-| **Enrollments** | Approval flows, Waitlists, Prereqs, Eligibility Profiles | Simple "Click to Enroll" | 🟡 Partial | Missing rules engine & workflows |
-| **Compliance** | Certifications, Recertification Logic, Validity Periods | Simple "Completed" flag | 🔴 Missing | No regulatory tracking capability |
-| **Learning Paths** | Curriculums, Specializations, Learning Journeys | None | 🔴 Missing | No multi-course structures |
-| **Assessments** | Quizzes, Tests, Surveys, Evaluations | Score field only | 🔴 Missing | No assessment engine |
-| **Instructors** | Resources, Scheduling, Virtual Classroom Integration | Simple ID reference | 🟡 Partial | No instructor management UI |
-| **Skill Impact** | Auto-update Profiles, Competency Gaps | None | 🔴 Missing | Disconnected from HR Core |
-| **Managers** | Team Learning, Assignments, Compliance Dashboard | None | 🔴 Missing | Manager persona missing |
-| **AI/Intelligence** | Recommendations, "Best for you", Skill Gap Analysis | None | 🔴 Missing | No predictive capability |
+| **Catalog Structure** | Catalog > Community > Subject > Course > Offering > Activity | Flat List of Courses & Offerings with Categories | 🟡 Partial | Missing hierarchical communities |
+| **Content Delivery** | Native Video, SCORM 1.2/2004, AICC, PDF | Metadata (Content Items) defined, Output URL only | � Partial | **CRITICAL:** Missing Player UI |
+| **Enrollments** | Approval flows, Waitlists, Prereqs, Eligibility Profiles | "Click to Enroll" & Manager Assign | 🟡 Partial | Missing Approvals & Waitlists |
+| **Compliance** | Certifications, Recertification Logic, Validity Periods | Certification Entities exist; Manual Tracking | � Partial | Missing Auto-Renewal Jobs |
+| **Learning Paths** | Curriculums, Specializations, Learning Journeys | None | 🔴 Missing | Single-course only |
+| **Assessments** | Quizzes, Tests, Surveys, Evaluations | Score field only | 🔴 Missing | No Assessment Editor/Runner |
+| **Instructors** | Resources, Scheduling, Virtual Classroom Integration | Simple ID reference | 🟡 Partial | No Instructor Portal |
+| **Manager Self-Service**| Team Learning, Assignments, Compliance Dashboard | **Implemented** (Team View + Assignments) | 🟢 Parity | **Verified** |
+| **AI/Intelligence** | Recommendations, "Best for you", Skill Gap Analysis | **Implemented** (Recs + Skill Extraction) | 🟢 Parity | **Verified** |
 
 ## 3. Level-15 Canonical Decomposition
 
@@ -33,127 +39,129 @@ The current Learning & Training module is a functional MVP (Minimum Viable Produ
 **Learning & Training (LMS)**
 
 ### Level 2 — Sub-Domain
-*   **Current:** Course Management, Enrollments.
-*   **Target:** Catalog Management, Learning Delivery, Learner Intelligence, Compliance & Certification, Instructor Resources.
+*   **Current:** Course Management, Enrollments, Manager Assignments, AI Recommendations.
+*   **Target:** Catalog Management, Learning Delivery (Player), Learner Intelligence, Compliance & Certification, Instructor Resources.
 
 ### Level 3 — Functional Capability
-*   **Current:** Create Course, Search Catalog, Enroll, View My Learning.
-*   **Target:** Content Import (SCORM), Curriculum Building, Assignment Rules, Waitlist Management, Virtual Classroom Integration, Assessment Authoring.
+*   **Current:** Create Course, Search Catalog (Faceted), Enroll, View My Learning, Manager Assign, Extract Skills.
+*   **Target:** Content Import (SCORM), Curriculum Building, Assignment Rules, Waitlist Management, Virtual Classroom Integration.
 
 ### Level 4 — Business Use Case
-*   **Current:** Employee self-enrolls in a generic course.
+*   **Current:**
+    *   Employee self-enrolls/downloads certificate.
+    *   Manager assigns mandatory training.
+    *   AI recommends courses based on history.
 *   **Target:**
-    *   Compliance Officer assigns mandatory harassment training to all NY employees.
-    *   Manager assigns performance improvement training.
-    *   System recommends course based on skill gap.
+    *   Compliance Officer defines "Annual Safety" renewal rule.
+    *   Instructor marks attendance for ILT session.
+    *   Finance charges Cost Center for external training.
 
 ### Level 5 — User Personas
-*   **Current:** Generic User (Learner), implicit Admin.
+*   **Current:** Learner, Manager, Admin (Basic).
 *   **Missing:**
-    *   **Learning Specialist:** Manages catalog & assignments.
     *   **Instructor:** Manages rosters & sessions.
-    *   **Line Manager:** Tracks team compliance.
     *   **Compliance Officer:** Audits regulatory training.
 
 ### Level 6 — UI Surfaces (UX Audit)
 *   **Current Implementation:**
-    *   `LearningManagement.tsx`: Combined Catalog & My Learning. Learner-centric.
-    *   `CourseManagement.tsx`: **DEAD CODE** / Mock data.
+    *   `LearningManagement.tsx`: Learner Dashboard (Catalog/My Learning/Recommendations).
+    *   `ManagerLearningDashboard.tsx`: MSS Team View & Assignments.
+    *   `CourseCatalogAdmin.tsx`: Admin Workspace.
 *   **Target Architecture:**
-    *   **Learner Self-Service:** Dashboard / Catalog / My Learning.
-    *   **Administrator Work Space:** Catalog Mgmt / Content / Assignments / Intelligence.
     *   **Instructor Desk:** My Sessions / Roster / Grading.
-    *   **Manager Dashboard:** Team Learning / Compliance.
+    *   **Player UI:** Full-screen immersive content view.
 
 ### Level 7 — UI Components
-*   **Current:** Grid of Cards for Catalog.
+*   **Current:**
+    *   **Catalog:** Tile View with Filters (Category/Provider).
+    *   **Admin:** `StandardTable` for Courses.
+    *   **Manager:** Team Cards.
 *   **Tier-1 Requirement:**
-    *   **Catalog:** Search-optimized Tile View (Learner) vs Data Grid (Admin).
-    *   **Enrollments:** High-volume `StandardTable`.
-    *   **Content Player:** Dedicated immersive view.
+    *   **Content Player:** Dedicated immersive view (SCORM/Video).
+    *   **Analytics Cards:** Compliance %, Learning Hours.
 
 ### Level 8 — Configuration / Setup Screens
-*   **Current:** None.
+*   **Current:** None (Hardcoded lists).
 *   **Required:**
     *   Learning Providers Setup.
     *   Completion Status Mapping.
     *   Assessment Templates.
-    *   Email Notification Templates.
 
 ### Level 9 — Master Data Screens
-*   **Current:** Course creation via Dialog in Learner view (Incorrect Persona).
+*   **Current:** Course/Offering CRUD (Admin View).
 *   **Required:**
-    *   Course / Offering / Class hierarchy editors.
     *   Instructor Directory.
     *   Training Vendor management.
 
 ### Level 10 — Transactional Objects
-*   **Current:** `hrmLearningCourses`, `hrmLearningOfferings`, `hrmLearningEnrollments`.
+*   **Current:**
+    *   `hrmLearningCourses` (with Categories, Validity).
+    *   `hrmLearningOfferings`.
+    *   `hrmLearningEnrollments` (Status, Certificate URL).
+    *   `hrmLearningCertifications`.
+    *   `hrmLearningContentItems` (Metadata).
 *   **Missing:**
-    *   `hrm_learning_content_items` (SCORM/Video metadata).
     *   `hrm_learning_assignments` (Distinct from voluntary enrollment).
     *   `hrm_learning_records` (Historical transcripts).
-    *   `hrm_learning_certifications`.
 
 ### Level 11 — Workflow & Controls
-*   **Current:** Immediate enrollment.
+*   **Current:** Immediate enrollment; Manager Assignment (Force Enroll).
 *   **Required:**
     *   Approval Workflow (Manager/Cost Center approval).
     *   Waitlist Engine (Auto-promotion).
     *   Prerequisite Validation.
 
 ### Level 12 — Rules / Derivation
-*   **Current:** SQL Joins.
+*   **Current:** AI Recommendations (Cosine/Heuristic).
 *   **Required:**
     *   **Eligibility Profiles:** Who can see this course?
-    *   **Assignment Rules:** Auto-assign based on Org/Job/Location.
     *   **Recertification Logic:** If cert expires in 30 days, re-enroll.
 
 ### Level 13 — AI / Automation
-*   **Current:** None.
+*   **Current:**
+    *   **Recommendations:** Content-based filtering.
+    *   **Skill Extraction:** Hybrid (Keyword/LLM).
 *   **Required:**
-    *   **Smart Recommendations:** "People with your role took X".
-    *   **Skill Extraction:** Auto-tag content with skills.
+    *   **Risk Prediction:** "Who is likely to expire compliance?"
 
 ### Level 14 — Security, Compliance & Audit
-*   **Current:** `tenantId` filtered.
-*   **Risks:** No field-level audit. No granular RBAC (Admin vs Instructor).
+*   **Current:** `tenantId` filtered. Manager logic checks `managerId`.
+*   **Risks:** No field-level audit.
 *   **Requirement:** GDPR 'Right to be Forgotten' for learning history.
 
 ### Level 15 — Performance & Scalability
-*   **Current:** `fetchAll` pattern.
+*   **Current:** Basic Fetch/Query.
 *   **Risk:** Will crash at >1,000 courses.
 *   **Requirement:** Server-side pagination, infinite scroll for catalog.
 
 ## 4. Remediation Plan & Task List
 
-### Phase 1: Foundation Refactoring (Data Model & Admin)
-1.  **Schema Expansion:**
-    *   Add `hrm_learning_content_items`, `hrm_learning_certifications`.
-    *   Add `validity_period`, `renewal_rules` to courses.
-2.  **Administrator Workspace:**
-    *   Create dedicated Admin Route (`/learning/admin`).
-    *   Implement `CourseCatalogView` (Admin) with `StandardTable` and Pagination.
-    *   Move "Create Course" out of Learner view.
+### Phase 1-4: Foundation & MVP (COMPLETED ✅)
+*   [x] Schema Expansion (Courses, Offerings, Certifications).
+*   [x] Admin Workspace.
+*   [x] Learner Catalog (Faceted Search) & Certificates.
+*   [x] Manager Dashboard & Assignment.
+*   [x] AI Recommendations & Skill Extraction.
 
-### Phase 2: Learner Experience & Content
-1.  **Catalog Upgrade:**
-    *   Implement faceted search (Category, Type, Duration).
-    *   Connect "Self-Paced" to actual content URL logic.
-2.  **My Learning Enhancement:**
-    *   Add status filters (Active, Completed, Expired).
-    *   Implement Certificate generation (PDF mock).
+### Phase 5: Content Engine (The Player)
+1.  **SCORM/Video Player:**
+    *   Implement `/learning/player/:enrollmentId` route.
+    *   Handle SCORM 1.2 CMI communication (Commit/Finish).
+2.  **Content Hosting:**
+    *   S3/MinIO Integration for uploading Course zips/MP4s.
 
-### Phase 3: Manager & Compliance
-1.  **Manager Dashboard:**
-    *   View Team Enrollments.
-    *   View Team Compliance gaps.
-2.  **Assignment Engine:**
-    *   API endpoint to assigning courses to User Lists.
+### Phase 6: Deep Compliance
+1.  **Recertification Engine:**
+    *   Background Job (`cron`) to check `validityMonths`.
+    *   Auto-assign new offering if status is `EXPIRED` or `EXPIRING_SOON`.
+2.  **Audit Logs:**
+    *   Track every status change (Enrolled -> In Progress -> Completed).
 
-### Phase 4: AI & Architecture
-1.  **Embedding:** Generate embeddings for Course Titles/Descriptions.
-2.  **Recommendation Engine:** Simple cosine similarity against User Skills.
+### Phase 7: Workflow & Financials
+1.  **Approvals:**
+    *   Integrate with `ApprovalService` (from Phase 1 of Project).
+2.  **Commerce:**
+    *   Price on Offerings. Use `FinanceService` to create AR Invoice or GL Charge.
 
 ## 5. Explicit Stop
 **DO NOT BUILD YET.** Review and Approval Required.

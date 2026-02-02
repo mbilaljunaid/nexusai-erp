@@ -114,6 +114,7 @@ function Router() {
 
         {/* Talent Management Direct Routes (Debug/Fix for 404) */}
         <Route path="/talent/learning/manager" component={lazy(() => import("@/pages/learning/manager/ManagerLearningDashboard"))} />
+        <Route path="/talent/learning/play/:enrollmentId" component={lazy(() => import("@/pages/learning/player/LearningPlayer"))} />
         <Route path="/talent/learning/admin" component={lazy(() => import("@/pages/learning/admin/CourseCatalogAdmin"))} />
         <Route path="/talent/learning" component={LearningManagement} />
 
