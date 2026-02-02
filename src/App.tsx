@@ -7,6 +7,10 @@ import GlobalLayout from "@/components/GlobalLayout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import ESSDashboard from "./pages/hr/selfservice/ESSDashboard";
+import PersonalDetails from "./pages/hr/selfservice/PersonalDetails";
+import MyTimeCard from "./pages/hr/selfservice/MyTimeCard";
+import MSSDashboard from "./pages/hr/selfservice/MSSDashboard";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +32,13 @@ const App = () => (
           <Route path="/crm" element={<GlobalLayout><div className="p-4">CRM Module - Coming Soon</div></GlobalLayout>} />
           <Route path="/finance" element={<GlobalLayout><div className="p-4">Finance Module - Coming Soon</div></GlobalLayout>} />
           <Route path="/hr" element={<GlobalLayout><div className="p-4">HR Module - Coming Soon</div></GlobalLayout>} />
+
+          {/* ESS / MSS Routes */}
+          <Route path="/me" element={<GlobalLayout><ESSDashboard /></GlobalLayout>} />
+          <Route path="/me/profile" element={<GlobalLayout><PersonalDetails /></GlobalLayout>} />
+          <Route path="/me/documents" element={<GlobalLayout><PersonalDetails /></GlobalLayout>} />
+          <Route path="/me/time-card" element={<GlobalLayout><MyTimeCard /></GlobalLayout>} />
+          <Route path="/my-team" element={<GlobalLayout><MSSDashboard /></GlobalLayout>} />
           <Route path="/projects" element={<GlobalLayout><div className="p-4">Projects Module - Coming Soon</div></GlobalLayout>} />
           <Route path="/construction" element={<GlobalLayout><div className="p-4">Construction Module - Coming Soon</div></GlobalLayout>} />
           <Route path="/operations" element={<GlobalLayout><div className="p-4">Operations Module - Coming Soon</div></GlobalLayout>} />
