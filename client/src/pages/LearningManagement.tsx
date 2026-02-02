@@ -122,6 +122,9 @@ export default function LearningManagement() {
           <Button variant="outline" onClick={() => window.location.href = '/talent/learning/admin'}>
             Manage Content (Admin)
           </Button>
+          <Button variant="outline" onClick={() => window.location.href = '/talent/learning/manager'}>
+            Manager Dashboard
+          </Button>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm">

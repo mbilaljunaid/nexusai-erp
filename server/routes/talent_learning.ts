@@ -187,4 +187,40 @@ router.get("/learning/enrollments/:id/certificate", async (req, res) => {
     }
 });
 
+// MANAGER SERVICES
+import { ManagerLearningService } from "../services/ManagerLearningService";
+
+router.get("/learning/manager/team", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const managerId = (req as any).user?.id || req.query.managerId; // Dev fallback
+
+        if (!managerId) return res.status(400).json({ error: "Manager Context Required" });
+
+        const team = await ManagerLearningService.getTeamMembers(managerId, tenantId);
+        res.json(team);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post("/learning/manager/assign", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const managerId = (req as any).user?.id || req.body.managerId; // Dev fallback
+
+        const { personId, offeringId } = req.body;
+
+        const enrollment = await ManagerLearningService.assignLearning(managerId, {
+            personId,
+            offeringId,
+            tenantId
+        });
+
+        res.json(enrollment);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 export default router;
