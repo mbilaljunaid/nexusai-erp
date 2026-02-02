@@ -113,6 +113,7 @@ function Router() {
         <Route path="/scm*" component={ScmRoutes} />
 
         {/* Talent Management Direct Routes (Debug/Fix for 404) */}
+        <Route path="/talent/learning/admin" component={lazy(() => import("@/pages/learning/admin/CourseCatalogAdmin"))} />
         <Route path="/talent/learning" component={LearningManagement} />
 
         {/* Rewards */}

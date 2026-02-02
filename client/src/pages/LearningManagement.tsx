@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, GraduationCap, PlayCircle, Plus } from "lucide-react";
+import { BookOpen, GraduationCap, PlayCircle, Plus, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,18 +11,28 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 export default function LearningManagement() {
   const [activeTab, setActiveTab] = useState("catalog");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [providerFilter, setProviderFilter] = useState("ALL");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   // Fetch Catalog
   const { data: courses, isLoading: isCatalogLoading } = useQuery({
-    queryKey: ["learning-courses", searchQuery],
+    queryKey: ["learning-courses", searchQuery, categoryFilter, providerFilter],
     queryFn: async () => {
-      const res = await fetch(`/api/learning/courses?q=${searchQuery}`);
+      const res = await fetch(`/api/learning/courses?q=${searchQuery}&category=${categoryFilter}&provider=${providerFilter}`);
       if (!res.ok) throw new Error("Failed to fetch catalog");
       return res.json();
     }
@@ -108,29 +118,34 @@ export default function LearningManagement() {
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">Learning & Development</h1>
           <p className="text-muted-foreground mt-1">Upskill your journey</p>
         </div>
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm">
-              <Plus className="mr-2 h-4 w-4" /> Create Course
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Course</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleCreateCourse} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Course Title</Label>
-                <Input id="title" name="title" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Input id="description" name="description" />
-              </div>
-              <Button type="submit" className="w-full">Publish Course</Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => window.location.href = '/talent/learning/admin'}>
+            Manage Content (Admin)
+          </Button>
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm">
+                <Plus className="mr-2 h-4 w-4" /> Create Course
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Course</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleCreateCourse} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Course Title</Label>
+                  <Input id="title" name="title" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Input id="description" name="description" />
+                </div>
+                <Button type="submit" className="w-full">Publish Course</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -163,13 +178,53 @@ export default function LearningManagement() {
         </TabsList>
 
         <TabsContent value="catalog" className="space-y-4">
-          <div className="flex gap-4 mb-4">
+          <div className="flex gap-4 mb-4 flex-wrap">
             <Input
               placeholder="Search courses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="max-w-sm"
             />
+
+            <div className="w-[180px]">
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">All Categories</SelectItem>
+                  <SelectItem value="Compliance">Compliance</SelectItem>
+                  <SelectItem value="Technical">Technical</SelectItem>
+                  <SelectItem value="Leadership">Leadership</SelectItem>
+                  <SelectItem value="Soft Skills">Soft Skills</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="w-[180px]">
+              <Select value={providerFilter} onValueChange={setProviderFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Provider" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">All Providers</SelectItem>
+                  <SelectItem value="Internal">Internal</SelectItem>
+                  <SelectItem value="Udemy">Udemy</SelectItem>
+                  <SelectItem value="LinkedIn">LinkedIn</SelectItem>
+                  <SelectItem value="Pluralsight">Pluralsight</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {(categoryFilter !== "ALL" || providerFilter !== "ALL" || searchQuery) && (
+              <Button variant="ghost" onClick={() => {
+                setCategoryFilter("ALL");
+                setProviderFilter("ALL");
+                setSearchQuery("");
+              }}>
+                Clear Filters
+              </Button>
+            )}
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -221,7 +276,15 @@ export default function LearningManagement() {
                       <span className="text-sm font-medium">{enrollment.progress}%</span>
                     </div>
                   </div>
-                  <Button variant="outline">Resume</Button>
+                  <div className="flex gap-2">
+                    {enrollment.status === 'COMPLETED' ? (
+                      <Button variant="outline" onClick={() => window.open(`/api/learning/enrollments/${enrollment.enrollmentId}/certificate`, '_blank')}>
+                        <Download className="mr-2 h-4 w-4" /> Certificate
+                      </Button>
+                    ) : (
+                      <Button variant="outline">Resume</Button>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))}

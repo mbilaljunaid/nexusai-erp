@@ -1,23 +1,26 @@
 import { db } from "../db";
-import { hrmLearningCourses, hrmLearningOfferings, hrmLearningEnrollments } from "@shared/schema/talent_learning";
+import { hrmLearningCourses, hrmLearningOfferings, hrmLearningEnrollments, hrmLearningContentItems, hrmLearningCertifications } from "@shared/schema/talent_learning";
 import { eq, desc, ilike, and } from "drizzle-orm";
 
 export class LearningService {
 
     // COURSES (Catalog)
-    static async searchCatalog(tenantId: string, query?: string) {
-        let dbQuery = db.select().from(hrmLearningCourses).where(eq(hrmLearningCourses.tenantId, tenantId)).$dynamic();
+    static async searchCatalog(tenantId: string, filters: { query?: string, category?: string, provider?: string } = {}) {
+        let conditions = [eq(hrmLearningCourses.tenantId, tenantId)];
 
-        if (query) {
-            dbQuery = dbQuery.where(and(
-                eq(hrmLearningCourses.tenantId, tenantId),
-                ilike(hrmLearningCourses.title, `%${query}%`)
-            ));
-        } else {
-            dbQuery = dbQuery.orderBy(desc(hrmLearningCourses.createdAt));
+        if (filters.query) {
+            conditions.push(ilike(hrmLearningCourses.title, `%${filters.query}%`));
+        }
+        if (filters.category && filters.category !== "ALL") {
+            conditions.push(eq(hrmLearningCourses.category, filters.category));
+        }
+        if (filters.provider && filters.provider !== "ALL") {
+            conditions.push(eq(hrmLearningCourses.provider, filters.provider));
         }
 
-        return await dbQuery;
+        return await db.select().from(hrmLearningCourses)
+            .where(and(...conditions))
+            .orderBy(desc(hrmLearningCourses.createdAt));
     }
 
     static async createCourse(data: any) {
@@ -72,5 +75,49 @@ export class LearningService {
         // await db.update(hrmLearningOfferings).set({ enrolledCount: sql`enrolled_count + 1` })...
 
         return enrollment;
+    }
+
+    static async getEnrollmentDetails(enrollmentId: string) {
+        const [result] = await db.select({
+            enrollmentId: hrmLearningEnrollments.id,
+            status: hrmLearningEnrollments.status,
+            completionDate: hrmLearningEnrollments.completionDate,
+            personId: hrmLearningEnrollments.personId,
+            courseTitle: hrmLearningCourses.title,
+            provider: hrmLearningCourses.provider,
+            duration: hrmLearningCourses.durationMinutes,
+            offeringId: hrmLearningOfferings.id
+        })
+            .from(hrmLearningEnrollments)
+            .innerJoin(hrmLearningOfferings, eq(hrmLearningEnrollments.offeringId, hrmLearningOfferings.id))
+            .innerJoin(hrmLearningCourses, eq(hrmLearningOfferings.courseId, hrmLearningCourses.id))
+            .where(eq(hrmLearningEnrollments.id, enrollmentId))
+            .limit(1);
+
+        return result;
+    }
+
+    // CONTENT ITEMS (SCORM/Video)
+    static async listContentItems(tenantId: string) {
+        return await db.select().from(hrmLearningContentItems)
+            .where(eq(hrmLearningContentItems.tenantId, tenantId))
+            .orderBy(desc(hrmLearningContentItems.createdAt));
+    }
+
+    static async createContentItem(data: any) {
+        const [item] = await db.insert(hrmLearningContentItems).values(data).returning();
+        return item;
+    }
+
+    // CERTIFICATIONS
+    static async listCertifications(tenantId: string) {
+        return await db.select().from(hrmLearningCertifications)
+            .where(eq(hrmLearningCertifications.tenantId, tenantId))
+            .orderBy(desc(hrmLearningCertifications.createdAt));
+    }
+
+    static async createCertification(data: any) {
+        const [cert] = await db.insert(hrmLearningCertifications).values(data).returning();
+        return cert;
     }
 }
