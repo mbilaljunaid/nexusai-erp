@@ -6,19 +6,11 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "dev": "nest start --watch",
-    "debug": "nest start --debug --watch",
-    "prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
-    "build:dev": "vite build --mode development"
+  "dev": "vite",
+  "build": "vite build",
+  "build:dev": "vite build --mode development",
+  "preview": "vite preview"
+}
   },
   "dependencies": {
     "@nestjs/bull": "^10.0.1",
