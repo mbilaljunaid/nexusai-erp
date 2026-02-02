@@ -1,0 +1,18 @@
+import { SidebarTrigger } from "@/components/ui/sidebar";
+
+export function Header() {
+  return (
+    <header className="flex items-center justify-between p-2 border-b gap-2 bg-background sticky top-0 z-10 w-full shrink-0">
+      <div className="flex items-center gap-2">
+        <SidebarTrigger />
+        <span className="font-semibold text-lg hidden md:block">NexusAI ERP</span>
+      </div>
+
+      <div className="flex items-center gap-1">
+        {/* TODO: Add notification center, theme toggle, etc. */}
+      </div>
+    </header>
+  );
+}
+
+export default Header;
