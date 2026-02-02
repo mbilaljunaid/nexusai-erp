@@ -12,7 +12,9 @@ import {
     Briefcase,
     ChevronRight,
     TrendingUp,
-    Award
+    Award,
+    FileCheck,
+    Shield
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -22,6 +24,8 @@ export default function ESSDashboard() {
         { name: "Document Records", icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10", path: "/me/documents" },
         { name: "Payslips", icon: CreditCard, color: "text-green-500", bg: "bg-green-500/10", path: "/me/payslips" },
         { name: "Absence", icon: Calendar, color: "text-orange-500", bg: "bg-orange-500/10", path: "/wfm/my-time" },
+        { name: "Employment Verification", icon: Shield, color: "text-teal-500", bg: "bg-teal-500/10", path: "/api/hr-self-service/me/documents/verification/pdf", external: true },
+        { name: "Tax Forms", icon: FileCheck, color: "text-red-500", bg: "bg-red-500/10", path: "/me/statutory-forms" },
     ];
 
     const pendingTasks = [
@@ -56,17 +60,29 @@ export default function ESSDashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {quickActions.map((action) => (
-                    <Link key={action.name} href={action.path}>
-                        <Card className="hover:shadow-lg transition-all cursor-pointer group border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/30 overflow-hidden">
+                    action.external ? (
+                        <Card key={action.name} className="hover:shadow-lg transition-all cursor-pointer group border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/30 overflow-hidden" onClick={() => window.open(action.path, '_blank')}>
                             <CardContent className="p-6">
                                 <div className={`p-3 rounded-2xl ${action.bg} ${action.color} w-fit mb-4 group-hover:scale-110 transition-transform`}>
                                     <action.icon className="h-6 w-6" />
                                 </div>
                                 <h3 className="font-semibold text-lg">{action.name}</h3>
-                                <p className="text-sm text-muted-foreground mt-1">Manage your details</p>
+                                <p className="text-sm text-muted-foreground mt-1">Compliance utilities</p>
                             </CardContent>
                         </Card>
-                    </Link>
+                    ) : (
+                        <Link key={action.name} href={action.path}>
+                            <Card className="hover:shadow-lg transition-all cursor-pointer group border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/30 overflow-hidden">
+                                <CardContent className="p-6">
+                                    <div className={`p-3 rounded-2xl ${action.bg} ${action.color} w-fit mb-4 group-hover:scale-110 transition-transform`}>
+                                        <action.icon className="h-6 w-6" />
+                                    </div>
+                                    <h3 className="font-semibold text-lg">{action.name}</h3>
+                                    <p className="text-sm text-muted-foreground mt-1">Manage your details</p>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    )
                 ))}
             </div>
 

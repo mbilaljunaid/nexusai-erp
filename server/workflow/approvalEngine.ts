@@ -1,6 +1,8 @@
 import { db } from "../db";
 import { hrAuditApprovals } from "@shared/schema/hr_audit";
-import { eq, sql, and } from "drizzle-orm";
+import { hrAssignments } from "@shared/schema/hr_worker";
+import { eq, sql, and, lt } from "drizzle-orm";
+import { subDays } from "date-fns";
 
 export interface ApprovalRequest {
   id: string;
@@ -137,6 +139,72 @@ export class ApprovalEngine {
     const results = await db.select().from(hrAuditApprovals)
       .where(and(eq(hrAuditApprovals.formId, formId), eq(hrAuditApprovals.recordId, recordId)));
     return results as any as ApprovalRequest[];
+  }
+
+  /**
+   * Check for pending approvals older than a threshold and escalate them.
+   * Typically run by a background cron job.
+   */
+  async checkAndEscalateApprovals(tenantId: string = "default", thresholdDays: number = 3): Promise<number> {
+    const thresholdDate = subDays(new Date(), thresholdDays);
+
+    // Find pending requests older than threshold
+    const pendingRequests = await db.select().from(hrAuditApprovals).where(and(
+      eq(hrAuditApprovals.tenantId, tenantId),
+      eq(hrAuditApprovals.status, "pending"),
+      lt(hrAuditApprovals.requestedAt, thresholdDate)
+    ));
+
+    let escalatedCount = 0;
+
+    for (const request of pendingRequests) {
+      const approvers = request.approvers as any[];
+      const pendingApprover = approvers.find(a => !a.approved);
+
+      if (pendingApprover) {
+        // Find the manager of the pending approver
+        const [assignment] = await db.select().from(hrAssignments)
+          .where(and(
+            eq(hrAssignments.personId, pendingApprover.userId),
+            eq(hrAssignments.tenantId, tenantId)
+          ));
+
+        if (assignment && assignment.managerId) {
+          // Check if already escalated to this manager to avoid cycles
+          const alreadyInList = approvers.some(a => a.userId === assignment.managerId);
+          if (!alreadyInList) {
+            // Add manager as a new required approver or just notifying?
+            // Oracle Fusion adds them to the chain.
+            approvers.push({
+              userId: assignment.managerId,
+              isEscalation: true,
+              escalatedFrom: pendingApprover.userId,
+              escalatedAt: new Date()
+            });
+
+            const metadata = (request.metadata as any) || {};
+            metadata.escalationHistory = metadata.escalationHistory || [];
+            metadata.escalationHistory.push({
+              from: pendingApprover.userId,
+              to: assignment.managerId,
+              at: new Date()
+            });
+
+            await db.update(hrAuditApprovals)
+              .set({
+                approvers,
+                metadata,
+                updatedAt: new Date()
+              } as any)
+              .where(eq(hrAuditApprovals.id, request.id));
+
+            escalatedCount++;
+          }
+        }
+      }
+    }
+
+    return escalatedCount;
   }
 }
 

@@ -3,14 +3,15 @@ import { db } from "../db";
 import { hrPersons, hrAssignments } from "../../shared/schema/hr_worker";
 import { hrDocuments } from "../../shared/schema/hr_documents";
 import { hrmPerfGoals, hrmPerfDocuments } from "../../shared/schema/talent_performance";
-import { eq, and, sql, inArray } from "drizzle-orm";
+import { eq, and, sql, inArray, lt } from "drizzle-orm";
 import { approvalEngine } from "../workflow/approvalEngine";
 import { TimeLaborService } from "../services/TimeLaborService";
 import { ManagerAnalyticsService } from "../services/ManagerAnalyticsService";
 import { AIQueryService } from "../services/AIQueryService";
 import { DelegationService } from "../services/DelegationService";
 import { PayrollService } from "../services/PayrollService";
-import { hrmPayElements } from "../../shared/schema/rewards_payroll";
+import { hrmPayElements, hrmPayrollRuns, hrmPayrollRunResults } from "../../shared/schema/rewards_payroll";
+import { hrPdfService } from "../services/HRPdfService";
 
 const router = Router();
 
@@ -673,6 +674,98 @@ router.post("/me/compliance/forms", async (req: any, res) => {
             createdBy: req.user.id
         }).returning();
         res.json(doc);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST /api/hr-self-service/admin/workflow/escalate
+router.post("/admin/workflow/escalate", async (req: any, res) => {
+    try {
+        const tenantId = req.user?.tenantId || "default";
+        const count = await approvalEngine.checkAndEscalateApprovals(tenantId);
+        res.json({ success: true, escalatedCount: count });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/me/documents/payslip/:id/pdf
+router.get("/me/documents/payslip/:id/pdf", async (req: any, res) => {
+    try {
+        const personId = await getPersonId(req);
+        const tenantId = req.user?.tenantId || "default";
+        const runId = req.params.id;
+
+        if (!personId) return res.status(404).json({ error: "Person not found" });
+
+        // Fetch assignment for person
+        const [assignment] = await db.select().from(hrAssignments)
+            .where(and(eq(hrAssignments.personId, personId), eq(hrAssignments.tenantId, tenantId)));
+
+        if (!assignment) return res.status(404).json({ error: "Assignment not found" });
+
+        // Fetch run results
+        const run = await db.select().from(hrmPayrollRuns).where(eq(hrmPayrollRuns.id, runId)).then(r => r[0]);
+        const results = await db.select().from(hrmPayrollRunResults)
+            .innerJoin(hrmPayElements, eq(hrmPayrollRunResults.elementId, hrmPayElements.id))
+            .where(and(
+                eq(hrmPayrollRunResults.payrollRunId, runId),
+                eq(hrmPayrollRunResults.assignmentId, assignment.id)
+            ));
+
+        if (!run || results.length === 0) return res.status(404).json({ error: "Payslip data not found" });
+
+        const person = await db.select().from(hrPersons).where(eq(hrPersons.id, personId)).then(r => r[0]);
+
+        const earnings = results.filter(r => r.hrm_pay_elements.classification === "EARNINGS")
+            .map(r => ({ name: r.hrm_pay_elements.name, amount: Number(r.hrm_payroll_run_results.amount) }));
+        const deductions = results.filter(r => r.hrm_pay_elements.classification === "DEDUCTION")
+            .map(r => ({ name: r.hrm_pay_elements.name, amount: Number(r.hrm_payroll_run_results.amount) }));
+
+        const totalNet = Number(earnings.reduce((a, b) => a + b.amount, 0) + deductions.reduce((a, b) => a + b.amount, 0));
+
+        const buffer = await hrPdfService.generatePayslipPdf({
+            employeeName: `${person?.firstName} ${person?.lastName}`,
+            employeeNumber: person?.id || "N/A",
+            periodName: run.periodName,
+            payDate: run.paymentDate,
+            earnings,
+            deductions,
+            netPay: totalNet
+        });
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename=payslip_${run.periodName}.pdf`);
+        res.send(buffer);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr-self-service/me/documents/verification/pdf
+router.get("/me/documents/verification/pdf", async (req: any, res) => {
+    try {
+        const personId = await getPersonId(req);
+        const tenantId = req.user?.tenantId || "default";
+
+        if (!personId) return res.status(404).json({ error: "Person not found" });
+
+        const [person] = await db.select().from(hrPersons).where(eq(hrPersons.id, personId));
+        const [assignment] = await db.select().from(hrAssignments)
+            .where(and(eq(hrAssignments.personId, personId), eq(hrAssignments.tenantId, tenantId)));
+
+        if (!person || !assignment) return res.status(404).json({ error: "Data not found" });
+
+        const buffer = await hrPdfService.generateEmploymentVerification({
+            employeeName: `${person.firstName} ${person.lastName}`,
+            jobTitle: assignment.jobId || "Employee",
+            startDate: assignment.effectiveStartDate || "N/A"
+        });
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename=employment_verification.pdf`);
+        res.send(buffer);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

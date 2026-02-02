@@ -19,7 +19,10 @@ import {
    MoreHorizontal,
    ExternalLink,
    Banknote,
-   Zap as ZapIcon
+   Zap as ZapIcon,
+   FileDown,
+   ShieldCheck,
+   Zap
 } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -167,6 +170,9 @@ export default function MSSDashboard() {
                                              <DropdownMenuItem className="gap-2">
                                                 <TrendingUp className="h-4 w-4" /> Talent Review
                                              </DropdownMenuItem>
+                                             <DropdownMenuItem className="gap-2 text-primary" onClick={() => window.open(`/api/hr-self-service/me/documents/verification/pdf`, '_blank')}>
+                                                <ShieldCheck className="h-4 w-4" /> Verify Employment
+                                             </DropdownMenuItem>
                                           </DropdownMenuContent>
                                        </DropdownMenu>
                                     </div>
@@ -238,6 +244,37 @@ export default function MSSDashboard() {
                   </CardHeader>
                   <CardContent>
                      <p className="text-sm text-center text-muted-foreground py-8 italic">No upcoming absences this week.</p>
+                  </CardContent>
+               </Card>
+
+               <Card className="bg-teal-600 text-white border-none shadow-lg overflow-hidden relative">
+                  <Zap className="absolute -right-4 -bottom-4 w-32 h-32 opacity-10 rotate-12" />
+                  <CardHeader>
+                     <CardTitle className="text-lg flex items-center gap-2">
+                        <ZapIcon className="h-5 w-5 fill-white" /> Productivity Actions
+                     </CardTitle>
+                     <CardDescription className="text-teal-100">Tier-1 Manager utilities</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid gap-2 relative z-10">
+                     <Button
+                        variant="secondary"
+                        size="sm"
+                        className="w-full justify-start bg-white/20 hover:bg-white/30 border-none text-white"
+                        onClick={async () => {
+                           const res = await fetch('/api/hr-self-service/admin/workflow/escalate', { method: 'POST' });
+                           const data = await res.json();
+                           alert(`Escalated ${data.escalatedCount} pending approvals to the next level.`);
+                        }}
+                     >
+                        <ShieldCheck className="h-4 w-4 mr-2" /> Escalate Stalled Approvals
+                     </Button>
+                     <Button
+                        variant="secondary"
+                        size="sm"
+                        className="w-full justify-start bg-white/20 hover:bg-white/30 border-none text-white"
+                     >
+                        <FileDown className="h-4 w-4 mr-2" /> Batch Export Team Payslips
+                     </Button>
                   </CardContent>
                </Card>
             </div>
