@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { hrmLearningCourses, hrmLearningOfferings, hrmLearningEnrollments, hrmLearningContentItems, hrmLearningCertifications } from "@shared/schema/talent_learning";
-import { eq, desc, ilike, and } from "drizzle-orm";
+import { eq, desc, ilike, and, sql } from "drizzle-orm";
 
 export class LearningService {
 

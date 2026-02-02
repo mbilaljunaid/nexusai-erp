@@ -24,15 +24,22 @@ export default function CourseCatalogAdmin() {
         }
     };
 
-    // Fetch Courses
-    const { data: courses, isLoading } = useQuery({
-        queryKey: ["learning-courses", searchQuery],
+    // State for Pagination
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
+
+    // Fetch Courses (Paginated)
+    const { data: catalogData, isLoading } = useQuery({
+        queryKey: ["learning-courses", searchQuery, page],
         queryFn: async () => {
-            const res = await fetch(`/api/learning/courses?q=${searchQuery}`);
+            const res = await fetch(`/api/learning/courses?q=${searchQuery}&page=${page}&pageSize=${pageSize}`);
             if (!res.ok) throw new Error("Failed to fetch catalog");
             return res.json();
         }
     });
+
+    const courses = catalogData?.data || [];
+    const totalCourses = catalogData?.total || 0;
 
     // Fetch Audit Logs
     const { data: auditLogs } = useQuery({
@@ -116,6 +123,10 @@ export default function CourseCatalogAdmin() {
                             data={courses || []}
                             columns={columns}
                             isLoading={isLoading}
+                            totalItems={totalCourses}
+                            page={page}
+                            pageSize={pageSize}
+                            onPageChange={setPage}
                             filterColumn="title"
                             filterPlaceholder="Search courses..."
                         />

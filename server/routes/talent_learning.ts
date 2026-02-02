@@ -14,9 +14,11 @@ router.get("/learning/courses", async (req, res) => {
         const query = req.query.q as string;
         const category = req.query.category as string;
         const provider = req.query.provider as string;
+        const page = req.query.page ? parseInt(req.query.page as string) : 1;
+        const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string) : 10;
 
-        const courses = await LearningService.searchCatalog(tenantId, { query, category, provider });
-        res.json(courses);
+        const result = await LearningService.searchCatalog(tenantId, { query, category, provider, page, pageSize });
+        res.json(result);
     } catch (err: any) {
         res.status(500).json({ error: err.message });
     }
@@ -327,6 +329,158 @@ router.post("/learning/approvals/:requestId/decide", async (req, res) => {
 
         const result = await LearningWorkflowService.decideRequest(req.params.requestId, approverId, decision, comments, tenantId);
         res.json(result);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// ============================================
+// LEARNING PATHS (Phase 9)
+// ============================================
+// Note: Dynamic import wrapper inside handlers if top-level fails or direct if supported.
+// Using direct import since we're in same module context.
+import { LearningPathService } from "../services/LearningPathService";
+
+// Create Curriculum
+router.post("/learning/curricula", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const curriculum = await LearningPathService.createCurriculum({ ...req.body, tenantId });
+        res.json(curriculum);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// List Curricula
+router.get("/learning/curricula", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const list = await LearningPathService.listCurricula(tenantId);
+        res.json(list);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get Details
+router.get("/learning/curricula/:id", async (req, res) => {
+    try {
+        const details = await LearningPathService.getCurriculumDetails(req.params.id);
+        if (!details) return res.status(404).json({ error: "Curriculum not found" });
+        res.json(details);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Add Course
+router.post("/learning/curricula/:id/courses", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const { courseId, sequence } = req.body;
+        const result = await LearningPathService.addCourse(tenantId, req.params.id, courseId, sequence);
+        res.json(result);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// ============================================
+// ASSESSMENTS (Phase 10)
+// ============================================
+import { AssessmentService } from "../services/AssessmentService";
+
+// Create Assessment
+router.post("/learning/assessments", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const assessment = await AssessmentService.createAssessment({ ...req.body, tenantId });
+        res.json(assessment);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Add Question
+router.post("/learning/assessments/:id/questions", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const question = await AssessmentService.addQuestion({ ...req.body, assessmentId: req.params.id, tenantId });
+        res.json(question);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get Details
+router.get("/learning/assessments/:id", async (req, res) => {
+    try {
+        const details = await AssessmentService.getAssessment(req.params.id);
+        if (!details) return res.status(404).json({ error: "Assessment not found" });
+        res.json(details);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Submit Attempt
+router.post("/learning/assessments/:id/submit", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const { enrollmentId, answers } = req.body;
+        const result = await AssessmentService.submitAttempt(tenantId, enrollmentId, req.params.id, answers);
+        res.json(result);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// ============================================
+// COMMUNITIES (Phase 11)
+// ============================================
+import { CommunityService } from "../services/CommunityService";
+
+// Create Community
+router.post("/learning/communities", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const community = await CommunityService.createCommunity({ ...req.body, tenantId });
+        res.json(community);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// List Roots
+router.get("/learning/communities/roots", async (req, res) => {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default_tenant";
+        const roots = await CommunityService.getRootCommunities(tenantId);
+        res.json(roots);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get Children & Courses
+router.get("/learning/communities/:id/children", async (req, res) => {
+    try {
+        const result = await CommunityService.getChildren(req.params.id);
+        res.json(result);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get Breadcrumbs
+router.get("/learning/communities/:id/breadcrumbs", async (req, res) => {
+    try {
+        const bc = await CommunityService.getBreadcrumbs(req.params.id);
+        res.json(bc);
     } catch (err: any) {
         res.status(500).json({ error: err.message });
     }

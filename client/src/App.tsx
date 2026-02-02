@@ -58,6 +58,7 @@ import ErpRoutes from "@/routes/ErpRoutes";
 
 // DEBUG: Static Import to fix loading
 import LearningManagement from "@/pages/LearningManagement";
+import InstructorDashboard from "@/pages/learning/instructor/InstructorDashboard";
 import CompensationDashboard from "@/pages/rewards/CompensationDashboard";
 import PayrollWorkbench from "@/pages/rewards/PayrollWorkbench";
 import { PpmWorkbench } from "@/components/ppm/PpmWorkbench";
@@ -116,6 +117,10 @@ function Router() {
         <Route path="/talent/learning/manager" component={lazy(() => import("@/pages/learning/manager/ManagerLearningDashboard"))} />
         <Route path="/talent/learning/play/:enrollmentId" component={lazy(() => import("@/pages/learning/player/LearningPlayer"))} />
         <Route path="/talent/learning/admin" component={lazy(() => import("@/pages/learning/admin/CourseCatalogAdmin"))} />
+        <Route path="/talent/learning/admin/curricula" component={lazy(() => import("@/pages/learning/admin/CurriculumBuilder"))} />
+        <Route path="/talent/learning/admin/assessments" component={lazy(() => import("@/pages/learning/admin/AssessmentBuilder"))} />
+        <Route path="/talent/learning/admin/communities" component={lazy(() => import("@/pages/learning/admin/CommunityBrowser"))} />
+        <Route path="/talent/learning/instructor" component={InstructorDashboard} />
         <Route path="/talent/learning" component={LearningManagement} />
 
         {/* Rewards */}
