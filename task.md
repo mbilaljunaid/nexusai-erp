@@ -11,6 +11,28 @@
     - [x] Implement `TreasuryService.createDeal` with P&I generation logic <!-- id: 104 -->
     - [x] Implement `TreasuryService.listDeals` with status tracking <!-- id: 105 -->
 
+- [x] Phase 8: AOR-Based Data Privacy & Security Profiles (Phase 1)
+    - [x] Implement AOR-based field masking in `PersonService` (DOB, National ID)
+    - [x] Apply universal AOR filtering in `ComplianceService` monitoring and analytics
+    - [x] Create `SecurityProfileWorkbench` UI for `hrAor` management
+- [x] Phase 9: Tier-1 Localization & Rule Metadata (Phase 2)
+    - [x] Define Legislative Rule templates (US SSN, UK NIN, EU GDPR)
+    - [x] Extend `ComplianceEngineService` with time-based rules
+    - [x] Build visual "Rule Builder" for regulatory metadata
+- [x] Phase 10: Advanced Compliance Reporting & AI (Phase 3)
+    - [x] Implement drill-down analytics for Violations
+    - [x] Create "Regulatory Readiness" report export
+    - [x] Integrate AI Risk scoring for predictive compliance
+
+- [x] Phase 7: Advanced Auditing & Workflow Integration
+    - [x] Implement advanced `AuditLogService` with deep-diffing (before/after)
+    - [x] Integrate `AuditLogService` into `PersonService` (Replace custom logging)
+    - [x] Implement Audit Trail API with AOR Security
+    - [x] Create `AuditDiffViewer` frontend component
+    - [x] Connect `hrComplianceViolations` to the `hrApprovals` workflow
+    - [x] Implement "Ghost Employee" anomaly detection heuristic
+    - [x] Add breadcrumbs and sidebar navigation to all compliance sub-pages
+
 - [x] **Step 3: UI Implementation**
     - [x] Create `client/src/components/treasury/TreasuryWorkbench.tsx` <!-- id: 106 -->
     - [x] Create `client/src/components/treasury/DealEntrySheet.tsx` <!-- id: 107 -->

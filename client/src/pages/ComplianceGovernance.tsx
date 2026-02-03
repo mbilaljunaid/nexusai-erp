@@ -28,6 +28,8 @@ import { StandardTable, Column } from "@/components/ui/standardtable";
 import { MetricCard } from "@/components/MetricCard";
 import { ComplianceAnalytics } from "@/components/compliance/ComplianceAnalytics";
 import { RemediationSheet } from "@/components/compliance/RemediationSheet";
+import { RuleBuilder } from "@/components/compliance/RuleBuilder";
+import { RegulatoryReadinessReport } from "@/components/compliance/RegulatoryReadinessReport";
 import {
   Sheet,
   SheetContent,
@@ -49,9 +51,10 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 
 interface ComplianceRule {
   id: string;
-  ruleName: string;
-  jurisdiction: string;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  name: string;
+  legislationCode: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  category: string;
   status: 'active' | 'inactive';
   createdAt?: string;
 }
@@ -71,7 +74,16 @@ interface Violation {
 export default function ComplianceGovernance() {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const [newRule, setNewRule] = useState({ ruleName: "", jurisdiction: "", riskLevel: "medium" as const });
+  const [newRule, setNewRule] = useState({
+    code: "RULE-" + Date.now(),
+    name: "",
+    legislationCode: "GLOBAL",
+    severity: "medium",
+    category: "REGULATORY",
+    automationLevel: "full",
+    ruleLogic: {} as any,
+    effectiveDate: new Date().toISOString()
+  });
   const [selectedViolation, setSelectedViolation] = useState<Violation | null>(null);
 
   const { data: rules = [], isLoading } = useQuery<ComplianceRule[]>({
@@ -99,7 +111,16 @@ export default function ComplianceGovernance() {
     }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/hr/compliance-rules"] });
-      setNewRule({ ruleName: "", jurisdiction: "", riskLevel: "medium" });
+      setNewRule({
+        code: "RULE-" + Date.now(),
+        name: "",
+        legislationCode: "GLOBAL",
+        severity: "medium",
+        category: "REGULATORY",
+        automationLevel: "full",
+        ruleLogic: {} as any,
+        effectiveDate: new Date().toISOString()
+      });
       toast({ title: "Compliance rule created", description: "The new governance policy is now active." });
     },
   });
@@ -115,27 +136,32 @@ export default function ComplianceGovernance() {
   const columns: Column<ComplianceRule>[] = [
     {
       header: "Rule Name",
-      accessorKey: "ruleName",
-      cell: (r) => (
+      accessorKey: "name",
+      cell: (r: any) => (
         <div className="flex flex-col">
-          <span className="font-medium">{r.ruleName}</span>
+          <span className="font-medium text-slate-900">{r.name}</span>
           <span className="text-xs text-muted-foreground font-mono">{r.id.substring(0, 8)}</span>
         </div>
       )
     },
     {
-      header: "Jurisdiction",
-      accessorKey: "jurisdiction",
-      cell: (r) => <Badge variant="outline">{r.jurisdiction}</Badge>
+      header: "Legislation",
+      accessorKey: "legislationCode",
+      cell: (r: any) => <Badge variant="outline" className="bg-slate-50">{r.legislationCode}</Badge>
     },
     {
       header: "Risk Level",
-      accessorKey: "riskLevel",
-      cell: (r) => (
-        <Badge variant={r.riskLevel === "high" || r.riskLevel === "critical" ? "destructive" : r.riskLevel === "medium" ? "secondary" : "default"}>
-          {r.riskLevel.toUpperCase()}
+      accessorKey: "severity",
+      cell: (r: any) => (
+        <Badge variant={r.severity === "high" || r.severity === "critical" ? "destructive" : r.severity === "medium" ? "secondary" : "default"}>
+          {(r.severity || "MEDIUM").toUpperCase()}
         </Badge>
       )
+    },
+    {
+      header: "Category",
+      accessorKey: "category",
+      cell: (r: any) => <span className="text-xs font-semibold text-slate-500">{r.category}</span>
     },
     {
       header: "Status",
@@ -278,7 +304,7 @@ export default function ComplianceGovernance() {
       )}
 
       <Tabs defaultValue="rules" className="w-full">
-        <TabsList className="grid w-[400px] grid-cols-2 mb-4 bg-slate-100 p-1 rounded-lg">
+        <TabsList className="grid w-[600px] grid-cols-3 mb-4 bg-slate-100 p-1 rounded-lg">
           <TabsTrigger value="rules" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Governance Rules</TabsTrigger>
           <TabsTrigger value="violations" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
             Active Violations
@@ -288,6 +314,7 @@ export default function ComplianceGovernance() {
               </Badge>
             )}
           </TabsTrigger>
+          <TabsTrigger value="readiness" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Regulatory Readiness</TabsTrigger>
         </TabsList>
 
         <TabsContent value="rules">
@@ -318,46 +345,73 @@ export default function ComplianceGovernance() {
                     <SheetHeader>
                       <SheetTitle className="text-xl font-bold border-b pb-4">Add Compliance Rule</SheetTitle>
                     </SheetHeader>
-                    <div className="py-6 space-y-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="ruleName" className="text-sm font-semibold">Rule Name</Label>
-                        <Input
-                          id="ruleName"
-                          placeholder="e.g. GDPR Data Retention"
-                          value={newRule.ruleName}
-                          onChange={(e) => setNewRule({ ...newRule, ruleName: e.target.value })}
-                        />
+                    <div className="py-6 space-y-6 max-h-[80vh] overflow-y-auto pr-2">
+                      <div className="space-y-4 border-b pb-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="ruleName" className="text-sm font-bold">Rule Name</Label>
+                          <Input
+                            id="ruleName"
+                            placeholder="e.g. US SSN Validation"
+                            value={newRule.name}
+                            onChange={(e) => setNewRule({ ...newRule, name: e.target.value })}
+                            className="h-11 rounded-xl"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-bold">Legislation</Label>
+                            <Select
+                              value={newRule.legislationCode}
+                              onValueChange={(val) => setNewRule({ ...newRule, legislationCode: val })}
+                            >
+                              <SelectTrigger className="h-11 rounded-xl">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="GLOBAL">Global</SelectItem>
+                                <SelectItem value="US">United States</SelectItem>
+                                <SelectItem value="UK">United Kingdom</SelectItem>
+                                <SelectItem value="EU">European Union</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-sm font-bold">Risk Level</Label>
+                            <Select
+                              value={newRule.severity}
+                              onValueChange={(val) => setNewRule({ ...newRule, severity: val })}
+                            >
+                              <SelectTrigger className="h-11 rounded-xl">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="critical">Critical</SelectItem>
+                                <SelectItem value="high">High</SelectItem>
+                                <SelectItem value="medium">Medium</SelectItem>
+                                <SelectItem value="low">Low</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="jurisdiction" className="text-sm font-semibold">Jurisdiction / Framework</Label>
-                        <Input
-                          id="jurisdiction"
-                          placeholder="e.g. Global, European Union"
-                          value={newRule.jurisdiction}
-                          onChange={(e) => setNewRule({ ...newRule, jurisdiction: e.target.value })}
+
+                      <div className="space-y-4">
+                        <Label className="text-sm font-extrabold text-slate-900 italic">Rule Configuration</Label>
+                        <RuleBuilder
+                          onSave={(logic) => {
+                            setNewRule(prev => ({ ...prev, ruleLogic: logic }));
+                            toast({ title: "Logic Generated", description: "Rule evaluation strategy attached." });
+                          }}
                         />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="risk" className="text-sm font-semibold">Inherent Risk Level</Label>
-                        <Select
-                          value={newRule.riskLevel}
-                          onValueChange={(val: any) => setNewRule({ ...newRule, riskLevel: val })}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Risk Level" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="critical">Critical</SelectItem>
-                            <SelectItem value="high">High</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="low">Low</SelectItem>
-                          </SelectContent>
-                        </Select>
                       </div>
                     </div>
-                    <SheetFooter className="border-t pt-4">
-                      <Button className="w-full" onClick={() => createMutation.mutate(newRule)}>
-                        Create Governance Rule
+                    <SheetFooter className="border-t pt-6 bg-slate-50/50 -mx-6 px-6 -mb-6 pb-6">
+                      <Button
+                        className="w-full h-12 text-lg font-bold bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-lg ring-offset-2 ring-indigo-500 focus:ring-2"
+                        onClick={() => createMutation.mutate(newRule)}
+                        disabled={!newRule.name || !newRule.ruleLogic?.type}
+                      >
+                        Deploy Governance Rule
                       </Button>
                     </SheetFooter>
                   </SheetContent>
@@ -368,7 +422,7 @@ export default function ComplianceGovernance() {
               data={rules}
               columns={columns}
               isLoading={isLoading}
-              filterColumn="ruleName"
+              filterColumn="name"
             />
           </div>
         </TabsContent>
@@ -387,6 +441,12 @@ export default function ComplianceGovernance() {
               filterColumn="ruleName"
             />
           </div>
+        </TabsContent>
+
+        <TabsContent value="readiness">
+          {analyticsData && (
+            <RegulatoryReadinessReport data={analyticsData} />
+          )}
         </TabsContent>
       </Tabs>
 

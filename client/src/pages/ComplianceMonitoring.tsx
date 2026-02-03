@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle } from "lucide-react";
 
+import { Breadcrumb } from "@/components/Breadcrumb";
+
 export default function ComplianceMonitoring() {
   const rules = [
     { id: "r1", name: "SoD - Approver cannot be Requestor", module: "Finance", status: "active", violations: 0, lastChecked: "Nov 30, 10:15 AM" },
@@ -11,8 +13,9 @@ export default function ComplianceMonitoring() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 container mx-auto py-6">
       <div>
+        <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Compliance & Risk", path: "/compliance/dashboard" }, { label: "Monitoring", path: "/compliance/monitoring" }]} />
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <AlertTriangle className="h-8 w-8" />
           Compliance Monitoring

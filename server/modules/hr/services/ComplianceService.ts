@@ -26,27 +26,28 @@ export class ComplianceService {
         return !!deleted;
     }
 
+    static async getAorConditions(tenantId: string, currentUserId?: string) {
+        if (!currentUserId || currentUserId === "system") return [];
+
+        const userAors = await AorService.getAorForUser(currentUserId, tenantId);
+        if (userAors.length === 0) return [];
+
+        const deptIds = userAors.filter(a => a.scopeType === 'DEPARTMENT').map(a => a.scopeValueId);
+        const locIds = userAors.filter(a => a.scopeType === 'LOCATION').map(a => a.scopeValueId);
+        const leIds = userAors.filter(a => a.scopeType === 'LEGAL_EMPLOYER').map(a => a.scopeValueId);
+
+        const conditions = [];
+        if (deptIds.length > 0) conditions.push(inArray(hrAssignments.departmentId, deptIds));
+        if (locIds.length > 0) conditions.push(inArray(hrAssignments.locationId, locIds));
+        if (leIds.length > 0) conditions.push(inArray(hrWorkRelationships.legalEmployerId, leIds));
+
+        return conditions;
+    }
+
     static async listViolations(tenantId: string, currentUserId?: string) {
         // AOR Security filtering
-        const aorConditions = [];
-        if (currentUserId) {
-            const userAors = await AorService.getAorForUser(currentUserId, tenantId);
-            if (userAors.length > 0) {
-                const deptIds = userAors.filter(a => a.scopeType === 'DEPARTMENT').map(a => a.scopeValueId);
-                const locIds = userAors.filter(a => a.scopeType === 'LOCATION').map(a => a.scopeValueId);
-                const leIds = userAors.filter(a => a.scopeType === 'LEGAL_EMPLOYER').map(a => a.scopeValueId);
-
-                const conditions = [];
-                // Filter PERSON violations by AOR scopes linked to their assignments/relationships
-                if (deptIds.length > 0) conditions.push(inArray(hrAssignments.departmentId, deptIds));
-                if (locIds.length > 0) conditions.push(inArray(hrAssignments.locationId, locIds));
-                if (leIds.length > 0) conditions.push(inArray(hrWorkRelationships.legalEmployerId, leIds));
-
-                if (conditions.length > 0) {
-                    aorConditions.push(or(...conditions));
-                }
-            }
-        }
+        const conditions = await this.getAorConditions(tenantId, currentUserId);
+        const aorConditions = conditions.length > 0 ? [or(...conditions)] : [];
 
         const query = db.select({
             id: hrComplianceViolations.id,

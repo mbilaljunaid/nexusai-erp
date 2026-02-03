@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { History, User, Database, Clock } from "lucide-react";
+import { AuditDiffViewer } from "./AuditDiffViewer";
 
 interface AuditEntry {
     id: string;
@@ -89,13 +90,18 @@ export function AuditDetailsSideSheet({ entry, isOpen, onOpenChange }: AuditDeta
 
                     <Separator />
 
-                    <div className="space-y-2">
-                        <h4 className="text-sm font-bold">Field Changes</h4>
-                        <div className="bg-slate-50 rounded-lg border p-4 font-mono text-xs overflow-auto max-h-[300px]">
-                            {entry.changes ? (
-                                <pre>{JSON.stringify(entry.changes, null, 2)}</pre>
+                    <div className="space-y-4">
+                        <h4 className="text-sm font-bold flex items-center gap-2">
+                            <History className="h-4 w-4 text-primary" />
+                            Property Comparisons
+                        </h4>
+                        <div className="max-h-[400px]">
+                            {entry.changes && Object.keys(entry.changes).length > 0 ? (
+                                <AuditDiffViewer changes={entry.changes} />
                             ) : (
-                                <p className="text-muted-foreground italic">No granular changes recorded for this transaction.</p>
+                                <div className="bg-slate-50 rounded-lg border p-6 text-center italic text-muted-foreground text-sm">
+                                    No granular property changes recorded for this entry.
+                                </div>
                             )}
                         </div>
                     </div>

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ComplianceService } from "./services/ComplianceService";
 import { ComplianceAnalyticsService } from "./services/ComplianceAnalyticsService";
 import { ComplianceRiskService } from "./services/ComplianceRiskService";
+import { ComplianceApprovalService } from "./services/ComplianceApprovalService";
 
 export async function listRules(req: Request, res: Response) {
     try {
@@ -39,12 +40,15 @@ export async function deleteRule(req: Request, res: Response) {
 export async function getAnalytics(req: Request, res: Response) {
     try {
         const tenantId = (req as any).user?.tenantId || "default";
-        const [metrics, riskDistribution, violationTrends] = await Promise.all([
-            ComplianceAnalyticsService.getSummaryMetrics(tenantId),
+        const userId = (req as any).user?.id;
+        const [metrics, riskDistribution, violationTrends, readiness, auditSummary] = await Promise.all([
+            ComplianceAnalyticsService.getSummaryMetrics(tenantId, userId),
             ComplianceAnalyticsService.getRiskDistribution(tenantId),
-            ComplianceAnalyticsService.getViolationTrends(tenantId)
+            ComplianceAnalyticsService.getViolationTrends(tenantId, userId),
+            ComplianceAnalyticsService.getRegulatoryReadinessScore(tenantId),
+            ComplianceAnalyticsService.getAuditEngagementSummary(tenantId)
         ]);
-        res.json({ metrics, riskDistribution, violationTrends });
+        res.json({ metrics, riskDistribution, violationTrends, readiness, auditSummary });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -83,6 +87,35 @@ export async function predictRisk(req: Request, res: Response) {
     }
 }
 
+export async function requestRemediationApproval(req: Request, res: Response) {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default";
+        const userId = (req as any).user?.id;
+        const { violationId, approvers } = req.body;
+        const approval = await ComplianceApprovalService.requestRemediationApproval({
+            tenantId,
+            violationId,
+            requesterId: userId,
+            approvers
+        });
+        res.status(201).json(approval);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export async function approveRemediation(req: Request, res: Response) {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default";
+        const userId = (req as any).user?.id;
+        const { approvalId } = req.params;
+        const updated = await ComplianceApprovalService.approveRemediation(approvalId, userId, tenantId);
+        res.json(updated);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 export const complianceController = {
     listRules,
     createRule,
@@ -90,5 +123,7 @@ export const complianceController = {
     getAnalytics,
     listViolations,
     updateViolation,
-    predictRisk
+    predictRisk,
+    requestRemediationApproval,
+    approveRemediation
 };

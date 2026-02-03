@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { hrService } from "./services/HrService";
 import { insertEmployeeSchema, insertPayrollConfigSchema } from "@shared/schema";
+import { AorService } from "./services/AorService";
 
 export class HrController {
 
@@ -57,6 +58,26 @@ export class HrController {
             res.status(201).json(config);
         } catch (error: any) {
             res.status(500).json({ error: "Failed to create payroll config" });
+        }
+    }
+
+    async listAors(req: Request, res: Response) {
+        try {
+            const tenantId = (req as any).user?.tenantId || "default";
+            const aors = await AorService.listAors(tenantId);
+            res.json(aors);
+        } catch (error: any) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    async assignAor(req: Request, res: Response) {
+        try {
+            const tenantId = (req as any).user?.tenantId || "default";
+            const aor = await AorService.assignAor({ ...req.body, tenantId });
+            res.status(201).json(aor);
+        } catch (error: any) {
+            res.status(500).json({ message: error.message });
         }
     }
 }

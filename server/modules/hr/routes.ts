@@ -111,4 +111,10 @@ hrRouter.post("/compliance-rules", complianceController.createRule);
 hrRouter.delete("/compliance-rules/:id", complianceController.deleteRule);
 hrRouter.get("/compliance/violations", complianceController.listViolations);
 hrRouter.patch("/compliance/violations/:id", complianceController.updateViolation);
+hrRouter.post("/compliance/violations/:id/approve", complianceController.approveRemediation);
+hrRouter.post("/compliance/remediate/approve", complianceController.requestRemediationApproval);
 hrRouter.post("/compliance/predict-risk", complianceController.predictRisk);
+
+// --- AOR & Security Profiles ---
+hrRouter.get("/security/aor", hrController.listAors);
+hrRouter.post("/security/aor", hrController.assignAor);

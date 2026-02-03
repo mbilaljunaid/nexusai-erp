@@ -9,6 +9,7 @@ const ComplianceMonitoring = lazy(() => import("@/pages/ComplianceMonitoring"));
 const ComplianceExceptions = lazy(() => import("@/pages/ComplianceExceptions"));
 const ComplianceGovernance = lazy(() => import("@/pages/ComplianceGovernance"));
 const AuditTrails = lazy(() => import("@/pages/AuditTrails"));
+const SecurityProfiles = lazy(() => import("@/pages/SecurityProfiles"));
 
 export default function ComplianceRoutes() {
     return (
@@ -19,6 +20,7 @@ export default function ComplianceRoutes() {
             <Route path="/compliance/exceptions" component={ComplianceExceptions} />
             <Route path="/compliance/governance" component={ComplianceGovernance} />
             <Route path="/compliance/audit" component={AuditTrails} />
+            <Route path="/compliance/security" component={SecurityProfiles} />
         </Switch>
     );
 }

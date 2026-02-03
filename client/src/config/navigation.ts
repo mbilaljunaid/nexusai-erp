@@ -41,6 +41,7 @@ import {
     Activity,
     FileText,
     User,
+    History as HistoryIcon,
 } from "lucide-react";
 
 
@@ -83,11 +84,14 @@ export const navigationConfig: SidebarNode[] = [
     },
     {
         id: "intelligence-automation",
-        title: "Intelligence",
+        title: "Intelligence & Governance",
         type: "section",
         children: [
             { id: "analytics", title: "Analytics", type: "link", icon: BarChart3, path: "/analytics" },
-            { id: "ai", title: "AI", type: "link", icon: Sparkles, path: "/ai", allowedRoles: ["admin", "editor"] },
+            { id: "compliance", title: "Compliance & Risk", type: "link", icon: Shield, path: "/compliance/dashboard", allowedRoles: ["admin", "editor"] },
+            { id: "audit", title: "Audit Trails", type: "link", icon: HistoryIcon, path: "/compliance/audit", allowedRoles: ["admin"] },
+            { id: "security-profiles", title: "Security Profiles", type: "link", icon: Lock, path: "/compliance/security", allowedRoles: ["admin"] },
+            { id: "ai", title: "AI Assistant", type: "link", icon: Sparkles, path: "/ai", allowedRoles: ["admin", "editor"] },
         ],
     },
     {

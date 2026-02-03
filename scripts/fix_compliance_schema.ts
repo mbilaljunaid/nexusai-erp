@@ -28,6 +28,40 @@ async function fixSchema() {
         `);
         console.log("✅ hr_aor table created/verified.");
 
+        // 3. Create hr_audit_logs table
+        await db.execute(sql`
+            CREATE TABLE IF NOT EXISTS hr_audit_logs (
+                id varchar(255) PRIMARY KEY DEFAULT gen_random_uuid(),
+                tenant_id varchar(255) NOT NULL,
+                entity_type varchar(255) NOT NULL,
+                entity_id varchar(255) NOT NULL,
+                action varchar(255) NOT NULL,
+                actor_id varchar(255) NOT NULL,
+                changes jsonb,
+                timestamp timestamp DEFAULT now()
+            );
+        `);
+        console.log("✅ hr_audit_logs table created/verified.");
+
+        // 4. Create hr_audit_approvals table
+        await db.execute(sql`
+            CREATE TABLE IF NOT EXISTS hr_audit_approvals (
+                id varchar(255) PRIMARY KEY DEFAULT gen_random_uuid(),
+                tenant_id varchar(255) NOT NULL,
+                form_id varchar(255) NOT NULL,
+                record_id varchar(255) NOT NULL,
+                requested_by varchar(255) NOT NULL,
+                requested_at timestamp DEFAULT now(),
+                status varchar(255) DEFAULT 'pending',
+                approvers jsonb NOT NULL,
+                required_approvals integer DEFAULT 1,
+                current_approvals integer DEFAULT 0,
+                rejection_reason varchar(255),
+                metadata jsonb
+            );
+        `);
+        console.log("✅ hr_audit_approvals table created/verified.");
+
     } catch (error) {
         console.error("❌ Schema fix failed:", error);
     }
