@@ -53,7 +53,8 @@ export async function getAnalytics(req: Request, res: Response) {
 export async function listViolations(req: Request, res: Response) {
     try {
         const tenantId = (req as any).user?.tenantId || "default";
-        const violations = await ComplianceService.listViolations(tenantId);
+        const userId = (req as any).user?.id;
+        const violations = await ComplianceService.listViolations(tenantId, userId);
         res.json(violations);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

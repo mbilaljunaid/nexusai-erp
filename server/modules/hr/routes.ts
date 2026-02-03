@@ -82,10 +82,12 @@ hrRouter.post("/structures/positions", workforceStructuresController.createPosit
 
 // --- Phase 5: Intelligence & Audit ---
 
+import { auditController } from "./audit.controller";
 import { documentController } from "./document.controller";
 import { checklistController } from "./checklist.controller";
 
 // Documents (DOR)
+hrRouter.get("/audit-logs", auditController.listLogs);
 hrRouter.get("/persons/:personId/documents", documentController.getDocumentsByPerson);
 hrRouter.post("/documents", documentController.uploadDocument);
 

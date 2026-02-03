@@ -1,100 +1,195 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { format } from "date-fns";
+import {
+  AlertCircle,
+  Search,
+  ExternalLink,
+  Wrench,
+  Filter,
+  CheckCircle2,
+  Clock,
+  ShieldAlert
+} from "lucide-react";
+import { StandardTable, Column } from "@/components/ui/standardtable";
+import { MetricCard } from "@/components/MetricCard";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Plus, Trash2 } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { RemediationSheet } from "@/components/compliance/RemediationSheet";
+import { Link } from "wouter";
+
+interface Violation {
+  id: string;
+  ruleName: string;
+  entityType: string;
+  entityId: string;
+  status: string;
+  severity: string;
+  description: string;
+  createdAt: string;
+  remediationActions: string[];
+}
 
 export default function ComplianceExceptions() {
-  const { toast } = useToast();
-  const [newException, setNewException] = useState({ rule: "", user: "", reason: "", status: "pending" });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedViolation, setSelectedViolation] = useState<Violation | null>(null);
 
-  const { data: exceptions = [], isLoading } = useQuery({
-    queryKey: ["/api/compliance/exceptions"],
-    queryFn: () => fetch("/api/compliance/exceptions").then(r => r.json()).catch(() => []),
+  const { data: violations = [], isLoading } = useQuery<Violation[]>({
+    queryKey: ["/api/hr/compliance/violations"],
+    queryFn: () => fetch("/api/hr/compliance/violations").then(r => r.json()),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/compliance/exceptions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/compliance/exceptions"] });
-      setNewException({ rule: "", user: "", reason: "", status: "pending" });
-      toast({ title: "Exception requested" });
+  const pendingViolations = violations.filter(v => v.status === "open");
+  const resolvedViolations = violations.filter(v => v.status === "resolved");
+
+  const columns: Column<Violation>[] = [
+    {
+      header: "Rule / Exception Description",
+      accessorKey: "ruleName",
+      cell: (v) => (
+        <div className="flex flex-col">
+          <span className="font-bold text-slate-900">{v.ruleName}</span>
+          <span className="text-xs text-muted-foreground truncate max-w-[400px]">{v.description}</span>
+        </div>
+      )
     },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/compliance/exceptions/${id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/compliance/exceptions"] });
-      toast({ title: "Exception deleted" });
+    {
+      header: "Severity",
+      accessorKey: "severity",
+      cell: (v) => (
+        <Badge variant={v.severity === 'critical' ? 'destructive' : 'secondary'}>
+          {v.severity.toUpperCase()}
+        </Badge>
+      )
     },
-  });
-
-  const pending = exceptions.filter((e: any) => e.status === "pending").length;
-  const approved = exceptions.filter((e: any) => e.status === "approved").length;
+    {
+      header: "Person / Entity",
+      accessorKey: "entityId",
+      cell: (v) => (
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-[10px] font-mono">{v.entityType}</Badge>
+          <span className="text-sm font-medium">{v.entityId}</span>
+        </div>
+      )
+    },
+    {
+      header: "Detected On",
+      accessorKey: "createdAt",
+      cell: (v) => (
+        <span className="text-sm text-muted-foreground font-mono">
+          {format(new Date(v.createdAt), 'MMM d, yyyy HH:mm')}
+        </span>
+      )
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: (v) => (
+        <Badge
+          className={
+            v.status === 'resolved' ? 'bg-green-100 text-green-700 border-green-200' :
+              'bg-orange-100 text-orange-700 border-orange-200'
+          }
+        >
+          {v.status.toUpperCase()}
+        </Badge>
+      )
+    },
+    {
+      header: "Actions",
+      id: "actions",
+      cell: (v) => (
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 border-blue-200 text-blue-700 hover:bg-blue-50"
+            onClick={() => setSelectedViolation(v)}
+          >
+            <Wrench className="h-4 w-4 mr-1" />
+            Remediate
+          </Button>
+          <Link href={`/hr/persons/${v.entityId}`}>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      )
+    }
+  ];
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 container mx-auto">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <AlertCircle className="h-8 w-8" />
-          Compliance Exceptions
+        <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Compliance", path: "/compliance" }, { label: "Exceptions", path: "/compliance/exceptions" }]} />
+        <h1 className="text-3xl font-bold tracking-tight mt-2 flex items-center gap-2">
+          <AlertCircle className="h-8 w-8 text-orange-500" />
+          Compliance Exceptions Workbench
         </h1>
-        <p className="text-muted-foreground mt-2">Manage compliance rule exceptions and approvals</p>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Monitor and resolve regulatory violations, policy exceptions, and risk-flagged transactions.
+        </p>
       </div>
 
-      <Card data-testid="card-new-exception">
-        <CardHeader><CardTitle className="text-base">Request Exception</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-4 gap-3">
-            <Input placeholder="Rule name" value={newException.rule} onChange={(e) => setNewException({ ...newException, rule: e.target.value })} data-testid="input-rule" />
-            <Input placeholder="User" value={newException.user} onChange={(e) => setNewException({ ...newException, user: e.target.value })} data-testid="input-user" />
-            <Input placeholder="Reason" value={newException.reason} onChange={(e) => setNewException({ ...newException, reason: e.target.value })} data-testid="input-reason" />
-            <Select value={newException.status} onValueChange={(v) => setNewException({ ...newException, status: v })}>
-              <SelectTrigger data-testid="select-status"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button onClick={() => createMutation.mutate(newException)} disabled={createMutation.isPending || !newException.rule} className="w-full gap-2" data-testid="button-request-exception">
-            <Plus className="h-4 w-4" />
-            Request Exception
-          </Button>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-3 gap-3">
-        <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Exceptions</p><p className="text-2xl font-bold">{exceptions.length}</p></CardContent></Card>
-        <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Pending Approval</p><p className="text-2xl font-bold text-yellow-600">{pending}</p></CardContent></Card>
-        <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Approved</p><p className="text-2xl font-bold text-green-600">{approved}</p></CardContent></Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <MetricCard
+          title="Total Open Exceptions"
+          value={pendingViolations.length}
+          icon={ShieldAlert}
+          iconColor="text-orange-500"
+          loading={isLoading}
+        />
+        <MetricCard
+          title="Avg. Resolution Time"
+          value="2.4h"
+          icon={Clock}
+          iconColor="text-blue-500"
+          loading={isLoading}
+        />
+        <MetricCard
+          title="Successful Remediations"
+          value={resolvedViolations.length}
+          icon={CheckCircle2}
+          iconColor="text-green-500"
+          loading={isLoading}
+        />
       </div>
 
-      <Card>
-        <CardHeader><CardTitle className="text-base">Exception Requests</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : exceptions.length === 0 ? <p className="text-muted-foreground text-center py-4">No exceptions</p> : exceptions.map((exc: any) => (
-            <div key={exc.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`exception-${exc.id}`}>
-              <div>
-                <h3 className="font-semibold text-sm">{exc.rule}</h3>
-                <p className="text-sm text-muted-foreground">User: {exc.user} • Reason: {exc.reason}</p>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant={exc.status === "approved" ? "default" : "secondary"}>{exc.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(exc.id)} data-testid={`button-delete-${exc.id}`}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+        <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <h3 className="font-bold text-slate-700">Exception Queue</h3>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Filter by rule or entity..."
+                className="pl-9 h-9 w-[300px] bg-white border-slate-200"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-          ))}
-        </CardContent>
-      </Card>
+          </div>
+          <Button variant="outline" size="sm" className="gap-2">
+            <Filter className="h-4 w-4" />
+            Advanced Filter
+          </Button>
+        </div>
+
+        <StandardTable
+          data={violations}
+          columns={columns}
+          isLoading={isLoading}
+          filterColumn="ruleName"
+        />
+      </div>
+
+      <RemediationSheet
+        violation={selectedViolation}
+        onOpenChange={(open) => !open && setSelectedViolation(null)}
+      />
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { db } from "@db";
 import { hrComplianceRules, hrComplianceViolations, hrComplianceEvents, insertComplianceRuleSchema } from "@shared/schema/hr_compliance";
-import { eq, and, desc } from "drizzle-orm";
+import { hrAssignments, hrWorkRelationships } from "@shared/schema/hr_worker";
+import { eq, and, desc, inArray, or } from "drizzle-orm";
+import { AorService } from "./AorService";
 
 export class ComplianceService {
     static async listRules(tenantId: string) {
@@ -24,8 +26,29 @@ export class ComplianceService {
         return !!deleted;
     }
 
-    static async listViolations(tenantId: string) {
-        return db.select({
+    static async listViolations(tenantId: string, currentUserId?: string) {
+        // AOR Security filtering
+        const aorConditions = [];
+        if (currentUserId) {
+            const userAors = await AorService.getAorForUser(currentUserId, tenantId);
+            if (userAors.length > 0) {
+                const deptIds = userAors.filter(a => a.scopeType === 'DEPARTMENT').map(a => a.scopeValueId);
+                const locIds = userAors.filter(a => a.scopeType === 'LOCATION').map(a => a.scopeValueId);
+                const leIds = userAors.filter(a => a.scopeType === 'LEGAL_EMPLOYER').map(a => a.scopeValueId);
+
+                const conditions = [];
+                // Filter PERSON violations by AOR scopes linked to their assignments/relationships
+                if (deptIds.length > 0) conditions.push(inArray(hrAssignments.departmentId, deptIds));
+                if (locIds.length > 0) conditions.push(inArray(hrAssignments.locationId, locIds));
+                if (leIds.length > 0) conditions.push(inArray(hrWorkRelationships.legalEmployerId, leIds));
+
+                if (conditions.length > 0) {
+                    aorConditions.push(or(...conditions));
+                }
+            }
+        }
+
+        const query = db.select({
             id: hrComplianceViolations.id,
             ruleName: hrComplianceRules.name,
             entityType: hrComplianceEvents.entityType,
@@ -39,8 +62,24 @@ export class ComplianceService {
             .from(hrComplianceViolations)
             .leftJoin(hrComplianceRules, eq(hrComplianceViolations.ruleId, hrComplianceRules.id))
             .leftJoin(hrComplianceEvents, eq(hrComplianceViolations.eventId, hrComplianceEvents.id))
-            .where(eq(hrComplianceViolations.tenantId, tenantId))
+            // Join with worker structures for AOR filtering if it's a PERSON/ASSIGNMENT entity
+            .leftJoin(hrAssignments, and(
+                eq(hrComplianceEvents.entityId, hrAssignments.personId),
+                eq(hrComplianceEvents.entityType, "PERSON"),
+                eq(hrAssignments.primaryAssignmentFlag, true)
+            ))
+            .leftJoin(hrWorkRelationships, and(
+                eq(hrComplianceEvents.entityId, hrWorkRelationships.personId),
+                eq(hrComplianceEvents.entityType, "PERSON"),
+                eq(hrWorkRelationships.primaryFlag, true)
+            ))
+            .where(and(
+                eq(hrComplianceViolations.tenantId, tenantId),
+                ...aorConditions
+            ))
             .orderBy(desc(hrComplianceViolations.createdAt));
+
+        return query;
     }
 
     static async updateViolation(id: string, tenantId: string, data: { status?: string; resolutionNotes?: string }) {

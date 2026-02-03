@@ -23,6 +23,8 @@ export const hrComplianceRules = pgTable("hr_compliance_rules", {
     name: varchar("name").notNull(),
     description: text("description"),
     severity: varchar("severity").notNull(), // critical, high, medium, low
+    category: varchar("category").notNull().default("REGULATORY"), // REGULATORY, POLICY, DATA_PRIVACY
+    legislationCode: varchar("legislation_code").notNull().default("GLOBAL"), // e.g. US, UK, EU
     automationLevel: varchar("automation_level").notNull(), // full, partial, manual
     ruleLogic: jsonb("rule_logic"), // Detailed deterministic rules
     effectiveDate: timestamp("effective_date").notNull(),
