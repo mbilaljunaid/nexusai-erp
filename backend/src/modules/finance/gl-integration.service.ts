@@ -11,7 +11,7 @@ export interface JournalEntryParams {
     creditAccount: string;
     creditAmount: number;
     referenceId?: string;
-    sourceModule: 'COST' | 'INV' | 'AP' | 'AR';
+    sourceModule: 'COST' | 'INV' | 'AP' | 'AR' | 'EX';
 }
 
 @Injectable()

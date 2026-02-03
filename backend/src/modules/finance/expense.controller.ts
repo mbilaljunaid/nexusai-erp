@@ -1,37 +1,81 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Patch,
+  Query
+} from '@nestjs/common';
 import { ExpenseService } from './expense.service';
-import { CreateExpenseDto } from './dto/create-expense.dto';
-import { Expense } from './entities/expense.entity';
+import { ExpenseReport, InsertExpenseReport, InsertExpenseLine } from '@shared/schema';
 
-@Controller('api/finance/expenses')
+@Controller('api/expenses')
 export class ExpenseController {
-  constructor(private readonly expenseService: ExpenseService) {}
+  constructor(private readonly expenseService: ExpenseService) { }
 
-  @Post()
-  create(@Body() createExpenseDto: CreateExpenseDto): Promise<Expense> {
-    return this.expenseService.create(createExpenseDto);
+  @Get('reports')
+  async findAllReports(): Promise<any[]> {
+    return this.expenseService.findAllReports();
   }
 
-  @Get()
-  findAll(): Promise<Expense[]> {
-    return this.expenseService.findAll();
+  @Get('items')
+  async findAllLines(): Promise<any[]> {
+    return this.expenseService.findAllLines();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<Expense | null> {
-    return this.expenseService.findOne(id);
+  @Post('items/validate')
+  async validateLine(@Body() data: any): Promise<any> {
+    return this.expenseService.validateLine(data);
   }
 
-  @Put(':id')
-  update(
+  @Post('reports')
+  async createReport(@Body() data: any): Promise<any> {
+    return this.expenseService.createReport(data);
+  }
+
+  @Patch('reports/:id/status')
+  async updateStatus(
     @Param('id') id: string,
-    @Body() updateExpenseDto: Partial<CreateExpenseDto>,
-  ): Promise<Expense | null> {
-    return this.expenseService.update(id, updateExpenseDto);
+    @Body('status') status: string,
+    @Body('userId') userId: string
+  ): Promise<any> {
+    return this.expenseService.updateStatus(id, status, userId);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.expenseService.remove(id);
+  @Get('reports/:id')
+  async findOneReport(@Param('id') id: string): Promise<any | null> {
+    return this.expenseService.getReport(id);
+  }
+
+  @Post('items')
+  async createLine(@Body() data: any): Promise<any> {
+    return this.expenseService.createLine(data);
+  }
+
+  @Post('items/extract')
+  async extractReceipt(@Body() body: any) {
+    return await this.expenseService.extractReceipt(body);
+  }
+
+  @Get('cards/transactions')
+  async getCardTransactions(@Query('userId') userId: string) {
+    return await this.expenseService.getCardTransactions(userId);
+  }
+
+  @Post('cards/import')
+  async importCardTransactions(@Body('userId') userId: string) {
+    return await this.expenseService.importCardTransactions(userId);
+  }
+
+  @Delete('reports/:id')
+  async removeReport(@Param('id') id: string): Promise<void> {
+    return this.expenseService.removeReport(id);
+  }
+
+  @Post('reports/:id/post-gl')
+  async postToGL(@Param('id') id: string): Promise<any> {
+    return this.expenseService.postToGL(id);
   }
 }

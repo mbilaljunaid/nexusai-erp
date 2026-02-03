@@ -50,6 +50,7 @@ export * from "./revenue_periods";
 export * from "./revenue_rules";
 export * from "./costing";
 export * from "./cost_ai";
+export * from "./finance_expenses";
 
 export * from "./billing_enterprise";
 export * from "./billing_subscription";

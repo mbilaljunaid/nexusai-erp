@@ -64,6 +64,21 @@ import {
   arSystemOptions as arSystemOptionsTable,
   glAutoPostRules as glAutoPostRulesTable,
   glDataAccessSets as glDataAccessSetsTable,
+  expenseReports as expenseReportsTable,
+  expenseLines as expenseLinesTable,
+  expensePolicies as expensePoliciesTable,
+  expensePerDiems as expensePerDiemsTable,
+  corporateCardTransactions as corporateCardTransactionsTable,
+  type ExpenseReport,
+  type InsertExpenseReport,
+  type ExpenseLine,
+  type InsertExpenseLine,
+  type ExpensePolicy,
+  type InsertExpensePolicy,
+  type ExpensePerDiem,
+  type InsertExpensePerDiem,
+  type CorporateCardTransaction,
+  type InsertCorporateCardTransaction,
   type GlAutoPostRule,
   type InsertGlAutoPostRule,
   type GlDataAccessSet,
@@ -1325,5 +1340,94 @@ export const dbStorage = {
       .values(set)
       .returning();
     return result[0];
+  },
+
+  // ========== EXPENSE MANAGEMENT ==========
+  async listExpenseReports(tenantId: string, employeeId?: string): Promise<ExpenseReport[]> {
+    const conditions = [eq(expenseReportsTable.tenantId, tenantId)];
+    if (employeeId) {
+      conditions.push(eq(expenseReportsTable.employeeId, employeeId));
+    }
+    return await db.select().from(expenseReportsTable).where(and(...conditions)).orderBy(desc(expenseReportsTable.createdAt));
+  },
+
+  async getExpenseReport(id: string): Promise<ExpenseReport | undefined> {
+    const result = await db.select().from(expenseReportsTable).where(eq(expenseReportsTable.id, id));
+    return result[0];
+  },
+
+  async createExpenseReport(data: InsertExpenseReport): Promise<ExpenseReport> {
+    const result = await db.insert(expenseReportsTable).values(data).returning();
+    return result[0];
+  },
+
+  async updateExpenseReport(id: string, data: Partial<InsertExpenseReport>): Promise<ExpenseReport> {
+    const [updated] = await db
+      .update(expenseReportsTable)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(expenseReportsTable.id, id))
+      .returning();
+    return updated;
+  },
+
+  async listExpenseLines(reportId: string): Promise<ExpenseLine[]> {
+    return await db.select().from(expenseLinesTable).where(eq(expenseLinesTable.reportId, reportId)).orderBy(desc(expenseLinesTable.createdAt));
+  },
+
+  async listAllExpenseLines(tenantId: string): Promise<ExpenseLine[]> {
+    return await db.select().from(expenseLinesTable).where(eq(expenseLinesTable.tenantId, tenantId)).orderBy(desc(expenseLinesTable.createdAt));
+  },
+
+  async createExpenseLine(data: InsertExpenseLine): Promise<ExpenseLine> {
+    const result = await db.insert(expenseLinesTable).values(data).returning();
+    return result[0];
+  },
+
+  async updateExpenseLine(id: string, data: Partial<InsertExpenseLine>): Promise<ExpenseLine> {
+    const [updated] = await db
+      .update(expenseLinesTable)
+      .set(data)
+      .where(eq(expenseLinesTable.id, id))
+      .returning();
+    return updated;
+  },
+
+  async listExpensePolicies(tenantId: string): Promise<ExpensePolicy[]> {
+    return await db.select().from(expensePoliciesTable).where(eq(expensePoliciesTable.tenantId, tenantId));
+  },
+
+  async createExpensePolicy(data: InsertExpensePolicy): Promise<ExpensePolicy> {
+    const result = await db.insert(expensePoliciesTable).values(data).returning();
+    return result[0];
+  },
+
+  async listExpensePerDiems(tenantId: string): Promise<ExpensePerDiem[]> {
+    return await db.select().from(expensePerDiemsTable).where(eq(expensePerDiemsTable.tenantId, tenantId));
+  },
+
+  async createExpensePerDiem(data: InsertExpensePerDiem): Promise<ExpensePerDiem> {
+    const result = await db.insert(expensePerDiemsTable).values(data).returning();
+    return result[0];
+  },
+
+  async listCorporateCardTransactions(tenantId: string, employeeId?: string): Promise<CorporateCardTransaction[]> {
+    if (employeeId) {
+      return await db.select().from(corporateCardTransactionsTable).where(and(eq(corporateCardTransactionsTable.tenantId, tenantId), eq(corporateCardTransactionsTable.employeeId, employeeId))).orderBy(desc(corporateCardTransactionsTable.transactionDate));
+    }
+    return await db.select().from(corporateCardTransactionsTable).where(eq(corporateCardTransactionsTable.tenantId, tenantId)).orderBy(desc(corporateCardTransactionsTable.transactionDate));
+  },
+
+  async createCorporateCardTransaction(data: InsertCorporateCardTransaction): Promise<CorporateCardTransaction> {
+    const result = await db.insert(corporateCardTransactionsTable).values(data).returning();
+    return result[0];
+  },
+
+  async updateCorporateCardTransaction(id: string, data: Partial<InsertCorporateCardTransaction>): Promise<CorporateCardTransaction> {
+    const [updated] = await db
+      .update(corporateCardTransactionsTable)
+      .set(data)
+      .where(eq(corporateCardTransactionsTable.id, id))
+      .returning();
+    return updated;
   },
 };

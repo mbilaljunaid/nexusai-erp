@@ -5,9 +5,12 @@ import { ExpenseService } from './expense.service';
 import { GlIntegrationService } from './gl-integration.service';
 import { GLEntry } from '../erp/entities/gl-entry.entity';
 
+import { AuditModule } from '../audit/audit.module';
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([GLEntry])
+    TypeOrmModule.forFeature([GLEntry]),
+    AuditModule
   ],
   controllers: [ExpenseController],
   providers: [ExpenseService, GlIntegrationService],

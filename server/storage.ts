@@ -203,7 +203,14 @@ import {
   type CommunityBadgeProgress, type InsertCommunityBadgeProgress,
   invoices as legacyInvoices, type Invoice, type InsertInvoice,
   glCodeCombinations, type GlCodeCombination, type InsertGlCodeCombination,
-  type FaAssetBook
+  type FaAssetBook,
+  // Expense Management
+  expenseReports, expenseLines, expensePolicies, expensePerDiems, corporateCardTransactions,
+  type ExpenseReport, type InsertExpenseReport,
+  type ExpenseLine, type InsertExpenseLine,
+  type ExpensePolicy, type InsertExpensePolicy,
+  type ExpensePerDiem, type InsertExpensePerDiem,
+  type CorporateCardTransaction, type InsertCorporateCardTransaction,
 } from "@shared/schema";
 
 import { dbStorage } from "./storage-db";
@@ -798,6 +805,23 @@ export interface IStorage {
   getTaxExemption(id: string): Promise<TaxExemption | undefined>;
   createTaxExemption(data: InsertTaxExemption): Promise<TaxExemption>;
   getApplicableTaxRate(invoiceId: string): Promise<number>;
+
+  // Expense Management
+  listExpenseReports(tenantId: string, employeeId?: string): Promise<ExpenseReport[]>;
+  getExpenseReport(id: string): Promise<ExpenseReport | undefined>;
+  createExpenseReport(data: InsertExpenseReport): Promise<ExpenseReport>;
+  updateExpenseReport(id: string, data: Partial<InsertExpenseReport>): Promise<ExpenseReport>;
+  listExpenseLines(reportId: string): Promise<ExpenseLine[]>;
+  listAllExpenseLines(tenantId: string): Promise<ExpenseLine[]>;
+  createExpenseLine(data: InsertExpenseLine): Promise<ExpenseLine>;
+  updateExpenseLine(id: string, data: Partial<InsertExpenseLine>): Promise<ExpenseLine>;
+  listExpensePolicies(tenantId: string): Promise<ExpensePolicy[]>;
+  createExpensePolicy(data: InsertExpensePolicy): Promise<ExpensePolicy>;
+  listExpensePerDiems(tenantId: string): Promise<ExpensePerDiem[]>;
+  createExpensePerDiem(data: InsertExpensePerDiem): Promise<ExpensePerDiem>;
+  listCorporateCardTransactions(tenantId: string, employeeId?: string): Promise<CorporateCardTransaction[]>;
+  createCorporateCardTransaction(data: InsertCorporateCardTransaction): Promise<CorporateCardTransaction>;
+  updateCorporateCardTransaction(id: string, data: Partial<InsertCorporateCardTransaction>): Promise<CorporateCardTransaction>;
 }
 
 
@@ -2869,6 +2893,53 @@ export class DatabaseStorage implements IStorage {
 
   async upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions> {
     return await dbStorage.upsertArSystemOptions(data);
+  }
+
+  // Expense Management
+  async listExpenseReports(tenantId: string, employeeId?: string): Promise<ExpenseReport[]> {
+    return await dbStorage.listExpenseReports(tenantId, employeeId);
+  }
+  async getExpenseReport(id: string): Promise<ExpenseReport | undefined> {
+    return await dbStorage.getExpenseReport(id);
+  }
+  async createExpenseReport(data: InsertExpenseReport): Promise<ExpenseReport> {
+    return await dbStorage.createExpenseReport(data);
+  }
+  async updateExpenseReport(id: string, data: Partial<InsertExpenseReport>): Promise<ExpenseReport> {
+    return await dbStorage.updateExpenseReport(id, data);
+  }
+  async listExpenseLines(reportId: string): Promise<ExpenseLine[]> {
+    return await dbStorage.listExpenseLines(reportId);
+  }
+  async listAllExpenseLines(tenantId: string): Promise<ExpenseLine[]> {
+    return await dbStorage.listAllExpenseLines(tenantId);
+  }
+  async createExpenseLine(data: InsertExpenseLine): Promise<ExpenseLine> {
+    return await dbStorage.createExpenseLine(data);
+  }
+  async updateExpenseLine(id: string, data: Partial<InsertExpenseLine>): Promise<ExpenseLine> {
+    return await dbStorage.updateExpenseLine(id, data);
+  }
+  async listExpensePolicies(tenantId: string): Promise<ExpensePolicy[]> {
+    return await dbStorage.listExpensePolicies(tenantId);
+  }
+  async createExpensePolicy(data: InsertExpensePolicy): Promise<ExpensePolicy> {
+    return await dbStorage.createExpensePolicy(data);
+  }
+  async listExpensePerDiems(tenantId: string): Promise<ExpensePerDiem[]> {
+    return await dbStorage.listExpensePerDiems(tenantId);
+  }
+  async createExpensePerDiem(data: InsertExpensePerDiem): Promise<ExpensePerDiem> {
+    return await dbStorage.createExpensePerDiem(data);
+  }
+  async listCorporateCardTransactions(tenantId: string, employeeId?: string): Promise<CorporateCardTransaction[]> {
+    return await dbStorage.listCorporateCardTransactions(tenantId, employeeId);
+  }
+  async createCorporateCardTransaction(data: InsertCorporateCardTransaction): Promise<CorporateCardTransaction> {
+    return await dbStorage.createCorporateCardTransaction(data);
+  }
+  async updateCorporateCardTransaction(id: string, data: Partial<InsertCorporateCardTransaction>): Promise<CorporateCardTransaction> {
+    return await dbStorage.updateCorporateCardTransaction(id, data);
   }
 }
 
