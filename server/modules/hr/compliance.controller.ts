@@ -71,6 +71,17 @@ export async function updateViolation(req: Request, res: Response) {
     }
 }
 
+export async function predictRisk(req: Request, res: Response) {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default";
+        const { transactionType, data } = req.body;
+        const result = await ComplianceRiskService.predictRisk(tenantId, transactionType, data);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 export const complianceController = {
     listRules,
     createRule,

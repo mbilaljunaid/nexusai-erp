@@ -109,3 +109,4 @@ hrRouter.post("/compliance-rules", complianceController.createRule);
 hrRouter.delete("/compliance-rules/:id", complianceController.deleteRule);
 hrRouter.get("/compliance/violations", complianceController.listViolations);
 hrRouter.patch("/compliance/violations/:id", complianceController.updateViolation);
+hrRouter.post("/compliance/predict-risk", complianceController.predictRisk);
