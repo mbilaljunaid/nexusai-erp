@@ -6,6 +6,7 @@ import {
 } from "@shared/schema";
 import { eq, and, like, or, sql, desc, count, ilike, lte, gte, isNull, inArray } from "drizzle-orm";
 import { AorService } from "./AorService";
+import { ComplianceEngineService } from "./ComplianceEngineService";
 
 // Types for Paginated Response
 export interface PaginatedResult<T> {
@@ -80,6 +81,13 @@ export class PersonService {
             const [assignment] = await tx.insert(hrAssignments).values(assignmentData).returning();
             await this.logAudit(tx, { tenantId, actorId, entityType: "ASSIGNMENT", entityId: assignment.id, action: "CREATE", changes: assignmentData });
 
+            // 4. Evaluate Compliance
+            await ComplianceEngineService.evaluateTransaction(tenantId, "PERSON", person.id, {
+                ...personData,
+                assignment: assignmentData,
+                workRelationship: relationshipData
+            });
+
             return { person, relationship, assignment };
         });
     }
@@ -138,6 +146,14 @@ export class PersonService {
             await this.logAudit(tx, {
                 tenantId, actorId, entityType: "ASSIGNMENT", entityId: "ALL_ACTIVE", action: "TERMINATE",
                 changes: { effectiveEndDate: terminationDate }
+            });
+
+            // 4. Evaluate Compliance (Termination)
+            await ComplianceEngineService.evaluateTransaction(tenantId, "WORK_RELATIONSHIP", relationshipId, {
+                personId,
+                terminationDate,
+                reason: data.reason,
+                status: "TERMINATED"
             });
 
             return updatedRel;
@@ -199,6 +215,12 @@ export class PersonService {
             await this.logAudit(tx, {
                 tenantId, actorId, entityType: "ASSIGNMENT", entityId: newAsg.id, action: "TRANSFER",
                 changes: { from: currentAsg.id, to: newAsg.id, reason: data.reason, ...data }
+            });
+
+            // 4. Evaluate Compliance (Transfer)
+            await ComplianceEngineService.evaluateTransaction(tenantId, "ASSIGNMENT", newAsg.id, {
+                ...newAsgData,
+                reason: data.reason
             });
 
             return newAsg;

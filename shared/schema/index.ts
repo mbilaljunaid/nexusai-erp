@@ -14,6 +14,7 @@ export * from './talent_succession';
 export * from "./hr_hdl";
 export * from "./hr_aor";
 export * from "./hr_delegation";
+export * from "./hr_compliance";
 export * from "./manufacturing";
 export * from "./scm";
 export * from "./projects";

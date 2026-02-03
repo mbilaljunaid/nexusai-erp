@@ -100,3 +100,12 @@ hrRouter.post("/tasks/:taskId/status", checklistController.updateTaskStatus);
 import * as hdlController from "./hdl.controller";
 hrRouter.post("/hdl/workers", hdlController.importWorkers);
 hrRouter.get("/hdl/history", hdlController.getRecentImports);
+
+// --- Phase 9: Compliance & Governance ---
+import { complianceController } from "./compliance.controller";
+hrRouter.get("/compliance/analytics", complianceController.getAnalytics);
+hrRouter.get("/compliance-rules", complianceController.listRules);
+hrRouter.post("/compliance-rules", complianceController.createRule);
+hrRouter.delete("/compliance-rules/:id", complianceController.deleteRule);
+hrRouter.get("/compliance/violations", complianceController.listViolations);
+hrRouter.patch("/compliance/violations/:id", complianceController.updateViolation);

@@ -32,7 +32,7 @@ export const hrmTimeRules = pgTable("hrm_time_rules", {
 
 // 2. ACCRUAL POLICIES
 // Tenure-based logic: "If tenure > 5 years, accrue 15 days/year"
-export const hrmAccrualPolicies = pgTable("hrm_accrual_policy_rules", {
+export const hrmAccrualPolicyRules = pgTable("hrm_accrual_policy_rules", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     tenantId: varchar("tenant_id").notNull(),
 
@@ -49,4 +49,4 @@ export const hrmAccrualPolicies = pgTable("hrm_accrual_policy_rules", {
 });
 
 export const insertTimeRuleSchema = createInsertSchema(hrmTimeRules);
-export const insertAccrualPolicySchema = createInsertSchema(hrmAccrualPolicies);
+export const insertAccrualPolicyRuleSchema = createInsertSchema(hrmAccrualPolicyRules);
