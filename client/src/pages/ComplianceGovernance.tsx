@@ -96,10 +96,16 @@ export default function ComplianceGovernance() {
     queryFn: () => fetch("/api/hr/compliance/analytics").then(r => r.json()),
   });
 
-  const { data: violations = [] } = useQuery<Violation[]>({
-    queryKey: ["/api/hr/compliance/violations"],
-    queryFn: () => fetch("/api/hr/compliance/violations").then(r => r.json()),
+  const [violationPage, setViolationPage] = useState(1);
+  const violationLimit = 20;
+
+  const { data: violationsData = { data: [], total: 0 }, isLoading: isViolationsLoading } = useQuery<{ data: Violation[], total: number }>({
+    queryKey: ["/api/hr/compliance/violations", { page: violationPage, limit: violationLimit }],
+    queryFn: () => fetch(`/api/hr/compliance/violations?page=${violationPage}&limit=${violationLimit}`).then(r => r.json()),
   });
+
+  const violations = violationsData.data;
+  const totalViolations = violationsData.total;
 
   const metrics = analyticsData?.metrics || { totalRules: 0, openViolations: 0, criticalIssues: 0 };
 
@@ -315,6 +321,7 @@ export default function ComplianceGovernance() {
             )}
           </TabsTrigger>
           <TabsTrigger value="readiness" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Regulatory Readiness</TabsTrigger>
+          <TabsTrigger value="risk_config" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Risk Configuration</TabsTrigger>
         </TabsList>
 
         <TabsContent value="rules">
@@ -398,6 +405,7 @@ export default function ComplianceGovernance() {
                       <div className="space-y-4">
                         <Label className="text-sm font-extrabold text-slate-900 italic">Rule Configuration</Label>
                         <RuleBuilder
+                          legislationCode={newRule.legislationCode}
                           onSave={(logic) => {
                             setNewRule(prev => ({ ...prev, ruleLogic: logic }));
                             toast({ title: "Logic Generated", description: "Rule evaluation strategy attached." });
@@ -439,7 +447,52 @@ export default function ComplianceGovernance() {
               data={violations}
               columns={violationColumns}
               filterColumn="ruleName"
+              totalCount={totalViolations}
+              page={violationPage}
+              onPageChange={setViolationPage}
+              isLoading={isViolationsLoading}
             />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="risk_config">
+          <div className="bg-white rounded-xl border shadow-sm p-6">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-indigo-600" />
+              Weighted Heuristic Configuration
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+              {[
+                { key: "TENURE_VOLATILITY", label: "Tenure Volatility", description: "Impact of frequent job changes in short periods." },
+                { key: "TRANSACTION_TIMING", label: "Transaction Timing", description: "Risk weight for off-hours system activity." },
+                { key: "ROLE_SENSITIVITY", label: "Role Sensitivity", description: "Weight for access to sensitive financial/admin roles." },
+                { key: "TRANSFER_FREQUENCY", label: "Transfer Frequency", description: "Weight for multiple organization transfers." }
+              ].map((factor) => (
+                <div key={factor.key} className="space-y-4 p-4 border rounded-xl bg-slate-50/50">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <Label className="font-bold text-slate-800">{factor.label}</Label>
+                      <p className="text-xs text-muted-foreground">{factor.description}</p>
+                    </div>
+                    <Badge variant="outline" className="bg-white">Weight: 25</Badge>
+                  </div>
+                  <div className="pt-2">
+                    <input
+                      type="range"
+                      id={`risk-factor-${factor.key}`}
+                      title={factor.label}
+                      className="w-full accent-indigo-600"
+                      min="0"
+                      max="100"
+                      defaultValue="25"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 border-t pt-6 flex justify-end">
+              <Button className="bg-indigo-600 hover:bg-indigo-700">Save Risk Strategy</Button>
+            </div>
           </div>
         </TabsContent>
 

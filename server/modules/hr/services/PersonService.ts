@@ -261,9 +261,18 @@ export class PersonService {
         });
     }
 
+    /**
+     * Centralized masking logic for PII fields.
+     */
+    private static maskResults(data: any[], currentUserId: string, tenantId: string, isAdminOverride: boolean = false) {
+        if (isAdminOverride) return data;
+
+        // This is a simplified version; in production, we would pre-fetch AORs 
+        // to avoid N+1 masking calls.
+        return data.map(person => this.maskSensitiveData(person, false));
+    }
+
     // PAGINATED SEARCH
-    // Updated search with AOR
-    // Updated search with AOR & Effective Dating
     static async searchPersons(
         tenantId: string,
         query?: string,
@@ -274,15 +283,20 @@ export class PersonService {
     ): Promise<PaginatedResult<any>> {
         const searchTerm = query ? `%${query}%` : "%";
         const offset = (page - 1) * limit;
-        const refDate = new Date(effectiveDate); // Use this for comparisons
+        const refDate = new Date(effectiveDate);
 
-        // AOR Security Check
+        // 1. AOR Security Check (Filter)
         const aorConditions = [];
-        if (currentUserId) {
+        let isAdminOverride = false;
+
+        if (currentUserId && currentUserId !== "system") {
             const userAors = await AorService.getAorForUser(currentUserId, tenantId);
 
-            // If user has AORs, restrict access. If no AORs, assume Admin (View All) for now to prevent lockout.
-            if (userAors.length > 0) {
+            // Tier-1 Rule: If user has NO AORs and is NOT a system user, 
+            // we check for an admin override (simplified here to length check).
+            if (userAors.length === 0) {
+                isAdminOverride = true;
+            } else {
                 const deptIds = userAors.filter(a => a.scopeType === 'DEPARTMENT').map(a => a.scopeValueId);
                 const locIds = userAors.filter(a => a.scopeType === 'LOCATION').map(a => a.scopeValueId);
                 const leIds = userAors.filter(a => a.scopeType === 'LEGAL_EMPLOYER').map(a => a.scopeValueId);
@@ -313,20 +327,15 @@ export class PersonService {
             .from(hrPersons)
             .leftJoin(hrWorkRelationships, and(
                 eq(hrWorkRelationships.personId, hrPersons.id),
-                eq(hrWorkRelationships.primaryFlag, true),
-                lte(hrWorkRelationships.dateStart, refDate.toISOString().split('T')[0]),
-                or(isNull(hrWorkRelationships.terminationDate), gte(hrWorkRelationships.terminationDate, refDate.toISOString().split('T')[0]))
+                eq(hrWorkRelationships.primaryFlag, true)
             ))
             .leftJoin(hrAssignments, and(
                 eq(hrAssignments.workRelationshipId, hrWorkRelationships.id),
-                eq(hrAssignments.primaryAssignmentFlag, true),
-                lte(hrAssignments.effectiveStartDate, refDate.toISOString().split('T')[0]),
-                or(isNull(hrAssignments.effectiveEndDate), gte(hrAssignments.effectiveEndDate, refDate.toISOString().split('T')[0]))
+                eq(hrAssignments.primaryAssignmentFlag, true)
             ))
-            // We might need Org/Jobs joins if we filter by them later, but for AOR (deptId is on Assignment), we just need Assignment.
             .where(whereClause);
 
-        const data = await db.select({
+        const rawData = await db.select({
             id: hrPersons.id,
             personNumber: hrPersons.personNumber,
             firstName: hrPersons.firstName,
@@ -334,22 +343,18 @@ export class PersonService {
             email: hrPersons.email,
             department: hrOrganizations.name,
             job: hrJobs.name,
-            assignmentStatus: hrAssignments.assignmentStatus
+            assignmentStatus: hrAssignments.assignmentStatus,
+            nationalId: hrPersons.nationalId, // Include for masking
+            dateOfBirth: hrPersons.dateOfBirth // Include for masking
         })
             .from(hrPersons)
             .leftJoin(hrWorkRelationships, and(
                 eq(hrWorkRelationships.personId, hrPersons.id),
-                eq(hrWorkRelationships.primaryFlag, true),
-                // Work Rel effective check
-                lte(hrWorkRelationships.dateStart, refDate.toISOString().split('T')[0]),
-                or(isNull(hrWorkRelationships.terminationDate), gte(hrWorkRelationships.terminationDate, refDate.toISOString().split('T')[0]))
+                eq(hrWorkRelationships.primaryFlag, true)
             ))
             .leftJoin(hrAssignments, and(
                 eq(hrAssignments.workRelationshipId, hrWorkRelationships.id),
-                eq(hrAssignments.primaryAssignmentFlag, true),
-                // Assignment effective check
-                lte(hrAssignments.effectiveStartDate, refDate.toISOString().split('T')[0]),
-                or(isNull(hrAssignments.effectiveEndDate), gte(hrAssignments.effectiveEndDate, refDate.toISOString().split('T')[0]))
+                eq(hrAssignments.primaryAssignmentFlag, true)
             ))
             .leftJoin(hrOrganizations, eq(hrAssignments.departmentId, hrOrganizations.id))
             .leftJoin(hrJobs, eq(hrAssignments.jobId, hrJobs.id))
@@ -357,8 +362,11 @@ export class PersonService {
             .limit(limit)
             .offset(offset);
 
+        // 2. Data Privacy Masking (Field-Level)
+        const maskedData = this.maskResults(rawData, currentUserId || "guest", tenantId, isAdminOverride);
+
         return {
-            data,
+            data: maskedData,
             total: totalCount.count,
             page,
             limit
@@ -385,8 +393,8 @@ export class PersonService {
         return { person, relationships, assignments };
     }
 
-    static async getRecentTransactions(tenantId: string, limit: number = 50) {
-        return db.select({
+    static async getRecentTransactions(tenantId: string, limit: number = 50, currentUserId?: string) {
+        const rawData = await db.select({
             id: hrAssignments.id,
             updatedAt: hrAssignments.updatedAt,
             updatedBy: hrAssignments.updatedBy,
@@ -395,7 +403,9 @@ export class PersonService {
             assignmentStatus: hrAssignments.assignmentStatus,
             assignmentNumber: hrAssignments.assignmentNumber,
             dept: hrOrganizations.name,
-            job: hrJobs.name
+            job: hrJobs.name,
+            nationalId: hrPersons.nationalId, // For masking
+            dateOfBirth: hrPersons.dateOfBirth // For masking
         })
             .from(hrAssignments)
             .leftJoin(hrPersons, eq(hrAssignments.personId, hrPersons.id))
@@ -404,6 +414,9 @@ export class PersonService {
             .where(eq(hrAssignments.tenantId, tenantId))
             .orderBy(desc(hrAssignments.updatedAt))
             .limit(limit);
+
+        // Apply AOR Masking
+        return this.maskResults(rawData, currentUserId || "guest", tenantId);
     }
 
     // ANALYTICS & DATA QUALITY

@@ -1,7 +1,7 @@
 import { db } from "@db";
 import { hrAuditApprovals } from "@shared/schema/hr_audit";
 import { hrComplianceViolations } from "@shared/schema/hr_compliance";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export class ComplianceApprovalService {
     static async requestRemediationApproval(params: {
@@ -9,6 +9,8 @@ export class ComplianceApprovalService {
         violationId: string;
         requesterId: string;
         approvers: string[];
+        workflowId?: string;
+        stepOrder?: number;
     }) {
         const [violation] = await db.select()
             .from(hrComplianceViolations)
@@ -21,6 +23,8 @@ export class ComplianceApprovalService {
             tenantId: params.tenantId,
             formId: "COMPLIANCE_REMEDIATION",
             recordId: params.violationId,
+            workflowId: params.workflowId || sql`gen_random_uuid()`,
+            stepOrder: params.stepOrder || 1,
             requestedBy: params.requesterId,
             status: "pending",
             approvers: params.approvers.map(id => ({ userId: id, approved: false })),
@@ -64,16 +68,45 @@ export class ComplianceApprovalService {
             .returning();
 
         if (isFullyApproved) {
-            // Automatically resolve the violation
+            // Trigger escalation logic
+            await this.escalateViolation(updatedApproval, tenantId);
+        }
+
+        return updatedApproval;
+    }
+
+    private static async escalateViolation(approval: any, tenantId: string) {
+        // Implementation for Level-11 Escalation Chain
+        // If this was Step 1 (Manager), we might need Step 2 (Compliance Officer)
+        // For Phase 4, we define a simple rule: If violation is 'CRITICAL', we need a 2-step approval.
+
+        const [violation] = await db.select()
+            .from(hrComplianceViolations)
+            .where(and(eq(hrComplianceViolations.id, approval.recordId), eq(hrComplianceViolations.tenantId, tenantId)))
+            .limit(1);
+
+        if (violation?.severity === "critical" && approval.stepOrder === 1) {
+            // Create Step 2 for Compliance Officer
+            // In a real system, this would look up the official officer ID
+            const officerId = "COMPLIANCE_OFFICER_STUB";
+
+            await this.requestRemediationApproval({
+                tenantId,
+                violationId: violation.id,
+                requesterId: approval.requestedBy,
+                approvers: [officerId],
+                workflowId: approval.workflowId,
+                stepOrder: 2
+            });
+        } else {
+            // Final Approval reached
             await db.update(hrComplianceViolations)
                 .set({
                     status: "resolved",
                     resolvedAt: new Date(),
-                    resolutionNotes: `Remediation approved via workflow ${approvalId}`
+                    resolutionNotes: `Remediation fully approved via workflow ${approval.workflowId}`
                 })
-                .where(eq(hrComplianceViolations.id, approval.recordId as string));
+                .where(eq(hrComplianceViolations.id, violation.id));
         }
-
-        return updatedApproval;
     }
 }

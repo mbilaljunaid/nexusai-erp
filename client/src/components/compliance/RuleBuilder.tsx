@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,20 +9,56 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Code, Settings2, ShieldCheck, Clock } from "lucide-react";
+import { Code, Settings2, ShieldCheck, Clock, BookTemplate } from "lucide-react";
 
 interface RuleBuilderProps {
     onSave: (logic: any) => void;
     initialLogic?: any;
+    legislationCode?: string;
 }
 
-export function RuleBuilder({ onSave, initialLogic }: RuleBuilderProps) {
+const TEMPLATES: Record<string, any[]> = {
+    "US": [
+        { label: "I-9 Verification (3 Days)", type: "TIME_TRIGGER", logic: { type: "TIME_TRIGGER", dateField: "effectiveStartDate", operator: "GREATER_THAN", value: 3, remediation: ["Complete Form I-9"] } },
+        { label: "FLSA Min Age (14)", type: "MIN_AGE", logic: { type: "MIN_AGE", threshold: 14 } },
+        { label: "SSN Validation", type: "IDENTIFICATION", logic: { type: "IDENTIFICATION" } }
+    ],
+    "UK": [
+        { label: "Right to Work Check", type: "REQUIRED_FIELD", logic: { type: "REQUIRED_FIELD", field: "citizenshipDetails" } },
+        { label: "NIN Validation", type: "IDENTIFICATION", logic: { type: "IDENTIFICATION" } },
+        { label: "Pension Auto-Enrollment (22y)", type: "MIN_AGE", logic: { type: "MIN_AGE", threshold: 22 } }
+    ],
+    "EU": [
+        { label: "GDPR Consent (Annual)", type: "TIME_TRIGGER", logic: { type: "TIME_TRIGGER", dateField: "dateStart", operator: "MODULO", modulus: 365, window: 30, remediation: ["Renew GDPR Consent"] } },
+        { label: "Working Time Directive", type: "TIME_TRIGGER", logic: { type: "TIME_TRIGGER", dateField: "effectiveStartDate", operator: "GREATER_THAN", value: 48, remediation: ["Review Weekly Hours"] } }
+    ]
+};
+
+export function RuleBuilder({ onSave, initialLogic, legislationCode = "GLOBAL" }: RuleBuilderProps) {
     const [type, setType] = useState(initialLogic?.type || "REQUIRED_FIELD");
     const [field, setField] = useState(initialLogic?.field || "");
     const [threshold, setThreshold] = useState(initialLogic?.threshold || 18);
     const [dateField, setDateField] = useState(initialLogic?.dateField || "dateStart");
     const [operator, setOperator] = useState(initialLogic?.operator || "GREATER_THAN");
     const [value, setValue] = useState(initialLogic?.value || 90);
+    const [modulus, setModulus] = useState(initialLogic?.modulus || 365);
+    const [window, setWindow] = useState(initialLogic?.window || 30);
+
+    // Apply template logic
+    const applyTemplate = (templateIndex: string) => {
+        const tpl = TEMPLATES[legislationCode]?.[parseInt(templateIndex)];
+        if (!tpl) return;
+
+        setType(tpl.type);
+        const l = tpl.logic;
+        if (l.field) setField(l.field);
+        if (l.threshold) setThreshold(l.threshold);
+        if (l.dateField) setDateField(l.dateField);
+        if (l.operator) setOperator(l.operator);
+        if (l.value) setValue(l.value);
+        if (l.modulus) setModulus(l.modulus);
+        if (l.window) setWindow(l.window);
+    };
 
     const handleSave = () => {
         let logic: any = { type };
@@ -31,14 +67,43 @@ export function RuleBuilder({ onSave, initialLogic }: RuleBuilderProps) {
         if (type === "TIME_TRIGGER") {
             logic.dateField = dateField;
             logic.operator = operator;
-            logic.value = value;
+            if (operator === "MODULO") {
+                logic.modulus = modulus;
+                logic.window = window;
+            } else {
+                logic.value = value;
+            }
         }
-        // IDENTIFICATION and GHOST_EMPLOYEE often don't need extra params yet
         onSave(logic);
     };
 
+    const availableTemplates = TEMPLATES[legislationCode] || [];
+
     return (
         <div className="space-y-6 p-1">
+            {availableTemplates.length > 0 && (
+                <div className="bg-indigo-50 border border-indigo-100 p-3 rounded-xl flex items-center gap-4">
+                    <BookTemplate className="h-5 w-5 text-indigo-600" />
+                    <div className="flex-1">
+                        <Label className="text-xs font-bold text-indigo-800 uppercase tracking-wider mb-1 block">
+                            Quick Start: {legislationCode} Templates
+                        </Label>
+                        <Select onValueChange={applyTemplate}>
+                            <SelectTrigger className="h-9 bg-white border-indigo-200">
+                                <SelectValue placeholder="Choose a legislative template..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {availableTemplates.map((t, idx) => (
+                                    <SelectItem key={idx} value={idx.toString()}>
+                                        {t.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+            )}
+
             <div className="space-y-2">
                 <Label className="text-sm font-bold flex items-center gap-2">
                     <Settings2 className="h-4 w-4 text-indigo-500" />
@@ -107,22 +172,54 @@ export function RuleBuilder({ onSave, initialLogic }: RuleBuilderProps) {
                                 <SelectContent>
                                     <SelectItem value="GREATER_THAN">Greater Than (Past)</SelectItem>
                                     <SelectItem value="LESS_THAN">Less Than (Within)</SelectItem>
+                                    <SelectItem value="MODULO">Recurring Every (Modulo)</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
-                    <div className="space-y-2">
-                        <Label className="text-sm font-bold flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-orange-500" />
-                            Threshold (Days)
-                        </Label>
-                        <Input
-                            type="number"
-                            value={value}
-                            onChange={(e) => setValue(parseInt(e.target.value))}
-                            className="h-11 rounded-xl"
-                        />
-                    </div>
+
+                    {operator === "MODULO" ? (
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-sm font-bold flex items-center gap-2">
+                                    <Clock className="h-4 w-4 text-blue-500" />
+                                    Recurrence (Days)
+                                </Label>
+                                <Input
+                                    type="number"
+                                    value={modulus}
+                                    onChange={(e) => setModulus(parseInt(e.target.value))}
+                                    className="h-11 rounded-xl"
+                                    placeholder="365"
+                                />
+                                <p className="text-[10px] text-muted-foreground">e.g. 365 for Annually</p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-bold">Warning Window (Days)</Label>
+                                <Input
+                                    type="number"
+                                    value={window}
+                                    onChange={(e) => setWindow(parseInt(e.target.value))}
+                                    className="h-11 rounded-xl"
+                                    placeholder="30"
+                                />
+                                <p className="text-[10px] text-muted-foreground">Trigger if within X days of due date</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-2">
+                            <Label className="text-sm font-bold flex items-center gap-2">
+                                <Clock className="h-4 w-4 text-orange-500" />
+                                Threshold (Days)
+                            </Label>
+                            <Input
+                                type="number"
+                                value={value}
+                                onChange={(e) => setValue(parseInt(e.target.value))}
+                                className="h-11 rounded-xl"
+                            />
+                        </div>
+                    )}
                 </div>
             )}
 

@@ -28,6 +28,9 @@ export const hrAuditApprovals = pgTable("hr_audit_approvals", {
     formId: varchar("form_id").notNull(), // e.g. "PERSONAL_DATA_CHANGE"
     recordId: varchar("record_id").notNull(), // e.g. personId
 
+    workflowId: varchar("workflow_id"), // Links related steps
+    stepOrder: integer("step_order").default(1), // 1, 2, 3...
+
     requestedBy: varchar("requested_by").notNull(),
     requestedAt: timestamp("requested_at").default(sql`now()`),
 

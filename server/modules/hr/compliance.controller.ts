@@ -58,8 +58,11 @@ export async function listViolations(req: Request, res: Response) {
     try {
         const tenantId = (req as any).user?.tenantId || "default";
         const userId = (req as any).user?.id;
-        const violations = await ComplianceService.listViolations(tenantId, userId);
-        res.json(violations);
+        const page = req.query.page ? parseInt(req.query.page as string) : 1;
+        const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+
+        const result = await ComplianceService.listViolations(tenantId, userId, page, limit);
+        res.json(result);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -116,6 +119,19 @@ export async function approveRemediation(req: Request, res: Response) {
     }
 }
 
+export async function listApprovals(req: Request, res: Response) {
+    try {
+        const tenantId = (req as any).user?.tenantId || "default";
+        const { violationId } = req.query;
+        if (!violationId) return res.status(400).json({ message: "violationId is required" });
+
+        const approvals = await ComplianceApprovalService.listApprovals(violationId as string, tenantId);
+        res.json(approvals);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 export const complianceController = {
     listRules,
     createRule,
@@ -125,5 +141,6 @@ export const complianceController = {
     updateViolation,
     predictRisk,
     requestRemediationApproval,
-    approveRemediation
+    approveRemediation,
+    listApprovals
 };

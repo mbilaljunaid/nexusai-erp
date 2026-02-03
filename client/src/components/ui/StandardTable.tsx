@@ -40,6 +40,7 @@ export interface StandardTableProps<T> {
     page?: number;     // Current page (1-based)
     pageSize?: number; // Items per page
     totalItems?: number;
+    totalCount?: number; // Alias for totalItems
     onPageChange?: (page: number) => void;
 
     onRowClick?: (item: T) => void;
@@ -67,6 +68,7 @@ export function StandardTable<T>({
     page: propPage,
     pageSize = 10,
     totalItems: propTotalItems,
+    totalCount: propTotalCount,
     onPageChange,
     onRowClick,
     className,
@@ -91,8 +93,8 @@ export function StandardTable<T>({
         });
     }, [data, filterColumn, filterValue]);
 
-    const isClientSidePagination = propTotalItems === undefined;
-    const totalCount = isClientSidePagination ? filteredData.length : (propTotalItems ?? filteredData.length);
+    const isClientSidePagination = propTotalItems === undefined && propTotalCount === undefined;
+    const totalCount = isClientSidePagination ? filteredData.length : (propTotalItems ?? propTotalCount ?? filteredData.length);
     const totalPages = Math.ceil(totalCount / pageSize);
 
     const paginatedData = useMemo(() => {

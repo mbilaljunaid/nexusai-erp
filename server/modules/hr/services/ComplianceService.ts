@@ -44,12 +44,30 @@ export class ComplianceService {
         return conditions;
     }
 
-    static async listViolations(tenantId: string, currentUserId?: string) {
+    static async listViolations(tenantId: string, currentUserId?: string, page: number = 1, limit: number = 20) {
         // AOR Security filtering
         const conditions = await this.getAorConditions(tenantId, currentUserId);
         const aorConditions = conditions.length > 0 ? [or(...conditions)] : [];
+        const offset = (page - 1) * limit;
 
-        const query = db.select({
+        const whereClause = and(
+            eq(hrComplianceViolations.tenantId, tenantId),
+            ...aorConditions
+        );
+
+        // 1. Get Total Count
+        const [totalCount] = await db.select({ count: sql<number>`count(*)` })
+            .from(hrComplianceViolations)
+            .leftJoin(hrComplianceEvents, eq(hrComplianceViolations.eventId, hrComplianceEvents.id))
+            .leftJoin(hrAssignments, and(
+                eq(hrComplianceEvents.entityId, hrAssignments.personId),
+                eq(hrComplianceEvents.entityType, "PERSON"),
+                eq(hrAssignments.primaryAssignmentFlag, true)
+            ))
+            .where(whereClause);
+
+        // 2. Get Paginated Data
+        const data = await db.select({
             id: hrComplianceViolations.id,
             ruleName: hrComplianceRules.name,
             entityType: hrComplianceEvents.entityType,
@@ -74,13 +92,17 @@ export class ComplianceService {
                 eq(hrComplianceEvents.entityType, "PERSON"),
                 eq(hrWorkRelationships.primaryFlag, true)
             ))
-            .where(and(
-                eq(hrComplianceViolations.tenantId, tenantId),
-                ...aorConditions
-            ))
-            .orderBy(desc(hrComplianceViolations.createdAt));
+            .where(whereClause)
+            .orderBy(desc(hrComplianceViolations.createdAt))
+            .limit(limit)
+            .offset(offset);
 
-        return query;
+        return {
+            data,
+            total: Number(totalCount?.count || 0),
+            page,
+            limit
+        };
     }
 
     static async updateViolation(id: string, tenantId: string, data: { status?: string; resolutionNotes?: string }) {

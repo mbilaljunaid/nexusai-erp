@@ -99,8 +99,9 @@ async function getRecentTransactions(req: Request, res: Response) {
     try {
         const tenantId = (req as any).user?.tenantId || "default";
         const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+        const userId = (req as any).user?.id;
 
-        const transactions = await PersonService.getRecentTransactions(tenantId, limit);
+        const transactions = await PersonService.getRecentTransactions(tenantId, limit, userId);
         res.json(transactions);
     } catch (error: any) {
         console.error("Error fetching transactions:", error);

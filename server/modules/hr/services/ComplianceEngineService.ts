@@ -145,6 +145,24 @@ class TimeTriggerStrategy implements IRuleStrategy {
             };
         }
 
+        if (logic.operator === "MODULO") {
+            const modulus = logic.modulus || 365;
+            const window = logic.window || 30; // Default 30 day warning window
+            const remainder = diffDays % modulus;
+
+            // Trigger if we are in the "window" period after the cycle resets (recurrence due)
+            // e.g. Day 370 (Remainder 5). Window 30. 5 < 30. Trigger!
+            // e.g. Day 180 (Remainder 180). Window 30. 180 > 30. Compliant.
+            if (remainder < window) {
+                return {
+                    isCompliant: false,
+                    reason: `${rule.name}: Recurring cycle due. (${remainder} days into new cycle).`,
+                    metadata: { diffDays, remainder, modulus, window },
+                    remediation: logic.remediation || ["Perform recurring certification/review"]
+                };
+            }
+        }
+
         return { isCompliant: true, metadata: { diffDays } };
     }
 }

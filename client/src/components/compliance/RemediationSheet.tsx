@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
     Sheet,
     SheetContent,
@@ -58,11 +59,17 @@ export function RemediationSheet({ violation, onOpenChange }: RemediationSheetPr
         },
     });
 
+    const { data: approvals = [] } = useQuery<any[]>({
+        queryKey: ["/api/hr/compliance/approvals", violation?.id],
+        queryFn: () => fetch(`/api/hr/compliance/approvals?violationId=${violation?.id}`).then(r => r.json()),
+        enabled: !!violation?.id
+    });
+
     if (!violation) return null;
 
     return (
         <Sheet open={!!violation} onOpenChange={onOpenChange}>
-            <SheetContent className="sm:max-w-md">
+            <SheetContent className="sm:max-w-md overflow-y-auto">
                 <SheetHeader>
                     <SheetTitle className="text-xl font-bold border-b pb-4">
                         Remediate Violation
@@ -70,6 +77,32 @@ export function RemediationSheet({ violation, onOpenChange }: RemediationSheetPr
                 </SheetHeader>
 
                 <div className="py-6 space-y-6">
+                    {/* Approval Chain Visualizer */}
+                    {approvals.length > 0 && (
+                        <div className="space-y-3">
+                            <Label className="text-xs uppercase text-muted-foreground font-semibold">Approval Chain</Label>
+                            <div className="space-y-4 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+                                {approvals.sort((a, b) => (a.stepOrder || 1) - (b.stepOrder || 1)).map((step, idx) => (
+                                    <div key={idx} className="flex gap-4 relative">
+                                        <div className={`h-6 w-6 rounded-full border-2 bg-white flex items-center justify-center shrink-0 z-10 ${step.status === 'approved' ? 'border-green-500 text-green-500' :
+                                            step.status === 'rejected' ? 'border-red-500 text-red-500' : 'border-slate-300 text-slate-400'
+                                            }`}>
+                                            <span className="text-[10px] font-bold">{step.stepOrder || 1}</span>
+                                        </div>
+                                        <div className="flex-1 pt-0.5">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-sm font-semibold">{step.status.toUpperCase()}</span>
+                                                <Badge variant="outline" className="text-[10px] h-4">Step {step.stepOrder || 1}</Badge>
+                                            </div>
+                                            <p className="text-[11px] text-muted-foreground mt-0.5">
+                                                {step.status === 'approved' ? 'Approval granted by governance chain.' : 'Pending review by authorities.'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     <div className="space-y-1">
                         <Label className="text-xs uppercase text-muted-foreground font-semibold">Rule Violated</Label>
                         <p className="text-sm font-medium">{violation.ruleName}</p>

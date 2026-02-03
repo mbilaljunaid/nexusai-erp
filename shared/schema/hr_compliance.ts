@@ -32,6 +32,16 @@ export const hrComplianceRules = pgTable("hr_compliance_rules", {
     isActive: boolean("is_active").default(true),
 });
 
+export const hrRiskConfigurations = pgTable("hr_risk_configurations", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+    factorKey: varchar("factor_key").notNull(), // TENURE_VOLATILITY, TRANSACTION_TIMING, ROLE_SENSITIVITY
+    weight: integer("weight").notNull().default(10), // 0-100
+    threshold: integer("threshold"), // Optional trigger threshold
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
 // ========== COMPLIANCE TRANSACTIONS ==========
 
 export const hrComplianceEvents = pgTable("hr_compliance_events", {
@@ -66,6 +76,7 @@ export const insertComplianceFrameworkSchema = createInsertSchema(hrComplianceFr
 export const insertComplianceRuleSchema = createInsertSchema(hrComplianceRules);
 export const insertComplianceEventSchema = createInsertSchema(hrComplianceEvents);
 export const insertComplianceViolationSchema = createInsertSchema(hrComplianceViolations);
+export const insertRiskConfigurationSchema = createInsertSchema(hrRiskConfigurations);
 
 // ========== TYPES ==========
 
@@ -73,3 +84,4 @@ export type HrComplianceFramework = typeof hrComplianceFrameworks.$inferSelect;
 export type HrComplianceRule = typeof hrComplianceRules.$inferSelect;
 export type HrComplianceEvent = typeof hrComplianceEvents.$inferSelect;
 export type HrComplianceViolation = typeof hrComplianceViolations.$inferSelect;
+export type HrRiskConfiguration = typeof hrRiskConfigurations.$inferSelect;
