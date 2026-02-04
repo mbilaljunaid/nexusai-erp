@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EPMService } from './epm.service';
 import { BudgetService } from './budget.service';
 import { BudgetController } from './budget.controller';
+import { PlanningController } from './planning.controller'; // NEW
 import { Budget } from './entities/budget.entity';
 import { PlanScenario } from './entities/plan-scenario.entity';
 import { PlanVersion } from './entities/plan-version.entity';
@@ -37,7 +38,7 @@ import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
       EpmAudit
     ])
   ],
-  controllers: [BudgetController],
+  controllers: [BudgetController, PlanningController], // Updated
   providers: [
     EPMService,
     BudgetService,

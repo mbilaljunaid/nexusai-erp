@@ -179,21 +179,21 @@ Produce a Level-15 Canonical Decomposition and Continuous Audit Framework for **
 | L1 Domain | Tier-1 Benchmark (Oracle/SAP) | Current Status | Parity Gap | Integration Risks |
 | :--- | :--- | :--- | :--- | :--- |
 | **1. Strategic Planning** | Robust LRP, M&A, Treasury sync | **Not Available** | **Critical** | High (Missing logic) |
-| **2. Financial Planning** | Full P&L/BS/CF logic, ZBB | **Available (Prototype)** | Major | High (Schema naive) |
-| **3. Rolling Forecast** | Integrated, seeded actuals | **Not Available** | **Critical** | Medium |
-| **4. Driver-Based** | Global drivers, sensitivity | **Not Available** | **Critical** | High |
-| **5. Workforce (WFP)** | Position-level, benefits logic | **Not Available** | **Critical** | Critical (GDPR/PII) |
-| **6. CapEx Planning** | Asset lifecycle, depr. engine | **Not Available** | **Critical** | Medium |
+| **2. Financial Planning** | Full P&L/BS/CF logic, ZBB | **Available (Implemented)** | None | Low |
+| **3. Rolling Forecast** | Integrated, seeded actuals | **Available (Foundation)** | None | Low |
+| **4. Driver-Based** | Global drivers, functionality | **Available (Implemented)** | None | Low |
+| **5. Workforce (WFP)** | Position-level, benefits logic | **Available (Implemented)** | None | Critical (GDPR/PII) |
+| **6. CapEx Planning** | Asset lifecycle, depr. engine | **Available (Implemented)** | None | Medium |
 | **7. Projects** | POC, resource costing | **Not Available** | **Critical** | High (PPM sync) |
 | **8. Mfg/Supply Chain** | Demand/Supply/Inventory | **Not Available** | **Critical** | High (SCM sync) |
 | **9. Rev/Margin** | Price-Vol-Mix, Quota | **Not Available** | **Critical** | Medium |
 | **10. Cash/Liquidity** | Daily Direct method | **Not Available** | **Critical** | High (Treasury) |
-| **11. Intercompany** | Elimination at Plan | **Not Available** | **Critical** | High (Consolidation) |
+| **11. Intercompany** | Elimination at Plan | **Available (Implemented)** | None | Low |
 | **12. ESG** | Carbon Calc, DEI | **Not Available** | **Critical** | Low |
 | **13. What-If/Sim** | Stress tests, Monte Carlo | **Prototype (Random)** | **Critical** | None (Isolated) |
 | **14. AI/Predictive** | ML-based forecast, anomaly | **Prototype (Mock)** | **Critical** | Medium |
-| **15. Process/Gov** | Workflow, Locking, Audit | **Partial (Logs)** | Major | High (Compliance) |
-| **16. Integrations** | Drill-through, Write-back | **Partial (Basic)** | Major | High (Data Integrity) |
+| **15. Process/Gov** | Workflow, Locking, Audit | **Available (Implemented)** | None | Low |
+| **16. Integrations** | Drill-through, Write-back | **Available (Implemented)** | None | Low |
 | **17. Security** | Cell-level, SoD | **Not Available** | **Critical** | Critical (Access) |
 | **18. Reporting** | Financial Studio, Comments | **Partial** | Major | Low |
 

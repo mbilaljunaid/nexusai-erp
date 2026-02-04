@@ -11,6 +11,8 @@ import ESSDashboard from "./pages/hr/selfservice/ESSDashboard";
 import PersonalDetails from "./pages/hr/selfservice/PersonalDetails";
 import MyTimeCard from "./pages/hr/selfservice/MyTimeCard";
 import MSSDashboard from "./pages/hr/selfservice/MSSDashboard";
+import PlanningDashboard from "./pages/epm/PlanningDashboard";
+import PlanningGrid from "./pages/epm/PlanningGrid";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,8 @@ const App = () => (
           <Route path="/processes" element={<GlobalLayout><div className="p-4">Processes Module - Coming Soon</div></GlobalLayout>} />
           <Route path="/crm" element={<GlobalLayout><div className="p-4">CRM Module - Coming Soon</div></GlobalLayout>} />
           <Route path="/finance" element={<GlobalLayout><div className="p-4">Finance Module - Coming Soon</div></GlobalLayout>} />
+          <Route path="/epm/dashboard" element={<GlobalLayout><PlanningDashboard /></GlobalLayout>} />
+          <Route path="/epm/planning" element={<GlobalLayout><PlanningGrid /></GlobalLayout>} />
           <Route path="/hr" element={<GlobalLayout><div className="p-4">HR Module - Coming Soon</div></GlobalLayout>} />
 
           {/* ESS / MSS Routes */}
