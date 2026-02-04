@@ -64,12 +64,20 @@ export default function HRReports() {
     };
 
     // Dynamic Columns based on data
-    const columns: Column<any>[] = reportData && reportData.length > 0
-        ? Object.keys(reportData[0]).map(key => ({
+    const allKeys = reportData && reportData.length > 0 ? Object.keys(reportData[0]) : [];
+    const [visibleColumns, setVisibleColumns] = useState<string[]>([]);
+
+    // Initialize visible columns when data loads
+    if (reportData && reportData.length > 0 && visibleColumns.length === 0 && allKeys.length > 0) {
+        setVisibleColumns(allKeys);
+    }
+
+    const columns: Column<any>[] = allKeys
+        .filter(key => visibleColumns.includes(key))
+        .map(key => ({
             accessorKey: key,
             header: key.replace(/([A-Z])/g, ' $1').trim() // CamelCase to Title Case
-        }))
-        : [];
+        }));
 
     return (
         <div className="space-y-6 p-4">
@@ -124,7 +132,33 @@ export default function HRReports() {
             {/* Preview Table */}
             {reportData && (
                 <Card>
-                    <CardHeader><CardTitle>Report Preview: {reportTypes?.find(t => t.id === selectedType)?.name}</CardTitle></CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle>Report Preview: {reportTypes?.find(t => t.id === selectedType)?.name}</CardTitle>
+                        {/* Column Selector */}
+                        <div className="flex gap-2">
+                            {allKeys.length > 0 && (
+                                <Select onValueChange={(val) => {
+                                    if (visibleColumns.includes(val)) {
+                                        setVisibleColumns(visibleColumns.filter(c => c !== val));
+                                    } else {
+                                        setVisibleColumns([...visibleColumns, val]);
+                                    }
+                                }}>
+                                    <SelectTrigger className="w-[200px]">
+                                        <SelectValue placeholder="Toggle Columns" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {allKeys.map(key => (
+                                            <SelectItem key={key} value={key}>
+                                                {visibleColumns.includes(key) ? "✅ " : "❌ "}
+                                                {key.replace(/([A-Z])/g, ' $1').trim()}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        </div>
+                    </CardHeader>
                     <CardContent>
                         <StandardTable
                             data={reportData}

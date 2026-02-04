@@ -7,7 +7,9 @@ import { createServer } from "http";
 import { requestIdMiddleware, securityHeaders } from "./security";
 import { errorHandler } from "./middleware/error";
 import { auditMiddleware } from "./middleware/audit";
+import { rlsMiddleware } from "./middleware/rls";
 import { initCronJobs } from "./cron/sweeper";
+import { JobRunnerService } from "./services/JobRunnerService";
 
 const app = express();
 const httpServer = createServer(app);
@@ -84,8 +86,12 @@ app.use(tenantContext);
 // Audit logging for mutations
 app.use(auditMiddleware);
 
+// RLS / Security Context (Mock Auth)
+app.use(rlsMiddleware);
+
 // Initialize Cron Jobs (Autonomous Background Tasks)
 initCronJobs();
+JobRunnerService.start();
 
 console.log("DEBUG: NODE_ENV =", process.env.NODE_ENV);
 

@@ -1,29 +1,34 @@
 import { Router } from "express";
 import { HRAnalyticsService } from "../services/HRAnalyticsService";
+import { db } from "../db";
+import { hrOrganizations } from "@shared/schema/hr_structures";
+import { eq, and } from "drizzle-orm";
 
 const router = Router();
+
+function parseQueryInt(val: any, defaultVal: number): number {
+    const parsed = parseInt(val as string);
+    return isNaN(parsed) ? defaultVal : parsed;
+}
 
 // GET /api/hr/analytics/dashboard?tenantId=...
 // Returns the latest snapshot values for all active KPIs
 router.get("/dashboard", async (req, res) => {
     try {
         const tenantId = (req.query.tenantId as string) || "default";
+        const departmentId = req.query.departmentId as string | undefined;
 
-        // 1. Get Metrics
-        const metrics = await HRAnalyticsService.getDashboardMetrics(tenantId);
+        // 1. Get Metrics (with optional filter)
+        const { metrics: metricRows, benchmark } = await HRAnalyticsService.getDashboardMetrics(tenantId, { departmentId });
 
         // 2. Format for Frontend
-        // Grouping or just raw list? Let's return the list and let frontend handle it for now.
-        // Or we can shape it to match the dashboard expectation.
-        // Frontend expects: { totalHeadcount: 100, turnover: 2.4, ... }
-
-        // Let's return a structured object for easier consumption
         const response: any = {
             metrics: {},
-            trends: [] // Future: Time series data
+            trends: [], // Future: Time series data
+            benchmark // Pass through to frontend
         };
 
-        metrics.forEach((m: any) => {
+        (metricRows as any[]).forEach((m: any) => {
             response.metrics[m.code] = {
                 label: m.name,
                 value: Number(m.value),
@@ -49,11 +54,15 @@ router.get("/details/:kpiCode", async (req, res) => {
 
         let data: any[] = [];
 
+        const page = parseQueryInt(req.query.page, 1);
+        const limit = parseQueryInt(req.query.limit, 50);
+
         switch (kpiCode) {
             case "HR_HEADCOUNT":
-                data = await HRAnalyticsService.getHeadcountDetails(tenantId);
+                data = await HRAnalyticsService.getHeadcountDetails(tenantId, { page, limit });
                 break;
             case "HR_ATTRITION_VOL":
+                // Same pagination pattern for Attrition
                 data = await HRAnalyticsService.getAttritionDetails(tenantId);
                 break;
             default:
@@ -73,6 +82,29 @@ router.post("/snapshot/run", async (req, res) => {
         const tenantId = (req.body.tenantId as string) || "default";
         const results = await HRAnalyticsService.generateDailySnapshot(tenantId);
         res.json({ success: true, snapshotsGenerated: results.length });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/hr/analytics/departments
+// Returns list of available departments for filtering
+router.get("/departments", async (req, res) => {
+    try {
+        const tenantId = (req.query.tenantId as string) || "default";
+
+        // Fetch all organizations used as departments
+        // In real app, filter by classificationCode='DEPARTMENT'
+        const departments = await db.select({
+            id: hrOrganizations.id,
+            name: hrOrganizations.name
+        }).from(hrOrganizations)
+            .where(and(
+                eq(hrOrganizations.tenantId, tenantId),
+                eq(hrOrganizations.classificationCode, "DEPARTMENT")
+            ));
+
+        res.json(departments);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

@@ -67,7 +67,10 @@ router.get("/generate", async (req, res) => {
                 assignmentNumber: hrAssignments.assignmentNumber,
                 jobId: hrAssignments.jobId,
                 departmentId: hrAssignments.departmentId,
-                locationId: hrAssignments.locationId
+                jobId: hrAssignments.jobId,
+                departmentId: hrAssignments.departmentId,
+                locationId: hrAssignments.locationId,
+                salary: sql`'120000'` // Mock Salary for V1 (Schema doesn't have it yet)
             })
                 .from(hrAssignments)
                 .leftJoin(hrPersons, eq(hrAssignments.personId, hrPersons.id))
@@ -77,6 +80,17 @@ router.get("/generate", async (req, res) => {
                     eq(hrAssignments.primaryAssignmentFlag, true)
                 ))
                 .limit(1000);
+
+            // FIELD LEVEL SECURITY (MASKING)
+            // Check if user has "VIEW_SENSITIVE" permission
+            const canViewSensitive = req.user?.permissions.includes("VIEW_SENSITIVE");
+
+            if (!canViewSensitive) {
+                data = data.map(row => ({
+                    ...row,
+                    salary: "*****" // Masked Value
+                }));
+            }
         }
 
         res.json(data);

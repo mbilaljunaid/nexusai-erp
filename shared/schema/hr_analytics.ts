@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, timestamp, numeric, boolean, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, numeric, boolean, jsonb, integer } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -65,7 +65,21 @@ export const insertHrPredictiveModelSchema = createInsertSchema(hrPredictiveMode
 export type InsertHrPredictiveModel = z.infer<typeof insertHrPredictiveModelSchema>;
 export type HrPredictiveModel = typeof hrPredictiveModels.$inferSelect;
 
-// 4. Report Schedules
+// 4. Market Benchmarks
+export const hrMarketBenchmarks = pgTable("hr_market_benchmarks", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    jobFamily: varchar("job_family").notNull(), // ENGINEERING, SALES, HR
+    industry: varchar("industry").default("TECH"),
+
+    p50Salary: numeric("p50_salary"),
+    p90Salary: numeric("p90_salary"),
+    avgTurnoverRate: numeric("avg_turnover_rate"), // Percentage (e.g. 15.0)
+
+    year: integer("year").notNull(),
+    source: varchar("source").default("Internal Survey"),
+});
+
+// 5. Report Schedules
 export const hrReportSchedules = pgTable("hr_report_schedules", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     reportType: varchar("report_type").notNull(), // TERMINATION_LOG, NEW_HIRES
