@@ -60,6 +60,14 @@ export const maintMeterReadingsRelations = relations(maintMeterReadings, ({ one 
     }),
 }));
 
-// --- LEGACY TABLES REMOVED ---
+// --- LEGACY TABLES (To prevent auto-rename, will drop later) ---
+export const maintMetersLegacy = pgTable("maint_meters", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    assetId: uuid("asset_id"),
+});
 
+export const maintMeterReadingsLegacy = pgTable("maint_meter_readings", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    meterId: uuid("meter_id"),
+});
 

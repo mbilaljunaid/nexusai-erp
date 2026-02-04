@@ -20,7 +20,9 @@ import {
   Trash2,
   ExternalLink,
   Wrench,
-  Filter
+
+  Filter,
+  Sliders
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -321,7 +323,7 @@ export default function ComplianceGovernance() {
             )}
           </TabsTrigger>
           <TabsTrigger value="readiness" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Regulatory Readiness</TabsTrigger>
-          <TabsTrigger value="risk_config" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Risk Configuration</TabsTrigger>
+          <TabsTrigger value="risk-config" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Risk Configuration</TabsTrigger>
         </TabsList>
 
         <TabsContent value="rules">
@@ -455,51 +457,61 @@ export default function ComplianceGovernance() {
           </div>
         </TabsContent>
 
-        <TabsContent value="risk_config">
-          <div className="bg-white rounded-xl border shadow-sm p-6">
-            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-indigo-600" />
-              Weighted Heuristic Configuration
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-              {[
-                { key: "TENURE_VOLATILITY", label: "Tenure Volatility", description: "Impact of frequent job changes in short periods." },
-                { key: "TRANSACTION_TIMING", label: "Transaction Timing", description: "Risk weight for off-hours system activity." },
-                { key: "ROLE_SENSITIVITY", label: "Role Sensitivity", description: "Weight for access to sensitive financial/admin roles." },
-                { key: "TRANSFER_FREQUENCY", label: "Transfer Frequency", description: "Weight for multiple organization transfers." }
-              ].map((factor) => (
-                <div key={factor.key} className="space-y-4 p-4 border rounded-xl bg-slate-50/50">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <Label className="font-bold text-slate-800">{factor.label}</Label>
-                      <p className="text-xs text-muted-foreground">{factor.description}</p>
-                    </div>
-                    <Badge variant="outline" className="bg-white">Weight: 25</Badge>
-                  </div>
-                  <div className="pt-2">
-                    <input
-                      type="range"
-                      id={`risk-factor-${factor.key}`}
-                      title={factor.label}
-                      className="w-full accent-indigo-600"
-                      min="0"
-                      max="100"
-                      defaultValue="25"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 border-t pt-6 flex justify-end">
-              <Button className="bg-indigo-600 hover:bg-indigo-700">Save Risk Strategy</Button>
-            </div>
-          </div>
-        </TabsContent>
-
         <TabsContent value="readiness">
           {analyticsData && (
             <RegulatoryReadinessReport data={analyticsData} />
           )}
+        </TabsContent>
+
+
+        <TabsContent value="risk-config">
+          <div className="bg-white rounded-xl border shadow-sm overflow-hidden p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <Sliders className="h-5 w-5 text-indigo-500" />
+              <h3 className="font-bold text-slate-700 italic">Heuristic Risk Weights</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <h4 className="font-semibold text-sm text-slate-500 uppercase">Tenure & Stability</h4>
+                <div className="p-4 border rounded-lg bg-slate-50 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label>High Frequency Job Hopping</Label>
+                    <Input type="number" defaultValue={30} className="w-20 text-right" disabled />
+                  </div>
+                  <p className="text-xs text-muted-foreground">Penalty score added when candidate changes jobs &gt; 2 times in 2 years.</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-semibold text-sm text-slate-500 uppercase">Role & Access</h4>
+                <div className="p-4 border rounded-lg bg-slate-50 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label>Sensitive Role Keywords</Label>
+                    <Input type="number" defaultValue={20} className="w-20 text-right" disabled />
+                  </div>
+                  <p className="text-xs text-muted-foreground">Penalty for roles matching 'Finance', 'Legal', 'Admin'.</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-semibold text-sm text-slate-500 uppercase">Transaction Timing</h4>
+                <div className="p-4 border rounded-lg bg-slate-50 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label>Off-Hours Activity</Label>
+                    <Input type="number" defaultValue={15} className="w-20 text-right" disabled />
+                  </div>
+                  <p className="text-xs text-muted-foreground">Penalty for transactions between 9PM and 6AM.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-end">
+              <Button disabled>
+                Save Configuration (Coming Soon)
+              </Button>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
 
@@ -507,6 +519,6 @@ export default function ComplianceGovernance() {
         violation={selectedViolation}
         onOpenChange={(open) => !open && setSelectedViolation(null)}
       />
-    </div>
+    </div >
   );
 }

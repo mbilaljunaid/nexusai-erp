@@ -41,14 +41,15 @@ export async function getAnalytics(req: Request, res: Response) {
     try {
         const tenantId = (req as any).user?.tenantId || "default";
         const userId = (req as any).user?.id;
-        const [metrics, riskDistribution, violationTrends, readiness, auditSummary] = await Promise.all([
+        const [metrics, riskDistribution, violationTrends, readiness, auditSummary, velocity] = await Promise.all([
             ComplianceAnalyticsService.getSummaryMetrics(tenantId, userId),
             ComplianceAnalyticsService.getRiskDistribution(tenantId),
             ComplianceAnalyticsService.getViolationTrends(tenantId, userId),
             ComplianceAnalyticsService.getRegulatoryReadinessScore(tenantId),
-            ComplianceAnalyticsService.getAuditEngagementSummary(tenantId)
+            ComplianceAnalyticsService.getAuditEngagementSummary(tenantId),
+            ComplianceAnalyticsService.getComplianceVelocity(tenantId)
         ]);
-        res.json({ metrics, riskDistribution, violationTrends, readiness, auditSummary });
+        res.json({ metrics, riskDistribution, violationTrends, readiness, auditSummary, velocity });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -119,19 +120,6 @@ export async function approveRemediation(req: Request, res: Response) {
     }
 }
 
-export async function listApprovals(req: Request, res: Response) {
-    try {
-        const tenantId = (req as any).user?.tenantId || "default";
-        const { violationId } = req.query;
-        if (!violationId) return res.status(400).json({ message: "violationId is required" });
-
-        const approvals = await ComplianceApprovalService.listApprovals(violationId as string, tenantId);
-        res.json(approvals);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
-}
-
 export const complianceController = {
     listRules,
     createRule,
@@ -141,6 +129,5 @@ export const complianceController = {
     updateViolation,
     predictRisk,
     requestRemediationApproval,
-    approveRemediation,
-    listApprovals
+    approveRemediation
 };

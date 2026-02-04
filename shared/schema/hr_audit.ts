@@ -28,9 +28,6 @@ export const hrAuditApprovals = pgTable("hr_audit_approvals", {
     formId: varchar("form_id").notNull(), // e.g. "PERSONAL_DATA_CHANGE"
     recordId: varchar("record_id").notNull(), // e.g. personId
 
-    workflowId: varchar("workflow_id"), // Links related steps
-    stepOrder: integer("step_order").default(1), // 1, 2, 3...
-
     requestedBy: varchar("requested_by").notNull(),
     requestedAt: timestamp("requested_at").default(sql`now()`),
 
@@ -41,6 +38,11 @@ export const hrAuditApprovals = pgTable("hr_audit_approvals", {
     currentApprovals: integer("current_approvals").default(0),
 
     rejectionReason: varchar("rejection_reason"),
+
+    // Escalation & Multi-step support
+    stepOrder: integer("step_order").default(1),
+    escalationRuleId: varchar("escalation_rule_id"),
+    statusHistory: jsonb("status_history"), // Log of status changes
 
     metadata: jsonb("metadata"), // Extra context
 });

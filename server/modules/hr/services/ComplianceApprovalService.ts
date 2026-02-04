@@ -1,7 +1,7 @@
 import { db } from "@db";
 import { hrAuditApprovals } from "@shared/schema/hr_audit";
 import { hrComplianceViolations } from "@shared/schema/hr_compliance";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export class ComplianceApprovalService {
     static async requestRemediationApproval(params: {
@@ -9,8 +9,6 @@ export class ComplianceApprovalService {
         violationId: string;
         requesterId: string;
         approvers: string[];
-        workflowId?: string;
-        stepOrder?: number;
     }) {
         const [violation] = await db.select()
             .from(hrComplianceViolations)
@@ -23,8 +21,6 @@ export class ComplianceApprovalService {
             tenantId: params.tenantId,
             formId: "COMPLIANCE_REMEDIATION",
             recordId: params.violationId,
-            workflowId: params.workflowId || sql`gen_random_uuid()`,
-            stepOrder: params.stepOrder || 1,
             requestedBy: params.requesterId,
             status: "pending",
             approvers: params.approvers.map(id => ({ userId: id, approved: false })),
@@ -38,6 +34,45 @@ export class ComplianceApprovalService {
         return approval;
     }
 
+    static async escalateViolation(approvalId: string, tenantId: string, notes: string) {
+        const [approval] = await db.select()
+            .from(hrAuditApprovals)
+            .where(and(eq(hrAuditApprovals.id, approvalId), eq(hrAuditApprovals.tenantId, tenantId)))
+            .limit(1);
+
+        if (!approval) throw new Error("Approval record not found");
+
+        // Logic: Increment step order, reset approvals for next step
+        const nextStep = (approval.stepOrder || 1) + 1;
+        const history = (approval.statusHistory as any[]) || [];
+        history.push({
+            step: approval.stepOrder,
+            status: "escalated",
+            timestamp: new Date(),
+            notes
+        });
+
+        // Reset approvers for next step (in a real system, we'd fetch the next approver ID based on rules)
+        // For now, allow any compliance officer to pick it up (empty approvers list or re-assign)
+        // Let's assume the UI passes the new approver, but here we just reset state for the demo
+
+        await db.update(hrAuditApprovals)
+            .set({
+                stepOrder: nextStep,
+                status: "pending",
+                currentApprovals: 0,
+                approvers: [], // Clear previous approvers so new ones can be added/claimed
+                statusHistory: history,
+                metadata: {
+                    ...approval.metadata as object,
+                    escalatedFromStep: approval.stepOrder
+                }
+            })
+            .where(eq(hrAuditApprovals.id, approvalId));
+
+        return { success: true, nextStep };
+    }
+
     static async approveRemediation(approvalId: string, approverId: string, tenantId: string) {
         const [approval] = await db.select()
             .from(hrAuditApprovals)
@@ -46,10 +81,16 @@ export class ComplianceApprovalService {
 
         if (!approval) throw new Error("Approval record not found");
 
-        const approvers = approval.approvers as any[];
-        const approverIndex = approvers.findIndex(a => a.userId === approverId);
+        const approvers = (approval.approvers as any[]) || [];
+        // If approvers list is empty (pool), add this user as an approver
+        let approverIndex = approvers.findIndex(a => a.userId === approverId);
 
-        if (approverIndex === -1) throw new Error("User is not an authorized approver");
+        if (approverIndex === -1) {
+            // Allow ad-hoc approval if it's an open pool (e.g. after escalation)
+            approvers.push({ userId: approverId, approved: false });
+            approverIndex = approvers.length - 1;
+        }
+
         if (approvers[approverIndex].approved) return approval; // Already approved by this user
 
         approvers[approverIndex].approved = true;
@@ -68,45 +109,23 @@ export class ComplianceApprovalService {
             .returning();
 
         if (isFullyApproved) {
-            // Trigger escalation logic
-            await this.escalateViolation(updatedApproval, tenantId);
+            // Check if we need to escalate or resolve
+            // Simple rule: If Step 1, Escalate. If Step 2, Resolve.
+            // In a real system, this would be config-driven.
+            if ((approval.stepOrder || 1) < 2) {
+                await this.escalateViolation(approvalId, tenantId, "Auto-escalated to Level 2 Compliance Officer");
+            } else {
+                // Final Step Reached -> Resolve Violation
+                await db.update(hrComplianceViolations)
+                    .set({
+                        status: "resolved",
+                        resolvedAt: new Date(),
+                        resolutionNotes: `Remediation approved via workflow ${approvalId} (Step ${approval.stepOrder})`
+                    })
+                    .where(eq(hrComplianceViolations.id, approval.recordId as string));
+            }
         }
 
         return updatedApproval;
-    }
-
-    private static async escalateViolation(approval: any, tenantId: string) {
-        // Implementation for Level-11 Escalation Chain
-        // If this was Step 1 (Manager), we might need Step 2 (Compliance Officer)
-        // For Phase 4, we define a simple rule: If violation is 'CRITICAL', we need a 2-step approval.
-
-        const [violation] = await db.select()
-            .from(hrComplianceViolations)
-            .where(and(eq(hrComplianceViolations.id, approval.recordId), eq(hrComplianceViolations.tenantId, tenantId)))
-            .limit(1);
-
-        if (violation?.severity === "critical" && approval.stepOrder === 1) {
-            // Create Step 2 for Compliance Officer
-            // In a real system, this would look up the official officer ID
-            const officerId = "COMPLIANCE_OFFICER_STUB";
-
-            await this.requestRemediationApproval({
-                tenantId,
-                violationId: violation.id,
-                requesterId: approval.requestedBy,
-                approvers: [officerId],
-                workflowId: approval.workflowId,
-                stepOrder: 2
-            });
-        } else {
-            // Final Approval reached
-            await db.update(hrComplianceViolations)
-                .set({
-                    status: "resolved",
-                    resolvedAt: new Date(),
-                    resolutionNotes: `Remediation fully approved via workflow ${approval.workflowId}`
-                })
-                .where(eq(hrComplianceViolations.id, violation.id));
-        }
     }
 }

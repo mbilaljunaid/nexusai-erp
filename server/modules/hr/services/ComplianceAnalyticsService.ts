@@ -142,4 +142,57 @@ export class ComplianceAnalyticsService {
 
         return stats;
     }
+    static async getComplianceVelocity(tenantId: string) {
+        // Group by month for last 6 months
+        // Count created (opened)
+        const opened = await db.select({
+            month: sql`to_char(${hrComplianceViolations.createdAt}, 'Mon')`,
+            count: count(),
+            sortOrder: sql`EXTRACT(MONTH FROM ${hrComplianceViolations.createdAt})`
+        })
+            .from(hrComplianceViolations)
+            .where(and(
+                eq(hrComplianceViolations.tenantId, tenantId),
+                sql`${hrComplianceViolations.createdAt} > now() - interval '6 months'`
+            ))
+            .groupBy(sql`to_char(${hrComplianceViolations.createdAt}, 'Mon')`, sql`EXTRACT(MONTH FROM ${hrComplianceViolations.createdAt})`)
+            .orderBy(sql`EXTRACT(MONTH FROM ${hrComplianceViolations.createdAt})`);
+
+        // Count resolved
+        const resolved = await db.select({
+            month: sql`to_char(${hrComplianceViolations.resolvedAt}, 'Mon')`,
+            count: count(),
+            sortOrder: sql`EXTRACT(MONTH FROM ${hrComplianceViolations.resolvedAt})`
+        })
+            .from(hrComplianceViolations)
+            .where(and(
+                eq(hrComplianceViolations.tenantId, tenantId),
+                eq(hrComplianceViolations.status, 'resolved'),
+                sql`${hrComplianceViolations.resolvedAt} > now() - interval '6 months'`
+            ))
+            .groupBy(sql`to_char(${hrComplianceViolations.resolvedAt}, 'Mon')`, sql`EXTRACT(MONTH FROM ${hrComplianceViolations.resolvedAt})`)
+            .orderBy(sql`EXTRACT(MONTH FROM ${hrComplianceViolations.resolvedAt})`);
+
+        // Merge datasets
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const currentMonthIdx = new Date().getMonth();
+        // Generate last 6 months labels in order
+        const result = [];
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date();
+            d.setMonth(d.getMonth() - i);
+            const mLabel = months[d.getMonth()];
+
+            const openCount = opened.find(o => o.month === mLabel)?.count || 0;
+            const resolveCount = resolved.find(r => r.month === mLabel)?.count || 0;
+
+            result.push({
+                month: mLabel,
+                opened: Number(openCount),
+                resolved: Number(resolveCount)
+            });
+        }
+
+        return result;
+    }
 }

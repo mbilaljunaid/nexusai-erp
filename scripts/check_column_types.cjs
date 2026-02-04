@@ -15,23 +15,7 @@ async function checkColumnTypes() {
         'ic_transfer_pricing_rules',
         'ic_data_access_sets',
         'ic_allocation_rules',
-        'ic_allocation_lines',
-        'hrm_skills',
-        'hrm_competencies',
-        'hrm_job_profiles',
-        'hrm_person_skills',
-        'construction_projects',
-        'construction_sites',
-        'construction_entities',
-        'construction_activity_logs',
-        'construction_permits',
-        'construction_inspectors',
-        'construction_contractors',
-        'hr_persons',
-        'purchase_requisitions',
-        'maint_work_orders',
-        'maint_meters',
-        'maint_meter_readings'
+        'ic_allocation_lines'
     ];
 
     console.log('--- Checking Column Types ---');

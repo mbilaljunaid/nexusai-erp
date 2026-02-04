@@ -10,7 +10,9 @@ import {
     Pie,
     Cell,
     AreaChart,
-    Area
+    Area,
+    Legend,
+    Tooltip as RechartsTooltip
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -18,6 +20,7 @@ interface ComplianceAnalyticsProps {
     data: {
         riskDistribution: { severity: string; count: number }[];
         violationTrends: { month: string; count: number }[];
+        velocity: { month: string; opened: number; resolved: number }[];
     };
 }
 
@@ -122,6 +125,42 @@ export function ComplianceAnalytics({ data }: ComplianceAnalyticsProps) {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+            </Card>
+
+            <Card className="shadow-sm border md:col-span-2">
+                <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                        Compliance Velocity (Opened vs Resolved)
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={data.velocity}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis 
+                                    dataKey="month" 
+                                    axisLine={false} 
+                                    tickLine={false} 
+                                    tick={{ fontSize: 12, fill: '#64748b' }} 
+                                />
+                                <YAxis 
+                                    axisLine={false} 
+                                    tickLine={false} 
+                                    tick={{ fontSize: 12, fill: '#64748b' }} 
+                                />
+                                <RechartsTooltip 
+                                    contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                                    cursor={{ fill: '#f1f5f9' }}
+                                />
+                                <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                                <Bar dataKey="opened" name="Violations Opened" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={20} />
+                                <Bar dataKey="resolved" name="Violations Resolved" fill="#22c55e" radius={[4, 4, 0, 0]} barSize={20} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+        </div >
     );
 }

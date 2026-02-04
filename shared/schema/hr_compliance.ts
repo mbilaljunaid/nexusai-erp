@@ -32,12 +32,12 @@ export const hrComplianceRules = pgTable("hr_compliance_rules", {
     isActive: boolean("is_active").default(true),
 });
 
-export const hrRiskConfigurations = pgTable("hr_risk_configurations", {
+export const hrRiskWeights = pgTable("hr_risk_weights", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     tenantId: varchar("tenant_id").notNull(),
-    factorKey: varchar("factor_key").notNull(), // TENURE_VOLATILITY, TRANSACTION_TIMING, ROLE_SENSITIVITY
-    weight: integer("weight").notNull().default(10), // 0-100
-    threshold: integer("threshold"), // Optional trigger threshold
+    category: varchar("category").notNull(), // 'TENURE', 'LOCATION', 'ROLE', 'TIME'
+    conditionKey: varchar("condition_key").notNull(), // e.g., 'less_than_30_days', 'high_risk_role'
+    weight: integer("weight").notNull().default(0),
     isActive: boolean("is_active").default(true),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
@@ -76,7 +76,7 @@ export const insertComplianceFrameworkSchema = createInsertSchema(hrComplianceFr
 export const insertComplianceRuleSchema = createInsertSchema(hrComplianceRules);
 export const insertComplianceEventSchema = createInsertSchema(hrComplianceEvents);
 export const insertComplianceViolationSchema = createInsertSchema(hrComplianceViolations);
-export const insertRiskConfigurationSchema = createInsertSchema(hrRiskConfigurations);
+export const insertRiskWeightSchema = createInsertSchema(hrRiskWeights);
 
 // ========== TYPES ==========
 
@@ -84,4 +84,4 @@ export type HrComplianceFramework = typeof hrComplianceFrameworks.$inferSelect;
 export type HrComplianceRule = typeof hrComplianceRules.$inferSelect;
 export type HrComplianceEvent = typeof hrComplianceEvents.$inferSelect;
 export type HrComplianceViolation = typeof hrComplianceViolations.$inferSelect;
-export type HrRiskConfiguration = typeof hrRiskConfigurations.$inferSelect;
+export type HrRiskWeight = typeof hrRiskWeights.$inferSelect;

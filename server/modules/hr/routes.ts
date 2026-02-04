@@ -110,7 +110,6 @@ hrRouter.get("/compliance-rules", complianceController.listRules);
 hrRouter.post("/compliance-rules", complianceController.createRule);
 hrRouter.delete("/compliance-rules/:id", complianceController.deleteRule);
 hrRouter.get("/compliance/violations", complianceController.listViolations);
-hrRouter.get("/compliance/approvals", complianceController.listApprovals);
 hrRouter.patch("/compliance/violations/:id", complianceController.updateViolation);
 hrRouter.post("/compliance/violations/:id/approve", complianceController.approveRemediation);
 hrRouter.post("/compliance/remediate/approve", complianceController.requestRemediationApproval);
