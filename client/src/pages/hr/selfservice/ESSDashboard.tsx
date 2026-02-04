@@ -17,6 +17,7 @@ import {
     Shield
 } from "lucide-react";
 import { Link } from "wouter";
+import { MyConsents } from "@/components/hr/MyConsents";
 
 export default function ESSDashboard() {
     const quickActions = [
@@ -141,48 +142,39 @@ export default function ESSDashboard() {
                     </div>
                 </div>
 
-                <div className="space-y-6">
-                    <Card className="border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden">
-                        <CardHeader className="bg-zinc-50/50 dark:bg-zinc-900/50">
-                            <CardTitle className="text-lg">My Organization</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-6">
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-3">
-                                    <Avatar className="h-10 w-10">
-                                        <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100" />
-                                        <AvatarFallback>SM</AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <p className="text-sm font-medium">Sarah Miller</p>
-                                        <p className="text-xs text-muted-foreground">My Manager</p>
+                                            <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100" />
+                                            <AvatarFallback>SM</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <p className="text-sm font-medium">Sarah Miller</p>
+                                            <p className="text-xs text-muted-foreground">My Manager</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                                    <p className="text-sm font-medium mb-3">Peers (5)</p>
-                                    <div className="flex -space-x-2">
-                                        {[1, 2, 3, 4, 5].map(i => (
-                                            <Avatar key={i} className="h-8 w-8 border-2 border-background">
-                                                <AvatarFallback>{i}</AvatarFallback>
-                                            </Avatar>
-                                        ))}
+                                    <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                                        <p className="text-sm font-medium mb-3">Peers (5)</p>
+                                        <div className="flex -space-x-2">
+                                            {[1, 2, 3, 4, 5].map(i => (
+                                                <Avatar key={i} className="h-8 w-8 border-2 border-background">
+                                                    <AvatarFallback>{i}</AvatarFallback>
+                                                </Avatar>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                                </div >
+                            </CardContent >
+                        </Card >
 
-                    <Card className="bg-teal-600 text-white border-none shadow-lg shadow-teal-500/20">
-                        <CardContent className="p-6">
-                            <h3 className="font-bold text-lg mb-2">Need Help?</h3>
-                            <p className="text-teal-100/80 text-sm mb-4">Ask our AI Assistant any HR policy questions or request time off.</p>
-                            <Button variant="secondary" className="w-full bg-white text-teal-600 hover:bg-zinc-100">
-                                Launch AI Chat
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
-        </div>
+        <Card className="bg-teal-600 text-white border-none shadow-lg shadow-teal-500/20">
+            <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-2">Need Help?</h3>
+                <p className="text-teal-100/80 text-sm mb-4">Ask our AI Assistant any HR policy questions or request time off.</p>
+                <Button variant="secondary" className="w-full bg-white text-teal-600 hover:bg-zinc-100">
+                    Launch AI Chat
+                </Button>
+            </CardContent>
+        </Card>
+                    </div >
+            </div >
+        </div >
     );
 }

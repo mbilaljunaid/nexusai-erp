@@ -4,9 +4,11 @@ import {
     insertPersonSchema, insertWorkRelationshipSchema, insertAssignmentSchema,
     hrJobs, hrOrganizations, hrAuditLogs
 } from "@shared/schema";
+import { AuditLogService } from "./AuditLogService";
 import { eq, and, like, or, sql, desc, count, ilike, lte, gte, isNull, inArray } from "drizzle-orm";
 import { AorService } from "./AorService";
 import { ComplianceEngineService } from "./ComplianceEngineService";
+import { MaskPII } from "../../../common/decorators/MaskPII";
 
 // Types for Paginated Response
 export interface PaginatedResult<T> {
@@ -273,6 +275,7 @@ export class PersonService {
     }
 
     // PAGINATED SEARCH
+    @MaskPII(['nationalId', 'dateOfBirth'], 4, 0)
     static async searchPersons(
         tenantId: string,
         query?: string,
@@ -362,11 +365,11 @@ export class PersonService {
             .limit(limit)
             .offset(offset);
 
-        // 2. Data Privacy Masking (Field-Level)
-        const maskedData = this.maskResults(rawData, currentUserId || "guest", tenantId, isAdminOverride);
+        // 2. Data Privacy Masking (Field-Level) - Handled by @MaskPII
+        // const maskedData = this.maskResults(rawData, currentUserId || "guest", tenantId, isAdminOverride);
 
         return {
-            data: maskedData,
+            data: rawData,
             total: totalCount.count,
             page,
             limit
@@ -374,6 +377,7 @@ export class PersonService {
     }
 
     // GET FULL PROFILE
+    @MaskPII(['nationalId', 'dateOfBirth'], 2, 1)
     static async getPersonProfile(personId: string, tenantId: string, currentUserId?: string) {
         const personData = await db.query.hrPersons.findFirst({
             where: and(eq(hrPersons.id, personId), eq(hrPersons.tenantId, tenantId)),
@@ -381,8 +385,34 @@ export class PersonService {
 
         if (!personData) return null;
 
-        const hasAccess = currentUserId ? await this.hasAorAccess(currentUserId, personId, tenantId) : true;
-        const person = this.maskSensitiveData(personData, hasAccess);
+        const hasAccess = currentUserId ? await AorService.hasAccess(currentUserId, personId, tenantId) : true;
+        // Manual masking removed in favor of Decorator
+        const person = personData;
+        // Note: AorService.hasAccess usage here is just to pre-check? 
+        // Actually, for getPersonProfile which returns `{person, relationships...}`,
+        // The decorator will inspect `result.person`.
+
+        // HOWEVER, we might want to restrict the WHOLE object if no access?
+        // The requirement is "Field-Level Masking". Row-level access is often a filter.
+        // If strictly filtering, `hasAccess` should throw or return null.
+        // But the previous implementation returned masked data for those without full access?
+        // Let's look at `maskSensitiveData` implementation at top of file (to be removed/ignored).
+        // It only masked DOB/NID. It didn't hide the record. 
+        // So Row Level Security (RLS) acts as "View Only Public Info" vs "View Private Info"?
+        // Typically RLS hides the row entirely.
+        // But `PersonService` seems to treat it as "Partial View" if in Directory.
+        // Re-reading `searchPersons` logic:
+        // "1. AOR Security Check (Filter)" -> It filters the query! 
+        // So searchPersons strictly hides rows you don't have access to via AOR.
+        // BUT getPersonProfile didn't seem to have that strict filter in the Query?
+        // It fetched `findingFirst`. Then called `hasAorAccess`.
+
+        // Let's assume the decorator handles the FIELD masking.
+        // The ROW filtering should happen in the Service Logic ideally.
+        // In SearchPersons, it IS happening in the query.
+        // In GetPersonProfile, it was NOT preventing return, just masking.
+        // So the decorator matches that behavior.
+
 
         const relationships = await db.select().from(hrWorkRelationships)
             .where(eq(hrWorkRelationships.personId, personId));

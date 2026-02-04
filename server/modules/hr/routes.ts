@@ -113,7 +113,17 @@ hrRouter.get("/compliance/violations", complianceController.listViolations);
 hrRouter.patch("/compliance/violations/:id", complianceController.updateViolation);
 hrRouter.post("/compliance/violations/:id/approve", complianceController.approveRemediation);
 hrRouter.post("/compliance/remediate/approve", complianceController.requestRemediationApproval);
+hrRouter.post("/compliance/remediate/approve", complianceController.requestRemediationApproval);
 hrRouter.post("/compliance/predict-risk", complianceController.predictRisk);
+
+// --- Phase 6: Consent Management ---
+hrRouter.post("/compliance/policies/acknowledge", complianceController.acknowledgePolicy);
+hrRouter.get("/compliance/policies/my-consents", complianceController.getMyPolicies);
+
+// --- Phase 7: SoD Matrix ---
+hrRouter.get("/compliance/sod/rules", complianceController.getSodRules);
+hrRouter.post("/compliance/sod/rules", complianceController.createSodRule);
+hrRouter.delete("/compliance/sod/rules/:id", complianceController.deleteSodRule);
 
 // --- AOR & Security Profiles ---
 hrRouter.get("/security/aor", hrController.listAors);

@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button"; // Added missing import
-import { Briefcase, User, MapPin, Building, Calendar, FileText, CheckSquare, Plus } from "lucide-react";
+import { Briefcase, User, MapPin, Building, Calendar, FileText, CheckSquare, Plus, Shield } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
 import { TransferWorkerDialog } from "./TransferWorkerDialog";
@@ -64,7 +64,15 @@ export function EmploymentProfile({ personId }: EmploymentProfileProps) {
                     <div className="flex gap-2 items-center text-muted-foreground mt-1">
                         <Badge variant="outline">{person.personNumber}</Badge>
                         <span className="text-sm">{person.email}</span>
-                        {person.nationalId && <span className="text-sm">• NID: ***{person.nationalId.slice(-4)}</span>}
+                        {person.nationalId && (
+                            person.nationalId.includes('*') ? (
+                                <Badge variant="outline" className="gap-1 bg-yellow-50 text-yellow-700 border-yellow-200">
+                                    <Shield className="h-3 w-3" /> Confidential
+                                </Badge>
+                            ) : (
+                                <span className="text-sm">• NID: ***{person.nationalId.slice(-4)}</span>
+                            )
+                        )}
                     </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
@@ -154,7 +162,15 @@ export function EmploymentProfile({ personId }: EmploymentProfileProps) {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-sm text-muted-foreground">Date of Birth</label>
-                                    <p>{person.dateOfBirth ? format(new Date(person.dateOfBirth), "PP") : "N/A"}</p>
+                                    <p>
+                                        {person.dateOfBirth === '1900-01-01' ? (
+                                            <span className="flex items-center gap-1 text-xs text-muted-foreground italic">
+                                                <Shield className="h-3 w-3" /> Redacted
+                                            </span>
+                                        ) : (
+                                            person.dateOfBirth ? format(new Date(person.dateOfBirth), "PP") : "N/A"
+                                        )}
+                                    </p>
                                 </div>
                                 <div>
                                     <label className="text-sm text-muted-foreground">Phone</label>

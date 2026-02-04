@@ -42,6 +42,30 @@ export const hrRiskWeights = pgTable("hr_risk_weights", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
+
+export const hrPolicyAcknowledgements = pgTable("hr_policy_acknowledgements", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+    personId: varchar("person_id").notNull(), // Link to hrPersons (loose reference or FK)
+    policyCode: varchar("policy_code").notNull(), // e.g., "GDPR_2026", "DATA_PRIVACY_GLOBAL"
+    consentVersion: varchar("consent_version").notNull(), // "v1.0", "2026-A"
+    ipAddress: varchar("ip_address"), // Audit trail
+    userAgent: text("user_agent"), // Device info
+    acknowledgedAt: timestamp("acknowledged_at").defaultNow(),
+});
+
+// ========== SEGREGATION OF DUTIES (SoD) ==========
+
+export const hrSodRules = pgTable("hr_sod_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+    roleCodeA: varchar("role_code_a").notNull(),
+    roleCodeB: varchar("role_code_b").notNull(),
+    riskLevel: varchar("risk_level").notNull(), // CRITICAL, HIGH, MEDIUM
+    description: text("description"),
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
 // ========== COMPLIANCE TRANSACTIONS ==========
 
 export const hrComplianceEvents = pgTable("hr_compliance_events", {
@@ -77,6 +101,7 @@ export const insertComplianceRuleSchema = createInsertSchema(hrComplianceRules);
 export const insertComplianceEventSchema = createInsertSchema(hrComplianceEvents);
 export const insertComplianceViolationSchema = createInsertSchema(hrComplianceViolations);
 export const insertRiskWeightSchema = createInsertSchema(hrRiskWeights);
+export const insertPolicyAcknowledgementSchema = createInsertSchema(hrPolicyAcknowledgements);
 
 // ========== TYPES ==========
 
@@ -85,3 +110,4 @@ export type HrComplianceRule = typeof hrComplianceRules.$inferSelect;
 export type HrComplianceEvent = typeof hrComplianceEvents.$inferSelect;
 export type HrComplianceViolation = typeof hrComplianceViolations.$inferSelect;
 export type HrRiskWeight = typeof hrRiskWeights.$inferSelect;
+export type HrPolicyAcknowledgement = typeof hrPolicyAcknowledgements.$inferSelect;

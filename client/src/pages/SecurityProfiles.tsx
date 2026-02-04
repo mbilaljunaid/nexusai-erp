@@ -135,6 +135,15 @@ export default function SecurityProfiles() {
             }
         },
         {
+            header: "Coverage",
+            cell: (r: any) => (
+                <div className="flex items-center gap-1">
+                    <span className="font-bold">{r.coverageCount || 0}</span>
+                    <span className="text-muted-foreground text-xs">People</span>
+                </div>
+            )
+        },
+        {
             header: "Scope Value ID",
             accessorKey: "scopeValueId",
             cell: (r) => <span className="font-mono text-xs text-slate-500">{r.scopeValueId}</span>

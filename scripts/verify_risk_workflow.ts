@@ -30,7 +30,7 @@ async function verifyRiskAndWorkflow() {
 
         // 2. Seed Person & History
         const personId = "risk_person_" + Date.now();
-        await db.insert(hrPersons).values({ id: personId, tenantId, firstName: "John", lastName: "Doe", email: "john@example.com" });
+        await db.insert(hrPersons).values({ id: personId, tenantId, personNumber: "PN" + Date.now(), firstName: "John", lastName: "Doe", email: "john@example.com" });
 
         // Insert 3 work relationships to trigger "job_hopping" heuristic
         await db.insert(hrWorkRelationships).values([
