@@ -1,0 +1,140 @@
+
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { StandardTable, Column } from "@/components/ui/standardtable";
+import { Loader2, Download, FileText } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+interface ReportType {
+    id: string;
+    name: string;
+    description: string;
+}
+
+export default function HRReports() {
+    const [selectedType, setSelectedType] = useState<string>("");
+    const [dateRange, setDateRange] = useState({ start: "", end: "" });
+
+    // Fetch Report Types
+    const { data: reportTypes, isLoading: isLoadingTypes } = useQuery<ReportType[]>({
+        queryKey: ["/api/hr/reports/types"],
+        queryFn: () => fetch("/api/hr/reports/types").then(r => r.json())
+    });
+
+    // Fetch Report Data (Only when type is selected)
+    const { data: reportData, isLoading: isLoadingData, refetch } = useQuery({
+        queryKey: ["/api/hr/reports/generate", selectedType, dateRange],
+        queryFn: async () => {
+            if (!selectedType) return [];
+            const params = new URLSearchParams({
+                type: selectedType,
+                startDate: dateRange.start,
+                endDate: dateRange.end
+            });
+            const res = await fetch(`/api/hr/reports/generate?${params}`);
+            if (!res.ok) throw new Error("Failed to generate report");
+            return res.json();
+        },
+        enabled: false // Trigger manually or on effective inputs change only if desired. Here we trigger on button click usually.
+    });
+
+    const handleGenerate = () => {
+        if (selectedType) refetch();
+    };
+
+    const handleExport = () => {
+        if (!reportData || reportData.length === 0) return;
+
+        // Convert to CSV
+        const headers = Object.keys(reportData[0]).join(",");
+        const rows = reportData.map((row: any) => Object.values(row).map(v => JSON.stringify(v)).join(","));
+        const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n");
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `${selectedType}_${new Date().toISOString()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    // Dynamic Columns based on data
+    const columns: Column<any>[] = reportData && reportData.length > 0
+        ? Object.keys(reportData[0]).map(key => ({
+            accessorKey: key,
+            header: key.replace(/([A-Z])/g, ' $1').trim() // CamelCase to Title Case
+        }))
+        : [];
+
+    return (
+        <div className="space-y-6 p-4">
+            <div>
+                <h1 className="text-3xl font-semibold flex items-center gap-2">
+                    <FileText className="w-8 h-8 text-blue-600" />
+                    HR Compliance Reporting
+                </h1>
+                <p className="text-muted-foreground text-sm mt-1">Generate and export regulatory and operational reports.</p>
+            </div>
+
+            <Card>
+                <CardHeader><CardTitle>Report Configuration</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                            <Label>Report Type</Label>
+                            <Select value={selectedType} onValueChange={setSelectedType}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select Report..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {reportTypes?.map(t => (
+                                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Start Date</Label>
+                            <Input type="date" value={dateRange.start} onChange={e => setDateRange({ ...dateRange, start: e.target.value })} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>End Date</Label>
+                            <Input type="date" value={dateRange.end} onChange={e => setDateRange({ ...dateRange, end: e.target.value })} />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-2">
+                        <Button onClick={handleGenerate} disabled={!selectedType || isLoadingData}>
+                            {isLoadingData ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                            Generate Preview
+                        </Button>
+                        <Button variant="outline" onClick={handleExport} disabled={!reportData || reportData.length === 0}>
+                            <Download className="w-4 h-4 mr-2" />
+                            Export CSV
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Preview Table */}
+            {reportData && (
+                <Card>
+                    <CardHeader><CardTitle>Report Preview: {reportTypes?.find(t => t.id === selectedType)?.name}</CardTitle></CardHeader>
+                    <CardContent>
+                        <StandardTable
+                            data={reportData}
+                            columns={columns}
+                            isLoading={isLoadingData}
+                        />
+                        <p className="text-xs text-muted-foreground mt-2">Showing max 500 records. Export to CSV for full results.</p>
+                    </CardContent>
+                </Card>
+            )}
+        </div>
+    );
+}

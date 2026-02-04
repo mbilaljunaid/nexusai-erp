@@ -49,6 +49,9 @@ export const hrmJobProfiles = pgTable("hrm_job_profiles", {
     responsibilities: text("responsibilities"),
     qualifications: text("qualifications"),
 
+    // Structure: [{ skillId: string, level: string, required: boolean }]
+    requiredSkills: jsonb("required_skills"),
+
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 

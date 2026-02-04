@@ -70,15 +70,17 @@ import PersonalDetails from "@/pages/hr/selfservice/PersonalDetails";
 import MyTimeCard from "@/pages/hr/selfservice/MyTimeCard";
 import { AIGuide } from "@/components/hr/AIGuide";
 import MSSDashboard from "@/pages/hr/selfservice/MSSDashboard";
+import HRAnalyticsDashboard from "@/pages/HRAnalyticsDashboard";
+import PredictiveAnalytics from "@/pages/PredictiveAnalytics";
+import HRReports from "@/pages/HRReports";
+import KpiConfiguration from "@/pages/analytics/KpiConfiguration";
+import ReportScheduler from "@/pages/analytics/ReportScheduler";
 
 function Router() {
   const [location] = useLocation();
   console.log("DEBUG: App Router Location:", location);
   return (
     <>
-      <div style={{ position: "fixed", top: 0, left: 0, zIndex: 9999, background: "red", color: "white", padding: "10px", fontSize: "20px" }}>
-        DEBUG ROUTER PATH: {location}
-      </div>
       <Switch>
         {/* Dashboard */}
         <Route path="/dashboard" component={DashboardRoutes} />
@@ -141,6 +143,13 @@ function Router() {
         <Route path="/hr/recruitment" component={RecruitmentManagement} />
         <Route path="/hr/performance" component={PerformanceManagement} />
         <Route path="/hr/setup/performance" component={lazy(() => import("@/pages/PerformanceConfiguration"))} />
+
+        {/* HR Analytics */}
+        <Route path="/hr/analytics/predictive" component={PredictiveAnalytics} />
+        <Route path="/hr/analytics/reports" component={HRReports} />
+        <Route path="/hr/analytics/config/kpis" component={KpiConfiguration} />
+        <Route path="/hr/analytics/config/scheduler" component={ReportScheduler} />
+        <Route path="/hr/analytics" component={HRAnalyticsDashboard} />
 
         <Route path="/wfm/my-time" component={lazy(() => import("@/pages/wfm/MyTime"))} />
         <Route path="/wfm/approvals" component={lazy(() => import("@/pages/wfm/ManagerApprovals"))} />

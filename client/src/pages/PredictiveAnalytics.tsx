@@ -1,154 +1,110 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Zap, TrendingUp, AlertTriangle, BarChart3, Brain, AlertCircle, Plus, Trash2 } from "lucide-react";
+import { Brain, TrendingUp, AlertTriangle, RefreshCw } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-
-interface Prediction {
-  id: string;
-  name: string;
-  forecast: number;
-  confidence: number;
-  accuracy: number;
-  hasAnomaly: boolean;
-}
+import { Loader2 } from "lucide-react";
 
 export default function PredictiveAnalytics() {
   const { toast } = useToast();
-  const [activeNav, setActiveNav] = useState("forecasts");
-  const [newPrediction, setNewPrediction] = useState({ modelName: "", algorithm: "regression", confidence: "0.85" });
 
-  const { data: predictions = [], isLoading } = useQuery<Prediction[]>({
-    queryKey: ["/api/predictions"],
-    queryFn: () => fetch("/api/predictions").then(r => r.json()).catch(() => []),
+  const { data: forecast, isLoading } = useQuery({
+    queryKey: ["/api/hr/predictive/attrition"],
+    queryFn: () => fetch("/api/hr/predictive/attrition").then(r => r.json()),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/predictions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+  const trainMutation = useMutation({
+    mutationFn: () => fetch("/api/hr/predictive/train", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kpiCode: "HR_ATTRITION_VOL" })
+    }).then(r => r.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/predictions"] });
-      setNewPrediction({ modelName: "", algorithm: "regression", confidence: "0.85" });
-      toast({ title: "Model created" });
+      queryClient.invalidateQueries({ queryKey: ["/api/hr/predictive/attrition"] });
+      toast({ title: "HR Attrition Model Trained successfully" });
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/predictions/${id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/predictions"] });
-      toast({ title: "Model deleted" });
-    },
-  });
+  if (isLoading) {
+    return <div className="flex h-96 items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
+  }
 
-  const stats = {
-    total: predictions.length,
-    highConfidence: predictions.filter((p: any) => p.confidence >= 0.8).length,
-    anomalies: predictions.filter((p: any) => p.hasAnomaly).length,
-    accuracy: ((predictions.reduce((sum: number, p: any) => sum + (p.accuracy || 0), 0) / (predictions.length || 1)) * 100).toFixed(0),
-  };
-
-  const navItems = [
-    { id: "forecasts", label: "Forecasts", icon: TrendingUp, color: "text-green-500" },
-    { id: "anomalies", label: "Anomalies", icon: AlertCircle, color: "text-red-500" },
-    { id: "models", label: "Models", icon: Brain, color: "text-purple-500" },
-  ];
+  const { currentRate, predictedRate, riskLevel, topdrivers } = forecast || {};
 
   return (
     <div className="space-y-6 p-4">
-      <div><h1 className="text-3xl font-semibold flex items-center gap-2"><Brain className="w-8 h-8" />Predictive Analytics</h1>
-        <p className="text-muted-foreground text-sm">ML forecasting and anomaly detection</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold flex items-center gap-2">
+            <Brain className="w-8 h-8 text-purple-600" />
+            Workforce Predictions
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">AI-driven insights for attrition and headcount planning (Tier-1)</p>
+        </div>
+        <Button onClick={() => trainMutation.mutate()} disabled={trainMutation.isPending}>
+          {trainMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+          Retrain Model
+        </Button>
       </div>
 
-      <Card data-testid="card-new-model">
-        <CardHeader><CardTitle className="text-base">Create ML Model</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-3 gap-3">
-            <Input placeholder="Model name" value={newPrediction.modelName} onChange={(e) => setNewPrediction({ ...newPrediction, modelName: e.target.value })} data-testid="input-model-name" />
-            <Select value={newPrediction.algorithm} onValueChange={(v) => setNewPrediction({ ...newPrediction, algorithm: v })}>
-              <SelectTrigger data-testid="select-algorithm"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="regression">Regression</SelectItem>
-                <SelectItem value="classification">Classification</SelectItem>
-                <SelectItem value="clustering">Clustering</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={newPrediction.confidence} onValueChange={(v) => setNewPrediction({ ...newPrediction, confidence: v })}>
-              <SelectTrigger data-testid="select-confidence"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0.7">70%</SelectItem>
-                <SelectItem value="0.8">80%</SelectItem>
-                <SelectItem value="0.9">90%</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button disabled={createMutation.isPending || !newPrediction.modelName} className="w-full" data-testid="button-create-model">
-            <Plus className="w-4 h-4 mr-2" /> Create Model
-          </Button>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="hover-elevate"><CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <Zap className="h-5 w-5 text-blue-500" />
-            <div><p className="text-2xl font-semibold">{stats.total}</p>
-              <p className="text-xs text-muted-foreground">Models</p></div>
-          </div>
-        </CardContent></Card>
-        <Card className="hover-elevate"><CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <TrendingUp className="h-5 w-5 text-green-500" />
-            <div><p className="text-2xl font-semibold">{stats.highConfidence}</p>
-              <p className="text-xs text-muted-foreground">High Confidence</p></div>
-          </div>
-        </CardContent></Card>
-        <Card className="hover-elevate"><CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-orange-500" />
-            <div><p className="text-2xl font-semibold">{stats.anomalies}</p>
-              <p className="text-xs text-muted-foreground">Anomalies</p></div>
-          </div>
-        </CardContent></Card>
-        <Card className="hover-elevate"><CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <BarChart3 className="h-5 w-5 text-orange-500" />
-            <div><p className="text-2xl font-semibold">{stats.accuracy}%</p>
-              <p className="text-xs text-muted-foreground">Avg Accuracy</p></div>
-          </div>
-        </CardContent></Card>
-      </div>
-
-      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
-
-      {activeNav === "forecasts" && (
-        <Card>
-          <CardHeader><CardTitle className="text-base">Predictive Models</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            {isLoading ? <p>Loading...</p> : predictions.length === 0 ? <p className="text-muted-foreground text-center py-4">No models</p> : predictions.map((pred: any) => (
-              <div key={pred.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`model-${pred.id}`}>
-                <div>
-                  <p className="font-semibold">{pred.name}</p>
-                  <p className="text-sm text-muted-foreground">Forecast: ${(pred.forecast / 1000000).toFixed(1)}M • Confidence: {(pred.confidence * 100).toFixed(0)}%</p>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <Badge>{(pred.confidence * 100).toFixed(0)}%</Badge>
-                  <Button size="icon" variant="ghost" data-testid={`button-delete-${pred.id}`}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Attrition Risk Card */}
+        <Card className="border-l-4 border-l-orange-500 hover:shadow-md transition-shadow">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium text-muted-foreground flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" /> Attrition Forecast (Next Month)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-end gap-2">
+              <span className="text-4xl font-bold">{predictedRate?.toFixed(1)}%</span>
+              <span className={predictedRate > currentRate ? "text-red-500 mb-1" : "text-green-500 mb-1"}>
+                vs {currentRate?.toFixed(1)}% current
+              </span>
+            </div>
+            <div className="mt-4 flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Risk Level:</span>
+              <Badge variant={riskLevel === "HIGH" ? "destructive" : "secondary"}>
+                {riskLevel}
+              </Badge>
+            </div>
           </CardContent>
         </Card>
-      )}
-      {activeNav === "anomalies" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Detected anomalies and outliers</p></CardContent></Card>}
-      {activeNav === "models" && <Card><CardContent className="p-6"><p className="text-muted-foreground">ML model configuration and training</p></CardContent></Card>}
+
+        {/* Top Drivers */}
+        <Card className="md:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium text-muted-foreground flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4" /> Top Risk Drivers
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              {topdrivers?.map((driver: string, idx: number) => (
+                <div key={idx} className="p-3 bg-muted/50 rounded-lg border text-sm font-medium flex items-center justify-center text-center h-24">
+                  {driver}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Model Explanation</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground text-sm">
+            The attrition prediction model uses a linear regression analysis based on historical snapshots from the last 90 days.
+            It correlates voluntary turnover with variables such as compensation ratio, commute time, and manager effectiveness score.
+            Retraining the model incorporates the latest daily snapshots into the dataset.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

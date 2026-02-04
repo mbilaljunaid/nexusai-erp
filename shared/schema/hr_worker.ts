@@ -27,7 +27,7 @@ export const hrPersons = pgTable("hr_persons", {
     country: varchar("country").default("US"), // For Regional Rules (e.g. US, UK, AE)
 
     // Contact
-    // Contact
+    gender: varchar("gender").default("U"), // M=Male, F=Female, U=Unknown/Other
     email: varchar("email"), // Personal or Work? Usually Work Email here, but Fusion separates.
     phone: varchar("phone"),
 

@@ -26,6 +26,10 @@ import leaseDirectRouter from "./routes/lease";
 import { registerNotificationRoutes } from "./modules/notifications/routes";
 import contractRoutes from "./modules/contracts/routes";
 import intercompanyRouter from "./routes/intercompany";
+import hrAnalyticsRouter from "./routes/hr_analytics";
+import hrPredictiveRouter from "./routes/hr_predictive";
+import hrReportsRouter from "./routes/hr_reports";
+import hrConfigurationRouter from "./routes/hr_configuration";
 
 
 // Import existing routes files that were already modularized (if any)
@@ -237,6 +241,10 @@ export async function registerRoutes(
   registerFinanceRoutes(app);
   // HR
   app.use("/api/hr", hrRouter);
+  app.use("/api/hr/analytics", hrAnalyticsRouter);
+  app.use("/api/hr/predictive", hrPredictiveRouter);
+  app.use("/api/hr/reports", hrReportsRouter);
+  app.use("/api/hr/config", hrConfigurationRouter);
   // Copilot (AI)
   app.use("/api/copilot", copilotRouter);
   registerProjectRoutes(app);
