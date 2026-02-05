@@ -1,37 +1,40 @@
-# EPM Planning Phase 3: Operational Planning
+# EPM Planning Phase 5: Extended Domains (ESG, Treasury, Strategic)
 
 # Goal Description
-Expand EPM capabilities into Operational Planning, specifically targeting **Project Financials** and **S&OP (Sales & Operations Planning)**. This phase bridges the gap between high-level financial budgeting and granular operational execution.
+Extend the EPM module to cover "Extended" planning domains required for full Enterprise Compliance.
+- **ESG**: Planning for Carbon, DEI, and Social Impact.
+- **Treasury**: Cash forecasting and liquidity planning.
+- **Strategic**: Long-Range Planning (LRP) support.
 
 ## User Review Required
 > [!NOTE]
-> We are introducing a new `PlanProduct` dimension for S&OP. This will require schema updates similar to Phase 2.
+> **ESG Data Model**: We will introduce a new `PlanEsgMetric` entity. This differs from `PlanUnit` as it tracks non-financial units (KG CO2, Count, %) without necessarily tying to a GL Account, though integration is possible.
 
 ## Proposed Changes
 
-### Domain 7: Project Financials
-We will implement a dedicated `ProjectFinanceService` to handle:
-- **Revenue Recognition**: Percentage of Completion (POC) method.
-    - Formula: `recognizedRevenue = totalContractValue * (actualCost / estimatedTotalCost)`
-- **Project Margin Analysis**: Calculating profitability per project.
+### Domain 1: ESG & Non-Financials
+- **Entity**: `PlanEsgMetric` (Dimension: Metric Code, Type, Unit)
+- **Service**: `EsgPlanningService`
+    - Logic: `Carbon = Activity * Emission Factor`
+    - Logic: `Diversity % = Target Headcount / Total Headcount`
 
 **Files:**
-#### [NEW] [project-finance.service.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/project-finance.service.ts)
+#### [NEW] [plan-esg-metric.entity.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/entities/plan-esg-metric.entity.ts)
+#### [NEW] [esg-planning.service.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/esg-planning.service.ts)
 
-### Domain 8: S&OP Alignment
-We will lay the foundation for Demand Planning.
-- **New Dimension**: `PlanProduct` (SKU level planning).
-- **Service**: `DemandPlanningService` for calculating Gross Margin.
+### Domain 2: Treasury & Strategic
+- **Service**: `TreasuryPlanningService`
+    - Logic: `Closing Cash = Opening + Collections - Disbursements`
+    - Note: Will re-use `PlanUnit` but with specialized Cash Flow Account Types.
 
 **Files:**
-#### [NEW] [plan-product.entity.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/entities/plan-product.entity.ts)
-#### [NEW] [demand-planning.service.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/demand-planning.service.ts)
+#### [NEW] [treasury-planning.service.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/treasury-planning.service.ts)
 
 ## Verification Plan
 
 ### Automated Tests
-- **Project Revenue Rec**: Create a test script to seed a project with Total Value and Costs, then trigger the POC calculation and verify the generated `PlanUnit` for Revenue.
-- **S&OP**: Test gross margin calculation flow.
+- **ESG**: Verify Carbon Calc (1000 km * 0.2 factor = 200kg).
+- **Treasury**: Verify Cash Roll-forward.
 
 ### Manual Verification
-- None required for this backend-focused phase.
+- None required (API/Script level verification sufficient).

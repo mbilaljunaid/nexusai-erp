@@ -32,6 +32,9 @@ export class PlanUnit {
     @Column({ nullable: true })
     channelId?: string; // New Dimension: Channel (Sales Channel)
 
+    @Column({ name: 'product_id', nullable: true })
+    productId?: string; // New Dimension: S&OP Product
+
     @Column('decimal', { precision: 18, scale: 2, default: 0 })
     amount!: number;
 

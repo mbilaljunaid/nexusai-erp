@@ -28,6 +28,17 @@ import { BudgetControlService } from './budget-control.service';
 import { FormulaService } from './formula.service'; // NEW
 import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
 
+import { ProjectFinanceService } from './project-finance.service';
+import { PlanProduct } from './entities/plan-product.entity'; // NEW
+import { DemandPlanningService } from './demand-planning.service';
+import { PredictiveForecastingService } from './predictive-forecasting.service';
+import { EpmSecurityService } from './epm-security.service';
+import { PlanEsgMetric } from './entities/plan-esg-metric.entity'; // NEW
+import { EsgPlanningService } from './esg-planning.service'; // NEW
+import { TreasuryPlanningService } from './treasury-planning.service'; // NEW
+import { Project } from '../projects/entities/project.entity';
+import { ProjectIntegrationService } from './project-integration.service';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -39,13 +50,16 @@ import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
       PlanDriver,
       PlanPosition,
       PlanAsset,
-      PlanProject, // NEW
-      PlanChannel, // NEW
+      PlanProject,
+      PlanChannel,
+      PlanProduct,
+      PlanEsgMetric, // NEW
       EpmAudit,
-      GLBalance // NEW
+      GLBalance,
+      Project
     ])
   ],
-  controllers: [BudgetController, PlanningController], // Updated
+  controllers: [BudgetController, PlanningController],
   providers: [
     EPMService,
     BudgetService,
@@ -58,7 +72,14 @@ import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
     EliminationService,
     BudgetControlService,
     PlanUnitSubscriber,
-    FormulaService // NEW
+    FormulaService,
+    ProjectIntegrationService,
+    ProjectFinanceService,
+    DemandPlanningService,
+    PredictiveForecastingService,
+    EpmSecurityService,
+    EsgPlanningService, // NEW
+    TreasuryPlanningService // NEW
   ],
   exports: [
     EPMService,
@@ -71,7 +92,14 @@ import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
     CapExService,
     EliminationService,
     BudgetControlService,
-    FormulaService // NEW
+    FormulaService,
+    ProjectIntegrationService,
+    ProjectFinanceService,
+    DemandPlanningService,
+    PredictiveForecastingService,
+    EpmSecurityService,
+    EsgPlanningService, // NEW
+    TreasuryPlanningService // NEW
   ],
 })
 export class EPMModule { }
