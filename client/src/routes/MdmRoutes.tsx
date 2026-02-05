@@ -5,6 +5,10 @@ import DataGovernancePage from "@/pages/DataGovernancePage";
 import DuplicateDetection from "@/pages/DuplicateDetection";
 import PartyDirectory from "@/pages/PartyDirectory";
 import PartyProfile from "@/pages/PartyProfile";
+import ReferenceDataList from "@/pages/ReferenceDataList";
+import ReferenceDataDetail from "@/pages/ReferenceDataDetail";
+import MatchRuleList from "@/pages/MatchRuleList";
+import MatchRuleDetail from "@/pages/MatchRuleDetail";
 
 export default function MdmRoutes() {
     return (
@@ -13,6 +17,11 @@ export default function MdmRoutes() {
             <Route path="/mdm/duplicates" component={DuplicateDetection} />
             <Route path="/mdm/parties" component={PartyDirectory} />
             <Route path="/mdm/parties/:id" component={PartyProfile} />
+            <Route path="/mdm/reference-data" component={ReferenceDataList} />
+            <Route path="/mdm/reference-data/:id" component={ReferenceDataDetail} />
+
+            <Route path="/mdm/config/match-rules" component={MatchRuleList} />
+            <Route path="/mdm/config/match-rules/:id" component={MatchRuleDetail} />
 
             {/* Redirects or Default */}
             <Route path="/mdm" component={DataGovernancePage} />

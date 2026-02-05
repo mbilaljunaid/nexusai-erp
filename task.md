@@ -127,7 +127,37 @@
     - [x] Build "Merge Review" Side Sheet (Compare A vs B) <!-- id: 54 -->
     - [x] Implement "Merge" action (calls `resolveSet`) <!-- id: 55 -->
 
-- [ ] **Step 3: Master Data Registry (360 View)**
-    - [ ] Create `PartyDirectory.tsx` (Search Parties) <!-- id: 56 -->
-    - [ ] Create `PartyProfile.tsx` (View/Edit Party + Addresses + Contacts) <!-- id: 57 -->
+- [x] **Step 3: Master Data Registry (360 View)**
+    - [x] Create `PartyDirectory.tsx` (Search Parties) <!-- id: 56 -->
+    - [x] Create `PartyProfile.tsx` (View/Edit Party + Addresses + Contacts) <!-- id: 57 -->
+
+# Phase 9: Advanced Governance (Reference Data & Hierarchies)
+
+- [x] **Step 1: Reference Data Management (RDM)**
+    - [x] Create `ReferenceDataList.tsx` (Manage Lookup Types) <!-- id: 58 -->
+    - [x] Create `ReferenceDataDetail.tsx` (Manage Lookup Values) <!-- id: 59 -->
+    - [x] Register RDM Routes in `MdmRoutes.tsx` <!-- id: 60 -->
+
+- [x] **Step 2: Hierarchy Management**
+    - [x] Create `RelationshipViewer.tsx` (Visual Hierarchy) <!-- id: 61 -->
+    - [x] Integrate Relationship Tab in `PartyProfile.tsx` <!-- id: 62 -->
+
+- [x] **Step 3: Verification**
+    - [x] Manual Verification of RDM and Hierarchy UI <!-- id: 63 -->
+
+# Phase 10: Configurable Rules Engines (Dynamic Governance)
+
+- [ ] **Step 1: Match Rule Configuration**
+    - [ ] Create `hz_match_rules` schema <!-- id: 64 -->
+    - [ ] Implement `MatchRuleService` <!-- id: 65 -->
+    - [ ] Create `MatchRuleList.tsx` & `MatchRuleDetail.tsx` <!-- id: 66 -->
+    - [ ] Update `MatchingService` to use dynamic rules <!-- id: 67 -->
+
+- [ ] **Step 2: Survivorship Rules**
+    - [ ] Create `hz_survivorship_rules` schema <!-- id: 68 -->
+    - [ ] Implement `SurvivorshipService` <!-- id: 69 -->
+    - [ ] Create UI for Survivorship Configuration <!-- id: 70 -->
+
+- [ ] **Step 3: Verification**
+    - [ ] Script: Verify Match Rule CRUD & Execution <!-- id: 71 -->
 

@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Building2, User, MapPin, Phone, Mail, Globe, Hash } from "lucide-react";
 import { useRoute } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { RelationshipViewer } from "@/components/mdm/RelationshipViewer";
 
 export default function PartyProfile() {
     const [, params] = useRoute("/mdm/parties/:id");
@@ -135,6 +136,10 @@ export default function PartyProfile() {
                         <div className="text-center py-10 text-muted-foreground border-2 border-dashed rounded-lg bg-orange-50/50">
                             Contacts module not yet linked in Phase 8.
                         </div>
+                    </TabsContent>
+
+                    <TabsContent value="relationships" className="mt-6">
+                        <RelationshipViewer partyId={partyId || ""} />
                     </TabsContent>
                 </Tabs>
             </div>

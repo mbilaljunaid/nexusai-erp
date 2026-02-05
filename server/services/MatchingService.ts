@@ -1,6 +1,6 @@
-
 import { db } from "../db";
-import { hzParties, hzDupBatch, hzDupSets, hzDupSetParties } from "@shared/schema";
+import { hzParties, hzDupBatch, hzDupSets, hzDupSetParties } from "../../shared/schema";
+import { matchRuleService } from "./MatchRuleService";
 import { eq, like, or, and, ne, sql } from "drizzle-orm";
 
 // Basic weighted Levenshtein implementation
@@ -39,11 +39,16 @@ export class MatchingService {
     async runBatch(batchName: string = `Batch-${Date.now()}`) {
         console.log("Starting Duplicate Detection Batch:", batchName);
 
+        const activeRules = await matchRuleService.getActiveRules();
+        const ruleToUse = activeRules[0]; // Use first active rule for now
+        const matchRuleCode = ruleToUse ? ruleToUse.ruleName : "DEFAULT_FUZZY";
+        const threshold = ruleToUse ? (ruleToUse.matchScoreThreshold || 80) / 100 : 0.85;
+
         // 1. Create Batch Record
         const [batch] = await db.insert(hzDupBatch).values({
             batchName: batchName,
             status: "RUNNING",
-            matchRuleCode: "FUZZY_NAME_MATCH"
+            matchRuleCode: matchRuleCode
         }).returning();
 
         let totalRecordsProcessed = 0;
@@ -76,7 +81,8 @@ export class MatchingService {
                         const similarity = calculateSimilarity(p1.partyName.toLowerCase(), p2.partyName.toLowerCase());
 
                         // Threshold 85%
-                        if (similarity >= 0.85) {
+                        // Threshold Dynamic
+                        if (similarity >= threshold) {
                             matches.push({ party: p2, score: Math.round(similarity * 100) });
                         }
                     }

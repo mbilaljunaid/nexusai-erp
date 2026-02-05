@@ -4,6 +4,7 @@ import { partyService } from "../services/PartyService";
 import { locationService } from "../services/LocationService";
 import { referenceDataService } from "../services/ReferenceDataService";
 import { matchingService } from "../services/MatchingService";
+import { matchRuleService } from "../services/MatchRuleService";
 
 
 const mdmRouter = Router();
@@ -81,6 +82,24 @@ mdmRouter.post("/parties/:id/locations", async (req, res) => {
 // ==========================================
 // Reference Data (Lookups)
 // ==========================================
+mdmRouter.get("/lookups", async (req, res) => {
+    try {
+        const result = await referenceDataService.getAllLookupTypes();
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.get("/lookups/types/:id", async (req, res) => {
+    try {
+        const result = await referenceDataService.getLookupTypeById(req.params.id);
+        if (!result) return res.status(404).json({ error: "Lookup Type not found" });
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
 mdmRouter.get("/lookups/:type", async (req, res) => {
     try {
         const result = await referenceDataService.getLookupValues(req.params.type.toUpperCase());
@@ -160,4 +179,46 @@ mdmRouter.post("/quality/duplicates/:setId/resolve", async (req, res) => {
     }
 });
 
+
+mdmRouter.get("/parties/:id/relationships", async (req, res) => {
+    try {
+        const result = await partyService.getRelationships(req.params.id);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==========================================
+// Match Rules (Configuration)
+// ==========================================
+mdmRouter.get("/match-rules", async (req, res) => {
+    try {
+        const result = await matchRuleService.getAllRules();
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.post("/match-rules", async (req, res) => {
+    try {
+        const result = await matchRuleService.createRule(req.body);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.put("/match-rules/:id", async (req, res) => {
+    try {
+        const result = await matchRuleService.updateRule(req.params.id, req.body);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 export { mdmRouter };
+
+

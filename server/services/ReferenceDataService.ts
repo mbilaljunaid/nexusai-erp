@@ -17,6 +17,22 @@ export class ReferenceDataService {
     }
 
     /**
+     * Get All Lookup Types
+     */
+    async getAllLookupTypes() {
+        return await db.select().from(fndLookupTypes).orderBy(fndLookupTypes.lookupType);
+    }
+
+    /**
+     * Get Lookup Type by ID
+     */
+    async getLookupTypeById(id: string) {
+        return await db.query.fndLookupTypes.findFirst({
+            where: eq(fndLookupTypes.id, id)
+        });
+    }
+
+    /**
      * Create a Lookup Value (Detail)
      */
     async createLookupValue(data: InsertFndLookupValue) {

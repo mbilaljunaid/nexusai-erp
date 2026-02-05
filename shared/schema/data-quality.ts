@@ -1,5 +1,5 @@
 
-import { pgTable, varchar, text, timestamp, integer, numeric, date } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, integer, numeric, date, boolean, json } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -48,6 +48,21 @@ export const hzDupSetParties = pgTable("hz_dup_set_parties", {
 });
 
 // ==========================================
+// 4. MATCH RULES (Configuration)
+// ==========================================
+export const hzMatchRules = pgTable("hz_match_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ruleName: varchar("rule_name").notNull(),
+    description: text("description"),
+    matchType: varchar("match_type").default("FUZZY"), // EXACT, FUZZY
+    matchScoreThreshold: integer("match_score_threshold").default(80),
+    configJson: json("config_json"), // Stores columns, weights etc. e.g. { columns: ["partyName"] }
+    activeFlag: boolean("active_flag").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// ==========================================
 // RELATIONS
 // ==========================================
 export const hzDupBatchRelations = relations(hzDupBatch, ({ many }) => ({
@@ -89,6 +104,11 @@ export const insertHzDupSetPartySchema = createInsertSchema(hzDupSetParties).ext
     score: z.number().or(z.string().transform(v => Number(v))),
 });
 
+export const insertHzMatchRuleSchema = createInsertSchema(hzMatchRules).extend({
+    ruleName: z.string().min(1),
+    matchScoreThreshold: z.number().min(0).max(100),
+});
+
 
 // Types
 export type HzDupBatch = typeof hzDupBatch.$inferSelect;
@@ -99,3 +119,6 @@ export type InsertHzDupSet = typeof hzDupSets.$inferInsert;
 
 export type HzDupSetParty = typeof hzDupSetParties.$inferSelect;
 export type InsertHzDupSetParty = typeof hzDupSetParties.$inferInsert;
+
+export type HzMatchRule = typeof hzMatchRules.$inferSelect;
+export type InsertHzMatchRule = typeof hzMatchRules.$inferInsert;

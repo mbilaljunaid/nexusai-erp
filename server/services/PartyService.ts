@@ -1,10 +1,10 @@
 
 import { db } from "../db";
 import {
-    hzParties, hzOrganizationProfiles, hzPersonProfiles,
-    InsertHzParty, InsertHzOrganizationProfile, InsertHzPersonProfile
+    hzParties, hzOrganizationProfiles, hzPersonProfiles, hzRelationships,
+    InsertHzParty, InsertHzOrganizationProfile, InsertHzPersonProfile, InsertHzRelationship
 } from "../../shared/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, or } from "drizzle-orm";
 
 export class PartyService {
 
@@ -89,6 +89,43 @@ export class PartyService {
     async countParties() {
         const result = await db.select({ count: sql<number>`count(*)` }).from(hzParties);
         return Number(result[0].count);
+    }
+
+    /**
+     * Get Relationships for a Party
+     */
+    async getRelationships(partyId: string) {
+        // Find all relationships where this party is either Subject or Object
+        const rels = await db.select().from(hzRelationships)
+            .where(or(
+                eq(hzRelationships.subjectId, partyId),
+                eq(hzRelationships.objectId, partyId)
+            ));
+
+        // Enrich with Party Names (Manual 'join' helper)
+        const enriched = await Promise.all(rels.map(async (r) => {
+            const otherId = r.subjectId === partyId ? r.objectId : r.subjectId;
+            const otherParty = await db.query.hzParties.findFirst({
+                where: eq(hzParties.id, otherId),
+                columns: { partyName: true, partyType: true }
+            });
+            return {
+                ...r,
+                relatedPartyName: otherParty?.partyName,
+                relatedPartyType: otherParty?.partyType,
+                direction: r.subjectId === partyId ? 'Subject' : 'Object' // 'Subject' means Party -> Other
+            };
+        }));
+
+        return enriched;
+    }
+
+    /**
+     * Create a Relationship (Internal use for now or Verification)
+     */
+    async createRelationship(data: InsertHzRelationship) {
+        const [rel] = await db.insert(hzRelationships).values(data).returning();
+        return rel;
     }
 }
 
