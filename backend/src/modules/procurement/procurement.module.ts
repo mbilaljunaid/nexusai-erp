@@ -30,7 +30,7 @@ import { RfqLine } from './entities/rfq-line.entity';
 import { SupplierQuote } from './entities/supplier-quote.entity';
 import { Item } from '../inventory/entities/item.entity';
 import { Budget } from '../epm/entities/budget.entity';
-import { ApprovalService } from './approval.service';
+import { ProcurementApprovalService } from './approval.service';
 import { BudgetService } from '../epm/budget.service';
 import { ProcurementGlIntegrationService } from './gl-integration.service';
 import { AiController } from './ai.controller';
@@ -69,11 +69,11 @@ import { EPMModule } from '../epm/epm.module';
     ReceiptService,
     RequisitionService,
     ApService,
-    ApprovalService,
+    ProcurementApprovalService,
     SourcingService,
     ProcurementGlIntegrationService,
     ProcurementAiService
   ],
-  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService, TypeOrmModule],
+  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ProcurementApprovalService, SourcingService, TypeOrmModule],
 })
 export class ProcurementModule { }

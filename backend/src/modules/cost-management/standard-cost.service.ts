@@ -8,7 +8,7 @@ import { CostElement } from './entities/cost-element.entity';
 import { CostOrganization } from './entities/cost-organization.entity';
 import { CstItemCost } from './entities/cst-item-cost.entity';
 import { CostBook } from './entities/cost-book.entity';
-import { ApprovalService } from './approval.service';
+import { CostApprovalService } from './approval.service';
 
 @Injectable()
 export class StandardCostService implements OnModuleInit {
@@ -25,8 +25,8 @@ export class StandardCostService implements OnModuleInit {
         private costOrgRepo: Repository<CostOrganization>,
         @InjectDataSource()
         private dataSource: DataSource,
-        @Inject(ApprovalService)
-        private approvalService: ApprovalService
+        @Inject(CostApprovalService)
+        private approvalService: CostApprovalService
     ) { }
 
     onModuleInit() {

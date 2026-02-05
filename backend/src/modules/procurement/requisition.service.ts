@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { RequisitionHeader } from './entities/requisition-header.entity';
 import { RequisitionLine } from './entities/requisition-line.entity';
 import { PurchaseOrderService } from './purchase-order.service';
-import { ApprovalService } from './approval.service';
+import { ProcurementApprovalService } from './approval.service';
 import { ProcurementGlIntegrationService } from './gl-integration.service';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class RequisitionService {
         @InjectRepository(RequisitionLine)
         private reqLineRepo: Repository<RequisitionLine>,
         private readonly poService: PurchaseOrderService,
-        private readonly approvalService: ApprovalService,
+        private readonly approvalService: ProcurementApprovalService,
         private readonly glService: ProcurementGlIntegrationService,
     ) { }
 

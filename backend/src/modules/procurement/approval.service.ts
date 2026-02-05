@@ -4,8 +4,8 @@ import { Repository, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { ApprovalRule } from './entities/approval-rule.entity';
 
 @Injectable()
-export class ApprovalService {
-    private readonly logger = new Logger(ApprovalService.name);
+export class ProcurementApprovalService {
+    private readonly logger = new Logger(ProcurementApprovalService.name);
 
     constructor(
         @InjectRepository(ApprovalRule)

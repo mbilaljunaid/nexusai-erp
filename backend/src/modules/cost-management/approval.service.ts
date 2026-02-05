@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { ApprovalRequest, ApprovalStatus } from './entities/approval-request.entity';
 
 @Injectable()
-export class ApprovalService {
-    private readonly logger = new Logger(ApprovalService.name);
+export class CostApprovalService {
+    private readonly logger = new Logger(CostApprovalService.name);
     // Registry of callbacks for different entity types
     private readonly approvalCallbacks = new Map<string, (id: string) => Promise<void>>();
 

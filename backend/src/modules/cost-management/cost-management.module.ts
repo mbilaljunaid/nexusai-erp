@@ -28,7 +28,7 @@ import { LandedCostCharge } from './entities/landed-cost.entity';
 import { CostAnomaly } from './entities/cost-anomaly.entity';
 import { CostAnomalyService } from './cost-anomaly.service';
 import { ApprovalRequest } from './entities/approval-request.entity';
-import { ApprovalService } from './approval.service';
+import { CostApprovalService } from './approval.service';
 import { GLEntry } from '../erp/entities/gl-entry.entity';
 import { StandardCostService } from './standard-cost.service';
 import { FinanceGlIntegrationService } from '../finance/gl-integration.service';
@@ -61,7 +61,7 @@ import { WipCostingService } from './wip-costing.service';
         SlaService,
         CostProcessorService,
         CostAnomalyService,
-        ApprovalService
+        CostApprovalService
     ],
     exports: [
         CostManagementService,
@@ -74,7 +74,7 @@ import { WipCostingService } from './wip-costing.service';
         LcmService,
         WipCostingService,
         CostAnomalyService,
-        ApprovalService
+        CostApprovalService
     ],
 })
 export class CostManagementModule { }
