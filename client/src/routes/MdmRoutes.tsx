@@ -14,6 +14,7 @@ import ItemDirectory from "@/pages/ItemDirectory";
 import ItemProfile from "@/pages/ItemProfile";
 import DataQualityDashboard from "@/pages/DataQualityDashboard";
 import ChangeRequestInbox from "@/pages/ChangeRequestInbox";
+import BulkImportWizard from "@/pages/BulkImportWizard";
 
 export default function MdmRoutes() {
     return (
@@ -33,6 +34,7 @@ export default function MdmRoutes() {
             <Route path="/mdm/items/:id" component={ItemProfile} />
             <Route path="/mdm/dq-dashboard" component={DataQualityDashboard} />
             <Route path="/mdm/change-requests" component={ChangeRequestInbox} />
+            <Route path="/mdm/import" component={BulkImportWizard} />
 
             {/* Redirects or Default */}
             <Route path="/mdm" component={DataGovernancePage} />

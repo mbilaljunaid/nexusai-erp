@@ -1,6 +1,7 @@
 
 import { db } from "../../../db";
 import { purchaseOrders, purchaseOrderLines, type InsertPurchaseOrder, type InsertPurchaseOrderLine } from "@shared/schema/scm";
+import { itemService } from "../../../services/ItemService";
 
 import { eq } from "drizzle-orm";
 
@@ -20,11 +21,29 @@ export class ProcurementService {
 
             // 2. Create Lines
             if (data.lines && data.lines.length > 0) {
-                await tx.insert(purchaseOrderLines).values(data.lines.map((line, index) => ({
-                    ...line,
-                    poHeaderId: header.id,
-                    lineNumber: index + 1
-                })));
+                const enrichedLines = await Promise.all(
+                    data.lines.map(async (line, index) => {
+                        // PIM Integration
+                        if (line.itemId) {
+                            const item = await itemService.getItemById(line.itemId);
+                            if (!item) throw new Error(`Item ID ${line.itemId} not found in PIM.`);
+                            if (item.inventoryItemStatusCode !== "Active" && item.inventoryItemStatusCode !== "ACTIVE") {
+                                throw new Error(`Item ${item.itemNumber} is not Active.`);
+                            }
+
+                            // Auto-populate description if missing
+                            if (!line.description) line.description = item.itemName;
+                        }
+
+                        return {
+                            ...line,
+                            poHeaderId: header.id,
+                            lineNumber: index + 1
+                        };
+                    })
+                );
+
+                await tx.insert(purchaseOrderLines).values(enrichedLines);
             }
 
             // 3. Contract Compliance Validation

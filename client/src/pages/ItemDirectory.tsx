@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
-import { Plus, Package, Eye } from "lucide-react";
+import { Plus, Package, Eye, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function ItemDirectory() {
@@ -42,7 +42,7 @@ export default function ItemDirectory() {
         {
             header: "Status", accessorKey: "itemStatus", cell: (row: any) => (
                 <span className={`px-2 py-1 rounded text-xs ${row.itemStatus === 'ACTIVE' ? 'bg-green-100 text-green-800' :
-                        row.itemStatus === 'OBSOLETE' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+                    row.itemStatus === 'OBSOLETE' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
                     }`}>
                     {row.itemStatus}
                 </span>
@@ -101,63 +101,68 @@ export default function ItemDirectory() {
             description="Centralized Item Master (Products, Services, BOMs)"
             breadcrumbs={[{ label: "MDM", href: "/mdm/governance" }, { label: "Item Master" }]}
             actions={
-                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                    <SheetTrigger asChild>
-                        <Button><Plus className="mr-2 h-4 w-4" /> Create Item</Button>
-                    </SheetTrigger>
-                    <SheetContent>
-                        <SheetHeader>
-                            <SheetTitle>Create New Item</SheetTitle>
-                        </SheetHeader>
-                        <div className="space-y-4 mt-6">
-                            <div>
-                                <Label>Item Number</Label>
-                                <Input
-                                    placeholder="e.g. SRV-001"
-                                    value={newItem.itemNumber}
-                                    onChange={(e) => setNewItem({ ...newItem, itemNumber: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <Label>Item Name</Label>
-                                <Input
-                                    placeholder="e.g. Consulting Services"
-                                    value={newItem.itemName}
-                                    onChange={(e) => setNewItem({ ...newItem, itemName: e.target.value })}
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setLocation("/mdm/import")}>
+                        <Upload className="mr-2 h-4 w-4" /> Bulk Import
+                    </Button>
+                    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                        <SheetTrigger asChild>
+                            <Button><Plus className="mr-2 h-4 w-4" /> Create Item</Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>Create New Item</SheetTitle>
+                            </SheetHeader>
+                            <div className="space-y-4 mt-6">
                                 <div>
-                                    <Label>Type</Label>
-                                    <Select value={newItem.itemType} onValueChange={(val) => setNewItem({ ...newItem, itemType: val })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="GOODS">Goods</SelectItem>
-                                            <SelectItem value="SERVICE">Service</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div>
-                                    <Label>UOM</Label>
+                                    <Label>Item Number</Label>
                                     <Input
-                                        value={newItem.primaryUomCode}
-                                        onChange={(e) => setNewItem({ ...newItem, primaryUomCode: e.target.value })}
+                                        placeholder="e.g. SRV-001"
+                                        value={newItem.itemNumber}
+                                        onChange={(e) => setNewItem({ ...newItem, itemNumber: e.target.value })}
                                     />
                                 </div>
+                                <div>
+                                    <Label>Item Name</Label>
+                                    <Input
+                                        placeholder="e.g. Consulting Services"
+                                        value={newItem.itemName}
+                                        onChange={(e) => setNewItem({ ...newItem, itemName: e.target.value })}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>Type</Label>
+                                        <Select value={newItem.itemType} onValueChange={(val) => setNewItem({ ...newItem, itemType: val })}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="GOODS">Goods</SelectItem>
+                                                <SelectItem value="SERVICE">Service</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <Label>UOM</Label>
+                                        <Input
+                                            value={newItem.primaryUomCode}
+                                            onChange={(e) => setNewItem({ ...newItem, primaryUomCode: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <Label>Description</Label>
+                                    <Input
+                                        value={newItem.description}
+                                        onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                                    />
+                                </div>
+                                <Button onClick={handleCreate} disabled={createMutation.isPending} className="w-full">
+                                    {createMutation.isPending ? "Creating..." : "Create Item"}
+                                </Button>
                             </div>
-                            <div>
-                                <Label>Description</Label>
-                                <Input
-                                    value={newItem.description}
-                                    onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                                />
-                            </div>
-                            <Button onClick={handleCreate} disabled={createMutation.isPending} className="w-full">
-                                {createMutation.isPending ? "Creating..." : "Create Item"}
-                            </Button>
-                        </div>
-                    </SheetContent>
-                </Sheet>
+                        </SheetContent>
+                    </Sheet>
+                </div>
             }
         >
             <Card>
@@ -171,6 +176,6 @@ export default function ItemDirectory() {
                     />
                 </CardContent>
             </Card>
-        </StandardPage>
+        </StandardPage >
     );
 }

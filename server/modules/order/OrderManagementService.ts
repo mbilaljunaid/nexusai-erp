@@ -4,6 +4,7 @@ import { omOrderHeaders, omOrderLines, omHolds } from "../../../shared/schema/or
 import { arCustomers } from "../../../shared/schema/ar";
 import { eq, sql, and, desc } from "drizzle-orm";
 import { billingService } from "../billing/BillingService";
+import { itemService } from "../../services/ItemService";
 
 export class OrderManagementService {
 
@@ -24,17 +25,30 @@ export class OrderManagementService {
             }).returning();
 
             if (data.lines && data.lines.length > 0) {
-                await tx.insert(omOrderLines).values(data.lines.map((line: any, index: number) => ({
-                    headerId: header.id,
-                    lineNumber: index + 1,
-                    itemId: line.itemId,
-                    orderedQuantity: line.orderedQuantity || line.quantity,
-                    unitSellingPrice: line.unitSellingPrice || line.unitPrice,
-                    status: 'AWAITING_FULFILLMENT',
-                    orgId: 'ORG-001',
-                    projectId: line.projectId,
-                    taskId: line.taskId
-                })));
+                const enrichedLines = await Promise.all(data.lines.map(async (line: any, index: number) => {
+                    // PIM Validation
+                    const item = await itemService.getItemById(line.itemId);
+                    if (!item) throw new Error(`Item ID ${line.itemId} not found in PIM.`);
+                    if (item.inventoryItemStatusCode !== "ACTIVE" && item.inventoryItemStatusCode !== "Active") {
+                        throw new Error(`Item ${item.itemNumber} is not eligible for sales (Status: ${item.inventoryItemStatusCode})`);
+                    }
+
+                    return {
+                        headerId: header.id,
+                        lineNumber: index + 1,
+                        itemId: line.itemId,
+                        description: item.itemName, // Force description from Master
+                        orderedQuantity: line.orderedQuantity || line.quantity,
+                        unitSellingPrice: line.unitSellingPrice || line.unitPrice,
+                        uom: line.uom || item.primaryUomCode, // Default to Primary UOM
+                        status: 'AWAITING_FULFILLMENT',
+                        orgId: 'ORG-001',
+                        projectId: line.projectId,
+                        taskId: line.taskId
+                    };
+                }));
+
+                await tx.insert(omOrderLines).values(enrichedLines);
             }
 
             return header;

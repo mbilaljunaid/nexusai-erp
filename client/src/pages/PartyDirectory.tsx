@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Edit2, Search, Building2, User, Eye } from "lucide-react";
+import { Plus, Edit2, Search, Building2, User, Eye, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 
@@ -119,11 +119,16 @@ export default function PartyDirectory() {
             breadcrumbs={[{ label: "MDM", href: "/mdm/governance" }, { label: "Registry" }]}
             actions={
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                    <SheetTrigger asChild>
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" /> Create Record
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => setLocation("/mdm/import")}>
+                            <Upload className="mr-2 h-4 w-4" /> Bulk Import
                         </Button>
-                    </SheetTrigger>
+                        <SheetTrigger asChild>
+                            <Button>
+                                <Plus className="mr-2 h-4 w-4" /> Create Record
+                            </Button>
+                        </SheetTrigger>
+                    </div>
                     <SheetContent>
                         <SheetHeader>
                             <SheetTitle>Create New Party</SheetTitle>

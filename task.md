@@ -209,3 +209,32 @@
 
 - [x] **Step 4: Verification**
     - [x] Script: Verify Audit Logging & Change Request Flow <!-- id: 92 -->
+
+# Phase 14: Bulk Data Import
+
+- [x] **Step 1: Backend Import Service**
+    - [x] Create `BulkImportService` (CSV Parsing & Validation) <!-- id: 93 -->
+    - [x] Implement Batch Insert Logic for Parties/Items <!-- id: 94 -->
+    - [x] Expose Import API Endpoint <!-- id: 95 -->
+
+- [x] **Step 2: Import UI**
+    - [x] Create `BulkImportWizard.tsx` (Upload -> Map -> Preview -> Import) <!-- id: 96 -->
+    - [x] Add "Import" button to Party/Item Directories <!-- id: 97 -->
+
+- [x] **Step 3: Verification**
+    - [x] Script: Verify CSV Import Flow <!-- id: 98 -->
+
+# Phase 15: PIM Integration (Order Management & Procurement)
+
+- [ ] **Step 1: Analyze & Refactor Schema**
+    - [ ] Check `OrderLine` and `PurchaseOrderLine` schema <!-- id: 99 -->
+    - [ ] Add Foreign Key to `egp_system_items` if missing <!-- id: 100 -->
+
+- [ ] **Step 2: Service Layer Integration**
+    - [ ] Update `OrderService` to validate Items against PIM <!-- id: 101 -->
+    - [ ] Update `ProcurementService` to select Items from PIM <!-- id: 102 -->
+    - [ ] Ensure Inventory Reservation logic uses PIM attributes <!-- id: 103 -->
+
+- [ ] **Step 3: Verification**
+    - [ ] Script: Verify Order Creation with PIM Item <!-- id: 104 -->
+    - [ ] Script: Verify PO Creation with PIM Item <!-- id: 105 -->

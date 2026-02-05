@@ -9,6 +9,10 @@ import { survivorshipService } from "../services/SurvivorshipService";
 import { itemService } from "../services/ItemService";
 import { dataQualityService } from "../services/DataQualityService";
 import { auditService } from "../services/AuditService";
+import { bulkImportService } from "../services/BulkImportService";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 const mdmRouter = Router();
@@ -335,6 +339,31 @@ mdmRouter.put("/change-requests/:id/status", async (req, res) => {
     try {
         const { status, reason } = req.body;
         const result = await auditService.updateRequestStatus(req.params.id, status, reason);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// ==========================================
+// Bulk Data Import
+// ==========================================
+mdmRouter.post("/bulk/import/:type", upload.single("file"), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+        const { type } = req.params;
+
+        if (type !== "party" && type !== "item") {
+            return res.status(400).json({ error: "Invalid type. Must be 'party' or 'item'." });
+        }
+
+        const csvContent = req.file.buffer.toString("utf-8");
+        const result = await bulkImportService.processImport(
+            type.toUpperCase() as "PARTY" | "ITEM",
+            csvContent
+        );
+
         res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
