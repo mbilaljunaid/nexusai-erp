@@ -13,7 +13,10 @@ import { PlanUnit } from './entities/plan-unit.entity';
 import { PlanDriver } from './entities/plan-driver.entity';
 import { PlanPosition } from './entities/plan-position.entity';
 import { PlanAsset } from './entities/plan-asset.entity';
+import { PlanProject } from './entities/plan-project.entity'; // NEW
+import { PlanChannel } from './entities/plan-channel.entity'; // NEW
 import { EpmAudit } from './entities/epm-audit.entity';
+import { GLBalance } from '../finance/entities/gl-balance.entity'; // NEW
 import { EPMFoundationService } from './epm-foundation.service';
 import { GLIntegrationService } from './gl-integration.service';
 import { PlanningService } from './planning.service';
@@ -22,6 +25,7 @@ import { WorkforceService } from './workforce.service';
 import { CapExService } from './capex.service';
 import { EliminationService } from './elimination.service';
 import { BudgetControlService } from './budget-control.service';
+import { FormulaService } from './formula.service'; // NEW
 import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
 
 @Module({
@@ -35,7 +39,10 @@ import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
       PlanDriver,
       PlanPosition,
       PlanAsset,
-      EpmAudit
+      PlanProject, // NEW
+      PlanChannel, // NEW
+      EpmAudit,
+      GLBalance // NEW
     ])
   ],
   controllers: [BudgetController, PlanningController], // Updated
@@ -50,7 +57,8 @@ import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
     CapExService,
     EliminationService,
     BudgetControlService,
-    PlanUnitSubscriber
+    PlanUnitSubscriber,
+    FormulaService // NEW
   ],
   exports: [
     EPMService,
@@ -62,7 +70,8 @@ import { PlanUnitSubscriber } from './subscribers/plan-unit.subscriber';
     WorkforceService,
     CapExService,
     EliminationService,
-    BudgetControlService
+    BudgetControlService,
+    FormulaService // NEW
   ],
 })
 export class EPMModule { }

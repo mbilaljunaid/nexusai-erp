@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import GlobalLayout from '@/components/GlobalLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +10,8 @@ interface PlanUnit {
     id: string;
     accountId: string;
     departmentId: string;
+    projectId?: string; // New
+    channelId?: string; // New
     period: string;
     amount: string;
     versionId: string;
@@ -26,9 +29,9 @@ const PlanningGrid = () => {
             // In real app: fetch(`/api/epm/plan-units?versionId=...`)
             // Mock data for UI demonstration
             const mockData = [
-                { id: '1', accountId: '40000 Revenue', departmentId: 'Global', period: '2024-01', amount: '50000.00', versionId: 'v1' },
-                { id: '2', accountId: '60000 Salaries', departmentId: 'Eng', period: '2024-01', amount: '12000.00', versionId: 'v1' },
-                { id: '3', accountId: '70000 Depr.', departmentId: 'IT', period: '2024-01', amount: '1000.00', versionId: 'v1' },
+                { id: '1', accountId: '40000 Revenue', departmentId: 'Global', projectId: 'PROJ-001', channelId: 'Direct', period: '2024-01', amount: '50000.00', versionId: 'v1' },
+                { id: '2', accountId: '60000 Salaries', departmentId: 'Eng', projectId: 'PROJ-INT', channelId: '-', period: '2024-01', amount: '12000.00', versionId: 'v1' },
+                { id: '3', accountId: '70000 Depr.', departmentId: 'IT', projectId: '-', channelId: '-', period: '2024-01', amount: '1000.00', versionId: 'v1' },
             ];
             setData(mockData);
         } finally {
@@ -78,6 +81,8 @@ const PlanningGrid = () => {
                                     <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Account</th>
                                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Department</th>
+                                        <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Project</th>
+                                        <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Channel</th>
                                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Period</th>
                                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground text-right">Amount</th>
                                     </tr>
@@ -87,6 +92,8 @@ const PlanningGrid = () => {
                                         <tr key={row.id} className="border-b transition-colors hover:bg-muted/50">
                                             <td className="p-4 align-middle">{row.accountId}</td>
                                             <td className="p-4 align-middle">{row.departmentId}</td>
+                                            <td className="p-4 align-middle">{row.projectId || '-'}</td>
+                                            <td className="p-4 align-middle">{row.channelId || '-'}</td>
                                             <td className="p-4 align-middle">{row.period}</td>
                                             <td className="p-4 align-middle text-right">{Number(row.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
                                         </tr>
@@ -102,3 +109,4 @@ const PlanningGrid = () => {
 };
 
 export default PlanningGrid;
+

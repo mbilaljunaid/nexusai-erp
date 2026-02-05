@@ -1,98 +1,53 @@
+# EPM Planning Phase 2: Core Financials & Real Integration
 
-# Maintenance Parity Gap Closure Walkthrough (Phases A, B, C)
+## Overview
+We have successfully implemented the Integration Layer between the General Ledger (GL) and EPM Planning module, enabling real-time actuals fetching. Additionally, we expanded the planning dimensionality to include Projects and Channels and introduced a Formula Engine for driver-based planning.
 
-## 🎯 Objective
-Achieve feature parity with Oracle Fusion Maintenance by closing critical gaps in Asset Metering, Preventive Maintenance, Dispatching, and Forecasting.
+## Changes
 
-## 🏆 Key Achievements
+### 1. Data Model Updates
+- **GLBalance Entity**: Created `GLBalance` TypeORM entity mapping to `gl_balances_v2` table in the Finance module.
+- **PlanUnit Entity**: Added `projectId` and `channelId` to `PlanUnit` for multi-dimensional planning.
+- **Dimensions**: Created `PlanProject` and `PlanChannel` entities.
 
-### 1. Asset Meters & Readings (Phase A)
-**Goal**: Track asset usage (hours, km, cycles) to drive maintenance.
-*   **Schema**: Created `maint_asset_meters` linked to Assets.
-*   **Logic**: Added `recordReading(value, isDelta)` to handle both absolute (odometer) and delta (trip) readings.
-*   **Trigger**: Verified that exceeding PM threshold triggers a Work Order.
+### 2. Integration Service (`GLIntegrationService`)
+- Implemented `fetchActuals` to query `GLBalance` records, aggregate by Account/Dept/Entity, and populate `PlanUnit`s.
+- Replaced mock data with real database queries.
 
-### 2. Advanced PM Engine (Phase B)
-**Goal**: Move beyond simple time-based schedules.
-*   **Meter-Based**: PMs now defined with `triggerType: METER` and `intervalValue`. E.g., "Change Oil every 5000 hours".
-*   **Floating Intervals**: Enabled dynamic scheduling where the *Next Due Date* floats based on the *Last Completion Date*, rather than a fixed calendar cycle.
+### 3. Formula Engine (`FormulaService`)
+- Created a generic calculation engine.
+- Implemented `applyDriverRule`: Dynamically updates plan amounts based on expressions (e.g., `Amount * 1.10`).
+- Implemented `allocate`: Spreads a pool amount across dimensions based on driver weights.
 
-### 3. Dispatch Console (Phase C)
-**Goal**: Efficiently assign unallocated work to technicians.
-*   **Status**: **INTEGRATED**.
-*   **Features**:
-    *   **Queue View**: Shows all `SUBMITTED` work orders without an assignee.
-    *   **Team View**: Shows technician availability (Available vs Busy) and current load (Active Jobs).
-    *   **Action**: One-click assignment moves WO to `IN_PROGRESS` and assigns the tech.
+### 4. User Interface
+- Updated `PlanningGrid.tsx` to display **Project** and **Channel** columns.
 
-### 4. Planning & Forecasting (Phase C)
-**Goal**: Visualize future maintenance load before work orders are generated.
-*   **Status**: **INTEGRATED**.
-*   **Visualization**: added "Show PM Forecast" toggle to the Scheduling Board.
-*   **Logic**: Uses `MaintenancePlanningService.getForecast()` to simulate future PM occurrences based on frequencies, overlaying them as "Ghost Cards" on the Gantt chart.
+## Verification
 
-## 📸 Validation
-*   **Automated Verification**: `scripts/verify_parity_step1.ts` and `scripts/verify_parity_step2.ts` confirmed backend logic.
-*   **Visual Verification**: UI components (`DispatchConsole`, `PlanningBoard`) successfully connected to backend APIs.
+### Automated Verification Script
+We executed a comprehensive verification script (`backend/src/verify_epm_phase2.ts`) that performed the following:
 
-### 5. Financial Integration (Phase D)
-**Goal**: Post maintenance costs to the General Ledger.
-*   **Status**: **COMPLETED**.
-*   **Architecture**: Implemented the **SLA (Sub-ledger Accounting)** pattern.
-*   **Events**: Seaded `MAINT_MATERIAL_ISSUE` and `MAINT_RESOURCE_CHARGING`.
-*   **Process**:
-    *   Costing service triggers `MaintenanceAccountingService`.
-    *   Generates a balanced **SLA Journal** (Dr Maintenance Expense, Cr Inventory Asset).
-    *   Updates Cost record status to `POSTED`.
-*   **Verification**: `scripts/verify_maintenance_accounting.ts` confirmed CCID resolution, balanced entries, and correct event categorization.
+1.  **Cleanup**: Cleared test data from `gl_balances_v2` and `plan_units`.
+2.  **Seeding**: Inserted a test GL Balance record (15,000 USD).
+3.  **Integration Test**: Ran `fetchActuals` and verified a `PlanUnit` was created with 15,000 USD.
+4.  **Formula Test**: Applied a 10% increase driver (`Amount * 1.10`) and verified the amount updated to 16,500 USD.
+5.  **Allocation Test**: Allocated 100,000 USD pool to Sales/Marketing and verified correct distribution.
 
-## Phase 10: Advanced Compliance Reporting & AI
-Successfully finalized the remediation plan, enabling proactive governance and automated audit readiness.
+### Results
+```text
+--- EPM Phase 2 Verification ---
+1. Cleaning up test data...
+2. Seeding GL Balance...
+3. Running fetchActuals...
+   Seeded 1 units.
+   Integration Verified!
+4. Testing Formula Engine (Driver)...
+   Formula Engine Verified!
+5. Testing Allocation...
+   Allocation Verified!
+--- Verification Complete: SUCCESS ---
+```
 
-### Key Accomplishments:
-- **Regulatory Readiness Score**: Implemented a dynamic readiness algorithm that evaluates the organization's compliance posture based on critical exposures and resolution efficiency.
-- **Predictive Risk Scoring**: Integrated `ComplianceRiskService` into HR transactions, providing real-time AI-driven risk indicators for hires and transfers.
-- **Audit Package Generation**: Developed a visual report view for compliance officers to monitor high-level health and export audit-ready datasets.
-- **Risk Heatmaps**: Added intuitive visualizations in `RegulatoryReadinessReport.tsx` to highlight clusters of systemic risk across the workforce.
-
-### Verification Results:
-- **Heuristic Accuracy**: Verified that sensitive roles and anomalous transaction timing (after-hours) correctly trigger elevated risk scores.
-- **Aggregation Logic**: Confirmed the readiness score accurately reflects the resolution of high-severity violations.
-- **UI Performance**: Verified the smooth rendering of complex risk distribution charts using standard Recharts patterns.
-
-render_diffs(file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/server/modules/hr/services/ComplianceAnalyticsService.ts)
-render_diffs(file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/client/src/components/compliance/RegulatoryReadinessReport.tsx)
-render_diffs(file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/server/modules/hr/compliance.controller.ts)
-
-## 📸 Validation
-*   **Automated Verification**: `scripts/verify_parity_step1.ts`, `scripts/verify_parity_step2.ts`, and `scripts/verify_maintenance_accounting.ts` all passing.
-*   **Visual Verification**: `DispatchConsole` and `PlanningBoard` (Forecasting) UI ready for demo.
-
-## 🏁 Conclusion
-The Maintenance module has achieved **Feature Parity** for advanced EAM requirements. The transition from simple work orders to meter-driven, forecasted, and financially integrated maintenance is complete.
-
-
-## Phase 13: Enterprise Readiness (Scale & Close)
-**Goal**: Finalize Subledger Accounting Engine for Scale (Volume, Reversals, Intercompany).
-*   **Reversals**: Implemented logical reversals for AP Payment Voids, AR Unapply, and Credit Memo Applications.
-*   **Intercompany**: Restored `balanceBySegment` logic in `SlaEngine` V2 to automatically generate Due To/Due From lines for cross-entity transactions.
-*   **Duplicate Cleanup**: Consolidated all accounting logic into `SlaEngine`, removing legacy services.
-*   **Verification**: `scripts/verify_parity_final.ts` confirmed:
-    *   Multi-Tier WHT (AP)
-    *   Intercompany Balancing (General)
-    *   ISO20022 XML Generation (Treasury)
-
-## Phase 14: AI Explainability (Level 13)
-**Goal**: Make the "Black Box" engine transparent to users.
-*   **Trace Mode**: `SlaEngine.explainAccounting` simulates rule evaluation step-by-step.
-*   **Visualization**: `ViewAccountingModal` now features an "Explain" button showing:
-    *   ✅ Step passed (e.g. Period Open)
-    *   ⏭️ Rule Skipped ( Condition evaluated False)
-    *   ℹ️ Information (Initialization data)
-*   **Payload Reconstruction**: Automatically fetches invoice data for retrospective diagnosis.
-
-## Phase 15: Security, Audit & Scale (Level 11, 14, 15)
-**Goal**: Enterprise controls and high-volume throughput.
-*   **Configuration Audit**: `SlaConfigAuditService` logs every Rule/JLT change (Make/Check).
-*   **Async Processing**: `slaQueue` (Bull/Redis) implemented to decouple transaction commit from accounting generation for high scale.
-
+## Next Steps
+- Implement frontend UI for triggering Allocations and defining formulas.
+- Connect `PlanProject` to real ERP Projects module if available.

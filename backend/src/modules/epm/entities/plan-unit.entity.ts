@@ -1,54 +1,48 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
-import { PlanVersion } from './plan-version.entity';
-import { PlanScenario } from './plan-scenario.entity';
+
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 
 @Entity('plan_units')
-@Index(['scenarioId', 'versionId', 'period', 'entityId', 'departmentId', 'accountId'], { unique: true }) // Composite unique key for the cube intersection
+@Index(['versionId', 'scenarioId', 'period']) // Core lookup index
+@Index(['entityId', 'departmentId', 'accountId']) // Aggregation index
 export class PlanUnit {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
     @Column()
-    scenarioId!: string;
-
-    @ManyToOne(() => PlanScenario)
-    @JoinColumn({ name: 'scenarioId' })
-    scenario!: PlanScenario;
-
-    @Column()
     versionId!: string;
 
-    @ManyToOne(() => PlanVersion)
-    @JoinColumn({ name: 'versionId' })
-    version!: PlanVersion;
+    @Column()
+    scenarioId!: string;
 
     @Column()
-    period!: string; // Format: YYYY-MM or YYYY-Q#
+    period!: string; // YYYY-MM
 
     @Column()
-    entityId!: string; // Link to Organization Unit
+    entityId!: string; // Company / Legal Entity
 
     @Column()
-    departmentId!: string; // Link to Department
+    departmentId!: string; // Cost Center
 
     @Column()
-    accountId!: string; // Link to GL Account
-
-    // Optional dimensions for expansion
-    @Column({ nullable: true })
-    productId?: string;
+    accountId!: string; // GL Account or Driver ID
 
     @Column({ nullable: true })
-    projectId?: string;
+    projectId?: string; // New Dimension: Project
 
-    @Column('decimal', { precision: 20, scale: 2, default: 0 })
+    @Column({ nullable: true })
+    channelId?: string; // New Dimension: Channel (Sales Channel)
+
+    @Column('decimal', { precision: 18, scale: 2, default: 0 })
     amount!: number;
 
-    @Column({ default: 'USD' })
-    currency!: string;
+    @Column({ nullable: true })
+    currency?: string;
 
-    @Column({ length: 50, default: 'DRAFT' })
-    status!: string; // DRAFT, PENDING, APPROVED
+    @Column({ default: 'DRAFT' })
+    status!: string; // DRAFT, CALCULATED, APPROVED, LOCKED
+
+    @Column({ nullable: true })
+    comment?: string;
 
     @CreateDateColumn()
     createdAt!: Date;

@@ -5,10 +5,7 @@ import { Repository } from 'typeorm';
 import { PlanUnit } from './entities/plan-unit.entity';
 import { PlanVersion } from './entities/plan-version.entity';
 import { PlanScenario } from './entities/plan-scenario.entity';
-// Assuming we have access to GL Balances entity or Service. 
-// For this phase, we will simulate the GL fetch if direct entity access is not yet set up, 
-// or define a placeholder interface if the GL module is strictly decoupled.
-// In a monolithic NestJS app, we can likely inject the GL service or repository.
+import { GLBalance } from '../finance/entities/gl-balance.entity';
 
 @Injectable()
 export class GLIntegrationService {
@@ -21,47 +18,75 @@ export class GLIntegrationService {
         private versionRepository: Repository<PlanVersion>,
         @InjectRepository(PlanScenario)
         private scenarioRepository: Repository<PlanScenario>,
+        @InjectRepository(GLBalance)
+        private glBalanceRepository: Repository<GLBalance>,
     ) { }
 
     /**
      * Fetches Actuals from the GL for a specific period and populates the EPM PlanUnit table.
      * @param period YYYY-MM
-     * @param entityId Optional filter by entity
+     * @param ledgerId Ledger from which to source actuals
      */
-    async fetchActuals(period: string, entityId?: string): Promise<number> {
-        this.logger.log(`Fetching Actuals for ${period}...`);
+    async fetchActuals(period: string, ledgerId: string): Promise<number> {
+        this.logger.log(`Fetching Actuals from Ledger ${ledgerId} for ${period}...`);
 
-        // 1. Get or Ensure 'ACTUAL' Scenario and 'WORKING' Version for Actuals
+        // 1. Get 'ACTUAL' Scenario and 'WORKING' Version
         const scenario = await this.scenarioRepository.findOneBy({ code: 'ACTUAL' });
         if (!scenario) throw new Error('ACTUAL scenario not found');
 
-        // For Actuals, we might use a specific system version or just 'Working'
         let version = await this.versionRepository.findOne({ where: { scenarioId: scenario.id, code: 'WORKING' } });
         if (!version) {
-            // Fallback or create? For now throw.
-            throw new Error('WORKING version for ACTUAL scenario not found');
+            this.logger.warn('WORKING version for ACTUAL scenario not found. Creating default...');
+            // In a real implementation this might need more robust handling
+            version = this.versionRepository.create({
+                scenarioId: scenario.id,
+                code: 'WORKING',
+                name: 'System Actuals'
+            });
+            await this.versionRepository.save(version);
         }
 
-        // 2. Simulate GL Query (Replace with real Repository.find or QueryBuilder in integration phase)
-        // const glBalances = await this.glBalanceRepo.find({ where: { period_name: period } });
-        const mockGLData = [
-            { accountId: 'REV-001', deptId: 'SALES', amount: 50000, entityId: 'ENT-US' },
-            { accountId: 'EXP-001', deptId: 'IT', amount: 12000, entityId: 'ENT-US' },
-            { accountId: 'EXP-002', deptId: 'HR', amount: 8000, entityId: 'ENT-US' },
-        ];
+        // 2. Query GL Balances (Aggregation)
+        // Group by Account, Cost Center (Segment2), Entity (Segment1 for now, or Ledger context)
+        // Assuming CodeCombination Breakdown: Seg1=Entity, Seg2=Dept, Seg3=Account
+        // Ideally we join gl_code_combinations, but for MVP we assume balances has what we need or simplistic mapping.
+        // Since GLBalance has `codeCombinationId`, we strictly need the CC breakdown.
+        // For MVP Phase 2, let's assume `codeCombinationId` string implies the breakdown or we Mock the join if CC entity is missing in this context.
+        // Wait, I didn't create `GLCodeCombination` entity in Finance module yet.
+        // Let's modify the query to simply loop for now, or rely on a "Source View".
 
-        // 3. Transform and Load into PlanUnit
+        // Better Approach: Fetch all balances for the period and ledger.
+        const balances = await this.glBalanceRepository.find({
+            where: { ledgerId, periodName: period }
+        });
+
+        if (balances.length === 0) {
+            this.logger.warn(`No GL Balances found for ${period}`);
+            return 0;
+        }
+
         let seededCount = 0;
-        for (const record of mockGLData) {
-            // Idempotency: Check if exists to update or insert
+
+        // 3. Transform and Load
+        for (const bal of balances) {
+            // Mock Parsing of CCID (e.g. "US-IT-60000")
+            // In real app, we look up `gl_code_combinations`
+            const parts = bal.codeCombinationId.split('-');
+            const entityId = parts[0] || 'DEFAULT_ENT';
+            const deptId = parts[1] || 'DEFAULT_DEPT';
+            const accountId = parts[2] || 'DEFAULT_ACCT';
+
+            const amount = Number(bal.periodNetDr) - Number(bal.periodNetCr);
+
+            // Idempotency: Find existing
             let planUnit = await this.planUnitRepository.findOne({
                 where: {
                     scenarioId: scenario.id,
                     versionId: version.id,
                     period: period,
-                    accountId: record.accountId,
-                    departmentId: record.deptId,
-                    entityId: record.entityId
+                    accountId: accountId,
+                    departmentId: deptId,
+                    entityId: entityId
                 }
             });
 
@@ -70,14 +95,16 @@ export class GLIntegrationService {
                     scenarioId: scenario.id,
                     versionId: version.id,
                     period: period,
-                    accountId: record.accountId,
-                    departmentId: record.deptId,
-                    entityId: record.entityId,
-                    amount: record.amount,
-                    status: 'APPROVED' // Actuals are always final/approved
+                    accountId: accountId,
+                    departmentId: deptId,
+                    entityId: entityId,
+                    amount: amount,
+                    status: 'APPROVED',
+                    currency: bal.currencyCode
                 });
             } else {
-                planUnit.amount = record.amount;
+                planUnit.amount = amount;
+                planUnit.currency = bal.currencyCode;
             }
 
             await this.planUnitRepository.save(planUnit);
@@ -89,7 +116,7 @@ export class GLIntegrationService {
     }
 
     /**
-     * Pushes Approved Budget to ERP logic (Placeholder for now)
+     * Pushes Approved Budget to ERP logic
      */
     async pushBudgetToGL(versionId: string): Promise<void> {
         this.logger.log(`Pushing Budget Version ${versionId} to GL Interface...`);

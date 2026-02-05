@@ -1,87 +1,96 @@
 
 import { NestFactory } from '@nestjs/core';
-import { Module, Logger } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
-import { EPMFoundationService } from '../backend/src/modules/epm/epm-foundation.service';
+import { AppModule } from '../backend/src/app.module';
 import { GLIntegrationService } from '../backend/src/modules/epm/gl-integration.service';
-import { PlanningService } from '../backend/src/modules/epm/planning.service';
-import { DriverService } from '../backend/src/modules/epm/driver.service';
-import { EPMModule } from '../backend/src/modules/epm/epm.module';
+import { FormulaService } from '../backend/src/modules/epm/formula.service';
+import { DataSource } from 'typeorm';
+import { GLBalance } from '../backend/src/modules/finance/entities/gl-balance.entity';
+import { PlanUnit } from '../backend/src/modules/epm/entities/plan-unit.entity';
+import { PlanScenario } from '../backend/src/modules/epm/entities/plan-scenario.entity';
+import { PlanVersion } from '../backend/src/modules/epm/entities/plan-version.entity';
 
-@Module({
-    imports: [
-        ConfigModule.forRoot({
-            isGlobal: true,
-            envFilePath: '.env',
-        }),
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            host: process.env.DB_HOST || 'localhost',
-            port: parseInt(process.env.DB_PORT || '5432') || 5432,
-            username: process.env.DB_USER || 'postgres',
-            password: process.env.DB_PASSWORD || 'postgres',
-            database: process.env.DB_NAME || 'nexusai',
-            autoLoadEntities: true,
-            synchronize: false,
-        }),
-        EPMModule,
-    ],
-})
-class VerifyPhase2Module { }
+async function bootstrap() {
+    const app = await NestFactory.createApplicationContext(AppModule);
+    const dataSource = app.get(DataSource);
 
-async function verify() {
-    const logger = new Logger('VerifyEPM_Phase2');
-    const app = await NestFactory.createApplicationContext(VerifyPhase2Module);
+    const glIntegrationService = app.get(GLIntegrationService);
+    const formulaService = app.get(FormulaService);
 
-    try {
-        const glService = app.get(GLIntegrationService);
-        const planningService = app.get(PlanningService);
-        const driverService = app.get(DriverService);
-        const foundation = app.get(EPMFoundationService);
+    const glBalanceRepository = dataSource.getRepository(GLBalance);
+    const planUnitRepository = dataSource.getRepository(PlanUnit);
+    const scenarioRepository = dataSource.getRepository(PlanScenario);
 
-        logger.log('--- Verifying Phase 2: Core Financials ---');
+    console.log('--- EPM Phase 2 Verification ---');
 
-        // 1. Fetch Actuals from GL
-        const actualsCount = await glService.fetchActuals('2024-01');
-        logger.log(`Fetched ${actualsCount} Actuals records`);
-        if (actualsCount === 0) throw new Error('Failed to fetch actuals');
+    const testPeriod = '2025-01';
+    const testLedger = 'PRIMARY_TEST';
 
-        // 2. Create Drivers
-        await driverService.createDriver('CPI_2024', 'Inflation 2024', 0.05);
-        logger.log('Created Driver: CPI_2024 at 5%');
+    // 1. Cleanup
+    console.log('1. Cleaning up test data...');
+    await glBalanceRepository.delete({ ledgerId: testLedger });
+    await planUnitRepository.delete({ period: testPeriod });
 
-        // 3. Create Budget Version (if not exists)
-        // We expect 'V1' from Phase 1 seeding, but let's ensure 'BUDGET_2024_V2' for testing
-        const budgetScenario = (await foundation.getScenarios()).find(s => s.code === 'BUDGET');
-        const actualScenario = (await foundation.getScenarios()).find(s => s.code === 'ACTUAL');
-
-        // Get source Version (Working Actuals)
-        const actualVersion = (await foundation.getVersions('ACTUAL')).find(v => v.code === 'WORKING');
-        if (!actualVersion) throw new Error('Missing Actuals Working Version');
-
-        // Create Target Version
-        let budgetVersion = (await foundation.getVersions('BUDGET')).find(v => v.code === 'V2_TEST');
-        if (!budgetVersion) {
-            budgetVersion = await foundation.createVersion('V2 Test', 'V2_TEST', 'BUDGET', false);
-        }
-
-        // 4. Generate Base Plan (Copy Actuals -> Budget V2)
-        const copied = await planningService.generateBasePlan(actualVersion.id, budgetVersion.id, 'COPY');
-        logger.log(`Copied ${copied} records to Budget V2`);
-        if (copied === 0) throw new Error('Copy Base Plan Failed');
-
-        // 5. Apply Driver (Inflation +5%)
-        const updated = await planningService.applyDriver(budgetVersion.id, 'CPI_2024', 0.05);
-        logger.log(`Applied Driver to ${updated} records`);
-
-        logger.log('--- Verification Phase 2 SUCCESS ---');
-    } catch (error: any) {
-        logger.error('Verification Failed', error);
-        process.exit(1);
-    } finally {
-        await app.close();
+    const scenario = await scenarioRepository.findOneBy({ code: 'ACTUAL' });
+    if (!scenario) {
+        console.log('Creating ACTUAL scenario...');
+        await scenarioRepository.save({ code: 'ACTUAL', name: 'Actuals' });
     }
+
+    // 2. Seed GL Balance
+    console.log('2. Seeding GL Balance...');
+    await glBalanceRepository.save({
+        ledgerId: testLedger,
+        periodName: testPeriod,
+        codeCombinationId: 'US-IT-60000',
+        currencyCode: 'USD',
+        periodNetDr: 15000,
+        periodNetCr: 0,
+        beginBalance: 0,
+        endBalance: 15000
+    });
+
+    // 3. Test Integration (Fetch Actuals)
+    console.log('3. Running fetchActuals...');
+    const seededCount = await glIntegrationService.fetchActuals(testPeriod, testLedger);
+    console.log(`   Seeded ${seededCount} units.`);
+
+    if (seededCount !== 1) throw new Error('Integration failed: Expected 1 unit');
+
+    const unit = await planUnitRepository.findOne({ where: { period: testPeriod, accountId: '60000', departmentId: 'IT' } });
+    if (!unit) throw new Error('Integration failed: Unit not found');
+    if (Number(unit.amount) !== 15000) throw new Error(`Integration failed: Expected amount 15000, got ${unit.amount}`);
+    console.log('   Integration Verified!');
+
+    // 4. Test Formula Engine (Driver)
+    console.log('4. Testing Formula Engine (Driver)...');
+    // Create a plan unit to driver
+    const driverVersionId = unit.versionId;
+    await formulaService.applyDriverRule(driverVersionId, 'Amount * 1.10', { accountId: '60000' });
+
+    const updatedUnit = await planUnitRepository.findOne({ where: { id: unit.id } });
+    // 15000 * 1.10 = 16500
+    if (Number(updatedUnit?.amount) !== 16500) throw new Error(`Formula failed: Expected 16500, got ${updatedUnit?.amount}`);
+    console.log('   Formula Engine Verified!');
+
+    // 5. Test Allocation
+    console.log('5. Testing Allocation...');
+    // Spread 100,000 across Sales(0.6) and Mktg(0.4)
+    const pool = 100000;
+    const weights = { 'SALES': 60, 'MKTG': 40 };
+
+    const allocCount = await formulaService.allocate(pool, weights, driverVersionId, '90000_ALLOC_EXP', testPeriod, 'US');
+
+    if (allocCount !== 2) throw new Error('Allocation failed: Expected 2 units');
+
+    const salesUnit = await planUnitRepository.findOne({ where: { period: testPeriod, accountId: '90000_ALLOC_EXP', departmentId: 'SALES' } });
+    if (Number(salesUnit?.amount) !== 60000) throw new Error(`Allocation failed: Sales expected 60000, got ${salesUnit?.amount}`);
+    console.log('   Allocation Verified!');
+
+    console.log('--- Verification Complete: SUCCESS ---');
+    await app.close();
 }
 
-verify();
+bootstrap().catch(err => {
+    console.error('Verification Failed:', err);
+    process.exit(1);
+});
