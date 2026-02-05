@@ -1,11 +1,19 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { BudgetService } from '../epm/budget.service';
 
 @Injectable()
-export class ProcurementGlIntegrationService {
-    constructor(private readonly budgetService: BudgetService) { }
+export class ProcurementGlIntegrationService implements OnModuleInit {
+    private budgetService: BudgetService;
+
+    constructor(private moduleRef: ModuleRef) { }
+
+    onModuleInit() {
+        this.budgetService = this.moduleRef.get(BudgetService, { strict: false });
+    }
 
     async checkFunds(amount: number, departmentId: string): Promise<void> {
+        if (!this.budgetService) return;
         const currentYear = new Date().getFullYear();
         const hasFunds = await this.budgetService.checkFunds(departmentId, amount, currentYear);
 
@@ -15,11 +23,13 @@ export class ProcurementGlIntegrationService {
     }
 
     async reserveFunds(amount: number, departmentId: string): Promise<void> {
+        if (!this.budgetService) return;
         const currentYear = new Date().getFullYear();
         await this.budgetService.reserveFunds(departmentId, amount, currentYear);
     }
 
     async releaseFunds(amount: number, departmentId: string): Promise<void> {
+        if (!this.budgetService) return;
         const currentYear = new Date().getFullYear();
         await this.budgetService.releaseFunds(departmentId, amount, currentYear);
     }

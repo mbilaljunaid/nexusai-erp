@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EPMService } from './epm.service';
 import { BudgetService } from './budget.service';
@@ -38,6 +38,7 @@ import { TreasuryPlanningService } from './treasury-planning.service';
 import { Project } from '../projects/entities/project.entity';
 import { ProjectIntegrationService } from './project-integration.service';
 import { FinanceModule } from '../finance/finance.module';
+import { ProcurementModule } from '../procurement/procurement.module';
 
 @Module({
   imports: [
@@ -57,11 +58,12 @@ import { FinanceModule } from '../finance/finance.module';
       EpmAudit,
     ]),
     ProjectsModule,
+    // ProcurementModule removed to break circular dependency (EPM doesn't use it)
     FinanceModule
   ],
   controllers: [
     BudgetController,
-    PlanningController
+    // PlanningController
   ],
   providers: [
     EPMService,
@@ -85,6 +87,8 @@ import { FinanceModule } from '../finance/finance.module';
     TreasuryPlanningService
   ],
   exports: [
+    EPMService,
+    BudgetService,
     EPMService,
     BudgetService,
     EpmPlanningService,

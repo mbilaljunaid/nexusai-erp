@@ -33,12 +33,12 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
   imports: [
     forwardRef(() => CostManagementModule),
     TypeOrmModule.forFeature([
-      Item,
-      InventoryOrganization,
+      // Item,
+      // InventoryOrganization,
       Subinventory,
       Locator,
-      MaterialTransaction,
-      OnHandBalance,
+      // MaterialTransaction,
+      // OnHandBalance,
       Lot,
       Serial,
       CstTransactionCost,

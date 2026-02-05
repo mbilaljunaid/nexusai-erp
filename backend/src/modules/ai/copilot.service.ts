@@ -17,7 +17,7 @@ interface CopilotResponse {
 }
 
 @Injectable()
-export class CopilotService {
+export class AiCopilotService {
   private openai?: OpenAI;
 
   constructor() {

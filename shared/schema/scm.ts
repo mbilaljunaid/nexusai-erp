@@ -186,6 +186,22 @@ export const insertInventoryTransactionSchema = createInsertSchema(inventoryTran
 export type InsertInventoryTransaction = z.infer<typeof insertInventoryTransactionSchema>;
 export type InventoryTransaction = typeof inventoryTransactions.$inferSelect;
 
+export const inventoryOnHandQuantities = pgTable("inv_on_hand_quantities", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    organizationId: varchar("organizationId").notNull(),
+    itemId: varchar("itemId").notNull(),
+    subinventoryId: varchar("subinventoryId").notNull(),
+    locatorId: varchar("locatorId"),
+    lotNumber: varchar("lot_number"),
+    serialNumber: varchar("serial_number"),
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).default("0").notNull(),
+    lastUpdated: timestamp("last_updated").default(sql`now()`),
+});
+
+export const insertInventoryOnHandSchema = createInsertSchema(inventoryOnHandQuantities);
+export type InventoryOnHandQuantity = typeof inventoryOnHandQuantities.$inferSelect;
+
+
 export const inventoryLotSerial = pgTable("inventory_lot_serial", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     inventoryId: varchar("inventory_id").notNull(),

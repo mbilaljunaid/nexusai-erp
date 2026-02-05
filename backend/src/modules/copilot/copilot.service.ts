@@ -19,7 +19,7 @@ export interface CopilotSession {
 }
 
 @Injectable()
-export class CopilotService {
+export class CopilotCoreService {
   private openai?: OpenAI;
   private sessions: Map<string, CopilotSession> = new Map();
   private sessionCounter = 1;

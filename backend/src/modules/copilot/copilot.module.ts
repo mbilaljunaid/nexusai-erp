@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { CopilotService } from './copilot.service';
+import { CopilotCoreService } from './copilot.service';
 
 @Module({
-  providers: [CopilotService],
-  exports: [CopilotService],
+  providers: [CopilotCoreService],
+  exports: [CopilotCoreService],
 })
-export class CopilotModule {}
+export class CopilotModule { }
