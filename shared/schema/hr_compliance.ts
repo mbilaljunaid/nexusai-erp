@@ -102,6 +102,7 @@ export const insertComplianceEventSchema = createInsertSchema(hrComplianceEvents
 export const insertComplianceViolationSchema = createInsertSchema(hrComplianceViolations);
 export const insertRiskWeightSchema = createInsertSchema(hrRiskWeights);
 export const insertPolicyAcknowledgementSchema = createInsertSchema(hrPolicyAcknowledgements);
+export const insertSodRuleSchema = createInsertSchema(hrSodRules);
 
 // ========== TYPES ==========
 
@@ -111,3 +112,4 @@ export type HrComplianceEvent = typeof hrComplianceEvents.$inferSelect;
 export type HrComplianceViolation = typeof hrComplianceViolations.$inferSelect;
 export type HrRiskWeight = typeof hrRiskWeights.$inferSelect;
 export type HrPolicyAcknowledgement = typeof hrPolicyAcknowledgements.$inferSelect;
+export type HrSodRule = typeof hrSodRules.$inferSelect;

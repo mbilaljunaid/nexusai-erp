@@ -1,13 +1,18 @@
 
 import { EventSubscriber, EntitySubscriberInterface, UpdateEvent, InsertEvent, DataSource } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
 import { PlanUnit } from '../entities/plan-unit.entity';
 import { EpmAudit } from '../entities/epm-audit.entity';
 
-@EventSubscriber()
-export class PlanUnitSubscriber implements EntitySubscriberInterface<PlanUnit> {
+import { OnModuleInit } from '@nestjs/common';
 
-    constructor(dataSource: DataSource) {
-        dataSource.subscribers.push(this);
+@EventSubscriber()
+export class PlanUnitSubscriber implements EntitySubscriberInterface<PlanUnit>, OnModuleInit {
+
+    constructor(@InjectDataSource() private readonly dataSource: DataSource) { }
+
+    onModuleInit() {
+        this.dataSource.subscribers.push(this);
     }
 
     listenTo() {

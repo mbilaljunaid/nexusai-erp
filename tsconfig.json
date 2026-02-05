@@ -12,6 +12,7 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -25,13 +26,28 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./client/src/*"
+        "./src/*"
       ],
       "@db": [
         "./server/db"
       ],
+      "@db/*": [
+        "./server/db/*"
+      ],
+      "@server": [
+        "./server"
+      ],
+      "@server/*": [
+        "./server/*"
+      ],
+      "@shared": [
+        "./shared"
+      ],
       "@shared/*": [
         "./shared/*"
+      ],
+      "@assets/*": [
+        "./attached_assets/*"
       ]
     }
   },

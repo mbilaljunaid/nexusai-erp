@@ -5,16 +5,16 @@ export class PlanScenario {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, type: 'varchar' })
     code!: string; // e.g., 'ACTUAL', 'BUDGET_2024'
 
-    @Column()
+    @Column({ type: 'varchar' })
     name!: string; // e.g., 'Actuals', 'Budget 2024'
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     description?: string;
 
-    @Column({ default: false })
+    @Column({ type: 'boolean', default: false })
     isSystem!: boolean; // System scenarios cannot be deleted
 
     @CreateDateColumn()

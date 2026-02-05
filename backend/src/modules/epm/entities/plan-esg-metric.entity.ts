@@ -6,31 +6,31 @@ export class PlanEsgMetric {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     versionId!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     scenarioId!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     period!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     entityId!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     metricCode!: string; // e.g., 'CO2_SCOPE1', 'DEI_FEMALE_PCT'
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     departmentId?: string;
 
     @Column('decimal', { precision: 18, scale: 4, default: 0 })
     value!: number;
 
-    @Column()
+    @Column({ type: 'varchar' })
     unit!: string; // e.g., 'KG', 'PCT', 'COUNT'
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     comment?: string;
 
     @CreateDateColumn()

@@ -35,7 +35,11 @@ export function ComplianceAnalytics({ data }: ComplianceAnalyticsProps) {
     const pieData = data.riskDistribution.map(d => ({
         name: d.severity.toUpperCase(),
         value: Number(d.count),
-        color: COLORS[d.severity as keyof typeof COLORS] || "#94a3b8"
+        color: COLORS[d.severity as keyof typeof COLORS] || "#94a3b8",
+        bgClass: d.severity === 'critical' ? 'bg-red-500' :
+            d.severity === 'high' ? 'bg-orange-500' :
+                d.severity === 'medium' ? 'bg-yellow-500' :
+                    d.severity === 'low' ? 'bg-green-500' : 'bg-slate-400'
     }));
 
     return (
@@ -116,7 +120,7 @@ export function ComplianceAnalytics({ data }: ComplianceAnalyticsProps) {
                         <div className="flex flex-col gap-2 min-w-[120px]">
                             {pieData.map((d, i) => (
                                 <div key={i} className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full" style={{ backgroundColor: d.color }} />
+                                    <div className={`h-3 w-3 rounded-full ${d.bgClass}`} />
                                     <span className="text-xs font-medium text-slate-700">{d.name}</span>
                                     <span className="text-xs text-muted-foreground ml-auto">{d.value}</span>
                                 </div>

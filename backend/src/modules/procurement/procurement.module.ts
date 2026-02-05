@@ -36,6 +36,9 @@ import { GlIntegrationService } from './gl-integration.service';
 import { AiController } from './ai.controller';
 import { ProcurementAiService } from './procurement-ai.service';
 
+import { InventoryModule } from '../inventory/inventory.module';
+import { EPMModule } from '../epm/epm.module';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -54,13 +57,23 @@ import { ProcurementAiService } from './procurement-ai.service';
       ApprovalRule,
       RfqHeader,
       RfqLine,
-      SupplierQuote,
-      Item,
-      Budget
+      SupplierQuote
     ]),
+    InventoryModule,
+    EPMModule
   ],
   controllers: [PurchaseOrderController, SupplierController, ReceiptController, RequisitionController, ApController, SourcingController, AiController],
-  providers: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService, BudgetService, GlIntegrationService, ProcurementAiService],
+  providers: [
+    PurchaseOrderService,
+    SupplierService,
+    ReceiptService,
+    RequisitionService,
+    ApService,
+    ApprovalService,
+    SourcingService,
+    GlIntegrationService,
+    ProcurementAiService
+  ],
   exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService],
 })
 export class ProcurementModule { }

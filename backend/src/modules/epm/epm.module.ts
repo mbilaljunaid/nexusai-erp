@@ -13,7 +13,8 @@ import { PlanUnit } from './entities/plan-unit.entity';
 import { PlanDriver } from './entities/plan-driver.entity';
 import { PlanPosition } from './entities/plan-position.entity';
 import { PlanAsset } from './entities/plan-asset.entity';
-import { PlanProject } from './entities/plan-project.entity'; // NEW
+import { PlanProject } from './entities/plan-project.entity';
+import { ProjectsModule } from '../projects/projects.module';
 import { PlanChannel } from './entities/plan-channel.entity'; // NEW
 import { EpmAudit } from './entities/epm-audit.entity';
 import { GLBalance } from '../finance/entities/gl-balance.entity'; // NEW
@@ -39,6 +40,8 @@ import { TreasuryPlanningService } from './treasury-planning.service'; // NEW
 import { Project } from '../projects/entities/project.entity';
 import { ProjectIntegrationService } from './project-integration.service';
 
+import { FinanceModule } from '../finance/finance.module';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -55,9 +58,10 @@ import { ProjectIntegrationService } from './project-integration.service';
       PlanProduct,
       PlanEsgMetric, // NEW
       EpmAudit,
-      GLBalance,
-      Project
-    ])
+      GLBalance
+    ]),
+    ProjectsModule,
+    FinanceModule
   ],
   controllers: [BudgetController, PlanningController],
   providers: [

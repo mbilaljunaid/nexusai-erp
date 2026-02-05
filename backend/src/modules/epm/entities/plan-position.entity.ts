@@ -5,19 +5,19 @@ export class PlanPosition {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     jobTitle!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     departmentId!: string; // Link to Dept
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     employeeId?: string; // If existing employee
 
-    @Column()
+    @Column({ type: 'varchar' })
     startDate!: string; // YYYY-MM-DD
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     endDate?: string;
 
     @Column('decimal', { precision: 18, scale: 2 })
@@ -26,10 +26,10 @@ export class PlanPosition {
     @Column('decimal', { precision: 5, scale: 2, default: 0.20 })
     benefitsPct!: number; // e.g. 0.20 for 20%
 
-    @Column({ default: 'NEW' })
+    @Column({ type: 'varchar', default: 'NEW' })
     status!: string; // NEW, EXISTING, TERMINATED
 
-    @Column()
+    @Column({ type: 'varchar' })
     versionId!: string; // Associated with a specific Plan Version
 
     @CreateDateColumn()

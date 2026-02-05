@@ -5,19 +5,22 @@ export class Project {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     name!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     description?: string;
 
-    @Column({ default: 'active' })
-    status!: string;
+    @Column({ type: 'varchar', default: 'DRAFT' })
+    status!: string; // DRAFT, ACTIVE, ON_HOLD, COMPLETED, CANCELLED
 
-    @Column({ name: 'start_date', nullable: true })
+    @Column({ type: 'varchar' })
+    type!: string; // INTERNAL, BILLABLE, PRODUCT_DEV
+
+    @Column({ name: 'start_date', type: 'timestamp', nullable: true })
     startDate?: Date;
 
-    @Column({ name: 'end_date', nullable: true })
+    @Column({ name: 'end_date', type: 'timestamp', nullable: true })
     endDate?: Date;
 
     @CreateDateColumn({ name: 'created_at' })

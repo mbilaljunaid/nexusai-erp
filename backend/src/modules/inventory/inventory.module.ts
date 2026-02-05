@@ -23,10 +23,10 @@ import { Reservation } from './entities/reservation.entity';
 import { ReservationService } from './reservation.service';
 import { CycleCountHeader, CycleCountEntry } from './entities/cycle-count.entity';
 import { CycleCountService } from './cycle-count.service';
-import { CostManagementModule } from '../cost-management/cost-management.module';
 import { LotService } from './lot.service';
 import { SerialService } from './serial.service';
 import { LotSerialController } from './lot-serial.controller';
+import { CostManagementModule } from '../cost-management/cost-management.module';
 
 @Module({
   imports: [

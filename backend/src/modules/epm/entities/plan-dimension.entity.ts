@@ -5,16 +5,16 @@ export class PlanDimension {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, type: 'varchar' })
     code!: string; // e.g., 'CHANNEL', 'PROJECT'
 
-    @Column()
+    @Column({ type: 'varchar' })
     name!: string; // e.g., 'Sales Channel'
 
-    @Column()
+    @Column({ type: 'varchar' })
     type!: string; // 'Standard' or 'Custom'
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     isActive!: boolean;
 
     @CreateDateColumn()

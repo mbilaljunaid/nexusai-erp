@@ -5,16 +5,16 @@ export class PlanChannel {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, type: 'varchar' })
     code!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     name!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     description?: string;
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     isActive!: boolean;
 
     @CreateDateColumn()

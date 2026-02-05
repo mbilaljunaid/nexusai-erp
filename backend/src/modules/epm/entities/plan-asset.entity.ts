@@ -5,13 +5,13 @@ export class PlanAsset {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     name!: string; // e.g., 'New Server Rack'
 
-    @Column()
+    @Column({ type: 'varchar' })
     assetType!: string; // IT, VEHICLE, FURNITURE
 
-    @Column()
+    @Column({ type: 'varchar' })
     purchaseDate!: string; // YYYY-MM-DD
 
     @Column('decimal', { precision: 18, scale: 2 })
@@ -20,10 +20,10 @@ export class PlanAsset {
     @Column({ type: 'int' })
     usefulLifeMonths!: number; // e.g., 36, 60
 
-    @Column({ default: 'STRAIGHT_LINE' })
+    @Column({ type: 'varchar', default: 'STRAIGHT_LINE' })
     depreciationMethod!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     versionId!: string; // Associated plan version
 
     @CreateDateColumn()

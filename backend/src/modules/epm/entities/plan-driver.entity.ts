@@ -5,22 +5,22 @@ export class PlanDriver {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, type: 'varchar' })
     code!: string; // e.g., 'CPI_2024', 'MERIT_PCT'
 
-    @Column()
+    @Column({ type: 'varchar' })
     name!: string; // e.g., 'Consumer Price Index', 'Merit Increase %'
 
     @Column('decimal', { precision: 10, scale: 4 })
     value!: number; // e.g., 0.0350 for 3.5%
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     period?: string; // Optional: if driver is period-specific
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     description?: string;
 
-    @Column({ default: true })
+    @Column({ type: 'boolean', default: true })
     isActive!: boolean;
 
     @CreateDateColumn()

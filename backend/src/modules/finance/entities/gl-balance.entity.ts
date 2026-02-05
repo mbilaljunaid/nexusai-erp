@@ -6,16 +6,16 @@ export class GLBalance {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ name: 'ledger_id' })
+    @Column({ name: 'ledger_id', type: 'varchar' })
     ledgerId!: string;
 
-    @Column({ name: 'code_combination_id' })
+    @Column({ name: 'code_combination_id', type: 'varchar' })
     codeCombinationId!: string;
 
-    @Column({ name: 'currency_code' })
+    @Column({ name: 'currency_code', type: 'varchar' })
     currencyCode!: string;
 
-    @Column({ name: 'period_name' })
+    @Column({ name: 'period_name', type: 'varchar' })
     periodName!: string;
 
     @Column({ name: 'period_year', type: 'int', nullable: true })
@@ -36,7 +36,7 @@ export class GLBalance {
     @Column('decimal', { name: 'end_balance', precision: 18, scale: 2, default: 0 })
     endBalance!: number;
 
-    @Column({ name: 'translated_flag', default: false })
+    @Column({ name: 'translated_flag', type: 'boolean', default: false })
     translatedFlag!: boolean;
 
     @UpdateDateColumn({ name: 'updated_at' })

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -472,7 +473,7 @@ function WidgetContent({ type }: { type: WidgetType }) {
               <div
                 key={i}
                 className="flex-1 bg-primary/20 rounded-t"
-                style={{ height: `${h}%` }}
+                style={{ height: `${h}%` } as React.CSSProperties}
               />
             ))}
           </div>
@@ -635,11 +636,8 @@ function WidgetContent({ type }: { type: WidgetType }) {
                 <span>{g.goal}</span>
                 <span className="text-muted-foreground">{g.progress}%</span>
               </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary rounded-full transition-all"
-                  style={{ width: `${g.progress}%` }}
-                />
+              <div className="pt-1">
+                <Progress value={g.progress} className="h-2" />
               </div>
             </div>
           ))}

@@ -5,7 +5,7 @@ export class EpmAudit {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     planUnitId!: string; // ID of the cell changed
 
     @Column('decimal', { precision: 20, scale: 2, nullable: true })
@@ -14,10 +14,10 @@ export class EpmAudit {
     @Column('decimal', { precision: 20, scale: 2, nullable: true })
     newValue!: number | null;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     userId?: string; // Who made the change
 
-    @Column()
+    @Column({ type: 'varchar' })
     changeType!: string; // MANUAL, CALCULATION, WFP, ELIMINATION
 
     @CreateDateColumn()

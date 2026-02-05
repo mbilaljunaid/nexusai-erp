@@ -6,23 +6,23 @@ export class PlanVersion {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     code!: string; // e.g., 'V1', 'WORKING', 'FINAL'
 
-    @Column()
+    @Column({ type: 'varchar' })
     name!: string; // e.g., 'Initial Draft', 'Board Approved'
 
-    @Column()
+    @Column({ type: 'varchar' })
     scenarioId!: string;
 
     @ManyToOne(() => PlanScenario)
     @JoinColumn({ name: 'scenarioId' })
     scenario!: PlanScenario;
 
-    @Column({ default: false })
+    @Column({ type: 'boolean', default: false })
     isLocked!: boolean; // If true, no edits allowed
 
-    @Column({ default: false })
+    @Column({ type: 'boolean', default: false })
     isFinal!: boolean; // Official version for reporting
 
     @CreateDateColumn()

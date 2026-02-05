@@ -110,27 +110,22 @@ app.use((req, res, next) => {
 // Centralized Error Handling
 app.use(errorHandler);
 
-// START: NestJS Bridge
 try {
+  log('Starting NestJS Bridge...');
   const { NestFactory } = await import('@nestjs/core');
   const { ExpressAdapter } = await import('@nestjs/platform-express');
   const { AppModule } = await import('../backend/src/app.module');
 
-  // Create standalone NestJS app (Sub-App Strategy)
-  // We disable bodyParser because the main app already handles it, 
-  // but NestJS might need its own if mounted? Actually, mounted apps usually inherit?
-  // Use bodyParser: true for safety, verify later.
   const nestApp = await NestFactory.create(
     AppModule,
-    { logger: ['error', 'warn'] }
+    { logger: ['error', 'warn', 'log', 'debug', 'verbose'] }
   );
 
   // Initialize NestJS (starts the container, resolves dependencies)
+  log('Initializing NestJS container...');
   await nestApp.init();
 
   // Mount the NestJS Express instance into the main app
-  // This allows NestJS to handle its routes while sharing the port.
-  // We wrap it to only handle /api requests so it doesn't 404 frontend routes.
   const nestHandler = nestApp.getHttpAdapter().getInstance();
   app.use((req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
@@ -140,11 +135,6 @@ try {
     }
   });
 
-  // Enable Global Prefix if needed, but CostController has explicit route
-  // await nestApp.setGlobalPrefix('api'); 
-
-  // Initialize (Registers routes) but DOES NOT Listen (we use httpServer below)
-  await nestApp.init();
   log('NestJS Bridge Initialized');
 } catch (err) {
   console.error('Failed to initialize NestJS Bridge:', err);
@@ -157,8 +147,10 @@ try {
 if (process.env.NODE_ENV === "production") {
   serveStatic(app);
 } else {
+  log('Starting Vite setup...');
   const { setupVite } = await import("./vite");
   await setupVite(httpServer, app);
+  log('Vite setup completed');
 }
 
 // ALWAYS serve the app on the port specified in the environment variable PORT

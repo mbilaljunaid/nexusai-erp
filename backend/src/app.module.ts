@@ -40,7 +40,6 @@ import { AuditModule } from './modules/audit/audit.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
     }),
     TypeOrmModule.forRoot({
       type: 'postgres' as const,
@@ -48,28 +47,23 @@ import { AuditModule } from './modules/audit/audit.module';
       port: parseInt(process.env.DB_PORT || '5432') || 5432,
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'postgres',
-      database: process.env.DB_NAME || 'nexusai',
+      database: process.env.DB_NAME || 'nexusai_erp',
       autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV !== 'production',
-    }),
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379') || 6379,
-      },
+      synchronize: false,
+      retryAttempts: 1,
+      logging: ['error', 'warn', 'query'],
     }),
     AuthModule,
     ERPModule,
-    EPMModule,
+    FinanceModule,
+    InventoryModule,
+    ProcurementModule,
+    CostManagementModule,
     CRMModule,
     HRModule,
     ProjectsModule,
     ServiceModule,
     MarketingModule,
-    FinanceModule,
-    InventoryModule,
-    ProcurementModule,
-    CostManagementModule,
     AIModule,
     HealthModule,
     IndustriesModule,
@@ -91,6 +85,7 @@ import { AuditModule } from './modules/audit/audit.module';
     TenantsModule,
     TestingModule,
     AuditModule,
+    EPMModule,
   ],
 })
 export class AppModule { }

@@ -1,32 +1,32 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('leads')
 export class Lead {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({ type: 'varchar', default: () => 'gen_random_uuid()' })
   id!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ name: 'first_name', type: 'varchar', nullable: true })
   firstName!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ name: 'last_name', type: 'varchar', nullable: true })
   lastName!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   email!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   phone!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ name: 'company', type: 'varchar', nullable: true })
   companyName!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   industry!: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ name: 'lead_source', type: 'varchar', nullable: true })
   source?: string;
 
-  @Column({ type: 'varchar', default: 'new' })
+  @Column({ type: 'varchar', default: 'new', nullable: true })
   status!: string;
 
   @Column('decimal', { precision: 18, scale: 2, nullable: true })

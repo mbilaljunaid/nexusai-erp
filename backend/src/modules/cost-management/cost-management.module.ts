@@ -40,11 +40,10 @@ import { WipCostingService } from './wip-costing.service';
 @Module({
     imports: [
         TypeOrmModule.forFeature([
-            CostBook,
+            CostBook, CostOrganization,
             CostPeriod, CmrReceiptDistribution, MaterialTransaction,
-            CstItemCost, GLEntry, CostOrganization, InventoryOrganization, Item,
-            CstStandardCost, CostScenario, LandedCostCharge, CostAnomaly, ApprovalRequest,
-            CstCostDistribution, OnHandBalance, CostBook, CostElement, CostProfile,
+            CstItemCost, CstStandardCost, CostScenario, LandedCostCharge, CostAnomaly, ApprovalRequest,
+            CstCostDistribution, CostElement, CostProfile, GLEntry,
             WorkOrder, WipTransaction
         ]),
         forwardRef(() => InventoryModule),

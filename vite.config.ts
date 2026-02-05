@@ -10,7 +10,9 @@ export default defineConfig(({ mode }) => ({
   ].filter(Boolean),
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(process.cwd(), "./src"),
+      "@shared": path.resolve(process.cwd(), "./shared"),
+      "@assets": path.resolve(process.cwd(), "./attached_assets"),
     },
   },
   server: {
