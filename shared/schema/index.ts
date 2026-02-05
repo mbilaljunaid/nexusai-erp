@@ -92,3 +92,10 @@ export * from "./time_labor";
 export * from "./time_ai";
 export * from "./rewards_benefits";
 export * from "./time_rules";
+export * from "./time_rules";
+
+// MDM / TCA
+export * from "./parties";
+export * from "./locations";
+export * from "./relationships";
+export * from "./reference";

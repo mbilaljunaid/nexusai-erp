@@ -3,6 +3,8 @@ import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+import { hzParties } from "./parties";
+
 // ========== CRM MODULE ==========
 
 // --- Leads ---
@@ -96,6 +98,9 @@ export const accounts = pgTable("accounts", {
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     ownerId: varchar("owner_id"),
+
+    // TCA Linkage (Organization Party)
+    partyId: varchar("party_id").references(() => hzParties.id),
 });
 
 export const insertAccountSchema = createInsertSchema(accounts).extend({
@@ -134,6 +139,9 @@ export const contacts = pgTable("contacts", {
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     ownerId: varchar("owner_id"),
+
+    // TCA Linkage (Person Party)
+    partyId: varchar("party_id").references(() => hzParties.id),
 });
 
 export const insertContactSchema = createInsertSchema(contacts).extend({

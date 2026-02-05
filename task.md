@@ -93,3 +93,26 @@
 
 - [x] **Step 3: Verification**
     - [x] Script: Verify Python Bridge integration <!-- id: 38 -->
+
+# Phase 7: Master Data Management Remediation (TCA Implementation)
+
+- [x] **Step 1: Foundation (Trading Community Architecture)**
+    - [x] Create `shared/schema/parties.ts` (Party, Org, Person Profiles) <!-- id: 39 -->
+    - [x] Create `shared/schema/locations.ts` (Location, Address, ContactPoints) <!-- id: 40 -->
+    - [x] Create `shared/schema/relationships.ts` & `reference.ts` <!-- id: 41 -->
+
+- [x] **Step 2: MDM Service Layer**
+    - [x] Implement `PartyService` (CRUD for Parties) <!-- id: 42 -->
+    - [x] Implement `LocationService` (Address standardization) <!-- id: 43 -->
+    - [x] Implement `ReferenceDataService` (Value Sets) <!-- id: 44 -->
+
+- [ ] **Step 3: Entity Refactoring & Migration**
+    - [ ] Update `Supplier` entity to link to `Party` <!-- id: 45 -->
+    - [ ] Update `Customer` entity to link to `Party` <!-- id: 46 -->
+    - [ ] Script: Migrate existing data to TCA model <!-- id: 47 -->
+
+- [ ] **Step 4: Data Quality & Governance**
+    - [ ] Implement `MatchingService` (Fuzzy Logic) <!-- id: 48 -->
+    - [ ] Implement `DuplicateDetection` with real backend <!-- id: 49 -->
+    - [ ] Create `Data Steward` Dashboard & Change Request Workflow <!-- id: 50 -->
+

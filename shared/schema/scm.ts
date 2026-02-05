@@ -3,6 +3,8 @@ import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+import { hzParties } from "./parties";
+
 // ========== SUPPLY CHAIN MODULE ==========
 export const suppliers = pgTable("scm_suppliers", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -11,6 +13,10 @@ export const suppliers = pgTable("scm_suppliers", {
     phone: varchar("phone"),
     address: text("address"),
     status: varchar("status").default("active"),
+
+    // TCA Linkage
+    partyId: varchar("party_id").references(() => hzParties.id),
+
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 

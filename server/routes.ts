@@ -61,6 +61,7 @@ import { supplierPortalRouter } from "./routes/supplierPortal";
 import contractPortalRouter from "./routes/contractPortal";
 import { supplierPortalExternalRouter } from "./routes/supplierPortalExternal";
 import publicCareersRouter from "./routes/public_careers";
+import { mdmRouter } from "./routes/mdm";
 // // import sourcingRouter from "./routes/sourcing"; // Refactored to modules/scm/routes.ts
 // import { procurementRouter as PROCUREMENT_ROUTER } from "./modules/scm/procurementRoutes"; // Refactored to modules/scm/routes.ts
 
@@ -144,6 +145,7 @@ export async function registerRoutes(
   app.use("/api/lcm", lcmRouter);
   app.use("/api/treasury", treasuryRouter);
   app.use("/api/wfm", wfmRouter);
+  app.use("/api/mdm", mdmRouter);
   app.use("/api/hr-self-service", hrSelfServiceRouter);
   app.use("/api/treasury", treasuryRouter);
   app.use("/api/transportation", transportationRouter);
