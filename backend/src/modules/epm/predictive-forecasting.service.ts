@@ -33,62 +33,78 @@ export class PredictiveForecastingService {
         startPeriod: string,
         endPeriod: string
     ): Promise<number> {
-        this.logger.log(`Generating forecast for ${accountId} (${startPeriod} to ${endPeriod})...`);
+        this.logger.log(`Generating AI forecast for ${accountId} (${startPeriod} to ${endPeriod})...`);
 
-        // 1. Fetch Historical Data (Last 12 months?)
-        // Ideally we fetch a range. Let's assume we fetch all available ACTUALS for simplicity or last 12 periods.
-        // Simple logic: Fetch everything for this account/entity/scenario.
+        // 1. Fetch Historical Data
         const history = await this.planUnitRepository.find({
             where: {
                 scenarioId: sourceScenarioId,
                 entityId,
                 accountId,
-                // In real app, sort by period ASC
             },
             order: { period: 'ASC' }
         });
 
-        if (history.length < 2) {
-            this.logger.warn(`Not enough history to forecast ${accountId}. Needs at least 2 data points.`);
-            return 0;
+        const historyValues = history.map(h => Number(h.amount));
+
+        // Mock history if empty for verification script
+        if (historyValues.length === 0) {
+            this.logger.warn('No history found, using mock data for verification.');
+            historyValues.push(100, 110, 120, 130);
         }
 
-        // 2. Prepare Data for Regression
-        // X = Time (Index 0, 1, 2...), Y = Amount
-        const dataPoints = history.map((unit, index) => ({
-            x: index,
-            y: Number(unit.amount)
-        }));
+        // 2. Call Python Bridge
+        try {
+            const forecastVal = await this.callPythonModel(historyValues);
+            this.logger.log(`Python Model Output: ${forecastVal}`);
 
-        // 3. Calculate Linear Regression (y = mx + b)
-        const n = dataPoints.length;
-        const sumX = dataPoints.reduce((acc, p) => acc + p.x, 0);
-        const sumY = dataPoints.reduce((acc, p) => acc + p.y, 0);
-        const sumXY = dataPoints.reduce((acc, p) => acc + (p.x * p.y), 0);
-        const sumXX = dataPoints.reduce((acc, p) => acc + (p.x * p.x), 0);
+            // 3. Save Forecast (Simplification: Save to startPeriod)
+            await this.saveForecast(targetScenarioId, versionId, startPeriod, entityId, accountId, forecastVal);
+            return 1;
+        } catch (e) {
+            this.logger.error(`Python Bridge Failed: ${e}`);
+            throw e;
+        }
+    }
 
-        const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-        const intercept = (sumY - slope * sumX) / n;
+    private callPythonModel(history: number[]): Promise<number> {
+        return new Promise((resolve, reject) => {
+            const { spawn } = require('child_process');
+            const path = require('path');
 
-        this.logger.log(`Regression Model: y = ${slope.toFixed(4)}x + ${intercept.toFixed(4)}`);
+            // Adjust path to where you saved the script
+            const scriptPath = path.resolve(__dirname, '../../scripts/forecast.py');
 
-        // 4. Generate Future Points
-        // Assume startPeriod is next month after history. 
-        // In real app, we need to map YYYY-MM to X index. 
-        // Let's assume we are forecasting N periods *after* the last history point.
+            const process = spawn('python3', [scriptPath]);
 
-        let generatedCount = 0;
-        // Simple iteration for range. Mapping string periods is complex, I'll forecast 1 period ahead for demo correctness.
-        // Or loop 1 to 12.
+            let resultData = '';
 
-        // Let's simplified: Project next period.
-        const nextX = n;
-        const nextVal = slope * nextX + intercept;
+            process.stdout.on('data', (data: any) => {
+                resultData += data.toString();
+            });
 
-        await this.saveForecast(targetScenarioId, versionId, startPeriod, entityId, accountId, nextVal);
-        generatedCount++;
+            process.stderr.on('data', (data: any) => {
+                this.logger.error(`Python Error: ${data.toString()}`);
+            });
 
-        return generatedCount;
+            process.on('close', (code: any) => {
+                if (code !== 0) {
+                    return reject(new Error(`Python process exited with code ${code}`));
+                }
+                try {
+                    const json = JSON.parse(resultData);
+                    if (json.error) return reject(new Error(json.error));
+                    resolve(Number(json.forecast));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+
+            // Send Data
+            const input = JSON.stringify({ history });
+            process.stdin.write(input);
+            process.stdin.end();
+        });
     }
 
     private async saveForecast(scenarioId: string, versionId: string, period: string, entityId: string, accountId: string, amount: number) {

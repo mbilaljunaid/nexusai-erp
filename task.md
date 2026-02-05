@@ -80,3 +80,16 @@
 
 - [x] **Step 3: Verification**
     - [x] Script: Verify ESG and Treasury calculations <!-- id: 33 -->
+
+# EPM Planning Phase 6: Hyper-Scalability & Advanced AI
+
+- [x] **Step 1: Python AI Bridge**
+    - [x] Create `forecast.py` script for advanced ARIMA/Prophet logic <!-- id: 34 -->
+    - [x] Update `PredictiveForecastingService` to spawn Python process <!-- id: 35 -->
+
+- [x] **Step 2: Database Scalability**
+    - [x] Create Migration for `PlanUnit` Partitioning (Year/Period) <!-- id: 36 -->
+    - [x] Add Performance Indices <!-- id: 37 -->
+
+- [x] **Step 3: Verification**
+    - [x] Script: Verify Python Bridge integration <!-- id: 38 -->

@@ -1,40 +1,36 @@
-# EPM Planning Phase 5: Extended Domains (ESG, Treasury, Strategic)
+# EPM Planning Phase 6: Hyper-Scalability & Advanced AI
 
 # Goal Description
-Extend the EPM module to cover "Extended" planning domains required for full Enterprise Compliance.
-- **ESG**: Planning for Carbon, DEI, and Social Impact.
-- **Treasury**: Cash forecasting and liquidity planning.
-- **Strategic**: Long-Range Planning (LRP) support.
+Address the "Future Enhancements" identified in the Tier-1 Gap Analysis to ensure the system can handle Year-2 scaling (>100M rows) and provide Fortune-500 grade predictive analytics.
 
 ## User Review Required
-> [!NOTE]
-> **ESG Data Model**: We will introduce a new `PlanEsgMetric` entity. This differs from `PlanUnit` as it tracks non-financial units (KG CO2, Count, %) without necessarily tying to a GL Account, though integration is possible.
+> [!IMPORTANT]
+> **Architecture Change (DB)**: Moving `PlanUnit` to a specialized Time-Series database (TimescaleDB) or identifying it as a Hyper-Table. For now, we will Implement **Postgres Partitioning** as the immediate step to support 100M+ rows without introducing a new infrastructure component (ClickHouse) immediately.
+> **Architecture Change (AI)**: Introducing a Python Bridge. We will use a Sidecar pattern (FastAPI service) or local execution via `python-shell` if deployment complexity must be kept low. **Recommendation: Local Python Shell for simplicity in Monolith.**
 
 ## Proposed Changes
 
-### Domain 1: ESG & Non-Financials
-- **Entity**: `PlanEsgMetric` (Dimension: Metric Code, Type, Unit)
-- **Service**: `EsgPlanningService`
-    - Logic: `Carbon = Activity * Emission Factor`
-    - Logic: `Diversity % = Target Headcount / Total Headcount`
+### 1. Advanced AI (Python Integration)
+- **Objective**: Move beyond Linear Regression (JS) to ARIMA/Prophet (Python).
+- **Implementation**:
+    - Create `ml/forecast.py`: Python script accepting JSON input (History) and outputting Forecast.
+    - Update `PredictiveForecastingService`: Use `child_process` to spawn python script and parse results.
 
 **Files:**
-#### [NEW] [plan-esg-metric.entity.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/entities/plan-esg-metric.entity.ts)
-#### [NEW] [esg-planning.service.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/esg-planning.service.ts)
+#### [NEW] [backend/src/scripts/forecast.py](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/scripts/forecast.py)
+#### [MODIFY] [predictive-forecasting.service.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/predictive-forecasting.service.ts)
 
-### Domain 2: Treasury & Strategic
-- **Service**: `TreasuryPlanningService`
-    - Logic: `Closing Cash = Opening + Collections - Disbursements`
-    - Note: Will re-use `PlanUnit` but with specialized Cash Flow Account Types.
+### 2. Hyper-Scalability (Data Layout)
+- **Objective**: Optimize `PlanUnit` for massive scale.
+- **Implementation**:
+    - Implement **Table Partitioning** by `Year` (Period).
+    - Add Database Indexes for common query patterns (Entity + Account).
 
 **Files:**
-#### [NEW] [treasury-planning.service.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/treasury-planning.service.ts)
+#### [NEW] [backend/src/migrations/1700000000000-PartitionPlanUnit.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/migrations/1700000000000-PartitionPlanUnit.ts)
 
 ## Verification Plan
 
 ### Automated Tests
-- **ESG**: Verify Carbon Calc (1000 km * 0.2 factor = 200kg).
-- **Treasury**: Verify Cash Roll-forward.
-
-### Manual Verification
-- None required (API/Script level verification sufficient).
+- **AI**: Verify Python script returns a Prophet-like curve (Seasonality check).
+- **DB**: Verify Partition creation and Insert routing.
