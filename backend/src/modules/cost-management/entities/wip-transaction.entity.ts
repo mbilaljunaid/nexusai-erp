@@ -10,17 +10,17 @@ export class WipTransaction {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @ManyToOne(() => InventoryOrganization)
-    organization!: InventoryOrganization;
+    @ManyToOne('InventoryOrganization')
+    organization!: any;
 
-    @ManyToOne(() => WorkOrder)
-    workOrder!: WorkOrder;
+    @ManyToOne('WorkOrder')
+    workOrder!: any;
 
     @Column({ type: 'varchar' })
     transactionType!: WipTransactionType;
 
-    @ManyToOne(() => Item, { nullable: true })
-    item?: Item; // Component Item for Issues, Assembly Item for Completion
+    @ManyToOne('Item', { nullable: true })
+    item?: any; // Component Item for Issues, Assembly Item for Completion
 
     @Column('decimal', { precision: 18, scale: 4 })
     quantity!: number;

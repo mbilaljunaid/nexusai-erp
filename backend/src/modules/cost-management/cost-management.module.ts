@@ -31,7 +31,7 @@ import { ApprovalRequest } from './entities/approval-request.entity';
 import { ApprovalService } from './approval.service';
 import { GLEntry } from '../erp/entities/gl-entry.entity';
 import { StandardCostService } from './standard-cost.service';
-import { GlIntegrationService } from '../finance/gl-integration.service';
+import { FinanceGlIntegrationService } from '../finance/gl-integration.service';
 import { LcmService } from './lcm.service';
 import { WorkOrder } from '../manufacturing/entities/work-order.entity';
 import { WipTransaction } from './entities/wip-transaction.entity';
@@ -41,10 +41,10 @@ import { WipCostingService } from './wip-costing.service';
     imports: [
         TypeOrmModule.forFeature([
             CostBook, CostOrganization,
-            CostPeriod, CmrReceiptDistribution, MaterialTransaction,
+            CostPeriod, CmrReceiptDistribution,
             CstItemCost, CstStandardCost, CostScenario, LandedCostCharge, CostAnomaly, ApprovalRequest,
-            CstCostDistribution, CostElement, CostProfile, GLEntry,
-            WorkOrder, WipTransaction
+            CstCostDistribution, CostElement, CostProfile,
+            WipTransaction
         ]),
         forwardRef(() => InventoryModule),
         FinanceModule
@@ -56,7 +56,6 @@ import { WipCostingService } from './wip-costing.service';
         ReceiptAccountingService,
         ReconciliationService,
         StandardCostService,
-        GlIntegrationService,
         LcmService,
         WipCostingService,
         SlaService,
@@ -72,7 +71,6 @@ import { WipCostingService } from './wip-costing.service';
         CostPeriodService,
         ReconciliationService,
         StandardCostService,
-        GlIntegrationService,
         LcmService,
         WipCostingService,
         CostAnomalyService,

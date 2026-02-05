@@ -4,15 +4,15 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { PlanUnit } from '../entities/plan-unit.entity';
 import { EpmAudit } from '../entities/epm-audit.entity';
 
-import { OnModuleInit } from '@nestjs/common';
+import { OnModuleInit, Injectable } from '@nestjs/common';
 
-@EventSubscriber()
+@Injectable()
 export class PlanUnitSubscriber implements EntitySubscriberInterface<PlanUnit>, OnModuleInit {
 
     constructor(@InjectDataSource() private readonly dataSource: DataSource) { }
 
     onModuleInit() {
-        this.dataSource.subscribers.push(this);
+        // this.dataSource.subscribers.push(this);
     }
 
     listenTo() {

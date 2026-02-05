@@ -15,8 +15,8 @@ export interface JournalEntryParams {
 }
 
 @Injectable()
-export class GlIntegrationService {
-    private readonly logger = new Logger(GlIntegrationService.name);
+export class FinanceGlIntegrationService {
+    private readonly logger = new Logger(FinanceGlIntegrationService.name);
 
     constructor(
         @InjectRepository(GLEntry)

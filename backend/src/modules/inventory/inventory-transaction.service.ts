@@ -30,8 +30,9 @@ export interface CreateTransactionDto {
     reference?: string;
 }
 
-import { ReceiptAccountingService } from '../cost-management/receipt-accounting.service';
-import { CostProcessorService } from '../cost-management/cost-processor.service';
+import { ModuleRef } from '@nestjs/core';
+// import { ReceiptAccountingService } from '../cost-management/receipt-accounting.service'; // Use type only
+// import { CostProcessorService } from '../cost-management/cost-processor.service'; // Use type only
 
 @Injectable()
 export class InventoryTransactionService {
@@ -48,9 +49,27 @@ export class InventoryTransactionService {
         private subinvRepo: Repository<Subinventory>,
         private dataSource: DataSource,
         private readonly costingService: CostingService,
-        private readonly receiptAccountingService: ReceiptAccountingService,
-        private readonly costProcessorService: CostProcessorService
+        private readonly moduleRef: ModuleRef
     ) { }
+
+    private _receiptAccountingService: any;
+    private _costProcessorService: any;
+
+    private async getReceiptAccountingService() {
+        if (!this._receiptAccountingService) {
+            const { ReceiptAccountingService } = await import('../cost-management/receipt-accounting.service');
+            this._receiptAccountingService = this.moduleRef.get(ReceiptAccountingService, { strict: false });
+        }
+        return this._receiptAccountingService;
+    }
+
+    private async getCostProcessorService() {
+        if (!this._costProcessorService) {
+            const { CostProcessorService } = await import('../cost-management/cost-processor.service');
+            this._costProcessorService = this.moduleRef.get(CostProcessorService, { strict: false });
+        }
+        return this._costProcessorService;
+    }
 
     async executeTransaction(dto: CreateTransactionDto): Promise<MaterialTransaction> {
         return this.dataSource.transaction(async (manager) => {
@@ -192,7 +211,8 @@ export class InventoryTransactionService {
 
                 // Phase 3: Cost Processor (Update Average Cost)
                 // Called within the transaction manager for atomicity.
-                await this.costProcessorService.processTransactionCost(txn, manager);
+                const cps = await this.getCostProcessorService();
+                await cps.processTransactionCost(txn, manager);
             }
 
             // 6. Aggregate Update

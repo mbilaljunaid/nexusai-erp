@@ -18,7 +18,7 @@ import { InventoryTransactionService } from './inventory-transaction.service';
 
 import { CstTransactionCost } from './entities/cst-transaction-cost.entity';
 import { CostingService } from './costing.service';
-import { PlanningService } from './planning.service';
+import { InventoryPlanningService } from './planning.service';
 import { Reservation } from './entities/reservation.entity';
 import { ReservationService } from './reservation.service';
 import { CycleCountHeader, CycleCountEntry } from './entities/cycle-count.entity';
@@ -26,6 +26,7 @@ import { CycleCountService } from './cycle-count.service';
 import { LotService } from './lot.service';
 import { SerialService } from './serial.service';
 import { LotSerialController } from './lot-serial.controller';
+import { WorkOrder } from '../manufacturing/entities/work-order.entity';
 import { CostManagementModule } from '../cost-management/cost-management.module';
 
 @Module({
@@ -43,7 +44,8 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
       CstTransactionCost,
       Reservation,
       CycleCountHeader,
-      CycleCountEntry
+      CycleCountEntry,
+      WorkOrder
     ]),
   ],
   controllers: [ProductController, ItemController, InventoryOrganizationController, LotSerialController],
@@ -53,7 +55,7 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
     InventoryOrganizationService,
     InventoryTransactionService,
     CostingService,
-    PlanningService,
+    InventoryPlanningService,
     ReservationService,
     CycleCountService,
     LotService,
@@ -64,7 +66,7 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
     ItemService,
     InventoryTransactionService,
     CostingService,
-    PlanningService,
+    InventoryPlanningService,
     ReservationService,
     CycleCountService,
     LotService,

@@ -8,8 +8,8 @@ export class CstCostDistribution {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @ManyToOne(() => MaterialTransaction)
-    transaction!: MaterialTransaction;
+    @ManyToOne('MaterialTransaction')
+    transaction!: any;
 
     @ManyToOne(() => CostOrganization)
     costOrganization!: CostOrganization;

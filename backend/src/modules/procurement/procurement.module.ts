@@ -32,7 +32,7 @@ import { Item } from '../inventory/entities/item.entity';
 import { Budget } from '../epm/entities/budget.entity';
 import { ApprovalService } from './approval.service';
 import { BudgetService } from '../epm/budget.service';
-import { GlIntegrationService } from './gl-integration.service';
+import { ProcurementGlIntegrationService } from './gl-integration.service';
 import { AiController } from './ai.controller';
 import { ProcurementAiService } from './procurement-ai.service';
 
@@ -71,9 +71,9 @@ import { EPMModule } from '../epm/epm.module';
     ApService,
     ApprovalService,
     SourcingService,
-    GlIntegrationService,
+    ProcurementGlIntegrationService,
     ProcurementAiService
   ],
-  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService],
+  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ApprovalService, SourcingService, TypeOrmModule],
 })
 export class ProcurementModule { }

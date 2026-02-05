@@ -1,6 +1,6 @@
 
 import { Controller, Get, Post, Body, Param, Query, Logger } from '@nestjs/common';
-import { PlanningService } from './planning.service';
+import { EpmPlanningService } from './planning.service';
 import { DriverService } from './driver.service';
 import { WorkforceService } from './workforce.service';
 import { BudgetControlService } from './budget-control.service';
@@ -14,11 +14,11 @@ export class PlanningController {
     private readonly logger = new Logger(PlanningController.name);
 
     constructor(
-        private readonly planningService: PlanningService,
-        private readonly driverService: DriverService,
-        private readonly workforceService: WorkforceService,
-        private readonly controlService: BudgetControlService,
-        private readonly foundationService: EPMFoundationService,
+        private readonly planningService: EpmPlanningService,
+        // private readonly driverService: DriverService,
+        // private readonly workforceService: WorkforceService,
+        // private readonly controlService: BudgetControlService,
+        // private readonly foundationService: EPMFoundationService,
         @InjectRepository(PlanUnit)
         private planUnitRepo: Repository<PlanUnit>
     ) { }

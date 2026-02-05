@@ -90,8 +90,8 @@ app.use(auditMiddleware);
 app.use(rlsMiddleware);
 
 // Initialize Cron Jobs (Autonomous Background Tasks)
-initCronJobs();
-JobRunnerService.start();
+// initCronJobs();
+// JobRunnerService.start();
 
 console.log("DEBUG: NODE_ENV =", process.env.NODE_ENV);
 

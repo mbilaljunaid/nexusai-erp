@@ -19,8 +19,8 @@ import { PlanChannel } from './entities/plan-channel.entity'; // NEW
 import { EpmAudit } from './entities/epm-audit.entity';
 import { GLBalance } from '../finance/entities/gl-balance.entity'; // NEW
 import { EPMFoundationService } from './epm-foundation.service';
-import { GLIntegrationService } from './gl-integration.service';
-import { PlanningService } from './planning.service';
+import { EpmGLIntegrationService } from './gl-integration.service';
+import { EpmPlanningService } from './planning.service';
 import { DriverService } from './driver.service';
 import { WorkforceService } from './workforce.service';
 import { CapExService } from './capex.service';
@@ -58,52 +58,53 @@ import { FinanceModule } from '../finance/finance.module';
       PlanProduct,
       PlanEsgMetric, // NEW
       EpmAudit,
-      GLBalance
     ]),
     ProjectsModule,
     FinanceModule
   ],
-  controllers: [BudgetController, PlanningController],
+  controllers: [
+    BudgetController,
+    PlanningController
+  ],
   providers: [
     EPMService,
     BudgetService,
-    EPMFoundationService,
-    GLIntegrationService,
-    PlanningService,
-    DriverService,
-    WorkforceService,
-    CapExService,
-    EliminationService,
-    BudgetControlService,
-    PlanUnitSubscriber,
-    FormulaService,
-    ProjectIntegrationService,
-    ProjectFinanceService,
-    DemandPlanningService,
-    PredictiveForecastingService,
-    EpmSecurityService,
-    EsgPlanningService, // NEW
-    TreasuryPlanningService // NEW
+    EpmPlanningService,
+    // DriverService,
+    // WorkforceService,
+    // CapExService,
+    // EliminationService,
+    // BudgetControlService,
+    // PlanUnitSubscriber,
+    // FormulaService,
+    // ProjectIntegrationService,
+    // ProjectFinanceService,
+    // DemandPlanningService,
+    // PredictiveForecastingService,
+    // EpmSecurityService,
+    // EsgPlanningService, // NEW
+    // TreasuryPlanningService // NEW
   ],
   exports: [
     EPMService,
     BudgetService,
-    EPMFoundationService,
-    GLIntegrationService,
-    PlanningService,
-    DriverService,
-    WorkforceService,
-    CapExService,
-    EliminationService,
-    BudgetControlService,
-    FormulaService,
-    ProjectIntegrationService,
-    ProjectFinanceService,
-    DemandPlanningService,
-    PredictiveForecastingService,
-    EpmSecurityService,
-    EsgPlanningService, // NEW
-    TreasuryPlanningService // NEW
+    // EPMFoundationService,
+    // GLIntegrationService,
+    EpmPlanningService,
+    // DriverService,
+    // WorkforceService,
+    // CapExService,
+    // EliminationService,
+    // BudgetControlService,
+    // FormulaService,
+    // ProjectIntegrationService,
+    // ProjectFinanceService,
+    // DemandPlanningService,
+    // PredictiveForecastingService,
+    // EpmSecurityService,
+    // EsgPlanningService, // NEW
+    // TreasuryPlanningService, // NEW
+    TypeOrmModule
   ],
 })
 export class EPMModule { }

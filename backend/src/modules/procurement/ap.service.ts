@@ -6,7 +6,7 @@ import { ApInvoiceLine } from './entities/ap-invoice-line.entity';
 import { ApPayment } from './entities/ap-payment.entity';
 import { PurchaseOrder } from './entities/purchase-order.entity';
 import { Supplier } from './entities/supplier.entity';
-import { GlIntegrationService } from './gl-integration.service';
+import { ProcurementGlIntegrationService } from './gl-integration.service';
 
 @Injectable()
 export class ApService {
@@ -23,7 +23,7 @@ export class ApService {
         private poRepo: Repository<PurchaseOrder>,
         @InjectRepository(Supplier)
         private supplierRepo: Repository<Supplier>,
-        private readonly glService: GlIntegrationService,
+        private readonly glService: ProcurementGlIntegrationService,
     ) { }
 
     async createInvoice(dto: any): Promise<ApInvoice> {

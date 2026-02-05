@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { BudgetService } from '../epm/budget.service';
 
 @Injectable()
-export class GlIntegrationService {
+export class ProcurementGlIntegrationService {
     constructor(private readonly budgetService: BudgetService) { }
 
     async checkFunds(amount: number, departmentId: string): Promise<void> {

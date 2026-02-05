@@ -6,8 +6,8 @@ import { PlanUnit } from './entities/plan-unit.entity';
 import { PlanVersion } from './entities/plan-version.entity';
 
 @Injectable()
-export class PlanningService {
-    private readonly logger = new Logger(PlanningService.name);
+export class EpmPlanningService {
+    private readonly logger = new Logger(EpmPlanningService.name);
 
     constructor(
         @InjectRepository(PlanUnit)

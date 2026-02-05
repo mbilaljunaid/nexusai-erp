@@ -7,7 +7,7 @@ import { PurchaseOrder } from './entities/purchase-order.entity';
 import { PurchaseOrderLine } from './entities/purchase-order-line.entity';
 import { Item } from '../inventory/entities/item.entity';
 import { ApService } from './ap.service';
-import { GlIntegrationService } from './gl-integration.service';
+import { ProcurementGlIntegrationService } from './gl-integration.service';
 import { InventoryTransactionService } from '../inventory/inventory-transaction.service';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class ReceiptService {
         @InjectRepository(Item)
         private itemRepo: Repository<Item>,
         private readonly apService: ApService,
-        private readonly glService: GlIntegrationService,
+        private readonly glService: ProcurementGlIntegrationService,
         private readonly invTxnService: InventoryTransactionService,
     ) { }
 

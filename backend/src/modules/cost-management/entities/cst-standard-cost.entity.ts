@@ -11,8 +11,8 @@ export class CstStandardCost {
     @ManyToOne(() => CostScenario, scenario => scenario.costs)
     scenario!: CostScenario;
 
-    @ManyToOne(() => Item)
-    item!: Item;
+    @ManyToOne('Item')
+    item!: any;
 
     @ManyToOne(() => CostElement)
     costElement!: CostElement;

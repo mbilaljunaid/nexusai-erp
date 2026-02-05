@@ -9,11 +9,11 @@ export class CstItemCost {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @ManyToOne(() => InventoryOrganization)
-    inventoryOrganization!: InventoryOrganization;
+    @ManyToOne('InventoryOrganization')
+    inventoryOrganization!: any;
 
-    @ManyToOne(() => Item)
-    item!: Item;
+    @ManyToOne('Item')
+    item!: any;
 
     @ManyToOne(() => CostBook)
     costBook!: CostBook;

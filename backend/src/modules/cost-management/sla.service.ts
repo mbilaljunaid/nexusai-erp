@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { CstCostDistribution } from './entities/cst-cost-distribution.entity';
 import { CstItemCost } from './entities/cst-item-cost.entity';
-import { GlIntegrationService } from '../finance/gl-integration.service';
+import { FinanceGlIntegrationService } from '../finance/gl-integration.service';
 
 @Injectable()
 export class SlaService {
@@ -12,8 +12,8 @@ export class SlaService {
     constructor(
         @InjectRepository(CstCostDistribution)
         private readonly distRepo: Repository<CstCostDistribution>,
-        @Inject(GlIntegrationService)
-        private readonly glService: GlIntegrationService
+        @Inject(FinanceGlIntegrationService)
+        private readonly glService: FinanceGlIntegrationService
     ) { }
 
     /**

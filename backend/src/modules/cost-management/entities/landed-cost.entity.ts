@@ -14,8 +14,8 @@ export class LandedCostCharge {
     organization!: InventoryOrganization;
 
     // Link to PO Header (Estimated Charges)
-    @ManyToOne(() => PurchaseOrder, { nullable: true })
-    purchaseOrder?: PurchaseOrder;
+    @ManyToOne('PurchaseOrder', { nullable: true })
+    purchaseOrder?: any;
 
     // Future: Link to Receipt (Actual Charges) or Invoice
     // For now, we define charges on the PO level and allocate to Receipts.

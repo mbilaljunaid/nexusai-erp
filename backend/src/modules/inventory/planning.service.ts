@@ -5,8 +5,8 @@ import { Item } from './entities/item.entity';
 import { InventoryOrganization } from './entities/inventory-organization.entity';
 
 @Injectable()
-export class PlanningService {
-    private readonly logger = new Logger(PlanningService.name);
+export class InventoryPlanningService {
+    private readonly logger = new Logger(InventoryPlanningService.name);
 
     constructor(
         @InjectRepository(Item)

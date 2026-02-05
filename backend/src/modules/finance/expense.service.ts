@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 // import { storage } from '@server/storage';
 import { ExpenseReport, ExpenseLine, InsertExpenseReport, InsertExpenseLine } from '@shared/schema';
-import { GlIntegrationService } from './gl-integration.service';
+import { FinanceGlIntegrationService } from './gl-integration.service';
 import { AuditService } from '../audit/audit.service';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class ExpenseService {
   private readonly DEFAULT_TENANT = "tenant1";
 
   constructor(
-    private readonly glIntegrationService: GlIntegrationService,
+    private readonly glIntegrationService: FinanceGlIntegrationService,
     private readonly auditService: AuditService
   ) { }
 

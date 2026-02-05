@@ -8,8 +8,8 @@ import { PlanScenario } from './entities/plan-scenario.entity';
 import { GLBalance } from '../finance/entities/gl-balance.entity';
 
 @Injectable()
-export class GLIntegrationService {
-    private readonly logger = new Logger(GLIntegrationService.name);
+export class EpmGLIntegrationService {
+    private readonly logger = new Logger(EpmGLIntegrationService.name);
 
     constructor(
         @InjectRepository(PlanUnit)

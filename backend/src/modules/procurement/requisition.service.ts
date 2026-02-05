@@ -5,7 +5,7 @@ import { RequisitionHeader } from './entities/requisition-header.entity';
 import { RequisitionLine } from './entities/requisition-line.entity';
 import { PurchaseOrderService } from './purchase-order.service';
 import { ApprovalService } from './approval.service';
-import { GlIntegrationService } from './gl-integration.service';
+import { ProcurementGlIntegrationService } from './gl-integration.service';
 
 @Injectable()
 export class RequisitionService {
@@ -18,7 +18,7 @@ export class RequisitionService {
         private reqLineRepo: Repository<RequisitionLine>,
         private readonly poService: PurchaseOrderService,
         private readonly approvalService: ApprovalService,
-        private readonly glService: GlIntegrationService,
+        private readonly glService: ProcurementGlIntegrationService,
     ) { }
 
     async create(dto: any): Promise<RequisitionHeader> {
