@@ -63,6 +63,21 @@ export const hzMatchRules = pgTable("hz_match_rules", {
 });
 
 // ==========================================
+// 5. SURVIVORSHIP RULES (Confidence/Recency)
+// ==========================================
+export const hzSurvivorshipRules = pgTable("hz_survivorship_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ruleName: varchar("rule_name").notNull(),
+    description: text("description"),
+    sourceSystem: varchar("source_system"), // e.g. "CRM", "SAP"
+    confidenceScore: integer("confidence_score").default(50),
+    logicType: varchar("logic_type").default("SOURCE_CONFIDENCE"), // MOST_RECENT, SOURCE_CONFIDENCE
+    activeFlag: boolean("active_flag").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// ==========================================
 // RELATIONS
 // ==========================================
 export const hzDupBatchRelations = relations(hzDupBatch, ({ many }) => ({
@@ -109,6 +124,10 @@ export const insertHzMatchRuleSchema = createInsertSchema(hzMatchRules).extend({
     matchScoreThreshold: z.number().min(0).max(100),
 });
 
+export const insertHzSurvivorshipRuleSchema = createInsertSchema(hzSurvivorshipRules).extend({
+    ruleName: z.string().min(1),
+});
+
 
 // Types
 export type HzDupBatch = typeof hzDupBatch.$inferSelect;
@@ -122,3 +141,6 @@ export type InsertHzDupSetParty = typeof hzDupSetParties.$inferInsert;
 
 export type HzMatchRule = typeof hzMatchRules.$inferSelect;
 export type InsertHzMatchRule = typeof hzMatchRules.$inferInsert;
+
+export type HzSurvivorshipRule = typeof hzSurvivorshipRules.$inferSelect;
+export type InsertHzSurvivorshipRule = typeof hzSurvivorshipRules.$inferInsert;

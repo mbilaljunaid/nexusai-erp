@@ -9,6 +9,10 @@ import ReferenceDataList from "@/pages/ReferenceDataList";
 import ReferenceDataDetail from "@/pages/ReferenceDataDetail";
 import MatchRuleList from "@/pages/MatchRuleList";
 import MatchRuleDetail from "@/pages/MatchRuleDetail";
+import SurvivorshipRuleList from "@/pages/SurvivorshipRuleList";
+import ItemDirectory from "@/pages/ItemDirectory";
+import ItemProfile from "@/pages/ItemProfile";
+import DataQualityDashboard from "@/pages/DataQualityDashboard";
 
 export default function MdmRoutes() {
     return (
@@ -22,6 +26,11 @@ export default function MdmRoutes() {
 
             <Route path="/mdm/config/match-rules" component={MatchRuleList} />
             <Route path="/mdm/config/match-rules/:id" component={MatchRuleDetail} />
+            <Route path="/mdm/config/survivorship-rules" component={SurvivorshipRuleList} />
+
+            <Route path="/mdm/items" component={ItemDirectory} />
+            <Route path="/mdm/items/:id" component={ItemProfile} />
+            <Route path="/mdm/dq-dashboard" component={DataQualityDashboard} />
 
             {/* Redirects or Default */}
             <Route path="/mdm" component={DataGovernancePage} />

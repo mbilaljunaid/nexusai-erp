@@ -147,17 +147,65 @@
 
 # Phase 10: Configurable Rules Engines (Dynamic Governance)
 
-- [ ] **Step 1: Match Rule Configuration**
-    - [ ] Create `hz_match_rules` schema <!-- id: 64 -->
-    - [ ] Implement `MatchRuleService` <!-- id: 65 -->
-    - [ ] Create `MatchRuleList.tsx` & `MatchRuleDetail.tsx` <!-- id: 66 -->
-    - [ ] Update `MatchingService` to use dynamic rules <!-- id: 67 -->
+- [x] **Step 1: Match Rule Configuration**
+    - [x] Create `hz_match_rules` schema <!-- id: 64 -->
+    - [x] Implement `MatchRuleService` <!-- id: 65 -->
+    - [x] Create `MatchRuleList.tsx` & `MatchRuleDetail.tsx` <!-- id: 66 -->
+    - [x] Update `MatchingService` to use dynamic rules <!-- id: 67 -->
 
-- [ ] **Step 2: Survivorship Rules**
-    - [ ] Create `hz_survivorship_rules` schema <!-- id: 68 -->
-    - [ ] Implement `SurvivorshipService` <!-- id: 69 -->
-    - [ ] Create UI for Survivorship Configuration <!-- id: 70 -->
+- [x] **Step 2: Survivorship Rules**
+    - [x] Create `hz_survivorship_rules` schema <!-- id: 68 -->
+    - [x] Implement `SurvivorshipService` <!-- id: 69 -->
+    - [x] Create UI for Survivorship Configuration <!-- id: 70 -->
 
-- [ ] **Step 3: Verification**
-    - [ ] Script: Verify Match Rule CRUD & Execution <!-- id: 71 -->
+- [x] **Step 3: Verification**
+    - [x] Script: Verify Match Rule CRUD & Execution <!-- id: 71 -->
 
+# Phase 11: Product Information Management (PIM)
+
+- [x] **Step 1: Item Schema & Service**
+    - [x] Create `egp_system_items` & `egp_item_categories` schema <!-- id: 72 -->
+    - [x] Implement `ItemService` (CRUD) <!-- id: 73 -->
+    - [x] Expose Item API Routes in `mdm.ts` <!-- id: 74 -->
+
+- [x] **Step 2: Item Master UI**
+    - [x] Create `ItemDirectory.tsx` (Search/Grid) <!-- id: 75 -->
+    - [x] Create `ItemProfile.tsx` (Detail/Specifications) <!-- id: 76 -->
+    - [x] Register Item Routes in `MdmRoutes.tsx` <!-- id: 77 -->
+
+- [x] **Step 3: Verification**
+    - [x] Script: Verify Item CRUD & Category Linkage <!-- id: 78 -->
+- [x] **Step 3: Verification**
+    - [x] Script: Verify Item CRUD & Category Linkage <!-- id: 78 -->
+
+# Phase 12: Data Quality Dashboard
+
+- [x] **Step 1: Metric Aggregation**
+    - [x] Update `DataQualityService` to compute stats (Total Records, Duplicates, Match Rates) <!-- id: 79 -->
+    - [x] Create API Endpoint for Dashboard Metrics <!-- id: 80 -->
+
+- [x] **Step 2: Dashboard UI**
+    - [x] Create `DataQualityDashboard.tsx` <!-- id: 81 -->
+    - [x] Integrate Recharts for Trend Analysis <!-- id: 82 -->
+    - [x] Register Route `/mdm/dq-dashboard` <!-- id: 83 -->
+
+- [x] **Step 3: Verification**
+    - [x] Script: Verify Metrics Calculation <!-- id: 84 -->
+
+# Phase 13: Workflow & Audit Governance
+
+- [ ] **Step 1: Audit & Change Request Schema**
+    - [ ] Create `mdm_audit_log` and `mdm_change_requests` schema <!-- id: 85 -->
+    - [ ] Implement `AuditService` <!-- id: 86 -->
+
+- [ ] **Step 2: Change Request Workflow**
+    - [ ] Create API for proposing/approving changes <!-- id: 87 -->
+    - [ ] Update `PartyService` to support "Draft" edits <!-- id: 88 -->
+
+- [ ] **Step 3: UI Implementation**
+    - [ ] Create `AuditLogViewer.tsx` <!-- id: 89 -->
+    - [ ] Create `ChangeRequestInbox.tsx` <!-- id: 90 -->
+    - [ ] Register new routes <!-- id: 91 -->
+
+- [ ] **Step 4: Verification**
+    - [ ] Script: Verify Audit Logging & Change Request Flow <!-- id: 92 -->

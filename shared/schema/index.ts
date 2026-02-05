@@ -97,6 +97,8 @@ export * from "./time_rules";
 // MDM / TCA
 export * from "./parties";
 export * from "./locations";
-export * from "./relationships";
 export * from "./reference";
+export * from "./relationships";
 export * from "./data-quality";
+export * from "./pim";
+export * from "./governance";

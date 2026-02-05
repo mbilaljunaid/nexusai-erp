@@ -20,7 +20,7 @@ export default function MatchRuleDetail() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: rule, isLoading } = useQuery({
+    const { data: rule, isLoading } = useQuery<any>({
         queryKey: [`/api/mdm/match-rules/${ruleId}`],
         enabled: !!ruleId
     });

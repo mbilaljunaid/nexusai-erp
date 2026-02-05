@@ -5,6 +5,9 @@ import { locationService } from "../services/LocationService";
 import { referenceDataService } from "../services/ReferenceDataService";
 import { matchingService } from "../services/MatchingService";
 import { matchRuleService } from "../services/MatchRuleService";
+import { survivorshipService } from "../services/SurvivorshipService";
+import { itemService } from "../services/ItemService";
+import { dataQualityService } from "../services/DataQualityService";
 
 
 const mdmRouter = Router();
@@ -214,6 +217,83 @@ mdmRouter.put("/match-rules/:id", async (req, res) => {
     try {
         const result = await matchRuleService.updateRule(req.params.id, req.body);
         res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// ==========================================
+// Survivorship Rules
+// ==========================================
+mdmRouter.get("/survivorship-rules", async (req, res) => {
+    try {
+        const result = await survivorshipService.getAllRules();
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.post("/survivorship-rules", async (req, res) => {
+    try {
+        const result = await survivorshipService.createRule(req.body);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.put("/survivorship-rules/:id", async (req, res) => {
+    try {
+        const result = await survivorshipService.updateRule(req.params.id, req.body);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// ==========================================
+// Item Master (PIM)
+// ==========================================
+mdmRouter.get("/items", async (req, res) => {
+    try {
+        const query = req.query.q as string;
+        const result = await itemService.searchItems(query);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.get("/items/:id", async (req, res) => {
+    try {
+        const result = await itemService.getItemById(req.params.id);
+        if (!result) return res.status(404).json({ error: "Item not found" });
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.post("/items", async (req, res) => {
+    try {
+        const result = await itemService.createItem(req.body);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// ==========================================
+// Data Quality Dashboard
+// ==========================================
+mdmRouter.get("/dq-dashboard/stats", async (req, res) => {
+    try {
+        const stats = await dataQualityService.getDashboardMetrics();
+        res.json(stats);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
