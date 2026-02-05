@@ -29,8 +29,8 @@ export class OrderManagementService {
                     // PIM Validation
                     const item = await itemService.getItemById(line.itemId);
                     if (!item) throw new Error(`Item ID ${line.itemId} not found in PIM.`);
-                    if (item.inventoryItemStatusCode !== "ACTIVE" && item.inventoryItemStatusCode !== "Active") {
-                        throw new Error(`Item ${item.itemNumber} is not eligible for sales (Status: ${item.inventoryItemStatusCode})`);
+                    if (item.itemStatus !== "ACTIVE" && item.itemStatus !== "Active") {
+                        throw new Error(`Item ${item.itemNumber} is not eligible for sales (Status: ${item.itemStatus})`);
                     }
 
                     return {

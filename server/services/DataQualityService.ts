@@ -2,6 +2,7 @@
 import { db } from "../db";
 import { hzParties, hzDupSets, egpSystemItems } from "../../shared/schema";
 import { sql, eq, count } from "drizzle-orm";
+import { anomalyDetectionService } from "./AnomalyDetectionService";
 
 export class DataQualityService {
 
@@ -41,8 +42,15 @@ export class DataQualityService {
             openDuplicateSets: openDups.count,
             resolvedDuplicateSets: resolvedDups.count,
             dataHealthScore: Math.round(healthScore),
-            lastRefresh: new Date()
+            dataHealthScore: Math.round(healthScore),
+            lastRefresh: new Date(),
+            anomalies: await this.getRecentAnomalies()
         };
+    }
+
+    async getRecentAnomalies() {
+        // Run analysis on demand for now (in production this would be a cached job)
+        return await anomalyDetectionService.analyzeProcurementPricing();
     }
 }
 

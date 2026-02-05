@@ -18,9 +18,9 @@ async function main() {
         description: "A widget for testing OM/PO integration",
         primaryUomCode: "EA",
         itemType: "GOODS",
-        inventoryItemStatusCode: "Active",
-        organizationId: 1,
-        enabledFlag: true
+        itemStatus: "ACTIVE",
+        organizationId: "GLOBAL",
+        revision: "A"
     } as any);
 
     if (!newItem) throw new Error("Failed to create item");

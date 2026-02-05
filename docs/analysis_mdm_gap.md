@@ -14,14 +14,14 @@
 > - **Product Hub:** Item Master (PIM) is fully implemented (`egp_system_items`).
 > - **Governance:** Configurable Match/Survivorship Rules & Change Request Workflows are active.
 > - **Stewardship:** Data Quality Dashboard & Deduplication Console are fully functional.
+> - **Integration:** Bulk Import & cross-module PIM integration (OM/Procurement) are **COMPLETE**.
 > 
 > **Current Status:** `TIER_1_READY`
 > **Enterprise Readiness:** ✅ **COMPLETE** (Backend 15/15, Frontend 14/15)
 >
 > **Remaining Optimizations:**
-> 1.  **Deeper Integration:** Connect Order Management to PIM (Item Master).
-> 2.  **Bulk Loading:** Add CSV Import for Items/Parties.
-> 3.  **Advanced Enrichment:** Integration with D&B/Experian (External APIs).
+> 1.  **Enrichment:** Integration with D&B/Experian (External APIs).
+> 2.  **Advanced AI:** Anomaly detection (beyond simple rules).
 
 ---
 
@@ -61,6 +61,7 @@
 *   **Merge Console:** ✅ **DONE**. `/mdm/duplicates`.
 *   **Reference Data Manager:** ✅ **DONE**. `/mdm/reference-data`.
 *   **Governance Workbench:** ✅ **DONE**. `/mdm/change-requests`.
+*   **Import Wizard:** ✅ **DONE**. `/mdm/import` (Phase 14).
 
 ### Level 7 — UI Components
 *   **StandardTable:** ✅ Used extensively.
@@ -87,7 +88,8 @@
 *   **Lineage:** ✅ **DONE**. Audit Log Timeline.
 
 ### Level 12 — Accounting / Rules / Derivation
-*   **Validation:** ⚠️ Basic.
+*   **Validation:** ✅ **DONE**. PIM Integration enforces Item Validity in OM/PO.
+*   **Derivation:** ✅ **DONE**. Auto-populates UOM/Description from PIM.
 
 ### Level 13 — AI / Automation
 *   **Anomaly Detection:** ❌ **MISSING**.
@@ -98,7 +100,7 @@
 *   **RBAC:** ✅ Supported (Stewards vs Viewers).
 
 ### Level 15 — Performance & Ops
-*   **Bulk Loader:** ❌ **MISSING**.
+*   **Bulk Loader:** ✅ **DONE**. `BulkImportService` + CSV Import Wizard (Phase 14).
 *   **Server-side Pagination:** ✅ Services support it.
 
 ---
@@ -117,6 +119,8 @@
 | Stewardship | Data Steward Dashboard | **✅ IMPLEMENTED** |  **READY** | ✅ YES |
 | **Reference** | Value Sets / Lookups | **✅ IMPLEMENTED** |  **READY** | ✅ YES |
 | **Product** | **Product Hub (PIM)** | **✅ IMPLEMENTED** |  **READY** | ✅ YES |
+| **Integration** | **Bulk Import / Export** | **✅ IMPLEMENTED** |  **READY** | ✅ YES |
+| **Orchestration** | **Cross-Module Validation** | **✅ IMPLEMENTED** |  **READY** | ✅ YES |
 
 ---
 
@@ -138,9 +142,18 @@
 - [x] **Audit Trail**: `mdm_audit_log` with Timeline UI.
 - [x] **Change Requests**: Maker-Checker Workflow with Inbox UI.
 
+### PHASE 14: BULK DATA IMPORT (✅ DONE)
+- [x] **Bulk Import Service**: CSV Parsing for Party/Item (`BulkImportService`).
+- [x] **UI**: Drag-and-drop Import Wizard.
+- [x] **Integration**: Direct link from Directory Pages.
+
+### PHASE 15: PIM INTEGRATION & VALIDATION (✅ DONE)
+- [x] **Schema**: Linked `om_order_lines` and `purchase_order_lines` to `egp_system_items`.
+- [x] **Validation**: Enforced "Active" item checks in OM and Procurement.
+- [x] **Derivation**: Auto-populate Price/Description/UOM from PIM.
+
 ---
 
 ## 🔮 REMEDIATION ROADMAP (OPTIMIZATIONS)
-1.  **Bulk Loading:** Implement CSV Import for mass-creation of Items/Parties.
-2.  **Integration:** Wire PIM to Order Management & Procurement.
-3.  **External Enrichment:** Connect to D&B / Google Maps API for address verification.
+1.  **AI Anomaly Detection:** Implement statistical analysis for outlier detection.
+2.  **External Enrichment:** Connect to D&B / Google Maps API for address verification.

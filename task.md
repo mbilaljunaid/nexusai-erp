@@ -226,15 +226,28 @@
 
 # Phase 15: PIM Integration (Order Management & Procurement)
 
-- [ ] **Step 1: Analyze & Refactor Schema**
-    - [ ] Check `OrderLine` and `PurchaseOrderLine` schema <!-- id: 99 -->
-    - [ ] Add Foreign Key to `egp_system_items` if missing <!-- id: 100 -->
+- [x] **Step 1: Analyze & Refactor Schema**
+    - [x] Check `OrderLine` and `PurchaseOrderLine` schema <!-- id: 99 -->
+    - [x] Add Foreign Key to `egp_system_items` if missing <!-- id: 100 -->
 
-- [ ] **Step 2: Service Layer Integration**
-    - [ ] Update `OrderService` to validate Items against PIM <!-- id: 101 -->
-    - [ ] Update `ProcurementService` to select Items from PIM <!-- id: 102 -->
-    - [ ] Ensure Inventory Reservation logic uses PIM attributes <!-- id: 103 -->
+- [x] **Step 2: Service Layer Integration**
+    - [x] Update `OrderService` to validate Items against PIM <!-- id: 101 -->
+    - [x] Update `ProcurementService` to select Items from PIM <!-- id: 102 -->
+    - [x] Ensure Inventory Reservation logic uses PIM attributes <!-- id: 103 -->
 
-- [ ] **Step 3: Verification**
-    - [ ] Script: Verify Order Creation with PIM Item <!-- id: 104 -->
-    - [ ] Script: Verify PO Creation with PIM Item <!-- id: 105 -->
+- [x] **Step 3: Verification**
+    - [x] Script: Verify Order Creation with PIM Item <!-- id: 104 -->
+    - [x] Script: Verify PO Creation with PIM Item <!-- id: 105 -->
+
+# Phase 16: AI Anomaly Detection (Advanced Data Quality)
+
+- [x] **Step 1: Metric Calculations**
+    - [x] Create `AnomalyDetectionService` <!-- id: 106 -->
+    - [x] Implement Z-Score / IQR outlier detection for prices/quantities <!-- id: 107 -->
+
+- [x] **Step 2: Integration**
+    - [x] Add Anomaly Checks to `DataQualityService` batch run <!-- id: 108 -->
+    - [x] Display Anomalies in DQ Dashboard <!-- id: 109 -->
+
+- [x] **Step 3: Verification**
+    - [x] Script: Verify Outlier Detection Logic (Z-Score > 3) <!-- id: 110 -->

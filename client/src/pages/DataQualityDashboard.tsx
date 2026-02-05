@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { Loader2, AlertTriangle, CheckCircle, Database, Package } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { Loader2, AlertTriangle, CheckCircle, Database, Package, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 
@@ -13,6 +14,15 @@ interface DQStats {
     openDuplicateSets: number;
     resolvedDuplicateSets: number;
     dataHealthScore: number;
+    anomalies?: {
+        entityId: string;
+        entityType: string;
+        field: string;
+        value: number;
+        score: number;
+        mean: number;
+        message: string;
+    }[];
 }
 
 export default function DataQualityDashboard() {
@@ -91,6 +101,17 @@ export default function DataQualityDashboard() {
                         <p className="text-xs text-muted-foreground">Sets waiting for review</p>
                     </CardContent>
                 </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">AI Anomalies</CardTitle>
+                        <Sparkles className="h-4 w-4 text-purple-500" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats?.anomalies?.length || 0}</div>
+                        <p className="text-xs text-muted-foreground">Detected by Z-Score AI</p>
+                    </CardContent>
+                </Card>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -110,6 +131,34 @@ export default function DataQualityDashboard() {
                                 <Bar dataKey="Resolved" fill="#10b981" />
                             </BarChart>
                         </ResponsiveContainer>
+                    </CardContent>
+                </Card>
+
+                <Card className="col-span-1">
+                    <CardHeader>
+                        <CardTitle>Detected Anomalies (Outliers)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {stats?.anomalies?.length === 0 ? (
+                            <div className="text-center text-muted-foreground py-10">No anomalies detected. Data quality is high.</div>
+                        ) : (
+                            <div className="space-y-4">
+                                {stats?.anomalies?.slice(0, 5).map((anomaly, i) => (
+                                    <div key={i} className="flex items-start gap-4 p-3 border rounded-lg bg-red-50 dark:bg-red-900/20">
+                                        <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
+                                        <div>
+                                            <p className="font-medium text-sm text-red-700 dark:text-red-400">
+                                                Z-Score Alert: {anomaly.score} (Limit: 3)
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">{anomaly.message}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                                {stats?.anomalies && stats.anomalies.length > 5 && (
+                                    <p className="text-xs text-center text-muted-foreground">+ {stats.anomalies.length - 5} more</p>
+                                )}
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
