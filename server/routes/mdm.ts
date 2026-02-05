@@ -8,6 +8,7 @@ import { matchRuleService } from "../services/MatchRuleService";
 import { survivorshipService } from "../services/SurvivorshipService";
 import { itemService } from "../services/ItemService";
 import { dataQualityService } from "../services/DataQualityService";
+import { auditService } from "../services/AuditService";
 
 
 const mdmRouter = Router();
@@ -294,6 +295,47 @@ mdmRouter.get("/dq-dashboard/stats", async (req, res) => {
     try {
         const stats = await dataQualityService.getDashboardMetrics();
         res.json(stats);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// ==========================================
+// Governance (Audit & Workflow)
+// ==========================================
+mdmRouter.get("/audit/:type/:id", async (req, res) => {
+    try {
+        const result = await auditService.getAuditLogs(req.params.type, req.params.id);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.get("/change-requests/pending", async (req, res) => {
+    try {
+        const result = await auditService.getPendingRequests();
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.post("/change-requests", async (req, res) => {
+    try {
+        const result = await auditService.createChangeRequest(req.body);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.put("/change-requests/:id/status", async (req, res) => {
+    try {
+        const { status, reason } = req.body;
+        const result = await auditService.updateRequestStatus(req.params.id, status, reason);
+        res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

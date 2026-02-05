@@ -13,6 +13,7 @@ import SurvivorshipRuleList from "@/pages/SurvivorshipRuleList";
 import ItemDirectory from "@/pages/ItemDirectory";
 import ItemProfile from "@/pages/ItemProfile";
 import DataQualityDashboard from "@/pages/DataQualityDashboard";
+import ChangeRequestInbox from "@/pages/ChangeRequestInbox";
 
 export default function MdmRoutes() {
     return (
@@ -31,6 +32,7 @@ export default function MdmRoutes() {
             <Route path="/mdm/items" component={ItemDirectory} />
             <Route path="/mdm/items/:id" component={ItemProfile} />
             <Route path="/mdm/dq-dashboard" component={DataQualityDashboard} />
+            <Route path="/mdm/change-requests" component={ChangeRequestInbox} />
 
             {/* Redirects or Default */}
             <Route path="/mdm" component={DataGovernancePage} />

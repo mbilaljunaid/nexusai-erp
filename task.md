@@ -194,18 +194,18 @@
 
 # Phase 13: Workflow & Audit Governance
 
-- [ ] **Step 1: Audit & Change Request Schema**
-    - [ ] Create `mdm_audit_log` and `mdm_change_requests` schema <!-- id: 85 -->
-    - [ ] Implement `AuditService` <!-- id: 86 -->
+- [x] **Step 1: Audit & Change Request Schema**
+    - [x] Create `mdm_audit_log` and `mdm_change_requests` schema <!-- id: 85 -->
+    - [x] Implement `AuditService` <!-- id: 86 -->
 
-- [ ] **Step 2: Change Request Workflow**
-    - [ ] Create API for proposing/approving changes <!-- id: 87 -->
-    - [ ] Update `PartyService` to support "Draft" edits <!-- id: 88 -->
+- [x] **Step 2: Change Request Workflow**
+    - [x] Create API for proposing/approving changes <!-- id: 87 -->
+    - [x] Update `PartyService` to support "Draft" edits <!-- id: 88 -->
 
-- [ ] **Step 3: UI Implementation**
-    - [ ] Create `AuditLogViewer.tsx` <!-- id: 89 -->
-    - [ ] Create `ChangeRequestInbox.tsx` <!-- id: 90 -->
-    - [ ] Register new routes <!-- id: 91 -->
+- [x] **Step 3: UI Implementation**
+    - [x] Create `AuditLogViewer.tsx` <!-- id: 89 -->
+    - [x] Create `ChangeRequestInbox.tsx` <!-- id: 90 -->
+    - [x] Register new routes <!-- id: 91 -->
 
-- [ ] **Step 4: Verification**
-    - [ ] Script: Verify Audit Logging & Change Request Flow <!-- id: 92 -->
+- [x] **Step 4: Verification**
+    - [x] Script: Verify Audit Logging & Change Request Flow <!-- id: 92 -->
