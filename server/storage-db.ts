@@ -165,6 +165,8 @@ import type {
   ArSystemOptions, InsertArSystemOptions
 } from "@shared/schema";
 import { revenueService } from "./modules/revenue/services/RevenueService";
+import { partyService } from "./services/PartyService";
+
 
 /**
  * Database storage operations for Phase 2
@@ -245,11 +247,26 @@ export const dbStorage = {
   },
 
   async createAccount(account: InsertAccount): Promise<Account> {
+    // 1. Create Organization Party
+    const { party } = await partyService.createOrganization(
+      {
+        partyName: account.name,
+        partyNumber: `ACCT-${Date.now().toString().slice(-9)}-${Math.floor(Math.random() * 1000)}`,
+        partyType: 'ORGANIZATION'
+      },
+      {
+        organizationName: account.name,
+        industryCode: account.industry
+      }
+    );
+
+    // 2. Create Account Linked to Party
     const result = await db
       .insert(accountsTable)
       .values({
         ...account,
         annualRevenue: account.annualRevenue ? String(account.annualRevenue) : null,
+        partyId: party.id // TCA Linkage
       })
       .returning();
     return result[0];
@@ -280,9 +297,27 @@ export const dbStorage = {
   },
 
   async createContact(contact: InsertContact): Promise<Contact> {
+    // 1. Create Person Party
+    const { party } = await partyService.createPerson(
+      {
+        partyName: `${contact.firstName} ${contact.lastName}`,
+        partyNumber: `CONT-${Date.now().toString().slice(-9)}-${Math.floor(Math.random() * 1000)}`,
+        email: contact.email,
+        partyType: 'PERSON'
+      },
+      {
+        personFirstName: contact.firstName,
+        personLastName: contact.lastName
+      }
+    );
+
+    // 2. Create Contact Linked to Party
     const result = await db
       .insert(contactsTable)
-      .values(contact)
+      .values({
+        ...contact,
+        partyId: party.id // TCA Linkage
+      })
       .returning();
     return result[0];
   },
@@ -669,7 +704,22 @@ export const dbStorage = {
       if (!lead) throw new Error("Lead not found");
       if (lead.isConverted) throw new Error("Lead already converted");
 
-      // 1. Create Account
+      // 1. Create Account (with Party)
+      // Note: We duplicate logic here because we are in a transaction block
+      // Ideally call PartyService here too (will be separate transaction context, but acceptable for now)
+
+      const { party: accountParty } = await partyService.createOrganization(
+        {
+          partyName: lead.company || `${lead.firstName} ${lead.lastName}`,
+          partyNumber: `ACCT-${Date.now().toString().slice(-8)}-${lead.id.substring(0, 4)}`,
+          partyType: 'ORGANIZATION'
+        },
+        {
+          organizationName: lead.company || `${lead.firstName} ${lead.lastName}`,
+          industryCode: lead.industry
+        }
+      );
+
       const [account] = await tx.insert(accountsTable).values({
         name: lead.company || `${lead.firstName} ${lead.lastName}`,
         industry: lead.industry,
@@ -677,10 +727,24 @@ export const dbStorage = {
         billingCity: lead.city,
         billingState: lead.state,
         billingCountry: lead.country,
-        ownerId: ownerId || lead.ownerId
+        ownerId: ownerId || lead.ownerId,
+        partyId: accountParty.id // TCA Linkage
       }).returning();
 
-      // 2. Create Contact
+      // 2. Create Contact (with Party)
+      const { party: contactParty } = await partyService.createPerson(
+        {
+          partyName: `${lead.firstName} ${lead.lastName}`,
+          partyNumber: `CONT-${Date.now().toString().slice(-8)}-${lead.id.substring(0, 4)}`,
+          email: lead.email,
+          partyType: 'PERSON'
+        },
+        {
+          personFirstName: lead.firstName || "",
+          personLastName: lead.lastName
+        }
+      );
+
       const [contact] = await tx.insert(contactsTable).values({
         accountId: account.id,
         firstName: lead.firstName || "",
@@ -692,7 +756,8 @@ export const dbStorage = {
         mailingState: lead.state,
         mailingCountry: lead.country,
         ownerId: ownerId || lead.ownerId,
-        leadSource: lead.leadSource
+        leadSource: lead.leadSource,
+        partyId: contactParty.id // TCA Linkage
       }).returning();
 
       // 3. Create Opportunity

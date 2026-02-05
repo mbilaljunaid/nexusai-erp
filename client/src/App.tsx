@@ -45,6 +45,7 @@ import ReportRoutes from "@/routes/ReportRoutes";
 import MarketingRoutes from "@/routes/MarketingRoutes";
 import AnalyticsRoutes from "@/routes/AnalyticsRoutes";
 import ComplianceRoutes from "@/routes/ComplianceRoutes";
+import MdmRoutes from "@/routes/MdmRoutes";
 
 // Phase 2: Module Overviews
 
@@ -119,6 +120,8 @@ function Router() {
         <Route path="/crm*" component={CrmRoutes} />
         <Route path="/finance*" component={FinanceRoutes} />
         <Route path="/scm*" component={ScmRoutes} />
+        <Route path="/mdm*" component={MdmRoutes} />
+        <Route path="/mdm*" component={MdmRoutes} />
 
         {/* Talent Management Direct Routes (Debug/Fix for 404) */}
         <Route path="/talent/learning/manager" component={lazy(() => import("@/pages/learning/manager/ManagerLearningDashboard"))} />

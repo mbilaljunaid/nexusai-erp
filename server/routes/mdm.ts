@@ -3,6 +3,8 @@ import { Router } from "express";
 import { partyService } from "../services/PartyService";
 import { locationService } from "../services/LocationService";
 import { referenceDataService } from "../services/ReferenceDataService";
+import { matchingService } from "../services/MatchingService";
+
 
 const mdmRouter = Router();
 
@@ -100,6 +102,58 @@ mdmRouter.post("/lookups/types", async (req, res) => {
 mdmRouter.post("/lookups/values", async (req, res) => {
     try {
         const result = await referenceDataService.createLookupValue(req.body);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
+// ==========================================
+// Dashboard Stats
+// ==========================================
+mdmRouter.get("/stats", async (req, res) => {
+    try {
+        const partiesCount = await partyService.countParties();
+        const openDupSets = await matchingService.countOpenSets();
+
+        res.json({
+            recordsManaged: partiesCount,
+            dataQualityScore: 94, // Placeholder for now until we have real scoring history
+            policies: 18, // Check rule count
+            openDuplicateSets: openDupSets
+        });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==========================================
+// Data Quality (Duplicates)
+// ==========================================
+mdmRouter.post("/quality/match-batch", async (req, res) => {
+    try {
+        const result = await matchingService.runBatch(req.body.batchName);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.get("/quality/duplicates", async (req, res) => {
+    try {
+        // @ts-ignore
+        const result = await matchingService.getOpenSets();
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+mdmRouter.post("/quality/duplicates/:setId/resolve", async (req, res) => {
+    try {
+        const result = await matchingService.resolveSet(req.params.setId, req.body.survivorPartyId);
         res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });

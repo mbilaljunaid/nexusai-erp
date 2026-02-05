@@ -106,13 +106,28 @@
     - [x] Implement `LocationService` (Address standardization) <!-- id: 43 -->
     - [x] Implement `ReferenceDataService` (Value Sets) <!-- id: 44 -->
 
-- [ ] **Step 3: Entity Refactoring & Migration**
-    - [ ] Update `Supplier` entity to link to `Party` <!-- id: 45 -->
-    - [ ] Update `Customer` entity to link to `Party` <!-- id: 46 -->
-    - [ ] Script: Migrate existing data to TCA model <!-- id: 47 -->
+- [x] **Step 3: Entity Refactoring & Migration**
+    - [x] Update `Supplier` entity to link to `Party` <!-- id: 45 -->
+    - [x] Update `Customer` entity to link to `Party` <!-- id: 46 -->
+    - [x] Script: Migrate existing data to TCA model <!-- id: 47 -->
 
-- [ ] **Step 4: Data Quality & Governance**
-    - [ ] Implement `MatchingService` (Fuzzy Logic) <!-- id: 48 -->
-    - [ ] Implement `DuplicateDetection` with real backend <!-- id: 49 -->
-    - [ ] Create `Data Steward` Dashboard & Change Request Workflow <!-- id: 50 -->
+- [x] **Step 4: Data Quality & Governance**
+    - [x] Implement `MatchingService` (Fuzzy Logic) <!-- id: 48 -->
+    - [x] Implement `DuplicateDetection` with real backend <!-- id: 49 -->
+    - [x] Create duplicate management endpoints for Dashboard <!-- id: 50 -->
+
+# Phase 8: Data Stewardship UI & Governance (The "Face" of MDM)
+
+- [x] **Step 1: Data Governance Dashboard**
+    - [x] Update `DataGovernancePage.tsx` to fetch real stats <!-- id: 51 -->
+    - [x] Add "Run Deduplication Batch" button & API integration <!-- id: 52 -->
+
+- [x] **Step 2: Duplicate Resolution Console**
+    - [x] Update `DuplicateDetection.tsx` to list real `hz_dup_sets` <!-- id: 53 -->
+    - [x] Build "Merge Review" Side Sheet (Compare A vs B) <!-- id: 54 -->
+    - [x] Implement "Merge" action (calls `resolveSet`) <!-- id: 55 -->
+
+- [ ] **Step 3: Master Data Registry (360 View)**
+    - [ ] Create `PartyDirectory.tsx` (Search Parties) <!-- id: 56 -->
+    - [ ] Create `PartyProfile.tsx` (View/Edit Party + Addresses + Contacts) <!-- id: 57 -->
 

@@ -4,7 +4,7 @@ import {
     hzParties, hzOrganizationProfiles, hzPersonProfiles,
     InsertHzParty, InsertHzOrganizationProfile, InsertHzPersonProfile
 } from "../../shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export class PartyService {
 
@@ -81,6 +81,14 @@ export class PartyService {
         // Simple mock search for now using Drizzle's ilike if possible or just naive implementation
         // For now, implementing basic retrieval
         return await db.select().from(hzParties).limit(50);
+    }
+
+    /**
+     * Count Total Parties
+     */
+    async countParties() {
+        const result = await db.select({ count: sql<number>`count(*)` }).from(hzParties);
+        return Number(result[0].count);
     }
 }
 

@@ -8,94 +8,93 @@
 
 ## 🛑 EXECUTIVE SUMMARY & STOP ORDER
 > [!IMPORTANT]
-> **CRITICAL ARCHITECTURAL GAP DETECTED: NO TRADING COMMUNITY ARCHITECTURE (TCA)**
-> The current system operates on **Separate Silos** for Suppliers, Customers, and Users. There is no central "Party" model, no unified "Location" registry, and no shared "Contact Point" architecture.
+> **ARCHITECTURAL STATUS: BACKEND FOUNDATION COMPLETE / FRONTEND CRITICAL GAP**
+> The backend "Trading Community Architecture" (TCA) foundation is now **IMPLEMENTED** (Phase 7). We have `Party`, `Location`, and `Data Quality` schemes.
+> However, the **Frontend is completely MOCK/MISSING**. Users cannot search parties, manage duplicates, or govern data quality.
 
-**Current Status:** `FRAGMENTED / UNREADY`
-**Tier-1 Enterprise Readiness:** ❌ **FAIL** (0/15 Levels Compliant for Core MDM)
+**Current Status:** `BACKEND_READY / UI_MISSING`
+**Tier-1 Enterprise Readiness:** ❌ **FAIL** (Backend 10/15, Frontend 1/15)
 
 **Immediate Remediation Required:**
-1.  **Stop building isolated master data tables.**
-2.  **Implement `shared/schema/parties.ts`** (TCA equivalent).
-3.  **Implement `shared/schema/locations.ts`** (Global Address Model).
-4.  **Refactor Customer & Supplier entities** to link to Parties.
+1.  **Build Generic Party Search & Profile UI** (The "Single View of 360").
+2.  **Connect MOCK Dashboards** (`DataGovernance`, `DuplicateDetection`) to real APIs.
+3.  **Implement Data Steward Work flows** (Merge actions, manual approval).
 
 ---
 
 ## 🧱 LEVEL-15 CANONICAL DECOMPOSITION
 
 ### Level 1 — Module Domain
-*   **Current:** Dispersed across `procurement`, `crm`, `inventory`, `finance`.
-*   **Target:** Centralized `modules/mdm` for governance, quality, and unified registry.
-*   **Status:** ❌ **MISSING** (No dedicated MDM module).
+*   **target:** Centralized `modules/mdm` for governance vs `modules/crm` for sales.
+*   **Status:** ⚠️ **PARTIAL**. Backend services exist (`PartyService`, `MatchingService`), but no dedicated frontend module folder.
 
 ### Level 2 — Sub-Domain
-*   **Customer MDM:** Partially in `crm` (CustomerEntryForm).
-*   **Supplier MDM:** Partially in `procurement` (SupplierManagement).
-*   **Item MDM:** Partially in `inventory` (Item entity).
-*   **Asset MDM:** Present in `finance` (Fixed Assets).
-*   **Reference Data:** ❌ **MISSING** (No centralized lookup/value-set service).
+*   **Customer MDM:** ✅ Linked to TCA (`createAccount` now creates `Party`).
+*   **Supplier MDM:** ✅ Linked to TCA (`approveSupplier` now creates `Party`).
+*   **Item MDM:** ❌ **MISSING** (Still siloed in Inventory).
+*   **Reference Data:** ✅ Backend `ReferenceDataService` exists.
+*   **Data Quality:** ✅ Backend `MatchingService` exists.
 
 ### Level 3 — Functional Capability
-*   **Create/Update:** ✅ Implemented but isolated.
-*   **Validate:** ⚠️ Basic field validation only. No cross-reference checks.
-*   **Govern:** ❌ **MISSING** (No change request workflow).
-*   **Merge:** ❌ **MISSING** (No survivorship logic).
-*   **Version:** ❌ **MISSING** (No effective dating for master data profile).
+*   **Create/Update:** ✅ Implemented via API.
+*   **Validate:** ⚠️ Basic simulation in `LocationService`. No real address verification.
+*   **Govern:** ❌ **MISSING** (No UI for approvals).
+*   **Merge:** ⚠️ Service exists (`resolveSet`), but no UI to trigger it.
+*   **Version:** ❌ **MISSING** (Date-effective columns exist in schema, but logic is basic).
 
 ### Level 4 — Business Use Case
-*   **Golden Record:** ❌ **MISSING** (No concept of "Single Source of Truth" separate from transaction tables).
-*   **De-duplication:** ❌ **MISSING** (Mock UI in `DuplicateDetection.tsx`).
-*   **Enrichment:** ❌ **MISSING** (No D&B or external data hooks).
+*   **Golden Record:** ✅ Supported by Schema (`hz_parties`).
+*   **De-duplication:** ✅ Fuzzy Logic implemented (`Levenshtein`), Batch execution supported.
+*   **Enrichment:** ❌ **MISSING** (No 3rd party hooks).
 
 ### Level 5 — User Personas
-*   **MDM Data Steward:** ❌ **MISSING** (No dedicated cockpit).
-*   **Business Owner:** ✅ Partially supported via functional screens.
+*   **MDM Data Steward:** ❌ **MISSING** (No Dashboard UI).
+*   **Business Owner:** ✅ Supported via transactional screens (CRM/SCM).
 *   **Compliance Officer:** ❌ **MISSING**.
 
 ### Level 6 — UI Surfaces
-*   **MDM Dashboard:** ❌ **MISSING** (No Data Quality metrics).
-*   **Master Record Forms:** ✅ Exists (`CustomerEntryForm`, `SupplierManagement`).
-*   **Merge Console:** ❌ **MISSING** (Mock only).
+*   **MDM Dashboard:** ❌ **MOCK** (`DataGovernancePage.tsx` is static HTML).
+*   **Master Record Forms:** ❌ **MISSING** (No generic Party view).
+*   **Merge Console:** ❌ **MOCK** (`DuplicateDetection.tsx` is static HTML).
 *   **Governance Workbench:** ❌ **MISSING**.
 
 ### Level 7 — UI Components
-*   **StandardTable:** ✅ Used in `SupplierManagement`.
-*   **Side-panels:** ✅ Used in `SupplierManagement`.
-*   **Hierarchy Viewer:** ⚠️ Partial (`AssetHierarchyTree`), missing for Parties/Orgs.
+*   **StandardTable:** ✅ Available system-wide.
+*   **Side-panels:** ✅ Available.
+*   **Hierarchy Viewer:** ❌ **MISSING** for Parties.
 
 ### Level 8 — Configuration / Setup Screens
-*   **Match Rules:** ❌ **MISSING**.
-*   **Survivorship Rules:** ❌ **MISSING**.
-*   **Source System Management:** ❌ **MISSING**.
+*   **Match Rules:** ❌ **MISSING** (Hardcoded in `MatchingService`).
+*   **Survivorship Rules:** ❌ **MISSING** (Hardcoded "Surviving Party" logic).
+*   **Source System Management:** ✅ Schema supports `origSystemReference`.
 
 ### Level 9 — Master Data Screens
 *   **Parties:** ❌ **MISSING**.
-*   **Locations:** ❌ **MISSING** (Embedded strings).
-*   **Contacts:** ❌ **MISSING** (Embedded).
+*   **Locations:** ❌ **MISSING**.
+*   **Ref Data:** ❌ **MISSING** (API only).
 
 ### Level 10 — Transactional Objects
 *   **Change Requests:** ❌ **MISSING**.
-*   **Merge Request:** ❌ **MISSING**.
+*   **Merge Request:** ✅ Backend `hz_dup_sets` exists.
 
 ### Level 11 — Workflow & Controls
-*   **Approval:** ❌ **MISSING** for master data creation.
-*   **Lineage:** ❌ **MISSING**.
+*   **Approval:** ❌ **MISSING** for MDM.
+*   **Lineage:** ⚠️ `created_at`/`updated_at` only. No full audit log integration yet.
 
 ### Level 12 — Accounting / Rules / Derivation
-*   **Validation:** ⚠️ Weak.
+*   **Validation:** ❌ **MISSING**.
 
 ### Level 13 — AI / Automation
 *   **Anomaly Detection:** ❌ **MISSING**.
-*   **Duplicate Detection:** ❌ **MISSING** (Mock only).
+*   **Duplicate Detection:** ✅ Implemented (Batch/Fuzzy).
 
 ### Level 14 — Security, Compliance & Audit
-*   **Audit Trail:** ✅ `audit_logs` schema exists, but not explicitly wired for component-level field tracking in MDM.
-*   **RBAC:** ✅ Basic roles exist.
+*   **Audit Trail:** ⚠️ Partial (Schema has fields, but no strict logging).
+*   **RBAC:** ⚠️ Basic.
 
 ### Level 15 — Performance & Ops
-*   **Bulk Loader:** ❌ **MISSING** (No FBDI equivalent).
-*   **Server-side Pagination:** ✅ Supported by `StandardTable` pattern.
+*   **Bulk Loader:** ❌ **MISSING**.
+*   **Server-side Pagination:** ⚠️ Service supports limits, but UI integration missing.
 
 ---
 
@@ -103,53 +102,43 @@
 
 | Feature Category | Oracle Fusion Capability | Current NexusAI State | Gap Severity | Tier-1 Req? |
 | :--- | :--- | :--- | :--- | :--- |
-| **Foundation** | **Trading Community Arch (TCA)** | **None (Siloed Tables)** | 🔴 **CRITICAL** | ✅ YES |
-| Geography | Global Geography / Address Model | Plain Text Fields | 🔴 **CRITICAL** | ✅ YES |
-| Party Model | Party, Org, Person, Group | Customer/Supplier Entities | 🔴 **CRITICAL** | ✅ YES |
-| **Data Quality** | Enterprise Data Quality (EDQ) | Mock UI Only | 🔴 **CRITICAL** | ✅ YES |
-| Matching | Fuzzy, Exact, Levenshtein | None | 🔴 **CRITICAL** | ✅ YES |
-| Survivorship | Source System Confidence | None | 🔴 **CRITICAL** | ✅ YES |
-| **Governance** | Change Request Workflow | Direct Edits | 🔴 **CRITICAL** | ✅ YES |
-| Stewardship | Data Steward Dashboard | None | 🔴 **CRITICAL** | ✅ YES |
-| **Reference** | Value Sets / Lookups | Enum / Hardcoded | 🟠 HIGH | ✅ YES |
+| **Foundation** | **Trading Community Arch (TCA)** | **✅ IMPLEMENTED (Backend)** | � **READY** | ✅ YES |
+| Geography | Global Geography / Address Model | **✅ IMPLEMENTED (Backend)** | � **READY** | ✅ YES |
+| Party Model | Party, Org, Person, Group | **✅ IMPLEMENTED (Backend)** | � **READY** | ✅ YES |
+| **Data Quality** | Enterprise Data Quality (EDQ) | **⚠️ BACKEND ONLY** | � **HIGH** | ✅ YES |
+| Matching | Fuzzy, Exact, Levenshtein | ✅ Implemented | � **READY** | ✅ YES |
+| Survivorship | Source System Confidence | Hardcoded | � **HIGH** | ✅ YES |
+| **Governance** | Change Request Workflow | Direct API Edits | 🔴 **CRITICAL** | ✅ YES |
+| Stewardship | Data Steward Dashboard | **❌ MOCK UI** | 🔴 **CRITICAL** | ✅ YES |
+| **Reference** | Value Sets / Lookups | **⚠️ API ONLY** | 🟠 **HIGH** | ✅ YES |
 
 ---
 
 ## 🔨 BUILD-READY TASK LIST & IMPLEMENTATION PLAN
 
-### PHASE 1: FOUNDATION - TCA SCHEMA (Urgent)
-> **Goal:** Establish the `Parties` and `Locations` canonical models.
-- [ ] Create `shared/schema/parties.ts` (Party, OrganizationProfile, PersonProfile).
-- [ ] Create `shared/schema/locations.ts` (Location, Address, ContactPoint).
-- [ ] Create `shared/schema/relationships.ts` (PartyRelationship).
-- [ ] Create `shared/schema/reference.ts` (Lookups, ValueSets).
+### PHASE 8: DATA STEWARDSHIP UI (The "Face" of MDM)
+> **Goal:** Build the actual UI for Data Stewards to manage the backend we just built.
+- [ ] **Step 1: Data Governance Dashboard**
+    - [ ] Update `DataGovernancePage.tsx` to fetch real stats from `MatchingService`.
+    - [ ] Add "Run Deduplication Batch" button (Actionable UI).
+- [ ] **Step 2: Duplicate Resolution Console**
+    - [ ] Update `DuplicateDetection.tsx` to list real `hz_dup_sets`.
+    - [ ] Build "Merge Review" Side Sheet (Compare Party A vs Party B).
+    - [ ] Implement "Merge" action (calls `resolveSet`).
+- [ ] **Step 3: Master Data Registry (360 View)**
+    - [ ] Create `PartyDirectory.tsx` (Search Parties).
+    - [ ] Create `PartyProfile.tsx` (View/Edit Party + Addresses + Contacts).
 
-### PHASE 2: MDM SERVICE LAYER
-> **Goal:** Centralize logic for Party creation and management.
-- [ ] Implement `PartyService` (Create, Update, Get Profile).
-- [ ] Implement `LocationService` (Address Validation, Formatting).
-- [ ] Implement `ReferenceDataService`.
-
-### PHASE 3: ENTITY MIGRATION (Refactor)
-> **Goal:** Link Procurement and CRM to the new Party model.
-- [ ] Refactor `Supplier` entity to link to `PartyId`.
-- [ ] Refactor `Customer` (CRM) to link to `PartyId`.
-- [ ] Migrate existing data (Script).
-
-### PHASE 4: DATA QUALITY ENGINE
-> **Goal:** Real implementation of `DuplicateDetection`.
-- [ ] Implement `MatchingService` (Fuzzy matching on Name, Address).
-- [ ] Implement `MergeService` (Survivorship logic).
-- [ ] Update `DuplicateDetection.tsx` to use real API.
-
-### PHASE 5: GOVERNANCE UI
-> **Goal:** Enterprise stewardship.
-- [ ] Build `DataStewardDashboard.tsx`.
-- [ ] Build `MasterDataChangeRequest` workflow.
+### PHASE 9: ADVANCED GOVERNANCE
+> **Goal:** Configuration and Control.
+- [ ] **Step 1: Reference Data UI**
+    - [ ] UI to Manage Lookup Types and Values.
+- [ ] **Step 2: Hierarchy Management**
+    - [ ] Party Relationships UI (Parent/Child).
 
 ---
 
 ## 🔮 REMEDIATION ROADMAP
-1.  **Immediate:** Define the TCA Schemas.
-2.  **Short Term:** Build the Party Service and refactor Supplier/Customer.
-3.  **Medium Term:** Implement Data Quality matching.
+1.  **Immediate:** Build the **Duplicate Resolution Console**. The backend is ready; the UI is fake. This is the highest value win.
+2.  **Short Term:** Build the **Party Directory**. Admins need to see the "Golden Records" created by CRM/SCM.
+3.  **Medium Term:** Full Governance Dashboard.
