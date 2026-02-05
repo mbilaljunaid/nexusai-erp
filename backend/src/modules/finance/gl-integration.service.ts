@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, EntityManager } from 'typeorm';
-import { GLEntry } from '../erp/entities/gl-entry.entity';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema';
 
 export interface JournalEntryParams {
     journalDate: Date;
@@ -19,49 +19,48 @@ export class FinanceGlIntegrationService {
     private readonly logger = new Logger(FinanceGlIntegrationService.name);
 
     constructor(
-        @InjectRepository(GLEntry)
-        private readonly glRepo: Repository<GLEntry>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
     /**
      * Creates a GL Journal Entry.
-     * Supports transactional execution if EntityManager is provided (SLA Batching).
+     * Supports transactional execution if tx is provided.
      */
-    async createJournal(entry: JournalEntryParams, manager?: EntityManager): Promise<GLEntry> {
-        const glEntry = this.glRepo.create({
+    async createJournal(entry: JournalEntryParams, tx?: any): Promise<any> {
+        const executor = tx || this.db;
+
+        const [glEntry] = await executor.insert(schema.glEntries).values({
             journalDate: entry.journalDate,
             description: `[${entry.sourceModule}] ${entry.description}`,
             debitAccount: entry.debitAccount,
-            debitAmount: entry.debitAmount,
+            debitAmount: entry.debitAmount.toString(),
             creditAccount: entry.creditAccount,
-            creditAmount: entry.creditAmount,
-            status: 'posted', // Auto-post for now, later 'draft'
-            // referenceId: entry.referenceId // Add column if needed
-        });
+            creditAmount: entry.creditAmount.toString(),
+            status: 'posted'
+        }).returning();
 
-        if (manager) {
-            return manager.save(glEntry);
-        }
-        return this.glRepo.save(glEntry);
+        return glEntry;
     }
 
     /**
      * Batch create journals for high volume SLA
      */
-    async createBatchJournals(entries: JournalEntryParams[], manager?: EntityManager): Promise<GLEntry[]> {
-        const glEntries = entries.map(entry => this.glRepo.create({
+    async createBatchJournals(entries: JournalEntryParams[], tx?: any): Promise<any[]> {
+        if (entries.length === 0) return [];
+
+        const executor = tx || this.db;
+
+        const values = entries.map(entry => ({
             journalDate: entry.journalDate,
             description: `[${entry.sourceModule}] ${entry.description}`,
             debitAccount: entry.debitAccount,
-            debitAmount: entry.debitAmount,
+            debitAmount: entry.debitAmount.toString(),
             creditAccount: entry.creditAccount,
-            creditAmount: entry.creditAmount,
+            creditAmount: entry.creditAmount.toString(),
             status: 'posted'
         }));
 
-        if (manager) {
-            return manager.save(GLEntry, glEntries); // Bulk save
-        }
-        return this.glRepo.save(glEntries);
+        const glEntries = await executor.insert(schema.glEntries).values(values).returning();
+        return glEntries;
     }
 }

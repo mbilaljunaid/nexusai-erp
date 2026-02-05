@@ -10,7 +10,7 @@ import { AuditModule } from '../audit/audit.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([GLEntry, GLBalance]),
+    TypeOrmModule.forFeature([GLBalance]),
     AuditModule
   ],
   controllers: [ExpenseController],

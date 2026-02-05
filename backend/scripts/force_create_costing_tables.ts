@@ -33,6 +33,19 @@ async function run() {
                 "createdAt" timestamp DEFAULT now()
             );
 
+            CREATE TABLE IF NOT EXISTS gl_entries (
+                id text PRIMARY KEY DEFAULT gen_random_uuid(),
+                "journalDate" timestamp NOT NULL,
+                description text NOT NULL,
+                "debitAccount" text NOT NULL,
+                "debitAmount" numeric(18, 2) NOT NULL,
+                "creditAccount" text NOT NULL,
+                "creditAmount" numeric(18, 2) NOT NULL,
+                status text DEFAULT 'draft',
+                "createdAt" timestamp DEFAULT now(),
+                "updatedAt" timestamp DEFAULT now()
+            );
+
             CREATE TABLE IF NOT EXISTS cst_cost_distributions (
                 id text PRIMARY KEY DEFAULT gen_random_uuid(),
                 "transactionId" text,

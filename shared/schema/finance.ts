@@ -798,6 +798,21 @@ export const glDataAccessSetAssignments = pgTable("gl_data_access_set_assignment
 });
 
 export const insertGlDataAccessSetAssignmentSchema = createInsertSchema(glDataAccessSetAssignments);
+
+// ========== LEGACY COMPATIBILITY ==========
+// Legacy: Simple Journal Entry (Used by FinanceGlIntegrationService, Tax, etc.) - gl_entries
+export const glEntries = pgTable("gl_entries", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    journalDate: timestamp("journalDate").notNull(),
+    description: varchar("description").notNull(),
+    debitAccount: varchar("debitAccount").notNull(),
+    debitAmount: numeric("debitAmount", { precision: 18, scale: 2 }).notNull(),
+    creditAccount: varchar("creditAccount").notNull(),
+    creditAmount: numeric("creditAmount", { precision: 18, scale: 2 }).notNull(),
+    status: varchar("status").default("draft"),
+    createdAt: timestamp("createdAt").default(sql`now()`),
+    updatedAt: timestamp("updatedAt").default(sql`now()`), // TypeORM auto-update
+});
 export type InsertGlDataAccessSetAssignment = z.infer<typeof insertGlDataAccessSetAssignmentSchema>;
 export type GlDataAccessSetAssignment = typeof glDataAccessSetAssignments.$inferSelect;
 
