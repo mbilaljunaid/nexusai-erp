@@ -25,6 +25,14 @@ async function run() {
                 "updatedAt" timestamp DEFAULT now()
             );
 
+            CREATE TABLE IF NOT EXISTS cst_cost_organizations (
+                id text PRIMARY KEY DEFAULT gen_random_uuid(),
+                code text NOT NULL,
+                name text NOT NULL,
+                "inventoryOrganizationId" text NOT NULL,
+                "createdAt" timestamp DEFAULT now()
+            );
+
             CREATE TABLE IF NOT EXISTS cst_cost_distributions (
                 id text PRIMARY KEY DEFAULT gen_random_uuid(),
                 "transactionId" text,

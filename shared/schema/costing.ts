@@ -46,8 +46,16 @@ export const cmrReceiptDistributions = pgTable("cmr_receipt_distributions", {
     createdAt: timestamp("createdAt").defaultNow(),
 });
 
+// Cost Organization (CST_COST_ORGANIZATIONS)
+export const cstCostOrganizations = pgTable("cst_cost_organizations", {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    code: text("code").notNull(),
+    name: text("name").notNull(),
+    inventoryOrganizationId: text("inventoryOrganizationId").notNull(),
+    createdAt: timestamp("createdAt").defaultNow(),
+});
+
 // Legacy Minimal Schema (Deprecated or Used for O2C Stub?)
-// Keeping for backward compat if needed, but the above replaces generic usage.
 export const cstTransactions = pgTable("cst_transactions", {
     id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
     transactionType: text("transaction_type").notNull(),

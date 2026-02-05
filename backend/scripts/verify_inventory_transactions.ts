@@ -33,7 +33,21 @@ async function verify() {
         // 2. Instantiate Services
         const orgService = new InventoryOrganizationService(db);
         const itemService = new ItemService(db);
-        const txnService = new InventoryTransactionService(db, mockCostingService, mockModuleRef);
+
+        // Mock CostPeriodService (Legacy TypeORM dependency)
+        const mockPeriodService = {
+            validateTransactionDate: async () => { console.log('   (Mock) Period Validation Passed'); }
+        } as any;
+
+        // Instantiate Dependencies
+        const { ReceiptAccountingService } = await import('../src/modules/cost-management/receipt-accounting.service');
+        const { CostProcessorService } = await import('../src/modules/cost-management/cost-processor.service');
+
+        const receiptService = new ReceiptAccountingService(db, mockPeriodService);
+        const costProcessor = new CostProcessorService(db);
+
+        // Pass dependencies to Txn Service
+        const txnService = new InventoryTransactionService(db, mockCostingService, mockModuleRef, receiptService, costProcessor);
 
         console.log('✅ Services instantiated.');
 
@@ -104,7 +118,42 @@ async function verify() {
             throw new Error(`Detailed Balance Mismatch. Expected 50, got ${balance?.quantity}`);
         }
 
+        // 5b. Execute PO Receipt (Testing Costing Integration)
+        console.log('🔄 Executing PO Receipt (+10)...');
+
+        // We need a generic Cost Org for this to work (since ReceiptAccountingService looks it up)
+        // Create Stub Cost Org
+        console.log('   -> Setup: Creating Stub Cost Org...');
+        const [costOrg] = await db.insert(schema.cstCostOrganizations).values({
+            code: 'COST_ORG_1',
+            name: 'Test Cost Org',
+            inventoryOrganizationId: org.id
+        }).returning();
+
+        const poTxn = await txnService.executeTransaction({
+            organizationId: org.id,
+            itemId: item.id,
+            subinventoryId: subinv.id,
+            transactionType: 'PO Receipt',
+            quantity: 10,
+            uom: 'EA',
+            reference: 'PO Verification'
+        });
+        console.log(`✅ PO Transaction Created: ${poTxn.id}`);
+
+        // Verify Cost Distributions
+        const distributions = await db.select().from(schema.cmrReceiptDistributions)
+            .where(eq(schema.cmrReceiptDistributions.transactionId, poTxn.id));
+
+        console.log(`   -> Cost Distributions Created: ${distributions.length}`);
+        if (distributions.length !== 2) {
+            throw new Error(`Costing Verification Failed. Expected 2 distributions (Debit/Credit), got ${distributions.length}`);
+        }
+
         // 6. Cleanup
+        await db.delete(schema.cmrReceiptDistributions).where(eq(schema.cmrReceiptDistributions.transactionId, poTxn.id));
+        await db.delete(schema.cstCostOrganizations).where(eq(schema.cstCostOrganizations.id, costOrg.id));
+
         await db.delete(schema.inventoryOnHandQuantities).where(eq(schema.inventoryOnHandQuantities.itemId, item.id));
         await db.delete(schema.inventoryTransactions).where(eq(schema.inventoryTransactions.itemId, item.id));
         await itemService.remove(item.id);

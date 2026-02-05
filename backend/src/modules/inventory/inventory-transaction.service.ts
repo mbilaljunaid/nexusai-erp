@@ -1,10 +1,12 @@
-import { Inject, Injectable, Logger, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, BadRequestException, NotFoundException, forwardRef } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and, isNull, sql } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import * as schema from '../../../../shared/schema';
 import { ModuleRef } from '@nestjs/core';
 import { CostingService } from './costing.service';
+import { ReceiptAccountingService } from '../cost-management/receipt-accounting.service';
+import { CostProcessorService } from '../cost-management/cost-processor.service';
 
 export interface CreateTransactionDto {
     organizationId: string;
@@ -30,8 +32,14 @@ export class InventoryTransactionService {
     constructor(
         @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
         private readonly costingService: CostingService,
-        private readonly moduleRef: ModuleRef
+        private readonly moduleRef: ModuleRef,
+        @Inject(forwardRef(() => ReceiptAccountingService))
+        private readonly receiptAccountingService: ReceiptAccountingService,
+        @Inject(forwardRef(() => CostProcessorService))
+        private readonly costProcessorService: CostProcessorService,
     ) { }
+
+
 
     async executeTransaction(dto: CreateTransactionDto) {
         return this.db.transaction(async (tx) => {
@@ -72,11 +80,29 @@ export class InventoryTransactionService {
                 await this.updateBalance(tx, dto.organizationId, dto.itemId, dto.transferSubinventoryId, dto.transferLocatorId, dto.lotId, dto.serialId, destQty);
             }
 
-            // 5. Costing (STUBBED FOR MIGRATION)
-            // The CostingService and related tables (CstTransactionCost, CmrReceiptDistribution) are still TypeORM/Legacy.
-            // We cannot easily mix the transaction context 'tx' with the TypeORM repositories in CostingService without issues.
-            // For now, we log the intent. Real costing will be re-enabled when CostManagement migrates to Drizzle.
-            this.logger.warn(`Skipping Costing for Transaction ${txn.id} (CostManagement migration pending)`);
+            // 5. Costing
+            const unitCost = 10.0; // Placeholder: hardcoded standard cost for now
+
+            // Phase 2: Receipt Accounting (Atomically via Drizzle)
+            if (dto.transactionType === 'PO Receipt') {
+                if (this.receiptAccountingService) {
+                    this.logger.log('Calling createReceiptDistributions...');
+                    await this.receiptAccountingService.createReceiptDistributions(txn, unitCost, tx);
+                } else {
+                    this.logger.error('ReceiptAccountingService not found - skipping distributions');
+                }
+
+                // Phase 3: Cost Processor (Update Average Cost)
+                if (this.costProcessorService) {
+                    await this.costProcessorService.processTransactionCost(txn, tx);
+                }
+            } else {
+                // For other transactions, we might just update Average Cost or record generic distribution
+                // keeping logic consistent with old behavior:
+                if (this.costProcessorService) {
+                    await this.costProcessorService.processTransactionCost(txn, tx);
+                }
+            }
 
             // 6. Aggregate Update
             await tx.update(schema.inventory)
