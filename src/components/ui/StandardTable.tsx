@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Loader2, Search } from "lucide-react";
-import { FixedSizeList } from "react-window";
+import { FixedSizeList as List } from "react-window";
 
 export interface Column<T> {
     header: string;
@@ -40,6 +40,7 @@ export interface StandardTableProps<T> {
     page?: number;     // Current page (1-based)
     pageSize?: number; // Items per page
     totalItems?: number;
+    totalCount?: number; // Alias for totalItems
     onPageChange?: (page: number) => void;
 
     onRowClick?: (item: T) => void;
@@ -67,6 +68,7 @@ export function StandardTable<T>({
     page: propPage,
     pageSize = 10,
     totalItems: propTotalItems,
+    totalCount: propTotalCount,
     onPageChange,
     onRowClick,
     className,
@@ -91,8 +93,8 @@ export function StandardTable<T>({
         });
     }, [data, filterColumn, filterValue]);
 
-    const isClientSidePagination = propTotalItems === undefined;
-    const totalCount = isClientSidePagination ? filteredData.length : (propTotalItems ?? filteredData.length);
+    const isClientSidePagination = propTotalItems === undefined && propTotalCount === undefined;
+    const totalCount = isClientSidePagination ? filteredData.length : (propTotalItems ?? propTotalCount ?? filteredData.length);
     const totalPages = Math.ceil(totalCount / pageSize);
 
     const paginatedData = useMemo(() => {
@@ -136,7 +138,7 @@ export function StandardTable<T>({
         </div>
     )), []);
 
-    const RowComponent = ({ index, style }: any) => {
+    const Row = ({ index, style }: any) => {
         const item = paginatedData[index];
         if (!item) return null;
 
@@ -173,7 +175,7 @@ export function StandardTable<T>({
                                     if (col.accessorKey) return (item[col.accessorKey as keyof T] as React.ReactNode);
                                     return null;
                                 } catch (e) {
-                                    return <span className="text-red-500 text-xs">Error</span>;
+                                    return <span className="text-red-500 text-xs text-nowrap">Error</span>;
                                 }
                             })()}
                         </div>
@@ -239,7 +241,7 @@ export function StandardTable<T>({
                                     })}
                                 </div>
                             </div>
-                            <FixedSizeList
+                            <List
                                 height={height}
                                 itemCount={paginatedData.length}
                                 itemSize={itemSize}
@@ -248,25 +250,25 @@ export function StandardTable<T>({
                                 innerElementType={InnerElement}
                                 outerElementType={OuterElement}
                             >
-                                {RowComponent}
-                            </FixedSizeList>
+                                {Row}
+                            </List>
                         </div>
                     </div>
                 ) : (
                     <Table aria-label={i18n.t('hr.table', 'Data Table')} role="grid">
                         <TableHeader className="sticky top-0 z-10 bg-muted/50 backdrop-blur-sm">
-                            <TableRow className="hover:bg-transparent">
+                            <TableRow className="hover:bg-transparent" role="row">
                                 {columns.map((col, idx) => (
-                                    <TableHead key={idx} className={cn("h-10 text-xs font-semibold uppercase tracking-wider text-muted-foreground", col.className)}>
+                                    <TableHead key={idx} className={cn("h-10 text-xs font-semibold uppercase tracking-wider text-muted-foreground", col.className)} role="columnheader">
                                         {col.header}
                                     </TableHead>
                                 ))}
                             </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <TableBody role="rowgroup">
                             {isLoading ? (
-                                <TableRow>
-                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableRow role="row">
+                                    <TableCell colSpan={columns.length} className="h-24 text-center" role="gridcell">
                                         <div className="flex items-center justify-center gap-2 text-muted-foreground">
                                             <Loader2 className="h-4 w-4 animate-spin" />
                                             <span>Loading data...</span>
@@ -274,8 +276,8 @@ export function StandardTable<T>({
                                     </TableCell>
                                 </TableRow>
                             ) : paginatedData.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
+                                <TableRow role="row">
+                                    <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground" role="gridcell">
                                         No results found.
                                     </TableCell>
                                 </TableRow>
@@ -285,9 +287,10 @@ export function StandardTable<T>({
                                         key={keyExtractor ? keyExtractor(item || {} as T) : (item as any)?.id || idx}
                                         className={cn("group transition-colors hover:bg-muted/30 even:bg-muted/5", onRowClick && "cursor-pointer")}
                                         onClick={() => item && onRowClick && onRowClick(item)}
+                                        role="row"
                                     >
                                         {columns.map((col, colIdx) => (
-                                            <TableCell key={colIdx} className={cn("py-3 text-sm", col.className)}>
+                                            <TableCell key={colIdx} className={cn("py-3 text-sm", col.className)} role="gridcell">
                                                 {(() => {
                                                     try {
                                                         if (col.cell && typeof col.cell === "function") {

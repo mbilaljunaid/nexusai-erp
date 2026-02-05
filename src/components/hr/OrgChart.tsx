@@ -31,8 +31,7 @@ const OrgTreeNode: React.FC<{ node: OrgNode; level: number }> = ({ node, level }
     return (
         <div className="space-y-2">
             <div
-                className={`flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-background hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors max-w-md`}
-                /* eslint-disable-next-line react/forbid-component-props */
+                className={`flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-background hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors max-w-md ml-${level * 8}`}
                 style={{ marginLeft: `${level * 2}rem` }}
             >
                 <Avatar className="h-10 w-10">

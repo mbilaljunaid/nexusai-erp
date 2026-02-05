@@ -10,6 +10,8 @@ import * as z from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { RiskIndicator } from "@/components/compliance/RiskIndicator";
+import { ShieldCheck, Loader2 } from "lucide-react";
 
 // Schema for Step 1: Identity
 const identitySchema = z.object({
@@ -33,28 +35,43 @@ const hireSchema = identitySchema.merge(employmentSchema);
 
 export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
     const [step, setStep] = useState(1);
+    const [riskAnalysis, setRiskAnalysis] = useState<any>(null);
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
     const form = useForm<z.infer<typeof hireSchema>>({
-        resolver: zodResolver(step === 1 ? identitySchema : employmentSchema), // Simple step validation needed
+        resolver: zodResolver(step === 1 ? identitySchema : employmentSchema),
         defaultValues: {
             workerType: "EMPLOYEE",
         }
     });
 
-    // TODO: Fetch Legal Employers, Jobs, Depts for Selects
+    const riskMutation = useMutation({
+        mutationFn: (data: z.infer<typeof hireSchema>) => {
+            return fetch("/api/hr/compliance/predict-risk", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    transactionType: "HIRE",
+                    data: {
+                        ...data,
+                        jobName: "Software Engineer" // Placeholder until job select is fixed
+                    }
+                })
+            }).then(r => r.json());
+        },
+        onSuccess: (data) => setRiskAnalysis(data),
+    });
 
     const hireMutation = useMutation({
         mutationFn: (data: z.infer<typeof hireSchema>) => {
-            // Transform flat form data into hierarchical Person > Rel > Asg structure
             const payload = {
                 person: {
                     firstName: data.firstName,
                     lastName: data.lastName,
                     email: data.email,
                     nationalId: data.nationalId,
-                    personNumber: "AUTO", // Backend handles or we generate
+                    personNumber: "AUTO",
                 },
                 workRelationship: {
                     legalEmployerId: data.legalEmployerId,
@@ -78,7 +95,6 @@ export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
     });
 
     const onNext = async () => {
-        // Validate current step fields
         const fields = step === 1
             ? ["firstName", "lastName", "nationalId"]
             : ["legalEmployerId", "startDate"];
@@ -92,57 +108,91 @@ export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
     };
 
     return (
-        <Card className="w-full max-w-2xl mx-auto">
-            <CardHeader>
-                <CardTitle>Hire New Worker</CardTitle>
-                <CardDescription>Step {step} of 2: {step === 1 ? "Personal Details" : "Employment Information"}</CardDescription>
+        <Card className="w-full max-w-2xl mx-auto shadow-xl border-slate-200">
+            <CardHeader className="bg-slate-50/50 border-b pb-6">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <CardTitle className="text-2xl font-bold text-slate-900">Hire New Worker</CardTitle>
+                        <CardDescription className="text-slate-500">Step {step} of 2: {step === 1 ? "Personal Details" : "Employment Information"}</CardDescription>
+                    </div>
+                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <ShieldCheck className="h-6 w-6 text-primary" />
+                    </div>
+                </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
                         {step === 1 && (
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-6">
                                 <FormField control={form.control} name="firstName" render={({ field }) => (
-                                    <FormItem><FormLabel>First Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel className="font-semibold">First Name</FormLabel><FormControl><Input placeholder="John" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
                                 <FormField control={form.control} name="lastName" render={({ field }) => (
-                                    <FormItem><FormLabel>Last Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel className="font-semibold">Last Name</FormLabel><FormControl><Input placeholder="Doe" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
                                 <FormField control={form.control} name="nationalId" render={({ field }) => (
-                                    <FormItem><FormLabel>National ID</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel className="font-semibold">National ID / Passport</FormLabel><FormControl><Input placeholder="ABC123456" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
                                 <FormField control={form.control} name="email" render={({ field }) => (
-                                    <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel className="font-semibold">Email Address</FormLabel><FormControl><Input type="email" placeholder="john.doe@example.com" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
                             </div>
                         )}
 
                         {step === 2 && (
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                                 <FormField control={form.control} name="legalEmployerId" render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Legal Employer</FormLabel>
+                                        <FormLabel className="font-semibold">Legal Employer</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl><SelectTrigger><SelectValue placeholder="Select Employer" /></SelectTrigger></FormControl>
+                                            <FormControl><SelectTrigger className="bg-white"><SelectValue placeholder="Select Employer" /></SelectTrigger></FormControl>
                                             <SelectContent>
-                                                <SelectItem value="le1">Acme US (Placeholder)</SelectItem>
+                                                <SelectItem value="le1">Acme US Corp</SelectItem>
+                                                <SelectItem value="le2">Acme UK Ltd</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
-                                {/* Add Job, Dept selects here */}
+
                                 <FormField control={form.control} name="startDate" render={({ field }) => (
-                                    <FormItem><FormLabel>Start Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel className="font-semibold">Hire Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
+
+                                <div className="pt-4 border-t">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">Compliance Analytics</h3>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => riskMutation.mutate(form.getValues())}
+                                            disabled={riskMutation.isPending}
+                                            className="h-8 gap-2 bg-slate-50"
+                                        >
+                                            {riskMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <ShieldCheck className="h-3 w-3" />}
+                                            Preview Compliance Risk
+                                        </Button>
+                                    </div>
+                                    <RiskIndicator analysis={riskAnalysis} isLoading={riskMutation.isPending} />
+                                </div>
                             </div>
                         )}
 
-                        <div className="flex justify-between pt-4">
-                            {step > 1 && <Button type="button" variant="outline" onClick={() => setStep(step - 1)}>Back</Button>}
-                            {step < 2 && <Button type="button" onClick={onNext}>Next</Button>}
-                            {step === 2 && <Button type="submit">Submit</Button>}
+                        <div className="flex justify-between pt-6 mt-4 border-t">
+                            {step > 1 && <Button type="button" variant="outline" className="px-8" onClick={() => setStep(step - 1)}>Back</Button>}
+                            <div className="ml-auto">
+                                {step < 2 ? (
+                                    <Button type="button" className="px-8" onClick={onNext}>Continue</Button>
+                                ) : (
+                                    <Button type="submit" disabled={hireMutation.isPending} className="px-8 gap-2 font-bold shadow-lg shadow-primary/20">
+                                        {hireMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+                                        Complete Hire
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     </form>
                 </Form>
