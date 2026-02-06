@@ -23,4 +23,8 @@ export class CreateLeaveDto {
   @IsOptional()
   @IsString()
   replacement?: string;
+
+  // Added for Service compatibility
+  @IsOptional() @IsString() employeeId?: string;
+  @IsOptional() @IsString() status?: string;
 }

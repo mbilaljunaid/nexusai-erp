@@ -11,7 +11,7 @@ export const dataPersistenceTests = {
       score: 85,
       status: "prospect",
     };
-    
+
     // POST: Create lead
     const createResponse = await fetch("/api/leads", {
       method: "POST",
@@ -19,13 +19,13 @@ export const dataPersistenceTests = {
       body: JSON.stringify(testLead),
     });
     const created = await createResponse.json();
-    
+
     // GET: Retrieve all leads
     const listResponse = await fetch("/api/leads");
     const leads = await listResponse.json();
-    
+
     // Verify: Created lead exists in list
-    const found = leads.find((l: any) => l.email === testLead.email);
+    const found = (leads as any[]).find((l: any) => l.email === testLead.email);
     return {
       passed: createResponse.ok && listResponse.ok && found !== undefined,
       created,
@@ -42,18 +42,19 @@ export const dataPersistenceTests = {
       amount: 5000,
       status: "pending",
     };
-    
+
     const createResponse = await fetch("/api/invoices", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(testInvoice),
     });
     const created = await createResponse.json();
-    
+
     const listResponse = await fetch("/api/invoices");
     const invoices = await listResponse.json();
-    
-    const found = invoices.find((i: any) => i.invoiceNumber === testInvoice.invoiceNumber);
+
+    // Explicitly cast or handle unknown
+    const found = (invoices as any[]).find((i: any) => i.invoiceNumber === testInvoice.invoiceNumber);
     return {
       passed: createResponse.ok && listResponse.ok && found !== undefined,
       created,
@@ -70,18 +71,18 @@ export const dataPersistenceTests = {
       department: "Engineering",
       role: "Engineer",
     };
-    
+
     const createResponse = await fetch("/api/hr/employees", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(testEmployee),
     });
     const created = await createResponse.json();
-    
+
     const listResponse = await fetch("/api/hr/employees");
     const employees = await listResponse.json();
-    
-    const found = employees.find((e: any) => e.email === testEmployee.email);
+
+    const found = (employees as any[]).find((e: any) => e.email === testEmployee.email);
     return {
       passed: createResponse.ok && listResponse.ok && found !== undefined,
       created,
@@ -97,18 +98,18 @@ export const dataPersistenceTests = {
       description: "Test description",
       assignedTo: "John Doe",
     };
-    
+
     const createResponse = await fetch("/api/manufacturing/work-orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(testWorkOrder),
     });
     const created = await createResponse.json();
-    
+
     const listResponse = await fetch("/api/manufacturing/work-orders");
     const workOrders = await listResponse.json();
-    
-    const found = workOrders.find((wo: any) => wo.title === testWorkOrder.title);
+
+    const found = (workOrders as any[]).find((wo: any) => wo.title === testWorkOrder.title);
     return {
       passed: createResponse.ok && listResponse.ok && found !== undefined,
       created,
@@ -125,7 +126,7 @@ export const dataPersistenceTests = {
       employee: await dataPersistenceTests.testEmployeePersistence(),
       workOrder: await dataPersistenceTests.testWorkOrderPersistence(),
     };
-    
+
     const allPassed = Object.values(results).every((r: any) => r.passed);
     return {
       allPassed,

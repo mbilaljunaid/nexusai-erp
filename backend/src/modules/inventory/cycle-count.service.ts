@@ -2,7 +2,7 @@ import { Injectable, Logger, BadRequestException, NotFoundException, Inject } fr
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and, gt, sql } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../../database/drizzle.provider';
-import * as schema from '../../../../shared/schema/index.ts';
+import * as schema from '../../../../shared/schema/index';
 import { InventoryTransactionService } from './inventory-transaction.service';
 
 @Injectable()

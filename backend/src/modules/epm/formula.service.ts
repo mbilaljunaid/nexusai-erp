@@ -2,8 +2,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class FormulaService {
@@ -43,10 +43,9 @@ export class FormulaService {
 
         // Construct where clause dynamically
         const whereConditions = [eq(schema.planUnits.versionId, versionId)];
-        if (targetFilter.scenarioId) whereConditions.push(eq(schema.planUnits.scenarioId, targetFilter.scenarioId));
         if (targetFilter.entityId) whereConditions.push(eq(schema.planUnits.entityId, targetFilter.entityId));
-        if (targetFilter.departmentId) whereConditions.push(eq(schema.planUnits.departmentId, targetFilter.departmentId));
-        if (targetFilter.accountId) whereConditions.push(eq(schema.planUnits.accountId, targetFilter.accountId));
+        if (targetFilter.department) whereConditions.push(eq(schema.planUnits.department, targetFilter.department));
+        if (targetFilter.account) whereConditions.push(eq(schema.planUnits.account, targetFilter.account));
 
         const units = await this.db.query.planUnits.findMany({
             where: and(...whereConditions)
@@ -95,11 +94,10 @@ export class FormulaService {
 
             await this.db.insert(schema.planUnits).values({
                 versionId,
-                scenarioId: 'TODO_lookup_Working', // Mock
                 period,
                 entityId,
-                departmentId: deptId,
-                accountId,
+                department: deptId,
+                account: accountId,
                 amount: String(allocation),
                 status: 'ALLOCATED',
                 // comment: `Allocated based on driver (Wt: ${weight}/${totalWeight})` // Commenting out as schema might miss it

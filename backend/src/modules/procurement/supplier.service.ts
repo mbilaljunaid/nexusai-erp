@@ -1,8 +1,8 @@
 
 import { Injectable, Logger, NotFoundException, Inject } from '@nestjs/common';
-import { DATABASE_CONNECTION } from '../../database/database-connection';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../../../shared/schema';
+import * as schema from '../../../../shared/schema/index';
 import { eq, desc, ilike, or, sql } from 'drizzle-orm';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class SupplierService {
     private readonly logger = new Logger(SupplierService.name);
 
     constructor(
-        @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
     async create(createSupplierDto: any): Promise<typeof schema.suppliers.$inferSelect> {

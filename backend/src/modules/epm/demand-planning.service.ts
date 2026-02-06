@@ -2,8 +2,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class DemandPlanningService {
@@ -31,17 +31,16 @@ export class DemandPlanningService {
         this.logger.log(`Calculating Gross Margin for ${productCode} in ${period}...`);
 
         const product = await this.db.query.planProducts.findFirst({
-            where: eq(schema.planProducts.code, productCode)
+            where: eq(schema.planProducts.sku, productCode)
         });
         if (!product) throw new Error(`Product ${productCode} not found`);
 
         const volUnit = await this.db.query.planUnits.findFirst({
             where: and(
-                eq(schema.planUnits.scenarioId, scenarioId),
                 eq(schema.planUnits.versionId, versionId),
                 eq(schema.planUnits.period, period),
-                eq(schema.planUnits.productId, product.code),
-                eq(schema.planUnits.accountId, volumeAccountId)
+                eq(schema.planUnits.product, product.sku),
+                eq(schema.planUnits.account, volumeAccountId)
             )
         });
 
@@ -59,9 +58,9 @@ export class DemandPlanningService {
         this.logger.log(`Vol: ${volume}, Price: ${product.listPrice}, Cost: ${product.standardCost} -> Rev: ${revenue}, COGS: ${cogs}`);
 
         // Save Revenue
-        await this.saveUnit(scenarioId, versionId, period, product.code || productCode, revenueTargetAccount, revenue, entityId);
+        await this.saveUnit(scenarioId, versionId, period, product.sku || productCode, revenueTargetAccount, revenue, entityId);
         // Save COGS
-        await this.saveUnit(scenarioId, versionId, period, product.code || productCode, cogsTargetAccount, cogs, entityId);
+        await this.saveUnit(scenarioId, versionId, period, product.sku || productCode, cogsTargetAccount, cogs, entityId);
 
         // Optionally Save Margin if there is an account for it, or it handles via hierarchy
     }
@@ -71,23 +70,21 @@ export class DemandPlanningService {
 
         const unit = await this.db.query.planUnits.findFirst({
             where: and(
-                eq(schema.planUnits.scenarioId, scenarioId),
                 eq(schema.planUnits.versionId, versionId),
                 eq(schema.planUnits.period, period),
-                eq(schema.planUnits.productId, productId),
-                eq(schema.planUnits.accountId, accountId)
+                eq(schema.planUnits.product, productId),
+                eq(schema.planUnits.account, accountId)
             )
         });
 
         if (!unit) {
             await this.db.insert(schema.planUnits).values({
-                scenarioId,
                 versionId,
                 period,
-                productId,
-                accountId,
+                product: productId,
+                account: accountId,
                 entityId, // inherited
-                departmentId: 'SOP_DEPT',
+                department: 'SOP_DEPT',
                 amount: String(amount),
                 status: 'CALCULATED'
             });

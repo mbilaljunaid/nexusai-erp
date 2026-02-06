@@ -34,7 +34,7 @@ export class RequisitionService {
             }).returning();
 
             let total = 0;
-            const createdLines = [];
+            const createdLines: typeof schema.purchaseRequisitionLines.$inferSelect[] = [];
 
             // 2. Create Lines
             if (dto.lines && dto.lines.length > 0) {
@@ -45,7 +45,6 @@ export class RequisitionService {
                         itemId: lineDto.itemId,
                         itemDescription: lineDto.itemDescription || lineDto.description, // Fallback
                         quantity: String(lineDto.quantity),
-                        unitPrice: String(lineDto.unitPrice), // Assuming DTO sends unitPrice? schema has estimatedPrice
                         estimatedPrice: String(lineDto.unitPrice || lineDto.estimatedPrice || 0),
                         unitOfMeasure: lineDto.unitOfMeasure || lineDto.uom,
                         status: 'PENDING'
@@ -99,7 +98,7 @@ export class RequisitionService {
         const approvalResult = await this.approvalService.evaluateRule('Requisition', totalAmount, 'General');
 
         let newStatus = 'Pending Approval';
-        let approverId = approvalResult.approverId;
+        let approverId: string | null | undefined = approvalResult.approverId;
 
         if (approvalResult.action === 'AutoApprove' || approvalResult.approverId === 'AUTO') {
             newStatus = 'Approved';

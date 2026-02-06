@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
-import * as schema from '../../../../shared/schema/index.ts';
+import * as schema from '../../../../shared/schema/index';
 import { CreateLeadDto } from './dto/create-lead.dto';
 
 @Injectable()

@@ -3,6 +3,8 @@ export class CreateInvoiceDto {
   customerId!: string;
   invoiceDate!: Date;
   dueDate!: Date;
-  totalAmount!: number;
+  amount!: number; // Alias for totalAmount or primary field
+  status?: string;
+  totalAmount?: number; // kept for compatibility if needed
   description?: string;
 }

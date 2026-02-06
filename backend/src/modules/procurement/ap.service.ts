@@ -1,9 +1,9 @@
 
 import { Injectable, Logger, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
-import { DATABASE_CONNECTION } from '../../database/database-connection';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../../../shared/schema';
-import { eq, sql } from 'drizzle-orm';
+import * as schema from '../../../../shared/schema/index';
+import { eq, desc, and, sql } from 'drizzle-orm';
 import { ProcurementGlIntegrationService } from './gl-integration.service';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class ApService {
     private readonly logger = new Logger(ApService.name);
 
     constructor(
-        @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
         private readonly glService: ProcurementGlIntegrationService,
     ) { }
 
@@ -112,7 +112,7 @@ export class ApService {
             if (invoice.status !== 'Draft') throw new BadRequestException(`Cannot validate invoice in status ${invoice.status}`);
 
             // Automated Tax Logic
-            const hasTaxLine = invoice.lines.some(l => l.description?.toLowerCase().includes('tax'));
+            const hasTaxLine = invoice.lines.some((l: any) => l.description?.toLowerCase().includes('tax'));
             let currentAmount = Number(invoice.amount);
             let taxAmount = 0;
 
@@ -179,7 +179,7 @@ export class ApService {
                 paymentMethod: dto.paymentMethod || 'Check'
             }).returning();
 
-            const totalPaid = invoice.payments.reduce((sum, p) => sum + Number(p.amount), 0) + Number(dto.amount);
+            const totalPaid = invoice.payments.reduce((sum: number, p: any) => sum + Number(p.amount), 0) + Number(dto.amount);
             let newStatus = 'Partially Paid';
 
             if (Math.abs(totalPaid) >= Math.abs(Number(invoice.amount))) {

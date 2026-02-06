@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { BudgetService } from './budget.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
-import { Budget } from './entities/budget.entity';
+import { Budget } from '../../../../shared/schema';
 
 @Controller('api/epm/budgets')
 export class BudgetController {
-  constructor(private readonly budgetService: BudgetService) {}
+  constructor(private readonly budgetService: BudgetService) { }
 
   @Post()
   create(@Body() createBudgetDto: CreateBudgetDto): Promise<Budget> {

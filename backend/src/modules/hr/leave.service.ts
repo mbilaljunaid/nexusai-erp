@@ -1,39 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateLeaveDto } from './dto/create-leave.dto';
-import { Leave } from './entities/leave.entity';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from '../../../../shared/schema/index';
+import { eq, desc } from 'drizzle-orm';
 
 @Injectable()
 export class LeaveService {
-  private leaves: Leave[] = [];
-  private idCounter = 1;
+  constructor(
+    @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
+  ) { }
 
-  async create(createLeaveDto: CreateLeaveDto): Promise<Leave> {
-    const leave: Leave = {
-      id: this.idCounter++,
-      ...createLeaveDto,
-      createdAt: new Date(),
-    };
-    this.leaves.push(leave);
+  async create(createLeaveDto: CreateLeaveDto): Promise<typeof schema.leaveRequests.$inferSelect> {
+    if (!createLeaveDto.employeeId) throw new Error('Employee ID required');
+
+    const employee = await this.db.query.employees.findFirst({
+      where: eq(schema.employees.id, createLeaveDto.employeeId)
+    });
+    if (!employee) throw new NotFoundException('Employee not found');
+
+    const [leave] = await this.db.insert(schema.leaveRequests).values({
+      employeeId: createLeaveDto.employeeId,
+      leaveType: createLeaveDto.leaveType,
+      startDate: new Date(createLeaveDto.startDate),
+      endDate: new Date(createLeaveDto.endDate),
+      reason: createLeaveDto.reason,
+      status: createLeaveDto.status || 'PENDING'
+    }).returning();
     return leave;
   }
 
-  async findAll(): Promise<Leave[]> {
-    return this.leaves;
+  async findAll(): Promise<typeof schema.leaveRequests.$inferSelect[]> {
+    return this.db.query.leaveRequests.findMany({
+      orderBy: [desc(schema.leaveRequests.createdAt)]
+    });
   }
 
-  async findOne(id: string): Promise<Leave | null> {
-    return this.leaves.find(l => l.id === parseInt(id)) ?? null;
+  async findOne(id: string): Promise<typeof schema.leaveRequests.$inferSelect> {
+    const leave = await this.db.query.leaveRequests.findFirst({
+      where: eq(schema.leaveRequests.id, id)
+    });
+    if (!leave) throw new NotFoundException('Leave request not found');
+    return leave;
   }
 
-  async update(id: string, updateLeaveDto: Partial<CreateLeaveDto>): Promise<Leave | null> {
-    const leave = this.leaves.find(l => l.id === parseInt(id));
-    if (!leave) return null;
-    Object.assign(leave, updateLeaveDto);
-    return leave ?? null;
+  async update(id: string, updateLeaveDto: Partial<CreateLeaveDto>): Promise<typeof schema.leaveRequests.$inferSelect> {
+    const [updated] = await this.db.update(schema.leaveRequests)
+      .set({
+        leaveType: updateLeaveDto.leaveType,
+        startDate: updateLeaveDto.startDate ? new Date(updateLeaveDto.startDate) : undefined,
+        endDate: updateLeaveDto.endDate ? new Date(updateLeaveDto.endDate) : undefined,
+        reason: updateLeaveDto.reason,
+        status: updateLeaveDto.status
+      })
+      .where(eq(schema.leaveRequests.id, id))
+      .returning();
+
+    if (!updated) throw new NotFoundException('Leave request not found');
+    return updated;
   }
 
   async remove(id: string): Promise<void> {
-    const index = this.leaves.findIndex(l => l.id === parseInt(id));
-    if (index > -1) this.leaves.splice(index, 1);
+    const [deleted] = await this.db.delete(schema.leaveRequests)
+      .where(eq(schema.leaveRequests.id, id))
+      .returning();
+    if (!deleted) throw new NotFoundException('Leave request not found');
   }
 }

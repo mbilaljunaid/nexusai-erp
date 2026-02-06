@@ -103,5 +103,27 @@ export const insertTimeEntrySchema = createInsertSchema(timeEntries).extend({
     status: z.string().optional(),
 });
 
-export type InsertTimeEntry = z.infer<typeof insertTimeEntrySchema>;
-export type TimeEntry = typeof timeEntries.$inferSelect;
+
+export const leaveRequests = pgTable("leave_requests", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    employeeId: varchar("employee_id").notNull(),
+    leaveType: varchar("leave_type").notNull(), // Annual, Sick, Unpaid
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    reason: varchar("reason"),
+    status: varchar("status").default("PENDING"), // PENDING, APPROVED, REJECTED
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertLeaveRequestSchema = createInsertSchema(leaveRequests).extend({
+    employeeId: z.string().min(1),
+    leaveType: z.string().min(1),
+    startDate: z.date(),
+    endDate: z.date(),
+    reason: z.string().optional(),
+    status: z.string().optional(),
+});
+
+export type InsertLeaveRequest = z.infer<typeof insertLeaveRequestSchema>;
+export type LeaveRequest = typeof leaveRequests.$inferSelect;
+

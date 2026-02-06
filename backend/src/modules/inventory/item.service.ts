@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../../database/drizzle.provider';
-import * as schema from '../../../../shared/schema';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class ItemService {
@@ -41,7 +41,7 @@ export class ItemService {
 
         // Basic join simulation if needed, but Drizzle join is different. 
         // Returning flat items for now as per previous return structure mostly.
-        const total = (await this.db.select({ count: schema.sql`count(*)` }).from(schema.inventory))[0].count;
+        const total = (await this.db.select({ count: sql`count(*)` }).from(schema.inventory))[0].count;
         return { data: items, total: Number(total) };
     }
 

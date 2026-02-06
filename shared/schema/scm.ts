@@ -12,6 +12,7 @@ export const suppliers = pgTable("scm_suppliers", {
     email: varchar("email"),
     phone: varchar("phone"),
     address: text("address"),
+    supplierNumber: varchar("supplier_number").unique(), // Legacy Key
     status: varchar("status").default("active"),
 
     // TCA Linkage
@@ -77,6 +78,7 @@ export const purchaseOrderLines = pgTable("purchase_order_lines", {
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
     projectId: varchar("project_id"), // Linked to ppm_projects
     taskId: varchar("task_id"), // Linked to ppm_tasks
+    quantityReceived: numeric("quantity_received", { precision: 18, scale: 4 }).default("0"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -922,3 +924,42 @@ export const inventoryReservations = pgTable("inv_reservations", {
 export const insertReservationSchema = createInsertSchema(inventoryReservations);
 export type InventoryReservation = typeof inventoryReservations.$inferSelect;
 export type InsertInventoryReservation = z.infer<typeof insertReservationSchema>;
+
+// ========== CYCLE COUNTING ==========
+export const cycleCountHeaders = pgTable("inv_cycle_count_headers", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    organizationId: varchar("organization_id").notNull(),
+    cycleCountName: varchar("cycle_count_name").notNull(),
+    subinventoryId: varchar("subinventory_id"),
+    status: varchar("status").default("Draft"), // Draft, InProgress, Completed, Cancelled
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const cycleCountEntries = pgTable("inv_cycle_count_entries", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    headerId: varchar("header_id").notNull(), // FK to Headers
+    itemId: varchar("item_id").notNull(),
+    subinventoryId: varchar("subinventory_id").notNull(),
+    locatorId: varchar("locator_id"),
+    systemQuantity: numeric("system_quantity", { precision: 18, scale: 4 }).notNull(),
+    countedQuantity: numeric("counted_quantity", { precision: 18, scale: 4 }),
+    status: varchar("status").default("Pending"), // Pending, Counted, Adjusted
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCycleCountHeaderSchema = createInsertSchema(cycleCountHeaders);
+export const insertCycleCountEntrySchema = createInsertSchema(cycleCountEntries);
+
+export type CycleCountHeader = typeof cycleCountHeaders.$inferSelect;
+export type CycleCountEntry = typeof cycleCountEntries.$inferSelect;
+
+export const cycleCountHeadersRelations = relations(cycleCountHeaders, ({ many }) => ({
+    entries: many(cycleCountEntries),
+}));
+
+export const cycleCountEntriesRelations = relations(cycleCountEntries, ({ one }) => ({
+    header: one(cycleCountHeaders, {
+        fields: [cycleCountEntries.headerId],
+        references: [cycleCountHeaders.id],
+    }),
+}));

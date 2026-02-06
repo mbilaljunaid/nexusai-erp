@@ -7,8 +7,8 @@ import { BudgetControlService } from './budget-control.service';
 import { EPMFoundationService } from './epm-foundation.service';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Controller('api/epm')
 export class PlanningController {

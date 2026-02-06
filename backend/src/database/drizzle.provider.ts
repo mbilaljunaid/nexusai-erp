@@ -1,7 +1,7 @@
 import { Provider, Global } from '@nestjs/common';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import * as schema from '../../../shared/schema/index.ts';
+import * as schema from '../../../shared/schema/index';
 
 export const DRIZZLE_DB = 'DRIZZLE_DB';
 

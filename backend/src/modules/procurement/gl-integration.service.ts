@@ -4,7 +4,7 @@ import { BudgetService } from '../epm/budget.service';
 
 @Injectable()
 export class ProcurementGlIntegrationService implements OnModuleInit {
-    private budgetService: BudgetService;
+    private budgetService!: BudgetService;
 
     constructor(private moduleRef: ModuleRef) { }
 

@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 import { CreateBudgetDto } from './dto/create-budget.dto';
 
 @Injectable()

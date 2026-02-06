@@ -1,9 +1,9 @@
 
 import { Injectable, Logger, NotFoundException, BadRequestException, Inject, forwardRef } from '@nestjs/common';
-import { DATABASE_CONNECTION } from '../../database/database-connection';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../../../shared/schema';
-import { eq, sql } from 'drizzle-orm';
+import * as schema from '../../../../shared/schema/index';
+import { eq, desc, and, sql } from 'drizzle-orm';
 import { ApService } from './ap.service';
 import { ProcurementGlIntegrationService } from './gl-integration.service';
 import { InventoryTransactionService } from '../inventory/inventory-transaction.service';
@@ -13,7 +13,7 @@ export class ReceiptService {
     private readonly logger = new Logger(ReceiptService.name);
 
     constructor(
-        @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
         @Inject(forwardRef(() => ApService)) private readonly apService: ApService,
         private readonly glService: ProcurementGlIntegrationService,
         private readonly invTxnService: InventoryTransactionService,
@@ -132,7 +132,7 @@ export class ReceiptService {
                 }
             });
 
-            if (!receiptLine) throw new NotFoundException('Receipt Line not found');
+            if (!receiptLine || !receiptLine.poLineId) throw new NotFoundException('Receipt Line or linked PO Line ID not found');
 
             // Need PO Line info. `rcvShipmentLines` has `poLineId`.
             const poLine = await tx.query.purchaseOrderLines.findFirst({
@@ -150,6 +150,8 @@ export class ReceiptService {
                     supplier: true
                 }
             });
+
+            if (!po) throw new NotFoundException('PO for Receipt Line not found');
 
             const qtyToReturn = Number(dto.quantityToReturn);
             const received = Number(receiptLine.quantityReceived);
@@ -193,7 +195,7 @@ export class ReceiptService {
                 amount: -amount,
                 description: `Return of ${qtyToReturn} items from Receipt ${receiptLine.header.receiptNumber}`,
                 lines: [{
-                    description: `Return: ${poLine.itemDescription}`,
+                    description: `Return: ${poLine.description}`,
                     amount: -amount,
                     poLineId: poLine.id
                 }]

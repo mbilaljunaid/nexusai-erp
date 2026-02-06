@@ -2,8 +2,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and, asc } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class PredictiveForecastingService {
@@ -29,9 +29,8 @@ export class PredictiveForecastingService {
         // 1. Fetch Historical Data
         const history = await this.db.query.planUnits.findMany({
             where: and(
-                eq(schema.planUnits.scenarioId, sourceScenarioId),
                 eq(schema.planUnits.entityId, entityId),
-                eq(schema.planUnits.accountId, accountId)
+                eq(schema.planUnits.account, accountId)
             ),
             orderBy: [asc(schema.planUnits.period)]
         });
@@ -102,22 +101,20 @@ export class PredictiveForecastingService {
 
         const unit = await this.db.query.planUnits.findFirst({
             where: and(
-                eq(schema.planUnits.scenarioId, scenarioId),
                 eq(schema.planUnits.versionId, versionId),
                 eq(schema.planUnits.period, period),
                 eq(schema.planUnits.entityId, entityId),
-                eq(schema.planUnits.accountId, accountId)
+                eq(schema.planUnits.account, accountId)
             )
         });
 
         if (!unit) {
             await this.db.insert(schema.planUnits).values({
-                scenarioId,
                 versionId,
                 period,
                 entityId,
-                accountId,
-                departmentId: 'AI_GENERATED',
+                account: accountId, // Mapped to 'account' column
+                department: 'AI_GENERATED',
                 amount: String(amount), // Convert to string for numeric column
                 status: 'DRAFT',
                 // schema 'planUnits' doesn't have 'comment'?

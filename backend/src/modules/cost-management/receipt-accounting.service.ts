@@ -30,7 +30,7 @@ export class ReceiptAccountingService {
         try {
             await this.periodService.validateTransactionDate(orgId, transaction.transactionDate || new Date());
         } catch (e) {
-            this.logger.warn(`Cost Period Validation Failed: ${e.message}. Proceeding for Migration Compatibility.`);
+            this.logger.warn(`Cost Period Validation Failed: ${(e as Error).message}. Proceeding for Migration Compatibility.`);
         }
 
         // Resolve Cost Organization

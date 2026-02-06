@@ -2,8 +2,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class EsgPlanningService {
@@ -33,7 +33,6 @@ export class EsgPlanningService {
         // 1. Get Activity Data
         const activity = await this.db.query.planEsgMetrics.findFirst({
             where: and(
-                eq(schema.planEsgMetrics.scenarioId, scenarioId),
                 eq(schema.planEsgMetrics.versionId, versionId),
                 eq(schema.planEsgMetrics.period, period),
                 eq(schema.planEsgMetrics.entityId, entityId),
@@ -62,7 +61,6 @@ export class EsgPlanningService {
     ) {
         const metric = await this.db.query.planEsgMetrics.findFirst({
             where: and(
-                eq(schema.planEsgMetrics.scenarioId, scenarioId),
                 eq(schema.planEsgMetrics.versionId, versionId),
                 eq(schema.planEsgMetrics.period, period),
                 eq(schema.planEsgMetrics.entityId, entityId),
@@ -72,9 +70,9 @@ export class EsgPlanningService {
 
         if (!metric) {
             await this.db.insert(schema.planEsgMetrics).values({
-                scenarioId, versionId, period, entityId, metricCode,
+                versionId, period, entityId, metricCode,
                 value: String(value),
-                unit,
+                uom: unit,
                 // comment // schema check needed? `epm.ts` likely has comment if I recall, but let's be safe.
                 // Re-checking `epm.ts` quickly or assuming safe if entity had it?
                 // `PlanEsgMetric` entity had it. Drizzle schema likely has it if I was thorough.

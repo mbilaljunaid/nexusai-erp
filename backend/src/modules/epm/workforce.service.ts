@@ -1,9 +1,9 @@
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { eq, and } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class WorkforceService {
@@ -42,12 +42,11 @@ export class WorkforceService {
             for (const period of periods) {
                 // Create Salary Line
                 await this.db.insert(schema.planUnits).values({
-                    scenarioId: 'TODO_look_up_scenario', // Simplified for conversion
                     versionId: versionId,
                     period: period,
                     entityId: 'DEFAULT_ENT',
-                    departmentId: pos.department || 'Unassigned',
-                    accountId: '60000_SALARIES',
+                    department: pos.department || 'Unassigned',
+                    account: '60000_SALARIES',
                     amount: String(monthlySalary),
                     status: 'DRAFT'
                 });
@@ -69,12 +68,11 @@ export class WorkforceService {
             const monthly = Number(pos.salary || 0) / 12;
             // Generate just one month for testing to save time
             await this.db.insert(schema.planUnits).values({
-                scenarioId,
                 versionId,
                 period: '2024-01',
                 entityId: 'US-OPS',
-                departmentId: pos.department || 'Unassigned',
-                accountId: '60000_SALARIES',
+                department: pos.department || 'Unassigned',
+                account: '60000_SALARIES',
                 amount: String(monthly),
                 status: 'CALCULATED'
             });

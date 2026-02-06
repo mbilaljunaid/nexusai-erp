@@ -6,7 +6,10 @@
       "ES2021"
     ],
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDirs": [
+      "./src",
+      "../shared"
+    ],
     "strict": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -31,7 +34,8 @@
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "../shared/**/*"
   ],
   "exclude": [
     "node_modules",

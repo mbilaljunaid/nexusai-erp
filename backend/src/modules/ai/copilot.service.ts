@@ -72,6 +72,7 @@ export class AiCopilotService {
     Return as JSON.`;
 
     try {
+      if (!this.openai) return { success: false, message: 'AI Offline' };
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
@@ -126,6 +127,7 @@ export class AiCopilotService {
     Return as JSON array of test scripts.`;
 
     try {
+      if (!this.openai) return ['AI Offline'];
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4',
         messages: [

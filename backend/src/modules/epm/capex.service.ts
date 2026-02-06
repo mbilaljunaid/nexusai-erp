@@ -2,8 +2,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class CapExService {
@@ -29,12 +29,11 @@ export class CapExService {
 
             // Generate PlanUnit for one sample month
             await this.db.insert(schema.planUnits).values({
-                scenarioId,
                 versionId,
                 period: '2024-01', // Should be strictly >= purchaseDate
                 entityId: 'US-OPS',
-                departmentId: 'SHARED', // Hardcoded as in original
-                accountId: '70000_DEPR_EXP',
+                department: 'SHARED', // Hardcoded as in original
+                account: '70000_DEPR_EXP',
                 amount: String(monthlyDepr),
                 status: 'CALCULATED'
             });

@@ -1,8 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../../database/drizzle.provider';
-import * as schema from '../../../../shared/schema';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class InventoryOrganizationService {
@@ -21,7 +21,7 @@ export class InventoryOrganizationService {
         // Drizzle doesn't support findAndCount directly in one query efficiently without raw SQL count
         // For now, simpler query
         const orgs = await this.db.select().from(schema.inventoryOrganizations).limit(limit || 100).offset(offset || 0);
-        const total = (await this.db.select({ count: schema.sql`count(*)` }).from(schema.inventoryOrganizations))[0].count;
+        const total = (await this.db.select({ count: sql`count(*)` }).from(schema.inventoryOrganizations))[0].count;
         return { data: orgs, total: Number(total) };
     }
 

@@ -1,8 +1,8 @@
 
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { DATABASE_CONNECTION } from '../../database/database-connection';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../../../shared/schema';
+import * as schema from '../../../../shared/schema/index';
 import { eq, desc, and, gte, lte, or, isNull } from 'drizzle-orm';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class ProcurementApprovalService {
     private readonly logger = new Logger(ProcurementApprovalService.name);
 
     constructor(
-        @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
     async evaluateRule(documentType: string, amount: number, category?: string): Promise<{ action: string, approverId?: string }> {
@@ -31,7 +31,7 @@ export class ProcurementApprovalService {
 
             if (amount >= min && amount <= max) {
                 // Match found
-                return { action: 'Approve', approverId: rule.approverId }; // Or 'Route'
+                return { action: 'Approve', approverId: rule.approverId || undefined }; // Or 'Route'
             }
         }
 

@@ -2,7 +2,7 @@ import { pgTable, varchar, text, timestamp, numeric, boolean, jsonb, integer, da
 import { sql, relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { projects2 } from "./projects.ts"; // For PlanProject relation
+import { projects2 } from "./projects"; // For PlanProject relation
 
 // ========== EPM CORE ENTITIES ==========
 // ... (imports are top, this is just to replace the top block)
@@ -61,6 +61,7 @@ export const planUnits = pgTable("plan_units", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     versionId: varchar("version_id").notNull().references(() => planVersions.id),
     period: varchar("period").notNull(), // Jan-24
+    entityId: varchar("entity_id"), // Added missing dimension
     account: varchar("account").notNull(),
     amount: numeric("amount", { precision: 18, scale: 2 }).default("0"),
     currency: varchar("currency").default("USD"),
@@ -142,6 +143,8 @@ export const planProducts = pgTable("plan_products", {
     sku: varchar("sku").notNull().unique(),
     name: varchar("name").notNull(),
     family: varchar("family"),
+    listPrice: numeric("list_price", { precision: 18, scale: 2 }),
+    standardCost: numeric("standard_cost", { precision: 18, scale: 2 }),
     isActive: boolean("is_active").default(true),
 });
 
@@ -149,7 +152,10 @@ export const planProducts = pgTable("plan_products", {
 export const planEsgMetrics = pgTable("plan_esg_metrics", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     versionId: varchar("version_id").notNull().references(() => planVersions.id),
-    metricName: varchar("metric_name").notNull(), // Carbon, Water
+    metricCode: varchar("metric_code").notNull(), // Carbon, Water
+    period: varchar("period").notNull(),
+    entityId: varchar("entity_id").notNull(),
+    value: numeric("value", { precision: 18, scale: 4 }),
     targetValue: numeric("target_value", { precision: 18, scale: 4 }),
     uom: varchar("uom"),
     createdAt: timestamp("created_at").default(sql`now()`),

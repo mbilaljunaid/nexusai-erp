@@ -27,4 +27,14 @@ export class CreateTimesheetDto {
   @ValidateNested({ each: true })
   @Type(() => TimesheetEntryDto)
   entries!: TimesheetEntryDto[];
+
+  // Support for flat/single entry creation/update (Legacy/Service compatibility)
+  @IsOptional() @IsString() employeeId?: string;
+  @IsOptional() @IsString() projectId?: string;
+  @IsOptional() @IsString() taskId?: string;
+  @IsOptional() @IsString() date?: string;
+  @IsOptional() @IsString() hours?: string;
+  @IsOptional() @IsString() description?: string;
+  @IsOptional() @IsString() status?: string; // SUBMITTED, APPROVED, etc
+  @IsOptional() @IsString() billableFlag?: string | boolean; // Service uses string, schema uses boolean
 }

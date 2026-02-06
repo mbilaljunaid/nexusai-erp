@@ -2,8 +2,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class EpmGLIntegrationService {
@@ -81,22 +81,20 @@ export class EpmGLIntegrationService {
             // Idempotency: Find existing
             const planUnit = await this.db.query.planUnits.findFirst({
                 where: and(
-                    eq(schema.planUnits.scenarioId, scenario.id),
                     eq(schema.planUnits.versionId, version.id),
                     eq(schema.planUnits.period, period),
-                    eq(schema.planUnits.accountId, accountId),
-                    eq(schema.planUnits.departmentId, deptId),
+                    eq(schema.planUnits.account, accountId),
+                    eq(schema.planUnits.department, deptId),
                     eq(schema.planUnits.entityId, entityId)
                 )
             });
 
             if (!planUnit) {
                 await this.db.insert(schema.planUnits).values({
-                    scenarioId: scenario.id,
                     versionId: version.id,
                     period: period,
-                    accountId: accountId,
-                    departmentId: deptId,
+                    account: accountId,
+                    department: deptId,
                     entityId: entityId,
                     amount: String(amount),
                     status: 'APPROVED',

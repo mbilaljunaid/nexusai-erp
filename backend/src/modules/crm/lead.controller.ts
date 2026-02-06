@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { LeadService } from './lead.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
-import * as schema from '../../../../shared/schema/index.ts';
+import * as schema from '../../../../shared/schema/index';
 
 type Lead = typeof schema.leads.$inferSelect;
 

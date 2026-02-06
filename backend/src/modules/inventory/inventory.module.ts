@@ -6,7 +6,6 @@ import { ItemService } from './item.service';
 import { InventoryOrganizationController } from './inventory-organization.controller';
 import { InventoryOrganizationService } from './inventory-organization.service';
 import { InventoryTransactionService } from './inventory-transaction.service';
-import { CostingService } from './costing.service';
 import { InventoryPlanningService } from './planning.service';
 import { ReservationService } from './reservation.service';
 import { CycleCountService } from './cycle-count.service';
@@ -25,7 +24,6 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
     ItemService,
     InventoryOrganizationService,
     InventoryTransactionService,
-    CostingService,
     InventoryPlanningService,
     ReservationService,
     CycleCountService,
@@ -36,7 +34,6 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
     ProductService,
     ItemService,
     InventoryTransactionService,
-    CostingService,
     InventoryPlanningService,
     ReservationService,
     CycleCountService,

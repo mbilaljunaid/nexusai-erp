@@ -2,8 +2,8 @@
 import { Inject, Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class EpmPlanningService {
@@ -38,14 +38,13 @@ export class EpmPlanningService {
             // Mapping source units to new structure
             const newUnits = sourceUnits.map(unit => ({
                 versionId: targetVersionId,
-                scenarioId: targetVersion.scenarioId,
                 period: unit.period,
                 entityId: unit.entityId,
-                departmentId: unit.departmentId,
-                accountId: unit.accountId,
-                projectId: unit.projectId,
-                channelId: unit.channelId,
-                productId: unit.productId,
+                department: unit.department,
+                account: unit.account,
+                projectId: unit.project,
+                channelId: unit.channel,
+                productId: unit.product,
                 amount: unit.amount, // Keep string/numeric type consistent
                 currency: unit.currency,
                 status: 'DRAFT'
@@ -68,8 +67,8 @@ export class EpmPlanningService {
 
         // Construct dynamic filter
         const filters = [eq(schema.planUnits.versionId, versionId)];
-        if (filter?.departmentId) filters.push(eq(schema.planUnits.departmentId, filter.departmentId));
-        if (filter?.accountId) filters.push(eq(schema.planUnits.accountId, filter.accountId));
+        if (filter?.department) filters.push(eq(schema.planUnits.department, filter.department));
+        if (filter?.account) filters.push(eq(schema.planUnits.account, filter.account));
 
         const units = await this.db.query.planUnits.findMany({
             where: and(...filters)

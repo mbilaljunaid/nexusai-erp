@@ -1,24 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CostBook } from './entities/cost-book.entity';
-import { CostOrganization } from './entities/cost-organization.entity';
-import { CostElement } from './entities/cost-element.entity';
-import { CostProfile } from './entities/cost-profile.entity';
-import { CstItemCost } from './entities/cst-item-cost.entity';
-import { OnHandBalance } from '../inventory/entities/on-hand-balance.entity';
+
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from '../../../../shared/schema';
+import { eq, and, sql } from 'drizzle-orm';
 
 @Injectable()
 export class CostManagementService {
     private readonly logger = new Logger(CostManagementService.name);
 
     constructor(
-        @InjectRepository(CostBook) private costBookRepo: Repository<CostBook>,
-        @InjectRepository(CostOrganization) private costOrgRepo: Repository<CostOrganization>,
-        @InjectRepository(CostElement) private costElementRepo: Repository<CostElement>,
-        @InjectRepository(CostProfile) private costProfileRepo: Repository<CostProfile>,
-        @InjectRepository(CstItemCost) private itemCostRepo: Repository<CstItemCost>,
-        @InjectRepository(OnHandBalance) private balanceRepo: Repository<OnHandBalance>
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>
     ) { }
 
     async onModuleInit() {
@@ -27,12 +19,21 @@ export class CostManagementService {
 
     async getWorkspaceValuation(orgId: string): Promise<number> {
         // SQL SUM query joining Balance and Cost.
-        const result = await this.balanceRepo.createQueryBuilder('balance')
-            .select('SUM(balance.quantity * cost.unitCost)', 'totalValue')
-            .innerJoin(CstItemCost, 'cost', 'cost.item = balance.item AND cost.inventoryOrganization = balance.organization')
-            .where('balance.organization = :orgId', { orgId })
-            .getRawOne();
+        // inv_on_hand_quantities (b) JOIN cst_item_costs (c)
 
-        return result ? Number(result.totalValue) : 0;
+        const result = await this.db.select({
+            totalValue: sql<string>`SUM(${schema.inventoryOnHandQuantities.quantity} * ${schema.cstItemCosts.unitCost})`
+        })
+            .from(schema.inventoryOnHandQuantities)
+            .innerJoin(
+                schema.cstItemCosts,
+                and(
+                    eq(schema.cstItemCosts.itemId, schema.inventoryOnHandQuantities.itemId),
+                    eq(schema.cstItemCosts.inventoryOrganizationId, schema.inventoryOnHandQuantities.organizationId)
+                )
+            )
+            .where(eq(schema.inventoryOnHandQuantities.organizationId, orgId));
+
+        return parseFloat(result[0]?.totalValue || '0');
     }
 }

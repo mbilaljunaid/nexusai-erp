@@ -1,0 +1,118 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+// Updated exports
+__exportStar(require("./common"), exports);
+__exportStar(require("./ap"), exports);
+__exportStar(require("./ar"), exports);
+__exportStar(require("./crm"), exports);
+__exportStar(require("./finance"), exports);
+__exportStar(require("./hr"), exports);
+__exportStar(require("./hr_structures"), exports);
+__exportStar(require("./hr_worker"), exports);
+__exportStar(require("./hr_documents"), exports);
+__exportStar(require("./hr_checklists"), exports);
+__exportStar(require("./hr_audit"), exports);
+__exportStar(require("./talent_succession"), exports);
+__exportStar(require("./hr_hdl"), exports);
+__exportStar(require("./hr_aor"), exports);
+__exportStar(require("./hr_delegation"), exports);
+__exportStar(require("./hr_compliance"), exports);
+__exportStar(require("./hr_analytics"), exports);
+__exportStar(require("./manufacturing"), exports);
+__exportStar(require("./scm"), exports);
+__exportStar(require("./projects"), exports);
+__exportStar(require("./field_service"), exports);
+__exportStar(require("./marketplace"), exports);
+__exportStar(require("./service"), exports);
+__exportStar(require("./community"), exports);
+__exportStar(require("./education"), exports);
+__exportStar(require("./partner"), exports);
+__exportStar(require("./copilot"), exports);
+__exportStar(require("./mobile"), exports);
+__exportStar(require("./reporting"), exports);
+__exportStar(require("./epm"), exports);
+__exportStar(require("./integration"), exports);
+__exportStar(require("./platform"), exports);
+__exportStar(require("./ai"), exports);
+__exportStar(require("./agentic"), exports);
+__exportStar(require("./billing"), exports);
+__exportStar(require("./content"), exports);
+__exportStar(require("./gamification"), exports);
+__exportStar(require("./cash"), exports);
+__exportStar(require("./fixedAssets"), exports);
+__exportStar(require("./sla"), exports);
+__exportStar(require("./gl-config"), exports);
+__exportStar(require("./tax"), exports);
+__exportStar(require("./netting"), exports);
+__exportStar(require("./translation"), exports);
+__exportStar(require("./roles"), exports);
+__exportStar(require("./ppm"), exports);
+__exportStar(require("./revenue"), exports);
+__exportStar(require("./revenue_accounting"), exports);
+__exportStar(require("./revenue_periods"), exports);
+__exportStar(require("./revenue_rules"), exports);
+__exportStar(require("./costing"), exports);
+__exportStar(require("./cost_ai"), exports);
+__exportStar(require("./finance_expenses"), exports);
+__exportStar(require("./billing_enterprise"), exports);
+__exportStar(require("./billing_subscription"), exports);
+__exportStar(require("./order_management"), exports);
+__exportStar(require("./maintenance"), exports);
+__exportStar(require("./maintenance_pm"), exports);
+__exportStar(require("./maintenance_sr"), exports);
+__exportStar(require("./maintenance_scm"), exports);
+__exportStar(require("./maintenance_res"), exports);
+__exportStar(require("./maintenance_costing"), exports);
+__exportStar(require("./maintenance_planning"), exports);
+__exportStar(require("./maintenance_quality"), exports);
+__exportStar(require("./maintenance_meters"), exports);
+__exportStar(require("./maintenance_library"), exports);
+__exportStar(require("./maintenance_failure"), exports);
+__exportStar(require("./treasury"), exports);
+__exportStar(require("./construction"), exports);
+__exportStar(require("./construction_ops"), exports);
+__exportStar(require("./construction_master"), exports);
+__exportStar(require("./construction_claims"), exports);
+__exportStar(require("./construction_resources"), exports);
+__exportStar(require("./lcm"), exports);
+__exportStar(require("./transportation"), exports);
+// export * from "./sla"; // Removed duplicate
+__exportStar(require("./lease"), exports);
+__exportStar(require("./contracts"), exports);
+__exportStar(require("./intercompany"), exports);
+// Talent Management
+__exportStar(require("./talent_core"), exports);
+__exportStar(require("./talent_recruitment"), exports);
+__exportStar(require("./talent_performance"), exports);
+__exportStar(require("./talent_learning"), exports);
+__exportStar(require("./rewards_compensation"), exports);
+__exportStar(require("./rewards_payroll"), exports);
+__exportStar(require("./hr_payroll_ext"), exports);
+__exportStar(require("./time_labor"), exports);
+__exportStar(require("./time_ai"), exports);
+__exportStar(require("./rewards_benefits"), exports);
+__exportStar(require("./time_rules"), exports);
+__exportStar(require("./time_rules"), exports);
+// MDM / TCA
+__exportStar(require("./parties"), exports);
+__exportStar(require("./locations"), exports);
+__exportStar(require("./reference"), exports);
+__exportStar(require("./relationships"), exports);
+__exportStar(require("./data-quality"), exports);
+__exportStar(require("./pim"), exports);
+__exportStar(require("./governance"), exports);
+//# sourceMappingURL=index.js.map

@@ -1,3 +1,4 @@
+
 import { Module } from '@nestjs/common';
 import { EmployeeController } from './employee.controller';
 import { EmployeeService } from './employee.service';
@@ -11,4 +12,4 @@ import { TimesheetService } from './timesheet.service';
   providers: [EmployeeService, LeaveService, TimesheetService],
   exports: [EmployeeService, LeaveService, TimesheetService],
 })
-export class HRModule {}
+export class HRModule { }

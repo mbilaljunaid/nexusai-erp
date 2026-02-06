@@ -1,16 +1,16 @@
 
-import { Injectable, Logger, Inject } from '@nestjs/common';
-import { DATABASE_CONNECTION } from '../../database/database-connection';
+import { Injectable, Logger, NotFoundException, Inject } from '@nestjs/common';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../../../shared/schema';
-import { desc, sql } from 'drizzle-orm';
+import * as schema from '../../../../shared/schema/index';
+import { eq, desc, and, inArray, sql } from 'drizzle-orm';
 
 @Injectable()
 export class ProcurementAiService {
     private readonly logger = new Logger(ProcurementAiService.name);
 
     constructor(
-        @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
     async analyzeSpendPatterns(): Promise<any> {

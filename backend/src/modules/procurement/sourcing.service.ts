@@ -1,8 +1,8 @@
 
 import { Injectable, Logger, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
-import { DATABASE_CONNECTION } from '../../database/database-connection';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../../../shared/schema';
+import * as schema from '../../../../shared/schema/index';
 import { eq, desc } from 'drizzle-orm';
 import { PurchaseOrderService } from './purchase-order.service';
 
@@ -11,7 +11,7 @@ export class SourcingService {
     private readonly logger = new Logger(SourcingService.name);
 
     constructor(
-        @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
         private readonly poService: PurchaseOrderService,
     ) { }
 
@@ -123,8 +123,8 @@ export class SourcingService {
 
             // Create PO lines logic
             // Distribute amount evenly across lines for MVP simplicity
-            const totalTargetQty = rfq.lines.reduce((sum, l) => sum + Number(l.targetQuantity), 0);
-            const poLines = rfq.lines.map((line, idx) => {
+            const totalTargetQty = rfq.lines.reduce((sum: number, l: any) => sum + Number(l.targetQuantity), 0);
+            const poLines = rfq.lines.map((line: any, idx: number) => {
                 const unitPrice = totalTargetQty > 0 ? Number(quote.quoteAmount) / totalTargetQty : 0;
                 return {
                     lineNumber: idx + 1,
@@ -148,7 +148,7 @@ export class SourcingService {
                 supplierId: quote.supplier.id,
                 status: 'Draft',
                 lines: poLines
-            }, 'Sourcing'); // 'Sourcing' or UserId. Pass 'Sourcing' as userId/context mock.
+            },); // 'Sourcing' removed as service takes 1 arg
 
             return { message: 'Quote Awarded and PO Created', po };
         });

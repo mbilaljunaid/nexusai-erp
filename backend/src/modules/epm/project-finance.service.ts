@@ -2,8 +2,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
-import * as schema from '../../../../shared/schema/index.ts';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index';
 
 @Injectable()
 export class ProjectFinanceService {
@@ -33,18 +33,15 @@ export class ProjectFinanceService {
         // Assuming "5xxxx" are expense accounts. In real app, use Account Type='EXPENSE'
         const units = await this.db.query.planUnits.findMany({
             where: and(
-                eq(schema.planUnits.scenarioId, scenarioId),
                 eq(schema.planUnits.versionId, versionId),
                 eq(schema.planUnits.period, period),
-                eq(schema.planUnits.projectId, projectCodeVal) // Assuming PlanUnit stores code (legacy) or ID? 
-                // The TypeORM code used `project.code` for `projectId` filter.
-                // Assuming PlanUnit.projectId stores the "Code" string in this messy legacy setup.
+                eq(schema.planUnits.project, projectCodeVal)
             )
         });
 
         // Filter for expenses manually or via query if needed. 
         // For simplicity, let's assume all units for this project *except* the revenue account are costs.
-        const costUnits = units.filter(u => u.accountId !== revenueAccount);
+        const costUnits = units.filter(u => u.account !== revenueAccount);
         const periodCost = costUnits.reduce((sum, u) => sum + Number(u.amount), 0);
 
         if (periodCost === 0) {
@@ -64,23 +61,21 @@ export class ProjectFinanceService {
         // 4. Upsert Revenue PlanUnit
         const revUnit = await this.db.query.planUnits.findFirst({
             where: and(
-                eq(schema.planUnits.scenarioId, scenarioId),
                 eq(schema.planUnits.versionId, versionId),
                 eq(schema.planUnits.period, period),
-                eq(schema.planUnits.projectId, projectCodeVal),
-                eq(schema.planUnits.accountId, revenueAccount)
+                eq(schema.planUnits.project, projectCodeVal),
+                eq(schema.planUnits.account, revenueAccount)
             )
         });
 
         if (!revUnit) {
             // Insert
             await this.db.insert(schema.planUnits).values({
-                scenarioId,
                 versionId,
                 period,
-                projectId: projectCodeVal,
-                accountId: revenueAccount,
-                departmentId: 'GL_REV_REC', // System Dept
+                project: projectCodeVal,
+                account: revenueAccount,
+                department: 'GL_REV_REC', // System Dept
                 entityId: costUnits[0]?.entityId || 'DEFAULT',
                 amount: String(revenueAmount),
                 status: 'CALCULATED'

@@ -9,6 +9,8 @@ export class AiController {
     @Get('insights')
     // @UseGuards(JwtAuthGuard)
     async getInsights() {
-        return this.aiService.getInsights();
+        const spend = await this.aiService.analyzeSpendPatterns();
+        const delays = await this.aiService.predictDeliveryDelays();
+        return { spend, delays };
     }
 }

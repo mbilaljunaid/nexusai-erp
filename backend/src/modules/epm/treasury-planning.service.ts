@@ -1,27 +1,17 @@
-
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PlanUnit } from './entities/plan-unit.entity';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from '../../../../shared/schema/index';
+import { eq, and } from 'drizzle-orm';
 
 @Injectable()
 export class TreasuryPlanningService {
     private readonly logger = new Logger(TreasuryPlanningService.name);
 
     constructor(
-        @InjectRepository(PlanUnit)
-        private planUnitRepo: Repository<PlanUnit>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
-    /**
-     * Calculates Projected Cash Closing Balance.
-     * Logic: Opening (from prev period Closing) + Inflows - Outflows.
-     * 
-     * @param period Target Period
-     * @param cashAccount Account for Cash
-     * @param inflowAccount Aggregated Inflows
-     * @param outflowAccount Aggregated Outflows
-     */
     async calculateCashPosition(
         scenarioId: string,
         versionId: string,
@@ -35,10 +25,10 @@ export class TreasuryPlanningService {
         this.logger.log(`Calculating Cash Position for ${entityId}/${period}...`);
 
         // 1. Get Inflows
-        const inflow = await this.getAmount(scenarioId, versionId, period, entityId, inflowAccount);
+        const inflow = await this.getAmount(versionId, period, entityId, inflowAccount);
 
         // 2. Get Outflows
-        const outflow = await this.getAmount(scenarioId, versionId, period, entityId, outflowAccount);
+        const outflow = await this.getAmount(versionId, period, entityId, outflowAccount);
 
         // 3. Calculate Closing
         const closing = openingBalance + inflow - outflow;
@@ -46,29 +36,42 @@ export class TreasuryPlanningService {
         this.logger.log(`Opening: ${openingBalance} + In: ${inflow} - Out: ${outflow} = Closing: ${closing}`);
 
         // 4. Save Closing Balance
-        await this.savePlanUnit(scenarioId, versionId, period, entityId, cashAccount, closing);
+        await this.savePlanUnit(versionId, period, entityId, cashAccount, closing);
     }
 
-    private async getAmount(scenarioId: string, versionId: string, period: string, entityId: string, accountId: string): Promise<number> {
-        const unit = await this.planUnitRepo.findOne({
-            where: { scenarioId, versionId, period, entityId, accountId }
+    private async getAmount(versionId: string, period: string, entityId: string, accountId: string): Promise<number> {
+        const unit = await this.db.query.planUnits.findFirst({
+            where: and(
+                eq(schema.planUnits.versionId, versionId),
+                eq(schema.planUnits.period, period),
+                eq(schema.planUnits.entityId, entityId),
+                eq(schema.planUnits.account, accountId)
+            )
         });
         return unit ? Number(unit.amount) : 0;
     }
 
-    private async savePlanUnit(scenarioId: string, versionId: string, period: string, entityId: string, accountId: string, amount: number) {
-        let unit = await this.planUnitRepo.findOne({
-            where: { scenarioId, versionId, period, entityId, accountId }
+    private async savePlanUnit(versionId: string, period: string, entityId: string, accountId: string, amount: number) {
+        const existing = await this.db.query.planUnits.findFirst({
+            where: and(
+                eq(schema.planUnits.versionId, versionId),
+                eq(schema.planUnits.period, period),
+                eq(schema.planUnits.entityId, entityId),
+                eq(schema.planUnits.account, accountId)
+            )
         });
 
-        if (!unit) {
-            unit = this.planUnitRepo.create({
-                scenarioId, versionId, period, entityId, accountId,
-                amount, status: 'CALCULATED', departmentId: 'TREASURY'
-            });
+        if (!existing) {
+            await this.db.insert(schema.planUnits).values({
+                versionId, period, entityId, account: accountId,
+                amount: amount.toString(),
+                status: 'CALCULATED',
+                department: 'TREASURY' // Default for this service
+            } as any);
         } else {
-            unit.amount = amount;
+            await this.db.update(schema.planUnits)
+                .set({ amount: amount.toString() })
+                .where(eq(schema.planUnits.id, existing.id));
         }
-        await this.planUnitRepo.save(unit);
     }
 }
