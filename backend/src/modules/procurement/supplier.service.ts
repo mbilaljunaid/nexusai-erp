@@ -1,98 +1,121 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Supplier } from './entities/supplier.entity';
-import { SupplierSite } from './entities/supplier-site.entity';
+
+import { Injectable, Logger, NotFoundException, Inject } from '@nestjs/common';
+import { DATABASE_CONNECTION } from '../../database/database-connection';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from '../../../shared/schema';
+import { eq, desc, ilike, or, sql } from 'drizzle-orm';
 
 @Injectable()
 export class SupplierService {
     private readonly logger = new Logger(SupplierService.name);
 
     constructor(
-        @InjectRepository(Supplier)
-        private supplierRepository: Repository<Supplier>,
-        @InjectRepository(SupplierSite)
-        private siteRepository: Repository<SupplierSite>,
+        @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
     ) { }
 
-    async create(createSupplierDto: any): Promise<Supplier> {
-        // In real app use specific DTO
+    async create(createSupplierDto: any): Promise<typeof schema.suppliers.$inferSelect> {
         this.logger.log(`Creating supplier: ${createSupplierDto.supplierName}`);
-        const supplier = this.supplierRepository.create(createSupplierDto);
-        return this.supplierRepository.save(supplier);
+        const [supplier] = await this.db.insert(schema.suppliers).values({
+            ...createSupplierDto,
+            supplierNumber: createSupplierDto.supplierNumber || `SUP-${Date.now()}`,
+            status: createSupplierDto.status || 'Active'
+        }).returning();
+        return supplier;
     }
 
-    async findAll(query?: { search?: string; limit?: number; offset?: number }): Promise<{ data: Supplier[]; total: number }> {
-        const qb = this.supplierRepository.createQueryBuilder('supplier')
-            .leftJoinAndSelect('supplier.sites', 'site')
-            .orderBy('supplier.createdAt', 'DESC');
+    async findAll(query?: { search?: string; limit?: number; offset?: number }): Promise<{ data: (typeof schema.suppliers.$inferSelect)[]; total: number }> {
+        const whereClause = query?.search
+            ? or(
+                ilike(schema.suppliers.name, `%${query.search}%`),
+                ilike(schema.suppliers.supplierNumber, `%${query.search}%`)
+            )
+            : undefined;
 
-        if (query?.search) {
-            qb.where('supplier.supplierName ILIKE :search OR supplier.supplierNumber ILIKE :search', { search: `%${query.search}%` });
-        }
-
-        if (query?.limit) {
-            qb.take(query.limit);
-        }
-
-        if (query?.offset) {
-            qb.skip(query.offset);
-        }
-
-        const [data, total] = await qb.getManyAndCount();
-        return { data, total };
-    }
-
-    async findOne(id: string): Promise<Supplier> {
-        const supplier = await this.supplierRepository.findOne({
-            where: { id },
-            relations: ['sites'],
+        const data = await this.db.query.suppliers.findMany({
+            where: whereClause,
+            orderBy: [desc(schema.suppliers.createdAt)],
+            limit: query?.limit,
+            offset: query?.offset,
+            with: {
+                sites: true // Include sites by default or as needed
+            }
         });
+
+        // Count total
+        const [countResult] = await this.db
+            .select({ count: sql<number>`count(*)` })
+            .from(schema.suppliers)
+            .where(whereClause);
+
+        return { data, total: Number(countResult.count) };
+    }
+
+    async findOne(id: string): Promise<typeof schema.suppliers.$inferSelect & { sites: (typeof schema.supplierSites.$inferSelect)[] }> {
+        const supplier = await this.db.query.suppliers.findFirst({
+            where: eq(schema.suppliers.id, id),
+            with: {
+                sites: true,
+            },
+        });
+
         if (!supplier) {
             throw new NotFoundException(`Supplier with ID ${id} not found`);
         }
         return supplier;
     }
 
-    async update(id: string, updateData: any): Promise<Supplier> {
-        const supplier = await this.findOne(id);
-        Object.assign(supplier, updateData);
-        return this.supplierRepository.save(supplier);
+    async update(id: string, updateData: any): Promise<typeof schema.suppliers.$inferSelect> {
+        await this.findOne(id); // Ensure exists
+        const [updated] = await this.db.update(schema.suppliers)
+            .set({ ...updateData, updatedAt: new Date() })
+            .where(eq(schema.suppliers.id, id))
+            .returning();
+        return updated;
     }
 
     async remove(id: string): Promise<void> {
-        const result = await this.supplierRepository.delete(id);
-        if (result.affected === 0) {
+        const [deleted] = await this.db.delete(schema.suppliers)
+            .where(eq(schema.suppliers.id, id))
+            .returning();
+
+        if (!deleted) {
             throw new NotFoundException(`Supplier with ID ${id} not found`);
         }
     }
 
-    async addSite(supplierId: string, siteData: any): Promise<SupplierSite> {
-        const supplier = await this.findOne(supplierId);
-        const site = this.siteRepository.create({
+    async addSite(supplierId: string, siteData: any): Promise<typeof schema.supplierSites.$inferSelect> {
+        await this.findOne(supplierId); // Verify supplier exists
+
+        const [site] = await this.db.insert(schema.supplierSites).values({
             ...siteData,
-            supplier,
-        });
-        return this.siteRepository.save(site);
+            supplierId,
+        }).returning();
+        return site;
     }
 
-    async getSites(supplierId: string): Promise<SupplierSite[]> {
-        return this.siteRepository.find({
-            where: { supplier: { id: supplierId } },
-            order: { createdAt: 'DESC' }
+    async getSites(supplierId: string): Promise<(typeof schema.supplierSites.$inferSelect)[]> {
+        return this.db.query.supplierSites.findMany({
+            where: eq(schema.supplierSites.supplierId, supplierId),
+            orderBy: [desc(schema.supplierSites.createdAt)]
         });
     }
 
-    async updateSite(siteId: string, updateData: any): Promise<SupplierSite> {
-        const site = await this.siteRepository.findOne({ where: { id: siteId } });
-        if (!site) throw new NotFoundException(`Site with ID ${siteId} not found`);
-        Object.assign(site, updateData);
-        return this.siteRepository.save(site);
+    async updateSite(siteId: string, updateData: any): Promise<typeof schema.supplierSites.$inferSelect> {
+        const [updated] = await this.db.update(schema.supplierSites)
+            .set({ ...updateData, updatedAt: new Date() })
+            .where(eq(schema.supplierSites.id, siteId))
+            .returning();
+
+        if (!updated) throw new NotFoundException(`Site with ID ${siteId} not found`);
+        return updated;
     }
 
     async removeSite(siteId: string): Promise<void> {
-        const result = await this.siteRepository.delete(siteId);
-        if (result.affected === 0) {
+        const [deleted] = await this.db.delete(schema.supplierSites)
+            .where(eq(schema.supplierSites.id, siteId))
+            .returning();
+
+        if (!deleted) {
             throw new NotFoundException(`Site with ID ${siteId} not found`);
         }
     }

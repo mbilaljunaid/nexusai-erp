@@ -645,6 +645,158 @@ export const insertPurchaseOrderDistributionSchema = createInsertSchema(purchase
 export type PurchaseOrderDistribution = typeof purchaseOrderDistributions.$inferSelect;
 export type InsertPurchaseOrderDistribution = z.infer<typeof insertPurchaseOrderDistributionSchema>;
 
+// ========== RFQ / SOURCING ==========
+export const rfqHeaders = pgTable("scm_rfq_headers", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    rfqNumber: varchar("rfq_number").notNull().unique(),
+    title: varchar("title").notNull(),
+    status: varchar("status").default("Draft"), // Draft, Active, Awarded, Closed
+    deadline: timestamp("deadline"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const rfqLines = pgTable("scm_rfq_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    headerId: varchar("header_id").notNull(),
+    description: text("description"),
+    targetQuantity: numeric("target_quantity", { precision: 18, scale: 2 }),
+    itemId: varchar("item_id"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const supplierQuotes = pgTable("scm_supplier_quotes", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    rfqId: varchar("rfq_id").notNull(),
+    supplierId: varchar("supplier_id").notNull(),
+    quoteAmount: numeric("quote_amount", { precision: 18, scale: 2 }),
+    status: varchar("status").default("Submitted"), // Submitted, Awarded, Rejected
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertRfqHeaderSchema = createInsertSchema(rfqHeaders);
+export const insertRfqLineSchema = createInsertSchema(rfqLines);
+export const insertSupplierQuoteSchema = createInsertSchema(supplierQuotes);
+
+export type RfqHeader = typeof rfqHeaders.$inferSelect;
+export type RfqLine = typeof rfqLines.$inferSelect;
+export type SupplierQuote = typeof supplierQuotes.$inferSelect;
+
+// ========== APPROVAL RULES ==========
+export const approvalRules = pgTable("scm_approval_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    ruleName: varchar("rule_name").notNull(),
+    documentType: varchar("document_type").notNull(), // Requisition, PO
+    minAmount: numeric("min_amount", { precision: 18, scale: 2 }).default("0"),
+    maxAmount: numeric("max_amount", { precision: 18, scale: 2 }),
+    approverId: varchar("approver_id"),
+    priority: integer("priority").default(10),
+    categoryFilter: varchar("category_filter").default("ALL"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertApprovalRuleSchema = createInsertSchema(approvalRules);
+export type ApprovalRule = typeof approvalRules.$inferSelect;
+
+// ========== RECEIVING (RCV) ==========
+export const rcvShipmentHeaders = pgTable("rcv_shipment_headers", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    receiptNumber: varchar("receipt_number").notNull().unique(),
+    shipmentNumber: varchar("shipment_number"),
+    vendorId: varchar("vendor_id"), // Supplier ID
+    shippedDate: timestamp("shipped_date"),
+    expectedReceiptDate: timestamp("expected_receipt_date"),
+    receiptDate: timestamp("receipt_date").default(sql`now()`),
+    comments: text("comments"),
+    grossWeight: numeric("gross_weight"),
+    netWeight: numeric("net_weight"),
+    packagingCode: varchar("packaging_code"),
+    waybillAirbillNumber: varchar("waybill_airbill_number"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const rcvShipmentLines = pgTable("rcv_shipment_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    shipmentHeaderId: varchar("shipment_header_id").notNull(),
+    lineNum: integer("line_num"),
+    categoryId: varchar("category_id"),
+    quantityShipped: numeric("quantity_shipped", { precision: 18, scale: 4 }),
+    quantityReceived: numeric("quantity_received", { precision: 18, scale: 4 }),
+    unitOfMeasure: varchar("uom"),
+    itemDescription: varchar("item_description"),
+    itemId: varchar("item_id"),
+    poHeaderId: varchar("po_header_id"),
+    poLineId: varchar("po_line_id"),
+    poDistributionId: varchar("po_distribution_id"),
+    routingHeaderId: varchar("routing_header_id"),
+    packingSlip: varchar("packing_slip"),
+    fromOrganizationId: varchar("from_organization_id"),
+    toOrganizationId: varchar("to_organization_id"), // Inventory Org
+    deliverToPersonId: varchar("deliver_to_person_id"),
+    deliverToLocationId: varchar("deliver_to_location_id"),
+    destinationTypeCode: varchar("destination_type_code").default("RECEIVING"), // RECEIVING, INVENTORY, EXPENSE
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertRcvShipmentHeaderSchema = createInsertSchema(rcvShipmentHeaders);
+export const insertRcvShipmentLineSchema = createInsertSchema(rcvShipmentLines);
+
+export type RcvShipmentHeader = typeof rcvShipmentHeaders.$inferSelect;
+export type RcvShipmentLine = typeof rcvShipmentLines.$inferSelect;
+
+
+// ========== ACCOUNTS PAYABLE (AP) ==========
+export const apInvoices = pgTable("ap_invoices", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceNumber: varchar("invoice_number").notNull(),
+    supplierId: varchar("supplier_id").notNull(),
+    siteId: varchar("site_id"), // Supplier Site
+    purchaseOrderId: varchar("purchase_order_id"), // Optional Match
+    invoiceDate: timestamp("invoice_date").notNull(),
+    dueDate: timestamp("due_date"), // Calculated from Terms
+    paymentTerms: varchar("payment_terms"), // "Net 30", etc.
+    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    currencyCode: varchar("currency_code").default("USD"),
+    status: varchar("status").default("Draft"), // Draft, Validated, Approved, Cancelled, Paid
+    accountingStatus: varchar("accounting_status").default("Unaccounted"), // Unaccounted, Accounted
+    description: text("description"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const apInvoiceLines = pgTable("ap_invoice_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(),
+    lineNumber: integer("line_number").notNull(),
+    lineType: varchar("line_type").default("ITEM"), // ITEM, TAX, FREIGHT
+    description: text("description"),
+    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    poLineId: varchar("po_line_id"), // Match to PO Line
+    rcvTransactionId: varchar("rcv_transaction_id"), // Match to Receipt
+    distCodeCombinationId: varchar("dist_code_combination_id"), // GL Account
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const apPayments = pgTable("ap_payments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    paymentNumber: varchar("payment_number").notNull().unique(),
+    invoiceId: varchar("invoice_id").notNull(),
+    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    currencyCode: varchar("currency_code").default("USD"),
+    paymentDate: timestamp("payment_date").default(sql`now()`),
+    paymentMethod: varchar("payment_method").default("CHECK"), // CHECK, EFT, WIRE
+    status: varchar("status").default("ISSUED"), // ISSUED, CLEARED, VOID
+    bankAccountId: varchar("bank_account_id"), // Internal Bank Account
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertApInvoiceSchema = createInsertSchema(apInvoices);
+export const insertApInvoiceLineSchema = createInsertSchema(apInvoiceLines);
+export const insertApPaymentSchema = createInsertSchema(apPayments);
+
+export type ApInvoice = typeof apInvoices.$inferSelect;
+export type ApInvoiceLine = typeof apInvoiceLines.$inferSelect;
+export type ApPayment = typeof apPayments.$inferSelect;
+
 // ========== RELATIONS ==========
 
 export const suppliersRelations = relations(suppliers, ({ one, many }) => ({
@@ -679,10 +831,67 @@ export const purchaseRequisitionsRelations = relations(purchaseRequisitions, ({ 
     lines: many(purchaseRequisitionLines),
 }));
 
+export const rfqHeadersRelations = relations(rfqHeaders, ({ one, many }) => ({
+    lines: many(rfqLines),
+    quotes: many(supplierQuotes),
+}));
+
+export const rfqLinesRelations = relations(rfqLines, ({ one }) => ({
+    header: one(rfqHeaders, {
+        fields: [rfqLines.headerId],
+        references: [rfqHeaders.id],
+    }),
+}));
+
+export const supplierQuotesRelations = relations(supplierQuotes, ({ one }) => ({
+    rfq: one(rfqHeaders, {
+        fields: [supplierQuotes.rfqId],
+        references: [rfqHeaders.id],
+    }),
+    supplier: one(suppliers, {
+        fields: [supplierQuotes.supplierId],
+        references: [suppliers.id],
+    }),
+}));
+
 export const purchaseRequisitionLinesRelations = relations(purchaseRequisitionLines, ({ one }) => ({
     header: one(purchaseRequisitions, {
         fields: [purchaseRequisitionLines.requisitionId],
         references: [purchaseRequisitions.id],
+    }),
+}));
+
+export const rcvShipmentHeadersRelations = relations(rcvShipmentHeaders, ({ one, many }) => ({
+    lines: many(rcvShipmentLines),
+}));
+
+export const rcvShipmentLinesRelations = relations(rcvShipmentLines, ({ one }) => ({
+    header: one(rcvShipmentHeaders, {
+        fields: [rcvShipmentLines.shipmentHeaderId],
+        references: [rcvShipmentHeaders.id],
+    }),
+}));
+
+export const apInvoicesRelations = relations(apInvoices, ({ one, many }) => ({
+    lines: many(apInvoiceLines),
+    payments: many(apPayments),
+    supplier: one(suppliers, {
+        fields: [apInvoices.supplierId],
+        references: [suppliers.id],
+    }),
+}));
+
+export const apInvoiceLinesRelations = relations(apInvoiceLines, ({ one }) => ({
+    invoice: one(apInvoices, {
+        fields: [apInvoiceLines.invoiceId],
+        references: [apInvoices.id],
+    }),
+}));
+
+export const apPaymentsRelations = relations(apPayments, ({ one }) => ({
+    invoice: one(apInvoices, {
+        fields: [apPayments.invoiceId],
+        references: [apInvoices.id],
     }),
 }));
 // ========== RESERVATIONS ==========

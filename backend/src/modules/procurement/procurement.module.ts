@@ -1,5 +1,5 @@
+
 import { Module, forwardRef } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { PurchaseOrderController } from './purchase-order.controller';
 import { PurchaseOrderService } from './purchase-order.service';
 import { SupplierController } from './supplier.controller';
@@ -12,52 +12,18 @@ import { ApController } from './ap.controller';
 import { ApService } from './ap.service';
 import { SourcingController } from './sourcing.controller';
 import { SourcingService } from './sourcing.service';
-import { Supplier } from './entities/supplier.entity';
-import { SupplierSite } from './entities/supplier-site.entity';
-// PurchaseOrder entities removed
-import { ReceiptHeader } from './entities/receipt-header.entity';
-import { ReceiptLine } from './entities/receipt-line.entity';
-// Requisition entities removed
-import { ApInvoice } from './entities/ap-invoice.entity';
-import { ApInvoiceLine } from './entities/ap-invoice-line.entity';
-import { ApPayment } from './entities/ap-payment.entity';
-import { ApprovalRule } from './entities/approval-rule.entity';
-import { RfqHeader } from './entities/rfq-header.entity';
-import { RfqLine } from './entities/rfq-line.entity';
-import { SupplierQuote } from './entities/supplier-quote.entity';
-import { Item } from '../inventory/entities/item.entity';
-import { Budget } from '../epm/entities/budget.entity';
 import { ProcurementApprovalService } from './approval.service';
-import { BudgetService } from '../epm/budget.service';
 import { ProcurementGlIntegrationService } from './gl-integration.service';
 import { AiController } from './ai.controller';
-import { ProcurementAiService } from './procurement-ai.service';
-import { RfqService } from './rfq.service'; // Added
-import { SupplierPortalService } from './supplier-portal.service'; // Added
+import { RfqService } from './rfq.service';
+import { SupplierPortalService } from './supplier-portal.service';
+// Entities removed
 
 import { InventoryModule } from '../inventory/inventory.module';
 import { EPMModule } from '../epm/epm.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Supplier,
-      SupplierSite,
-      // PurchaseOrder,
-      // PurchaseOrderLine,
-      // PurchaseOrderDistribution,
-      ReceiptHeader,
-      ReceiptLine,
-      // RequisitionHeader,
-      // RequisitionLine,
-      ApInvoice,
-      ApInvoiceLine,
-      ApPayment,
-      ApprovalRule,
-      RfqHeader,
-      RfqLine,
-      SupplierQuote
-    ]),
     InventoryModule,
     forwardRef(() => EPMModule)
   ],
@@ -71,10 +37,10 @@ import { EPMModule } from '../epm/epm.module';
     ProcurementApprovalService,
     { provide: 'ProcurementApprovalService', useClass: ProcurementApprovalService },
     ProcurementGlIntegrationService,
-    { provide: 'ProcurementGlIntegrationService', useClass: ProcurementGlIntegrationService }, // Alias for circular dep resolution
+    { provide: 'ProcurementGlIntegrationService', useClass: ProcurementGlIntegrationService },
     RfqService,
     SupplierPortalService
   ],
-  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ProcurementApprovalService, SourcingService, TypeOrmModule],
+  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ProcurementApprovalService, SourcingService],
 })
 export class ProcurementModule { }
