@@ -1,121 +1,177 @@
-import { db } from "../server/db";
-import { sql } from "drizzle-orm";
 
-async function deploySchema() {
-    console.log("🚀 Manual Schema Deployment started...");
+import { Client } from 'pg';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-    // List of tables to ensure exist
-    const tables = [
-        `CREATE TABLE IF NOT EXISTS "bom_items" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "bom_id" varchar NOT NULL,
-            "product_id" varchar NOT NULL,
-            "quantity" numeric(18, 4) NOT NULL,
-            "uom" varchar DEFAULT 'EA',
-            "scrap_factor" numeric(5, 2) DEFAULT '0',
-            "created_at" timestamp DEFAULT now()
-        )`,
-        `CREATE TABLE IF NOT EXISTS "manufacturing_resources" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "resource_code" varchar NOT NULL UNIQUE,
-            "name" varchar NOT NULL,
-            "type" varchar NOT NULL,
-            "status" varchar DEFAULT 'active',
-            "capacity_per_hour" numeric(18, 2),
-            "cost_per_hour" numeric(18, 2),
-            "created_at" timestamp DEFAULT now()
-        )`,
-        `CREATE TABLE IF NOT EXISTS "routings" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "routing_number" varchar NOT NULL UNIQUE,
-            "product_id" varchar NOT NULL,
-            "status" varchar DEFAULT 'active',
-            "created_at" timestamp DEFAULT now()
-        )`,
-        `CREATE TABLE IF NOT EXISTS "routing_operations" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "routing_id" varchar NOT NULL,
-            "operation_seq" integer NOT NULL,
-            "work_center_id" varchar NOT NULL,
-            "standard_operation_id" varchar,
-            "description" varchar,
-            "setup_time" numeric(10, 2) DEFAULT '0',
-            "run_time" numeric(10, 2) DEFAULT '0',
-            "resource_id" varchar,
-            "created_at" timestamp DEFAULT now()
-        )`,
-        `CREATE TABLE IF NOT EXISTS "mfg_cost_elements" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "code" varchar NOT NULL UNIQUE,
-            "name" varchar NOT NULL,
-            "type" varchar NOT NULL,
-            "fixed_or_variable" varchar DEFAULT 'VARIABLE',
-            "gl_account_id" varchar,
-            "status" varchar DEFAULT 'active',
-            "created_at" timestamp DEFAULT now()
-        )`,
-        `CREATE TABLE IF NOT EXISTS "mfg_overhead_rules" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "cost_element_id" varchar NOT NULL,
-            "basis" varchar NOT NULL,
-            "rate_or_percentage" numeric(10, 4) NOT NULL,
-            "status" varchar DEFAULT 'active',
-            "created_at" timestamp DEFAULT now()
-        )`,
-        `CREATE TABLE IF NOT EXISTS "mfg_standard_costs" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "target_type" varchar NOT NULL,
-            "target_id" varchar NOT NULL,
-            "cost_element_id" varchar NOT NULL,
-            "unit_cost" numeric(18, 4) NOT NULL,
-            "effective_date" timestamp DEFAULT now(),
-            "is_active" boolean DEFAULT true,
-            "created_at" timestamp DEFAULT now()
-        )`,
-        `CREATE TABLE IF NOT EXISTS "mfg_wip_balances" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "production_order_id" varchar NOT NULL,
-            "cost_element_id" varchar NOT NULL,
-            "balance" numeric(18, 4) DEFAULT '0',
-            "last_updated" timestamp DEFAULT now()
-        )`,
-        `CREATE TABLE IF NOT EXISTS "mfg_variance_journals" (
-            "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
-            "production_order_id" varchar NOT NULL,
-            "variance_type" varchar NOT NULL,
-            "amount" numeric(18, 4) NOT NULL,
-            "description" text,
-            "gl_posted" boolean DEFAULT false,
-            "transaction_date" timestamp DEFAULT now(),
-            "created_at" timestamp DEFAULT now()
-        )`,
-        `DO $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='inventory' AND column_name='tracking_method') THEN
-                ALTER TABLE "inventory" ADD COLUMN "tracking_method" varchar DEFAULT 'NONE';
-            END IF;
-            
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='production_orders' AND column_name='routing_id') THEN
-                ALTER TABLE "production_orders" ADD COLUMN "routing_id" varchar;
-            END IF;
-            
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='production_orders' AND column_name='bom_id') THEN
-                ALTER TABLE "production_orders" ADD COLUMN "bom_id" varchar;
-            END IF;
-        END $$;`
-    ];
-
-    for (const tableSql of tables) {
-        try {
-            console.log(`Executing SQL: ${tableSql.substring(0, 40)}...`);
-            await db.execute(sql.raw(tableSql));
-        } catch (error) {
-            console.error(`❌ Error executing SQL:`, error);
-        }
+async function deployCostingSchema() {
+    console.log('Deploying Costing Schema...');
+    if (!process.env.DATABASE_URL) {
+        console.error('DATABASE_URL missing');
+        process.exit(1);
     }
 
-    console.log("✅ Schema deployment completed!");
-    process.exit(0);
+    const client = new Client({ connectionString: process.env.DATABASE_URL });
+    await client.connect();
+
+    try {
+        // 1. Cost Books
+        console.log('Creating cst_cost_books...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_cost_books" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "costBookCode" varchar NOT NULL UNIQUE,
+                "description" varchar NOT NULL,
+                "currencyCode" varchar NOT NULL,
+                "isActive" boolean DEFAULT true,
+                "createdAt" timestamp DEFAULT now(),
+                "updatedAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 2. Cost Organizations (already existed?) - Ensure columns
+        console.log('Ensuring cst_cost_organizations...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_cost_organizations" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "code" varchar NOT NULL,
+                "name" varchar NOT NULL,
+                "inventoryOrganizationId" varchar NOT NULL,
+                "createdAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 3. Cost Periods
+        console.log('Creating cst_cost_periods...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_cost_periods" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "costOrganizationId" varchar,
+                "periodName" varchar NOT NULL,
+                "startDate" timestamp NOT NULL,
+                "endDate" timestamp NOT NULL,
+                "status" varchar DEFAULT 'Open',
+                "createdAt" timestamp DEFAULT now(),
+                "updatedAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 4. Cost Scenarios
+        console.log('Creating cst_cost_scenarios...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_cost_scenarios" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "costOrganizationId" varchar,
+                "name" varchar NOT NULL,
+                "description" varchar,
+                "scenarioType" varchar DEFAULT 'Pending',
+                "effectiveDate" timestamp,
+                "createdAt" timestamp DEFAULT now(),
+                "updatedAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 5. Cost Elements
+        console.log('Creating cst_cost_elements...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_cost_elements" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "costElementCode" varchar NOT NULL UNIQUE,
+                "description" varchar NOT NULL,
+                "elementType" varchar DEFAULT 'Material',
+                "isActive" boolean DEFAULT true,
+                "createdAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 6. Cost Profiles
+        console.log('Creating cst_cost_profiles...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_cost_profiles" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "profileName" varchar NOT NULL UNIQUE,
+                "description" varchar NOT NULL,
+                "costMethod" varchar DEFAULT 'Average',
+                "isDefault" boolean DEFAULT true,
+                "createdAt" timestamp DEFAULT now(),
+                "updatedAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 7. Standard Costs
+        console.log('Creating cst_standard_costs...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_standard_costs" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "scenarioId" varchar,
+                "itemId" varchar,
+                "costElementId" varchar,
+                "unitCost" numeric(18, 4) NOT NULL,
+                "createdAt" timestamp DEFAULT now(),
+                "updatedAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 8. Landed Costs
+        console.log('Creating cst_landed_costs...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_landed_costs" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "organizationId" varchar,
+                "purchaseOrderId" varchar,
+                "chargeType" varchar NOT NULL,
+                "amount" numeric(18, 4) NOT NULL,
+                "currencyCode" varchar NOT NULL,
+                "allocationBasis" varchar DEFAULT 'Value',
+                "isEstimated" boolean DEFAULT false,
+                "vendorName" varchar,
+                "createdAt" timestamp DEFAULT now(),
+                "updatedAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 9. Anomalies
+        console.log('Creating cst_anomalies...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_anomalies" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "organizationId" varchar,
+                "itemId" varchar,
+                "anomalyType" varchar NOT NULL,
+                "detectedValue" numeric(10, 2),
+                "expectedValue" numeric(10, 2),
+                "variancePercent" numeric(5, 2),
+                "severity" varchar DEFAULT 'Medium',
+                "details" text,
+                "status" varchar DEFAULT 'Open',
+                "detectedAt" timestamp DEFAULT now()
+            );
+        `);
+
+        // 10. Approval Requests
+        console.log('Creating cst_approval_requests...');
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "cst_approval_requests" (
+                "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+                "requesterId" varchar NOT NULL,
+                "approverId" varchar,
+                "status" varchar DEFAULT 'PENDING',
+                "entityType" varchar NOT NULL,
+                "entityId" varchar NOT NULL,
+                "payload" text,
+                "rejectionReason" text,
+                "createdAt" timestamp DEFAULT now(),
+                "updatedAt" timestamp DEFAULT now()
+            );
+        `);
+
+
+        console.log('Costing Schema deployed successfully.');
+    } catch (e) {
+        console.error('Migration Failed', e);
+        process.exit(1);
+    } finally {
+        await client.end();
+    }
 }
 
-deploySchema();
+deployCostingSchema();

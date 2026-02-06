@@ -4,7 +4,6 @@ import { eq, and, isNull, sql } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import * as schema from '../../../../shared/schema';
 import { ModuleRef } from '@nestjs/core';
-import { CostingService } from './costing.service';
 import { ReceiptAccountingService } from '../cost-management/receipt-accounting.service';
 import { CostProcessorService } from '../cost-management/cost-processor.service';
 
@@ -31,7 +30,6 @@ export class InventoryTransactionService {
 
     constructor(
         @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
-        private readonly costingService: CostingService,
         private readonly moduleRef: ModuleRef,
         @Inject(forwardRef(() => ReceiptAccountingService))
         private readonly receiptAccountingService: ReceiptAccountingService,
