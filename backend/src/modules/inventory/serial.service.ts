@@ -1,55 +1,68 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
-import { Serial } from './entities/serial.entity';
+import { Injectable, Inject } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, like, and, isNotNull, desc, sql } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class SerialService {
     constructor(
-        @InjectRepository(Serial)
-        private readonly serialRepository: Repository<Serial>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
-    async create(data: Partial<Serial>): Promise<Serial> {
-        const serial = this.serialRepository.create(data);
-        return await this.serialRepository.save(serial);
+    async create(data: any) {
+        const [serial] = await this.db.insert(schema.inventoryLotSerial).values({
+            inventoryId: data.item?.id || data.inventoryId,
+            serialNumber: data.serialNumber, // Assuming input has serialNumber
+            status: data.status || 'ACTIVE',
+            quantity: '1', // Serials are always qty 1
+        }).returning();
+        return serial;
     }
 
     async findAll(query: { limit?: number; offset?: number; search?: string; status?: string; itemId?: string }) {
-        const take = query.limit || 25;
-        const skip = query.offset || 0;
+        const limit = query.limit || 25;
+        const offset = query.offset || 0;
 
-        const where: any = {};
-        if (query.status) where.status = query.status;
-        if (query.itemId) where.item = { id: query.itemId };
-        if (query.search) {
-            where.serialNumber = Like(`%${query.search}%`);
-        }
+        const filters = [isNotNull(schema.inventoryLotSerial.serialNumber)];
 
-        const [data, total] = await this.serialRepository.findAndCount({
-            where,
-            take,
-            skip,
-            relations: ['item', 'organization'],
-            order: { createdAt: 'DESC' }
-        });
+        if (query.status) filters.push(eq(schema.inventoryLotSerial.status, query.status));
+        if (query.itemId) filters.push(eq(schema.inventoryLotSerial.inventoryId, query.itemId));
+        if (query.search) filters.push(like(schema.inventoryLotSerial.serialNumber, `%${query.search}%`));
 
-        return { data, total };
+        const data = await this.db.select()
+            .from(schema.inventoryLotSerial)
+            .where(and(...filters))
+            .limit(limit)
+            .offset(offset)
+            .orderBy(desc(schema.inventoryLotSerial.createdAt));
+
+        const [countResult] = await this.db.select({ count: sql<number>`count(*)` })
+            .from(schema.inventoryLotSerial)
+            .where(and(...filters));
+
+        return { data, total: Number(countResult?.count || 0) };
     }
 
-    async findOne(id: string): Promise<Serial | null> {
-        return await this.serialRepository.findOne({
-            where: { id },
-            relations: ['item', 'organization']
-        });
+    async findOne(id: string) {
+        const [serial] = await this.db.select()
+            .from(schema.inventoryLotSerial)
+            .where(eq(schema.inventoryLotSerial.id, id));
+        return serial || null;
     }
 
-    async update(id: string, data: Partial<Serial>): Promise<Serial | null> {
-        await this.serialRepository.update(id, data);
-        return await this.findOne(id);
+    async update(id: string, data: any) {
+        const [serial] = await this.db.update(schema.inventoryLotSerial)
+            .set({
+                status: data.status,
+            })
+            .where(eq(schema.inventoryLotSerial.id, id))
+            .returning();
+        return serial || null;
     }
 
     async remove(id: string): Promise<void> {
-        await this.serialRepository.delete(id);
+        await this.db.delete(schema.inventoryLotSerial)
+            .where(eq(schema.inventoryLotSerial.id, id));
     }
 }

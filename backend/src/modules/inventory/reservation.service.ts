@@ -1,14 +1,8 @@
-import { Injectable, Logger, BadRequestException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
-import { Reservation } from './entities/reservation.entity';
-import { OnHandBalance } from './entities/on-hand-balance.entity';
-import { InventoryOrganization } from './entities/inventory-organization.entity';
-import { Item } from './entities/item.entity';
-import { Subinventory } from './entities/subinventory.entity';
-import { Locator } from './entities/locator.entity';
-import { Lot } from './entities/lot.entity';
-import { Serial } from './entities/serial.entity';
+import { Injectable, Logger, BadRequestException, Inject } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, and, isNull, sql } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index.ts';
 
 export interface CreateReservationDto {
     organizationId: string;
@@ -29,18 +23,11 @@ export class ReservationService {
     private readonly logger = new Logger(ReservationService.name);
 
     constructor(
-        @InjectRepository(Reservation)
-        private reservationRepo: Repository<Reservation>,
-        @InjectRepository(OnHandBalance)
-        private balanceRepo: Repository<OnHandBalance>,
-        @InjectRepository(Item)
-        private itemRepo: Repository<Item>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
-    async createReservation(dto: CreateReservationDto): Promise<Reservation> {
+    async createReservation(dto: CreateReservationDto) {
         // 1. Check Availability (ATP Check)
-        // We must ensure (OnHand - ExistingReservations) >= RequestQty
-
         const availableQty = await this.calculateAvailableQuantity(
             dto.organizationId,
             dto.itemId,
@@ -54,50 +41,57 @@ export class ReservationService {
         }
 
         // 2. Create Reservation
-        const reservation = new Reservation();
-        reservation.organization = { id: dto.organizationId } as InventoryOrganization;
-        reservation.item = { id: dto.itemId } as Item;
-        reservation.demandSourceType = dto.demandSourceType;
-        reservation.demandSourceHeaderId = dto.demandSourceHeaderId;
-        reservation.demandSourceLineId = dto.demandSourceLineId;
+        const [reservation] = await this.db.insert(schema.inventoryReservations).values({
+            organizationId: dto.organizationId,
+            itemId: dto.itemId,
+            demandSourceType: dto.demandSourceType,
+            demandSourceHeaderId: dto.demandSourceHeaderId,
+            demandSourceLineId: dto.demandSourceLineId,
+            subinventoryId: dto.subinventoryId,
+            locatorId: dto.locatorId,
+            lotId: dto.lotId,
+            serialId: dto.serialId,
+            quantity: dto.quantity.toString(),
+            uom: dto.uom || 'EA',
+            reservationType: dto.subinventoryId ? 'Hard' : 'Soft',
+        }).returning();
 
-        if (dto.subinventoryId) reservation.subinventory = { id: dto.subinventoryId } as Subinventory;
-        if (dto.locatorId) reservation.locator = { id: dto.locatorId } as Locator;
-        if (dto.lotId) reservation.lot = { id: dto.lotId } as Lot;
-        if (dto.serialId) reservation.serial = { id: dto.serialId } as Serial;
-
-        reservation.quantity = dto.quantity;
-        reservation.uom = dto.uom || 'EA';
-        reservation.reservationType = dto.subinventoryId ? 'Hard' : 'Soft'; // Simple logic for now
-
-        return this.reservationRepo.save(reservation);
+        return reservation;
     }
 
     async calculateAvailableQuantity(orgId: string, itemId: string, subinvId?: string, locatorId?: string, lotId?: string): Promise<number> {
         // A. Get On Hand
-        const balanceQuery = this.balanceRepo.createQueryBuilder('b')
-            .select('SUM(b.quantity)', 'total')
-            .where('b.organizationId = :orgId', { orgId })
-            .andWhere('b.itemId = :itemId', { itemId });
+        const onHandFilters = [
+            eq(schema.inventoryOnHandQuantities.organizationId, orgId),
+            eq(schema.inventoryOnHandQuantities.itemId, itemId)
+        ];
+        if (subinvId) onHandFilters.push(eq(schema.inventoryOnHandQuantities.subinventoryId, subinvId));
+        if (locatorId) onHandFilters.push(eq(schema.inventoryOnHandQuantities.locatorId, locatorId));
+        if (lotId) onHandFilters.push(eq(schema.inventoryOnHandQuantities.lotNumber, lotId)); // Assuming lotId maps to lotNumber
 
-        if (subinvId) balanceQuery.andWhere('b.subinventoryId = :subinvId', { subinvId });
-        if (locatorId) balanceQuery.andWhere('b.locatorId = :locatorId', { locatorId });
-        if (lotId) balanceQuery.andWhere('b.lotId = :lotId', { lotId });
+        const [onHandResult] = await this.db.select({
+            total: sql<number>`SUM(${schema.inventoryOnHandQuantities.quantity})`
+        })
+            .from(schema.inventoryOnHandQuantities)
+            .where(and(...onHandFilters));
 
-        const balanceResult = await balanceQuery.getRawOne();
-        const onHand = Number(balanceResult?.total || 0);
+        const onHand = Number(onHandResult?.total || 0);
 
         // B. Get Existing Reservations
-        const resQuery = this.reservationRepo.createQueryBuilder('r')
-            .select('SUM(r.quantity)', 'total')
-            .where('r.organizationId = :orgId', { orgId })
-            .andWhere('r.itemId = :itemId', { itemId });
+        const resFilters = [
+            eq(schema.inventoryReservations.organizationId, orgId),
+            eq(schema.inventoryReservations.itemId, itemId)
+        ];
+        if (subinvId) resFilters.push(eq(schema.inventoryReservations.subinventoryId, subinvId));
+        if (locatorId) resFilters.push(eq(schema.inventoryReservations.locatorId, locatorId));
+        if (lotId) resFilters.push(eq(schema.inventoryReservations.lotId, lotId));
 
-        if (subinvId) resQuery.andWhere('r.subinventoryId = :subinvId', { subinvId });
-        if (locatorId) resQuery.andWhere('r.locatorId = :locatorId', { locatorId });
-        if (lotId) resQuery.andWhere('r.lotId = :lotId', { lotId });
+        const [resResult] = await this.db.select({
+            total: sql<number>`SUM(${schema.inventoryReservations.quantity})`
+        })
+            .from(schema.inventoryReservations)
+            .where(and(...resFilters));
 
-        const resResult = await resQuery.getRawOne();
         const reserved = Number(resResult?.total || 0);
 
         // ATP = OnHand - Reserved

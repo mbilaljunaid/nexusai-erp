@@ -685,3 +685,31 @@ export const purchaseRequisitionLinesRelations = relations(purchaseRequisitionLi
         references: [purchaseRequisitions.id],
     }),
 }));
+// ========== RESERVATIONS ==========
+export const inventoryReservations = pgTable("inv_reservations", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    organizationId: varchar("organizationId").notNull(),
+    itemId: varchar("itemId").notNull(),
+
+    // Demand Source
+    demandSourceType: varchar("demandSourceType").notNull(), // 'Sales Order', 'Work Order', 'Transfer Order'
+    demandSourceHeaderId: varchar("demandSourceHeaderId").notNull(),
+    demandSourceLineId: varchar("demandSourceLineId"),
+
+    // Supply Source (Inventory)
+    subinventoryId: varchar("subinventoryId"),
+    locatorId: varchar("locatorId"),
+    lotId: varchar("lotId"), // Maps to lotNumber usually in new schema, but sticking to ID if needed or string
+    serialId: varchar("serialId"), // Maps to serialNumber
+
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
+    uom: varchar("uom").notNull(),
+    reservationType: varchar("reservationType").default("Hard"), // Hard, Soft
+
+    createdAt: timestamp("createdAt").default(sql`now()`),
+    updatedAt: timestamp("updatedAt").default(sql`now()`),
+});
+
+export const insertReservationSchema = createInsertSchema(inventoryReservations);
+export type InventoryReservation = typeof inventoryReservations.$inferSelect;
+export type InsertInventoryReservation = z.infer<typeof insertReservationSchema>;

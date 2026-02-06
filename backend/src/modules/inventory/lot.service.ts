@@ -1,55 +1,72 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
-import { Lot } from './entities/lot.entity';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, like, and, isNotNull, desc, sql } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class LotService {
     constructor(
-        @InjectRepository(Lot)
-        private readonly lotRepository: Repository<Lot>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
-    async create(data: Partial<Lot>): Promise<Lot> {
-        const lot = this.lotRepository.create(data);
-        return await this.lotRepository.save(lot);
+    async create(data: any) {
+        // Lots are now often auto-created via transactions or reception, 
+        // but if we need master data creation:
+        const [lot] = await this.db.insert(schema.inventoryLotSerial).values({
+            inventoryId: data.item?.id || data.inventoryId,
+            lotNumber: data.lotNumber,
+            status: data.status || 'ACTIVE',
+            quantity: data.quantity?.toString() || '0',
+            expirationDate: data.expirationDate ? new Date(data.expirationDate) : null
+        }).returning();
+        return lot;
     }
 
     async findAll(query: { limit?: number; offset?: number; search?: string; status?: string; itemId?: string }) {
-        const take = query.limit || 25;
-        const skip = query.offset || 0;
+        const limit = query.limit || 25;
+        const offset = query.offset || 0;
 
-        const where: any = {};
-        if (query.status) where.status = query.status;
-        if (query.itemId) where.item = { id: query.itemId };
-        if (query.search) {
-            where.lotNumber = Like(`%${query.search}%`);
-        }
+        const filters = [isNotNull(schema.inventoryLotSerial.lotNumber)];
 
-        const [data, total] = await this.lotRepository.findAndCount({
-            where,
-            take,
-            skip,
-            relations: ['item', 'organization'],
-            order: { createdAt: 'DESC' }
-        });
+        if (query.status) filters.push(eq(schema.inventoryLotSerial.status, query.status));
+        if (query.itemId) filters.push(eq(schema.inventoryLotSerial.inventoryId, query.itemId));
+        if (query.search) filters.push(like(schema.inventoryLotSerial.lotNumber, `%${query.search}%`));
 
-        return { data, total };
+        const data = await this.db.select()
+            .from(schema.inventoryLotSerial)
+            .where(and(...filters))
+            .limit(limit)
+            .offset(offset)
+            .orderBy(desc(schema.inventoryLotSerial.createdAt));
+
+        const [countResult] = await this.db.select({ count: sql<number>`count(*)` })
+            .from(schema.inventoryLotSerial)
+            .where(and(...filters));
+
+        return { data, total: Number(countResult?.count || 0) };
     }
 
-    async findOne(id: string): Promise<Lot | null> {
-        return await this.lotRepository.findOne({
-            where: { id },
-            relations: ['item', 'organization']
-        });
+    async findOne(id: string) {
+        const [lot] = await this.db.select()
+            .from(schema.inventoryLotSerial)
+            .where(eq(schema.inventoryLotSerial.id, id));
+        return lot || null;
     }
 
-    async update(id: string, data: Partial<Lot>): Promise<Lot | null> {
-        await this.lotRepository.update(id, data);
-        return await this.findOne(id);
+    async update(id: string, data: any) {
+        const [lot] = await this.db.update(schema.inventoryLotSerial)
+            .set({
+                status: data.status,
+                expirationDate: data.expirationDate ? new Date(data.expirationDate) : undefined
+            })
+            .where(eq(schema.inventoryLotSerial.id, id))
+            .returning();
+        return lot || null;
     }
 
     async remove(id: string): Promise<void> {
-        await this.lotRepository.delete(id);
+        await this.db.delete(schema.inventoryLotSerial)
+            .where(eq(schema.inventoryLotSerial.id, id));
     }
 }
