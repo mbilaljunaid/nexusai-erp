@@ -15,7 +15,7 @@ async function verify() {
 
     try {
         // 1. Finance
-        const glCount = await db.select({ count: sql<number>`count(*)` }).from(schema.glJeHeaders);
+        const glCount = await db.select({ count: sql<number>`count(*)` }).from(schema.glJournals);
         console.log(`✅ Finance (GL Headers): ${glCount[0].count}`);
 
         // 2. Projects
@@ -27,7 +27,7 @@ async function verify() {
         console.log(`✅ EPM (Plan Units): ${epmCount[0].count}`);
 
         // 4. Inventory
-        const invCount = await db.select({ count: sql<number>`count(*)` }).from(schema.invMaterialTxns);
+        const invCount = await db.select({ count: sql<number>`count(*)` }).from(schema.inventoryTransactions);
         console.log(`✅ Inventory (Material Txns): ${invCount[0].count}`);
 
         // 5. CRM
