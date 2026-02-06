@@ -1,34 +1,16 @@
 
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PlanUnit } from './entities/plan-unit.entity';
-import { PlanProject } from './entities/plan-project.entity';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, and } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class ProjectFinanceService {
     private readonly logger = new Logger(ProjectFinanceService.name);
 
-    constructor(
-        @InjectRepository(PlanUnit)
-        private planUnitRepository: Repository<PlanUnit>,
-        @InjectRepository(PlanProject)
-        private planProjectRepository: Repository<PlanProject>,
-    ) { }
+    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
 
-    /**
-     * Calculates Forecasted Revenue based on Percentage of Completion (POC) method.
-     * Logic: 
-     * 1. Get Project Plan Expenses for the period (Cost).
-     * 2. Calculate POC % = (Period Cost / Estimated Total Cost).
-     * 3. Revenue = Total Contract Value * POC %.
-     * 4. Save Revenue PlanUnit.
-     * 
-     * @param projectCode EPM Project Code
-     * @param period Period (2025-01)
-     * @param costAccountPattern Pattern to identify cost accounts (e.g. '5%')
-     * @param revenueAccount Target Revenue Account Code
-     */
     async calculateRevenueRecognition(
         projectCode: string,
         period: string,
@@ -40,18 +22,25 @@ export class ProjectFinanceService {
     ): Promise<number> {
         this.logger.log(`Running Rev Rec for ${projectCode} in ${period}...`);
 
-        const project = await this.planProjectRepository.findOneBy({ code: projectCode });
+        const project = await this.db.query.planProjects.findFirst({
+            where: eq(schema.planProjects.code, projectCode)
+        });
+
         if (!project) throw new Error(`Project ${projectCode} not found`);
+        const projectCodeVal = project.code || 'UNKNOWN';
 
         // 1. Aggregate Costs for this Project/Period 
         // Assuming "5xxxx" are expense accounts. In real app, use Account Type='EXPENSE'
-        const units = await this.planUnitRepository.createQueryBuilder('unit')
-            .where('unit.scenarioId = :scenarioId', { scenarioId })
-            .andWhere('unit.versionId = :versionId', { versionId })
-            .andWhere('unit.period = :period', { period })
-            .andWhere('unit.projectId = :projId', { projId: project.code }) // Assuming projectId stores code or ID? PlanUnit.projectId usually stores the Code or UUID. Let's assume Code based on previous mock data.
-            // .andWhere('unit.accountId LIKE :pattern', { pattern: '5%' }) // Simple filter for costs
-            .getMany();
+        const units = await this.db.query.planUnits.findMany({
+            where: and(
+                eq(schema.planUnits.scenarioId, scenarioId),
+                eq(schema.planUnits.versionId, versionId),
+                eq(schema.planUnits.period, period),
+                eq(schema.planUnits.projectId, projectCodeVal) // Assuming PlanUnit stores code (legacy) or ID? 
+                // The TypeORM code used `project.code` for `projectId` filter.
+                // Assuming PlanUnit.projectId stores the "Code" string in this messy legacy setup.
+            )
+        });
 
         // Filter for expenses manually or via query if needed. 
         // For simplicity, let's assume all units for this project *except* the revenue account are costs.
@@ -73,33 +62,36 @@ export class ProjectFinanceService {
         this.logger.log(`Cost: ${periodCost}, Est.Total: ${estimatedTotalCost}, POC: ${(pocPercent * 100).toFixed(2)}%, Rev: ${revenueAmount}`);
 
         // 4. Upsert Revenue PlanUnit
-        let revUnit = await this.planUnitRepository.findOne({
-            where: {
-                scenarioId,
-                versionId,
-                period,
-                projectId: project.code,
-                accountId: revenueAccount
-            }
+        const revUnit = await this.db.query.planUnits.findFirst({
+            where: and(
+                eq(schema.planUnits.scenarioId, scenarioId),
+                eq(schema.planUnits.versionId, versionId),
+                eq(schema.planUnits.period, period),
+                eq(schema.planUnits.projectId, projectCodeVal),
+                eq(schema.planUnits.accountId, revenueAccount)
+            )
         });
 
         if (!revUnit) {
-            revUnit = this.planUnitRepository.create({
+            // Insert
+            await this.db.insert(schema.planUnits).values({
                 scenarioId,
                 versionId,
                 period,
-                projectId: project.code,
+                projectId: projectCodeVal,
                 accountId: revenueAccount,
                 departmentId: 'GL_REV_REC', // System Dept
                 entityId: costUnits[0]?.entityId || 'DEFAULT',
-                amount: revenueAmount,
+                amount: String(revenueAmount),
                 status: 'CALCULATED'
             });
         } else {
-            revUnit.amount = revenueAmount;
+            // Update
+            await this.db.update(schema.planUnits)
+                .set({ amount: String(revenueAmount) })
+                .where(eq(schema.planUnits.id, revUnit.id));
         }
 
-        await this.planUnitRepository.save(revUnit);
         return revenueAmount;
     }
 }

@@ -1,43 +1,43 @@
 
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PlanAsset } from './entities/plan-asset.entity';
-import { PlanUnit } from './entities/plan-unit.entity';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class CapExService {
     private readonly logger = new Logger(CapExService.name);
 
-    constructor(
-        @InjectRepository(PlanAsset)
-        private assetRepository: Repository<PlanAsset>,
-        @InjectRepository(PlanUnit)
-        private planUnitRepository: Repository<PlanUnit>,
-    ) { }
+    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
 
     async calculateDepreciation(versionId: string, scenarioId: string): Promise<number> {
         this.logger.log(`Calculating Depreciation for Version ${versionId}...`);
 
-        const assets = await this.assetRepository.find({ where: { versionId } });
+        const assets = await this.db.query.planAssets.findMany({
+            where: eq(schema.planAssets.versionId, versionId)
+        });
 
         let count = 0;
         for (const asset of assets) {
             // Straight Line: Cost / UsefulLife
-            const monthlyDepr = Number(asset.cost) / asset.usefulLifeMonths;
+            // Schema has cost, usefulLife (months - verifying schema, assumed integer)
+            const cost = Number(asset.cost || 0);
+            const usefulLife = asset.usefulLife || 60; // Default 5 years if null
+
+            const monthlyDepr = cost / usefulLife;
 
             // Generate PlanUnit for one sample month
-            const unit = this.planUnitRepository.create({
+            await this.db.insert(schema.planUnits).values({
                 scenarioId,
                 versionId,
                 period: '2024-01', // Should be strictly >= purchaseDate
                 entityId: 'US-OPS',
-                departmentId: 'SHARED',
+                departmentId: 'SHARED', // Hardcoded as in original
                 accountId: '70000_DEPR_EXP',
-                amount: monthlyDepr,
+                amount: String(monthlyDepr),
                 status: 'CALCULATED'
             });
-            await this.planUnitRepository.save(unit);
             count++;
         }
         return count;

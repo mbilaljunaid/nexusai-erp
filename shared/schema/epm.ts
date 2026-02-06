@@ -1,127 +1,218 @@
-import { pgTable, varchar, text, timestamp, numeric, boolean, jsonb } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { pgTable, varchar, text, timestamp, numeric, boolean, jsonb, integer, date } from "drizzle-orm/pg-core";
+import { sql, relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { projects2 } from "./projects.ts"; // For PlanProject relation
 
-// ========== FINANCIAL FORECASTING & EPM ==========
-export const revenueForecasts = pgTable("revenue_forecasts", {
+// ========== EPM CORE ENTITIES ==========
+// ... (imports are top, this is just to replace the top block)
+
+
+// 1. Budgets (Existing)
+export const budgets = pgTable("budgets", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    name: varchar("name").notNull(),
-    period: varchar("period").notNull(), // monthly, quarterly, yearly
-    startDate: timestamp("start_date").notNull(),
-    endDate: timestamp("end_date").notNull(),
-    forecastAmount: numeric("forecast_amount", { precision: 18, scale: 2 }),
-    actualAmount: numeric("actual_amount", { precision: 18, scale: 2 }),
-    variance: numeric("variance", { precision: 18, scale: 2 }),
-    status: varchar("status").default("draft"),
-    createdAt: timestamp("created_at").default(sql`now()`),
-    updatedAt: timestamp("updated_at").default(sql`now()`),
-});
-
-export const insertRevenueForecastSchema = createInsertSchema(revenueForecasts).extend({
-    name: z.string().min(1),
-    period: z.string().min(1),
-    startDate: z.date(),
-    endDate: z.date(),
-    forecastAmount: z.string().optional(),
-    actualAmount: z.string().optional(),
-    variance: z.string().optional(),
-    status: z.string().optional(),
-});
-
-export type InsertRevenueForecast = z.infer<typeof insertRevenueForecastSchema>;
-export type RevenueForecast = typeof revenueForecasts.$inferSelect;
-
-export const budgetAllocations = pgTable("budget_allocations", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    name: varchar("name").notNull(),
-    department: varchar("department"),
-    category: varchar("category"),
-    fiscalYear: varchar("fiscal_year"),
-    allocatedAmount: numeric("allocated_amount", { precision: 18, scale: 2 }),
+    departmentId: varchar("department_id").notNull(),
+    year: integer("year").notNull(),
+    quarter: integer("quarter").notNull(),
+    allocatedAmount: numeric("allocated_amount", { precision: 18, scale: 2 }).notNull(),
     spentAmount: numeric("spent_amount", { precision: 18, scale: 2 }).default("0"),
-    remainingAmount: numeric("remaining_amount", { precision: 18, scale: 2 }),
-    status: varchar("status").default("active"),
+    reservedAmount: numeric("reserved_amount", { precision: 18, scale: 2 }).default("0"),
+    status: varchar("status").default("draft"),
+    notes: text("notes"),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertBudgetAllocationSchema = createInsertSchema(budgetAllocations).extend({
-    name: z.string().min(1),
-    department: z.string().optional(),
-    category: z.string().optional(),
-    fiscalYear: z.string().optional(),
-    allocatedAmount: z.string().optional(),
-    spentAmount: z.string().optional(),
-    remainingAmount: z.string().optional(),
-    status: z.string().optional(),
+// 2. Plan Scenarios (Existing)
+export const planScenarios = pgTable("plan_scenarios", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    code: varchar("code").notNull().unique(), // ACTUAL, BUDGET_2024
+    name: varchar("name").notNull(),
+    description: text("description"),
+    isSystem: boolean("is_system").default(false),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export type InsertBudgetAllocation = z.infer<typeof insertBudgetAllocationSchema>;
-export type BudgetAllocation = typeof budgetAllocations.$inferSelect;
-
-export const forecastModels = pgTable("forecast_models", {
+// 3. Plan Versions (Existing)
+export const planVersions = pgTable("plan_versions", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    code: varchar("code").notNull(), // V1, FINAL
     name: varchar("name").notNull(),
-    type: varchar("type").notNull(), // linear, exponential, arima, ml
-    parameters: jsonb("parameters"),
-    accuracy: numeric("accuracy", { precision: 5, scale: 2 }),
+    scenarioId: varchar("scenario_id").notNull().references(() => planScenarios.id),
+    isLocked: boolean("is_locked").default(false),
+    isFinal: boolean("is_final").default(false),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// 4. Plan Dimensions
+export const planDimensions = pgTable("plan_dimensions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(), // Department, Region, Channel
+    type: varchar("type").notNull(), // STANDARD, ATTRIBUTE
     isActive: boolean("is_active").default(true),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertForecastModelSchema = createInsertSchema(forecastModels).extend({
-    name: z.string().min(1),
-    type: z.string().min(1),
-    parameters: z.record(z.any()).optional(),
-    accuracy: z.string().optional(),
-    isActive: z.boolean().optional(),
-});
-
-export type InsertForecastModel = z.infer<typeof insertForecastModelSchema>;
-export type ForecastModel = typeof forecastModels.$inferSelect;
-
-// ========== SCENARIOS & PLANNING ==========
-export const scenarios = pgTable("scenarios", {
+// 5. Plan Units (Data Points)
+export const planUnits = pgTable("plan_units", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    name: varchar("name").notNull(),
-    description: text("description"),
-    type: varchar("type"), // best_case, worst_case, most_likely
-    baselineId: varchar("baseline_id"),
+    versionId: varchar("version_id").notNull().references(() => planVersions.id),
+    period: varchar("period").notNull(), // Jan-24
+    account: varchar("account").notNull(),
+    amount: numeric("amount", { precision: 18, scale: 2 }).default("0"),
+    currency: varchar("currency").default("USD"),
+
+    // Dimensions (Flexible columns or JSONB could be used, explicitly mapped for now)
+    department: varchar("department"),
+    region: varchar("region"),
+    product: varchar("product"),
+    channel: varchar("channel"),
+    project: varchar("project"),
+
     status: varchar("status").default("draft"),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export const insertScenarioSchema = createInsertSchema(scenarios).extend({
-    name: z.string().min(1),
-    description: z.string().optional(),
-    type: z.string().optional(),
-    baselineId: z.string().optional(),
-    status: z.string().optional(),
+// 6. Plan Drivers
+export const planDrivers = pgTable("plan_drivers", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    type: varchar("type").notNull(), // GROWTH_RATE, HEADCOUNT
+    value: numeric("value", { precision: 18, scale: 4 }),
+    versionId: varchar("version_id").references(() => planVersions.id),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
-export type InsertScenario = z.infer<typeof insertScenarioSchema>;
-export type Scenario = typeof scenarios.$inferSelect;
-
-export const scenarioVariables = pgTable("scenario_variables", {
+// 7. Plan Positions (Workforce Planning)
+export const planPositions = pgTable("plan_positions", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    scenarioId: varchar("scenario_id").notNull(),
-    variableName: varchar("variable_name").notNull(),
-    baseValue: numeric("base_value", { precision: 18, scale: 4 }),
-    adjustedValue: numeric("adjusted_value", { precision: 18, scale: 4 }),
-    adjustmentType: varchar("adjustment_type"), // percentage, absolute
+    versionId: varchar("version_id").notNull().references(() => planVersions.id),
+    jobTitle: varchar("job_title").notNull(),
+    department: varchar("department"),
+    headcount: integer("headcount").default(1),
+    salary: numeric("salary", { precision: 18, scale: 2 }),
+    startDate: date("start_date"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const insertScenarioVariableSchema = createInsertSchema(scenarioVariables).extend({
-    scenarioId: z.string().min(1),
-    variableName: z.string().min(1),
-    baseValue: z.string().optional(),
-    adjustedValue: z.string().optional(),
-    adjustmentType: z.string().optional(),
+// 8. Plan Assets (CapEx)
+export const planAssets = pgTable("plan_assets", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    versionId: varchar("version_id").notNull().references(() => planVersions.id),
+    name: varchar("name").notNull(),
+    category: varchar("category"),
+    cost: numeric("cost", { precision: 18, scale: 2 }),
+    purchaseDate: date("purchase_date"),
+    usefulLife: integer("useful_life"), // Months
+    createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export type InsertScenarioVariable = z.infer<typeof insertScenarioVariableSchema>;
-export type ScenarioVariable = typeof scenarioVariables.$inferSelect;
+// 9. PlanProjects
+export const planProjects = pgTable("plan_projects", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    versionId: varchar("version_id").notNull().references(() => planVersions.id),
+    code: varchar("code").unique(), // Added to match Entity
+    name: varchar("name"), // Added
+    description: text("description"), // Added
+    isActive: boolean("is_active").default(true), // Added
+    erpProjectId: varchar("erp_project_id"), // Added link
+    projectId: varchar("project_id").references(() => projects2.id), // Cross-module (existing)
+    plannedStart: date("planned_start"),
+    plannedEnd: date("planned_end"),
+    plannedBudget: numeric("planned_budget", { precision: 18, scale: 2 }),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 10. Plan Channels
+export const planChannels = pgTable("plan_channels", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    code: varchar("code").notNull().unique(),
+    name: varchar("name").notNull(),
+    isActive: boolean("is_active").default(true),
+});
+
+// 11. Plan Products
+export const planProducts = pgTable("plan_products", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    sku: varchar("sku").notNull().unique(),
+    name: varchar("name").notNull(),
+    family: varchar("family"),
+    isActive: boolean("is_active").default(true),
+});
+
+// 12. Plan ESG Metrics
+export const planEsgMetrics = pgTable("plan_esg_metrics", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    versionId: varchar("version_id").notNull().references(() => planVersions.id),
+    metricName: varchar("metric_name").notNull(), // Carbon, Water
+    targetValue: numeric("target_value", { precision: 18, scale: 4 }),
+    uom: varchar("uom"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 13. EPM Audits
+export const epmAudits = pgTable("epm_audits", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entityType: varchar("entity_type").notNull(),
+    entityId: varchar("entity_id").notNull(),
+    action: varchar("action").notNull(),
+    changedBy: varchar("changed_by").notNull(),
+    changes: jsonb("changes"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// ========== RELATIONS ==========
+
+export const planScenariosRelations = relations(planScenarios, ({ many }) => ({
+    versions: many(planVersions),
+}));
+
+export const planVersionsRelations = relations(planVersions, ({ one, many }) => ({
+    scenario: one(planScenarios, {
+        fields: [planVersions.scenarioId],
+        references: [planScenarios.id],
+    }),
+    units: many(planUnits),
+    drivers: many(planDrivers),
+    positions: many(planPositions),
+    assets: many(planAssets),
+    projects: many(planProjects),
+    esgMetrics: many(planEsgMetrics),
+}));
+
+export const planUnitsRelations = relations(planUnits, ({ one }) => ({
+    version: one(planVersions, {
+        fields: [planUnits.versionId],
+        references: [planVersions.id],
+    }),
+}));
+
+export const planProjectsRelations = relations(planProjects, ({ one }) => ({
+    version: one(planVersions, {
+        fields: [planProjects.versionId],
+        references: [planVersions.id],
+    }),
+    project: one(projects2, {
+        fields: [planProjects.projectId],
+        references: [projects2.id],
+    }),
+}));
+
+// Zod Schemas
+export const insertBudgetSchema = createInsertSchema(budgets);
+export const insertPlanScenarioSchema = createInsertSchema(planScenarios);
+export const insertPlanVersionSchema = createInsertSchema(planVersions);
+export const insertPlanUnitSchema = createInsertSchema(planUnits);
+export const insertPlanDriverSchema = createInsertSchema(planDrivers);
+export const insertPlanPositionSchema = createInsertSchema(planPositions);
+export const insertPlanAssetSchema = createInsertSchema(planAssets);
+
+export type Budget = typeof budgets.$inferSelect;
+export type PlanScenario = typeof planScenarios.$inferSelect;
+export type PlanVersion = typeof planVersions.$inferSelect;
+export type PlanUnit = typeof planUnits.$inferSelect;

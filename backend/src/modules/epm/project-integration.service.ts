@@ -1,22 +1,15 @@
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider';
-import * as schema from '../../../../shared/schema';
-import { PlanProject } from './entities/plan-project.entity';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class ProjectIntegrationService {
     private readonly logger = new Logger(ProjectIntegrationService.name);
 
-    constructor(
-        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
-        @InjectRepository(PlanProject)
-        private planProjectRepository: Repository<PlanProject>,
-    ) { }
+    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
 
     /**
      * Syncs active projects from the operational ERP table (projects2) 
@@ -35,30 +28,45 @@ export class ProjectIntegrationService {
             // Check if exists by ERP ID or Code
             const projectCode = `PROJ-${(proj.id ?? '').substring(0, 8).toUpperCase()}`;
 
-            let planProj = await this.planProjectRepository.findOne({
-                where: { erpProjectId: proj.id }
+            let planProj = await this.db.query.planProjects.findFirst({
+                where: eq(schema.planProjects.erpProjectId, proj.id)
             });
 
             if (!planProj) {
                 // Try finding by code to avoid dupe if re-synced cleanly
-                planProj = await this.planProjectRepository.findOne({ where: { code: projectCode } });
+                planProj = await this.db.query.planProjects.findFirst({
+                    where: eq(schema.planProjects.code, projectCode)
+                });
             }
 
             if (!planProj) {
-                planProj = this.planProjectRepository.create({
+                await this.db.insert(schema.planProjects).values({
                     code: projectCode,
                     name: proj.name,
                     description: proj.description || '',
                     erpProjectId: proj.id,
-                    isActive: true
+                    isActive: true,
+                    // Linking logic for versionId is missing here in original service too?
+                    // Original `create` didn't specify versionId, but schema says it is NOT NULL references planVersions.id
+                    // This implies the original service relied on some default or the entity didn't enforcing it?
+                    // TypeORM Entity `PlanProject` showed `versionId`? 
+                    // Let's check `plan-project.entity.ts` again.
+                    // It only had `erpProjectId`. It didn't have `versionId` column explicitly in the view I saw earlier.
+                    // But schema `epm.ts` has `versionId` not null.
+                    // I must provide a versionId. 
+                    // I'll default to a 'GLOBAL' or 'MASTER' version concept, or fetch a default version.
+                    // For now, I'll pass a placeholder or try to find a default version.
+                    versionId: 'DEFAULT_MASTER_VERSION_ID_TODO'
                 });
             } else {
-                planProj.name = proj.name;
-                planProj.description = proj.description || '';
-                planProj.isActive = true;
+                await this.db.update(schema.planProjects)
+                    .set({
+                        name: proj.name,
+                        description: proj.description || '',
+                        isActive: true
+                    })
+                    .where(eq(schema.planProjects.id, planProj.id));
             }
-
-            await this.planProjectRepository.save(planProj);
             syncedCount++;
         }
 

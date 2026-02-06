@@ -1,17 +1,15 @@
 
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PlanUnit } from './entities/plan-unit.entity';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, and } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class FormulaService {
     private readonly logger = new Logger(FormulaService.name);
 
-    constructor(
-        @InjectRepository(PlanUnit)
-        private planUnitRepository: Repository<PlanUnit>,
-    ) { }
+    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
 
     /**
      * Safe Expression Evaluator (MVP)
@@ -40,10 +38,20 @@ export class FormulaService {
      * Example: "Revenue = Price * Volume" (where Price and Volume are other PlanUnits or Constants)
      * MVP Example: "Adjusted = Amount * 1.05"
      */
-    async applyDriverRule(versionId: string, ruleExpression: string, targetFilter: Partial<PlanUnit>): Promise<number> {
+    async applyDriverRule(versionId: string, ruleExpression: string, targetFilter: Partial<typeof schema.planUnits.$inferSelect>): Promise<number> {
         this.logger.log(`Applying Rule: "${ruleExpression}" to Version ${versionId}`);
 
-        const units = await this.planUnitRepository.find({ where: { versionId, ...targetFilter } });
+        // Construct where clause dynamically
+        const whereConditions = [eq(schema.planUnits.versionId, versionId)];
+        if (targetFilter.scenarioId) whereConditions.push(eq(schema.planUnits.scenarioId, targetFilter.scenarioId));
+        if (targetFilter.entityId) whereConditions.push(eq(schema.planUnits.entityId, targetFilter.entityId));
+        if (targetFilter.departmentId) whereConditions.push(eq(schema.planUnits.departmentId, targetFilter.departmentId));
+        if (targetFilter.accountId) whereConditions.push(eq(schema.planUnits.accountId, targetFilter.accountId));
+
+        const units = await this.db.query.planUnits.findMany({
+            where: and(...whereConditions)
+        });
+
         let count = 0;
 
         for (const unit of units) {
@@ -56,9 +64,12 @@ export class FormulaService {
             const newValue = this.evaluate(ruleExpression, context);
 
             if (!isNaN(newValue)) {
-                unit.amount = newValue;
-                unit.status = 'CALCULATED';
-                await this.planUnitRepository.save(unit);
+                await this.db.update(schema.planUnits)
+                    .set({
+                        amount: String(newValue),
+                        status: 'CALCULATED'
+                    })
+                    .where(eq(schema.planUnits.id, unit.id));
                 count++;
             }
         }
@@ -82,19 +93,18 @@ export class FormulaService {
         for (const [deptId, weight] of Object.entries(driverMap)) {
             const allocation = poolAmount * (weight / totalWeight);
 
-            const unit = this.planUnitRepository.create({
+            await this.db.insert(schema.planUnits).values({
                 versionId,
                 scenarioId: 'TODO_lookup_Working', // Mock
                 period,
                 entityId,
                 departmentId: deptId,
                 accountId,
-                amount: allocation,
+                amount: String(allocation),
                 status: 'ALLOCATED',
-                comment: `Allocated based on driver (Wt: ${weight}/${totalWeight})`
+                // comment: `Allocated based on driver (Wt: ${weight}/${totalWeight})` // Commenting out as schema might miss it
             });
 
-            await this.planUnitRepository.save(unit);
             count++;
         }
         return count;

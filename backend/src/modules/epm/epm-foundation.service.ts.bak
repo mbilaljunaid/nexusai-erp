@@ -2,14 +2,14 @@
 import { Inject, Injectable, Logger, ConflictException, NotFoundException } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+// import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
 import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class EPMFoundationService {
     private readonly logger = new Logger(EPMFoundationService.name);
 
-    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
+    constructor(@Inject('DRIZZLE_DB') private db: NodePgDatabase<typeof schema>) { }
 
     async createScenario(name: string, code: string, isSystem = false) {
         const existing = await this.db.query.planScenarios.findFirst({

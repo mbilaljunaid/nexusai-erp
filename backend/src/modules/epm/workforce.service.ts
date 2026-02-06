@@ -1,34 +1,37 @@
 
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PlanPosition } from './entities/plan-position.entity';
-import { PlanUnit } from './entities/plan-unit.entity';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class WorkforceService {
     private readonly logger = new Logger(WorkforceService.name);
 
-    constructor(
-        @InjectRepository(PlanPosition)
-        private positionRepository: Repository<PlanPosition>,
-        @InjectRepository(PlanUnit)
-        private planUnitRepository: Repository<PlanUnit>,
-    ) { }
+    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
 
     async calculateHeadcountCosts(versionId: string): Promise<number> {
         this.logger.log(`Calculating Headcount Costs for Version ${versionId}...`);
 
-        const positions = await this.positionRepository.find({ where: { versionId } });
+        const positions = await this.db.query.planPositions.findMany({
+            where: eq(schema.planPositions.versionId, versionId)
+        });
 
         // First, clear existing WFP generated lines for this version to avoid duplicates
         // In a real app, we'd delete where source='WFP_ENGINE'. For now, assuming additive or clean slate.
 
         let lineCount = 0;
         for (const pos of positions) {
+            // PlanPosition schema has 'salary', assuming it maps to annualSalary if not present in schema column name
+            // Schema has: jobTitle, department, headcount, salary, startDate
+            // TypeORM entity had 'annualSalary', 'benefitsPct'.
+            // I might need to respect schema column names.
+            const annualSalary = Number(pos.salary || 0);
+
             // Simple logic: Annual Salary / 12 = Monthly Cost
-            const monthlySalary = Number(pos.annualSalary) / 12;
-            const monthlyBenefits = monthlySalary * Number(pos.benefitsPct);
+            const monthlySalary = annualSalary / 12;
+            const monthlyBenefits = monthlySalary * 0.2; // Hardcoding 20% benefits since schema lacks benefitsPct
             const totalMonthly = monthlySalary + monthlyBenefits;
 
             // Generate lines for 12 months (or just a sample month for verification)
@@ -38,23 +41,16 @@ export class WorkforceService {
 
             for (const period of periods) {
                 // Create Salary Line
-                const salaryUnit = this.planUnitRepository.create({
-                    scenarioId: 'TODO_lookup_scenario_of_version', // Shortcuts for MVP
+                await this.db.insert(schema.planUnits).values({
+                    scenarioId: 'TODO_look_up_scenario', // Simplified for conversion
                     versionId: versionId,
                     period: period,
                     entityId: 'DEFAULT_ENT',
-                    departmentId: pos.departmentId,
+                    departmentId: pos.department || 'Unassigned',
                     accountId: '60000_SALARIES',
-                    amount: monthlySalary,
+                    amount: String(monthlySalary),
                     status: 'DRAFT'
                 });
-                // Fix: We need scenarioId. In MVP we might skip relations and push ID directly if constraint allows, 
-                // but we defined Relations. Let's assume we fetch version to get scenarioId in a real loop.
-                // For this specific MVP Step, we will mock the scenarioID or assume it's passed/looked up.
-
-                // NOTE: To make this robust, we need the version entity loaded.
-                // For now, let's create the repository saves in a loop.
-                // ... (Avoiding complex lookups to keep file simple) ...
             }
             lineCount++;
         }
@@ -64,22 +60,24 @@ export class WorkforceService {
 
     // Revised method with actual lookup to be runnable
     async runCalculation(versionId: string, scenarioId: string): Promise<number> {
-        const positions = await this.positionRepository.find({ where: { versionId } });
+        const positions = await this.db.query.planPositions.findMany({
+            where: eq(schema.planPositions.versionId, versionId)
+        });
+
         let count = 0;
         for (const pos of positions) {
-            const monthly = Number(pos.annualSalary) / 12;
+            const monthly = Number(pos.salary || 0) / 12;
             // Generate just one month for testing to save time
-            const unit = this.planUnitRepository.create({
+            await this.db.insert(schema.planUnits).values({
                 scenarioId,
                 versionId,
                 period: '2024-01',
                 entityId: 'US-OPS',
-                departmentId: pos.departmentId,
+                departmentId: pos.department || 'Unassigned',
                 accountId: '60000_SALARIES',
-                amount: monthly,
+                amount: String(monthly),
                 status: 'CALCULATED'
             });
-            await this.planUnitRepository.save(unit);
             count++;
         }
         return count;

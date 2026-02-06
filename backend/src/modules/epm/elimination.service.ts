@@ -1,17 +1,15 @@
 
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PlanUnit } from './entities/plan-unit.entity';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, and } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class EliminationService {
     private readonly logger = new Logger(EliminationService.name);
 
-    constructor(
-        @InjectRepository(PlanUnit)
-        private planUnitRepository: Repository<PlanUnit>,
-    ) { }
+    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
 
     async runEliminations(versionId: string, scenarioId: string): Promise<number> {
         this.logger.log(`Running IC Eliminations for Version ${versionId}...`);
@@ -23,27 +21,26 @@ export class EliminationService {
         // Mock: Find 'IC_SALES' and create offset.
         // real implementation would group by Payee/Payer.
 
-        const icSales = await this.planUnitRepository.find({
-            where: {
-                versionId,
-                accountId: 'IC_SALES' // Placeholder
-            }
+        const icSales = await this.db.query.planUnits.findMany({
+            where: and(
+                eq(schema.planUnits.versionId, versionId),
+                eq(schema.planUnits.accountId, 'IC_SALES') // Placeholder
+            )
         });
 
         let count = 0;
         for (const sale of icSales) {
             // Create Offset
-            const elimination = this.planUnitRepository.create({
+            await this.db.insert(schema.planUnits).values({
                 scenarioId,
                 versionId,
                 period: sale.period,
                 entityId: 'ELIM_ENTITY', // Group Elimination Node
                 departmentId: 'NO_DEPT',
                 accountId: 'IC_OFFSET',
-                amount: Number(sale.amount) * -1, // Reverse the amount
+                amount: String(Number(sale.amount) * -1), // Reverse the amount
                 status: 'ELIMINATED'
             });
-            await this.planUnitRepository.save(elimination);
             count++;
         }
 

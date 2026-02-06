@@ -14,13 +14,10 @@ import { SourcingController } from './sourcing.controller';
 import { SourcingService } from './sourcing.service';
 import { Supplier } from './entities/supplier.entity';
 import { SupplierSite } from './entities/supplier-site.entity';
-import { PurchaseOrder } from './entities/purchase-order.entity';
-import { PurchaseOrderLine } from './entities/purchase-order-line.entity';
-import { PurchaseOrderDistribution } from './entities/purchase-order-distribution.entity';
+// PurchaseOrder entities removed
 import { ReceiptHeader } from './entities/receipt-header.entity';
 import { ReceiptLine } from './entities/receipt-line.entity';
-import { RequisitionHeader } from './entities/requisition-header.entity';
-import { RequisitionLine } from './entities/requisition-line.entity';
+// Requisition entities removed
 import { ApInvoice } from './entities/ap-invoice.entity';
 import { ApInvoiceLine } from './entities/ap-invoice-line.entity';
 import { ApPayment } from './entities/ap-payment.entity';
@@ -35,6 +32,8 @@ import { BudgetService } from '../epm/budget.service';
 import { ProcurementGlIntegrationService } from './gl-integration.service';
 import { AiController } from './ai.controller';
 import { ProcurementAiService } from './procurement-ai.service';
+import { RfqService } from './rfq.service'; // Added
+import { SupplierPortalService } from './supplier-portal.service'; // Added
 
 import { InventoryModule } from '../inventory/inventory.module';
 import { EPMModule } from '../epm/epm.module';
@@ -44,13 +43,13 @@ import { EPMModule } from '../epm/epm.module';
     TypeOrmModule.forFeature([
       Supplier,
       SupplierSite,
-      PurchaseOrder,
-      PurchaseOrderLine,
-      PurchaseOrderDistribution,
+      // PurchaseOrder,
+      // PurchaseOrderLine,
+      // PurchaseOrderDistribution,
       ReceiptHeader,
       ReceiptLine,
-      RequisitionHeader,
-      RequisitionLine,
+      // RequisitionHeader,
+      // RequisitionLine,
       ApInvoice,
       ApInvoiceLine,
       ApPayment,
@@ -70,9 +69,11 @@ import { EPMModule } from '../epm/epm.module';
     RequisitionService,
     ApService,
     ProcurementApprovalService,
-    SourcingService,
+    { provide: 'ProcurementApprovalService', useClass: ProcurementApprovalService },
     ProcurementGlIntegrationService,
-    ProcurementAiService
+    { provide: 'ProcurementGlIntegrationService', useClass: ProcurementGlIntegrationService }, // Alias for circular dep resolution
+    RfqService,
+    SupplierPortalService
   ],
   exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ProcurementApprovalService, SourcingService, TypeOrmModule],
 })

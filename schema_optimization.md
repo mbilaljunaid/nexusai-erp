@@ -1,57 +1,94 @@
 # Schema Optimization & ORM Streamlining Plan
 
-## 1. Current State Assessment
+## 1. Executive Summary: "Drizzle-First" Consolidation
 
-The NexusAI ERP currently operates in a "hybrid" mode, which is the primary source of infrastructure instability:
-*   **Drizzle ORM**: Source of Truth for schema definition (~98 files in `shared/schema/*`). Handles complex PostgreSQL types and Zod validation generation.
-*   **TypeORM**: Secondary, partial implementation used within the NestJS Bridge modules. Definitions are often out of sync (e.g., `CRM Lead` has 54 columns in Drizzle but only 10 in TypeORM).
-*   **Conflict**: Mixed database connection pools, metadata initialization hangs during NestJS bootstrap, and "double-entry" schema maintenance.
-
-## 2. Recommended Strategy: "Drizzle-First" Consolidation
-
-**Verdict**: **KEEP Drizzle** as the single Source of Truth. **MERGE/REPLACE TypeORM** functionality into Drizzle.
+**Decision**: **KEEP Drizzle ORM** as the single Source of Truth. **PHASE OUT TypeORM** completely.
+**Timeline**: Phased migration to ensure zero downtime.
 
 ### Why Drizzle?
-1.  **SQL-Native Performance**: No runtime overhead of a heavy ORM metadata engine.
-2.  **Schema Completeness**: Already covers 100% of the ERP domain model.
-3.  **Type Safety**: Superior TypeScript inference without the need for redundant class-based entity decorators.
-4.  **Zod Integration**: Seamlessly generates frontend/API validation schemas from database definitions.
-5.  **NestJS Compatibility**: Drizzle can be injected as a standard NestJS Provider, replacing the need for `@nestjs/typeorm`.
+1.  **Performance**: Lightweight, SQL-like, fast startup (no metadata scan hangs).
+2.  **Type Safety**: Superior inference via `drizzle-orm` + `zod`.
+3.  **Schema Authority**: `shared/schema` already defines 100% of the ERP data model (98+ files).
+4.  **Stability**: Solving the "Hybrid" state eliminates the double-connection pool issues and "undefined column" errors seen in TypeORM.
 
 ---
 
-## 3. Implementation Plan (Phased)
+## 2. Component Analysis
 
-### Phase 1: Infrastructure Preparation
-*   [ ] **Create Unified DB Provider**: Implement a NestJS `DatabaseModule` that exports a Drizzle `db` instance.
-*   [ ] **Standardize Migrations**: Consolidate `server/migrations` (SQL) and Drizzle Kit migrations into a single `npm run db:push` / `npm run db:generate` workflow.
-*   [ ] **Connection Management**: Ensure both the core Express server and the NestJS Bridge share the same `pg` pool to avoid connection exhaustion.
-
-### Phase 2: Domain Migration
-*   [ ] **Entity Extraction**: Systematically replace TypeORM entities (`*.entity.ts`) with Drizzle schema imports.
-*   [ ] **Repository Refactoring**:
-    *   Transition `@InjectRepository(Entity)` to `@Inject(DATABASE_CONNECTION)`.
-    *   Use Drizzle's `db.query` or `db.select` syntax, which provides better type safety than TypeORM's query builder.
-*   [ ] **Service Migration**: Update `InventoryService`, `FinanceService`, etc., to use the unified Drizzle instance.
-
-### Phase 3: Cleanup & Optimization
-*   [ ] **Remove TypeORM Dependencies**: Uninstall `@nestjs/typeorm` and `typeorm`.
-*   [ ] **Metadata Elimination**: Delete all legacy TypeORM entity files.
-*   [ ] **Constraint Audit**: Use Drizzle Kit to verify that all foreign keys and indices in the 98 schema files are correctly applied to the Postgres instance.
+| Module | Current State | Target State | Complexity |
+| :--- | :--- | :--- | :--- |
+| **Finance (GL)** | **Hybrid** (Migrated Services + Legacy Entities) | **Drizzle** | Low (Mostly Done) |
+| **Project Accounting** | **Drizzle** (New `ProjectService`) | **Drizzle** | Done |
+| **Cost Management** | **Drizzle** (`SlaService`) | **Drizzle** | Low (Cleanup) |
+| **Inventory** | **Drizzle** (Migrated Repos) | **Drizzle** | Done |
+| **Procurement** | **TypeORM** (Heavy usage) | **Drizzle** | High |
+| **HR / Payroll** | **TypeORM** (Complex Relations) | **Drizzle** | High |
+| **EPM (Planning)** | **TypeORM** (Complex Hierarchies) | **Drizzle** | High |
+| **CRM** | **Hybrid** | **Drizzle** | Medium |
+| **Auth / Users** | **TypeORM** (Passport/JWT Integration) | **Drizzle** | Critical |
 
 ---
 
-## 4. Risks & Mitigations
+## 3. Implementation Plan
 
-| Risk | Impact | Mitigation |
-| :--- | :--- | :--- |
-| **Breaking NestJS DI** | High | Use a standard Provider pattern for Drizzle to ensure zero disruption to module scoping. |
-| **Complexity of Join Logic** | Medium | Leverage Drizzle's Relational Queries (`db.query.table.findMany({ with: ... })`) for TypeORM-like nested data fetching. |
-| **Out-of-sync Migrations** | Low | Standardize on Drizzle Kit as the sole migration engine. |
+### Phase 1: Infrastructure & Core Validations (Completed)
+- [x] Create `DatabaseModule` with `DrizzleProvider`.
+- [x] Establish `shared/schema` as the definition source.
+- [x] Demonstrate "Safe Service Migration" pattern (Finance/Projects).
 
-## 5. Next Steps for User
+### Phase 2: High-Impact Module Migration (Current Focus)
+**Goal**: Migrate heavy transactional modules to remove bulk of TypeORM overhead.
+*   [ ] **Procurement**:
+    *   Migrate `PurchaseOrderService` and `RequisitionService`.
+    *   Replace `PO` and `Requisition` entities with Drizzle schema.
+*   [ ] **CRM**:
+    *   Migrate `LeadService` and `OpportunityService`.
+*   [ ] **EPM (Enterprise Planning)**:
+    *   Migrate `BudgetService` (High data volume, benefits from Drizzle performance).
 
-> [!IMPORTANT]
-> This plan focuses on **Structural Integrity**. By moving to a single ORM, we eliminate the initialization hangs observed during server startup and ensure that any schema change in `shared/schema` is immediately reflected across the entire application.
+### Phase 3: Complex Domain Migration
+**Goal**: tackle deeply nested and relational domains.
+*   [ ] **HR & Payroll**:
+    *   Migrate Employee/Person structures.
+    *   Refactor `PayrollService`.
+*   [ ] **Authorization (RBAC)**:
+    *   Move `Users`, `Roles`, `Permissions` to Drizzle.
+    *   Update `AuthModule` (Passport strategies).
 
-**Approved?** If so, we can begin Phase 1 by creating the unified NestJS Database Provider.
+### Phase 4: The "Kill Switch" (Cleanup)
+**Goal**: Remove TypeORM entirely.
+*   [ ] Remove `TypeOrmModule` from `AppModule`.
+*   [ ] Uninstall `@nestjs/typeorm`, `typeorm`.
+*   [ ] Delete `backend/src/**/entities/*.entity.ts`.
+*   [ ] Search and destroy any `@InjectRepository`.
+
+---
+
+## 4. Migration Guide (Pattern)
+
+#### 1. The "Safe Service" Pattern
+Refactor services one by one without breaking the app.
+```typescript
+// BEFORE (TypeORM)
+constructor(@InjectRepository(User) repo) {}
+
+// AFTER (Drizzle)
+constructor(@Inject(DRIZZLE_DB) db) {}
+// Use db.select().from(schema.users)...
+```
+
+#### 2. Handling Relations
+Use Drizzle's "Relational Queries" (RDBMS-like) to replace TypeORM's object graph mapping.
+```typescript
+// TypeORM
+repo.find({ relations: ['profile'] })
+
+// Drizzle
+db.query.users.findMany({ with: { profile: true } })
+```
+
+---
+
+## 5. Next Steps
+1.  **Approval**: Confirm this plan to proceed with **Procurement** migration next.
+2.  **Execution**: We will systematically apply the "Safe Service Migration" pattern to the remaining modules.

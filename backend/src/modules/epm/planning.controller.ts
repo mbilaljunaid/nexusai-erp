@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, Param, Query, Logger } from '@nestjs/common';
+
+import { Controller, Get, Post, Body, Param, Query, Logger, Inject } from '@nestjs/common';
 import { EpmPlanningService } from './planning.service';
 import { DriverService } from './driver.service';
 import { WorkforceService } from './workforce.service';
 import { BudgetControlService } from './budget-control.service';
 import { EPMFoundationService } from './epm-foundation.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PlanUnit } from './entities/plan-unit.entity';
-import { Repository } from 'typeorm';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, and } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Controller('api/epm')
 export class PlanningController {
@@ -18,8 +20,7 @@ export class PlanningController {
         private readonly workforceService: WorkforceService,
         private readonly controlService: BudgetControlService,
         private readonly foundationService: EPMFoundationService,
-        @InjectRepository(PlanUnit)
-        private planUnitRepo: Repository<PlanUnit>
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>
     ) { }
 
     @Get('versions')
@@ -35,9 +36,21 @@ export class PlanningController {
         @Query('versionId') versionId: string,
         @Query('entity') entityId?: string
     ) {
-        const where: any = { versionId };
-        if (entityId) where.entityId = entityId;
-        return this.planUnitRepo.find({ where, take: 500 });
+        const whereConditions = [eq(schema.planUnits.versionId, versionId)];
+        if (entityId) whereConditions.push(eq(schema.planUnits.entityId, entityId));
+
+        // Handling dynamic AND conditions
+        if (whereConditions.length > 1) {
+            return this.db.query.planUnits.findMany({
+                where: and(...whereConditions),
+                limit: 500
+            });
+        }
+
+        return this.db.query.planUnits.findMany({
+            where: whereConditions[0],
+            limit: 500
+        });
     }
 
     @Post('calculate/driver')

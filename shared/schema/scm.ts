@@ -1,5 +1,5 @@
 import { pgTable, varchar, text, timestamp, numeric, integer, boolean } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -629,3 +629,59 @@ export const wmsWaveTemplates = pgTable("wms_wave_templates", {
 
 export const insertWmsWaveTemplateSchema = createInsertSchema(wmsWaveTemplates);
 export type WmsWaveTemplate = typeof wmsWaveTemplates.$inferSelect;
+
+// ========== PO DISTRIBUTIONS ==========
+export const purchaseOrderDistributions = pgTable("purchase_order_distributions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    poLineId: varchar("po_line_id").notNull(), // FK to purchaseOrderLines
+    distributionNumber: integer("distribution_number").notNull(),
+    quantity: numeric("quantity", { precision: 18, scale: 4 }).notNull(),
+    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    chargeAccountParams: text("charge_account_params"), // JSON string
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertPurchaseOrderDistributionSchema = createInsertSchema(purchaseOrderDistributions);
+export type PurchaseOrderDistribution = typeof purchaseOrderDistributions.$inferSelect;
+export type InsertPurchaseOrderDistribution = z.infer<typeof insertPurchaseOrderDistributionSchema>;
+
+// ========== RELATIONS ==========
+
+export const suppliersRelations = relations(suppliers, ({ one, many }) => ({
+    sites: many(supplierSites),
+    purchaseOrders: many(purchaseOrders),
+}));
+
+export const purchaseOrdersRelations = relations(purchaseOrders, ({ one, many }) => ({
+    supplier: one(suppliers, {
+        fields: [purchaseOrders.supplierId],
+        references: [suppliers.id],
+    }),
+    lines: many(purchaseOrderLines),
+}));
+
+export const purchaseOrderLinesRelations = relations(purchaseOrderLines, ({ one, many }) => ({
+    header: one(purchaseOrders, {
+        fields: [purchaseOrderLines.poHeaderId],
+        references: [purchaseOrders.id],
+    }),
+    distributions: many(purchaseOrderDistributions),
+}));
+
+export const purchaseOrderDistributionsRelations = relations(purchaseOrderDistributions, ({ one }) => ({
+    line: one(purchaseOrderLines, {
+        fields: [purchaseOrderDistributions.poLineId],
+        references: [purchaseOrderLines.id],
+    }),
+}));
+
+export const purchaseRequisitionsRelations = relations(purchaseRequisitions, ({ many }) => ({
+    lines: many(purchaseRequisitionLines),
+}));
+
+export const purchaseRequisitionLinesRelations = relations(purchaseRequisitionLines, ({ one }) => ({
+    header: one(purchaseRequisitions, {
+        fields: [purchaseRequisitionLines.requisitionId],
+        references: [purchaseRequisitions.id],
+    }),
+}));

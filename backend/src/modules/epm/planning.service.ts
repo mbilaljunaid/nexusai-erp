@@ -1,20 +1,15 @@
 
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PlanUnit } from './entities/plan-unit.entity';
-import { PlanVersion } from './entities/plan-version.entity';
+import { Inject, Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, and } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class EpmPlanningService {
     private readonly logger = new Logger(EpmPlanningService.name);
 
-    constructor(
-        @InjectRepository(PlanUnit)
-        private planUnitRepository: Repository<PlanUnit>,
-        @InjectRepository(PlanVersion)
-        private versionRepository: Repository<PlanVersion>,
-    ) { }
+    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
 
     /**
      * Generates a Base Plan by copying from a source version (e.g., Actuals) to a target version (e.g., Budget).
@@ -23,31 +18,42 @@ export class EpmPlanningService {
         this.logger.log(`Generating Base Plan: Source=${sourceVersionId} Target=${targetVersionId} Method=${method}`);
 
         if (method === 'ZERO_BASED') {
-            // Just clear the target - already empty usually?
-            // Or create empty rows for all accounts?
-            // For simplicity, do nothing or just log.
             return 0;
         }
 
         // Method = COPY
-        const sourceUnits = await this.planUnitRepository.find({ where: { versionId: sourceVersionId } });
-        const targetVersion = await this.versionRepository.findOneBy({ id: targetVersionId });
+        const sourceUnits = await this.db.query.planUnits.findMany({
+            where: eq(schema.planUnits.versionId, sourceVersionId)
+        });
+
+        const targetVersion = await this.db.query.planVersions.findFirst({
+            where: eq(schema.planVersions.id, targetVersionId)
+        });
+
         if (!targetVersion) throw new BadRequestException('Target Version ID invalid');
 
         let count = 0;
-        for (const unit of sourceUnits) {
-            // Create copy
-            const newUnit = this.planUnitRepository.create({
-                ...unit,
-                id: undefined, // Let DB generate new ID
+        if (sourceUnits.length > 0) {
+            // Bulk insert for performance? Or loop. Drizzle supports bulk.
+            // Mapping source units to new structure
+            const newUnits = sourceUnits.map(unit => ({
                 versionId: targetVersionId,
                 scenarioId: targetVersion.scenarioId,
-                status: 'DRAFT',
-                createdAt: undefined,
-                updatedAt: undefined
-            });
-            await this.planUnitRepository.save(newUnit);
-            count++;
+                period: unit.period,
+                entityId: unit.entityId,
+                departmentId: unit.departmentId,
+                accountId: unit.accountId,
+                projectId: unit.projectId,
+                channelId: unit.channelId,
+                productId: unit.productId,
+                amount: unit.amount, // Keep string/numeric type consistent
+                currency: unit.currency,
+                status: 'DRAFT'
+            }));
+
+            // Chunking if necessary, but for now direct insert
+            await this.db.insert(schema.planUnits).values(newUnits);
+            count = newUnits.length;
         }
 
         this.logger.log(`Copied ${count} units to Base Plan.`);
@@ -56,23 +62,34 @@ export class EpmPlanningService {
 
     /**
      * Applies a driver value (percentage increase) to all lines in a version matching criteria.
-     * @param versionId The plan version to update
-     * @param driverName Name for logging
-     * @param value Percentage (e.g. 0.05 for 5%)
-     * @param filter Criteria (e.g. { departmentId: 'IT' })
      */
-    async applyDriver(versionId: string, driverName: string, value: number, filter?: Partial<PlanUnit>): Promise<number> {
+    async applyDriver(versionId: string, driverName: string, value: number, filter?: Partial<typeof schema.planUnits.$inferSelect>): Promise<number> {
         this.logger.log(`Applying Driver ${driverName} (${value * 100}%) to Version ${versionId}`);
 
-        const units = await this.planUnitRepository.find({ where: { versionId, ...filter } });
+        // Construct dynamic filter
+        const filters = [eq(schema.planUnits.versionId, versionId)];
+        if (filter?.departmentId) filters.push(eq(schema.planUnits.departmentId, filter.departmentId));
+        if (filter?.accountId) filters.push(eq(schema.planUnits.accountId, filter.accountId));
+
+        const units = await this.db.query.planUnits.findMany({
+            where: and(...filters)
+        });
+
+        let updatedCount = 0;
+        // Batch update is tricky with different values, but here it's a multiplier.
+        // Drizzle doesn't support 'update ... set amount = amount * X' easily without sql operator.
+        // Doing loop update for safety/logic clarity for now.
 
         for (const unit of units) {
-            // Simple logic: New Amount = Old Amount * (1 + value)
             const oldVal = Number(unit.amount);
-            unit.amount = oldVal * (1 + value);
-            await this.planUnitRepository.save(unit);
+            const newVal = String(oldVal * (1 + value));
+
+            await this.db.update(schema.planUnits)
+                .set({ amount: newVal })
+                .where(eq(schema.planUnits.id, unit.id));
+            updatedCount++;
         }
 
-        return units.length;
+        return updatedCount;
     }
 }

@@ -1,26 +1,15 @@
 
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PlanUnit } from './entities/plan-unit.entity';
-import { PlanVersion } from './entities/plan-version.entity';
-import { PlanScenario } from './entities/plan-scenario.entity';
-import { GLBalance } from '../finance/entities/gl-balance.entity';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq, and } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider.ts';
+import * as schema from '../../../../shared/schema/index.ts';
 
 @Injectable()
 export class EpmGLIntegrationService {
     private readonly logger = new Logger(EpmGLIntegrationService.name);
 
-    constructor(
-        @InjectRepository(PlanUnit)
-        private planUnitRepository: Repository<PlanUnit>,
-        @InjectRepository(PlanVersion)
-        private versionRepository: Repository<PlanVersion>,
-        @InjectRepository(PlanScenario)
-        private scenarioRepository: Repository<PlanScenario>,
-        @InjectRepository(GLBalance)
-        private glBalanceRepository: Repository<GLBalance>,
-    ) { }
+    constructor(@Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>) { }
 
     /**
      * Fetches Actuals from the GL for a specific period and populates the EPM PlanUnit table.
@@ -31,19 +20,27 @@ export class EpmGLIntegrationService {
         this.logger.log(`Fetching Actuals from Ledger ${ledgerId} for ${period}...`);
 
         // 1. Get 'ACTUAL' Scenario and 'WORKING' Version
-        const scenario = await this.scenarioRepository.findOneBy({ code: 'ACTUAL' });
+        const scenario = await this.db.query.planScenarios.findFirst({
+            where: eq(schema.planScenarios.code, 'ACTUAL')
+        });
         if (!scenario) throw new Error('ACTUAL scenario not found');
 
-        let version = await this.versionRepository.findOne({ where: { scenarioId: scenario.id, code: 'WORKING' } });
+        let version = await this.db.query.planVersions.findFirst({
+            where: and(
+                eq(schema.planVersions.scenarioId, scenario.id),
+                eq(schema.planVersions.code, 'WORKING')
+            )
+        });
+
         if (!version) {
             this.logger.warn('WORKING version for ACTUAL scenario not found. Creating default...');
             // In a real implementation this might need more robust handling
-            version = this.versionRepository.create({
+            const [newVersion] = await this.db.insert(schema.planVersions).values({
                 scenarioId: scenario.id,
                 code: 'WORKING',
                 name: 'System Actuals'
-            });
-            await this.versionRepository.save(version);
+            }).returning();
+            version = newVersion;
         }
 
         // 2. Query GL Balances (Aggregation)
@@ -56,8 +53,11 @@ export class EpmGLIntegrationService {
         // Let's modify the query to simply loop for now, or rely on a "Source View".
 
         // Better Approach: Fetch all balances for the period and ledger.
-        const balances = await this.glBalanceRepository.find({
-            where: { ledgerId, periodName: period }
+        const balances = await this.db.query.glBalances.findMany({
+            where: and(
+                eq(schema.glBalances.ledgerId, ledgerId),
+                eq(schema.glBalances.periodName, period)
+            )
         });
 
         if (balances.length === 0) {
@@ -79,35 +79,38 @@ export class EpmGLIntegrationService {
             const amount = Number(bal.periodNetDr) - Number(bal.periodNetCr);
 
             // Idempotency: Find existing
-            let planUnit = await this.planUnitRepository.findOne({
-                where: {
-                    scenarioId: scenario.id,
-                    versionId: version.id,
-                    period: period,
-                    accountId: accountId,
-                    departmentId: deptId,
-                    entityId: entityId
-                }
+            const planUnit = await this.db.query.planUnits.findFirst({
+                where: and(
+                    eq(schema.planUnits.scenarioId, scenario.id),
+                    eq(schema.planUnits.versionId, version.id),
+                    eq(schema.planUnits.period, period),
+                    eq(schema.planUnits.accountId, accountId),
+                    eq(schema.planUnits.departmentId, deptId),
+                    eq(schema.planUnits.entityId, entityId)
+                )
             });
 
             if (!planUnit) {
-                planUnit = this.planUnitRepository.create({
+                await this.db.insert(schema.planUnits).values({
                     scenarioId: scenario.id,
                     versionId: version.id,
                     period: period,
                     accountId: accountId,
                     departmentId: deptId,
                     entityId: entityId,
-                    amount: amount,
+                    amount: String(amount),
                     status: 'APPROVED',
                     currency: bal.currencyCode
                 });
             } else {
-                planUnit.amount = amount;
-                planUnit.currency = bal.currencyCode;
+                await this.db.update(schema.planUnits)
+                    .set({
+                        amount: String(amount),
+                        currency: bal.currencyCode
+                    })
+                    .where(eq(schema.planUnits.id, planUnit.id));
             }
 
-            await this.planUnitRepository.save(planUnit);
             seededCount++;
         }
 

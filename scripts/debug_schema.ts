@@ -1,19 +1,14 @@
 
-import { db } from "@db";
-import { sql } from "drizzle-orm";
+import * as schema from '../shared/schema/index.ts';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 
-async function debugSchema() {
-    console.log("🔍 Debugging Schemas...");
+console.log('Schema loaded:', Object.keys(schema).length, 'keys');
 
-    // Check Inv Tx columns
-    const cols = await db.execute(sql`
-        SELECT column_name 
-        FROM information_schema.columns 
-        WHERE table_name = 'inv_material_transactions'
-    `);
-    console.log("inv_material_transactions columns:", cols.rows.map(r => r.column_name));
-
-    process.exit(0);
+try {
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL || 'postgres://localhost:5432/nexusai_erp' });
+    const db = drizzle(pool, { schema });
+    console.log('Drizzle initialized successfully');
+} catch (e) {
+    console.error('Drizzle initialization failed:', e);
 }
-
-debugSchema().catch(console.error);
