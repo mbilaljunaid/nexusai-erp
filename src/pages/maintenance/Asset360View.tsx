@@ -44,7 +44,7 @@ export default function Asset360View() {
                     <h1 className="text-3xl font-bold tracking-tight">{asset?.assetNumber || "Loading..."}</h1>
                     <p className="text-muted-foreground">{asset?.description}</p>
                 </div>
-                <Badge className={asset?.healthScore > 80 ? "bg-green-500" : "bg-yellow-500"}>
+                <Badge className={(asset?.healthScore ?? 0) > 80 ? "bg-green-500" : "bg-yellow-500"}>
                     Health: {asset?.healthScore}%
                 </Badge>
             </div>

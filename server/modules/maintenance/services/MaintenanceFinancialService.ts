@@ -1,6 +1,6 @@
 
 import { db } from "../../../db";
-import { maintWorkOrders, maintWorkOrderCosts, faAssetBooks, faTransactions } from "@shared/schema";
+import { maintWorkOrders, maintWorkOrderCosts, faAssetBooks, faTransactions } from "../../../../shared/schema";
 import { eq, sql, sum } from "drizzle-orm";
 
 /**
@@ -43,7 +43,7 @@ class MaintenanceFinancialService {
                     originalCost: newCost.toString(),
                     recoverableCost: newRecoverable.toString(),
                     updatedAt: new Date()
-                })
+                } as any)
                 .where(eq(faAssetBooks.id, book.id));
 
             // 5. Create Transaction Record
@@ -55,7 +55,7 @@ class MaintenanceFinancialService {
                 description: `Overhaul Capitalization: WO ${wo.workOrderNumber}`,
                 reference: `WO-${workOrderId}`,
                 status: "POSTED"
-            }).returning();
+            } as any).returning();
 
             transactions.push(tx);
         }

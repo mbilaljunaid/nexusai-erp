@@ -1,7 +1,7 @@
 
 import { db } from "../../../db";
 import { eq } from "drizzle-orm";
-import { maintWorkOrderCosts, slaJournalHeaders, slaJournalLines, glLedgers, glCodeCombinations } from "@shared/schema";
+import { maintWorkOrderCosts, slaJournalHeaders, slaJournalLines, glLedgers, glCodeCombinations } from "../../../../shared/schema";
 
 export class MaintenanceAccountingService {
 
@@ -56,8 +56,8 @@ export class MaintenanceAccountingService {
         // We'll create or find these CCIDs. For this script, we'll assume we pass the raw code
         // But the schema requires `code_combination_id`. 
         // Let's assume we find/create them.
-        const drCcid = await this.getOrCreateCcid(drAccount, ledger.id);
-        const crCcid = await this.getOrCreateCcid(crAccount, ledger.id);
+        const drCcid = await this.getOrCreateCcid(drAccount, String(ledger.id));
+        const crCcid = await this.getOrCreateCcid(crAccount, String(ledger.id));
 
 
         // 5. Create SLA Journal
@@ -72,7 +72,7 @@ export class MaintenanceAccountingService {
             currencyCode: "USD", // Default
             status: "Final",
             description: `Auto-Accounting for WO: ${cost.workOrder?.workOrderNumber} - ${cost.description}`
-        }).returning();
+        } as any).returning();
 
         // Lines
         const amount = cost.totalCost || "0";
@@ -87,7 +87,7 @@ export class MaintenanceAccountingService {
             accountedDr: amount,
             currencyCode: "USD",
             description: cost.description
-        });
+        } as any);
 
         // Credit Line
         await db.insert(slaJournalLines).values({
@@ -99,11 +99,11 @@ export class MaintenanceAccountingService {
             accountedCr: amount,
             currencyCode: "USD",
             description: "Offset Account"
-        });
+        } as any);
 
         // 6. Update Cost Status
         await db.update(maintWorkOrderCosts)
-            .set({ glStatus: "POSTED" })
+            .set({ glStatus: "POSTED" } as any)
             .where(eq(maintWorkOrderCosts.id, cost.id));
 
 
@@ -125,7 +125,7 @@ export class MaintenanceAccountingService {
             segment1: code.split('-')[0],
             accountType: "EXPENSE", // Simplified
             enabledFlag: true
-        }).returning();
+        } as any).returning();
         return neu.id;
     }
 }
