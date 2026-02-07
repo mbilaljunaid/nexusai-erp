@@ -1,7 +1,7 @@
 
 import { db } from "../server/db";
 import { sql } from "drizzle-orm";
-import { maintenanceService } from "../server/services/MaintenanceService";
+import { maintenanceService } from "../server/modules/maintenance/services/MaintenanceService";
 import { maintenanceCostingService } from "../server/services/MaintenanceCostingService";
 import { projectCostingIntegration } from "../server/services/ProjectCostingIntegration";
 import { inventoryReorderService } from "../server/services/InventoryReorderService";

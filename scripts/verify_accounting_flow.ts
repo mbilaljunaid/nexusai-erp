@@ -2,7 +2,7 @@
 import { db } from "../server/db";
 import { maintWorkOrders, maintWorkOrderCosts, glJournals, faAssets } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { maintenanceService } from "../server/services/MaintenanceService";
+import { maintenanceService } from "../server/modules/maintenance/services/MaintenanceService";
 import { maintenanceCostingService } from "../server/services/MaintenanceCostingService";
 import { maintenanceAccountingService } from "../server/services/MaintenanceAccountingService";
 

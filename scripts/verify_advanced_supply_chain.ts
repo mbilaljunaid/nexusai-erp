@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { orderManagementService } from "../server/modules/order/OrderManagementService";
 import { dropShipService } from "../server/modules/order/DropShipService";
-import { procurementService } from "../server/modules/scm/ProcurementService";
+import { procurementService } from "../server/modules/scm/services/ProcurementService";
 import { fulfillmentService } from "../server/modules/order/FulfillmentService";
 import { reservationService } from "../server/modules/order/ReservationService";
 import { backToBackService } from "../server/modules/order/BackToBackService";

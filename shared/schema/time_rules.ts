@@ -48,7 +48,7 @@ export const hrmAccrualPolicyRules = pgTable("hrm_accrual_policy_rules", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-export const hrmAccrualPolicies = hrmAccrualPolicyRules;
+
 
 export const insertTimeRuleSchema = createInsertSchema(hrmTimeRules);
 export const insertAccrualPolicyRuleSchema = createInsertSchema(hrmAccrualPolicyRules);

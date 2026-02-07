@@ -116,3 +116,7 @@ export type InsertHzOrganizationProfile = typeof hzOrganizationProfiles.$inferIn
 
 export type HzPersonProfile = typeof hzPersonProfiles.$inferSelect;
 export type InsertHzPersonProfile = typeof hzPersonProfiles.$inferInsert;
+
+// Aliases for compatibility
+export type InsertOrganization = InsertHzOrganizationProfile;
+export type InsertPerson = InsertHzPersonProfile;

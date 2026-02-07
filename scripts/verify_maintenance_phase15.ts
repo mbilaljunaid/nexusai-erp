@@ -1,5 +1,5 @@
 
-import { maintenanceService } from "../server/services/MaintenanceService";
+import { maintenanceService } from "../server/modules/maintenance/services/MaintenanceService";
 import { db } from "../server/db";
 import { maintWorkOrders, insertMaintWorkOrderSchema } from "@shared/schema";
 import { sql } from "drizzle-orm";

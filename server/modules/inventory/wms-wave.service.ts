@@ -1,6 +1,7 @@
 
 import { db } from "@db";
-import { wmsWaves, wmsTasks, omOrderLines, omOrderHeaders, wmsWaveTemplates } from "@shared/schema/scm"; // Assuming schema access
+import { wmsWaves, wmsTasks, wmsWaveTemplates } from "@shared/schema/scm";
+import { omOrderLines, omOrderHeaders } from "@shared/schema/order_management";
 // We need access to omOrderLines/Headers if they are in 'scm'. 
 // Wait, omOrderLines was in 'order_management.ts' in previous steps (viewed_file).
 // Let's check imports.

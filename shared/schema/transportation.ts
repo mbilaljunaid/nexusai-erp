@@ -151,3 +151,12 @@ export type TlMilestone = typeof tlMilestones.$inferSelect;
 export type TlFreightCharge = typeof tlFreightCharges.$inferSelect;
 export type TlStop = typeof tlStops.$inferSelect;
 export const insertTlStopSchema = createInsertSchema(tlStops);
+
+export type InsertTlLocation = z.infer<typeof insertTlLocationSchema>;
+export type InsertTlCarrier = z.infer<typeof insertTlCarrierSchema>;
+export type InsertTlLane = z.infer<typeof insertTlLaneSchema>;
+export type InsertTlRateAgreement = z.infer<typeof insertTlRateAgreementSchema>;
+export type InsertTlShipment = z.infer<typeof insertTlShipmentSchema>;
+export type InsertTlMilestone = z.infer<typeof insertTlMilestoneSchema>;
+export type InsertTlFreightCharge = z.infer<typeof insertTlFreightChargeSchema>;
+export type InsertTlStop = z.infer<typeof insertTlStopSchema>;

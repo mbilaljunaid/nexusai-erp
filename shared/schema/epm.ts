@@ -222,3 +222,9 @@ export type Budget = typeof budgets.$inferSelect;
 export type PlanScenario = typeof planScenarios.$inferSelect;
 export type PlanVersion = typeof planVersions.$inferSelect;
 export type PlanUnit = typeof planUnits.$inferSelect;
+
+// Legacy Aliases
+export type Scenario = PlanScenario;
+export type InsertScenario = z.infer<typeof insertPlanScenarioSchema>;
+export type ScenarioVariable = any; // Placeholder if variable schema is missing
+export type InsertScenarioVariable = any;

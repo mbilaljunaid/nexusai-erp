@@ -2,7 +2,7 @@
 import { db } from "../server/db";
 import { maintInspectionDefinitions, faAssets } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { maintenanceService } from "../server/services/MaintenanceService";
+import { maintenanceService } from "../server/modules/maintenance/services/MaintenanceService";
 import { maintenanceQualityService } from "../server/services/MaintenanceQualityService";
 
 async function verifyQualityFlow() {
