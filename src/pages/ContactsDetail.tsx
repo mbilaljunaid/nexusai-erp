@@ -34,7 +34,7 @@ import {
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertContactSchema, type InsertContact, type Contact } from "@shared/schema";
+import { insertContactSchema, type InsertContact, type Contact } from "@shared/schema/crm";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 

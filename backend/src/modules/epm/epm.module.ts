@@ -22,7 +22,7 @@ import { EsgPlanningService } from './esg-planning.service';
 import { TreasuryPlanningService } from './treasury-planning.service';
 import { ProjectIntegrationService } from './project-integration.service';
 import { FinanceModule } from '../finance/finance.module';
-import { ProcurementModule } from '../procurement/procurement.module';
+// import { ProcurementModule } from '../procurement/procurement.module';
 
 @Module({
   imports: [
@@ -37,9 +37,9 @@ import { ProcurementModule } from '../procurement/procurement.module';
   providers: [
     EPMService,
     BudgetService,
-    EpmPlanningService,
     EPMFoundationService,
     EpmGLIntegrationService,
+    EpmPlanningService,
     DriverService,
     WorkforceService,
     CapExService,

@@ -1,6 +1,6 @@
 import { Express, Request, Response } from "express";
 import { storage } from "../../storage";
-import { insertInvoiceSchema, insertPaymentSchema, insertRevenueForecastSchema, insertBudgetAllocationSchema, insertGlAutoPostRuleSchema, insertGlDataAccessSetSchema, glCloseTasks, insertGlCloseTaskSchema, glEliminationDefinitions } from "../../../shared/schema";
+import { insertInvoiceSchema, insertPaymentSchema, insertGlAutoPostRuleSchema, insertGlDataAccessSetSchema, glCloseTasks, insertGlCloseTaskSchema, glEliminationDefinitions } from "../../../shared/schema";
 import { financeService } from "../../services/finance";
 import { eq } from "drizzle-orm";
 import { db } from "../../db";
@@ -64,52 +64,9 @@ export function registerFinanceRoutes(app: Express) {
         }
     });
 
-    // Revenue Forecasts
-    app.get("/api/financial/forecasts", async (req, res) => {
-        try {
-            const forecasts = await storage.listRevenueForecasts();
-            res.json(forecasts);
-        } catch (error) {
-            res.status(500).json({ error: "Failed to list forecasts" });
-        }
-    });
 
-    app.post("/api/financial/forecasts", async (req, res) => {
-        try {
-            const parseResult = insertRevenueForecastSchema.safeParse(req.body);
-            if (!parseResult.success) {
-                return res.status(400).json({ error: parseResult.error });
-            }
-            const forecast = await storage.createRevenueForecast(parseResult.data);
-            res.status(201).json(forecast);
-        } catch (error) {
-            res.status(500).json({ error: "Failed to create forecast" });
-        }
-    });
 
-    // Budget Allocations
-    app.get("/api/financial/budgets", async (req, res) => {
-        try {
-            const year = req.query.year ? parseInt(req.query.year as string) : undefined;
-            const budgets = await storage.listBudgetAllocations(year);
-            res.json(budgets);
-        } catch (error) {
-            res.status(500).json({ error: "Failed to list budgets" });
-        }
-    });
 
-    app.post("/api/financial/budgets", async (req, res) => {
-        try {
-            const parseResult = insertBudgetAllocationSchema.safeParse(req.body);
-            if (!parseResult.success) {
-                return res.status(400).json({ error: parseResult.error });
-            }
-            const budget = await storage.createBudgetAllocation(parseResult.data);
-            res.status(201).json(budget);
-        } catch (error) {
-            res.status(500).json({ error: "Failed to create budget" });
-        }
-    });
     // Financial Reporting (FSG)
     // Replaced all /api/gl with /api/finance/gl
     app.get("/api/finance/gl/reports", async (req, res) => {

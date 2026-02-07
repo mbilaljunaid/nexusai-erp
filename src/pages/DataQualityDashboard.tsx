@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+
 import { Loader2, AlertTriangle, CheckCircle, Database, Package, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";

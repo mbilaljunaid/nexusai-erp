@@ -20,7 +20,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Loader2, Search } from "lucide-react";
-import { FixedSizeList as List } from "react-window";
+import * as ReactWindow from "react-window";
+// @ts-ignore
+const List = ReactWindow.FixedSizeList;
 
 export interface Column<T> {
     header: string;
@@ -122,18 +124,19 @@ export function StandardTable<T>({
     }, [filterValue, isClientSidePagination, onPageChange, page]);
 
     const InnerElement = useMemo(() => React.forwardRef(({ children, ...props }: any, ref: any) => (
+        /* eslint-disable-next-line jsx-a11y/role-has-required-aria-props */
         <div ref={ref} {...props} role="rowgroup">
             {children}
             {(!children || React.Children.count(children) === 0) && (
-                <div role="row" aria-hidden="true" className="invisible h-0">
-                    <div role="gridcell" />
+                <div className="invisible h-0">
+                    <div />
                 </div>
             )}
         </div>
     )), []);
 
     const OuterElement = useMemo(() => React.forwardRef(({ children, ...props }: any, ref: any) => (
-        <div ref={ref} {...props} role="presentation" aria-hidden="true">
+        <div ref={ref} {...props} role="presentation">
             {children}
         </div>
     )), []);
@@ -216,7 +219,7 @@ export function StandardTable<T>({
                         <div
                             className="min-w-full"
                             role="grid"
-                            aria-rowcount={paginatedData.length}
+                            aria-rowcount={String(paginatedData.length)}
                         >
                             <div className="bg-muted/50 border-b border-border" role="rowgroup">
                                 <div className="flex w-full" role="row">

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { CampaignForm } from "@/components/forms/CampaignForm";
-import type { Campaign } from "@shared/schema";
+import type { Campaign } from "@shared/schema/crm";
 
 // Helper to format currency
 const formatCurrency = (val: number | string | null | undefined) => {

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { DollarSign, TrendingUp, Package, Activity } from 'lucide-react';
 import { AnalyticsChart } from '@/components/AnalyticsChart';
 
-import { useQuery } from '@tanstack/react-query';
+
 
 export default function CostDashboard() {
     const [period, setPeriod] = useState('CY');

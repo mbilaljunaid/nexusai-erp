@@ -1,14 +1,10 @@
 
-import { Controller, Get, Post, Body, Param, Query, Logger, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Logger } from '@nestjs/common';
 import { EpmPlanningService } from './planning.service';
 import { DriverService } from './driver.service';
 import { WorkforceService } from './workforce.service';
 import { BudgetControlService } from './budget-control.service';
 import { EPMFoundationService } from './epm-foundation.service';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq, and } from 'drizzle-orm';
-import { DRIZZLE_DB } from '../../database/drizzle.provider';
-import * as schema from '../../../../shared/schema/index';
 
 @Controller('api/epm')
 export class PlanningController {
@@ -19,8 +15,7 @@ export class PlanningController {
         private readonly driverService: DriverService,
         private readonly workforceService: WorkforceService,
         private readonly controlService: BudgetControlService,
-        private readonly foundationService: EPMFoundationService,
-        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>
+        private readonly foundationService: EPMFoundationService
     ) { }
 
     @Get('versions')
@@ -36,21 +31,7 @@ export class PlanningController {
         @Query('versionId') versionId: string,
         @Query('entity') entityId?: string
     ) {
-        const whereConditions = [eq(schema.planUnits.versionId, versionId)];
-        if (entityId) whereConditions.push(eq(schema.planUnits.entityId, entityId));
-
-        // Handling dynamic AND conditions
-        if (whereConditions.length > 1) {
-            return this.db.query.planUnits.findMany({
-                where: and(...whereConditions),
-                limit: 500
-            });
-        }
-
-        return this.db.query.planUnits.findMany({
-            where: whereConditions[0],
-            limit: 500
-        });
+        return this.planningService.getPlanUnits(versionId, entityId);
     }
 
     @Post('calculate/driver')

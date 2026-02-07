@@ -38,7 +38,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { CaseForm } from "@/components/forms/CaseForm";
 import { CaseComments } from "@/components/forms/CaseComments";
-import type { Case } from "@shared/schema";
+import type { Case } from "@shared/schema/crm";
 
 export default function CasesDetail() {
     const [searchTerm, setSearchTerm] = useState("");

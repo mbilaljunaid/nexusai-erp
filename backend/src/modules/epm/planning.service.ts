@@ -91,4 +91,20 @@ export class EpmPlanningService {
 
         return updatedCount;
     }
+    async getPlanUnits(versionId: string, entityId?: string) {
+        const whereConditions = [eq(schema.planUnits.versionId, versionId)];
+        if (entityId) whereConditions.push(eq(schema.planUnits.entityId, entityId));
+
+        if (whereConditions.length > 1) {
+            return this.db.query.planUnits.findMany({
+                where: and(...whereConditions),
+                limit: 500
+            });
+        }
+
+        return this.db.query.planUnits.findMany({
+            where: whereConditions[0],
+            limit: 500
+        });
+    }
 }

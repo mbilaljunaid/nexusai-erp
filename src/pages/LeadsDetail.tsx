@@ -9,7 +9,7 @@ import { ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertLeadSchema, type InsertLead, type Lead } from "@shared/schema";
+import { insertLeadSchema, type InsertLead, type Lead } from "@shared/schema/crm";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {

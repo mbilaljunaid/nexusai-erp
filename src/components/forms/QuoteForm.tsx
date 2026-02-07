@@ -10,7 +10,7 @@ import { FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import type { Opportunity } from "@shared/schema";
+import type { Opportunity } from "@shared/schema/crm";
 
 interface QuoteFormProps {
     opportunityId?: string; // If creating from opp

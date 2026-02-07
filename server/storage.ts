@@ -168,10 +168,7 @@ import {
   // Others
   type CopilotConversation, type InsertCopilotConversation,
   type CopilotMessage, type InsertCopilotMessage,
-  type RevenueForecast, type InsertRevenueForecast,
-  budgetAllocations, type BudgetAllocation, type InsertBudgetAllocation,
   type TimeSeriesData, type InsertTimeSeriesData,
-  type ForecastModel, type InsertForecastModel,
   type Scenario, type InsertScenario,
   type ScenarioVariable, type InsertScenarioVariable,
   type DashboardWidget, type InsertDashboardWidget,
@@ -405,21 +402,11 @@ export interface IStorage {
   listCopilotMessages(conversationId?: string): Promise<CopilotMessage[]>;
   createCopilotMessage(msg: InsertCopilotMessage): Promise<CopilotMessage>;
 
-  getRevenueForecast(id: string): Promise<RevenueForecast | undefined>;
-  listRevenueForecasts(): Promise<RevenueForecast[]>;
-  createRevenueForecast(forecast: InsertRevenueForecast): Promise<RevenueForecast>;
-
-  getBudgetAllocation(id: string): Promise<BudgetAllocation | undefined>;
-  listBudgetAllocations(year?: number): Promise<BudgetAllocation[]>;
-  createBudgetAllocation(budget: InsertBudgetAllocation): Promise<BudgetAllocation>;
 
   getTimeSeriesData(id: string): Promise<TimeSeriesData | undefined>;
   listTimeSeriesData(): Promise<TimeSeriesData[]>;
   createTimeSeriesData(data: InsertTimeSeriesData): Promise<TimeSeriesData>;
 
-  getForecastModel(id: string): Promise<ForecastModel | undefined>;
-  listForecastModels(): Promise<ForecastModel[]>;
-  createForecastModel(model: InsertForecastModel): Promise<ForecastModel>;
 
   getScenario(id: string): Promise<Scenario | undefined>;
   listScenarios(): Promise<Scenario[]>;
