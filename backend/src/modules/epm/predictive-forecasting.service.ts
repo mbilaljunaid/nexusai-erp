@@ -119,12 +119,12 @@ export class PredictiveForecastingService {
                 status: 'DRAFT',
                 // schema 'planUnits' doesn't have 'comment'?
                 // Checking previous files: `schema.planUnits` has `status` but I don't recall adding `comment`.
-                // TypeORM `PlanUnit` entity might have had it.
+                // Legacy `PlanUnit` entity might have had it.
                 // If schema missing `comment`, I should update schema or skip field.
                 // I will update schema later if needed. For now I'll skip comment to avoid runtime error if column missing,
                 // OR add it if I see it in `epm.ts` schema.
                 // Let's assume schema matches basic fields. I'll omit comment for safety unless I check schema.
-                // Assuming TypeORM usage had it, Drizzle schema *should* have it if I mapped properly.
+                // Assuming legacy Drizzle usage had it, Drizzle schema *should* have it if I mapped properly.
                 // I will check schema `epm.ts` in separate step if I fail here.
                 // Removing `comment` field for now to match strict schema assumptions.
             });

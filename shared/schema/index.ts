@@ -1,6 +1,6 @@
 // Updated exports
 export * from "./common";
-// export * from "./ap";
+export * from "./ap";
 export * from "./ar";
 export * from "./crm";
 export * from "./finance";
@@ -92,7 +92,7 @@ export * from "./time_labor";
 export * from "./time_ai";
 export * from "./rewards_benefits";
 // export * from "./time_rules";
-// // export * from "./time_rules"; // Removed duplicate
+export * from "./time_rules";
 
 // MDM / TCA
 export * from "./parties";

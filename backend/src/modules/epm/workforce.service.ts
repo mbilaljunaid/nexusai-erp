@@ -25,7 +25,7 @@ export class WorkforceService {
         for (const pos of positions) {
             // PlanPosition schema has 'salary', assuming it maps to annualSalary if not present in schema column name
             // Schema has: jobTitle, department, headcount, salary, startDate
-            // TypeORM entity had 'annualSalary', 'benefitsPct'.
+            // Legacy entity had 'annualSalary', 'benefitsPct'.
             // I might need to respect schema column names.
             const annualSalary = Number(pos.salary || 0);
 

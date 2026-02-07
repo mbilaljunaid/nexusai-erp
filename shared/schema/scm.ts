@@ -2,6 +2,7 @@ import { pgTable, varchar, text, timestamp, numeric, integer, boolean } from "dr
 import { sql, relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { apInvoices, apInvoiceLines, apPayments } from "./ap";
 
 import { hzParties } from "./parties";
 
@@ -746,58 +747,10 @@ export type RcvShipmentHeader = typeof rcvShipmentHeaders.$inferSelect;
 export type RcvShipmentLine = typeof rcvShipmentLines.$inferSelect;
 
 
-// ========== ACCOUNTS PAYABLE (AP) ==========
-export const apInvoices = pgTable("ap_invoices", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    invoiceNumber: varchar("invoice_number").notNull(),
-    supplierId: varchar("supplier_id").notNull(),
-    siteId: varchar("site_id"), // Supplier Site
-    purchaseOrderId: varchar("purchase_order_id"), // Optional Match
-    invoiceDate: timestamp("invoice_date").notNull(),
-    dueDate: timestamp("due_date"), // Calculated from Terms
-    paymentTerms: varchar("payment_terms"), // "Net 30", etc.
-    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
-    currencyCode: varchar("currency_code").default("USD"),
-    status: varchar("status").default("Draft"), // Draft, Validated, Approved, Cancelled, Paid
-    accountingStatus: varchar("accounting_status").default("Unaccounted"), // Unaccounted, Accounted
-    description: text("description"),
-    createdAt: timestamp("created_at").default(sql`now()`),
-    updatedAt: timestamp("updated_at").default(sql`now()`),
-});
+// ========== ACCOUNTS PAYABLE (AP) Linkages ==========
+// Note: AP Tables are defined authoritative in ./ap.ts
+// We only import types if needed, but do not redefine tables here.
 
-export const apInvoiceLines = pgTable("ap_invoice_lines", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    invoiceId: varchar("invoice_id").notNull(),
-    lineNumber: integer("line_number").notNull(),
-    lineType: varchar("line_type").default("ITEM"), // ITEM, TAX, FREIGHT
-    description: text("description"),
-    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
-    poLineId: varchar("po_line_id"), // Match to PO Line
-    rcvTransactionId: varchar("rcv_transaction_id"), // Match to Receipt
-    distCodeCombinationId: varchar("dist_code_combination_id"), // GL Account
-    createdAt: timestamp("created_at").default(sql`now()`),
-});
-
-export const apPayments = pgTable("ap_payments", {
-    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    paymentNumber: varchar("payment_number").notNull().unique(),
-    invoiceId: varchar("invoice_id").notNull(),
-    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
-    currencyCode: varchar("currency_code").default("USD"),
-    paymentDate: timestamp("payment_date").default(sql`now()`),
-    paymentMethod: varchar("payment_method").default("CHECK"), // CHECK, EFT, WIRE
-    status: varchar("status").default("ISSUED"), // ISSUED, CLEARED, VOID
-    bankAccountId: varchar("bank_account_id"), // Internal Bank Account
-    createdAt: timestamp("created_at").default(sql`now()`),
-});
-
-export const insertApInvoiceSchema = createInsertSchema(apInvoices);
-export const insertApInvoiceLineSchema = createInsertSchema(apInvoiceLines);
-export const insertApPaymentSchema = createInsertSchema(apPayments);
-
-export type ApInvoice = typeof apInvoices.$inferSelect;
-export type ApInvoiceLine = typeof apInvoiceLines.$inferSelect;
-export type ApPayment = typeof apPayments.$inferSelect;
 
 // ========== RELATIONS ==========
 
@@ -874,28 +827,7 @@ export const rcvShipmentLinesRelations = relations(rcvShipmentLines, ({ one }) =
     }),
 }));
 
-export const apInvoicesRelations = relations(apInvoices, ({ one, many }) => ({
-    lines: many(apInvoiceLines),
-    payments: many(apPayments),
-    supplier: one(suppliers, {
-        fields: [apInvoices.supplierId],
-        references: [suppliers.id],
-    }),
-}));
-
-export const apInvoiceLinesRelations = relations(apInvoiceLines, ({ one }) => ({
-    invoice: one(apInvoices, {
-        fields: [apInvoiceLines.invoiceId],
-        references: [apInvoices.id],
-    }),
-}));
-
-export const apPaymentsRelations = relations(apPayments, ({ one }) => ({
-    invoice: one(apInvoices, {
-        fields: [apPayments.invoiceId],
-        references: [apInvoices.id],
-    }),
-}));
+// AP relations removed to prevent conflicts and runtime errors (schema refactor)
 // ========== RESERVATIONS ==========
 export const inventoryReservations = pgTable("inv_reservations", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

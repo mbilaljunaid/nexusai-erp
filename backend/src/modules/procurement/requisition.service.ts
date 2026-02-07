@@ -57,7 +57,7 @@ export class RequisitionService {
 
             // 3. Update Total? Schema doesn't have totalAmount on Header?
             // Checking schema... scm.ts:227 purchaseRequisitions does NOT have totalAmount.
-            // TypeORM entity had it. This is a schema gap.
+            // Legacy entity had it. This is a schema gap.
             // Keeping it consistent with Drizzle schema for now. Logic relies on line aggregation.
 
             return { ...req, lines: createdLines, totalAmount: total };
@@ -160,7 +160,7 @@ export class RequisitionService {
 
         // Group by Item -> Supplier? 
         // Logic: Req lines might not have supplierId (it is not in schema.purchaseRequisitionLines).
-        // Wait, backing out. TypeORM entity had supplierId?
+        // Wait, backing out. Legacy entity had supplierId?
         // Checking scm.ts lines: itemId, itemDescription, quantity... NO supplierId.
         // Assuming for MVP we convert to 1 PO or need Logic to pick supplier.
         // For simplicity: Pass supplierId in DTO or assign default? 
@@ -168,7 +168,7 @@ export class RequisitionService {
         // Let's assume we pass a supplierId or pick one? 
         // NOTE: The previous code had `line.supplierId`. 
         // Drizzle schema `purchaseRequisitionLines` DOES NOT have `supplierId`.
-        // This suggests the Drizzle schema is missing columns that were in TypeORM.
+        // This suggests the Drizzle schema is missing columns that were in legacy entity.
 
         // WORKAROUND: Create one PO for all lines, requiring a specific supplier?
         // Or assume lines have item info linked to supplier.
@@ -193,7 +193,7 @@ export class RequisitionService {
         const po = await this.poService.create(poDto);
 
         await this.db.update(schema.purchaseRequisitions)
-            .set({ status: 'PO Created' }) // PO_CREATED vs PO Created? TypeORM had 'PO Created'.
+            .set({ status: 'PO Created' }) // PO_CREATED vs PO Created? Legacy had 'PO Created'.
             .where(eq(schema.purchaseRequisitions.id, id));
 
         return [po];

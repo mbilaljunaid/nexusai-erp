@@ -81,7 +81,7 @@ export class TaxReportingService {
 
     // Helper to simulate DB call to GL
     private async mockFetchGLTaxBalance(start: Date, end: Date): Promise<number> {
-        // In a real scenario, we would use TypeORM to query the GLEntry entity.
+        // In a real scenario, we would use Drizzle to query the glEntries table.
         // For now, we simulate a slight mismatch or perfect match.
         // Let's simulate a perfect match for "happy path" verification.
 

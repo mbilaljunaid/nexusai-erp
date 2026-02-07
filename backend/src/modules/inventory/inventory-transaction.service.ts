@@ -126,7 +126,7 @@ export class InventoryTransactionService {
         else filters.push(isNull(schema.inventoryOnHandQuantities.locatorId));
 
         if (lotId) filters.push(eq(schema.inventoryOnHandQuantities.lotNumber, lotId)); // Assuming lotId maps to lotNumber or ID logic needs alignment. Schema has lotNumber. Assuming simple mapping for now.
-        // Clarification: Previous TypeORM entity had 'lot' relation (ID). New schema has 'lotNumber' (string).
+        // Clarification: Previous entity had 'lot' relation (ID). New schema has 'lotNumber' (string).
         // If the system passes Lot IDs, we might need to resolve to Number, or change schema to ID.
         // For this refactor, assuming the DTO provides what's needed, but let's be safe: 
         // If lotId is passed, use it as lotNumber for now or update schema later. 

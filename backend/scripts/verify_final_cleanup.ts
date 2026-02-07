@@ -1,11 +1,12 @@
 
+import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from '../../shared/schema';
 import { sql } from 'drizzle-orm';
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgres://nexus:nexus@localhost:5432/nexus_erp',
+    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/nexusai_erp',
 });
 
 const db = drizzle(pool, { schema });

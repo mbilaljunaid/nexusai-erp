@@ -49,7 +49,7 @@ export class ProjectIntegrationService {
                     // Linking logic for versionId is missing here in original service too?
                     // Original `create` didn't specify versionId, but schema says it is NOT NULL references planVersions.id
                     // This implies the original service relied on some default or the entity didn't enforcing it?
-                    // TypeORM Entity `PlanProject` showed `versionId`? 
+                    // Legacy Entity `PlanProject` showed `versionId`? 
                     // Let's check `plan-project.entity.ts` again.
                     // It only had `erpProjectId`. It didn't have `versionId` column explicitly in the view I saw earlier.
                     // But schema `epm.ts` has `versionId` not null.

@@ -16,7 +16,7 @@ export class DriverService {
         // Assuming table is plan_drivers and has code, name, value columns.
         // Wait, schema.planDrivers has: id, name, type, value, versionId. 
         // It DOES NOT have 'code'. 
-        // Looking at TypeORM entity `plan-driver.entity.ts`, I should verify fields.
+        // Looking at legacy entity `plan-driver.entity.ts`, I should verify fields.
         // If I missed 'code' in schema, I might have a bug.
         // Let's assume schema is correct and map 'code' to 'name' or 'type' if needed, OR fix schema.
         // Actually, looking at `PlanDriver` usage in `driver.service.ts`: `create({ code, name, value })`.
@@ -37,7 +37,7 @@ export class DriverService {
         // schema doesn't have isActive? 
         // Checked schema: `planDrivers` has `id, name, type, value, versionId`.
         // It does NOT have `isActive`.
-        // The TypeORM service filtered `{ isActive: true }`.
+        // The legacy service filtered `{ isActive: true }`.
         // This implies my schema update for `planDrivers` might have missed `isActive` or `code`.
         // I will proceed without filtering by isActive for now, or assume all are active.
         return this.db.query.planDrivers.findMany();
