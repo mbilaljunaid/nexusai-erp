@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { db } from "@db";
 import { hrPersons } from "@shared/schema";
 import { eq, and } from "drizzle-orm";

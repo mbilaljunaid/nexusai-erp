@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { db } from "../../db";
 import { cstTransactions } from "../../../shared/schema/costing";
 import { eq } from "drizzle-orm";

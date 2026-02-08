@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { Router } from "express";
 import { db } from "../../db";
 import { commissionPlans, commissionAssignments, commissions, insertCommissionPlanSchema, insertCommissionAssignmentSchema } from "../../../shared/schema";

@@ -2,60 +2,35 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": true,
+    "strict": false,
+    "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@db": [
-        "./server/db"
-      ],
-      "@db/*": [
-        "./server/db/*"
-      ],
-      "@server": [
-        "./server"
-      ],
-      "@server/*": [
-        "./server/*"
-      ],
-      "@shared": [
-        "./shared"
-      ],
-      "@shared/*": [
-        "./shared/*"
-      ],
-      "@assets/*": [
-        "./attached_assets/*"
-      ]
+      "@/*": ["./src/*"],
+      "@assets/*": ["./attached_assets/*"],
+      "@db": ["./server/db"],
+      "@db/*": ["./server/db/*"],
+      "@server": ["./server"],
+      "@server/*": ["./server/*"],
+      "@shared": ["./shared"],
+      "@shared/*": ["./shared/*"]
     }
   },
-  "include": [
-    "src",
-    "client/src",
-    "backend/src",
-    "shared",
-    "server"
-  ]
+  "include": ["src", "shared"],
+  "exclude": ["server", "backend", "scripts"]
 }

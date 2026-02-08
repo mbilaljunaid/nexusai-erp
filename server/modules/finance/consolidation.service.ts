@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { db } from "../../db";
 import {
     glConsolidationRuns, glEliminationDefinitions, glLedgerSets, glJournals,

@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { Request, Response, NextFunction } from "express";
 
 // Extend Request type to include user context

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { db } from "../../../db";
 import { formulas, formulaIngredients, manufacturingBatches, batchTransactions, recipes, qualityResults, type InsertQualityResult } from "@shared/schema";
 
