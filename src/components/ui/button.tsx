@@ -15,13 +15,12 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground border border-destructive-border",
         outline:
-          // Shows the background color of whatever card / sidebar / accent background it is inside of.
-          // Inherits the current text color.
           " border [border-color:var(--button-outline)]  shadow-xs active:shadow-none ",
         secondary: "border bg-secondary text-secondary-foreground border border-secondary-border ",
-        // Add a transparent border so that when someone toggles a border on later, it doesn't shift layout/size.
         ghost: "border border-transparent",
         link: "text-primary underline-offset-4 hover:underline",
+        premium: "bg-gradient-to-r from-indigo-500 to-purple-500 text-white border border-indigo-400 shadow-md",
+        glow: "bg-primary text-primary-foreground border border-primary-border shadow-[0_0_12px_hsl(var(--primary)/0.4)]",
       },
       // Heights are set as "min" heights, because sometimes Ai will place large amount of content
       // inside buttons. With a min-height they will look appropriate with small amounts of content,
@@ -30,6 +29,7 @@ const buttonVariants = cva(
         default: "min-h-9 px-4 py-2",
         sm: "min-h-8 rounded-md px-3 text-xs",
         lg: "min-h-10 rounded-md px-8",
+        xs: "min-h-6 rounded px-2 py-0.5 text-[11px]",
         icon: "h-9 w-9",
       },
     },
