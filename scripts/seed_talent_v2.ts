@@ -4,7 +4,8 @@ import { hrmRecRequisitions } from "../shared/schema/talent_recruitment";
 import { hrmPerfDocuments } from "../shared/schema/talent_performance";
 import { RecruitmentService } from "../server/services/RecruitmentService";
 import { PerformanceService } from "../server/services/PerformanceService";
-import { hrPersons, hrOrganizations } from "../shared/schema/hr_structures";
+import { hrPersons } from "../shared/schema/hr_worker";
+import { hrOrganizations } from "../shared/schema/hr_structures";
 import { sql } from "drizzle-orm";
 
 async function seedTalent() {

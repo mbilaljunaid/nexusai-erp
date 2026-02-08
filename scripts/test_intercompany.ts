@@ -46,16 +46,14 @@ async function testIntercompany() {
     await financeService.createJournal({
         id: journalId,
         journalNumber: `JE-IC-${Date.now()}`,
-        ledgerId, // Note: Schema might vary, checking implementation
+        ledgerId,
         periodId: period.id,
         source: "Manual",
         status: "Draft",
-        approvalStatus: "Approved", // Auto-approve for test
+        approvalStatus: "Approved",
         currencyCode: "USD",
         description: "Test Intercompany Journal",
-        totalDebit: "1000",
-        totalCredit: "1000"
-    }, [
+    } as any, [
         {
             journalId,
             accountId: ccidExp101.id,

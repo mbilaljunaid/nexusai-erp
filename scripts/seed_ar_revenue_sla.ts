@@ -11,32 +11,29 @@ async function seedArRevenueSla() {
         id: "AR_REVENUE",
         name: "Revenue Recognition",
         applicationId: "AR",
-        module: "AR"
-    }).onConflictDoNothing();
+    } as any).onConflictDoNothing();
 
     await db.insert(slaEventClasses).values({
         id: "AR_CM_APP",
         name: "Credit Memo Application",
         applicationId: "AR",
-        module: "AR"
-    }).onConflictDoNothing();
+    } as any).onConflictDoNothing();
 
     // 2. Event Types
     await db.insert(slaEventTypes).values({
         id: "AR_REV_REC_STD",
         name: "Standard Revenue Recognition",
         eventClassId: "AR_REVENUE"
-    }).onConflictDoNothing();
+    } as any).onConflictDoNothing();
 
     await db.insert(slaEventTypes).values({
         id: "AR_CM_APPLY_STD",
         name: "Credit Memo Apply",
         eventClassId: "AR_CM_APP"
-    }).onConflictDoNothing();
+    } as any).onConflictDoNothing();
 
     // 3. JLTs
     const jlts = [
-        // Revenue Recognition
         {
             code: "DEF_REV_DR",
             eventClassId: "AR_REVENUE",
@@ -59,7 +56,6 @@ async function seedArRevenueSla() {
             descriptionRule: "Revenue Rec: {description}",
             condition: "true"
         },
-        // CM Application (Wash)
         {
             code: "CM_APP_REC_DR",
             eventClassId: "AR_CM_APP",

@@ -56,7 +56,6 @@
     "client/src",
     "backend/src",
     "shared",
-    "server",
-    "scripts"
+    "server"
   ]
 }

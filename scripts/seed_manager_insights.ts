@@ -42,7 +42,7 @@ async function main() {
             { skillName: "Strategic Planning", level: "Advanced" }
         ];
 
-        if (job.jobName.includes("Developer") || job.jobName.includes("Engineer")) {
+        if (job.name.includes("Developer") || job.name.includes("Engineer")) {
             reqs.push({ skillName: "Python Programming", level: "Advanced" });
             reqs.push({ skillName: "React Development", level: "Intermediate" });
         }
@@ -51,7 +51,7 @@ async function main() {
             tenantId,
             jobId: job.id,
             requiredSkills: reqs,
-            profileSummary: `Standard profile for ${job.jobName}`
+            profileSummary: `Standard profile for ${job.name}`
         }); // Note: In real life we'd upsert based on jobId
     }
 

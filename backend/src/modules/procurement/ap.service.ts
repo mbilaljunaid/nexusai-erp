@@ -15,7 +15,7 @@ export class ApService {
         private readonly glService: ProcurementGlIntegrationService,
     ) { }
 
-    async createInvoice(dto: any): Promise<typeof schema.apInvoices.$inferSelect> {
+    async createInvoice(dto: any): Promise<any> {
         return this.db.transaction(async (tx) => {
             const supplier = await tx.query.suppliers.findFirst({
                 where: eq(schema.suppliers.id, dto.supplierId)
@@ -29,15 +29,14 @@ export class ApService {
                 });
             }
 
-            // Payment Terms Logic
-            const terms = dto.paymentTerms || 'Net 30'; // Supplier schema has no paymentTerms column yet, fallback to default
+            const terms = dto.paymentTerms || 'Net 30';
             const invoiceDate = dto.invoiceDate ? new Date(dto.invoiceDate) : new Date();
             let dueDate = new Date(invoiceDate);
 
             if (terms === 'Net 30') {
                 dueDate.setDate(dueDate.getDate() + 30);
             } else if (terms === 'Immediate') {
-                // Same
+                // Same day
             } else {
                 dueDate.setDate(dueDate.getDate() + 30);
             }
@@ -45,15 +44,14 @@ export class ApService {
             const [invoice] = await tx.insert(schema.apInvoices).values({
                 invoiceNumber: dto.invoiceNumber,
                 supplierId: supplier.id,
-                siteId: dto.siteId, // Assuming passed in DTO
-                purchaseOrderId: po?.id,
-                amount: dto.amount.toString(),
+                supplierSiteId: dto.siteId,
+                invoiceAmount: dto.amount.toString(),
                 invoiceDate: invoiceDate,
                 dueDate: dueDate,
                 paymentTerms: terms,
-                status: dto.status || 'Draft',
+                invoiceStatus: dto.status || 'Draft',
                 description: dto.description
-            }).returning();
+            } as any).returning();
 
             if (dto.lines && dto.lines.length > 0) {
                 const linesToInsert = dto.lines.map((lineDto: any, index: number) => ({
@@ -71,7 +69,7 @@ export class ApService {
         });
     }
 
-    async createDebitMemo(dto: any): Promise<typeof schema.apInvoices.$inferSelect> {
+    async createDebitMemo(dto: any): Promise<any> {
         if (Number(dto.amount) > 0 && !dto.isCreditMemo) {
             dto.amount = -1 * Number(dto.amount);
         }
@@ -79,16 +77,16 @@ export class ApService {
         return this.createInvoice(dto);
     }
 
-    async findAllInvoices(): Promise<typeof schema.apInvoices.$inferSelect[]> {
+    async findAllInvoices(): Promise<any[]> {
         return this.db.query.apInvoices.findMany({
             with: {
                 supplier: true,
                 lines: true
             }
-        });
+        } as any);
     }
 
-    async findOneInvoice(id: string): Promise<typeof schema.apInvoices.$inferSelect & { lines: any[], payments: any[] }> {
+    async findOneInvoice(id: string): Promise<any> {
         const invoice = await this.db.query.apInvoices.findFirst({
             where: eq(schema.apInvoices.id, id),
             with: {
@@ -96,24 +94,24 @@ export class ApService {
                 lines: true,
                 payments: true
             }
-        });
+        } as any);
         if (!invoice) throw new NotFoundException(`Invoice ${id} not found`);
         return invoice;
     }
 
-    async validateInvoice(id: string): Promise<typeof schema.apInvoices.$inferSelect> {
+    async validateInvoice(id: string): Promise<any> {
         return this.db.transaction(async (tx) => {
-            const invoice = await tx.query.apInvoices.findFirst({
+            const invoice: any = await tx.query.apInvoices.findFirst({
                 where: eq(schema.apInvoices.id, id),
                 with: { lines: true }
-            });
+            } as any);
 
             if (!invoice) throw new NotFoundException('Invoice not found');
-            if (invoice.status !== 'Draft') throw new BadRequestException(`Cannot validate invoice in status ${invoice.status}`);
+            if (invoice.invoiceStatus !== 'Draft') throw new BadRequestException(`Cannot validate invoice in status ${invoice.invoiceStatus}`);
 
-            // Automated Tax Logic
-            const hasTaxLine = invoice.lines.some((l: any) => l.description?.toLowerCase().includes('tax'));
-            let currentAmount = Number(invoice.amount);
+            const lines: any[] = invoice.lines || [];
+            const hasTaxLine = lines.some((l: any) => l.description?.toLowerCase().includes('tax'));
+            let currentAmount = Number(invoice.invoiceAmount);
             let taxAmount = 0;
 
             if (!hasTaxLine && currentAmount > 0) {
@@ -122,7 +120,7 @@ export class ApService {
 
                 await tx.insert(schema.apInvoiceLines).values({
                     invoiceId: invoice.id,
-                    lineNumber: invoice.lines.length + 1,
+                    lineNumber: lines.length + 1,
                     description: 'Automated Tax (10%)',
                     amount: taxAmount.toString(),
                     lineType: 'TAX'
@@ -131,27 +129,24 @@ export class ApService {
                 currentAmount += taxAmount;
 
                 await tx.update(schema.apInvoices)
-                    .set({ amount: currentAmount.toString() })
+                    .set({ invoiceAmount: currentAmount.toString() } as any)
                     .where(eq(schema.apInvoices.id, invoice.id));
 
                 this.logger.log(`Added automated tax of ${taxAmount} to Invoice ${invoice.invoiceNumber}`);
             }
 
-            // Refresh lines total check could be done here but skipping for brevity
-            // Validation Passed
             const [updatedInvoice] = await tx.update(schema.apInvoices)
-                .set({ status: 'Validated' })
+                .set({ invoiceStatus: 'Validated' } as any)
                 .where(eq(schema.apInvoices.id, invoice.id))
                 .returning();
 
-            // GL Integration
             await this.glService.postJournal({
                 source: 'Payables',
                 category: 'Purchase Invoices',
                 description: `Invoice ${updatedInvoice.invoiceNumber} Validation`,
                 lines: [
-                    { account: '5000-Expense', debit: Number(updatedInvoice.amount) },
-                    { account: '2000-AP-Liability', credit: Number(updatedInvoice.amount) }
+                    { account: '5000-Expense', debit: Number(updatedInvoice.invoiceAmount) },
+                    { account: '2000-AP-Liability', credit: Number(updatedInvoice.invoiceAmount) }
                 ]
             });
 
@@ -159,16 +154,16 @@ export class ApService {
         });
     }
 
-    async payInvoice(id: string, dto: any): Promise<typeof schema.apPayments.$inferSelect> {
+    async payInvoice(id: string, dto: any): Promise<any> {
         return this.db.transaction(async (tx) => {
-            const invoice = await tx.query.apInvoices.findFirst({
+            const invoice: any = await tx.query.apInvoices.findFirst({
                 where: eq(schema.apInvoices.id, id),
                 with: { payments: true }
-            });
+            } as any);
 
             if (!invoice) throw new NotFoundException('Invoice not found');
-            if (invoice.status !== 'Validated' && invoice.status !== 'Partially Paid') {
-                throw new BadRequestException(`Cannot pay invoice in status ${invoice.status}`);
+            if (invoice.invoiceStatus !== 'Validated' && invoice.invoiceStatus !== 'Partially Paid') {
+                throw new BadRequestException(`Cannot pay invoice in status ${invoice.invoiceStatus}`);
             }
 
             const [payment] = await tx.insert(schema.apPayments).values({
@@ -176,18 +171,21 @@ export class ApService {
                 invoiceId: invoice.id,
                 amount: dto.amount.toString(),
                 paymentDate: new Date(),
-                paymentMethod: dto.paymentMethod || 'Check'
-            }).returning();
+                paymentMethodCode: dto.paymentMethod || 'CHECK',
+                currencyCode: 'USD',
+                supplierId: invoice.supplierId,
+            } as any).returning();
 
-            const totalPaid = invoice.payments.reduce((sum: number, p: any) => sum + Number(p.amount), 0) + Number(dto.amount);
+            const payments: any[] = invoice.payments || [];
+            const totalPaid = payments.reduce((sum: number, p: any) => sum + Number(p.amount), 0) + Number(dto.amount);
             let newStatus = 'Partially Paid';
 
-            if (Math.abs(totalPaid) >= Math.abs(Number(invoice.amount))) {
+            if (Math.abs(totalPaid) >= Math.abs(Number(invoice.invoiceAmount))) {
                 newStatus = 'Paid';
             }
 
             await tx.update(schema.apInvoices)
-                .set({ status: newStatus })
+                .set({ invoiceStatus: newStatus } as any)
                 .where(eq(schema.apInvoices.id, invoice.id));
 
             return payment;

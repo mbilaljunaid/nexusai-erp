@@ -11,7 +11,7 @@ async function main() {
 
         const journals = await db.execute(sql`SELECT COUNT(*) FROM gl_journals_v2`);
         console.log("gl_journals_v2 count:", journals.rows[0].count);
-    } catch (e) {
+    } catch (e: any) {
         console.log("Error checking counts (table might not exist):", e.message);
     }
     process.exit(0);

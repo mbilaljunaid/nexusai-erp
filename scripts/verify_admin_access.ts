@@ -16,7 +16,7 @@ async function verifyAdminAccess() {
         console.log("   - Seeding Organization...");
         const orgId = "org_admin_test_" + Date.now();
         await db.insert(hrOrganizations).values([
-            { id: orgId, tenantId, name: "Secret Dept", classificationCode: "DEPARTMENT", status: "A" }
+            { id: orgId, tenantId, name: "Secret Dept", classificationCode: "DEPARTMENT", activeStatus: "A" } as any
         ]);
 
         // 2. Setup Admin User (No AORs, but Admin Role)
