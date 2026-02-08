@@ -19,7 +19,7 @@ const buttonVariants = cva(
         secondary: "border bg-secondary text-secondary-foreground border border-secondary-border ",
         ghost: "border border-transparent",
         link: "text-primary underline-offset-4 hover:underline",
-        premium: "bg-gradient-to-r from-indigo-500 to-purple-500 text-white border border-indigo-400 shadow-md",
+        premium: "bg-gradient-to-r from-premium-from to-premium-to text-premium-foreground border border-premium-from shadow-md",
         glow: "bg-primary text-primary-foreground border border-primary-border shadow-[0_0_12px_hsl(var(--primary)/0.4)]",
       },
       // Heights are set as "min" heights, because sometimes Ai will place large amount of content

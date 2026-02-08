@@ -41,6 +41,15 @@
     --input: 214 32% 91%;
     --ring: 221 83% 53%;
 
+    /* Semantic Status */
+    --success: 160 84% 31%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 11%;
+    --premium-from: 239 84% 67%;
+    --premium-to: 271 81% 56%;
+    --premium-foreground: 210 40% 98%;
+
     /* Charts */
     --chart-1: 221 83% 53%; /* Blue */
     --chart-2: 12 76% 61%; /* Orange/Rose */
@@ -90,6 +99,14 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    --success: 160 84% 39%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 11%;
+    --premium-from: 239 84% 67%;
+    --premium-to: 271 81% 56%;
+    --premium-foreground: 210 40% 98%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
