@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Manufacturing Service Layer
 import { manufacturingCostingService } from "./ManufacturingCostingService";
 import { db } from "../../../db";

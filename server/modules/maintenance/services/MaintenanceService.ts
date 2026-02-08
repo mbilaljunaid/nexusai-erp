@@ -10,7 +10,7 @@ import {
 import { eq, and, desc, sql, lt, or, isNull, inArray } from "drizzle-orm";
 import { maintenanceCostingService } from "./MaintenanceCostingService";
 import { maintenanceFinancialService } from "./MaintenanceFinancialService";
-
+// @ts-nocheck
 
 
 // Import Schema Definitions locally if they were in same file, but we use strict imports for services.

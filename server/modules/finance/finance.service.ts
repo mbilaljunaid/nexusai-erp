@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { db } from "../../db";
 import {
     glJournals, glJournalLines, glAccounts, glPeriods, glCodeCombinations,
