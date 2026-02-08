@@ -6,7 +6,6 @@ import { eq, and } from "drizzle-orm";
 async function resetPeriods() {
     console.log("🔄 Resetting Periods to Open...");
 
-    // Open Jan-2026 for PRIMARY
     const periodName = "Jan-2026";
     const ledgerId = "PRIMARY";
 
@@ -24,11 +23,10 @@ async function resetPeriods() {
             periodName,
             ledgerId,
             startDate: new Date("2026-01-01"),
-            endDate: new Date("2026-02-01"), // Safe buffer
+            endDate: new Date("2026-02-01"),
             fiscalYear: 2026,
-            quarter: 1,
             status: "Open"
-        });
+        } as any);
         console.log(`✅ Created & Opened ${periodName} for ${ledgerId}`);
     }
     process.exit(0);

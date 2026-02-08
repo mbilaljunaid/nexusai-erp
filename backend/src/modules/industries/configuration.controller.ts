@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { ConfigurationService, IndustryConfiguration } from './configuration.service';
+import { ConfigurationService } from './configuration.service';
+import type { IndustryConfiguration } from './configuration.service';
 
 @Controller('api/configuration')
 export class ConfigurationController {

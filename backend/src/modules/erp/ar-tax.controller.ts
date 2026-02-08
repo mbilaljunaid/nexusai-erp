@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { ARTaxService } from './ar-tax.service';
-import { TaxableTransaction } from './tax-engine.service';
+import type { TaxableTransaction } from './tax-engine.service';
 
 /**
  * Controller for handling Accounts Receivable (AR) tax related endpoints.

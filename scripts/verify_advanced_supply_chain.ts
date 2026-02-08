@@ -5,7 +5,7 @@ import { procurementService } from "../server/modules/scm/services/ProcurementSe
 import { fulfillmentService } from "../server/modules/order/FulfillmentService";
 import { reservationService } from "../server/modules/order/ReservationService";
 import { backToBackService } from "../server/modules/order/BackToBackService";
-import { manufacturingService } from "../server/services/ManufacturingService";
+// import { manufacturingService } from "../server/services/ManufacturingService";
 import { db } from "../server/db";
 import { omOrderHeaders, omOrderLines } from "../shared/schema/order_management";
 import { cstTransactions } from "../shared/schema/costing";
@@ -76,7 +76,7 @@ async function verifyCOGS() {
 
         // 4. Verify COGS Transaction
         const cogs = await db.select().from(cstTransactions)
-            .where(eq(cstTransactions.sourceId, order.id))
+            .where(eq((cstTransactions as any).sourceId, order.id))
             .execute();
 
         if (cogs.length === 0) throw new Error("No COGS transaction found.");

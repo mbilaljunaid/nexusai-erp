@@ -180,13 +180,13 @@ async function verifyAdvancedGL() {
         // Create AP Invoice (Unpaid)
         await db.insert(apInvoices).values({
             invoiceNumber: `INV-${Date.now()}`,
-            supplierId: 1,
+            supplierId: "1",
             invoiceAmount: "999.00",
             paymentStatus: "UNPAID",
             invoiceDate: new Date(),
             invoiceCurrencyCode: "USD",
             paymentCurrencyCode: "USD"
-        }).onConflictDoNothing();
+        } as any).onConflictDoNothing();
 
         const reconRes = await request("GET", `/gl/reconciliation/${LEDGER_ID}?periodName=${PERIOD_NAME}`);
         console.log("   Reconciliation Summary:", reconRes.data);

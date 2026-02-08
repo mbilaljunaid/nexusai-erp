@@ -13,15 +13,13 @@ async function migrate() {
     console.log(`Found ${allSuppliers.length} suppliers to migrate.`);
 
     for (const supplier of allSuppliers) {
-        // Create Organization Party
-        // Use auto-generated random number for partyNumber if not provided logic, 
-        // but here we use a prefix + substring for uniqueness in migration
         const partyNumber = "SUP-" + Math.floor(Math.random() * 1000000);
 
         const { party, profile } = await partyService.createOrganization(
             {
                 partyName: supplier.name,
                 partyNumber: partyNumber,
+                partyType: 'ORGANIZATION',
                 email: supplier.email,
             },
             {
@@ -29,7 +27,6 @@ async function migrate() {
             }
         );
 
-        // Update Supplier
         await db.update(suppliers)
             .set({ partyId: party.id })
             .where(eq(suppliers.id, supplier.id));
@@ -48,6 +45,7 @@ async function migrate() {
             {
                 partyName: account.name,
                 partyNumber: partyNumber,
+                partyType: 'ORGANIZATION',
             },
             {
                 organizationName: account.name,
@@ -74,6 +72,7 @@ async function migrate() {
             {
                 partyName: fullName,
                 partyNumber: partyNumber,
+                partyType: 'PERSON',
                 email: contact.email,
             },
             {
