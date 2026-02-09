@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -65,7 +64,7 @@ interface ContributorProfileData {
 
 export default function ContributorProfile() {
   const [, params] = useRoute("/marketplace/profile/:userId");
-  const userId = params?.userId;
+  const userId = (params as any)?.userId;
 
   const { data, isLoading, error } = useQuery<ContributorProfileData>({
     queryKey: ["/api/community/marketplace/profile", userId],

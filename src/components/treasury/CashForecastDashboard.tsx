@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -90,7 +89,7 @@ export function CashForecastDashboard() {
                                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                     />
                                     <Legend />
-                                    <Bar nam="AP Outflows" dataKey="AP_INVOICE" stackId="a" fill="#ef4444" radius={[0, 0, 4, 4]} />
+                                    <Bar name="AP Outflows" dataKey="AP_INVOICE" stackId="a" fill="#ef4444" radius={[0, 0, 4, 4]} />
                                     <Bar name="Debt Service" dataKey="DEBT_PAYMENT" stackId="a" fill="#f97316" />
                                     <Bar name="FX Settlements" dataKey="FX_SETTLEMENT" stackId="a" fill="#8b5cf6" />
                                     <Bar name="AR Inflows" dataKey="AR_INVOICE" stackId="a" fill="#22c55e" radius={[4, 4, 0, 0]} />

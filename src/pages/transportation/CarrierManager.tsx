@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Shield, Star, Globe, Phone, Mail, Award, TrendingUp, Search } from "lucide-react";
@@ -16,35 +15,35 @@ export default function CarrierManager() {
 
     const columns = [
         { header: "SCAC", accessorKey: "scacCode" },
-        { header: "Carrier Name", accessorKey: "name", cell: (info: any) => <span className="font-semibold">{info.getValue()}</span> },
-        { header: "Mode", accessorKey: "mode", cell: (info: any) => <Badge variant="outline">{info.getValue()}</Badge> },
+        { header: "Carrier Name", accessorKey: "name", cell: (row: any) => <span className="font-semibold">{row.name}</span> },
+        { header: "Mode", accessorKey: "mode", cell: (row: any) => <Badge variant="outline">{row.mode}</Badge> },
         {
             header: "Service Level",
             accessorKey: "serviceLevel",
-            cell: (info: any) => (
+            cell: (row: any) => (
                 <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                    {info.getValue() || "Standard"}
+                    {row.serviceLevel || "Standard"}
                 </span>
             )
         },
         {
             header: "Rating",
             accessorKey: "rating",
-            cell: (info: any) => (
+            cell: (row: any) => (
                 <div className="flex items-center text-amber-500">
                     <Star className="h-4 w-4 fill-current mr-1" />
-                    <span className="font-bold">{info.getValue()}</span>
+                    <span className="font-bold">{row.rating}</span>
                 </div>
             )
         },
         {
             id: "actions",
+            header: "",
             cell: () => (
                 <Button size="xs" variant="outline">Details</Button>
             )
         }
     ];
-
     return (
         <div className="p-6 space-y-6">
             <div className="flex justify-between items-center">

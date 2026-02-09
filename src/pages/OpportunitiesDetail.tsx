@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -383,8 +382,8 @@ export default function OpportunitiesDetail() {
             columns={[
               {
                 header: "Name",
-                accessorKey: "name",
-                cell: (opp: Opportunity) => (
+                accessorKey: "name" as any,
+                cell: (opp: any) => (
                   <div>
                     <div className="font-semibold">{opp.name}</div>
                     <div className="text-xs text-muted-foreground">{getAccountName(opp.accountId)}</div>
@@ -393,29 +392,27 @@ export default function OpportunitiesDetail() {
               },
               {
                 header: "Stage",
-                accessorKey: "stage",
-                cell: (opp: Opportunity) => <Badge variant="outline" className="capitalize">{opp.stage.replace('_', ' ')}</Badge>
+                accessorKey: "stage" as any,
+                cell: (opp: any) => <Badge variant="outline" className="capitalize">{String(opp.stage).replace('_', ' ')}</Badge>
               },
               {
                 header: "Amount",
-                accessorKey: "amount",
-                className: "text-right",
-                cell: (opp: Opportunity) => <span className="font-medium">{formatCurrency(opp.amount)}</span>
+                accessorKey: "amount" as any,
+                cell: (opp: any) => <span className="font-medium">{formatCurrency(opp.amount)}</span>
               },
               {
                 header: "Probability",
-                accessorKey: "probability",
-                className: "text-right",
-                cell: (opp: Opportunity) => <span>{opp.probability}%</span>
+                accessorKey: "probability" as any,
+                cell: (opp: any) => <span>{opp.probability}%</span>
               },
               {
                 header: "Close Date",
-                accessorKey: "closeDate",
-                cell: (opp: Opportunity) => opp.closeDate ? new Date(opp.closeDate).toLocaleDateString() : '-'
+                accessorKey: "closeDate" as any,
+                cell: (opp: any) => opp.closeDate ? new Date(opp.closeDate).toLocaleDateString() : '-'
               }
             ]}
-            onRowClick={setSelectedOpp}
-            keyExtractor={(opp) => opp.id}
+            onRowClick={(opp: any) => setSelectedOpp(opp)}
+            keyExtractor={(opp: any) => opp.id}
           />
         ) : (
           /* Kanban View */

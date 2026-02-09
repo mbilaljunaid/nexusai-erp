@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -15,7 +14,7 @@ import { RelationshipViewer } from "@/components/mdm/RelationshipViewer";
 
 export default function PartyProfile() {
     const [, params] = useRoute("/mdm/parties/:id");
-    const partyId = params?.id;
+    const partyId = (params as any)?.id;
 
     const { data, isLoading } = useQuery<{ party: any, profile: any }>({
         queryKey: [`/api/mdm/parties/${partyId}`],

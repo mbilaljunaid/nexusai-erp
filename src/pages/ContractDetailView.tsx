@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useRoute } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function ContractDetailView() {
     const [match, params] = useRoute("/contracts/:id");
-    const id = params?.id;
+    const id = (params as any)?.id;
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
