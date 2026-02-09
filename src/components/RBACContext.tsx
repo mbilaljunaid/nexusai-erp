@@ -65,20 +65,18 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           credentials: "include",
         });
         
-      const contentType = response.headers.get("content-type") || "";
+        const contentType = response.headers.get("content-type") || "";
         if (!contentType.includes("application/json")) {
           // Backend not available — auto-authenticate with defaults for dev/preview
-          if (!localStorage.getItem("authToken")) {
-            setUserId("user1");
-            setUserRole("admin");
-            setEnterpriseRoleState("super_admin");
-            setIsAuthenticated(true);
-            localStorage.setItem("authToken", "true");
-            localStorage.setItem("userId", "user1");
-            localStorage.setItem("userRole", "admin");
-            localStorage.setItem("enterpriseRole", "system_admin");
-            localStorage.setItem("authTimestamp", Date.now().toString());
-          }
+          setUserId("user1");
+          setUserRole("admin");
+          setEnterpriseRoleState("super_admin");
+          setIsAuthenticated(true);
+          localStorage.setItem("authToken", "true");
+          localStorage.setItem("userId", "user1");
+          localStorage.setItem("userRole", "admin");
+          localStorage.setItem("enterpriseRole", "super_admin");
+          localStorage.setItem("authTimestamp", Date.now().toString());
           setIsLoading(false);
           return;
         }
@@ -109,7 +107,17 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           localStorage.removeItem("authTimestamp");
         }
       } catch (error) {
-        // Network error — preserve existing local auth state
+        // Network error — auto-authenticate with defaults
+        if (!isAuthenticated) {
+          setUserId("user1");
+          setUserRole("admin");
+          setEnterpriseRoleState("super_admin");
+          setIsAuthenticated(true);
+          localStorage.setItem("authToken", "true");
+          localStorage.setItem("userId", "user1");
+          localStorage.setItem("userRole", "admin");
+          localStorage.setItem("enterpriseRole", "super_admin");
+        }
       } finally {
         setIsLoading(false);
       }
