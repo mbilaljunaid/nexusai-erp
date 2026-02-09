@@ -72,7 +72,7 @@ function Router() {
     <>
       <Switch>
         {/* Dashboard */}
-        <Route path="/dashboard" component={DashboardRoutes} />
+        <Route path="/dashboard" component={lazy(() => import("@/pages/Dashboard"))} />
 
         {/* Sidebar links that were 404 */}
         <Route path="/processes" component={ProcessHub} />
