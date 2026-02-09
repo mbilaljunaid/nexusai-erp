@@ -116,8 +116,8 @@ function Router() {
         {/* Core Modules */}
         <Route path="/crm*" component={CrmRoutes} />
         <Route path="/finance*" component={FinanceRoutes} />
+        <Route path="/revenue*" component={FinanceRoutes} />
         <Route path="/scm*" component={ScmRoutes} />
-        <Route path="/mdm*" component={MdmRoutes} />
         <Route path="/mdm*" component={MdmRoutes} />
 
         {/* Talent Management Direct Routes (Debug/Fix for 404) */}
