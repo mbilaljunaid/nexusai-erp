@@ -1,8 +1,8 @@
 
 import { db } from "../db";
 import { eq, and, or, gte, lte } from "drizzle-orm";
-import { hrmTimeRules, hrmAccrualPolicies } from "@shared/schema/time_rules";
-import { hrmTimeEntries } from "@shared/schema/time_labor";
+import { hrmTimeRules } from "@shared/schema/time_rules";
+import { hrmAccrualPolicies, hrmTimeEntries } from "@shared/schema/time_labor";
 
 export class TimeRuleEngine {
 
