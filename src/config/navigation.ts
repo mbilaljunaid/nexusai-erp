@@ -47,6 +47,11 @@ import {
     Globe,
     Megaphone,
     Target,
+    Heart,
+    Wifi,
+    Hotel,
+    ShoppingBag,
+    Boxes,
 } from "lucide-react";
 
 
@@ -112,6 +117,66 @@ export const navigationConfig: SidebarNode[] = [
         children: [
             { id: "portal-customer", title: "Customer Portal", type: "link", icon: Globe, path: "/portal", allowedRoles: ["admin", "editor"] },
             { id: "portal-supplier", title: "Supplier Portal", type: "link", icon: Truck, path: "/portal/supplier", allowedRoles: ["admin", "editor"] },
+        ],
+    },
+    {
+        id: "industry-verticals",
+        title: "Industries",
+        type: "section",
+        allowedRoles: ["admin", "editor"],
+        children: [
+            {
+                id: "ind-healthcare", title: "Healthcare", type: "group", icon: Heart, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-hc-patients", title: "Patients", type: "link", path: "/industry/healthcare/patients" },
+                    { id: "ind-hc-appointments", title: "Appointments", type: "link", path: "/industry/healthcare/appointments" },
+                    { id: "ind-hc-clinical", title: "Clinical Docs", type: "link", path: "/industry/healthcare/clinical" },
+                    { id: "ind-hc-pharmacy", title: "Pharmacy", type: "link", path: "/industry/healthcare/pharmacy" },
+                    { id: "ind-hc-billing", title: "Medical Billing", type: "link", path: "/industry/healthcare/billing" },
+                    { id: "ind-hc-bi", title: "BI Dashboard", type: "link", path: "/industry/healthcare/bi" },
+                ],
+            },
+            {
+                id: "ind-telecom", title: "Telecom", type: "group", icon: Wifi, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-tc-network", title: "Network OSS", type: "link", path: "/industry/telecom/network-oss" },
+                    { id: "ind-tc-billing", title: "Billing & Revenue", type: "link", path: "/industry/telecom/billing" },
+                    { id: "ind-tc-monitoring", title: "Monitoring", type: "link", path: "/industry/telecom/monitoring" },
+                    { id: "ind-tc-devices", title: "Devices & SIM", type: "link", path: "/industry/telecom/devices" },
+                    { id: "ind-tc-sla", title: "SLA Management", type: "link", path: "/industry/telecom/sla" },
+                ],
+            },
+            {
+                id: "ind-hospitality", title: "Hospitality", type: "group", icon: Hotel, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-hs-reservations", title: "Reservations", type: "link", path: "/industry/hospitality/reservations" },
+                    { id: "ind-hs-frontdesk", title: "Front Desk", type: "link", path: "/industry/hospitality/front-desk" },
+                    { id: "ind-hs-pos", title: "F&B POS", type: "link", path: "/industry/hospitality/pos" },
+                    { id: "ind-hs-events", title: "Events", type: "link", path: "/industry/hospitality/events" },
+                    { id: "ind-hs-guest", title: "Guest CRM", type: "link", path: "/industry/hospitality/guest-crm" },
+                    { id: "ind-hs-bi", title: "BI Dashboard", type: "link", path: "/industry/hospitality/bi" },
+                ],
+            },
+            {
+                id: "ind-retail", title: "Retail & Commerce", type: "group", icon: ShoppingBag, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-rt-pos", title: "Point of Sale", type: "link", path: "/industry/retail/pos" },
+                    { id: "ind-rt-store", title: "Store Ops", type: "link", path: "/industry/retail/store-ops" },
+                    { id: "ind-rt-omni", title: "Omnichannel", type: "link", path: "/industry/retail/omnichannel" },
+                    { id: "ind-rt-merch", title: "Merchandise", type: "link", path: "/industry/retail/merchandise" },
+                    { id: "ind-rt-ecom", title: "E-Commerce", type: "link", path: "/industry/retail/ecommerce" },
+                ],
+            },
+            {
+                id: "ind-logistics", title: "Logistics", type: "group", icon: Boxes, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-lg-shipping", title: "Shipping", type: "link", path: "/industry/logistics/shipping" },
+                    { id: "ind-lg-coldchain", title: "Cold Chain", type: "link", path: "/industry/logistics/cold-chain" },
+                    { id: "ind-lg-optimization", title: "Optimization", type: "link", path: "/industry/logistics/optimization" },
+                    { id: "ind-lg-analytics", title: "Analytics", type: "link", path: "/industry/logistics/analytics" },
+                    { id: "ind-lg-warehouse", title: "Warehouse", type: "link", path: "/industry/logistics/warehouse" },
+                ],
+            },
         ],
     },
     {
