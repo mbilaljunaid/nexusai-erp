@@ -63,24 +63,12 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: "admin@nexusaifirst.cloud", password: "Admin@2025!" }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        await login(data.user.id, "admin");
-        setSuccess(true);
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-      } else {
-        const data = await res.json();
-        setError(data.message || "Login failed. Admin account may not exist yet.");
-      }
+      // Direct client-side demo login — no backend required
+      await login("demo-admin-user", "admin");
+      setSuccess(true);
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     } catch (e) {
       setError("Login failed. Please try again.");
     } finally {
