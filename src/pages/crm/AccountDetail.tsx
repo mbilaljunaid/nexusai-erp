@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +12,7 @@ import type { Account, Contact, Opportunity, Case } from "@/types/erp-types";
 import { Link } from "wouter";
 
 export default function AccountDetail() {
-    const [, params] = useRoute("/crm/accounts/:id");
+    const [, params] = useRoute("/crm/accounts/:id") as [boolean, { id?: string } | null];
     const accountId = params?.id;
 
     const { data: account } = useQuery<Account>({
