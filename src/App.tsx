@@ -75,7 +75,6 @@ function Router() {
         <Route path="/wfm/analytics" component={WfmAnalytics} />
         <Route path="/rewards/payroll" component={PayrollDashboard} />
         <Route path="/wfm/admin/accrual-test" component={AccrualTesting} />
-        <Route component={NotFound} />
 
         {/* Marketing */}
         <Route path="/marketing*" component={MarketingRoutes} />
