@@ -13,7 +13,7 @@ export default function ChartOfAccounts() {
   const { toast } = useToast();
   const [newAccount, setNewAccount] = useState({ accountCode: "", accountName: "", accountType: "Asset", description: "" });
 
-  const { data: accounts = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/finance/chart-of-accounts"], queryFn: () => fetch("/api/finance/chart-of-accounts").then(r => r.json()).catch(() => []) });
+  const { data: accounts = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/finance/chart-of-accounts"], queryFn: () => fetch("/api/finance/chart-of-accounts").then(r => r.json()) });
 
   const createMutation = useMutation({
     mutationFn: (data: any) => fetch("/api/finance/chart-of-accounts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),

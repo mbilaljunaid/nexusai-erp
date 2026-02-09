@@ -15,7 +15,7 @@ export default function FormulationRecipeManagement() {
 
   const { data: formulas = [], isLoading } = useQuery({
     queryKey: ["/api/formulations"],
-    queryFn: () => fetch("/api/formulations").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/formulations").then(r => r.json()),
   });
 
   const createMutation = useMutation({

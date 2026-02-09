@@ -14,7 +14,7 @@ export default function BatchManufacturing() {
 
   const { data: batches = [], isLoading } = useQuery({
     queryKey: ["/api/fb-batches"],
-    queryFn: () => fetch("/api/fb-batches").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/fb-batches").then(r => r.json()),
   });
 
   const createMutation = useMutation({

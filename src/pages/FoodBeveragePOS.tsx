@@ -15,7 +15,7 @@ export default function FoodBeveragePOS() {
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["/api/hospitality-orders"],
-    queryFn: () => fetch("/api/hospitality-orders").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/hospitality-orders").then(r => r.json()),
   });
 
   const createMutation = useMutation({

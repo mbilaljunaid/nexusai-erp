@@ -7,7 +7,7 @@ import { DashboardWidget } from "@/components/ui/DashboardWidget";
 export default function HospitalityBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
     queryKey: ["/api/hospitality-bi"],
-    queryFn: () => fetch("/api/hospitality-bi").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/hospitality-bi").then(r => r.json()),
   });
 
   const totalRevenue = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.revenue) || 0), 0);
