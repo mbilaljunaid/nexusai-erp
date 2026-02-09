@@ -52,6 +52,9 @@ import {
     Hotel,
     ShoppingBag,
     Boxes,
+    Car,
+    Landmark,
+    Flame,
 } from "lucide-react";
 
 
@@ -181,6 +184,66 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "ind-lg-optimization", title: "Optimization", type: "link", path: "/industry/logistics/optimization" },
                     { id: "ind-lg-analytics", title: "Analytics", type: "link", path: "/industry/logistics/analytics" },
                     { id: "ind-lg-warehouse", title: "Warehouse", type: "link", path: "/industry/logistics/warehouse" },
+                ],
+            },
+            {
+                id: "ind-automotive", title: "Automotive", type: "group", icon: Car, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-auto-production", title: "Production", type: "link", path: "/industry/automotive/production" },
+                    { id: "ind-auto-sales", title: "Sales CRM", type: "link", path: "/industry/automotive/sales" },
+                    { id: "ind-auto-supply", title: "Supply Chain", type: "link", path: "/industry/automotive/supply-chain" },
+                    { id: "ind-auto-quality", title: "Quality Analytics", type: "link", path: "/industry/automotive/quality" },
+                    { id: "ind-auto-bi", title: "BI Dashboard", type: "link", path: "/industry/automotive/bi" },
+                ],
+            },
+            {
+                id: "ind-banking", title: "Banking & Finance", type: "group", icon: Landmark, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-bk-core", title: "Core Banking", type: "link", path: "/industry/banking/core" },
+                    { id: "ind-bk-accounts", title: "Customer Accounts", type: "link", path: "/industry/banking/accounts" },
+                    { id: "ind-bk-loans", title: "Loans & Credit", type: "link", path: "/industry/banking/loans" },
+                    { id: "ind-bk-payments", title: "Payments", type: "link", path: "/industry/banking/payments" },
+                    { id: "ind-bk-fraud", title: "AI Fraud Detection", type: "link", path: "/industry/banking/fraud" },
+                    { id: "ind-bk-bi", title: "BI Dashboard", type: "link", path: "/industry/banking/bi" },
+                ],
+            },
+            {
+                id: "ind-insurance", title: "Insurance", type: "group", icon: Shield, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-ins-policy", title: "Policy Mgmt", type: "link", path: "/industry/insurance/policies" },
+                    { id: "ind-ins-claims", title: "Claims", type: "link", path: "/industry/insurance/claims" },
+                    { id: "ind-ins-underwriting", title: "Underwriting", type: "link", path: "/industry/insurance/underwriting" },
+                    { id: "ind-ins-billing", title: "Billing & Premiums", type: "link", path: "/industry/insurance/billing" },
+                    { id: "ind-ins-bi", title: "BI Dashboard", type: "link", path: "/industry/insurance/bi" },
+                ],
+            },
+            {
+                id: "ind-government", title: "Government", type: "group", icon: Landmark, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-gov-citizen", title: "Citizen Services", type: "link", path: "/industry/government/citizen" },
+                    { id: "ind-gov-procurement", title: "Procurement", type: "link", path: "/industry/government/procurement" },
+                    { id: "ind-gov-grants", title: "Grants & Funding", type: "link", path: "/industry/government/grants" },
+                    { id: "ind-gov-compliance", title: "Compliance", type: "link", path: "/industry/government/compliance" },
+                    { id: "ind-gov-hr", title: "HR & Workforce", type: "link", path: "/industry/government/hr" },
+                    { id: "ind-gov-bi", title: "BI Dashboard", type: "link", path: "/industry/government/bi" },
+                ],
+            },
+            {
+                id: "ind-education", title: "Education", type: "group", icon: GraduationCap, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-ed-dashboard", title: "Dashboard", type: "link", path: "/industry/education/dashboard" },
+                    { id: "ind-ed-admissions", title: "Admissions", type: "link", path: "/industry/education/admissions" },
+                    { id: "ind-ed-faculty", title: "Faculty", type: "link", path: "/industry/education/faculty" },
+                    { id: "ind-ed-billing", title: "Billing", type: "link", path: "/industry/education/billing" },
+                    { id: "ind-ed-analytics", title: "Analytics", type: "link", path: "/industry/education/analytics" },
+                ],
+            },
+            {
+                id: "ind-energy", title: "Energy & Utilities", type: "group", icon: Flame, allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "ind-en-grid", title: "Grid Operations", type: "link", path: "/industry/energy/grid" },
+                    { id: "ind-en-trading", title: "Energy Trading", type: "link", path: "/industry/energy/trading" },
+                    { id: "ind-en-analytics", title: "Analytics", type: "link", path: "/industry/energy/analytics" },
                 ],
             },
         ],

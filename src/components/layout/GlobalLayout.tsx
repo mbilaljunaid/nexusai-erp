@@ -1,6 +1,6 @@
 import React from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { AppSidebar } from "./AppSidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import Header from "@/components/Header";
 import { GlobalSpotlight } from "@/components/GlobalSpotlight";
 import { Toaster } from "@/components/ui/toaster";

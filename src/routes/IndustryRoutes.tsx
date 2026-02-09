@@ -54,6 +54,48 @@ const SupplyChainLogistics = lazy(() => import("@/pages/SupplyChainLogistics"));
 const WarehouseInventoryLogistics = lazy(() => import("@/pages/WarehouseInventoryLogistics"));
 const BillingLogistics = lazy(() => import("@/pages/BillingLogistics"));
 
+// Automotive
+const AutomotiveProduction = lazy(() => import("@/pages/AutomotiveProduction"));
+const AutomotiveSalesCRM = lazy(() => import("@/pages/AutomotiveSalesCRM"));
+const AutomotiveSupplyChain = lazy(() => import("@/pages/AutomotiveSupplyChain"));
+const AutomotiveQualityAnalytics = lazy(() => import("@/pages/AutomotiveQualityAnalytics"));
+const AutomotiveBIDashboard = lazy(() => import("@/pages/AutomotiveBIDashboard"));
+
+// Banking
+const BankingCoreBanking = lazy(() => import("@/pages/BankingCoreBanking"));
+const BankingCustomerAccounts = lazy(() => import("@/pages/BankingCustomerAccounts"));
+const BankingLoansCredit = lazy(() => import("@/pages/BankingLoansCredit"));
+const BankingPayments = lazy(() => import("@/pages/BankingPayments"));
+const BankingAIFraudDetection = lazy(() => import("@/pages/BankingAIFraudDetection"));
+const BankingBIDashboards = lazy(() => import("@/pages/BankingBIDashboards"));
+
+// Insurance
+const InsurancePolicyManagement = lazy(() => import("@/pages/InsurancePolicyManagement"));
+const InsuranceClaimsProcessing = lazy(() => import("@/pages/InsuranceClaimsProcessing"));
+const InsuranceUnderwriting = lazy(() => import("@/pages/InsuranceUnderwriting"));
+const InsuranceBillingPremiums = lazy(() => import("@/pages/InsuranceBillingPremiums"));
+const InsuranceBIDashboards = lazy(() => import("@/pages/InsuranceBIDashboards"));
+
+// Government
+const GovernmentCitizenServices = lazy(() => import("@/pages/GovernmentCitizenServices"));
+const GovernmentProcurement = lazy(() => import("@/pages/GovernmentProcurement"));
+const GovernmentGrantsFunding = lazy(() => import("@/pages/GovernmentGrantsFunding"));
+const GovernmentCompliance = lazy(() => import("@/pages/GovernmentCompliance"));
+const GovernmentHR = lazy(() => import("@/pages/GovernmentHR"));
+const GovernmentBIDashboards = lazy(() => import("@/pages/GovernmentBIDashboards"));
+
+// Education
+const EdDashboard = lazy(() => import("@/pages/EdDashboard"));
+const AdmissionsEnrollment = lazy(() => import("@/pages/AdmissionsEnrollment"));
+const EdFaculty = lazy(() => import("@/pages/EdFaculty"));
+const EducationBilling = lazy(() => import("@/pages/EducationBilling"));
+const EducationAnalytics = lazy(() => import("@/pages/EducationAnalytics"));
+
+// Energy
+const GridOperations = lazy(() => import("@/pages/GridOperations"));
+const EnergyTrading = lazy(() => import("@/pages/EnergyTrading"));
+const EnergyAnalytics = lazy(() => import("@/pages/EnergyAnalytics"));
+
 export default function IndustryRoutes() {
     return (
         <Switch>
@@ -107,6 +149,48 @@ export default function IndustryRoutes() {
             <Route path="/industry/logistics/supply-chain" component={SupplyChainLogistics} />
             <Route path="/industry/logistics/warehouse" component={WarehouseInventoryLogistics} />
             <Route path="/industry/logistics/billing" component={BillingLogistics} />
+
+            {/* Automotive */}
+            <Route path="/industry/automotive/production" component={AutomotiveProduction} />
+            <Route path="/industry/automotive/sales" component={AutomotiveSalesCRM} />
+            <Route path="/industry/automotive/supply-chain" component={AutomotiveSupplyChain} />
+            <Route path="/industry/automotive/quality" component={AutomotiveQualityAnalytics} />
+            <Route path="/industry/automotive/bi" component={AutomotiveBIDashboard} />
+
+            {/* Banking */}
+            <Route path="/industry/banking/core" component={BankingCoreBanking} />
+            <Route path="/industry/banking/accounts" component={BankingCustomerAccounts} />
+            <Route path="/industry/banking/loans" component={BankingLoansCredit} />
+            <Route path="/industry/banking/payments" component={BankingPayments} />
+            <Route path="/industry/banking/fraud" component={BankingAIFraudDetection} />
+            <Route path="/industry/banking/bi" component={BankingBIDashboards} />
+
+            {/* Insurance */}
+            <Route path="/industry/insurance/policies" component={InsurancePolicyManagement} />
+            <Route path="/industry/insurance/claims" component={InsuranceClaimsProcessing} />
+            <Route path="/industry/insurance/underwriting" component={InsuranceUnderwriting} />
+            <Route path="/industry/insurance/billing" component={InsuranceBillingPremiums} />
+            <Route path="/industry/insurance/bi" component={InsuranceBIDashboards} />
+
+            {/* Government */}
+            <Route path="/industry/government/citizen" component={GovernmentCitizenServices} />
+            <Route path="/industry/government/procurement" component={GovernmentProcurement} />
+            <Route path="/industry/government/grants" component={GovernmentGrantsFunding} />
+            <Route path="/industry/government/compliance" component={GovernmentCompliance} />
+            <Route path="/industry/government/hr" component={GovernmentHR} />
+            <Route path="/industry/government/bi" component={GovernmentBIDashboards} />
+
+            {/* Education */}
+            <Route path="/industry/education/dashboard" component={EdDashboard} />
+            <Route path="/industry/education/admissions" component={AdmissionsEnrollment} />
+            <Route path="/industry/education/faculty" component={EdFaculty} />
+            <Route path="/industry/education/billing" component={EducationBilling} />
+            <Route path="/industry/education/analytics" component={EducationAnalytics} />
+
+            {/* Energy */}
+            <Route path="/industry/energy/grid" component={GridOperations} />
+            <Route path="/industry/energy/trading" component={EnergyTrading} />
+            <Route path="/industry/energy/analytics" component={EnergyAnalytics} />
         </Switch>
     );
 }
