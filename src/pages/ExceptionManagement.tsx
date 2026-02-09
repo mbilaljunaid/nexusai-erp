@@ -15,7 +15,7 @@ export default function ExceptionManagement() {
 
   const { data: exceptions = [], isLoading } = useQuery({
     queryKey: ["/api/exceptions"],
-    queryFn: () => fetch("/api/exceptions").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/exceptions").then(r => r.json()),
   });
 
   const createMutation = useMutation({

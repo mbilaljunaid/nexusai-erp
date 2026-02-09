@@ -8,7 +8,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function RetailProductCatalog() {
   const { data: products = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/retail-products'],
-    queryFn: () => fetch("/api/retail-products").then(r => r.json()).catch(() => [])
+    queryFn: () => fetch("/api/retail-products").then(r => r.json())
   });
 
   const columns: any[] = [
