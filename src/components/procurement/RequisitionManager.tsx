@@ -16,12 +16,12 @@ export function RequisitionManager() {
 
     const { data: requisitions = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/requisitions"],
-        queryFn: () => fetch("/api/procurement/requisitions").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/requisitions").then(r => r.json())
     });
 
     const { data: items = [] } = useQuery<any[]>({
         queryKey: ["/api/inventory/items"],
-        queryFn: () => fetch("/api/inventory/items").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/inventory/items").then(r => r.json())
     });
 
     const createRequisitionMutation = useMutation({

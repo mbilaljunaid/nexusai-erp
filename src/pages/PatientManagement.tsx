@@ -27,7 +27,7 @@ export default function PatientManagement() {
 
   const { data: patients = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/healthcare-patients"],
-    queryFn: () => fetch("/api/healthcare-patients").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/healthcare-patients").then(r => r.json()),
   });
 
   const createMutation = useMutation({

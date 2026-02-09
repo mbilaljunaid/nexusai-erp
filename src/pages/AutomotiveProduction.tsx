@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function AutomotivePage() {
   const { data = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/automotive-default'],
-    queryFn: () => fetch("/api/automotive-default").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/automotive-default").then(r => r.json()),
   });
 
   return (

@@ -7,7 +7,7 @@ import { DashboardWidget } from "@/components/ui/DashboardWidget";
 export default function AutomotiveBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
     queryKey: ["/api/auto-analytics"],
-    queryFn: () => fetch("/api/auto-analytics").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/auto-analytics").then(r => r.json()),
   });
 
   const totalSales = metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.salesAmount) || 0), 0);

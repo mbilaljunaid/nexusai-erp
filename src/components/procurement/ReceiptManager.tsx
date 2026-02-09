@@ -17,17 +17,17 @@ export function ReceiptManager() {
 
     const { data: pos = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/purchase-orders"],
-        queryFn: () => fetch("/api/procurement/purchase-orders").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/purchase-orders").then(r => r.json())
     });
 
     const { data: suppliers = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/suppliers"],
-        queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json())
     });
 
     const { data: receipts = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/receipts"],
-        queryFn: () => fetch("/api/procurement/receipts").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/receipts").then(r => r.json())
     });
 
     const createReceiptMutation = useMutation({

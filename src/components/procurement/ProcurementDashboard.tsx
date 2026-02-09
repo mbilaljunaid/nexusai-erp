@@ -11,15 +11,15 @@ interface Props {
 export function ProcurementDashboard({ onViewChange }: Props) {
     const { data: pos = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/purchase-orders"],
-        queryFn: () => fetch("/api/procurement/purchase-orders").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/purchase-orders").then(r => r.json())
     });
     const { data: suppliers = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/suppliers"],
-        queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json())
     });
     const { data: invoices = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/ap/invoices"],
-        queryFn: () => fetch("/api/procurement/ap/invoices").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/ap/invoices").then(r => r.json())
     });
 
     // Analytics Helpers

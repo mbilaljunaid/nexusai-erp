@@ -15,7 +15,7 @@ export default function ResourceAllocation() {
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["/api/resources"],
-    queryFn: () => fetch("/api/resources").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/resources").then(r => r.json()),
   });
 
   const createMutation = useMutation({

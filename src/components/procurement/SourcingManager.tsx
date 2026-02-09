@@ -18,12 +18,12 @@ export function SourcingManager() {
 
     const { data: rfqs = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/sourcing/rfqs"],
-        queryFn: () => fetch("/api/procurement/sourcing/rfqs").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/sourcing/rfqs").then(r => r.json())
     });
 
     const { data: suppliers = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/suppliers"],
-        queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json())
     });
 
     const createRFQMutation = useMutation({

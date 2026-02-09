@@ -14,7 +14,7 @@ export default function WorkshopServiceOrders() {
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["/api/auto-service-orders"],
-    queryFn: () => fetch("/api/auto-service-orders").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/auto-service-orders").then(r => r.json()),
   });
 
   const createMutation = useMutation({
