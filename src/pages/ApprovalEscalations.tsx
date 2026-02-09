@@ -15,7 +15,7 @@ export default function ApprovalEscalations() {
 
   const { data: escalations = [], isLoading } = useQuery({
     queryKey: ["/api/escalation-rules"],
-    queryFn: () => fetch("/api/escalation-rules").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/escalation-rules").then(r => r.json()),
   });
 
   const createMutation = useMutation({

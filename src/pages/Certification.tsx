@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Certification() {
     const { data: certs = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/ed-certificates"],
-        queryFn: () => fetch("/api/ed-certificates").then(r => r.json()).catch(() => []),
+        queryFn: () => fetch("/api/ed-certificates").then(r => r.json()),
     });
 
     const issuedCount = certs.filter((c: any) => c.status === "issued").length;

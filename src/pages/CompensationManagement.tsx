@@ -13,7 +13,7 @@ export default function CompensationManagement() {
 
   const { data: compensations = [], isLoading } = useQuery({
     queryKey: ["/api/compensation"],
-    queryFn: () => fetch("/api/compensation").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/compensation").then(r => r.json()),
   });
 
   const createMutation = useMutation({

@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function SalesDistribution() {
     const { data: orders = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/cpg-sales"],
-        queryFn: () => fetch("/api/cpg-sales").then(r => r.json()).catch(() => []),
+        queryFn: () => fetch("/api/cpg-sales").then(r => r.json()),
     });
 
     const totalValue = orders.reduce((sum: number, o: any) => sum + (parseFloat(o.value) || 0), 0);

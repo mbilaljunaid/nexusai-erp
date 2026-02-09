@@ -15,7 +15,7 @@ export default function FreightRateCalculation() {
 
   const { data: rates = [], isLoading } = useQuery({
     queryKey: ["/api/freight-rates"],
-    queryFn: () => fetch("/api/freight-rates").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/freight-rates").then(r => r.json()),
   });
 
   const createMutation = useMutation({

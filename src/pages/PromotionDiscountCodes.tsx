@@ -15,7 +15,7 @@ export default function PromotionDiscountCodes() {
 
   const { data: promos = [], isLoading } = useQuery({
     queryKey: ["/api/promotions"],
-    queryFn: () => fetch("/api/promotions").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/promotions").then(r => r.json()),
   });
 
   const createMutation = useMutation({

@@ -14,7 +14,7 @@ export default function ShoppingCartCheckout() {
 
   const { data: cartItems = [], isLoading } = useQuery({
     queryKey: ["/api/shopping-cart"],
-    queryFn: () => fetch("/api/shopping-cart").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/shopping-cart").then(r => r.json()),
   });
 
   const createMutation = useMutation({
