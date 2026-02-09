@@ -33,7 +33,7 @@ import {
 import { Link } from "wouter";
 import { OpportunityForm } from "@/components/forms/OpportunityForm";
 import { ActivityTimeline } from "@/components/crm/ActivityTimeline";
-import type { Opportunity, Account } from "@shared/schema/crm";
+import type { Opportunity, Account } from "@/types/erp-types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OpportunityProductList } from "@/components/crm/OpportunityProductList";
 import { OpportunityQuoteList } from "@/components/crm/OpportunityQuoteList";

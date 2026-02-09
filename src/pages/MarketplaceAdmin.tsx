@@ -18,7 +18,7 @@ import {
   TrendingUp, Users, Settings, Percent, Building2, ExternalLink,
   Play, CreditCard, AlertTriangle, FileText, RefreshCw
 } from "lucide-react";
-import type { MarketplaceApp, MarketplaceDeveloper, MarketplacePayout, MarketplaceAuditLog } from "@shared/schema";
+import type { MarketplaceApp, MarketplaceDeveloper, MarketplacePayout, MarketplaceAuditLog } from "@/types/erp-types";
 
 interface AppReviewDialogProps {
   app: MarketplaceApp | null;

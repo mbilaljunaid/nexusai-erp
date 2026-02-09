@@ -46,7 +46,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { Partner } from "@shared/schema";
+import type { Partner } from "@/types/erp-types";
 import { useToast } from "@/hooks/use-toast";
 
 function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToast>["toast"] }) {

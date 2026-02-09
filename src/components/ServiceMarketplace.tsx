@@ -16,7 +16,7 @@ import {
   CheckCircle, XCircle, AlertCircle, Truck, MessageSquare, User,
   ArrowUpDown, LayoutGrid, List, Filter, Loader2
 } from "lucide-react";
-import type { ServicePackage, ServiceOrder, ServiceCategory, ServiceReview, UserTrustLevel } from "@shared/schema";
+import type { ServicePackage, ServiceOrder, ServiceCategory, ServiceReview, UserTrustLevel } from "@/types/erp-types";
 
 interface ServicePackageWithCategory extends ServicePackage {
   category?: ServiceCategory;

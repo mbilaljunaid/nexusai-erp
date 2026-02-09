@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,15 +34,39 @@ import {
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertContactSchema, type InsertContact, type Contact } from "@shared/schema/crm";
+import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+
+const contactFormSchema = z.object({
+    firstName: z.string().optional(),
+    lastName: z.string().min(1),
+    email: z.string().optional(),
+    phone: z.string().optional(),
+    title: z.string().optional(),
+    accountId: z.string().optional(),
+    description: z.string().optional(),
+});
+type InsertContact = z.infer<typeof contactFormSchema>;
+interface Contact extends InsertContact {
+    id: string;
+    salutation?: string;
+    department?: string;
+    mobilePhone?: string;
+    homePhone?: string;
+    mailingStreet?: string;
+    mailingCity?: string;
+    mailingState?: string;
+    mailingPostalCode?: string;
+    mailingCountry?: string;
+    createdAt?: string;
+}
 
 function ContactEntryForm({ onSuccess }: { onSuccess?: () => void }) {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const form = useForm<InsertContact>({
-        resolver: zodResolver(insertContactSchema),
+        resolver: zodResolver(contactFormSchema),
         defaultValues: {
             firstName: "",
             lastName: "",

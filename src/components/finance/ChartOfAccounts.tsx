@@ -10,11 +10,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Search, FolderTree, Edit2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { GlAccount, InsertGlAccount } from "@shared/schema";
+import type { GlAccount, InsertGlAccount } from "@/types/erp-types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertGlAccountSchema } from "@shared/schema";
+import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const insertGlAccountSchema = z.object({
+    accountCode: z.string().min(1),
+    accountName: z.string().min(1),
+    accountType: z.string().optional(),
+    parentAccountId: z.string().nullable().optional(),
+    isActive: z.boolean().optional(),
+});
 
 export function ChartOfAccounts() {
     const { toast } = useToast();

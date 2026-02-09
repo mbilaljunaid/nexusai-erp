@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { ProductForm } from "@/components/forms/ProductForm";
-import type { Product } from "@shared/schema";
+import type { Product } from "@/types/erp-types";
 import { Plus, CheckCircle2, XCircle, Info, Calendar } from "lucide-react";
 
 export default function ProductsDetail() {
@@ -34,7 +34,7 @@ export default function ProductsDetail() {
     const products = data?.data || [];
     const pagination = data?.pagination || { page: 1, totalPages: 1 };
 
-    const activeCount = products.filter(p => p.isActive === 1).length;
+    const activeCount = products.filter((p: any) => p.isActive === true || p.isActive === 1).length;
 
     return (
         <div className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10">

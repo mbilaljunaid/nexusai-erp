@@ -11,7 +11,7 @@ import {
 import {
     Activity, Clock, AlertTriangle, CheckCircle2
 } from "lucide-react";
-import type { WipBalance } from "@shared/schema";
+import type { WipBalance } from "@/types/erp-types";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function WIPDashboard() {

@@ -22,7 +22,7 @@ import {
   Edit, Trash2, Send, Eye, Star, Download, Clock,
   CheckCircle, XCircle, AlertCircle, Code, FileText, ExternalLink
 } from "lucide-react";
-import type { MarketplaceDeveloper, MarketplaceApp, MarketplaceCategory, MarketplacePayout } from "@shared/schema";
+import type { MarketplaceDeveloper, MarketplaceApp, MarketplaceCategory, MarketplacePayout } from "@/types/erp-types";
 
 interface EarningsSummary {
   totalEarnings: string;
@@ -785,7 +785,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1">
                           <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                          {app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "-"}
+                          {app.averageRating ? String(Number(app.averageRating).toFixed(1)) : "-"}
                         </div>
                       </TableCell>
                       <TableCell className="text-right">

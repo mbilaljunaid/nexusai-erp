@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Building2, Shield, ArrowRight, AlertOctagon } from "lucide-react";
 import { useState } from "react";
-import { ApSupplier } from "@shared/schema";
+import type { ApSupplier } from "@/types/erp-types";
 import { ApSideSheet } from "./ApSideSheet";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -100,7 +100,7 @@ export function ApSupplierList() {
             <ApSideSheet
                 open={!!selectedSupplier}
                 onOpenChange={(open) => !open && setSelectedSupplier(null)}
-                supplier={selectedSupplier || undefined}
+                supplier={selectedSupplier as any || undefined}
                 type="supplier"
             />
         </>

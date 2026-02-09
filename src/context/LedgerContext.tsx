@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { apiRequest } from "@/lib/queryClient";
-import { GlLedger } from "@shared/schema";
+interface GlLedger { id: string; name?: string; currency?: string; [key: string]: any; }
 import { useQuery } from "@tanstack/react-query";
 
 interface LedgerContextType {

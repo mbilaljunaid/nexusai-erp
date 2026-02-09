@@ -24,7 +24,7 @@ import {
 import { Header, Footer } from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { Partner } from "@shared/schema";
+import type { Partner } from "@/types/erp-types";
 import { 
   Search, 
   Building2, 

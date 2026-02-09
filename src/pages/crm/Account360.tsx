@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Account, Contact, Opportunity, Order } from "@shared/schema";
+import type { Account, Contact, Opportunity, Order } from "@/types/erp-types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";

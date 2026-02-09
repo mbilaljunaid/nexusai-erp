@@ -18,7 +18,8 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import {
     Calculator, Plus, TrendingUp, DollarSign, Layers
 } from "lucide-react";
-import type { CostElement, StandardCost } from "@shared/schema";
+interface CostElement { id: string; name?: string; type?: string; [key: string]: any; }
+interface StandardCost { id: string; itemId?: string; costElementId?: string; amount?: string; [key: string]: any; }
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CostingWorkbench() {

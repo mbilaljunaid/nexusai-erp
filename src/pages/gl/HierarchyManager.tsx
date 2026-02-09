@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Network } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import type { GlValueSet, GlSegmentValue, GlSegmentHierarchy } from "@shared/schema";
+import type { GlValueSet, GlSegmentValue, GlSegmentHierarchy } from "@/types/erp-types";
 
 // Helper to build tree structure
 type TreeNode = GlSegmentValue & { children: TreeNode[] };

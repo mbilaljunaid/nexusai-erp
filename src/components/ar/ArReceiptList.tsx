@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArReceiptApplicationDialog } from "./ArReceiptApplicationDialog";
-import { ArReceipt } from "@shared/schema";
+import type { ArReceipt } from "@/types/erp-types";
 
 export function ArReceiptList() {
     const [selectedReceipt, setSelectedReceipt] = useState<ArReceipt | null>(null);

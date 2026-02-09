@@ -10,12 +10,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Calendar, Edit2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { GlPeriod, InsertGlPeriod } from "@shared/schema";
+import type { GlPeriod, InsertGlPeriod } from "@/types/erp-types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertGlPeriodSchema } from "@shared/schema";
+import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { format } from "date-fns";
+
+const insertGlPeriodSchema = z.object({
+    periodName: z.string().min(1),
+    fiscalYear: z.coerce.number(),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date(),
+    status: z.string().optional(),
+});
 
 export function FiscalPeriods() {
     const { toast } = useToast();

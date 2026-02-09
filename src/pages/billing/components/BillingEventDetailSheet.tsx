@@ -9,7 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { BillingEvent } from "@shared/schema/billing_enterprise";
+import type { BillingEvent } from "@/types/erp-types";
 import { format } from "date-fns";
 
 interface BillingEventDetailSheetProps {

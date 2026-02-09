@@ -10,7 +10,7 @@ import { Phone, Mail, Calendar, StickyNote, CheckCircle, Clock } from "lucide-re
 import { formatDistanceToNow, format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { Interaction } from "@shared/schema";
+import type { Interaction } from "@/types/erp-types";
 
 interface ActivityTimelineProps {
     entityType: "lead" | "contact" | "account" | "opportunity";

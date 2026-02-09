@@ -9,7 +9,7 @@ import { Link } from "wouter";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
-import { BillingEvent } from "@shared/schema/billing_enterprise";
+import type { BillingEvent } from "@/types/erp-types";
 import {
     Breadcrumb,
     BreadcrumbItem,

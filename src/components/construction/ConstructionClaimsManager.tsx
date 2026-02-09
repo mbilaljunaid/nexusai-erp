@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle2, Gavel, Plus, FileText, Ban } from "lucide-react";
 import { format } from "date-fns";
 import { StandardTable, Column } from "../tables/StandardTable";
-import { ConstructionClaim } from "@shared/schema";
+import type { ConstructionClaim } from "@/types/erp-types";
 
 interface Props {
     contractId: string;

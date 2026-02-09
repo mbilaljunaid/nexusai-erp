@@ -1,7 +1,23 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertArInvoiceSchema, type InsertArInvoice } from "@shared/schema";
+import { z } from "zod";
+
+const insertArInvoiceSchema = z.object({
+    transactionClass: z.string().optional(),
+    invoiceNumber: z.string().optional(),
+    customerId: z.string().optional(),
+    accountId: z.string().optional(),
+    siteId: z.string().optional(),
+    currency: z.string().optional(),
+    amount: z.string().optional(),
+    taxAmount: z.string().optional(),
+    totalAmount: z.string().optional(),
+    status: z.string().optional(),
+    dueDate: z.string().optional(),
+    description: z.string().optional(),
+});
+type InsertArInvoice = z.infer<typeof insertArInvoiceSchema>;
 import {
     Dialog,
     DialogContent,
@@ -52,7 +68,7 @@ export function ArTransactionDialog({ isOpen, onClose }: ArTransactionDialogProp
             taxAmount: "0",
             totalAmount: "0",
             status: "Sent",
-            dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+            dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
         }
     });
 

@@ -52,7 +52,7 @@ import {
   Crown,
 } from "lucide-react";
 import { Link } from "wouter";
-import type { MarketplaceApp } from "@shared/schema";
+import type { MarketplaceApp } from "@/types/erp-types";
 
 interface Widget {
   id: string;
@@ -158,7 +158,7 @@ function PinnedAppsWidget() {
             <p className="text-sm font-medium truncate">{installed.app?.name || 'Unknown App'}</p>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-              <span>{installed.app?.averageRating ? parseFloat(installed.app.averageRating).toFixed(1) : '0.0'}</span>
+              <span>{installed.app?.averageRating ? String(installed.app.averageRating) : '0.0'}</span>
             </div>
           </div>
           <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
