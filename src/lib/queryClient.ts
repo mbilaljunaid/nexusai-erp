@@ -13,6 +13,38 @@ function getRBACHeaders() {
   };
 }
 
+// ── Global Fetch Interceptor ──
+// Catches API errors at the network level BEFORE .catch(() => []) can swallow them.
+// This ensures error toasts appear even for the 350+ files that still use the
+// error-swallowing pattern in their queryFn.
+let lastApiErrorToast = 0;
+const API_ERROR_THROTTLE_MS = 3000;
+
+const originalFetch = window.fetch;
+window.fetch = async function (input: RequestInfo | URL, init?: RequestInit) {
+  const response = await originalFetch.call(this, input, init);
+  const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : (input as Request).url;
+
+  if (url.startsWith("/api/")) {
+    const now = Date.now();
+    const contentType = response.headers.get("content-type");
+
+    if (!response.ok && now - lastApiErrorToast > API_ERROR_THROTTLE_MS) {
+      lastApiErrorToast = now;
+      toast.error(`API Error ${response.status}`, {
+        description: url.substring(0, 80),
+      });
+    } else if (contentType && !contentType.includes("application/json") && now - lastApiErrorToast > API_ERROR_THROTTLE_MS) {
+      lastApiErrorToast = now;
+      toast.error("Backend returned non-JSON response", {
+        description: `${url.substring(0, 60)} → ${contentType}`,
+      });
+    }
+  }
+
+  return response;
+};
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;

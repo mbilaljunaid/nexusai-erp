@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function GovernmentPage() {
   const { data = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/government-default'],
-    queryFn: () => fetch("/api/government-default").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/government-default").then(r => r.json()),
   });
 
   return (

@@ -14,7 +14,7 @@ export default function WarrantyClaimsManagement() {
 
   const { data: claims = [], isLoading } = useQuery({
     queryKey: ["/api/auto-warranty"],
-    queryFn: () => fetch("/api/auto-warranty").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/auto-warranty").then(r => r.json()),
   });
 
   const createMutation = useMutation({

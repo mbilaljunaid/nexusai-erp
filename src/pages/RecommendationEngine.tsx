@@ -15,7 +15,7 @@ export default function RecommendationEngine() {
 
   const { data: recommendations = [], isLoading } = useQuery({
     queryKey: ["/api/recommendations"],
-    queryFn: () => fetch("/api/recommendations").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/recommendations").then(r => r.json()),
   });
 
   const createMutation = useMutation({
