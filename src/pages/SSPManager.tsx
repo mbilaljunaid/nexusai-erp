@@ -15,17 +15,10 @@ import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Book, FileText } from "lucide-react";
-import type { InferSelectModel } from "drizzle-orm";
-import { revenueSspBooks, revenueSspLines } from "@shared/schema/revenue";
+import type { RevenueSspBook, RevenueSspLine } from "@/types/erp-types";
 import { useToast } from "@/hooks/use-toast";
 
-// Type-safe interfaces matching backend schema
-type RevenueSspBook = InferSelectModel<typeof revenueSspBooks>;
-type RevenueSspLine = InferSelectModel<typeof revenueSspLines>;
-
-interface SSPBook extends RevenueSspBook {
-    // Add UI-specific fields if needed
-}
+interface SSPBook extends RevenueSspBook {}
 
 interface SSPLine extends RevenueSspLine {
     itemName?: string;

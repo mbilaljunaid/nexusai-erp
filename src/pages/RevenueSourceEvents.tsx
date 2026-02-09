@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import type { RevenueSourceEvent } from "@shared/schema/revenue";
+import type { RevenueSourceEvent } from "@/types/erp-types";
 
 // Create a local type matching the DB schema if not exported
 // type RevenueSourceEvent = {

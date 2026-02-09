@@ -22,7 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, DollarSign, Calculator, Lock, Calendar, ShieldCheck, History } from "lucide-react";
 import { format } from "date-fns";
 import { StandardTable, Column } from "../tables/StandardTable";
-import { CostCode } from "@shared/schema";
+import type { CostCode } from "@/types/erp-types";
 
 interface PayApp {
     id: string;

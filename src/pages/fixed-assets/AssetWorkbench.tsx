@@ -1,7 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import { FaAsset } from "@shared/schema";
+import type { FaAsset } from "@/types/erp-types";
 import { AssetStatCards } from "@/components/fixed-assets/AssetStatCards";
 import { AddAssetDialog } from "@/components/fixed-assets/AddAssetDialog";
 import { RetireAssetDialog } from "@/components/fixed-assets/RetireAssetDialog";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/tabs";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 
-interface FaAssetWithFinancials extends FaAsset {
+interface FaAssetWithFinancials extends Omit<FaAsset, 'originalCost' | 'datePlacedInService'> {
     datePlacedInService: string | Date;
     originalCost: string | number;
     recoverableCost: string | number;
@@ -88,7 +88,7 @@ export default function AssetWorkbench() {
             header: "Actions",
             className: "text-right",
             cell: (asset) => (
-                asset.status === "ACTIVE" && <RetireAssetDialog asset={asset} />
+                asset.status === "ACTIVE" && <RetireAssetDialog asset={asset as any} />
             )
         }
     ];

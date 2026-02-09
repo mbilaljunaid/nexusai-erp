@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
-import { ArInvoice } from "@shared/schema";
+import type { ArInvoice } from "@/types/erp-types";
 import { CreditMemoDialog } from "@/components/billing/CreditMemoDialog";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { CreditCard, Plus, Trash2, CheckCircle, AlertTriangle, FileText } from "lucide-react";

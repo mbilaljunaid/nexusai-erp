@@ -10,11 +10,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Layers, Play, Plus, History, Calculator, Settings2, ArrowRight } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { GlAllocation, InsertGlAllocation } from "@shared/schema";
+import type { GlAllocation, InsertGlAllocation } from "@/types/erp-types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertGlAllocationSchema } from "@shared/schema";
+import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+
+const insertGlAllocationSchema = z.object({
+    name: z.string().min(1),
+    description: z.string().optional(),
+    ledgerId: z.string().optional(),
+    poolAccountFilter: z.string().optional(),
+    basisAccountFilter: z.string().optional(),
+    offsetAccount: z.string().optional(),
+    targetAccountPattern: z.string().optional(),
+    enabled: z.boolean().optional(),
+});
 
 export function AllocationManager() {
     const { toast } = useToast();

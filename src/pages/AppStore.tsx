@@ -15,7 +15,9 @@ import {
   Search, Star, Package, Trash2, MessageSquare,
   ExternalLink, Settings, CheckCircle, Clock, AlertCircle
 } from "lucide-react";
-import type { MarketplaceApp, AppInstallation, AppReview } from "@shared/schema";
+import type { MarketplaceApp } from "@/types/erp-types";
+interface AppInstallation { id: string; appId?: string; app?: MarketplaceApp; status?: string; installedAt?: string; [key: string]: any; }
+interface AppReview { id: string; appId?: string; rating?: number; comment?: string; [key: string]: any; }
 
 interface InstalledAppCardProps {
   installation: AppInstallation & { app?: MarketplaceApp };
@@ -67,7 +69,7 @@ function InstalledAppCard({ installation, onUninstall, onReview, isUninstalling 
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-            <span>{app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "0.0"}</span>
+            <span>{app.averageRating ? String(Number(app.averageRating).toFixed(1)) : "0.0"}</span>
           </div>
           <div className="text-xs">
             Installed: {installation.installedAt ? new Date(installation.installedAt).toLocaleDateString() : "N/A"}

@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { FaMassAddition, FaCategory, FaBook } from "@shared/schema";
+import type { FaMassAddition, FaCategory, FaBook } from "@/types/erp-types";
 import { Button } from "@/components/ui/button";
 import {
     Table,

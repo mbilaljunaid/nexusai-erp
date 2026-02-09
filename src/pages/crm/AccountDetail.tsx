@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Building2, Globe, Mail, Phone, MapPin, Users, Briefcase, MessageSquare, TrendingUp, MoreVertical } from "lucide-react";
 import { StandardTable } from "@/components/ui/StandardTable";
-import type { Account, Contact, Opportunity, Case } from "@shared/schema";
+import type { Account, Contact, Opportunity, Case } from "@/types/erp-types";
 import { Link } from "wouter";
 
 export default function AccountDetail() {

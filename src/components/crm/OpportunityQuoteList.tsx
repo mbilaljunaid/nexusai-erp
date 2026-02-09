@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, FileText, ExternalLink } from "lucide-react";
 import { QuoteForm } from "@/components/forms/QuoteForm";
 import { Badge } from "@/components/ui/badge";
-import type { Quote } from "@shared/schema";
+import type { Quote } from "@/types/erp-types";
 import { useLocation } from "wouter";
 
 interface OpportunityQuoteListProps {

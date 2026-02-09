@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArSystemOptions, InsertArSystemOptions } from "@shared/schema";
+import type { ArSystemOptions, InsertArSystemOptions } from "@/types/erp-types";
 import { Loader2, Save } from "lucide-react";
 
 export function ArSystemOptionsComponent() {

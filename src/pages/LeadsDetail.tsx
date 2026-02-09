@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +9,29 @@ import { ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertLeadSchema, type InsertLead, type Lead } from "@shared/schema/crm";
+import { z } from "zod";
+
+const leadFormSchema = z.object({
+    name: z.string().min(1),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    email: z.string().optional(),
+    phone: z.string().optional(),
+    company: z.string().optional(),
+    title: z.string().optional(),
+    status: z.string().optional(),
+    leadSource: z.string().optional(),
+});
+type InsertLead = z.infer<typeof leadFormSchema>;
+interface Lead extends InsertLead {
+    id: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    country?: string;
+    createdAt?: string;
+}
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -104,7 +125,7 @@ function LeadEntryForm() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const form = useForm<InsertLead>({
-    resolver: zodResolver(insertLeadSchema),
+    resolver: zodResolver(leadFormSchema),
     defaultValues: {
       name: "",
       email: "",

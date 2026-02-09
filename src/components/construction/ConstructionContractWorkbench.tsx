@@ -25,7 +25,7 @@ import { Plus, Hammer, FileText, DollarSign, RefreshCw } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VariationManager from "@/components/construction/VariationManager";
 import { StandardTable, Column } from "../tables/StandardTable";
-import { CostCode } from "@shared/schema";
+import type { CostCode } from "@/types/erp-types";
 
 interface Project {
     id: string;

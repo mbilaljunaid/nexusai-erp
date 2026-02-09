@@ -10,7 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
-import { CashBankAccount } from "@shared/schema";
+import type { CashBankAccount } from "@/types/erp-types";
 import { Link } from "wouter";
 import { RevaluationDialog } from "./RevaluationDialog";
 import { BankAccountDialog } from "./BankAccountDialog";

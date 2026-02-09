@@ -1,7 +1,18 @@
-// @ts-nocheck
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertCaseSchema, type InsertCase, type Case } from "@shared/schema/crm";
+import { z } from "zod";
+
+const caseFormSchema = z.object({
+    subject: z.string().min(1),
+    description: z.string().optional(),
+    status: z.string().optional(),
+    priority: z.string().optional(),
+    origin: z.string().optional(),
+    accountId: z.string().nullable().optional(),
+    contactId: z.string().nullable().optional(),
+});
+type InsertCase = z.infer<typeof caseFormSchema>;
+interface Case extends InsertCase { id: string; createdAt?: string; }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,7 +41,7 @@ export function CaseForm({ onSuccess, defaultValues, caseId }: CaseFormProps) {
     });
 
     const form = useForm<InsertCase>({
-        resolver: zodResolver(insertCaseSchema),
+        resolver: zodResolver(caseFormSchema),
         defaultValues: defaultValues || {
             subject: "",
             description: "",

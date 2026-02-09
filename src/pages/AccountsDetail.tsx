@@ -35,7 +35,10 @@ import {
 import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertAccountSchema, type InsertAccount, type Account } from "@shared/schema/crm";
+import { z } from "zod";
+const insertAccountSchema = z.object({ name: z.string().min(1), industry: z.string().optional(), website: z.string().optional(), phone: z.string().optional(), type: z.string().optional(), description: z.string().optional() });
+type InsertAccount = z.infer<typeof insertAccountSchema>;
+import type { Account } from "@/types/erp-types";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 

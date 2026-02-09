@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Truck, Users, Box, Plus, Calendar, Settings2, Activity, Gauge, Fuel, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { StandardTable, Column } from "../tables/StandardTable";
-import { ConstructionResource, ConstructionResourceAllocation } from "@shared/schema";
+import type { ConstructionResource, ConstructionResourceAllocation } from "@/types/erp-types";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export default function ConstructionResourceWorkbench() {

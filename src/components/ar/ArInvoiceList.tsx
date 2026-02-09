@@ -7,7 +7,7 @@ import { useState } from "react";
 import { ArSideSheet } from "./ArSideSheet";
 import { CreateTransactionDialog } from "./CreateTransactionDialog";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
-import { ArInvoice } from "@shared/schema";
+import type { ArInvoice } from "@/types/erp-types";
 import { format } from "date-fns";
 
 export function ArInvoiceList() {

@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Trash2, Package } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { OpportunityLineItem, Product, Opportunity } from "@shared/schema";
+import type { OpportunityLineItem, Product, Opportunity } from "@/types/erp-types";
 import { PriceBookSelector } from "./PriceBookSelector"; // Ensure this import path is correct
 
 interface OpportunityProductListProps {

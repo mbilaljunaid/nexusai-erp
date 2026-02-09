@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Edit, List, Check, X, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import type { GlValueSet, GlSegmentValue } from "@shared/schema";
+import type { GlValueSet, GlSegmentValue } from "@/types/erp-types";
 
 // --- Sub-Component: Value Manager (Manage Segment Values) ---
 function ValueManager({ valueSetId, valueSetName }: { valueSetId: string, valueSetName: string }) {

@@ -10,7 +10,7 @@ import {
 import {
     AlertCircle, ArrowUpRight, ArrowDownRight, FileSpreadsheet
 } from "lucide-react";
-import type { VarianceJournal } from "@shared/schema";
+import type { VarianceJournal } from "@/types/erp-types";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useState } from "react";
 import { format } from "date-fns";

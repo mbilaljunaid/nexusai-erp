@@ -19,12 +19,21 @@ import {
     FileText,
     DollarSign
 } from "lucide-react";
-import { revenueContracts } from "@shared/schema/revenue";
-// Infer type since we don't have explicit Zod export for Select yet, or use any for now to unblock
-type RevenueContract = typeof revenueContracts.$inferSelect & {
+interface RevenueContract {
+    id: string;
+    contractNumber?: string;
+    customerId?: string;
     customerName?: string;
+    ledgerId?: string;
     ledgerName?: string;
-};
+    legalEntityId?: string;
+    orgId?: string;
+    versionNumber?: number;
+    status?: string;
+    totalTransactionPrice?: string;
+    totalAllocatedPrice?: string;
+    createdAt?: string;
+}
 import { useToast } from "@/hooks/use-toast";
 
 export default function RevenueContractWorkbench() {

@@ -1,7 +1,21 @@
-// @ts-nocheck
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertTreasuryFxDealSchema, type InsertTreasuryFxDeal } from "@shared/schema";
+import { z } from "zod";
+
+const fxDealFormSchema = z.object({
+    dealNumber: z.string().optional(),
+    dealType: z.string(),
+    counterpartyId: z.string(),
+    buyCurrency: z.string(),
+    buyAmount: z.string().optional(),
+    sellCurrency: z.string(),
+    sellAmount: z.string().optional(),
+    exchangeRate: z.string().optional(),
+    tradeDate: z.coerce.date().optional(),
+    valueDate: z.coerce.date().optional(),
+    status: z.string().optional(),
+});
+type InsertTreasuryFxDeal = z.infer<typeof fxDealFormSchema>;
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -37,7 +51,7 @@ export function FxDealEntry() {
     });
 
     const form = useForm<InsertTreasuryFxDeal>({
-        resolver: zodResolver(insertTreasuryFxDealSchema),
+        resolver: zodResolver(fxDealFormSchema),
         defaultValues: {
             dealNumber: `FX-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`,
             status: "DRAFT",

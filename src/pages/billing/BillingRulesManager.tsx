@@ -23,7 +23,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { BillingRule } from "@shared/schema/billing_enterprise";
+import type { BillingRule } from "@/types/erp-types";
 
 export default function BillingRulesManager() {
     const { toast } = useToast();

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -22,7 +21,14 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { insertFaAssetSchema, InsertFaAsset } from "@shared/schema";
+
+interface InsertFaAsset {
+    assetNumber?: string;
+    description?: string;
+    categoryId?: string;
+    status?: string;
+    [key: string]: any;
+}
 import { Loader2, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

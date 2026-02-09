@@ -47,7 +47,7 @@ const getSpaceIcon = (iconName: string | null) => {
   const Icon = iconMap[iconName];
   return Icon ? <Icon className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />;
 };
-import type { CommunitySpace, CommunityPost, UserTrustLevel } from "@shared/schema";
+import type { CommunitySpace, CommunityPost, UserTrustLevel } from "@/types/erp-types";
 import { UserProfile } from "@/components/UserProfile";
 import { FlagContentDialog } from "@/components/FlagContentDialog";
 import { ModerationQueue } from "@/components/ModerationQueue";

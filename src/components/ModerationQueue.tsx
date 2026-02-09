@@ -16,7 +16,7 @@ import {
   Clock, MessageSquare, Eye, Trash2, Ban, Sparkles,
   Users, Activity, Loader2, AlertOctagon, Search
 } from "lucide-react";
-import type { CommunityVoteAnomaly, CommunityAIRecommendation } from "@shared/schema";
+import type { CommunityVoteAnomaly, CommunityAIRecommendation } from "@/types/erp-types";
 
 interface Flag {
   id: string;

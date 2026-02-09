@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -11,11 +10,28 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Link2, Trash2, CheckCircle2, AlertCircle } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { GlIntercompanyRule, InsertGlIntercompanyRule } from "@shared/schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertGlIntercompanyRuleSchema } from "@shared/schema";
+import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+interface GlIntercompanyRule {
+    id: string;
+    fromCompany?: string;
+    toCompany?: string;
+    receivableAccountId?: string;
+    payableAccountId?: string;
+    enabled?: boolean;
+}
+
+const intercompanyRuleSchema = z.object({
+    fromCompany: z.string().min(1),
+    toCompany: z.string().min(1),
+    receivableAccountId: z.string().min(1),
+    payableAccountId: z.string().min(1),
+    enabled: z.boolean().optional(),
+});
+type InsertGlIntercompanyRule = z.infer<typeof intercompanyRuleSchema>;
 
 export function IntercompanyManager() {
     const { toast } = useToast();
@@ -27,7 +43,7 @@ export function IntercompanyManager() {
     });
 
     const form = useForm<InsertGlIntercompanyRule>({
-        resolver: zodResolver(insertGlIntercompanyRuleSchema),
+        resolver: zodResolver(intercompanyRuleSchema),
         defaultValues: {
             fromCompany: "",
             toCompany: "",

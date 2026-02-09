@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit2, Trash2, Library } from "lucide-react";
 import { StandardTable, Column } from "../tables/StandardTable";
-import { CostCode } from "@shared/schema";
+import type { CostCode } from "@/types/erp-types";
 
 export default function ConstructionCostCodeLibrary() {
     const { toast } = useToast();

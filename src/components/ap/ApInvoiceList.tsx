@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileText, Calendar, DollarSign, ArrowRight, Percent, CheckCircle2, Plus } from "lucide-react";
 import { useState } from "react";
-import { ApInvoice } from "@shared/schema";
+import type { ApInvoice } from "@/types/erp-types";
 import { ApSideSheet } from "./ApSideSheet";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";

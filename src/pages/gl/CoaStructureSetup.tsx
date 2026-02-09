@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Settings, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import type { GlCoaStructure, GlSegment, GlValueSet } from "@shared/schema";
+import type { GlCoaStructure, GlSegment, GlValueSet } from "@/types/erp-types";
 
 // --- Sub-Component: Segment Manager ---
 function SegmentManager({ structureId, structureName }: { structureId: string, structureName: string }) {

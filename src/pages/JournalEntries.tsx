@@ -24,7 +24,7 @@ import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { SideSheet } from "@/components/gl/premium/SideSheet";
 import { format } from "date-fns";
 import { api } from "@/lib/api";
-import { GlJournal } from "@shared/schema";
+import type { GlJournal } from "@/types/erp-types";
 import { ExcelImportModal } from "@/components/ExcelImportModal";
 
 export default function JournalEntries() {

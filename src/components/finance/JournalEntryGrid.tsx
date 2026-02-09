@@ -10,7 +10,7 @@ import { Plus, Trash2, Save, FileSpreadsheet } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useLedger } from "@/context/LedgerContext";
-import type { GlAccount, GlPeriod, InsertGlJournal, InsertGlJournalLine } from "@shared/schema";
+import type { GlAccount, GlPeriod, InsertGlJournal, InsertGlJournalLine } from "@/types/erp-types";
 
 export function JournalEntryGrid() {
     const { toast } = useToast();

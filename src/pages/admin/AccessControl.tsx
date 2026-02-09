@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Shield, AlertTriangle, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { ROLES } from "@shared/schema";
+import { ROLES } from "@/types/erp-types";
 
 export default function AccessControl() {
     const { toast } = useToast();

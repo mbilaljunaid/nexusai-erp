@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ApSupplier, ApInvoice } from "@shared/schema";
+import type { ApSupplier, ApInvoice } from "@/types/erp-types";
 import { format } from "date-fns";
 import {
     CreditCard,

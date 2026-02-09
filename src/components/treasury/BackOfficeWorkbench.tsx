@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2, ShieldAlert, CreditCard } from "lucide-react";
-import { TreasuryDeal, TreasuryFxDeal } from "@shared/schema/treasury";
+import type { TreasuryDeal, TreasuryFxDeal } from "@/types/erp-types";
 
 export function BackOfficeWorkbench() {
     const { toast } = useToast();

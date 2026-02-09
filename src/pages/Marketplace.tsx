@@ -24,7 +24,7 @@ import {
   Code, BookOpen, Mail, Globe, DollarSign, LogIn, Building2,
   Sparkles, Share2, Twitter, Linkedin, Link2, GitCompare, X, Clock, Trash2, ChevronsUpDown
 } from "lucide-react";
-import type { MarketplaceApp, MarketplaceCategory } from "@shared/schema";
+import type { MarketplaceApp, MarketplaceCategory } from "@/types/erp-types";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
 
 interface Industry {
@@ -100,7 +100,7 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-            <span>{app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "0.0"}</span>
+            <span>{app.averageRating ? String(Number(app.averageRating).toFixed(1)) : "0.0"}</span>
             <span className="text-xs">({app.reviewCount || 0})</span>
           </div>
           <div className="flex items-center gap-1">
@@ -205,7 +205,7 @@ function AppDetailDialog({
               <div className="flex items-center gap-4 mt-2 text-sm">
                 <div className="flex items-center gap-1">
                   <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                  <span className="font-medium">{app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "0.0"}</span>
+                  <span className="font-medium">{app.averageRating ? String(Number(app.averageRating).toFixed(1)) : "0.0"}</span>
                   <span className="text-muted-foreground">({app.reviewCount || 0} reviews)</span>
                 </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
@@ -472,7 +472,7 @@ function CompareDialog({
                     <td key={app.id} className="p-3 border-b">
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                        <span>{app.averageRating ? parseFloat(app.averageRating).toFixed(1) : "0.0"}</span>
+                        <span>{app.averageRating ? String(Number(app.averageRating).toFixed(1)) : "0.0"}</span>
                         <span className="text-xs text-muted-foreground">({app.reviewCount || 0})</span>
                       </div>
                     </td>

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { QuoteForm } from "@/components/forms/QuoteForm";
-import type { Quote } from "@shared/schema/crm";
+import type { Quote } from "@/types/erp-types";
 import { Plus, CheckCircle2, Clock, Calendar, DollarSign, FileText, ArrowRight } from "lucide-react";
 
 export default function QuotesDetail() {

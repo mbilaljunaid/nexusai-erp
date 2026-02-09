@@ -21,7 +21,7 @@ import { CashForecastDashboard } from "./CashForecastDashboard";
 import { NettingWorkbench } from "./NettingWorkbench";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
-import { TreasuryDeal } from "@shared/schema";
+import type { TreasuryDeal } from "@/types/erp-types";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
