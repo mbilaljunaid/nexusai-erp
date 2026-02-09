@@ -42,6 +42,11 @@ import {
     FileText,
     User,
     History as HistoryIcon,
+    Headphones,
+    ClipboardList,
+    Globe,
+    Megaphone,
+    Target,
 } from "lucide-react";
 
 
@@ -62,11 +67,13 @@ export const navigationConfig: SidebarNode[] = [
         children: [
             { id: "dashboard", title: "Dashboard", type: "link", icon: LayoutDashboard, path: "/dashboard" },
             { id: "processes", title: "Processes", type: "link", icon: WorkflowIcon, path: "/processes" },
-            { id: "crm", title: "CRM & Sales", type: "link", icon: Users, path: "/crm", allowedRoles: ["admin", "editor"] },
+            { id: "crm", title: "CRM & Sales", type: "link", icon: Target, path: "/crm", allowedRoles: ["admin", "editor"] },
             { id: "finance", title: "Finance", type: "link", icon: DollarSign, path: "/finance", allowedRoles: ["admin", "editor"] },
             { id: "hr", title: "HR & Talent", type: "link", icon: Briefcase, path: "/hr", allowedRoles: ["admin", "editor"] },
             { id: "projects", title: "Projects", type: "link", icon: Zap, path: "/projects", allowedRoles: ["admin", "editor"] },
             { id: "construction", title: "Construction", type: "link", icon: Hammer, path: "/construction", allowedRoles: ["admin", "editor"] },
+            { id: "order-mgmt", title: "Order Management", type: "link", icon: ShoppingCart, path: "/order-management", allowedRoles: ["admin", "editor"] },
+            { id: "marketing", title: "Marketing", type: "link", icon: Megaphone, path: "/marketing", allowedRoles: ["admin", "editor"] },
         ],
     },
     {
@@ -80,6 +87,8 @@ export const navigationConfig: SidebarNode[] = [
             { id: "inventory", title: "Inventory", type: "link", icon: Warehouse, path: "/inventory", allowedRoles: ["admin", "editor"] },
             { id: "manufacturing", title: "Manufacturing", type: "link", icon: Factory, path: "/manufacturing", allowedRoles: ["admin", "editor"] },
             { id: "maintenance", title: "Maintenance", type: "link", icon: Wrench, path: "/maintenance", allowedRoles: ["admin", "editor"] },
+            { id: "service", title: "Service", type: "link", icon: Headphones, path: "/service", allowedRoles: ["admin", "editor"] },
+            { id: "mdm", title: "Master Data", type: "link", icon: Database, path: "/mdm", allowedRoles: ["admin", "editor"] },
         ],
     },
     {
@@ -88,10 +97,21 @@ export const navigationConfig: SidebarNode[] = [
         type: "section",
         children: [
             { id: "analytics", title: "Analytics", type: "link", icon: BarChart3, path: "/analytics" },
+            { id: "reports", title: "Reports", type: "link", icon: FileText, path: "/reports" },
             { id: "compliance", title: "Compliance & Risk", type: "link", icon: Shield, path: "/compliance/dashboard", allowedRoles: ["admin", "editor"] },
             { id: "audit", title: "Audit Trails", type: "link", icon: HistoryIcon, path: "/compliance/audit", allowedRoles: ["admin"] },
             { id: "security-profiles", title: "Security Profiles", type: "link", icon: Lock, path: "/compliance/security", allowedRoles: ["admin"] },
             { id: "ai", title: "AI Assistant", type: "link", icon: Sparkles, path: "/ai", allowedRoles: ["admin", "editor"] },
+        ],
+    },
+    {
+        id: "portals-section",
+        title: "Portals",
+        type: "section",
+        allowedRoles: ["admin", "editor"],
+        children: [
+            { id: "portal-customer", title: "Customer Portal", type: "link", icon: Globe, path: "/portal", allowedRoles: ["admin", "editor"] },
+            { id: "portal-supplier", title: "Supplier Portal", type: "link", icon: Truck, path: "/portal/supplier", allowedRoles: ["admin", "editor"] },
         ],
     },
     {
