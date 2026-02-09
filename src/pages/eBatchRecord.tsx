@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function eBatchRecord() {
     const { data: batches = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/pharma-ebr"],
-        queryFn: () => fetch("/api/pharma-ebr").then(r => r.json()).catch(() => []),
+        queryFn: () => fetch("/api/pharma-ebr").then(r => r.json()),
     });
 
     const completedCount = batches.filter((b: any) => b.status === "completed").length;

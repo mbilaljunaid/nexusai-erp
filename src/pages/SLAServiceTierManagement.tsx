@@ -15,7 +15,7 @@ export default function SLAServiceTierManagement() {
 
   const { data: slas = [], isLoading } = useQuery({
     queryKey: ["/api/sla-tiers"],
-    queryFn: () => fetch("/api/sla-tiers").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/sla-tiers").then(r => r.json()),
   });
 
   const createMutation = useMutation({

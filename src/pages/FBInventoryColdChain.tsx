@@ -14,7 +14,7 @@ export default function FBInventoryColdChain() {
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["/api/fb-inventory"],
-    queryFn: () => fetch("/api/fb-inventory").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/fb-inventory").then(r => r.json()),
   });
 
   const createMutation = useMutation({

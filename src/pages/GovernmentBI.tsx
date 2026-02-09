@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function GovernmentBI() {
     const { data: kpis = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/gov-bi"],
-        queryFn: () => fetch("/api/gov-bi").then(r => r.json()).catch(() => []),
+        queryFn: () => fetch("/api/gov-bi").then(r => r.json()),
     });
 
     const onTrackCount = kpis.filter((k: any) => k.status === "on-track").length;

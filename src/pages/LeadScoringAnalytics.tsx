@@ -14,7 +14,7 @@ export default function LeadScoringAnalytics() {
 
   const { data: insights = [], isLoading } = useQuery({
     queryKey: ["/api/lead-scoring-insights"],
-    queryFn: () => fetch("/api/lead-scoring-insights").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/lead-scoring-insights").then(r => r.json()),
   });
 
   const createMutation = useMutation({

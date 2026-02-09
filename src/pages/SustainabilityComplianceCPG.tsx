@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function SustainabilityComplianceCPG() {
     const { data: compliance = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/cpg-compliance"],
-        queryFn: () => fetch("/api/cpg-compliance").then(r => r.json()).catch(() => []),
+        queryFn: () => fetch("/api/cpg-compliance").then(r => r.json()),
     });
 
     const certifiedCount = compliance.filter((c: any) => c.certified).length;

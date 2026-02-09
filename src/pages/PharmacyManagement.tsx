@@ -15,7 +15,7 @@ export default function PharmacyManagement() {
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["/api/healthcare-pharmacy"],
-    queryFn: () => fetch("/api/healthcare-pharmacy").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/healthcare-pharmacy").then(r => r.json()),
   });
 
   const createMutation = useMutation({

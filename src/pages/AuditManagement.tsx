@@ -16,7 +16,7 @@ export default function AuditManagement() {
 
   const { data: audits = [], isLoading } = useQuery({
     queryKey: ["/api/audits"],
-    queryFn: () => fetch("/api/audits").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/audits").then(r => r.json()),
   });
 
   const createMutation = useMutation({
