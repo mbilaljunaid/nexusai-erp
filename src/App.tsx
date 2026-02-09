@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import GlobalLayout from "@/components/layout/GlobalLayout";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { RBACProvider } from "@/components/RBACContext";
+import { RBACProvider, useRBAC } from "@/components/RBACContext";
 import { TourProvider } from "@/hooks/use-tour";
 import { GuidedTourOverlay } from "@/components/GuidedTour";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -258,17 +258,27 @@ function PublicLayout() {
   );
 }
 
-export default function App() {
+function AppInner() {
   const [location] = useLocation();
+  const { isAuthenticated } = useRBAC();
 
   // Public routes don't show sidebar - includes dynamic routes
   const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/contribution", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/marketplace/services", "/marketplace/apps", "/marketplace/jobs", "/supplier/register", "/community"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/") || location.startsWith("/blog/") || location.startsWith("/marketplace/jobs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
 
+  // Authenticated user at "/" should go to dashboard
+  if (isAuthenticated && location === "/") {
+    return <Redirect to="/dashboard" />;
+  }
+
   // Industry setup routes should show authenticated layout
   const isIndustrySetup = location === "/industry-setup" || location === "/industry-deployments";
 
+  return isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <ProtectedRoute><AuthenticatedLayout /></ProtectedRoute>;
+}
+
+export default function App() {
   return (
     <RBACProvider>
       <QueryClientProvider client={queryClient}>
@@ -277,7 +287,7 @@ export default function App() {
             <TooltipProvider>
               <TourProvider>
                 <QuickTipsProvider>
-                  {isPublicRoute && !isIndustrySetup ? <PublicLayout /> : <ProtectedRoute><AuthenticatedLayout /></ProtectedRoute>}
+                  <AppInner />
                 </QuickTipsProvider>
               </TourProvider>
             </TooltipProvider>
