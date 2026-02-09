@@ -81,6 +81,8 @@ function Router() {
         <Route path="/system-configuration" component={SettingsPage} />
         <Route path="/manufacturing"><Redirect to="/manufacturing/dashboard" /></Route>
         <Route path="/scm"><Redirect to="/inventory" /></Route>
+        <Route path="/epm" component={lazy(() => import("@/pages/EPMPage"))} />
+        <Route path="/wfm"><Redirect to="/wfm/my-time" /></Route>
 
         {/* Analytics & Compliance */}
         <Route path="/analytics*" component={AnalyticsRoutes} />
