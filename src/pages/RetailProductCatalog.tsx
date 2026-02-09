@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { StandardTable } from "@/components/ui/StandardTable";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";

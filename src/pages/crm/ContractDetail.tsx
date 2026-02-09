@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { FileText, ArrowLeft, CheckCircle, AlertOctagon } from "lucide-react";

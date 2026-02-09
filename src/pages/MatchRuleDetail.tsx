@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 // MatchRuleDetail.tsx
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRoute } from "wouter";

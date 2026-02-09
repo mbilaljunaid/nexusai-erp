@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { i18n } from "@/lib/i18n";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";

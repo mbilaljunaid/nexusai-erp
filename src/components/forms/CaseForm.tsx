@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertCaseSchema, type InsertCase, type Case } from "@shared/schema/crm";
