@@ -28,7 +28,6 @@ export default function ContactList() {
 
     const { data: contacts = [], isLoading } = useQuery<Contact[]>({
         queryKey: ["/api/crm/contacts"],
-        queryFn: () => fetch("/api/crm/contacts").then(r => r.json()).catch(() => []),
     });
 
     const createMutation = useMutation({

@@ -23,7 +23,6 @@ export default function RequisitionBoard() {
 
     const { data: requisitions = [], isLoading } = useQuery<Requisition[]>({
         queryKey: ["/api/procurement/requisitions"],
-        queryFn: () => fetch("/api/procurement/requisitions").then(r => r.json()).catch(() => [])
     });
 
     const reqAction = (id: string | number, action: string) => {

@@ -22,17 +22,14 @@ import { Link } from "wouter";
 export default function ProcurementDashboard() {
     const { data: pos = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/purchase-orders"],
-        queryFn: () => fetch("/api/procurement/purchase-orders").then(r => r.json()).catch(() => [])
     });
 
     const { data: suppliers = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/suppliers"],
-        queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json()).catch(() => [])
     });
 
     const { data: invoices = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/ap/invoices"],
-        queryFn: () => fetch("/api/procurement/ap/invoices").then(r => r.json()).catch(() => [])
     });
 
     // KPI Calculations

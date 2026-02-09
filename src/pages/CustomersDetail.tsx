@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { mockCustomers } from "@/data/mock-data";
 
 function CustomerEntryForm() {
   return (
@@ -16,7 +17,6 @@ function CustomerEntryForm() {
 
 export default function CustomersDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const customers = [{ id: 1, name: "TechCorp Inc", industry: "Technology", revenue: "100M" }, { id: 2, name: "RetailCo", industry: "Retail", revenue: "50M" }];
 
   return (
     <div className="space-y-6">
@@ -37,7 +37,7 @@ export default function CustomersDetail() {
         </div>
 
         <div className="space-y-2">
-          {customers.filter((c: any) => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map((c: any) => (
+          {mockCustomers.filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map((c) => (
             <Card key={c.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{c.name}</p><p className="text-sm text-muted-foreground">{c.industry}</p></div><Badge>{c.revenue}</Badge></div></CardContent></Card>
           ))}
         </div>

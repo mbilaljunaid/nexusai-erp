@@ -12,9 +12,8 @@ export default function CustomsCompliance() {
   const { toast } = useToast();
   const [newDecl, setNewDecl] = useState({ declarationId: "", shipmentId: "", hsCode: "", country: "", status: "pending" });
 
-  const { data: declarations = [], isLoading } = useQuery({
+  const { data: declarations = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/tl-customs"],
-    queryFn: () => fetch("/api/tl-customs").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({

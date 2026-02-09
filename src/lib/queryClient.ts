@@ -1,4 +1,5 @@
-import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { QueryClient, QueryFunction, QueryCache } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const DEFAULT_TENANT_ID = "tenant1";
 const DEFAULT_USER_ID = "user1";
@@ -79,10 +80,23 @@ export const getQueryFn: <T>(options: {
     }
 
     await throwIfResNotOk(res);
+
+    const contentType = res.headers.get("content-type");
+    if (contentType && !contentType.includes("application/json")) {
+      throw new Error(`Expected JSON response but received ${contentType}`);
+    }
+
     return await res.json();
   };
 
 export const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      toast.error("Failed to load data", {
+        description: error.message?.substring(0, 100),
+      });
+    },
+  }),
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),

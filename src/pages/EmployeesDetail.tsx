@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { mockEmployees } from "@/data/mock-data";
 
 function EmployeeEntryForm() {
   return (
@@ -16,7 +17,6 @@ function EmployeeEntryForm() {
 
 export default function EmployeesDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const employees = [{ id: 1, name: "Sarah Johnson", dept: "Engineering", email: "sarah@company.com" }, { id: 2, name: "John Smith", dept: "Sales", email: "john@company.com" }];
 
   return (
     <div className="space-y-6">
@@ -37,7 +37,7 @@ export default function EmployeesDetail() {
         </div>
 
         <div className="space-y-2">
-          {employees.filter((e: any) => e.name.toLowerCase().includes(searchQuery.toLowerCase())).map((e: any) => (
+          {mockEmployees.filter((e) => e.name.toLowerCase().includes(searchQuery.toLowerCase())).map((e) => (
             <Card key={e.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{e.name}</p><p className="text-sm text-muted-foreground">{e.dept}</p></div><Badge>{e.email}</Badge></div></CardContent></Card>
           ))}
         </div>
