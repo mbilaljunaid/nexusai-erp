@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -65,7 +64,7 @@ export function ProcurementDashboard({ onViewChange }: Props) {
                                 <BarChart data={spendBySupplier}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="name" fontSize={12} />
-                                    <YAxis prefix="$" fontSize={12} />
+                                    <YAxis tickFormatter={(v) => `$${v}`} fontSize={12} />
                                     <Tooltip />
                                     <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                                 </BarChart>

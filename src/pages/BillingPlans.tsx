@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -34,7 +33,7 @@ export default function BillingPlans() {
   return (
     <StandardPage
       title="Billing Plans"
-      subtitle="Choose the perfect plan for your organization"
+      description="Choose the perfect plan for your organization"
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {plans.map((plan: any) => (

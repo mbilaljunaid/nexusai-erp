@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -14,7 +13,7 @@ import { useLocation } from "wouter";
 
 export default function ItemProfile() {
     const [, params] = useRoute("/mdm/items/:id");
-    const itemId = params?.id;
+    const itemId = (params as any)?.id;
     const [, setLocation] = useLocation();
     const queryClient = useQueryClient();
 

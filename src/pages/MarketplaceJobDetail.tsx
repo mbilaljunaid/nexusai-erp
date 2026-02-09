@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
@@ -56,7 +55,7 @@ interface JobPosting {
 
 export default function MarketplaceJobDetail() {
   const [, params] = useRoute("/marketplace/jobs/:id");
-  const jobId = params?.id;
+  const jobId = (params as any)?.id;
   const { toast } = useToast();
   const [isProposalOpen, setIsProposalOpen] = useState(false);
   const [proposal, setProposal] = useState({

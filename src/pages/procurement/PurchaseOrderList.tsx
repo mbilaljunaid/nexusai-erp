@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -103,7 +102,7 @@ export default function PurchaseOrderList() {
     return (
         <StandardPage
             title="Purchase Orders"
-            subtitle="Manage purchase orders and supplier agreements"
+            description="Manage purchase orders and supplier agreements"
             actions={
                 <Link href="/procurement/orders/new">
                     <Button>

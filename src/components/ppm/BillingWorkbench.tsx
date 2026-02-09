@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -176,7 +175,6 @@ export function BillingWorkbench() {
                                 data={events || []}
                                 isLoading={isEventsLoading}
                                 pageSize={10}
-                                emptyMessage="No unbilled events found. Try generating from costs."
                             />
                         </CardContent>
                     </Card>

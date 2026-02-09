@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
 import { TrendingUp, Users, DollarSign, Target } from "lucide-react";
@@ -6,12 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 export default function CampaignDetail() {
-    const { id } = useParams();
+    const params = useParams() as any;
 
     const { data, isLoading } = useQuery({
-        queryKey: [`/api/crm/campaigns/${id}/stats`],
+        queryKey: [`/api/crm/campaigns/${params?.id}/stats`],
         queryFn: async () => {
-            const res = await fetch(`/api/crm/campaigns/${id}/stats`);
+            const res = await fetch(`/api/crm/campaigns/${params?.id}/stats`);
             if (!res.ok) throw new Error("Failed");
             return res.json();
         }

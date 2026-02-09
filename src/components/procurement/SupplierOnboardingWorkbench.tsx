@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,7 +15,7 @@ export default function SupplierOnboardingWorkbench() {
     const queryClient = useQueryClient();
     const [selectedRequest, setSelectedRequest] = useState<any>(null);
 
-    const { data: requests, isLoading } = useQuery({
+    const { data: requests, isLoading } = useQuery<any[]>({
         queryKey: ["/api/supplier-portal/onboarding/pending"],
     });
 

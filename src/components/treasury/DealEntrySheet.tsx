@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -50,8 +49,8 @@ export function DealEntrySheet({ open, onClose }: DealEntrySheetProps) {
         queryKey: ["/api/treasury/counterparties"],
     });
 
-    const form = useForm({
-        resolver: zodResolver(insertTreasuryDealSchema),
+    const form = useForm<any>({
+        resolver: zodResolver(insertTreasuryDealSchema) as any,
         defaultValues: {
             dealNumber: `DL-${Date.now().toString().slice(-6)}`,
             type: "DEBT",
@@ -130,7 +129,7 @@ export function DealEntrySheet({ open, onClose }: DealEntrySheetProps) {
                         <FormField
                             control={form.control}
                             name="counterpartyId"
-                            render={({ field }) => (
+                            render={({ field }: any) => (
                                 <FormItem>
                                     <FormLabel>Institution / Counterparty</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -140,8 +139,8 @@ export function DealEntrySheet({ open, onClose }: DealEntrySheetProps) {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {counterparties.map(cp => (
-                                                <SelectItem key={cp.id} value={cp.id}>{cp.name} ({cp.type})</SelectItem>
+                                            {counterparties.map((cp: any) => (
+                                                <SelectItem key={cp.id} value={cp.id}>{cp.name}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>

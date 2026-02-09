@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery } from "@tanstack/react-query";
 import { StandardDashboard } from "@/components/ui/StandardDashboard";
 import { DashboardWidget } from "@/components/ui/DashboardWidget";
@@ -37,7 +36,7 @@ export default function RetailDashboard() {
                     icon={CheckCircle}
                     loading={isLoading}
                     type="metric"
-                    trend={{ value: 10, label: "vs last month", direction: "up" }}
+                    trend={{ value: 10, label: "vs last month", positive: true }}
                     className="text-green-600"
                 />
                 <DashboardWidget

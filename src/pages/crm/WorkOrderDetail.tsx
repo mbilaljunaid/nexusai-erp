@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "wouter";
@@ -13,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 export default function WorkOrderDetail() {
-    const { id } = useParams();
+    const { id } = useParams() as any;
     const queryClient = useQueryClient();
     const [isAssignOpen, setIsAssignOpen] = useState(false);
     const [assignData, setAssignData] = useState({ technicianId: "", start: "", end: "" });

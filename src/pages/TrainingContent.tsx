@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
@@ -57,7 +56,7 @@ const typeConfig: Record<string, { icon: any; color: string; title: string; desc
 
 export default function TrainingContent() {
   const [, params] = useRoute("/training/:type");
-  const contentType = params?.type || "videos";
+  const contentType = (params as any)?.type || "videos";
   const type = contentType === "videos" ? "video" : contentType === "apis" ? "api" : contentType === "guides" ? "guide" : contentType === "materials" ? "material" : "video";
   
   const [search, setSearch] = useState("");

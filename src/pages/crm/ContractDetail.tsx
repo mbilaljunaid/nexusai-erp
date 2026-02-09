@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { FileText, ArrowLeft, CheckCircle, AlertOctagon } from "lucide-react";
@@ -9,7 +8,7 @@ import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ContractDetail() {
-    const { id } = useParams();
+    const { id } = useParams() as any;
     const { toast } = useToast();
     const queryClient = useQueryClient();
 

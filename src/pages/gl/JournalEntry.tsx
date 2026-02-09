@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLedger } from "@/context/LedgerContext";
 import React, { useState, useMemo, useEffect } from "react";
@@ -48,7 +47,7 @@ export default function JournalEntry() {
     const { toast } = useToast();
     const { currentLedgerId, activeLedger } = useLedger();
     const [match, params] = useRoute("/gl/journals/:id");
-    const [journalId, setJournalId] = useState<string | null>(match ? params.id : null);
+    const [journalId, setJournalId] = useState<string | null>(match ? (params as any)?.id : null);
 
     const [header, setHeader] = useState({
         description: "",

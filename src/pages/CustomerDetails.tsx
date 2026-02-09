@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -10,7 +9,7 @@ import { Link } from "wouter";
 
 export default function CustomerDetails() {
     const [, params] = useRoute("/finance/ar/customers/:id");
-    const customerId = params?.id;
+    const customerId = (params as any)?.id;
 
     const { data: customer, isLoading } = useQuery({
         queryKey: [`/api/ar/customers/${customerId}`],
