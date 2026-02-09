@@ -8,6 +8,8 @@ const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
 const BlogPostPage = lazy(() => import("@/pages/BlogPostPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
+const SignupPage = lazy(() => import("@/pages/SignupPage"));
+const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const DemoManagement = lazy(() => import("@/pages/DemoManagement"));
 const PortalLogin = lazy(() => import("@/pages/portal/PortalLogin"));
 const UseCases = lazy(() => import("@/pages/UseCases"));
@@ -91,6 +93,9 @@ export default function PublicRoutes() {
             <Route path="/careers" component={CareersPage} />
             <Route path="/modules" component={ModulesPage} />
             <Route path="/login" component={LoginPage} />
+            <Route path="/signup" component={SignupPage} />
+            <Route path="/forgot-password" component={ForgotPasswordPage} />
+            <Route path="/demo" component={DemoManagement} />
             <Route path="/portal/login" component={PortalLogin} />
             <Route path="/supplier/register" component={ExternalSupplierRegistration} />
 

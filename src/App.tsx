@@ -265,7 +265,7 @@ function AppInner() {
   const { isAuthenticated } = useRBAC();
 
   // Public routes don't show sidebar - includes dynamic routes
-  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/contribution", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/marketplace/services", "/marketplace/apps", "/marketplace/jobs", "/supplier/register", "/community"];
+  const publicRoutes = ["/", "/use-cases", "/industries", "/about", "/blog", "/login", "/signup", "/forgot-password", "/demo", "/contact", "/security", "/license", "/open-source", "/legal", "/pricing", "/privacy", "/terms", "/partners", "/contributing", "/contribution", "/modules", "/public/processes", "/careers", "/features", "/marketplace", "/marketplace/services", "/marketplace/apps", "/marketplace/jobs", "/supplier/register", "/community"];
   const isDynamicPublicRoute = location.startsWith("/industry/") || location.startsWith("/module/") || location.startsWith("/public/processes/") || location.startsWith("/docs/") || location.startsWith("/features/") || location.startsWith("/blog/") || location.startsWith("/marketplace/jobs/");
   const isPublicRoute = publicRoutes.includes(location) || isDynamicPublicRoute;
 

@@ -47,7 +47,7 @@ export default function MatchRuleList() {
         { header: "Description", accessorKey: "description" },
         {
             header: "Actions", id: "actions", cell: (row: any) => (
-                <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/match-rules/${row.id}`)}>
+                <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/config/match-rules/${row.id}`)}>
                     <Settings2 className="h-4 w-4 mr-2" /> Configure
                 </Button>
             )

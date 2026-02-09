@@ -30,6 +30,7 @@ import ModuleLayout from "@/components/layouts/ModuleLayout";
 export default function CrmRoutes() {
     return (
         <ModuleLayout>
+            <Route path="/crm/leads/:id" component={LeadsDetail} />
             <Route path="/crm/leads" component={LeadsDetail} />
             <Route path="/crm/accounts" component={AccountsDetail} />
             <Route path="/crm/accounts/:id" component={Account360} />

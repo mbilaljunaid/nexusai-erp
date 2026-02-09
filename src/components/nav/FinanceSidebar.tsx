@@ -26,16 +26,16 @@ export const financeMenu = [
         label: "Payables (AP)",
         items: [
             { title: "Invoices", url: "/finance/accounts-payable", icon: FileText },
-            { title: "Payments", url: "/finance/ap/payments", icon: DollarSign },
-            { title: "Suppliers", url: "/finance/ap/suppliers", icon: Users },
+            { title: "Settings", url: "/ap/settings", icon: Settings },
         ],
     },
     {
         label: "Receivables (AR)",
         items: [
             { title: "Invoices", url: "/finance/ar/invoices", icon: FileText },
-            { title: "Customers", url: "/finance/ar/customers", icon: Users },
-            { title: "Collections", url: "/finance/ar/collections", icon: DollarSign },
+            { title: "Analytics", url: "/finance/ar/analytics", icon: BarChart3 },
+            { title: "Reports", url: "/finance/ar/reports", icon: FileText },
+            { title: "Period Close", url: "/finance/ar/period-close", icon: CheckSquare },
         ],
     },
     {
