@@ -1,124 +1,124 @@
 
 
-# Plan: Stabilize Frontend — Replace @shared/schema Imports and Remove @ts-nocheck
+# Audit: Unreachable Pages, Missing Navigation, and 404 Errors
 
-## Overview
+## Summary
 
-The frontend build is broken because files import **runtime values** (like Zod schemas) from `@shared/schema` that aren't available in the compiled output. Additionally, 74 files have `// @ts-nocheck` suppressing TypeScript errors. This plan systematically fixes both categories.
+After cross-referencing all route definitions (20 route files), the global sidebar navigation (`src/config/navigation.ts`), the Dashboard module grid, and live browser testing, here are the findings organized into two categories.
 
-## Phase 1: Fix Build-Breaking @shared/schema Value Imports (Priority: Critical)
+---
 
-These imports pull in **runtime values** (Zod schemas, Drizzle table objects) that don't exist in the compiled `shared/schema.js`. Each must be replaced with a local Zod schema and/or interface.
+## PART 1: Sidebar/Dashboard Links That Lead to 404 Pages
 
-### Files with value imports (build breakers):
+These are paths listed in navigation menus or the Dashboard that have **no matching route definition** and will show a 404 or the Landing Page when clicked.
 
-| File | Broken Import | Fix |
-|------|--------------|-----|
-| `src/components/treasury/FxDealEntry.tsx` | `insertTreasuryFxDealSchema, InsertTreasuryFxDeal` | Inline Zod schema + interface locally |
-| `src/components/fixed-assets/AddAssetDialog.tsx` | `insertFaAssetSchema, InsertFaAsset` | Inline Zod schema + interface locally |
-| `src/components/finance/IntercompanyManager.tsx` | `insertGlIntercompanyRuleSchema` | Inline Zod schema locally |
-| `src/components/forms/CaseForm.tsx` | `insertCaseSchema` (if value) | Inline Zod schema locally |
-| `src/pages/LeadsDetail.tsx` | `insertLeadSchema, InsertLead, Lead` | Inline Zod schema + interfaces locally |
-| `src/pages/ContactsDetail.tsx` | `insertContactSchema, InsertContact, Contact` | Inline Zod schema + interfaces locally |
-| `src/pages/RevenueContractWorkbench.tsx` | `revenueContracts` (Drizzle table object) | Replace with local interface |
+### Global Sidebar (navigation.ts) - 4 broken links
+| Sidebar Label | Path | Status |
+|---|---|---|
+| Processes | `/processes` | No route exists anywhere |
+| Operations | `/operations` | No route exists anywhere |
+| AI Assistant | `/ai` | No route exists anywhere |
+| Settings | `/system-configuration` | No route exists anywhere |
 
-### Approach for each file:
-1. Remove the `@shared/schema` import
-2. Define a local Zod schema (using `z.object(...)`) matching the field names used in the form
-3. Define a local TypeScript interface for the type
-4. Keep `// @ts-nocheck` temporarily if other errors remain in the file
+### Dashboard Quick Links - 6 broken links
+| Link Label | Path | Dashboard Role | Status |
+|---|---|---|---|
+| Processes | `/process-hub` | Editor | No route (sidebar uses `/processes`, also broken) |
+| Security | `/security-settings` | Admin | No route exists |
+| Audit Logs | `/audit-logs` | Admin | No route (actual path is `/compliance/audit`) |
+| View All Alerts | `/system-alerts` | Admin | No route exists |
+| My Tasks | `/tasks` | Viewer | No route exists |
+| HR Portal | `/hr/employee-self-service` | Viewer | No route (actual path is `/me`) |
+| Timesheets | `/hr/time-tracking` | Viewer | No route (actual path is `/me/time-card` or `/wfm/my-time`) |
 
-## Phase 2: Convert Type-Only @shared/schema Imports (Priority: High)
+### Manufacturing base path - 404
+| Path | Status |
+|---|---|
+| `/manufacturing` | ScmRoutes only has `/manufacturing/dashboard`, `/manufacturing/bom`, etc. -- the base `/manufacturing` path has no route, so the sidebar link shows 404 |
 
-These 65+ files import only **types** (e.g., `type { ArInvoice }`). While some work today, they are fragile. Each type import will be replaced with a local interface.
+### SCM base path - 404
+| Path | Status |
+|---|---|
+| `/scm` | ScmRoutes has no `/scm` base route. Only `/scm/fulfillment`, `/scm/costing/*` exist. Sidebar link to Supply Chain shows 404 |
 
-### Approach:
-- For each file, define a minimal local interface with only the fields actually used in the component
-- Group by module to batch similar types:
+---
 
-| Module | Files | Types to Localize |
-|--------|-------|-------------------|
-| AR | ~6 files | `ArInvoice`, `ArReceipt`, `ArRevenueSchedule`, `ArSystemOptions` |
-| AP | ~3 files | `ApInvoice`, `ApSupplier` |
-| Treasury | ~4 files | `TreasuryDeal`, `TreasuryFxDeal`, `TreasuryCounterparty` |
-| CRM | ~8 files | `Account`, `Contact`, `Opportunity`, `Lead`, `Campaign`, `Quote`, `Order` |
-| GL | ~4 files | `GlJournal`, `GlCoaStructure`, `GlSegment`, `GlValueSet`, `GlSegmentValue` |
-| Manufacturing | ~3 files | `WipBalance`, `VarianceJournal` |
-| Construction | ~4 files | `CostCode`, `ConstructionResource`, `ConstructionResourceAllocation` |
-| Cash | ~2 files | `CashStatementLine`, `CashTransaction` |
-| Fixed Assets | ~2 files | `FaAsset` |
-| Billing | ~3 files | `BillingEvent`, `BillingRule`, `BillingProfile` |
-| Community | ~2 files | `CommunitySpace`, `CommunityPost`, `UserTrustLevel`, `CommunityVoteAnomaly` |
-| Marketplace | ~2 files | `MarketplaceDeveloper`, `MarketplaceApp` |
-| Platform/Admin | ~1 file | `Partner` |
+## PART 2: Built Pages With No Menu/Dashboard Entry
 
-### Efficiency strategy:
-Create a single shared local types file `src/types/erp-types.ts` containing all these interfaces, so each component imports from `@/types/erp-types` instead of `@shared/schema`.
+These are pages that have **valid route definitions** and render content, but are **not reachable** from any sidebar menu item or Dashboard module grid. Users can only reach them by knowing the URL.
 
-## Phase 3: Remove @ts-nocheck from 74 Files (Priority: Medium)
+### Entire Module Route Trees (no sidebar entry for sub-pages)
 
-After Phase 1 and 2 eliminate the schema import errors, many `@ts-nocheck` files will compile cleanly. The remaining issues are typically:
+**Order Management** (11 routes, zero sidebar/nav entries)
+- `/order-management`, `/order-management/create`, `/order-management/:id`, `/order-management/fulfillment`, `/order-management/returns`, `/order-management/config`, `/order-management/pricing`, plus 4 legacy routes
 
-1. **`useRoute`/`useParams` null safety** -- add fallback: `const { id } = useParams() ?? {}`
-2. **Prop mismatches on `StandardPage`** -- use `subtitle` or `description` consistently
-3. **Missing `queryClient` import** -- ensure `apiRequest` is imported from `@/lib/queryClient`
-4. **Form type mismatches** -- use `as any` on `useForm` generics where needed
+**MDM / Master Data Management** (15 routes, zero sidebar/nav entries)
+- `/mdm`, `/mdm/governance`, `/mdm/duplicates`, `/mdm/parties`, `/mdm/reference-data`, `/mdm/items`, `/mdm/dq-dashboard`, `/mdm/change-requests`, `/mdm/import`, plus config sub-routes
 
-### Batch processing order (by module):
-1. Treasury components (4 files) -- already partially fixed
-2. AP components (3 files)
-3. CRM pages (8 files)
-4. Finance/GL pages (5 files)
-5. Procurement pages (4 files)
-6. HR self-service pages (5 files)
-7. Billing pages (4 files)
-8. Manufacturing pages (3 files)
-9. Remaining pages (38 files)
+**Portal** (14 routes, zero sidebar/nav entries)
+- `/portal/*` (customer portal), `/portal/supplier/*` (supplier portal)
 
-## Phase 4: Build Verification
+**Marketing** (2 routes, zero sidebar/nav entries)
+- `/marketing`, `/marketing-module`
 
-After all changes:
-1. Run `vite build --mode development` to confirm zero build errors
-2. Verify the preview renders the dashboard
-3. Spot-check key modules: CRM, Finance, Treasury, HR
+**ERP** (2 routes, zero sidebar/nav entries)
+- `/erp`, `/erp-module`
 
-## Technical Details
+**Reports** (2 routes, zero sidebar/nav entries)
+- `/reports`, `/reports/:module`
 
-### Local Zod schema pattern (for forms):
-```typescript
-import { z } from "zod";
+**Service** (4 routes, zero sidebar/nav entries -- sidebar has "Service" in `app-sidebar.tsx` but NOT in `navigation.ts` which is the active sidebar)
+- `/service`, `/service/tickets`, `/service/ticket/:id`, `/ticket-dashboard`
 
-const fxDealFormSchema = z.object({
-  dealNumber: z.string().optional(),
-  dealType: z.string(),
-  counterpartyId: z.string(),
-  buyCurrency: z.string(),
-  buyAmount: z.string().optional(),
-  sellCurrency: z.string(),
-  sellAmount: z.string().optional(),
-  exchangeRate: z.string().optional(),
-  tradeDate: z.date().optional(),
-  valueDate: z.date().optional(),
-  status: z.string().optional(),
-});
-type FxDealFormData = z.infer<typeof fxDealFormSchema>;
-```
+### Industry Vertical Pages (41 routes, zero sidebar entries)
+All `/industry/*` routes including Healthcare (9), Telecom (8), Hospitality (10), Retail (6), Logistics (8)
 
-### Local interface pattern (for display-only components):
-```typescript
-interface ArInvoice {
-  id: string;
-  invoiceNumber: string;
-  customerName?: string;
-  invoiceAmount?: string;
-  status?: string;
-  invoiceDate?: string;
-}
-```
+### Standalone Orphan Pages (routed in App.tsx but no nav entry)
+| Path | Page |
+|---|---|
+| `/intercompany` | Intercompany Workbench |
+| `/intercompany/reconciliation` | Intercompany Reconciliation |
+| `/intercompany/netting` | Netting Workbench |
+| `/intercompany/allocations` | Allocations Workbench |
+| `/me/payslips` | My Payslips |
+| `/me/benefits/enroll` | Benefits Enrollment |
+| `/me/delegation` | Delegation Workbench |
+| `/me/payroll/deductions` | Voluntary Deductions |
+| `/me/compliance/forms` | Statutory Forms |
+| `/wfm/*` (12 routes) | Workforce Management (time, schedule, shifts, violations, etc.) |
+| `/rewards/compensation` | Compensation Dashboard |
+| `/rewards/payroll` | Payroll Workbench |
+| `/talent/learning/*` (8 routes) | Learning Management System |
+| `/hr/recruitment/*` (5 routes) | Recruitment sub-pages |
+| `/hr/analytics/*` (5 routes) | HR Analytics sub-pages |
 
-### Estimated scope:
-- ~72 files need schema import replacement
-- ~74 files need @ts-nocheck removal
-- 1 new shared types file (`src/types/erp-types.ts`)
-- Total files modified: ~100 (with overlap)
+### Finance Sub-Pages Not in FinanceSidebar
+Many finance routes exist but are not in the sidebar menu, including:
+- `/finance/billing/*` (6 routes -- billing workbench, rules, profiles, anomalies, subscriptions)
+- `/finance/sla/*` (3 routes)
+- `/finance/tax`, `/finance/expense-management`
+- `/revenue/*` (13 routes -- revenue management module)
+- `/gl/config/*` (12+ config sub-routes)
+
+---
+
+## PART 3: Proposed Fix Plan
+
+### Phase 1 -- Fix 404s from existing navigation (Critical)
+1. Add missing route for `/manufacturing` (redirect to `/manufacturing/dashboard`)
+2. Add missing route for `/scm` (create an SCM landing/dashboard page or redirect)
+3. Add route for `/processes` pointing to the existing Processes pages in `src/pages/processes/`
+4. Add route for `/operations` (create landing page or redirect to SCM)
+5. Add route for `/ai` pointing to `AIAssistant.tsx`
+6. Add route for `/system-configuration` pointing to `Settings` page
+7. Fix Dashboard broken links: `/process-hub` to `/processes`, `/security-settings`, `/audit-logs` to `/compliance/audit`, `/tasks`, `/hr/employee-self-service` to `/me`, `/hr/time-tracking` to `/wfm/my-time`
+
+### Phase 2 -- Add navigation entries for orphaned modules
+8. Add Order Management, MDM, Service, Marketing, Reports, Intercompany to the global sidebar or as sub-items
+9. Add Industry verticals as a sidebar section or sub-menu
+10. Add WFM, Rewards, Learning, Recruitment sub-pages to the HR domain sidebar
+11. Add Revenue, Billing, SLA, Intercompany routes to the Finance domain sidebar
+
+### Phase 3 -- Clean up duplicate sidebar files
+12. Remove or consolidate `src/components/app-sidebar.tsx` (old rail sidebar) vs `src/components/AppSidebar.tsx` (active sidebar used by GlobalLayout)
 
