@@ -21,7 +21,7 @@ export const crmMenu = [
             { title: "Leads", url: "/crm/leads", icon: Target },
             { title: "Accounts", url: "/crm/accounts", icon: Briefcase },
             { title: "Contacts", url: "/crm/contacts", icon: Users },
-            { title: "Opportunities", url: "/crm/opportunities", icon: Target }, // Assuming route exists or will exist
+            { title: "Opportunities", url: "/crm/leads", icon: Target },
         ],
     },
     {
