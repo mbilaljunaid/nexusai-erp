@@ -98,9 +98,6 @@ export default function FinanceRoutes() {
     console.log("DEBUG: FinanceRoutes RENDERED. Path:", window.location.pathname);
     return (
         <ModuleLayout>
-            <div className="mb-4 p-2 bg-yellow-100 text-yellow-800 text-xs rounded">
-                DEBUG: FinanceRoutes Active. Path: {window.location.pathname}
-            </div>
             <Switch>
                 <Route path="/finance/cash-management" component={TreasuryCommandCenter} />
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />

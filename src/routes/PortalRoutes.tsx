@@ -19,32 +19,43 @@ const SupplierSourcing = lazy(() => import("@/pages/supplier-portal/Sourcing"));
 
 export default function PortalRoutes() {
     return (
-        <>
-
-            <Route path="/portal">
-                <CustomerPortalLayout>
-                    <Switch>
-                        <Route path="/portal/dashboard" component={PortalDashboard} />
-                        <Route path="/portal/invoices" component={PortalInvoices} />
-                        <Route path="/portal" component={PortalDashboard} />
-                    </Switch>
-                </CustomerPortalLayout>
+        <Switch>
+            {/* Customer Portal */}
+            <Route path="/portal/dashboard">
+                <CustomerPortalLayout><PortalDashboard /></CustomerPortalLayout>
+            </Route>
+            <Route path="/portal/invoices">
+                <CustomerPortalLayout><PortalInvoices /></CustomerPortalLayout>
             </Route>
 
+            {/* Supplier Portal */}
             <Route path="/portal/supplier/login" component={SupplierLogin} />
-            <Route path="/portal/supplier">
-                <SupplierPortalLayout>
-                    <Switch>
-                        <Route path="/portal/supplier/dashboard" component={SupplierDashboard} />
-                        <Route path="/portal/supplier/orders" component={SupplierOrders} />
-                        <Route path="/portal/supplier/asns" component={SupplierASNs} />
-                        <Route path="/portal/supplier/performance" component={SupplierPerformance} />
-                        <Route path="/portal/supplier/sourcing" component={SupplierSourcing} />
-                        <Route path="/portal/supplier/documents" component={SupplierDocuments} />
-                        <Route path="/portal/supplier" component={SupplierDashboard} />
-                    </Switch>
-                </SupplierPortalLayout>
+            <Route path="/portal/supplier/dashboard">
+                <SupplierPortalLayout><SupplierDashboard /></SupplierPortalLayout>
             </Route>
-        </>
+            <Route path="/portal/supplier/orders">
+                <SupplierPortalLayout><SupplierOrders /></SupplierPortalLayout>
+            </Route>
+            <Route path="/portal/supplier/asns">
+                <SupplierPortalLayout><SupplierASNs /></SupplierPortalLayout>
+            </Route>
+            <Route path="/portal/supplier/performance">
+                <SupplierPortalLayout><SupplierPerformance /></SupplierPortalLayout>
+            </Route>
+            <Route path="/portal/supplier/sourcing">
+                <SupplierPortalLayout><SupplierSourcing /></SupplierPortalLayout>
+            </Route>
+            <Route path="/portal/supplier/documents">
+                <SupplierPortalLayout><SupplierDocuments /></SupplierPortalLayout>
+            </Route>
+            <Route path="/portal/supplier">
+                <SupplierPortalLayout><SupplierDashboard /></SupplierPortalLayout>
+            </Route>
+
+            {/* Customer Portal catch-all */}
+            <Route path="/portal">
+                <CustomerPortalLayout><PortalDashboard /></CustomerPortalLayout>
+            </Route>
+        </Switch>
     );
 }

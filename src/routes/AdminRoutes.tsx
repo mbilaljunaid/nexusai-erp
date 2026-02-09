@@ -23,7 +23,6 @@ export default function AdminRoutes() {
         <Switch>
             <Route path="/admin" component={AdminConsole} />
             <Route path="/admin/platform" component={PlatformAdmin} />
-            <Route path="/admin/platform" component={PlatformAdmin} />
             <Route path="/admin/security" component={AccessControl} />
             {/* Core Admin Pages */}
             <Route path="/admin/sod" component={lazy(() => import("@/pages/admin/SoDMatrix"))} />
