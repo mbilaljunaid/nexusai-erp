@@ -15,7 +15,7 @@ export default function ShippingManagement() {
 
   const { data: shipments = [], isLoading } = useQuery({
     queryKey: ["/api/shipments"],
-    queryFn: () => fetch("/api/shipments").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/shipments").then(r => r.json()),
   });
 
   const createMutation = useMutation({

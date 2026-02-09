@@ -16,7 +16,7 @@ export default function OpportunityList() {
 
   const { data: opportunities = [], isLoading } = useQuery({
     queryKey: ["/api/crm/opportunities"],
-    queryFn: () => fetch("/api/crm/opportunities").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/crm/opportunities").then(r => r.json()),
   });
 
   const createMutation = useMutation({

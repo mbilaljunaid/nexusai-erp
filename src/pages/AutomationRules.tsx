@@ -15,7 +15,7 @@ export default function AutomationRules() {
 
   const { data: rules = [], isLoading } = useQuery({
     queryKey: ["/api/automation-rules"],
-    queryFn: () => fetch("/api/automation-rules").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/automation-rules").then(r => r.json()),
   });
 
   const createMutation = useMutation({

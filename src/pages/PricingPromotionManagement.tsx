@@ -15,7 +15,7 @@ export default function PricingPromotionManagement() {
 
   const { data: prices = [], isLoading } = useQuery({
     queryKey: ["/api/pricing-promotion"],
-    queryFn: () => fetch("/api/pricing-promotion").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/pricing-promotion").then(r => r.json()),
   });
 
   const createMutation = useMutation({

@@ -14,7 +14,7 @@ export default function EventBanquetingManagement() {
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ["/api/hospitality-events"],
-    queryFn: () => fetch("/api/hospitality-events").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/hospitality-events").then(r => r.json()),
   });
 
   const createMutation = useMutation({

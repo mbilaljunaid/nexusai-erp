@@ -15,7 +15,7 @@ export default function EquipmentManagement() {
 
   const { data: equipment = [], isLoading } = useQuery({
     queryKey: ["/api/equipment"],
-    queryFn: () => fetch("/api/equipment").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/equipment").then(r => r.json()),
   });
 
   const createMutation = useMutation({

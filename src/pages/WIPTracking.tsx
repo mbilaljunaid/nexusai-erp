@@ -14,7 +14,7 @@ export default function WIPTracking() {
 
   const { data: wipItems = [], isLoading } = useQuery({
     queryKey: ["/api/wip"],
-    queryFn: () => fetch("/api/wip").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/wip").then(r => r.json()),
   });
 
   const createMutation = useMutation({

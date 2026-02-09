@@ -14,7 +14,7 @@ export default function CarrierProcurement() {
 
   const { data: rates = [], isLoading } = useQuery({
     queryKey: ["/api/tl-rates"],
-    queryFn: () => fetch("/api/tl-rates").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/tl-rates").then(r => r.json()),
   });
 
   const createMutation = useMutation({

@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function TelecomFinanceCompliance() {
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ["/api/telecom-finance"],
-    queryFn: () => fetch("/api/telecom-finance").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/telecom-finance").then(r => r.json()),
   });
 
   const totalRevenue = transactions.reduce((sum: number, t: any) => sum + (parseFloat(t.amount) || 0), 0);

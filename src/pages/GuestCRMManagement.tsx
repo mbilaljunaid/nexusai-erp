@@ -14,7 +14,7 @@ export default function GuestCRMManagement() {
 
   const { data: guests = [], isLoading } = useQuery({
     queryKey: ["/api/hospitality-guests"],
-    queryFn: () => fetch("/api/hospitality-guests").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/hospitality-guests").then(r => r.json()),
   });
 
   const createMutation = useMutation({

@@ -14,7 +14,7 @@ export default function DashboardBuilder() {
 
   const { data: dashboards = [], isLoading } = useQuery({
     queryKey: ["/api/analytics/dashboards"],
-    queryFn: () => fetch("/api/analytics/dashboards").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/analytics/dashboards").then(r => r.json()),
   });
 
   const createMutation = useMutation({

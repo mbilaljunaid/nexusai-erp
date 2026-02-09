@@ -16,7 +16,7 @@ export default function RevenueForecasting() {
 
   const { data: forecasts = [], isLoading } = useQuery({
     queryKey: ["/api/analytics/forecast"],
-    queryFn: () => fetch("/api/analytics/forecast").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/analytics/forecast").then(r => r.json()),
   });
 
   const createMutation = useMutation({
