@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Users, DollarSign, Briefcase, GraduationCap, FileText, Settings, Database } from "lucide-react";
+import { Users, DollarSign, Briefcase, GraduationCap, FileText, Settings, Database, Clock, BarChart3, Award, Brain } from "lucide-react";
 import { ModuleNavigationGrid } from "@/components/nav/ModuleNavigationGrid";
 import HrDashboard from "@/pages/hr/HrDashboard";
 
@@ -18,7 +18,30 @@ const hrMenu = [
     items: [
       { title: "Recruitment (ATS)", url: "/hr/recruitment", icon: Briefcase },
       { title: "Performance Goals", url: "/hr/performance", icon: FileText },
-      { title: "Learning (LMS)", url: "/hr/learning", icon: GraduationCap },
+      { title: "Learning (LMS)", url: "/talent/learning", icon: GraduationCap },
+    ]
+  },
+  {
+    label: "Workforce Management",
+    items: [
+      { title: "My Time", url: "/wfm/my-time", icon: Clock },
+      { title: "Team Schedule", url: "/wfm/schedule", icon: Clock },
+      { title: "Manager Approvals", url: "/wfm/approvals", icon: FileText },
+      { title: "Timekeeper Console", url: "/wfm/timekeeper", icon: Clock },
+    ]
+  },
+  {
+    label: "Rewards",
+    items: [
+      { title: "Compensation", url: "/rewards/compensation", icon: Award },
+      { title: "Payroll Dashboard", url: "/rewards/payroll", icon: DollarSign },
+    ]
+  },
+  {
+    label: "Insights & AI",
+    items: [
+      { title: "HR Analytics", url: "/hr/analytics", icon: BarChart3 },
+      { title: "HR Copilot", url: "/ai", icon: Brain },
     ]
   },
   {

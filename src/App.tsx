@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, Redirect } from "wouter";
 import { lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -41,6 +41,12 @@ import MdmRoutes from "@/routes/MdmRoutes";
 
 import ErpRoutes from "@/routes/ErpRoutes";
 
+// Direct page imports for sidebar links
+const ProcessHub = lazy(() => import("@/pages/processes/ProcessHub"));
+const AIAssistantPage = lazy(() => import("@/pages/AIAssistant"));
+const SettingsPage = lazy(() => import("@/pages/Settings"));
+const SCMDashboard = lazy(() => import("@/pages/Inventory"));
+
 import LearningManagement from "@/pages/LearningManagement";
 import InstructorDashboard from "@/pages/learning/instructor/InstructorDashboard";
 import CompensationDashboard from "@/pages/rewards/CompensationDashboard";
@@ -67,6 +73,14 @@ function Router() {
       <Switch>
         {/* Dashboard */}
         <Route path="/dashboard" component={DashboardRoutes} />
+
+        {/* Sidebar links that were 404 */}
+        <Route path="/processes" component={ProcessHub} />
+        <Route path="/operations" component={SCMDashboard} />
+        <Route path="/ai" component={AIAssistantPage} />
+        <Route path="/system-configuration" component={SettingsPage} />
+        <Route path="/manufacturing"><Redirect to="/manufacturing/dashboard" /></Route>
+        <Route path="/scm"><Redirect to="/inventory" /></Route>
 
         {/* Analytics & Compliance */}
         <Route path="/analytics*" component={AnalyticsRoutes} />

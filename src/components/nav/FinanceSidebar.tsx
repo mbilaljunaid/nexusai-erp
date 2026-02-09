@@ -17,8 +17,8 @@ export const financeMenu = [
             { title: "Dashboard", url: "/finance", icon: BarChart3 },
             { title: "Journals", url: "/gl/journals", icon: FileText },
             { title: "Trial Balance", url: "/gl/trial-balance", icon: BarChart3 },
-            { title: "Consolidation", url: "/gl/consolidation", icon: Layers }, // New
-            { title: "Close Center", url: "/gl/close-center", icon: CheckSquare }, // Updated
+            { title: "Consolidation", url: "/gl/consolidation", icon: Layers },
+            { title: "Close Center", url: "/gl/close-center", icon: CheckSquare },
             { title: "Chart of Accounts", url: "/gl/coa-structures", icon: Settings },
         ],
     },
@@ -39,10 +39,27 @@ export const financeMenu = [
         ],
     },
     {
+        label: "Billing & Revenue",
+        items: [
+            { title: "Billing Workbench", url: "/finance/billing", icon: FileText },
+            { title: "Revenue Contracts", url: "/revenue/contracts", icon: DollarSign },
+            { title: "Tax Management", url: "/finance/tax", icon: DollarSign },
+            { title: "Expense Management", url: "/finance/expense-management", icon: FileText },
+        ],
+    },
+    {
         label: "Assets & Cash",
         items: [
             { title: "Fixed Assets", url: "/finance/fixed-assets", icon: Briefcase },
             { title: "Cash Management", url: "/finance/cash-management", icon: DollarSign },
+        ],
+    },
+    {
+        label: "Intercompany",
+        items: [
+            { title: "Workbench", url: "/intercompany", icon: TrendingUp },
+            { title: "Reconciliation", url: "/intercompany/reconciliation", icon: BarChart3 },
+            { title: "Netting", url: "/intercompany/netting", icon: TrendingUp },
         ],
     },
     {
@@ -56,7 +73,6 @@ export const financeMenu = [
         label: "Contracts (CLM)",
         items: [
             { title: "Contract List", url: "/finance/contracts", icon: FileText },
-            { title: "Revenue Contracts", url: "/revenue/contracts", icon: DollarSign },
         ]
     },
     {

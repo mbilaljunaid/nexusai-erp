@@ -101,9 +101,9 @@ function AdminDashboard() {
     { title: "User Management", url: "/user-management", icon: Users, color: "text-blue-600" },
     { title: "System Config", url: "/system-configuration", icon: Settings, color: "text-gray-600" },
     { title: "Tenant Admin", url: "/tenant-admin", icon: Building, color: "text-purple-600" },
-    { title: "Security", url: "/security-settings", icon: Shield, color: "text-red-600" },
+    { title: "Security", url: "/admin", icon: Shield, color: "text-red-600" },
     { title: "Period Close", url: "/gl/period-close", icon: Archive, color: "text-emerald-600" },
-    { title: "Audit Logs", url: "/audit-logs", icon: FileText, color: "text-orange-600" },
+    { title: "Audit Logs", url: "/compliance/audit", icon: FileText, color: "text-orange-600" },
   ];
 
   return (
@@ -159,7 +159,7 @@ function AdminDashboard() {
                 </div>
               ))}
             </div>
-            <Link to="/system-alerts">
+            <Link to="/admin">
               <Button variant="outline" size="sm" className="mt-4" data-testid="button-view-all-alerts">
                 View All Alerts
               </Button>
@@ -266,7 +266,7 @@ function EditorDashboard() {
   ];
 
   const quickLinks = [
-    { title: "Processes", url: "/process-hub", icon: Workflow, color: "text-blue-600" },
+    { title: "Processes", url: "/processes", icon: Workflow, color: "text-blue-600" },
     { title: "Period Close", url: "/gl/period-close", icon: Archive, color: "text-emerald-600" },
     { title: "GL Reports", url: "/gl/reports", icon: FileText, color: "text-green-600" },
     { title: "GL Config", url: "/gl/config", icon: Database, color: "text-indigo-600" },
@@ -357,7 +357,7 @@ function EditorDashboard() {
           <p className="text-sm text-muted-foreground mb-4">
             You can create, edit, and manage content within your organization. For administrative actions, contact your platform administrator.
           </p>
-          <Link to="/process-hub">
+          <Link to="/processes">
             <Button size="sm" data-testid="button-explore-processes">Explore Processes</Button>
           </Link>
         </CardContent>
@@ -387,9 +387,9 @@ function ViewerDashboard() {
   const displayTasks = myTasks.length > 0 ? myTasks : defaultTasks;
 
   const quickModules = [
-    { title: "My Tasks", url: "/tasks", icon: ClipboardList, color: "text-blue-500", description: "View your pending tasks" },
-    { title: "HR Portal", url: "/hr/employee-self-service", icon: Users, color: "text-orange-500", description: "Self-service HR portal" },
-    { title: "Timesheets", url: "/hr/time-tracking", icon: Clock, color: "text-green-500", description: "Track your work hours" },
+    { title: "My Tasks", url: "/me", icon: ClipboardList, color: "text-blue-500", description: "View your pending tasks" },
+    { title: "HR Portal", url: "/me", icon: Users, color: "text-orange-500", description: "Self-service HR portal" },
+    { title: "Timesheets", url: "/wfm/my-time", icon: Clock, color: "text-green-500", description: "Track your work hours" },
     { title: "Reports", url: "/reports", icon: FileText, color: "text-purple-500", description: "View available reports" },
   ];
 
@@ -433,7 +433,7 @@ function ViewerDashboard() {
               </div>
             ))}
           </div>
-          <Link to="/tasks">
+          <Link to="/me">
             <Button variant="outline" size="sm" className="mt-4" data-testid="button-view-all-tasks">
               View All Tasks
             </Button>
