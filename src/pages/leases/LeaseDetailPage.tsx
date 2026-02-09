@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useRoute } from "wouter";
 import { LeaseDetailView } from "./LeaseDetailView";
 

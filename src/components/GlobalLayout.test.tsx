@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import GlobalLayout from "./GlobalLayout";
+import GlobalLayout from "./layout/GlobalLayout";
 import { Router } from "wouter";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";

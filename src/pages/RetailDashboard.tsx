@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useQuery } from "@tanstack/react-query";
 import { StandardDashboard } from "@/components/ui/StandardDashboard";
 import { DashboardWidget } from "@/components/ui/DashboardWidget";

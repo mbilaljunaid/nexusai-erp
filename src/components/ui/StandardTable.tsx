@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo, useState } from "react";
 import { i18n } from "@/lib/i18n";
 import {

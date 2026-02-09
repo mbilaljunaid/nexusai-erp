@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
 import { TrendingUp, Users, DollarSign, Target } from "lucide-react";

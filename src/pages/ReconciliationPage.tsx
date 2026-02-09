@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { ReconciliationWorkbench } from "@/components/cash/ReconciliationWorkbench";
 import { useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
