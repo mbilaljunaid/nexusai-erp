@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Video, Download } from "lucide-react";
-import { useUser } from "@/hooks/use-user";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function InterviewerDashboard() {
-    const { user } = useUser();
+    const { user } = useAuth();
     // For V1 demo, if no user is logged in, we might default to a test ID, but useUser should handle it.
     // We'll pass user.id to the query.
 
