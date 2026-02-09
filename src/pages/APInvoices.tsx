@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useQuery } from "@tanstack/react-query";
@@ -30,6 +29,7 @@ export default function APInvoices() {
     { header: "Validation", accessorKey: "validationStatus", cell: (row) => <Badge variant="outline">{row.validationStatus}</Badge> },
     {
       id: "actions",
+      header: "Actions",
       cell: (row) => (
         <Button
           variant="ghost"

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { i18n } from "@/lib/i18n";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -26,7 +25,8 @@ import {
     MessageSquare,
     Shield,
     Activity,
-    CreditCard
+    CreditCard,
+    Clock
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";

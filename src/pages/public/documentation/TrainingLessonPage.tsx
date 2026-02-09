@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -2001,8 +2000,11 @@ const categoryColors: Record<string, { bg: string; text: string; darkBg: string;
 };
 
 export default function TrainingLessonPage() {
-  const [, params] = useRoute("/docs/training-guides/:category/:lesson");
-  const lessonKey = params ? `${params.category}/${params.lesson}` : "";
+  const [, rawParams] = useRoute("/docs/training-guides/:category/:lesson");
+  const params = rawParams as any;
+  const category = params?.category || "";
+  const lesson_slug = params?.lesson || "";
+  const lessonKey = `${category}/${lesson_slug}`;
   const lesson = lessonContent[lessonKey];
 
   useEffect(() => {

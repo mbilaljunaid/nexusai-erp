@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -31,9 +30,8 @@ export default function DispatchConsole() {
     // 1. Fetch Techs (Mock for now, or use MaintenanceService if available)
     // Ideally, valid users with 'Technician' role.
     // 1. Fetch Techs
-    const { data: technicians, isLoading: loadingTechs } = useQuery({
+    const { data: technicians, isLoading: loadingTechs } = useQuery<any[]>({
         queryKey: ["/api/maintenance/supervisors/technicians"],
-        // Backend returns: [{ id, name, skill, status, activeJobs }]
     });
 
     // Pagination State
@@ -48,6 +46,27 @@ export default function DispatchConsole() {
 
     const unassignedWOs = unassignedWOsResponse?.data || [];
     const totalPages = Math.ceil((unassignedWOsResponse?.total || 0) / limit);
+
+    const assignMutation = useMutation({
+        mutationFn: async ({ woId, techId }: { woId: string; techId: string }) => {
+            const res = await fetch(`/api/maintenance/work-orders/${woId}/assign`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ assignedToId: techId }),
+            });
+            if (!res.ok) throw new Error("Assignment failed");
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["/api/maintenance/work-orders"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/maintenance/supervisors/technicians"] });
+        }
+    });
+
+    const handleAssign = (woId: string) => {
+        if (!selectedTech) return;
+        assignMutation.mutate({ woId, techId: selectedTech });
+    };
 
     // ... (rest of mutation code)
 

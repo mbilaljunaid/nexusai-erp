@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { i18n } from "@/lib/i18n";
@@ -19,7 +18,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
-import { StandardPage } from "@/components/ui/StandardPage";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import {
     Dialog,
@@ -101,45 +100,45 @@ export default function StatutoryForms() {
 
     const columns: Column<ComplianceForm>[] = [
         {
-            key: "documentName",
+            accessorKey: "documentName",
             header: "Form Name",
-            render: (val: any) => (
+            cell: (item) => (
                 <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-primary" />
-                    <span className="font-medium">{val}</span>
+                    <span className="font-medium">{item.documentName}</span>
                 </div>
             )
         },
         {
-            key: "createdAt",
+            accessorKey: "createdAt",
             header: "Submitted On",
-            render: (val: any) => format(new Date(val), "PPP")
+            cell: (item) => format(new Date(item.createdAt), "PPP")
         },
         {
-            key: "verificationStatus",
+            accessorKey: "verificationStatus",
             header: "Status",
-            render: (val: any) => {
+            cell: (item) => {
                 const colorMap: any = {
                     "PENDING": "bg-yellow-100 text-yellow-700 border-yellow-200",
                     "VERIFIED": "bg-green-100 text-green-700 border-green-200",
                     "REJECTED": "bg-red-100 text-red-700 border-red-200"
                 };
                 return (
-                    <Badge variant="outline" className={colorMap[val]}>
-                        {val === "VERIFIED" && <CheckCircle2 className="w-3 h-3 mr-1" />}
-                        {val === "PENDING" && <Clock className="w-3 h-3 mr-1" />}
-                        {val === "REJECTED" && <AlertTriangle className="w-3 h-3 mr-1" />}
-                        {val}
+                    <Badge variant="outline" className={colorMap[item.verificationStatus]}>
+                        {item.verificationStatus === "VERIFIED" && <CheckCircle2 className="w-3 h-3 mr-1" />}
+                        {item.verificationStatus === "PENDING" && <Clock className="w-3 h-3 mr-1" />}
+                        {item.verificationStatus === "REJECTED" && <AlertTriangle className="w-3 h-3 mr-1" />}
+                        {item.verificationStatus}
                     </Badge>
                 );
             }
         },
         {
-            key: "attachmentUrl",
+            accessorKey: "attachmentUrl",
             header: "Actions",
-            render: (url: any) => (
+            cell: (item) => (
                 <Button variant="ghost" size="sm" asChild>
-                    <a href={url || "#"} target="_blank" rel="noreferrer">
+                    <a href={item.attachmentUrl || "#"} target="_blank" rel="noreferrer">
                         <Download className="w-4 h-4 mr-1" />
                         Download
                     </a>
@@ -151,8 +150,7 @@ export default function StatutoryForms() {
     return (
         <StandardPage
             title="Compliance & Statutory Forms"
-            subtitle="Manage localized tax forms and legal documentation"
-            icon={<FileCheck className="w-8 h-8 text-primary" />}
+            description="Manage localized tax forms and legal documentation"
         >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">

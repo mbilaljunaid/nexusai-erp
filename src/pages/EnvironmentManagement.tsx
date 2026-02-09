@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -101,7 +100,7 @@ export default function EnvironmentManagement() {
 
   const filtered = envVars.filter((v) => v.environment === selectedEnv);
 
-  const columns: ColumnDef<EnvironmentVariable>[] = [
+  const columns: any[] = [
     {
       header: "Key",
       accessorKey: "key",
@@ -142,7 +141,7 @@ export default function EnvironmentManagement() {
   return (
     <StandardPage
       title="Environment Management"
-      subtitle="Manage environment variables across development, staging, and production"
+      description="Manage environment variables across development, staging, and production"
     >
       <div className="space-y-6">
         {/* Environment Stats */}

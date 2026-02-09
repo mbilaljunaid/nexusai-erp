@@ -1,11 +1,9 @@
-// @ts-nocheck
 import { StandardTable } from "@/components/ui/StandardTable";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Plus } from "lucide-react";
-import { ColumnDef } from "@tanstack/react-table";
-import { StandardPage } from "@/components/ui/StandardPage";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function RetailProductCatalog() {
   const { data: products = [], isLoading } = useQuery<any[]>({
@@ -13,7 +11,7 @@ export default function RetailProductCatalog() {
     queryFn: () => fetch("/api/retail-products").then(r => r.json()).catch(() => [])
   });
 
-  const columns: ColumnDef<any>[] = [
+  const columns: any[] = [
     {
       accessorKey: "name",
       header: "Product Name",

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ReconciliationWorkbench } from "@/components/cash/ReconciliationWorkbench";
 import { useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
 export default function ReconciliationPage() {
-    const [match, params] = useRoute("/cash/accounts/:id/reconcile");
+    const [match, rawParams] = useRoute("/cash/accounts/:id/reconcile");
+    const params = rawParams as any;
     const accountId = params?.id;
 
     if (!accountId) return <div>Invalid Account</div>;

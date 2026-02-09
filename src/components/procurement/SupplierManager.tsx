@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -57,12 +56,12 @@ export function SupplierManager() {
         {
             header: "Actions",
             accessorKey: "id",
-            cell: (id, row) => (
+            cell: (row) => (
                 <div className="flex items-center gap-2">
                     <Button size="sm" variant="outline" onClick={() => setSelectedSupplier(row)}>
                         Manage Sites
                     </Button>
-                    <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteSupplierMutation.mutate(id)}>
+                    <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteSupplierMutation.mutate(row.id)}>
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>

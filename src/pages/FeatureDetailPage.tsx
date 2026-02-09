@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRoute, Link } from "wouter";
 import { Header, Footer } from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,8 +8,8 @@ import { CheckCircle, ArrowRight, ArrowLeft, Sparkles, Target, Lightbulb, Link2 
 import NotFound from "./not-found";
 
 export default function FeatureDetailPage() {
-  const [, params] = useRoute("/features/:slug");
-  const slug = params?.slug || "";
+  const [match, params] = useRoute("/features/:slug");
+  const slug = (params as any)?.slug || "";
   
   const feature = getFeatureBySlug(slug);
   

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,7 +37,7 @@ export default function BillingWorkbench() {
         queryFn: () => fetch("/api/billing/profiles").then(r => r.json()) // Fallback to profiles if customers API not direct
     });
 
-    const customerMap = new Map(customers.map((c: any) => [c.customerId, c.customerName || "Unknown"]));
+    const customerMap = new Map<string, string>(customers.map((c: any) => [c.customerId, c.customerName || "Unknown"]));
 
     // Run Auto-Invoice Mutation
     const autoInvoiceMutation = useMutation({

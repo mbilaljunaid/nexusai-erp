@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +11,8 @@ import { useRoute } from "wouter";
 import CrmAuditTrail from "@/components/crm/CrmAuditTrail";
 
 export default function LeadDetail() {
-  const [, params] = useRoute("/crm/leads/:id");
+  const [, rawParams] = useRoute("/crm/leads/:id");
+  const params = rawParams as any;
   const [activeNav, setActiveNav] = useState("overview");
   const leadId = params?.id;
 

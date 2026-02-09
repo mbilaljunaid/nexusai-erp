@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import type { Account, Contact, Opportunity, Order } from "@/types/erp-types";
@@ -18,7 +17,8 @@ import {
 } from "@/components/ui/table";
 
 export default function Account360() {
-    const { id } = useParams();
+    const params = useParams() as { id?: string };
+    const id = params.id;
 
     const { data: account, isLoading: isLoadingAccount } = useQuery<Account>({
         queryKey: [`/api/crm/accounts/${id}`],
