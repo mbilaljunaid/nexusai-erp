@@ -140,9 +140,9 @@ export default function ReferenceDataList() {
             <Card>
                 <CardContent className="p-0">
                     <StandardTable
-                        data={lookupTypes}
+                        data={lookupTypes as any[]}
                         columns={columns}
-                        loading={isLoading}
+                        isLoading={isLoading}
                         filterColumn="userLookupName"
                         filterPlaceholder="Search lookup types..."
                     />

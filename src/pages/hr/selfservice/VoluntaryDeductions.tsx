@@ -140,34 +140,34 @@ export default function VoluntaryDeductions() {
 
     const deductionColumns: Column<VoluntaryDeduction>[] = [
         {
-            key: "elementId",
+            accessorKey: "elementId",
             header: "Element",
-            render: (val: any) => elements?.find(e => e.id === val)?.name || val
+            cell: (item: any) => elements?.find((e: any) => e.id === item.elementId)?.name || item.elementId
         },
         {
-            key: "amount",
+            accessorKey: "amount",
             header: "Amount",
-            render: (val: any) => (
+            cell: (item: any) => (
                 <span className="font-mono font-medium text-destructive">
-                    -{Number(val).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    -{Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </span>
             )
         },
         {
-            key: "frequency",
+            accessorKey: "frequency",
             header: "Frequency",
-            render: (val: any) => <Badge variant="outline">{val}</Badge>
+            cell: (item: any) => <Badge variant="outline">{item.frequency}</Badge>
         },
         {
-            key: "startDate",
+            accessorKey: "startDate",
             header: "Effective From",
-            render: (val: any) => format(new Date(val), "PPP")
+            cell: (item: any) => format(new Date(item.startDate), "PPP")
         },
         {
-            key: "id",
+            id: "actions",
             header: "Actions",
-            render: (id: any) => (
-                <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(id)}>
+            cell: (item: any) => (
+                <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(item.id)}>
                     <Trash2 className="w-4 h-4 text-destructive" />
                 </Button>
             )
@@ -176,18 +176,18 @@ export default function VoluntaryDeductions() {
 
     const retroColumns: Column<RetroPayResult>[] = [
         {
-            key: "periodName",
+            accessorKey: "periodName",
             header: "Adjusted Period",
         },
         {
-            key: "elementName",
+            accessorKey: "elementName",
             header: "Pay Element",
         },
         {
-            key: "amount",
+            accessorKey: "amount",
             header: "Amount",
-            render: (val: any) => {
-                const isPositive = Number(val) > 0;
+            cell: (item: any) => {
+                const isPositive = Number(item.amount) > 0;
                 return (
                     <div className="flex items-center gap-1 font-mono font-medium">
                         {isPositive ? (
@@ -196,24 +196,23 @@ export default function VoluntaryDeductions() {
                             <TrendingDown className="w-3 h-3 text-destructive" />
                         )}
                         <span className={isPositive ? "text-green-600" : "text-destructive"}>
-                            {isPositive ? "+" : ""}{Number(val).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            {isPositive ? "+" : ""}{Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                         </span>
                     </div>
                 );
             }
         },
         {
-            key: "createdAt",
+            accessorKey: "createdAt",
             header: "Processed On",
-            render: (val: any) => format(new Date(val), "PPP")
+            cell: (item: any) => format(new Date(item.createdAt), "PPP")
         }
     ];
 
     return (
         <StandardPage
             title="Payroll Preferences"
-            subtitle="Manage voluntary deductions and view adjustment history"
-            icon={<Wallet className="w-8 h-8 text-primary" />}
+            description="Manage voluntary deductions and view adjustment history"
         >
             <Tabs defaultValue="deductions" className="w-full">
                 <TabsList className="mb-4">

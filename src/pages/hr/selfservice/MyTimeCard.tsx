@@ -157,7 +157,7 @@ export default function MyTimeCard() {
     return (
         <StandardPage
             title={i18n.t('hr.time.card')}
-            subtitle="Manage your time entries, attendance, and leave requests."
+            description="Manage your time entries, attendance, and leave requests."
         >
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Left Sidebar: Summary & Balances */}

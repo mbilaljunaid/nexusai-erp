@@ -131,48 +131,48 @@ export default function DelegationWorkbench() {
 
     const columns: Column<Delegation>[] = [
         {
-            key: "proxyId",
+            accessorKey: "proxyId",
             header: "Proxy Name",
-            render: (val: any) => {
-                const emp = eligibleProxies?.find(e => e.id === val);
-                return emp ? emp.name : val;
+            cell: (item: any) => {
+                const emp = eligibleProxies?.find((e: any) => e.id === item.proxyId);
+                return emp ? emp.name : item.proxyId;
             }
         },
         {
-            key: "startDate",
+            accessorKey: "startDate",
             header: "Start Date",
-            render: (val: any) => format(new Date(val), "PPP")
+            cell: (item: any) => format(new Date(item.startDate), "PPP")
         },
         {
-            key: "endDate",
+            accessorKey: "endDate",
             header: "End Date",
-            render: (val: any) => val ? format(new Date(val), "PPP") : "No End Date"
+            cell: (item: any) => item.endDate ? format(new Date(item.endDate), "PPP") : "No End Date"
         },
         {
-            key: "canApproveTransitions",
+            accessorKey: "canApproveTransitions" as any,
             header: "Approve Authority",
-            render: (val: any) => (
+            cell: (item: any) => (
                 <div className="flex items-center gap-2">
-                    <Shield className={val ? "text-green-500 w-4 h-4" : "text-gray-300 w-4 h-4"} />
-                    <span className="text-xs">{val ? "Yes" : "No"}</span>
+                    <Shield className={item.canApproveTransitions ? "text-green-500 w-4 h-4" : "text-gray-300 w-4 h-4"} />
+                    <span className="text-xs">{item.canApproveTransitions ? "Yes" : "No"}</span>
                 </div>
             )
         },
         {
-            key: "canViewTeamAnalytics",
+            accessorKey: "canViewTeamAnalytics" as any,
             header: "Analytics View",
-            render: (val: any) => (
+            cell: (item: any) => (
                 <div className="flex items-center gap-2">
-                    <Users className={val ? "text-blue-500 w-4 h-4" : "text-gray-300 w-4 h-4"} />
-                    <span className="text-xs">{val ? "Yes" : "No"}</span>
+                    <Users className={item.canViewTeamAnalytics ? "text-blue-500 w-4 h-4" : "text-gray-300 w-4 h-4"} />
+                    <span className="text-xs">{item.canViewTeamAnalytics ? "Yes" : "No"}</span>
                 </div>
             )
         },
         {
-            key: "id",
+            id: "actions",
             header: "Actions",
-            render: (id: any) => (
-                <Button variant="ghost" size="sm" onClick={() => revokeMutation.mutate(id)}>
+            cell: (item: any) => (
+                <Button variant="ghost" size="sm" onClick={() => revokeMutation.mutate(item.id)}>
                     <Trash2 className="w-4 h-4 text-destructive" />
                 </Button>
             )
@@ -182,8 +182,7 @@ export default function DelegationWorkbench() {
     return (
         <StandardPage
             title="Delegation Workbench"
-            subtitle="Manage your approval and analytics proxies"
-            icon={<UserCheck className="w-8 h-8 text-primary" />}
+            description="Manage your approval and analytics proxies"
         >
             <div className="grid gap-6">
                 <Card className="vanguard-card">

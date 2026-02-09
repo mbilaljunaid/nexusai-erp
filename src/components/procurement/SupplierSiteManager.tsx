@@ -81,7 +81,7 @@ export function SupplierSiteManager({ supplierId, supplierName }: SupplierSiteMa
         {
             header: "Location",
             accessorKey: "city",
-            cell: (val, row) => <span className="text-sm text-muted-foreground">{[row.city, row.state, row.country].filter(Boolean).join(", ") || "-"}</span>
+            cell: (row: any) => <span className="text-sm text-muted-foreground">{[row.city, row.state, row.country].filter(Boolean).join(", ") || "-"}</span>
         },
         {
             header: "",

@@ -160,9 +160,9 @@ export default function SurvivorshipRuleList() {
             <Card>
                 <CardContent className="p-0">
                     <StandardTable
-                        data={rules}
+                        data={rules as any[]}
                         columns={columns}
-                        loading={isLoading}
+                        isLoading={isLoading}
                         filterColumn="ruleName"
                         filterPlaceholder="Search rules..."
                     />
