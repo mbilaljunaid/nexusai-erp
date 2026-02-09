@@ -14,7 +14,7 @@ export default function SupplierCarrierManagement() {
 
   const { data: suppliers = [], isLoading } = useQuery({
     queryKey: ["/api/suppliers-carriers"],
-    queryFn: () => fetch("/api/suppliers-carriers").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/suppliers-carriers").then(r => r.json()),
   });
 
   const createMutation = useMutation({

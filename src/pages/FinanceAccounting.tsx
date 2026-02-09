@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function FinanceAccounting() {
     const { data: financials = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/telecom-finance"],
-        queryFn: () => fetch("/api/telecom-finance").then(r => r.json()).catch(() => []),
+        queryFn: () => fetch("/api/telecom-finance").then(r => r.json()),
     });
 
     const totalRev = financials.reduce((sum: number, f: any) => sum + (parseFloat(f.revenue) || 0), 0);

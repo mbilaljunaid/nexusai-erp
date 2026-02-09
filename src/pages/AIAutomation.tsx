@@ -15,7 +15,7 @@ export default function AIAutomation() {
 
   const { data: workflows = [], isLoading } = useQuery({
     queryKey: ["/api/ai-automations"],
-    queryFn: () => fetch("/api/ai-automations").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/ai-automations").then(r => r.json()),
   });
 
   const createMutation = useMutation({

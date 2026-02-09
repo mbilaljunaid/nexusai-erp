@@ -6,7 +6,7 @@ import { GitBranch } from "lucide-react";
 export default function BatchTraceabilityGeology() {
   const { data: traces = [], isLoading } = useQuery({
     queryKey: ["/api/batch-genealogy"],
-    queryFn: () => fetch("/api/batch-genealogy").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/batch-genealogy").then(r => r.json()),
   });
 
   const recalled = traces.filter((t: any) => t.recallFlag).length;

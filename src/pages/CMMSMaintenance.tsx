@@ -20,7 +20,7 @@ export default function CMMSMaintenance() {
 
   const { data: workOrders = [], isLoading } = useQuery({
     queryKey: ["/api/maintenance/work-orders"],
-    queryFn: () => fetch("/api/maintenance/work-orders").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/maintenance/work-orders").then(r => r.json()),
   });
 
   const createMutation = useMutation({

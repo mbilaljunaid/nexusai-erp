@@ -22,7 +22,7 @@ export default function PMManager() {
 
     const { data: pms = [], isLoading } = useQuery({
         queryKey: ["/api/maintenance/pm-definitions"],
-        queryFn: () => fetch("/api/maintenance/pm-definitions").then(r => r.json()).catch(() => [])
+        queryFn: () => fetch("/api/maintenance/pm-definitions").then(r => r.json())
     });
 
     const createMutation = useMutation({

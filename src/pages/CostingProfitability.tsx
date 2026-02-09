@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function CostingProfitability() {
     const { data: costing = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/fashion-costing"],
-        queryFn: () => fetch("/api/fashion-costing").then(r => r.json()).catch(() => []),
+        queryFn: () => fetch("/api/fashion-costing").then(r => r.json()),
     });
 
     const avgMargin = costing.length > 0

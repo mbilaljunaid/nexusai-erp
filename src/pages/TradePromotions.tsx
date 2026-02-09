@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function TradePromotions() {
     const { data: promos = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/cpg-promotions"],
-        queryFn: () => fetch("/api/cpg-promotions").then(r => r.json()).catch(() => []),
+        queryFn: () => fetch("/api/cpg-promotions").then(r => r.json()),
     });
 
     const activeCount = promos.filter((p: any) => p.status === "active").length;

@@ -21,7 +21,7 @@ export default function AppointmentScheduling() {
 
   const { data: appointments = [], isLoading } = useQuery({
     queryKey: ["/api/healthcare-appointments"],
-    queryFn: () => fetch("/api/healthcare-appointments").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/healthcare-appointments").then(r => r.json()),
   });
 
   const createMutation = useMutation({

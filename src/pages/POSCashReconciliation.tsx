@@ -14,7 +14,7 @@ export default function POSCashReconciliation() {
 
   const { data: reconciliations = [], isLoading } = useQuery({
     queryKey: ["/api/cash-reconciliation"],
-    queryFn: () => fetch("/api/cash-reconciliation").then(r => r.json()).catch(() => []),
+    queryFn: () => fetch("/api/cash-reconciliation").then(r => r.json()),
   });
 
   const createMutation = useMutation({
