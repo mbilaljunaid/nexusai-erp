@@ -1,240 +1,214 @@
-# Codebase Audit: Import/Export Verification
+# Comprehensive Codebase Audit Results
 
-## Executive Summary
-A full static analysis was performed using the TypeScript compiler (`tsc`). The audit identified **135 unique import/export errors** and several potential syntax/type issues.
-
-**Key Findings:**
-1.  **Schema Export Mismatches (Critical)**:
-    -   The `@shared/schema` barrel file pattern is failing in multiple places.
-    -   Specific schemas (`omOrderLines`, `InsertOrganization`, `InsertScenario`) are being imported but are not exported from the referenced module.
-2.  **Broken Service Paths**:
-    -   Numerous verification scripts (`scripts/verify_*.ts`) reference backend services using incorrect relative paths (type `../server/services/...`).
-    -   Legacy references to `@nestjs/typeorm` exist in scripts despite the migration to Drizzle.
-3.  **Frontend Asset Missing**:
-    -   `IndustryDetail.tsx` references missing images in `@assets/stock_images/`.
-    -   `Leaflet` component references missing marker images.
-4.  **Drizzle/ORM Issues**:
-    -   `drizzle-orm` import issues (e.g., `stddev` not found).
-
-## Recommendations
-1.  **Fix Shared Schema Barrels**: Audit `shared/schema/index.ts` to ensure all sub-modules (`scm`, `parties`, `transportation`) are fully exported.
-2.  **Prune Obsolete Verification Scripts**: Many errors come from `scripts/` which may be outdated. Delete scripts that are no longer relevant to the current architecture.
-3.  **Restore/Mock Assets**: Ensure the `@assets` alias points to a valid directory and that the referenced images exist.
-4.  **Remove Legacy Dependencies**: Remove imports of `@nestjs/typeorm` from all remaining files.
+Generated on: 2026-02-09
 
 ---
 
-## Full Error Log
+## Executive Summary
 
-### Import & Module Errors (TS2305, TS2307, TS2614)
-The following is the complete list of missing modules and export mismatches:
+| Category | Count |
+|----------|-------|
+| `@ts-nocheck` suppressions | **24 files** (server) + **2 files** (src) |
+| `@ts-ignore` usages | **3 instances** (src) |
+| TODO/FIXME comments | **~30 files** across src |
+| Hardcoded/mock data in pages | **8+ page files** with inline arrays |
+| Mock data in backend services | **~22 files** across server/backend |
+| Assumption comments | **28 files** with uncertain implementations |
+| API endpoints called from frontend | **1,048 files** referencing `/api/` |
+| `.catch(() => [])` silent error swallows | **385+ queryFn patterns** |
+| Backend unreachable in preview | **ALL API calls** return HTML instead of JSON |
+| Broken import paths (scripts/) | **135 unique TS errors** |
 
-```
-scripts/benchmark_performance.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/benchmark_performance.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/seed_epm_foundation.ts(4,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/seed_large_volume.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/seed_large_volume.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/seed_talent_v2.ts(7,10): error TS2305: Module '"../shared/schema/hr_structures"' has no exported member 'hrPersons'.
-scripts/sweeper_job.ts(2,29): error TS2307: Cannot find module '../services/cash.service' or its corresponding type declarations.
-scripts/sweeper_job.ts(3,24): error TS2307: Cannot find module '../utils/logger' or its corresponding type declarations.
-scripts/test_import.ts(2,30): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-scenario.entity.ts' or its corresponding type declarations.
-scripts/verify_accounting_flow.ts(5,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_accounting_flow.ts(6,43): error TS2307: Cannot find module '../server/services/MaintenanceCostingService' or its corresponding type declarations.
-scripts/verify_accounting_flow.ts(7,46): error TS2307: Cannot find module '../server/services/MaintenanceAccountingService' or its corresponding type declarations.
-scripts/verify_advanced_supply_chain.ts(4,36): error TS2307: Cannot find module '../server/modules/scm/ProcurementService' or its corresponding type declarations.
-scripts/verify_advanced_supply_chain.ts(8,38): error TS2307: Cannot find module '../server/services/ManufacturingService' or its corresponding type declarations.
-scripts/verify_ai.ts(2,20): error TS2307: Cannot find module '../db' or its corresponding type declarations.
-scripts/verify_allocations.ts(2,20): error TS2307: Cannot find module '../db' or its corresponding type declarations.
-scripts/verify_ar_adjustments.ts(5,28): error TS2307: Cannot find module '../server/services/SlaService' or its corresponding type declarations.
-scripts/verify_ar_parity_final.ts(6,19): error TS2307: Cannot find module 'axios' or its corresponding type declarations.
-scripts/verify_asset_health_step3.ts(50,49): error TS2307: Cannot find module '../server/services/AssetHealthService' or its corresponding type declarations.
-scripts/verify_corrective_flow.ts(3,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_cost_ai.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/verify_cost_ai.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/verify_costing_flow.ts(5,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_costing_flow.ts(6,43): error TS2307: Cannot find module '../server/services/MaintenanceCostingService' or its corresponding type declarations.
-scripts/verify_epm_foundation.ts(4,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/verify_epm_phase2.ts(10,29): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-version.entity' or its corresponding type declarations.
-scripts/verify_epm_phase2.ts(6,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/verify_epm_phase2.ts(7,27): error TS2307: Cannot find module '../backend/src/modules/finance/entities/gl-balance.entity' or its corresponding type declarations.
-scripts/verify_epm_phase2.ts(8,26): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-unit.entity' or its corresponding type declarations.
-scripts/verify_epm_phase2.ts(9,30): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-scenario.entity' or its corresponding type declarations.
-scripts/verify_epm_phase2_draft.ts(11,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/verify_epm_phase2_draft.ts(12,27): error TS2307: Cannot find module '../backend/src/modules/finance/entities/gl-balance.entity' or its corresponding type declarations.
-scripts/verify_epm_phase2_draft.ts(13,26): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-unit.entity' or its corresponding type declarations.
-scripts/verify_epm_phase2_draft.ts(14,30): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-scenario.entity' or its corresponding type declarations.
-scripts/verify_epm_phase2_draft.ts(15,29): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-version.entity' or its corresponding type declarations.
-scripts/verify_epm_phase3.ts(10,27): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-asset.entity' or its corresponding type declarations.
-scripts/verify_epm_phase3.ts(4,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/verify_epm_phase3.ts(9,30): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-position.entity' or its corresponding type declarations.
-scripts/verify_epm_phase4.ts(10,26): error TS2307: Cannot find module '../backend/src/modules/epm/entities/epm-audit.entity' or its corresponding type declarations.
-scripts/verify_epm_phase4.ts(4,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/verify_epm_phase4.ts(9,26): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-unit.entity' or its corresponding type declarations.
-scripts/verify_lcm.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/verify_lcm.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/verify_maintenance_accounting.ts(3,43): error TS2307: Cannot find module '../server/services/MaintenanceCostingService' or its corresponding type declarations.
-scripts/verify_maintenance_foundation.ts(2,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_maintenance_full_audit.ts(4,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_maintenance_full_audit.ts(5,43): error TS2307: Cannot find module '../server/services/MaintenanceCostingService' or its corresponding type declarations.
-scripts/verify_maintenance_full_audit.ts(8,43): error TS2307: Cannot find module '../server/services/MaintenanceQualityService' or its corresponding type declarations.
-scripts/verify_maintenance_phase14.ts(4,43): error TS2307: Cannot find module '../server/services/MaintenanceQualityService' or its corresponding type declarations.
-scripts/verify_maintenance_phase15.ts(2,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_manufacturing_costing.ts(1,45): error TS2307: Cannot find module '../server/services/ManufacturingCostingService' or its corresponding type declarations.
-scripts/verify_manufacturing_costing.ts(2,38): error TS2307: Cannot find module '../server/services/ManufacturingService' or its corresponding type declarations.
-scripts/verify_manufacturing_process.ts(1,45): error TS2307: Cannot find module '../server/services/ManufacturingProcessService' or its corresponding type declarations.
-scripts/verify_material_flow.ts(3,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_operations.ts(2,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_overhaul_capitalization.ts(74,49): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_parity_step1.ts(4,41): error TS2307: Cannot find module '../server/services/MaintenanceMeterService' or its corresponding type declarations.
-scripts/verify_parity_step1.ts(5,43): error TS2307: Cannot find module '../server/services/MaintenanceLibraryService' or its corresponding type declarations.
-scripts/verify_parity_step1.ts(6,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_parity_step2.ts(3,41): error TS2307: Cannot find module '../server/services/MaintenanceMeterService' or its corresponding type declarations.
-scripts/verify_parity_step2.ts(4,43): error TS2307: Cannot find module '../server/services/MaintenanceLibraryService' or its corresponding type declarations.
-scripts/verify_parity_step2.ts(5,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_period_close.ts(5,36): error TS2307: Cannot find module '../server/modules/sla/period-close.service' or its corresponding type declarations.
-scripts/verify_period_reconciliation.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/verify_period_reconciliation.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/verify_period_sweep.ts(7,32): error TS2307: Cannot find module '../server/services/RevenueService' or its corresponding type declarations.
-scripts/verify_phase6_consumption.ts(7,36): error TS2307: Cannot find module '../server/modules/scm/ProcurementService' or its corresponding type declarations.
-scripts/verify_planning_flow.ts(5,44): error TS2307: Cannot find module '../server/services/MaintenancePlanningService' or its corresponding type declarations.
-scripts/verify_planning_flow.ts(6,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_pm_logic.ts(2,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_posting_persistence.ts(7,34): error TS2307: Cannot find module '../metadata' or its corresponding type declarations.
-scripts/verify_ppm_ap_integration.ts(2,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_assets.ts(3,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_billing.ts(4,35): error TS2307: Cannot find module '../server/services/PpmBillingService' or its corresponding type declarations.
-scripts/verify_ppm_burdening.ts(2,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_capitalization.ts(2,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_configuration.ts(6,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_core.ts(3,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_cross_charge.ts(7,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_intelligence.ts(7,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_inventory.ts(7,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_labor.ts(7,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_performance.ts(1,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_ppm_planning.ts(4,36): error TS2307: Cannot find module '../server/services/PpmPlanningService' or its corresponding type declarations.
-scripts/verify_ppm_subledger.ts(2,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_procurement_step2.ts(39,52): error TS2307: Cannot find module '../server/services/MaintenanceSCMService' or its corresponding type declarations.
-scripts/verify_project_integration.ts(5,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
-scripts/verify_quality_flow.ts(5,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_quality_flow.ts(6,43): error TS2307: Cannot find module '../server/services/MaintenanceQualityService' or its corresponding type declarations.
-scripts/verify_resource_flow.ts(3,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
-scripts/verify_revenue_intelligence.ts(4,32): error TS2307: Cannot find module '../server/services/RevenueService' or its corresponding type declarations.
-scripts/verify_revenue_intelligence.ts(5,43): error TS2307: Cannot find module '../server/services/RevenueForecastingService' or its corresponding type declarations.
-scripts/verify_revenue_phase_d.ts(6,32): error TS2307: Cannot find module '../server/services/RevenueService' or its corresponding type declarations.
-scripts/verify_revenue_recognition.ts(3,28): error TS2307: Cannot find module '../server/services/SlaService' or its corresponding type declarations.
-scripts/verify_sla_draft.ts(2,38): error TS2307: Cannot find module '../server/services/SlaService' or its corresponding type declarations.
-scripts/verify_standard_costing.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/verify_standard_costing.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/verify_supplier_name_display.ts(5,19): error TS2307: Cannot find module 'axios' or its corresponding type declarations.
-scripts/verify_wip_costing.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-scripts/verify_wip_costing.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
-scripts/verify_wms_flow.ts(4,28): error TS2307: Cannot find module '../server/services/WmsService' or its corresponding type declarations.
-scripts/verify_wms_foundation.ts(2,20): error TS2307: Cannot find module '../db' or its corresponding type declarations.
-server/modules/finance/finance.service.ts(187,46): error TS2307: Cannot find module '../../../services/period-close/CloseEngine' or its corresponding type declarations.
-server/modules/finance/routes.ts(319,64): error TS2307: Cannot find module '../../services/RevenueRecognitionService' or its corresponding type declarations.
-server/modules/finance/routes.ts(338,64): error TS2307: Cannot find module '../../services/RevenueRecognitionService' or its corresponding type declarations.
-server/modules/intercompany/intercompany.invoice.service.ts(7,27): error TS2307: Cannot find module '../shared/schema/intercompany' or its corresponding type declarations.
-server/modules/inventory/wms-wave.service.ts(3,30): error TS2305: Module '"@shared/schema/scm"' has no exported member 'omOrderLines'.
-server/modules/inventory/wms-wave.service.ts(3,44): error TS2305: Module '"@shared/schema/scm"' has no exported member 'omOrderHeaders'.
-server/modules/order/BackToBackService.ts(4,38): error TS2307: Cannot find module '../../services/ManufacturingService' or its corresponding type declarations.
-server/modules/scm/procurementRoutes.ts(6,36): error TS2307: Cannot find module './ProcurementService' or its corresponding type declarations.
-server/modules/scm/wms-routes.ts(3,28): error TS2307: Cannot find module '../../services/WmsService' or its corresponding type declarations.
-server/scripts/verify_fixed_assets.ts(3,10): error TS2305: Module '"../services/fixedAssets"' has no exported member 'fixedAssetsService'.
-server/services/AnomalyDetectionService.ts(5,30): error TS2305: Module '"drizzle-orm"' has no exported member 'stddev'.
-server/services/BulkImportService.ts(5,23): error TS2305: Module '"../../shared/schema/parties"' has no exported member 'InsertOrganization'.
-server/services/BulkImportService.ts(5,43): error TS2305: Module '"../../shared/schema/parties"' has no exported member 'InsertPerson'.
-server/services/CarrierRatingService.ts(4,10): error TS2305: Module '"../../shared/schema/transportation"' has no exported member 'InsertTlCarrier'.
-server/services/TLOptimizationService.ts(4,10): error TS2305: Module '"../../shared/schema/transportation"' has no exported member 'InsertTlShipment'.
-server/services/agentic.ts(219,53): error TS2307: Cannot find module './PpmService' or its corresponding type declarations.
-server/services/agentic.ts(265,71): error TS2307: Cannot find module './ManufacturingPlanningService' or its corresponding type declarations.
-server/storage.ts(172,23): error TS2305: Module '"@shared/schema"' has no exported member 'InsertScenario'.
-server/storage.ts(172,8): error TS2305: Module '"@shared/schema"' has no exported member 'Scenario'.
-server/storage.ts(173,31): error TS2305: Module '"@shared/schema"' has no exported member 'InsertScenarioVariable'.
-server/storage.ts(173,8): error TS2305: Module '"@shared/schema"' has no exported member 'ScenarioVariable'.
-src/components/GlobalLayout.test.tsx(3,26): error TS2307: Cannot find module './GlobalLayout' or its corresponding type declarations.
-src/components/transportation/RouteMapOverlay.tsx(5,27): error TS2307: Cannot find module 'leaflet/dist/images/marker-icon.png' or its corresponding type declarations.
-src/components/transportation/RouteMapOverlay.tsx(6,29): error TS2307: Cannot find module 'leaflet/dist/images/marker-shadow.png' or its corresponding type declarations.
-src/pages/IndustryDetail.tsx(10,31): error TS2307: Cannot find module '@assets/stock_images/industrial_manufactu_283e69f0.jpg' or its corresponding type declarations.
-src/pages/IndustryDetail.tsx(11,27): error TS2307: Cannot find module '@assets/stock_images/logistics_warehouse__5ce59285.jpg' or its corresponding type declarations.
-src/pages/IndustryDetail.tsx(12,27): error TS2307: Cannot find module '@assets/stock_images/modern_education_uni_aed4c4fe.jpg' or its corresponding type declarations.
-src/pages/IndustryDetail.tsx(13,28): error TS2307: Cannot find module '@assets/stock_images/government_building__65e1f24d.jpg' or its corresponding type declarations.
-src/pages/IndustryDetail.tsx(14,28): error TS2307: Cannot find module '@assets/stock_images/automotive_car_deale_62f1f498.jpg' or its corresponding type declarations.
-src/pages/IndustryDetail.tsx(15,25): error TS2307: Cannot find module '@assets/stock_images/banking_finance_corp_f11367f7.jpg' or its corresponding type declarations.
-src/pages/IndustryDetail.tsx(8,28): error TS2307: Cannot find module '@assets/stock_images/modern_hospital_heal_f0393426.jpg' or its corresponding type declarations.
-src/pages/IndustryDetail.tsx(9,24): error TS2307: Cannot find module '@assets/stock_images/retail_store_shoppin_143d3777.jpg' or its corresponding type declarations.
-src/pages/recruitment/InterviewerDashboard.tsx(8,25): error TS2307: Cannot find module '@/hooks/use-user' or its corresponding type declarations.
-```
+---
 
-### Syntax & Type Check Errors (TS1xxx, TS18xxx)
-The following is a list of syntax and critical type check errors:
-```
-backend/src/modules/erp/ar-tax.controller.ts(17,35): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
-backend/src/modules/erp/intercompany-tax.controller.ts(9,53): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
-backend/src/modules/erp/inventory-tax.controller.ts(17,39): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
-backend/src/modules/industries/configuration.controller.ts(9,24): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
-backend/src/modules/industries/configuration.controller.ts(9,48): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
-scripts/check_counts.ts(15,71): error TS18046: 'e' is of type 'unknown'.
-scripts/fix_db_schema.ts(12,89): error TS18046: 'e' is of type 'unknown'.
-scripts/verify_advanced_supply_chain.ts(107,50): error TS18048: 'result.workOrders' is possibly 'undefined'.
-scripts/verify_advanced_supply_chain.ts(115,53): error TS18048: 'result.workOrders' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(101,50): error TS18048: 'pOk' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(102,58): error TS18048: 'pOk' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(104,13): error TS18048: 'pOk' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(104,49): error TS18048: 'pOk' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(114,52): error TS18048: 'pNo' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(115,60): error TS18048: 'pNo' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(117,13): error TS18048: 'pNo' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(117,49): error TS18048: 'pNo' is possibly 'undefined'.
-scripts/verify_aor_privacy.ts(117,49): error TS18047: 'pNo.nationalId' is possibly 'null'.
-scripts/verify_approval_workflow.ts(97,9): error TS18048: 'finalJournal' is possibly 'undefined'.
-scripts/verify_approval_workflow.ts(97,97): error TS18048: 'finalJournal' is possibly 'undefined'.
-scripts/verify_ar_automation.ts(54,9): error TS18047: 'updatedAcc.creditScore' is possibly 'null'.
-scripts/verify_costing_drizzle.ts(137,13): error TS18046: 'e' is of type 'unknown'.
-scripts/verify_enterprise_billing.ts(117,23): error TS18048: 'batchResult.invoiceIds' is possibly 'undefined'.
-scripts/verify_final_cleanup.ts(37,84): error TS18046: 'e' is of type 'unknown'.
-scripts/verify_hr_migration.ts(78,13): error TS18046: 'e' is of type 'unknown'.
-scripts/verify_intercompany.ts(77,13): error TS1117: An object literal cannot have multiple properties with the same name.
-scripts/verify_maintenance_phase13.ts(20,13): error TS18047: 'checkInv.rowCount' is possibly 'null'.
-scripts/verify_onboarding_flow.ts(73,9): error TS18048: 'updatedHire' is possibly 'undefined'.
-scripts/verify_onboarding_flow.ts(74,9): error TS18048: 'updatedHire' is possibly 'undefined'.
-scripts/verify_onboarding_flow.ts(74,84): error TS18048: 'updatedHire' is possibly 'undefined'.
-scripts/verify_order_management.ts(112,41): error TS18048: 'closedOrder' is possibly 'undefined'.
-scripts/verify_order_management.ts(114,13): error TS18048: 'closedOrder' is possibly 'undefined'.
-scripts/verify_procurement_drizzle.ts(131,13): error TS18046: 'e' is of type 'unknown'.
-scripts/verify_subscriptions.ts(48,61): error TS18048: 'amendedSub' is possibly 'undefined'.
-scripts/verify_talent_level15.ts(100,13): error TS18048: 'updatedGoal' is possibly 'undefined'.
-scripts/verify_talent_level15.ts(101,49): error TS18048: 'updatedGoal' is possibly 'undefined'.
-server/modules/maintenance/services/MaintenanceSCMService.ts(37,23): error TS18047: 'mat.plannedQuantity' is possibly 'null'.
-server/modules/maintenance/services/MaintenanceService.ts(455,13): error TS18047: 'mat.actualQuantity' is possibly 'null'.
-server/modules/maintenance/services/MaintenanceService.ts(455,35): error TS18047: 'mat.plannedQuantity' is possibly 'null'.
-server/modules/revenue/services/RevenueService.ts(572,25): error TS18048: 'period' is possibly 'undefined'.
-server/routes/hr_reports.ts(70,17): error TS1117: An object literal cannot have multiple properties with the same name.
-server/routes/hr_reports.ts(71,17): error TS1117: An object literal cannot have multiple properties with the same name.
-server/services/ar.ts(486,21): error TS18004: No value exists in scope for the shorthand property 'receiptId'. Either declare one or provide an initializer.
-server/services/ar.ts(487,21): error TS18004: No value exists in scope for the shorthand property 'invoiceId'. Either declare one or provide an initializer.
-server/services/cash-revaluation.service.ts(72,44): error TS18048: 'result.foreignBalance' is possibly 'undefined'.
-server/services/cash-revaluation.service.ts(73,47): error TS18048: 'result.foreignBalance' is possibly 'undefined'.
-server/services/cash-revaluation.service.ts(73,71): error TS18048: 'result.historicalRate' is possibly 'undefined'.
-server/services/cash-revaluation.service.ts(97,29): error TS18048: 'result.currentRate' is possibly 'undefined'.
-server/services/cash-revaluation.service.ts(98,27): error TS18048: 'usedRate' is possibly 'undefined'.
-server/services/CompensationService.ts(131,25): error TS1117: An object literal cannot have multiple properties with the same name.
-server/services/DataQualityService.ts(45,13): error TS1117: An object literal cannot have multiple properties with the same name.
-server/services/finance.ts(404,13): error TS1117: An object literal cannot have multiple properties with the same name.
-src/pages/analytics/KpiConfiguration.tsx(10,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/analytics/ReportScheduler.tsx(9,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/AuditTrails.tsx(13,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/ComplianceExceptions.tsx(14,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/ComplianceGovernance.tsx(29,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/hr/selfservice/DelegationWorkbench.tsx(15,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/hr/selfservice/MyTimeCard.tsx(26,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/hr/selfservice/MyTimeCard.tsx(27,30): error TS1261: Already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardpage.tsx' differs from file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardPage.tsx' only in casing.
-src/pages/hr/selfservice/StatutoryForms.tsx(20,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/hr/selfservice/VoluntaryDeductions.tsx(18,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/HRAnalyticsDashboard.tsx(10,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/HRReports.tsx(7,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-src/pages/maintenance/Asset360View.tsx(47,35): error TS18048: 'asset.healthScore' is possibly 'undefined'.
-src/pages/RetailProductCatalog.tsx(7,30): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardPage.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardpage.tsx' only in casing.
-src/pages/SecurityProfiles.tsx(25,39): error TS1149: File name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/standardtable.tsx' differs from already included file name '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/StandardTable.tsx' only in casing.
-```
+## CRITICAL: Breaks Functionality
+
+### C1. Backend API Completely Unreachable in Preview
+- **Impact**: Every single `/api/` call returns the HTML index page (200 OK with `text/html`), not JSON.
+- **Evidence**: Network requests show `/api/auth/user` and `/api/finance/gl/ledgers` both return the full HTML page.
+- **Affected**: All 1,048+ files making API calls. Every table, chart, and form in the app shows empty data.
+- **Root Cause**: The external Node.js/NestJS backend is not running in the Lovable preview environment.
+
+### C2. Authentication Flow Returns HTML, Not JSON
+- **Files**: `src/components/RBACContext.tsx`, `src/hooks/useAuth.ts`
+- **Issue**: `/api/auth/user` returns HTML. The auth system had to be patched with content-type checks to avoid crashing.
+- **Status**: Partially mitigated with client-side fallback, but fragile.
+
+### C3. Silent Data Failures Across 385+ Pages
+- **Pattern**: `queryFn: () => fetch("/api/...").then(r => r.json()).catch(() => [])`
+- **Impact**: When API returns HTML, `.json()` throws, catch swallows the error, UI silently shows "no data."
+- **Sample files** (of 385+):
+  - `src/pages/StoreOutletManagement.tsx` → `/api/stores`
+  - `src/pages/WorkshopServiceOrders.tsx` → `/api/auto-service-orders`
+  - `src/pages/eBatchRecord.tsx` → `/api/pharma-ebr`
+  - `src/pages/FleetDriverManagement.tsx` → `/api/tl-drivers`
+  - `src/pages/FreightRateCalculation.tsx` → `/api/freight-rates`
+
+### C4. Broken Import Paths in 135+ Files
+From previous TSC audit (still valid):
+- 60+ `scripts/verify_*.ts` files reference non-existent service paths
+- `server/modules/finance/routes.ts` imports missing `RevenueRecognitionService`
+- `server/modules/scm/procurementRoutes.ts` imports missing `ProcurementService`
+- `server/services/AnomalyDetectionService.ts` imports non-existent `stddev` from drizzle-orm
+- `server/services/BulkImportService.ts` imports missing `InsertOrganization`, `InsertPerson`
+
+---
+
+## HIGH: Missing Features / Non-Functional
+
+### H1. Pages with Hardcoded Inline Mock Data (No API Calls)
+These pages render data from const arrays, not from any API:
+
+| File | Mock Data |
+|------|-----------|
+| `src/pages/TasksDetail.tsx` | 2 hardcoded tasks |
+| `src/pages/CustomersDetail.tsx` | 2 hardcoded customers |
+| `src/pages/EmployeesDetail.tsx` | 2 hardcoded employees |
+| `src/pages/ExpensesDetail.tsx` | 2 hardcoded expenses |
+| `src/pages/PayrollDetail.tsx` | 2 hardcoded payrolls |
+| `src/pages/BOMDetail.tsx` | 2 hardcoded BOMs |
+| `src/pages/WorkflowExecution.tsx` | 2 hardcoded months |
+| `src/pages/PerformanceMonitoring.tsx` | 2 hardcoded data points |
+| `src/pages/admin/TenantAdmin.tsx` | Hardcoded tenant users |
+| `src/components/KanbanBoard.tsx` | Default mock columns/tasks |
+| `src/components/examples/LeadCard.tsx` | Mock lead object |
+| `src/pages/projects/TaskList.tsx` | 4 hardcoded tasks |
+
+### H2. 24 Server Files with `@ts-nocheck` (Type Safety Disabled)
+
+| File | Module |
+|------|--------|
+| `server/modules/finance/routes.ts` | GL/Finance routing |
+| `server/modules/finance/finance.service.ts` | Core finance service |
+| `server/modules/finance/consolidation.service.ts` | Consolidation |
+| `server/modules/crm/accounts-routes.ts` | CRM accounts |
+| `server/modules/crm/campaigns-routes.ts` | CRM campaigns |
+| `server/modules/crm/commissions-routes.ts` | CRM commissions |
+| `server/modules/crm/contracts-routes.ts` | CRM contracts |
+| `server/modules/crm/quotas-routes.ts` | CRM quotas |
+| `server/modules/billing/BillingService.ts` | Billing |
+| `server/modules/manufacturing/manufacturing.controller.ts` | Manufacturing |
+| `server/modules/manufacturing/services/ManufacturingService.ts` | Manufacturing |
+| `server/modules/manufacturing/services/ManufacturingCostingService.ts` | Costing |
+| `server/modules/manufacturing/services/ManufacturingPlanningService.ts` | Planning |
+| `server/modules/manufacturing/services/ManufacturingProcessService.ts` | Process |
+| `server/modules/inventory/wms-shipping.service.ts` | WMS Shipping |
+| `server/modules/hr/services/AorService.ts` | HR AOR |
+| `server/modules/hr/services/ComplianceService.ts` | HR Compliance |
+| `server/modules/hr/services/AnonymizationService.ts` | HR Anonymization |
+| `server/middleware/audit.ts` | Audit middleware |
+| `server/middleware/rls.ts` | Row-level security |
+| `server/middleware/tenant.ts` | Multi-tenancy |
+| `server/modules/lcm/lcm.service.ts` | LCM (mid-file) |
+
+### H3. Backend Services Using In-Memory Arrays (No Database)
+These NestJS services store data in `private array = []` — all data lost on restart:
+
+| File | Entity |
+|------|--------|
+| `backend/src/modules/service/ticket.service.ts` | Tickets |
+| `backend/src/modules/inventory/product.service.ts` | Products |
+| `backend/src/modules/marketing/campaign.service.ts` | Campaigns |
+
+### H4. AI Service Returns Stubs Only
+- **File**: `backend/src/modules/ai/ai.service.ts`
+- `analyzeEntry()` → always returns `{ isAnomaly: false, confidence: 0.95 }`
+- `generateInsight()` → returns `"Insight generation coming soon"`
+- `searchKnowledgeBase()` → returns `[]`
+
+### H5. OCR Service Returns Mock Data
+- **File**: `server/services/OCRService.ts`
+- Always returns "Starbucks Coffee" / $15.75 regardless of input.
+
+### H6. Forms Missing Create Buttons
+- `src/components/hr/workforce-structures/GradesTab.tsx` — `{/* TODO: Add Create Button */}`
+- `src/components/hr/workforce-structures/JobsTab.tsx` — `{/* TODO: Add Create Button */}`
+- `src/components/hr/workforce-structures/PositionsTab.tsx` — `{/* TODO: Add Create Button */}`
+
+### H7. AOR Management Component is a Stub
+- **File**: `src/components/hr/AorManagement.tsx`
+- Uses `const aors: any[] = []` — no API call, no CRUD functionality.
+
+---
+
+## MEDIUM: Incomplete Implementations
+
+### M1. Mock Data in Server Services
+
+| File | What's Mocked |
+|------|---------------|
+| `server/services/CardFeedService.ts` | `mockTransactions` array |
+| `server/services/ai.ts` | NLP parser, intent extraction, all AI actions |
+| `server/modules/inventory/wms-task.service.ts` | Unit cost hardcoded to `$50.00` |
+| `server/modules/intercompany/intercompany.invoice.service.ts` | AR/AP invoice IDs are string concatenations |
+| `backend/src/modules/epm/epm-security.service.ts` | Hardcoded security policies |
+| `backend/src/modules/epm/gl-integration.service.ts` | Mock parsing of code combination IDs |
+| `backend/src/modules/erp/tax-reporting.service.ts` | `mockFetchGLTaxBalance()` simulates GL |
+
+### M2. Assumption Comments (Uncertain Code)
+28 files contain comments like "Assuming endpoint exists", indicating code may not work:
+
+| File | Assumption |
+|------|------------|
+| `src/components/maintenance/PartRequirementList.tsx` | "Assuming WMS module exists" |
+| `src/components/construction/ConstructionDailyLogDetail.tsx` | "assuming the endpoints exist" |
+| `src/pages/billing/BillingProfileManager.tsx` | "I'll assume we can fetch all profiles" |
+| `src/pages/crm/CommissionPlanManager.tsx` | "Assuming we have a users endpoint" |
+| `src/pages/crm/AccountDetail.tsx` | "Assuming cases endpoint supports filtering" |
+| `src/pages/leases/LeaseDisclosureReport.tsx` | "Assuming list endpoint returns all" |
+| `src/components/supplier-portal/CreateASNModal.tsx` | "assume we can pass lines if available" |
+| `src/pages/learning/instructor/InstructorDashboard.tsx` | "Assuming this path" for StandardTable |
+
+### M3. `@ts-ignore` in Frontend Components
+
+| File | Line | Context |
+|------|------|---------|
+| `src/components/forms/OpportunityForm.tsx` | 50 | Ignoring type check on formData.accountId |
+| `src/components/cash/ReconciliationWorkbench.tsx` | 248 | Ignoring StandardTable generic type issues |
+| `src/components/cash/ReconciliationWorkbench.tsx` | 271 | Same StandardTable issue |
+
+### M4. Dual Backend Architecture Conflict
+The project has **two separate backends**:
+1. **Express/Drizzle** (`server/`) — primary, has routes and services
+2. **NestJS/Drizzle** (`backend/`) — secondary, some services use in-memory arrays
+
+Neither is confirmed running in the preview environment.
+
+### M5. Dummy API Key in Production Code
+- `server/services/ai.ts:11` — `apiKey: process.env.OPENAI_API_KEY || "dummy-key"`
+
+---
+
+## LOW: TODOs and Cleanup
+
+### L1. TODO Comments in Frontend
+
+| File | Line | Comment |
+|------|------|---------|
+| `src/pages/crm/Account360.tsx` | 35 | "Add backend filters" |
+| `src/components/hr/workforce-structures/GradesTab.tsx` | 36 | "Add Create Button" |
+| `src/components/hr/workforce-structures/JobsTab.tsx` | 37 | "Add Create Button" |
+| `src/components/hr/workforce-structures/PositionsTab.tsx` | 40 | "Add Create Button" |
+| `src/components/KanbanBoard.tsx` | 45 | "remove mock functionality" |
+| `src/pages/admin/TenantAdmin.tsx` | 53 | "remove mock functionality" |
+| `src/components/examples/LeadCard.tsx` | 4 | "remove mock functionality" |
+
+### L2. Obsolete Verification Scripts
+60+ `scripts/verify_*.ts` files reference non-existent service paths and deprecated TypeORM imports. These should be pruned or updated.
+
+### L3. `scripts/audit_codebase.ts` Exists but Not Integrated
+A local audit script exists but cannot be run in the Lovable environment.
+
+---
+
+## Recommendations (Priority Order)
+
+1. **Enable Lovable Cloud** to get a working backend (database + auth + edge functions) in the preview
+2. **Migrate critical API routes** to edge functions or connect the external backend
+3. **Replace silent `.catch(() => [])` patterns** with proper error handling showing user feedback
+4. **Wire hardcoded pages** (TasksDetail, CustomersDetail, etc.) to real data sources
+5. **Remove `@ts-nocheck`** from security-critical middleware (audit, rls, tenant)
+6. **Replace in-memory NestJS services** with database-backed implementations
+7. **Implement real OCR and AI services** or clearly mark them as demo-only
+8. **Prune obsolete verification scripts** (60+ broken files in `scripts/`)
+9. **Consolidate dual backend** into a single architecture
