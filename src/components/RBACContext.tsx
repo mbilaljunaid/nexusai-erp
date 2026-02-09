@@ -65,6 +65,13 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           credentials: "include",
         });
         
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          // Backend not available — preserve any existing local auth state
+          setIsLoading(false);
+          return;
+        }
+
         if (response.ok) {
           const userData = await response.json();
           const id = userData.id || userData.email || "";
@@ -79,6 +86,7 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           localStorage.setItem("userId", id);
           localStorage.setItem("authTimestamp", Date.now().toString());
         } else {
+          // Valid JSON 401 — clear auth
           setIsAuthenticated(false);
           setUserId("");
           setUserRole("viewer");
@@ -90,15 +98,7 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           localStorage.removeItem("authTimestamp");
         }
       } catch (error) {
-        setIsAuthenticated(false);
-        setUserId("");
-        setUserRole("viewer");
-        setEnterpriseRoleState("end_user");
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("enterpriseRole");
-        localStorage.removeItem("authTimestamp");
+        // Network error — preserve existing local auth state
       } finally {
         setIsLoading(false);
       }
@@ -124,6 +124,12 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           credentials: "include",
         });
         
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          // Backend not available — skip revalidation
+          return;
+        }
+
         if (response.ok) {
           const userData = await response.json();
           const id = userData.id || userData.email || "";
@@ -149,15 +155,7 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           localStorage.removeItem("authTimestamp");
         }
       } catch (error) {
-        setIsAuthenticated(false);
-        setUserId("");
-        setUserRole("viewer");
-        setEnterpriseRoleState("end_user");
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("enterpriseRole");
-        localStorage.removeItem("authTimestamp");
+        // Network error — preserve existing state
       }
     };
 
@@ -166,12 +164,23 @@ export function RBACProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (id: string, role: "admin" | "editor" | "viewer", entRole?: EnterpriseRole) => {
+    const applyLocalAuth = () => {
+      setUserId(id);
+      setUserRole(role);
+      if (entRole) setEnterpriseRoleState(entRole);
+      setIsAuthenticated(true);
+      localStorage.setItem("authToken", "true");
+      localStorage.setItem("userId", id);
+      localStorage.setItem("userRole", role);
+      if (entRole) localStorage.setItem("enterpriseRole", entRole);
+      localStorage.setItem("authTimestamp", Date.now().toString());
+    };
+
     try {
-      const response = await fetch("/api/auth/user", {
-        credentials: "include",
-      });
+      const response = await fetch("/api/auth/user", { credentials: "include" });
+      const contentType = response.headers.get("content-type") || "";
       
-      if (response.ok) {
+      if (response.ok && contentType.includes("application/json")) {
         const userData = await response.json();
         const backendId = userData.id || userData.email || id;
         const backendRole = userData.role as "admin" | "editor" | "viewer" | undefined;
@@ -179,46 +188,18 @@ export function RBACProvider({ children }: { children: ReactNode }) {
         
         setUserId(backendId);
         setUserRole(finalRole);
-        if (entRole) {
-          setEnterpriseRoleState(entRole);
-        }
+        if (entRole) setEnterpriseRoleState(entRole);
         setIsAuthenticated(true);
         localStorage.setItem("authToken", "true");
         localStorage.setItem("userId", backendId);
         localStorage.setItem("userRole", finalRole);
-        if (entRole) {
-          localStorage.setItem("enterpriseRole", entRole);
-        }
+        if (entRole) localStorage.setItem("enterpriseRole", entRole);
         localStorage.setItem("authTimestamp", Date.now().toString());
       } else {
-        setUserId(id);
-        setUserRole(role);
-        if (entRole) {
-          setEnterpriseRoleState(entRole);
-        }
-        setIsAuthenticated(true);
-        localStorage.setItem("authToken", "true");
-        localStorage.setItem("userId", id);
-        localStorage.setItem("userRole", role);
-        if (entRole) {
-          localStorage.setItem("enterpriseRole", entRole);
-        }
-        localStorage.setItem("authTimestamp", Date.now().toString());
+        applyLocalAuth();
       }
     } catch (error) {
-      setUserId(id);
-      setUserRole(role);
-      if (entRole) {
-        setEnterpriseRoleState(entRole);
-      }
-      setIsAuthenticated(true);
-      localStorage.setItem("authToken", "true");
-      localStorage.setItem("userId", id);
-      localStorage.setItem("userRole", role);
-      if (entRole) {
-        localStorage.setItem("enterpriseRole", entRole);
-      }
-      localStorage.setItem("authTimestamp", Date.now().toString());
+      applyLocalAuth();
     }
   }, []);
 
