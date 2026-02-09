@@ -1,22 +1,4 @@
-// @ts-nocheck
-import { Request, Response, NextFunction } from "express";
-
-// Extend Request type to include user context
-declare global {
-    namespace Express {
-        // Just overriding the User interface locally or merging
-        interface User {
-            id: string;
-            role: string;
-            permissions: string[];
-            tenantId: string;
-        }
-
-        interface Request {
-            user?: User;
-        }
-    }
-}
+import { Request, Response, NextFunction } from "./types";
 
 /**
  * RLS Middleware
@@ -36,11 +18,9 @@ export const rlsMiddleware = (req: Request, res: Response, next: NextFunction) =
             permissions = ["VIEW_ALL", "VIEW_SENSITIVE", "EDIT_CONFIG", "RUN_REPORTS", "MANAGE_SECURITY"];
             break;
         case "HR_ANALYST":
-            // New Role: Access to Analytics and Report Building, but no Config/Security
             permissions = ["VIEW_ALL", "VIEW_REPORTS", "CREATE_REPORTS", "VIEW_ANALYTICS"];
             break;
         case "MANAGER":
-            // Refined: Can view own team and team analytics
             permissions = ["VIEW_TEAM", "VIEW_REPORTS", "VIEW_TEAM_ANALYTICS"];
             break;
         case "EMPLOYEE":
@@ -51,10 +31,10 @@ export const rlsMiddleware = (req: Request, res: Response, next: NextFunction) =
 
     // 3. Attach User Context
     req.user = {
-        id: "mock-user-id", // Added to satisfy User interface
+        id: "mock-user-id",
         role,
         permissions,
-        tenantId: "default" // In multi-tenant, this comes from subdomain or JWT
+        tenantId: "default"
     };
 
     // Log context for debugging transparency

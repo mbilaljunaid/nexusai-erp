@@ -13,9 +13,8 @@ export default function EstimationWorkbook() {
   const { toast } = useToast();
   const [newEst, setNewEst] = useState({ project: "Project-A", description: "", qty: "100", rate: "500", margin: "15", status: "draft" });
 
-  const { data: estimates = [], isLoading } = useQuery({
+  const { data: estimates = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/estimations"],
-    queryFn: () => fetch("/api/estimations").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({

@@ -28,7 +28,6 @@ export default function FixedAssets() {
 
     const { data: assets = [], isLoading } = useQuery<Asset[]>({
         queryKey: ["/api/fa/assets"],
-        queryFn: () => fetch("/api/fa/assets").then(r => r.json()).catch(() => []),
     });
 
     const createMutation = useMutation({

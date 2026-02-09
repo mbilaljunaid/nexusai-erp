@@ -12,9 +12,8 @@ export default function CustomerDeviceManagement() {
   const { toast } = useToast();
   const [newDevice, setNewDevice] = useState({ deviceId: "", subscriberId: "", imei: "", simId: "", status: "active" });
 
-  const { data: devices = [], isLoading } = useQuery({
+  const { data: devices = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/devices-sims"],
-    queryFn: () => fetch("/api/devices-sims").then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({

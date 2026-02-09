@@ -26,12 +26,10 @@ export default function PurchaseOrderList() {
 
     const { data: pos = [], isLoading } = useQuery<PurchaseOrder[]>({
         queryKey: ["/api/procurement/purchase-orders"],
-        queryFn: () => fetch("/api/procurement/purchase-orders").then(r => r.json()).catch(() => [])
     });
 
     const { data: suppliers = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/suppliers"],
-        queryFn: () => fetch("/api/procurement/suppliers").then(r => r.json()).catch(() => [])
     });
 
     const deletePOMutation = useMutation({

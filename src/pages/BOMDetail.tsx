@@ -6,10 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { BomForm } from "@/components/forms/BomForm";
+import { mockBOMs } from "@/data/mock-data";
 
 export default function BOMDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const boms = [{id: 1, name: "Widget A BOM", version: "1.0", items: 12}, {id: 2, name: "Widget B BOM", version: "2.1", items: 8}];
 
   return (
     <div className="space-y-6">
@@ -30,7 +30,7 @@ export default function BOMDetail() {
         </div>
 
         <div className="space-y-2">
-          {boms.filter((b: any) => b.name.toLowerCase().includes(searchQuery.toLowerCase())).map((b: any) => (
+          {mockBOMs.filter((b) => b.name.toLowerCase().includes(searchQuery.toLowerCase())).map((b) => (
             <Card key={b.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{b.name}</p><p className="text-sm text-muted-foreground">v{b.version} • {b.items} items</p></div><Badge>{b.items}</Badge></div></CardContent></Card>
           ))}
         </div>
