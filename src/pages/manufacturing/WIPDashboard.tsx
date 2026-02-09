@@ -139,7 +139,7 @@ export default function WIPDashboard() {
                             page={page}
                             onPageChange={setPage}
                             totalItems={totalItems}
-                            itemsPerPage={limit}
+                            pageSize={limit}
                         />
                     </CardContent>
                 </Card>

@@ -15,19 +15,19 @@ import { Plus, ArrowLeft } from "lucide-react";
 
 export default function ReferenceDataDetail() {
     const [, params] = useRoute("/mdm/reference-data/:id");
-    const typeId = params?.id;
+    const typeId = (params as any)?.id;
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
     // Fetch Lookup Type Header
-    const { data: lookupType, isLoading: isHeaderLoading } = useQuery({
+    const { data: lookupType, isLoading: isHeaderLoading } = useQuery<any>({
         queryKey: [`/api/mdm/lookups/types/${typeId}`],
         enabled: !!typeId
     });
 
-    // Fetch Lookup Values (We need to use the CODE to fetch values, not ID, based on existing service)
-    const { data: lookupValues = [], isLoading: isValuesLoading } = useQuery({
+    // Fetch Lookup Values
+    const { data: lookupValues = [], isLoading: isValuesLoading } = useQuery<any[]>({
         queryKey: [`/api/mdm/lookups/${lookupType?.lookupType}`],
         enabled: !!lookupType?.lookupType
     });
@@ -178,7 +178,7 @@ export default function ReferenceDataDetail() {
                         <StandardTable
                             data={lookupValues}
                             columns={columns}
-                            loading={isLoading}
+                            isLoading={isLoading}
                             filterColumn="meaning"
                             filterPlaceholder="Search values..."
                         />

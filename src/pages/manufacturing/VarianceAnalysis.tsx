@@ -195,7 +195,7 @@ export default function VarianceAnalysis() {
                             page={page}
                             onPageChange={setPage}
                             totalItems={totalItems}
-                            itemsPerPage={limit}
+                            pageSize={limit}
                         />
                     </CardContent>
                 </Card>
