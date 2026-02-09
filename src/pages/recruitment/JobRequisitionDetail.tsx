@@ -1,9 +1,7 @@
-// @ts-nocheck
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-// import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"; 
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { CandidateProfileDrawer } from "./CandidateProfileDrawer";
@@ -12,7 +10,8 @@ import { User, MoreHorizontal, Briefcase } from "lucide-react";
 const STAGES = ["NEW", "SCREENING", "INTERVIEW", "OFFER", "HIRED"];
 
 export default function JobRequisitionDetail() {
-    const { id } = useParams();
+    const params = useParams() as { id?: string };
+    const id = params.id;
     const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
 
     // Fetch Pipeline

@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "wouter";
-import { User, MessageSquare, CheckCircle, Clock } from "lucide-react";
+import { User, MessageSquare, CheckCircle, Clock, BookOpen } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function CaseDetail() {
-    const { id } = useParams();
+    const params = useParams() as { id?: string };
+    const id = params.id;
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [comment, setComment] = useState("");
@@ -188,7 +188,7 @@ export default function CaseDetail() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <SuggestedArticles subject={currentCase?.subject} />
+                        <SuggestedArticles subject={ticket?.subject || ""} />
                     </CardContent>
                 </Card>
             </div>

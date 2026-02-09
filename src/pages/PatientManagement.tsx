@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -99,7 +98,7 @@ export default function PatientManagement() {
   return (
     <StandardPage
       title="Patient Management & Registration"
-      subtitle={`Patient demographics, MRN assignment, insurance verification, and records. Total Patients: ${patients.length}`}
+      description={`Patient demographics, MRN assignment, insurance verification, and records. Total Patients: ${patients.length}`}
       actions={
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>

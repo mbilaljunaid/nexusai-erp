@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -107,7 +106,7 @@ export default function ManualJournalEntry() {
     };
 
     return (
-        <StandardPage title="Create Manual Journal" subtitle="Enter generic SLA adjustment journals">
+        <StandardPage title="Create Manual Journal" description="Enter generic SLA adjustment journals">
             <div className="space-y-6">
                 {/* Header Card */}
                 <Card>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +40,7 @@ export function ApInvoiceList(props: { statusFilter?: string }) {
     });
 
     const validateMutation = useMutation({
-        mutationFn: async (id: number) => {
+        mutationFn: async (id: string | number) => {
             const res = await apiRequest("POST", `/api/ap/invoices/${id}/validate`);
             return res.json();
         },

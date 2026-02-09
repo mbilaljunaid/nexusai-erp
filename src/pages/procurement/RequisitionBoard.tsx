@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -96,7 +95,7 @@ export default function RequisitionBoard() {
     return (
         <StandardPage
             title="Requisitions"
-            subtitle="Track and manage internal purchase requests"
+            description="Track and manage internal purchase requests"
             actions={
                 <Link href="/procurement/requisitions/new">
                     <Button>

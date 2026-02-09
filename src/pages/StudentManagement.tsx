@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,7 +48,7 @@ export default function StudentManagement() {
   return (
     <StandardPage
       title="Student Management"
-      subtitle="Manage student profiles and enrollment"
+      description="Manage student profiles and enrollment"
       actions={
         <Button data-testid="button-add-student">
           <Plus className="h-4 w-4 mr-2" /> Add Student

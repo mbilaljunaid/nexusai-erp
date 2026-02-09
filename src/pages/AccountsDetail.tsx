@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,7 +44,7 @@ import { useToast } from "@/hooks/use-toast";
 function AccountEntryForm({ onSuccess }: { onSuccess?: () => void }) {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const form = useForm<InsertAccount>({
+    const form = useForm<any>({
         resolver: zodResolver(insertAccountSchema),
         defaultValues: {
             name: "",

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
     Sheet,
     SheetContent,
@@ -274,7 +273,7 @@ export function ApSideSheet({
                                 </ScrollArea>
                             </TabsContent>
                             <TabsContent value="holds" className="space-y-4">
-                                {invoice && <InvoiceHoldsView invoiceId={invoice.id} />}
+                                {invoice && <InvoiceHoldsView invoiceId={Number(invoice.id)} />}
                             </TabsContent>
                             <TabsContent value="distributions">
                                 <ScrollArea className="h-[300px] rounded-md border p-0">
@@ -288,10 +287,10 @@ export function ApSideSheet({
                                 </ScrollArea>
                             </TabsContent>
                             <TabsContent value="accounting" className="space-y-4">
-                                {invoice && <InvoiceAccountingView invoiceId={invoice.id} />}
+                                {invoice && <InvoiceAccountingView invoiceId={Number(invoice.id)} />}
                             </TabsContent>
                             <TabsContent value="prepayments" className="space-y-4">
-                                {invoice && <InvoicePrepaymentsView invoiceId={invoice.id} />}
+                                {invoice && <InvoicePrepaymentsView invoiceId={Number(invoice.id)} />}
                             </TabsContent>
                         </>
                     )}
@@ -344,7 +343,7 @@ export function ApSideSheet({
                         <Button
                             variant={supplier.creditHold ? "default" : "destructive"}
                             className="w-full"
-                            onClick={() => toggleHoldMutation.mutate({ id: supplier.id, hold: !supplier.creditHold })}
+                            onClick={() => toggleHoldMutation.mutate({ id: Number(supplier.id), hold: !supplier.creditHold })}
                             disabled={toggleHoldMutation.isPending}
                         >
                             {supplier.creditHold ? "Release Credit Hold" : "Place on Credit Hold"}
@@ -375,7 +374,7 @@ export function ApSideSheet({
 
                 {invoice && (
                     <ApPrepayApplication
-                        invoiceId={invoice.id}
+                        invoiceId={Number(invoice.id)}
                         open={isPrepayDialogOpen}
                         onOpenChange={setIsPrepayDialogOpen}
                     />

@@ -1,4 +1,3 @@
-// @ts-nocheck
 // MatchRuleDetail.tsx
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRoute } from "wouter";
@@ -14,7 +13,8 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 
 export default function MatchRuleDetail() {
-    const [, params] = useRoute("/mdm/match-rules/:id");
+    const [, rawParams] = useRoute("/mdm/match-rules/:id");
+    const params = rawParams as any;
     const ruleId = params?.id;
     const [, setLocation] = useLocation();
     const { toast } = useToast();

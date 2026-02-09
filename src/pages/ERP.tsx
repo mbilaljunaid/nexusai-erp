@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,15 +15,16 @@ import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settin
 import { Link, useRoute } from "wouter";
 
 export default function ERP() {
-  const [match, params] = useRoute("/erp/:page");
+  const [match, rawParams] = useRoute("/erp/:page");
+  const erpParams = rawParams as any;
   const [activeNav, setActiveNav] = useState("overview");
   const [selectedVendor, setSelectedVendor] = useState<any>(null);
 
   useEffect(() => {
-    if (params?.page) {
-      setActiveNav(params.page);
+    if (erpParams?.page) {
+      setActiveNav(erpParams.page);
     }
-  }, [params?.page]);
+  }, [erpParams?.page]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<any[]>([]);
   const [filteredGLEntries, setFilteredGLEntries] = useState<any[]>([]);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,7 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle, ArrowLeft } from "lucide-react";
 
 export default function LearningPlayer() {
-    const { enrollmentId } = useParams();
+    const params = useParams() as { enrollmentId?: string };
+    const enrollmentId = params.enrollmentId;
     const [location, setLocation] = useLocation();
     const { toast } = useToast();
     const queryClient = useQueryClient();
