@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useParams, Link } from "wouter";
 import { Header, Footer } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
@@ -1724,10 +1723,10 @@ const slugAliases: Record<string, string> = {
 };
 
 export default function IndustryDetail() {
-  const params = useParams();
+  const params = useParams() as { slug?: string };
   const rawSlug = (params.slug || "").toLowerCase();
   const slug = slugAliases[rawSlug] || rawSlug;
-  const industry = industryData[slug] || {
+  const industry: IndustryInfo = industryData[slug] || {
     name: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " "),
     description: "Industry-specific ERP solutions",
     modules: ["Core ERP", "CRM", "Finance", "HR", "Analytics", "Compliance"],

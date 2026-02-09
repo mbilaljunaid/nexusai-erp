@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -119,11 +118,10 @@ export default function ProcurementDashboard() {
                                     tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
                                 />
                                 <YAxis
-                                    prefix="$"
                                     fontSize={12}
                                     tickLine={false}
                                     axisLine={false}
-                                    tickFormatter={(value) => `$${value}`}
+                                    tickFormatter={(value: any) => `$${value}`}
                                 />
                                 <Tooltip
                                     formatter={(value: number) => [`$${value.toLocaleString()}`, 'Spend']}

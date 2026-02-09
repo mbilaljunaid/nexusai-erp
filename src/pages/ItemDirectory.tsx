@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -21,7 +20,7 @@ export default function ItemDirectory() {
     const queryClient = useQueryClient();
 
     // Fetch Items
-    const { data: items = [], isLoading } = useQuery({
+    const { data: items = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/mdm/items"],
     });
 
@@ -170,7 +169,7 @@ export default function ItemDirectory() {
                     <StandardTable
                         data={items}
                         columns={columns}
-                        loading={isLoading}
+                        isLoading={isLoading}
                         filterColumn="itemName"
                         filterPlaceholder="Search items..."
                     />
