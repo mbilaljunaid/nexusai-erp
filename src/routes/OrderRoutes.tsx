@@ -18,7 +18,6 @@ export default function OrderRoutes() {
         <Switch>
             <Route path="/order-management" component={OrderWorkbench} />
             <Route path="/order-management/create" component={OrderEntry} />
-            <Route path="/order-management/:id" component={OrderEntry} />
             <Route path="/order-management/fulfillment" component={ShipmentWorkbench} />
             <Route path="/order-management/returns" component={ReturnsWorkbench} />
             <Route path="/order-management/config" component={OrderConfigManager} />
@@ -29,6 +28,9 @@ export default function OrderRoutes() {
             <Route path="/order-management/rma-legacy" component={RMAManagement} />
             <Route path="/order-management/sales-legacy" component={SalesOrderManagement} />
             <Route path="/order-management/shipment-legacy" component={ShipmentOrderManagement} />
+
+            {/* Dynamic :id must come AFTER all specific routes */}
+            <Route path="/order-management/:id" component={OrderEntry} />
         </Switch>
     );
 }
