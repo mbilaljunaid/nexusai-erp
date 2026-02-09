@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -10,7 +9,27 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
-import { TreasuryCounterparty, insertTreasuryCounterpartySchema } from "@shared/schema";
+import { z } from "zod";
+
+// Inline schema - not exported from @shared/schema
+const insertTreasuryCounterpartySchema = z.object({
+  name: z.string().min(1),
+  type: z.string().min(1),
+  shortName: z.string().optional(),
+  taxId: z.string().optional(),
+  swiftCode: z.string().optional(),
+  active: z.boolean().optional(),
+});
+
+interface TreasuryCounterparty {
+  id: string;
+  name: string;
+  type: string;
+  shortName?: string;
+  taxId?: string;
+  swiftCode?: string;
+  active?: boolean;
+}
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {

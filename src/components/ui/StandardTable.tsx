@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import React, { useMemo, useState } from "react";
 import { i18n } from "@/lib/i18n";
 import {
@@ -122,62 +122,37 @@ export function StandardTable<T>({
         }
     }, [filterValue, isClientSidePagination, onPageChange, page]);
 
-    const InnerElement = useMemo(() => React.forwardRef(({ children, ...props }: any, ref: any) => (
-        /* eslint-disable-next-line jsx-a11y/role-has-required-aria-props */
-        <div ref={ref} {...props} role="rowgroup">
-            {children}
-            {(!children || React.Children.count(children) === 0) && (
-                <div className="invisible h-0">
-                    <div />
-                </div>
-            )}
-        </div>
-    )), []);
-
-    const OuterElement = useMemo(() => React.forwardRef(({ children, ...props }: any, ref: any) => (
-        <div ref={ref} {...props} role="presentation">
-            {children}
-        </div>
-    )), []);
-
-    const Row = ({ index, style }: any) => {
+    const VirtualRow = ({ index, style, ariaAttributes }: { index: number; style: React.CSSProperties; ariaAttributes: any }) => {
         const item = paginatedData[index];
         if (!item) return null;
 
         return (
             <div
-                /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                style={style as any}
+                style={style}
+                {...ariaAttributes}
                 className={cn(
-                    "flex border-b border-border bg-white transition-colors hover:bg-muted/30",
+                    "flex border-b border-border bg-background transition-colors hover:bg-muted/30",
                     onRowClick && "cursor-pointer"
                 )}
                 onClick={() => onRowClick && onRowClick(item)}
-                role="row"
             >
-                {columns.map((col: any, colIdx) => {
+                {columns.map((col: Column<T>, colIdx: number) => {
                     const width = col.width || `${100 / columns.length}%`;
                     return (
                         <div
                             key={colIdx}
                             className={cn("py-3 px-4 text-sm flex items-center shrink-0 overflow-hidden", col.className)}
-                            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                            style={{
-                                width,
-                                flexBasis: width
-                            } as any}
-                            role="gridcell"
+                            style={{ width, flexBasis: width }}
                         >
                             {(() => {
                                 try {
                                     if (col.cell && typeof col.cell === "function") {
                                         return col.cell(item);
                                     }
-                                    if (col.cell) return col.cell;
                                     if (col.accessorKey) return (item[col.accessorKey as keyof T] as React.ReactNode);
                                     return null;
-                                } catch (e) {
-                                    return <span className="text-red-500 text-xs text-nowrap">Error</span>;
+                                } catch {
+                                    return <span className="text-destructive text-xs text-nowrap">Error</span>;
                                 }
                             })()}
                         </div>
@@ -212,13 +187,13 @@ export function StandardTable<T>({
                 </div>
             )}
 
-            <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+            <div className="rounded-md border bg-background shadow-sm overflow-hidden">
                 {isVirtualized ? (
                     <div className="w-full overflow-x-auto">
                         <div
                             className="min-w-full"
                             role="grid"
-                            aria-rowcount={String(paginatedData.length)}
+                            aria-rowcount={paginatedData.length}
                         >
                             <div className="bg-muted/50 border-b border-border" role="rowgroup">
                                 <div className="flex w-full" role="row">
@@ -231,10 +206,7 @@ export function StandardTable<T>({
                                                     "h-10 px-4 flex items-center text-xs font-semibold uppercase tracking-wider text-muted-foreground shrink-0",
                                                     col.className
                                                 )}
-                                                style={{
-                                                    width,
-                                                    flexBasis: width
-                                                } as any}
+                                                style={{ width, flexBasis: width }}
                                                 role="columnheader"
                                             >
                                                 {col.header}
@@ -244,16 +216,13 @@ export function StandardTable<T>({
                                 </div>
                             </div>
                             <List
-                                height={height}
-                                itemCount={paginatedData.length}
-                                itemSize={itemSize}
-                                width="100%"
+                                rowComponent={VirtualRow as any}
+                                rowCount={paginatedData.length}
+                                rowHeight={itemSize}
+                                rowProps={{} as any}
+                                style={{ height }}
                                 className="scrollbar-hide"
-                                innerElementType={InnerElement}
-                                outerElementType={OuterElement}
-                            >
-                                {Row}
-                            </List>
+                            />
                         </div>
                     </div>
                 ) : (
@@ -298,11 +267,10 @@ export function StandardTable<T>({
                                                         if (col.cell && typeof col.cell === "function") {
                                                             return col.cell(item);
                                                         }
-                                                        if (col.cell) return col.cell;
                                                         if (col.accessorKey) return (item[col.accessorKey] as React.ReactNode);
                                                         return null;
                                                     } catch (e) {
-                                                        return <span className="text-red-500 text-xs">Error</span>;
+                                                        return <span className="text-destructive text-xs">Error</span>;
                                                     }
                                                 })()}
                                             </TableCell>
