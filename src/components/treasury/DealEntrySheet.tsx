@@ -14,7 +14,25 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertTreasuryDealSchema, TreasuryCounterparty } from "@shared/schema";
+import { z } from "zod";
+
+// Schema not available from shared - define inline for form validation
+const insertTreasuryDealSchema = z.object({
+  dealType: z.string().min(1),
+  counterpartyId: z.string().optional(),
+  buyCurrency: z.string().min(1),
+  sellCurrency: z.string().min(1),
+  buyAmount: z.coerce.number().positive(),
+  sellAmount: z.coerce.number().positive(),
+  rate: z.coerce.number().positive(),
+  valueDate: z.string().min(1),
+  maturityDate: z.string().optional(),
+});
+
+interface TreasuryCounterparty {
+  id: string;
+  name: string;
+}
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";

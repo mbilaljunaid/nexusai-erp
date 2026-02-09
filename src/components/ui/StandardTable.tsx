@@ -21,9 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Loader2, Search } from "lucide-react";
-import * as ReactWindow from "react-window";
-// @ts-ignore
-const List = ReactWindow.FixedSizeList;
+import { List } from "react-window";
 
 export interface Column<T> {
     header: string;
