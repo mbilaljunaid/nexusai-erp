@@ -40,9 +40,9 @@ import ComplianceRoutes from "@/routes/ComplianceRoutes";
 import MdmRoutes from "@/routes/MdmRoutes";
 
 import ErpRoutes from "@/routes/ErpRoutes";
+import ProcessRoutes from "@/routes/ProcessRoutes";
 
 // Direct page imports for sidebar links
-const ProcessHub = lazy(() => import("@/pages/processes/ProcessHub"));
 const AIAssistantPage = lazy(() => import("@/pages/AIAssistant"));
 const SettingsPage = lazy(() => import("@/pages/Settings"));
 const SCMDashboard = lazy(() => import("@/pages/Inventory"));
@@ -74,8 +74,8 @@ function Router() {
         {/* Dashboard */}
         <Route path="/dashboard" component={lazy(() => import("@/pages/Dashboard"))} />
 
-        {/* Sidebar links that were 404 */}
-        <Route path="/processes" component={ProcessHub} />
+        {/* Processes */}
+        <Route path="/processes*" component={ProcessRoutes} />
         <Route path="/operations" component={SCMDashboard} />
         <Route path="/ai" component={AIAssistantPage} />
         <Route path="/system-configuration" component={SettingsPage} />
