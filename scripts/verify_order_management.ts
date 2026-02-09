@@ -109,9 +109,9 @@ async function runVerification() {
         await orderManagementService.transferToAR(createdOrder.id);
 
         const closedOrder = await db.query.omOrderHeaders.findFirst({ where: eq(omOrderHeaders.id, createdOrder.id) } as any);
-        console.log("   Order Status:", closedOrder.status);
+        console.log("   Order Status:", closedOrder?.status);
 
-        if (closedOrder.status !== "CLOSED") throw new Error("Order should be CLOSED");
+        if (closedOrder?.status !== "CLOSED") throw new Error("Order should be CLOSED");
 
         // 6. RMA
         console.log("6. Creating RMA...");

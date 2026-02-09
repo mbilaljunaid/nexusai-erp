@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/ui/standardtable";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { MetricCard } from "@/components/MetricCard";
 import { ComplianceAnalytics } from "@/components/compliance/ComplianceAnalytics";
 import { RemediationSheet } from "@/components/compliance/RemediationSheet";

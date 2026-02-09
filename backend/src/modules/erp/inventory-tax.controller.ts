@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { InventoryTaxService } from './inventory-tax.service';
-import type { TaxableTransaction } from './tax-engine.service';
+import { type TaxableTransaction } from './tax-engine.service';
 
 /**
  * Controller for handling inventory tax related endpoints.

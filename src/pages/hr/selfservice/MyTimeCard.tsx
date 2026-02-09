@@ -23,8 +23,8 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
-import { StandardTable, Column } from "@/components/ui/standardtable";
-import { StandardPage } from "@/components/ui/standardpage";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { StandardPage } from "@/components/ui/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";

@@ -452,7 +452,7 @@ export class MaintenanceService {
         });
         if (!mat) throw new Error("Material record not found");
 
-        if (mat.actualQuantity >= mat.plannedQuantity) {
+        if ((mat.actualQuantity ?? 0) >= (mat.plannedQuantity ?? 0)) {
             throw new Error("Material already fully issued");
         }
 
@@ -476,7 +476,7 @@ export class MaintenanceService {
         // 4. Update WO Material Actuals
         const [updatedMat] = await db.update(maintWorkOrderMaterials)
             .set({
-                actualQuantity: (mat.actualQuantity || 0) + 1,
+                actualQuantity: ((mat.actualQuantity ?? 0) || 0) + 1,
                 unitCost: "0", // Placeholder if cost not in item
                 // In production, we'd fetch cost from item
             } as any)

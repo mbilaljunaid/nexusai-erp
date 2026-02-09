@@ -127,8 +127,7 @@ export class CompensationService {
                         assignmentId: data.assignmentId,
                         elementId: retroElement.id,
                         elementName: 'Retroactive Adjustment',
-                        amount: retroAmount.toFixed(2),
-                        elementId: retroElement.id
+                        amount: retroAmount.toFixed(2)
                     });
                     console.log(`[RETRO-COMPLETE] Applied $${retroAmount.toFixed(2)} to Run ${nextRun.periodName}`);
                 } else {

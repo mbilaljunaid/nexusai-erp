@@ -1,6 +1,5 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { IntercompanyTaxService } from './intercompany-tax.service';
-import type { IntercompanyTransaction } from './intercompany-tax.service';
+import { IntercompanyTaxService, type IntercompanyTransaction } from './intercompany-tax.service';
 
 @Controller('api/tax/intercompany')
 export class IntercompanyTaxController {

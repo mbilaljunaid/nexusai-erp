@@ -98,6 +98,9 @@ async function verifyAorPrivacy() {
         console.log("Test 1: Authorized manager viewing profile...");
         const profileOk = await PersonService.getPersonProfile(worker.id, tenantId, managerOk.id);
         const pOk = profileOk?.person;
+        if (!pOk) {
+            throw new Error("Failed to retrieve person profile for authorized manager");
+        }
         console.log("DOB seen by Auth Manager:", pOk.dateOfBirth);
         console.log("National ID seen by Auth Manager:", pOk.nationalId);
 
@@ -111,10 +114,13 @@ async function verifyAorPrivacy() {
         console.log("\nTest 2: Unauthorized manager viewing profile...");
         const profileNo = await PersonService.getPersonProfile(worker.id, tenantId, managerNo.id);
         const pNo = profileNo?.person;
+        if (!pNo) {
+            throw new Error("Failed to retrieve person profile for unauthorized manager");
+        }
         console.log("DOB seen by Unauth Manager:", pNo.dateOfBirth);
         console.log("National ID seen by Unauth Manager:", pNo.nationalId);
 
-        if (pNo.dateOfBirth === "1900-01-01" && pNo.nationalId.startsWith("***")) {
+        if (pNo.dateOfBirth === "1900-01-01" && pNo.nationalId?.startsWith("***")) {
             console.log("✅ Success: Unauthorized manager saw masked data.");
         } else {
             console.error("❌ Failure: Unauthorized manager saw raw PII!");

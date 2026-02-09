@@ -42,7 +42,6 @@ export class DataQualityService {
             openDuplicateSets: openDups.count,
             resolvedDuplicateSets: resolvedDups.count,
             dataHealthScore: Math.round(healthScore),
-            dataHealthScore: Math.round(healthScore),
             lastRefresh: new Date(),
             anomalies: await this.getRecentAnomalies()
         };

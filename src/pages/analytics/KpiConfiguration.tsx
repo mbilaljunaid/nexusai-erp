@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { StandardTable, Column } from "@/components/ui/standardtable";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Save, AlertCircle } from "lucide-react";

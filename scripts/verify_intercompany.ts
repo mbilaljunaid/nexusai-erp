@@ -70,7 +70,6 @@ async function verifyIntercompany() {
         await storage.createIntercompanyRule({
             fromCompany: "101",
             toCompany: "102",
-            receivableAccountId: ccDueFrom102.id, // Due from 101 (Asset for 102) - Wait, logic in resolveImbalances is:
             // Debtor (Co101 needs Credit) -> rule.payableAccountId (Liability for Co101)
             // Creditor (Co102 needs Debit) -> rule.receivableAccountId (Asset for Co102)
             payableAccountId: ccDueTo101.id,

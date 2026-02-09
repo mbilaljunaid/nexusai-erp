@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardTable, Column } from "@/components/ui/standardtable";
-import { StandardPage } from "@/components/ui/standardpage";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { StandardPage } from "@/components/ui/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import {
     Dialog,

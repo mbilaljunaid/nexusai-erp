@@ -9,7 +9,7 @@ async function fixSchema() {
         await db.execute(sql`TRUNCATE TABLE sla_period_statuses CASCADE;`);
         console.log("✅ Truncated sla_period_statuses.");
     } catch (e) {
-        console.log("⚠️ Could not truncate sla_period_statuses (might not exist yet):", (e as any).message);
+        console.log("⚠️ Could not truncate sla_period_statuses (might not exist yet):", e instanceof Error ? e.message : String(e));
     }
 
     process.exit(0);

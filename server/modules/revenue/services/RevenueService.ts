@@ -569,7 +569,7 @@ export class RevenueService {
             unbilledDetails
         };
         return {
-            periodName: period.periodName,
+            periodName: period?.periodName,
             postedCount,
             unbilledAccrualTotal,
             unbilledDetails

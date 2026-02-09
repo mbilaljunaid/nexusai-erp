@@ -67,8 +67,6 @@ router.get("/generate", async (req, res) => {
                 assignmentNumber: hrAssignments.assignmentNumber,
                 jobId: hrAssignments.jobId,
                 departmentId: hrAssignments.departmentId,
-                jobId: hrAssignments.jobId,
-                departmentId: hrAssignments.departmentId,
                 locationId: hrAssignments.locationId,
                 salary: sql`'120000'` // Mock Salary for V1 (Schema doesn't have it yet)
             })

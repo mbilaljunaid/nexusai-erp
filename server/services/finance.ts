@@ -401,7 +401,6 @@ export class FinanceService {
             journalNumber: journalData.journalNumber || `JE - ${Date.now()} `,
             totalDebit: totalDebit.toFixed(2),
             totalCredit: totalCredit.toFixed(2),
-            totalCredit: totalCredit.toFixed(2),
             status: "Draft" as const,
             approvalStatus: "Not Required" as const // Default, will verify on submit
         };

@@ -70,8 +70,8 @@ async function verifyOnboardingFlow() {
     const updatedProgressList = await RecruitmentService.getOnboardingProgress(tenantId);
     const updatedHire = updatedProgressList.find(h => h.id === app.id);
 
-    if (updatedHire.completedTasks !== 1) throw new Error("Task completion not counted");
-    if (updatedHire.progress !== 20) throw new Error(`Expected 20% progress, got ${updatedHire.progress}%`);
+    if (updatedHire?.completedTasks !== 1) throw new Error("Task completion not counted");
+    if (updatedHire?.progress !== 20) throw new Error(`Expected 20% progress, got ${updatedHire?.progress}%`);
 
     console.log("✅ Progress Updated Successfully (20%)");
 

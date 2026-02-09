@@ -11,7 +11,7 @@ import {
   Clock,
   ShieldAlert
 } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/standardtable";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { MetricCard } from "@/components/MetricCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Badge } from "@/components/ui/badge";

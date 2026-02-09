@@ -63,14 +63,14 @@ export class CashRevaluationService {
         const result = await this.calculateRevaluation(bankAccountId);
 
         // Apply manual override if provided
-        let usedRate = result.currentRate;
+        let usedRate = (result.currentRate ?? 1);
         let finalGainLoss = result.gainLoss;
         const rateType = rateOverride ? "User" : "Corporate";
 
         if (rateOverride) {
             usedRate = rateOverride;
-            const currentFunctionalValue = result.foreignBalance * usedRate;
-            const historicalFunctionalValue = result.foreignBalance * result.historicalRate;
+            const currentFunctionalValue = (result.foreignBalance ?? '0') * usedRate;
+            const historicalFunctionalValue = (result.foreignBalance ?? '0') * (result.historicalRate ?? 1);
             finalGainLoss = currentFunctionalValue - historicalFunctionalValue;
         }
 
@@ -94,7 +94,7 @@ export class CashRevaluationService {
             await db.insert(cashRevaluationHistory).values({
                 bankAccountId,
                 currency: result.currency!,
-                systemRate: result.currentRate.toString(),
+                systemRate: (result.currentRate ?? 1).toString(),
                 usedRate: usedRate.toString(),
                 rateType,
                 unrealizedGainLoss: finalGainLoss.toFixed(2),

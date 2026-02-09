@@ -409,8 +409,8 @@ export class ArService {
                 ledgerId,
                 sourceData: {
                     receiptNumber: receipt.id.slice(0, 8),
-                    receiptId,
-                    invoiceId,
+                    receiptId: receipt.id,
+                    invoiceId: invoice.id,
                     invoiceNumber: invoice.invoiceNumber,
                     accountId: receipt.accountId,
                     amount: amount
@@ -483,8 +483,8 @@ export class ArService {
                 ledgerId,
                 sourceData: {
                     receiptNumber: receipt.id.slice(0, 8),
-                    receiptId,
-                    invoiceId,
+                    receiptId: receipt.id,
+                    invoiceId: invoice.id,
                     invoiceNumber: invoice.invoiceNumber,
                     accountId: receipt.accountId,
                     amount: amountToUnapply

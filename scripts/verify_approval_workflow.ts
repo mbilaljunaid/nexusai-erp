@@ -88,12 +88,13 @@ async function run() {
     let finalJournal;
     for (let i = 0; i < 10; i++) {
         finalJournal = await db.select().from(glJournals).where(eq(glJournals.id, highJournal.id)).then(r => r[0]);
-        if (finalJournal.status === "Posted") break;
-        if (finalJournal.status === "Error") throw new Error("Posting failed with Error status");
+        if (finalJournal?.status === "Posted") break;
+        if (finalJournal?.status === "Error") throw new Error("Posting failed with Error status");
         console.log(`   ... waiting for posting (current: ${finalJournal?.status})`);
         await new Promise(r => setTimeout(r, 1000));
     }
 
+    if (!finalJournal) throw new Error("Failed to retrieve final journal status");
     if (finalJournal.status !== "Posted") throw new Error(`Final status should be Posted, got ${finalJournal.status}`);
     console.log("   -> Posting Succeeded (Pass)");
 

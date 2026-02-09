@@ -104,13 +104,16 @@ async function verifyBackToBack() {
         const result = await backToBackService.generateWorkOrders(order.id);
         if (!result.success) throw new Error(`WO Generation Failed: ${result.message}`);
 
-        console.log(`   Work Orders Generated: ${result.workOrders.length}`);
+        console.log(`   Work Orders Generated: ${result.workOrders?.length ?? 0}`);
 
         // 3. Verify WO in DB
         // listWorkOrders in ManufacturingService has a subquery that fails if inventory missing.
         // We verify directly against DB to confirm creation success.
 
         const { productionOrders } = await import("../shared/schema");
+        if (!result.workOrders || result.workOrders.length === 0) {
+            throw new Error("No work orders generated");
+        }
         const wos = await db.select().from(productionOrders)
             .where(eq(productionOrders.orderNumber, result.workOrders[0].orderNumber));
 

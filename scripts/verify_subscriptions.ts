@@ -45,7 +45,7 @@ async function verifySubscriptions() {
             ]
         });
 
-        if (Number(amendedSub?.totalMrr) === 1500 && Number(amendedSub.products[0].quantity) === 15) {
+        if (Number(amendedSub?.totalMrr) === 1500 && Number(amendedSub?.products[0].quantity) === 15) {
             console.log("✅ Amendment Successful (MRR Updated)");
         } else {
             console.error("❌ Amendment Failed", { mrr: amendedSub?.totalMrr, qty: amendedSub?.products[0].quantity });
