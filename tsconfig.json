@@ -31,6 +31,6 @@
       "@shared/*": ["./shared/*"]
     }
   },
-  "include": ["src", "shared"],
-  "exclude": ["server", "backend", "scripts"]
+  "include": ["src", "shared", "server"],
+  "exclude": ["backend", "scripts"]
 }

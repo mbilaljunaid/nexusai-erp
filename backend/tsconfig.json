@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ESNext",
     "target": "ES2021",
     "lib": [
       "ES2021"
     ],
+    "moduleResolution": "bundler",
     "outDir": "./dist",
     "rootDirs": [
       "./src",

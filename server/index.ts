@@ -112,20 +112,39 @@ app.use(errorHandler);
 
 try {
   log('Starting NestJS Bridge...');
+  const esbuild = await import('esbuild');
+  const path = await import('path');
+
+  const backendEntry = path.resolve('backend/src/app.module.ts');
+  const outfile = path.resolve('.nestjs-bridge-bundle.mjs');
+
+  await esbuild.build({
+    entryPoints: [backendEntry],
+    bundle: true,
+    outfile,
+    format: 'esm',
+    platform: 'node',
+    target: 'es2021',
+    packages: 'external',
+    tsconfigRaw: JSON.stringify({
+      compilerOptions: {
+        experimentalDecorators: true,
+        emitDecoratorMetadata: true,
+      },
+    }),
+  });
+
   const { NestFactory } = await import('@nestjs/core');
-  const { ExpressAdapter } = await import('@nestjs/platform-express');
-  const { AppModule } = await import('../backend/src/app.module');
+  const { AppModule } = await import(outfile);
 
   const nestApp = await NestFactory.create(
     AppModule,
     { logger: ['error', 'warn', 'log', 'debug', 'verbose'] }
   );
 
-  // Initialize NestJS (starts the container, resolves dependencies)
   log('Initializing NestJS container...');
   await nestApp.init();
 
-  // Mount the NestJS Express instance into the main app
   const nestHandler = nestApp.getHttpAdapter().getInstance();
   app.use((req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
