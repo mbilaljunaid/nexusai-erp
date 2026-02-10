@@ -25,6 +25,8 @@ import CashReconciliationWorkbench from "@/pages/finance/CashReconciliationWorkb
 import CashForecastingView from "@/pages/finance/cash/CashForecastingView";
 import CurrencyRevaluationView from "@/pages/finance/cash/CurrencyRevaluationView";
 import ZBAManagement from "@/pages/finance/cash/ZBAManagement";
+import BankReconciliationWorkbench from "@/pages/finance/cash/BankReconciliationWorkbench";
+import CashPositionDashboard from "@/pages/finance/cash/CashPositionDashboard";
 
 import AccountsReceivable from "@/pages/AccountsReceivable";
 import EnterpriseBillingDashboard from "@/pages/billing/BillingDashboard";
@@ -36,6 +38,7 @@ import BillingAnomalyDashboard from "@/pages/billing/BillingAnomalyDashboard";
 import { SubscriptionWorkbench } from "@/pages/billing/SubscriptionWorkbench";
 import { ArInvoiceList } from "@/components/ar/ArInvoiceList";
 
+import ARInvoices from "@/pages/finance/ar/ARInvoices";
 import ArAnalytics from "@/pages/finance/ar/ArAnalytics";
 import ArReports from "@/pages/finance/ar/ArReports";
 import ArDunningWorkbench from "@/pages/finance/ar/ArDunningWorkbench";
@@ -78,6 +81,13 @@ import Revaluation from "@/pages/gl/Revaluation";
 import TaxManagement from "@/pages/TaxManagement";
 import ExpenseManagement from "@/pages/ExpenseManagement";
 import ApSettings from "@/components/ap/ApSettings";
+
+// Intercompany Module
+import IntercompanyWorkbench from "@/pages/intercompany/IntercompanyWorkbench";
+import NettingWorkbench from "@/pages/intercompany/NettingWorkbench";
+import AllocationsWorkbench from "@/pages/intercompany/AllocationsWorkbench";
+import IntercompanyReconciliation from "@/pages/intercompany/IntercompanyReconciliation";
+import ICDataAccessManager from "@/pages/intercompany/ICDataAccessManager";
 
 // Revenue Management
 import RevenueContractWorkbench from "@/pages/RevenueContractWorkbench";
@@ -127,6 +137,8 @@ export default function FinanceRoutes() {
                 <Route path="/finance/cash/forecasting" component={CashForecastingView} />
                 <Route path="/finance/cash/revaluation" component={CurrencyRevaluationView} />
                 <Route path="/finance/cash/zba" component={ZBAManagement} />
+                <Route path="/finance/cash/bank-reconciliation" component={BankReconciliationWorkbench} />
+                <Route path="/finance/cash/position" component={CashPositionDashboard} />
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />
                 <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
                 <Route path="/finance/fixed-assets" component={FixedAssetWorkbench} />
@@ -197,6 +209,13 @@ export default function FinanceRoutes() {
                 <Route path="/gl/close-center" component={FinancialCloseCenter} />
                 <Route path="/gl/consolidation" component={ConsolidationWorkbench} />
                 <Route path="/gl/consolidation/rules" component={EliminationRules} />
+
+                {/* Intercompany Module */}
+                <Route path="/finance/intercompany/workbench" component={IntercompanyWorkbench} />
+                <Route path="/finance/intercompany/netting" component={NettingWorkbench} />
+                <Route path="/finance/intercompany/allocations" component={AllocationsWorkbench} />
+                <Route path="/finance/intercompany/reconciliation" component={IntercompanyReconciliation} />
+                <Route path="/finance/intercompany/data-access" component={ICDataAccessManager} />
 
                 <Route path="/finance/tax" component={TaxManagement} />
                 <Route path="/finance/expense-management" component={ExpenseManagement} />

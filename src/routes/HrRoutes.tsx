@@ -9,8 +9,11 @@ import InterviewScheduler from "../pages/recruitment/InterviewScheduler";
 import OfferManagementWorkbench from "../pages/recruitment/OfferManagementWorkbench";
 import CandidateMatchingView from "../pages/recruitment/CandidateMatchingView";
 import RecruitingAnalytics from "../pages/recruitment/RecruitingAnalytics";
-import TalentPool from "../pages/TalentPool";
+import TalentPool from "@/pages/TalentPool";
 import JobRequisitionDetail from "../pages/recruitment/JobRequisitionDetail";
+import OnboardingWorkbench from "../pages/recruitment/OnboardingWorkbench";
+import InterviewerDashboard from "../pages/recruitment/InterviewerDashboard";
+import SuccessionPlanning from "@/pages/SuccessionPlanning";
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { HrSidebar } from "@/components/nav/HrSidebar";
 
@@ -30,6 +33,9 @@ import CourseCatalogAdmin from "../pages/hr/learning/admin/CourseCatalogAdmin";
 import ManagerLearningDashboard from "../pages/hr/learning/manager/ManagerLearningDashboard";
 import LearningPlayer from "../pages/hr/learning/player/LearningPlayer";
 import InstructorDashboard from "../pages/hr/learning/instructor/InstructorDashboard";
+import AssessmentBuilder from "../pages/hr/learning/admin/AssessmentBuilder";
+import CurriculumBuilder from "../pages/hr/learning/admin/CurriculumBuilder";
+import CommunityBrowser from "../pages/hr/learning/admin/CommunityBrowser";
 
 // Workforce Management (WFM) Imports
 import MyTime from "../pages/wfm/MyTime";
@@ -44,6 +50,9 @@ import AccrualTesting from "../pages/wfm/AccrualTesting";
 import AIWorkforceInsights from "../pages/wfm/AIWorkforceInsights";
 import HolidayCalendar from "../pages/wfm/HolidayCalendar";
 
+// HR Analytics
+import HRAnalyticsDashboard from "@/pages/HRAnalyticsDashboard";
+
 export default function HrRoutes() {
     return (
         <ModuleLayout sidebar={<HrSidebar />}>
@@ -55,7 +64,10 @@ export default function HrRoutes() {
                 <Route path="/hr/recruitment/offers" component={OfferManagementWorkbench} />
                 <Route path="/hr/recruitment/matching" component={CandidateMatchingView} />
                 <Route path="/hr/recruitment/analytics" component={RecruitingAnalytics} />
+                <Route path="/hr/recruitment/onboarding" component={OnboardingWorkbench} />
+                <Route path="/hr/recruitment/interviewer" component={InterviewerDashboard} />
 
+                <Route path="/hr/succession" component={SuccessionPlanning} />
                 <Route path="/hr/talent-pool" component={TalentPool} />
                 <Route path="/hr/performance" component={PerformanceManagement} />
                 <Route path="/hr/employees" component={EmployeeDirectory} />
@@ -78,6 +90,11 @@ export default function HrRoutes() {
                 <Route path="/hr/learning/instructor" component={InstructorDashboard} />
                 <Route path="/hr/learning/play/:id" component={LearningPlayer} />
 
+                {/* Learning Admin - Advanced Features */}
+                <Route path="/hr/learning/admin/assessments" component={AssessmentBuilder} />
+                <Route path="/hr/learning/admin/curricula" component={CurriculumBuilder} />
+                <Route path="/hr/learning/communities" component={CommunityBrowser} />
+
                 {/* Workforce Management (WFM) Routes */}
                 {/* Employee Self-Service */}
                 <Route path="/hr/wfm/me/time" component={MyTime} />
@@ -93,6 +110,7 @@ export default function HrRoutes() {
                 <Route path="/hr/wfm/admin/holidays" component={HolidayCalendar} />
 
                 {/* Analytics & Reporting */}
+                <Route path="/hr/analytics" component={HRAnalyticsDashboard} />
                 <Route path="/hr/wfm/analytics" component={WfmAnalytics} />
                 <Route path="/hr/wfm/violations" component={ViolationsDashboard} />
                 <Route path="/hr/wfm/insights" component={AIWorkforceInsights} />

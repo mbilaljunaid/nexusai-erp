@@ -261,4 +261,105 @@ router.delete("/data-access/:id", async (req, res) => {
     }
 });
 
+// ── Netting Module ──
+router.get("/netting/batches", async (req, res) => {
+    try {
+        // Mock netting batches - in production, query from icNettingBatches table
+        const mockBatches = [
+            {
+                id: "NET-001",
+                batchName: "Month-End Netting - Feb 2026",
+                status: "PENDING",
+                createdDate: new Date("2026-02-10"),
+                participatingOrgs: ["ICO-101", "ICO-102", "ICO-103"],
+                totalSettlementAmount: 150000,
+                currency: "USD"
+            },
+            {
+                id: "NET-002",
+                batchName: "Q1 Netting Batch",
+                status: "EXECUTED",
+                createdDate: new Date("2026-01-31"),
+                participatingOrgs: ["ICO-101", "ICO-104"],
+                totalSettlementAmount: 85000,
+                currency: "USD",
+                executedDate: new Date("2026-02-01")
+            }
+        ];
+        res.json(mockBatches);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/netting/batches", async (req, res) => {
+    try {
+        const { batchName, participatingOrgIds, periodStart, periodEnd, currency } = req.body;
+
+        if (!batchName || !participatingOrgIds || participatingOrgIds.length < 2) {
+            return res.status(400).json({ error: "batchName and at least 2 participating orgs required" });
+        }
+
+        // Mock netting calculation
+        // In production, this would:
+        // 1. Query all IC transactions between orgs in the period
+        // 2. Calculate bilateral positions
+        // 3. Apply multilateral netting algorithm
+        // 4. Generate net settlement positions
+
+        const newBatch = {
+            id: `NET-${Date.now()}`,
+            batchName,
+            status: "PENDING",
+            createdDate: new Date(),
+            participatingOrgs: participatingOrgIds,
+            currency: currency || "USD",
+            periodStart,
+            periodEnd,
+            // Mock calculated positions
+            positions: participatingOrgIds.map((orgId: string, idx: number) => ({
+                orgId,
+                grossPayable: (idx + 1) * 50000,
+                grossReceivable: (idx + 1) * 45000,
+                netPosition: (idx % 2 === 0 ? 1 : -1) * (5000 * (idx + 1))
+            })),
+            totalSettlementAmount: 0 // Will be calculated
+        };
+
+        // Calculate total settlement
+        const totalSettlement = newBatch.positions.reduce((sum: number, p: any) =>
+            sum + Math.abs(p.netPosition), 0) / 2;
+        newBatch.totalSettlementAmount = totalSettlement;
+
+        res.json(newBatch);
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.post("/netting/batches/:id/execute", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // In production, this would:
+        // 1. Validate batch status is PENDING
+        // 2. Create settlement payment transactions
+        // 3. Update IC balances
+        // 4. Generate GL journals
+        // 5. Mark batch as EXECUTED
+
+        const result = {
+            batchId: id,
+            status: "EXECUTED",
+            executedDate: new Date(),
+            settlementsCreated: 3,
+            message: "Netting batch executed successfully. Settlement transactions created."
+        };
+
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 export default router;

@@ -32,7 +32,9 @@ import {
     AlertTriangle,
     DollarSign,
     Sparkles,
-    ClipboardList
+    ClipboardList,
+    FileCheck,
+    GitBranch
 } from "lucide-react";
 
 const hrMenu = [
@@ -57,11 +59,20 @@ const hrMenu = [
         ]
     },
     {
-        label: "Development",
+        label: "Learning & Development",
         items: [
-            { title: "Performance", url: "/hr/performance", icon: FileText },
-            { title: "Learning (LMS)", url: "/hr/learning/me", icon: GraduationCap },
-            { title: "Talent Pool", url: "/hr/talent-pool", icon: Users },
+            { title: "My Learning", url: "/hr/learning/me", icon: GraduationCap },
+            { title: "Communities", url: "/hr/learning/communities", icon: Users },
+            { title: "Team Dashboard", url: "/hr/learning/team", icon: Users2 },
+            { title: "Instructor", url: "/hr/learning/instructor", icon: Award },
+        ]
+    },
+    {
+        label: "Learning Admin",
+        items: [
+            { title: "Course Catalog", url: "/hr/learning/admin", icon: Database },
+            { title: "Assessments", url: "/hr/learning/admin/assessments", icon: FileCheck },
+            { title: "Learning Paths", url: "/hr/learning/admin/curricula", icon: GitBranch },
         ]
     },
     {
