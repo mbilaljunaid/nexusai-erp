@@ -216,13 +216,21 @@ export function NexusAIPanel() {
                         )}
                       </div>
                     )}
-                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    <div className="whitespace-pre-wrap break-words">{msg.content}</div>
                     {msg.toolCalls && msg.toolCalls.length > 0 && (
-                      <div className="mt-2 pt-2 border-t border-border/50">
+                      <div className="mt-2 pt-2 border-t border-border/50 space-y-1">
                         {msg.toolCalls.map((tc, i) => (
-                          <div key={i} className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                            <Sparkles className="h-2.5 w-2.5" />
-                            <span>Used: {tc.name}</span>
+                          <div key={i}>
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                              <Sparkles className="h-2.5 w-2.5 text-primary" />
+                              <span className="font-medium">Tool: {tc.name}</span>
+                              {tc.result && <Badge variant="outline" className="text-[8px] px-1 py-0 h-3 ml-1 text-emerald-600 border-emerald-300">✓ executed</Badge>}
+                            </div>
+                            {tc.result && (
+                              <pre className="mt-1 text-[10px] bg-background/50 rounded p-1.5 overflow-x-auto max-h-32 text-muted-foreground">
+                                {typeof tc.result === "string" ? tc.result : JSON.stringify(tc.result, null, 2)}
+                              </pre>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -237,7 +245,7 @@ export function NexusAIPanel() {
               <div className="flex justify-start">
                 <div className="bg-muted rounded-xl rounded-bl-sm px-3.5 py-2.5 flex items-center gap-2">
                   <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                  <span className="text-xs text-muted-foreground">Thinking...</span>
+                  <span className="text-xs text-muted-foreground">Streaming response...</span>
                 </div>
               </div>
             )}
