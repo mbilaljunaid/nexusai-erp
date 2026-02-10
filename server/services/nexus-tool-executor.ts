@@ -388,6 +388,105 @@ const TOOL_PERMISSION_MAP: Record<string, string> = {
   check_recipe_compliance: PERMISSIONS.FNB_READ,
   get_batch_trace: PERMISSIONS.FNB_READ,
   forecast_cpg_demand: PERMISSIONS.FNB_READ,
+
+  // ═══════════════════════════════════════════════
+  // NEW TOOLS — Phase 5: Remaining Modules
+  // ═══════════════════════════════════════════════
+
+  // ── Costing / Profitability ──
+  get_cost_analysis: PERMISSIONS.COSTING_READ,
+  run_profitability_report: PERMISSIONS.COSTING_READ,
+  get_margin_breakdown: PERMISSIONS.COSTING_READ,
+
+  // ── Compliance (Advanced) ──
+  get_compliance_dashboard: PERMISSIONS.COMPLIANCE_READ,
+  check_regulatory_status: PERMISSIONS.COMPLIANCE_READ,
+  create_compliance_exception: PERMISSIONS.COMPLIANCE_WRITE,
+
+  // ── Community / Forum ──
+  get_community_metrics: PERMISSIONS.COMMUNITY_READ,
+  create_forum_post: PERMISSIONS.COMMUNITY_WRITE,
+
+  // ── Content Management ──
+  get_content_library: PERMISSIONS.CONTENT_READ,
+  publish_content: PERMISSIONS.CONTENT_WRITE,
+  get_content_analytics: PERMISSIONS.CONTENT_READ,
+
+  // ── Customer Success / Loyalty ──
+  get_customer_health_score: PERMISSIONS.CUSTOMER_SUCCESS_READ,
+  predict_churn: PERMISSIONS.CUSTOMER_SUCCESS_READ,
+  get_nps_summary: PERMISSIONS.CUSTOMER_SUCCESS_READ,
+
+  // ── Loyalty Programs ──
+  get_loyalty_summary: PERMISSIONS.LOYALTY_READ,
+  check_rewards_balance: PERMISSIONS.LOYALTY_READ,
+  issue_loyalty_points: PERMISSIONS.LOYALTY_WRITE,
+
+  // ── Employee Engagement ──
+  get_engagement_score: PERMISSIONS.ENGAGEMENT_READ,
+  create_pulse_survey: PERMISSIONS.ENGAGEMENT_WRITE,
+  get_survey_results: PERMISSIONS.ENGAGEMENT_READ,
+
+  // ── Integration Hub ──
+  get_integration_status: PERMISSIONS.INTEGRATION_READ,
+  check_connector_health: PERMISSIONS.INTEGRATION_READ,
+  trigger_sync: PERMISSIONS.INTEGRATION_WRITE,
+
+  // ── PIM ──
+  get_product_catalog: PERMISSIONS.PIM_READ,
+  enrich_product_data: PERMISSIONS.PIM_WRITE,
+  check_product_completeness: PERMISSIONS.PIM_READ,
+
+  // ── Risk Management ──
+  get_risk_register: PERMISSIONS.RISK_READ,
+  assess_risk: PERMISSIONS.RISK_READ,
+  create_risk_mitigation: PERMISSIONS.RISK_WRITE,
+
+  // ── Security / Access Control ──
+  get_security_overview: PERMISSIONS.SECURITY_READ,
+  check_access_violations: PERMISSIONS.SECURITY_READ,
+  audit_user_permissions: PERMISSIONS.SECURITY_READ,
+
+  // ── System Admin ──
+  get_system_health: PERMISSIONS.SYSTEM_ADMIN_READ,
+  check_job_queue: PERMISSIONS.SYSTEM_ADMIN_READ,
+  get_usage_metrics: PERMISSIONS.SYSTEM_ADMIN_READ,
+
+  // ── Warehouse Operations ──
+  get_warehouse_utilization: PERMISSIONS.WAREHOUSE_READ,
+  process_goods_receipt: PERMISSIONS.WAREHOUSE_WRITE,
+  run_cycle_count: PERMISSIONS.WAREHOUSE_WRITE,
+
+  // ── HSE / Safety ──
+  get_safety_incidents: PERMISSIONS.HSE_READ,
+  create_safety_report: PERMISSIONS.HSE_WRITE,
+  check_hse_compliance: PERMISSIONS.HSE_READ,
+
+  // ── Demand Forecasting ──
+  run_demand_forecast: PERMISSIONS.DEMAND_FORECAST_READ,
+  get_forecast_accuracy: PERMISSIONS.DEMAND_FORECAST_READ,
+
+  // ── Translation / Localization ──
+  get_translation_status: PERMISSIONS.TRANSLATION_READ,
+  request_translation: PERMISSIONS.TRANSLATION_WRITE,
+
+  // ── Competitive Intelligence ──
+  get_competitor_analysis: PERMISSIONS.COMPETITIVE_INTEL_READ,
+  get_market_positioning: PERMISSIONS.COMPETITIVE_INTEL_READ,
+
+  // ── Sustainability / ESG ──
+  get_esg_metrics: PERMISSIONS.SUSTAINABILITY_READ,
+  get_carbon_footprint: PERMISSIONS.SUSTAINABILITY_READ,
+  create_sustainability_goal: PERMISSIONS.SUSTAINABILITY_WRITE,
+
+  // ── Cognitive Services ──
+  analyze_sentiment: PERMISSIONS.COGNITIVE_READ,
+  classify_document: PERMISSIONS.COGNITIVE_READ,
+  extract_entities: PERMISSIONS.COGNITIVE_READ,
+
+  // ── Geolocation ──
+  get_location_analytics: PERMISSIONS.GEOLOCATION_READ,
+  geocode_address: PERMISSIONS.GEOLOCATION_READ,
 };
 
 export interface ToolExecutionRequest {
@@ -1012,6 +1111,105 @@ async function executeToolAction(toolName: string, params: Record<string, any>, 
       return getBatchTrace(params);
     case "forecast_cpg_demand":
       return forecastCpgDemand(params);
+
+    // ═══════════════════════════════════════════════
+    // NEW TOOL CASES — Phase 5: Remaining Modules
+    // ═══════════════════════════════════════════════
+
+    // ── Costing / Profitability ──
+    case "get_cost_analysis": return getCostAnalysis(params);
+    case "run_profitability_report": return runProfitabilityReport(params);
+    case "get_margin_breakdown": return getMarginBreakdown(params);
+
+    // ── Compliance ──
+    case "get_compliance_dashboard": return getComplianceDashboard(params);
+    case "check_regulatory_status": return checkRegulatoryStatus(params);
+    case "create_compliance_exception": return createComplianceException(params);
+
+    // ── Community ──
+    case "get_community_metrics": return getCommunityMetrics(params);
+    case "create_forum_post": return createForumPost(params);
+
+    // ── Content Management ──
+    case "get_content_library": return getContentLibrary(params);
+    case "publish_content": return publishContent(params);
+    case "get_content_analytics": return getContentAnalytics(params);
+
+    // ── Customer Success ──
+    case "get_customer_health_score": return getCustomerHealthScore(params);
+    case "predict_churn": return predictChurn(params);
+    case "get_nps_summary": return getNpsSummary(params);
+
+    // ── Loyalty ──
+    case "get_loyalty_summary": return getLoyaltySummary(params);
+    case "check_rewards_balance": return checkRewardsBalance(params);
+    case "issue_loyalty_points": return issueLoyaltyPoints(params);
+
+    // ── Employee Engagement ──
+    case "get_engagement_score": return getEngagementScore(params);
+    case "create_pulse_survey": return createPulseSurvey(params);
+    case "get_survey_results": return getSurveyResults(params);
+
+    // ── Integration Hub ──
+    case "get_integration_status": return getIntegrationStatus(params);
+    case "check_connector_health": return checkConnectorHealth(params);
+    case "trigger_sync": return triggerSync(params);
+
+    // ── PIM ──
+    case "get_product_catalog": return getProductCatalog(params);
+    case "enrich_product_data": return enrichProductData(params);
+    case "check_product_completeness": return checkProductCompleteness(params);
+
+    // ── Risk Management ──
+    case "get_risk_register": return getRiskRegister(params);
+    case "assess_risk": return assessRisk(params);
+    case "create_risk_mitigation": return createRiskMitigation(params);
+
+    // ── Security ──
+    case "get_security_overview": return getSecurityOverview(params);
+    case "check_access_violations": return checkAccessViolations(params);
+    case "audit_user_permissions": return auditUserPermissions(params);
+
+    // ── System Admin ──
+    case "get_system_health": return getSystemHealth(params);
+    case "check_job_queue": return checkJobQueue(params);
+    case "get_usage_metrics": return getUsageMetrics(params);
+
+    // ── Warehouse ──
+    case "get_warehouse_utilization": return getWarehouseUtilization(params);
+    case "process_goods_receipt": return processGoodsReceipt(params);
+    case "run_cycle_count": return runCycleCount(params);
+
+    // ── HSE ──
+    case "get_safety_incidents": return getSafetyIncidents(params);
+    case "create_safety_report": return createSafetyReport(params);
+    case "check_hse_compliance": return checkHseCompliance(params);
+
+    // ── Demand Forecasting ──
+    case "run_demand_forecast": return runDemandForecast(params);
+    case "get_forecast_accuracy": return getForecastAccuracy(params);
+
+    // ── Translation ──
+    case "get_translation_status": return getTranslationStatus(params);
+    case "request_translation": return requestTranslation(params);
+
+    // ── Competitive Intelligence ──
+    case "get_competitor_analysis": return getCompetitorAnalysis(params);
+    case "get_market_positioning": return getMarketPositioning(params);
+
+    // ── Sustainability / ESG ──
+    case "get_esg_metrics": return getEsgMetrics(params);
+    case "get_carbon_footprint": return getCarbonFootprint(params);
+    case "create_sustainability_goal": return createSustainabilityGoal(params);
+
+    // ── Cognitive Services ──
+    case "analyze_sentiment": return analyzeSentiment(params);
+    case "classify_document": return classifyDocument(params);
+    case "extract_entities": return extractEntities(params);
+
+    // ── Geolocation ──
+    case "get_location_analytics": return getLocationAnalytics(params);
+    case "geocode_address": return geocodeAddress(params);
 
     default:
       throw new Error(`Unknown tool: ${toolName}`);
@@ -3173,4 +3371,268 @@ async function getBatchTrace(params: Record<string, any>) {
 
 async function forecastCpgDemand(params: Record<string, any>) {
   return { productId: params.productId || "all", forecast: [{ month: "Mar", units: 45000 }, { month: "Apr", units: 52000 }, { month: "May", units: 48000 }], seasonalIndex: 1.12, promotionLift: 18, accuracy: 91, message: "CPG demand forecast (mock data)" };
+}
+
+// ═══════════════════════════════════════════════
+// Phase 5 — Remaining Module Implementations
+// ═══════════════════════════════════════════════
+
+// ── Costing / Profitability ──
+
+async function getCostAnalysis(params: Record<string, any>) {
+  return { entityId: params.entityId || "all", period: params.period || "current", directCosts: 245000, indirectCosts: 82000, overheadAllocation: 34000, totalCost: 361000, costPerUnit: 12.03, varianceFromStandard: -2.4, message: "Cost analysis (mock data)" };
+}
+
+async function runProfitabilityReport(params: Record<string, any>) {
+  return { segment: params.segment || "all", revenue: 520000, cogs: 312000, grossMargin: 40, operatingExpenses: 124000, netProfit: 84000, netMargin: 16.2, topProducts: [{ name: "Product A", margin: 48 }, { name: "Product B", margin: 35 }], message: "Profitability report (mock data)" };
+}
+
+async function getMarginBreakdown(params: Record<string, any>) {
+  return { productId: params.productId || "all", grossMargin: 42, contributionMargin: 38, operatingMargin: 18, materialCost: 45, laborCost: 22, overheadCost: 15, variances: [{ type: "material_price", amount: -2400 }, { type: "labor_efficiency", amount: 1200 }], message: "Margin breakdown (mock data)" };
+}
+
+// ── Compliance (Advanced) ──
+
+async function getComplianceDashboard(params: Record<string, any>) {
+  return { overallScore: 94, openFindings: 7, closedThisMonth: 12, regulations: [{ name: "SOX", status: "compliant" }, { name: "GDPR", status: "compliant" }, { name: "HIPAA", status: "review_needed" }], upcomingAudits: 2, riskAreas: ["Data Retention", "Access Controls"], message: "Compliance dashboard (mock data)" };
+}
+
+async function checkRegulatoryStatus(params: Record<string, any>) {
+  return { regulation: params.regulation || "SOX", status: "compliant", lastAssessment: "2026-01-15", nextDeadline: "2026-03-31", openItems: 3, controlsTested: 48, passRate: 95.8, message: "Regulatory status (mock data)" };
+}
+
+async function createComplianceException(params: Record<string, any>) {
+  return { exceptionId: `COMP-EXC-${Date.now()}`, type: params.type || "policy_deviation", status: "pending_review", requestedBy: params.requestedBy || "current_user", approvalRequired: true, message: "Compliance exception created" };
+}
+
+// ── Community / Forum ──
+
+async function getCommunityMetrics(params: Record<string, any>) {
+  return { totalMembers: 12400, activeMonthly: 3200, postsThisWeek: 142, topContributors: [{ name: "user_a", posts: 24 }, { name: "user_b", posts: 18 }], resolvedQuestions: 89, avgResponseTime: "2.4h", satisfactionRate: 91, message: "Community metrics (mock data)" };
+}
+
+async function createForumPost(params: Record<string, any>) {
+  return { postId: `POST-${Date.now()}`, title: params.title || "Untitled", category: params.category || "general", status: "published", message: "Forum post created" };
+}
+
+// ── Content Management ──
+
+async function getContentLibrary(params: Record<string, any>) {
+  return { totalAssets: 2840, published: 2100, draft: 540, archived: 200, categories: [{ name: "Documentation", count: 890 }, { name: "Marketing", count: 640 }, { name: "Training", count: 420 }], recentUpdates: 12, message: "Content library (mock data)" };
+}
+
+async function publishContent(params: Record<string, any>) {
+  return { contentId: params.contentId || `CMS-${Date.now()}`, title: params.title, status: "published", publishedAt: new Date().toISOString(), channel: params.channel || "web", message: "Content published" };
+}
+
+async function getContentAnalytics(params: Record<string, any>) {
+  return { period: params.period || "last_30_days", totalViews: 45200, uniqueVisitors: 12800, avgTimeOnPage: "3:42", topContent: [{ title: "Getting Started Guide", views: 4200 }, { title: "API Documentation", views: 3100 }], bounceRate: 32, message: "Content analytics (mock data)" };
+}
+
+// ── Customer Success / Loyalty ──
+
+async function getCustomerHealthScore(params: Record<string, any>) {
+  return { customerId: params.customerId || "all", healthScore: 82, trend: "improving", factors: [{ factor: "product_usage", score: 88 }, { factor: "support_tickets", score: 72 }, { factor: "nps", score: 85 }], riskLevel: "low", nextReview: "2026-03-01", message: "Customer health score (mock data)" };
+}
+
+async function predictChurn(params: Record<string, any>) {
+  return { segment: params.segment || "all", churnProbability: 8.2, atRiskAccounts: 14, topReasons: ["Low engagement", "Support escalations", "Contract approaching renewal"], recommendations: ["Proactive outreach to 5 highest-risk accounts", "Schedule QBR for enterprise segment"], message: "Churn prediction (mock data)" };
+}
+
+async function getNpsSummary(params: Record<string, any>) {
+  return { period: params.period || "last_quarter", nps: 52, promoters: 62, passives: 28, detractors: 10, responsesCollected: 340, topThemes: [{ theme: "Ease of use", sentiment: "positive" }, { theme: "Onboarding", sentiment: "mixed" }], message: "NPS summary (mock data)" };
+}
+
+// ── Loyalty Programs ──
+
+async function getLoyaltySummary(params: Record<string, any>) {
+  return { programId: params.programId || "default", totalMembers: 48200, activeMembers: 32100, pointsIssued: 2400000, pointsRedeemed: 1800000, redemptionRate: 75, tiers: [{ name: "Gold", members: 4200 }, { name: "Silver", members: 12400 }, { name: "Bronze", members: 31600 }], message: "Loyalty summary (mock data)" };
+}
+
+async function checkRewardsBalance(params: Record<string, any>) {
+  return { memberId: params.memberId, tier: "Gold", pointsBalance: 12400, pointsExpiring: 2400, expiryDate: "2026-06-30", lifetimeEarned: 84200, lifetimeRedeemed: 71800, message: "Rewards balance (mock data)" };
+}
+
+async function issueLoyaltyPoints(params: Record<string, any>) {
+  return { transactionId: `LP-${Date.now()}`, memberId: params.memberId, pointsIssued: params.points || 100, reason: params.reason || "purchase", newBalance: 12500, message: "Loyalty points issued" };
+}
+
+// ── Employee Engagement ──
+
+async function getEngagementScore(params: Record<string, any>) {
+  return { tenantId: params.tenantId, overallScore: 78, dimensions: [{ name: "Purpose", score: 82 }, { name: "Growth", score: 74 }, { name: "Recognition", score: 71 }, { name: "Wellbeing", score: 80 }, { name: "Belonging", score: 76 }], participation: 84, trend: "stable", benchmarkVsIndustry: "+4", message: "Engagement score (mock data)" };
+}
+
+async function createPulseSurvey(params: Record<string, any>) {
+  return { surveyId: `PULSE-${Date.now()}`, title: params.title || "Weekly Pulse", questions: params.questionCount || 5, targetAudience: params.audience || "all_employees", status: "scheduled", launchDate: params.launchDate || new Date().toISOString(), message: "Pulse survey created" };
+}
+
+async function getSurveyResults(params: Record<string, any>) {
+  return { surveyId: params.surveyId, title: "Q1 Engagement Pulse", responses: 342, responseRate: 78, avgScore: 4.1, topStrengths: ["Team collaboration", "Manager support"], topConcerns: ["Career growth", "Workload balance"], message: "Survey results (mock data)" };
+}
+
+// ── Integration Hub ──
+
+async function getIntegrationStatus(params: Record<string, any>) {
+  return { totalIntegrations: 24, active: 20, error: 2, paused: 2, connectors: [{ name: "Salesforce", status: "active", lastSync: "2026-02-10T08:00:00Z" }, { name: "SAP", status: "active", lastSync: "2026-02-10T07:45:00Z" }, { name: "Workday", status: "error", lastError: "Auth token expired" }], message: "Integration status (mock data)" };
+}
+
+async function checkConnectorHealth(params: Record<string, any>) {
+  return { connectorId: params.connectorId, name: params.name || "Salesforce", status: "healthy", uptime: 99.8, latency: "120ms", lastSync: "2026-02-10T08:00:00Z", recordsSynced: 12400, errors: 0, message: "Connector health (mock data)" };
+}
+
+async function triggerSync(params: Record<string, any>) {
+  return { syncId: `SYNC-${Date.now()}`, connectorId: params.connectorId, status: "in_progress", estimatedDuration: "5m", recordsQueued: 840, message: "Sync triggered" };
+}
+
+// ── PIM ──
+
+async function getProductCatalog(params: Record<string, any>) {
+  return { totalProducts: 4200, published: 3800, draft: 300, archived: 100, categories: 84, attributes: 240, completenessAvg: 87, recentUpdates: 42, message: "Product catalog (mock data)" };
+}
+
+async function enrichProductData(params: Record<string, any>) {
+  return { productId: params.productId, enrichedFields: ["description", "seo_keywords", "specifications"], completeness: { before: 72, after: 94 }, suggestedCategories: ["Electronics > Accessories"], message: "Product data enriched" };
+}
+
+async function checkProductCompleteness(params: Record<string, any>) {
+  return { productId: params.productId || "all", completeness: 87, missingFields: [{ field: "weight", products: 42 }, { field: "hs_code", products: 120 }, { field: "images", products: 28 }], channelReadiness: { web: 92, marketplace: 78, print: 64 }, message: "Product completeness (mock data)" };
+}
+
+// ── Risk Management ──
+
+async function getRiskRegister(params: Record<string, any>) {
+  return { totalRisks: 34, critical: 3, high: 8, medium: 15, low: 8, topRisks: [{ id: "R-001", name: "Supply chain disruption", severity: "critical", likelihood: "medium", owner: "VP Operations" }, { id: "R-002", name: "Cybersecurity breach", severity: "high", likelihood: "low", owner: "CISO" }], mitigationRate: 78, message: "Risk register (mock data)" };
+}
+
+async function assessRisk(params: Record<string, any>) {
+  return { riskId: params.riskId, assessment: { impact: 4, likelihood: 3, riskScore: 12, category: "operational", residualRisk: 6 }, controls: [{ name: "Dual sourcing", effectiveness: "high" }, { name: "Safety stock", effectiveness: "medium" }], recommendation: "Implement additional mitigation for supply chain risk", message: "Risk assessment (mock data)" };
+}
+
+async function createRiskMitigation(params: Record<string, any>) {
+  return { mitigationId: `MIT-${Date.now()}`, riskId: params.riskId, action: params.action || "Implement control", owner: params.owner, dueDate: params.dueDate || "2026-06-30", status: "open", expectedReduction: 40, message: "Risk mitigation created" };
+}
+
+// ── Security / Access Control ──
+
+async function getSecurityOverview(params: Record<string, any>) {
+  return { activeUsers: 1240, failedLogins24h: 14, mfaAdoption: 92, openVulnerabilities: 3, lastPenTest: "2026-01-20", complianceScore: 96, activeSessions: 342, suspiciousActivities: 2, message: "Security overview (mock data)" };
+}
+
+async function checkAccessViolations(params: Record<string, any>) {
+  return { period: params.period || "last_7_days", violations: 4, details: [{ user: "user_042", action: "unauthorized_export", timestamp: "2026-02-08T14:22:00Z" }, { user: "user_189", action: "sod_conflict", timestamp: "2026-02-07T09:15:00Z" }], recommendation: "Review user_042 permissions", message: "Access violations (mock data)" };
+}
+
+async function auditUserPermissions(params: Record<string, any>) {
+  return { userId: params.userId, roles: ["gl_user", "ap_writer"], permissions: 42, lastReview: "2025-12-15", sodConflicts: 0, unusedPermissions: 5, recommendation: "Remove 5 unused permissions per least-privilege policy", message: "User permission audit (mock data)" };
+}
+
+// ── System Admin ──
+
+async function getSystemHealth(params: Record<string, any>) {
+  return { status: "healthy", uptime: "99.97%", cpuUsage: 34, memoryUsage: 62, diskUsage: 48, activeConnections: 342, queueDepth: 12, avgResponseTime: "145ms", alerts: [{ level: "warning", message: "Disk usage approaching 50%" }], message: "System health (mock data)" };
+}
+
+async function checkJobQueue(params: Record<string, any>) {
+  return { totalJobs: 42, pending: 8, running: 3, completed: 28, failed: 3, scheduledJobs: [{ name: "nightly_reconciliation", nextRun: "2026-02-11T02:00:00Z" }, { name: "data_sync", nextRun: "2026-02-10T12:00:00Z" }], message: "Job queue (mock data)" };
+}
+
+async function getUsageMetrics(params: Record<string, any>) {
+  return { period: params.period || "current_month", activeUsers: 842, apiCalls: 1240000, storageUsed: "42GB", bandwidth: "120GB", peakConcurrent: 124, topModules: [{ name: "Finance", usage: 32 }, { name: "CRM", usage: 24 }, { name: "HR", usage: 18 }], message: "Usage metrics (mock data)" };
+}
+
+// ── Warehouse Operations ──
+
+async function getWarehouseUtilization(params: Record<string, any>) {
+  return { warehouseId: params.warehouseId || "all", utilization: 78, totalLocations: 4200, occupied: 3276, available: 924, receivingDock: { pending: 12, processing: 3 }, shippingDock: { pending: 8, processing: 5 }, pickEfficiency: 94, message: "Warehouse utilization (mock data)" };
+}
+
+async function processGoodsReceipt(params: Record<string, any>) {
+  return { receiptId: `GR-${Date.now()}`, poNumber: params.poNumber, items: params.items || 5, status: "received", putawayGenerated: true, qualityInspection: params.inspectionRequired || false, message: "Goods receipt processed" };
+}
+
+async function runCycleCount(params: Record<string, any>) {
+  return { countId: `CC-${Date.now()}`, zone: params.zone || "A", itemsCounted: 240, discrepancies: 8, accuracy: 96.7, adjustmentsRequired: 5, status: "completed", message: "Cycle count completed" };
+}
+
+// ── HSE / Safety ──
+
+async function getSafetyIncidents(params: Record<string, any>) {
+  return { period: params.period || "current_year", totalIncidents: 14, nearMisses: 24, lostTimeDays: 8, trir: 1.2, topCategories: [{ category: "Slips/Falls", count: 5 }, { category: "Ergonomic", count: 4 }], openInvestigations: 2, message: "Safety incidents (mock data)" };
+}
+
+async function createSafetyReport(params: Record<string, any>) {
+  return { reportId: `HSE-${Date.now()}`, type: params.type || "incident", severity: params.severity || "minor", location: params.location, status: "reported", investigationRequired: params.severity === "major", message: "Safety report created" };
+}
+
+async function checkHseCompliance(params: Record<string, any>) {
+  return { overallScore: 94, inspections: { completed: 42, scheduled: 48 }, training: { current: 96, expired: 4 }, permits: { active: 24, expiring: 3 }, openActions: 7, regulatoryFindings: 0, message: "HSE compliance (mock data)" };
+}
+
+// ── Demand Forecasting ──
+
+async function runDemandForecast(params: Record<string, any>) {
+  return { productId: params.productId || "all", method: params.method || "ml_ensemble", horizon: params.horizon || "12_weeks", forecast: [{ week: 1, units: 4200, confidence: 92 }, { week: 2, units: 4400, confidence: 90 }, { week: 3, units: 4100, confidence: 87 }], seasonality: "detected", accuracy: 91.4, message: "Demand forecast (mock data)" };
+}
+
+async function getForecastAccuracy(params: Record<string, any>) {
+  return { period: params.period || "last_quarter", mape: 8.2, bias: -1.4, wmape: 7.8, forecastValueAdded: 12.4, bestModel: "XGBoost", worstCategory: "New Products", message: "Forecast accuracy (mock data)" };
+}
+
+// ── Translation / Localization ──
+
+async function getTranslationStatus(params: Record<string, any>) {
+  return { totalStrings: 24800, translated: 22400, inReview: 1200, pending: 1200, languages: [{ code: "fr", progress: 94 }, { code: "de", progress: 91 }, { code: "ja", progress: 82 }, { code: "es", progress: 96 }], completeness: 90.3, message: "Translation status (mock data)" };
+}
+
+async function requestTranslation(params: Record<string, any>) {
+  return { requestId: `TL-${Date.now()}`, sourceLanguage: params.sourceLanguage || "en", targetLanguage: params.targetLanguage, stringCount: params.stringCount || 50, estimatedCompletion: "48h", status: "queued", message: "Translation requested" };
+}
+
+// ── Competitive Intelligence ──
+
+async function getCompetitorAnalysis(params: Record<string, any>) {
+  return { competitor: params.competitor || "all", marketShare: { us: 24, them: 18 }, strengths: ["Brand recognition", "Distribution network"], weaknesses: ["Product innovation", "Customer support"], recentMoves: ["Launched new product line", "Expanded to APAC"], winRate: 62, message: "Competitor analysis (mock data)" };
+}
+
+async function getMarketPositioning(params: Record<string, any>) {
+  return { segment: params.segment || "enterprise", position: "leader", quadrant: { innovation: 85, execution: 78 }, competitors: [{ name: "Competitor A", innovation: 72, execution: 82 }, { name: "Competitor B", innovation: 68, execution: 74 }], differentiators: ["AI-powered automation", "Industry depth"], message: "Market positioning (mock data)" };
+}
+
+// ── Sustainability / ESG ──
+
+async function getEsgMetrics(params: Record<string, any>) {
+  return { period: params.period || "FY2025", environmental: { score: 78, carbonEmissions: 12400, renewableEnergy: 42, waterUsage: -8 }, social: { score: 82, diversity: 44, safetyRate: 98.2, communityInvestment: 240000 }, governance: { score: 88, boardDiversity: 40, ethicsComplaints: 2, complianceScore: 96 }, overallScore: 82, message: "ESG metrics (mock data)" };
+}
+
+async function getCarbonFootprint(params: Record<string, any>) {
+  return { period: params.period || "current_year", scope1: 3200, scope2: 5400, scope3: 18200, total: 26800, reductionVsLastYear: -12, offsetCredits: 4200, netEmissions: 22600, topSources: [{ source: "Electricity", tCO2e: 5400 }, { source: "Fleet", tCO2e: 3200 }], message: "Carbon footprint (mock data)" };
+}
+
+async function createSustainabilityGoal(params: Record<string, any>) {
+  return { goalId: `ESG-${Date.now()}`, title: params.title || "Reduce emissions", target: params.target || "20% reduction by 2028", category: params.category || "environmental", baseline: params.baseline || 26800, status: "active", message: "Sustainability goal created" };
+}
+
+// ── Cognitive Services ──
+
+async function analyzeSentiment(params: Record<string, any>) {
+  return { text: (params.text || "").substring(0, 100) + "...", sentiment: "positive", confidence: 0.87, scores: { positive: 0.87, neutral: 0.10, negative: 0.03 }, keyPhrases: ["excellent service", "fast delivery", "great product"], message: "Sentiment analysis (mock data)" };
+}
+
+async function classifyDocument(params: Record<string, any>) {
+  return { documentId: params.documentId, classification: "invoice", confidence: 0.94, subType: "purchase_invoice", language: "en", pages: 2, extractedFields: ["vendor", "amount", "date", "po_number"], message: "Document classified (mock data)" };
+}
+
+async function extractEntities(params: Record<string, any>) {
+  return { text: (params.text || "").substring(0, 100) + "...", entities: [{ text: "Acme Corp", type: "ORGANIZATION", confidence: 0.95 }, { text: "$50,000", type: "MONEY", confidence: 0.98 }, { text: "2026-03-15", type: "DATE", confidence: 0.97 }], totalEntities: 3, message: "Entity extraction (mock data)" };
+}
+
+// ── Geolocation ──
+
+async function getLocationAnalytics(params: Record<string, any>) {
+  return { region: params.region || "all", totalLocations: 42, activeAssets: 340, coverageArea: "12,400 sq km", heatmapData: [{ lat: 40.7128, lng: -74.0060, density: 85 }, { lat: 34.0522, lng: -118.2437, density: 62 }], avgTravelTime: "34min", serviceRadius: "15km", message: "Location analytics (mock data)" };
+}
+
+async function geocodeAddress(params: Record<string, any>) {
+  return { address: params.address || "123 Main St", coordinates: { lat: 40.7128, lng: -74.0060 }, formattedAddress: "123 Main Street, New York, NY 10001", confidence: 0.96, timezone: "America/New_York", message: "Geocoding result (mock data)" };
 }

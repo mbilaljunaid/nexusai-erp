@@ -221,6 +221,65 @@ export const PERMISSIONS = {
     // Food & Beverage / CPG
     FNB_READ: "fnb.read",
     FNB_WRITE: "fnb.write",
+
+    // ═══════════════════════════════════════════════
+    // Phase 5 — Remaining Modules
+    // ═══════════════════════════════════════════════
+    // Costing / Profitability
+    COSTING_READ: "costing.read",
+    COSTING_WRITE: "costing.write",
+    // Compliance (Advanced)
+    COMPLIANCE_READ: "compliance.read",
+    COMPLIANCE_WRITE: "compliance.write",
+    // Community / Forum
+    COMMUNITY_READ: "community.read",
+    COMMUNITY_WRITE: "community.write",
+    // Content Management
+    CONTENT_READ: "content.read",
+    CONTENT_WRITE: "content.write",
+    // Customer Success / Loyalty
+    CUSTOMER_SUCCESS_READ: "customer_success.read",
+    CUSTOMER_SUCCESS_WRITE: "customer_success.write",
+    LOYALTY_READ: "loyalty.read",
+    LOYALTY_WRITE: "loyalty.write",
+    // Employee Engagement
+    ENGAGEMENT_READ: "engagement.read",
+    ENGAGEMENT_WRITE: "engagement.write",
+    // Integration Hub
+    INTEGRATION_READ: "integration.read",
+    INTEGRATION_WRITE: "integration.write",
+    // PIM (Product Information Management)
+    PIM_READ: "pim.read",
+    PIM_WRITE: "pim.write",
+    // Risk Management
+    RISK_READ: "risk.read",
+    RISK_WRITE: "risk.write",
+    // Security / Access Control
+    SECURITY_READ: "security.read",
+    SECURITY_WRITE: "security.write",
+    // System Admin
+    SYSTEM_ADMIN_READ: "system_admin.read",
+    SYSTEM_ADMIN_WRITE: "system_admin.write",
+    // Warehouse Operations
+    WAREHOUSE_READ: "warehouse.read",
+    WAREHOUSE_WRITE: "warehouse.write",
+    // HSE / Safety
+    HSE_READ: "hse.read",
+    HSE_WRITE: "hse.write",
+    // Demand Forecasting (Dedicated)
+    DEMAND_FORECAST_READ: "demand_forecast.read",
+    // Translation / Localization
+    TRANSLATION_READ: "translation.read",
+    TRANSLATION_WRITE: "translation.write",
+    // Competitive Intelligence
+    COMPETITIVE_INTEL_READ: "competitive_intel.read",
+    // Sustainability / ESG
+    SUSTAINABILITY_READ: "sustainability.read",
+    SUSTAINABILITY_WRITE: "sustainability.write",
+    // Cognitive Services
+    COGNITIVE_READ: "cognitive.read",
+    // Geolocation
+    GEOLOCATION_READ: "geolocation.read",
 } as const;
 
 // Role-Permission Mapping (In a real app, this might be DB driven)
@@ -320,6 +379,27 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         PERMISSIONS.GOVERNMENT_READ, PERMISSIONS.GOVERNMENT_WRITE,
         PERMISSIONS.TELECOM_READ, PERMISSIONS.TELECOM_WRITE,
         PERMISSIONS.FNB_READ, PERMISSIONS.FNB_WRITE,
+        // Phase 5
+        PERMISSIONS.COSTING_READ, PERMISSIONS.COSTING_WRITE,
+        PERMISSIONS.COMPLIANCE_READ, PERMISSIONS.COMPLIANCE_WRITE,
+        PERMISSIONS.COMMUNITY_READ, PERMISSIONS.COMMUNITY_WRITE,
+        PERMISSIONS.CONTENT_READ, PERMISSIONS.CONTENT_WRITE,
+        PERMISSIONS.CUSTOMER_SUCCESS_READ, PERMISSIONS.CUSTOMER_SUCCESS_WRITE,
+        PERMISSIONS.LOYALTY_READ, PERMISSIONS.LOYALTY_WRITE,
+        PERMISSIONS.ENGAGEMENT_READ, PERMISSIONS.ENGAGEMENT_WRITE,
+        PERMISSIONS.INTEGRATION_READ, PERMISSIONS.INTEGRATION_WRITE,
+        PERMISSIONS.PIM_READ, PERMISSIONS.PIM_WRITE,
+        PERMISSIONS.RISK_READ, PERMISSIONS.RISK_WRITE,
+        PERMISSIONS.SECURITY_READ, PERMISSIONS.SECURITY_WRITE,
+        PERMISSIONS.SYSTEM_ADMIN_READ, PERMISSIONS.SYSTEM_ADMIN_WRITE,
+        PERMISSIONS.WAREHOUSE_READ, PERMISSIONS.WAREHOUSE_WRITE,
+        PERMISSIONS.HSE_READ, PERMISSIONS.HSE_WRITE,
+        PERMISSIONS.DEMAND_FORECAST_READ,
+        PERMISSIONS.TRANSLATION_READ, PERMISSIONS.TRANSLATION_WRITE,
+        PERMISSIONS.COMPETITIVE_INTEL_READ,
+        PERMISSIONS.SUSTAINABILITY_READ, PERMISSIONS.SUSTAINABILITY_WRITE,
+        PERMISSIONS.COGNITIVE_READ,
+        PERMISSIONS.GEOLOCATION_READ,
     ],
     [ROLES.GL_USER]: [
         // GL
@@ -397,6 +477,27 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         PERMISSIONS.GOVERNMENT_READ,
         PERMISSIONS.TELECOM_READ,
         PERMISSIONS.FNB_READ,
+        // Phase 5
+        PERMISSIONS.COSTING_READ,
+        PERMISSIONS.COMPLIANCE_READ,
+        PERMISSIONS.COMMUNITY_READ,
+        PERMISSIONS.CONTENT_READ,
+        PERMISSIONS.CUSTOMER_SUCCESS_READ,
+        PERMISSIONS.LOYALTY_READ,
+        PERMISSIONS.ENGAGEMENT_READ,
+        PERMISSIONS.INTEGRATION_READ,
+        PERMISSIONS.PIM_READ,
+        PERMISSIONS.RISK_READ,
+        PERMISSIONS.SECURITY_READ,
+        PERMISSIONS.SYSTEM_ADMIN_READ,
+        PERMISSIONS.WAREHOUSE_READ,
+        PERMISSIONS.HSE_READ,
+        PERMISSIONS.DEMAND_FORECAST_READ,
+        PERMISSIONS.TRANSLATION_READ,
+        PERMISSIONS.COMPETITIVE_INTEL_READ,
+        PERMISSIONS.SUSTAINABILITY_READ,
+        PERMISSIONS.COGNITIVE_READ,
+        PERMISSIONS.GEOLOCATION_READ,
     ],
     [ROLES.GL_VIEWER]: [
         PERMISSIONS.GL_READ, PERMISSIONS.AP_READ, PERMISSIONS.AR_READ,
@@ -454,6 +555,27 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         PERMISSIONS.GOVERNMENT_READ,
         PERMISSIONS.TELECOM_READ,
         PERMISSIONS.FNB_READ,
+        // Phase 5
+        PERMISSIONS.COSTING_READ,
+        PERMISSIONS.COMPLIANCE_READ,
+        PERMISSIONS.COMMUNITY_READ,
+        PERMISSIONS.CONTENT_READ,
+        PERMISSIONS.CUSTOMER_SUCCESS_READ,
+        PERMISSIONS.LOYALTY_READ,
+        PERMISSIONS.ENGAGEMENT_READ,
+        PERMISSIONS.INTEGRATION_READ,
+        PERMISSIONS.PIM_READ,
+        PERMISSIONS.RISK_READ,
+        PERMISSIONS.SECURITY_READ,
+        PERMISSIONS.SYSTEM_ADMIN_READ,
+        PERMISSIONS.WAREHOUSE_READ,
+        PERMISSIONS.HSE_READ,
+        PERMISSIONS.DEMAND_FORECAST_READ,
+        PERMISSIONS.TRANSLATION_READ,
+        PERMISSIONS.COMPETITIVE_INTEL_READ,
+        PERMISSIONS.SUSTAINABILITY_READ,
+        PERMISSIONS.COGNITIVE_READ,
+        PERMISSIONS.GEOLOCATION_READ,
     ]
 };
 
