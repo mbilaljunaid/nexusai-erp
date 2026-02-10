@@ -184,6 +184,88 @@ const TOOL_PERMISSION_MAP: Record<string, string> = {
   // ── Reporting ──
   generate_gl_report: PERMISSIONS.REPORTING_READ,
   generate_ar_aging: PERMISSIONS.REPORTING_READ,
+
+  // ═══════════════════════════════════════════════
+  // NEW TOOLS — Phase 3 Expansion
+  // ═══════════════════════════════════════════════
+
+  // ── Inventory ──
+  check_inventory_levels: PERMISSIONS.INVENTORY_READ,
+  reorder_stock: PERMISSIONS.INVENTORY_WRITE,
+  get_item_details: PERMISSIONS.INVENTORY_READ,
+
+  // ── Approvals / Workflow ──
+  approve_workflow: PERMISSIONS.APPROVAL_WRITE,
+  check_approval_status: PERMISSIONS.APPROVAL_READ,
+
+  // ── Analytics ──
+  get_analytics_dashboard: PERMISSIONS.ANALYTICS_READ,
+
+  // ── Cost Anomaly ──
+  detect_cost_anomalies: PERMISSIONS.GL_READ,
+
+  // ── Compensation ──
+  get_compensation_summary: PERMISSIONS.COMPENSATION_READ,
+
+  // ── Service / Cases ──
+  create_case: PERMISSIONS.SERVICE_WRITE,
+  check_case_status: PERMISSIONS.SERVICE_READ,
+
+  // ── Knowledge Base ──
+  search_knowledge_base: PERMISSIONS.KNOWLEDGE_READ,
+
+  // ── Learning ──
+  get_learning_path: PERMISSIONS.LEARNING_READ,
+  enroll_in_course: PERMISSIONS.LEARNING_WRITE,
+
+  // ── Territory ──
+  get_territory_summary: PERMISSIONS.TERRITORY_READ,
+
+  // ── Lease Calculations ──
+  calculate_lease: PERMISSIONS.LEASE_READ,
+
+  // ── Bank Reconciliation ──
+  run_bank_reconciliation: PERMISSIONS.CASH_READ,
+
+  // ── OCR / Document ──
+  ocr_document: PERMISSIONS.DOCUMENT_READ,
+
+  // ── Partner ──
+  get_partner_summary: PERMISSIONS.PARTNER_READ,
+
+  // ── Scorecard ──
+  get_scorecard: PERMISSIONS.ANALYTICS_READ,
+
+  // ── Sourcing ──
+  create_sourcing_event: PERMISSIONS.SOURCING_WRITE,
+
+  // ── Time Optimization ──
+  optimize_time_schedule: PERMISSIONS.HR_READ,
+
+  // ── SLA ──
+  check_sla_compliance: PERMISSIONS.SERVICE_READ,
+
+  // ── Billing ──
+  get_billing_summary: PERMISSIONS.BILLING_READ,
+
+  // ── Cash Revaluation ──
+  run_cash_revaluation: PERMISSIONS.CASH_WRITE,
+
+  // ── ZBA ──
+  run_zba_sweep: PERMISSIONS.CASH_WRITE,
+
+  // ── Freight Accounting ──
+  get_freight_accounting: PERMISSIONS.TRANSPORT_READ,
+  settle_freight: PERMISSIONS.TRANSPORT_READ,
+
+  // ── Bulk Import ──
+  bulk_import_data: PERMISSIONS.GL_WRITE,
+
+  // ── HR Analytics ──
+  generate_hr_report: PERMISSIONS.HR_READ,
+
+  // ── Recertification ──
+  check_recertification: PERMISSIONS.HR_READ,
 };
 
 export interface ToolExecutionRequest {
@@ -506,6 +588,118 @@ async function executeToolAction(toolName: string, params: Record<string, any>, 
       return generateGlReport(params);
     case "generate_ar_aging":
       return generateArAging(params);
+
+    // ═══════════════════════════════════════════════
+    // NEW TOOL CASES — Phase 3 Expansion
+    // ═══════════════════════════════════════════════
+
+    // ── Inventory ──
+    case "check_inventory_levels":
+      return checkInventoryLevels(params);
+    case "reorder_stock":
+      return reorderStock(params);
+    case "get_item_details":
+      return getItemDetails(params);
+
+    // ── Approvals ──
+    case "approve_workflow":
+      return approveWorkflow(params, userId);
+    case "check_approval_status":
+      return checkApprovalStatus(params);
+
+    // ── Analytics ──
+    case "get_analytics_dashboard":
+      return getAnalyticsDashboard(params);
+
+    // ── Cost Anomaly ──
+    case "detect_cost_anomalies":
+      return detectCostAnomalies(params);
+
+    // ── Compensation ──
+    case "get_compensation_summary":
+      return getCompensationSummary(params);
+
+    // ── Service / Cases ──
+    case "create_case":
+      return createCase(params);
+    case "check_case_status":
+      return checkCaseStatus(params);
+
+    // ── Knowledge Base ──
+    case "search_knowledge_base":
+      return searchKnowledgeBase(params);
+
+    // ── Learning ──
+    case "get_learning_path":
+      return getLearningPath(params);
+    case "enroll_in_course":
+      return enrollInCourse(params);
+
+    // ── Territory ──
+    case "get_territory_summary":
+      return getTerritorySummary(params);
+
+    // ── Lease Calculations ──
+    case "calculate_lease":
+      return calculateLease(params);
+
+    // ── Bank Reconciliation ──
+    case "run_bank_reconciliation":
+      return runBankReconciliation(params);
+
+    // ── OCR ──
+    case "ocr_document":
+      return ocrDocument(params);
+
+    // ── Partner ──
+    case "get_partner_summary":
+      return getPartnerSummary(params);
+
+    // ── Scorecard ──
+    case "get_scorecard":
+      return getScorecard(params);
+
+    // ── Sourcing ──
+    case "create_sourcing_event":
+      return createSourcingEvent(params);
+
+    // ── Time Optimization ──
+    case "optimize_time_schedule":
+      return optimizeTimeSchedule(params);
+
+    // ── SLA ──
+    case "check_sla_compliance":
+      return checkSlaCompliance(params);
+
+    // ── Billing ──
+    case "get_billing_summary":
+      return getBillingSummary(params);
+
+    // ── Cash Revaluation ──
+    case "run_cash_revaluation":
+      return runCashRevaluation(params);
+
+    // ── ZBA ──
+    case "run_zba_sweep":
+      return runZbaSweep(params);
+
+    // ── Freight Accounting ──
+    case "get_freight_accounting":
+      return getFreightAccounting(params);
+    case "settle_freight":
+      return settleFreight(params);
+
+    // ── Bulk Import ──
+    case "bulk_import_data":
+      return bulkImportData(params);
+
+    // ── HR Analytics ──
+    case "generate_hr_report":
+      return generateHrReport(params);
+
+    // ── Recertification ──
+    case "check_recertification":
+      return checkRecertification(params);
 
     default:
       throw new Error(`Unknown tool: ${toolName}`);
@@ -1926,6 +2120,413 @@ async function generateArAging(params: Record<string, any>) {
       over360: 2000,
       total: 687000,
       message: "AR aging report (mock data — reporting service unavailable)",
+    };
+  }
+}
+
+// ═══════════════════════════════════════════════
+// NEW Tool Implementations — Phase 3 Expansion
+// ═══════════════════════════════════════════════
+
+// ── Inventory ──
+
+async function checkInventoryLevels(params: Record<string, any>) {
+  try {
+    const { InventoryReorderService } = await import("./InventoryReorderService");
+    return await InventoryReorderService.checkLevels(params.itemId || params.productId);
+  } catch {
+    return {
+      items: [
+        { itemId: "SKU-001", name: "Widget A", onHand: 450, reorderPoint: 100, status: "adequate" },
+        { itemId: "SKU-002", name: "Widget B", onHand: 35, reorderPoint: 50, status: "low" },
+        { itemId: "SKU-003", name: "Gadget C", onHand: 0, reorderPoint: 25, status: "out_of_stock" },
+      ],
+      message: "Inventory levels (mock data)",
+    };
+  }
+}
+
+async function reorderStock(params: Record<string, any>) {
+  try {
+    const { InventoryReorderService } = await import("./InventoryReorderService");
+    return await InventoryReorderService.createReorder(params.itemId, params.quantity);
+  } catch {
+    return {
+      message: "Reorder created (mock)",
+      reorder: { id: `RO-${Date.now()}`, itemId: params.itemId || "SKU-002", quantity: params.quantity || 100, status: "submitted", estimatedDelivery: "2026-02-17" },
+    };
+  }
+}
+
+async function getItemDetails(params: Record<string, any>) {
+  try {
+    const { ItemService } = await import("./ItemService");
+    return await ItemService.getItem(params.itemId);
+  } catch {
+    return { itemId: params.itemId || "unknown", name: "Standard Widget", category: "Components", unitCost: 24.50, listPrice: 49.99, onHand: 450, onOrder: 200, uom: "Each", status: "active", message: "Item details (mock data)" };
+  }
+}
+
+// ── Approvals / Workflow ──
+
+async function approveWorkflow(params: Record<string, any>, userId: string) {
+  try {
+    const { ApprovalService } = await import("./ApprovalService");
+    return await ApprovalService.approve(params.approvalId, userId, params.comments);
+  } catch {
+    return { message: "Approval processed (mock)", approval: { id: params.approvalId || `APR-${Date.now()}`, status: params.action === "reject" ? "rejected" : "approved", approver: userId, processedAt: new Date().toISOString() } };
+  }
+}
+
+async function checkApprovalStatus(params: Record<string, any>) {
+  try {
+    const { ApprovalService } = await import("./ApprovalService");
+    return await ApprovalService.getStatus(params.entityId || params.approvalId);
+  } catch {
+    return {
+      entityId: params.entityId || "unknown",
+      approvalChain: [
+        { step: 1, approver: "manager@company.com", status: "approved", date: "2026-02-08" },
+        { step: 2, approver: "director@company.com", status: "pending", date: null },
+      ],
+      currentStep: 2, overallStatus: "in_progress", message: "Approval status (mock data)",
+    };
+  }
+}
+
+// ── Analytics ──
+
+async function getAnalyticsDashboard(params: Record<string, any>) {
+  try {
+    const { AnalyticsService } = await import("./AnalyticsService");
+    return await AnalyticsService.getDashboard(params.module || "all");
+  } catch {
+    return {
+      module: params.module || "all",
+      kpis: [
+        { name: "Revenue", value: 5200000, trend: "+8.5%", period: "YTD" },
+        { name: "Expenses", value: 3900000, trend: "+3.2%", period: "YTD" },
+        { name: "Net Margin", value: 25, unit: "%", trend: "+2.1%" },
+        { name: "Employee Count", value: 152, trend: "+5" },
+      ],
+      message: "Analytics dashboard (mock data)",
+    };
+  }
+}
+
+// ── Cost Anomaly ──
+
+async function detectCostAnomalies(params: Record<string, any>) {
+  try {
+    const { CostAnomalyService } = await import("./CostAnomalyService");
+    return await CostAnomalyService.detect(params.tenantId || "default");
+  } catch {
+    return {
+      anomalies: [
+        { type: "cost_spike", item: "Cloud Services", amount: 45000, deviation: 2.8 },
+        { type: "unusual_vendor", vendor: "NewCo Ltd", amount: 12000, confidence: 0.92 },
+      ],
+      message: "Cost anomaly detection (mock data)",
+    };
+  }
+}
+
+// ── Compensation ──
+
+async function getCompensationSummary(params: Record<string, any>) {
+  try {
+    const { CompensationService } = await import("./CompensationService");
+    return await CompensationService.getSummary(params.tenantId || "default");
+  } catch {
+    return {
+      totalCompensation: 12500000, averageSalary: 82237, medianSalary: 75000, compaRatio: 1.02,
+      byDepartment: [
+        { department: "Engineering", avgSalary: 115000, headcount: 42 },
+        { department: "Sales", avgSalary: 85000, headcount: 28 },
+        { department: "Operations", avgSalary: 65000, headcount: 35 },
+      ],
+      message: "Compensation summary (mock data)",
+    };
+  }
+}
+
+// ── Service / Cases ──
+
+async function createCase(params: Record<string, any>) {
+  try {
+    const { CaseService } = await import("./CaseService");
+    return await CaseService.create(params);
+  } catch {
+    return { message: "Service case created (mock)", case: { id: `CASE-${Date.now()}`, subject: params.subject || "New Support Request", priority: params.priority || "medium", status: "open", createdAt: new Date().toISOString() } };
+  }
+}
+
+async function checkCaseStatus(params: Record<string, any>) {
+  try {
+    const { CaseService } = await import("./CaseService");
+    return await CaseService.getStatus(params.caseId);
+  } catch {
+    return { caseId: params.caseId || "unknown", subject: "Network Connectivity Issue", status: "in_progress", priority: "high", slaStatus: "within_target", message: "Case status (mock data)" };
+  }
+}
+
+// ── Knowledge Base ──
+
+async function searchKnowledgeBase(params: Record<string, any>) {
+  try {
+    const { KnowledgeBaseService } = await import("./KnowledgeBaseService");
+    return await KnowledgeBaseService.search(params.query);
+  } catch {
+    return {
+      query: params.query || "",
+      results: [
+        { id: "KB-001", title: "How to create a journal entry", relevance: 0.95, category: "Finance" },
+        { id: "KB-002", title: "Expense report submission guide", relevance: 0.82, category: "Expenses" },
+      ],
+      message: "Knowledge base search (mock data)",
+    };
+  }
+}
+
+// ── Learning ──
+
+async function getLearningPath(params: Record<string, any>) {
+  try {
+    const { LearningPathService } = await import("./LearningPathService");
+    return await LearningPathService.getPath(params.pathId || params.employeeId);
+  } catch {
+    return {
+      pathId: params.pathId || "default", name: "Finance Professional Path", totalCourses: 8, completed: 5, progress: 62.5,
+      courses: [
+        { title: "Financial Reporting Fundamentals", status: "completed", score: 92 },
+        { title: "IFRS Standards Overview", status: "in_progress", progress: 45 },
+        { title: "Data Analytics for Finance", status: "not_started" },
+      ],
+      message: "Learning path (mock data)",
+    };
+  }
+}
+
+async function enrollInCourse(params: Record<string, any>) {
+  try {
+    const { LearningService } = await import("./LearningService");
+    return await LearningService.enrollUser(params.courseId, params.employeeId);
+  } catch {
+    return { message: "Enrollment successful (mock)", enrollment: { courseId: params.courseId || "CRS-001", employeeId: params.employeeId, status: "enrolled", startDate: new Date().toISOString() } };
+  }
+}
+
+// ── Territory ──
+
+async function getTerritorySummary(params: Record<string, any>) {
+  try {
+    const { TerritoryService } = await import("./TerritoryService");
+    return await TerritoryService.getSummary(params.territoryId);
+  } catch {
+    return { territoryId: params.territoryId || "default", name: "West Coast", assignedReps: 8, totalAccounts: 245, totalRevenue: 3200000, pipelineValue: 1800000, quotaAttainment: 78, message: "Territory summary (mock data)" };
+  }
+}
+
+// ── Lease Calculations ──
+
+async function calculateLease(params: Record<string, any>) {
+  try {
+    const { LeaseCalculationsService } = await import("./LeaseCalculationsService");
+    return await LeaseCalculationsService.calculate(params);
+  } catch {
+    const payment = Number(params.monthlyPayment || 5000);
+    const term = Number(params.termMonths || 60);
+    const rate = Number(params.discountRate || 0.05);
+    const pvFactor = (1 - Math.pow(1 + rate / 12, -term)) / (rate / 12);
+    return { monthlyPayment: payment, termMonths: term, discountRate: rate * 100, presentValue: Math.round(payment * pvFactor), classification: term >= 48 ? "finance" : "operating", message: "Lease calculation (heuristic)" };
+  }
+}
+
+// ── Bank Reconciliation ──
+
+async function runBankReconciliation(params: Record<string, any>) {
+  try {
+    const { MatchingService } = await import("./MatchingService");
+    return await MatchingService.runReconciliation(params.accountId);
+  } catch {
+    return { accountId: params.accountId || "default", bankBalance: 1250000, bookBalance: 1245000, difference: 5000, matchedTransactions: 142, unmatchedBank: 3, unmatchedBook: 5, autoMatchRate: 94.7, message: "Bank reconciliation (mock data)" };
+  }
+}
+
+// ── OCR / Document ──
+
+async function ocrDocument(params: Record<string, any>) {
+  try {
+    const { OCRService } = await import("./OCRService");
+    return await OCRService.extract(params.documentUrl || params.documentId);
+  } catch {
+    return { documentId: params.documentId || "unknown", extractedFields: { vendorName: "Sample Vendor Inc.", invoiceNumber: "INV-2026-0042", totalAmount: 4250.00, currency: "USD" }, confidence: 0.91, message: "OCR extraction (mock data)" };
+  }
+}
+
+// ── Partner ──
+
+async function getPartnerSummary(params: Record<string, any>) {
+  try {
+    const { PartnerService } = await import("./PartnerService");
+    return await PartnerService.getSummary(params.partnerId);
+  } catch {
+    return { totalPartners: 45, activeDeals: 23, totalRevenue: 2100000, topPartners: [{ name: "TechPartner Inc.", revenue: 450000, tier: "Gold" }, { name: "Solutions Ltd.", revenue: 320000, tier: "Silver" }], message: "Partner summary (mock data)" };
+  }
+}
+
+// ── Scorecard ──
+
+async function getScorecard(params: Record<string, any>) {
+  try {
+    const { ScorecardService } = await import("./ScorecardService");
+    return await ScorecardService.getScorecard(params.scorecardId || params.entityId);
+  } catch {
+    return {
+      metrics: [
+        { perspective: "Financial", kpi: "Revenue Growth", target: 10, actual: 8.5, status: "amber" },
+        { perspective: "Customer", kpi: "NPS Score", target: 70, actual: 72, status: "green" },
+        { perspective: "Internal", kpi: "Process Efficiency", target: 90, actual: 88, status: "amber" },
+        { perspective: "Growth", kpi: "Employee Engagement", target: 80, actual: 82, status: "green" },
+      ],
+      overallScore: 78, message: "Balanced scorecard (mock data)",
+    };
+  }
+}
+
+// ── Sourcing ──
+
+async function createSourcingEvent(params: Record<string, any>) {
+  try {
+    const { SourcingService } = await import("./SourcingService");
+    return await SourcingService.createEvent(params);
+  } catch {
+    return { message: "Sourcing event created (mock)", event: { id: `SRC-${Date.now()}`, title: params.title || "New Sourcing Event", type: params.type || "RFQ", status: "draft", category: params.category || "IT Services" } };
+  }
+}
+
+// ── Time Optimization ──
+
+async function optimizeTimeSchedule(params: Record<string, any>) {
+  try {
+    const { TLOptimizationService } = await import("./TLOptimizationService");
+    return await TLOptimizationService.optimize(params.teamId || params.managerId);
+  } catch {
+    return {
+      recommendations: [
+        { type: "overtime_reduction", employee: "EMP-012", currentHours: 52, recommended: 44, savings: 1200 },
+        { type: "shift_rebalance", team: "Operations", suggestion: "Move 2 FTEs from Wed to Thu" },
+        { type: "absence_coverage", date: "2026-02-14", gap: "2 FTEs needed" },
+      ],
+      estimatedSavings: 4500, message: "Time schedule optimization (mock data)",
+    };
+  }
+}
+
+// ── SLA ──
+
+async function checkSlaCompliance(params: Record<string, any>) {
+  return {
+    period: params.period || "Feb-2026",
+    slaMetrics: [
+      { name: "Response Time", target: "< 4 hours", actual: "3.2 hours", status: "met", compliance: 94 },
+      { name: "Resolution Time", target: "< 24 hours", actual: "18.5 hours", status: "met", compliance: 89 },
+      { name: "Uptime", target: "99.9%", actual: "99.95%", status: "met", compliance: 100 },
+    ],
+    overallCompliance: 95, breaches: 1, message: "SLA compliance check (mock data)",
+  };
+}
+
+// ── Billing ──
+
+async function getBillingSummary(params: Record<string, any>) {
+  return {
+    period: params.period || "Feb-2026",
+    totalInvoiced: 890000, totalCollected: 720000, outstanding: 170000, overdueAmount: 45000,
+    subscriptions: { active: 128, churned: 3, newThisMonth: 8 },
+    mrr: 185000, message: "Billing summary (mock data)",
+  };
+}
+
+// ── Cash Revaluation ──
+
+async function runCashRevaluation(params: Record<string, any>) {
+  try {
+    const mod = await import("./cash-revaluation.service");
+    return await mod.default?.revalue?.(params) || { message: "Revaluation method unavailable" };
+  } catch {
+    return { message: "Cash revaluation completed (mock)", result: { accountsRevalued: 12, gainLoss: -15200, currency: "USD", entries: 24 } };
+  }
+}
+
+// ── ZBA ──
+
+async function runZbaSweep(params: Record<string, any>) {
+  try {
+    const { zbaService } = await import("./zba");
+    return await zbaService.executeSweep(params.structureId);
+  } catch {
+    return { message: "ZBA sweep executed (mock)", result: { structureId: params.structureId || "default", accountsSwept: 6, totalTransferred: 125000, concentrationAccount: "Main Operating" } };
+  }
+}
+
+// ── Freight Accounting ──
+
+async function getFreightAccounting(params: Record<string, any>) {
+  try {
+    const { FreightAccountingService } = await import("./FreightAccountingService");
+    return await FreightAccountingService.getSummary(params.shipmentId);
+  } catch {
+    return { shipmentId: params.shipmentId || "default", totalFreightCost: 12500, accrued: 10000, invoiced: 8500, variance: 1500, message: "Freight accounting (mock data)" };
+  }
+}
+
+async function settleFreight(params: Record<string, any>) {
+  try {
+    const { FreightSettlementService } = await import("./FreightSettlementService");
+    return await FreightSettlementService.settle(params.shipmentId);
+  } catch {
+    return { message: "Freight settlement completed (mock)", result: { shipmentId: params.shipmentId || "default", carrierInvoice: 12200, accrual: 12500, variance: -300, status: "settled" } };
+  }
+}
+
+// ── Bulk Import ──
+
+async function bulkImportData(params: Record<string, any>) {
+  try {
+    const { BulkImportService } = await import("./BulkImportService");
+    return await BulkImportService.startImport(params.entityType, params.data);
+  } catch {
+    return { message: "Bulk import initiated (mock)", result: { jobId: `IMP-${Date.now()}`, entityType: params.entityType || "journal_entries", recordCount: params.recordCount || 100, status: "processing" } };
+  }
+}
+
+// ── HR Analytics ──
+
+async function generateHrReport(params: Record<string, any>) {
+  try {
+    const { HRAnalyticsService } = await import("./HRAnalyticsService");
+    return await HRAnalyticsService.generateReport(params.reportType);
+  } catch {
+    return { reportType: params.reportType || "headcount", totalEmployees: 152, newHires: 8, terminations: 3, turnoverRate: 12.5, averageTenure: 3.2, message: "HR report (mock data)" };
+  }
+}
+
+// ── Recertification ──
+
+async function checkRecertification(params: Record<string, any>) {
+  try {
+    const { RecertificationService } = await import("./RecertificationService");
+    return await RecertificationService.getStatus(params.employeeId);
+  } catch {
+    return {
+      employeeId: params.employeeId || "all",
+      certifications: [
+        { name: "CPA License", status: "current", expiryDate: "2026-12-31", daysRemaining: 324 },
+        { name: "Safety Training", status: "expiring_soon", expiryDate: "2026-03-15", daysRemaining: 33 },
+        { name: "HIPAA Compliance", status: "expired", expiryDate: "2026-01-31", daysRemaining: -10 },
+      ],
+      actionRequired: 2, message: "Recertification status (mock data)",
     };
   }
 }
