@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AIConfigurationSection from "@/components/admin/AIConfigurationSection";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,7 @@ import {
   Check,
   X,
   ExternalLink,
+  Brain,
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -443,6 +445,7 @@ export default function PlatformAdmin() {
     { id: "features", label: "Features & Licensing", icon: Zap, color: "text-yellow-500" },
     { id: "system", label: "System Config", icon: Settings, color: "text-purple-500" },
     { id: "security", label: "Security & Compliance", icon: Shield, color: "text-red-500" },
+    { id: "ai-config", label: "AI Configuration", icon: Brain, color: "text-violet-500" },
   ];
 
   // todo: remove mock functionality
@@ -1418,6 +1421,8 @@ export default function PlatformAdmin() {
           </Card>
         </div>
       )}
+
+      {activeNav === "ai-config" && <AIConfigurationSection />}
     </div>
   );
 }

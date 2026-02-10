@@ -102,3 +102,4 @@ export * from "./relationships";
 export * from "./data-quality";
 export * from "./pim";
 export * from "./governance";
+export * from "./nexus_ai";
