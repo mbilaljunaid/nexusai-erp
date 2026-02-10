@@ -20,6 +20,8 @@ import {
   ChevronLeft,
   Search,
   Filter,
+  Layers,
+  PenLine,
 } from "lucide-react";
 import {
   Select,
@@ -50,12 +52,17 @@ export function NexusAIPanel() {
     loadConversation,
     startNewConversation,
     deleteConversation,
+    additionalContextModules,
+    setAdditionalContextModules,
+    manualContext,
+    setManualContext,
   } = useNexusAI();
 
   const [input, setInput] = useState("");
   const [panelView, setPanelView] = useState<PanelView>("chat");
   const [historySearch, setHistorySearch] = useState("");
   const [moduleFilter, setModuleFilter] = useState("all");
+  const [showContextBar, setShowContextBar] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [, navigate] = useLocation();
@@ -163,10 +170,15 @@ export function NexusAIPanel() {
                 {panelView === "history" ? "Conversation History" : "NexusAI"}
               </h2>
               {panelView === "chat" && (
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
                     {currentModule}
                   </Badge>
+                  {additionalContextModules.map(mod => (
+                    <Badge key={mod} variant="outline" className="text-[9px] px-1 py-0 h-3.5">
+                      +{mod}
+                    </Badge>
+                  ))}
                   {activeProvider && (
                     <span className="text-[10px] text-muted-foreground">
                       {activeProvider.provider} · {activeProvider.model}
@@ -179,6 +191,13 @@ export function NexusAIPanel() {
           <div className="flex items-center gap-1">
             {panelView === "chat" && (
               <>
+                <Button
+                  variant="ghost" size="icon" className="h-8 w-8"
+                  onClick={() => setShowContextBar(prev => !prev)}
+                  title="Context settings"
+                >
+                  <Layers className={cn("h-4 w-4", showContextBar ? "text-primary" : "text-muted-foreground")} />
+                </Button>
                 <Button
                   variant="ghost" size="icon" className="h-8 w-8"
                   onClick={() => setPanelView("history")}
@@ -224,8 +243,54 @@ export function NexusAIPanel() {
             </div>
           </div>
         )}
+        {/* ═══ Context Bar ═══ */}
+        {showContextBar && panelView === "chat" && (
+          <div className="px-4 py-3 border-b border-border bg-muted/20 space-y-2">
+            <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              <Layers className="h-3 w-3" /> Multi-Module Context
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {["Finance", "Accounts Payable", "Accounts Receivable", "Fixed Assets", "Cash Management",
+                "CRM", "Human Resources", "Projects", "Supply Chain", "Manufacturing", "Intercompany"
+              ].map(mod => {
+                const isActive = currentModule === mod || additionalContextModules.includes(mod);
+                const isCurrentRoute = currentModule === mod;
+                return (
+                  <button
+                    key={mod}
+                    onClick={() => {
+                      if (isCurrentRoute) return; // Can't toggle route-based context
+                      setAdditionalContextModules(prev =>
+                        prev.includes(mod) ? prev.filter(m => m !== mod) : [...prev, mod]
+                      );
+                    }}
+                    className={cn(
+                      "text-[10px] px-2 py-1 rounded-full border transition-colors",
+                      isCurrentRoute
+                        ? "bg-primary/10 border-primary/30 text-primary cursor-default"
+                        : isActive
+                          ? "bg-accent border-accent text-accent-foreground"
+                          : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                  >
+                    {mod}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex items-center gap-1.5 mt-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              <PenLine className="h-3 w-3" /> Manual Context
+            </div>
+            <Input
+              placeholder="e.g., Working on Q1 budget for marketing department..."
+              value={manualContext}
+              onChange={e => setManualContext(e.target.value)}
+              className="h-8 text-xs"
+            />
+          </div>
+        )}
 
-        {/* ═══ History View ═══ */}
+
         {panelView === "history" && (
           <ScrollArea className="flex-1 px-4">
             <div className="py-4 space-y-3">

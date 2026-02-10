@@ -1,6 +1,6 @@
 
 import { db } from "../db";
-import { openai } from "./ai"; // Reuse the configured OpenAI instance
+import { callAIJson } from "./nexus-ai-gateway";
 import { opportunities, accounts, interactions, leads } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 
@@ -65,19 +65,13 @@ export class CrmAiService {
         `;
 
         try {
-            const response = await openai.chat.completions.create({
-                model: "gpt-4o",
-                messages: [
+            const result = await callAIJson(
+                [
                     { role: "system", content: "You are a helpful CRM AI Assistant. Return JSON only." },
                     { role: "user", content: prompt }
                 ],
-                response_format: { type: "json_object" }
-            });
-
-            const content = response.choices[0].message.content;
-            if (!content) throw new Error("No response from AI");
-
-            return JSON.parse(content);
+                { jsonMode: true }
+            );
         } catch (error) {
             console.error("AI Analysis Failed:", error);
             // Graceful Degradation (Tier-1 Requirement)

@@ -270,7 +270,7 @@ nexusAiRouter.post("/tools/execute", async (req: any, res) => {
 // ── POST chat with streaming (main AI endpoint) ──
 nexusAiRouter.post("/chat", async (req: any, res) => {
   try {
-    const { message, conversationHistory, moduleContext, capabilities, stream: wantStream } = req.body;
+    const { message, conversationHistory, moduleContext, manualContext, additionalModules, capabilities, stream: wantStream } = req.body;
     if (!message) return res.status(400).json({ error: "Message is required" });
 
     const userRole = req.role || req.session?.userRole || "gl_viewer";
@@ -291,7 +291,7 @@ nexusAiRouter.post("/chat", async (req: any, res) => {
     }
 
     const config = configs[0];
-    const systemPrompt = buildSystemPrompt(moduleContext, capabilities, userRole);
+    const systemPrompt = buildSystemPrompt(moduleContext, capabilities, userRole, manualContext, additionalModules);
 
     // Streaming path
     if (wantStream !== false) {
@@ -328,9 +328,9 @@ nexusAiRouter.post("/chat", async (req: any, res) => {
 });
 
 // ── System prompt builder with role awareness ──
-function buildSystemPrompt(moduleContext?: string, capabilities?: any[], userRole?: string) {
+function buildSystemPrompt(moduleContext?: string, capabilities?: any[], userRole?: string, manualContext?: string, additionalModules?: string[]) {
   let prompt = `You are NexusAI, an intelligent assistant embedded in an enterprise ERP platform.
-You help users with their work across Finance, CRM, HR, Projects, Supply Chain, and more.
+You help users with their work across Finance (GL, AP, AR, FA, Cash), CRM, HR, Projects, Supply Chain, Manufacturing, and more.
 Be concise, accurate, and action-oriented. When asked to perform actions, confirm what you'll do before executing.
 
 IMPORTANT: The user's role is "${userRole || "viewer"}". Only suggest actions they have permission to perform.
@@ -347,6 +347,14 @@ The system will execute it and return results. Do NOT fabricate tool results.`;
 
   if (moduleContext) {
     prompt += `\n\nThe user is currently in the ${moduleContext} module.`;
+  }
+
+  if (additionalModules && additionalModules.length > 0) {
+    prompt += `\nThe user has also selected additional context modules: ${additionalModules.join(", ")}. You should consider all these modules when responding.`;
+  }
+
+  if (manualContext) {
+    prompt += `\n\nUser-provided context: "${manualContext}"`;
   }
 
   if (capabilities && capabilities.length > 0) {
