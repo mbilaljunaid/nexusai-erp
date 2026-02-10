@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link, useRoute } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
-import { 
-  GraduationCap, ArrowLeft, ArrowRight, CheckCircle2, BookOpen, 
+import {
+  GraduationCap, ArrowLeft, ArrowRight, CheckCircle2, BookOpen,
   Clock, Target, AlertCircle, Lightbulb, Play, FileText,
   DollarSign, CreditCard, Calculator, PieChart, TrendingUp,
   Users, BarChart3, Mail, Calendar, Award, Package,
@@ -18,13 +18,13 @@ interface LessonSection {
   content: string[];
 }
 
-export type EnterpriseRole = 
-  | "implementation_partner" 
-  | "business_user" 
-  | "end_user" 
-  | "business_analyst" 
-  | "tenant_admin" 
-  | "platform_admin" 
+export type EnterpriseRole =
+  | "implementation_partner"
+  | "business_user"
+  | "end_user"
+  | "business_analyst"
+  | "tenant_admin"
+  | "platform_admin"
   | "super_admin";
 
 export type SkillLevel = "basic" | "intermediate" | "advanced";
@@ -103,7 +103,7 @@ const lessonContent: Record<string, LessonContent> = {
       "Post a journal entry with supporting documentation",
       "Generate a trial balance for the current period"
     ],
-    nextLesson: { title: "Accounts Payable", href: "/docs/training-guides/finance/accounts-payable" },
+    nextLesson: { title: "Accounts Payable", href: "/docs/training-guides/finance/ap" },
     parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" },
     allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
     module: "finance",
@@ -224,7 +224,7 @@ const lessonContent: Record<string, LessonContent> = {
       "Apply a customer payment to open invoices",
       "Generate a customer statement showing account activity"
     ],
-    prevLesson: { title: "Accounts Payable", href: "/docs/training-guides/finance/accounts-payable" },
+    prevLesson: { title: "Accounts Payable", href: "/docs/training-guides/finance/ap" },
     nextLesson: { title: "Budgeting", href: "/docs/training-guides/finance/budgeting" },
     parentGuide: { title: "Finance Training Guide", href: "/docs/training-guides/finance" },
     allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"],
@@ -2044,7 +2044,7 @@ export default function TrainingLessonPage() {
               <ArrowLeft className="mr-2 w-4 h-4" /> Back to {lesson.parentGuide.title}
             </Button>
           </Link>
-          
+
           <div className="flex items-start gap-4 mb-6">
             <div className={`p-3 rounded-lg ${colors.bg} ${colors.darkBg}`}>
               <GraduationCap className={`w-8 h-8 ${colors.text} ${colors.darkText}`} />
@@ -2059,7 +2059,7 @@ export default function TrainingLessonPage() {
               <h1 className="text-3xl font-bold" data-testid="text-lesson-title">{lesson.title}</h1>
             </div>
           </div>
-          
+
           <p className="text-lg text-muted-foreground mb-8">{lesson.description}</p>
 
           <Card className="mb-8">

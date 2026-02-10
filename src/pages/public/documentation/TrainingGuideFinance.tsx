@@ -28,7 +28,7 @@ export default function TrainingGuideFinance() {
 
   const modules: ModuleData[] = [
     { icon: FileText, title: "General Ledger", desc: "Chart of accounts, journal entries, and period close", duration: "60 min", href: "/docs/training-guides/finance/general-ledger", skillLevel: "intermediate", allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
-    { icon: CreditCard, title: "Accounts Payable", desc: "Vendor invoices, payments, and reconciliation", duration: "45 min", href: "/docs/training-guides/finance/accounts-payable", skillLevel: "basic", allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
+    { icon: CreditCard, title: "Accounts Payable", desc: "Vendor invoices, payments, and reconciliation", duration: "45 min", href: "/docs/training-guides/finance/ap", skillLevel: "basic", allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
     { icon: DollarSign, title: "Accounts Receivable", desc: "Customer invoicing, collections, and aging", duration: "45 min", href: "/docs/training-guides/finance/accounts-receivable", skillLevel: "basic", allowedRoles: ["business_user", "end_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
     { icon: Calculator, title: "Budgeting", desc: "Budget creation, variance analysis, and forecasting", duration: "50 min", href: "/docs/training-guides/finance/budgeting", skillLevel: "intermediate", allowedRoles: ["business_user", "business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
     { icon: PieChart, title: "Financial Reporting", desc: "Balance sheet, income statement, and custom reports", duration: "40 min", href: "/docs/training-guides/finance/financial-reporting", skillLevel: "advanced", allowedRoles: ["business_analyst", "tenant_admin", "implementation_partner", "platform_admin", "super_admin"] },
@@ -72,7 +72,7 @@ export default function TrainingGuideFinance() {
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
-            Complete training program for the Finance module covering general ledger, 
+            Complete training program for the Finance module covering general ledger,
             accounts payable/receivable, budgeting, and financial reporting.
           </p>
         </section>
@@ -85,7 +85,7 @@ export default function TrainingGuideFinance() {
             selectedModule="all"
             selectedSkillLevel={selectedSkillLevel}
             onRoleChange={setSelectedRole}
-            onModuleChange={() => {}}
+            onModuleChange={() => { }}
             onSkillLevelChange={setSelectedSkillLevel}
             onClearFilters={clearFilters}
             showModuleFilter={false}

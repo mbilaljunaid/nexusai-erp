@@ -1,5 +1,6 @@
 
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
+import { useEffect } from "react";
 // import { lazy } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import JournalWizard from "@/pages/gl/JournalWizard";
@@ -118,7 +119,12 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ap/reports" component={APReports} />
                 <Route path="/finance/ap/prepayments" component={APPrepayments} />
                 <Route path="/finance/ap/config" component={APSystemConfig} />
-                <Route path="/finance/accounts-payable" component={APDashboard} />
+                {/* Legacy redirect for backward compatibility */}
+                <Route path="/finance/accounts-payable" component={() => {
+                    const [, setLocation] = useLocation();
+                    useEffect(() => setLocation("/finance/ap"), [setLocation]);
+                    return null;
+                }} />
                 <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
                 <Route path="/finance/billing" component={EnterpriseBillingDashboard} />
                 <Route path="/finance/billing/workbench" component={BillingWorkbench} />

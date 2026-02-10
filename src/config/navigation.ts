@@ -99,7 +99,7 @@ export const navigationConfig: SidebarNode[] = [
                             { id: "gl-close-center", title: "Close Center", type: "link", path: "/gl/close-center" },
                         ],
                     },
-                    { id: "finance-ap", title: "Accounts Payable", type: "link", path: "/finance/accounts-payable" },
+                    { id: "finance-ap", title: "Accounts Payable", type: "link", path: "/finance/ap" },
                     { id: "finance-ar", title: "Accounts Receivable", type: "link", path: "/finance/accounts-receivable" },
                     { id: "finance-treasury", title: "Treasury", type: "link", path: "/finance/treasury" },
                     { id: "finance-fixed-assets", title: "Fixed Assets", type: "link", path: "/finance/fixed-assets" },
