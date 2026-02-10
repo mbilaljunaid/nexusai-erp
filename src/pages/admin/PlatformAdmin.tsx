@@ -385,6 +385,8 @@ interface Tenant {
   aiCreditsUsed: number;
 }
 
+import NexusAIToolRegistrySection from "@/components/admin/NexusAIToolRegistrySection";
+
 export default function PlatformAdmin() {
   const { toast } = useToast();
   const [activeNav, setActiveNav] = useState("overview");
@@ -443,6 +445,7 @@ export default function PlatformAdmin() {
     { id: "demos", label: "Demo Management", icon: RefreshCw, color: "text-pink-500" },
     { id: "payments", label: "Payment Settings", icon: CreditCard, color: "text-emerald-500" },
     { id: "features", label: "Features & Licensing", icon: Zap, color: "text-yellow-500" },
+    { id: "tool-registry", label: "Tool Registry", icon: Brain, color: "text-violet-500" },
     { id: "system", label: "System Config", icon: Settings, color: "text-purple-500" },
     { id: "security", label: "Security & Compliance", icon: Shield, color: "text-red-500" },
     { id: "ai-config", label: "AI Configuration", icon: Brain, color: "text-violet-500" },
@@ -1423,6 +1426,8 @@ export default function PlatformAdmin() {
       )}
 
       {activeNav === "ai-config" && <AIConfigurationSection />}
+
+      {activeNav === "tool-registry" && <NexusAIToolRegistrySection />}
     </div>
   );
 }

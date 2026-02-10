@@ -327,10 +327,34 @@ nexusAiRouter.post("/chat", async (req: any, res) => {
   }
 });
 
+// ── GET tool registry (for admin dashboard and system prompt) ──
+nexusAiRouter.get("/tools/registry", async (_req, res) => {
+  try {
+    const registry = getToolRegistry();
+    const definitions = getAllToolDefinitions();
+
+    const detailedRegistry = registry.map(reg => {
+      const def = definitions.find(d => d.name === reg.name);
+      return {
+        ...reg,
+        description: def?.description || "No description available",
+        parameters: def?.parameters || {},
+        module: def?.module || "Unknown"
+      };
+    });
+
+    res.json(detailedRegistry);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
 // ── System prompt builder with role awareness ──
 function buildSystemPrompt(moduleContext?: string, capabilities?: any[], userRole?: string, manualContext?: string, additionalModules?: string[]) {
-  let prompt = `You are NexusAI, an intelligent assistant embedded in an enterprise ERP platform.
+  let prompt = `You are NexusAI, an intelligent assistant embedded in an enterprise ERP platform. 
 You help users with their work across Finance (GL, AP, AR, FA, Cash), CRM, HR, Projects, Supply Chain, Manufacturing, and more.
+You have access to a comprehensive registry of 246 specialized tools across all modules.
+
 Be concise, accurate, and action-oriented. When asked to perform actions, confirm what you'll do before executing.
 
 IMPORTANT: The user's role is "${userRole || "viewer"}". Only suggest actions they have permission to perform.
@@ -526,7 +550,7 @@ async function processSSEStream(resp: Response, onChunk: (t: string) => void) {
         const parsed = JSON.parse(json);
         const content = parsed.choices?.[0]?.delta?.content;
         if (content) onChunk(content);
-      } catch {}
+      } catch { }
     }
   }
 }
@@ -552,7 +576,7 @@ async function processAnthropicStream(resp: Response, onChunk: (t: string) => vo
         if (parsed.type === "content_block_delta" && parsed.delta?.text) {
           onChunk(parsed.delta.text);
         }
-      } catch {}
+      } catch { }
     }
   }
 }
@@ -577,7 +601,7 @@ async function processGeminiStream(resp: Response, onChunk: (t: string) => void)
         const parsed = JSON.parse(line.slice(6));
         const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) onChunk(text);
-      } catch {}
+      } catch { }
     }
   }
 }
@@ -601,7 +625,7 @@ async function processOllamaStream(resp: Response, onChunk: (t: string) => void)
         const parsed = JSON.parse(line);
         if (parsed.message?.content) onChunk(parsed.message.content);
         if (parsed.done) return;
-      } catch {}
+      } catch { }
     }
   }
 }
@@ -626,7 +650,7 @@ async function processCohereStream(resp: Response, onChunk: (t: string) => void)
         if (parsed.event_type === "text-generation" && parsed.text) {
           onChunk(parsed.text);
         }
-      } catch {}
+      } catch { }
     }
   }
 }
