@@ -25,8 +25,14 @@ export const financeMenu = [
     {
         label: "Payables (AP)",
         items: [
-            { title: "Invoices", url: "/finance/accounts-payable", icon: FileText },
-            { title: "Settings", url: "/ap/settings", icon: Settings },
+            { title: "AP Dashboard", url: "/finance/ap", icon: BarChart3 },
+            { title: "Invoice Workbench", url: "/finance/ap/invoices", icon: FileText },
+            { title: "Suppliers", url: "/finance/ap/suppliers", icon: Users },
+            { title: "Payment Batches", url: "/finance/ap/payments", icon: DollarSign },
+            { title: "Prepayments", url: "/finance/ap/prepayments", icon: DollarSign },
+            { title: "AI Invoice Capture", url: "/finance/ap/ai-capture", icon: TrendingUp },
+            { title: "Reports", url: "/finance/ap/reports", icon: BarChart3 },
+            { title: "Configuration", url: "/finance/ap/config", icon: Settings },
         ],
     },
     {

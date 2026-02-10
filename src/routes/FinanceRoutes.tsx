@@ -15,6 +15,7 @@ import APAICaptureUpload from "@/pages/APAICaptureUpload";
 import APReports from "@/pages/APReports";
 import APPrepayments from "@/pages/APPrepayments";
 import APPaymentBatches from "@/pages/APPaymentBatches";
+import APSystemConfig from "@/pages/APSystemConfig";
 import AccountsReceivable from "@/pages/AccountsReceivable";
 import EnterpriseBillingDashboard from "@/pages/billing/BillingDashboard";
 import BillingWorkbench from "@/pages/billing/BillingWorkbench";
@@ -116,6 +117,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ap/ai-capture" component={APAICaptureUpload} />
                 <Route path="/finance/ap/reports" component={APReports} />
                 <Route path="/finance/ap/prepayments" component={APPrepayments} />
+                <Route path="/finance/ap/config" component={APSystemConfig} />
                 <Route path="/finance/accounts-payable" component={APDashboard} />
                 <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
                 <Route path="/finance/billing" component={EnterpriseBillingDashboard} />

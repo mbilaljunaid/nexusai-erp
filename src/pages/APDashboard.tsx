@@ -84,6 +84,13 @@ export default function APDashboard() {
             color: "text-purple-600"
         },
         {
+            title: "Prepayments",
+            description: "Manage and apply supplier prepayments",
+            icon: DollarSign,
+            href: "/finance/ap/prepayments",
+            color: "text-emerald-600"
+        },
+        {
             title: "AI Invoice Capture",
             description: "Upload and extract invoice data with AI",
             icon: Upload,
@@ -105,6 +112,7 @@ export default function APDashboard() {
             color: "text-gray-600"
         }
     ];
+
 
     return (
         <StandardPage
