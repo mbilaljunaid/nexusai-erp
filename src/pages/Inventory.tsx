@@ -45,6 +45,7 @@ export default function Inventory() {
     { id: "stock-levels", label: "Stock Levels", icon: Package, color: "text-green-500" },
     { id: "reorder-points", label: "Reorder Points", icon: AlertTriangle, color: "text-orange-500" },
     { id: "warehouses", label: "Warehouses", icon: Warehouse, color: "text-purple-500" },
+    { id: "fulfillment", label: "Fulfillment", icon: Package, color: "text-blue-500" },
   ];
 
   return (
@@ -141,10 +142,53 @@ export default function Inventory() {
 
         {activeNav === "warehouses" && (
           <div className="space-y-4">
-            <Card>
-              <CardHeader><CardTitle className="text-base">Warehouse Allocation</CardTitle></CardHeader>
-              <CardContent><p className="text-muted-foreground">12 warehouses managed</p></CardContent>
-            </Card>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card className="bg-slate-900/50 border-slate-800">
+                <CardHeader>
+                  <CardTitle className="text-base text-white">Warehouse Allocation</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-400">12 warehouses managed across 4 regions.</p>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Total Capacity</span>
+                      <span className="text-white font-mono">82%</span>
+                    </div>
+                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500 w-[var(--tw-progress-width)]" style={{ "--tw-progress-width": '82%' } as React.CSSProperties} />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-blue-600 border-none shadow-lg shadow-blue-900/20">
+                <CardHeader>
+                  <CardTitle className="text-base text-white">WMS Operations</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-blue-100 text-sm">Access advanced warehouse management features including wave planning and LPN tracking.</p>
+                  <div className="flex gap-2">
+                    <Button variant="secondary" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
+                      <a href="/scm/wms/operations">Enter Operations Workbench</a>
+                    </Button>
+                    <Button variant="outline" className="border-blue-400 text-white hover:bg-blue-500" asChild>
+                      <a href="/scm/wms/dashboard">View WMS Dashboard</a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {activeNav === "fulfillment" && (
+          <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-slate-800 rounded-xl space-y-4">
+            <Package className="h-16 w-16 text-slate-700" />
+            <h3 className="text-xl font-bold text-white">Advanced Fulfillment Active</h3>
+            <p className="text-slate-500 text-center max-w-md">The legacy inventory fulfillment view has been upgraded to the WMS Operations Workbench.</p>
+            <Button className="bg-blue-600 hover:bg-blue-500" asChild>
+              <a href="/scm/wms/operations">Open WMS Workbench</a>
+            </Button>
           </div>
         )}
       </div>

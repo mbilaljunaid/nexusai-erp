@@ -54,7 +54,7 @@ const hrMenu = [
         label: "Development",
         items: [
             { title: "Performance", url: "/hr/performance", icon: FileText },
-            { title: "Learning (LMS)", url: "/talent/learning", icon: GraduationCap },
+            { title: "Learning (LMS)", url: "/hr/learning/me", icon: GraduationCap },
             { title: "Talent Pool", url: "/hr/talent-pool", icon: Users },
         ]
     },
@@ -63,6 +63,16 @@ const hrMenu = [
         items: [
             { title: "My Time", url: "/wfm/my-time", icon: Clock },
             { title: "Team Schedule", url: "/wfm/schedule", icon: Clock },
+        ]
+    },
+    {
+        label: "Self-Service",
+        items: [
+            { title: "Employee (ESS)", url: "/hr/self-service/me", icon: Users },
+            { title: "My Team (MSS)", url: "/hr/self-service/team", icon: Users2 },
+            { title: "Personal Info", url: "/hr/self-service/profile", icon: FileText },
+            { title: "Time Card", url: "/hr/self-service/time", icon: Clock },
+            { title: "Delegations", url: "/hr/self-service/delegation", icon: Handshake },
         ]
     }
 ];

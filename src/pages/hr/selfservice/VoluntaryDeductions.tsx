@@ -213,6 +213,10 @@ export default function VoluntaryDeductions() {
         <StandardPage
             title="Payroll Preferences"
             description="Manage voluntary deductions and view adjustment history"
+            breadcrumbs={[
+                { label: "Self-Service", href: "/hr/self-service/me" },
+                { label: "Payroll Preferences" }
+            ]}
         >
             <Tabs defaultValue="deductions" className="w-full">
                 <TabsList className="mb-4">

@@ -158,6 +158,10 @@ export default function MyTimeCard() {
         <StandardPage
             title={i18n.t('hr.time.card')}
             description="Manage your time entries, attendance, and leave requests."
+            breadcrumbs={[
+                { label: "Self-Service", href: "/hr/self-service/me" },
+                { label: "Time Card" }
+            ]}
         >
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Left Sidebar: Summary & Balances */}
@@ -194,10 +198,10 @@ export default function MyTimeCard() {
                                         <span className="capitalize">{bal.leaveType.toLowerCase()}</span>
                                         <span className="font-semibold">{bal.balanceHours}h</span>
                                     </div>
-                                    <div className="w-full bg-muted rounded-full h-2">
+                                    <div className="w-full bg-muted rounded-full h-2 relative overflow-hidden">
                                         <div
-                                            className="bg-primary h-2 rounded-full"
-                                            style={{ width: `${Math.min(100, (Number(bal.balanceHours) / 160) * 100)}%` }}
+                                            className="bg-primary h-full rounded-full transition-all duration-500"
+                                            style={{ width: "var(--tw-progress-width)", "--tw-progress-width": `${Math.min(100, (Number(bal.balanceHours) / 160) * 100)}%` } as React.CSSProperties}
                                         />
                                     </div>
                                 </div>

@@ -73,7 +73,7 @@ export default function PersonalDetails() {
     return (
         <div className="space-y-6 max-w-5xl mx-auto py-8">
             <div className="flex items-center gap-4 mb-2">
-                <Link href="/me">
+                <Link href="/hr/self-service/me">
                     <Button variant="ghost" size="icon" className="rounded-full">
                         <ChevronLeft className="h-5 w-5" />
                     </Button>
@@ -249,7 +249,7 @@ export default function PersonalDetails() {
                             <h3 className="text-xl font-bold">Health & Wellness elections</h3>
                             <p className="text-muted-foreground text-sm">Your active coverage and benefit programs</p>
                         </div>
-                        <Link href="/me/benefits/enroll">
+                        <Link href="/hr/self-service/benefits">
                             <Button className="bg-teal-600 hover:bg-teal-700 text-white">
                                 <Plus className="h-4 w-4 mr-2" /> Modify Elections
                             </Button>
@@ -263,7 +263,7 @@ export default function PersonalDetails() {
                             <Card className="md:col-span-3 border-dashed border-2 py-12 flex flex-col items-center justify-center bg-transparent">
                                 <Shield className="h-12 w-12 text-zinc-300 mb-4" />
                                 <p className="text-zinc-500 font-medium">No active benefit enrollments found.</p>
-                                <Link href="/me/benefits/enroll">
+                                <Link href="/hr/self-service/benefits">
                                     <Button variant="link" className="text-teal-600 mt-2">Start Enrollment Process</Button>
                                 </Link>
                             </Card>
@@ -330,7 +330,7 @@ export default function PersonalDetails() {
                                     <h4 className="text-sm font-semibold">Manage your timesheets?</h4>
                                     <p className="text-xs text-muted-foreground">View detailed logs, entries, and submit for approval.</p>
                                 </div>
-                                <Link href="/me/time-card">
+                                <Link href="/hr/self-service/time">
                                     <Button>View Full Time Card</Button>
                                 </Link>
                             </div>

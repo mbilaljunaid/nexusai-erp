@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CourseCatalogAdmin() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -95,12 +96,14 @@ export default function CourseCatalogAdmin() {
     ];
 
     return (
-        <div className="p-8 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Learning Administration</h1>
-                    <p className="text-muted-foreground">Manage courses, compliance, and system logs.</p>
-                </div>
+        <StandardPage
+            title="Learning Administration"
+            description="Manage courses, compliance, and system logs."
+            breadcrumbs={[
+                { label: "Learning", href: "/hr/learning/me" },
+                { label: "Administration" }
+            ]}
+            actions={
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={runComplianceCheck}>
                         <ShieldCheck className="mr-2 h-4 w-4" /> Run Compliance Check
@@ -109,41 +112,44 @@ export default function CourseCatalogAdmin() {
                         <Plus className="mr-2 h-4 w-4" /> New Course
                     </Button>
                 </div>
+            }
+        >
+            <div className="space-y-6">
+
+                <Tabs defaultValue="courses" className="space-y-4">
+                    <TabsList>
+                        <TabsTrigger value="courses">Course Catalog</TabsTrigger>
+                        <TabsTrigger value="audit">Audit Logs</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="courses" className="space-y-4">
+                        <div className="bg-white rounded-md border">
+                            <StandardTable
+                                data={courses || []}
+                                columns={columns}
+                                isLoading={isLoading}
+                                totalItems={totalCourses}
+                                page={page}
+                                pageSize={pageSize}
+                                onPageChange={setPage}
+                                filterColumn="title"
+                                filterPlaceholder="Search courses..."
+                            />
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="audit" className="space-y-4">
+                        <div className="bg-white rounded-md border">
+                            <StandardTable
+                                data={auditLogs || []}
+                                columns={auditColumns}
+                                filterColumn="action"
+                                filterPlaceholder="Filter by Action..."
+                            />
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </div>
-
-            <Tabs defaultValue="courses" className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="courses">Course Catalog</TabsTrigger>
-                    <TabsTrigger value="audit">Audit Logs</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="courses" className="space-y-4">
-                    <div className="bg-white rounded-md border">
-                        <StandardTable
-                            data={courses || []}
-                            columns={columns}
-                            isLoading={isLoading}
-                            totalItems={totalCourses}
-                            page={page}
-                            pageSize={pageSize}
-                            onPageChange={setPage}
-                            filterColumn="title"
-                            filterPlaceholder="Search courses..."
-                        />
-                    </div>
-                </TabsContent>
-
-                <TabsContent value="audit" className="space-y-4">
-                    <div className="bg-white rounded-md border">
-                        <StandardTable
-                            data={auditLogs || []}
-                            columns={auditColumns}
-                            filterColumn="action"
-                            filterPlaceholder="Filter by Action..."
-                        />
-                    </div>
-                </TabsContent>
-            </Tabs>
-        </div>
+        </StandardPage>
     );
 }

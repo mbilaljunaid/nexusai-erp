@@ -37,6 +37,9 @@ import TransportationManagementSystem from "@/pages/TransportationManagementSyst
 import LcmWorkbench from "@/pages/cost-management/LcmWorkbench";
 import CostDashboard from "@/pages/cost-management/CostDashboard";
 
+import WarehouseOperations from "@/pages/scm/WarehouseOperations";
+import WmsDashboard from "@/pages/scm/WmsDashboard";
+
 export default function ScmRoutes() {
     return (
         <>
@@ -70,6 +73,8 @@ export default function ScmRoutes() {
             <Route path="/inventory/dashboard" component={Inventory} />
             <Route path="/inventory/work-orders" component={WorkOrdersDashboard} />
             <Route path="/warehouse" component={Warehouse} />
+            <Route path="/scm/wms/operations" component={WarehouseOperations} />
+            <Route path="/scm/wms/dashboard" component={WmsDashboard} />
             <Route path="/suppliers" component={SupplierManagement} />
 
             {/* Cost Management */}

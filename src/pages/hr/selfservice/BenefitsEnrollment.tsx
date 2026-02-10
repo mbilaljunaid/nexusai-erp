@@ -89,7 +89,7 @@ export default function BenefitsEnrollment() {
                 </div>
                 <h1 className="text-3xl font-bold">Enrollment Submitted!</h1>
                 <p className="text-zinc-500 max-w-md">Your benefits have been updated. You can view your active elections in your profile.</p>
-                <Button onClick={() => window.location.href = "/me/profile"} variant="outline" className="mt-4">
+                <Button onClick={() => window.location.href = "/hr/self-service/profile"} variant="outline" className="mt-4">
                     Back to Profile
                 </Button>
             </div>

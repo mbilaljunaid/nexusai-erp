@@ -23,12 +23,12 @@ import { useNexusAI } from "@/contexts/NexusAIContext";
 export default function ESSDashboard() {
     const { open } = useNexusAI();
     const quickActions = [
-        { name: "Personal Information", icon: User, color: "text-blue-500", bg: "bg-blue-500/10", path: "/me/profile" },
-        { name: "Document Records", icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10", path: "/me/documents" },
-        { name: "Payslips", icon: CreditCard, color: "text-green-500", bg: "bg-green-500/10", path: "/me/payslips" },
-        { name: "Absence", icon: Calendar, color: "text-orange-500", bg: "bg-orange-500/10", path: "/wfm/my-time" },
+        { name: "Personal Information", icon: User, color: "text-blue-500", bg: "bg-blue-500/10", path: "/hr/self-service/profile" },
+        { name: "Document Records", icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10", path: "/hr/self-service/profile" },
+        { name: "Payslips", icon: CreditCard, color: "text-green-500", bg: "bg-green-500/10", path: "/hr/self-service/payroll" },
+        { name: "Absence", icon: Calendar, color: "text-orange-500", bg: "bg-orange-500/10", path: "/hr/self-service/time" },
         { name: "Employment Verification", icon: Shield, color: "text-teal-500", bg: "bg-teal-500/10", path: "/api/hr-self-service/me/documents/verification/pdf", external: true },
-        { name: "Tax Forms", icon: FileCheck, color: "text-red-500", bg: "bg-red-500/10", path: "/me/statutory-forms" },
+        { name: "Tax Forms", icon: FileCheck, color: "text-red-500", bg: "bg-red-500/10", path: "/hr/self-service/tax-forms" },
     ];
 
     const pendingTasks = [

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Loader2, Plus, PenTool } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function AssessmentBuilder() {
     const { toast } = useToast();
@@ -31,48 +32,57 @@ export default function AssessmentBuilder() {
     });
 
     return (
-        <div className="p-8 space-y-6">
-            <h1 className="text-3xl font-bold">Assessment Builder</h1>
+        <StandardPage
+            title="Assessment Builder"
+            description="Create quizzes and certification exams."
+            breadcrumbs={[
+                { label: "Learning", href: "/hr/learning/me" },
+                { label: "Administration", href: "/hr/learning/admin" },
+                { label: "Assessment Builder" }
+            ]}
+        >
+            <div className="space-y-6">
 
-            {!selectedAssessment ? (
-                <Card className="w-full max-w-md mx-auto mt-10">
-                    <CardHeader>
-                        <CardTitle>Create New Quiz</CardTitle>
-                        <CardDescription>Configure the basic settings for your assessment.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            const fd = new FormData(e.currentTarget);
-                            createMutation.mutate({
-                                title: fd.get("title"),
-                                description: fd.get("description"),
-                                passingScore: Number(fd.get("passingScore"))
-                            });
-                        }} className="space-y-4">
-                            <div>
-                                <Label>Title</Label>
-                                <Input name="title" required placeholder="e.g. Final Exam" />
-                            </div>
-                            <div>
-                                <Label>Description</Label>
-                                <Input name="description" placeholder="Instructions..." />
-                            </div>
-                            <div>
-                                <Label>Passing Score (Points)</Label>
-                                <Input name="passingScore" type="number" defaultValue="80" />
-                            </div>
-                            <Button type="submit" className="w-full" disabled={createMutation.isPending}>
-                                {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Create & Add Questions
-                            </Button>
-                        </form>
-                    </CardContent>
-                </Card>
-            ) : (
-                <QuestionEditor assessment={selectedAssessment} />
-            )}
-        </div>
+                {!selectedAssessment ? (
+                    <Card className="w-full max-w-md mx-auto mt-10">
+                        <CardHeader>
+                            <CardTitle>Create New Quiz</CardTitle>
+                            <CardDescription>Configure the basic settings for your assessment.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                const fd = new FormData(e.currentTarget);
+                                createMutation.mutate({
+                                    title: fd.get("title"),
+                                    description: fd.get("description"),
+                                    passingScore: Number(fd.get("passingScore"))
+                                });
+                            }} className="space-y-4">
+                                <div>
+                                    <Label>Title</Label>
+                                    <Input name="title" required placeholder="e.g. Final Exam" />
+                                </div>
+                                <div>
+                                    <Label>Description</Label>
+                                    <Input name="description" placeholder="Instructions..." />
+                                </div>
+                                <div>
+                                    <Label>Passing Score (Points)</Label>
+                                    <Input name="passingScore" type="number" defaultValue="80" />
+                                </div>
+                                <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+                                    {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    Create & Add Questions
+                                </Button>
+                            </form>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <QuestionEditor assessment={selectedAssessment} />
+                )}
+            </div>
+        </StandardPage>
     );
 }
 

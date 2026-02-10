@@ -43,14 +43,14 @@ export default function LearningPlayer() {
 
     const handleComplete = () => {
         trackMutation.mutate("COMPLETED");
-        setTimeout(() => setLocation("/talent/learning"), 1000);
+        setTimeout(() => setLocation("/hr/learning/me"), 1000);
     };
 
     return (
         <div className="h-screen flex flex-col bg-slate-950 text-white">
             {/* Header */}
             <div className="h-16 border-b border-slate-800 flex items-center px-6 justify-between bg-slate-900">
-                <Button variant="ghost" className="text-white hover:bg-slate-800" onClick={() => setLocation("/talent/learning")}>
+                <Button variant="ghost" className="text-white hover:bg-slate-800" onClick={() => setLocation("/hr/learning/me")}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
                 </Button>
                 <div className="font-semibold text-lg">{launchData.studentName}'s Learning Session</div>

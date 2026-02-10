@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Loader2, Plus, Trash, ArrowRight, BookOpen } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CurriculumBuilder() {
     const { toast } = useToast();
@@ -40,58 +41,67 @@ export default function CurriculumBuilder() {
     });
 
     return (
-        <div className="p-8 space-y-6">
-            <h1 className="text-3xl font-bold">Curriculum Builder</h1>
+        <StandardPage
+            title="Curriculum Builder"
+            description="Design learning paths and course sequences."
+            breadcrumbs={[
+                { label: "Learning", href: "/hr/learning/me" },
+                { label: "Administration", href: "/hr/learning/admin" },
+                { label: "Curriculum Builder" }
+            ]}
+        >
+            <div className="space-y-6">
 
-            {/* Create Form */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Create New Path</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        const fd = new FormData(e.currentTarget);
-                        createMutation.mutate({ title: fd.get("title"), description: fd.get("description") });
-                        e.currentTarget.reset();
-                    }} className="flex gap-4">
-                        <Input name="title" placeholder="Path Title (e.g. Onboarding)" required />
-                        <Input name="description" placeholder="Description" />
-                        <Button type="submit" disabled={createMutation.isPending}>
-                            {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Create
-                        </Button>
-                    </form>
-                </CardContent>
-            </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* List */}
+                {/* Create Form */}
                 <Card>
-                    <CardHeader><CardTitle>Existing Curricula</CardTitle></CardHeader>
-                    <CardContent className="space-y-2">
-                        {loadingCurricula ? <Loader2 className="animate-spin" /> : curricula?.map((c: any) => (
-                            <div key={c.id}
-                                className={`p-3 border rounded cursor-pointer hover:bg-muted ${selectedCurriculum?.id === c.id ? 'border-primary bg-muted' : ''}`}
-                                onClick={() => setSelectedCurriculum(c)}
-                            >
-                                <div className="font-medium">{c.title}</div>
-                                <div className="text-xs text-muted-foreground">{c.description}</div>
-                            </div>
-                        ))}
+                    <CardHeader>
+                        <CardTitle>Create New Path</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            const fd = new FormData(e.currentTarget);
+                            createMutation.mutate({ title: fd.get("title"), description: fd.get("description") });
+                            e.currentTarget.reset();
+                        }} className="flex gap-4">
+                            <Input name="title" placeholder="Path Title (e.g. Onboarding)" required />
+                            <Input name="description" placeholder="Description" />
+                            <Button type="submit" disabled={createMutation.isPending}>
+                                {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Create
+                            </Button>
+                        </form>
                     </CardContent>
                 </Card>
 
-                {/* Editor */}
-                {selectedCurriculum ? (
-                    <CurriculumEditor curriculumId={selectedCurriculum.id} title={selectedCurriculum.title} />
-                ) : (
-                    <div className="flex items-center justify-center border rounded-lg h-64 bg-muted/20 text-muted-foreground">
-                        Select a curriculum to edit courses
-                    </div>
-                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* List */}
+                    <Card>
+                        <CardHeader><CardTitle>Existing Curricula</CardTitle></CardHeader>
+                        <CardContent className="space-y-2">
+                            {loadingCurricula ? <Loader2 className="animate-spin" /> : curricula?.map((c: any) => (
+                                <div key={c.id}
+                                    className={`p-3 border rounded cursor-pointer hover:bg-muted ${selectedCurriculum?.id === c.id ? 'border-primary bg-muted' : ''}`}
+                                    onClick={() => setSelectedCurriculum(c)}
+                                >
+                                    <div className="font-medium">{c.title}</div>
+                                    <div className="text-xs text-muted-foreground">{c.description}</div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+
+                    {/* Editor */}
+                    {selectedCurriculum ? (
+                        <CurriculumEditor curriculumId={selectedCurriculum.id} title={selectedCurriculum.title} />
+                    ) : (
+                        <div className="flex items-center justify-center border rounded-lg h-64 bg-muted/20 text-muted-foreground">
+                            Select a curriculum to edit courses
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }
 

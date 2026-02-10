@@ -14,6 +14,23 @@ import JobRequisitionDetail from "../pages/recruitment/JobRequisitionDetail";
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { HrSidebar } from "@/components/nav/HrSidebar";
 
+// Self-Service Imports
+import ESSDashboard from "../pages/hr/selfservice/ESSDashboard";
+import MSSDashboard from "../pages/hr/selfservice/MSSDashboard";
+import PersonalDetails from "../pages/hr/selfservice/PersonalDetails";
+import MyTimeCard from "../pages/hr/selfservice/MyTimeCard";
+import BenefitsEnrollment from "../pages/hr/selfservice/BenefitsEnrollment";
+import StatutoryForms from "../pages/hr/selfservice/StatutoryForms";
+import VoluntaryDeductions from "../pages/hr/selfservice/VoluntaryDeductions";
+import DelegationWorkbench from "../pages/hr/selfservice/DelegationWorkbench";
+
+// Learning Management (LMS) Imports
+import LearningDashboard from "../pages/hr/learning/LearningDashboard";
+import CourseCatalogAdmin from "../pages/hr/learning/admin/CourseCatalogAdmin";
+import ManagerLearningDashboard from "../pages/hr/learning/manager/ManagerLearningDashboard";
+import LearningPlayer from "../pages/hr/learning/player/LearningPlayer";
+import InstructorDashboard from "../pages/hr/learning/instructor/InstructorDashboard";
+
 export default function HrRoutes() {
     return (
         <ModuleLayout sidebar={<HrSidebar />}>
@@ -30,6 +47,23 @@ export default function HrRoutes() {
                 <Route path="/hr/performance" component={PerformanceManagement} />
                 <Route path="/hr/employees" component={EmployeeDirectory} />
                 <Route path="/hr/payroll" component={PayrollRuns} />
+
+                {/* Self-Service Routes */}
+                <Route path="/hr/self-service/me" component={ESSDashboard} />
+                <Route path="/hr/self-service/team" component={MSSDashboard} />
+                <Route path="/hr/self-service/profile" component={PersonalDetails} />
+                <Route path="/hr/self-service/time" component={MyTimeCard} />
+                <Route path="/hr/self-service/benefits" component={BenefitsEnrollment} />
+                <Route path="/hr/self-service/tax-forms" component={StatutoryForms} />
+                <Route path="/hr/self-service/deductions" component={VoluntaryDeductions} />
+                <Route path="/hr/self-service/delegation" component={DelegationWorkbench} />
+
+                {/* Learning Management (LMS) Routes */}
+                <Route path="/hr/learning/me" component={LearningDashboard} />
+                <Route path="/hr/learning/team" component={ManagerLearningDashboard} />
+                <Route path="/hr/learning/admin" component={CourseCatalogAdmin} />
+                <Route path="/hr/learning/instructor" component={InstructorDashboard} />
+                <Route path="/hr/learning/play/:id" component={LearningPlayer} />
 
                 {/* Main HR Dashboard */}
                 <Route path="/hr" component={HR} />

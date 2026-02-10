@@ -42,6 +42,7 @@ export const financeMenu = [
     {
         label: "Receivables (AR)",
         items: [
+            { title: "Dunning Workbench", url: "/finance/ar/dunning", icon: FileCheck },
             { title: "Invoices", url: "/finance/ar/invoices", icon: FileText },
             { title: "Analytics", url: "/finance/ar/analytics", icon: BarChart3 },
             { title: "Reports", url: "/finance/ar/reports", icon: FileText },
@@ -60,7 +61,8 @@ export const financeMenu = [
     {
         label: "Assets & Cash",
         items: [
-            { title: "Fixed Assets", url: "/finance/fixed-assets", icon: Briefcase },
+            { title: "Asset Workbench", url: "/finance/fixed-assets", icon: Briefcase },
+            { title: "Fixed Assets", url: "/finance/fixed-assets/inquiry", icon: FileText },
             { title: "Cash Dashboard", url: "/finance/cash", icon: BarChart3 },
             { title: "Bank Reconciliation", url: "/finance/cash/reconciliation", icon: CheckSquare },
             { title: "Cash Forecasting", url: "/finance/cash/forecasting", icon: TrendingUp },

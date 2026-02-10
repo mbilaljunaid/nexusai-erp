@@ -183,6 +183,10 @@ export default function DelegationWorkbench() {
         <StandardPage
             title="Delegation Workbench"
             description="Manage your approval and analytics proxies"
+            breadcrumbs={[
+                { label: "Self-Service", href: "/hr/self-service/me" },
+                { label: "Delegations" }
+            ]}
         >
             <div className="grid gap-6">
                 <Card className="vanguard-card">

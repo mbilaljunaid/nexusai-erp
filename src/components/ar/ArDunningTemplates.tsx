@@ -94,14 +94,31 @@ export function ArDunningTemplates() {
                                 <Input type="number" value={formData.daysOverdueMax} onChange={e => setFormData({ ...formData, daysOverdueMax: parseInt(e.target.value) })} />
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <label>Content Template</label>
-                            <Textarea value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} />
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Content Template</label>
+                                    <Textarea
+                                        value={formData.content}
+                                        onChange={e => setFormData({ ...formData, content: e.target.value })}
+                                        className="h-48 font-mono text-sm"
+                                        placeholder="Dear {{customer_name}}, your invoice {{invoice_number}} is overdue..."
+                                    />
+                                </div>
+                                <Button type="submit" disabled={createMutation.isPending} className="w-full">
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    {createMutation.isPending ? "Creating..." : "Save Template"}
+                                </Button>
+                            </div>
+                            <div className="space-y-4">
+                                <label className="text-sm font-medium">Template Preview</label>
+                                <div className="h-48 p-4 rounded-md border border-slate-200 bg-slate-50 overflow-y-auto text-sm whitespace-pre-wrap">
+                                    <div className="font-bold border-b pb-2 mb-2">Subject: {formData.subject || "(No Subject)"}</div>
+                                    {formData.content || "(No Content)"}
+                                </div>
+                                <p className="text-xs text-muted-foreground">Supported variables: {'{{customer_name}}, {{invoice_number}}, {{due_date}}, {{overdue_amount}}'}</p>
+                            </div>
                         </div>
-                        <Button type="submit" disabled={createMutation.isPending}>
-                            <Plus className="w-4 h-4 mr-2" />
-                            {createMutation.isPending ? "Creating..." : "Save Template"}
-                        </Button>
                     </form>
                 </CardContent>
             </Card>

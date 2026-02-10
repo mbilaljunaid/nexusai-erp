@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const QUARTERS = ["Q1-2026", "Q2-2026", "Q3-2026", "Q4-2026"];
 
@@ -213,10 +214,10 @@ export default function CrmQuotaManagement() {
                                                 </div>
                                                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-50">
                                                     <div
-                                                        className={`h-full rounded-full transition-all duration-1000 ${perf.attainment >= 100 ? 'bg-emerald-500' :
-                                                                perf.attainment >= 70 ? 'bg-indigo-500' : 'bg-amber-500'
+                                                        className={`h-full rounded-full transition-all duration-1000 w-[var(--tw-progress-width)] ${perf.attainment >= 100 ? 'bg-emerald-500' :
+                                                            perf.attainment >= 70 ? 'bg-indigo-500' : 'bg-amber-500'
                                                             }`}
-                                                        style={{ width: `${Math.min(perf.attainment, 100)}%` }}
+                                                        style={{ "--tw-progress-width": `${Math.min(perf.attainment, 100)}%` } as React.CSSProperties}
                                                     />
                                                 </div>
                                             </div>

@@ -197,8 +197,8 @@ export default function RecruitmentPipelineBoard() {
                                                                 </div>
                                                                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                                                                     <div
-                                                                        className="h-full bg-blue-500 rounded-full transition-all duration-1000"
-                                                                        style={{ width: `${app.score}%` }}
+                                                                        className="h-full bg-blue-500 rounded-full transition-all duration-1000 w-[var(--tw-progress-width)]"
+                                                                        style={{ "--tw-progress-width": `${app.score}%` } as React.CSSProperties}
                                                                     />
                                                                 </div>
                                                             </div>

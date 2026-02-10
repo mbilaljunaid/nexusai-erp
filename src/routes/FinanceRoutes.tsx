@@ -9,6 +9,7 @@ import JournalWizard from "@/pages/gl/JournalWizard";
 import TreasuryCommandCenter from "@/pages/TreasuryCommandCenter";
 import ReconciliationPage from "@/pages/ReconciliationPage";
 import FixedAssets from "@/pages/finance/FixedAssets";
+import FixedAssetWorkbench from "@/pages/finance/FixedAssetWorkbench";
 import APInvoices from "@/pages/APInvoices";
 import APDashboard from "@/pages/APDashboard";
 import APSuppliers from "@/pages/APSuppliers";
@@ -37,6 +38,7 @@ import { ArInvoiceList } from "@/components/ar/ArInvoiceList";
 
 import ArAnalytics from "@/pages/ArAnalytics";
 import ArReports from "@/pages/ArReports";
+import ArDunningWorkbench from "@/pages/finance/ArDunningWorkbench";
 import CustomerDetails from "@/pages/CustomerDetails";
 import JournalEntry from "@/pages/gl/JournalEntry";
 import JournalApprovalHub from "@/pages/gl/JournalApprovalHub";
@@ -127,7 +129,9 @@ export default function FinanceRoutes() {
                 <Route path="/finance/cash/zba" component={ZBAManagement} />
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />
                 <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
-                <Route path="/finance/fixed-assets" component={FixedAssets} />
+                <Route path="/finance/fixed-assets" component={FixedAssetWorkbench} />
+                <Route path="/finance/fixed-assets/workbench" component={FixedAssetWorkbench} />
+                <Route path="/finance/fixed-assets/inquiry" component={FixedAssets} />
                 <Route path="/finance/ap" component={APDashboard} />
                 <Route path="/finance/ap/suppliers" component={APSuppliers} />
                 <Route path="/finance/ap/invoices" component={APInvoices} />
@@ -155,6 +159,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/reports" component={ArReports} />
                 <Route path="/finance/ar/customers/:id" component={CustomerDetails} />
                 <Route path="/finance/ar/period-close" component={ArPeriodClose} />
+                <Route path="/finance/ar/dunning" component={ArDunningWorkbench} />
 
                 <Route path="/gl/journals/new" component={JournalEntry} />
                 <Route path="/gl/journals/wizard" component={JournalWizard} />
