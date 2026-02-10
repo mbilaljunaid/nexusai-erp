@@ -1,7 +1,7 @@
 import React from 'react';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, Briefcase, Clock, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Users, Briefcase, Clock, TrendingUp, AlertTriangle, Trello } from 'lucide-react';
 import { AnalyticsChart } from '@/components/AnalyticsChart';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
@@ -74,6 +74,10 @@ export default function HrDashboard() {
                 <p className="text-muted-foreground">Workforce overview and key performance indicators</p>
             </div>
             <div className="space-x-2">
+                <Button variant="outline" onClick={() => window.location.href = '/hr/recruitment/pipeline'}>
+                    <Trello className="h-4 w-4 mr-2" />
+                    Recruitment Pipeline
+                </Button>
                 <Button>Download Report</Button>
             </div>
         </div>

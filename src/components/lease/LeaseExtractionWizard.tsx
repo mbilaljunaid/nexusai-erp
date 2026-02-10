@@ -28,7 +28,7 @@ export function LeaseExtractionWizard({ onClose }: { onClose: () => void }) {
 
     const extractMutation = useMutation({
         mutationFn: async () => {
-            const res = await apiRequest("POST", "/api/leases/extract", { text: rawText });
+            const res = await apiRequest("POST", "/api/lease/leases/extract", { text: rawText });
             return res.json();
         },
         onSuccess: (result) => {

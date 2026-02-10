@@ -30,16 +30,16 @@ export default function LeaseModificationWizard({ leaseId }: { leaseId: string }
     });
 
     const { data: lease } = useQuery({
-        queryKey: [`/api/finance/lease/leases/${leaseId}`],
+        queryKey: [`/api/lease/leases/${leaseId}`],
         queryFn: async () => {
-            const res = await fetch(`/api/finance/lease/leases/${leaseId}`);
+            const res = await fetch(`/api/lease/leases/${leaseId}`);
             return res.json();
         }
     });
 
     const modificationMutation = useMutation({
         mutationFn: async (data: typeof formData) => {
-            const res = await fetch(`/api/finance/lease/leases/${leaseId}/modify`, {
+            const res = await fetch(`/api/lease/leases/${leaseId}/modify`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)

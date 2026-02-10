@@ -24,9 +24,9 @@ import { Badge } from "@/components/ui/badge";
 
 export default function LeaseComplianceDashboard() {
     const { data: stats } = useQuery({
-        queryKey: ["/api/finance/lease/compliance/stats"],
+        queryKey: ["/api/lease/compliance/stats"],
         queryFn: async () => {
-            const res = await fetch("/api/finance/lease/compliance/stats");
+            const res = await fetch("/api/lease/compliance/stats");
             return res.json();
         }
     });
@@ -153,7 +153,7 @@ export default function LeaseComplianceDashboard() {
                                 <div key={entry.name} className="flex items-center gap-2">
                                     <div
                                         className={`w-3 h-3 rounded-full ${entry.color === "#3b82f6" ? "bg-blue-500" :
-                                                entry.color === "#10b981" ? "bg-emerald-500" : ""
+                                            entry.color === "#10b981" ? "bg-emerald-500" : ""
                                             }`}
                                         title={`${entry.name} color indicator`}
                                     />

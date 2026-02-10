@@ -16,17 +16,20 @@ import {
     ResponsiveContainer,
     Legend
 } from "recharts";
+import { useLocation } from "wouter";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2, RefreshCw, PenTool } from "lucide-react";
 
 interface LeaseSchedule {
     period: number;
     date: string;
-    openingBalance: number;
-    payment: number;
-    interest: number;
-    principal: number;
-    closingBalance: number;
-    rouAmortization: number;
-    rouCarryValue: number;
+    openingLiability: string;
+    interestExpense: string;
+    paymentAmount: string;
+    closingLiability: string;
+    rouOpeningBalance: string;
+    amortizationExpense: string;
+    rouClosingBalance: string;
 }
 
 interface LeaseDetail {
@@ -43,12 +46,14 @@ interface LeaseDetail {
 
 export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
     const [activeTab, setActiveTab] = useState<"payment" | "rou">("payment");
+    const [, setLocation] = useLocation();
+    const queryClient = useQueryClient();
 
     // Fetch lease basic info
     const { data: lease } = useQuery<LeaseDetail>({
-        queryKey: [`/api/finance/lease/leases/${leaseId}`],
+        queryKey: [`/api/lease/leases/${leaseId}`],
         queryFn: async () => {
-            const res = await fetch(`/api/finance/lease/leases/${leaseId}`);
+            const res = await fetch(`/api/lease/leases/${leaseId}`);
             if (!res.ok) throw new Error("Failed to fetch lease details");
             return res.json();
         }
@@ -56,19 +61,33 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
 
     // Fetch payment schedules
     const { data: schedules = [], isLoading } = useQuery<LeaseSchedule[]>({
-        queryKey: [`/api/finance/lease/leases/${leaseId}/schedules`],
+        queryKey: [`/api/lease/leases/${leaseId}/schedules`],
         queryFn: async () => {
-            const res = await fetch(`/api/finance/lease/leases/${leaseId}/schedules`);
+            const res = await fetch(`/api/lease/leases/${leaseId}/schedules`);
             if (!res.ok) throw new Error("Failed to fetch schedules");
             return res.json();
         }
     });
 
-    const formatCurrency = (amount: number, currency: string = "USD") => {
+    const generateScheduleMutation = useMutation({
+        mutationFn: async () => {
+            const res = await fetch(`/api/lease/leases/${leaseId}/generate-schedule`, {
+                method: "POST"
+            });
+            if (!res.ok) throw new Error("Failed to generate schedule");
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/lease/leases/${leaseId}/schedules`] });
+        }
+    });
+
+    const formatCurrency = (amount: number | string, currency: string = "USD") => {
+        const value = typeof amount === "string" ? parseFloat(amount) : amount;
         return new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: currency
-        }).format(amount);
+        }).format(value);
     };
 
     const formatDate = (dateString: string) => {
@@ -94,11 +113,33 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
                                 {lease.leaseType} Lease • {lease.discountRate}% Incremental Borrowing Rate
                             </p>
                         </div>
-                        <PDFExportButton
-                            endpoint={`/api/finance/lease/leases/${leaseId}/schedules/pdf`}
-                            label="Download Schedule"
-                            filename={`Lease_Schedule_${leaseId}.pdf`}
-                        />
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setLocation(`/finance/leases/${leaseId}/modify`)}
+                            >
+                                <PenTool className="mr-2 h-4 w-4" /> Remeasure Lease
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => generateScheduleMutation.mutate()}
+                                disabled={generateScheduleMutation.isPending}
+                            >
+                                {generateScheduleMutation.isPending ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <RefreshCw className="mr-2 h-4 w-4" />
+                                )}
+                                Regenerate Schedule
+                            </Button>
+                            <PDFExportButton
+                                endpoint={`/api/lease/leases/${leaseId}/schedules/pdf`}
+                                label="Download PDF"
+                                filename={`Lease_Schedule_${leaseId}.pdf`}
+                            />
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -111,7 +152,7 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
                                 <p className="font-medium">{new Date(lease.endDate).toLocaleDateString()}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-muted-foreground">NPV of Minimum Payments</p>
+                                <p className="text-xs text-muted-foreground">Initial Liability (NPV)</p>
                                 <p className="font-bold text-lg text-blue-600">
                                     {formatCurrency(lease.totalValue, lease.currency)}
                                 </p>
@@ -146,7 +187,7 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
                                 <Legend />
                                 <Line
                                     type="monotone"
-                                    dataKey="closingBalance"
+                                    dataKey="closingLiability"
                                     stroke="#ef4444"
                                     name="Lease Liability"
                                     strokeWidth={2}
@@ -154,7 +195,7 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
                                 />
                                 <Line
                                     type="monotone"
-                                    dataKey="rouCarryValue"
+                                    dataKey="rouClosingBalance"
                                     stroke="#3b82f6"
                                     name="ROU Asset Value"
                                     strokeWidth={2}
@@ -198,7 +239,7 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
                                         <TableHead className="text-right">Opening Liability</TableHead>
                                         <TableHead className="text-right">Payment</TableHead>
                                         <TableHead className="text-right">Interest</TableHead>
-                                        <TableHead className="text-right">Principal</TableHead>
+                                        <TableHead className="text-right">Principal Reduction</TableHead>
                                         <TableHead className="text-right">Closing Liability</TableHead>
                                     </>
                                 ) : (
@@ -218,18 +259,18 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
                                     <TableCell>{formatDate(row.date)}</TableCell>
                                     {activeTab === "payment" ? (
                                         <>
-                                            <TableCell className="text-right">{formatCurrency(row.openingBalance)}</TableCell>
-                                            <TableCell className="text-right font-medium text-red-600">{formatCurrency(row.payment)}</TableCell>
-                                            <TableCell className="text-right text-orange-600">{formatCurrency(row.interest)}</TableCell>
-                                            <TableCell className="text-right text-green-600">{formatCurrency(row.principal)}</TableCell>
-                                            <TableCell className="text-right font-bold">{formatCurrency(row.closingBalance)}</TableCell>
+                                            <TableCell className="text-right">{formatCurrency(row.openingLiability)}</TableCell>
+                                            <TableCell className="text-right font-medium text-red-600">{formatCurrency(row.paymentAmount)}</TableCell>
+                                            <TableCell className="text-right text-orange-600">{formatCurrency(row.interestExpense)}</TableCell>
+                                            <TableCell className="text-right text-green-600">{formatCurrency(parseFloat(row.paymentAmount) - parseFloat(row.interestExpense))}</TableCell>
+                                            <TableCell className="text-right font-bold">{formatCurrency(row.closingLiability)}</TableCell>
                                         </>
                                     ) : (
                                         <>
-                                            <TableCell className="text-right">{formatCurrency(row.rouCarryValue + row.rouAmortization)}</TableCell>
-                                            <TableCell className="text-right text-blue-600">{formatCurrency(row.rouAmortization)}</TableCell>
+                                            <TableCell className="text-right">{formatCurrency(row.rouOpeningBalance)}</TableCell>
+                                            <TableCell className="text-right text-blue-600">{formatCurrency(row.amortizationExpense)}</TableCell>
                                             <TableCell className="text-right">$0.00</TableCell>
-                                            <TableCell className="text-right font-bold">{formatCurrency(row.rouCarryValue)}</TableCell>
+                                            <TableCell className="text-right font-bold">{formatCurrency(row.rouClosingBalance)}</TableCell>
                                         </>
                                     )}
                                 </TableRow>

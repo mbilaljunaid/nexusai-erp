@@ -20,7 +20,7 @@ import APSystemConfig from "@/pages/APSystemConfig";
 
 // Cash Management
 import CashManagementDashboard from "@/pages/finance/cash/CashManagementDashboard";
-import BankReconciliationWorkbench from "@/pages/finance/cash/BankReconciliationWorkbench";
+import CashReconciliationWorkbench from "@/pages/finance/CashReconciliationWorkbench";
 import CashForecastingView from "@/pages/finance/cash/CashForecastingView";
 import CurrencyRevaluationView from "@/pages/finance/cash/CurrencyRevaluationView";
 import ZBAManagement from "@/pages/finance/cash/ZBAManagement";
@@ -121,7 +121,7 @@ export default function FinanceRoutes() {
             <Switch>
                 <Route path="/finance/cash" component={CashManagementDashboard} />
                 <Route path="/finance/cash-management" component={CashManagementDashboard} />
-                <Route path="/finance/cash/reconciliation" component={BankReconciliationWorkbench} />
+                <Route path="/finance/cash/reconciliation" component={CashReconciliationWorkbench} />
                 <Route path="/finance/cash/forecasting" component={CashForecastingView} />
                 <Route path="/finance/cash/revaluation" component={CurrencyRevaluationView} />
                 <Route path="/finance/cash/zba" component={ZBAManagement} />

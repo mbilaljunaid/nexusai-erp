@@ -2,7 +2,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { TrendingUp, Users, Activity, CheckCircle, AlertTriangle } from "lucide-react";
+import { TrendingUp, Users, Activity, CheckCircle, AlertTriangle, Target } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function CrmAnalyticsDashboard() {
 
@@ -22,6 +23,12 @@ export default function CrmAnalyticsDashboard() {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Executive Insight</h1>
                     <p className="text-muted-foreground mt-2">Real-time performance metrics across Sales and Service.</p>
+                </div>
+                <div className="flex gap-3">
+                    <Button variant="outline" onClick={() => window.location.href = '/crm/quotas'}>
+                        <Target className="h-4 w-4 mr-2" />
+                        Quota Management
+                    </Button>
                 </div>
             </div>
 

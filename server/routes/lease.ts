@@ -165,200 +165,282 @@ router.post("/leases/:id/remeasure", enforceRBAC("finance_write"), async (req, r
     } catch (e: any) {
         res.status(500).json({ error: e.message });
     }
-    // 5. Modification with Audit Trail (Newv2)
-    router.post("/leases/:id/modify", enforceRBAC("finance_write"), async (req, res) => {
-        try {
-            const leaseId = req.params.id;
-            const { modificationType, effectiveDate, changeReason, newTerms } = req.body;
+});
 
-            // 1. Fetch Current Lease
-            const [currentLease] = await db.select().from(leaseHeaders).where(eq(leaseHeaders.id, leaseId));
-            if (!currentLease) return res.status(404).json({ error: "Lease not found" });
+// 5b. Modification with Audit Trail (Newv2)
+router.post("/leases/:id/modify", enforceRBAC("finance_write"), async (req, res) => {
+    try {
+        const leaseId = req.params.id;
+        const { modificationType, effectiveDate, changeReason, newTerms } = req.body;
 
-            // 2. Create Amendment Record (Audit Snapshot)
-            await db.insert(leaseAmendments).values({
-                leaseId,
-                modificationType,
-                effectiveDate: new Date(effectiveDate),
-                changeReason,
-                previousTerms: {
-                    discountRate: currentLease.discountRate,
-                    termMonths: currentLease.termMonths,
-                    initialDirectCosts: currentLease.initialDirectCosts
-                },
-                newTerms: newTerms, // JSON payload from frontend
-                modifiedBy: "SYSTEM", // Should be req.user.id if available
-                amendmentDate: new Date()
-            });
+        // 1. Fetch Current Lease
+        const [currentLease] = await db.select().from(leaseHeaders).where(eq(leaseHeaders.id, leaseId));
+        if (!currentLease) return res.status(404).json({ error: "Lease not found" });
 
-            // 3. Update Lease Header
-            await db.update(leaseHeaders).set({
-                isModified: true,
-                modificationDate: new Date(),
-                modificationReason: changeReason,
-                discountRate: newTerms.discountRate.toString(),
-                termMonths: newTerms.termMonths,
-                updatedAt: new Date()
-            }).where(eq(leaseHeaders.id, leaseId));
+        // 2. Create Amendment Record (Audit Snapshot)
+        await db.insert(leaseAmendments).values({
+            leaseId,
+            modificationType,
+            effectiveDate: new Date(effectiveDate),
+            changeReason,
+            previousTerms: {
+                discountRate: currentLease.discountRate,
+                termMonths: currentLease.termMonths,
+                initialDirectCosts: currentLease.initialDirectCosts
+            },
+            newTerms: newTerms, // JSON payload from frontend
+            modifiedBy: "SYSTEM", // Should be req.user.id if available
+            amendmentDate: new Date()
+        });
 
-            // 4. Update Payments? (Simplified: assuming payment amount changes on all streams)
-            if (newTerms.paymentAmount) {
-                await db.update(leasePayments)
-                    .set({ amount: newTerms.paymentAmount.toString() })
-                    .where(eq(leasePayments.leaseId, leaseId));
-            }
+        // 3. Update Lease Header
+        await db.update(leaseHeaders).set({
+            isModified: true,
+            modificationDate: new Date(),
+            modificationReason: changeReason,
+            discountRate: newTerms.discountRate.toString(),
+            termMonths: newTerms.termMonths,
+            updatedAt: new Date()
+        }).where(eq(leaseHeaders.id, leaseId));
 
-            // 5. Regenerate Schedules
-            // Note: For full IFRS 16 compliance, this should only affect periods AFTER effectiveDate.
-            // Current engine does full recalc.
-            const payments = await db.select().from(leasePayments).where(eq(leasePayments.leaseId, leaseId));
-            const [updatedHeader] = await db.select().from(leaseHeaders).where(eq(leaseHeaders.id, leaseId));
-
-            const npv = leaseCalculationsService.calculateNPV(
-                payments,
-                Number(updatedHeader.discountRate),
-                updatedHeader.commencementDate
-            );
-
-            // Update Liability
-            await db.update(leaseHeaders).set({
-                initialDirectCosts: npv.toString()
-            }).where(eq(leaseHeaders.id, leaseId));
-
-            const schedule = leaseCalculationsService.generateSchedule(updatedHeader, payments, npv);
-
-            // Persist Schedule (Full Replace)
-            await db.delete(leaseSchedules).where(eq(leaseSchedules.leaseId, leaseId));
-
-            const toInsert = schedule.map(s => ({
-                ...s,
-                leaseId,
-                openingLiability: s.openingLiability!.toString(),
-                interestExpense: s.interestExpense!.toString(),
-                paymentAmount: s.paymentAmount!.toString(),
-                closingLiability: s.closingLiability!.toString(),
-                rouOpeningBalance: s.rouOpeningBalance!.toString(),
-                amortizationExpense: s.amortizationExpense!.toString(),
-                rouClosingBalance: s.rouClosingBalance!.toString(),
-                date: s.date!,
-                period: s.period!
-            }));
-
-            await db.insert(leaseSchedules).values(toInsert);
-
-            res.json({ message: "Lease Modified & Remeasured", amendmentId: "new" });
-
-        } catch (e: any) {
-            res.status(500).json({ error: e.message });
+        // 4. Update Payments? (Simplified: assuming payment amount changes on all streams)
+        if (newTerms.paymentAmount) {
+            await db.update(leasePayments)
+                .set({ amount: newTerms.paymentAmount.toString() })
+                .where(eq(leasePayments.leaseId, leaseId));
         }
-    });
 
-    // 11. Create Fixed Asset (Integration)
-    router.post("/leases/:id/create-asset", enforceRBAC("finance_write"), async (req, res) => {
-        try {
-            const leaseId = req.params.id;
+        // 5. Regenerate Schedules
+        const payments = await db.select().from(leasePayments).where(eq(leasePayments.leaseId, leaseId));
+        const [updatedHeader] = await db.select().from(leaseHeaders).where(eq(leaseHeaders.id, leaseId));
 
-            // Check existence
-            const existing = await db.select().from(faAssets).where(eq(faAssets.leaseId, leaseId));
-            if (existing.length > 0) return res.status(400).json({ error: "Asset already created for this lease" });
+        const npv = leaseCalculationsService.calculateNPV(
+            payments,
+            Number(updatedHeader.discountRate),
+            updatedHeader.commencementDate
+        );
 
-            const [lease] = await db.select().from(leaseHeaders).where(eq(leaseHeaders.id, leaseId));
+        // Update Liability
+        await db.update(leaseHeaders).set({
+            initialDirectCosts: npv.toString()
+        }).where(eq(leaseHeaders.id, leaseId));
 
-            // Get Defaults (Mocking 'Corporate Book' and 'General' Category for now)
-            // In prod, these would be selected by user or mapped by Asset Class
-            let [book] = await db.select().from(faBooks).limit(1);
-            if (!book) {
-                // Auto-seed if missing (Demo convinience)
-                [book] = await db.insert(faBooks).values({
-                    bookCode: "CORP_USD", description: "Corporate Book USD", ledgerId: "PRIMARY", depreciationCalendar: "MONTHLY"
-                }).returning();
-            }
+        const schedule = leaseCalculationsService.generateSchedule(updatedHeader, payments, npv);
 
-            let [category] = await db.select().from(faCategories).limit(1);
-            if (!category) {
-                [category] = await db.insert(faCategories).values({
-                    majorCategory: "LEASED_PROP", minorCategory: "ROU",
-                    assetCostAccountCcid: "15000", assetClearingAccountCcid: "15999",
-                    deprExpenseAccountCcid: "61000", accumDeprAccountCcid: "16000",
-                    defaultLifeYears: 5
-                }).returning();
-            }
+        // Persist Schedule (Full Replace)
+        await db.delete(leaseSchedules).where(eq(leaseSchedules.leaseId, leaseId));
 
-            // 1. Create Asset Header
-            const [asset] = await db.insert(faAssets).values({
-                assetNumber: `AST-${lease.leaseNumber}`,
-                description: `ROU Asset - ${lease.description}`,
-                categoryId: category.id,
-                status: "ACTIVE",
-                leaseId: leaseId
+        const toInsert = schedule.map(s => ({
+            ...s,
+            leaseId,
+            openingLiability: s.openingLiability!.toString(),
+            interestExpense: s.interestExpense!.toString(),
+            paymentAmount: s.paymentAmount!.toString(),
+            closingLiability: s.closingLiability!.toString(),
+            rouOpeningBalance: s.rouOpeningBalance!.toString(),
+            amortizationExpense: s.amortizationExpense!.toString(),
+            rouClosingBalance: s.rouClosingBalance!.toString(),
+            date: s.date!,
+            period: s.period!
+        }));
+
+        await db.insert(leaseSchedules).values(toInsert);
+
+        res.json({ message: "Lease Modified & Remeasured", amendmentId: "new" });
+
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 12. Post to GL (Amortization Entry)
+router.post("/leases/:id/post-gl", enforceRBAC("finance_write"), async (req, res) => {
+    try {
+        const leaseId = req.params.id;
+        const { period } = req.body;
+
+        // 1. Fetch Schedule Line
+        const [line] = await db.select().from(leaseSchedules).where(and(
+            eq(leaseSchedules.leaseId, leaseId),
+            eq(leaseSchedules.period, period)
+        ));
+
+        if (!line) return res.status(404).json({ error: "Schedule line not found" });
+        if (line.isPosted) return res.status(400).json({ error: "Period already posted to GL" });
+
+        const [lease] = await db.select().from(leaseHeaders).where(eq(leaseHeaders.id, leaseId));
+
+        return await db.transaction(async (tx) => {
+            // 2. Create Journal Header
+            const [journal] = await tx.insert(glJournals).values({
+                journalNumber: `LSE-${lease.leaseNumber}-P${period}-${Date.now()}`,
+                ledgerId: "PRIMARY",
+                description: `Lease Amortization - ${lease.leaseNumber} - Period ${period}`,
+                currencyCode: lease.currency || "USD",
+                source: "LEASE",
+                category: "Amortization",
+                status: "Unposted"
             }).returning();
 
-            // 2. Create Asset Book (Financials)
-            await db.insert(faAssetBooks).values({
-                assetId: asset.id,
-                bookId: book.id,
-                datePlacedInService: lease.commencementDate,
-                originalCost: lease.initialDirectCosts || "0", // ROU Value
-                recoverableCost: lease.initialDirectCosts || "0",
-                lifeYears: Math.floor(lease.termMonths / 12),
-                lifeMonths: lease.termMonths % 12,
-                method: "STL", // Straight Line
-                status: "ACTIVE"
-            });
+            // 3. Create Journal Lines
+            // Entry (Simplified):
+            // Dr Interest Expense (P&L)   [Interest]
+            // Dr Amortization Expense (P&L) [Amortization]
+            // Cr Lease Liability (B/S)     [Interest + Amortization - Payment -> Wait, simple version:]
+            // Let's use standard Lease Entry:
+            // Dr Interest Expense 
+            // Dr Amortization Expense
+            // Cr Lease Liability (Interest portion)
+            // Cr ROU Accumulated Amortization
 
-            res.json({ message: "ROU Asset Created Successfully", assetNumber: asset.assetNumber });
+            await tx.insert(glJournalLines).values([
+                {
+                    journalId: journal.id,
+                    accountId: "62100", // Interest Expense
+                    description: "Lease Interest Expense",
+                    enteredDebit: line.interestExpense,
+                    accountedDebit: line.interestExpense,
+                    currencyCode: lease.currency || "USD"
+                },
+                {
+                    journalId: journal.id,
+                    accountId: "62200", // Lease Amortization Expense
+                    description: "ROU Asset Amortization",
+                    enteredDebit: line.amortizationExpense,
+                    accountedDebit: line.amortizationExpense,
+                    currencyCode: lease.currency || "USD"
+                },
+                {
+                    journalId: journal.id,
+                    accountId: "22000", // Lease Liability
+                    description: "Lease Liability Adjustment (Interest)",
+                    enteredCredit: line.interestExpense,
+                    accountedCredit: line.interestExpense,
+                    currencyCode: lease.currency || "USD"
+                },
+                {
+                    journalId: journal.id,
+                    accountId: "16500", // Accum Amortization
+                    description: "ROU Accumulated Amortization",
+                    enteredCredit: line.amortizationExpense,
+                    accountedCredit: line.amortizationExpense,
+                    currencyCode: lease.currency || "USD"
+                }
+            ]);
 
-        } catch (e: any) {
-            res.status(500).json({ error: e.message });
+            // 4. Update Schedule Line
+            await tx.update(leaseSchedules).set({
+                isPosted: true,
+                journalEntryId: journal.id
+            }).where(eq(leaseSchedules.id, line.id));
+
+            res.json({ message: "Posted to GL", journalNumber: journal.journalNumber });
+        });
+
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 11. Create Fixed Asset (Integration)
+router.post("/leases/:id/create-asset", enforceRBAC("finance_write"), async (req, res) => {
+    try {
+        const leaseId = req.params.id;
+
+        // Check existence
+        const existing = await db.select().from(faAssets).where(eq(faAssets.leaseId, leaseId));
+        if (existing.length > 0) return res.status(400).json({ error: "Asset already created for this lease" });
+
+        const [lease] = await db.select().from(leaseHeaders).where(eq(leaseHeaders.id, leaseId));
+
+        // Get Defaults
+        let [book] = await db.select().from(faBooks).limit(1);
+        if (!book) {
+            [book] = await db.insert(faBooks).values({
+                bookCode: "CORP_USD", description: "Corporate Book USD", ledgerId: "PRIMARY", depreciationCalendar: "MONTHLY"
+            }).returning();
         }
-    });
 
-    // 6. Workflow Actions (Submit)
-    router.post("/leases/:id/submit", enforceRBAC("finance_write"), async (req, res) => {
-        try {
-            const leaseId = req.params.id;
-            // Validate if ready to submit...
-            await db.update(leaseHeaders).set({
-                status: "PENDING_APPROVAL",
-                updatedAt: new Date()
-            }).where(eq(leaseHeaders.id, leaseId));
-
-            res.json({ message: "Lease Submitted for Approval" });
-        } catch (e: any) {
-            res.status(500).json({ error: e.message });
+        let [category] = await db.select().from(faCategories).limit(1);
+        if (!category) {
+            [category] = await db.insert(faCategories).values({
+                majorCategory: "LEASED_PROP", minorCategory: "ROU",
+                assetCostAccountCcid: "15000", assetClearingAccountCcid: "15999",
+                deprExpenseAccountCcid: "61000", accumDeprAccountCcid: "16000",
+                defaultLifeYears: 5
+            }).returning();
         }
-    });
 
-    // 7. Workflow Actions (Approve)
-    router.post("/leases/:id/approve", enforceRBAC("finance_manager"), async (req, res) => {
-        try {
-            const leaseId = req.params.id;
-            await db.update(leaseHeaders).set({
-                status: "ACTIVE",
-                updatedAt: new Date()
-            }).where(eq(leaseHeaders.id, leaseId));
+        const [asset] = await db.insert(faAssets).values({
+            assetNumber: `AST-${lease.leaseNumber}`,
+            description: `ROU Asset - ${lease.description}`,
+            categoryId: category.id,
+            status: "ACTIVE",
+            leaseId: leaseId
+        }).returning();
 
-            res.json({ message: "Lease Approved and Active" });
-        } catch (e: any) {
-            res.status(500).json({ error: e.message });
-        }
-    });
+        await db.insert(faAssetBooks).values({
+            assetId: asset.id,
+            bookId: book.id,
+            datePlacedInService: lease.commencementDate,
+            originalCost: lease.initialDirectCosts || "0",
+            recoverableCost: lease.initialDirectCosts || "0",
+            lifeYears: Math.floor(lease.termMonths / 12),
+            lifeMonths: lease.termMonths % 12,
+            method: "STL",
+            status: "ACTIVE"
+        });
 
-    // 8. Workflow Actions (Reject)
-    router.post("/leases/:id/reject", enforceRBAC("finance_manager"), async (req, res) => {
-        try {
-            const leaseId = req.params.id;
-            await db.update(leaseHeaders).set({
-                status: "REJECTED",
-                updatedAt: new Date()
-            }).where(eq(leaseHeaders.id, leaseId));
+        res.json({ message: "ROU Asset Created Successfully", assetNumber: asset.assetNumber });
 
-            res.json({ message: "Lease Rejected" });
-        } catch (e: any) {
-            res.status(500).json({ error: e.message });
-        }
-    });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
 
+// 6. Workflow Actions (Submit)
+router.post("/leases/:id/submit", enforceRBAC("finance_write"), async (req, res) => {
+    try {
+        const leaseId = req.params.id;
+        await db.update(leaseHeaders).set({
+            status: "PENDING_APPROVAL",
+            updatedAt: new Date()
+        }).where(eq(leaseHeaders.id, leaseId));
+
+        res.json({ message: "Lease Submitted for Approval" });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 7. Workflow Actions (Approve)
+router.post("/leases/:id/approve", enforceRBAC("finance_manager"), async (req, res) => {
+    try {
+        const leaseId = req.params.id;
+        await db.update(leaseHeaders).set({
+            status: "ACTIVE",
+            updatedAt: new Date()
+        }).where(eq(leaseHeaders.id, leaseId));
+
+        res.json({ message: "Lease Approved and Active" });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 8. Workflow Actions (Reject)
+router.post("/leases/:id/reject", enforceRBAC("finance_manager"), async (req, res) => {
+    try {
+        const leaseId = req.params.id;
+        await db.update(leaseHeaders).set({
+            status: "REJECTED",
+            updatedAt: new Date()
+        }).where(eq(leaseHeaders.id, leaseId));
+
+        res.json({ message: "Lease Rejected" });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 // 9. AI Extraction

@@ -32,9 +32,9 @@ export default function LeaseApprovalsWorkbench() {
 
     // Fetch pending approvals
     const { data: pendingLeases = [], isLoading } = useQuery<LeaseWorkflowItem[]>({
-        queryKey: ["/api/finance/lease/approvals"],
+        queryKey: ["/api/lease/approvals"],
         queryFn: async () => {
-            const res = await fetch("/api/finance/lease/approvals");
+            const res = await fetch("/api/lease/approvals");
             if (!res.ok) throw new Error("Failed to fetch approvals");
             return res.json();
         }
@@ -42,7 +42,7 @@ export default function LeaseApprovalsWorkbench() {
 
     const approvalMutation = useMutation({
         mutationFn: async ({ id, action, comments }: { id: string; action: "approve" | "reject"; comments?: string }) => {
-            const res = await fetch(`/api/finance/lease/leases/${id}/${action}`, {
+            const res = await fetch(`/api/lease/leases/${id}/${action}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ comments })
@@ -55,7 +55,7 @@ export default function LeaseApprovalsWorkbench() {
                 title: `Lease ${variables.action === "approve" ? "Approved" : "Rejected"}`,
                 description: `Successfully processed lease ${variables.id}`
             });
-            queryClient.invalidateQueries({ queryKey: ["/api/finance/lease/approvals"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/lease/approvals"] });
             setSelectedLeaseId(null);
         }
     });

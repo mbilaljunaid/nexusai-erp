@@ -179,6 +179,7 @@ function Router() {
 
         {/* Projects */}
         <Route path="/hr/recruitment/requisitions/:id" component={JobRequisitionDetail} />
+        <Route path="/hr/recruitment/pipeline" component={lazyWithRetry(() => import("@/pages/recruitment/RecruitmentPipelineBoard"))} />
         <Route path="/hr/recruitment/my-interviews" component={InterviewerDashboard} />
         <Route path="/hr/recruitment/onboarding" component={OnboardingWorkbench} />
         <Route path="/hr/recruitment/analytics" component={RecruitingAnalytics} />

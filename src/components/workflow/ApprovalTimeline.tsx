@@ -17,7 +17,7 @@ export function ApprovalTimeline({ leaseId, status }: ApprovalTimelineProps) {
 
     const mutation = useMutation({
         mutationFn: async (action: "submit" | "approve" | "reject") => {
-            const res = await apiRequest("POST", `/api/leases/${leaseId}/${action}`);
+            const res = await apiRequest("POST", `/api/lease/leases/${leaseId}/${action}`);
             return res.json();
         },
         onSuccess: () => {

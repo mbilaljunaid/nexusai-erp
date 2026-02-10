@@ -22,6 +22,7 @@ import PartnerDashboard from "@/pages/crm/PartnerDashboard";
 import CrmAnalyticsDashboard from "@/pages/crm/CrmAnalyticsDashboard";
 import FieldServiceDashboard from "@/pages/crm/FieldServiceDashboard";
 import WorkOrderDetail from "@/pages/crm/WorkOrderDetail";
+import CrmQuotaManagement from "@/pages/crm/CrmQuotaManagement";
 import CRM from "@/pages/CRM";
 
 import ModuleLayout from "@/components/layouts/ModuleLayout";
@@ -47,6 +48,7 @@ export default function CrmRoutes() {
             <Route path="/crm/contracts" component={ContractDashboard} />
             <Route path="/crm/contracts/:id" component={ContractDetail} />
             <Route path="/crm/partner" component={PartnerDashboard} />
+            <Route path="/crm/quotas" component={CrmQuotaManagement} />
             <Route path="/crm/analytics" component={CrmAnalyticsDashboard} />
             <Route path="/crm/field-service" component={FieldServiceDashboard} />
             <Route path="/crm/field-service/:id" component={WorkOrderDetail} />
