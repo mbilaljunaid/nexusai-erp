@@ -1,8 +1,17 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { NexusAIState, NexusAIMessage, AIProviderConfig, AICapability } from "@/types/nexus-ai";
 import { getCapabilitiesForRoute } from "@/config/ai-capabilities";
+
+interface ConversationSummary {
+  id: string;
+  title: string;
+  moduleContext?: string;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 interface NexusAIContextValue extends NexusAIState {
   toggle: () => void;
@@ -12,6 +21,12 @@ interface NexusAIContextValue extends NexusAIState {
   clearMessages: () => void;
   currentCapabilities: AICapability[];
   executeTool: (toolName: string, parameters: Record<string, any>) => Promise<any>;
+  // Conversation history
+  conversations: ConversationSummary[];
+  activeConversationId: string | null;
+  loadConversation: (id: string) => Promise<void>;
+  startNewConversation: () => void;
+  deleteConversation: (id: string) => Promise<void>;
 }
 
 const NexusAIContext = createContext<NexusAIContextValue | null>(null);
@@ -22,17 +37,39 @@ export function useNexusAI() {
   return ctx;
 }
 
+// Debounced save helper
+function useDebouncedSave(delay: number) {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const save = useCallback((fn: () => void) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(fn, delay);
+  }, [delay]);
+  return save;
+}
+
 export function NexusAIProvider({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<NexusAIMessage[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const debouncedSave = useDebouncedSave(1500);
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
 
   const { data: activeProvider = null } = useQuery<AIProviderConfig | null>({
     queryKey: ["/api/nexus-ai/provider/active"],
     retry: false,
     staleTime: 60_000,
+  });
+
+  // Fetch conversation list
+  const { data: conversations = [] } = useQuery<ConversationSummary[]>({
+    queryKey: ["/api/nexus-ai/conversations"],
+    retry: false,
+    staleTime: 30_000,
   });
 
   const currentCapabilities = useMemo(
@@ -48,7 +85,110 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
   const toggle = useCallback(() => setIsOpen(prev => !prev), []);
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
-  const clearMessages = useCallback(() => setMessages([]), []);
+
+  // Persist messages to backend
+  const persistMessages = useCallback(async (convoId: string, msgs: NexusAIMessage[], title?: string) => {
+    const serialized = msgs.map(m => ({
+      role: m.role,
+      content: m.content,
+      timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp,
+      toolCalls: m.toolCalls,
+      moduleContext: m.moduleContext,
+    }));
+
+    await fetch(`/api/nexus-ai/conversations/${convoId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: serialized, ...(title ? { title } : {}) }),
+    });
+    queryClient.invalidateQueries({ queryKey: ["/api/nexus-ai/conversations"] });
+  }, [queryClient]);
+
+  // Auto-save messages when they change (debounced)
+  useEffect(() => {
+    if (!activeConversationId || messages.length === 0) return;
+    const convoId = activeConversationId;
+    debouncedSave(() => {
+      persistMessages(convoId, messagesRef.current);
+    });
+  }, [messages, activeConversationId, debouncedSave, persistMessages]);
+
+  // Load most recent conversation on mount
+  useEffect(() => {
+    if (conversations.length > 0 && !activeConversationId && messages.length === 0) {
+      // Auto-load most recent active conversation
+      const recent = conversations.find(c => c.isActive !== false);
+      if (recent) {
+        loadConversationInternal(recent.id);
+      }
+    }
+  }, [conversations]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const loadConversationInternal = async (id: string) => {
+    try {
+      const resp = await fetch(`/api/nexus-ai/conversations/${id}`);
+      if (!resp.ok) return;
+      const data = await resp.json();
+      const loadedMsgs: NexusAIMessage[] = (data.messages || []).map((m: any) => ({
+        id: crypto.randomUUID(),
+        role: m.role,
+        content: m.content,
+        timestamp: new Date(m.timestamp),
+        toolCalls: m.toolCalls,
+        moduleContext: m.moduleContext,
+      }));
+      setMessages(loadedMsgs);
+      setActiveConversationId(id);
+    } catch {
+      // Silently fail
+    }
+  };
+
+  const loadConversation = useCallback(async (id: string) => {
+    await loadConversationInternal(id);
+  }, []);
+
+  const startNewConversation = useCallback(() => {
+    setMessages([]);
+    setActiveConversationId(null);
+    setError(null);
+  }, []);
+
+  const clearMessages = useCallback(async () => {
+    if (activeConversationId) {
+      // Delete from backend
+      await fetch(`/api/nexus-ai/conversations/${activeConversationId}`, { method: "DELETE" });
+      queryClient.invalidateQueries({ queryKey: ["/api/nexus-ai/conversations"] });
+    }
+    setMessages([]);
+    setActiveConversationId(null);
+    setError(null);
+  }, [activeConversationId, queryClient]);
+
+  const deleteConversation = useCallback(async (id: string) => {
+    await fetch(`/api/nexus-ai/conversations/${id}`, { method: "DELETE" });
+    if (activeConversationId === id) {
+      setMessages([]);
+      setActiveConversationId(null);
+    }
+    queryClient.invalidateQueries({ queryKey: ["/api/nexus-ai/conversations"] });
+  }, [activeConversationId, queryClient]);
+
+  // Create a new conversation in the backend
+  const ensureConversation = useCallback(async (firstMessage: string): Promise<string> => {
+    if (activeConversationId) return activeConversationId;
+
+    const title = firstMessage.length > 50 ? firstMessage.substring(0, 47) + "..." : firstMessage;
+    const resp = await fetch("/api/nexus-ai/conversations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, moduleContext: currentModule, messages: [] }),
+    });
+    const data = await resp.json();
+    setActiveConversationId(data.id);
+    queryClient.invalidateQueries({ queryKey: ["/api/nexus-ai/conversations"] });
+    return data.id;
+  }, [activeConversationId, currentModule, queryClient]);
 
   // Execute a tool via the backend (with RBAC)
   const executeToolAction = useCallback(async (toolName: string, parameters: Record<string, any>) => {
@@ -70,6 +210,9 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
       setError("No AI provider configured. Go to Platform Admin → AI Configuration to set one up.");
       return;
     }
+
+    // Ensure conversation exists in DB
+    const convoId = await ensureConversation(content);
 
     const userMsg: NexusAIMessage = {
       id: crypto.randomUUID(),
@@ -105,14 +248,11 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
         throw new Error(errData.error || `Request failed (${resp.status})`);
       }
 
-      // Check if response is SSE stream
       const contentType = resp.headers.get("content-type") || "";
       if (contentType.includes("text/event-stream") && resp.body) {
-        // Stream processing
         let assistantContent = "";
         const assistantId = crypto.randomUUID();
 
-        // Create initial assistant message
         setMessages(prev => [...prev, {
           id: assistantId,
           role: "assistant" as const,
@@ -147,7 +287,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
                   prev.map(m => m.id === assistantId ? { ...m, content: assistantContent } : m)
                 );
               } else if (parsed.type === "tool_result") {
-                // Tool execution result from backend
                 setMessages(prev =>
                   prev.map(m => m.id === assistantId
                     ? { ...m, toolCalls: [...(m.toolCalls || []), { name: parsed.toolName, result: parsed.result }] }
@@ -157,24 +296,21 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
               } else if (parsed.type === "error") {
                 throw new Error(parsed.content);
               }
-              // type === "done" is just end marker
             } catch (e: any) {
               if (e.message && !e.message.includes("JSON")) throw e;
-              // Incomplete JSON, put back and wait
               buffer = line + "\n" + buffer;
               break;
             }
           }
         }
 
-        // Check if AI response contains tool_call markers and auto-execute
+        // Check for tool_call markers and auto-execute
         const toolCallMatch = assistantContent.match(/```tool_call\s*\n([\s\S]*?)\n```/);
         if (toolCallMatch) {
           try {
             const toolCall = JSON.parse(toolCallMatch[1]);
             const toolResult = await executeToolAction(toolCall.tool, toolCall.parameters);
 
-            // Add tool result message
             const toolMsg: NexusAIMessage = {
               id: crypto.randomUUID(),
               role: "assistant",
@@ -198,8 +334,11 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
+        // Persist immediately after stream completes
+        const finalMsgs = messagesRef.current;
+        persistMessages(convoId, finalMsgs);
+
       } else {
-        // Non-streaming fallback
         const data = await resp.json();
         const assistantMsg: NexusAIMessage = {
           id: crypto.randomUUID(),
@@ -210,6 +349,8 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
           moduleContext: currentModule,
         };
         setMessages(prev => [...prev, assistantMsg]);
+        // Persist
+        setTimeout(() => persistMessages(convoId, messagesRef.current), 100);
       }
     } catch (err: any) {
       setError(err.message || "Failed to get AI response");
@@ -223,7 +364,7 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [activeProvider, messages, currentModule, currentCapabilities, executeToolAction]);
+  }, [activeProvider, messages, currentModule, currentCapabilities, executeToolAction, ensureConversation, persistMessages]);
 
   const value: NexusAIContextValue = {
     isOpen,
@@ -240,6 +381,11 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     clearMessages,
     currentCapabilities,
     executeTool: executeToolAction,
+    conversations,
+    activeConversationId,
+    loadConversation,
+    startNewConversation,
+    deleteConversation,
   };
 
   return (

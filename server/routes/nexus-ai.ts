@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "../db";
-import { aiProviderConfigs } from "@shared/schema/nexus_ai";
-import { eq, and } from "drizzle-orm";
+import { aiProviderConfigs, nexusConversations } from "@shared/schema/nexus_ai";
+import { eq, and, desc } from "drizzle-orm";
 import { executeTool, canExecuteTool } from "../services/nexus-tool-executor";
 import { hasPermission, PERMISSIONS } from "@shared/schema/roles";
 import type { AuthenticatedRequest } from "../middleware/auth";
@@ -114,6 +114,107 @@ nexusAiRouter.delete("/providers/:id", async (req, res) => {
       .returning();
     if (!deleted) return res.status(404).json({ error: "Provider not found" });
     res.json({ message: "Provider deleted" });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// ═══════════════════════════════════════════════
+// ── Conversation History Persistence ──
+// ═══════════════════════════════════════════════
+
+// GET all conversations for current user
+nexusAiRouter.get("/conversations", async (req: any, res) => {
+  try {
+    const userId = req.userId || req.session?.userId || "anonymous";
+    const convos = await db.select({
+      id: nexusConversations.id,
+      title: nexusConversations.title,
+      moduleContext: nexusConversations.moduleContext,
+      isActive: nexusConversations.isActive,
+      createdAt: nexusConversations.createdAt,
+      updatedAt: nexusConversations.updatedAt,
+    }).from(nexusConversations)
+      .where(eq(nexusConversations.userId, userId))
+      .orderBy(desc(nexusConversations.updatedAt))
+      .limit(50);
+    res.json(convos);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// GET single conversation with messages
+nexusAiRouter.get("/conversations/:id", async (req: any, res) => {
+  try {
+    const userId = req.userId || req.session?.userId || "anonymous";
+    const results = await db.select().from(nexusConversations)
+      .where(and(
+        eq(nexusConversations.id, req.params.id),
+        eq(nexusConversations.userId, userId)
+      ))
+      .limit(1);
+    if (results.length === 0) return res.status(404).json({ error: "Conversation not found" });
+    res.json(results[0]);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// POST create conversation
+nexusAiRouter.post("/conversations", async (req: any, res) => {
+  try {
+    const userId = req.userId || req.session?.userId || "anonymous";
+    const { title, moduleContext, messages } = req.body;
+    const [convo] = await db.insert(nexusConversations).values({
+      userId,
+      title: title || "New Conversation",
+      moduleContext,
+      messages: messages || [],
+      isActive: true,
+    }).returning();
+    res.json(convo);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// PATCH update conversation (save messages)
+nexusAiRouter.patch("/conversations/:id", async (req: any, res) => {
+  try {
+    const userId = req.userId || req.session?.userId || "anonymous";
+    const { title, messages, isActive } = req.body;
+    const updates: any = { updatedAt: new Date() };
+    if (title !== undefined) updates.title = title;
+    if (messages !== undefined) updates.messages = messages;
+    if (isActive !== undefined) updates.isActive = isActive;
+
+    const [updated] = await db.update(nexusConversations)
+      .set(updates)
+      .where(and(
+        eq(nexusConversations.id, req.params.id),
+        eq(nexusConversations.userId, userId)
+      ))
+      .returning();
+    if (!updated) return res.status(404).json({ error: "Conversation not found" });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// DELETE conversation
+nexusAiRouter.delete("/conversations/:id", async (req: any, res) => {
+  try {
+    const userId = req.userId || req.session?.userId || "anonymous";
+    const [deleted] = await db.delete(nexusConversations)
+      .where(and(
+        eq(nexusConversations.id, req.params.id),
+        eq(nexusConversations.userId, userId)
+      ))
+      .returning();
+    if (!deleted) return res.status(404).json({ error: "Conversation not found" });
+    res.json({ message: "Conversation deleted" });
   } catch (error) {
     res.status(500).json({ error: String(error) });
   }
