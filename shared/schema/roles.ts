@@ -151,6 +151,76 @@ export const PERMISSIONS = {
     SOURCING_WRITE: "sourcing.write",
     // Territory
     TERRITORY_READ: "territory.read",
+
+    // ═══════════════════════════════════════════════
+    // Phase 4 — Industry & Operational Modules
+    // ═══════════════════════════════════════════════
+    // Quality Management
+    QUALITY_READ: "quality.read",
+    QUALITY_WRITE: "quality.write",
+    // BPM
+    BPM_READ: "bpm.read",
+    BPM_WRITE: "bpm.write",
+    // Ecommerce / Marketplace
+    ECOMMERCE_READ: "ecommerce.read",
+    ECOMMERCE_WRITE: "ecommerce.write",
+    // WFM
+    WFM_READ: "wfm.read",
+    WFM_WRITE: "wfm.write",
+    // Portal
+    PORTAL_READ: "portal.read",
+    // Fleet
+    FLEET_READ: "fleet.read",
+    FLEET_WRITE: "fleet.write",
+    // MRP
+    MRP_READ: "mrp.read",
+    MRP_WRITE: "mrp.write",
+    // Data Governance
+    GOVERNANCE_READ: "governance.read",
+    GOVERNANCE_WRITE: "governance.write",
+    // API Management
+    API_MGMT_READ: "api_mgmt.read",
+    // Communication
+    COMMUNICATION_WRITE: "communication.write",
+    // Customs
+    CUSTOMS_READ: "customs.read",
+    CUSTOMS_WRITE: "customs.write",
+    // Clinical / Pharma
+    CLINICAL_READ: "clinical.read",
+    CLINICAL_WRITE: "clinical.write",
+    // Hospitality
+    HOSPITALITY_READ: "hospitality.read",
+    HOSPITALITY_WRITE: "hospitality.write",
+    // Healthcare
+    HEALTHCARE_READ: "healthcare.read",
+    HEALTHCARE_WRITE: "healthcare.write",
+    // Education
+    EDUCATION_READ: "education.read",
+    EDUCATION_WRITE: "education.write",
+    // Energy
+    ENERGY_READ: "energy.read",
+    ENERGY_WRITE: "energy.write",
+    // Banking
+    BANKING_READ: "banking.read",
+    BANKING_WRITE: "banking.write",
+    // Insurance
+    INSURANCE_READ: "insurance.read",
+    INSURANCE_WRITE: "insurance.write",
+    // Retail
+    RETAIL_READ: "retail.read",
+    RETAIL_WRITE: "retail.write",
+    // Automotive
+    AUTOMOTIVE_READ: "automotive.read",
+    AUTOMOTIVE_WRITE: "automotive.write",
+    // Government
+    GOVERNMENT_READ: "government.read",
+    GOVERNMENT_WRITE: "government.write",
+    // Telecom
+    TELECOM_READ: "telecom.read",
+    TELECOM_WRITE: "telecom.write",
+    // Food & Beverage / CPG
+    FNB_READ: "fnb.read",
+    FNB_WRITE: "fnb.write",
 } as const;
 
 // Role-Permission Mapping (In a real app, this might be DB driven)
@@ -226,6 +296,30 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         PERMISSIONS.COMPENSATION_READ,
         PERMISSIONS.SOURCING_READ, PERMISSIONS.SOURCING_WRITE,
         PERMISSIONS.TERRITORY_READ,
+        // Phase 4
+        PERMISSIONS.QUALITY_READ, PERMISSIONS.QUALITY_WRITE,
+        PERMISSIONS.BPM_READ, PERMISSIONS.BPM_WRITE,
+        PERMISSIONS.ECOMMERCE_READ, PERMISSIONS.ECOMMERCE_WRITE,
+        PERMISSIONS.WFM_READ, PERMISSIONS.WFM_WRITE,
+        PERMISSIONS.PORTAL_READ,
+        PERMISSIONS.FLEET_READ, PERMISSIONS.FLEET_WRITE,
+        PERMISSIONS.MRP_READ, PERMISSIONS.MRP_WRITE,
+        PERMISSIONS.GOVERNANCE_READ, PERMISSIONS.GOVERNANCE_WRITE,
+        PERMISSIONS.API_MGMT_READ,
+        PERMISSIONS.COMMUNICATION_WRITE,
+        PERMISSIONS.CUSTOMS_READ, PERMISSIONS.CUSTOMS_WRITE,
+        PERMISSIONS.CLINICAL_READ, PERMISSIONS.CLINICAL_WRITE,
+        PERMISSIONS.HOSPITALITY_READ, PERMISSIONS.HOSPITALITY_WRITE,
+        PERMISSIONS.HEALTHCARE_READ, PERMISSIONS.HEALTHCARE_WRITE,
+        PERMISSIONS.EDUCATION_READ, PERMISSIONS.EDUCATION_WRITE,
+        PERMISSIONS.ENERGY_READ, PERMISSIONS.ENERGY_WRITE,
+        PERMISSIONS.BANKING_READ, PERMISSIONS.BANKING_WRITE,
+        PERMISSIONS.INSURANCE_READ, PERMISSIONS.INSURANCE_WRITE,
+        PERMISSIONS.RETAIL_READ, PERMISSIONS.RETAIL_WRITE,
+        PERMISSIONS.AUTOMOTIVE_READ, PERMISSIONS.AUTOMOTIVE_WRITE,
+        PERMISSIONS.GOVERNMENT_READ, PERMISSIONS.GOVERNMENT_WRITE,
+        PERMISSIONS.TELECOM_READ, PERMISSIONS.TELECOM_WRITE,
+        PERMISSIONS.FNB_READ, PERMISSIONS.FNB_WRITE,
     ],
     [ROLES.GL_USER]: [
         // GL
@@ -280,6 +374,29 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         PERMISSIONS.COMPENSATION_READ,
         PERMISSIONS.SOURCING_READ,
         PERMISSIONS.TERRITORY_READ,
+        // Phase 4 (reads + limited writes)
+        PERMISSIONS.QUALITY_READ,
+        PERMISSIONS.BPM_READ,
+        PERMISSIONS.ECOMMERCE_READ,
+        PERMISSIONS.WFM_READ,
+        PERMISSIONS.PORTAL_READ,
+        PERMISSIONS.FLEET_READ,
+        PERMISSIONS.MRP_READ,
+        PERMISSIONS.GOVERNANCE_READ,
+        PERMISSIONS.API_MGMT_READ,
+        PERMISSIONS.CUSTOMS_READ,
+        PERMISSIONS.CLINICAL_READ,
+        PERMISSIONS.HOSPITALITY_READ,
+        PERMISSIONS.HEALTHCARE_READ,
+        PERMISSIONS.EDUCATION_READ,
+        PERMISSIONS.ENERGY_READ,
+        PERMISSIONS.BANKING_READ,
+        PERMISSIONS.INSURANCE_READ,
+        PERMISSIONS.RETAIL_READ,
+        PERMISSIONS.AUTOMOTIVE_READ,
+        PERMISSIONS.GOVERNMENT_READ,
+        PERMISSIONS.TELECOM_READ,
+        PERMISSIONS.FNB_READ,
     ],
     [ROLES.GL_VIEWER]: [
         PERMISSIONS.GL_READ, PERMISSIONS.AP_READ, PERMISSIONS.AR_READ,
@@ -314,6 +431,29 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         PERMISSIONS.COMPENSATION_READ,
         PERMISSIONS.SOURCING_READ,
         PERMISSIONS.TERRITORY_READ,
+        // Phase 4 (read-only)
+        PERMISSIONS.QUALITY_READ,
+        PERMISSIONS.BPM_READ,
+        PERMISSIONS.ECOMMERCE_READ,
+        PERMISSIONS.WFM_READ,
+        PERMISSIONS.PORTAL_READ,
+        PERMISSIONS.FLEET_READ,
+        PERMISSIONS.MRP_READ,
+        PERMISSIONS.GOVERNANCE_READ,
+        PERMISSIONS.API_MGMT_READ,
+        PERMISSIONS.CUSTOMS_READ,
+        PERMISSIONS.CLINICAL_READ,
+        PERMISSIONS.HOSPITALITY_READ,
+        PERMISSIONS.HEALTHCARE_READ,
+        PERMISSIONS.EDUCATION_READ,
+        PERMISSIONS.ENERGY_READ,
+        PERMISSIONS.BANKING_READ,
+        PERMISSIONS.INSURANCE_READ,
+        PERMISSIONS.RETAIL_READ,
+        PERMISSIONS.AUTOMOTIVE_READ,
+        PERMISSIONS.GOVERNMENT_READ,
+        PERMISSIONS.TELECOM_READ,
+        PERMISSIONS.FNB_READ,
     ]
 };
 
