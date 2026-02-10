@@ -24,6 +24,34 @@ router.get("/security/orgs", async (req, res) => {
     }
 });
 
+// User Search (for Data Access UI)
+router.get("/users/search", async (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q || (q as string).length < 3) {
+            return res.json([]);
+        }
+
+        // Mock user search - in production, this would query the user service
+        const mockUsers = [
+            { id: "user-001", name: "John Doe", email: "john.doe@example.com" },
+            { id: "user-002", name: "Jane Smith", email: "jane.smith@example.com" },
+            { id: "user-003", name: "Bob Johnson", email: "bob.johnson@example.com" },
+            { id: "user-004", name: "Alice Williams", email: "alice.williams@example.com" }
+        ];
+
+        const searchTerm = (q as string).toLowerCase();
+        const filtered = mockUsers.filter(u =>
+            u.name.toLowerCase().includes(searchTerm) ||
+            u.email.toLowerCase().includes(searchTerm)
+        );
+
+        res.json(filtered);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // 1. Get Setup Data
 router.get("/setup/orgs", async (req, res) => {
     try {

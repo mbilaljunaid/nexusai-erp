@@ -65,6 +65,22 @@ router.post("/exemptions", async (req, res) => {
     }
 });
 
+// Tax Simulation (Preview)
+router.post("/simulate", async (req, res) => {
+    try {
+        const { customerId, siteId, amount } = req.body;
+
+        if (!customerId || !siteId || !amount) {
+            return res.status(400).json({ error: "Missing required fields: customerId, siteId, amount" });
+        }
+
+        const result = await taxService.simulateTaxCalculation(customerId, siteId, Number(amount));
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Calculate Logic
 router.post("/calculate/:invoiceId", async (req, res) => {
     try {

@@ -90,6 +90,71 @@ export class TaxService {
 
         return { taxAmount: totalTax, taxDetails: details };
     }
+
+    /**
+     * Simulate tax calculation without an invoice (for preview purposes).
+     */
+    async simulateTaxCalculation(customerId: string, siteId: string, amount: number): Promise<TaxCalculationResult> {
+        const site = await storage.getArCustomerSite(siteId);
+        if (!site) throw new Error("Site not found");
+
+        // 1. Determine Applicable Jurisdiction
+        const jurisdictions = await storage.listTaxJurisdictions();
+        const matchingJurisdictions = jurisdictions.filter((j: TaxJurisdiction) =>
+            site.address.toLowerCase().includes(j.name.toLowerCase())
+        );
+
+        if (matchingJurisdictions.length === 0) {
+            return { taxAmount: 0, taxDetails: [] };
+        }
+
+        // 2. Find Active Tax Codes
+        const taxCodes = await storage.listTaxCodes();
+        const matchingJurisdictionIds = matchingJurisdictions.map((j: TaxJurisdiction) => j.id);
+        const applicableCodes = taxCodes.filter((tc: TaxCode) =>
+            matchingJurisdictionIds.includes(tc.jurisdictionId) && tc.active
+        );
+
+        if (applicableCodes.length === 0) {
+            return { taxAmount: 0, taxDetails: [] };
+        }
+
+        // 3. Calculate Tax
+        let totalTax = 0;
+        const details = [];
+        const exemptions = await storage.listTaxExemptions();
+
+        for (const code of applicableCodes) {
+            let rate = Number(code.rate);
+
+            // 4. Check Exemptions
+            const exemptRule = exemptions.find((e: TaxExemption) =>
+                (e.customerId === customerId || e.siteId === siteId) &&
+                e.taxCodeId === code.id
+            );
+
+            let isExempt = false;
+            if (exemptRule) {
+                isExempt = true;
+                if (exemptRule.exemptionType === 'Full') {
+                    rate = 0;
+                } else if (exemptRule.exemptionType === 'Partial' && exemptRule.exemptionValue) {
+                    rate = rate * (1 - Number(exemptRule.exemptionValue));
+                }
+            }
+
+            const taxLineAmount = amount * rate;
+            totalTax += taxLineAmount;
+            details.push({
+                code: code.name,
+                rate: rate,
+                amount: taxLineAmount,
+                exempt: isExempt
+            });
+        }
+
+        return { taxAmount: totalTax, taxDetails: details };
+    }
 }
 
 export const taxService = new TaxService();

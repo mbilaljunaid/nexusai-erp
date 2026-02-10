@@ -89,6 +89,7 @@ const IntercompanyWorkbench = lazyWithRetry(() => import("@/pages/intercompany/I
 const IntercompanyReconciliation = lazyWithRetry(() => import("@/pages/intercompany/IntercompanyReconciliation"));
 const NettingWorkbench = lazyWithRetry(() => import("@/pages/intercompany/NettingWorkbench"));
 const AllocationsWorkbench = lazyWithRetry(() => import("@/pages/intercompany/AllocationsWorkbench"));
+const ICDataAccessManager = lazyWithRetry(() => import("@/pages/intercompany/ICDataAccessManager"));
 
 import LearningDashboard from "@/pages/hr/learning/LearningDashboard";
 import InstructorDashboard from "@/pages/hr/learning/instructor/InstructorDashboard";
@@ -232,6 +233,7 @@ function Router() {
         <Route path="/intercompany/reconciliation" component={IntercompanyReconciliation} />
         <Route path="/intercompany/netting" component={NettingWorkbench} />
         <Route path="/intercompany/allocations" component={AllocationsWorkbench} />
+        <Route path="/intercompany/data-access" component={ICDataAccessManager} />
 
         {/* ERP Core (Temporary placeholder until refactored) */}
         {/* ERP Core */}

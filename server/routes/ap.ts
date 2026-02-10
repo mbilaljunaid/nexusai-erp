@@ -407,4 +407,122 @@ apRouter.post("/payments/:id/clear", async (req, res) => {
     }
 });
 
+// --- Bulk Operations ---
+apRouter.post("/invoices/bulk-approve", async (req, res) => {
+    try {
+        const { invoiceIds } = req.body;
+        if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
+            return res.status(400).json({ error: "invoiceIds array required" });
+        }
+
+        const results = { success: 0, failed: 0, errors: [] as any[] };
+
+        for (const invoiceId of invoiceIds) {
+            try {
+                await apService.approveInvoice(invoiceId, req.user?.id || "system");
+                results.success++;
+            } catch (error: any) {
+                results.failed++;
+                results.errors.push({ invoiceId, error: error.message });
+            }
+        }
+
+        res.json(results);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/invoices/bulk-reject", async (req, res) => {
+    try {
+        const { invoiceIds, reason } = req.body;
+        if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
+            return res.status(400).json({ error: "invoiceIds array required" });
+        }
+        if (!reason) {
+            return res.status(400).json({ error: "reason required" });
+        }
+
+        const results = { success: 0, failed: 0, errors: [] as any[] };
+
+        for (const invoiceId of invoiceIds) {
+            try {
+                await apService.rejectInvoice(invoiceId, reason, req.user?.id || "system");
+                results.success++;
+            } catch (error: any) {
+                results.failed++;
+                results.errors.push({ invoiceId, error: error.message });
+            }
+        }
+
+        res.json(results);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/invoices/bulk-export", async (req, res) => {
+    try {
+        const { invoiceIds, format = "excel" } = req.body;
+        if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
+            return res.status(400).json({ error: "invoiceIds array required" });
+        }
+
+        const invoices = await apService.getInvoicesByIds(invoiceIds);
+
+        if (format === "excel") {
+            // Mock Excel export (in production, use a library like xlsx)
+            const csvData = invoices.map(inv => ({
+                InvoiceNumber: inv.invoiceNumber,
+                Supplier: inv.supplier?.name || "",
+                Amount: inv.invoiceAmount,
+                Status: inv.invoiceStatus,
+                InvoiceDate: inv.invoiceDate,
+                DueDate: inv.dueDate
+            }));
+
+            const csv = [
+                Object.keys(csvData[0]).join(","),
+                ...csvData.map(row => Object.values(row).join(","))
+            ].join("\n");
+
+            res.setHeader("Content-Type", "text/csv");
+            res.setHeader("Content-Disposition", "attachment; filename=ap-invoices.csv");
+            res.send(csv);
+        } else {
+            res.json(invoices);
+        }
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/invoices/bulk-status-update", async (req, res) => {
+    try {
+        const { invoiceIds, status } = req.body;
+        if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
+            return res.status(400).json({ error: "invoiceIds array required" });
+        }
+        if (!status) {
+            return res.status(400).json({ error: "status required" });
+        }
+
+        const results = { success: 0, failed: 0, errors: [] as any[] };
+
+        for (const invoiceId of invoiceIds) {
+            try {
+                await apService.updateInvoiceStatus(invoiceId, status);
+                results.success++;
+            } catch (error: any) {
+                results.failed++;
+                results.errors.push({ invoiceId, error: error.message });
+            }
+        }
+
+        res.json(results);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 export default apRouter;

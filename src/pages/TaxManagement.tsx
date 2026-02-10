@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { FileText, Plus, MapPin, ShieldOff, LayoutDashboard } from "lucide-react";
+import { FileText, Plus, MapPin, ShieldOff, LayoutDashboard, Calculator } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
 
 import { TaxDashboardTab } from "./tax/TaxDashboardTab";
+import { TaxCalculator } from "./tax/TaxCalculator";
 
 export default function TaxManagement() {
   const { toast } = useToast();
@@ -30,6 +31,7 @@ export default function TaxManagement() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList>
           <TabsTrigger value="dashboard" className="gap-2"><LayoutDashboard className="w-4 h-4" /> Dashboard</TabsTrigger>
+          <TabsTrigger value="calculator" className="gap-2"><Calculator className="w-4 h-4" /> Calculator</TabsTrigger>
           <TabsTrigger value="codes" className="gap-2"><FileText className="w-4 h-4" /> Tax Codes</TabsTrigger>
           <TabsTrigger value="jurisdictions" className="gap-2"><MapPin className="w-4 h-4" /> Jurisdictions</TabsTrigger>
           <TabsTrigger value="exemptions" className="gap-2"><ShieldOff className="w-4 h-4" /> Exemptions</TabsTrigger>
@@ -37,6 +39,9 @@ export default function TaxManagement() {
 
         <TabsContent value="dashboard" className="py-4">
           <TaxDashboardTab />
+        </TabsContent>
+        <TabsContent value="calculator" className="py-4">
+          <TaxCalculator />
         </TabsContent>
         <TabsContent value="codes" className="py-4">
           <TaxCodesTab />
