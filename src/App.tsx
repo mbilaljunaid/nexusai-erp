@@ -12,7 +12,7 @@ import { TourProvider } from "@/hooks/use-tour";
 import { GuidedTourOverlay } from "@/components/GuidedTour";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { QuickTipsProvider } from "@/components/QuickTips";
-import { AIChatWidget } from "@/components/AIChatWidget";
+// AIChatWidget removed — consolidated into NexusAIPanel
 import { LedgerProvider } from "@/context/LedgerContext";
 import { NexusAIProvider } from "@/contexts/NexusAIContext";
 import { NexusAIPanel } from "@/components/NexusAIPanel";
@@ -102,7 +102,7 @@ import PerformanceManagement from "@/pages/PerformanceManagement";
 import ESSDashboard from "@/pages/hr/selfservice/ESSDashboard";
 import PersonalDetails from "@/pages/hr/selfservice/PersonalDetails";
 import MyTimeCard from "@/pages/hr/selfservice/MyTimeCard";
-import { AIGuide } from "@/components/hr/AIGuide";
+// AIGuide removed — HR capabilities consolidated into NexusAIPanel
 import MSSDashboard from "@/pages/hr/selfservice/MSSDashboard";
 import HRAnalyticsDashboard from "@/pages/HRAnalyticsDashboard";
 import PredictiveAnalytics from "@/pages/PredictiveAnalytics";
@@ -268,29 +268,10 @@ function AuthenticatedLayout() {
       <Suspense fallback={<div className="p-4">Loading...</div>}>
         <Router />
       </Suspense>
-      <AIChatWidgetWrapper />
       <GuidedTourOverlay />
-      <AIGuide />
       <NexusAIPanel />
     </GlobalLayout>
   );
-}
-
-
-function AIChatWidgetWrapper() {
-  const [location] = useLocation();
-
-  let context = "general";
-  if (location.includes("/accounts-payable")) context = "ap";
-  else if (location.includes("/accounts-receivable")) context = "ar";
-  else if (location.includes("/cash-management") || location.includes("/treasury")) context = "treasury";
-  else if (location.includes("/finance") || location.includes("/gl")) context = "finance";
-  else if (location.includes("/crm")) context = "crm";
-  else if (location.includes("/hr")) context = "hr";
-  else if (location.includes("/projects") || location.includes("/ppm")) context = "projects";
-  else if (location.includes("/transportation")) context = "logistics";
-
-  return <AIChatWidget context={context} />;
 }
 
 function PublicLayout() {

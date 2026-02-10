@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect, use
 import { useLocation } from "wouter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { NexusAIState, NexusAIMessage, AIProviderConfig, AICapability } from "@/types/nexus-ai";
-import { getCapabilitiesForRoute } from "@/config/ai-capabilities";
+import { getCapabilitiesForRoute, AI_CAPABILITIES_REGISTRY } from "@/config/ai-capabilities";
 
 interface ConversationSummary {
   id: string;
@@ -27,6 +27,11 @@ interface NexusAIContextValue extends NexusAIState {
   loadConversation: (id: string) => Promise<void>;
   startNewConversation: () => void;
   deleteConversation: (id: string) => Promise<void>;
+  // Multi-context & manual context
+  additionalContextModules: string[];
+  setAdditionalContextModules: React.Dispatch<React.SetStateAction<string[]>>;
+  manualContext: string;
+  setManualContext: (ctx: string) => void;
 }
 
 const NexusAIContext = createContext<NexusAIContextValue | null>(null);
@@ -55,6 +60,8 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
   const [messages, setMessages] = useState<NexusAIMessage[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [additionalContextModules, setAdditionalContextModules] = useState<string[]>([]);
+  const [manualContext, setManualContext] = useState("");
   const debouncedSave = useDebouncedSave(1500);
   const messagesRef = useRef(messages);
   messagesRef.current = messages;
@@ -72,10 +79,14 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     staleTime: 30_000,
   });
 
-  const currentCapabilities = useMemo(
-    () => getCapabilitiesForRoute(location),
-    [location]
-  );
+  // Merge route-based + manually selected module capabilities
+  const currentCapabilities = useMemo(() => {
+    const routeCaps = getCapabilitiesForRoute(location);
+    const additionalCaps = additionalContextModules
+      .map(mod => AI_CAPABILITIES_REGISTRY.find(c => c.module === mod))
+      .filter((c): c is AICapability => !!c && !routeCaps.find(rc => rc.id === c.id));
+    return [...routeCaps, ...additionalCaps];
+  }, [location, additionalContextModules]);
 
   const currentModule = useMemo(() => {
     const primary = currentCapabilities.find(c => c.id !== "general");
@@ -234,6 +245,8 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
           message: content,
           conversationHistory: messages.map(m => ({ role: m.role, content: m.content })),
           moduleContext: currentModule,
+          manualContext: manualContext || undefined,
+          additionalModules: additionalContextModules.length > 0 ? additionalContextModules : undefined,
           capabilities: currentCapabilities.map(c => ({
             module: c.module,
             tools: c.tools.map(t => t.name),
@@ -386,6 +399,10 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     loadConversation,
     startNewConversation,
     deleteConversation,
+    additionalContextModules,
+    setAdditionalContextModules,
+    manualContext,
+    setManualContext,
   };
 
   return (
