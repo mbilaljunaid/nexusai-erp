@@ -17,6 +17,16 @@ import SuccessionPlanning from "@/pages/SuccessionPlanning";
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { HrSidebar } from "@/components/nav/HrSidebar";
 
+// Payroll & Rewards Imports
+import CompensationDashboard from "../pages/rewards/CompensationDashboard";
+import MyPayslips from "../pages/rewards/MyPayslips";
+import PayrollRunDetails from "../pages/rewards/PayrollRunDetails";
+import PayrollWorkbench from "../pages/rewards/PayrollWorkbench";
+import PayslipView from "../pages/rewards/PayslipView";
+import PayrollDetail from "@/pages/PayrollDetail";
+import PayrollEngine from "@/pages/PayrollEngine";
+import PayrollProcessing from "@/pages/PayrollProcessing";
+
 // Self-Service Imports
 import ESSDashboard from "../pages/hr/selfservice/ESSDashboard";
 import MSSDashboard from "../pages/hr/selfservice/MSSDashboard";
@@ -71,7 +81,17 @@ export default function HrRoutes() {
                 <Route path="/hr/talent-pool" component={TalentPool} />
                 <Route path="/hr/performance" component={PerformanceManagement} />
                 <Route path="/hr/employees" component={EmployeeDirectory} />
+
+                {/* Payroll & Rewards */}
                 <Route path="/hr/payroll" component={PayrollRuns} />
+                <Route path="/hr/payroll/workbench" component={PayrollWorkbench} />
+                <Route path="/hr/payroll/processing" component={PayrollProcessing} />
+                <Route path="/hr/payroll/engine" component={PayrollEngine} />
+                <Route path="/hr/payroll/runs/:id" component={PayrollRunDetails} />
+                <Route path="/hr/payroll/detail/:id" component={PayrollDetail} />
+                <Route path="/hr/rewards/compensation" component={CompensationDashboard} />
+                <Route path="/hr/rewards/payslips" component={MyPayslips} />
+                <Route path="/hr/rewards/payslips/:id" component={PayslipView} />
 
                 {/* Self-Service Routes */}
                 <Route path="/hr/self-service/me" component={ESSDashboard} />
