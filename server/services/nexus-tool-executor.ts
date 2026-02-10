@@ -2159,7 +2159,6 @@ async function createGoal(params: Record<string, any>) {
 async function getSuccessionPlan(params: Record<string, any>) {
   try {
     const { SuccessionService } = await import("./SuccessionService");
-    const { SuccessionService } = await import("./SuccessionService");
     const plans = await SuccessionService.getPlans(params.tenantId || "default");
     // Filter for position or return most relevant plan
     const relevantPlan = plans.find(p => p.positionId === params.positionId) || plans[0];
@@ -2284,7 +2283,6 @@ async function getFieldSchedule(params: Record<string, any>) {
 
 async function getConstructionRisk(params: Record<string, any>) {
   try {
-    const { ConstructionRiskService } = await import("./ConstructionRiskService");
     const { ConstructionRiskService } = await import("./ConstructionRiskService");
     const service = new ConstructionRiskService();
     return await service.getProjectRiskOverview(params.projectId);

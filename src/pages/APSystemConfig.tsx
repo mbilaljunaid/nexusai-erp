@@ -179,6 +179,7 @@ export default function APSystemConfig() {
                                             checked={params.autoValidation}
                                             onChange={(e) => setParams({ ...params, autoValidation: e.target.checked })}
                                             className="h-4 w-4"
+                                            title="Auto-validation setting"
                                         />
                                         <span className="text-sm">Enable automatic invoice validation</span>
                                     </div>
@@ -192,6 +193,7 @@ export default function APSystemConfig() {
                                             checked={params.requirePOMatch}
                                             onChange={(e) => setParams({ ...params, requirePOMatch: e.target.checked })}
                                             className="h-4 w-4"
+                                            title="Require PO match setting"
                                         />
                                         <span className="text-sm">Require PO matching for approval</span>
                                     </div>
@@ -205,6 +207,7 @@ export default function APSystemConfig() {
                                             checked={params.allowPrepayments}
                                             onChange={(e) => setParams({ ...params, allowPrepayments: e.target.checked })}
                                             className="h-4 w-4"
+                                            title="Allow prepayments setting"
                                         />
                                         <span className="text-sm">Enable prepayment functionality</span>
                                     </div>

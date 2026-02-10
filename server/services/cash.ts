@@ -599,19 +599,6 @@ export class CashService {
     async deleteForecast(id: string) {
         await db.delete(cashForecasts).where(eq(cashForecasts.id, id));
     }
-
-    async createTransaction(data: any) {
-        return await storage.createCashTransaction({
-            bankAccountId: String(data.bankAccountId),
-            sourceModule: data.sourceModule || 'GL',
-            sourceId: String(data.sourceId || "MANUAL"),
-            amount: String(data.amount),
-            transactionDate: data.date || new Date(),
-            reference: data.reference || `TXN-${Date.now()}`,
-            description: data.description,
-            status: data.status || "Unreconciled" as any
-        });
-    }
 }
 
 export const cashService = new CashService();

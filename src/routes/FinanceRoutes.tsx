@@ -17,6 +17,14 @@ import APReports from "@/pages/APReports";
 import APPrepayments from "@/pages/APPrepayments";
 import APPaymentBatches from "@/pages/APPaymentBatches";
 import APSystemConfig from "@/pages/APSystemConfig";
+
+// Cash Management
+import CashManagementDashboard from "@/pages/finance/cash/CashManagementDashboard";
+import BankReconciliationWorkbench from "@/pages/finance/cash/BankReconciliationWorkbench";
+import CashForecastingView from "@/pages/finance/cash/CashForecastingView";
+import CurrencyRevaluationView from "@/pages/finance/cash/CurrencyRevaluationView";
+import ZBAManagement from "@/pages/finance/cash/ZBAManagement";
+
 import AccountsReceivable from "@/pages/AccountsReceivable";
 import EnterpriseBillingDashboard from "@/pages/billing/BillingDashboard";
 import BillingWorkbench from "@/pages/billing/BillingWorkbench";
@@ -82,6 +90,10 @@ import LeasePortfolioWorkbench from "@/pages/leases/LeasePortfolioWorkbench";
 import LeaseSystemSetup from "@/pages/leases/LeaseSystemSetup";
 import LeaseDisclosureReport from "@/pages/leases/LeaseDisclosureReport";
 import LeaseDetailPage from "@/pages/leases/LeaseDetailPage";
+import LeaseSchedulesView from "@/pages/leases/LeaseSchedulesView";
+import LeaseApprovalsWorkbench from "@/pages/leases/LeaseApprovalsWorkbench";
+import LeaseModificationWizard from "@/pages/leases/LeaseModificationWizard";
+import LeaseComplianceDashboard from "@/pages/leases/LeaseComplianceDashboard";
 import ContractList from "@/pages/contracts/ContractList";
 import ContractDetailView from "@/pages/ContractDetailView";
 import SSPManager from "@/pages/SSPManager";
@@ -107,7 +119,12 @@ export default function FinanceRoutes() {
     return (
         <ModuleLayout>
             <Switch>
-                <Route path="/finance/cash-management" component={TreasuryCommandCenter} />
+                <Route path="/finance/cash" component={CashManagementDashboard} />
+                <Route path="/finance/cash-management" component={CashManagementDashboard} />
+                <Route path="/finance/cash/reconciliation" component={BankReconciliationWorkbench} />
+                <Route path="/finance/cash/forecasting" component={CashForecastingView} />
+                <Route path="/finance/cash/revaluation" component={CurrencyRevaluationView} />
+                <Route path="/finance/cash/zba" component={ZBAManagement} />
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />
                 <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
                 <Route path="/finance/fixed-assets" component={FixedAssets} />
@@ -202,9 +219,13 @@ export default function FinanceRoutes() {
 
                 {/* Lease & Contracts */}
                 <Route path="/finance/leases" component={LeasePortfolioWorkbench} />
+                <Route path="/finance/leases/compliance" component={LeaseComplianceDashboard} />
+                <Route path="/finance/leases/approvals" component={LeaseApprovalsWorkbench} />
                 <Route path="/finance/leases/setup" component={LeaseSystemSetup} />
                 <Route path="/finance/leases/reports/disclosure" component={LeaseDisclosureReport} />
                 <Route path="/finance/leases/:id" component={LeaseDetailPage} />
+                <Route path="/finance/leases/:id/schedules">{(params: { id: string }) => <LeaseSchedulesView leaseId={params.id} />}</Route>
+                <Route path="/finance/leases/:id/modify">{(params: { id: string }) => <LeaseModificationWizard leaseId={params.id} />}</Route>
                 <Route path="/finance/contracts" component={ContractList} />
                 <Route path="/finance/contracts/:id" component={ContractDetailView} />
 

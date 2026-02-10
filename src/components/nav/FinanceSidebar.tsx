@@ -7,6 +7,10 @@ import {
     Settings,
     Layers,
     CheckSquare,
+    RefreshCw,
+    ShieldCheck,
+    FileCheck,
+    PieChart,
 } from "lucide-react";
 import { DomainSidebar } from "./DomainSidebar";
 
@@ -57,7 +61,11 @@ export const financeMenu = [
         label: "Assets & Cash",
         items: [
             { title: "Fixed Assets", url: "/finance/fixed-assets", icon: Briefcase },
-            { title: "Cash Management", url: "/finance/cash-management", icon: DollarSign },
+            { title: "Cash Dashboard", url: "/finance/cash", icon: BarChart3 },
+            { title: "Bank Reconciliation", url: "/finance/cash/reconciliation", icon: CheckSquare },
+            { title: "Cash Forecasting", url: "/finance/cash/forecasting", icon: TrendingUp },
+            { title: "Currency Revaluation", url: "/finance/cash/revaluation", icon: RefreshCw },
+            { title: "ZBA Management", url: "/finance/cash/zba", icon: Layers },
         ],
     },
     {
@@ -72,7 +80,10 @@ export const financeMenu = [
         label: "Lease Management",
         items: [
             { title: "Portfolio Workbench", url: "/finance/leases", icon: Briefcase },
-            { title: "Lease Setup", url: "/finance/leases/setup", icon: Settings },
+            { title: "Compliance Dashboard", url: "/finance/leases/compliance", icon: PieChart },
+            { title: "Approval Hub", url: "/finance/leases/approvals", icon: FileCheck },
+            { title: "Lease System Setup", url: "/finance/leases/setup", icon: Settings },
+            { title: "Disclosure Reports", url: "/finance/leases/reports/disclosure", icon: FileText },
         ]
     },
     {
