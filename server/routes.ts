@@ -77,6 +77,7 @@ import { lcmRouter } from "./modules/lcm/routes";
 
 import { ppmRouter } from "./modules/ppm/routes";
 import wfmRouter from "./routes/wfm";
+import { nexusAiRouter } from "./routes/nexus-ai";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -175,6 +176,9 @@ export async function registerRoutes(
   // Agentic AI
   app.use("/api", aiRouter);
   await aiService.initialize();
+
+  // NexusAI Provider Management
+  app.use("/api/nexus-ai", nexusAiRouter);
 
   // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {
