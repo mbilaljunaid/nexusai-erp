@@ -1,16 +1,16 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const MaintenanceWorkbench = lazy(() => import("@/pages/maintenance/MaintenanceWorkbench"));
-const PMDefinitionBuilder = lazy(() => import("@/pages/maintenance/PMDefinitionBuilder"));
-const PMManager = lazy(() => import("@/pages/PMManager"));
-const AssetHierarchyTree = lazy(() => import("@/pages/maintenance/AssetHierarchyTree"));
-const FailureCodeConfig = lazy(() => import("@/pages/maintenance/FailureCodeConfig"));
-const ServiceRequestPortal = lazy(() => import("@/pages/ServiceRequestPortal"));
-const ServiceRequestQueue = lazy(() => import("@/pages/ServiceRequestQueue"));
-const TechnicianTaskView = lazy(() => import("@/pages/maintenance/TechnicianTaskView"));
-const Asset360View = lazy(() => import("@/pages/maintenance/Asset360View"));
+const MaintenanceWorkbench = lazyWithRetry(() => import("@/pages/maintenance/MaintenanceWorkbench"));
+const PMDefinitionBuilder = lazyWithRetry(() => import("@/pages/maintenance/PMDefinitionBuilder"));
+const PMManager = lazyWithRetry(() => import("@/pages/PMManager"));
+const AssetHierarchyTree = lazyWithRetry(() => import("@/pages/maintenance/AssetHierarchyTree"));
+const FailureCodeConfig = lazyWithRetry(() => import("@/pages/maintenance/FailureCodeConfig"));
+const ServiceRequestPortal = lazyWithRetry(() => import("@/pages/ServiceRequestPortal"));
+const ServiceRequestQueue = lazyWithRetry(() => import("@/pages/ServiceRequestQueue"));
+const TechnicianTaskView = lazyWithRetry(() => import("@/pages/maintenance/TechnicianTaskView"));
+const Asset360View = lazyWithRetry(() => import("@/pages/maintenance/Asset360View"));
 
 export default function MaintenanceRoutes() {
     return (

@@ -2,20 +2,20 @@
 import { Route, Switch } from "wouter";
 import Projects from "@/pages/Projects";
 
-import { lazy } from "react";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 // Unified Project Container
-// const Projects = lazy(() => import("@/pages/Projects"));
+// const Projects = lazyWithRetry(() => import("@/pages/Projects"));
 
 // Lazy load components here for routing
-const ProjectList = lazy(() => import("@/pages/projects/ProjectList"));
-const TaskList = lazy(() => import("@/pages/projects/TaskList"));
-const AccountingDashboard = lazy(() => import("@/pages/projects/AccountingDashboard"));
-const AssetWorkbench = lazy(() => import("@/pages/projects/AssetWorkbench"));
-const BillRateManager = lazy(() => import("@/pages/projects/BillRateManager"));
-const BillingRulesManager = lazy(() => import("@/pages/projects/BillingRulesManager"));
-const BurdenManager = lazy(() => import("@/pages/projects/BurdenManager"));
-const ProjectTemplateManager = lazy(() => import("@/pages/projects/ProjectTemplateManager"));
+const ProjectList = lazyWithRetry(() => import("@/pages/projects/ProjectList"));
+const TaskList = lazyWithRetry(() => import("@/pages/projects/TaskList"));
+const AccountingDashboard = lazyWithRetry(() => import("@/pages/projects/AccountingDashboard"));
+const AssetWorkbench = lazyWithRetry(() => import("@/pages/projects/AssetWorkbench"));
+const BillRateManager = lazyWithRetry(() => import("@/pages/projects/BillRateManager"));
+const BillingRulesManager = lazyWithRetry(() => import("@/pages/projects/BillingRulesManager"));
+const BurdenManager = lazyWithRetry(() => import("@/pages/projects/BurdenManager"));
+const ProjectTemplateManager = lazyWithRetry(() => import("@/pages/projects/ProjectTemplateManager"));
 
 export default function ProjectRoutes() {
     return (

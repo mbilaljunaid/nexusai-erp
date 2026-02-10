@@ -1,21 +1,21 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 // Customer Portal
-const CustomerPortalLayout = lazy(() => import("@/pages/portal/CustomerPortalLayout"));
-const PortalDashboard = lazy(() => import("@/pages/portal/PortalDashboard"));
-const PortalInvoices = lazy(() => import("@/pages/portal/PortalInvoices"));
+const CustomerPortalLayout = lazyWithRetry(() => import("@/pages/portal/CustomerPortalLayout"));
+const PortalDashboard = lazyWithRetry(() => import("@/pages/portal/PortalDashboard"));
+const PortalInvoices = lazyWithRetry(() => import("@/pages/portal/PortalInvoices"));
 
 // Supplier Portal
-const SupplierPortalLayout = lazy(() => import("@/layouts/SupplierPortalLayout"));
-const SupplierLogin = lazy(() => import("@/pages/supplier-portal/Login"));
-const SupplierDashboard = lazy(() => import("@/pages/supplier-portal/Dashboard"));
-const SupplierOrders = lazy(() => import("@/pages/supplier-portal/Orders"));
-const SupplierASNs = lazy(() => import("@/pages/supplier-portal/ASNs"));
-const SupplierPerformance = lazy(() => import("@/pages/supplier-portal/Performance"));
-const SupplierDocuments = lazy(() => import("@/pages/supplier-portal/Documents"));
-const SupplierSourcing = lazy(() => import("@/pages/supplier-portal/Sourcing"));
+const SupplierPortalLayout = lazyWithRetry(() => import("@/layouts/SupplierPortalLayout"));
+const SupplierLogin = lazyWithRetry(() => import("@/pages/supplier-portal/Login"));
+const SupplierDashboard = lazyWithRetry(() => import("@/pages/supplier-portal/Dashboard"));
+const SupplierOrders = lazyWithRetry(() => import("@/pages/supplier-portal/Orders"));
+const SupplierASNs = lazyWithRetry(() => import("@/pages/supplier-portal/ASNs"));
+const SupplierPerformance = lazyWithRetry(() => import("@/pages/supplier-portal/Performance"));
+const SupplierDocuments = lazyWithRetry(() => import("@/pages/supplier-portal/Documents"));
+const SupplierSourcing = lazyWithRetry(() => import("@/pages/supplier-portal/Sourcing"));
 
 export default function PortalRoutes() {
     return (

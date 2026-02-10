@@ -1,22 +1,23 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const AdminConsole = lazy(() => import("@/pages/AdminConsole"));
-const PlatformAdmin = lazy(() => import("@/pages/admin/PlatformAdmin"));
-const AccessControl = lazy(() => import("@/pages/admin/AccessControl"));
-const AdminRoles = lazy(() => import("@/pages/AdminRoles"));
+const AdminConsole = lazyWithRetry(() => import("@/pages/AdminConsole"));
+const PlatformAdmin = lazyWithRetry(() => import("@/pages/admin/PlatformAdmin"));
+const AccessControl = lazyWithRetry(() => import("@/pages/admin/AccessControl"));
+const AdminRoles = lazyWithRetry(() => import("@/pages/AdminRoles"));
 
-const Settings = lazy(() => import("@/pages/Settings"));
-const Integrations = lazy(() => import("@/pages/Integrations"));
-const APIGateway = lazy(() => import("@/pages/APIGateway"));
-const WebhookManagement = lazy(() => import("@/pages/WebhookManagement"));
-const TenantAdmin = lazy(() => import("@/pages/TenantAdmin"));
-const UserManagement = lazy(() => import("@/pages/UserManagement"));
-const IndustrySetup = lazy(() => import("@/pages/IndustrySetup"));
-const EnvironmentManagement = lazy(() => import("@/pages/EnvironmentManagement"));
-const SubscriptionManagement = lazy(() => import("@/pages/SubscriptionManagement"));
-const BillingManagement = lazy(() => import("@/pages/billing/BillingWorkbench"));
+const Settings = lazyWithRetry(() => import("@/pages/Settings"));
+const Integrations = lazyWithRetry(() => import("@/pages/Integrations"));
+const APIGateway = lazyWithRetry(() => import("@/pages/APIGateway"));
+const WebhookManagement = lazyWithRetry(() => import("@/pages/WebhookManagement"));
+const TenantAdmin = lazyWithRetry(() => import("@/pages/TenantAdmin"));
+const UserManagement = lazyWithRetry(() => import("@/pages/UserManagement"));
+const IndustrySetup = lazyWithRetry(() => import("@/pages/IndustrySetup"));
+const EnvironmentManagement = lazyWithRetry(() => import("@/pages/EnvironmentManagement"));
+const SubscriptionManagement = lazyWithRetry(() => import("@/pages/SubscriptionManagement"));
+const BillingManagement = lazyWithRetry(() => import("@/pages/billing/BillingWorkbench"));
+const SoDMatrix = lazyWithRetry(() => import("@/pages/admin/SoDMatrix"));
 
 export default function AdminRoutes() {
     return (
@@ -25,7 +26,7 @@ export default function AdminRoutes() {
             <Route path="/admin/platform" component={PlatformAdmin} />
             <Route path="/admin/security" component={AccessControl} />
             {/* Core Admin Pages */}
-            <Route path="/admin/sod" component={lazy(() => import("@/pages/admin/SoDMatrix"))} />
+            <Route path="/admin/sod" component={SoDMatrix} />
 
             <Route path="/settings" component={Settings} />
             <Route path="/integrations" component={Integrations} />

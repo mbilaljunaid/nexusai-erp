@@ -1,8 +1,8 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Dashboard = lazyWithRetry(() => import("@/pages/Dashboard"));
 
 export default function DashboardRoutes() {
     return (

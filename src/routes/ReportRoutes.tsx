@@ -1,8 +1,8 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const Reports = lazy(() => import("@/pages/Reports"));
+const Reports = lazyWithRetry(() => import("@/pages/Reports"));
 
 
 export default function ReportRoutes() {
