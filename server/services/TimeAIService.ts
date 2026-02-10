@@ -3,6 +3,7 @@ import { eq, and, desc, gte, lte, sql } from "drizzle-orm";
 import { hrmTimeEntries, hrmShifts, hrmTimeSheets } from "@shared/schema/time_labor";
 import { hrmAiForecasts, hrmAiAnomalies } from "@shared/schema/time_ai";
 import { subDays, addDays, format, differenceInDays } from "date-fns";
+import { callAIJson, getCapabilityPrompt } from "./nexus-ai-gateway";
 
 export class TimeAIService {
 
@@ -77,13 +78,25 @@ export class TimeAIService {
         }
 
         if (streak >= 7) {
+            // Generate AI Insight
+            let riskReason = `Employee has worked ${streak} days in the last 10 days. Risk of burnout.`;
+            try {
+                const systemPrompt = await getCapabilityPrompt("Workforce Planner", "Analyze workforce fatigue risks.");
+                const insight = await callAIJson<{ explanation: string, severity: string }>([
+                    { role: "user", content: `Employee has worked ${streak} consecutive days. Analyze the fatigue risk impact.` }
+                ], { systemPrompt });
+                if (insight.explanation) riskReason = insight.explanation;
+            } catch (e) {
+                console.error("Failed to generate AI insight for fatigue risk", e);
+            }
+
             // Create Risk Anomaly
             const [anomaly] = await db.insert(hrmAiAnomalies).values({
                 tenantId,
                 personId,
                 type: "FATIGUE_RISK",
                 riskScore: 90, // High Risk
-                riskReason: `Employee has worked ${streak} days in the last 10 days. Risk of burnout.`,
+                riskReason,
                 status: "OPEN"
             }).returning();
             return anomaly;

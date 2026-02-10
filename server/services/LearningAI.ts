@@ -3,6 +3,7 @@ import { eq, inArray, desc, sql } from "drizzle-orm";
 import { hrmLearningCourses, hrmLearningEnrollments, hrmLearningOfferings } from "@shared/schema/talent_learning";
 import { hrmSkills } from "@shared/schema/talent_core";
 import { executeTool } from "./nexus-tool-executor";
+import { callAIJson, getCapabilityPrompt } from "./nexus-ai-gateway";
 
 // Hybrid AI Service: Rule-based Fallback + LLM Hooks
 export class LearningAI {
@@ -13,29 +14,29 @@ export class LearningAI {
     static async extractSkills(text: string): Promise<string[]> {
         if (!text) return [];
 
-        // Fetch all known skills from library
-        // Ideally cached in Redis
-        const allSkills = await db.select().from(hrmSkills);
+        try {
+            const systemPrompt = await getCapabilityPrompt("Learning Assistant",
+                "You are an expert Learning & Development assistant. Extract professional skills from the text. Return a JSON object with a 'skills' array of strings.");
 
-        const extracted: string[] = [];
-        const normalizedText = text.toLowerCase();
+            const response = await callAIJson<{ skills: string[] }>([
+                { role: "user", content: `Extract skills from: "${text}"` }
+            ], {
+                systemPrompt,
+                temperature: 0.1
+            });
 
-        for (const skill of allSkills) {
-            // Simple keyword matching for MVP
-            if (normalizedText.includes(skill.name.toLowerCase())) {
-                extracted.push(skill.name);
+            return response.skills || [];
+        } catch (error) {
+            console.error("LearningAI Skill Extraction Failed:", error);
+            // Fallback to dictionary matching
+            const allSkills = await db.select().from(hrmSkills);
+            const extracted: string[] = [];
+            const normalizedText = text.toLowerCase();
+            for (const skill of allSkills) {
+                if (normalizedText.includes(skill.name.toLowerCase())) extracted.push(skill.name);
             }
+            return extracted;
         }
-
-        // HEURISTIC: Fallback for common tech terms if library is empty
-        const commonTerms = ["JavaScript", "Python", "React", "Leadership", "Communication", "Safety", "Compliance"];
-        for (const term of commonTerms) {
-            if (normalizedText.includes(term.toLowerCase()) && !extracted.includes(term)) {
-                extracted.push(term);
-            }
-        }
-
-        return extracted;
     }
 
     // 2. RECOMMENDATION ENGINE

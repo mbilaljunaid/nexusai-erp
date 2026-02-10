@@ -1,4 +1,5 @@
 
+import { getCapabilityPrompt, callAIJson } from "./nexus-ai-gateway";
 interface ExtractedLeaseData {
     leaseNumber?: string;
     commencementDate?: string;
@@ -11,22 +12,35 @@ interface ExtractedLeaseData {
 export class LeaseAiService {
     // In a real implementation, this would call OpenAI API
     async extractLeaseData(text: string): Promise<ExtractedLeaseData> {
-        // Mock delay to simulate AI processing
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            // Fetch dynamic system prompt from DB
+            const systemPrompt = await getCapabilityPrompt("Lease Analyst",
+                "You are an expert lease analyst. Extract the following fields from the lease text: leaseNumber, commencementDate (YYYY-MM-DD), expirationDate (YYYY-MM-DD), monthlyRent (number), lessorName. Return JSON.");
 
-        // Basic heuristic regex for demo purposes (robust AI would use LLM)
-        const rentMatch = text.match(/\$\s?([0-9,]+(\.[0-9]{2})?)/);
-        const dateMatch = text.match(/(\d{4}-\d{2}-\d{2})/);
-        const lessorMatch = text.match(/Lessor:\s*(.+)/i) || ["", "TechProp Holdings LLC"];
+            // Call AI Gateway
+            const result = await callAIJson<ExtractedLeaseData>([
+                { role: "user", content: text }
+            ], {
+                systemPrompt,
+                temperature: 0.1 // Precision is key
+            });
 
-        return {
-            leaseNumber: "AI-" + Math.floor(Math.random() * 10000),
-            commencementDate: dateMatch ? dateMatch[0] : new Date().toISOString().split("T")[0],
-            expirationDate: new Date(new Date().setFullYear(new Date().getFullYear() + 5)).toISOString().split("T")[0], // Default 5 years
-            monthlyRent: rentMatch ? parseFloat(rentMatch[1].replace(/,/g, "")) : 5000,
-            lessorName: lessorMatch[1].trim(),
-            confidence: 0.89
-        };
+            return {
+                ...result,
+                confidence: 0.95 // AI confidence
+            };
+
+        } catch (error) {
+            console.error("Lease AI Extraction Failed:", error);
+            // Fallback to mock for reliability if AI fails (or if no API key)
+            return {
+                leaseNumber: "FALLBACK-" + Math.floor(Math.random() * 10000),
+                commencementDate: new Date().toISOString().split("T")[0],
+                monhtlyRent: 0,
+                lessorName: "Unknown",
+                confidence: 0.0
+            } as any;
+        }
     }
 }
 
