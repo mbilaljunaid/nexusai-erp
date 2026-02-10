@@ -14,6 +14,8 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { QuickTipsProvider } from "@/components/QuickTips";
 import { AIChatWidget } from "@/components/AIChatWidget";
 import { LedgerProvider } from "@/context/LedgerContext";
+import { NexusAIProvider } from "@/contexts/NexusAIContext";
+import { NexusAIPanel } from "@/components/NexusAIPanel";
 import NotFound from "@/pages/not-found";
 import CrmRoutes from "@/routes/CrmRoutes";
 import FinanceRoutes from "@/routes/FinanceRoutes";
@@ -269,6 +271,7 @@ function AuthenticatedLayout() {
       <AIChatWidgetWrapper />
       <GuidedTourOverlay />
       <AIGuide />
+      <NexusAIPanel />
     </GlobalLayout>
   );
 }
@@ -332,7 +335,9 @@ export default function App() {
             <TooltipProvider>
               <TourProvider>
                 <QuickTipsProvider>
-                  <AppInner />
+                  <NexusAIProvider>
+                    <AppInner />
+                  </NexusAIProvider>
                 </QuickTipsProvider>
               </TourProvider>
             </TooltipProvider>
