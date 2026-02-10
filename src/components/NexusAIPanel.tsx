@@ -18,7 +18,16 @@ import {
   MessageSquarePlus,
   History,
   ChevronLeft,
+  Search,
+  Filter,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useLocation } from "wouter";
 
 type PanelView = "chat" | "history";
@@ -45,9 +54,26 @@ export function NexusAIPanel() {
 
   const [input, setInput] = useState("");
   const [panelView, setPanelView] = useState<PanelView>("chat");
+  const [historySearch, setHistorySearch] = useState("");
+  const [moduleFilter, setModuleFilter] = useState("all");
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [, navigate] = useLocation();
+
+  // Derive unique modules from conversations
+  const conversationModules = Array.from(
+    new Set(conversations.map(c => c.moduleContext).filter(Boolean))
+  ) as string[];
+
+  // Filter conversations by search + module
+  const filteredConversations = conversations.filter(convo => {
+    const matchesModule = moduleFilter === "all" || convo.moduleContext === moduleFilter;
+    if (!historySearch.trim()) return matchesModule;
+    const q = historySearch.toLowerCase();
+    const titleMatch = (convo.title || "").toLowerCase().includes(q);
+    const moduleMatch = (convo.moduleContext || "").toLowerCase().includes(q);
+    return matchesModule && (titleMatch || moduleMatch);
+  });
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -202,7 +228,42 @@ export function NexusAIPanel() {
         {/* ═══ History View ═══ */}
         {panelView === "history" && (
           <ScrollArea className="flex-1 px-4">
-            <div className="py-4 space-y-2">
+            <div className="py-4 space-y-3">
+              {/* Search & Filter */}
+              <div className="space-y-2">
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                  <Input
+                    placeholder="Search conversations..."
+                    value={historySearch}
+                    onChange={e => setHistorySearch(e.target.value)}
+                    className="pl-8 h-9 text-xs"
+                  />
+                  {historySearch && (
+                    <button
+                      className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
+                      onClick={() => setHistorySearch("")}
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+                {conversationModules.length > 1 && (
+                  <Select value={moduleFilter} onValueChange={setModuleFilter}>
+                    <SelectTrigger className="h-8 text-xs">
+                      <Filter className="h-3 w-3 mr-1.5 text-muted-foreground" />
+                      <SelectValue placeholder="All modules" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Modules</SelectItem>
+                      {conversationModules.map(mod => (
+                        <SelectItem key={mod} value={mod}>{mod}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+
               <Button
                 variant="outline"
                 className="w-full justify-start gap-2 text-xs h-9"
@@ -212,13 +273,15 @@ export function NexusAIPanel() {
                 Start New Conversation
               </Button>
 
-              {conversations.length === 0 ? (
+              {filteredConversations.length === 0 ? (
                 <div className="text-center py-8">
                   <History className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">No conversation history yet</p>
+                  <p className="text-xs text-muted-foreground">
+                    {conversations.length === 0 ? "No conversation history yet" : "No conversations match your search"}
+                  </p>
                 </div>
               ) : (
-                conversations.map(convo => (
+                filteredConversations.map(convo => (
                   <div
                     key={convo.id}
                     className={cn(
