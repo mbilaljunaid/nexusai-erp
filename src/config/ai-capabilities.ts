@@ -574,6 +574,7 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
     insights: ["View billing and collection summaries", "Track MRR and subscription metrics", "Analyze churn and revenue trends"],
     tools: [
       { name: "get_billing_summary", description: "Get billing summary for a period", parameters: { period: { type: "string", description: "Billing period" } }, action: "/api/nexus-ai/tools/execute" },
+      { name: "scan_billing_anomalies", description: "Scan for billing and revenue leakage anomalies", parameters: {}, action: "/api/nexus-ai/tools/execute" },
     ],
   },
   {
@@ -621,6 +622,7 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
       { name: "get_scorecard", description: "Get balanced scorecard with KPIs", parameters: { entityId: { type: "string", description: "Entity or scorecard ID" } }, action: "/api/nexus-ai/tools/execute" },
       { name: "get_analytics_dashboard", description: "Get analytics dashboard KPIs", parameters: { module: { type: "string", description: "Module filter (or 'all')" } }, action: "/api/nexus-ai/tools/execute" },
       { name: "detect_cost_anomalies", description: "Detect cost anomalies across the organization", parameters: { tenantId: { type: "string", description: "Tenant ID" } }, action: "/api/nexus-ai/tools/execute" },
+      { name: "generate_revenue_forecast", description: "Generate AI-powered revenue forecast", parameters: { period: { type: "string", description: "Forecast period (e.g., Q3, Year 2026)" }, baseline: { type: "number", description: "Baseline revenue" } }, action: "/api/nexus-ai/tools/execute" },
     ],
   },
   {

@@ -9,7 +9,7 @@ import { slaRouter } from "./modules/sla/routes";
 import { registerDashboardRoutes } from "./modules/dashboard/routes";
 import { crmRouter } from "./modules/crm/routes";
 import { registerFeedbackRoutes } from "./modules/feedback/routes";
-import { copilotRouter } from "./modules/copilot/routes";
+
 import { registerFinanceRoutes } from "./modules/finance/routes";
 import { hrRouter } from "./modules/hr/routes";
 import { registerProjectRoutes } from "./modules/project/routes";
@@ -55,8 +55,7 @@ import rewardsRouter from "./routes/rewards";
 import hrSelfServiceRouter from "./routes/hr_self_service";
 
 import { constructionRouter } from "./modules/construction/routes";
-import aiRouter from "./routes/ai";
-import { aiService } from "./services/ai";
+
 import { supplierPortalRouter } from "./routes/supplierPortal";
 import contractPortalRouter from "./routes/contractPortal";
 import { supplierPortalExternalRouter } from "./routes/supplierPortalExternal";
@@ -173,9 +172,7 @@ export async function registerRoutes(
 
 
 
-  // Agentic AI
-  app.use("/api", aiRouter);
-  await aiService.initialize();
+
 
   // NexusAI Provider Management
   app.use("/api/nexus-ai", nexusAiRouter);
@@ -185,7 +182,8 @@ export async function registerRoutes(
     // Exemptions for public/auth routes
     const publicPaths = [
       "/health", "/login", "/logout", "/callback", "/auth", "/demos",
-      "/copilot", "/feedback", "/marketplace/categories",
+      "/health", "/login", "/logout", "/callback", "/auth", "/demos",
+      "/feedback", "/marketplace/categories",
       "/api/supplier-portal/register", "/portal/supplier", "/api/construction", "/api/ppm", "/api/public"
     ];
 
@@ -252,7 +250,7 @@ export async function registerRoutes(
   app.use("/api/hr/reports", hrReportsRouter);
   app.use("/api/hr/config", hrConfigurationRouter);
   // Copilot (AI)
-  app.use("/api/copilot", copilotRouter);
+
   registerProjectRoutes(app);
   // Manufacturing
   app.use("/api/manufacturing", manufacturingRouter);

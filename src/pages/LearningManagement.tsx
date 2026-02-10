@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 import {
   Select,
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/select";
 
 export default function LearningManagement() {
+  const { open, sendMessage } = useNexusAI();
   const [activeTab, setActiveTab] = useState("catalog");
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -200,23 +202,31 @@ export default function LearningManagement() {
       </div>
 
       {/* AI RECOMMENDATIONS BANNER */}
-      {recommendations && recommendations.length > 0 && (
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-6 text-white shadow-lg">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="h-5 w-5 text-yellow-300" />
-            <h2 className="text-lg font-semibold">Recommended for You</h2>
-          </div>
-          <p className="opacity-90 max-w-2xl mb-4">Based on your recent activity and role, we think you'd excel in these courses.</p>
-          <div className="grid gap-4 md:grid-cols-3">
-            {recommendations.slice(0, 3).map((rec: any) => (
-              <div key={rec.id} className="bg-white/10 backdrop-blur-sm p-4 rounded border border-white/20 hover:bg-white/20 transition cursor-pointer" onClick={() => setActiveTab("catalog")}>
-                <div className="font-semibold">{rec.title}</div>
-                <div className="text-xs opacity-75 mt-1">{rec.category} • {rec.provider}</div>
-              </div>
-            ))}
-          </div>
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-6 text-white shadow-lg overflow-hidden relative">
+        <div className="absolute top-0 right-0 p-4 opacity-10">
+          <BookOpen className="h-32 w-32 rotate-12" />
         </div>
-      )}
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-5 w-5 text-yellow-300" />
+              <h2 className="text-xl font-bold">Personalized Learning Paths</h2>
+            </div>
+            <p className="opacity-90 max-w-2xl text-slate-100">
+              NexusAI has analyzed your career goals and skill gaps. We've prepared recommended learning paths to accelerate your growth within the organization.
+            </p>
+          </div>
+          <Button
+            className="whitespace-nowrap bg-white text-indigo-600 hover:bg-slate-100 font-black shadow-xl h-12 px-8"
+            onClick={() => {
+              open();
+              sendMessage("I need AI-powered course recommendations based on my career goals and current skill set.");
+            }}
+          >
+            Ask NexusAI for Recommendations
+          </Button>
+        </div>
+      </div>
 
       {/* Active Learning */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

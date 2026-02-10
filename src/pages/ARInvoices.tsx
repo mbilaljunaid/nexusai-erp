@@ -11,10 +11,12 @@ import { StandardTable, Column } from "@/components/ui/StandardTable";
 import type { ArInvoice } from "@/types/erp-types";
 import { CreditMemoDialog } from "@/components/billing/CreditMemoDialog";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
-import { CreditCard, Plus, Trash2, CheckCircle, AlertTriangle, FileText } from "lucide-react";
+import { CreditCard, Plus, Trash2, CheckCircle, AlertTriangle, FileText, Sparkles, BrainCircuit } from "lucide-react";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function ARInvoices() {
   const { toast } = useToast();
+  const { open, sendMessage } = useNexusAI();
   const [newInvoice, setNewInvoice] = useState({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -115,6 +117,18 @@ export default function ARInvoices() {
           <Button
             variant="ghost"
             size="icon"
+            className="h-8 w-8 text-indigo-600 hover:bg-indigo-50"
+            onClick={() => {
+              open();
+              sendMessage(`Generate a professional collection email for invoice ${inv.invoiceNumber} (Customer: ${inv.customerId}, Amount: $${inv.totalAmount}).`);
+            }}
+            title="Generate AI Collection Email"
+          >
+            <Sparkles className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             className="h-8 w-8"
             onClick={() => {
               setSelectedEntityId(inv.id);
@@ -144,12 +158,24 @@ export default function ARInvoices() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <CreditCard className="w-8 h-8" />
-          Accounts Receivable
-        </h1>
-        <p className="text-muted-foreground">Track customer payments and collections</p>
+      <div className="flex justify-between items-center mb-2">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <CreditCard className="w-8 h-8" />
+            Accounts Receivable
+          </h1>
+          <p className="text-muted-foreground">Track customer payments and collections (Converged)</p>
+        </div>
+        <Button
+          onClick={() => {
+            open();
+            sendMessage("Analyze the aging report and predict payment dates for outstanding invoices.");
+          }}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
+        >
+          <BrainCircuit className="h-4 w-4" />
+          AI Payment Prediction
+        </Button>
       </div>
 
       <div className="grid grid-cols-3 gap-4">

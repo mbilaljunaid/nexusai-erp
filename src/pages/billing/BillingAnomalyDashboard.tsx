@@ -18,7 +18,8 @@ import {
     TableRow
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Brain, RefreshCw, CheckCircle } from "lucide-react";
+import { useNexusAI } from "@/contexts/NexusAIContext";
+import { Brain, RefreshCw, CheckCircle, Sparkles, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import {
@@ -33,6 +34,7 @@ import {
 export default function BillingAnomalyDashboard() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { open, sendMessage } = useNexusAI();
 
     // Fetch Anomalies
     const { data: anomalies = [], isLoading } = useQuery({
@@ -44,7 +46,7 @@ export default function BillingAnomalyDashboard() {
         }
     });
 
-    // Scan Mutation
+    // Scan Mutation (Deterministic fallback)
     const scanMutation = useMutation({
         mutationFn: async () => {
             const res = await fetch("/api/billing/anomalies/scan", { method: "POST" });
@@ -85,13 +87,23 @@ export default function BillingAnomalyDashboard() {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Billing Intelligence</h1>
                     <p className="text-muted-foreground">
-                        AI-powered anomaly detection for unbilled events and revenue leakage.
+                        AI-powered anomaly detection for unbilled events and revenue leakage (Converged).
                     </p>
                 </div>
                 <div className="flex space-x-2">
-                    <Button onClick={() => scanMutation.mutate()} disabled={scanMutation.isPending}>
-                        {scanMutation.isPending ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Brain className="mr-2 h-4 w-4" />}
-                        Run AI Scan
+                    <Button
+                        onClick={() => {
+                            open();
+                            sendMessage("Run a complete billing anomaly scan and identify potential revenue leakage.");
+                        }}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
+                    >
+                        <Sparkles className="h-4 w-4" />
+                        NexusAI Scan
+                    </Button>
+                    <Button variant="outline" onClick={() => scanMutation.mutate()} disabled={scanMutation.isPending}>
+                        {scanMutation.isPending ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                        Standard Scan
                     </Button>
                 </div>
             </div>

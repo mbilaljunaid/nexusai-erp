@@ -45,120 +45,33 @@ import { useNexusAI } from "@/contexts/NexusAIContext";
 // AI Insights Component
 function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
   const { open, sendMessage } = useNexusAI();
-  const [analysis, setAnalysis] = useState<any>(null);
-
-  const analyzeMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`/ api / crm / opportunities / ${opportunityId}/analyze`, {
-        method: "POST"
-      });
-      if (!res.ok) throw new Error("Analysis failed");
-      return res.json();
-    },
-    onSuccess: (data) => setAnalysis(data)
-  });
-
-  if (!analysis && !analyzeMutation.isPending) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 h-full">
-        <div className="bg-primary/10 p-4 rounded-full">
-          <Sparkles className="h-8 w-8 text-primary" />
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold">Generate AI Insights</h3>
-          <p className="text-muted-foreground text-sm max-w-xs mx-auto mt-2">
-            Use our advanced AI engine to analyze this deal's win probability, risks, and next best actions.
-          </p>
-        </div>
-        <Button onClick={() => analyzeMutation.mutate()} className="gap-2">
-          <BrainCircuit className="h-4 w-4" />
-          Analyze Opportunity
-        </Button>
-      </div>
-    );
-  }
-
-  if (analyzeMutation.isPending) {
-    return (
-      <div className="flex flex-col items-center justify-center p-12 space-y-4">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground animate-pulse">Analyzing deal dynamics...</p>
-      </div>
-    );
-  }
 
   return (
-    <div className="space-y-6 p-1">
-      {/* Win Probability */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Win Probability</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-end justify-between mb-2">
-            <span className="text-4xl font-bold">{analysis.winProbability}%</span>
-            <span className={`text-sm font-medium px-2 py-1 rounded-full ${analysis.sentiment === 'Positive' ? 'bg-green-100 text-green-700' :
-              analysis.sentiment === 'Negative' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
-              }`}>
-              {analysis.sentiment} Outlook
-            </span>
-          </div>
-          <Progress value={analysis.winProbability} className="h-2" />
-          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-            {analysis.reasoning}
-          </p>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 gap-4">
-        {/* Risks */}
-        <Card className="border-red-100 dark:border-red-900/20 bg-red-50/50 dark:bg-red-900/10">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold flex items-center gap-2 text-red-700 dark:text-red-400">
-              <AlertCircle className="h-4 w-4" /> Key Risks
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {analysis.risks.map((risk: string, i: number) => (
-                <li key={i} className="text-sm text-red-800 dark:text-red-300 flex items-start gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-red-500 shrink-0" />
-                  {risk}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-
-        {/* Next Steps */}
-        <Card className="border-blue-100 dark:border-blue-900/20 bg-blue-50/50 dark:bg-blue-900/10">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold flex items-center gap-2 text-blue-700 dark:text-blue-400">
-              <CheckCircle2 className="h-4 w-4" /> Recommended Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {analysis.nextSteps.map((step: string, i: number) => (
-                <li key={i} className="text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
-                  {step}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+    <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 h-full">
+      <div className="bg-primary/10 p-4 rounded-full">
+        <Sparkles className="h-8 w-8 text-primary" />
       </div>
-
-      <div className="flex justify-center pt-2">
-        <Button
-          variant="outline"
-          className="gap-2 border-primary/20 hover:bg-primary/5 text-primary"
-          onClick={open}
-        >
-          <Sparkles className="h-4 w-4" />
-          Discuss Deal Analysis
-        </Button>
+      <div>
+        <h3 className="text-lg font-semibold text-slate-900">NexusAI Analysis</h3>
+        <p className="text-muted-foreground text-sm max-w-xs mx-auto mt-2">
+          Use the unified NexusAI engine to analyze this deal's win probability, risks, and next best actions.
+        </p>
+      </div>
+      <Button
+        onClick={() => {
+          open();
+          sendMessage(`Analyze opportunity ${opportunityId}`);
+        }}
+        className="gap-2 shadow-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white"
+        data-testid="nexus-ai-analyze-btn"
+      >
+        <BrainCircuit className="h-4 w-4" />
+        Analyze with NexusAI
+      </Button>
+      <div className="pt-4 border-t w-full mt-4 flex justify-center">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black opacity-30">
+          NexusAI Convergence Platform v1.0
+        </p>
       </div>
     </div>
   );

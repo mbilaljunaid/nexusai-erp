@@ -1,9 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingDown, AlertTriangle, DollarSign } from "lucide-react";
+import { TrendingDown, AlertTriangle, DollarSign, Sparkles } from "lucide-react";
+import { useNexusAI } from "@/contexts/NexusAIContext";
+import { Button } from "@/components/ui/button";
 
 export default function CreditManagementCollections() {
+  const { open, sendMessage } = useNexusAI();
   const { data: creditData = [], isLoading } = useQuery({
     queryKey: ["/api/credit-management"],
     queryFn: () => fetch("/api/credit-management").then(r => r.json()).catch(() => []),
@@ -14,12 +17,24 @@ export default function CreditManagementCollections() {
 
   return (
     <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <DollarSign className="h-8 w-8" />
-          Credit Management & Collections
-        </h1>
-        <p className="text-muted-foreground mt-2">Customer credit limits, holds, aging analysis, and collections</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <DollarSign className="h-8 w-8" />
+            Credit Management & Collections
+          </h1>
+          <p className="text-muted-foreground mt-2">Customer credit limits, holds, aging analysis, and collections (Converged)</p>
+        </div>
+        <Button
+          onClick={() => {
+            open();
+            sendMessage("Analyze the current aging report and suggest a collections strategy for high-risk accounts.");
+          }}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
+        >
+          <Sparkles className="h-4 w-4" />
+          NexusAI Strategy
+        </Button>
       </div>
 
       <div className="grid grid-cols-4 gap-3">

@@ -78,6 +78,7 @@ export const aiCapabilities = pgTable("ai_capabilities", {
   description: text("description"),
   routes: jsonb("routes").$type<string[]>().default([]),
   insights: jsonb("insights").$type<string[]>().default([]),
+  systemPrompt: text("system_prompt"), // Context/Persona for this agent
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").default(sql`now()`),
   updatedAt: timestamp("updated_at").default(sql`now()`),

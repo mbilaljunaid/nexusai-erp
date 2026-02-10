@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Plus, Trash2, Calendar, Target, ShieldCheck, Activity } from "lucide-react";
+import { TrendingUp, TrendingDown, Plus, Trash2, Calendar, Target, ShieldCheck, Activity, Sparkles, LineChart } from "lucide-react";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
@@ -12,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RevenueForecasting() {
   const { toast } = useToast();
+  const { open, sendMessage } = useNexusAI();
   const [newForecast, setNewForecast] = useState({ period: "Q2", baseline: "", confidence: "85" });
 
   const { data: forecasts = [], isLoading } = useQuery({
@@ -39,9 +41,21 @@ export default function RevenueForecasting() {
   return (
     <StandardDashboard
       header={
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight font-heading">Revenue Forecasting</h1>
-          <p className="text-muted-foreground mt-1">Advanced revenue projections, scenario modeling, and predictive analytics</p>
+        <div className="flex justify-between items-center w-full">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight font-heading">Revenue Forecasting</h1>
+            <p className="text-muted-foreground mt-1">Advanced revenue projections, scenario modeling, and predictive analytics (Converged)</p>
+          </div>
+          <Button
+            onClick={() => {
+              open();
+              sendMessage("Review current revenue forecasts and provide an executive summary of growth projections and risks.");
+            }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
+          >
+            <LineChart className="h-4 w-4" />
+            NexusAI Insights
+          </Button>
         </div>
       }
     >
@@ -103,9 +117,23 @@ export default function RevenueForecasting() {
             colSpan={1}
             title={`${f.period} Forecast`}
             action={
-              <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(f.id)} data-testid={`button-delete-${f.id}`}>
-                <Trash2 className="w-4 h-4" />
-              </Button>
+              <div className="flex gap-1">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 text-indigo-600 hover:bg-indigo-50"
+                  onClick={() => {
+                    open();
+                    sendMessage(`Analyze the ${f.period} revenue forecast. Baseline: $${f.baseline}. Confidence: ${f.confidence}%. Provide a detailed breakdown of assumptions and risks.`);
+                  }}
+                  title="Analyze with NexusAI"
+                >
+                  <Sparkles className="h-4 w-4" />
+                </Button>
+                <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(f.id)} data-testid={`button-delete-${f.id}`}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
             }
           >
             <div className="space-y-4">

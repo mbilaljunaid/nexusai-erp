@@ -1,9 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, TrendingUp } from "lucide-react";
+import { Brain, TrendingUp, Sparkles, BrainCircuit } from "lucide-react";
+import { useNexusAI } from "@/contexts/NexusAIContext";
+import { Button } from "@/components/ui/button";
 
 export default function DemandForecastingAI() {
+  const { open, sendMessage } = useNexusAI();
   const { data: forecasts = [], isLoading } = useQuery({
     queryKey: ["/api/demand-forecast"],
     queryFn: () => fetch("/api/demand-forecast").then(r => r.json()).catch(() => []),
@@ -14,12 +17,24 @@ export default function DemandForecastingAI() {
 
   return (
     <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Brain className="h-8 w-8" />
-          Demand Forecasting & AI
-        </h1>
-        <p className="text-muted-foreground mt-2">ML-based demand prediction, safety stock optimization, and replenishment recommendations</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Brain className="h-8 w-8 text-primary" />
+            Demand Forecasting & AI
+          </h1>
+          <p className="text-muted-foreground mt-2">ML-based demand prediction, safety stock optimization, and replenishment recommendations</p>
+        </div>
+        <Button
+          onClick={() => {
+            open();
+            sendMessage("Analyze current demand forecasts and identify high-risk safety stock levels.");
+          }}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
+        >
+          <Sparkles className="h-4 w-4" />
+          Deep Dive with NexusAI
+        </Button>
       </div>
 
       <div className="grid grid-cols-3 gap-3">

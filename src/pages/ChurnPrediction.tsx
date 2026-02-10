@@ -1,19 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, TrendingDown } from "lucide-react";
+import { AlertTriangle, TrendingDown, Sparkles } from "lucide-react";
+import { useNexusAI } from "@/contexts/NexusAIContext";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 export default function ChurnPrediction() {
+  const { open, sendMessage } = useNexusAI();
   const { data: predictions = [] } = useQuery<any[]>({ queryKey: ["/api/analytics/churn-prediction"], queryFn: () => fetch("/api/analytics/churn-prediction").then(r => r.json()).catch(() => []) });
 
   return (
     <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TrendingDown className="h-8 w-8" />
-          Churn Prediction
-        </h1>
-        <p className="text-muted-foreground mt-2">Identify at-risk customers and take preventive action</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <TrendingDown className="h-8 w-8" />
+            Churn Prediction
+          </h1>
+          <p className="text-muted-foreground mt-2">Identify at-risk customers and take preventive action (Converged)</p>
+        </div>
+        <Button
+          onClick={() => {
+            open();
+            sendMessage("Analyze the current churn risk across all segments and identify the top 3 critical accounts needing immediate attention.");
+          }}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
+        >
+          <Sparkles className="h-4 w-4" />
+          NexusAI Churn Deep Dive
+        </Button>
       </div>
 
       <div className="grid gap-4">
@@ -21,7 +37,21 @@ export default function ChurnPrediction() {
           <Card key={pred.id} className="hover-elevate" data-testid={`prediction-${pred.id}`}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">{pred.customerId}</CardTitle>
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-base">{pred.customerId}</CardTitle>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-6 w-6 text-indigo-600 hover:bg-indigo-50"
+                    onClick={() => {
+                      open();
+                      sendMessage(`Analyze churn risk factors for customer ${pred.customerId}. Current risk score is ${pred.riskScore}%. Provide a detailed retention plan.`);
+                    }}
+                    title="Analyze with NexusAI"
+                  >
+                    <Sparkles className="h-3 w-3" />
+                  </Button>
+                </div>
                 {pred.riskScore > 70 ? (
                   <Badge variant="destructive" className="gap-1">
                     <AlertTriangle className="h-3 w-3" />
@@ -38,9 +68,7 @@ export default function ChurnPrediction() {
                   <span className="text-sm font-medium">Risk Score</span>
                   <span className="font-bold">{pred.riskScore}%</span>
                 </div>
-                <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                  <div className="bg-red-500 h-full" style={{ width: `${pred.riskScore}%` }} />
-                </div>
+                <Progress value={pred.riskScore} className="h-2" indicatorClassName="bg-red-500" />
               </div>
 
               <div>

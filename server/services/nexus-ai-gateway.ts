@@ -13,7 +13,7 @@
  */
 
 import { db } from "../db";
-import { aiProviderConfigs } from "@shared/schema/nexus_ai";
+import { aiProviderConfigs, aiCapabilities } from "@shared/schema/nexus_ai";
 import { eq, and } from "drizzle-orm";
 
 export interface GatewayMessage {
@@ -266,4 +266,22 @@ export async function callAIJson<T = any>(
     if (match) return JSON.parse(match[0]);
     throw new Error("AI response was not valid JSON: " + result.response.substring(0, 200));
   }
+}
+
+/**
+ * Fetch the system prompt for a specific named capability (agent persona).
+ * Falls back to a default if not found or not configured.
+ */
+export async function getCapabilityPrompt(capabilityName: string, defaultPrompt?: string): Promise<string> {
+  const capability = await db.query.aiCapabilities.findFirst({
+    where: eq(aiCapabilities.name, capabilityName)
+  });
+
+  if (capability && capability.systemPrompt) {
+    return capability.systemPrompt;
+  }
+
+  if (defaultPrompt) return defaultPrompt;
+
+  throw new Error(`AI Capability '${capabilityName}' not found or missing system prompt.`);
 }

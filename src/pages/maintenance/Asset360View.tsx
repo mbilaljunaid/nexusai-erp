@@ -20,7 +20,7 @@ const mockTelemetry = [
 ];
 
 export default function Asset360View() {
-    const { open } = useNexusAI();
+    const { open, sendMessage } = useNexusAI();
     // In real app, use assets ID from route
     const assetId = "ASSET-1001";
 
@@ -128,10 +128,13 @@ export default function Asset360View() {
                                             size="sm"
                                             variant="ghost"
                                             className="w-full text-yellow-900 hover:bg-yellow-100 gap-2 font-bold"
-                                            onClick={open}
+                                            onClick={() => {
+                                                open();
+                                                sendMessage(`Analyze asset telemetry for ${asset?.assetNumber || assetId}. A vibration spike (0.6 mm/s) was detected at 14:00. Evaluate the risk of bearing wear and provide recommended maintenance steps.`);
+                                            }}
                                         >
                                             <Sparkles className="h-3.5 w-3.5" />
-                                            Predictive Maintenance Insights
+                                            Deep AI Maintenance Analysis
                                         </Button>
                                     </div>
                                 </div>

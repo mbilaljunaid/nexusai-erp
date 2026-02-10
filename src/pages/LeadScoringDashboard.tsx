@@ -9,8 +9,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useNexusAI } from "@/contexts/NexusAIContext";
+import { Sparkles } from "lucide-react";
 
 export default function LeadScoringDashboard() {
+  const { open, sendMessage } = useNexusAI();
   const { toast } = useToast();
   const [newLead, setNewLead] = useState({ name: "", email: "", company: "", score: "", status: "new" });
 
@@ -58,9 +61,21 @@ export default function LeadScoringDashboard() {
 
   return (
     <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold">Lead Scoring Dashboard</h1>
-        <p className="text-muted-foreground mt-1">AI-powered lead scoring model and insights</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Lead Scoring Dashboard</h1>
+          <p className="text-muted-foreground mt-1">AI-powered lead scoring model and insights</p>
+        </div>
+        <Button
+          onClick={() => {
+            open();
+            sendMessage("Analyze current lead pipeline. Identify top 5 high-potential leads and suggested engagement strategies.");
+          }}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
+        >
+          <Sparkles className="h-4 w-4" />
+          NexusAI Lead Insights
+        </Button>
       </div>
 
       <Card data-testid="card-new-lead">

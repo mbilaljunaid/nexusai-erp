@@ -1,6 +1,6 @@
 
 import { db } from "../db";
-import { callAIJson } from "./nexus-ai-gateway";
+import { callAIJson, getCapabilityPrompt } from "./nexus-ai-gateway";
 import { opportunities, accounts, interactions, leads } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 
@@ -64,14 +64,25 @@ export class CrmAiService {
         }
         `;
 
+
+        const systemPrompt = await getCapabilityPrompt(
+            "CRM Opportunity Analyzer",
+            "You are a seasoned Sales Director AI."
+        );
+
         try {
-            // Unify with tool executor (which will eventually be DB-driven)
-            const result = await executeTool({
-                toolName: "analyze_opportunity",
-                parameters: { opportunityId },
-                userRole: "crm_manager", // Contextual role
-                userId: "crm-ai-service"
-            });
+            // Use the centralized AI gateway instead of calling executeTool (which would be circular)
+            const result = await callAIJson<{
+                winProbability: number,
+                risks: string[],
+                nextSteps: string[],
+                sentiment: string,
+                reasoning: string
+            }>([
+                { role: "system", content: systemPrompt },
+                { role: "user", content: prompt }
+            ], { jsonMode: true });
+
             return result;
         } catch (error) {
             console.error("AI Analysis Failed:", error);
