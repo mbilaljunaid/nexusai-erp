@@ -26,7 +26,13 @@ import {
     Calendar,
     Handshake,
     LineChart,
-    Search
+    Search,
+    CalendarDays,
+    CheckCircle,
+    AlertTriangle,
+    DollarSign,
+    Sparkles,
+    ClipboardList
 } from "lucide-react";
 
 const hrMenu = [
@@ -59,10 +65,29 @@ const hrMenu = [
         ]
     },
     {
-        label: "Workforce",
+        label: "Time & Labor (WFM)",
         items: [
-            { title: "My Time", url: "/wfm/my-time", icon: Clock },
-            { title: "Team Schedule", url: "/wfm/schedule", icon: Clock },
+            { title: "My Time", url: "/hr/wfm/me/time", icon: Clock },
+            { title: "Leave Balances", url: "/hr/wfm/me/balances", icon: CalendarDays },
+        ]
+    },
+    {
+        label: "WFM: Manager Tools",
+        items: [
+            { title: "Team Schedule", url: "/hr/wfm/team/schedule", icon: Calendar },
+            { title: "Approvals", url: "/hr/wfm/team/approvals", icon: CheckCircle },
+            { title: "Timekeeper Console", url: "/hr/wfm/timekeeper", icon: ClipboardList },
+        ]
+    },
+    {
+        label: "WFM: Admin & Analytics",
+        items: [
+            { title: "Shift Configuration", url: "/hr/wfm/admin/shifts", icon: Settings },
+            { title: "Holiday Calendar", url: "/hr/wfm/admin/holidays", icon: CalendarDays },
+            { title: "Labor Analytics", url: "/hr/wfm/analytics", icon: BarChart3 },
+            { title: "Violations", url: "/hr/wfm/violations", icon: AlertTriangle },
+            { title: "AI Workforce Insights", url: "/hr/wfm/insights", icon: Sparkles },
+            { title: "Payroll Transfer", url: "/hr/wfm/payroll", icon: DollarSign },
         ]
     },
     {

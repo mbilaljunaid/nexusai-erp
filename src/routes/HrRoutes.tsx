@@ -31,6 +31,19 @@ import ManagerLearningDashboard from "../pages/hr/learning/manager/ManagerLearni
 import LearningPlayer from "../pages/hr/learning/player/LearningPlayer";
 import InstructorDashboard from "../pages/hr/learning/instructor/InstructorDashboard";
 
+// Workforce Management (WFM) Imports
+import MyTime from "../pages/wfm/MyTime";
+import ManagerApprovals from "../pages/wfm/ManagerApprovals";
+import TeamSchedule from "../pages/wfm/TeamSchedule";
+import WfmAnalytics from "../pages/wfm/WfmAnalytics";
+import TimekeeperConsole from "../pages/wfm/TimekeeperConsole";
+import PayrollTransfer from "../pages/wfm/PayrollTransfer";
+import ViolationsDashboard from "../pages/wfm/ViolationsDashboard";
+import ShiftConfiguration from "../pages/wfm/ShiftConfiguration";
+import AccrualTesting from "../pages/wfm/AccrualTesting";
+import AIWorkforceInsights from "../pages/wfm/AIWorkforceInsights";
+import HolidayCalendar from "../pages/wfm/HolidayCalendar";
+
 export default function HrRoutes() {
     return (
         <ModuleLayout sidebar={<HrSidebar />}>
@@ -64,6 +77,28 @@ export default function HrRoutes() {
                 <Route path="/hr/learning/admin" component={CourseCatalogAdmin} />
                 <Route path="/hr/learning/instructor" component={InstructorDashboard} />
                 <Route path="/hr/learning/play/:id" component={LearningPlayer} />
+
+                {/* Workforce Management (WFM) Routes */}
+                {/* Employee Self-Service */}
+                <Route path="/hr/wfm/me/time" component={MyTime} />
+                <Route path="/hr/wfm/me/balances" component={AccrualTesting} />
+
+                {/* Manager Tools */}
+                <Route path="/hr/wfm/team/schedule" component={TeamSchedule} />
+                <Route path="/hr/wfm/team/approvals" component={ManagerApprovals} />
+                <Route path="/hr/wfm/timekeeper" component={TimekeeperConsole} />
+
+                {/* Admin & Configuration */}
+                <Route path="/hr/wfm/admin/shifts" component={ShiftConfiguration} />
+                <Route path="/hr/wfm/admin/holidays" component={HolidayCalendar} />
+
+                {/* Analytics & Reporting */}
+                <Route path="/hr/wfm/analytics" component={WfmAnalytics} />
+                <Route path="/hr/wfm/violations" component={ViolationsDashboard} />
+                <Route path="/hr/wfm/insights" component={AIWorkforceInsights} />
+
+                {/* Payroll Integration */}
+                <Route path="/hr/wfm/payroll" component={PayrollTransfer} />
 
                 {/* Main HR Dashboard */}
                 <Route path="/hr" component={HR} />
