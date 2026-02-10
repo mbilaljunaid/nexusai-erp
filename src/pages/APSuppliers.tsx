@@ -1,0 +1,194 @@
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { Button } from "@/components/ui/button";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Lock, Unlock } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+
+export default function APSuppliers() {
+    const [page, setPage] = useState(1);
+    const pageSize = 20;
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
+
+    const { data: suppliers, isLoading } = useQuery({
+        queryKey: ["/api/ap/suppliers"],
+        queryFn: () => fetch("/api/ap/suppliers").then(r => r.json())
+    });
+
+    const createMutation = useMutation({
+        mutationFn: (data: any) =>
+            fetch("/api/ap/suppliers", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            }).then(r => r.json()),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["/api/ap/suppliers"] });
+            setCreateDialogOpen(false);
+            toast({ title: "Supplier created successfully" });
+        }
+    });
+
+    const toggleHoldMutation = useMutation({
+        mutationFn: ({ id, hold }: { id: string, hold: boolean }) =>
+            fetch(`/api/ap/suppliers/${id}/hold`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ hold })
+            }).then(r => r.json()),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["/api/ap/suppliers"] });
+            toast({ title: "Credit hold status updated" });
+        }
+    });
+
+    const columns: Column<any>[] = [
+        { header: "Supplier #", accessorKey: "supplierNumber", className: "font-mono" },
+        { header: "Name", accessorKey: "name", className: "font-medium" },
+        { header: "Tax ID", accessorKey: "taxId" },
+        {
+            header: "Payment Terms",
+            accessorKey: "paymentTerms",
+            cell: (row) => row.paymentTerms || "Net 30"
+        },
+        {
+            header: "Status",
+            accessorKey: "status",
+            cell: (row) => (
+                <div className="flex gap-2">
+                    <Badge variant={row.status === "Active" ? "default" : "secondary"}>
+                        {row.status}
+                    </Badge>
+                    {row.onHold && (
+                        <Badge variant="destructive" className="flex items-center gap-1">
+                            <Lock className="h-3 w-3" />
+                            On Hold
+                        </Badge>
+                    )}
+                </div>
+            )
+        },
+        {
+            id: "actions",
+            header: "Actions",
+            cell: (row) => (
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toggleHoldMutation.mutate({ id: row.id, hold: !row.onHold });
+                    }}
+                >
+                    {row.onHold ? (
+                        <><Unlock className="h-4 w-4 mr-1" /> Release Hold</>
+                    ) : (
+                        <><Lock className="h-4 w-4 mr-1" /> Place Hold</>
+                    )}
+                </Button>
+            )
+        }
+    ];
+
+    const [formData, setFormData] = useState({
+        supplierNumber: "",
+        name: "",
+        taxId: "",
+        paymentTerms: "Net 30",
+        status: "Active"
+    });
+
+    return (
+        <StandardPage
+            title="Suppliers"
+            description="Manage supplier master data and credit holds"
+            breadcrumbs={[
+                { label: "Finance", href: "/finance" },
+                { label: "AP", href: "/finance/ap" },
+                { label: "Suppliers" }
+            ]}
+            actions={
+                <Button onClick={() => setCreateDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" /> Create Supplier
+                </Button>
+            }
+        >
+            <StandardTable
+                data={suppliers || []}
+                columns={columns}
+                totalItems={suppliers?.length || 0}
+                page={page}
+                onPageChange={setPage}
+                pageSize={pageSize}
+                isLoading={isLoading}
+            />
+
+            <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Create Supplier</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="supplierNumber">Supplier Number</Label>
+                            <Input
+                                id="supplierNumber"
+                                value={formData.supplierNumber}
+                                onChange={(e) => setFormData({ ...formData, supplierNumber: e.target.value })}
+                                placeholder="SUP-001"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Supplier Name</Label>
+                            <Input
+                                id="name"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                placeholder="Acme Corp"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="taxId">Tax ID</Label>
+                            <Input
+                                id="taxId"
+                                value={formData.taxId}
+                                onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
+                                placeholder="12-3456789"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="paymentTerms">Payment Terms</Label>
+                            <Select value={formData.paymentTerms} onValueChange={(v) => setFormData({ ...formData, paymentTerms: v })}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Net 30">Net 30</SelectItem>
+                                    <SelectItem value="Net 60">Net 60</SelectItem>
+                                    <SelectItem value="Net 90">Net 90</SelectItem>
+                                    <SelectItem value="Due on Receipt">Due on Receipt</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button onClick={() => createMutation.mutate(formData)}>
+                            Create
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </StandardPage>
+    );
+}

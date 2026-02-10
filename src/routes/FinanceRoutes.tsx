@@ -9,6 +9,12 @@ import TreasuryCommandCenter from "@/pages/TreasuryCommandCenter";
 import ReconciliationPage from "@/pages/ReconciliationPage";
 import FixedAssets from "@/pages/finance/FixedAssets";
 import APInvoices from "@/pages/APInvoices";
+import APDashboard from "@/pages/APDashboard";
+import APSuppliers from "@/pages/APSuppliers";
+import APAICaptureUpload from "@/pages/APAICaptureUpload";
+import APReports from "@/pages/APReports";
+import APPrepayments from "@/pages/APPrepayments";
+import APPaymentBatches from "@/pages/APPaymentBatches";
 import AccountsReceivable from "@/pages/AccountsReceivable";
 import EnterpriseBillingDashboard from "@/pages/billing/BillingDashboard";
 import BillingWorkbench from "@/pages/billing/BillingWorkbench";
@@ -103,7 +109,14 @@ export default function FinanceRoutes() {
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />
                 <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
                 <Route path="/finance/fixed-assets" component={FixedAssets} />
-                <Route path="/finance/accounts-payable" component={APInvoices} />
+                <Route path="/finance/ap" component={APDashboard} />
+                <Route path="/finance/ap/suppliers" component={APSuppliers} />
+                <Route path="/finance/ap/invoices" component={APInvoices} />
+                <Route path="/finance/ap/payments" component={APPaymentBatches} />
+                <Route path="/finance/ap/ai-capture" component={APAICaptureUpload} />
+                <Route path="/finance/ap/reports" component={APReports} />
+                <Route path="/finance/ap/prepayments" component={APPrepayments} />
+                <Route path="/finance/accounts-payable" component={APDashboard} />
                 <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
                 <Route path="/finance/billing" component={EnterpriseBillingDashboard} />
                 <Route path="/finance/billing/workbench" component={BillingWorkbench} />
