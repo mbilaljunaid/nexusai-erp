@@ -99,8 +99,25 @@ export default function CompensationDashboard() {
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="salary-bases">Salary Bases</TabsTrigger>
+                    <TabsTrigger value="grades">Pay Grades</TabsTrigger>
                     <TabsTrigger value="assignments">Worker Assignments</TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="grades" className="space-y-4">
+                    <div className="flex justify-end">
+                        <Button><Plus className="mr-2 h-4 w-4" /> New Pay Grade</Button>
+                    </div>
+                    <Card>
+                        <Table>
+                            <TableHeader><TableRow><TableHead>Grade Name</TableHead><TableHead>Code</TableHead><TableHead>Min</TableHead><TableHead>Mid</TableHead><TableHead>Max</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+                            <TableBody>
+                                <TableRow><TableCell>IC-1 Junior Engineer</TableCell><TableCell>IC1_SWE</TableCell><TableCell>$60,000</TableCell><TableCell>$75,000</TableCell><TableCell>$90,000</TableCell><TableCell><Badge variant="outline">Active</Badge></TableCell></TableRow>
+                                <TableRow><TableCell>IC-2 Engineer</TableCell><TableCell>IC2_SWE</TableCell><TableCell>$85,000</TableCell><TableCell>$105,000</TableCell><TableCell>$125,000</TableCell><TableCell><Badge variant="outline">Active</Badge></TableCell></TableRow>
+                                <TableRow><TableCell>IC-3 Senior Engineer</TableCell><TableCell>IC3_SWE</TableCell><TableCell>$120,000</TableCell><TableCell>$150,000</TableCell><TableCell>$180,000</TableCell><TableCell><Badge variant="outline">Active</Badge></TableCell></TableRow>
+                            </TableBody>
+                        </Table>
+                    </Card>
+                </TabsContent>
 
                 <TabsContent value="salary-bases" className="space-y-4">
                     <div className="flex justify-end">

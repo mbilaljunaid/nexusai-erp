@@ -1,8 +1,10 @@
 
+
 import { Router } from "express";
 import { intercompanyService } from "../modules/intercompany/intercompany.service";
 import { db } from "../db";
-import { icOrgs, icTransactionTypes } from "../../shared/schema/intercompany";
+import { icOrgs, icTransactionTypes, icDataAccessSets } from "../../shared/schema/intercompany";
+import { eq, and } from "drizzle-orm";
 
 import { intercompanyReportService } from "../modules/intercompany/intercompany.report.service";
 import { icSecurityService } from "../services/ic-security";
@@ -175,6 +177,57 @@ router.get("/reports/reconciliation", async (req, res) => {
         const { period } = req.query;
         const report = await intercompanyReportService.getReconciliationReport(period as string || "All");
         res.json(report);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ── Data Access Management ──
+router.get("/data-access", async (req, res) => {
+    try {
+        const sets = await db.select().from(icDataAccessSets);
+        res.json(sets);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/data-access", async (req, res) => {
+    try {
+        const { userId, icOrgId, accessLevel } = req.body;
+
+        if (!userId || !icOrgId) {
+            return res.status(400).json({ error: "userId and icOrgId are required" });
+        }
+
+        // Check for duplicate
+        const existing = await db.select().from(icDataAccessSets)
+            .where(and(
+                eq(icDataAccessSets.userId, userId),
+                eq(icDataAccessSets.icOrgId, icOrgId)
+            ));
+
+        if (existing.length > 0) {
+            return res.status(409).json({ error: "User already has access to this organization" });
+        }
+
+        const [newSet] = await db.insert(icDataAccessSets).values({
+            userId,
+            icOrgId,
+            accessLevel: accessLevel || "FULL"
+        }).returning();
+
+        res.json(newSet);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.delete("/data-access/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        await db.delete(icDataAccessSets).where(eq(icDataAccessSets.id, id));
+        res.json({ success: true });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

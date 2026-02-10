@@ -1,10 +1,19 @@
 import { Router } from "express";
 import { db } from "../db";
-import { aiProviderConfigs, nexusConversations, aiCapabilities, aiTools, aiQuickActions } from "@shared/schema/nexus_ai";
-import { eq, and, desc } from "drizzle-orm";
+import {
+  aiProviderConfigs,
+  nexusConversations,
+  aiCapabilities,
+  aiTools,
+  aiQuickActions,
+  aiAgentLogs
+} from "@shared/schema/nexus_ai";
+import { eq, and, desc, isNotNull } from "drizzle-orm";
 import { executeTool, canExecuteTool } from "../services/nexus-tool-executor";
 import { hasPermission, PERMISSIONS } from "@shared/schema/roles";
 import type { AuthenticatedRequest } from "../middleware/auth";
+
+export const nexusAiRouter = Router();
 
 // ── GET all capabilities (database-driven) ──
 nexusAiRouter.get("/capabilities", async (_req, res) => {
@@ -28,6 +37,128 @@ nexusAiRouter.get("/capabilities", async (_req, res) => {
   }
 });
 
+// ── GET single capability ──
+nexusAiRouter.get("/capabilities/:id", async (req, res) => {
+  try {
+    const [cap] = await db.select().from(aiCapabilities).where(eq(aiCapabilities.id, req.params.id));
+    if (!cap) return res.status(404).json({ error: "Agent not found" });
+
+    const tools = await db.select().from(aiTools).where(eq(aiTools.capabilityId, cap.id));
+    const quickActions = await db.select().from(aiQuickActions).where(eq(aiQuickActions.capabilityId, cap.id));
+
+    res.json({ ...cap, tools, quickActions });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// ── POST create capability (Agent) ──
+nexusAiRouter.post("/capabilities", async (req, res) => {
+  try {
+    const [created] = await db.insert(aiCapabilities).values({
+      ...req.body,
+      tenantId: req.body.tenantId || null,
+      isActive: true,
+    }).returning();
+    res.json(created);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// ── PATCH update capability ──
+nexusAiRouter.patch("/capabilities/:id", async (req, res) => {
+  try {
+    const [updated] = await db.update(aiCapabilities)
+      .set({ ...req.body, updatedAt: new Date() })
+      .where(eq(aiCapabilities.id, req.params.id))
+      .returning();
+    if (!updated) return res.status(404).json({ error: "Agent not found" });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// ── DELETE capability ──
+nexusAiRouter.delete("/capabilities/:id", async (req, res) => {
+  try {
+    await db.delete(aiTools).where(eq(aiTools.capabilityId, req.params.id));
+    await db.delete(aiQuickActions).where(eq(aiQuickActions.capabilityId, req.params.id));
+    const [deleted] = await db.delete(aiCapabilities).where(eq(aiCapabilities.id, req.params.id)).returning();
+    if (!deleted) return res.status(404).json({ error: "Agent not found" });
+    res.json({ message: "Agent deleted" });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// ── CRUD for AI Tools ──
+nexusAiRouter.post("/tools", async (req, res) => {
+  try {
+    const [created] = await db.insert(aiTools).values(req.body).returning();
+    res.json(created);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+nexusAiRouter.patch("/tools/:id", async (req, res) => {
+  try {
+    const [updated] = await db.update(aiTools).set(req.body).where(eq(aiTools.id, req.params.id)).returning();
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+nexusAiRouter.delete("/tools/:id", async (req, res) => {
+  try {
+    await db.delete(aiTools).where(eq(aiTools.id, req.params.id));
+    res.json({ message: "Tool deleted" });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// ── CRUD for Quick Actions ──
+nexusAiRouter.post("/quick-actions", async (req, res) => {
+  try {
+    const [created] = await db.insert(aiQuickActions).values(req.body).returning();
+    res.json(created);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+nexusAiRouter.patch("/quick-actions/:id", async (req, res) => {
+  try {
+    const [updated] = await db.update(aiQuickActions).set(req.body).where(eq(aiQuickActions.id, req.params.id)).returning();
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+nexusAiRouter.delete("/quick-actions/:id", async (req, res) => {
+  try {
+    await db.delete(aiQuickActions).where(eq(aiQuickActions.id, req.params.id));
+    res.json({ message: "Quick action deleted" });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// ── GET Governance Logs ──
+nexusAiRouter.get("/governance/logs", async (req: any, res) => {
+  try {
+    const logs = await db.select().from(aiAgentLogs).orderBy(desc(aiAgentLogs.createdAt)).limit(100);
+    res.json(logs);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
 // ── GET tool registry (database-driven) ──
 nexusAiRouter.get("/tools/registry", async (_req, res) => {
   try {
@@ -38,7 +169,6 @@ nexusAiRouter.get("/tools/registry", async (_req, res) => {
   }
 });
 
-export const nexusAiRouter = Router();
 
 // ── GET active provider (for frontend context) ──
 nexusAiRouter.get("/provider/active", async (_req, res) => {
@@ -300,19 +430,50 @@ nexusAiRouter.post("/tools/execute", async (req: any, res) => {
 
 // ── POST chat with streaming (main AI endpoint) ──
 nexusAiRouter.post("/chat", async (req: any, res) => {
+  const startTime = Date.now();
+  let agentId: string | undefined;
+
   try {
-    const { message, conversationHistory, moduleContext, manualContext, additionalModules, capabilities, stream: wantStream, agentMode, activePage, pageMetadata } = req.body;
+    const {
+      message,
+      conversationHistory,
+      moduleContext,
+      manualContext,
+      additionalModules,
+      capabilities,
+      stream: wantStream,
+      agentMode,
+      activePage,
+      pageMetadata
+    } = req.body;
+
     if (!message) return res.status(400).json({ error: "Message is required" });
 
     const userRole = req.role || req.session?.userRole || "gl_viewer";
     const userId = req.userId || req.session?.userId || "anonymous";
 
-    // Check basic AI chat permission
+    // 1. Check basic AI chat permission
     if (!hasPermission(userRole, PERMISSIONS.AI_CHAT)) {
       return res.status(403).json({ error: `Your role '${userRole}' does not have permission to use AI chat.` });
     }
 
-    // Get active default provider
+    // 2. Load Agent (Capability) from DB if possible
+    let targetAgent: any = null;
+    if (moduleContext) {
+      const agents = await db.select().from(aiCapabilities)
+        .where(and(eq(aiCapabilities.moduleId, moduleContext.toLowerCase()), eq(aiCapabilities.isActive, true)))
+        .limit(1);
+      if (agents.length > 0) {
+        targetAgent = agents[0];
+        agentId = targetAgent.id;
+
+        // Enrich agent with tools
+        const agentTools = await db.select().from(aiTools).where(eq(aiTools.capabilityId, agentId));
+        targetAgent.tools = agentTools;
+      }
+    }
+
+    // 3. Get active default provider
     const configs = await db.select().from(aiProviderConfigs)
       .where(and(eq(aiProviderConfigs.isActive, true), eq(aiProviderConfigs.isDefault, true)))
       .limit(1);
@@ -322,9 +483,22 @@ nexusAiRouter.post("/chat", async (req: any, res) => {
     }
 
     const config = configs[0];
-    const systemPrompt = buildSystemPrompt(moduleContext, capabilities, userRole, manualContext, additionalModules, agentMode, activePage, pageMetadata);
 
-    // Streaming path
+    // 4. Build System Prompt
+    const finalSystemPrompt = buildSystemPrompt(
+      moduleContext,
+      targetAgent ? [targetAgent] : capabilities,
+      userRole,
+      manualContext,
+      additionalModules,
+      agentMode,
+      activePage,
+      pageMetadata
+    );
+
+    let fullResponse = "";
+
+    // 5. Streaming path
     if (wantStream !== false) {
       res.setHeader("Content-Type", "text/event-stream");
       res.setHeader("Cache-Control", "no-cache");
@@ -333,52 +507,79 @@ nexusAiRouter.post("/chat", async (req: any, res) => {
       res.flushHeaders();
 
       try {
-        await streamAIProvider(config, message, conversationHistory || [], systemPrompt, (chunk) => {
+        await streamAIProvider(config, message, conversationHistory || [], finalSystemPrompt, (chunk) => {
+          fullResponse += chunk;
           res.write(`data: ${JSON.stringify({ type: "token", content: chunk })}\n\n`);
         });
 
-        // After streaming completes, check if AI suggested tool calls
-        // (For simplicity, tool calls are executed via separate /tools/execute endpoint
-        //  or the AI response text can contain structured tool-call markers)
         res.write(`data: ${JSON.stringify({ type: "done" })}\n\n`);
         res.end();
+
+        // Log to governance (fire and forget)
+        db.insert(aiAgentLogs).values({
+          userId,
+          agentId,
+          action: "chat",
+          prompt: message,
+          response: fullResponse,
+          latencyMs: Date.now() - startTime,
+          status: "success",
+          metadata: { moduleContext, agentMode, activePage }
+        }).execute().catch(console.error);
+
       } catch (err: any) {
         res.write(`data: ${JSON.stringify({ type: "error", content: err.message })}\n\n`);
         res.end();
+
+        // Log error
+        db.insert(aiAgentLogs).values({
+          userId,
+          agentId,
+          action: "chat",
+          prompt: message,
+          latencyMs: Date.now() - startTime,
+          status: "error",
+          errorMessage: err.message,
+          metadata: { moduleContext, agentMode, activePage }
+        }).execute().catch(console.error);
       }
       return;
     }
 
-    // Non-streaming fallback
-    const response = await callAIProviderNonStreaming(config, message, conversationHistory || [], systemPrompt);
+    // 6. Non-streaming path
+    const response = await callAIProviderNonStreaming(config, message, conversationHistory || [], finalSystemPrompt);
+
+    // Log to governance
+    await db.insert(aiAgentLogs).values({
+      userId,
+      agentId,
+      action: "chat",
+      prompt: message,
+      response: response.response,
+      latencyMs: Date.now() - startTime,
+      status: "success",
+      metadata: { moduleContext, agentMode, activePage }
+    }).execute();
+
     res.json(response);
   } catch (error) {
     console.error("NexusAI chat error:", error);
     res.status(500).json({ error: String(error) });
+
+    // Log fatal error
+    db.insert(aiAgentLogs).values({
+      userId: "system",
+      agentId,
+      action: "chat",
+      latencyMs: Date.now() - startTime,
+      status: "error",
+      errorMessage: String(error)
+    }).execute().catch(console.error);
   }
 });
 
-// ── GET tool registry (for admin dashboard and system prompt) ──
-nexusAiRouter.get("/tools/registry", async (_req, res) => {
-  try {
-    const registry = getToolRegistry();
-    const definitions = getAllToolDefinitions();
-
-    const detailedRegistry = registry.map(reg => {
-      const def = definitions.find(d => d.name === reg.name);
-      return {
-        ...reg,
-        description: def?.description || "No description available",
-        parameters: def?.parameters || {},
-        module: def?.module || "Unknown"
-      };
-    });
-
-    res.json(detailedRegistry);
-  } catch (error) {
-    res.status(500).json({ error: String(error) });
-  }
-});
+// This endpoint is now redundant with the one above, but kept for compatibility if needed
+// nexusAiRouter.get("/tools/registry-legacy", async (_req, res) => { ... });
 
 // ── System prompt builder with role awareness ──
 function buildSystemPrompt(moduleContext?: string, capabilities?: any[], userRole?: string, manualContext?: string, additionalModules?: string[], agentMode?: string, activePage?: string, pageMetadata?: any) {

@@ -118,3 +118,29 @@ export const aiQuickActions = pgTable("ai_quick_actions", {
 
 export const insertAiQuickActionSchema = createInsertSchema(aiQuickActions);
 export type AiQuickActionTable = typeof aiQuickActions.$inferSelect;
+
+// ========== NexusAI Agent Execution Logs (Governance) ==========
+// Tracks agent performance, token usage, and user interaction for audit
+export const aiAgentLogs = pgTable("ai_agent_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  userId: varchar("user_id").notNull(),
+  agentId: varchar("agent_id").references(() => aiCapabilities.id), // Link to the capability/agent
+  action: varchar("action").notNull(), // 'chat', 'tool_execution', 'quick_action'
+  prompt: text("prompt"),
+  response: text("response"),
+  toolCalls: jsonb("tool_calls"),
+  tokenUsage: jsonb("token_usage").$type<{
+    prompt: number;
+    completion: number;
+    total: number;
+  }>(),
+  latencyMs: integer("latency_ms"),
+  status: varchar("status").notNull().default("success"), // success, error
+  errorMessage: text("error_message"),
+  metadata: jsonb("metadata"), // Any additional context (activePage, agentMode, etc.)
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAiAgentLogSchema = createInsertSchema(aiAgentLogs);
+export type AiAgentLogTable = typeof aiAgentLogs.$inferSelect;

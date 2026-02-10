@@ -3,45 +3,45 @@ import { Route, Switch } from "wouter";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 // Healthcare
-const PatientManagement = lazyWithRetry(() => import("@/pages/PatientManagement"));
-const AppointmentScheduling = lazyWithRetry(() => import("@/pages/AppointmentScheduling"));
-const ClinicalDocumentation = lazyWithRetry(() => import("@/pages/ClinicalDocumentation"));
-const LaboratoryManagement = lazyWithRetry(() => import("@/pages/LaboratoryManagement"));
-const PharmacyManagement = lazyWithRetry(() => import("@/pages/PharmacyManagement"));
-const MedicalBilling = lazyWithRetry(() => import("@/pages/MedicalBilling"));
-const InpatientManagement = lazyWithRetry(() => import("@/pages/InpatientManagement"));
-const HealthcareBIDashboard = lazyWithRetry(() => import("@/pages/HealthcareBIDashboard"));
-const HealthcareCompliance = lazyWithRetry(() => import("@/pages/HealthcareCompliance"));
+const PatientManagement = lazyWithRetry(() => import("@/pages/industries/healthcare/PatientManagement"));
+const AppointmentScheduling = lazyWithRetry(() => import("@/pages/industries/healthcare/AppointmentScheduling"));
+const ClinicalDocumentation = lazyWithRetry(() => import("@/pages/industries/healthcare/ClinicalDocumentation"));
+const LaboratoryManagement = lazyWithRetry(() => import("@/pages/industries/healthcare/LaboratoryManagement"));
+const PharmacyManagement = lazyWithRetry(() => import("@/pages/industries/healthcare/PharmacyManagement"));
+const MedicalBilling = lazyWithRetry(() => import("@/pages/industries/healthcare/MedicalBilling"));
+const InpatientManagement = lazyWithRetry(() => import("@/pages/industries/healthcare/InpatientManagement"));
+const HealthcareBIDashboard = lazyWithRetry(() => import("@/pages/industries/healthcare/HealthcareBIDashboard"));
+const HealthcareCompliance = lazyWithRetry(() => import("@/pages/industries/healthcare/HealthcareCompliance"));
 
 // Telecom
-const NetworkInventoryOSS = lazyWithRetry(() => import("@/pages/NetworkInventoryOSS"));
-const TelecomBillingRevenue = lazyWithRetry(() => import("@/pages/TelecomBillingRevenue"));
-const FaultPerformanceMonitoring = lazyWithRetry(() => import("@/pages/FaultPerformanceMonitoring"));
-const TelecomFinanceCompliance = lazyWithRetry(() => import("@/pages/TelecomFinanceCompliance"));
-const TelecomBIDashboard = lazyWithRetry(() => import("@/pages/TelecomBIDashboard"));
-const CustomerDeviceManagement = lazyWithRetry(() => import("@/pages/CustomerDeviceManagement"));
-const SLAServiceTierManagement = lazyWithRetry(() => import("@/pages/SLAServiceTierManagement"));
-const TelecomCustomerSupport = lazyWithRetry(() => import("@/pages/TelecomCustomerSupport"));
+const NetworkInventoryOSS = lazyWithRetry(() => import("@/pages/industries/telecom/NetworkInventoryOSS"));
+const TelecomBillingRevenue = lazyWithRetry(() => import("@/pages/industries/telecom/TelecomBillingRevenue"));
+const FaultPerformanceMonitoring = lazyWithRetry(() => import("@/pages/industries/telecom/FaultPerformanceMonitoring"));
+const TelecomFinanceCompliance = lazyWithRetry(() => import("@/pages/industries/telecom/TelecomFinanceCompliance"));
+const TelecomBIDashboard = lazyWithRetry(() => import("@/pages/industries/telecom/TelecomBIDashboard"));
+const CustomerDeviceManagement = lazyWithRetry(() => import("@/pages/industries/telecom/CustomerDeviceManagement"));
+const SLAServiceTierManagement = lazyWithRetry(() => import("@/pages/industries/telecom/SLAServiceTierManagement"));
+const TelecomCustomerSupport = lazyWithRetry(() => import("@/pages/industries/telecom/TelecomCustomerSupport"));
 
 // Hospitality
-const ReservationBooking = lazyWithRetry(() => import("@/pages/ReservationBooking"));
-const FrontDeskOperations = lazyWithRetry(() => import("@/pages/FrontDeskOperations"));
-const HousekeepingManagement = lazyWithRetry(() => import("@/pages/HousekeepingManagement"));
-const FoodBeveragePOS = lazyWithRetry(() => import("@/pages/FoodBeveragePOS"));
-const EventBanquetingManagement = lazyWithRetry(() => import("@/pages/EventBanquetingManagement"));
-const GuestCRMManagement = lazyWithRetry(() => import("@/pages/GuestCRMManagement"));
-const RevenueManagement = lazyWithRetry(() => import("@/pages/RevenueManagement"));
-const HospitalityInventory = lazyWithRetry(() => import("@/pages/HospitalityInventory"));
-const HospitalityHRRostering = lazyWithRetry(() => import("@/pages/HospitalityHRRostering"));
-const HospitalityBIDashboard = lazyWithRetry(() => import("@/pages/HospitalityBIDashboard"));
+const ReservationBooking = lazyWithRetry(() => import("@/pages/industries/hospitality/ReservationBooking"));
+const FrontDeskOperations = lazyWithRetry(() => import("@/pages/industries/hospitality/FrontDeskOperations"));
+const HousekeepingManagement = lazyWithRetry(() => import("@/pages/industries/hospitality/HousekeepingManagement"));
+const FoodBeveragePOS = lazyWithRetry(() => import("@/pages/industries/hospitality/FoodBeveragePOS"));
+const EventBanquetingManagement = lazyWithRetry(() => import("@/pages/industries/hospitality/EventBanquetingManagement"));
+const GuestCRMManagement = lazyWithRetry(() => import("@/pages/industries/hospitality/GuestCRMManagement"));
+const RevenueManagement = lazyWithRetry(() => import("@/pages/industries/hospitality/RevenueManagement"));
+const HospitalityInventory = lazyWithRetry(() => import("@/pages/industries/hospitality/HospitalityInventory"));
+const HospitalityHRRostering = lazyWithRetry(() => import("@/pages/industries/hospitality/HospitalityHRRostering"));
+const HospitalityBIDashboard = lazyWithRetry(() => import("@/pages/industries/hospitality/HospitalityBIDashboard"));
 
 // Retail & Commerce
-const PointOfSale = lazyWithRetry(() => import("@/pages/PointOfSale"));
-const StoreOperationsDashboard = lazyWithRetry(() => import("@/pages/StoreOperationsDashboard"));
-const OmniChannelOrders = lazyWithRetry(() => import("@/pages/OmniChannelOrders"));
-const MerchandisePlanning = lazyWithRetry(() => import("@/pages/MerchandisePlanning"));
-const PricingPromoEngine = lazyWithRetry(() => import("@/pages/PricingPromoEngine"));
-const Ecommerce = lazyWithRetry(() => import("@/pages/Ecommerce"));
+const PointOfSale = lazyWithRetry(() => import("@/pages/industries/retail/PointOfSale"));
+const StoreOperationsDashboard = lazyWithRetry(() => import("@/pages/industries/retail/StoreOperationsDashboard"));
+const OmniChannelOrders = lazyWithRetry(() => import("@/pages/industries/retail/OmniChannelOrders"));
+const MerchandisePlanning = lazyWithRetry(() => import("@/pages/industries/retail/MerchandisePlanning"));
+const PricingPromoEngine = lazyWithRetry(() => import("@/pages/industries/retail/PricingPromoEngine"));
+const Ecommerce = lazyWithRetry(() => import("@/pages/industries/retail/Ecommerce"));
 
 // Logistics Orphans (Detailed)
 const LogisticsComplianceSafety = lazyWithRetry(() => import("@/pages/LogisticsComplianceSafety"));
@@ -54,46 +54,46 @@ const WarehouseInventoryLogistics = lazyWithRetry(() => import("@/pages/Warehous
 const BillingLogistics = lazyWithRetry(() => import("@/pages/BillingLogistics"));
 
 // Automotive
-const AutomotiveProduction = lazyWithRetry(() => import("@/pages/AutomotiveProduction"));
-const AutomotiveSalesCRM = lazyWithRetry(() => import("@/pages/AutomotiveSalesCRM"));
-const AutomotiveSupplyChain = lazyWithRetry(() => import("@/pages/AutomotiveSupplyChain"));
-const AutomotiveQualityAnalytics = lazyWithRetry(() => import("@/pages/AutomotiveQualityAnalytics"));
-const AutomotiveBIDashboard = lazyWithRetry(() => import("@/pages/AutomotiveBIDashboard"));
+const AutomotiveProduction = lazyWithRetry(() => import("@/pages/industries/automotive/AutomotiveProduction"));
+const AutomotiveSalesCRM = lazyWithRetry(() => import("@/pages/industries/automotive/AutomotiveSalesCRM"));
+const AutomotiveSupplyChain = lazyWithRetry(() => import("@/pages/industries/automotive/AutomotiveSupplyChain"));
+const AutomotiveQualityAnalytics = lazyWithRetry(() => import("@/pages/industries/automotive/AutomotiveQualityAnalytics"));
+const AutomotiveBIDashboard = lazyWithRetry(() => import("@/pages/industries/automotive/AutomotiveBIDashboard"));
 
 // Banking
-const BankingCoreBanking = lazyWithRetry(() => import("@/pages/BankingCoreBanking"));
-const BankingCustomerAccounts = lazyWithRetry(() => import("@/pages/BankingCustomerAccounts"));
-const BankingLoansCredit = lazyWithRetry(() => import("@/pages/BankingLoansCredit"));
-const BankingPayments = lazyWithRetry(() => import("@/pages/BankingPayments"));
-const BankingAIFraudDetection = lazyWithRetry(() => import("@/pages/BankingAIFraudDetection"));
-const BankingBIDashboards = lazyWithRetry(() => import("@/pages/BankingBIDashboards"));
+const BankingCoreBanking = lazyWithRetry(() => import("@/pages/industries/banking/BankingCoreBanking"));
+const BankingCustomerAccounts = lazyWithRetry(() => import("@/pages/industries/banking/BankingCustomerAccounts"));
+const BankingLoansCredit = lazyWithRetry(() => import("@/pages/industries/banking/BankingLoansCredit"));
+const BankingPayments = lazyWithRetry(() => import("@/pages/industries/banking/BankingPayments"));
+const BankingAIFraudDetection = lazyWithRetry(() => import("@/pages/industries/banking/BankingAIFraudDetection"));
+const BankingBIDashboards = lazyWithRetry(() => import("@/pages/industries/banking/BankingBIDashboards"));
 
 // Insurance
-const InsurancePolicyManagement = lazyWithRetry(() => import("@/pages/InsurancePolicyManagement"));
-const InsuranceClaimsProcessing = lazyWithRetry(() => import("@/pages/InsuranceClaimsProcessing"));
-const InsuranceUnderwriting = lazyWithRetry(() => import("@/pages/InsuranceUnderwriting"));
-const InsuranceBillingPremiums = lazyWithRetry(() => import("@/pages/InsuranceBillingPremiums"));
-const InsuranceBIDashboards = lazyWithRetry(() => import("@/pages/InsuranceBIDashboards"));
+const InsurancePolicyManagement = lazyWithRetry(() => import("@/pages/industries/insurance/InsurancePolicyManagement"));
+const InsuranceClaimsProcessing = lazyWithRetry(() => import("@/pages/industries/insurance/InsuranceClaimsProcessing"));
+const InsuranceUnderwriting = lazyWithRetry(() => import("@/pages/industries/insurance/InsuranceUnderwriting"));
+const InsuranceBillingPremiums = lazyWithRetry(() => import("@/pages/industries/insurance/InsuranceBillingPremiums"));
+const InsuranceBIDashboards = lazyWithRetry(() => import("@/pages/industries/insurance/InsuranceBIDashboards"));
 
 // Government
-const GovernmentCitizenServices = lazyWithRetry(() => import("@/pages/GovernmentCitizenServices"));
-const GovernmentProcurement = lazyWithRetry(() => import("@/pages/GovernmentProcurement"));
-const GovernmentGrantsFunding = lazyWithRetry(() => import("@/pages/GovernmentGrantsFunding"));
-const GovernmentCompliance = lazyWithRetry(() => import("@/pages/GovernmentCompliance"));
-const GovernmentHR = lazyWithRetry(() => import("@/pages/GovernmentHR"));
-const GovernmentBIDashboards = lazyWithRetry(() => import("@/pages/GovernmentBIDashboards"));
+const GovernmentCitizenServices = lazyWithRetry(() => import("@/pages/industries/government/GovernmentCitizenServices"));
+const GovernmentProcurement = lazyWithRetry(() => import("@/pages/industries/government/GovernmentProcurement"));
+const GovernmentGrantsFunding = lazyWithRetry(() => import("@/pages/industries/government/GovernmentGrantsFunding"));
+const GovernmentCompliance = lazyWithRetry(() => import("@/pages/industries/government/GovernmentCompliance"));
+const GovernmentHR = lazyWithRetry(() => import("@/pages/industries/government/GovernmentHR"));
+const GovernmentBIDashboards = lazyWithRetry(() => import("@/pages/industries/government/GovernmentBIDashboards"));
 
 // Education
-const EdDashboard = lazyWithRetry(() => import("@/pages/EdDashboard"));
-const AdmissionsEnrollment = lazyWithRetry(() => import("@/pages/AdmissionsEnrollment"));
-const EdFaculty = lazyWithRetry(() => import("@/pages/EdFaculty"));
-const EducationBilling = lazyWithRetry(() => import("@/pages/EducationBilling"));
-const EducationAnalytics = lazyWithRetry(() => import("@/pages/EducationAnalytics"));
+const EdDashboard = lazyWithRetry(() => import("@/pages/industries/education/EdDashboard"));
+const AdmissionsEnrollment = lazyWithRetry(() => import("@/pages/industries/education/AdmissionsEnrollment"));
+const EdFaculty = lazyWithRetry(() => import("@/pages/industries/education/EdFaculty"));
+const EducationBilling = lazyWithRetry(() => import("@/pages/industries/education/EducationBilling"));
+const EducationAnalytics = lazyWithRetry(() => import("@/pages/industries/education/EducationAnalytics"));
 
 // Energy
-const GridOperations = lazyWithRetry(() => import("@/pages/GridOperations"));
-const EnergyTrading = lazyWithRetry(() => import("@/pages/EnergyTrading"));
-const EnergyAnalytics = lazyWithRetry(() => import("@/pages/EnergyAnalytics"));
+const GridOperations = lazyWithRetry(() => import("@/pages/industries/energy/GridOperations"));
+const EnergyTrading = lazyWithRetry(() => import("@/pages/industries/energy/EnergyTrading"));
+const EnergyAnalytics = lazyWithRetry(() => import("@/pages/industries/energy/EnergyAnalytics"));
 
 export default function IndustryRoutes() {
     return (

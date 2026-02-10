@@ -5,4 +5,7 @@ export * from "./ArReceiptList";
 export * from "./ArTransactionDialog";
 export * from "./ArRevenueWorkbench";
 export * from "./ArCollectionsDashboard";
-export * from "./ArSystemOptions"; // Export new component
+export * from "./ArSystemOptions";
+export * from "./ArCreditManagement";
+export * from "./ArRevenueRules";
+export * from "./ArAgingAnalysis";

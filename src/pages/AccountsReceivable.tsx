@@ -11,7 +11,9 @@ import {
     ArTransactionDialog,
     ArRevenueWorkbench,
     ArCollectionsDashboard,
-    ArSystemOptionsComponent
+    ArSystemOptionsComponent,
+    ArCreditManagement,
+    ArRevenueRules
 } from "@/components/ar";
 
 import { useToast } from "@/hooks/use-toast";
@@ -62,6 +64,7 @@ export default function AccountsReceivable() {
                             <TabsTrigger value="invoices" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Invoices</TabsTrigger>
                             <TabsTrigger value="customers" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Customers</TabsTrigger>
                             <TabsTrigger value="receipts" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Receipts</TabsTrigger>
+                            <TabsTrigger value="credit" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Credit Mgmt</TabsTrigger>
                             <TabsTrigger value="revenue" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Revenue</TabsTrigger>
                             <TabsTrigger value="collections" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Collections</TabsTrigger>
                             <TabsTrigger value="config" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Configuration</TabsTrigger>
@@ -80,6 +83,10 @@ export default function AccountsReceivable() {
                         <ArReceiptList />
                     </TabsContent>
 
+                    <TabsContent value="credit" className="space-y-4 focus-visible:outline-none">
+                        <ArCreditManagement />
+                    </TabsContent>
+
                     <TabsContent value="revenue" className="space-y-4 focus-visible:outline-none">
                         <ArRevenueWorkbench />
                     </TabsContent>
@@ -88,7 +95,18 @@ export default function AccountsReceivable() {
                         <ArCollectionsDashboard />
                     </TabsContent>
                     <TabsContent value="config" className="space-y-4 focus-visible:outline-none">
-                        <ArSystemOptionsComponent />
+                        <Tabs defaultValue="system-options" className="space-y-4">
+                            <TabsList>
+                                <TabsTrigger value="system-options">System Options</TabsTrigger>
+                                <TabsTrigger value="revenue-rules">Revenue Rules</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="system-options">
+                                <ArSystemOptionsComponent />
+                            </TabsContent>
+                            <TabsContent value="revenue-rules">
+                                <ArRevenueRules />
+                            </TabsContent>
+                        </Tabs>
                     </TabsContent>
                 </Tabs>
 

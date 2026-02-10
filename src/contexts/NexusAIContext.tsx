@@ -63,7 +63,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<NexusAIMessage[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
@@ -89,14 +88,27 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     staleTime: 30_000,
   });
 
+  // Fetch capabilities from API (dynamic registry)
+  const { data: dynamicCapabilities = [], isLoading: isCapsLoading } = useQuery<AICapability[]>({
+    queryKey: ["/api/nexus-ai/capabilities"],
+    staleTime: 60_000,
+  });
+
+  // Use dynamic capabilities if available, otherwise fall back to static registry (handled by helper default)
+  const availableCapabilities = dynamicCapabilities.length > 0 ? dynamicCapabilities : AI_CAPABILITIES_REGISTRY;
+
   // Merge route-based + manually selected module capabilities
   const currentCapabilities = useMemo(() => {
-    const routeCaps = getCapabilitiesForRoute(location);
+    // Pass available capabilities to the helper
+    const routeCaps = getCapabilitiesForRoute(location, availableCapabilities);
     const additionalCaps = additionalContextModules
-      .map(mod => AI_CAPABILITIES_REGISTRY.find(c => c.module === mod))
+      .map(mod => availableCapabilities.find(c => c.module === mod))
       .filter((c): c is AICapability => !!c && !routeCaps.find(rc => rc.id === c.id));
     return [...routeCaps, ...additionalCaps];
-  }, [location, additionalContextModules]);
+  }, [location, additionalContextModules, availableCapabilities]);
+
+  // Loading state for the AI input/chat window
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
   const currentModule = useMemo(() => {
     const primary = currentCapabilities.find(c => c.id !== "general");
@@ -248,7 +260,8 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
       moduleContext: currentModule,
     };
     setMessages(prev => [...prev, userMsg]);
-    setIsLoading(true);
+    setMessages(prev => [...prev, userMsg]);
+    setIsAiLoading(true);
     setError(null);
 
     try {
@@ -377,16 +390,17 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
       };
       setMessages(prev => [...prev, errorMsg]);
     } finally {
-      setIsLoading(false);
+      setIsAiLoading(false);
     }
   }, [activeProvider, messages, currentModule, currentCapabilities, executeToolAction, ensureConversation, persistMessages, agentMode, activePage, pageMetadata, additionalContextModules, manualContext]);
 
   const value: NexusAIContextValue = {
     isOpen,
-    isLoading,
+    isLoading: isAiLoading || isCapsLoading,
     messages,
     currentModule,
     capabilities: currentCapabilities,
+    currentCapabilities,
     activeProvider,
     error,
     toggle,
@@ -394,7 +408,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     close,
     sendMessage,
     clearMessages,
-    currentCapabilities,
     executeTool: executeToolAction,
     conversations,
     activeConversationId,

@@ -1342,9 +1342,20 @@ async function checkApStatus(params: Record<string, any>) {
 async function createArInvoice(params: Record<string, any>) {
   try {
     const { arService } = await import("./ar");
-    const invoice = await arService.createInvoice(params as any);
+    const data = { ...params };
+    if (data.dueDate && typeof data.dueDate === 'string') {
+      data.dueDate = new Date(data.dueDate);
+    }
+    if (!data.totalAmount && data.amount) {
+      data.totalAmount = data.amount;
+    }
+    if (!data.taxAmount) {
+      data.taxAmount = "0";
+    }
+    const invoice = await arService.createInvoice(data as any);
     return { message: "AR invoice created", invoice };
-  } catch {
+  } catch (err) {
+    console.error("createArInvoice failed:", err);
     return { message: "AR invoice creation — service unavailable" };
   }
 }

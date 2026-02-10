@@ -878,7 +878,7 @@ export class PpmService {
     /**
      * Get Assets for a project or all assets
      */
-    async getProjectAssets(projectId?: string, limit: number = 20, offset: number = 0) {
+    async getProjectAssetsPaginated(projectId?: string, limit: number = 20, offset: number = 0) {
         let baseQuery = db.select().from(ppmProjectAssets);
         let countQuery = db.select({ count: sql<number>`count(*)` }).from(ppmProjectAssets);
 

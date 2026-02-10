@@ -28,7 +28,6 @@ import TestRoute from "./TestRoute";
 import ServiceRoutes from "@/routes/ServiceRoutes";
 import WfmAnalytics from "@/pages/wfm/WfmAnalytics";
 import AccrualTesting from "@/pages/wfm/AccrualTesting";
-import PayrollDashboard from "@/pages/rewards/PayrollDashboard";
 import AdminRoutes from "@/routes/AdminRoutes";
 import PortalRoutes from "@/routes/PortalRoutes";
 import PublicRoutes from "@/routes/PublicRoutes";
@@ -52,12 +51,12 @@ const DashboardPage = lazyWithRetry(() => import("@/pages/Dashboard"));
 const EPMPage = lazyWithRetry(() => import("@/pages/EPMPage"));
 
 // Talent/Learning
-const ManagerLearningDashboard = lazyWithRetry(() => import("@/pages/learning/manager/ManagerLearningDashboard"));
-const LearningPlayer = lazyWithRetry(() => import("@/pages/learning/player/LearningPlayer"));
-const CourseCatalogAdmin = lazyWithRetry(() => import("@/pages/learning/admin/CourseCatalogAdmin"));
-const CurriculumBuilder = lazyWithRetry(() => import("@/pages/learning/admin/CurriculumBuilder"));
-const AssessmentBuilder = lazyWithRetry(() => import("@/pages/learning/admin/AssessmentBuilder"));
-const CommunityBrowser = lazyWithRetry(() => import("@/pages/learning/admin/CommunityBrowser"));
+const ManagerLearningDashboard = lazyWithRetry(() => import("@/pages/hr/learning/manager/ManagerLearningDashboard"));
+const LearningPlayer = lazyWithRetry(() => import("@/pages/hr/learning/player/LearningPlayer"));
+const CourseCatalogAdmin = lazyWithRetry(() => import("@/pages/hr/learning/admin/CourseCatalogAdmin"));
+const CurriculumBuilder = lazyWithRetry(() => import("@/pages/hr/learning/admin/CurriculumBuilder"));
+const AssessmentBuilder = lazyWithRetry(() => import("@/pages/hr/learning/admin/AssessmentBuilder"));
+const CommunityBrowser = lazyWithRetry(() => import("@/pages/hr/learning/admin/CommunityBrowser"));
 
 // HR/Recruitment
 const InterviewerDashboard = lazyWithRetry(() => import("@/pages/recruitment/InterviewerDashboard"));
@@ -91,8 +90,8 @@ const IntercompanyReconciliation = lazyWithRetry(() => import("@/pages/intercomp
 const NettingWorkbench = lazyWithRetry(() => import("@/pages/intercompany/NettingWorkbench"));
 const AllocationsWorkbench = lazyWithRetry(() => import("@/pages/intercompany/AllocationsWorkbench"));
 
-import LearningManagement from "@/pages/LearningManagement";
-import InstructorDashboard from "@/pages/learning/instructor/InstructorDashboard";
+import LearningDashboard from "@/pages/hr/learning/LearningDashboard";
+import InstructorDashboard from "@/pages/hr/learning/instructor/InstructorDashboard";
 import CompensationDashboard from "@/pages/rewards/CompensationDashboard";
 import PayrollWorkbench from "@/pages/rewards/PayrollWorkbench";
 import RecruitmentManagement from "@/pages/RecruitmentManagement";
@@ -132,7 +131,7 @@ function Router() {
         <Route path="/compliance*" component={ComplianceRoutes} />
         <Route path="/compliance-module" component={ComplianceRoutes} />
         <Route path="/wfm/analytics" component={WfmAnalytics} />
-        <Route path="/rewards/payroll" component={PayrollDashboard} />
+        <Route path="/rewards/payroll" component={PayrollWorkbench} />
         <Route path="/wfm/admin/accrual-test" component={AccrualTesting} />
 
         {/* Marketing */}
@@ -171,7 +170,7 @@ function Router() {
         <Route path="/talent/learning/admin/assessments" component={AssessmentBuilder} />
         <Route path="/talent/learning/admin/communities" component={CommunityBrowser} />
         <Route path="/talent/learning/instructor" component={InstructorDashboard} />
-        <Route path="/talent/learning" component={LearningManagement} />
+        <Route path="/talent/learning" component={LearningDashboard} />
 
         {/* Rewards */}
         <Route path="/rewards/compensation" component={CompensationDashboard} />

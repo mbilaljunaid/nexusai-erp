@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Calculator, Calendar, Layers, Activity, Play, Plus, CheckCircle, BrainCircuit } from "lucide-react";
+import { Calculator, Calendar, Layers, Activity, Play, Plus, CheckCircle, BrainCircuit, FileText } from "lucide-react";
+import PayrollRunDetails from "./PayrollRunDetails";
 
 export default function PayrollWorkbench() {
     const [activeTab, setActiveTab] = useState("runs");
@@ -20,6 +21,8 @@ export default function PayrollWorkbench() {
     const [isRunOpen, setIsRunOpen] = useState(false);
     const [auditResults, setAuditResults] = useState<any[] | null>(null);
     const [isAuditOpen, setIsAuditOpen] = useState(false);
+    const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     // === QUERIES ===
     const { data: runs, isLoading: isRunsLoading } = useQuery({
@@ -135,28 +138,73 @@ export default function PayrollWorkbench() {
         <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Payroll Workbench</h1>
-                    <p className="text-muted-foreground mt-1">Execute payroll runs, manage groups and elements.</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Payroll Command Center</h1>
+                    <p className="text-muted-foreground mt-1">Execute payroll runs, manage groups, and analyze performance.</p>
+                </div>
+                <div className="flex gap-2">
+                    <Button variant="outline">
+                        <Activity className="mr-2 h-4 w-4" /> Reports
+                    </Button>
+                    <Dialog open={isRunOpen} onOpenChange={setIsRunOpen}>
+                        <DialogTrigger asChild><Button><Play className="mr-2 h-4 w-4" /> Run Payroll</Button></DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader><DialogTitle>New Payroll Run</DialogTitle></DialogHeader>
+                            <form onSubmit={handleRunSubmit} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Pay Group</Label>
+                                    <select name="payGroupId" className="w-full h-10 border rounded-md px-3" required>
+                                        <option value="">Select Group</option>
+                                        {groups?.map((g: any) => <option key={g.id} value={g.id}>{g.name}</option>)}
+                                    </select>
+                                </div>
+                                <div className="space-y-2"><Label>Period Name</Label><Input name="periodName" placeholder="2024-01 Monthly" required /></div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2"><Label>Start Date</Label><Input type="date" name="periodStartDate" required /></div>
+                                    <div className="space-y-2"><Label>End Date</Label><Input type="date" name="periodEndDate" required /></div>
+                                </div>
+                                <div className="space-y-2"><Label>Payment Date</Label><Input type="date" name="paymentDate" required /></div>
+                                <Button type="submit" className="w-full">Initialize Run</Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Active Runs</CardTitle>
-                        <Activity className="h-4 w-4 text-indigo-600" />
+                        <CardTitle className="text-sm font-medium">Last Run Total</CardTitle>
+                        <Calculator className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{runs?.filter((r: any) => r.status === 'OPEN' || r.status === 'CALCULATING').length || 0}</div>
+                        <div className="text-2xl font-bold">
+                            {runs && runs.length > 0 ? `$${Number(runs[0].totalNet || 0).toLocaleString()}` : "$0.00"}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            {runs && runs.length > 0 ? `${runs[0].periodName} (Paid)` : "No Date"}
+                        </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Pay Groups</CardTitle>
-                        <Layers className="h-4 w-4 text-slate-600" />
+                        <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
+                        <Activity className="h-4 w-4 text-amber-600" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">
+                            {runs ? runs.filter((r: any) => r.status === 'PENDING_APPROVAL').length : 0}
+                        </div>
+                        <p className="text-xs text-muted-foreground">Runs waiting for final sign-off</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Active Pay Groups</CardTitle>
+                        <Layers className="h-4 w-4 text-indigo-600" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{groups?.length || 0}</div>
+                        <p className="text-xs text-muted-foreground">Scheduled frequencies</p>
                     </CardContent>
                 </Card>
             </div>
@@ -169,59 +217,6 @@ export default function PayrollWorkbench() {
                 </TabsList>
 
                 <TabsContent value="runs" className="space-y-4">
-                    <div className="flex justify-end space-x-2">
-                        <Dialog open={isAuditOpen} onOpenChange={setIsAuditOpen}>
-                            <DialogContent className="sm:max-w-md">
-                                <DialogHeader>
-                                    <DialogTitle className="flex items-center gap-2">
-                                        <BrainCircuit className="h-5 w-5 text-indigo-600" /> AI Audit Results
-                                    </DialogTitle>
-                                    <DialogDescription>
-                                        Analyzing payroll variance and data integrity.
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                    {auditResults?.length === 0 ? (
-                                        <div className="text-green-600 flex items-center gap-2">
-                                            <CheckCircle className="h-5 w-5" /> No anomalies detected.
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-2">
-                                            {auditResults?.map((a: any, i: number) => (
-                                                <div key={i} className="p-3 border rounded-md bg-amber-50 border-amber-200 text-sm">
-                                                    <div className="font-semibold text-amber-800">{a.type}</div>
-                                                    <div className="text-amber-700">{a.description}</div>
-                                                    {a.variancePercent && <div className="text-xs mt-1 text-amber-600">Variance: {a.variancePercent.toFixed(1)}% ({a.previousNet} {'>'} {a.currentNet})</div>}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </DialogContent>
-                        </Dialog>
-
-                        <Dialog open={isRunOpen} onOpenChange={setIsRunOpen}>
-                            <DialogTrigger asChild><Button><Plus className="mr-2 h-4 w-4" /> Create Run</Button></DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader><DialogTitle>New Payroll Run</DialogTitle></DialogHeader>
-                                <form onSubmit={handleRunSubmit} className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label>Pay Group</Label>
-                                        <select name="payGroupId" className="w-full h-10 border rounded-md px-3" required>
-                                            {groups?.map((g: any) => <option key={g.id} value={g.id}>{g.name}</option>)}
-                                        </select>
-                                    </div>
-                                    <div className="space-y-2"><Label>Period Name</Label><Input name="periodName" placeholder="2024-01 Monthly" required /></div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2"><Label>Start Date</Label><Input type="date" name="periodStartDate" required /></div>
-                                        <div className="space-y-2"><Label>End Date</Label><Input type="date" name="periodEndDate" required /></div>
-                                    </div>
-                                    <div className="space-y-2"><Label>Payment Date</Label><Input type="date" name="paymentDate" required /></div>
-                                    <Button type="submit" className="w-full">Initialize Run</Button>
-                                </form>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
                     <Card>
                         <Table>
                             <TableHeader><TableRow>
@@ -257,7 +252,7 @@ export default function PayrollWorkbench() {
                                                 </>
                                             )}
                                             {run.status === 'COMPLETED' && (
-                                                <Button size="sm" variant="outline">View Results</Button>
+                                                <Button size="sm" variant="outline" onClick={() => { setSelectedRunId(run.id); setIsDetailsOpen(true); }}>View Details</Button>
                                             )}
                                         </TableCell>
                                     </TableRow>
@@ -325,6 +320,6 @@ export default function PayrollWorkbench() {
                 </TabsContent>
 
             </Tabs>
-        </div>
+        </div >
     );
 }

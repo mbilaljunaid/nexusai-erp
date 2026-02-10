@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AIConfigurationSection from "@/components/admin/AIConfigurationSection";
+import { NexusAIAgentRegistrySection } from "@/components/admin/NexusAIAgentRegistrySection";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ import {
   X,
   ExternalLink,
   Brain,
+  Sparkles,
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -446,6 +448,7 @@ export default function PlatformAdmin() {
     { id: "payments", label: "Payment Settings", icon: CreditCard, color: "text-emerald-500" },
     { id: "features", label: "Features & Licensing", icon: Zap, color: "text-yellow-500" },
     { id: "tool-registry", label: "Tool Registry", icon: Brain, color: "text-violet-500" },
+    { id: "agent-registry", label: "Agent Registry (Phase 11)", icon: Sparkles, color: "text-amber-500" },
     { id: "system", label: "System Config", icon: Settings, color: "text-purple-500" },
     { id: "security", label: "Security & Compliance", icon: Shield, color: "text-red-500" },
     { id: "ai-config", label: "AI Configuration", icon: Brain, color: "text-violet-500" },
@@ -1428,6 +1431,8 @@ export default function PlatformAdmin() {
       {activeNav === "ai-config" && <AIConfigurationSection />}
 
       {activeNav === "tool-registry" && <NexusAIToolRegistrySection />}
+
+      {activeNav === "agent-registry" && <NexusAIAgentRegistrySection />}
     </div>
   );
 }

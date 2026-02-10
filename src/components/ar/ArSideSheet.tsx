@@ -40,6 +40,7 @@ import { Loader2, Receipt } from "lucide-react";
 import { ArAdjustmentDialog } from "./ArAdjustmentDialog"; // Import Dialog
 import { Button } from "@/components/ui/button"; // Import Button
 import { CreateCreditMemoDialog } from "./CreateCreditMemoDialog";
+import { ArAgingAnalysis } from "./ArAgingAnalysis";
 
 interface ArSideSheetProps {
     isOpen: boolean;
@@ -276,6 +277,7 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                         <div className="px-6 border-b">
                             <TabsList className="grid w-full grid-cols-2 mb-2">
                                 <TabsTrigger value="details">Details</TabsTrigger>
+                                <TabsTrigger value="aging" disabled={type !== "customer"}>Aging</TabsTrigger>
                                 <TabsTrigger value="accounting" disabled={type === "customer"}>Accounting</TabsTrigger>
                             </TabsList>
                         </div>
@@ -285,6 +287,9 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                                 {type === "invoice" ? renderInvoiceDetails() :
                                     type === "customer" ? renderCustomerDetails() :
                                         type === "receipt" ? renderReceiptDetails() : null}
+                            </TabsContent>
+                            <TabsContent value="aging" className="mt-0 outline-none">
+                                {type === "customer" && <ArAgingAnalysis customerId={data.id} />}
                             </TabsContent>
                             <TabsContent value="accounting" className="mt-0 outline-none">
                                 {(type === "invoice" || type === "receipt") && (

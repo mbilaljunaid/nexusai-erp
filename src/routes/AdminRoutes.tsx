@@ -9,7 +9,7 @@ const AdminRoles = lazyWithRetry(() => import("@/pages/AdminRoles"));
 
 const Settings = lazyWithRetry(() => import("@/pages/Settings"));
 const Integrations = lazyWithRetry(() => import("@/pages/Integrations"));
-const APIGateway = lazyWithRetry(() => import("@/pages/APIGateway"));
+const APIGateway = lazyWithRetry(() => import("@/pages/admin/api/APIGateway"));
 const WebhookManagement = lazyWithRetry(() => import("@/pages/WebhookManagement"));
 const TenantAdmin = lazyWithRetry(() => import("@/pages/TenantAdmin"));
 const UserManagement = lazyWithRetry(() => import("@/pages/UserManagement"));

@@ -1256,12 +1256,12 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
 /**
  * Get capabilities for a specific route
  */
-export function getCapabilitiesForRoute(route: string): AICapability[] {
-  const matches = AI_CAPABILITIES_REGISTRY.filter(cap =>
+export function getCapabilitiesForRoute(route: string, capabilities: AICapability[] = AI_CAPABILITIES_REGISTRY): AICapability[] {
+  const matches = capabilities.filter(cap =>
     cap.routes.some(r => route.startsWith(r))
   );
   // Always include general capabilities
-  const general = AI_CAPABILITIES_REGISTRY.find(c => c.id === "general");
+  const general = capabilities.find(c => c.id === "general");
   if (general && !matches.find(m => m.id === "general")) {
     matches.push(general);
   }
@@ -1271,8 +1271,8 @@ export function getCapabilitiesForRoute(route: string): AICapability[] {
 /**
  * Get all available tool definitions (for system prompt construction)
  */
-export function getAllToolDefinitions() {
-  return AI_CAPABILITIES_REGISTRY.flatMap(cap =>
+export function getAllToolDefinitions(capabilities: AICapability[] = AI_CAPABILITIES_REGISTRY) {
+  return capabilities.flatMap(cap =>
     cap.tools.map(tool => ({
       module: cap.module,
       ...tool,
@@ -1283,8 +1283,8 @@ export function getAllToolDefinitions() {
 /**
  * Get all module names for multi-context selector
  */
-export function getAllModules(): string[] {
-  return AI_CAPABILITIES_REGISTRY
+export function getAllModules(capabilities: AICapability[] = AI_CAPABILITIES_REGISTRY): string[] {
+  return capabilities
     .filter(c => c.id !== "general")
     .map(c => c.module);
 }
