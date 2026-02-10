@@ -46,7 +46,6 @@ import ErpRoutes from "@/routes/ErpRoutes";
 import ProcessRoutes from "@/routes/ProcessRoutes";
 
 // Direct page imports for sidebar links
-const AIAssistantPage = lazyWithRetry(() => import("@/pages/AIAssistant"));
 const SettingsPage = lazyWithRetry(() => import("@/pages/Settings"));
 const SCMDashboard = lazyWithRetry(() => import("@/pages/Inventory"));
 const DashboardPage = lazyWithRetry(() => import("@/pages/Dashboard"));
@@ -122,7 +121,6 @@ function Router() {
         {/* Processes */}
         <Route path="/processes*" component={ProcessRoutes} />
         <Route path="/operations" component={SCMDashboard} />
-        <Route path="/ai" component={AIAssistantPage} />
         <Route path="/system-configuration" component={SettingsPage} />
         <Route path="/manufacturing"><Redirect to="/manufacturing/dashboard" /></Route>
         <Route path="/scm"><Redirect to="/inventory" /></Route>
@@ -211,7 +209,6 @@ function Router() {
 
         <Route path="/hr*" component={HrRoutes} />
         <Route path="/projects*" component={ProjectRoutes} />
-        <Route path="/manufacturing*" component={ScmRoutes} />
         <Route path="/service*" component={ServiceRoutes} />
 
         {/* Portal Login (Public) must come before PortalRoutes catch-all */}

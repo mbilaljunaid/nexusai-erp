@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import AssetBOMEditor from "@/components/maintenance/AssetBOMEditor";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Thermometer, Gauge, Zap, AlertTriangle, FileText } from "lucide-react";
+import { Activity, Thermometer, Gauge, Zap, AlertTriangle, FileText, Sparkles } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 const mockTelemetry = [
     { time: '08:00', temp: 45, vibration: 0.2 },
@@ -19,6 +20,7 @@ const mockTelemetry = [
 ];
 
 export default function Asset360View() {
+    const { open } = useNexusAI();
     // In real app, use assets ID from route
     const assetId = "ASSET-1001";
 
@@ -120,7 +122,18 @@ export default function Asset360View() {
                                         <AlertTriangle className="h-4 w-4" /> Anomaly Detected
                                     </div>
                                     <p className="text-sm text-yellow-700">Vibration spike detected at 14:00. 85% probability of bearing wear.</p>
-                                    <Button size="sm" variant="outline" className="mt-2 w-full border-yellow-300 text-yellow-800 hover:bg-yellow-100">Schedule Inspection</Button>
+                                    <div className="flex flex-col gap-2 mt-2">
+                                        <Button size="sm" variant="outline" className="w-full border-yellow-300 text-yellow-800 hover:bg-yellow-100">Schedule Inspection</Button>
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            className="w-full text-yellow-900 hover:bg-yellow-100 gap-2 font-bold"
+                                            onClick={open}
+                                        >
+                                            <Sparkles className="h-3.5 w-3.5" />
+                                            Predictive Maintenance Insights
+                                        </Button>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">

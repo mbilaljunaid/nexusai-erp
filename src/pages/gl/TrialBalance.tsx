@@ -14,6 +14,7 @@ import {
 import { format } from "date-fns";
 import { FormattedValue } from "@/components/FormattedValue";
 import { cn } from "@/lib/utils";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 interface TrialBalanceRow {
     ccid: string;
@@ -27,6 +28,7 @@ interface TrialBalanceRow {
 }
 
 export default function TrialBalance() {
+    const { open, sendMessage } = useNexusAI();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCCID, setSelectedCCID] = useState<string | null>(null);
     const [selectedPeriod, setSelectedPeriod] = useState("PRIMARY_DEC23"); // Mock selection for now
@@ -120,6 +122,17 @@ export default function TrialBalance() {
                                 )}
                             </div>
                         )}
+                        <div className="mt-6 flex justify-end">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-primary hover:text-primary hover:bg-primary/5 gap-2 font-bold"
+                                onClick={open}
+                            >
+                                <Sparkles className="h-3.5 w-3.5" />
+                                Financial Insights
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
 

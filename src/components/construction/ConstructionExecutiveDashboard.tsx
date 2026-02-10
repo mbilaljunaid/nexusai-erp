@@ -20,7 +20,9 @@ import {
     CheckCircle2,
     Clock
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 interface ProjectRisk {
     contractId: string;
@@ -33,6 +35,7 @@ interface ProjectRisk {
 }
 
 export default function ConstructionExecutiveDashboard() {
+    const { open, sendMessage } = useNexusAI();
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const [projects, setProjects] = useState<any[]>([]);
 
@@ -224,6 +227,15 @@ export default function ConstructionExecutiveDashboard() {
                                     </li>
                                 </ul>
                             </div>
+
+                            <Button
+                                className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 gap-2 mt-4"
+                                variant="outline"
+                                onClick={open}
+                            >
+                                <Sparkles className="h-4 w-4" />
+                                Portfolio Insights
+                            </Button>
                         </CardContent>
                     </Card>
 

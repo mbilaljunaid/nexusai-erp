@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useNexusAI } from "@/contexts/NexusAIContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useLocation } from "wouter";
 import {
   Brain,
   X,
@@ -16,31 +17,30 @@ import {
   AlertCircle,
   Settings,
   MessageSquarePlus,
-  History,
+  History as HistoryIcon,
   ChevronLeft,
   Search,
   Filter,
   Layers,
   PenLine,
+  Zap,
+  Check,
+  CheckCircle2,
+  Clock,
 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useLocation } from "wouter";
-
-type PanelView = "chat" | "history";
 
 export function NexusAIPanel() {
+  const [panelView, setPanelView] = useState<"chat" | "history">("chat");
+  const [showContextBar, setShowContextBar] = useState(false);
+  const [, setLocation] = useLocation();
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
   const {
     isOpen,
     isLoading,
     messages,
     currentModule,
-    currentCapabilities,
+    capabilities,
     activeProvider,
     error,
     toggle,
@@ -48,71 +48,38 @@ export function NexusAIPanel() {
     sendMessage,
     clearMessages,
     conversations,
-    activeConversationId,
     loadConversation,
     startNewConversation,
-    deleteConversation,
     additionalContextModules,
     setAdditionalContextModules,
     manualContext,
     setManualContext,
+    agentMode,
+    setAgentMode,
+    activePage,
+    pageMetadata,
+    executeTool,
+    nudges,
   } = useNexusAI();
 
   const [input, setInput] = useState("");
-  const [panelView, setPanelView] = useState<PanelView>("chat");
-  const [historySearch, setHistorySearch] = useState("");
-  const [moduleFilter, setModuleFilter] = useState("all");
-  const [showContextBar, setShowContextBar] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [, navigate] = useLocation();
 
-  // Derive unique modules from conversations
-  const conversationModules = Array.from(
-    new Set(conversations.map(c => c.moduleContext).filter(Boolean))
-  ) as string[];
-
-  // Filter conversations by search + module
-  const filteredConversations = conversations.filter(convo => {
-    const matchesModule = moduleFilter === "all" || convo.moduleContext === moduleFilter;
-    if (!historySearch.trim()) return matchesModule;
-    const q = historySearch.toLowerCase();
-    const titleMatch = (convo.title || "").toLowerCase().includes(q);
-    const moduleMatch = (convo.moduleContext || "").toLowerCase().includes(q);
-    return matchesModule && (titleMatch || moduleMatch);
-  });
-
-  // Auto-scroll to bottom on new messages
+  // Auto-scroll to bottom
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
-  // Focus input when panel opens
-  useEffect(() => {
-    if (isOpen && inputRef.current && panelView === "chat") {
-      setTimeout(() => inputRef.current?.focus(), 300);
-    }
-  }, [isOpen, panelView]);
-
-  const handleSend = () => {
-    const trimmed = input.trim();
-    if (!trimmed || isLoading) return;
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+    const content = input;
     setInput("");
-    sendMessage(trimmed);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  const handleLoadConversation = async (id: string) => {
-    await loadConversation(id);
-    setPanelView("chat");
+    await sendMessage(content);
   };
 
   const handleNewConversation = () => {
@@ -120,31 +87,32 @@ export function NexusAIPanel() {
     setPanelView("chat");
   };
 
-  // Suggested prompts based on current module
-  const contextualSuggestions = currentCapabilities
-    .filter(c => c.id !== "general")
-    .flatMap(c => c.insights.slice(0, 2));
+  const { quickActions, contextualSuggestions } = useMemo(() => {
+    const caps = capabilities.find(c => c.module === currentModule);
+    return {
+      quickActions: caps?.quickActions || [],
+      contextualSuggestions: caps?.insights || []
+    };
+  }, [capabilities, currentModule]);
 
   return (
     <>
-      {/* Floating trigger button */}
+      {/* FAB Trigger moved to global layout or rendered here if not already present */}
       {!isOpen && (
-        <button
+        <Button
           onClick={toggle}
-          className="fixed bottom-6 right-6 z-50 flex items-center justify-center h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 group"
-          aria-label="Open NexusAI"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl bg-primary hover:bg-primary/90 hover:scale-110 transition-all duration-300 z-50 group"
+          title="Open NexusAI"
         >
-          <Brain className="h-6 w-6 group-hover:scale-110 transition-transform" />
-          <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-emerald-500 border-2 border-background" />
-        </button>
-      )}
-
-      {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity duration-200"
-          onClick={close}
-        />
+          <div className="relative">
+            <Brain className="h-6 w-6 text-primary-foreground group-hover:rotate-12 transition-transform" />
+            {nudges && nudges.length > 0 && (
+              <span className="absolute -top-3 -right-3 h-5 w-5 bg-destructive rounded-full border-2 border-background flex items-center justify-center text-[10px] text-destructive-foreground font-bold animate-pulse">
+                {nudges.length}
+              </span>
+            )}
+          </div>
+        </Button>
       )}
 
       {/* Slide-over panel */}
@@ -158,7 +126,7 @@ export function NexusAIPanel() {
         <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
           <div className="flex items-center gap-2">
             {panelView === "history" && (
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPanelView("chat")}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPanelView("chat")} title="Back to chat">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
             )}
@@ -179,11 +147,6 @@ export function NexusAIPanel() {
                       +{mod}
                     </Badge>
                   ))}
-                  {activeProvider && (
-                    <span className="text-[10px] text-muted-foreground">
-                      {activeProvider.provider} · {activeProvider.model}
-                    </span>
-                  )}
                 </div>
               )}
             </div>
@@ -194,7 +157,7 @@ export function NexusAIPanel() {
                 <Button
                   variant="ghost" size="icon" className="h-8 w-8"
                   onClick={() => setShowContextBar(prev => !prev)}
-                  title="Context settings"
+                  title="Context & Agent settings"
                 >
                   <Layers className={cn("h-4 w-4", showContextBar ? "text-primary" : "text-muted-foreground")} />
                 </Button>
@@ -203,7 +166,7 @@ export function NexusAIPanel() {
                   onClick={() => setPanelView("history")}
                   title="Conversation history"
                 >
-                  <History className="h-4 w-4 text-muted-foreground" />
+                  <HistoryIcon className="h-4 w-4 text-muted-foreground" />
                 </Button>
                 <Button
                   variant="ghost" size="icon" className="h-8 w-8"
@@ -217,269 +180,241 @@ export function NexusAIPanel() {
                 </Button>
               </>
             )}
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={close}>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={close} title="Close panel">
               <X className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
-        {/* No Provider Warning */}
-        {!activeProvider && panelView === "chat" && (
-          <div className="mx-4 mt-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
-            <AlertCircle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
-            <div className="text-xs">
-              <p className="font-medium text-destructive">No AI Provider Configured</p>
-              <p className="text-muted-foreground mt-0.5">
-                Go to Platform Admin → AI Configuration to add a provider.
-              </p>
-              <Button
-                variant="link"
-                size="sm"
-                className="h-auto p-0 text-xs mt-1"
-                onClick={() => { navigate("/admin/platform"); close(); }}
-              >
-                <Settings className="h-3 w-3 mr-1" /> Configure AI Provider
-              </Button>
-            </div>
-          </div>
-        )}
-        {/* ═══ Context Bar ═══ */}
+        {/* ═══ Context & Agent Bar ═══ */}
         {showContextBar && panelView === "chat" && (
-          <div className="px-4 py-3 border-b border-border bg-muted/20 space-y-2">
-            <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-              <Layers className="h-3 w-3" /> Multi-Module Context
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {["Finance", "Accounts Payable", "Accounts Receivable", "Fixed Assets", "Cash Management",
-                "CRM", "Human Resources", "Projects", "Supply Chain", "Manufacturing", "Intercompany"
-              ].map(mod => {
-                const isActive = currentModule === mod || additionalContextModules.includes(mod);
-                const isCurrentRoute = currentModule === mod;
-                return (
+          <div className="px-4 py-3 border-b border-border bg-muted/20 space-y-3">
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                <Zap className="h-3 w-3" /> Agent Mode
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {(["auditor", "planner", "executor", "verifier", "general"] as const).map(m => (
                   <button
-                    key={mod}
-                    onClick={() => {
-                      if (isCurrentRoute) return; // Can't toggle route-based context
-                      setAdditionalContextModules(prev =>
-                        prev.includes(mod) ? prev.filter(m => m !== mod) : [...prev, mod]
-                      );
-                    }}
+                    key={m}
+                    onClick={() => setAgentMode(m)}
                     className={cn(
-                      "text-[10px] px-2 py-1 rounded-full border transition-colors",
-                      isCurrentRoute
-                        ? "bg-primary/10 border-primary/30 text-primary cursor-default"
-                        : isActive
-                          ? "bg-accent border-accent text-accent-foreground"
-                          : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+                      "text-[10px] px-2 py-1 rounded-md border capitalize transition-colors",
+                      agentMode === m
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
                     )}
                   >
-                    {mod}
+                    {m}
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-              <PenLine className="h-3 w-3" /> Manual Context
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                <Layers className="h-3 w-3" /> Multi-Module Context
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {["Finance", "Accounts Payable", "Accounts Receivable", "Fixed Assets", "Cash Management",
+                  "CRM", "Human Resources", "Projects", "Supply Chain", "Manufacturing", "Intercompany"
+                ].map(mod => {
+                  const isActive = currentModule === mod || additionalContextModules.includes(mod);
+                  const isCurrentRoute = currentModule === mod;
+                  return (
+                    <button
+                      key={mod}
+                      onClick={() => {
+                        if (isCurrentRoute) return;
+                        setAdditionalContextModules(prev =>
+                          prev.includes(mod) ? prev.filter(m => m !== mod) : [...prev, mod]
+                        );
+                      }}
+                      className={cn(
+                        "text-[10px] px-2 py-1 rounded-full border transition-colors",
+                        isCurrentRoute
+                          ? "bg-primary/10 border-primary/30 text-primary cursor-default"
+                          : isActive
+                            ? "bg-accent border-accent text-accent-foreground"
+                            : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )}
+                    >
+                      {mod}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <Input
-              placeholder="e.g., Working on Q1 budget for marketing department..."
-              value={manualContext}
-              onChange={e => setManualContext(e.target.value)}
-              className="h-8 text-xs"
-            />
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                <PenLine className="h-3 w-3" /> Manual Context
+              </div>
+              <Input
+                placeholder="e.g., Working on Q1 budget..."
+                value={manualContext}
+                onChange={e => setManualContext(e.target.value)}
+                className="h-8 text-xs font-medium"
+              />
+            </div>
           </div>
         )}
 
+        {/* ═══ Nudges Bar (HR) ═══ */}
+        {nudges && nudges.length > 0 && panelView === "chat" && (
+          <div className="px-4 py-2 border-b border-border bg-emerald-50/50 flex gap-2 overflow-x-auto scrollbar-hide">
+            {nudges.map((n: any) => (
+              <button
+                key={n.id}
+                onClick={() => setInput(n.text)}
+                className="flex-shrink-0 bg-white border border-emerald-100 px-3 py-1 rounded-full text-[10px] font-bold text-emerald-700 flex items-center gap-1.5 shadow-sm hover:border-emerald-300 transition-colors italic whitespace-nowrap"
+              >
+                <Clock className="h-3 w-3" /> {n.text}
+              </button>
+            ))}
+          </div>
+        )}
 
-        {panelView === "history" && (
-          <ScrollArea className="flex-1 px-4">
-            <div className="py-4 space-y-3">
-              {/* Search & Filter */}
-              <div className="space-y-2">
-                <div className="relative">
+        {/* Content Area */}
+        <div className="flex-1 overflow-hidden relative flex flex-col">
+          {panelView === "history" ? (
+            <ScrollArea className="flex-1 px-4">
+              <div className="py-4 space-y-3">
+                <div className="relative mb-4">
                   <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-                  <Input
-                    placeholder="Search conversations..."
-                    value={historySearch}
-                    onChange={e => setHistorySearch(e.target.value)}
-                    className="pl-8 h-9 text-xs"
-                  />
-                  {historySearch && (
-                    <button
-                      className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
-                      onClick={() => setHistorySearch("")}
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  )}
+                  <Input placeholder="Search conversations..." className="pl-9 h-9 text-xs" />
                 </div>
-                {conversationModules.length > 1 && (
-                  <Select value={moduleFilter} onValueChange={setModuleFilter}>
-                    <SelectTrigger className="h-8 text-xs">
-                      <Filter className="h-3 w-3 mr-1.5 text-muted-foreground" />
-                      <SelectValue placeholder="All modules" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Modules</SelectItem>
-                      {conversationModules.map(mod => (
-                        <SelectItem key={mod} value={mod}>{mod}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                {conversations.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground text-xs">No conversations found</div>
+                ) : (
+                  conversations.map(convo => (
+                    <button
+                      key={convo.id}
+                      onClick={() => loadConversation(convo.id)}
+                      className={cn(
+                        "w-full text-left p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors group relative",
+                        convo.id === conversations[0]?.id && "bg-muted/30"
+                      )}
+                    >
+                      <div className="font-medium text-xs truncate pr-6">{convo.title}</div>
+                      <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-2">
+                        <span className="capitalize">{convo.moduleContext}</span>
+                        <span>•</span>
+                        <span>{convo.updatedAt ? new Date(convo.updatedAt).toLocaleDateString() : 'Just now'}</span>
+                      </div>
+                      <div className="absolute right-2 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                      </div>
+                    </button>
+                  ))
                 )}
               </div>
-
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2 text-xs h-9"
-                onClick={handleNewConversation}
-              >
-                <MessageSquarePlus className="h-3.5 w-3.5" />
-                Start New Conversation
-              </Button>
-
-              {filteredConversations.length === 0 ? (
-                <div className="text-center py-8">
-                  <History className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">
-                    {conversations.length === 0 ? "No conversation history yet" : "No conversations match your search"}
-                  </p>
-                </div>
-              ) : (
-                filteredConversations.map(convo => (
-                  <div
-                    key={convo.id}
-                    className={cn(
-                      "group flex items-center justify-between p-2.5 rounded-lg border border-border hover:bg-muted/50 cursor-pointer transition-colors",
-                      activeConversationId === convo.id && "bg-primary/5 border-primary/20"
-                    )}
-                    onClick={() => handleLoadConversation(convo.id)}
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium truncate">{convo.title || "Untitled"}</p>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        {convo.moduleContext && (
-                          <Badge variant="secondary" className="text-[9px] px-1 py-0 h-3.5">
-                            {convo.moduleContext}
-                          </Badge>
-                        )}
-                        <span className="text-[10px] text-muted-foreground">
-                          {convo.updatedAt
-                            ? new Date(convo.updatedAt).toLocaleDateString(undefined, {
-                                month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
-                              })
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 opacity-0 group-hover:opacity-100 shrink-0"
-                      onClick={(e) => { e.stopPropagation(); deleteConversation(convo.id); }}
-                    >
-                      <Trash2 className="h-3 w-3 text-muted-foreground" />
-                    </Button>
-                  </div>
-                ))
-              )}
-            </div>
-          </ScrollArea>
-        )}
-
-        {/* ═══ Chat View ═══ */}
-        {panelView === "chat" && (
-          <>
-            {/* Messages area */}
-            <ScrollArea className="flex-1 px-4" ref={scrollRef}>
-              <div className="py-4 space-y-4">
+            </ScrollArea>
+          ) : (
+            <ScrollArea ref={scrollAreaRef} className="flex-1 px-4">
+              <div className="py-4 space-y-6">
                 {messages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <div className="h-16 w-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-4">
-                      <Sparkles className="h-8 w-8 text-primary/40" />
+                  <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                    <div className="h-16 w-16 rounded-2xl bg-primary/5 flex items-center justify-center animate-pulse">
+                      <Brain className="h-8 w-8 text-primary/40" />
                     </div>
                     <h3 className="text-sm font-medium text-foreground mb-1">How can I help?</h3>
                     <p className="text-xs text-muted-foreground max-w-[260px]">
-                      I'm context-aware and can assist with {currentModule} tasks, analysis, and navigation.
+                      I'm context-aware and can assist with {currentModule} tasks and insights.
                     </p>
 
-                    {/* Contextual suggestions */}
-                    {contextualSuggestions.length > 0 && (
-                      <div className="mt-6 w-full space-y-2">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
-                          Suggestions for {currentModule}
-                        </p>
-                        {contextualSuggestions.map((suggestion, i) => (
-                          <button
-                            key={i}
-                            className="w-full text-left text-xs p-2.5 rounded-lg border border-border hover:bg-muted/50 hover:border-primary/20 transition-colors flex items-center gap-2 group"
-                            onClick={() => {
-                              setInput(suggestion);
-                              inputRef.current?.focus();
-                            }}
-                          >
-                            <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-                            <span className="text-muted-foreground group-hover:text-foreground transition-colors">
-                              {suggestion}
-                            </span>
-                          </button>
-                        ))}
+                    {/* Proactive Quick Actions */}
+                    {quickActions.length > 0 && (
+                      <div className="mt-4 w-full space-y-3">
+                        <div className="text-[10px] font-bold text-muted-foreground uppercase text-center tracking-widest mb-2">
+                          Proactive Actions for this page
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                          {quickActions.map((action, i) => (
+                            <Button
+                              key={i}
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start gap-2 h-10 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 text-primary transition-all group"
+                              onClick={() => {
+                                sendMessage(action.prompt);
+                              }}
+                            >
+                              <Sparkles className="h-3.5 w-3.5 group-hover:rotate-12 transition-transform" />
+                              <span className="font-bold text-xs">{action.label}</span>
+                            </Button>
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-2 py-2">
+                          <div className="h-[1px] flex-1 bg-border/50" />
+                          <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-tighter">or try a suggestion</span>
+                          <div className="h-[1px] flex-1 bg-border/50" />
+                        </div>
                       </div>
                     )}
 
-                    {/* Recent conversations shortcut */}
-                    {conversations.length > 0 && (
-                      <button
-                        className="mt-4 text-xs text-primary hover:underline flex items-center gap-1"
-                        onClick={() => setPanelView("history")}
-                      >
-                        <History className="h-3 w-3" />
-                        View {conversations.length} past conversation{conversations.length !== 1 ? "s" : ""}
-                      </button>
-                    )}
+                    <div className="mt-2 w-full space-y-2">
+                      {contextualSuggestions.map((suggestion, i) => (
+                        <button
+                          key={i}
+                          className="w-full text-left text-xs p-2.5 rounded-lg border border-border hover:bg-muted/50 hover:border-primary/20 transition-colors flex items-center gap-2 group"
+                          onClick={() => setInput(suggestion)}
+                        >
+                          <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                          <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                            {suggestion}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   messages.map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={cn(
-                        "flex",
-                        msg.role === "user" ? "justify-end" : "justify-start"
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          "max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed",
-                          msg.role === "user"
-                            ? "bg-primary text-primary-foreground rounded-br-sm"
-                            : "bg-muted text-foreground rounded-bl-sm"
-                        )}
-                      >
+                    <div key={msg.id} className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}>
+                      <div className={cn(
+                        "max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed relative group",
+                        msg.role === "user" ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-muted text-foreground rounded-bl-sm"
+                      )}>
                         {msg.role === "assistant" && (
-                          <div className="flex items-center gap-1.5 mb-1">
+                          <div className="flex items-center gap-1.5 mb-1.5">
                             <Brain className="h-3 w-3 text-primary" />
-                            <span className="text-[10px] font-medium text-primary">NexusAI</span>
-                            {msg.moduleContext && (
-                              <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">
-                                {msg.moduleContext}
-                              </Badge>
-                            )}
+                            <span className="text-[10px] font-bold text-primary tracking-tight">NexusAI</span>
+                            {msg.moduleContext && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-primary/20">{msg.moduleContext}</Badge>}
                           </div>
                         )}
                         <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+
+                        {/* Suggested Actions */}
+                        {(msg.actionType === "confirmation" || (msg.toolCalls && msg.toolCalls.some(tc => !tc.result))) && msg.actionDetails && (
+                          <div className="mt-3 p-3 border rounded-lg bg-card text-card-foreground shadow-sm animate-in zoom-in-95 duration-200">
+                            <div className="text-[10px] font-bold text-muted-foreground uppercase mb-1 flex items-center gap-1.5">
+                              <Sparkles className="h-3 w-3 text-primary" /> Action Proposal
+                            </div>
+                            <div className="text-xs font-bold">{msg.actionDetails.entity}: {msg.actionDetails.type}</div>
+                            <Button
+                              size="sm"
+                              className="h-8 w-full mt-3 gap-1.5 text-xs font-bold"
+                              onClick={() => executeTool(msg.actionDetails!.type, msg.actionDetails!.params)}
+                            >
+                              <Check className="h-3.5 w-3.5" /> Confirm Execution
+                            </Button>
+                          </div>
+                        )}
+
+                        {/* Execution Results */}
                         {msg.toolCalls && msg.toolCalls.length > 0 && (
-                          <div className="mt-2 pt-2 border-t border-border/50 space-y-1">
-                            {msg.toolCalls.map((tc, i) => (
-                              <div key={i}>
-                                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                  <Sparkles className="h-2.5 w-2.5 text-primary" />
-                                  <span className="font-medium">Tool: {tc.name}</span>
-                                  {tc.result && <Badge variant="outline" className="text-[8px] px-1 py-0 h-3 ml-1 text-emerald-600 border-emerald-300">✓ executed</Badge>}
+                          <div className="mt-3 pt-3 border-t border-border/40 space-y-2">
+                            {msg.toolCalls.map((tc, idx) => (
+                              <div key={idx} className="space-y-1.5">
+                                <div className="flex items-center gap-1.5 text-[10px] text-emerald-600 font-bold uppercase tracking-tight">
+                                  <CheckCircle2 className="h-3 w-3" /> Result: {tc.name}
                                 </div>
                                 {tc.result && (
-                                  <pre className="mt-1 text-[10px] bg-background/50 rounded p-1.5 overflow-x-auto max-h-32 text-muted-foreground">
-                                    {typeof tc.result === "string" ? tc.result : JSON.stringify(tc.result, null, 2)}
-                                  </pre>
+                                  <div className="bg-background/50 border border-border/30 rounded p-2 overflow-x-auto max-h-40">
+                                    <pre className="text-[10px] font-mono text-muted-foreground">
+                                      {typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result, null, 2)}
+                                    </pre>
+                                  </div>
                                 )}
                               </div>
                             ))}
@@ -489,52 +424,50 @@ export function NexusAIPanel() {
                     </div>
                   ))
                 )}
-
-                {/* Loading indicator */}
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="bg-muted rounded-xl rounded-bl-sm px-3.5 py-2.5 flex items-center gap-2">
                       <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                      <span className="text-xs text-muted-foreground">Streaming response...</span>
+                      <span className="text-xs text-muted-foreground font-medium italic">NexusAI is thinking...</span>
                     </div>
+                  </div>
+                )}
+                {error && (
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    {error}
                   </div>
                 )}
               </div>
             </ScrollArea>
+          )}
+        </div>
 
-            {/* Input area */}
-            <div className="p-3 border-t border-border bg-muted/20">
-              {error && !messages.length && (
-                <p className="text-[10px] text-destructive mb-2 px-1">{error}</p>
-              )}
-              <div className="flex items-center gap-2">
-                <Input
-                  ref={inputRef}
-                  placeholder={activeProvider ? `Ask NexusAI about ${currentModule}...` : "Configure AI provider first..."}
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  disabled={isLoading || !activeProvider}
-                  className="text-sm h-10"
-                />
-                <Button
-                  size="icon"
-                  className="h-10 w-10 shrink-0"
-                  onClick={handleSend}
-                  disabled={!input.trim() || isLoading || !activeProvider}
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-              <p className="text-[10px] text-muted-foreground mt-1.5 px-1">
-                NexusAI uses your configured provider. Responses may vary by model.
-              </p>
+        {/* Footer Input */}
+        {panelView === "chat" && (
+          <div className="p-4 bg-background border-t border-border mt-auto">
+            <div className="relative flex items-center">
+              <Input
+                ref={inputRef}
+                placeholder="Message NexusAI..."
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleSend()}
+                className="pr-10 h-10 text-sm font-medium py-6"
+                disabled={isLoading}
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className="absolute right-1 text-muted-foreground hover:text-primary h-8 w-8"
+                onClick={handleSend}
+                disabled={isLoading || !input.trim()}
+                title="Send message"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
             </div>
-          </>
+          </div>
         )}
       </div>
     </>

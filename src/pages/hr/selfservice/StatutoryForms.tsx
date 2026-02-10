@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/select";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 interface ComplianceForm {
     id: string;
@@ -60,6 +61,7 @@ const AVAILABLE_FORM_TEMPLATES = [
 ];
 
 export default function StatutoryForms() {
+    const { open, sendMessage } = useNexusAI();
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
@@ -243,20 +245,23 @@ export default function StatutoryForms() {
                         </CardContent>
                     </Card>
 
-                    <Card className="vanguard-card bg-blue-50/50 border-blue-100">
+                    <Card className="vanguard-card bg-teal-50/50 border-teal-100">
                         <CardHeader className="pb-2">
-                            <div className="flex items-center gap-2 text-blue-700">
+                            <div className="flex items-center gap-2 text-teal-700">
                                 <Info className="w-4 h-4" />
-                                <CardTitle className="text-sm font-semibold uppercase tracking-wider">AI Assistant Nudge</CardTitle>
+                                <CardTitle className="text-sm font-semibold uppercase tracking-wider">Payroll Help</CardTitle>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-xs text-blue-800 leading-relaxed">
-                                Not sure how to complete your <strong>2024 Form W-4</strong>?
-                                Ask <strong>NexusAI Buddy</strong> for a guided walkthrough of the worksheets.
+                            <p className="text-xs text-teal-800 leading-relaxed">
+                                Need assistance with statutory reporting or tax forms? Our AI assistant is ready to help.
                             </p>
-                            <Button variant="link" className="px-0 text-blue-700 h-auto mt-2 text-xs font-semibold">
-                                Get help with W-4 <ArrowRight className="w-3 h-3 ml-1" />
+                            <Button
+                                variant="link"
+                                className="px-0 text-teal-700 h-auto mt-2 text-xs font-semibold"
+                                onClick={() => open()}
+                            >
+                                Launch NexusAI Assistant <ArrowRight className="w-3 h-3 ml-1" />
                             </Button>
                         </CardContent>
                     </Card>

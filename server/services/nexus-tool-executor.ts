@@ -15,7 +15,7 @@ import { glEntries, leads, opportunities } from "../../shared/schema";
 // ═══════════════════════════════════════════════
 // Tool Permission Map — Central RBAC Registry
 // ═══════════════════════════════════════════════
-const TOOL_PERMISSION_MAP: Record<string, string> = {
+export const TOOL_PERMISSION_MAP: Record<string, string> = {
   // ── Finance: GL ──
   create_journal_entry: PERMISSIONS.GL_WRITE,
   analyze_account_balance: PERMISSIONS.GL_READ,

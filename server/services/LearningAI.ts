@@ -1,8 +1,8 @@
-
 import { db } from "../db";
 import { eq, inArray, desc, sql } from "drizzle-orm";
 import { hrmLearningCourses, hrmLearningEnrollments, hrmLearningOfferings } from "@shared/schema/talent_learning";
 import { hrmSkills } from "@shared/schema/talent_core";
+import { executeTool } from "./nexus-tool-executor";
 
 // Hybrid AI Service: Rule-based Fallback + LLM Hooks
 export class LearningAI {

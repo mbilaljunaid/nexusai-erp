@@ -40,9 +40,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { StandardTable } from "@/components/ui/StandardTable";
 import { Progress } from "@/components/ui/progress";
 import { CompetitorList } from "@/components/crm/CompetitorList";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 // AI Insights Component
 function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
+  const { open, sendMessage } = useNexusAI();
   const [analysis, setAnalysis] = useState<any>(null);
 
   const analyzeMutation = useMutation({
@@ -146,6 +148,17 @@ function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
             </ul>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="flex justify-center pt-2">
+        <Button
+          variant="outline"
+          className="gap-2 border-primary/20 hover:bg-primary/5 text-primary"
+          onClick={open}
+        >
+          <Sparkles className="h-4 w-4" />
+          Discuss Deal Analysis
+        </Button>
       </div>
     </div>
   );

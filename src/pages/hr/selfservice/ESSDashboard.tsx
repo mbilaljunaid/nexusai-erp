@@ -18,8 +18,10 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { MyConsents } from "@/components/hr/MyConsents";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function ESSDashboard() {
+    const { open } = useNexusAI();
     const quickActions = [
         { name: "Personal Information", icon: User, color: "text-blue-500", bg: "bg-blue-500/10", path: "/me/profile" },
         { name: "Document Records", icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10", path: "/me/documents" },
@@ -175,8 +177,12 @@ export default function ESSDashboard() {
                         <CardContent className="p-6">
                             <h3 className="font-bold text-lg mb-2">Need Help?</h3>
                             <p className="text-teal-100/80 text-sm mb-4">Ask our AI Assistant any HR policy questions or request time off.</p>
-                            <Button variant="secondary" className="w-full bg-white text-teal-600 hover:bg-zinc-100">
-                                Launch AI Chat
+                            <Button
+                                variant="secondary"
+                                className="w-full bg-white text-teal-600 hover:bg-zinc-100"
+                                onClick={() => open()}
+                            >
+                                Launch NexusAI
                             </Button>
                         </CardContent>
                     </Card>

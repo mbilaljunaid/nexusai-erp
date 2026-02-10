@@ -53,10 +53,10 @@ const quickTips: QuickTip[] = [
     content: "All reports can be exported to Excel, PDF, or CSV. Look for the download button in the top-right corner of any chart.",
   },
   {
-    id: "ai-assistant",
-    context: "ai",
-    title: "AI Assistant",
-    content: "Ask the AI assistant anything about your data. Try queries like 'Show my top customers' or 'What were last month's sales?'",
+    id: "nexusai-assistant",
+    context: "global",
+    title: "NexusAI Agent",
+    content: "Our unified AI agent is always available in the right sidebar. It automatically detects your current page context and helps with multi-module queries.",
   },
   {
     id: "workflow-automation",
@@ -98,12 +98,12 @@ export function QuickTipsProvider({ children }: { children: React.ReactNode }) {
 
   const showTip = (context: string) => {
     if (!tipsEnabled) return;
-    
+
     const contextTips = quickTips.filter(
-      tip => (tip.context === context || tip.context === "global") && 
-             !dismissedTips.includes(tip.id)
+      tip => (tip.context === context || tip.context === "global") &&
+        !dismissedTips.includes(tip.id)
     );
-    
+
     if (contextTips.length > 0) {
       setCurrentTip(contextTips[0]);
       setTipIndex(0);
@@ -156,7 +156,7 @@ interface QuickTipPopupProps {
 
 function QuickTipPopup({ tip, onDismiss, onDisableAll }: QuickTipPopupProps) {
   return (
-    <Card 
+    <Card
       className="fixed bottom-4 right-4 w-80 shadow-xl z-50 border-primary/20 animate-in slide-in-from-bottom-4"
       data-testid="quick-tip-popup"
     >
@@ -168,9 +168,9 @@ function QuickTipPopup({ tip, onDismiss, onDisableAll }: QuickTipPopupProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
               <h4 className="font-semibold text-sm">{tip.title}</h4>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 className="h-6 w-6 shrink-0"
                 onClick={onDismiss}
                 data-testid="button-dismiss-tip"
@@ -180,17 +180,17 @@ function QuickTipPopup({ tip, onDismiss, onDisableAll }: QuickTipPopupProps) {
             </div>
             <p className="text-xs text-muted-foreground mt-1">{tip.content}</p>
             <div className="flex items-center justify-between mt-3 gap-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="h-auto p-0 text-xs text-muted-foreground"
                 onClick={onDisableAll}
                 data-testid="button-disable-tips"
               >
                 Don't show tips
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 onClick={onDismiss}
                 data-testid="button-got-it"
               >

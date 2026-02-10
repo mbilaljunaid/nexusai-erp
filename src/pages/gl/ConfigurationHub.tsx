@@ -18,6 +18,7 @@ import {
     Zap
 } from "lucide-react";
 import { Link as RouterLink } from "wouter";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 const configTiles = [
     {
@@ -167,6 +168,7 @@ const configTiles = [
 ];
 
 export default function ConfigurationHub() {
+    const { open, sendMessage } = useNexusAI();
     return (
         <div className="p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col gap-2">
@@ -205,25 +207,6 @@ export default function ConfigurationHub() {
                 ))}
             </div>
 
-            <Card className="bg-slate-900 text-white border-none shadow-2xl overflow-hidden relative">
-                <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
-                    <Wand2 className="h-40 w-40" />
-                </div>
-                <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-                    <div className="space-y-2">
-                        <h2 className="text-2xl font-bold flex items-center gap-2">
-                            <Wand2 className="h-6 w-6 text-fuchsia-400" />
-                            AI Assistant Setup
-                        </h2>
-                        <p className="text-slate-400 font-medium">
-                            Let NexusAI help you generate a compliant Chart of Accounts or Fiscal Calendar standard.
-                        </p>
-                    </div>
-                    <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 font-bold px-8 shadow-lg shrink-0">
-                        Launch QuickBuilder
-                    </Button>
-                </CardContent>
-            </Card>
         </div>
     );
 }

@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Megaphone, Plus, Trash2 } from "lucide-react";
+import { Megaphone, Plus, Trash2, Sparkles } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function MarketingEngagement() {
+  const { open } = useNexusAI();
   const { toast } = useToast();
   const [newCampaign, setNewCampaign] = useState({ campaignId: "", type: "email", targetSegment: "all", status: "draft" });
 
@@ -46,6 +48,18 @@ export default function MarketingEngagement() {
           Marketing & Customer Engagement
         </h1>
         <p className="text-muted-foreground mt-2">Campaigns, promotions, churn prediction, and retention strategies</p>
+      </div>
+
+      <div className="flex justify-end -mb-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2 border-primary/20 hover:bg-primary/5 text-primary"
+          onClick={open}
+        >
+          <Sparkles className="h-4 w-4 transition-all group-hover:rotate-12" />
+          Channel Optimization
+        </Button>
       </div>
 
       <div className="grid grid-cols-4 gap-3">

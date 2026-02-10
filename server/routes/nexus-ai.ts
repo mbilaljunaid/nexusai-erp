@@ -1,11 +1,42 @@
 import { Router } from "express";
 import { db } from "../db";
-import { aiProviderConfigs, nexusConversations } from "@shared/schema/nexus_ai";
+import { aiProviderConfigs, nexusConversations, aiCapabilities, aiTools, aiQuickActions } from "@shared/schema/nexus_ai";
 import { eq, and, desc } from "drizzle-orm";
 import { executeTool, canExecuteTool } from "../services/nexus-tool-executor";
 import { hasPermission, PERMISSIONS } from "@shared/schema/roles";
 import type { AuthenticatedRequest } from "../middleware/auth";
-import { getAllToolDefinitions } from "../../src/config/ai-capabilities";
+
+// ── GET all capabilities (database-driven) ──
+nexusAiRouter.get("/capabilities", async (_req, res) => {
+  try {
+    const capabilities = await db.select().from(aiCapabilities).where(eq(aiCapabilities.isActive, true));
+
+    // Enrich with tools and quick actions
+    const enriched = await Promise.all(capabilities.map(async (cap) => {
+      const tools = await db.select().from(aiTools).where(eq(aiTools.capabilityId, cap.id));
+      const quickActions = await db.select().from(aiQuickActions).where(eq(aiQuickActions.capabilityId, cap.id));
+      return {
+        ...cap,
+        tools,
+        quickActions
+      };
+    }));
+
+    res.json(enriched);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+// ── GET tool registry (database-driven) ──
+nexusAiRouter.get("/tools/registry", async (_req, res) => {
+  try {
+    const tools = await db.select().from(aiTools);
+    res.json(tools);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
 
 export const nexusAiRouter = Router();
 
@@ -270,7 +301,7 @@ nexusAiRouter.post("/tools/execute", async (req: any, res) => {
 // ── POST chat with streaming (main AI endpoint) ──
 nexusAiRouter.post("/chat", async (req: any, res) => {
   try {
-    const { message, conversationHistory, moduleContext, manualContext, additionalModules, capabilities, stream: wantStream } = req.body;
+    const { message, conversationHistory, moduleContext, manualContext, additionalModules, capabilities, stream: wantStream, agentMode, activePage, pageMetadata } = req.body;
     if (!message) return res.status(400).json({ error: "Message is required" });
 
     const userRole = req.role || req.session?.userRole || "gl_viewer";
@@ -291,7 +322,7 @@ nexusAiRouter.post("/chat", async (req: any, res) => {
     }
 
     const config = configs[0];
-    const systemPrompt = buildSystemPrompt(moduleContext, capabilities, userRole, manualContext, additionalModules);
+    const systemPrompt = buildSystemPrompt(moduleContext, capabilities, userRole, manualContext, additionalModules, agentMode, activePage, pageMetadata);
 
     // Streaming path
     if (wantStream !== false) {
@@ -350,7 +381,7 @@ nexusAiRouter.get("/tools/registry", async (_req, res) => {
 });
 
 // ── System prompt builder with role awareness ──
-function buildSystemPrompt(moduleContext?: string, capabilities?: any[], userRole?: string, manualContext?: string, additionalModules?: string[]) {
+function buildSystemPrompt(moduleContext?: string, capabilities?: any[], userRole?: string, manualContext?: string, additionalModules?: string[], agentMode?: string, activePage?: string, pageMetadata?: any) {
   let prompt = `You are NexusAI, an intelligent assistant embedded in an enterprise ERP platform. 
 You help users with their work across Finance (GL, AP, AR, FA, Cash), CRM, HR, Projects, Supply Chain, Manufacturing, and more.
 You have access to a comprehensive registry of 246 specialized tools across all modules.
@@ -367,7 +398,14 @@ When you want to execute a tool, respond with a JSON block in this format:
 \`\`\`tool_call
 {"tool": "tool_name", "parameters": {...}}
 \`\`\`
-The system will execute it and return results. Do NOT fabricate tool results.`;
+The system will execute it and return results. Do NOT fabricate tool results.
+
+CURRENT AGENT MODE: ${agentMode || "general"}
+- auditor: Focus on analyzing data, finding discrepancies, and verifying completeness.
+- planner: Focus on outlining steps, creating roadmaps, and organizing dependencies.
+- executor: Focus on performing actions, creating records, and processing transactions.
+- verifier: Focus on validating results, checking status, and ensuring correctness.
+- general: Balanced assistance across all capabilities.`;
 
   if (moduleContext) {
     prompt += `\n\nThe user is currently in the ${moduleContext} module.`;
@@ -379,6 +417,13 @@ The system will execute it and return results. Do NOT fabricate tool results.`;
 
   if (manualContext) {
     prompt += `\n\nUser-provided context: "${manualContext}"`;
+  }
+
+  if (activePage) {
+    prompt += `\n\nThe user is currently viewing the page: ${activePage}`;
+    if (pageMetadata) {
+      prompt += `\nPage Metadata: ${JSON.stringify(pageMetadata)}`;
+    }
   }
 
   if (capabilities && capabilities.length > 0) {

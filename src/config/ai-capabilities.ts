@@ -25,6 +25,10 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
       { name: "explain_variance", description: "Analyze variances between two fiscal periods", parameters: { periodId: { type: "string", description: "Period ID", required: true }, benchmarkPeriodId: { type: "string", description: "Benchmark period ID", required: true } }, action: "/api/nexus-ai/tools/execute" },
       { name: "close_period", description: "Close a fiscal period", parameters: { periodId: { type: "string", description: "Period ID to close", required: true } }, action: "/api/nexus-ai/tools/execute" },
     ],
+    quickActions: [
+      { label: "Financial Commentary", prompt: "Analyze the current trial balance and provide executive financial commentary on variances and trends.", icon: "FileText" },
+      { label: "GL QuickBuilder", prompt: "Help me generate a compliant enterprise Chart of Accounts or Fiscal Calendar standard for my General Ledger.", icon: "Wand2" }
+    ]
   },
   {
     id: "ap",
@@ -87,6 +91,9 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
       { name: "analyze_opportunity", description: "AI analysis of opportunity win probability", parameters: { opportunityId: { type: "string", description: "Opportunity ID", required: true } }, action: "/api/nexus-ai/tools/execute" },
       { name: "get_forecast_summary", description: "Get sales pipeline forecast summary", parameters: {}, action: "/api/nexus-ai/tools/execute" },
     ],
+    quickActions: [
+      { label: "Analyze Opportunity", prompt: "Conduct a deep-dive analysis of the current opportunity. What are the win probability, key risks, and recommended next steps?", icon: "Target" }
+    ]
   },
   {
     id: "hr",
@@ -102,6 +109,11 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
       { name: "get_attrition_forecast", description: "Predict employee attrition risk", parameters: {}, action: "/api/nexus-ai/tools/execute" },
       { name: "recommend_courses", description: "Get AI-powered course recommendations for an employee", parameters: { employeeId: { type: "string", description: "Employee ID", required: true } }, action: "/api/nexus-ai/tools/execute" },
     ],
+    quickActions: [
+      { label: "Draft Job Description", prompt: "Help me draft a comprehensive job description for a Senior Frontend Engineer role.", icon: "FileText" },
+      { label: "W-4 Guided Walkthrough", prompt: "I need help completing my 2024 Form W-4. Can you guide me through the worksheets?", icon: "HelpCircle" },
+      { label: "Extract Skills", prompt: "Extract key professional skills from this resume or job description text.", icon: "Scissors" }
+    ]
   },
   {
     id: "projects",
@@ -320,6 +332,9 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
       { name: "get_construction_cost", description: "Get project cost summary", parameters: { projectId: { type: "string", description: "Project ID", required: true } }, action: "/api/nexus-ai/tools/execute" },
       { name: "track_construction_progress", description: "Track construction milestone status", parameters: { projectId: { type: "string", description: "Project ID", required: true } }, action: "/api/nexus-ai/tools/execute" },
     ],
+    quickActions: [
+      { label: "Strategic Insights", prompt: "Looking at our construction project portfolio. What are the key strategic risks and schedule anomalies we should address?", icon: "Hammer" }
+    ]
   },
   {
     id: "maintenance",
@@ -333,6 +348,9 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
       { name: "get_maintenance_schedule", description: "Get preventive maintenance schedule", parameters: { assetId: { type: "string", description: "Asset ID" } }, action: "/api/nexus-ai/tools/execute" },
       { name: "check_meter_readings", description: "Check asset meter readings", parameters: { assetId: { type: "string", description: "Asset ID", required: true } }, action: "/api/nexus-ai/tools/execute" },
     ],
+    quickActions: [
+      { label: "Analyze Asset Telemetry", prompt: "Analyze the current telemetry for the selected asset. Are there any anomalies or maintenance risks we should act on?", icon: "Wrench" }
+    ]
   },
   {
     id: "mdm",
@@ -382,6 +400,9 @@ export const AI_CAPABILITIES_REGISTRY: AICapability[] = [
       { name: "get_campaign_stats", description: "Get campaign performance statistics", parameters: { campaignId: { type: "string", description: "Campaign ID", required: true } }, action: "/api/nexus-ai/tools/execute" },
       { name: "create_campaign", description: "Create a new marketing campaign", parameters: { name: { type: "string", description: "Campaign name", required: true }, type: { type: "string", description: "Campaign type (email, social, etc.)" }, audience: { type: "string", description: "Target audience" } }, action: "/api/nexus-ai/tools/execute" },
     ],
+    quickActions: [
+      { label: "Optimize Engagement", prompt: "Looking at our marketing engagement metrics. How can we optimize campaign ROI and target high-performing segments?", icon: "Megaphone" }
+    ]
   },
   {
     id: "commission",

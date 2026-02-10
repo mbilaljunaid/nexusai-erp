@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import type { NexusAIState, NexusAIMessage, AIProviderConfig, AICapability } from "@/types/nexus-ai";
+import type { NexusAIState, NexusAIMessage, AIProviderConfig, AICapability, AIAgentMode } from "@/types/nexus-ai";
 import { getCapabilitiesForRoute, AI_CAPABILITIES_REGISTRY } from "@/config/ai-capabilities";
 
 interface ConversationSummary {
@@ -32,6 +32,13 @@ interface NexusAIContextValue extends NexusAIState {
   setAdditionalContextModules: React.Dispatch<React.SetStateAction<string[]>>;
   manualContext: string;
   setManualContext: (ctx: string) => void;
+  // Page awareness & Agent modes
+  agentMode: AIAgentMode;
+  setAgentMode: (mode: AIAgentMode) => void;
+  activePage: string;
+  pageMetadata: any;
+  // Nudges (HR/Global)
+  nudges: any[];
 }
 
 const NexusAIContext = createContext<NexusAIContextValue | null>(null);
@@ -62,6 +69,9 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [additionalContextModules, setAdditionalContextModules] = useState<string[]>([]);
   const [manualContext, setManualContext] = useState("");
+  const [agentMode, setAgentMode] = useState<AIAgentMode>("general");
+  const [activePage, setActivePage] = useState(location);
+  const [pageMetadata, setPageMetadata] = useState<any>(null);
   const debouncedSave = useDebouncedSave(1500);
   const messagesRef = useRef(messages);
   messagesRef.current = messages;
@@ -93,11 +103,27 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     return primary?.module ?? "General";
   }, [currentCapabilities]);
 
+  // Fetch Nudges (HR/Global)
+  const { data: nudges = [] } = useQuery<any[]>({
+    queryKey: ["/api/hr-self-service/me/ai/nudges"],
+    enabled: currentModule === "Human Resources" || additionalContextModules.includes("Human Resources"),
+    staleTime: 60_000,
+  });
+
+  // Sync activePage and detect page-level metadata
+  useEffect(() => {
+    setActivePage(location);
+    setPageMetadata({
+      path: location,
+      title: document.title,
+      timestamp: new Date().toISOString()
+    });
+  }, [location]);
+
   const toggle = useCallback(() => setIsOpen(prev => !prev), []);
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
 
-  // Persist messages to backend
   const persistMessages = useCallback(async (convoId: string, msgs: NexusAIMessage[], title?: string) => {
     const serialized = msgs.map(m => ({
       role: m.role,
@@ -115,7 +141,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     queryClient.invalidateQueries({ queryKey: ["/api/nexus-ai/conversations"] });
   }, [queryClient]);
 
-  // Auto-save messages when they change (debounced)
   useEffect(() => {
     if (!activeConversationId || messages.length === 0) return;
     const convoId = activeConversationId;
@@ -124,10 +149,8 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     });
   }, [messages, activeConversationId, debouncedSave, persistMessages]);
 
-  // Load most recent conversation on mount
   useEffect(() => {
     if (conversations.length > 0 && !activeConversationId && messages.length === 0) {
-      // Auto-load most recent active conversation
       const recent = conversations.find(c => c.isActive !== false);
       if (recent) {
         loadConversationInternal(recent.id);
@@ -167,7 +190,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
 
   const clearMessages = useCallback(async () => {
     if (activeConversationId) {
-      // Delete from backend
       await fetch(`/api/nexus-ai/conversations/${activeConversationId}`, { method: "DELETE" });
       queryClient.invalidateQueries({ queryKey: ["/api/nexus-ai/conversations"] });
     }
@@ -185,10 +207,8 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     queryClient.invalidateQueries({ queryKey: ["/api/nexus-ai/conversations"] });
   }, [activeConversationId, queryClient]);
 
-  // Create a new conversation in the backend
   const ensureConversation = useCallback(async (firstMessage: string): Promise<string> => {
     if (activeConversationId) return activeConversationId;
-
     const title = firstMessage.length > 50 ? firstMessage.substring(0, 47) + "..." : firstMessage;
     const resp = await fetch("/api/nexus-ai/conversations", {
       method: "POST",
@@ -201,7 +221,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     return data.id;
   }, [activeConversationId, currentModule, queryClient]);
 
-  // Execute a tool via the backend (with RBAC)
   const executeToolAction = useCallback(async (toolName: string, parameters: Record<string, any>) => {
     const resp = await fetch("/api/nexus-ai/tools/execute", {
       method: "POST",
@@ -215,16 +234,12 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     return data;
   }, []);
 
-  // Streaming message sender
   const sendMessage = useCallback(async (content: string) => {
     if (!activeProvider) {
       setError("No AI provider configured. Go to Platform Admin → AI Configuration to set one up.");
       return;
     }
-
-    // Ensure conversation exists in DB
     const convoId = await ensureConversation(content);
-
     const userMsg: NexusAIMessage = {
       id: crypto.randomUUID(),
       role: "user",
@@ -232,7 +247,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
       timestamp: new Date(),
       moduleContext: currentModule,
     };
-
     setMessages(prev => [...prev, userMsg]);
     setIsLoading(true);
     setError(null);
@@ -247,6 +261,9 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
           moduleContext: currentModule,
           manualContext: manualContext || undefined,
           additionalModules: additionalContextModules.length > 0 ? additionalContextModules : undefined,
+          agentMode,
+          activePage,
+          pageMetadata,
           capabilities: currentCapabilities.map(c => ({
             module: c.module,
             tools: c.tools.map(t => t.name),
@@ -265,7 +282,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
       if (contentType.includes("text/event-stream") && resp.body) {
         let assistantContent = "";
         const assistantId = crypto.randomUUID();
-
         setMessages(prev => [...prev, {
           id: assistantId,
           role: "assistant" as const,
@@ -282,7 +298,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
           const { done, value } = await reader.read();
           if (done) break;
           buffer += decoder.decode(value, { stream: true });
-
           let nl: number;
           while ((nl = buffer.indexOf("\n")) !== -1) {
             let line = buffer.slice(0, nl);
@@ -291,21 +306,16 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
             if (!line.startsWith("data: ")) continue;
             const jsonStr = line.slice(6).trim();
             if (!jsonStr) continue;
-
             try {
               const parsed = JSON.parse(jsonStr);
               if (parsed.type === "token" && parsed.content) {
                 assistantContent += parsed.content;
-                setMessages(prev =>
-                  prev.map(m => m.id === assistantId ? { ...m, content: assistantContent } : m)
-                );
+                setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, content: assistantContent } : m));
               } else if (parsed.type === "tool_result") {
-                setMessages(prev =>
-                  prev.map(m => m.id === assistantId
-                    ? { ...m, toolCalls: [...(m.toolCalls || []), { name: parsed.toolName, result: parsed.result }] }
-                    : m
-                  )
-                );
+                setMessages(prev => prev.map(m => m.id === assistantId
+                  ? { ...m, toolCalls: [...(m.toolCalls || []), { name: parsed.toolName, result: parsed.result }] }
+                  : m
+                ));
               } else if (parsed.type === "error") {
                 throw new Error(parsed.content);
               }
@@ -316,14 +326,11 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
             }
           }
         }
-
-        // Check for tool_call markers and auto-execute
         const toolCallMatch = assistantContent.match(/```tool_call\s*\n([\s\S]*?)\n```/);
         if (toolCallMatch) {
           try {
             const toolCall = JSON.parse(toolCallMatch[1]);
             const toolResult = await executeToolAction(toolCall.tool, toolCall.parameters);
-
             const toolMsg: NexusAIMessage = {
               id: crypto.randomUUID(),
               role: "assistant",
@@ -346,11 +353,7 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
             setMessages(prev => [...prev, errorMsg]);
           }
         }
-
-        // Persist immediately after stream completes
-        const finalMsgs = messagesRef.current;
-        persistMessages(convoId, finalMsgs);
-
+        persistMessages(convoId, messagesRef.current);
       } else {
         const data = await resp.json();
         const assistantMsg: NexusAIMessage = {
@@ -362,7 +365,6 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
           moduleContext: currentModule,
         };
         setMessages(prev => [...prev, assistantMsg]);
-        // Persist
         setTimeout(() => persistMessages(convoId, messagesRef.current), 100);
       }
     } catch (err: any) {
@@ -377,7 +379,7 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [activeProvider, messages, currentModule, currentCapabilities, executeToolAction, ensureConversation, persistMessages]);
+  }, [activeProvider, messages, currentModule, currentCapabilities, executeToolAction, ensureConversation, persistMessages, agentMode, activePage, pageMetadata, additionalContextModules, manualContext]);
 
   const value: NexusAIContextValue = {
     isOpen,
@@ -403,6 +405,11 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     setAdditionalContextModules,
     manualContext,
     setManualContext,
+    agentMode,
+    setAgentMode,
+    activePage,
+    pageMetadata,
+    nudges,
   };
 
   return (

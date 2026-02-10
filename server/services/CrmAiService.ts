@@ -65,13 +65,14 @@ export class CrmAiService {
         `;
 
         try {
-            const result = await callAIJson(
-                [
-                    { role: "system", content: "You are a helpful CRM AI Assistant. Return JSON only." },
-                    { role: "user", content: prompt }
-                ],
-                { jsonMode: true }
-            );
+            // Unify with tool executor (which will eventually be DB-driven)
+            const result = await executeTool({
+                toolName: "analyze_opportunity",
+                parameters: { opportunityId },
+                userRole: "crm_manager", // Contextual role
+                userId: "crm-ai-service"
+            });
+            return result;
         } catch (error) {
             console.error("AI Analysis Failed:", error);
             // Graceful Degradation (Tier-1 Requirement)

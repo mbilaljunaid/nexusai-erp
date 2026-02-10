@@ -10,8 +10,12 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function SupplierPerformance() {
+    const { open } = useNexusAI();
     const token = localStorage.getItem("supplier_token");
 
     const { data: scorecard, isLoading } = useQuery({
@@ -45,10 +49,20 @@ export default function SupplierPerformance() {
                     <h1 className="text-3xl font-bold tracking-tight">Performance Scorecard</h1>
                     <p className="text-muted-foreground">Detailed breakdown of your performance metrics for the current period.</p>
                 </div>
-                <div className="text-right">
-                    <p className="text-sm font-medium text-muted-foreground">Overall Score</p>
-                    <div className={`text-4xl font-bold ${getScoreColor(scorecard?.overallScore)}`}>
-                        {scorecard?.overallScore ?? 0}
+                <div className="flex items-center gap-6">
+                    <Button
+                        variant="ghost"
+                        className="gap-2 text-primary hover:bg-primary/5 font-semibold"
+                        onClick={open}
+                    >
+                        <Sparkles className="h-4 w-4" />
+                        Performance Discussion
+                    </Button>
+                    <div className="text-right">
+                        <p className="text-sm font-medium text-muted-foreground">Overall Score</p>
+                        <div className={`text-4xl font-bold ${getScoreColor(scorecard?.overallScore)}`}>
+                            {scorecard?.overallScore ?? 0}
+                        </div>
                     </div>
                 </div>
             </div>

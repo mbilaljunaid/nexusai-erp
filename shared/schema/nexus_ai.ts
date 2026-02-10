@@ -66,3 +66,54 @@ export const insertNexusConversationSchema = createInsertSchema(nexusConversatio
 
 export type NexusConversation = typeof nexusConversations.$inferSelect;
 export type InsertNexusConversation = z.infer<typeof insertNexusConversationSchema>;
+
+// ========== NexusAI Capabilities Registry ==========
+// Stores module-specific AI agents and their configurations
+export const aiCapabilities = pgTable("ai_capabilities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id"),
+  moduleId: varchar("module_id").notNull(), // e.g., 'finance', 'hr'
+  moduleName: varchar("module_name").notNull(), // e.g., 'Finance', 'Human Resources'
+  name: varchar("name").notNull(), // e.g., 'Financial AI Assistant'
+  description: text("description"),
+  routes: jsonb("routes").$type<string[]>().default([]),
+  insights: jsonb("insights").$type<string[]>().default([]),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertAiCapabilitySchema = createInsertSchema(aiCapabilities);
+export type AiCapabilityTable = typeof aiCapabilities.$inferSelect;
+
+// ========== NexusAI Tools Registry ==========
+// Stores AI-callable tools and their RBAC permissions
+export const aiTools = pgTable("ai_tools", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  capabilityId: varchar("capability_id").references(() => aiCapabilities.id),
+  name: varchar("name").notNull(), // e.g., 'create_journal_entry'
+  description: text("description"),
+  parameters: jsonb("parameters").notNull(), // JSON Schema for tool parameters
+  requiredPermission: varchar("required_permission").notNull(), // from PERMISSIONS
+  action: varchar("action").notNull().default("/api/nexus-ai/tools/execute"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAiToolSchema = createInsertSchema(aiTools);
+export type AiToolTable = typeof aiTools.$inferSelect;
+
+// ========== NexusAI Quick Actions ==========
+// Stores proactive prompts displayed in the NexusAI panel
+export const aiQuickActions = pgTable("ai_quick_actions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  capabilityId: varchar("capability_id").references(() => aiCapabilities.id),
+  label: varchar("label").notNull(), // e.g., 'Analyze Opportunity'
+  prompt: text("prompt").notNull(),
+  icon: varchar("icon").default("Sparkles"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertAiQuickActionSchema = createInsertSchema(aiQuickActions);
+export type AiQuickActionTable = typeof aiQuickActions.$inferSelect;

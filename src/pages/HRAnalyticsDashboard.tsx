@@ -12,8 +12,7 @@ import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Info } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AnalyticsAssistant } from "@/components/analytics/AnalyticsAssistant";
+import { Select, SelectContent, SelectItem, SelectValue, SelectTrigger } from "@/components/ui/select";
 
 interface HRMetric {
   label: string;
@@ -227,8 +226,6 @@ export default function HRAnalyticsDashboard() {
           </div>
         </SheetContent>
       </Sheet>
-
-      <AnalyticsAssistant />
     </div>
   );
 }

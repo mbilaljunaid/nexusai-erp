@@ -1,11 +1,11 @@
 // NexusAI — Configurable AI Provider Types & Capabilities
 
-export type AIProviderType = 
-  | "openai" 
-  | "google_gemini" 
-  | "anthropic" 
-  | "azure_openai" 
-  | "ollama" 
+export type AIProviderType =
+  | "openai"
+  | "google_gemini"
+  | "anthropic"
+  | "azure_openai"
+  | "ollama"
   | "mistral"
   | "cohere"
   | "custom";
@@ -101,6 +101,7 @@ export interface AICapability {
   tools: AITool[];
   insights: string[];
   routes: string[]; // which app routes this capability applies to
+  quickActions?: { label: string; prompt: string; icon?: string }[];
 }
 
 export interface AITool {
@@ -110,13 +111,25 @@ export interface AITool {
   action: string; // API endpoint or action code
 }
 
+export type AIAgentMode = "auditor" | "planner" | "executor" | "verifier" | "general";
+
 export interface NexusAIMessage {
   id: string;
   role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
-  toolCalls?: { name: string; result?: any }[];
+  toolCalls?: { name: string; result?: any; status?: 'pending' | 'executing' | 'completed' | 'failed' }[];
   moduleContext?: string;
+  // For centralization flow
+  actionType?: "info" | "action" | "confirmation" | "error";
+  actionDetails?: {
+    type: string;
+    entity: string;
+    id?: string;
+    summary?: string;
+    params?: any;
+  };
+  mode?: AIAgentMode;
 }
 
 export interface NexusAIState {
@@ -127,4 +140,8 @@ export interface NexusAIState {
   capabilities: AICapability[];
   activeProvider: AIProviderConfig | null;
   error: string | null;
+  // Centralization additions
+  agentMode: AIAgentMode;
+  activePage: string;
+  pageMetadata?: any;
 }

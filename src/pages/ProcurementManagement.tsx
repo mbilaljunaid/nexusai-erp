@@ -11,7 +11,6 @@ import { RequisitionManager } from "@/components/procurement/RequisitionManager"
 import { InvoiceWorkbench } from "@/components/procurement/InvoiceWorkbench";
 import SourcingWorkbench from "@/components/procurement/SourcingWorkbench";
 import ContractWorkbench from "@/components/procurement/ContractWorkbench";
-import { ProcurementAI } from "@/components/procurement/ProcurementAI";
 
 export default function ProcurementManagement() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -25,7 +24,6 @@ export default function ProcurementManagement() {
     { id: "contracts", label: "Contracts", icon: FileText, color: "text-indigo-500" },
     { id: "sourcing", label: "Sourcing", icon: Gavel, color: "text-amber-500" },
     { id: "suppliers", label: "Suppliers", icon: Users, color: "text-cyan-500" },
-    { id: "ai", label: "AI Insights", icon: BrainCircuit, color: "text-pink-500" },
   ];
 
   return (
@@ -45,7 +43,6 @@ export default function ProcurementManagement() {
         {activeTab === "contracts" && <ContractWorkbench />}
         {activeTab === "sourcing" && <SourcingWorkbench />}
         {activeTab === "suppliers" && <SupplierManager />}
-        {activeTab === "ai" && <ProcurementAI onViewChange={setActiveTab} />}
       </div>
     </StandardPage>
   );
