@@ -1,12 +1,12 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 
-const TicketDashboard = lazy(() => import("@/pages/TicketDashboard"));
-const Service = lazy(() => import("@/pages/Service"));
-const ServiceTicketsDetail = lazy(() => import("@/pages/ServiceTicketsDetail"));
-const ServiceTicket = lazy(() => import("@/pages/ServiceTicket"));
+const TicketDashboard = lazyWithRetry(() => import("@/pages/TicketDashboard"));
+const Service = lazyWithRetry(() => import("@/pages/Service"));
+const ServiceTicketsDetail = lazyWithRetry(() => import("@/pages/ServiceTicketsDetail"));
+const ServiceTicket = lazyWithRetry(() => import("@/pages/ServiceTicket"));
 
 export default function ServiceRoutes() {
     return (

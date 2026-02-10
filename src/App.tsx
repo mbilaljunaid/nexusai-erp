@@ -1,5 +1,6 @@
 import { Switch, Route, useLocation, Redirect } from "wouter";
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -43,10 +44,51 @@ import ErpRoutes from "@/routes/ErpRoutes";
 import ProcessRoutes from "@/routes/ProcessRoutes";
 
 // Direct page imports for sidebar links
-const AIAssistantPage = lazy(() => import("@/pages/AIAssistant"));
-const SettingsPage = lazy(() => import("@/pages/Settings"));
-const SCMDashboard = lazy(() => import("@/pages/Inventory"));
-const DashboardPage = lazy(() => import("@/pages/Dashboard"));
+const AIAssistantPage = lazyWithRetry(() => import("@/pages/AIAssistant"));
+const SettingsPage = lazyWithRetry(() => import("@/pages/Settings"));
+const SCMDashboard = lazyWithRetry(() => import("@/pages/Inventory"));
+const DashboardPage = lazyWithRetry(() => import("@/pages/Dashboard"));
+const EPMPage = lazyWithRetry(() => import("@/pages/EPMPage"));
+
+// Talent/Learning
+const ManagerLearningDashboard = lazyWithRetry(() => import("@/pages/learning/manager/ManagerLearningDashboard"));
+const LearningPlayer = lazyWithRetry(() => import("@/pages/learning/player/LearningPlayer"));
+const CourseCatalogAdmin = lazyWithRetry(() => import("@/pages/learning/admin/CourseCatalogAdmin"));
+const CurriculumBuilder = lazyWithRetry(() => import("@/pages/learning/admin/CurriculumBuilder"));
+const AssessmentBuilder = lazyWithRetry(() => import("@/pages/learning/admin/AssessmentBuilder"));
+const CommunityBrowser = lazyWithRetry(() => import("@/pages/learning/admin/CommunityBrowser"));
+
+// HR/Recruitment
+const InterviewerDashboard = lazyWithRetry(() => import("@/pages/recruitment/InterviewerDashboard"));
+const OnboardingWorkbench = lazyWithRetry(() => import("@/pages/recruitment/OnboardingWorkbench"));
+const RecruitingAnalytics = lazyWithRetry(() => import("@/pages/recruitment/RecruitingAnalytics"));
+const RecruitmentConfiguration = lazyWithRetry(() => import("@/pages/RecruitmentConfiguration"));
+const PerformanceConfiguration = lazyWithRetry(() => import("@/pages/PerformanceConfiguration"));
+
+// WFM
+const MyTime = lazyWithRetry(() => import("@/pages/wfm/MyTime"));
+const ManagerApprovals = lazyWithRetry(() => import("@/pages/wfm/ManagerApprovals"));
+const ShiftConfiguration = lazyWithRetry(() => import("@/pages/wfm/ShiftConfiguration"));
+const TeamSchedule = lazyWithRetry(() => import("@/pages/wfm/TeamSchedule"));
+const PayrollTransfer = lazyWithRetry(() => import("@/pages/wfm/PayrollTransfer"));
+const TimekeeperConsole = lazyWithRetry(() => import("@/pages/wfm/TimekeeperConsole"));
+const ViolationsDashboard = lazyWithRetry(() => import("@/pages/wfm/ViolationsDashboard"));
+const WfmAnalyticsLazy = lazyWithRetry(() => import("@/pages/wfm/WfmAnalytics"));
+const AIWorkforceInsights = lazyWithRetry(() => import("@/pages/wfm/AIWorkforceInsights"));
+const HolidayCalendar = lazyWithRetry(() => import("@/pages/wfm/HolidayCalendar"));
+
+// Self-Service
+const MyPayslips = lazyWithRetry(() => import("@/pages/rewards/MyPayslips"));
+const BenefitsEnrollment = lazyWithRetry(() => import("@/pages/hr/selfservice/BenefitsEnrollment"));
+const DelegationWorkbench = lazyWithRetry(() => import("@/pages/hr/selfservice/DelegationWorkbench"));
+const VoluntaryDeductions = lazyWithRetry(() => import("@/pages/hr/selfservice/VoluntaryDeductions"));
+const StatutoryForms = lazyWithRetry(() => import("@/pages/hr/selfservice/StatutoryForms"));
+
+// Intercompany
+const IntercompanyWorkbench = lazyWithRetry(() => import("@/pages/intercompany/IntercompanyWorkbench"));
+const IntercompanyReconciliation = lazyWithRetry(() => import("@/pages/intercompany/IntercompanyReconciliation"));
+const NettingWorkbench = lazyWithRetry(() => import("@/pages/intercompany/NettingWorkbench"));
+const AllocationsWorkbench = lazyWithRetry(() => import("@/pages/intercompany/AllocationsWorkbench"));
 
 import LearningManagement from "@/pages/LearningManagement";
 import InstructorDashboard from "@/pages/learning/instructor/InstructorDashboard";
@@ -82,7 +124,7 @@ function Router() {
         <Route path="/system-configuration" component={SettingsPage} />
         <Route path="/manufacturing"><Redirect to="/manufacturing/dashboard" /></Route>
         <Route path="/scm"><Redirect to="/inventory" /></Route>
-        <Route path="/epm" component={lazy(() => import("@/pages/EPMPage"))} />
+        <Route path="/epm" component={EPMPage} />
         <Route path="/wfm"><Redirect to="/wfm/my-time" /></Route>
 
         {/* Analytics & Compliance */}
@@ -122,12 +164,12 @@ function Router() {
         <Route path="/mdm*" component={MdmRoutes} />
 
         {/* Talent Management Direct Routes (Debug/Fix for 404) */}
-        <Route path="/talent/learning/manager" component={lazy(() => import("@/pages/learning/manager/ManagerLearningDashboard"))} />
-        <Route path="/talent/learning/play/:enrollmentId" component={lazy(() => import("@/pages/learning/player/LearningPlayer"))} />
-        <Route path="/talent/learning/admin" component={lazy(() => import("@/pages/learning/admin/CourseCatalogAdmin"))} />
-        <Route path="/talent/learning/admin/curricula" component={lazy(() => import("@/pages/learning/admin/CurriculumBuilder"))} />
-        <Route path="/talent/learning/admin/assessments" component={lazy(() => import("@/pages/learning/admin/AssessmentBuilder"))} />
-        <Route path="/talent/learning/admin/communities" component={lazy(() => import("@/pages/learning/admin/CommunityBrowser"))} />
+        <Route path="/talent/learning/manager" component={ManagerLearningDashboard} />
+        <Route path="/talent/learning/play/:enrollmentId" component={LearningPlayer} />
+        <Route path="/talent/learning/admin" component={CourseCatalogAdmin} />
+        <Route path="/talent/learning/admin/curricula" component={CurriculumBuilder} />
+        <Route path="/talent/learning/admin/assessments" component={AssessmentBuilder} />
+        <Route path="/talent/learning/admin/communities" component={CommunityBrowser} />
         <Route path="/talent/learning/instructor" component={InstructorDashboard} />
         <Route path="/talent/learning" component={LearningManagement} />
 
@@ -137,13 +179,13 @@ function Router() {
 
         {/* Projects */}
         <Route path="/hr/recruitment/requisitions/:id" component={JobRequisitionDetail} />
-        <Route path="/hr/recruitment/my-interviews" component={lazy(() => import("@/pages/recruitment/InterviewerDashboard"))} />
-        <Route path="/hr/recruitment/onboarding" component={lazy(() => import("@/pages/recruitment/OnboardingWorkbench"))} />
-        <Route path="/hr/recruitment/analytics" component={lazy(() => import("@/pages/recruitment/RecruitingAnalytics"))} />
-        <Route path="/hr/recruitment/configuration" component={lazy(() => import("@/pages/RecruitmentConfiguration"))} />
+        <Route path="/hr/recruitment/my-interviews" component={InterviewerDashboard} />
+        <Route path="/hr/recruitment/onboarding" component={OnboardingWorkbench} />
+        <Route path="/hr/recruitment/analytics" component={RecruitingAnalytics} />
+        <Route path="/hr/recruitment/configuration" component={RecruitmentConfiguration} />
         <Route path="/hr/recruitment" component={RecruitmentManagement} />
         <Route path="/hr/performance" component={PerformanceManagement} />
-        <Route path="/hr/setup/performance" component={lazy(() => import("@/pages/PerformanceConfiguration"))} />
+        <Route path="/hr/setup/performance" component={PerformanceConfiguration} />
 
         {/* HR Analytics */}
         <Route path="/hr/analytics/predictive" component={PredictiveAnalytics} />
@@ -152,17 +194,17 @@ function Router() {
         <Route path="/hr/analytics/config/scheduler" component={ReportScheduler} />
         <Route path="/hr/analytics" component={HRAnalyticsDashboard} />
 
-        <Route path="/wfm/my-time" component={lazy(() => import("@/pages/wfm/MyTime"))} />
-        <Route path="/wfm/approvals" component={lazy(() => import("@/pages/wfm/ManagerApprovals"))} />
-        <Route path="/wfm/setup/shifts" component={lazy(() => import("@/pages/wfm/ShiftConfiguration"))} />
-        <Route path="/wfm/schedule" component={lazy(() => import("@/pages/wfm/TeamSchedule"))} />
-        <Route path="/wfm/integration/payroll" component={lazy(() => import("@/pages/wfm/PayrollTransfer"))} />
-        <Route path="/wfm/timekeeper" component={lazy(() => import("@/pages/wfm/TimekeeperConsole"))} />
-        <Route path="/wfm/violations" component={lazy(() => import("@/pages/wfm/ViolationsDashboard"))} />
-        <Route path="/wfm/analytics" component={lazy(() => import("@/pages/wfm/WfmAnalytics"))} />
-        <Route path="/wfm/intelligence" component={lazy(() => import("@/pages/wfm/AIWorkforceInsights"))} />
+        <Route path="/wfm/my-time" component={MyTime} />
+        <Route path="/wfm/approvals" component={ManagerApprovals} />
+        <Route path="/wfm/setup/shifts" component={ShiftConfiguration} />
+        <Route path="/wfm/schedule" component={TeamSchedule} />
+        <Route path="/wfm/integration/payroll" component={PayrollTransfer} />
+        <Route path="/wfm/timekeeper" component={TimekeeperConsole} />
+        <Route path="/wfm/violations" component={ViolationsDashboard} />
+        <Route path="/wfm/analytics" component={WfmAnalyticsLazy} />
+        <Route path="/wfm/intelligence" component={AIWorkforceInsights} />
         {/* Payroll */}
-        <Route path="/wfm/admin/holidays" component={lazy(() => import("@/pages/wfm/HolidayCalendar"))} />
+        <Route path="/wfm/admin/holidays" component={HolidayCalendar} />
         <Route path="/wfm/admin/accrual-test" component={AccrualTesting} />
 
         <Route path="/hr*" component={HrRoutes} />
@@ -186,11 +228,11 @@ function Router() {
         <Route path="/construction*" component={ConstructionRoutes} />
         <Route path="/maintenance*" component={MaintenanceRoutes} />
 
-        <Route path="/me/payslips" component={lazy(() => import("@/pages/rewards/MyPayslips"))} />
-        <Route path="/intercompany" component={lazy(() => import("@/pages/intercompany/IntercompanyWorkbench"))} />
-        <Route path="/intercompany/reconciliation" component={lazy(() => import("@/pages/intercompany/IntercompanyReconciliation"))} />
-        <Route path="/intercompany/netting" component={lazy(() => import("@/pages/intercompany/NettingWorkbench"))} />
-        <Route path="/intercompany/allocations" component={lazy(() => import("@/pages/intercompany/AllocationsWorkbench"))} />
+        <Route path="/me/payslips" component={MyPayslips} />
+        <Route path="/intercompany" component={IntercompanyWorkbench} />
+        <Route path="/intercompany/reconciliation" component={IntercompanyReconciliation} />
+        <Route path="/intercompany/netting" component={NettingWorkbench} />
+        <Route path="/intercompany/allocations" component={AllocationsWorkbench} />
 
         {/* ERP Core (Temporary placeholder until refactored) */}
         {/* ERP Core */}
@@ -204,11 +246,11 @@ function Router() {
         <Route path="/me" component={ESSDashboard} />
         <Route path="/me/profile" component={PersonalDetails} />
         <Route path="/me/documents" component={PersonalDetails} />
-        <Route path="/me/benefits/enroll" component={lazy(() => import("@/pages/hr/selfservice/BenefitsEnrollment"))} />
+        <Route path="/me/benefits/enroll" component={BenefitsEnrollment} />
         <Route path="/me/time-card" component={MyTimeCard} />
-        <Route path="/me/delegation" component={lazy(() => import("@/pages/hr/selfservice/DelegationWorkbench"))} />
-        <Route path="/me/payroll/deductions" component={lazy(() => import("@/pages/hr/selfservice/VoluntaryDeductions"))} />
-        <Route path="/me/compliance/forms" component={lazy(() => import("@/pages/hr/selfservice/StatutoryForms"))} />
+        <Route path="/me/delegation" component={DelegationWorkbench} />
+        <Route path="/me/payroll/deductions" component={VoluntaryDeductions} />
+        <Route path="/me/compliance/forms" component={StatutoryForms} />
         <Route path="/my-team" component={MSSDashboard} />
 
         {/* Public Catch-all */}

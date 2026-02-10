@@ -1,27 +1,26 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 const ProcessHub = lazyWithRetry(() => import("@/pages/processes/ProcessHub"));
-const ProcureToPayProcess = lazy(() => import("@/pages/processes/pages/ProcureToPayProcess"));
-const OrderToCashProcess = lazy(() => import("@/pages/processes/pages/OrderToCashProcess"));
-const HireToRetireProcess = lazy(() => import("@/pages/processes/pages/HireToRetireProcess"));
-const MonthEndConsolidationProcess = lazy(() => import("@/pages/processes/pages/MonthEndConsolidationProcess"));
-const ComplianceRiskProcess = lazy(() => import("@/pages/processes/pages/ComplianceRiskProcess"));
-const InventoryManagementProcess = lazy(() => import("@/pages/processes/pages/InventoryManagementProcess"));
-const FixedAssetLifecycleProcess = lazy(() => import("@/pages/processes/pages/FixedAssetLifecycleProcess"));
-const ProductionPlanningProcess = lazy(() => import("@/pages/processes/pages/ProductionPlanningProcess"));
-const MRPProcess = lazy(() => import("@/pages/processes/pages/MRPProcess"));
-const QualityAssuranceProcess = lazy(() => import("@/pages/processes/pages/QualityAssuranceProcess"));
-const ContractManagementProcess = lazy(() => import("@/pages/processes/pages/ContractManagementProcess"));
-const BudgetPlanningProcess = lazy(() => import("@/pages/processes/pages/BudgetPlanningProcess"));
-const DemandPlanningProcess = lazy(() => import("@/pages/processes/pages/DemandPlanningProcess"));
-const CapacityPlanningProcess = lazy(() => import("@/pages/processes/pages/CapacityPlanningProcess"));
-const WarehouseManagementProcess = lazy(() => import("@/pages/processes/pages/WarehouseManagementProcess"));
-const CustomerReturnsProcess = lazy(() => import("@/pages/processes/pages/CustomerReturnsProcess"));
-const VendorPerformanceProcess = lazy(() => import("@/pages/processes/pages/VendorPerformanceProcess"));
-const SubscriptionBillingProcess = lazy(() => import("@/pages/processes/pages/SubscriptionBillingProcess"));
+const ProcureToPayProcess = lazyWithRetry(() => import("@/pages/processes/pages/ProcureToPayProcess"));
+const OrderToCashProcess = lazyWithRetry(() => import("@/pages/processes/pages/OrderToCashProcess"));
+const HireToRetireProcess = lazyWithRetry(() => import("@/pages/processes/pages/HireToRetireProcess"));
+const MonthEndConsolidationProcess = lazyWithRetry(() => import("@/pages/processes/pages/MonthEndConsolidationProcess"));
+const ComplianceRiskProcess = lazyWithRetry(() => import("@/pages/processes/pages/ComplianceRiskProcess"));
+const InventoryManagementProcess = lazyWithRetry(() => import("@/pages/processes/pages/InventoryManagementProcess"));
+const FixedAssetLifecycleProcess = lazyWithRetry(() => import("@/pages/processes/pages/FixedAssetLifecycleProcess"));
+const ProductionPlanningProcess = lazyWithRetry(() => import("@/pages/processes/pages/ProductionPlanningProcess"));
+const MRPProcess = lazyWithRetry(() => import("@/pages/processes/pages/MRPProcess"));
+const QualityAssuranceProcess = lazyWithRetry(() => import("@/pages/processes/pages/QualityAssuranceProcess"));
+const ContractManagementProcess = lazyWithRetry(() => import("@/pages/processes/pages/ContractManagementProcess"));
+const BudgetPlanningProcess = lazyWithRetry(() => import("@/pages/processes/pages/BudgetPlanningProcess"));
+const DemandPlanningProcess = lazyWithRetry(() => import("@/pages/processes/pages/DemandPlanningProcess"));
+const CapacityPlanningProcess = lazyWithRetry(() => import("@/pages/processes/pages/CapacityPlanningProcess"));
+const WarehouseManagementProcess = lazyWithRetry(() => import("@/pages/processes/pages/WarehouseManagementProcess"));
+const CustomerReturnsProcess = lazyWithRetry(() => import("@/pages/processes/pages/CustomerReturnsProcess"));
+const VendorPerformanceProcess = lazyWithRetry(() => import("@/pages/processes/pages/VendorPerformanceProcess"));
+const SubscriptionBillingProcess = lazyWithRetry(() => import("@/pages/processes/pages/SubscriptionBillingProcess"));
 
 export default function ProcessRoutes() {
     return (

@@ -1,17 +1,17 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const OrderWorkbench = lazy(() => import("@/pages/order/OrderWorkbench").then(module => ({ default: module.OrderWorkbench })));
-const OrderEntry = lazy(() => import("@/pages/order/OrderEntry").then(module => ({ default: module.OrderEntry })));
-const ShipmentWorkbench = lazy(() => import("@/pages/order/ShipmentWorkbench").then(module => ({ default: module.ShipmentWorkbench })));
-const ReturnsWorkbench = lazy(() => import("@/pages/order/ReturnsWorkbench").then(module => ({ default: module.ReturnsWorkbench })));
-const OrderConfigManager = lazy(() => import("@/pages/order/OrderConfigManager").then(module => ({ default: module.OrderConfigManager })));
-const PriceListManager = lazy(() => import("@/pages/order/PriceListManager").then(module => ({ default: module.PriceListManager })));
-const OrderFulfillment = lazy(() => import("@/pages/OrderFulfillment"));
-const RMAManagement = lazy(() => import("@/pages/RMAManagement"));
-const SalesOrderManagement = lazy(() => import("@/pages/SalesOrderManagement"));
-const ShipmentOrderManagement = lazy(() => import("@/pages/ShipmentOrderManagement"));
+const OrderWorkbench = lazyWithRetry(() => import("@/pages/order/OrderWorkbench").then(module => ({ default: module.OrderWorkbench })));
+const OrderEntry = lazyWithRetry(() => import("@/pages/order/OrderEntry").then(module => ({ default: module.OrderEntry })));
+const ShipmentWorkbench = lazyWithRetry(() => import("@/pages/order/ShipmentWorkbench").then(module => ({ default: module.ShipmentWorkbench })));
+const ReturnsWorkbench = lazyWithRetry(() => import("@/pages/order/ReturnsWorkbench").then(module => ({ default: module.ReturnsWorkbench })));
+const OrderConfigManager = lazyWithRetry(() => import("@/pages/order/OrderConfigManager").then(module => ({ default: module.OrderConfigManager })));
+const PriceListManager = lazyWithRetry(() => import("@/pages/order/PriceListManager").then(module => ({ default: module.PriceListManager })));
+const OrderFulfillment = lazyWithRetry(() => import("@/pages/OrderFulfillment"));
+const RMAManagement = lazyWithRetry(() => import("@/pages/RMAManagement"));
+const SalesOrderManagement = lazyWithRetry(() => import("@/pages/SalesOrderManagement"));
+const ShipmentOrderManagement = lazyWithRetry(() => import("@/pages/ShipmentOrderManagement"));
 
 export default function OrderRoutes() {
     return (

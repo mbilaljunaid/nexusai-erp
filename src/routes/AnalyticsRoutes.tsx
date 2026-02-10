@@ -1,16 +1,16 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 
-const Analytics = lazy(() => import("@/pages/Analytics"));
-const AdvancedAnalytics = lazy(() => import("@/pages/AdvancedAnalytics"));
-const BusinessIntelligence = lazy(() => import("@/pages/BusinessIntelligence"));
-const SalesAnalytics = lazy(() => import("@/pages/SalesAnalytics"));
-const FinancialAnalytics = lazy(() => import("@/pages/FinancialAnalytics"));
-const OperationalAnalytics = lazy(() => import("@/pages/OperationalAnalytics"));
-const LeadScoringAnalytics = lazy(() => import("@/pages/LeadScoringAnalytics"));
-const ChurnRiskAnalysis = lazy(() => import("@/pages/ChurnRiskAnalysis"));
+const Analytics = lazyWithRetry(() => import("@/pages/Analytics"));
+const AdvancedAnalytics = lazyWithRetry(() => import("@/pages/AdvancedAnalytics"));
+const BusinessIntelligence = lazyWithRetry(() => import("@/pages/BusinessIntelligence"));
+const SalesAnalytics = lazyWithRetry(() => import("@/pages/SalesAnalytics"));
+const FinancialAnalytics = lazyWithRetry(() => import("@/pages/FinancialAnalytics"));
+const OperationalAnalytics = lazyWithRetry(() => import("@/pages/OperationalAnalytics"));
+const LeadScoringAnalytics = lazyWithRetry(() => import("@/pages/LeadScoringAnalytics"));
+const ChurnRiskAnalysis = lazyWithRetry(() => import("@/pages/ChurnRiskAnalysis"));
 
 export default function AnalyticsRoutes() {
     return (

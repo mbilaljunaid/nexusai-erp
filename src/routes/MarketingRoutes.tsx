@@ -1,10 +1,10 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const Marketing = lazy(() => import("@/pages/Marketing"));
-const CampaignsDashboard = lazy(() => import("@/pages/CampaignsDashboard"));
-const MarketingEngagement = lazy(() => import("@/pages/MarketingEngagement"));
+const Marketing = lazyWithRetry(() => import("@/pages/Marketing"));
+const CampaignsDashboard = lazyWithRetry(() => import("@/pages/CampaignsDashboard"));
+const MarketingEngagement = lazyWithRetry(() => import("@/pages/MarketingEngagement"));
 
 export default function MarketingRoutes() {
     return (

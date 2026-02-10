@@ -1,8 +1,8 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const ERP = lazy(() => import("@/pages/ERP"));
+const ERP = lazyWithRetry(() => import("@/pages/ERP"));
 
 
 export default function ErpRoutes() {

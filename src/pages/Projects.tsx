@@ -1,4 +1,5 @@
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ModuleNavigationGrid } from "@/components/nav/ModuleNavigationGrid";
 import {
@@ -12,7 +13,7 @@ import {
 } from "lucide-react";
 
 // Lazy load components to optimize bundle size
-const ProjectsDashboard = lazy(() => import("@/pages/projects/ProjectsDashboard"));
+const ProjectsDashboard = lazyWithRetry(() => import("@/pages/projects/ProjectsDashboard"));
 
 const projectsMenu = [
   {

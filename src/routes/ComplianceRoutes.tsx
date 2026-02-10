@@ -1,15 +1,15 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const Compliance = lazy(() => import("@/pages/Compliance"));
+const Compliance = lazyWithRetry(() => import("@/pages/Compliance"));
 
-const ComplianceDashboardNew = lazy(() => import("@/pages/ComplianceDashboardNew"));
-const ComplianceMonitoring = lazy(() => import("@/pages/ComplianceMonitoring"));
-const ComplianceExceptions = lazy(() => import("@/pages/ComplianceExceptions"));
-const ComplianceGovernance = lazy(() => import("@/pages/ComplianceGovernance"));
-const AuditTrails = lazy(() => import("@/pages/AuditTrails"));
-const SecurityProfiles = lazy(() => import("@/pages/SecurityProfiles"));
+const ComplianceDashboardNew = lazyWithRetry(() => import("@/pages/ComplianceDashboardNew"));
+const ComplianceMonitoring = lazyWithRetry(() => import("@/pages/ComplianceMonitoring"));
+const ComplianceExceptions = lazyWithRetry(() => import("@/pages/ComplianceExceptions"));
+const ComplianceGovernance = lazyWithRetry(() => import("@/pages/ComplianceGovernance"));
+const AuditTrails = lazyWithRetry(() => import("@/pages/AuditTrails"));
+const SecurityProfiles = lazyWithRetry(() => import("@/pages/SecurityProfiles"));
 
 export default function ComplianceRoutes() {
     return (

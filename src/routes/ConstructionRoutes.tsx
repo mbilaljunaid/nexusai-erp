@@ -1,17 +1,17 @@
 
-import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const ConstructionContractWorkbench = lazy(() => import("@/components/construction/ConstructionContractWorkbench"));
-const ConstructionBillingWorkbench = lazy(() => import("@/components/construction/ConstructionBillingWorkbench"));
-const ConstructionExecutiveDashboard = lazy(() => import("@/components/construction/ConstructionExecutiveDashboard"));
-const ConstructionSetup = lazy(() => import("@/components/construction/ConstructionSetup"));
-const ConstructionResourceWorkbench = lazy(() => import("@/components/construction/ConstructionResourceWorkbench"));
-const ConstructionSiteManagement = lazy(() => import("@/components/construction/ConstructionSiteManagement"));
-const ConstructionCostCodeLibrary = lazy(() => import("@/components/construction/ConstructionCostCodeLibrary"));
+const ConstructionContractWorkbench = lazyWithRetry(() => import("@/components/construction/ConstructionContractWorkbench"));
+const ConstructionBillingWorkbench = lazyWithRetry(() => import("@/components/construction/ConstructionBillingWorkbench"));
+const ConstructionExecutiveDashboard = lazyWithRetry(() => import("@/components/construction/ConstructionExecutiveDashboard"));
+const ConstructionSetup = lazyWithRetry(() => import("@/components/construction/ConstructionSetup"));
+const ConstructionResourceWorkbench = lazyWithRetry(() => import("@/components/construction/ConstructionResourceWorkbench"));
+const ConstructionSiteManagement = lazyWithRetry(() => import("@/components/construction/ConstructionSiteManagement"));
+const ConstructionCostCodeLibrary = lazyWithRetry(() => import("@/components/construction/ConstructionCostCodeLibrary"));
 
 
-const ConstructionLanding = lazy(() => import("@/pages/ConstructionLanding"));
+const ConstructionLanding = lazyWithRetry(() => import("@/pages/ConstructionLanding"));
 
 export default function ConstructionRoutes() {
     return (
