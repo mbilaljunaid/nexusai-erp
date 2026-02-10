@@ -119,6 +119,38 @@ export const PERMISSIONS = {
     // Succession
     SUCCESSION_READ: "succession.read",
     SUCCESSION_WRITE: "succession.write",
+    // Inventory
+    INVENTORY_READ: "inventory.read",
+    INVENTORY_WRITE: "inventory.write",
+    // Approvals / Workflow
+    APPROVAL_READ: "approval.read",
+    APPROVAL_WRITE: "approval.write",
+    // Analytics
+    ANALYTICS_READ: "analytics.read",
+    // Service / SLA
+    SERVICE_READ: "service.read",
+    SERVICE_WRITE: "service.write",
+    // Knowledge Base
+    KNOWLEDGE_READ: "knowledge.read",
+    // Learning
+    LEARNING_READ: "learning.read",
+    LEARNING_WRITE: "learning.write",
+    // Partner
+    PARTNER_READ: "partner.read",
+    // Billing
+    BILLING_READ: "billing.read",
+    BILLING_WRITE: "billing.write",
+    // Notifications
+    NOTIFICATION_WRITE: "notification.write",
+    // Document / OCR
+    DOCUMENT_READ: "document.read",
+    // Compensation
+    COMPENSATION_READ: "compensation.read",
+    // Sourcing
+    SOURCING_READ: "sourcing.read",
+    SOURCING_WRITE: "sourcing.write",
+    // Territory
+    TERRITORY_READ: "territory.read",
 } as const;
 
 // Role-Permission Mapping (In a real app, this might be DB driven)
@@ -180,6 +212,20 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         // Field Service / Construction / Maintenance / MDM
         PERMISSIONS.FIELD_SERVICE_READ, PERMISSIONS.CONSTRUCTION_READ,
         PERMISSIONS.MAINTENANCE_READ, PERMISSIONS.MDM_READ,
+        // New Phase 3
+        PERMISSIONS.INVENTORY_READ, PERMISSIONS.INVENTORY_WRITE,
+        PERMISSIONS.APPROVAL_READ, PERMISSIONS.APPROVAL_WRITE,
+        PERMISSIONS.ANALYTICS_READ,
+        PERMISSIONS.SERVICE_READ, PERMISSIONS.SERVICE_WRITE,
+        PERMISSIONS.KNOWLEDGE_READ,
+        PERMISSIONS.LEARNING_READ, PERMISSIONS.LEARNING_WRITE,
+        PERMISSIONS.PARTNER_READ,
+        PERMISSIONS.BILLING_READ, PERMISSIONS.BILLING_WRITE,
+        PERMISSIONS.NOTIFICATION_WRITE,
+        PERMISSIONS.DOCUMENT_READ,
+        PERMISSIONS.COMPENSATION_READ,
+        PERMISSIONS.SOURCING_READ, PERMISSIONS.SOURCING_WRITE,
+        PERMISSIONS.TERRITORY_READ,
     ],
     [ROLES.GL_USER]: [
         // GL
@@ -221,6 +267,19 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         PERMISSIONS.MAINTENANCE_READ, PERMISSIONS.MDM_READ,
         // Netting / Allocation (read)
         PERMISSIONS.NETTING_READ, PERMISSIONS.ALLOCATION_READ,
+        // New Phase 3
+        PERMISSIONS.INVENTORY_READ,
+        PERMISSIONS.APPROVAL_READ,
+        PERMISSIONS.ANALYTICS_READ,
+        PERMISSIONS.SERVICE_READ,
+        PERMISSIONS.KNOWLEDGE_READ,
+        PERMISSIONS.LEARNING_READ,
+        PERMISSIONS.PARTNER_READ,
+        PERMISSIONS.BILLING_READ,
+        PERMISSIONS.DOCUMENT_READ,
+        PERMISSIONS.COMPENSATION_READ,
+        PERMISSIONS.SOURCING_READ,
+        PERMISSIONS.TERRITORY_READ,
     ],
     [ROLES.GL_VIEWER]: [
         PERMISSIONS.GL_READ, PERMISSIONS.AP_READ, PERMISSIONS.AR_READ,
@@ -242,6 +301,19 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
         PERMISSIONS.FIELD_SERVICE_READ, PERMISSIONS.CONSTRUCTION_READ,
         PERMISSIONS.MAINTENANCE_READ, PERMISSIONS.MDM_READ,
         PERMISSIONS.NETTING_READ, PERMISSIONS.ALLOCATION_READ,
+        // New Phase 3
+        PERMISSIONS.INVENTORY_READ,
+        PERMISSIONS.APPROVAL_READ,
+        PERMISSIONS.ANALYTICS_READ,
+        PERMISSIONS.SERVICE_READ,
+        PERMISSIONS.KNOWLEDGE_READ,
+        PERMISSIONS.LEARNING_READ,
+        PERMISSIONS.PARTNER_READ,
+        PERMISSIONS.BILLING_READ,
+        PERMISSIONS.DOCUMENT_READ,
+        PERMISSIONS.COMPENSATION_READ,
+        PERMISSIONS.SOURCING_READ,
+        PERMISSIONS.TERRITORY_READ,
     ]
 };
 
