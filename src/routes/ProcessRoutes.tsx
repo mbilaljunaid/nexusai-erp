@@ -1,8 +1,9 @@
 
 import { lazy } from "react";
 import { Route, Switch } from "wouter";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
-const ProcessHub = lazy(() => import("@/pages/processes/ProcessHub"));
+const ProcessHub = lazyWithRetry(() => import("@/pages/processes/ProcessHub"));
 const ProcureToPayProcess = lazy(() => import("@/pages/processes/pages/ProcureToPayProcess"));
 const OrderToCashProcess = lazy(() => import("@/pages/processes/pages/OrderToCashProcess"));
 const HireToRetireProcess = lazy(() => import("@/pages/processes/pages/HireToRetireProcess"));
