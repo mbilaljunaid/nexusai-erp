@@ -46,6 +46,7 @@ import ProcessRoutes from "@/routes/ProcessRoutes";
 const AIAssistantPage = lazy(() => import("@/pages/AIAssistant"));
 const SettingsPage = lazy(() => import("@/pages/Settings"));
 const SCMDashboard = lazy(() => import("@/pages/Inventory"));
+const DashboardPage = lazy(() => import("@/pages/Dashboard"));
 
 import LearningManagement from "@/pages/LearningManagement";
 import InstructorDashboard from "@/pages/learning/instructor/InstructorDashboard";
@@ -72,7 +73,7 @@ function Router() {
     <>
       <Switch>
         {/* Dashboard */}
-        <Route path="/dashboard" component={lazy(() => import("@/pages/Dashboard"))} />
+        <Route path="/dashboard" component={DashboardPage} />
 
         {/* Processes */}
         <Route path="/processes*" component={ProcessRoutes} />
