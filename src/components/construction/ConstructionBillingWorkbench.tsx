@@ -19,10 +19,13 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, DollarSign, Calculator, Lock, Calendar, ShieldCheck, History } from "lucide-react";
+import { Plus, DollarSign, Calculator, Lock, Calendar, ShieldCheck, History, Edit, Workflow, Receipt } from "lucide-react";
 import { format } from "date-fns";
 import { StandardTable, Column } from "../tables/StandardTable";
 import type { CostCode } from "@/types/erp-types";
+import { PayAppLineEditor } from "./PayAppLineEditor";
+import { PayAppCertificationWizard } from "./PayAppCertificationWizard";
+import { PayAppSummary } from "./PayAppSummary";
 
 interface PayApp {
     id: string;
@@ -58,6 +61,9 @@ export default function ConstructionBillingWorkbench() {
     const [selectedPayAppId, setSelectedPayAppId] = useState<string | null>(null);
     const [linePage, setLinePage] = useState(1);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [selectedLine, setSelectedLine] = useState<PayAppLine | null>(null);
+    const [isLineEditorOpen, setIsLineEditorOpen] = useState(false);
+    const [isWizardOpen, setIsWizardOpen] = useState(false);
 
     // Fetch Projects
     useEffect(() => {
@@ -168,6 +174,23 @@ export default function ConstructionBillingWorkbench() {
             id: lineId,
             data: { [field]: value }
         });
+    };
+
+    const handleLineSave = async (id: string, data: Partial<PayAppLine>) => {
+        await updateLineMutation.mutateAsync({ id, data });
+        queryClient.invalidateQueries({ queryKey: ["construction-pay-app-lines"] });
+    };
+
+    const handleCertify = async (action: string) => {
+        const res = await fetch(`/api/construction/pay-apps/${selectedPayAppId}/${action}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user: "Manager-User" })
+        });
+        if (!res.ok) throw new Error("Certification action failed");
+        queryClient.invalidateQueries({ queryKey: ["construction-pay-apps"] });
+        queryClient.invalidateQueries({ queryKey: ["construction-pay-app-detail", selectedPayAppId] });
+        return res.json();
     };
 
     const certMutation = useMutation({
@@ -309,6 +332,14 @@ export default function ConstructionBillingWorkbench() {
                                     </CardContent>
                                 </Card>
                                 <Card className="flex flex-col items-center justify-center p-4 gap-2">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full gap-2"
+                                        onClick={() => setIsWizardOpen(true)}
+                                    >
+                                        <Workflow className="h-4 w-4" />
+                                        Certification Workflow
+                                    </Button>
                                     <div className="flex gap-2 w-full">
                                         {activeApp.status === "DRAFT" && (
                                             <Button
@@ -409,15 +440,65 @@ export default function ConstructionBillingWorkbench() {
                                                 header: "Balance",
                                                 accessorKey: "balance",
                                                 cell: (item: any) => `$${(Number(item.scheduledValue) - Number(item.totalCompletedToDate)).toLocaleString()}`
+                                            },
+                                            {
+                                                header: "",
+                                                accessorKey: "actions",
+                                                cell: (item: any) => (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => {
+                                                            setSelectedLine(item);
+                                                            setIsLineEditorOpen(true);
+                                                        }}
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                )
                                             }
                                         ]}
                                     />
                                 </CardContent>
                             </Card>
+
+                            {/* Pay App Summary */}
+                            {activeApp && (
+                                <PayAppSummary
+                                    payApp={{
+                                        ...activeApp,
+                                        scheduledValue: "0", // Would come from contract
+                                        previousAmount: "0", // Would come from previous app
+                                        workThisPeriod: "0",
+                                        materialsStored: "0",
+                                        retentionPercent: 10
+                                    }}
+                                />
+                            )}
                         </>
                     )}
                 </div>
             </div>
+
+            {/* Dialogs */}
+            {selectedLine && (
+                <PayAppLineEditor
+                    open={isLineEditorOpen}
+                    onOpenChange={setIsLineEditorOpen}
+                    line={selectedLine}
+                    onSave={handleLineSave}
+                    isReadOnly={activeApp?.isLocked}
+                />
+            )}
+
+            {activeApp && (
+                <PayAppCertificationWizard
+                    open={isWizardOpen}
+                    onOpenChange={setIsWizardOpen}
+                    payApp={activeApp}
+                    onCertify={handleCertify}
+                />
+            )}
         </div>
     );
 }

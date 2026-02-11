@@ -52,6 +52,9 @@ import KnowledgeBase from "@/pages/crm/KnowledgeBase";
 import PartnerManagement from "@/pages/crm/PartnerManagement";
 import DealRegistration from "@/pages/crm/DealRegistration";
 
+// CRM Landing
+import CrmDashboard from "@/pages/crm/CrmDashboard";
+
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 // import { CrmSidebar } from "@/components/nav/CrmSidebar";
 
@@ -96,6 +99,7 @@ export default function CrmRoutes() {
 
             {/* Module Overview & Catch-all */}
             <Route path="/crm-module" component={CRM} />
+            <Route path="/crm" component={CrmDashboard} />
             <Route path="/crm/:page?" component={CRM} />
         </ModuleLayout>
     );

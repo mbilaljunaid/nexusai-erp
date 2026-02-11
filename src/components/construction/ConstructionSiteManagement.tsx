@@ -29,6 +29,9 @@ import { StandardTable, Column } from "../tables/StandardTable";
 
 import ConstructionClaimsManager from "./ConstructionClaimsManager";
 import ConstructionDailyLogDetail from "./ConstructionDailyLogDetail";
+import { DailyLogForm } from "./DailyLogForm";
+import { RFIManager } from "./RFIManager";
+import { SubmittalManager } from "./SubmittalManager";
 
 interface DailyLog {
     id: string;
@@ -63,6 +66,7 @@ export default function ConstructionSiteManagement() {
     const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
     const [selectedLogId, setSelectedLogId] = useState<string | null>(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [isLogFormOpen, setIsLogFormOpen] = useState(false);
 
     // --- Data Fetching ---
 
@@ -213,7 +217,7 @@ export default function ConstructionSiteManagement() {
                 <TabsContent value="logs" className="space-y-4">
                     <div className="flex justify-between items-center">
                         <h2 className="text-xl font-semibold">Field Daily Reports</h2>
-                        <Button size="sm"><Plus className="h-4 w-4 mr-1" /> New Log</Button>
+                        <Button size="sm" onClick={() => setIsLogFormOpen(true)}><Plus className="h-4 w-4 mr-1" /> New Log</Button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {logs.map(log => (
@@ -250,68 +254,23 @@ export default function ConstructionSiteManagement() {
                 </TabsContent>
 
                 <TabsContent value="rfis" className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-semibold">Requests for Information</h2>
-                        <Button size="sm"><Plus className="h-4 w-4 mr-1" /> New RFI</Button>
-                    </div>
-                    <StandardTable
-                        data={rfis}
-                        columns={[
-                            { header: "RFI #", accessorKey: "rfiNumber", sortable: true },
-                            { header: "Subject", accessorKey: "subject" },
-                            {
-                                header: "Importance",
-                                accessorKey: "importance",
-                                cell: (item: RFI) => (
-                                    <Badge variant={item.importance === "URGENT" ? "destructive" : "outline"}>
-                                        {item.importance}
-                                    </Badge>
-                                )
-                            },
-                            {
-                                header: "Status",
-                                accessorKey: "status",
-                                cell: (item: RFI) => (
-                                    <Badge variant={item.status === "OPEN" ? "default" : "secondary"}>
-                                        {item.status}
-                                    </Badge>
-                                )
-                            },
-                            {
-                                header: "Created At",
-                                accessorKey: "createdAt",
-                                cell: (item: RFI) => format(new Date(item.createdAt), "PP")
-                            }
-                        ]}
-                    />
+                    {selectedProjectId ? (
+                        <RFIManager projectId={selectedProjectId} />
+                    ) : (
+                        <Card className="h-48 flex items-center justify-center text-muted-foreground border-dashed">
+                            Select a project to manage RFIs.
+                        </Card>
+                    )}
                 </TabsContent>
 
                 <TabsContent value="submittals" className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-semibold">Project Submittals</h2>
-                        <Button size="sm"><Plus className="h-4 w-4 mr-1" /> New Submittal</Button>
-                    </div>
-                    <StandardTable
-                        data={submittals}
-                        columns={[
-                            { header: "Submittal #", accessorKey: "submittalNumber", sortable: true },
-                            { header: "Description", accessorKey: "description" },
-                            {
-                                header: "Status",
-                                accessorKey: "status",
-                                cell: (item: Submittal) => (
-                                    <Badge variant={item.status === "APPROVED" ? "default" : "outline"}>
-                                        {item.status}
-                                    </Badge>
-                                )
-                            },
-                            {
-                                header: "Received",
-                                accessorKey: "createdAt",
-                                cell: (item: Submittal) => format(new Date(item.createdAt), "PP")
-                            }
-                        ]}
-                    />
+                    {selectedProjectId ? (
+                        <SubmittalManager projectId={selectedProjectId} />
+                    ) : (
+                        <Card className="h-48 flex items-center justify-center text-muted-foreground border-dashed">
+                            Select a project to manage submittals.
+                        </Card>
+                    )}
                 </TabsContent>
 
                 <TabsContent value="compliance" className="space-y-4">
@@ -393,6 +352,17 @@ export default function ConstructionSiteManagement() {
                 open={isDetailOpen}
                 onOpenChange={setIsDetailOpen}
             />
+
+            {selectedProjectId && (
+                <DailyLogForm
+                    open={isLogFormOpen}
+                    onOpenChange={setIsLogFormOpen}
+                    projectId={selectedProjectId}
+                    onSubmit={async (data) => {
+                        await createLogMutation.mutateAsync(data);
+                    }}
+                />
+            )}
         </div >
     );
 }

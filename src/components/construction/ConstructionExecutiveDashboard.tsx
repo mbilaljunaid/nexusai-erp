@@ -23,6 +23,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { useNexusAI } from "@/contexts/NexusAIContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RiskDashboard } from "./RiskDashboard";
+import { EquipmentTelemetry } from "./EquipmentTelemetry";
 
 interface ProjectRisk {
     contractId: string;
@@ -132,124 +135,143 @@ export default function ConstructionExecutiveDashboard() {
                 </Card>
             </div>
 
-            <div className="grid grid-cols-12 gap-6">
-                {/* Risk Distribution Table */}
-                <Card className="col-span-8 shadow-sm">
-                    <CardHeader>
-                        <CardTitle className="text-lg">Contract-Level Risk Matrix</CardTitle>
-                        <CardDescription>Detailed breakdown of specific contract health.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Contract</TableHead>
-                                    <TableHead>Risk Level</TableHead>
-                                    <TableHead>Risk Score</TableHead>
-                                    <TableHead className="text-right">Est. Exposure</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {isLoading ? (
-                                    <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground animate-pulse">Analyzing portfolio...</TableCell></TableRow>
-                                ) : riskData.length === 0 ? (
-                                    <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground italic">No contract data found for selected project.</TableCell></TableRow>
-                                ) : (
-                                    riskData.map(risk => (
-                                        <TableRow key={risk.contractId}>
-                                            <TableCell>
-                                                <div className="font-medium">{risk.contractNumber}</div>
-                                                <div className="text-xs text-muted-foreground">{risk.subject}</div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge
-                                                    variant={risk.riskLevel === "HIGH" ? "destructive" : risk.riskLevel === "MEDIUM" ? "outline" : "secondary"}
-                                                    className={risk.riskLevel === "MEDIUM" ? "border-amber-500 text-amber-600" : ""}
-                                                >
-                                                    {risk.riskLevel}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-sm font-mono mr-2">{risk.riskScore}</span>
-                                                    <Progress value={risk.riskScore} className={`h-1.5 w-16 ${risk.riskScore > 70 ? "[&>div]:bg-red-500" : ""}`} />
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-right font-mono font-bold">
-                                                ${Number(risk.variationExposure).toLocaleString()}
-                                            </TableCell>
+            {/* Main Content with Tabs */}
+            <Tabs defaultValue="portfolio" className="space-y-6">
+                <TabsList>
+                    <TabsTrigger value="portfolio">Portfolio Overview</TabsTrigger>
+                    <TabsTrigger value="risk">Project Risk Analysis</TabsTrigger>
+                    <TabsTrigger value="equipment">Equipment Monitoring</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="portfolio" className="space-y-6">
+                    <div className="grid grid-cols-12 gap-6">
+                        {/* Risk Distribution Table */}
+                        <Card className="col-span-8 shadow-sm">
+                            <CardHeader>
+                                <CardTitle className="text-lg">Contract-Level Risk Matrix</CardTitle>
+                                <CardDescription>Detailed breakdown of specific contract health.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Contract</TableHead>
+                                            <TableHead>Risk Level</TableHead>
+                                            <TableHead>Risk Score</TableHead>
+                                            <TableHead className="text-right">Est. Exposure</TableHead>
                                         </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {isLoading ? (
+                                            <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground animate-pulse">Analyzing portfolio...</TableCell></TableRow>
+                                        ) : riskData.length === 0 ? (
+                                            <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground italic">No contract data found for selected project.</TableCell></TableRow>
+                                        ) : (
+                                            riskData.map(risk => (
+                                                <TableRow key={risk.contractId}>
+                                                    <TableCell>
+                                                        <div className="font-medium">{risk.contractNumber}</div>
+                                                        <div className="text-xs text-muted-foreground">{risk.subject}</div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge
+                                                            variant={risk.riskLevel === "HIGH" ? "destructive" : risk.riskLevel === "MEDIUM" ? "outline" : "secondary"}
+                                                            className={risk.riskLevel === "MEDIUM" ? "border-amber-500 text-amber-600" : ""}
+                                                        >
+                                                            {risk.riskLevel}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-sm font-mono mr-2">{risk.riskScore}</span>
+                                                            <Progress value={risk.riskScore} className={`h-1.5 w-16 ${risk.riskScore > 70 ? "[&>div]:bg-red-500" : ""}`} />
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-mono font-bold">
+                                                        ${Number(risk.variationExposure).toLocaleString()}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
 
-                {/* Insights Panel */}
-                <div className="col-span-4 space-y-6">
-                    <Card className="shadow-sm bg-slate-900 text-white">
-                        <CardHeader>
-                            <CardTitle className="text-lg flex items-center gap-2">
-                                <Sparkles className="h-5 w-5 text-amber-400" />
-                                AI Strategic Insights
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {riskData.some(r => r.riskLevel === "HIGH") ? (
-                                <Alert className="bg-red-950/50 border-red-900 text-red-200">
-                                    <AlertTriangle className="h-4 w-4" />
-                                    <AlertTitle>Critical Variations Detected</AlertTitle>
-                                    <AlertDescription className="text-xs">
-                                        Multiple contracts exhibit high variation frequency. Recommend immediate audit of PCO processing.
-                                    </AlertDescription>
-                                </Alert>
-                            ) : (
-                                <Alert className="bg-green-950/50 border-green-900 text-green-200">
-                                    <CheckCircle2 className="h-4 w-4" />
-                                    <AlertTitle>Stable Performance</AlertTitle>
-                                    <AlertDescription className="text-xs">
-                                        Contract variances are within expected 5% margin of original budget.
-                                    </AlertDescription>
-                                </Alert>
-                            )}
+                        {/* Insights Panel */}
+                        <div className="col-span-4 space-y-6">
+                            <Card className="shadow-sm bg-slate-900 text-white">
+                                <CardHeader>
+                                    <CardTitle className="text-lg flex items-center gap-2">
+                                        <Sparkles className="h-5 w-5 text-amber-400" />
+                                        AI Strategic Insights
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    {riskData.some(r => r.riskLevel === "HIGH") ? (
+                                        <Alert className="bg-red-950/50 border-red-900 text-red-200">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            <AlertTitle>Critical Variations Detected</AlertTitle>
+                                            <AlertDescription className="text-xs">
+                                                Multiple contracts exhibit high variation frequency. Recommend immediate audit of PCO processing.
+                                            </AlertDescription>
+                                        </Alert>
+                                    ) : (
+                                        <Alert className="bg-green-950/50 border-green-900 text-green-200">
+                                            <CheckCircle2 className="h-4 w-4" />
+                                            <AlertTitle>Stable Performance</AlertTitle>
+                                            <AlertDescription className="text-xs">
+                                                Contract variances are within expected 5% margin of original budget.
+                                            </AlertDescription>
+                                        </Alert>
+                                    )}
 
-                            <div className="space-y-2">
-                                <h4 className="text-sm font-semibold text-slate-400">Recurring Risk Factors</h4>
-                                <ul className="text-xs space-y-2">
-                                    <li className="flex items-center gap-2">
-                                        <div className="h-1 w-1 bg-amber-400 rounded-full" />
-                                        Subcontractor schedule delays (75% correlation)
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <div className="h-1 w-1 bg-amber-400 rounded-full" />
-                                        Materials cost volatility
-                                    </li>
-                                </ul>
-                            </div>
+                                    <div className="space-y-2">
+                                        <h4 className="text-sm font-semibold text-slate-400">Recurring Risk Factors</h4>
+                                        <ul className="text-xs space-y-2">
+                                            <li className="flex items-center gap-2">
+                                                <div className="h-1 w-1 bg-amber-400 rounded-full" />
+                                                Subcontractor schedule delays (75% correlation)
+                                            </li>
+                                            <li className="flex items-center gap-2">
+                                                <div className="h-1 w-1 bg-amber-400 rounded-full" />
+                                                Materials cost volatility
+                                            </li>
+                                        </ul>
+                                    </div>
 
-                            <Button
-                                className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 gap-2 mt-4"
-                                variant="outline"
-                                onClick={open}
-                            >
-                                <Sparkles className="h-4 w-4" />
-                                Portfolio Insights
-                            </Button>
-                        </CardContent>
-                    </Card>
+                                    <Button
+                                        className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 gap-2 mt-4"
+                                        variant="outline"
+                                        onClick={open}
+                                    >
+                                        <Sparkles className="h-4 w-4" />
+                                        Portfolio Insights
+                                    </Button>
+                                </CardContent>
+                            </Card>
 
-                    <Card className="shadow-sm border-dashed border-2">
-                        <CardHeader className="pb-3 text-center">
-                            <Clock className="h-6 w-6 mx-auto text-muted-foreground mb-2" />
-                            <CardTitle className="text-base uppercase tracking-widest text-muted-foreground">Coming Soon</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-sm text-center text-muted-foreground pb-6 px-10">
-                            Predictive cash flow modeling based on historical pay app cycles.
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
+                            <Card className="shadow-sm border-dashed border-2">
+                                <CardHeader className="pb-3 text-center">
+                                    <Clock className="h-6 w-6 mx-auto text-muted-foreground mb-2" />
+                                    <CardTitle className="text-base uppercase tracking-widest text-muted-foreground">Coming Soon</CardTitle>
+                                </CardHeader>
+                                <CardContent className="text-sm text-center text-muted-foreground pb-6 px-10">
+                                    Predictive cash flow modeling based on historical pay app cycles.
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="risk">
+                    <RiskDashboard projectId={selectedProjectId || undefined} />
+                </TabsContent>
+
+                <TabsContent value="equipment">
+                    <EquipmentTelemetry projectId={selectedProjectId || undefined} />
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

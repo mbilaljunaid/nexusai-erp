@@ -1,0 +1,448 @@
+-- ============================================
+-- CRM DATABASE SCHEMA
+-- ============================================
+-- This migration creates the core CRM tables for opportunities,
+-- quotes, leads, products, partners, and service management
+
+-- ============================================
+-- 1. OPPORTUNITIES & PIPELINE
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_opportunities (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    opportunity_number TEXT NOT NULL,
+    name TEXT NOT NULL,
+    account_name TEXT NOT NULL,
+    stage TEXT NOT NULL CHECK (stage IN ('DISCOVERY', 'QUALIFICATION', 'PROPOSAL', 'NEGOTIATION', 'CLOSED_WON', 'CLOSED_LOST')),
+    amount DECIMAL(15,2) NOT NULL DEFAULT 0,
+    close_date DATE NOT NULL,
+    win_probability INTEGER NOT NULL DEFAULT 0 CHECK (win_probability BETWEEN 0 AND 100),
+    owner TEXT NOT NULL,
+    product_type TEXT,
+    lead_source TEXT,
+    competitor TEXT,
+    status TEXT NOT NULL DEFAULT 'OPEN' CHECK (status IN ('OPEN', 'WON', 'LOST')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by UUID,
+    updated_by UUID
+);
+
+CREATE INDEX idx_crm_opportunities_tenant ON crm_opportunities(tenant_id);
+CREATE INDEX idx_crm_opportunities_stage ON crm_opportunities(stage);
+CREATE INDEX idx_crm_opportunities_owner ON crm_opportunities(owner);
+CREATE INDEX idx_crm_opportunities_close_date ON crm_opportunities(close_date);
+
+-- RLS Policies
+ALTER TABLE crm_opportunities ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_opportunities_tenant_isolation ON crm_opportunities
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 2. QUOTES & LINE ITEMS
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_quotes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    quote_number TEXT NOT NULL,
+    opportunity_id UUID REFERENCES crm_opportunities(id),
+    account_name TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'PENDING', 'APPROVED', 'REJECTED', 'SENT')),
+    total_amount DECIMAL(15,2) NOT NULL DEFAULT 0,
+    discount_percent DECIMAL(5,2) DEFAULT 0,
+    expiration_date DATE,
+    created_by TEXT NOT NULL,
+    approved_by TEXT,
+    rejection_reason TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS crm_quote_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    quote_id UUID NOT NULL REFERENCES crm_quotes(id) ON DELETE CASCADE,
+    product_name TEXT NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    unit_price DECIMAL(15,2) NOT NULL,
+    discount DECIMAL(5,2) DEFAULT 0,
+    total DECIMAL(15,2) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_quotes_tenant ON crm_quotes(tenant_id);
+CREATE INDEX idx_crm_quotes_status ON crm_quotes(status);
+CREATE INDEX idx_crm_quotes_opportunity ON crm_quotes(opportunity_id);
+CREATE INDEX idx_crm_quote_items_quote ON crm_quote_items(quote_id);
+
+-- RLS Policies
+ALTER TABLE crm_quotes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE crm_quote_items ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_quotes_tenant_isolation ON crm_quotes
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+CREATE POLICY crm_quote_items_access ON crm_quote_items
+    USING (EXISTS (
+        SELECT 1 FROM crm_quotes 
+        WHERE crm_quotes.id = crm_quote_items.quote_id 
+        AND crm_quotes.tenant_id = current_setting('app.current_tenant_id')::UUID
+    ));
+
+-- ============================================
+-- 3. LEADS & SCORING
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_leads (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    lead_number TEXT NOT NULL,
+    name TEXT NOT NULL,
+    company TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT,
+    score INTEGER DEFAULT 0 CHECK (score BETWEEN 0 AND 100),
+    status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'CONTACTED', 'QUALIFIED', 'CONVERTED', 'DISQUALIFIED')),
+    source TEXT,
+    industry TEXT,
+    assigned_to TEXT,
+    conversion_date DATE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_leads_tenant ON crm_leads(tenant_id);
+CREATE INDEX idx_crm_leads_score ON crm_leads(score DESC);
+CREATE INDEX idx_crm_leads_status ON crm_leads(status);
+CREATE INDEX idx_crm_leads_assigned ON crm_leads(assigned_to);
+
+-- RLS Policies
+ALTER TABLE crm_leads ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_leads_tenant_isolation ON crm_leads
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 4. COMPETITORS
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_competitors (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    website TEXT,
+    strengths TEXT[],
+    weaknesses TEXT[],
+    win_count INTEGER DEFAULT 0,
+    loss_count INTEGER DEFAULT 0,
+    total_deals INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_competitors_tenant ON crm_competitors(tenant_id);
+
+-- RLS Policies
+ALTER TABLE crm_competitors ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_competitors_tenant_isolation ON crm_competitors
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 5. PRODUCTS & CATALOG
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    product_code TEXT NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT,
+    list_price DECIMAL(15,2) NOT NULL DEFAULT 0,
+    cost DECIMAL(15,2) DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE', 'ARCHIVED')),
+    is_bundle BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS crm_price_books (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_products_tenant ON crm_products(tenant_id);
+CREATE INDEX idx_crm_products_status ON crm_products(status);
+CREATE INDEX idx_crm_price_books_tenant ON crm_price_books(tenant_id);
+
+-- RLS Policies
+ALTER TABLE crm_products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE crm_price_books ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_products_tenant_isolation ON crm_products
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+CREATE POLICY crm_price_books_tenant_isolation ON crm_price_books
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 6. MARKETING CAMPAIGNS
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_campaigns (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'EMAIL' CHECK (type IN ('EMAIL', 'SOCIAL', 'EVENT', 'WEBINAR')),
+    status TEXT NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'SCHEDULED', 'SENT', 'COMPLETED')),
+    template TEXT,
+    subject TEXT,
+    send_date TIMESTAMPTZ,
+    sent_count INTEGER DEFAULT 0,
+    delivered_count INTEGER DEFAULT 0,
+    opened_count INTEGER DEFAULT 0,
+    clicked_count INTEGER DEFAULT 0,
+    bounced_count INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_campaigns_tenant ON crm_campaigns(tenant_id);
+CREATE INDEX idx_crm_campaigns_status ON crm_campaigns(status);
+
+-- RLS Policies
+ALTER TABLE crm_campaigns ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_campaigns_tenant_isolation ON crm_campaigns
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 7. MARKETING AUTOMATION JOURNEYS
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_journeys (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    trigger_event TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'ACTIVE', 'PAUSED', 'COMPLETED')),
+    enrolled_count INTEGER DEFAULT 0,
+    active_count INTEGER DEFAULT 0,
+    completed_count INTEGER DEFAULT 0,
+    steps JSONB DEFAULT '[]'::JSONB,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_journeys_tenant ON crm_journeys(tenant_id);
+CREATE INDEX idx_crm_journeys_status ON crm_journeys(status);
+
+-- RLS Policies
+ALTER TABLE crm_journeys ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_journeys_tenant_isolation ON crm_journeys
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 8. SERVICE CASES
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_cases (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    case_number TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    description TEXT,
+    status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'IN_PROGRESS', 'RESOLVED', 'CLOSED', 'ESCALATED')),
+    priority TEXT NOT NULL DEFAULT 'MEDIUM' CHECK (priority IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')),
+    type TEXT NOT NULL DEFAULT 'TECHNICAL' CHECK (type IN ('TECHNICAL', 'BILLING', 'GENERAL', 'FEATURE')),
+    customer TEXT NOT NULL,
+    assigned_to TEXT,
+    sla_deadline TIMESTAMPTZ,
+    sla_status TEXT DEFAULT 'ON_TIME' CHECK (sla_status IN ('ON_TIME', 'AT_RISK', 'BREACHED')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    resolved_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_crm_cases_tenant ON crm_cases(tenant_id);
+CREATE INDEX idx_crm_cases_status ON crm_cases(status);
+CREATE INDEX idx_crm_cases_priority ON crm_cases(priority);
+CREATE INDEX idx_crm_cases_sla ON crm_cases(sla_status, sla_deadline);
+
+-- RLS Policies
+ALTER TABLE crm_cases ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_cases_tenant_isolation ON crm_cases
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 9. KNOWLEDGE BASE
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_kb_articles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    title TEXT NOT NULL,
+    summary TEXT,
+    content TEXT NOT NULL,
+    category TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'PUBLISHED', 'ARCHIVED')),
+    author TEXT NOT NULL,
+    views INTEGER DEFAULT 0,
+    likes INTEGER DEFAULT 0,
+    helpful_votes INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_kb_articles_tenant ON crm_kb_articles(tenant_id);
+CREATE INDEX idx_crm_kb_articles_status ON crm_kb_articles(status);
+CREATE INDEX idx_crm_kb_articles_category ON crm_kb_articles(category);
+CREATE INDEX idx_crm_kb_articles_views ON crm_kb_articles(views DESC);
+
+-- RLS Policies
+ALTER TABLE crm_kb_articles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_kb_articles_tenant_isolation ON crm_kb_articles
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 10. PARTNERS
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_partners (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    tier TEXT NOT NULL CHECK (tier IN ('PLATINUM', 'GOLD', 'SILVER', 'BRONZE')),
+    type TEXT NOT NULL CHECK (type IN ('RESELLER', 'REFERRAL', 'TECHNOLOGY', 'CONSULTANT')),
+    status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('ACTIVE', 'INACTIVE', 'PENDING')),
+    certification_level TEXT,
+    deals_registered INTEGER DEFAULT 0,
+    revenue DECIMAL(15,2) DEFAULT 0,
+    win_rate INTEGER DEFAULT 0 CHECK (win_rate BETWEEN 0 AND 100),
+    contact_name TEXT NOT NULL,
+    contact_email TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_partners_tenant ON crm_partners(tenant_id);
+CREATE INDEX idx_crm_partners_tier ON crm_partners(tier);
+CREATE INDEX idx_crm_partners_status ON crm_partners(status);
+
+-- RLS Policies
+ALTER TABLE crm_partners ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_partners_tenant_isolation ON crm_partners
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- 11. DEAL REGISTRATIONS
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS crm_deal_registrations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL,
+    partner_id UUID REFERENCES crm_partners(id),
+    deal_name TEXT NOT NULL,
+    customer_name TEXT NOT NULL,
+    partner_name TEXT NOT NULL,
+    estimated_value DECIMAL(15,2) NOT NULL DEFAULT 0,
+    expected_close_date DATE NOT NULL,
+    status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED', 'EXPIRED')),
+    product_type TEXT,
+    description TEXT,
+    submitted_by TEXT NOT NULL,
+    submitted_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    reviewed_by TEXT,
+    reviewed_date DATE,
+    rejection_reason TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_crm_deal_registrations_tenant ON crm_deal_registrations(tenant_id);
+CREATE INDEX idx_crm_deal_registrations_partner ON crm_deal_registrations(partner_id);
+CREATE INDEX idx_crm_deal_registrations_status ON crm_deal_registrations(status);
+
+-- RLS Policies
+ALTER TABLE crm_deal_registrations ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY crm_deal_registrations_tenant_isolation ON crm_deal_registrations
+    USING (tenant_id = current_setting('app.current_tenant_id')::UUID);
+
+-- ============================================
+-- TRIGGERS FOR UPDATED_AT
+-- ============================================
+
+CREATE OR REPLACE FUNCTION update_modified_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_crm_opportunities_modtime
+    BEFORE UPDATE ON crm_opportunities
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_quotes_modtime
+    BEFORE UPDATE ON crm_quotes
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_leads_modtime
+    BEFORE UPDATE ON crm_leads
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_competitors_modtime
+    BEFORE UPDATE ON crm_competitors
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_products_modtime
+    BEFORE UPDATE ON crm_products
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_campaigns_modtime
+    BEFORE UPDATE ON crm_campaigns
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_journeys_modtime
+    BEFORE UPDATE ON crm_journeys
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_cases_modtime
+    BEFORE UPDATE ON crm_cases
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_kb_articles_modtime
+    BEFORE UPDATE ON crm_kb_articles
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_partners_modtime
+    BEFORE UPDATE ON crm_partners
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER update_crm_deal_registrations_modtime
+    BEFORE UPDATE ON crm_deal_registrations
+    FOR EACH ROW
+    EXECUTE FUNCTION update_modified_column();

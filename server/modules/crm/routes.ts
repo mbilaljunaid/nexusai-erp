@@ -20,7 +20,7 @@ import { contractRoutes } from "./contracts-routes";
 import { partnerRoutes } from "./partner-routes";
 
 // Import mock routes for new CRM features
-import { crmMockRouter } from "../../routes/crmMockRoutes";
+import { crmRouter as crmDatabaseRouter } from "../../routes/crmRoutes";
 
 export const crmRouter = Router();
 
@@ -41,8 +41,8 @@ crmRouter.use("/contracts", contractRoutes);
 crmRouter.use("/partner", partnerRoutes);
 crmRouter.use("/analytics", analyticsRoutes);
 
-// Mount mock routes for new CRM features (Phase 1-2)
-crmRouter.use(crmMockRouter);
+// USE REAL DATABASE-BACKED ROUTES
+crmRouter.use(crmDatabaseRouter);
 
 // --- CrmController Routes ---
 

@@ -81,7 +81,26 @@ export const navigationConfig: SidebarNode[] = [
         children: [
             { id: "dashboard", title: "Dashboard", type: "link", icon: LayoutDashboard, path: "/dashboard" },
             { id: "processes", title: "Processes", type: "link", icon: WorkflowIcon, path: "/processes" },
-            { id: "crm", title: "CRM & Sales", type: "link", icon: Target, path: "/crm", allowedRoles: ["admin", "editor"] },
+            {
+                id: "crm", title: "CRM & Sales", type: "group", icon: Target, path: "/crm", allowedRoles: ["admin", "editor"],
+                children: [
+                    { id: "crm-overview", title: "Overview", type: "link", path: "/crm" },
+                    { id: "crm-pipeline", title: "Opportunity Pipeline", type: "link", path: "/crm/pipeline" },
+                    { id: "crm-leads", title: "Lead Scoring", type: "link", path: "/crm/lead-scoring" },
+                    { id: "crm-quotes", title: "Quote Builder", type: "link", path: "/crm/quotes/builder" },
+                    { id: "crm-analytics", title: "Analytics", type: "link", path: "/crm/analytics" },
+                    { id: "crm-deal-desk", title: "Deal Desk", type: "link", path: "/crm/deal-desk" },
+                    { id: "crm-competitors", title: "Competitors", type: "link", path: "/crm/competitors" },
+                    { id: "crm-catalog", title: "Product Catalog", type: "link", path: "/crm/catalog" },
+                    { id: "crm-cpq", title: "CPQ Configurator", type: "link", path: "/crm/cpq" },
+                    { id: "crm-campaigns", title: "Email Campaigns", type: "link", path: "/crm/marketing/campaigns" },
+                    { id: "crm-automation", title: "Marketing Automation", type: "link", path: "/crm/marketing/automation" },
+                    { id: "crm-cases", title: "Case Management", type: "link", path: "/crm/service/cases" },
+                    { id: "crm-knowledge", title: "Knowledge Base", type: "link", path: "/crm/service/knowledge" },
+                    { id: "crm-partners", title: "Partners", type: "link", path: "/crm/partners" },
+                    { id: "crm-deals", title: "Deal Registration", type: "link", path: "/crm/partners/deals" },
+                ],
+            },
             {
                 id: "finance", title: "Finance", type: "group", icon: DollarSign, path: "/finance", allowedRoles: ["admin", "editor"],
                 children: [
