@@ -1,0 +1,52 @@
+
+import { test, expect } from "@playwright/test";
+
+test.describe("WMS UI Route Verification", () => {
+    const routes = [
+        "/scm/wms/dashboard",
+        "/scm/wms/waves",
+        "/scm/wms/tasks",
+        "/scm/wms/mobile",
+        "/scm/wms/masters",
+        "/scm/wms/yard",
+        "/scm/wms/shipping",
+        "/scm/wms/labor",
+        "/scm/wms/slotting",
+    ];
+
+    for (const route of routes) {
+        test(`should render ${route} successfully`, async ({ page }) => {
+            await page.goto(route);
+            // Wait for some common element or text that should be present in our WMS pages
+            // All my pages use StandardPage which has a title
+            await expect(page.locator("h1")).toBeVisible();
+            console.log(`Successfully verified route: ${route}`);
+        });
+    }
+
+    test("should allow creating a wave in Wave Planning", async ({ page }) => {
+        await page.goto("/scm/wms/waves");
+        await expect(page.getByText("Wave Planning")).toBeVisible();
+
+        // Check if orders are visible
+        const orderRows = page.locator("tbody tr");
+        if (await orderRows.count() > 0) {
+            await orderRows.first().locator('input[type="checkbox"]').check();
+            const createButton = page.getByRole("button", { name: /Create & Release Wave/i });
+            await expect(createButton).toBeEnabled();
+        }
+    });
+
+    test("should toggle views in Mobile Warehouse", async ({ page }) => {
+        await page.goto("/scm/wms/mobile");
+        await expect(page.getByText("WMS Mobile")).toBeVisible();
+
+        const pickingButton = page.getByRole("button", { name: /Picking/i });
+        await pickingButton.click();
+        await expect(page.getByText("Picking Queue")).toBeVisible();
+
+        const backButton = page.getByRole("button", { name: /Menu/i });
+        await backButton.click();
+        await expect(page.getByText("WMS Mobile")).toBeVisible();
+    });
+});

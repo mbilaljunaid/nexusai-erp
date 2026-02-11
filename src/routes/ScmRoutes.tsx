@@ -46,6 +46,16 @@ import CostDashboard from "@/pages/cost-management/CostDashboard";
 import WarehouseOperations from "@/pages/scm/WarehouseOperations";
 import WmsDashboard from "@/pages/scm/WmsDashboard";
 
+// WMS New Components
+import WavePlanning from "@/pages/scm/wms/WavePlanning";
+import TaskDashboard from "@/pages/scm/wms/TaskDashboard";
+import MobileWarehouse from "@/pages/scm/wms/MobileWarehouse";
+import WmsMasterData from "@/pages/scm/wms/WmsMasterData";
+import YardManagement from "@/pages/scm/wms/YardManagement";
+import ShippingWorkbench from "@/pages/scm/wms/ShippingWorkbench";
+import WmsLaborPerformance from "@/pages/scm/wms/WmsLaborPerformance";
+import SlottingWorkbench from "@/pages/scm/wms/SlottingWorkbench";
+
 export default function ScmRoutes() {
     return (
         <>
@@ -81,6 +91,17 @@ export default function ScmRoutes() {
             <Route path="/warehouse" component={Warehouse} />
             <Route path="/scm/wms/operations" component={WarehouseOperations} />
             <Route path="/scm/wms/dashboard" component={WmsDashboard} />
+
+            {/* WMS Expanded */}
+            <Route path="/scm/wms/waves" component={WavePlanning} />
+            <Route path="/scm/wms/tasks" component={TaskDashboard} />
+            <Route path="/scm/wms/mobile" component={MobileWarehouse} />
+            <Route path="/scm/wms/masters" component={WmsMasterData} />
+            <Route path="/scm/wms/yard" component={YardManagement} />
+            <Route path="/scm/wms/shipping" component={ShippingWorkbench} />
+            <Route path="/scm/wms/labor" component={WmsLaborPerformance} />
+            <Route path="/scm/wms/slotting" component={SlottingWorkbench} />
+
             <Route path="/suppliers" component={SupplierManagement} />
 
             {/* Cost Management */}

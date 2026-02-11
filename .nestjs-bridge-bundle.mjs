@@ -180,6 +180,8 @@ __export(schema_exports, {
   arCustomerAccounts: () => arCustomerAccounts,
   arCustomerSites: () => arCustomerSites,
   arCustomers: () => arCustomers,
+  arDisputeAttachments: () => arDisputeAttachments,
+  arDisputes: () => arDisputes,
   arDunningRuns: () => arDunningRuns,
   arDunningTemplates: () => arDunningTemplates,
   arInvoiceLines: () => arInvoiceLines,
@@ -285,6 +287,7 @@ __export(schema_exports, {
   cstLandedCosts: () => cstLandedCosts,
   cstStandardCosts: () => cstStandardCosts,
   cstTransactions: () => cstTransactions,
+  customerNotifications: () => customerNotifications,
   cycleCountEntries: () => cycleCountEntries,
   cycleCountEntriesRelations: () => cycleCountEntriesRelations,
   cycleCountHeaders: () => cycleCountHeaders,
@@ -459,7 +462,9 @@ __export(schema_exports, {
   hrmPerfGoals: () => hrmPerfGoals,
   hrmPerfTemplates: () => hrmPerfTemplates,
   hrmPersonSkills: () => hrmPersonSkills,
+  hrmPositionHistory: () => hrmPositionHistory,
   hrmPublicHolidays: () => hrmPublicHolidays,
+  hrmReadinessAssessments: () => hrmReadinessAssessments,
   hrmRecApplications: () => hrmRecApplications,
   hrmRecCandidates: () => hrmRecCandidates,
   hrmRecEmailTemplates: () => hrmRecEmailTemplates,
@@ -563,6 +568,8 @@ __export(schema_exports, {
   insertArCustomerAccountSchema: () => insertArCustomerAccountSchema,
   insertArCustomerSchema: () => insertArCustomerSchema,
   insertArCustomerSiteSchema: () => insertArCustomerSiteSchema,
+  insertArDisputeAttachmentSchema: () => insertArDisputeAttachmentSchema,
+  insertArDisputeSchema: () => insertArDisputeSchema,
   insertArDunningRunSchema: () => insertArDunningRunSchema,
   insertArDunningTemplateSchema: () => insertArDunningTemplateSchema,
   insertArInvoiceLineSchema: () => insertArInvoiceLineSchema,
@@ -660,6 +667,7 @@ __export(schema_exports, {
   insertCostElementSchema: () => insertCostElementSchema,
   insertCstCostDistributionSchema: () => insertCstCostDistributionSchema,
   insertCstItemCostSchema: () => insertCstItemCostSchema,
+  insertCustomerNotificationSchema: () => insertCustomerNotificationSchema,
   insertCycleCountEntrySchema: () => insertCycleCountEntrySchema,
   insertCycleCountHeaderSchema: () => insertCycleCountHeaderSchema,
   insertDailyEquipmentSchema: () => insertDailyEquipmentSchema,
@@ -891,6 +899,7 @@ __export(schema_exports, {
   insertPlanUnitSchema: () => insertPlanUnitSchema,
   insertPlanVersionSchema: () => insertPlanVersionSchema,
   insertPolicyAcknowledgementSchema: () => insertPolicyAcknowledgementSchema,
+  insertPositionHistorySchema: () => insertPositionHistorySchema,
   insertPositionSchema: () => insertPositionSchema,
   insertPpmAssetLineSchema: () => insertPpmAssetLineSchema,
   insertPpmBillRateScheduleSchema: () => insertPpmBillRateScheduleSchema,
@@ -937,6 +946,7 @@ __export(schema_exports, {
   insertRFISchema: () => insertRFISchema,
   insertRcvShipmentHeaderSchema: () => insertRcvShipmentHeaderSchema,
   insertRcvShipmentLineSchema: () => insertRcvShipmentLineSchema,
+  insertReadinessAssessmentSchema: () => insertReadinessAssessmentSchema,
   insertRecipeSchema: () => insertRecipeSchema,
   insertReportSchema: () => insertReportSchema,
   insertReputationDimensionSchema: () => insertReputationDimensionSchema,
@@ -1001,14 +1011,20 @@ __export(schema_exports, {
   insertTimeEntrySchema: () => insertTimeEntrySchema,
   insertTimeRuleSchema: () => insertTimeRuleSchema,
   insertTimeSeriesDataSchema: () => insertTimeSeriesDataSchema,
+  insertTlCarrierRateSchema: () => insertTlCarrierRateSchema,
   insertTlCarrierSchema: () => insertTlCarrierSchema,
+  insertTlContractRateSchema: () => insertTlContractRateSchema,
   insertTlFreightChargeSchema: () => insertTlFreightChargeSchema,
   insertTlLaneSchema: () => insertTlLaneSchema,
   insertTlLocationSchema: () => insertTlLocationSchema,
   insertTlMilestoneSchema: () => insertTlMilestoneSchema,
   insertTlRateAgreementSchema: () => insertTlRateAgreementSchema,
+  insertTlRateQuoteSchema: () => insertTlRateQuoteSchema,
   insertTlShipmentSchema: () => insertTlShipmentSchema,
+  insertTlShipmentTrackingSchema: () => insertTlShipmentTrackingSchema,
   insertTlStopSchema: () => insertTlStopSchema,
+  insertTlTrackingAlertSchema: () => insertTlTrackingAlertSchema,
+  insertTlTrackingMilestoneSchema: () => insertTlTrackingMilestoneSchema,
   insertTrainingFilterRequestSchema: () => insertTrainingFilterRequestSchema,
   insertTrainingResourceLikeSchema: () => insertTrainingResourceLikeSchema,
   insertTrainingResourceSchema: () => insertTrainingResourceSchema,
@@ -1313,14 +1329,20 @@ __export(schema_exports, {
   territoryRules: () => territoryRules,
   timeEntries: () => timeEntries,
   timeSeriesData: () => timeSeriesData,
+  tlCarrierRates: () => tlCarrierRates,
   tlCarriers: () => tlCarriers,
+  tlContractRates: () => tlContractRates,
   tlFreightCharges: () => tlFreightCharges,
   tlLanes: () => tlLanes,
   tlLocations: () => tlLocations,
   tlMilestones: () => tlMilestones,
   tlRateAgreements: () => tlRateAgreements,
+  tlRateQuotes: () => tlRateQuotes,
+  tlShipmentTracking: () => tlShipmentTracking,
   tlShipments: () => tlShipments,
   tlStops: () => tlStops,
+  tlTrackingAlerts: () => tlTrackingAlerts,
+  tlTrackingMilestones: () => tlTrackingMilestones,
   trainingFilterRequests: () => trainingFilterRequests,
   trainingResourceLikes: () => trainingResourceLikes,
   trainingResources: () => trainingResources,
@@ -2357,6 +2379,67 @@ var insertArSystemOptionsSchema = createInsertSchema3(arSystemOptions).extend({
   realizedGainsAccount: z2.string().optional().nullable(),
   realizedLossesAccount: z2.string().optional().nullable(),
   unallocatedRevenueAccount: z2.string().optional().nullable()
+});
+var arDisputes = pgTable3("ar_disputes", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  invoiceId: varchar3("invoice_id").notNull(),
+  customerId: varchar3("customer_id").notNull(),
+  disputeReason: varchar3("dispute_reason", { length: 255 }).notNull(),
+  disputedAmount: numeric3("disputed_amount", { precision: 15, scale: 2 }),
+  description: text3("description"),
+  status: varchar3("status").default("Open"),
+  // Open, Under Review, Resolved, Rejected
+  adminResponse: text3("admin_response"),
+  resolvedBy: varchar3("resolved_by"),
+  resolvedAt: timestamp3("resolved_at"),
+  createdAt: timestamp3("created_at").default(sql3`now()`),
+  updatedAt: timestamp3("updated_at").default(sql3`now()`)
+});
+var insertArDisputeSchema = createInsertSchema3(arDisputes).extend({
+  invoiceId: z2.string().min(1),
+  customerId: z2.string().min(1),
+  disputeReason: z2.string().min(1),
+  disputedAmount: z2.string().optional().nullable(),
+  description: z2.string().optional().nullable(),
+  status: z2.string().optional(),
+  adminResponse: z2.string().optional().nullable(),
+  resolvedBy: z2.string().optional().nullable(),
+  resolvedAt: z2.date().optional().nullable()
+});
+var arDisputeAttachments = pgTable3("ar_dispute_attachments", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  disputeId: varchar3("dispute_id").notNull(),
+  fileName: varchar3("file_name", { length: 255 }).notNull(),
+  filePath: varchar3("file_path", { length: 500 }).notNull(),
+  fileSize: integer3("file_size").notNull(),
+  mimeType: varchar3("mime_type", { length: 100 }).notNull(),
+  uploadedAt: timestamp3("uploaded_at").default(sql3`now()`)
+});
+var insertArDisputeAttachmentSchema = createInsertSchema3(arDisputeAttachments).extend({
+  disputeId: z2.string().min(1),
+  fileName: z2.string().min(1),
+  filePath: z2.string().min(1),
+  fileSize: z2.number().int(),
+  mimeType: z2.string().min(1)
+});
+var customerNotifications = pgTable3("customer_notifications", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  customerId: varchar3("customer_id").notNull(),
+  type: varchar3("type").notNull(),
+  // new_invoice, payment_received, dispute_update, statement_ready, overdue_reminder
+  title: varchar3("title", { length: 255 }).notNull(),
+  message: text3("message").notNull(),
+  read: boolean3("read").default(false),
+  referenceId: varchar3("reference_id"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertCustomerNotificationSchema = createInsertSchema3(customerNotifications).extend({
+  customerId: z2.string().min(1),
+  type: z2.string().min(1),
+  title: z2.string().min(1),
+  message: z2.string().min(1),
+  read: z2.boolean().optional(),
+  referenceId: z2.string().optional().nullable()
 });
 
 // shared/schema/crm.ts
@@ -4252,13 +4335,41 @@ var hrmSuccessionCandidates = pgTable13("hrm_succession_candidates", {
   // READY_NOW, READY_1_2_YEARS, READY_3_5_YEARS
   ranking: integer12("ranking"),
   // 1, 2, 3
+  nineBoxPosition: varchar13("nine_box_position"),
+  // HIGH_PERF_HIGH_POT, etc.
   notes: text7("notes"),
   createdAt: timestamp13("created_at").default(sql13`now()`),
   updatedAt: timestamp13("updated_at").default(sql13`now()`)
 });
+var hrmReadinessAssessments = pgTable13("hrm_readiness_assessments", {
+  id: varchar13("id").primaryKey().default(sql13`gen_random_uuid()`),
+  tenantId: varchar13("tenant_id").notNull(),
+  candidateId: varchar13("candidate_id").notNull().references(() => hrmSuccessionCandidates.id),
+  assessorId: varchar13("assessor_id").references(() => hrPersons.id),
+  technicalCompetence: integer12("technical_competence").notNull(),
+  leadershipCapability: integer12("leadership_capability").notNull(),
+  culturalFit: integer12("cultural_fit").notNull(),
+  overallScore: integer12("overall_score"),
+  developmentNeeds: text7("development_needs"),
+  readinessTimeline: varchar13("readiness_timeline"),
+  createdAt: timestamp13("created_at").default(sql13`now()`),
+  updatedBy: varchar13("updated_by")
+});
+var hrmPositionHistory = pgTable13("hrm_position_history", {
+  id: varchar13("id").primaryKey().default(sql13`gen_random_uuid()`),
+  tenantId: varchar13("tenant_id").notNull(),
+  candidateId: varchar13("candidate_id").notNull().references(() => hrmSuccessionCandidates.id),
+  previousPosition: varchar13("previous_position"),
+  newPosition: varchar13("new_position").notNull(),
+  changedBy: varchar13("changed_by"),
+  changeReason: text7("change_reason"),
+  createdAt: timestamp13("created_at").default(sql13`now()`)
+});
 var insertTalentPoolSchema = createInsertSchema13(hrmTalentPools);
 var insertSuccessionPlanSchema = createInsertSchema13(hrmSuccessionPlans);
 var insertSuccessionCandidateSchema = createInsertSchema13(hrmSuccessionCandidates);
+var insertReadinessAssessmentSchema = createInsertSchema13(hrmReadinessAssessments);
+var insertPositionHistorySchema = createInsertSchema13(hrmPositionHistory);
 
 // shared/schema/hr_hdl.ts
 import { pgTable as pgTable14, varchar as varchar14, text as text8, timestamp as timestamp14, jsonb as jsonb9 } from "drizzle-orm/pg-core";
@@ -11890,6 +12001,90 @@ var tlStops = pgTable75("tl_stops", {
   notes: text61("notes"),
   createdAt: timestamp74("created_at").default(sql68`now()`)
 });
+var tlCarrierRates = pgTable75("tl_carrier_rates", {
+  id: varchar72("id").primaryKey().default(sql68`gen_random_uuid()`),
+  carrierId: varchar72("carrier_id").notNull(),
+  serviceLevel: varchar72("service_level").notNull(),
+  // STANDARD, EXPRESS, ECONOMY
+  rateCardName: varchar72("rate_card_name").notNull(),
+  effectiveDate: timestamp74("effective_date").notNull(),
+  expiryDate: timestamp74("expiry_date").notNull(),
+  baseRate: numeric44("base_rate", { precision: 18, scale: 2 }).notNull(),
+  perKgRate: numeric44("per_kg_rate", { precision: 18, scale: 4 }).default("0"),
+  perMileRate: numeric44("per_mile_rate", { precision: 18, scale: 4 }).default("0"),
+  currency: varchar72("currency").default("USD"),
+  minimumCharge: numeric44("minimum_charge", { precision: 18, scale: 2 }).default("0"),
+  maxWeightKg: numeric44("max_weight_kg", { precision: 18, scale: 2 }),
+  status: varchar72("status").default("ACTIVE"),
+  // ACTIVE, INACTIVE, EXPIRED
+  createdAt: timestamp74("created_at").default(sql68`now()`),
+  updatedAt: timestamp74("updated_at").default(sql68`now()`)
+});
+var tlRateQuotes = pgTable75("tl_rate_quotes", {
+  id: varchar72("id").primaryKey().default(sql68`gen_random_uuid()`),
+  shipmentId: varchar72("shipment_id"),
+  carrierId: varchar72("carrier_id").notNull(),
+  quoteAmount: numeric44("quote_amount", { precision: 18, scale: 2 }).notNull(),
+  transitDays: integer60("transit_days"),
+  validUntil: timestamp74("valid_until").notNull(),
+  quoteDetails: text61("quote_details"),
+  // JSON string with breakdown
+  status: varchar72("status").default("PENDING"),
+  // PENDING, ACCEPTED, REJECTED, EXPIRED
+  createdAt: timestamp74("created_at").default(sql68`now()`),
+  createdBy: varchar72("created_by")
+});
+var tlContractRates = pgTable75("tl_contract_rates", {
+  id: varchar72("id").primaryKey().default(sql68`gen_random_uuid()`),
+  contractNumber: varchar72("contract_number").notNull().unique(),
+  carrierId: varchar72("carrier_id").notNull(),
+  fileName: varchar72("file_name").notNull(),
+  fileUrl: varchar72("file_url"),
+  uploadedAt: timestamp74("uploaded_at").default(sql68`now()`),
+  uploadedBy: varchar72("uploaded_by"),
+  effectiveDate: timestamp74("effective_date").notNull(),
+  expiryDate: timestamp74("expiry_date").notNull(),
+  ratesCount: integer60("rates_count").default(0),
+  status: varchar72("status").default("PENDING")
+  // PENDING, PROCESSED, FAILED
+});
+var tlShipmentTracking = pgTable75("tl_shipment_tracking", {
+  id: varchar72("id").primaryKey().default(sql68`gen_random_uuid()`),
+  shipmentId: varchar72("shipment_id").notNull().unique(),
+  status: varchar72("status").default("IN_TRANSIT"),
+  // IN_TRANSIT, DELAYED, DELIVERED, EXCEPTION
+  currentLocationId: varchar72("current_location_id"),
+  latitude: numeric44("latitude", { precision: 10, scale: 7 }),
+  longitude: numeric44("longitude", { precision: 10, scale: 7 }),
+  lastUpdated: timestamp74("last_updated").default(sql68`now()`),
+  estimatedDelivery: timestamp74("estimated_delivery"),
+  confidencePercent: integer60("confidence_percent").default(85)
+});
+var tlTrackingMilestones = pgTable75("tl_tracking_milestones", {
+  id: varchar72("id").primaryKey().default(sql68`gen_random_uuid()`),
+  shipmentId: varchar72("shipment_id").notNull(),
+  milestoneType: varchar72("milestone_type").notNull(),
+  // PICKED_UP, LOADED, IN_TRANSIT, ARRIVED, DELIVERED, EXCEPTION
+  location: varchar72("location"),
+  latitude: numeric44("latitude", { precision: 10, scale: 7 }),
+  longitude: numeric44("longitude", { precision: 10, scale: 7 }),
+  timestamp: timestamp74("timestamp").default(sql68`now()`),
+  notes: text61("notes"),
+  createdBy: varchar72("created_by")
+});
+var tlTrackingAlerts = pgTable75("tl_tracking_alerts", {
+  id: varchar72("id").primaryKey().default(sql68`gen_random_uuid()`),
+  shipmentId: varchar72("shipment_id").notNull(),
+  alertType: varchar72("alert_type").notNull(),
+  // DELAY, EXCEPTION, WEATHER, CUSTOMS
+  message: text61("message").notNull(),
+  severity: varchar72("severity").default("MEDIUM"),
+  // LOW, MEDIUM, HIGH, CRITICAL
+  createdAt: timestamp74("created_at").default(sql68`now()`),
+  acknowledgedAt: timestamp74("acknowledged_at"),
+  acknowledgedBy: varchar72("acknowledged_by"),
+  resolvedAt: timestamp74("resolved_at")
+});
 var insertTlLocationSchema = createInsertSchema69(tlLocations);
 var insertTlCarrierSchema = createInsertSchema69(tlCarriers);
 var insertTlLaneSchema = createInsertSchema69(tlLanes);
@@ -11898,6 +12093,12 @@ var insertTlShipmentSchema = createInsertSchema69(tlShipments);
 var insertTlMilestoneSchema = createInsertSchema69(tlMilestones);
 var insertTlFreightChargeSchema = createInsertSchema69(tlFreightCharges);
 var insertTlStopSchema = createInsertSchema69(tlStops);
+var insertTlCarrierRateSchema = createInsertSchema69(tlCarrierRates);
+var insertTlRateQuoteSchema = createInsertSchema69(tlRateQuotes);
+var insertTlContractRateSchema = createInsertSchema69(tlContractRates);
+var insertTlShipmentTrackingSchema = createInsertSchema69(tlShipmentTracking);
+var insertTlTrackingMilestoneSchema = createInsertSchema69(tlTrackingMilestones);
+var insertTlTrackingAlertSchema = createInsertSchema69(tlTrackingAlerts);
 
 // shared/schema/lease.ts
 import { pgTable as pgTable76, varchar as varchar73, text as text62, timestamp as timestamp75, numeric as numeric45, integer as integer61, boolean as boolean62, jsonb as jsonb41 } from "drizzle-orm/pg-core";

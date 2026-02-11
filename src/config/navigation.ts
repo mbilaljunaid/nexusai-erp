@@ -182,6 +182,18 @@ export const navigationConfig: SidebarNode[] = [
                 children: [
                     { id: "scm-overview", title: "Overview", type: "link", path: "/inventory" },
                     {
+                        id: "wms-group", title: "Warehouse (WMS)", type: "group", icon: Warehouse,
+                        children: [
+                            { id: "wms-dashboard", title: "Dashboard", type: "link", path: "/scm/wms/dashboard" },
+                            { id: "wms-waves", title: "Wave Planning", type: "link", path: "/scm/wms/waves" },
+                            { id: "wms-tasks", title: "Task Console", type: "link", path: "/scm/wms/tasks" },
+                            { id: "wms-mobile", title: "Mobile UI", type: "link", path: "/scm/wms/mobile" },
+                            { id: "wms-masters", title: "Masters & Setup", type: "link", path: "/scm/wms/masters" },
+                            { id: "wms-yard", title: "Yard & Docks", type: "link", path: "/scm/wms/yard" },
+                            { id: "wms-shipping", title: "Shipping Hub", type: "link", path: "/scm/wms/shipping" },
+                        ],
+                    },
+                    {
                         id: "procurement", title: "Procurement", type: "group", icon: ScrollText,
                         children: [
                             { id: "proc-suppliers", title: "Suppliers", type: "link", path: "/suppliers" },
@@ -189,7 +201,6 @@ export const navigationConfig: SidebarNode[] = [
                         ],
                     },
                     { id: "scm-costing", title: "Cost Management", type: "link", icon: Calculator, path: "/scm/costing/dashboard" },
-                    { id: "scm-warehouse", title: "Warehouse", type: "link", path: "/warehouse" },
                     { id: "scm-logistics", title: "Logistics", type: "link", path: "/logistics" },
                 ],
             },

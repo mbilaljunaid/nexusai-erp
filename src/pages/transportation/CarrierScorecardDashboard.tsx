@@ -195,7 +195,7 @@ export default function CarrierScorecardDashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-rose-600">{underPerformers.length}</div>
-                        <p className="text-xs text-muted-foreground">Rating < 3.5 stars</p>
+                        <p className="text-xs text-muted-foreground">Rating {"<"} 3.5 stars</p>
                     </CardContent>
                 </Card>
 
@@ -394,7 +394,7 @@ export default function CarrierScorecardDashboard() {
                                 <AlertCircle className="h-5 w-5 text-rose-600" />
                                 Needs Attention
                             </CardTitle>
-                            <CardDescription>Carriers with rating < 3.5</CardDescription>
+                            <CardDescription>Carriers with rating {"<"} 3.5</CardDescription>
                         </CardHeader>
                         <CardContent>
                             {underPerformers.length === 0 ? (
