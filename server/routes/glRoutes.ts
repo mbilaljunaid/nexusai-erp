@@ -545,5 +545,98 @@ router.get("/gl/budget-balances", async (req, res) => {
   }
 });
 
+/**
+ * Consolidation API Routes
+ */
+import multer from 'multer';
+import { ConsolidationExportService } from '../services/ConsolidationExportService';
+import { FxRateCsvService } from '../services/FxRateCsvService';
+
+const upload = multer({ storage: multer.memoryStorage() });
+const exportService = new ConsolidationExportService();
+const csvService = new FxRateCsvService();
+
+/**
+ * GET /api/gl/consolidation/results/:runId/export
+ * Export consolidation results to Excel
+ */
+router.get("/gl/consolidation/results/:runId/export", async (req, res, next) => {
+  try {
+    await exportService.handleExportRequest(req, res, next);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/gl/consolidation/fx-rates/upload
+ * Upload FX rates via CSV
+ */
+router.post("/gl/consolidation/fx-rates/upload", upload.single('file'), async (req, res) => {
+  try {
+    const db = (req as any).db; // Assuming db is attached to req
+    await csvService.handleCsvUpload(req, res, db);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/gl/consolidation/fx-rates/template
+ * Download CSV template for FX rate upload
+ */
+router.get("/gl/consolidation/fx-rates/template", (req, res) => {
+  try {
+    const template = csvService.generateTemplate();
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=fx-rates-template.csv');
+    res.send(template);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/gl/consolidation/variance
+ * Get period-over-period variance analysis data
+ */
+router.get("/gl/consolidation/variance", async (req, res) => {
+  try {
+    const { currentPeriod, priorPeriod, ledgerSetId } = req.query;
+
+    // Mock data - replace with actual calculation
+    const varianceData = [
+      { account: "Cash and Cash Equivalents", currentPeriod: 5200000, priorPeriod: 5000000, variance: 200000, variancePct: 4.0 },
+      { account: "Accounts Receivable", currentPeriod: 3500000, priorPeriod: 3800000, variance: -300000, variancePct: -7.89 },
+      { account: "Inventory", currentPeriod: 2800000, priorPeriod: 2700000, variance: 100000, variancePct: 3.70 },
+      { account: "Fixed Assets", currentPeriod: 10200000, priorPeriod: 10000000, variance: 200000, variancePct: 2.0 },
+      { account: "Intercompany Receivables", currentPeriod: 0, priorPeriod: 0, variance: 0, variancePct: 0 },
+      { account: "Total Assets", currentPeriod: 21700000, priorPeriod: 21500000, variance: 200000, variancePct: 0.93 }
+    ];
+
+    res.json(varianceData);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/gl/consolidation/history
+ * Get consolidation run history
+ */
+router.get("/gl/consolidation/history", async (req, res) => {
+  try {
+    // Mock consolidation history
+    const history = [
+      { id: 'HIST-001', runId: 'RUN-1676000000000', runDate: new Date(Date.now() - 86400000), ledgerSetId: 'GLOBAL_GRP', periodId: 'Jan-2026', status: 'Completed', totalEliminated: 1250000 },
+      { id: 'HIST-002', runId: 'RUN-1675913600000', runDate: new Date(Date.now() - 172800000), ledgerSetId: 'EMEA_GRP', periodId: 'Dec-2025', status: 'Completed', totalEliminated: 800000 },
+      { id: 'HIST-003', runId: 'RUN-1675827200000', runDate: new Date(Date.now() - 259200000), ledgerSetId: 'NA_GRP', periodId: 'Nov-2025', status: 'Error', totalEliminated: 0 }
+    ];
+    res.json(history);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
 

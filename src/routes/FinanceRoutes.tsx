@@ -123,6 +123,14 @@ import ConsolidationWorkbench from "@/pages/gl/ConsolidationWorkbench";
 import EliminationRules from "@/pages/gl/EliminationRules";
 import FinancialCloseCenter from "@/pages/gl/FinancialCloseCenter";
 
+// Financial Consolidation
+import LedgerSetManager from "@/pages/gl/LedgerSetManager";
+import FxTranslationDashboard from "@/pages/gl/FxTranslationDashboard";
+import EliminationRuleBuilder from "@/pages/gl/EliminationRuleBuilder";
+import ConsolidationResultsViewer from "@/pages/gl/ConsolidationResultsViewer";
+import EliminationJournalReview from "@/pages/gl/EliminationJournalReview";
+import VarianceAnalysis from "@/pages/gl/VarianceAnalysis";
+
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 // import { FinanceSidebar } from "@/components/nav/FinanceSidebar";
 
@@ -208,7 +216,12 @@ export default function FinanceRoutes() {
                 <Route path="/gl/revaluation" component={Revaluation} />
                 <Route path="/gl/close-center" component={FinancialCloseCenter} />
                 <Route path="/gl/consolidation" component={ConsolidationWorkbench} />
-                <Route path="/gl/consolidation/rules" component={EliminationRules} />
+                <Route path="/gl/consolidation/ledger-sets" component={LedgerSetManager} />
+                <Route path="/gl/consolidation/fx-rates" component={FxTranslationDashboard} />
+                <Route path="/gl/consolidation/rules" component={EliminationRuleBuilder} />
+                <Route path="/gl/consolidation/results/:runId">{(params: { runId: string }) => <ConsolidationResultsViewer />}</Route>
+                <Route path="/gl/consolidation/journals" component={EliminationJournalReview} />
+                <Route path="/gl/consolidation/elimination-rules" component={EliminationRules} />
 
                 {/* Intercompany Module */}
                 <Route path="/finance/intercompany/workbench" component={IntercompanyWorkbench} />
