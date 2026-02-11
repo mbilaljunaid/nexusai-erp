@@ -13,6 +13,9 @@ import TalentPool from "@/pages/TalentPool";
 import JobRequisitionDetail from "../pages/recruitment/JobRequisitionDetail";
 import OnboardingWorkbench from "../pages/recruitment/OnboardingWorkbench";
 import InterviewerDashboard from "../pages/recruitment/InterviewerDashboard";
+import MyInterviews from "../pages/recruitment/MyInterviews";
+import OnboardingTracker from "../pages/recruitment/OnboardingTracker";
+import RecruitmentAnalytics from "../pages/recruitment/RecruitmentAnalytics";
 import SuccessionPlanning from "@/pages/SuccessionPlanning";
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { HrSidebar } from "@/components/nav/HrSidebar";
@@ -76,6 +79,9 @@ export default function HrRoutes() {
                 <Route path="/hr/recruitment/analytics" component={RecruitingAnalytics} />
                 <Route path="/hr/recruitment/onboarding" component={OnboardingWorkbench} />
                 <Route path="/hr/recruitment/interviewer" component={InterviewerDashboard} />
+                <Route path="/hr/recruitment/my-interviews" component={MyInterviews} />
+                <Route path="/hr/recruitment/onboarding-tracker" component={OnboardingTracker} />
+                <Route path="/hr/recruitment/analytics-dashboard" component={RecruitmentAnalytics} />
 
                 <Route path="/hr/succession" component={SuccessionPlanning} />
                 <Route path="/hr/talent-pool" component={TalentPool} />

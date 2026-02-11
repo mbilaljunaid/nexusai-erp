@@ -4,11 +4,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Save, Send } from "lucide-react";
+import { Calendar, Save, Send, Grid } from "lucide-react";
 import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from "date-fns";
 import { TimesheetGrid } from "@/components/wfm/TimesheetGrid";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { BulkTimeEntryModal } from "@/components/wfm/BulkTimeEntryModal";
 
 // MOCK USER for V1 - Need to get from context later
 const MOCK_USER = {
@@ -20,6 +21,7 @@ export default function MyTime() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [selectedDate, setSelectedDate] = useState(new Date()); // Current focus date to determine week
+    const [showBulkEntry, setShowBulkEntry] = useState(false);
 
     // Derive period from date (Simplification: 1 Week Periods starting Mon)
     // Real implementation would look up Period ID from API
@@ -101,70 +103,93 @@ export default function MyTime() {
         });
     };
 
-if (isLoading) return <div className="p-8">Loading Timesheet...</div>;
+    if (isLoading) return <div className="p-8">Loading Timesheet...</div>;
 
-return (
-    <div className="container mx-auto p-6 max-w-7xl space-y-6">
-        <div className="flex justify-between items-center">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">My Time</h1>
-                <p className="text-muted-foreground">Manage your weekly time and leave balances.</p>
+    return (
+        <div className="container mx-auto p-6 max-w-7xl space-y-6">
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">My Time</h1>
+                    <p className="text-muted-foreground">Manage your weekly time and leave balances.</p>
+                </div>
+                <div className="flex gap-4">
+                    {/* BALANCE CARDS */}
+                    <Card className="w-32">
+                        <CardHeader className="p-2 pb-0">
+                            <CardTitle className="text-xs font-medium text-muted-foreground">Vacation</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-2 pt-1 font-bold text-lg">
+                            {getBalance("VACATION")}h
+                        </CardContent>
+                    </Card>
+                    <Card className="w-32">
+                        <CardHeader className="p-2 pb-0">
+                            <CardTitle className="text-xs font-medium text-muted-foreground">Sick</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-2 pt-1 font-bold text-lg">
+                            {getBalance("SICK")}h
+                        </CardContent>
+                    </Card>
+
+                    <Button className="gap-2 h-14" size="lg">
+                        <Send className="h-4 w-4" />
+                        Submit
+                    </Button>
+                </div>
             </div>
-            <div className="flex gap-4">
-                {/* BALANCE CARDS */}
-                <Card className="w-32">
-                    <CardHeader className="p-2 pb-0">
-                        <CardTitle className="text-xs font-medium text-muted-foreground">Vacation</CardTitle>
+
+            {/* ERROR / STATUS */}
+            {!timesheet && !isLoading && (
+                <div className="bg-yellow-100 p-4 rounded text-yellow-800">
+                    No active timesheet found.
+                </div>
+            )}
+
+            {/* MAIN GRID */}
+            {timesheet && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Timesheet Entry</CardTitle>
+                        <CardDescription>
+                            Week of {format(periodStart, "MMM d, yyyy")}
+                            <Badge className="ml-2" variant={timesheet.status === 'APPROVED' ? 'default' : 'secondary'}>
+                                {timesheet.status}
+                            </Badge>
+                        </CardDescription>
                     </CardHeader>
-                    <CardContent className="p-2 pt-1 font-bold text-lg">
-                        {getBalance("VACATION")}h
+                    <div className="px-6 pb-4">
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowBulkEntry(true)}
+                            className="gap-2"
+                            disabled={timesheet?.status === 'SUBMITTED' || timesheet?.status === 'APPROVED'}
+                        >
+                            <Grid className="h-4 w-4" />
+                            Bulk Entry
+                        </Button>
+                    </div>
+                    <CardContent>
+                        <TimesheetGrid
+                            startDate={format(periodStart, "yyyy-MM-dd")}
+                            entries={timesheet?.entries || []}
+                            onEntryChange={handleEntryChange}
+                            readOnly={timesheet?.status === 'SUBMITTED' || timesheet?.status === 'APPROVED'}
+                        />
                     </CardContent>
                 </Card>
-                <Card className="w-32">
-                    <CardHeader className="p-2 pb-0">
-                        <CardTitle className="text-xs font-medium text-muted-foreground">Sick</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-2 pt-1 font-bold text-lg">
-                        {getBalance("SICK")}h
-                    </CardContent>
-                </Card>
+            )}
 
-                <Button className="gap-2 h-14" size="lg">
-                    <Send className="h-4 w-4" />
-                    Submit
-                </Button>
-            </div>
+            {/* Bulk Entry Modal */}
+            {timesheet && (
+                <BulkTimeEntryModal
+                    isOpen={showBulkEntry}
+                    onClose={() => setShowBulkEntry(false)}
+                    onSuccess={() => setShowBulkEntry(false)}
+                    timesheetId={timesheet.id}
+                    startDate={format(periodStart, "yyyy-MM-dd")}
+                    tenantId={MOCK_USER.tenantId}
+                />
+            )}
         </div>
-
-        {/* ERROR / STATUS */}
-        {!timesheet && !isLoading && (
-            <div className="bg-yellow-100 p-4 rounded text-yellow-800">
-                No active timesheet found.
-            </div>
-        )}
-
-        {/* MAIN GRID */}
-        {timesheet && (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Timesheet Entry</CardTitle>
-                    <CardDescription>
-                        Week of {format(periodStart, "MMM d, yyyy")}
-                        <Badge className="ml-2" variant={timesheet.status === 'APPROVED' ? 'default' : 'secondary'}>
-                            {timesheet.status}
-                        </Badge>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <TimesheetGrid
-                        startDate={format(periodStart, "yyyy-MM-dd")}
-                        entries={timesheet?.entries || []}
-                        onEntryChange={handleEntryChange}
-                        readOnly={timesheet?.status === 'SUBMITTED' || timesheet?.status === 'APPROVED'}
-                    />
-                </CardContent>
-            </Card>
-        )}
-    </div>
-);
+    );
 }

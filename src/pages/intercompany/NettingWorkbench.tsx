@@ -8,9 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CheckCircle, ArrowRightLeft } from "lucide-react";
+import { Loader2, CheckCircle, ArrowRightLeft, Eye, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
+import { NettingProposalCard } from "@/components/netting/NettingProposalCard";
+import { SettlementExecutionModal } from "@/components/netting/SettlementExecutionModal";
+import { NettingAgreementWizard } from "@/components/netting/NettingAgreementWizard";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function NettingWorkbench() {
     const { toast } = useToast();
@@ -21,6 +25,11 @@ export default function NettingWorkbench() {
     const [orgId1, setOrgId1] = useState("");
     const [orgId2, setOrgId2] = useState("");
     const [currency, setCurrency] = useState("USD");
+
+    // Modal State
+    const [selectedBatchForProposal, setSelectedBatchForProposal] = useState<any | null>(null);
+    const [selectedBatchForSettlement, setSelectedBatchForSettlement] = useState<any | null>(null);
+    const [showAgreementWizard, setShowAgreementWizard] = useState(false);
 
     // Fetch Orgs (reuse existing API)
     const { data: orgs } = useQuery<any[]>({
@@ -88,6 +97,7 @@ export default function NettingWorkbench() {
                 <TabsList>
                     <TabsTrigger value="create">Create Proposal</TabsTrigger>
                     <TabsTrigger value="batches">Settlement Batches</TabsTrigger>
+                    <TabsTrigger value="agreements">Agreements</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="create">
@@ -166,7 +176,7 @@ export default function NettingWorkbench() {
                                         <TableHead className="text-right">Total B owed A</TableHead>
                                         <TableHead className="text-right">Net Settlement</TableHead>
                                         <TableHead>Status</TableHead>
-                                        <TableHead>Action</TableHead>
+                                        <TableHead>Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -205,19 +215,51 @@ export default function NettingWorkbench() {
                                                     </span>
                                                 </TableCell>
                                                 <TableCell>
-                                                    {batch.status === 'Draft' && (
+                                                    <div className="flex items-center gap-2">
                                                         <Button
-                                                            variant="outline"
+                                                            variant="ghost"
                                                             size="sm"
-                                                            onClick={() => settleBatchMutation.mutate(batch.id)}
-                                                            disabled={settleBatchMutation.isPending}
+                                                            onClick={() => setSelectedBatchForProposal({
+                                                                batchId: batch.id,
+                                                                entityA: {
+                                                                    id: batch.orgId1,
+                                                                    name: orgs?.find((o: any) => o.id === batch.orgId1)?.orgName || batch.orgId1,
+                                                                    owes: parseFloat(batch.totalPayables)
+                                                                },
+                                                                entityB: {
+                                                                    id: batch.orgId2,
+                                                                    name: orgs?.find((o: any) => o.id === batch.orgId2)?.orgName || batch.orgId2,
+                                                                    owes: parseFloat(batch.totalReceivables)
+                                                                },
+                                                                netSettlement: {
+                                                                    payer: parseFloat(batch.netAmount) > 0 ? orgs?.find((o: any) => o.id === batch.orgId2)?.orgName : orgs?.find((o: any) => o.id === batch.orgId1)?.orgName,
+                                                                    payee: parseFloat(batch.netAmount) > 0 ? orgs?.find((o: any) => o.id === batch.orgId1)?.orgName : orgs?.find((o: any) => o.id === batch.orgId2)?.orgName,
+                                                                    amount: Math.abs(parseFloat(batch.netAmount))
+                                                                },
+                                                                currency: batch.currencyCode,
+                                                                transactions: []
+                                                            })}
                                                         >
-                                                            {settleBatchMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : "Settle"}
+                                                            <Eye className="h-3 w-3 mr-1" />
+                                                            Proposal
                                                         </Button>
-                                                    )}
-                                                    {batch.status === 'Settled' && (
-                                                        <CheckCircle className="h-4 w-4 text-green-600 ml-2" />
-                                                    )}
+                                                        {batch.status === 'Draft' && (
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => setSelectedBatchForSettlement({
+                                                                    ...batch,
+                                                                    org1Name: orgs?.find((o: any) => o.id === batch.orgId1)?.orgName || batch.orgId1,
+                                                                    org2Name: orgs?.find((o: any) => o.id === batch.orgId2)?.orgName || batch.orgId2
+                                                                })}
+                                                            >
+                                                                Settle
+                                                            </Button>
+                                                        )}
+                                                        {batch.status === 'Settled' && (
+                                                            <CheckCircle className="h-4 w-4 text-green-600" />
+                                                        )}
+                                                    </div>
                                                 </TableCell>
                                             </TableRow>
                                         ))
@@ -227,7 +269,57 @@ export default function NettingWorkbench() {
                         </CardContent>
                     </Card>
                 </TabsContent>
+
+                <TabsContent value="agreements">
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <CardTitle>Netting Agreements</CardTitle>
+                                <Button onClick={() => setShowAgreementWizard(true)}>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Create Agreement
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-center py-12 text-muted-foreground">
+                                <p>No netting agreements configured yet.</p>
+                                <p className="text-sm mt-2">Click "Create Agreement" to set up your first netting agreement.</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
             </Tabs>
+
+            {/* Proposal Modal */}
+            <Dialog open={!!selectedBatchForProposal} onOpenChange={() => setSelectedBatchForProposal(null)}>
+                <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Netting Proposal</DialogTitle>
+                    </DialogHeader>
+                    {selectedBatchForProposal && (
+                        <NettingProposalCard proposal={selectedBatchForProposal} />
+                    )}
+                </DialogContent>
+            </Dialog>
+
+            {/* Settlement Execution Modal */}
+            {selectedBatchForSettlement && (
+                <SettlementExecutionModal
+                    batchId={selectedBatchForSettlement.id}
+                    batch={selectedBatchForSettlement}
+                    isOpen={!!selectedBatchForSettlement}
+                    onClose={() => setSelectedBatchForSettlement(null)}
+                    onSuccess={() => setSelectedBatchForSettlement(null)}
+                />
+            )}
+
+            {/* Agreement Wizard */}
+            <NettingAgreementWizard
+                isOpen={showAgreementWizard}
+                onClose={() => setShowAgreementWizard(false)}
+                onSuccess={() => setShowAgreementWizard(false)}
+            />
         </div>
     );
 }

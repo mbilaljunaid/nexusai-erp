@@ -6,15 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Users2, Plus, Trash2 } from "lucide-react";
+import { Users2, Plus, Trash2, Calendar, Download } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { InterviewScheduler } from "@/components/recruitment/InterviewScheduler";
 
 export default function RecruitmentManagement() {
   const { toast } = useToast();
   const [newJob, setNewJob] = useState({ title: "", department: "Engineering", stage: "open" });
   const [page, setPage] = useState(0);
   const pageSize = 10;
+  const [schedulerModal, setSchedulerModal] = useState<{
+    isOpen: boolean;
+    applicationId?: string;
+    candidateName?: string;
+    jobTitle?: string;
+  }>({ isOpen: false });
 
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ["/api/recruitment/jobs", page],
@@ -101,6 +108,17 @@ export default function RecruitmentManagement() {
                 </Link>
                 <p className="text-sm text-muted-foreground">Dept: {job.department || job.dept} • Applicants: {job.applicants || 0}</p>
                 <div className="mt-2 flex gap-2">
+                  <Button size="sm" onClick={() => {
+                    setSchedulerModal({
+                      isOpen: true,
+                      applicationId: `mock-app-${job.id}`,
+                      candidateName: "Mock Candidate",
+                      jobTitle: job.title
+                    });
+                  }}>
+                    <Calendar className="w-3 h-3 mr-1" />
+                    Schedule Interview
+                  </Button>
                   <Button size="sm" variant="outline" onClick={() => {
                     // Demo Apply Action
                     fetch("/api/recruitment/applications", {
@@ -108,27 +126,12 @@ export default function RecruitmentManagement() {
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({
                         requisitionId: job.id,
-                        candidateId: "mock-candidate-id", // Use a real one in prod
+                        candidateId: "mock-candidate-id",
                         status: "APPLIED"
                       })
                     }).then(() => toast({ title: "Applied successfully (Mock Candidate)" }));
                   }}>
                     Mock Apply
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => {
-                    // Demo Create Offer -> Auto Approve workflow
-                    // 1. Create Offer
-                    // 2. Submit
-                    // 3. Approve
-                    toast({ title: "Offer Workflow Started", description: "Created -> Submitted -> Approved (Simulation)" });
-                  }}>
-                    Simulate Offer Workflow
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => {
-                    // Demo Offer Action (requires an application ID usually, just simulating intent here)
-                    toast({ title: "Offer flow requires candidate selection first" });
-                  }}>
-                    Create Offer
                   </Button>
                 </div>
               </div>
@@ -142,6 +145,15 @@ export default function RecruitmentManagement() {
           ))}
         </CardContent>
       </Card>
+
+      {/* Interview Scheduler Modal */}
+      <InterviewScheduler
+        isOpen={schedulerModal.isOpen}
+        onClose={() => setSchedulerModal({ isOpen: false })}
+        applicationId={schedulerModal.applicationId || ''}
+        candidateName={schedulerModal.candidateName}
+        jobTitle={schedulerModal.jobTitle}
+      />
     </div>
   );
 }

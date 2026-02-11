@@ -5,6 +5,7 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
 import { Target, TrendingUp, Star, AlertCircle, BarChart3 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import GoalManagementPanel from "@/components/performance/GoalManagementPanel";
 
 import { Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -74,37 +75,21 @@ export default function PerformanceManagement() {
         </div>
       )}
       {activeNav === "goals" && (
-        <Card><CardContent className="p-4 space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">My Goals</h3>
-            <Button size="sm" onClick={() => {
-              // Demo create goal
-              const title = prompt("Enter Goal Title:");
-              if (title) {
-                fetch("/api/performance/goals", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    title,
-                    personId: "mock-person-id", // In real app, derived from auth context
-                    weight: 20,
-                    status: "IN_PROGRESS"
-                  })
-                }).then(() => {
-                  toast({ title: "Goal Created" });
-                  // In real app, invalidate query
-                });
-              }
-            }}>
-              <Plus className="w-4 h-4 mr-2" /> New Goal
-            </Button>
-          </div>
-          {/* We would fetch goals here with a new useQuery key ['/api/performance/goals', personId] */}
-          <p className="text-muted-foreground text-sm">Goals fetching would happen here. (Wired to /api/performance/goals)</p>
-        </CardContent></Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Performance Goals</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <GoalManagementPanel />
+          </CardContent>
+        </Card>
       )}
-      {activeNav === "feedback" && <Card><CardContent className="p-4"><p className="text-muted-foreground">360-degree feedback and reviews</p></CardContent></Card>}
-      {activeNav === "analytics" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Performance analytics and trends</p></CardContent></Card>}
+      {activeNav === "feedback" && (
+        <div className="text-muted-foreground text-center py-8">360 Feedback Collection (Mock)</div>
+      )}
+      {activeNav === "analytics" && (
+        <div className="text-muted-foreground text-center py-8">Performance Analytics (Mock)</div>
+      )}
     </div>
   );
 }

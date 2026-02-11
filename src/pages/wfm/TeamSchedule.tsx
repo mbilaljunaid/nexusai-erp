@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, startOfWeek, addDays, isSameDay, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { Sparkles } from "lucide-react";
+import { AIScheduleOptimizer } from "@/components/wfm/AIScheduleOptimizer";
 
 // MOCK CONSTANTS
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -18,6 +20,7 @@ export default function TeamSchedule() {
     const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
     const [selectedCell, setSelectedCell] = useState<{ personId: string, date: Date } | null>(null);
     const [selectedShiftId, setSelectedShiftId] = useState<string>("");
+    const [showAIOptimizer, setShowAIOptimizer] = useState(false);
 
     // 1. Fetch Shifts (Definitions)
     const { data: shifts } = useQuery({
@@ -84,7 +87,13 @@ export default function TeamSchedule() {
                     <h1 className="text-3xl font-bold tracking-tight">Team Schedule</h1>
                     <p className="text-muted-foreground">Manage shift assignments ({format(weekStart, "MMM d")} - {format(addDays(weekStart, 6), "MMM d")})</p>
                 </div>
-                {/* Nav controls could go here (Next/Prev Week) */}
+                <Button
+                    onClick={() => setShowAIOptimizer(true)}
+                    className="gap-2 bg-purple-600 hover:bg-purple-700"
+                >
+                    <Sparkles className="h-4 w-4" />
+                    AI Optimize
+                </Button>
             </div>
 
             <Card>
@@ -173,6 +182,17 @@ export default function TeamSchedule() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* AI Optimizer Modal */}
+            <AIScheduleOptimizer
+                isOpen={showAIOptimizer}
+                onClose={() => setShowAIOptimizer(false)}
+                onSuccess={() => {
+                    setShowAIOptimizer(false);
+                    queryClient.invalidateQueries({ queryKey: ["wfm-team-schedule"] });
+                }}
+                tenantId={MOCK_TENANT_ID}
+            />
         </div>
     );
 }

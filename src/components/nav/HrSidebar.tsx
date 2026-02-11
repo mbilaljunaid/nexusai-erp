@@ -53,9 +53,12 @@ const hrMenu = [
             { title: "Pipeline Board", url: "/hr/recruitment/pipeline", icon: Kanban },
             { title: "Candidate Search", url: "/hr/recruitment/candidates", icon: Search },
             { title: "Interview Schedule", url: "/hr/recruitment/interviews", icon: Calendar },
+            { title: "My Interviews", url: "/hr/recruitment/my-interviews", icon: ClipboardList },
             { title: "Offer Management", url: "/hr/recruitment/offers", icon: Handshake },
+            { title: "Onboarding Tracker", url: "/hr/recruitment/onboarding-tracker", icon: CheckCircle },
             { title: "AI Matching", url: "/hr/recruitment/matching", icon: Brain },
-            { title: "Analytics", url: "/hr/recruitment/analytics", icon: LineChart },
+            { title: "Analytics Dashboard", url: "/hr/recruitment/analytics-dashboard", icon: BarChart3 },
+            { title: "Analytics (Legacy)", url: "/hr/recruitment/analytics", icon: LineChart },
         ]
     },
     {
