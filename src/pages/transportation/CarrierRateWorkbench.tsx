@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable } from "@/components/ui/standard-table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,7 +67,7 @@ export default function CarrierRateWorkbench() {
     });
 
     // Fetch contracts
-    const { data: contracts = [] } = useQuery({
+    const { data: contracts = [] } = useQuery<any[]>({
         queryKey: ["/api/carrier-rates/contracts"],
     });
 
@@ -193,11 +193,32 @@ export default function CarrierRateWorkbench() {
                             <CardDescription>Latest active pricing structures</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
-                                data={rateCards.slice(0, 5)}
-                                columns={rateCardColumns}
-                                isLoading={loadingRates}
-                            />
+                            {loadingRates ? (
+                                <p className="text-center py-8 text-muted-foreground">Loading...</p>
+                            ) : rateCards.length === 0 ? (
+                                <p className="text-center py-8 text-muted-foreground">No rate cards</p>
+                            ) : (
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            {rateCardColumns.map((col) => (
+                                                <TableHead key={col.key}>{col.label}</TableHead>
+                                            ))}
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {rateCards.slice(0, 5).map((rate) => (
+                                            <TableRow key={rate.id}>
+                                                {rateCardColumns.map((col) => (
+                                                    <TableCell key={col.key}>
+                                                        {col.render ? col.render(rate[col.key as keyof CarrierRate]) : rate[col.key as keyof CarrierRate]}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            )}
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -232,15 +253,39 @@ export default function CarrierRateWorkbench() {
 
                     <Card>
                         <CardContent className="pt-6">
-                            <StandardTable
-                                data={rateCards}
-                                columns={rateCardColumns}
-                                isLoading={loadingRates}
-                                onRowClick={(rate) => {
-                                    setSelectedRate(rate);
-                                    setIsRateDialogOpen(true);
-                                }}
-                            />
+                            {loadingRates ? (
+                                <p className="text-center py-8 text-muted-foreground">Loading...</p>
+                            ) : rateCards.length === 0 ? (
+                                <p className="text-center py-8 text-muted-foreground">No rate cards</p>
+                            ) : (
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            {rateCardColumns.map((col) => (
+                                                <TableHead key={col.key}>{col.label}</TableHead>
+                                            ))}
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {rateCards.map((rate) => (
+                                            <TableRow
+                                                key={rate.id}
+                                                className="cursor-pointer hover:bg-slate-50"
+                                                onClick={() => {
+                                                    setSelectedRate(rate);
+                                                    setIsRateDialogOpen(true);
+                                                }}
+                                            >
+                                                {rateCardColumns.map((col) => (
+                                                    <TableCell key={col.key}>
+                                                        {col.render ? col.render(rate[col.key as keyof CarrierRate]) : rate[col.key as keyof CarrierRate]}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            )}
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -295,25 +340,36 @@ export default function CarrierRateWorkbench() {
 
                     <Card>
                         <CardContent className="pt-6">
-                            <StandardTable
-                                data={contracts}
-                                columns={[
-                                    { key: "contractNumber", label: "Contract #" },
-                                    { key: "fileName", label: "File Name" },
-                                    { key: "ratesCount", label: "Rates Count" },
-                                    {
-                                        key: "uploadedAt",
-                                        label: "Uploaded",
-                                        render: (val: string) => new Date(val).toLocaleDateString(),
-                                    },
-                                    {
-                                        key: "status",
-                                        label: "Status",
-                                        render: (val: string) => <Badge>{val}</Badge>,
-                                    },
-                                ]}
-                                isLoading={false}
-                            />
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Contract #</TableHead>
+                                        <TableHead>File Name</TableHead>
+                                        <TableHead>Rates Count</TableHead>
+                                        <TableHead>Uploaded</TableHead>
+                                        <TableHead>Status</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {contracts.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                                                No contracts uploaded
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : (
+                                        contracts.map((contract: any) => (
+                                            <TableRow key={contract.id}>
+                                                <TableCell>{contract.contractNumber}</TableCell>
+                                                <TableCell>{contract.fileName}</TableCell>
+                                                <TableCell>{contract.ratesCount}</TableCell>
+                                                <TableCell>{new Date(contract.uploadedAt).toLocaleDateString()}</TableCell>
+                                                <TableCell><Badge>{contract.status}</Badge></TableCell>
+                                            </TableRow>
+                                        ))
+                                    )}
+                                </TableBody>
+                            </Table>
                         </CardContent>
                     </Card>
                 </TabsContent>

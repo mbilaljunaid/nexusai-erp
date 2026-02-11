@@ -1,134 +1,208 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, Calendar as CalendarIcon, DollarSign, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
-import { format } from "date-fns";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+    TrendingUp,
+    TrendingDown,
+    Calendar,
+    DollarSign,
+    Clock,
+    FileBarChart,
+    Download,
+    Filter
+} from "lucide-react";
+import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+
+interface DeferredItem {
+    contractId: string;
+    contractNumber: string;
+    customerName: string;
+    pobName: string;
+    deferredBalance: string;
+    currentRelease: string;
+    nextPeriodRelease: string;
+    remainingPeriods: number;
+    status: string;
+}
+
+interface DeferredSummary {
+    totalDeferred: number;
+    currentPeriodRelease: number;
+    next12MonthsRelease: number;
+    contractLiability: number;
+    contractAsset: number;
+}
 
 export default function DeferredRevenueMatrix() {
-    const [date, setDate] = useState<Date | undefined>(new Date());
+    const { toast } = useToast();
+    const [asOfDate, setAsOfDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+    const [filterStatus, setFilterStatus] = useState<string>("all");
 
-    const { data: matrixData, isLoading, error } = useQuery({
-        queryKey: ['deferred-revenue', date],
+    // Fetch deferred revenue summary
+    const { data: summary, isLoading: summaryLoading } = useQuery<DeferredSummary>({
+        queryKey: ["/api/revenue/reporting/deferred", asOfDate],
         queryFn: async () => {
-            const dateStr = date ? date.toISOString() : new Date().toISOString();
-            const res = await fetch(`/api/revenue/reporting/deferred?date=${dateStr}`);
-            if (!res.ok) throw new Error("Failed to fetch deferred revenue data");
+            const res = await fetch(`/api/revenue/reporting/deferred?date=${asOfDate}`);
+            if (!res.ok) return {
+                totalDeferred: 0,
+                currentPeriodRelease: 0,
+                next12MonthsRelease: 0,
+                contractLiability: 0,
+                contractAsset: 0
+            };
             return res.json();
         }
     });
 
+    // Fetch deferred items detail
+    const { data: items = [], isLoading: itemsLoading } = useQuery<DeferredItem[]>({
+        queryKey: ["/api/revenue/reporting/deferred-details", asOfDate],
+        queryFn: async () => {
+            const res = await fetch(`/api/revenue/reporting/deferred-details?date=${asOfDate}`);
+            if (!res.ok) return [];
+            return res.json();
+        }
+    });
+
+    const filteredItems = items.filter(item =>
+        filterStatus === "all" || item.status === filterStatus
+    );
+
+    const handleExport = () => {
+        toast({
+            title: "Export Started",
+            description: "Deferred revenue report is being generated..."
+        });
+        // TODO: Implement actual export
+    };
+
     return (
-        <div className="p-8 max-w-[1600px] mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
+            {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">
                         Deferred Revenue Matrix
                     </h1>
-                    <p className="text-muted-foreground mt-2">
-                        Track unearned revenue liability as of a specific date.
+                    <p className="text-muted-foreground mt-1">
+                        Track contract liabilities and release schedules
                     </p>
                 </div>
-
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-muted-foreground">As of Date:</span>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant={"outline"}
-                                className={`w-[240px] justify-start text-left font-normal ${!date && "text-muted-foreground"}`}
-                            >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? format(date, "PPP") : <span>Pick a date</span>}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="end">
-                            <Calendar
-                                mode="single"
-                                selected={date}
-                                onSelect={setDate}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={handleExport}>
+                        <Download className="h-4 w-4 mr-2" />
+                        Export
+                    </Button>
                 </div>
             </div>
 
-            {error && (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                        Failed to load deferred revenue data. Please try again.
-                    </AlertDescription>
-                </Alert>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Total Bookings Card */}
-                <Card className="shadow-md border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+            {/* Summary Metrics */}
+            <div className="grid gap-4 md:grid-cols-5">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-blue-600">
-                            Total Allocated Amount
-                        </CardTitle>
-                        <ArrowUpRight className="h-4 w-4 text-blue-600" />
+                        <CardTitle className="text-sm font-medium">Total Deferred</CardTitle>
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        {isLoading ? <Skeleton className="h-8 w-[100px]" /> : (
+                        {summaryLoading ? (
+                            <Skeleton className="h-8 w-32" />
+                        ) : (
                             <>
                                 <div className="text-2xl font-bold">
-                                    ${matrixData?.totalBookings?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    ${(summary?.totalDeferred || 0).toLocaleString()}
                                 </div>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    Total value of all active contracts
+                                <p className="text-xs text-muted-foreground">
+                                    Outstanding balance
                                 </p>
                             </>
                         )}
                     </CardContent>
                 </Card>
 
-                {/* Total Recognized Card */}
-                <Card className="shadow-md border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-green-600">
-                            Recognized Revenue
-                        </CardTitle>
-                        <ArrowDownRight className="h-4 w-4 text-green-600" />
+                        <CardTitle className="text-sm font-medium">Current Period</CardTitle>
+                        <Calendar className="h-4 w-4 text-green-500" />
                     </CardHeader>
                     <CardContent>
-                        {isLoading ? <Skeleton className="h-8 w-[100px]" /> : (
+                        {summaryLoading ? (
+                            <Skeleton className="h-8 w-32" />
+                        ) : (
                             <>
-                                <div className="text-2xl font-bold">
-                                    ${matrixData?.totalRecognized?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                <div className="text-2xl font-bold text-green-600">
+                                    ${(summary?.currentPeriodRelease || 0).toLocaleString()}
                                 </div>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    Revenue recognized to date
+                                <p className="text-xs text-muted-foreground">
+                                    To be recognized
                                 </p>
                             </>
                         )}
                     </CardContent>
                 </Card>
 
-                {/* Deferred Balance Card */}
-                <Card className="shadow-md border-l-4 border-l-orange-500 hover:shadow-lg transition-shadow bg-orange-50/50 dark:bg-orange-950/10">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-orange-600">
-                            Deferred Revenue Liability
-                        </CardTitle>
-                        <Activity className="h-4 w-4 text-orange-600" />
+                        <CardTitle className="text-sm font-medium">Next 12 Months</CardTitle>
+                        <Clock className="h-4 w-4 text-blue-500" />
                     </CardHeader>
                     <CardContent>
-                        {isLoading ? <Skeleton className="h-8 w-[100px]" /> : (
+                        {summaryLoading ? (
+                            <Skeleton className="h-8 w-32" />
+                        ) : (
                             <>
-                                <div className="text-2xl font-bold text-orange-700 dark:text-orange-400">
-                                    ${matrixData?.deferredBalance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                <div className="text-2xl font-bold text-blue-600">
+                                    ${(summary?.next12MonthsRelease || 0).toLocaleString()}
                                 </div>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    Remaining unearned revenue
+                                <p className="text-xs text-muted-foreground">
+                                    Forecasted release
+                                </p>
+                            </>
+                        )}
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Contract Liability</CardTitle>
+                        <TrendingDown className="h-4 w-4 text-orange-500" />
+                    </CardHeader>
+                    <CardContent>
+                        {summaryLoading ? (
+                            <Skeleton className="h-8 w-32" />
+                        ) : (
+                            <>
+                                <div className="text-2xl font-bold text-orange-600">
+                                    ${(summary?.contractLiability || 0).toLocaleString()}
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                    Prepaid/unearned
+                                </p>
+                            </>
+                        )}
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Contract Asset</CardTitle>
+                        <TrendingUp className="h-4 w-4 text-purple-500" />
+                    </CardHeader>
+                    <CardContent>
+                        {summaryLoading ? (
+                            <Skeleton className="h-8 w-32" />
+                        ) : (
+                            <>
+                                <div className="text-2xl font-bold text-purple-600">
+                                    ${(summary?.contractAsset || 0).toLocaleString()}
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                    Unbilled revenue
                                 </p>
                             </>
                         )}
@@ -136,21 +210,136 @@ export default function DeferredRevenueMatrix() {
                 </Card>
             </div>
 
-            <Card className="mt-8">
+            {/* Main Content */}
+            <Card>
                 <CardHeader>
-                    <CardTitle>Detailed Breakdown</CardTitle>
-                    <CardDescription>
-                        Contract-level detail for the deferred revenue balance (Top 10 by value)
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-center p-12 bg-muted/20 border-2 border-dashed rounded-lg">
-                        <div className="text-center text-muted-foreground">
-                            <Activity className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p>Detailed contract breakdown is coming in the next iteration.</p>
-                            <p className="text-sm">This will allow you to drill down into specific contract liabilities.</p>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <CardTitle>Deferred Revenue Details</CardTitle>
+                            <CardDescription>
+                                Active deferral balances by contract and performance obligation
+                            </CardDescription>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <Filter className="h-4 w-4 text-muted-foreground" />
+                            <select
+                                className="border rounded-md px-3 py-1.5 text-sm"
+                                value={filterStatus}
+                                onChange={(e) => setFilterStatus(e.target.value)}
+                            >
+                                <option value="all">All Statuses</option>
+                                <option value="Active">Active</option>
+                                <option value="Satisfied">Satisfied</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
                         </div>
                     </div>
+                </CardHeader>
+                <CardContent>
+                    <Tabs defaultValue="matrix">
+                        <TabsList>
+                            <TabsTrigger value="matrix">Matrix View</TabsTrigger>
+                            <TabsTrigger value="aging">Aging Analysis</TabsTrigger>
+                            <TabsTrigger value="schedule">Release Schedule</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="matrix" className="mt-4">
+                            {itemsLoading ? (
+                                <div className="space-y-3">
+                                    <Skeleton className="h-12 w-full" />
+                                    <Skeleton className="h-12 w-full" />
+                                    <Skeleton className="h-12 w-full" />
+                                </div>
+                            ) : filteredItems.length === 0 ? (
+                                <div className="text-center py-12 text-muted-foreground">
+                                    <FileBarChart className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                    <p>No deferred revenue items found</p>
+                                    <p className="text-sm mt-1">
+                                        {filterStatus !== "all"
+                                            ? "Try changing the filter"
+                                            : "All revenue has been recognized"}
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="border rounded-lg overflow-hidden">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="bg-slate-50">
+                                                <TableHead>Contract</TableHead>
+                                                <TableHead>Customer</TableHead>
+                                                <TableHead>Performance Obligation</TableHead>
+                                                <TableHead className="text-right">Deferred Balance</TableHead>
+                                                <TableHead className="text-right">Current Release</TableHead>
+                                                <TableHead className="text-right">Next Period</TableHead>
+                                                <TableHead className="text-center">Remaining</TableHead>
+                                                <TableHead>Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {filteredItems.map((item, idx) => (
+                                                <TableRow key={idx} className="hover:bg-slate-50">
+                                                    <TableCell className="font-mono text-sm">
+                                                        {item.contractNumber}
+                                                    </TableCell>
+                                                    <TableCell>{item.customerName}</TableCell>
+                                                    <TableCell className="font-medium">
+                                                        {item.pobName}
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-mono font-semibold">
+                                                        ${parseFloat(item.deferredBalance).toLocaleString()}
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-mono text-green-600">
+                                                        ${parseFloat(item.currentRelease).toLocaleString()}
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-mono text-blue-600">
+                                                        ${parseFloat(item.nextPeriodRelease).toLocaleString()}
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <Badge variant="outline" className="font-mono">
+                                                            {item.remainingPeriods} periods
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge
+                                                            variant={
+                                                                item.status === "Active"
+                                                                    ? "default"
+                                                                    : item.status === "Satisfied"
+                                                                        ? "secondary"
+                                                                        : "destructive"
+                                                            }
+                                                        >
+                                                            {item.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            )}
+                        </TabsContent>
+
+                        <TabsContent value="aging" className="mt-4">
+                            <div className="text-center py-12 text-muted-foreground">
+                                <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                <p>Aging analysis coming soon</p>
+                                <p className="text-sm mt-1">
+                                    View deferred revenue by aging buckets (0-30, 31-60, 61-90, 90+ days)
+                                </p>
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="schedule" className="mt-4">
+                            <div className="text-center py-12 text-muted-foreground">
+                                <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                <p>Release schedule coming soon</p>
+                                <p className="text-sm mt-1">
+                                    View forecasted revenue release by period for the next 12 months
+                                </p>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                 </CardContent>
             </Card>
         </div>

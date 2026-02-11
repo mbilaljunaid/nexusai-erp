@@ -1,56 +1,64 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient } from "@/lib/queryClient";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription
-} from "@/components/ui/card";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-    RefreshCw,
+    Upload,
+    Play,
     AlertCircle,
     CheckCircle2,
-    Clock
+    Clock,
+    FileText,
+    Plus,
+    RefreshCw,
+    Download,
+    Filter
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import type { RevenueSourceEvent } from "@/types/erp-types";
 
-// Create a local type matching the DB schema if not exported
-// type RevenueSourceEvent = {
-//     id: string;
-//     sourceSystem: string;
-//     sourceId: string;
-//     eventType: string;
-//     eventDate: string;
-//     amount: string;
-//     currency: string;
-//     processingStatus: "Pending" | "Processed" | "Error" | "Ignored";
-//     errorMessage?: string;
-// };
+interface SourceEvent {
+    id: string;
+    sourceSystem: string;
+    sourceId: string;
+    eventType: string;
+    eventDate: string;
+    itemId?: string;
+    amount: string;
+    currency: string;
+    processingStatus: string;
+    contractId?: string;
+    errorMessage?: string;
+    createdAt: string;
+}
 
 export default function RevenueSourceEvents() {
     const { toast } = useToast();
+    const queryClient = useQueryClient();
+    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [filterStatus, setFilterStatus] = useState<string>("all");
 
-    // Fetch Events
-    const { data: events, isLoading, isRefetching, refetch } = useQuery({
-        queryKey: ["revenueSourceEvents"],
+    // Fetch source events
+    const { data: events = [], isLoading } = useQuery<SourceEvent[]>({
+        queryKey: ["/api/revenue/events"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/events");
-            if (!res.ok) throw new Error("Failed to fetch events");
-            return res.json() as Promise<any[]>; // Use any to avoid strict type issues for now
-        }
+            if (!res.ok) return [];
+            return res.json();
+        },
+        refetchInterval: 10000 // Refresh every 10 seconds
     });
 
-    // Retry Mutation (Single Action - Re-queue)
-    // For MVP, we'll just implement a "Process All" trigger from here too
-    const processMutation = useMutation({
+    // Process events mutation
+    const processEventsMutation = useMutation({
         mutationFn: async () => {
             const res = await fetch("/api/revenue/jobs/process-events", { method: "POST" });
             if (!res.ok) throw new Error("Processing failed");
@@ -58,122 +66,412 @@ export default function RevenueSourceEvents() {
         },
         onSuccess: (data: any) => {
             toast({
-                title: "Processing Job Triggered",
-                description: data.message,
+                title: "Processing Complete",
+                description: `Processed ${data.results?.length || 0} events.`
             });
-            queryClient.invalidateQueries({ queryKey: ["revenueSourceEvents"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/revenue/events"] });
         },
         onError: () => {
             toast({
                 title: "Processing Failed",
+                description: "Failed to process events.",
                 variant: "destructive"
             });
         }
     });
 
-    const columns: any[] = [
-        {
-            header: "Source System",
-            accessorKey: "sourceSystem",
-            cell: (info: any) => <span className="font-medium">{info.getValue()}</span>
+    // Create event mutation
+    const createEventMutation = useMutation({
+        mutationFn: async (data: any) => {
+            const res = await fetch("/api/revenue/events", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error("Failed to create event");
+            return res.json();
         },
-        {
-            header: "Source ID",
-            accessorKey: "sourceId",
+        onSuccess: () => {
+            toast({
+                title: "Event Created",
+                description: "Revenue source event has been queued for processing."
+            });
+            queryClient.invalidateQueries({ queryKey: ["/api/revenue/events"] });
+            setIsCreateDialogOpen(false);
         },
-        {
-            header: "Reference #",
-            accessorKey: "referenceNumber",
-            cell: (info: any) => <span className="font-mono text-xs">{info.getValue() || "—"}</span>
-        },
-        {
-            header: "Event Type",
-            accessorKey: "eventType",
-            cell: (info: any) => <Badge variant="outline">{info.getValue()}</Badge>
-        },
-        {
-            header: "Event Date",
-            accessorKey: "eventDate",
-            cell: (info: any) => format(new Date(info.getValue()), "MMM dd, yyyy")
-        },
-        {
-            header: "Amount",
-            accessorKey: "amount",
-            cell: (info: any) => {
-                const amount = parseFloat(info.getValue() || "0");
-                const currency = info.row.original.currency || "USD";
-                return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
-            }
-        },
-        {
-            header: "Status",
-            accessorKey: "processingStatus",
-            cell: (info: any) => {
-                const status = info.getValue();
-                let color = "bg-gray-100 text-gray-800";
-                let icon = <Clock className="h-3 w-3 mr-1" />;
-
-                if (status === "Processed") {
-                    color = "bg-green-100 text-green-800 border-green-200";
-                    icon = <CheckCircle2 className="h-3 w-3 mr-1" />;
-                } else if (status === "Error") {
-                    color = "bg-red-100 text-red-800 border-red-200";
-                    icon = <AlertCircle className="h-3 w-3 mr-1" />;
-                }
-
-                return (
-                    <div className={`flex items-center px-2 py-1 rounded-full text-xs border ${color} w-fit`}>
-                        {icon}
-                        {status}
-                    </div>
-                );
-            }
-        },
-        {
-            header: "Message",
-            accessorKey: "errorMessage",
-            cell: (info: any) => <span className="text-xs text-red-500 max-w-[200px] truncate block" title={info.getValue()}>{info.getValue()}</span>
+        onError: () => {
+            toast({
+                title: "Error",
+                description: "Failed to create event.",
+                variant: "destructive"
+            });
         }
-    ];
+    });
 
-    if (isLoading) {
-        return <div className="p-8"><Skeleton className="h-96 w-full" /></div>;
-    }
+    const handleCreateEvent = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        createEventMutation.mutate({
+            sourceSystem: formData.get("sourceSystem"),
+            sourceId: formData.get("sourceId"),
+            eventType: formData.get("eventType"),
+            itemId: formData.get("itemId") || null,
+            amount: formData.get("amount"),
+            currency: formData.get("currency"),
+            eventDate: formData.get("eventDate")
+        });
+    };
+
+    const filteredEvents = events.filter(event =>
+        filterStatus === "all" || event.processingStatus === filterStatus
+    );
+
+    const statusCounts = {
+        total: events.length,
+        pending: events.filter(e => e.processingStatus === "Pending").length,
+        processed: events.filter(e => e.processingStatus === "Processed").length,
+        error: events.filter(e => e.processingStatus === "Error").length
+    };
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
+            {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Revenue Source Events</h1>
-                    <p className="text-muted-foreground mt-1">Audit trail of inbound commercial events (Orders, Usage, Invoices)</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+                        Revenue Source Events
+                    </h1>
+                    <p className="text-muted-foreground mt-1">
+                        Ingest and process revenue events from operational systems
+                    </p>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isRefetching}>
-                        <RefreshCw className={`h-4 w-4 mr-2 ${isRefetching ? 'animate-spin' : ''}`} />
-                        Refresh
-                    </Button>
                     <Button
-                        size="sm"
-                        onClick={() => processMutation.mutate()}
-                        disabled={processMutation.isPending}
+                        variant="outline"
+                        onClick={() => processEventsMutation.mutate()}
+                        disabled={processEventsMutation.isPending || statusCounts.pending === 0}
                     >
-                        {processMutation.isPending ? "Processing..." : "Process Pending Events"}
+                        <Play className="h-4 w-4 mr-2" />
+                        Process Queue ({statusCounts.pending})
+                    </Button>
+                    <Button onClick={() => setIsCreateDialogOpen(true)}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Manual Event
                     </Button>
                 </div>
             </div>
 
+            {/* Summary Metrics */}
+            <div className="grid gap-4 md:grid-cols-4">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Events</CardTitle>
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{statusCounts.total}</div>
+                        <p className="text-xs text-muted-foreground">All time</p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Pending</CardTitle>
+                        <Clock className="h-4 w-4 text-yellow-500" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold text-yellow-600">{statusCounts.pending}</div>
+                        <p className="text-xs text-muted-foreground">Awaiting processing</p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Processed</CardTitle>
+                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold text-green-600">{statusCounts.processed}</div>
+                        <p className="text-xs text-muted-foreground">Successfully processed</p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Errors</CardTitle>
+                        <AlertCircle className="h-4 w-4 text-red-500" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold text-red-600">{statusCounts.error}</div>
+                        <p className="text-xs text-muted-foreground">Require attention</p>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Main Content */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Inbound Stream</CardTitle>
-                    <CardDescription>Real-time feed of revenue-impacting events.</CardDescription>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <CardTitle>Event Queue</CardTitle>
+                            <CardDescription>
+                                Revenue events from billing, order management, and usage systems
+                            </CardDescription>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <Filter className="h-4 w-4 text-muted-foreground" />
+                            <select
+                                className="border rounded-md px-3 py-1.5 text-sm"
+                                value={filterStatus}
+                                onChange={(e) => setFilterStatus(e.target.value)}
+                            >
+                                <option value="all">All Statuses</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Processed">Processed</option>
+                                <option value="Error">Error</option>
+                                <option value="Ignored">Ignored</option>
+                            </select>
+                        </div>
+                    </div>
                 </CardHeader>
                 <CardContent>
-                    <StandardTable
-                        data={events || []}
-                        columns={columns}
-                    />
+                    <Tabs defaultValue="list">
+                        <TabsList>
+                            <TabsTrigger value="list">Event List</TabsTrigger>
+                            <TabsTrigger value="upload">Bulk Upload</TabsTrigger>
+                            <TabsTrigger value="mapping">Field Mapping</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="list" className="mt-4">
+                            {isLoading ? (
+                                <div className="space-y-3">
+                                    <Skeleton className="h-12 w-full" />
+                                    <Skeleton className="h-12 w-full" />
+                                    <Skeleton className="h-12 w-full" />
+                                </div>
+                            ) : filteredEvents.length === 0 ? (
+                                <div className="text-center py-12 text-muted-foreground">
+                                    <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                    <p>No events found</p>
+                                    <p className="text-sm mt-1">
+                                        {filterStatus !== "all"
+                                            ? "Try changing the filter"
+                                            : "Create a manual event or upload a batch to get started"}
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="border rounded-lg overflow-hidden">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="bg-slate-50">
+                                                <TableHead>Source</TableHead>
+                                                <TableHead>Source ID</TableHead>
+                                                <TableHead>Event Type</TableHead>
+                                                <TableHead>Event Date</TableHead>
+                                                <TableHead className="text-right">Amount</TableHead>
+                                                <TableHead>Contract</TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead>Actions</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {filteredEvents.map((event) => (
+                                                <TableRow key={event.id} className="hover:bg-slate-50">
+                                                    <TableCell>
+                                                        <Badge variant="outline">{event.sourceSystem}</Badge>
+                                                    </TableCell>
+                                                    <TableCell className="font-mono text-sm">
+                                                        {event.sourceId}
+                                                    </TableCell>
+                                                    <TableCell>{event.eventType}</TableCell>
+                                                    <TableCell className="text-sm">
+                                                        {format(new Date(event.eventDate), "MMM dd, yyyy")}
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-mono">
+                                                        {event.currency} {parseFloat(event.amount).toLocaleString()}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {event.contractId ? (
+                                                            <Badge variant="secondary">{event.contractId.slice(0, 8)}</Badge>
+                                                        ) : (
+                                                            <span className="text-muted-foreground text-sm">-</span>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge
+                                                            variant={
+                                                                event.processingStatus === "Processed"
+                                                                    ? "default"
+                                                                    : event.processingStatus === "Pending"
+                                                                        ? "secondary"
+                                                                        : event.processingStatus === "Error"
+                                                                            ? "destructive"
+                                                                            : "outline"
+                                                            }
+                                                        >
+                                                            {event.processingStatus === "Pending" && <Clock className="h-3 w-3 mr-1" />}
+                                                            {event.processingStatus === "Processed" && <CheckCircle2 className="h-3 w-3 mr-1" />}
+                                                            {event.processingStatus === "Error" && <AlertCircle className="h-3 w-3 mr-1" />}
+                                                            {event.processingStatus}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {event.processingStatus === "Error" && (
+                                                            <Button variant="ghost" size="sm" title={event.errorMessage || "View error"}>
+                                                                <AlertCircle className="h-4 w-4 text-red-500" />
+                                                            </Button>
+                                                        )}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            )}
+                        </TabsContent>
+
+                        <TabsContent value="upload" className="mt-4">
+                            <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                                <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                                <p className="font-medium mb-2">Bulk Event Upload</p>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                    Upload CSV/Excel file with revenue events from Order Management or Billing systems
+                                </p>
+                                <Button variant="outline">
+                                    <Upload className="h-4 w-4 mr-2" />
+                                    Select File
+                                </Button>
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="mapping" className="mt-4">
+                            <div className="text-center py-12 text-muted-foreground">
+                                <RefreshCw className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                <p>Field Mapping Configuration</p>
+                                <p className="text-sm mt-1">
+                                    Map source system fields to revenue event attributes
+                                </p>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                 </CardContent>
             </Card>
+
+            {/* Create Event Dialog */}
+            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Create Manual Revenue Event</DialogTitle>
+                        <DialogDescription>
+                            Manually create a revenue source event for processing
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleCreateEvent}>
+                        <div className="grid grid-cols-2 gap-4 py-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="sourceSystem">Source System *</Label>
+                                <Select name="sourceSystem" defaultValue="API" required>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="API">API / Manual</SelectItem>
+                                        <SelectItem value="OrderManagement">Order Management</SelectItem>
+                                        <SelectItem value="Billing">Billing System</SelectItem>
+                                        <SelectItem value="Usage">Usage Tracking</SelectItem>
+                                        <SelectItem value="Subscription">Subscription Platform</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="sourceId">Source ID *</Label>
+                                <Input
+                                    id="sourceId"
+                                    name="sourceId"
+                                    placeholder="e.g., SO-12345"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="eventType">Event Type *</Label>
+                                <Select name="eventType" defaultValue="Booking" required>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Booking">Booking</SelectItem>
+                                        <SelectItem value="Shipment">Shipment</SelectItem>
+                                        <SelectItem value="Consumption">Consumption</SelectItem>
+                                        <SelectItem value="Invoice">Invoice</SelectItem>
+                                        <SelectItem value="Usage">Usage</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="eventDate">Event Date *</Label>
+                                <Input
+                                    id="eventDate"
+                                    name="eventDate"
+                                    type="date"
+                                    defaultValue={format(new Date(), "yyyy-MM-dd")}
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="amount">Amount *</Label>
+                                <Input
+                                    id="amount"
+                                    name="amount"
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="currency">Currency *</Label>
+                                <Select name="currency" defaultValue="USD" required>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="USD">USD</SelectItem>
+                                        <SelectItem value="EUR">EUR</SelectItem>
+                                        <SelectItem value="GBP">GBP</SelectItem>
+                                        <SelectItem value="JPY">JPY</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2 col-span-2">
+                                <Label htmlFor="itemId">Item ID (Optional)</Label>
+                                <Input
+                                    id="itemId"
+                                    name="itemId"
+                                    placeholder="e.g., PROD-001"
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setIsCreateDialogOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={createEventMutation.isPending}>
+                                {createEventMutation.isPending ? "Creating..." : "Create Event"}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

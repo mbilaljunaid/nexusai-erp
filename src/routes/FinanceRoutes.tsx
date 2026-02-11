@@ -108,7 +108,7 @@ import LeaseModificationWizard from "@/pages/leases/LeaseModificationWizard";
 import LeaseComplianceDashboard from "@/pages/leases/LeaseComplianceDashboard";
 import ContractList from "@/pages/contracts/ContractList";
 import ContractDetailView from "@/pages/ContractDetailView";
-import SSPManager from "@/pages/SSPManager";
+import RevenueSSPManager from "@/pages/RevenueSSPManager";
 import RevenueWaterfall from "@/pages/RevenueWaterfall";
 import DeferredRevenueMatrix from "@/pages/DeferredRevenueMatrix";
 import RevenueSourceEvents from "@/pages/RevenueSourceEvents";
@@ -230,7 +230,7 @@ export default function FinanceRoutes() {
                 <Route path="/revenue/contracts" component={RevenueContractWorkbench} />
                 <Route path="/revenue/contracts/:id" component={RevenueContractDetail} />
                 <Route path="/revenue/periods" component={RevenuePeriodClose} />
-                <Route path="/revenue/ssp" component={SSPManager} />
+                <Route path="/revenue/ssp" component={RevenueSSPManager} />
                 <Route path="/revenue/rules" component={RevenueRuleManager} />
                 <Route path="/revenue/waterfall" component={RevenueWaterfall} />
                 <Route path="/revenue/deferred" component={DeferredRevenueMatrix} />

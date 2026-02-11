@@ -150,7 +150,7 @@ export default function ShipmentTrackingDashboard() {
                     <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden">
                         <div
                             className={`h-full ${val >= 80 ? "bg-green-500" : val >= 60 ? "bg-amber-500" : "bg-red-500"}`}
-                            style={{ width: `${val}%` }}
+                            style={{ width: `${Number(val)}%` }}
                         />
                     </div>
                     <span className="text-xs text-muted-foreground">{val}%</span>
@@ -252,7 +252,7 @@ export default function ShipmentTrackingDashboard() {
                                             >
                                                 {shipmentColumns.map((col) => (
                                                     <TableCell key={col.key}>
-                                                        {col.render ? col.render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment]}
+                                                        {col.render ? col.render(shipment[col.key as keyof ActiveShipment] as any) : shipment[col.key as keyof ActiveShipment]}
                                                     </TableCell>
                                                 ))}
                                             </TableRow>
@@ -339,7 +339,7 @@ export default function ShipmentTrackingDashboard() {
                                             >
                                                 {shipmentColumns.map((col) => (
                                                     <TableCell key={col.key}>
-                                                        {col.render ? col.render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment]}
+                                                        {col.render ? col.render(shipment[col.key as keyof ActiveShipment] as any) : shipment[col.key as keyof ActiveShipment]}
                                                     </TableCell>
                                                 ))}
                                             </TableRow>

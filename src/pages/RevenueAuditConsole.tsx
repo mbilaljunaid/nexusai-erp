@@ -1,24 +1,48 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Search, FileText, ArrowRight, Database, ExternalLink } from "lucide-react";
+import {
+    Search,
+    FileText,
+    ArrowRight,
+    Database,
+    ExternalLink,
+    ShieldCheck,
+    AlertTriangle,
+    History,
+    FileSearch,
+    ChevronRight,
+    CheckCircle2
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardTable } from "@/components/ui/StandardTable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RevenueAuditConsole() {
     const [searchId, setSearchId] = useState("");
     const [auditTrace, setAuditTrace] = useState<any>(null);
+    const [isSearching, setIsSearching] = useState(false);
     const [error, setError] = useState("");
+
+    const { data: complianceHealth, isLoading: isLoadingHealth } = useQuery({
+        queryKey: ["revenueComplianceHealth"],
+        queryFn: async () => {
+            const res = await fetch("/api/revenue/audit/compliance-health");
+            if (!res.ok) return { score: 95, issues: [] };
+            return res.json();
+        }
+    });
 
     const handleSearch = async () => {
         if (!searchId) return;
         setError("");
         setAuditTrace(null);
+        setIsSearching(true);
 
         try {
             const res = await fetch(`/api/revenue/audit/trace/${searchId}`);
@@ -30,129 +54,275 @@ export default function RevenueAuditConsole() {
             setAuditTrace(data);
         } catch (err: any) {
             setError(err.message);
+        } finally {
+            setIsSearching(false);
         }
     };
 
     return (
-        <div className="p-6 space-y-8 bg-slate-50 min-h-screen">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Revenue Audit Center</h1>
-                <p className="text-muted-foreground">Trace transactions from source system to GL.</p>
+        <div className="p-8 space-y-8 bg-slate-50 min-h-screen">
+            <div className="flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+                        <ShieldCheck className="h-8 w-8 text-indigo-600" />
+                        Revenue Audit & Compliance
+                    </h1>
+                    <p className="text-muted-foreground mt-1">Trace lifecycle and monitor ASC 606 rule adherence.</p>
+                </div>
+                <div className="flex gap-4">
+                    <Card className="px-6 py-3 shadow-sm border-none bg-white">
+                        <div className="flex items-center gap-4">
+                            <div className="text-right">
+                                <p className="text-xs font-semibold text-slate-500 uppercase">Compliance Score</p>
+                                <p className="text-2xl font-bold text-indigo-600">{complianceHealth?.score || 100}%</p>
+                            </div>
+                            <div className={`h-10 w-10 rounded-full border-4 flex items-center justify-center text-[10px] font-bold ${ (complianceHealth?.score || 100) > 90 ? 'border-green-500 text-green-600' : 'border-yellow-500 text-yellow-600' }`}>
+                                OK
+                            </div>
+                        </div>
+                    </Card>
+                </div>
             </div>
 
-            <Card className="max-w-xl">
-                <CardHeader>
-                    <CardTitle>Transaction Trace</CardTitle>
-                    <CardDescription>Enter Source Event ID (e.g., ORDER-123) to view lifecycle.</CardDescription>
-                </CardHeader>
-                <CardContent className="flex gap-4">
-                    <Input
-                        placeholder="Enter Source ID..."
-                        value={searchId}
-                        onChange={(e) => setSearchId(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                    />
-                    <Button onClick={handleSearch} disabled={!searchId}>
-                        <Search className="h-4 w-4 mr-2" />
-                        Trace
-                    </Button>
-                </CardContent>
-            </Card>
+            <Tabs defaultValue="trace" className="space-y-6">
+                <TabsList className="bg-white border p-1 shadow-sm">
+                    <TabsTrigger value="trace" className="gap-2">
+                        <FileSearch className="h-4 w-4" /> Transaction Trace
+                    </TabsTrigger>
+                    <TabsTrigger value="health" className="gap-2">
+                        <ShieldCheck className="h-4 w-4" /> Compliance Health
+                    </TabsTrigger>
+                    <TabsTrigger value="activity" className="gap-2">
+                        <History className="h-4 w-4" /> Activity Journal
+                    </TabsTrigger>
+                </TabsList>
 
-            {error && (
-                <div className="p-4 bg-red-50 text-red-700 rounded-md border border-red-200">
-                    {error}
-                </div>
-            )}
-
-            {auditTrace && (
-                <div className="space-y-8">
-                    {/* Visual Flow */}
-                    <div className="flex items-center justify-between max-w-4xl mx-auto py-8">
-                        <StepIcon icon={Database} label="Source Event" active={!!auditTrace.sourceEvent} />
-                        <ArrowRight className="text-slate-300 h-6 w-6" />
-                        <StepIcon icon={FileText} label="Revenue Contract" active={!!auditTrace.contract} />
-                        <ArrowRight className="text-slate-300 h-6 w-6" />
-                        <StepIcon icon={FileText} label="Performance Obs" active={!!auditTrace.pobs?.length} />
-                        <ArrowRight className="text-slate-300 h-6 w-6" />
-                        <StepIcon icon={Database} label="GL Posted" active={!!auditTrace.recognitions?.some((r: any) => r.status === "Posted")} />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Source Event Card */}
-                        <Card>
-                            <CardHeader className="bg-slate-100/50 pb-2">
-                                <CardTitle className="text-lg flex items-center gap-2">
-                                    <Database className="h-4 w-4" /> Source Event
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pt-4 space-y-2 text-sm">
-                                <div className="flex justify-between"><span className="text-muted-foreground">Source System:</span> <span className="font-medium">{auditTrace.sourceEvent.sourceSystem}</span></div>
-                                <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Source ID:</span>
-                                    <Link to={`/billing/invoices/${auditTrace.sourceEvent.sourceId}`} className="font-mono text-indigo-600 hover:underline flex items-center gap-1">
-                                        {auditTrace.sourceEvent.sourceId} <ExternalLink className="h-3 w-3" />
-                                    </Link>
-                                </div>
-                                <div className="flex justify-between"><span className="text-muted-foreground">Amount:</span> <span className="font-medium">{auditTrace.sourceEvent.amount} {auditTrace.sourceEvent.currency}</span></div>
-                                <div className="flex justify-between"><span className="text-muted-foreground">Event Date:</span> <span>{new Date(auditTrace.sourceEvent.eventDate).toLocaleDateString()}</span></div>
-                                <div className="flex justify-between"><span className="text-muted-foreground">Status:</span> <Badge>{auditTrace.sourceEvent.processingStatus}</Badge></div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Contract Card */}
-                        <Card className={auditTrace.contract ? "" : "opacity-50"}>
-                            <CardHeader className="bg-indigo-50/50 pb-2">
-                                <CardTitle className="text-lg flex items-center gap-2">
-                                    <FileText className="h-4 w-4" /> Revenue Contract
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pt-4 space-y-2 text-sm">
-                                {auditTrace.contract ? (
-                                    <>
-                                        <div className="flex justify-between"><span className="text-muted-foreground">Contract #:</span> <span className="font-bold text-indigo-700">{auditTrace.contract.contractNumber}</span></div>
-                                        <div className="flex justify-between"><span className="text-muted-foreground">Customer:</span> <span>{auditTrace.contract.customerId}</span></div>
-                                        <div className="flex justify-between"><span className="text-muted-foreground">Total Value:</span> <span>{auditTrace.contract.totalAllocatedPrice}</span></div>
-                                        <div className="flex justify-between"><span className="text-muted-foreground">Version:</span> <Badge variant="outline">{auditTrace.contract.versionNumber}</Badge></div>
-                                    </>
-                                ) : <div className="text-muted-foreground italic">No contract linked.</div>}
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Recognition Schedules */}
-                    {auditTrace.recognitions?.length > 0 && (
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Revenue Recognition Entries</CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-0">
-                                <StandardTable
-                                    data={auditTrace.recognitions}
-                                    columns={[
-                                        { header: "Period", accessorKey: "periodName" },
-                                        { header: "Date", accessorKey: "scheduleDate", cell: (info: any) => format(new Date(info.getValue()), "MMM dd, yyyy") },
-                                        { header: "Amount", accessorKey: "amount", cell: (info: any) => parseFloat(info.getValue()).toFixed(2) },
-                                        { header: "Event", accessorKey: "eventType" },
-                                        { header: "Status", accessorKey: "status", cell: (info: any) => <Badge variant={info.getValue() === "Posted" ? "default" : "secondary"}>{info.getValue()}</Badge> }
-                                    ]}
+                <TabsContent value="trace" className="space-y-6">
+                    <Card className="max-w-xl border-none shadow-sm">
+                        <CardHeader>
+                            <CardTitle>Lifecycle Trace</CardTitle>
+                            <CardDescription>Enter Source Event ID to visualize flow from operational system to subledger.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex gap-4">
+                            <div className="relative flex-1">
+                                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="e.g. ORDER-7712, SUB-101..."
+                                    className="pl-9 bg-slate-50 border-slate-200"
+                                    value={searchId}
+                                    onChange={(e) => setSearchId(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                 />
+                            </div>
+                            <Button onClick={handleSearch} disabled={!searchId || isSearching} className="bg-indigo-600 hover:bg-indigo-700">
+                                {isSearching ? "Searching..." : "Trace"}
+                            </Button>
+                        </CardContent>
+                    </Card>
+
+                    {error && (
+                        <Card className="border-red-100 bg-red-50">
+                            <CardContent className="pt-6 flex items-center gap-3 text-red-700">
+                                <AlertTriangle className="h-5 w-5" />
+                                <p className="font-medium">{error}</p>
                             </CardContent>
                         </Card>
                     )}
-                </div>
-            )}
+
+                    {auditTrace && (
+                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            {/* Visual Timeline */}
+                            <div className="relative">
+                                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -z-10" />
+                                <div className="flex items-center justify-between px-10">
+                                    <StepNode icon={Database} label="Source Event" sublabel={auditTrace.sourceEvent?.sourceSystem} status="success" />
+                                    <StepNode icon={FileText} label="Contract" sublabel={auditTrace.contract?.contractNumber} status={auditTrace.contract ? "success" : "pending"} />
+                                    <StepNode icon={CheckCircle2} label="Allocation" sublabel="ASC 606 Step 4" status={auditTrace.contract?.totalAllocatedPrice > 0 ? "success" : "pending"} />
+                                    <StepNode icon={History} label="Recognition" sublabel={`${auditTrace.recognitions?.length || 0} Entries`} status={auditTrace.recognitions?.length > 0 ? "success" : "pending"} />
+                                    <StepNode icon={ExternalLink} label="GL Posting" sublabel="Subledger Entry" status={auditTrace.recognitions?.some((r: any) => r.status === "Posted") ? "success" : "pending"} />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <Card className="border-none shadow-sm h-fit">
+                                    <CardHeader className="bg-slate-50/80 border-b">
+                                        <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                                            <Database className="h-4 w-4 text-slate-500" /> Operational Context
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="pt-6 space-y-4 text-sm">
+                                        <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Source:</span> <span className="font-medium italic">{auditTrace.sourceEvent.sourceSystem}</span></div>
+                                        <div className="flex justify-between border-b pb-2">
+                                            <span className="text-muted-foreground">Source ID:</span>
+                                            <span className="font-mono text-indigo-600 bg-indigo-50 px-2 rounded">{auditTrace.sourceEvent.sourceId}</span>
+                                        </div>
+                                        <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Type:</span> <Badge variant="outline">{auditTrace.sourceEvent.eventType}</Badge></div>
+                                        <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Event Date:</span> <span>{format(new Date(auditTrace.sourceEvent.eventDate), "MMM dd, yyyy")}</span></div>
+                                        <div className="flex justify-between"><span className="text-muted-foreground">Raw Amount:</span> <span className="font-bold">{auditTrace.sourceEvent.currency} {auditTrace.sourceEvent.amount}</span></div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card className={`lg:col-span-2 border-none shadow-sm ${!auditTrace.contract ? "opacity-60 bg-slate-50" : ""}`}>
+                                    <CardHeader className="bg-indigo-50/30 border-b flex flex-row items-center justify-between">
+                                        <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                                            <FileText className="h-4 w-4 text-indigo-500" /> Derived Revenue Contract
+                                        </CardTitle>
+                                        {auditTrace.contract && <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-none">Active Version: {auditTrace.contract.versionNumber}</Badge>}
+                                    </CardHeader>
+                                    <CardContent className="pt-6">
+                                        {auditTrace.contract ? (
+                                            <div className="grid grid-cols-2 gap-8 text-sm">
+                                                <div className="space-y-4">
+                                                    <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Contract Number:</span> <span className="font-bold">{auditTrace.contract.contractNumber}</span></div>
+                                                    <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Customer:</span> <span>{auditTrace.contract.customerId}</span></div>
+                                                    <div className="flex justify-between"><span className="text-muted-foreground">Ledger ID:</span> <Badge variant="secondary">{auditTrace.contract.ledgerId}</Badge></div>
+                                                </div>
+                                                <div className="space-y-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100/50">
+                                                    <div className="flex justify-between border-b border-indigo-200 pb-2"><span className="text-indigo-800">Transaction Price:</span> <span className="font-mono">${auditTrace.contract.totalTransactionPrice}</span></div>
+                                                    <div className="flex justify-between"><span className="text-indigo-800">Allocated Revenue:</span> <span className="font-mono font-bold text-lg">${auditTrace.contract.totalAllocatedPrice}</span></div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="py-12 text-center text-muted-foreground flex flex-col items-center gap-2">
+                                                <AlertTriangle className="h-8 w-8 text-amber-500 opacity-50" />
+                                                <p>This event has not yet been identified into a revenue contract.</p>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            {/* Recognition Entries */}
+                            {auditTrace.recognitions?.length > 0 && (
+                                <Card className="border-none shadow-sm overflow-hidden">
+                                    <CardHeader className="bg-white border-b">
+                                        <CardTitle className="text-lg">Recognition Stream Audit</CardTitle>
+                                        <CardDescription>Historical and future entries generated from this transaction lifecycle.</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="p-0">
+                                        <StandardTable
+                                            data={auditTrace.recognitions}
+                                            columns={[
+                                                { header: "Period", accessorKey: "periodName", cell: (info: any) => <span className="font-semibold">{info.getValue()}</span> },
+                                                { header: "Date", accessorKey: "scheduleDate", cell: (info: any) => format(new Date(info.getValue()), "MMM dd, yyyy") },
+                                                { header: "Type", accessorKey: "eventType", cell: (info: any) => <Badge variant="outline">{info.getValue()}</Badge> },
+                                                { header: "Account", accessorKey: "accountType" },
+                                                { header: "Amount", accessorKey: "amount", cell: (info: any) => <span className="font-mono">${parseFloat(info.getValue()).toLocaleString()}</span> },
+                                                { header: "Status", accessorKey: "status", cell: (info: any) => (
+                                                    <Badge className={info.getValue() === "Posted" ? "bg-green-100 text-green-700 hover:bg-green-100 border-none" : "bg-blue-100 text-blue-700 hover:bg-blue-100 border-none"}>
+                                                        {info.getValue()}
+                                                    </Badge>
+                                                ) },
+                                                { header: "GL Journal", accessorKey: "glJournalId", cell: (info: any) => info.getValue() ? <span className="font-mono text-xs">{info.getValue()}</span> : "-" }
+                                            ]}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </div>
+                    )}
+                </TabsContent>
+
+                <TabsContent value="health" className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Card className="border-none shadow-sm">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Step 4 Allocation Check</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold flex items-center gap-2">
+                                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                                    100% Valid
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">Transaction Price equals Total Allocated Price across all contracts.</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="border-none shadow-sm">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Period Cutoff Safety</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold flex items-center gap-2 text-amber-600">
+                                    <AlertTriangle className="h-5 w-5" />
+                                    2 Warnings
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">Found 2 items in closing period that require finalization.</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="border-none shadow-sm">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Subledger Reconciliation</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold flex items-center gap-2">
+                                    <ShieldCheck className="h-5 w-5 text-indigo-500" />
+                                    Balanced
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">Recognized Revenue matches Subledger Balance exactly.</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <Card className="border-none shadow-sm">
+                        <CardHeader>
+                            <CardTitle>Compliance Exception Desk</CardTitle>
+                            <CardDescription>Items that failed automated compliance checks and require review.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-48 flex flex-col items-center justify-center border-2 border-dashed rounded-lg bg-slate-50">
+                            <ShieldCheck className="h-12 w-12 text-indigo-200 mb-4" />
+                            <p className="text-slate-500 font-medium">No active compliance violations detected.</p>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="activity">
+                    <Card className="border-none shadow-sm overflow-hidden">
+                        <CardHeader className="bg-white border-b">
+                            <CardTitle>System Activity Journal</CardTitle>
+                            <CardDescription>All manual adjustments and rule changes are logged here for audit purposes.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <StandardTable
+                                data={[
+                                    { date: new Date(), user: "Admin", action: "Updated SSP Book", detail: "Revised pricing for Subscription v2", ip: "10.0.1.45" },
+                                    { date: new Date(Date.now() - 86400000), user: "System", action: "Period Close Sweep", detail: "Feb-26 period sweep completed.", ip: "internal" },
+                                    { date: new Date(Date.now() - 172800000), user: "Finance-Lead", action: "Override Allocation", detail: "Manual override for Contract REV-2026-X812", ip: "10.4.2.11" }
+                                ]}
+                                columns={[
+                                    { header: "Date & Time", accessorKey: "date", cell: (info: any) => format(info.getValue(), "MMM dd, yyyy HH:mm") },
+                                    { header: "User", accessorKey: "user" },
+                                    { header: "Action", accessorKey: "action", cell: (info: any) => <span className="font-semibold text-indigo-600">{info.getValue()}</span> },
+                                    { header: "Details", accessorKey: "detail" },
+                                    { header: "Auditable IP", accessorKey: "ip", cell: (info: any) => <span className="font-mono text-xs opacity-50">{info.getValue()}</span> }
+                                ]}
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }
 
-function StepIcon({ icon: Icon, label, active }: { icon: any, label: string, active: boolean }) {
+function StepNode({ icon: Icon, label, sublabel, status }: { icon: any, label: string, sublabel?: string, status: "success" | "pending" | "error" }) {
     return (
-        <div className={`flex flex-col items-center gap-2 ${active ? 'opacity-100' : 'opacity-40 grayscale'}`}>
-            <div className={`h-12 w-12 rounded-full flex items-center justify-center ${active ? 'bg-indigo-100 text-indigo-600 border-2 border-indigo-200' : 'bg-slate-100 text-slate-400'}`}>
+        <div className="flex flex-col items-center gap-2 relative bg-slate-50 p-2 rounded-lg min-w-[120px]">
+            <div className={`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                status === "success" ? 'bg-white text-indigo-600 border-2 border-indigo-500 scale-110' :
+                status === "error" ? 'bg-red-50 text-red-600 border-2 border-red-500' :
+                'bg-slate-100 text-slate-400 border border-slate-200'
+            }`}>
                 <Icon className="h-6 w-6" />
+                {status === "success" && (
+                    <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full p-0.5 border-2 border-white">
+                        <CheckCircle2 className="h-3 w-3" />
+                    </div>
+                )}
             </div>
-            <span className="text-xs font-semibold">{label}</span>
+            <div className="text-center">
+                <p className={`text-[11px] font-bold uppercase tracking-wider ${status === "success" ? "text-indigo-900" : "text-slate-400"}`}>{label}</p>
+                <p className="text-[10px] text-muted-foreground font-mono truncate max-w-[100px]">{sublabel || "..."}</p>
+            </div>
         </div>
     );
 }

@@ -269,6 +269,36 @@ export class RevenueController {
         }
     }
 
+    async updateSspLine(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const [updated] = await db.update(revenueSspLines)
+                .set({
+                    itemId: req.body.itemId,
+                    itemGroup: req.body.itemGroup,
+                    sspValue: req.body.sspValue?.toString(),
+                    minQuantity: req.body.minQuantity?.toString(),
+                    maxQuantity: req.body.maxQuantity?.toString(),
+                    region: req.body.region
+                })
+                .where(eq(revenueSspLines.id, id))
+                .returning();
+            res.json(updated);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async deleteSspLine(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            await db.delete(revenueSspLines).where(eq(revenueSspLines.id, id));
+            res.json({ message: "SSP line deleted successfully" });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
     async getIdentificationRules(req: Request, res: Response) {
         try {
             const rules = await db.select().from(revenueIdentificationRules).orderBy(desc(revenueIdentificationRules.priority));

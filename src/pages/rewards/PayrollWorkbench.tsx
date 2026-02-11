@@ -152,7 +152,7 @@ export default function PayrollWorkbench() {
                             <form onSubmit={handleRunSubmit} className="space-y-4">
                                 <div className="space-y-2">
                                     <Label>Pay Group</Label>
-                                    <select name="payGroupId" className="w-full h-10 border rounded-md px-3" required>
+                                    <select name="payGroupId" aria-label="Select pay group" className="w-full h-10 border rounded-md px-3" required>
                                         <option value="">Select Group</option>
                                         {groups?.map((g: any) => <option key={g.id} value={g.id}>{g.name}</option>)}
                                     </select>
@@ -297,7 +297,7 @@ export default function PayrollWorkbench() {
                                 <form onSubmit={handleElementSubmit} className="space-y-4">
                                     <div className="space-y-2"><Label>Name</Label><Input name="name" required /></div>
                                     <div className="space-y-2"><Label>Classification</Label>
-                                        <select name="classification" className="w-full h-10 border rounded-md px-3">
+                                        <select name="classification" aria-label="Select element classification" className="w-full h-10 border rounded-md px-3">
                                             <option value="EARNINGS">Earnings</option>
                                             <option value="DEDUCTION">Deduction</option>
                                         </select>

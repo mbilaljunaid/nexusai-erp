@@ -642,6 +642,7 @@ export default function FreightSettlementWorkbench() {
                             <Label htmlFor="disputeReason">Dispute Reason *</Label>
                             <select
                                 id="disputeReason"
+                                aria-label="Select dispute reason"
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                                 value={disputeReason}
                                 onChange={(e) => setDisputeReason(e.target.value)}

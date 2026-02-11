@@ -70,6 +70,7 @@ export function DailyStatusBoard({ tenantId }: DailyStatusBoardProps) {
                         value={selectedDate}
                         onChange={(e) => setSelectedDate(e.target.value)}
                         className="border rounded px-3 py-2"
+                        aria-label="Select date for attendance view"
                     />
                     <div className="flex items-center gap-2">
                         <input
