@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { LeaseModificationDialog } from "@/components/lease/LeaseModificationDialog";
+import { LeaseAuditTrail } from "@/components/leases/LeaseAuditTrail";
+import { LeaseGLPostingModal } from "@/components/leases/LeaseGLPostingModal";
+import { ROUAssetCreatorModal } from "@/components/leases/ROUAssetCreatorModal";
 import { ApprovalTimeline } from "@/components/workflow/ApprovalTimeline";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -19,6 +22,11 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [isModDialogOpen, setIsModDialogOpen] = useState(false);
+    const [glPostingState, setGlPostingState] = useState<{ isOpen: boolean; period: number | null }>({
+        isOpen: false,
+        period: null
+    });
+    const [showRouAssetModal, setShowRouAssetModal] = useState(false);
 
     const { data: lease, isLoading } = useQuery({
         queryKey: ["lease", leaseId],
@@ -62,42 +70,6 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
         }
     });
 
-    const postGlMutation = useMutation({
-        mutationFn: async (period: number) => {
-            const res = await fetch(`/api/lease/leases/${leaseId}/post-gl`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ period })
-            });
-            if (!res.ok) throw new Error((await res.json()).error);
-            return res.json();
-        },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ["lease", leaseId] });
-            toast({ title: "GL Posted", description: `Journal ${data.journalNumber} created successfully.` });
-        },
-        onError: (err) => {
-            toast({ variant: "destructive", title: "Posting Failed", description: err.message });
-        }
-    });
-
-    const createAssetMutation = useMutation({
-        mutationFn: async () => {
-            const res = await fetch(`/api/lease/leases/${leaseId}/create-asset`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" }
-            });
-            if (!res.ok) throw new Error((await res.json()).error);
-            return res.json();
-        },
-        onSuccess: (data) => {
-            toast({ title: "Asset Capitalized", description: `Asset ${data.assetNumber} created in Fixed Assets.` });
-        },
-        onError: (err) => {
-            toast({ variant: "destructive", title: "Capitalization Failed", description: err.message });
-        }
-    });
-
     if (isLoading) return <Skeleton className="h-[400px] w-full" />;
 
     return (
@@ -118,11 +90,12 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                     <Button variant="secondary" size="sm" onClick={() => setIsModDialogOpen(true)}>
                         Modify Terms
                     </Button>
-                    <Button variant="default" className="bg-green-600 hover:bg-green-700" size="sm" onClick={() => {
-                        if (window.confirm("Create Fixed Asset from this ROU Liability?")) {
-                            createAssetMutation.mutate();
-                        }
-                    }}>
+                    <Button
+                        variant="default"
+                        className="bg-green-600 hover:bg-green-700"
+                        size="sm"
+                        onClick={() => setShowRouAssetModal(true)}
+                    >
                         Capitalize ROU
                     </Button>
                 </div>
@@ -135,6 +108,7 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="schedule">Amortization Schedule</TabsTrigger>
                     <TabsTrigger value="accounting">Accounting Lines</TabsTrigger>
+                    <TabsTrigger value="audit">Audit Trail</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview" className="space-y-4">
@@ -155,6 +129,38 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                             </CardContent>
                         </Card>
                     </div>
+
+                    {/* Approval Workflow Actions */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Approval Workflow</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground">Status</p>
+                                    <Badge variant={lease.status === 'Approved' ? 'default' : lease.status === 'Draft' ? 'secondary' : 'outline'} className="mt-1">
+                                        {lease.status || 'Draft'}
+                                    </Badge>
+                                </div>
+                                <div className="flex gap-2">
+                                    {lease.status === 'Draft' && (
+                                        <Button size="sm" variant="default">Submit for Approval</Button>
+                                    )}
+                                    {lease.status === 'Pending Approval' && (
+                                        <>
+                                            <Button size="sm" variant="outline" className="border-red-500 text-red-600 hover:bg-red-50">
+                                                Reject
+                                            </Button>
+                                            <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                                                Approve
+                                            </Button>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </TabsContent>
 
                 <TabsContent value="schedule">
@@ -199,9 +205,9 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                                                     variant={row.isPosted ? "ghost" : "default"}
                                                     size="sm"
                                                     disabled={row.isPosted}
-                                                    onClick={() => postGlMutation.mutate(row.period)}
+                                                    onClick={() => setGlPostingState({ isOpen: true, period: row.period })}
                                                 >
-                                                    {row.isPosted ? "Posted" : "Post to GL"}
+                                                    {row.isPosted ? "✓ Posted" : "Post to GL"}
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
@@ -210,6 +216,10 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                             </Table>
                         </CardContent>
                     </Card>
+                </TabsContent>
+
+                <TabsContent value="audit">
+                    <LeaseAuditTrail leaseId={leaseId} />
                 </TabsContent>
             </Tabs>
 
@@ -223,6 +233,27 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                         termMonths: lease.termMonths || 0,
                         paymentAmount: lease.payments?.[0]?.amount || 0
                     }}
+                />
+            )}
+
+            {glPostingState.period !== null && (
+                <LeaseGLPostingModal
+                    leaseId={leaseId}
+                    period={glPostingState.period}
+                    isOpen={glPostingState.isOpen}
+                    onClose={() => setGlPostingState({ isOpen: false, period: null })}
+                    onSuccess={() => queryClient.invalidateQueries({ queryKey: ["lease", leaseId] })}
+                />
+            )}
+
+            {lease && (
+                <ROUAssetCreatorModal
+                    leaseId={leaseId}
+                    leaseName={lease.leaseNumber || "Unknown Lease"}
+                    rouValue={Number(lease.initialDirectCosts || 0)}
+                    isOpen={showRouAssetModal}
+                    onClose={() => setShowRouAssetModal(false)}
+                    onSuccess={() => queryClient.invalidateQueries({ queryKey: ["lease", leaseId] })}
                 />
             )}
         </div>

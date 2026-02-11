@@ -472,4 +472,18 @@ router.get("/leases/:id", enforceRBAC("finance_read"), async (req, res) => {
     }
 });
 
+// 10. Get Lease Amendments (Audit Trail)
+router.get("/leases/:id/amendments", enforceRBAC("finance_read"), async (req, res) => {
+    try {
+        const amendments = await db.select()
+            .from(leaseAmendments)
+            .where(eq(leaseAmendments.leaseId, req.params.id))
+            .orderBy(desc(leaseAmendments.amendmentDate));
+
+        res.json(amendments);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 export default router;
