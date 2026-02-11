@@ -82,4 +82,8 @@ router.post("/library/definitions/:id/apply/:workOrderId", maintenanceController
 // Failure Analysis
 router.get("/failure-codes", maintenanceController.listFailureCodes);
 
+// Permit Types - NEW ENDPOINTS
+router.get("/permit-types", maintenanceController.getPermitTypes);
+router.get("/permit-types/:id", maintenanceController.getPermitType);
+
 export const maintenanceRouter = router;
