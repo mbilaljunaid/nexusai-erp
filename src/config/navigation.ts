@@ -200,7 +200,14 @@ export const navigationConfig: SidebarNode[] = [
                             { id: "proc-fulfillment", title: "Fulfillment", type: "link", path: "/scm/fulfillment" },
                         ],
                     },
-                    { id: "scm-costing", title: "Cost Management", type: "link", icon: Calculator, path: "/scm/costing/dashboard" },
+                    {
+                        id: "scm-costing-group", title: "Cost Management", type: "group", icon: Calculator,
+                        children: [
+                            { id: "scm-costing-dashboard", title: "Cost Analysis", type: "link", path: "/scm/costing/dashboard" },
+                            { id: "lcm-workbench", title: "Landed Cost Workbench", type: "link", path: "/scm/lcm/operations" },
+                            { id: "lcm-components", title: "Cost Components", type: "link", path: "/scm/lcm/components" },
+                        ]
+                    },
                     { id: "scm-logistics", title: "Logistics", type: "link", path: "/logistics" },
                 ],
             },

@@ -1,213 +1,311 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Trash2, Save, ArrowLeft, ArrowRight } from "lucide-react";
-import { useLocation } from "wouter";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { GitBranch, Plus, Search, Save, Trash2, Database, ShieldCheck, ArrowRight, Settings2, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
-import { AdrFlow } from "@/components/sla/AdrFlow";
+import { Label } from "@/components/ui/label";
+
+interface ADR {
+    id: string;
+    code: string;
+    name: string;
+    eventClassId: string;
+    ruleType: "Account" | "Segment";
+    segmentName?: string;
+    sourceType: "Constant" | "MappingSet" | "Source";
+    constantValue?: string;
+    mappingSetId?: string;
+    sourceAttribute?: string;
+}
+
+interface EventClass {
+    id: string;
+    name: string;
+}
 
 export default function AdrBuilder() {
-    const [, setLocation] = useLocation();
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
+    const [selectedClassId, setSelectedClassId] = useState<string>("ALL");
+    const [searchQuery, setSearchQuery] = useState("");
 
-    // Fetch Rules
-    const { data: rules, isLoading } = useQuery({
-        queryKey: ["/api/sla/rules"],
-        queryFn: () => fetch("/api/sla/rules").then(r => r.json())
+    // Fetch Event Classes
+    const { data: eventClasses = [] } = useQuery({
+        queryKey: ["sla-event-classes"],
+        queryFn: async () => {
+            const res = await fetch("/api/sla/event-classes");
+            return res.json();
+        }
     });
 
-    // Create/Update Rule (Local State for editing)
-    const [editingRule, setEditingRule] = useState<any>({
-        code: "", name: "", ruleType: "Account", sourceType: "Constant", constantValue: ""
+    // Fetch ADRs
+    const { data: rules = [], isLoading } = useQuery({
+        queryKey: ["sla-rules"],
+        queryFn: async () => {
+            const res = await fetch("/api/sla/rules");
+            return res.json();
+        }
     });
 
-    const isNew = !selectedRuleId;
+    // Fetch Mapping Sets for ADR linking
+    const { data: mappingSets = [] } = useQuery({
+        queryKey: ["sla-mapping-sets"],
+        queryFn: async () => {
+            const res = await fetch("/api/sla/mapping-sets");
+            return res.json();
+        }
+    });
 
-    const saveMutation = useMutation({
-        mutationFn: async (data: any) => {
+    const upsertMutation = useMutation({
+        mutationFn: async (data: Partial<ADR>) => {
             const res = await fetch("/api/sla/rules", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
-            if (!res.ok) throw new Error("Failed to save rule");
             return res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/sla/rules"] });
-            toast({ title: "Success", description: "Accounting Rule saved successfully." });
-            if (isNew) {
-                // Reset form or select new rule (simplified)
-                setEditingRule({ code: "", name: "", ruleType: "Account", sourceType: "Constant", constantValue: "" });
-            }
-        },
-        onError: () => {
-            toast({ title: "Error", description: "Failed to save rule.", variant: "destructive" });
+            queryClient.invalidateQueries({ queryKey: ["sla-rules"] });
+            toast({ title: "Rule Saved", description: "Account Derivation Rule updated successfully." });
         }
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: async (id: string) => {
+            await fetch(`/api/sla/rules/${id}`, { method: "DELETE" });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["sla-rules"] });
+            toast({ title: "Rule Deleted" });
+        }
+    });
+
+    const filteredRules = rules.filter((r: ADR) => {
+        const matchesClass = selectedClassId === "ALL" || r.eventClassId === selectedClassId;
+        const matchesSearch = r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            r.code.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesClass && matchesSearch;
+    });
+
+    const handleCreateNew = () => {
+        const newRule: Partial<ADR> = {
+            code: `NEW_RULE_${Date.now()}`,
+            name: "New Account Rule",
+            ruleType: "Segment",
+            sourceType: "Constant",
+            eventClassId: selectedClassId === "ALL" ? "" : selectedClassId
+        };
+        upsertMutation.mutate(newRule);
+    };
+
     return (
         <StandardPage
-            title="Account Derivation Rules (ADR)"
-            description="Configure logic for deriving GL Accounts dynamically."
-            breadcrumbs={[{ label: "SLA Rules", href: "/finance/sla/rules" }, { label: "ADR Builder" }]}
-            actions={
-                <Button onClick={() => { setSelectedRuleId(null); setEditingRule({ code: "", name: "", ruleType: "Account", sourceType: "Constant" }); }}>
-                    <Plus className="mr-2 h-4 w-4" /> New Rule
-                </Button>
-            }
+            title="Account Derivation Builder"
+            description="Visual logic designer for determining dynamic account combinations."
+            breadcrumbs={[
+                { label: "Finance", href: "/finance" },
+                { label: "SLA Config", href: "/gl/config/sla" },
+                { label: "ADR Builder" }
+            ]}
         >
-            <div className="grid grid-cols-12 gap-6 h-[calc(100vh-14rem)]">
-                {/* List Panel */}
-                <div className="col-span-4 border rounded-lg overflow-y-auto bg-card">
-                    <div className="p-4 border-b bg-muted/30">
-                        <Input placeholder="Search rules..." className="h-9" />
-                    </div>
-                    <div>
-                        {isLoading ? <div className="p-4 text-center">Loading...</div> : rules?.map((rule: any) => (
-                            <div
-                                key={rule.id}
-                                onClick={() => { setSelectedRuleId(rule.id); setEditingRule(rule); }}
-                                className={`p-4 border-b cursor-pointer hover:bg-muted/50 transition-colors ${selectedRuleId === rule.id ? 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-l-blue-500' : ''}`}
-                            >
-                                <div className="font-medium">{rule.name}</div>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <Badge variant="outline" className="text-xs">{rule.ruleType}</Badge>
-                                    <span className="text-xs text-muted-foreground font-mono">{rule.code}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Editor Panel */}
-                <div className="col-span-8 space-y-4">
-                    <Card className="h-full border-dashed border-2">
-                        <CardHeader>
-                            <CardTitle>{isNew ? "New Derivation Rule" : "Edit Rule"}</CardTitle>
-                            <CardDescription>Define how the account is determined.</CardDescription>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Rules Navigator */}
+                <div className="lg:col-span-1 space-y-6">
+                    <Card className="shadow-sm">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="text-md flex items-center gap-2">
+                                <GitBranch className="h-5 w-5 text-primary" />
+                                Rule Context
+                            </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-6">
-                            {/* Top Configuration */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Rule Type (Output)</label>
-                                    <Select value={editingRule.ruleType} onValueChange={v => setEditingRule({ ...editingRule, ruleType: v })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Account">Full Account</SelectItem>
-                                            <SelectItem value="Segment">Segment</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Source Type (Input)</label>
-                                    <Select value={editingRule.sourceType} onValueChange={v => setEditingRule({ ...editingRule, sourceType: v })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Constant">Constant</SelectItem>
-                                            <SelectItem value="Source">Transaction Source</SelectItem>
-                                            <SelectItem value="MappingSet">Mapping Set (Lookup)</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Rule Code</label>
-                                    <Input
-                                        value={editingRule.code}
-                                        onChange={e => setEditingRule({ ...editingRule, code: e.target.value })}
-                                        placeholder="LIABILITY_RULE"
-                                        className="font-mono uppercase"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Rule Name</label>
-                                    <Input
-                                        value={editingRule.name}
-                                        onChange={e => setEditingRule({ ...editingRule, name: e.target.value })}
-                                        placeholder="Liability Account Rule"
-                                    />
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            {/* Visual Flow */}
+                        <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Derivation Logic Flow</label>
-                                <AdrFlow
-                                    ruleType={editingRule.ruleType}
-                                    sourceType={editingRule.sourceType}
-                                    constantValue={editingRule.constantValue}
-                                    sourceAttribute={editingRule.sourceAttribute}
-                                />
+                                <Label className="text-xs font-bold uppercase text-muted-foreground">Subledger Object</Label>
+                                <Select value={selectedClassId} onValueChange={setSelectedClassId}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="All Classes" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="ALL">All Event Classes</SelectItem>
+                                        {eventClasses.map((cls: any) => (
+                                            <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
 
-                            {/* Dynamic Fields */}
-                            <div className="p-4 border rounded-lg bg-slate-50 space-y-4">
-                                <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Configuration Details</h4>
-
-                                {editingRule.sourceType === "Constant" && (
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium">Constant Value {editingRule.ruleType === 'Account' ? '(CCID)' : '(Segment Value)'}</label>
-                                        <Input
-                                            value={editingRule.constantValue || ""}
-                                            onChange={e => setEditingRule({ ...editingRule, constantValue: e.target.value })}
-                                            placeholder={editingRule.ruleType === 'Account' ? "e.g. 61d41ff0..." : "e.g. 1000"}
-                                        />
-                                        <p className="text-xs text-muted-foreground">Enter the UUID of the Code Combination or the Segment Value.</p>
-                                    </div>
-                                )}
-
-                                {editingRule.sourceType === "Source" && (
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium">Source Attribute</label>
-                                        <Select
-                                            value={editingRule.sourceAttribute || ""}
-                                            onValueChange={v => setEditingRule({ ...editingRule, sourceAttribute: v })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select Source Attribute" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="supplierType">Supplier Type</SelectItem>
-                                                <SelectItem value="invoiceCurrency">Invoice Currency</SelectItem>
-                                                <SelectItem value="projectType">Project Type</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-
-                                {editingRule.sourceType === "MappingSet" && (
-                                    <div className="text-sm text-amber-600 flex items-center gap-2">
-                                        <span className="font-semibold">Note:</span> Mapping Set selection will be enabled in the next update.
-                                    </div>
-                                )}
+                            <div className="space-y-2">
+                                <Label className="text-xs font-bold uppercase text-muted-foreground">Search Rules</Label>
+                                <div className="relative">
+                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Filter by name..."
+                                        className="pl-9"
+                                        value={searchQuery}
+                                        onChange={e => setSearchQuery(e.target.value)}
+                                    />
+                                </div>
                             </div>
 
-                            <div className="flex justify-end pt-4">
-                                <Button onClick={() => saveMutation.mutate(editingRule)} disabled={saveMutation.isPending}>
-                                    <Save className="mr-2 h-4 w-4" />
-                                    {saveMutation.isPending ? "Saving..." : "Save Rule"}
+                            <div className="pt-4">
+                                <Button className="w-full gap-2" variant="outline" onClick={handleCreateNew}>
+                                    <Plus className="h-4 w-4" /> New Derivation Rule
                                 </Button>
                             </div>
                         </CardContent>
-                    </Card >
-                </div >
-            </div >
-        </StandardPage >
+                    </Card>
+
+                    <Card className="bg-blue-50/50 border-blue-100">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-xs font-bold text-blue-800 uppercase flex items-center gap-2">
+                                <Info className="h-3 w-3" /> Quick Tip
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-xs text-blue-700 leading-relaxed italic">
+                                ADRs are hierarchical. If a segment mapping fails, the engine looks for a "Full Account" override rule.
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Rules Editor Workspace */}
+                <div className="lg:col-span-3">
+                    <Card className="shadow-md border-t-4 border-t-primary min-h-[600px]">
+                        <CardHeader className="flex flex-row items-center justify-between border-b pb-6 bg-muted/20">
+                            <div>
+                                <CardTitle>Derivation Registry</CardTitle>
+                                <CardDescription>Manage the logical precedence for account segments.</CardDescription>
+                            </div>
+                            <Badge variant="outline" className="font-mono">{filteredRules.length} Defined</Badge>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            {isLoading ? (
+                                <div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
+                                    <ShieldCheck className="h-12 w-12 mb-4 animate-pulse opacity-20" />
+                                    <p>Loading ruleset...</p>
+                                </div>
+                            ) : (
+                                <Table>
+                                    <TableHeader className="bg-muted/30">
+                                        <TableRow>
+                                            <TableHead className="w-[200px] font-bold">Rule Definition</TableHead>
+                                            <TableHead className="font-bold">Type/Segment</TableHead>
+                                            <TableHead className="font-bold">Source Logic</TableHead>
+                                            <TableHead className="font-bold">Value Mapping</TableHead>
+                                            <TableHead className="text-right font-bold w-[120px]">Action</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {filteredRules.map((rule: ADR) => (
+                                            <TableRow key={rule.id} className="hover:bg-muted/5 group">
+                                                <TableCell className="space-y-1">
+                                                    <div className="font-bold text-sm tracking-tight">{rule.name}</div>
+                                                    <div className="font-mono text-[10px] text-muted-foreground uppercase">{rule.code}</div>
+                                                </TableCell>
+                                                <TableCell className="space-y-2">
+                                                    <Select
+                                                        value={rule.ruleType}
+                                                        onValueChange={v => upsertMutation.mutate({ ...rule, ruleType: v as any })}
+                                                    >
+                                                        <SelectTrigger className="h-8 text-xs">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="Segment">Segment</SelectItem>
+                                                            <SelectItem value="Account">Account</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    {rule.ruleType === 'Segment' && (
+                                                        <Input
+                                                            placeholder="e.g. Segment1"
+                                                            className="h-8 text-xs font-mono"
+                                                            value={rule.segmentName || ""}
+                                                            onChange={e => upsertMutation.mutate({ ...rule, segmentName: e.target.value })}
+                                                        />
+                                                    )}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Select
+                                                        value={rule.sourceType}
+                                                        onValueChange={v => upsertMutation.mutate({ ...rule, sourceType: v as any })}
+                                                    >
+                                                        <SelectTrigger className="h-8 text-xs">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="Constant">Constant</SelectItem>
+                                                            <SelectItem value="MappingSet">Mapping Set</SelectItem>
+                                                            <SelectItem value="Source">Source Attr</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {rule.sourceType === 'Constant' && (
+                                                        <Input
+                                                            placeholder="Constant value"
+                                                            className="h-8 text-xs"
+                                                            value={rule.constantValue || ""}
+                                                            onChange={e => upsertMutation.mutate({ ...rule, constantValue: e.target.value })}
+                                                        />
+                                                    )}
+                                                    {rule.sourceType === 'MappingSet' && (
+                                                        <Select
+                                                            value={rule.mappingSetId || ""}
+                                                            onValueChange={v => upsertMutation.mutate({ ...rule, mappingSetId: v })}
+                                                        >
+                                                            <SelectTrigger className="h-8 text-xs">
+                                                                <SelectValue placeholder="Select Set..." />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {mappingSets.map((ms: any) => (
+                                                                    <SelectItem key={ms.id} value={ms.id}>{ms.name}</SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    )}
+                                                    {rule.sourceType === 'Source' && (
+                                                        <Input
+                                                            placeholder="Source Field (e.g. supplier_type)"
+                                                            className="h-8 text-xs"
+                                                            value={rule.sourceAttribute || ""}
+                                                            onChange={e => upsertMutation.mutate({ ...rule, sourceAttribute: e.target.value })}
+                                                        />
+                                                    )}
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => deleteMutation.mutate(rule.id)}>
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                            <ArrowRight className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                        {filteredRules.length === 0 && (
+                                            <TableRow>
+                                                <TableCell colSpan={5} className="py-20 text-center text-muted-foreground italic">
+                                                    No derivation rules matching criteria. Use the sidebar to add new rules.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </StandardPage>
     );
 }

@@ -40,8 +40,17 @@ import FreightSettlementWorkbench from "@/pages/transportation/FreightSettlement
 import CarrierScorecardDashboard from "@/pages/transportation/CarrierScorecardDashboard";
 import CarrierRateWorkbench from "@/pages/transportation/CarrierRateWorkbench";
 import ShipmentTrackingDashboard from "@/pages/transportation/ShipmentTrackingDashboard";
-import LcmWorkbench from "@/pages/cost-management/LcmWorkbench";
+import CostComponents from "@/pages/lcm/CostComponents";
+import LcmWorkbench from "@/pages/lcm/LcmWorkbench";
+import TradeOperationDetails from "@/pages/lcm/TradeOperationDetails";
 import CostDashboard from "@/pages/cost-management/CostDashboard";
+import SlaDashboard from "@/pages/sla/SlaDashboard";
+import MappingSetWorkbench from "@/pages/sla/MappingSetWorkbench";
+import MappingSetEditor from "@/pages/sla/MappingSetEditor";
+import SlaAIExplainability from "@/pages/sla/SlaAIExplainability";
+import SlaReconciliationWorkbench from "@/pages/sla/SlaReconciliationWorkbench";
+import AdrBuilder from "@/pages/sla/AdrBuilder";
+
 
 import WarehouseOperations from "@/pages/scm/WarehouseOperations";
 import WmsDashboard from "@/pages/scm/WmsDashboard";
@@ -104,11 +113,20 @@ export default function ScmRoutes() {
 
             <Route path="/suppliers" component={SupplierManagement} />
 
-            {/* Cost Management */}
+            {/* Cost Management & SLA */}
             <Route path="/scm/costing/dashboard" component={CostDashboard} />
-            <Route path="/scm/costing/landed" component={LcmWorkbench} />
+            <Route path="/scm/lcm/operations" component={LcmWorkbench} />
+            <Route path="/scm/lcm/components" component={CostComponents} />
+            <Route path="/scm/lcm/trade-operation/:id" component={TradeOperationDetails} />
 
-            {/* Logistics */}
+            <Route path="/finance/sla/dashboard" component={SlaDashboard} />
+            <Route path="/finance/sla/mapping-sets" component={MappingSetWorkbench} />
+            <Route path="/finance/sla/mapping-sets/:id" component={MappingSetEditor} />
+            <Route path="/finance/sla/intelligence" component={SlaAIExplainability} />
+            <Route path="/finance/sla/reconciliation" component={SlaReconciliationWorkbench} />
+            <Route path="/finance/sla/adr" component={AdrBuilder} />
+
+            {/* Warehouse Management (WMS) */}
             <Route path="/logistics" component={LogisticsDashboard} />
             <Route path="/transportation/planning" component={RoutePlanningWorkbench} />
             <Route path="/transportation/carriers" component={CarrierManager} />

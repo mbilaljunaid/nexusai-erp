@@ -244,6 +244,16 @@ export class SlaController {
         }
     }
 
+    async getProactiveInsights(req: Request, res: Response) {
+        try {
+            const { slaEngine } = require("./sla.service");
+            const insights = await slaEngine.getProactiveInsights();
+            res.json(insights);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message || "Failed to fetch insights" });
+        }
+    }
+
     // --- Manual Journals (Phase 17) ---
     async createManualJournal(req: Request, res: Response) {
         try {
