@@ -65,6 +65,44 @@ export class SecurityHardener {
   }
 
   /**
+   * Get whitelisted IPs
+   */
+  getWhitelist(): Array<{ ip: string; addedBy: string; addedAt: string; reason?: string }> {
+    return Array.from(this.whitelistedIPs).map(ip => ({
+      ip,
+      addedBy: 'System',
+      addedAt: new Date().toISOString(),
+      reason: 'Whitelisted IP'
+    }));
+  }
+
+  /**
+   * Get blacklisted IPs
+   */
+  getBlacklist(): Array<{ ip: string; addedBy: string; addedAt: string; reason?: string }> {
+    return Array.from(this.blockedIPs).map(ip => ({
+      ip,
+      addedBy: 'System',
+      addedAt: new Date().toISOString(),
+      reason: 'Blacklisted IP'
+    }));
+  }
+
+  /**
+   * Remove IP from whitelist
+   */
+  removeFromWhitelist(ip: string): void {
+    this.whitelistedIPs.delete(ip);
+  }
+
+  /**
+   * Remove IP from blacklist
+   */
+  removeFromBlacklist(ip: string): void {
+    this.blockedIPs.delete(ip);
+  }
+
+  /**
    * Encrypt sensitive data
    */
   encryptSensitiveData(data: string, key: string): string {

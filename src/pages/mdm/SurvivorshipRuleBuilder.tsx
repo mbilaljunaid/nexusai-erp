@@ -165,6 +165,7 @@ export default function SurvivorshipRuleBuilder() {
                             <input
                                 type="range"
                                 id="priority"
+                                title="Set rule priority from 0 to 100"
                                 min="0"
                                 max="100"
                                 step="10"

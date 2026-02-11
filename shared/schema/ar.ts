@@ -417,3 +417,80 @@ export const insertArSystemOptionsSchema = createInsertSchema(arSystemOptions).e
 
 export type ArSystemOptions = typeof arSystemOptions.$inferSelect;
 export type InsertArSystemOptions = z.infer<typeof insertArSystemOptionsSchema>;
+
+// AR Disputes
+export const arDisputes = pgTable("ar_disputes", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(),
+    customerId: varchar("customer_id").notNull(),
+    disputeReason: varchar("dispute_reason", { length: 255 }).notNull(),
+    disputedAmount: numeric("disputed_amount", { precision: 15, scale: 2 }),
+    description: text("description"),
+    status: varchar("status").default("Open"), // Open, Under Review, Resolved, Rejected
+    adminResponse: text("admin_response"),
+    resolvedBy: varchar("resolved_by"),
+    resolvedAt: timestamp("resolved_at"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertArDisputeSchema = createInsertSchema(arDisputes).extend({
+    invoiceId: z.string().min(1),
+    customerId: z.string().min(1),
+    disputeReason: z.string().min(1),
+    disputedAmount: z.string().optional().nullable(),
+    description: z.string().optional().nullable(),
+    status: z.string().optional(),
+    adminResponse: z.string().optional().nullable(),
+    resolvedBy: z.string().optional().nullable(),
+    resolvedAt: z.date().optional().nullable(),
+});
+
+export type ArDispute = typeof arDisputes.$inferSelect;
+export type InsertArDispute = z.infer<typeof insertArDisputeSchema>;
+
+// AR Dispute Attachments
+export const arDisputeAttachments = pgTable("ar_dispute_attachments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    disputeId: varchar("dispute_id").notNull(),
+    fileName: varchar("file_name", { length: 255 }).notNull(),
+    filePath: varchar("file_path", { length: 500 }).notNull(),
+    fileSize: integer("file_size").notNull(),
+    mimeType: varchar("mime_type", { length: 100 }).notNull(),
+    uploadedAt: timestamp("uploaded_at").default(sql`now()`),
+});
+
+export const insertArDisputeAttachmentSchema = createInsertSchema(arDisputeAttachments).extend({
+    disputeId: z.string().min(1),
+    fileName: z.string().min(1),
+    filePath: z.string().min(1),
+    fileSize: z.number().int(),
+    mimeType: z.string().min(1),
+});
+
+export type ArDisputeAttachment = typeof arDisputeAttachments.$inferSelect;
+export type InsertArDisputeAttachment = z.infer<typeof insertArDisputeAttachmentSchema>;
+
+// Customer Notifications
+export const customerNotifications = pgTable("customer_notifications", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    customerId: varchar("customer_id").notNull(),
+    type: varchar("type").notNull(), // new_invoice, payment_received, dispute_update, statement_ready, overdue_reminder
+    title: varchar("title", { length: 255 }).notNull(),
+    message: text("message").notNull(),
+    read: boolean("read").default(false),
+    referenceId: varchar("reference_id"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCustomerNotificationSchema = createInsertSchema(customerNotifications).extend({
+    customerId: z.string().min(1),
+    type: z.string().min(1),
+    title: z.string().min(1),
+    message: z.string().min(1),
+    read: z.boolean().optional(),
+    referenceId: z.string().optional().nullable(),
+});
+
+export type CustomerNotification = typeof customerNotifications.$inferSelect;
+export type InsertCustomerNotification = z.infer<typeof insertCustomerNotificationSchema>;

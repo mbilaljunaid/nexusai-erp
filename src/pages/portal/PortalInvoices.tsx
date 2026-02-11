@@ -66,7 +66,9 @@ export default function PortalInvoices() {
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <Button variant="outline" size="sm">
+                                    <Button variant="outline" size="sm" onClick={() => {
+                                        window.open(`/api/portal/invoice/${inv.id}/pdf`, '_blank');
+                                    }}>
                                         <Download className="mr-2 h-4 w-4" /> PDF
                                     </Button>
 

@@ -6,6 +6,9 @@ import { lazyWithRetry } from "@/lib/lazyWithRetry";
 const CustomerPortalLayout = lazyWithRetry(() => import("@/pages/portal/CustomerPortalLayout"));
 const PortalDashboard = lazyWithRetry(() => import("@/pages/portal/PortalDashboard"));
 const PortalInvoices = lazyWithRetry(() => import("@/pages/portal/PortalInvoices"));
+const PortalPayments = lazyWithRetry(() => import("@/pages/portal/PortalPayments"));
+const PortalStatements = lazyWithRetry(() => import("@/pages/portal/PortalStatements"));
+const PortalDisputes = lazyWithRetry(() => import("@/pages/portal/PortalDisputes"));
 
 // Supplier Portal
 const SupplierPortalLayout = lazyWithRetry(() => import("@/layouts/SupplierPortalLayout"));
@@ -26,6 +29,15 @@ export default function PortalRoutes() {
             </Route>
             <Route path="/portal/invoices">
                 <CustomerPortalLayout><PortalInvoices /></CustomerPortalLayout>
+            </Route>
+            <Route path="/portal/payments">
+                <CustomerPortalLayout><PortalPayments /></CustomerPortalLayout>
+            </Route>
+            <Route path="/portal/statements">
+                <CustomerPortalLayout><PortalStatements /></CustomerPortalLayout>
+            </Route>
+            <Route path="/portal/disputes">
+                <CustomerPortalLayout><PortalDisputes /></CustomerPortalLayout>
             </Route>
 
             {/* Supplier Portal */}

@@ -19,6 +19,14 @@ const SubscriptionManagement = lazyWithRetry(() => import("@/pages/SubscriptionM
 const BillingManagement = lazyWithRetry(() => import("@/pages/billing/BillingWorkbench"));
 const SoDMatrix = lazyWithRetry(() => import("@/pages/admin/SoDMatrix"));
 
+// Production Management
+const ProductionLayout = lazyWithRetry(() => import("@/pages/admin/ProductionLayout"));
+const SystemHealthDashboard = lazyWithRetry(() => import("@/pages/admin/SystemHealthDashboard"));
+const SystemLogsViewer = lazyWithRetry(() => import("@/pages/admin/SystemLogsViewer"));
+const SecurityAdminPanel = lazyWithRetry(() => import("@/pages/admin/SecurityAdminPanel"));
+const BackupRestoreManager = lazyWithRetry(() => import("@/pages/admin/BackupRestoreManager"));
+
+
 export default function AdminRoutes() {
     return (
         <Switch>
@@ -41,6 +49,12 @@ export default function AdminRoutes() {
             <Route path="/environment-management" component={EnvironmentManagement} />
             <Route path="/subscription-management" component={SubscriptionManagement} />
             <Route path="/billing-management" component={BillingManagement} />
+
+            {/* Production Management Routes */}
+            <Route path="/admin/production/health" component={SystemHealthDashboard} />
+            <Route path="/admin/production/logs" component={SystemLogsViewer} />
+            <Route path="/admin/production/security" component={SecurityAdminPanel} />
+            <Route path="/admin/production/backups" component={BackupRestoreManager} />
         </Switch>
     );
 }
