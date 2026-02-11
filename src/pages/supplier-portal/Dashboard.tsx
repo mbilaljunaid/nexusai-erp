@@ -3,8 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Package, Truck, AlertCircle, CheckCircle2 } from "lucide-react";
+import { format, subDays, startOfDay } from "date-fns";
+import { SimpleBarChart } from "@/components/ui/simple-bar-chart";
 
 export default function SupplierDashboard() {
     const token = localStorage.getItem("supplier_token");
@@ -46,6 +49,38 @@ export default function SupplierDashboard() {
     });
 
     const openOrders = orders?.filter((o: any) => o.status === 'SENT' || o.status === 'OPEN').length || 0;
+
+    // Prepare chart data (last 7 days)  
+    const chartData = Array.from({ length: 7 }, (_, i) => {
+        const date = startOfDay(subDays(new Date(), 6 - i));
+        const count = orders?.filter((o: any) => {
+            const orderDate = o.orderDate ? startOfDay(new Date(o.orderDate)) : null;
+            return orderDate && orderDate.getTime() === date.getTime();
+        }).length || 0;
+        return { label: format(date, 'EEE'), value: count };
+    });
+
+    // Fetch ASNs for shipment chart
+    const { data: asns } = useQuery({
+        queryKey: ["/api/portal/supplier/asns"],
+        queryFn: async () => {
+            const res = await fetch("/api/portal/supplier/asns", {
+                headers: { "x-portal-token": token || "" }
+            });
+            if (!res.ok) throw new Error("Failed to fetch ASNs");
+            return res.json();
+        }
+    });
+
+    // Prepare shipment chart data (last 7 days)
+    const shipmentChartData = Array.from({ length: 7 }, (_, i) => {
+        const date = startOfDay(subDays(new Date(), 6 - i));
+        const count = asns?.filter((asn: any) => {
+            const shippedDate = asn.shippedDate ? startOfDay(new Date(asn.shippedDate)) : null;
+            return shippedDate && shippedDate.getTime() === date.getTime();
+        }).length || 0;
+        return { label: format(date, 'EEE'), value: count };
+    });
 
     if (isLoading) {
         return <div className="p-8 space-y-4">
@@ -120,14 +155,53 @@ export default function SupplierDashboard() {
                 </Card>
             </div>
 
+            {/* Charts Section */}
+            <div className="grid gap-4 md:grid-cols-2">
+                <SimpleBarChart
+                    title="Order Activity (Last 7 Days)"
+                    data={chartData}
+                    color="blue"
+                    icon={Package}
+                />
+                <SimpleBarChart
+                    title="Shipment Activity (Last 7 Days)"
+                    data={shipmentChartData}
+                    color="green"
+                    icon={Truck}
+                />
+            </div>
+
             <div className="grid gap-4 md:grid-cols-1">
                 <Card>
                     <CardHeader>
                         <CardTitle>Recent Activity</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {/* Placeholder for activity steam */}
-                        <div className="text-sm text-muted-foreground">No recent activity to display.</div>
+                        <div className="space-y-3">
+                            {orders && orders.length > 0 ? (
+                                <>
+                                    {orders.slice(0, 5).map((order: any) => (
+                                        <div key={order.id} className="flex items-start gap-3 text-sm">
+                                            <Package className="h-4 w-4 mt-0.5 text-muted-foreground" />
+                                            <div className="flex-1">
+                                                <p className="font-medium">Purchase Order {order.poNumber || order.orderNumber}</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {order.status} • {order.orderDate ? format(new Date(order.orderDate), 'MMM d, yyyy') : 'No date'}
+                                                </p>
+                                            </div>
+                                            <Badge variant={order.status === 'SENT' ? 'secondary' : 'outline'}>
+                                                {order.status}
+                                            </Badge>
+                                        </div>
+                                    ))}
+                                </
+                                >
+                            ) : (
+                                <div className="text-sm text-muted-foreground text-center py-4">
+                                    No recent activity to display.
+                                </div>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>
