@@ -34,6 +34,12 @@ import RoutePlanningWorkbench from "@/pages/transportation/RoutePlanningWorkbenc
 import CarrierManager from "@/pages/transportation/CarrierManager";
 import FreightSettlementConsole from "@/pages/transportation/FreightSettlementConsole";
 import TransportationManagementSystem from "@/pages/TransportationManagementSystem";
+import TransportationBIDashboard from "@/pages/TransportationBIDashboard";
+import FreightAccountingWorkbench from "@/pages/transportation/FreightAccountingWorkbench";
+import FreightSettlementWorkbench from "@/pages/transportation/FreightSettlementWorkbench";
+import CarrierScorecardDashboard from "@/pages/transportation/CarrierScorecardDashboard";
+import CarrierRateWorkbench from "@/pages/transportation/CarrierRateWorkbench";
+import ShipmentTrackingDashboard from "@/pages/transportation/ShipmentTrackingDashboard";
 import LcmWorkbench from "@/pages/cost-management/LcmWorkbench";
 import CostDashboard from "@/pages/cost-management/CostDashboard";
 
@@ -87,6 +93,17 @@ export default function ScmRoutes() {
             <Route path="/transportation/carriers" component={CarrierManager} />
             <Route path="/transportation/freight" component={FreightSettlementConsole} />
             <Route path="/transportation" component={TransportationManagementSystem} />
+
+            {/* TMS - New Components */}
+            <Route path="/tms/analytics" component={TransportationBIDashboard} />
+            <Route path="/tms/freight-accounting" component={FreightAccountingWorkbench} />
+            <Route path="/tms/settlement" component={FreightSettlementWorkbench} />
+            <Route path="/tms/carrier-scorecards" component={CarrierScorecardDashboard} />
+            <Route path="/transportation/freight-accounting" component={FreightAccountingWorkbench} />
+            <Route path="/transportation/freight-settlement" component={FreightSettlementWorkbench} />
+            <Route path="/transportation/carrier-scorecard" component={CarrierScorecardDashboard} />
+            <Route path="/transportation/carrier-rates" component={CarrierRateWorkbench} />
+            <Route path="/transportation/tracking" component={ShipmentTrackingDashboard} />
         </>
     );
 }

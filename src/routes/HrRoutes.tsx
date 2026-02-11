@@ -17,6 +17,8 @@ import MyInterviews from "../pages/recruitment/MyInterviews";
 import OnboardingTracker from "../pages/recruitment/OnboardingTracker";
 import RecruitmentAnalytics from "../pages/recruitment/RecruitmentAnalytics";
 import SuccessionPlanning from "@/pages/SuccessionPlanning";
+import CompetencyManagement from "../pages/talent/CompetencyManagement";
+import HRPredictiveAnalytics from "../pages/analytics/HRPredictiveAnalytics";
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { HrSidebar } from "@/components/nav/HrSidebar";
 
@@ -65,6 +67,7 @@ import HolidayCalendar from "../pages/wfm/HolidayCalendar";
 
 // HR Analytics
 import HRAnalyticsDashboard from "@/pages/HRAnalyticsDashboard";
+import HRReports from "@/pages/HRReports";
 
 export default function HrRoutes() {
     return (
@@ -84,6 +87,7 @@ export default function HrRoutes() {
                 <Route path="/hr/recruitment/analytics-dashboard" component={RecruitmentAnalytics} />
 
                 <Route path="/hr/succession" component={SuccessionPlanning} />
+                <Route path="/hr/talent/competencies" component={CompetencyManagement} />
                 <Route path="/hr/talent-pool" component={TalentPool} />
                 <Route path="/hr/performance" component={PerformanceManagement} />
                 <Route path="/hr/employees" component={EmployeeDirectory} />
@@ -137,6 +141,8 @@ export default function HrRoutes() {
 
                 {/* Analytics & Reporting */}
                 <Route path="/hr/analytics" component={HRAnalyticsDashboard} />
+                <Route path="/hr/analytics/predictive" component={HRPredictiveAnalytics} />
+                <Route path="/hr/reports" component={HRReports} />
                 <Route path="/hr/wfm/analytics" component={WfmAnalytics} />
                 <Route path="/hr/wfm/violations" component={ViolationsDashboard} />
                 <Route path="/hr/wfm/insights" component={AIWorkforceInsights} />

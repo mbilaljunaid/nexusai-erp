@@ -34,7 +34,8 @@ import {
     Sparkles,
     ClipboardList,
     FileCheck,
-    GitBranch
+    GitBranch,
+    TrendingUp
 } from "lucide-react";
 
 const hrMenu = [
@@ -43,6 +44,7 @@ const hrMenu = [
         items: [
             { title: "Dashboard", url: "/hr", icon: Users },
             { title: "Person Management", url: "/hr/employees", icon: Users2 },
+            { title: "Competency Management", url: "/hr/talent/competencies", icon: Award },
             { title: "Payroll Workbench", url: "/hr/payroll", icon: Award },
         ]
     },
@@ -76,6 +78,14 @@ const hrMenu = [
             { title: "Course Catalog", url: "/hr/learning/admin", icon: Database },
             { title: "Assessments", url: "/hr/learning/admin/assessments", icon: FileCheck },
             { title: "Learning Paths", url: "/hr/learning/admin/curricula", icon: GitBranch },
+        ]
+    },
+    {
+        label: "Analytics & Insights",
+        items: [
+            { title: "HR Analytics", url: "/hr/analytics", icon: BarChart3 },
+            { title: "Predictive Analytics", url: "/hr/analytics/predictive", icon: TrendingUp },
+            { title: "Reports", url: "/hr/reports", icon: FileText },
         ]
     },
     {

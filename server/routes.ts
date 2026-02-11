@@ -65,6 +65,8 @@ import { mdmRouter } from "./routes/mdm";
 // import { procurementRouter as PROCUREMENT_ROUTER } from "./modules/scm/procurementRoutes"; // Refactored to modules/scm/routes.ts
 
 import transportationRouter from "./modules/transportation/routes";
+import carrierRatesRouter from "./routes/carrier_rates";
+import shipmentTrackingRouter from "./routes/shipment_tracking";
 
 import { billingRouter } from "./modules/billing/billing.controller";
 import { orderRouter } from "./modules/order/order.controller";
@@ -149,6 +151,8 @@ export async function registerRoutes(
   app.use("/api/hr-self-service", hrSelfServiceRouter);
   app.use("/api/treasury", treasuryRouter);
   app.use("/api/transportation", transportationRouter);
+  app.use("/api", carrierRatesRouter); // Mounts /api/carrier-rates
+  app.use("/api", shipmentTrackingRouter); // Mounts /api/shipment-tracking
   app.use("/api/lease", leaseDirectRouter); // Lease Management
   app.use("/api/contracts", contractRoutes); // CLM Management
 

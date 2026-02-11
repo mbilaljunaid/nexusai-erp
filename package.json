@@ -17,6 +17,8 @@
     "cron:sweep": "ts-node scripts/cron-sweeper.ts"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
@@ -87,8 +89,10 @@
     "file-saver": "^2.0.5",
     "framer-motion": "^11.13.1",
     "handsontable": "^16.2.0",
+    "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",
     "jest": "^30.2.0",
+    "jspdf": "^4.1.0",
     "leaflet": "^1.9.4",
     "lovable-tagger": "^1.1.13",
     "lucide-react": "^0.453.0",
@@ -128,6 +132,7 @@
     "vaul": "^1.1.2",
     "wouter": "^3.3.5",
     "ws": "^8.18.0",
+    "xlsx": "^0.18.5",
     "zod": "^3.25.76",
     "zod-validation-error": "^3.4.0"
   },
