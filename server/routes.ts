@@ -39,7 +39,8 @@ import migrationRoutes from "./routes/migrationRoutes";
 
 // import financeRouter from "./routes/finance";
 import { apRouter } from "./routes/ap";
-import arRouter from "./routes/ar";
+import glRoutes from "./routes/glRoutes";
+import epmRoutes from "./routes/epmRoutes";
 import cashRouter from "./routes/cash";
 import taxRouter from "./routes/tax";
 import nettingRouter from "./routes/netting";
@@ -95,6 +96,8 @@ export async function registerRoutes(
   // Core Finance & ERP Routes
   // app.use("/api/finance", financeRouter); // Refactored to modules/finance/gl.routes.ts
 
+  app.use("/api/gl", glRoutes);
+  app.use("/api/epm", epmRoutes);
   app.use("/api/ap", apRouter);
   app.use("/api/ar", arRouter);
   app.use("/api/ar/ai", arAiRouter);

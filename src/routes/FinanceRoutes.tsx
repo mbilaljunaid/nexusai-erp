@@ -131,6 +131,17 @@ import ConsolidationResultsViewer from "@/pages/gl/ConsolidationResultsViewer";
 import EliminationJournalReview from "@/pages/gl/EliminationJournalReview";
 import VarianceAnalysis from "@/pages/gl/VarianceAnalysis";
 
+// EPM Phase 1 Components
+import BudgetControlRules from "@/pages/epm/BudgetControlRules";
+import BudgetBalanceDrillDown from "@/pages/epm/BudgetBalanceDrillDown";
+import VarianceAnalysisWorkbench from "@/pages/epm/VarianceAnalysisWorkbench";
+import BudgetReconciliation from "@/pages/epm/BudgetReconciliation";
+
+// EPM Phase 2 Components
+import ScenarioComparison from "@/pages/epm/ScenarioComparison";
+import BudgetWorkflow from "@/pages/epm/BudgetWorkflow";
+import BudgetAllocationWorkbench from "@/pages/epm/BudgetAllocationWorkbench";
+
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 // import { FinanceSidebar } from "@/components/nav/FinanceSidebar";
 
@@ -217,7 +228,16 @@ export default function FinanceRoutes() {
                 <Route path="/gl/close-center" component={FinancialCloseCenter} />
                 <Route path="/gl/consolidation" component={ConsolidationWorkbench} />
                 <Route path="/gl/consolidation/ledger-sets" component={LedgerSetManager} />
-                <Route path="/gl/consolidation/fx-rates" component={FxTranslationDashboard} />
+                <Route path="/gl/consolidation/variance" component={VarianceAnalysis} />
+
+                {/* EPM Module Routes */}
+                <Route path="/epm/budget-controls" component={BudgetControlRules} />
+                <Route path="/epm/budget-balances/:periodId" component={BudgetBalanceDrillDown} />
+                <Route path="/epm/variance-analysis" component={VarianceAnalysisWorkbench} />
+                <Route path="/epm/budget-reconciliation" component={BudgetReconciliation} />
+                <Route path="/epm/scenarios" component={ScenarioComparison} />
+                <Route path="/epm/workflow" component={BudgetWorkflow} />
+                <Route path="/epm/allocations" component={BudgetAllocationWorkbench} />
                 <Route path="/gl/consolidation/rules" component={EliminationRuleBuilder} />
                 <Route path="/gl/consolidation/results/:runId">{(params: { runId: string }) => <ConsolidationResultsViewer />}</Route>
                 <Route path="/gl/consolidation/journals" component={EliminationJournalReview} />

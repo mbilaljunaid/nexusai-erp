@@ -19,11 +19,38 @@ import KnowledgeBaseDashboard from "@/pages/crm/KnowledgeBaseDashboard";
 import ContractDashboard from "@/pages/crm/ContractDashboard";
 import ContractDetail from "@/pages/crm/ContractDetail";
 import PartnerDashboard from "@/pages/crm/PartnerDashboard";
-import CrmAnalyticsDashboard from "@/pages/crm/CrmAnalyticsDashboard";
 import FieldServiceDashboard from "@/pages/crm/FieldServiceDashboard";
 import WorkOrderDetail from "@/pages/crm/WorkOrderDetail";
 import CrmQuotaManagement from "@/pages/crm/CrmQuotaManagement";
 import CRM from "@/pages/CRM";
+
+// Phase 1 CRM Components
+import OpportunityPipeline from "@/pages/crm/OpportunityPipeline";
+import QuoteBuilder from "@/pages/crm/QuoteBuilder";
+
+// Phase 2 CRM Components
+import LeadScoringDashboard from "@/pages/crm/LeadScoringDashboard";
+import CompetitorIntelligence from "@/pages/crm/CompetitorIntelligence";
+
+// Phase 3 CRM Components
+import CrmAnalyticsDashboard from "@/pages/crm/CrmAnalyticsDashboard";
+import DealDesk from "@/pages/crm/DealDesk";
+
+// Phase 4 CRM Components
+import ProductCatalogManager from "@/pages/crm/ProductCatalogManager";
+import CpqConfigurator from "@/pages/crm/CpqConfigurator";
+
+// Phase 5 CRM Components
+import EmailCampaignBuilder from "@/pages/crm/EmailCampaignBuilder";
+import MarketingAutomation from "@/pages/crm/MarketingAutomation";
+
+// Phase 6 CRM Components
+import CaseManagement from "@/pages/crm/CaseManagement";
+import KnowledgeBase from "@/pages/crm/KnowledgeBase";
+
+// Phase 7 CRM Components
+import PartnerManagement from "@/pages/crm/PartnerManagement";
+import DealRegistration from "@/pages/crm/DealRegistration";
 
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 // import { CrmSidebar } from "@/components/nav/CrmSidebar";
@@ -52,6 +79,20 @@ export default function CrmRoutes() {
             <Route path="/crm/analytics" component={CrmAnalyticsDashboard} />
             <Route path="/crm/field-service" component={FieldServiceDashboard} />
             <Route path="/crm/field-service/:id" component={WorkOrderDetail} />
+            <Route path="/crm/pipeline" component={OpportunityPipeline} />
+            <Route path="/crm/quotes/builder" component={QuoteBuilder} />
+            <Route path="/crm/lead-scoring" component={LeadScoringDashboard} />
+            <Route path="/crm/competitors" component={CompetitorIntelligence} />
+            <Route path="/crm/analytics" component={CrmAnalyticsDashboard} />
+            <Route path="/crm/deal-desk" component={DealDesk} />
+            <Route path="/crm/catalog" component={ProductCatalogManager} />
+            <Route path="/crm/cpq" component={CpqConfigurator} />
+            <Route path="/crm/marketing/campaigns" component={EmailCampaignBuilder} />
+            <Route path="/crm/marketing/automation" component={MarketingAutomation} />
+            <Route path="/crm/service/cases" component={CaseManagement} />
+            <Route path="/crm/service/knowledge" component={KnowledgeBase} />
+            <Route path="/crm/partners" component={PartnerManagement} />
+            <Route path="/crm/partners/deals" component={DealRegistration} />
 
             {/* Module Overview & Catch-all */}
             <Route path="/crm-module" component={CRM} />

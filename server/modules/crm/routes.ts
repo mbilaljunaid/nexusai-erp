@@ -19,6 +19,9 @@ import { knowledgeBaseRoutes } from "./knowledge-base-routes";
 import { contractRoutes } from "./contracts-routes";
 import { partnerRoutes } from "./partner-routes";
 
+// Import mock routes for new CRM features
+import { crmMockRouter } from "../../routes/crmMockRoutes";
+
 export const crmRouter = Router();
 
 // --- CRM Sub-Modules ---
@@ -37,6 +40,9 @@ crmRouter.use("/knowledge", knowledgeBaseRoutes);
 crmRouter.use("/contracts", contractRoutes);
 crmRouter.use("/partner", partnerRoutes);
 crmRouter.use("/analytics", analyticsRoutes);
+
+// Mount mock routes for new CRM features (Phase 1-2)
+crmRouter.use(crmMockRouter);
 
 // --- CrmController Routes ---
 
