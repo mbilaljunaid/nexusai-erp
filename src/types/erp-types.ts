@@ -442,6 +442,58 @@ export interface TreasuryCounterparty {
   [key: string]: any;
 }
 
+export interface TreasuryHedgeRelationship {
+  id: string;
+  dealId: string;
+  dealNumber?: string;
+  hedgeItemType: "FORECAST_TRANSACTION" | "FIRM_COMMITMENT" | "NET_INVESTMENT";
+  hedgeItemId: string;
+  hedgeItemDescription?: string;
+  startDate: string;
+  endDate?: string;
+  effectiveness?: number;
+  status: string;
+  createdAt?: string;
+  [key: string]: any;
+}
+
+export interface TreasuryRiskLimit {
+  id: string;
+  counterpartyId: string;
+  limitType: "FX_EXPOSURE" | "CREDIT" | "SETTLEMENT";
+  maxAmount: string;
+  currency: string;
+  status: string;
+  createdAt?: string;
+  [key: string]: any;
+}
+
+export interface CashForecastAnomaly {
+  id: string;
+  forecastDate: string;
+  amount: string;
+  source: string;
+  reason: string;
+  confidence: number;
+  severity: "LOW" | "MEDIUM" | "HIGH";
+  createdAt?: string;
+  [key: string]: any;
+}
+
+export interface NettingPosition {
+  id: string;
+  batchId: string;
+  fromEntity: string;
+  toEntity: string;
+  currency: string;
+  grossPayable: string;
+  grossReceivable: string;
+  netAmount: string;
+  netDirection: "PAY" | "RECEIVE";
+  createdAt?: string;
+  [key: string]: any;
+}
+
 // ==================== Fixed Assets ====================
 export interface FaAsset {
   id: string;

@@ -9,9 +9,12 @@ import { ZbaManager } from "@/components/cash/ZbaManager";
 import { TreasuryWorkbench } from "@/components/treasury/TreasuryWorkbench";
 import { BackOfficeWorkbench } from "@/components/treasury/BackOfficeWorkbench";
 import { PaymentTransmissionHub } from "@/components/treasury/PaymentTransmissionHub";
+import { DealBlotter } from "@/components/treasury/DealBlotter";
+import { MarkToMarketDashboard } from "@/components/treasury/MarkToMarketDashboard";
+import { HedgeAccountingWorkbench } from "@/components/treasury/HedgeAccountingWorkbench";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Wallet, ArrowRightLeft, ShieldCheck, Settings2, Lock, Landmark, LayoutDashboard, AlertCircle, RefreshCcw, ShieldAlert, Globe } from "lucide-react";
+import { Wallet, ArrowRightLeft, ShieldCheck, Settings2, Lock, Landmark, LayoutDashboard, AlertCircle, RefreshCcw, ShieldAlert, Globe, TrendingUp, BarChart3, Shield } from "lucide-react";
 
 export default function TreasuryCommandCenter() {
   return (
@@ -32,6 +35,15 @@ export default function TreasuryCommandCenter() {
         <TabsList className="bg-muted/50 p-1">
           <TabsTrigger value="dashboard" className="gap-2">
             <LayoutDashboard className="w-4 h-4" /> Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="blotter" className="gap-2">
+            <TrendingUp className="w-4 h-4" /> Deal Blotter
+          </TabsTrigger>
+          <TabsTrigger value="mtm" className="gap-2">
+            <BarChart3 className="w-4 h-4" /> Mark-to-Market
+          </TabsTrigger>
+          <TabsTrigger value="hedge" className="gap-2">
+            <Shield className="w-4 h-4" /> Hedge Accounting
           </TabsTrigger>
           <TabsTrigger value="accounts" className="gap-2">
             <Wallet className="w-4 h-4" /> Bank Accounts
@@ -58,6 +70,18 @@ export default function TreasuryCommandCenter() {
             <ShieldCheck className="w-4 h-4" /> Audit Logs
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="blotter" className="space-y-6">
+          <DealBlotter />
+        </TabsContent>
+
+        <TabsContent value="mtm" className="space-y-6">
+          <MarkToMarketDashboard />
+        </TabsContent>
+
+        <TabsContent value="hedge" className="space-y-6">
+          <HedgeAccountingWorkbench />
+        </TabsContent>
 
         <TabsContent value="dashboard" className="space-y-6">
           <CashPositionMetrics />
