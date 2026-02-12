@@ -85,7 +85,7 @@ const operationsModules: ModuleSection = {
     { title: "Supply Chain", url: "/scm", icon: Package, description: "SCM & Procurement" },
     { title: "Cost Management", url: "/scm/costing/dashboard", icon: DollarSign, description: "Costing & Margins" },
     { title: "Inventory", url: "/inventory", icon: Warehouse, description: "Stock & Items" },
-    { title: "Warehouse", url: "/warehouse", icon: Warehouse, description: "Warehouse Operations" },
+    { title: "Warehouse (WMS)", url: "/scm/wms/dashboard", icon: Warehouse, description: "Warehouse Operations" },
     { title: "Manufacturing", url: "/manufacturing/dashboard", icon: Factory, description: "Production & Shop Floor" },
     { title: "Transport & Logistics", url: "/transportation", icon: Truck, description: "Fleet & Freight" },
     { title: "Maintenance", url: "/maintenance", icon: Wrench, description: "Asset Maintenance & PM" },
@@ -103,7 +103,6 @@ const intelligenceModules: ModuleSection = {
     { title: "Compliance & Risk", url: "/compliance/dashboard", icon: Shield, description: "Risk & Compliance" },
     { title: "Audit Trails", url: "/compliance/audit", icon: HistoryIcon, description: "Activity Logs" },
     { title: "Security Profiles", url: "/compliance/security", icon: Lock, description: "Access & Permissions" },
-    { title: "AI Assistant", url: "/ai", icon: Sparkles, description: "AI-Powered Help" },
   ],
 };
 
