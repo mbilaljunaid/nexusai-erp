@@ -65,6 +65,8 @@ const OnboardingWorkbench = lazyWithRetry(() => import("@/pages/recruitment/Onbo
 const RecruitingAnalytics = lazyWithRetry(() => import("@/pages/recruitment/RecruitingAnalytics"));
 const RecruitmentConfiguration = lazyWithRetry(() => import("@/pages/RecruitmentConfiguration"));
 const PerformanceConfiguration = lazyWithRetry(() => import("@/pages/PerformanceConfiguration"));
+const TemplateManagement = lazyWithRetry(() => import("@/pages/TemplateManagement"));
+
 
 // WFM
 const MyTime = lazyWithRetry(() => import("@/pages/wfm/MyTime"));
@@ -154,6 +156,8 @@ function Router() {
         <Route path="/environment-management" component={AdminRoutes} />
         <Route path="/subscription-management" component={AdminRoutes} />
         <Route path="/billing-management" component={AdminRoutes} />
+        <Route path="/template-management" component={TemplateManagement} />
+
 
         <Route path="/testroute" component={TestRoute} />
 

@@ -168,87 +168,41 @@ export class OnboardingService {
         industryId: string,
         moduleIds: string[]
     ): Promise<number> {
-        // Get all templates for this industry and modules
-        const { data: templates, error } = await db
-            .from('configuration_templates')
-            .select('*')
-            .eq('industry_id', industryId)
-            .in('module_id', moduleIds)
-            .eq('is_active', true);
+        let appliedCount = 0;
 
-        if (error) {
-            console.error('Failed to fetch templates:', error);
-            return 0;
+        try {
+            // Import TemplateService (dynamic to avoid circular dependencies)
+            const { TemplateService } = await import('./TemplateService');
+
+            // For each enabled module, find and apply default templates
+            for (const moduleId of moduleIds) {
+                try {
+                    // Get default template for this industry/module combination
+                    const template = await TemplateService.getDefaultTemplate(industryId, moduleId);
+
+                    if (template) {
+                        // Apply the template
+                        const result = await TemplateService.applyTemplate({
+                            tenantId,
+                            templateId: template.id,
+                        });
+
+                        if (result.success) {
+                            appliedCount++;
+                            console.log(`✓ Applied template: ${template.name} (${result.appliedItems} items)`);
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Failed to apply template for module ${moduleId}:`, error);
+                    // Continue with other modules even if one fails
+                }
+            }
+
+            return appliedCount;
+        } catch (error) {
+            console.error('Failed to apply configuration templates:', error);
+            return appliedCount;
         }
-
-        if (!templates || templates.length === 0) {
-            return 0;
-        }
-
-        // Apply each template
-        // This is where you would actually create the configuration data
-        // For now, we'll just log the templates that would be applied
-        console.log(`Applying ${templates.length} templates for tenant ${tenantId}`);
-
-        for (const template of templates) {
-            await this.applyTemplate(tenantId, template);
-        }
-
-        return templates.length;
-    }
-
-    /**
-     * Apply a single configuration template
-     */
-    private static async applyTemplate(tenantId: string, template: any): Promise<void> {
-        // Template application logic depends on template type
-        const { template_type, template_data } = template;
-
-        switch (template_type) {
-            case 'coa': // Chart of Accounts
-                await this.applyChartOfAccountsTemplate(tenantId, template_data);
-                break;
-            case 'product_categories':
-                await this.applyProductCategoriesTemplate(tenantId, template_data);
-                break;
-            case 'workflows':
-                await this.applyWorkflowsTemplate(tenantId, template_data);
-                break;
-            case 'approval_chains':
-                await this.applyApprovalChainsTemplate(tenantId, template_data);
-                break;
-            case 'tax_rates':
-                await this.applyTaxRatesTemplate(tenantId, template_data);
-                break;
-            default:
-                console.log(`Unknown template type: ${template_type}`);
-        }
-    }
-
-    // Template-specific application methods (to be implemented)
-    private static async applyChartOfAccountsTemplate(tenantId: string, data: any): Promise<void> {
-        // TODO: Implement GL account creation from template
-        console.log('Applying Chart of Accounts template for tenant', tenantId);
-    }
-
-    private static async applyProductCategoriesTemplate(tenantId: string, data: any): Promise<void> {
-        // TODO: Implement product category creation from template
-        console.log('Applying Product Categories template for tenant', tenantId);
-    }
-
-    private static async applyWorkflowsTemplate(tenantId: string, data: any): Promise<void> {
-        // TODO: Implement workflow creation from template
-        console.log('Applying Workflows template for tenant', tenantId);
-    }
-
-    private static async applyApprovalChainsTemplate(tenantId: string, data: any): Promise<void> {
-        // TODO: Implement approval chain creation from template
-        console.log('Applying Approval Chains template for tenant', tenantId);
-    }
-
-    private static async applyTaxRatesTemplate(tenantId: string, data: any): Promise<void> {
-        // TODO: Implement tax rate creation from template
-        console.log('Applying Tax Rates template for tenant', tenantId);
     }
 
     /**
