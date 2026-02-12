@@ -128,10 +128,14 @@ export const navigationConfig: SidebarNode[] = [
                         id: "billing", title: "Billing", type: "group", icon: Receipt,
                         children: [
                             { id: "billing-dashboard", title: "Dashboard", type: "link", path: "/finance/billing" },
-                            { id: "billing-workbench", title: "Workbench", type: "link", path: "/finance/billing/workbench" },
+                            { id: "billing-subscriptions", title: "Subscription Lifecycle", type: "link", path: "/finance/billing/subscriptions" },
+                            { id: "billing-usage", title: "Usage Metering", type: "link", path: "/finance/billing/usage-metering" },
+                            { id: "billing-dunning", title: "Dunning Configuration", type: "link", path: "/finance/billing/dunning" },
+                            { id: "billing-revenue-waterfall", title: "Revenue Waterfall", type: "link", path: "/finance/billing/revenue-waterfall" },
+                            { id: "billing-credit-memos", title: "Credit Memos", type: "link", path: "/finance/billing/credit-memos" },
+                            { id: "billing-workbench", title: "Event Workbench", type: "link", path: "/finance/billing/workbench" },
                             { id: "billing-rules", title: "Rules", type: "link", path: "/finance/billing/rules" },
                             { id: "billing-profiles", title: "Profiles", type: "link", path: "/finance/billing/profiles" },
-                            { id: "billing-subscriptions", title: "Subscriptions", type: "link", path: "/finance/billing/subscriptions" },
                         ],
                     },
                     {

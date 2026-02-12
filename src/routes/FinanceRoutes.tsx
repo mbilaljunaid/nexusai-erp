@@ -37,6 +37,11 @@ import BillingAnomalyDashboard from "@/pages/billing/BillingAnomalyDashboard";
 // Handle mixed exports
 import { SubscriptionWorkbench } from "@/pages/billing/SubscriptionWorkbench";
 import { ArInvoiceList } from "@/components/ar/ArInvoiceList";
+import SubscriptionLifecycleManager from "@/pages/billing/SubscriptionLifecycleManager";
+import UsageMeteringDashboard from "@/pages/billing/UsageMeteringDashboard";
+import DunningConfigManager from "@/pages/billing/DunningConfigManager";
+import RevenueWaterfallDashboard from "@/pages/billing/RevenueWaterfallDashboard";
+import CreditMemoWorkbench from "@/pages/billing/CreditMemoWorkbench";
 
 import ARInvoices from "@/pages/finance/ar/ARInvoices";
 import ArAnalytics from "@/pages/finance/ar/ArAnalytics";
@@ -179,11 +184,15 @@ export default function FinanceRoutes() {
                 }} />
                 <Route path="/finance/accounts-receivable" component={AccountsReceivable} />
                 <Route path="/finance/billing" component={EnterpriseBillingDashboard} />
+                <Route path="/finance/billing/subscriptions" component={SubscriptionLifecycleManager} />
+                <Route path="/finance/billing/usage-metering" component={UsageMeteringDashboard} />
+                <Route path="/finance/billing/dunning" component={DunningConfigManager} />
+                <Route path="/finance/billing/revenue-waterfall" component={RevenueWaterfallDashboard} />
+                <Route path="/finance/billing/credit-memos" component={CreditMemoWorkbench} />
                 <Route path="/finance/billing/workbench" component={BillingWorkbench} />
                 <Route path="/finance/billing/rules" component={BillingRulesManager} />
                 <Route path="/finance/billing/profiles" component={BillingProfileManager} />
                 <Route path="/finance/billing/anomalies" component={BillingAnomalyDashboard} />
-                <Route path="/finance/billing/subscriptions" component={SubscriptionWorkbench} />
 
                 <Route path="/finance/ar/invoices" component={ArInvoiceList} />
                 <Route path="/finance/ar/analytics" component={ArAnalytics} />

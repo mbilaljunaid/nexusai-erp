@@ -110,34 +110,163 @@ export default function BillingDashboard() {
                 </Card>
             </div>
 
-            {/* Main Content Area */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="md:col-span-2">
-                    <CardHeader>
-                        <CardTitle>Billing Trend</CardTitle>
-                        <CardDescription>30-day billing volume vs. target</CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[300px] flex items-center justify-center border-dashed border-2 rounded-md m-4">
-                        <span className="text-muted-foreground">Chart Component Placeholder</span>
-                    </CardContent>
-                </Card>
+            {/* Enterprise Billing Modules */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Subscription Lifecycle */}
+                <Link href="/finance/billing/subscriptions">
+                    <Card className="hover:shadow-lg transition-shadow cursor-pointer border-blue-500/20 bg-blue-500/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Activity className="h-5 w-5 text-blue-600" />
+                                Subscription Lifecycle
+                            </CardTitle>
+                            <CardDescription>
+                                Manage contract renewals, cancellations, and amendments
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex justify-between items-center">
+                                <span className="text-2xl font-bold text-blue-600">
+                                    {isLoading ? "..." : (metrics?.activeSubscriptions || 0)}
+                                </span>
+                                <Button variant="ghost" size="sm">
+                                    View <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">Active Subscriptions</p>
+                        </CardContent>
+                    </Card>
+                </Link>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Quick Actions</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                        <Link href="/finance/billing/workbench">
-                            <Button variant="outline" className="w-full justify-start">Run Auto-Invoice</Button>
-                        </Link>
-                        <div className="w-full">
-                            <style>{`.w-full > button { width: 100%; justify-content: flex-start; }`}</style>
-                            <CreateBillingEventSheet />
-                        </div>
-                        <Button variant="outline" className="w-full justify-start">Manage Rules</Button>
-                        <Button variant="outline" className="w-full justify-start">View Batches</Button>
-                    </CardContent>
-                </Card>
+                {/* Usage Metering */}
+                <Link href="/finance/billing/usage-metering">
+                    <Card className="hover:shadow-lg transition-shadow cursor-pointer border-purple-500/20 bg-purple-500/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <TrendingUp className="h-5 w-5 text-purple-600" />
+                                Usage Metering
+                            </CardTitle>
+                            <CardDescription>
+                                Track consumption, configure meters, and monitor thresholds
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex justify-between items-center">
+                                <span className="text-2xl font-bold text-purple-600">
+                                    {isLoading ? "..." : (metrics?.usageEvents || 0)}
+                                </span>
+                                <Button variant="ghost" size="sm">
+                                    View <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">Events This Month</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+
+                {/* Dunning Configuration */}
+                <Link href="/finance/billing/dunning">
+                    <Card className="hover:shadow-lg transition-shadow cursor-pointer border-amber-500/20 bg-amber-500/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <AlertTriangle className="h-5 w-5 text-amber-600" />
+                                Dunning & Collections
+                            </CardTitle>
+                            <CardDescription>
+                                Configure automated payment reminders and escalations
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex justify-between items-center">
+                                <span className="text-2xl font-bold text-amber-600">
+                                    {isLoading ? "..." : (metrics?.dunningTemplates || 0)}
+                                </span>
+                                <Button variant="ghost" size="sm">
+                                    View <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">Active Templates</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+
+                {/* Revenue Waterfall */}
+                <Link href="/finance/billing/revenue-waterfall">
+                    <Card className="hover:shadow-lg transition-shadow cursor-pointer border-green-500/20 bg-green-500/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <DollarSign className="h-5 w-5 text-green-600" />
+                                Revenue Waterfall
+                            </CardTitle>
+                            <CardDescription>
+                                ASC 606 revenue recognition and deferred tracking
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex justify-between items-center">
+                                <span className="text-2xl font-bold text-green-600">
+                                    {isLoading ? "..." : `$${((metrics?.deferredRevenue || 0) / 1000).toFixed(0)}K`}
+                                </span>
+                                <Button variant="ghost" size="sm">
+                                    View <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">Deferred Revenue</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+
+                {/* Credit Memos */}
+                <Link href="/finance/billing/credit-memos">
+                    <Card className="hover:shadow-lg transition-shadow cursor-pointer border-red-500/20 bg-red-500/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Activity className="h-5 w-5 text-red-600" />
+                                Credit Memos
+                            </CardTitle>
+                            <CardDescription>
+                                Create and approve customer credits with workflow controls
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex justify-between items-center">
+                                <span className="text-2xl font-bold text-red-600">
+                                    {isLoading ? "..." : (metrics?.pendingCredits || 0)}
+                                </span>
+                                <Button variant="ghost" size="sm">
+                                    View <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">Pending Approval</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+
+                {/* Billing Workbench */}
+                <Link href="/finance/billing/workbench">
+                    <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Activity className="h-5 w-5" />
+                                Billing Workbench
+                            </CardTitle>
+                            <CardDescription>
+                                Process events, run auto-invoice, and manage profiles
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex justify-between items-center">
+                                <span className="text-2xl font-bold">
+                                    {isLoading ? "..." : (metrics?.unbilledEvents || 0)}
+                                </span>
+                                <Button variant="ghost" size="sm">
+                                    View <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">Pending Events</p>
+                        </CardContent>
+                    </Card>
+                </Link>
             </div>
         </div>
     );

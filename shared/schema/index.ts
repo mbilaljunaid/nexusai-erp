@@ -55,6 +55,7 @@ export * from "./finance_expenses";
 
 export * from "./billing_enterprise";
 export * from "./billing_subscription";
+export * from "./usage_metering";
 export * from "./order_management";
 export * from "./maintenance";
 export * from "./maintenance_pm";

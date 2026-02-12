@@ -151,6 +151,22 @@ billingRouter.patch("/profiles/:id", async (req, res) => {
 
 // --- SUBSCRIPTION MANAGEMENT API ---
 
+// List Subscriptions (with pagination and filters)
+billingRouter.get("/subscriptions", async (req, res) => {
+    try {
+        const { status, customerId, limit, offset } = req.query;
+        const result = await subscriptionService.getAllSubscriptions({
+            status: status as string | undefined,
+            customerId: customerId as string | undefined,
+            limit: limit ? parseInt(limit as string) : undefined,
+            offset: offset ? parseInt(offset as string) : undefined,
+        });
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Create Subscription
 billingRouter.post("/subscriptions", async (req, res) => {
     try {
@@ -207,6 +223,197 @@ billingRouter.post("/subscriptions/process-billing", async (req, res) => {
     try {
         const result = await subscriptionService.generateBillingEvents();
         res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// --- USAGE METERING API ---
+
+const { usageMeteringService } = await import("./UsageMeteringService");
+
+// Meter Management
+billingRouter.get("/usage/meters", async (req, res) => {
+    try {
+        const meters = await usageMeteringService.getMeters();
+        res.json(meters);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+billingRouter.post("/usage/meters", async (req, res) => {
+    try {
+        const meter = await usageMeteringService.createMeter(req.body);
+        res.json(meter);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+billingRouter.patch("/usage/meters/:id", async (req, res) => {
+    try {
+        const meter = await usageMeteringService.updateMeter(req.params.id, req.body);
+        res.json(meter);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Usage Event Ingestion
+billingRouter.post("/usage/events", async (req, res) => {
+    try {
+        const event = await usageMeteringService.recordUsageEvent(req.body);
+        res.json(event);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Usage Summary (for dashboard)
+billingRouter.get("/usage/summary/:customerId", async (req, res) => {
+    try {
+        const { meterId, period } = req.query;
+        const summary = await usageMeteringService.getUsageSummary(
+            req.params.customerId,
+            meterId as string | undefined,
+            (period as 'current' | 'last_30_days') || 'current'
+        );
+        res.json(summary);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Threshold Management
+billingRouter.get("/usage/thresholds", async (req, res) => {
+    try {
+        const { customerId } = req.query;
+        const thresholds = await usageMeteringService.getThresholds(customerId as string | undefined);
+        res.json(thresholds);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+billingRouter.post("/usage/thresholds", async (req, res) => {
+    try {
+        const threshold = await usageMeteringService.createThreshold(req.body);
+        res.json(threshold);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Usage Dashboard Metrics
+billingRouter.get("/usage/metrics", async (req, res) => {
+    try {
+        const { customerId } = req.query;
+        const metrics = await usageMeteringService.getDashboardMetrics(customerId as string | undefined);
+        res.json(metrics);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Generate Billing from Usage
+billingRouter.post("/usage/generate-billing", async (req, res) => {
+    try {
+        const { customerId, periodStart, periodEnd } = req.body;
+        const result = await usageMeteringService.generateBillingEventsFromUsage(
+            customerId,
+            new Date(periodStart),
+            new Date(periodEnd)
+        );
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// --- REVENUE WATERFALL API ---
+
+// Get Revenue Schedules for Waterfall Visualization
+billingRouter.get("/revenue/schedules", async (req, res) => {
+    try {
+        const { customerId, startDate, endDate, status } = req.query;
+
+        // Import AR service for revenue schedule queries
+        const { arService } = await import("../../services/ar");
+
+        // This would query ar_revenue_schedules with filters
+        // For now, returning placeholder - will be implemented properly in verification
+        res.json({
+            message: "Revenue schedule API placeholder",
+            note: "Full implementation pending - uses ar_revenue_schedules table"
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Get Revenue Waterfall Summary (for chart)
+billingRouter.get("/revenue/waterfall/:customerId", async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+
+        // Placeholder - will aggregate from ar_revenue_schedules + invoices
+        res.json({
+            customerId: req.params.customerId,
+            contractValue: "100000",
+            invoiced: "75000",
+            recognized: "50000",
+            deferred: "25000",
+            message: "Waterfall API placeholder - full implementation pending"
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// --- CREDIT MEMO LIST API ---
+
+billingRouter.get("/credit-memos", async (req, res) => {
+    try {
+        const { customerId, status, limit, offset } = req.query;
+
+        // Query credit memos (invoices with transactionClass = 'CM')
+        let query = db.select().from(arInvoices)
+            .where(eq(arInvoices.transactionClass, "CM"));
+
+        const creditMemos = await query
+            .limit(limit ? parseInt(limit as string) : 50)
+            .offset(offset ? parseInt(offset as string) : 0);
+
+        res.json({
+            data: creditMemos,
+            total: creditMemos.length
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+billingRouter.post("/credit-memos/:id/approve", async (req, res) => {
+    try {
+        const [updated] = await db.update(arInvoices)
+            .set({ status: "Approved" })
+            .where(eq(arInvoices.id, req.params.id))
+            .returning();
+        res.json(updated);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+billingRouter.post("/credit-memos/:id/reject", async (req, res) => {
+    try {
+        const { reason } = req.body;
+        const [updated] = await db.update(arInvoices)
+            .set({ status: "Rejected", description: reason })
+            .where(eq(arInvoices.id, req.params.id))
+            .returning();
+        res.json(updated);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
