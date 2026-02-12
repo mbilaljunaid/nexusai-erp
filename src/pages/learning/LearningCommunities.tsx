@@ -18,7 +18,7 @@ interface Community {
 
 export default function LearningCommunities() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [selectedCommunityId, setSelected CommunityId] = useState<string | null>(null);
+    const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null);
 
     const { data: communities = [] } = useQuery({
         queryKey: ["/api/learning/communities"],

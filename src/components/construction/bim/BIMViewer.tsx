@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-    Cube,
+    Box,
     ZoomIn,
     ZoomOut,
     RotateCw,
@@ -44,10 +44,9 @@ interface BIMViewerProps {
  * 1. Register app at https://forge.autodesk.com
  * 2. Get Client ID and Secret
  * 3. Implement token generation endpoint
- * 4. Load Forge Viewer SDK in index.html:
- *    <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css">
-    * <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
-    */
+ * 4. Load Forge Viewer SDK in index.html
+ * 5. Add stylesheet and script tags for viewer library
+ */
 export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProps) {
     const viewerContainerRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -154,7 +153,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-base flex items-center gap-2">
-                            <Cube className="h-5 w-5" />
+                            <Box className="h-5 w-5" />
                             BIM Viewer
                             {selectedModel && (
                                 <Badge variant="outline" className="ml-2">
@@ -198,7 +197,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                                 {/* Placeholder for actual viewer */}
                                 <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
                                     <div className="text-center text-white space-y-4">
-                                        <Cube className="h-24 w-24 mx-auto opacity-20" />
+                                        <Box className="h-24 w-24 mx-auto opacity-20" />
                                         <div>
                                             <h3 className="text-xl font-bold mb-2">BIM Viewer Ready</h3>
                                             <p className="text-sm text-gray-400 max-w-md">
@@ -298,7 +297,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                 <Card>
                     <CardHeader className="pb-3">
                         <CardTitle className="text-sm flex items-center gap-2">
-                            <Cube className="h-4 w-4" />
+                            <Box className="h-4 w-4" />
                             Available Models
                         </CardTitle>
                     </CardHeader>

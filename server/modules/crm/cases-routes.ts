@@ -1,8 +1,8 @@
 
 import { Router } from "express";
 import { db } from "../../db";
-import { cases, insertCaseSchema } from "../../../shared/schema";
-import { CaseService } from "../../services/CaseService";
+import { cases, insertCaseSchema, caseComments } from "../../../shared/schema";
+import { caseManagementService } from "../../services/CaseService";
 import { eq, desc } from "drizzle-orm";
 
 export const caseRoutes = Router();
@@ -10,7 +10,7 @@ export const caseRoutes = Router();
 // LIST
 caseRoutes.get("/", async (req, res) => {
     try {
-        const result = await db.select().from(cases).orderBy(desc(cases.createdAt));
+        const result = await caseManagementService.getAll();
         res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -21,7 +21,7 @@ caseRoutes.get("/", async (req, res) => {
 caseRoutes.post("/", async (req, res) => {
     try {
         const data = insertCaseSchema.parse(req.body);
-        const result = await CaseService.createCase(data, "system"); // TODO: Use req.user.id
+        const result = await caseManagementService.create(data);
         res.json(result);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
@@ -31,7 +31,7 @@ caseRoutes.post("/", async (req, res) => {
 // GET DETAILS
 caseRoutes.get("/:id", async (req, res) => {
     try {
-        const result = await CaseService.getCaseDetails(req.params.id);
+        const result = await caseManagementService.getById(req.params.id);
         res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -41,7 +41,7 @@ caseRoutes.get("/:id", async (req, res) => {
 // UPDATE
 caseRoutes.patch("/:id", async (req, res) => {
     try {
-        const result = await CaseService.updateCase(req.params.id, req.body);
+        const result = await caseManagementService.update(req.params.id, req.body);
         res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -51,10 +51,16 @@ caseRoutes.patch("/:id", async (req, res) => {
 // ADD COMMENT
 caseRoutes.post("/:id/comments", async (req, res) => {
     try {
-        const { body } = req.body;
+        const { body, author } = req.body;
         if (!body) return res.status(400).json({ error: "Body required" });
-        const result = await CaseService.addComment(req.params.id, body, "system"); // TODO: Use req.user.id
-        res.json(result);
+
+        const [comment] = await db.insert(caseComments).values({
+            caseId: req.params.id,
+            body,
+            author: author || "system"
+        }).returning();
+
+        res.json(comment);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

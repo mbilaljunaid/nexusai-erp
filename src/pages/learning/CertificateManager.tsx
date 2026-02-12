@@ -7,10 +7,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 interface Certificate {
     id: string;
     courseTitle: string;
-  cour completedAt: string;
-expiresAt ?: string;
-certificateNumber: string;
-isActive: boolean;
+    completedAt: string;
+    expiresAt?: string;
+    certificateNumber: string;
+    isActive: boolean;
 }
 
 export default function CertificateManager() {

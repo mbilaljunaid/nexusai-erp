@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tantml/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -490,10 +490,10 @@ export function CashForecastDashboard() {
                                         <div
                                             key={anomaly.id}
                                             className={`p-4 rounded-lg border ${anomaly.severity === "HIGH"
-                                                    ? "bg-red-50 border-red-200"
-                                                    : anomaly.severity === "MEDIUM"
-                                                        ? "bg-amber-50 border-amber-200"
-                                                        : "bg-blue-50 border-blue-200"
+                                                ? "bg-red-50 border-red-200"
+                                                : anomaly.severity === "MEDIUM"
+                                                    ? "bg-amber-50 border-amber-200"
+                                                    : "bg-blue-50 border-blue-200"
                                                 }`}
                                         >
                                             <div className="flex justify-between items-start mb-2">
@@ -509,10 +509,10 @@ export function CashForecastDashboard() {
                                                     </p>
                                                     <Badge
                                                         className={`text-xs mt-1 ${anomaly.severity === "HIGH"
-                                                                ? "bg-red-100 text-red-700"
-                                                                : anomaly.severity === "MEDIUM"
-                                                                    ? "bg-amber-100 text-amber-700"
-                                                                    : "bg-blue-100 text-blue-700"
+                                                            ? "bg-red-100 text-red-700"
+                                                            : anomaly.severity === "MEDIUM"
+                                                                ? "bg-amber-100 text-amber-700"
+                                                                : "bg-blue-100 text-blue-700"
                                                             }`}
                                                     >
                                                         {anomaly.severity} • {(anomaly.confidence * 100).toFixed(0)}%
