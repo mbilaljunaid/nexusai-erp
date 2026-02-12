@@ -61,7 +61,7 @@ INSERT INTO configuration_templates (
     version
 )
 SELECT 
-    i.id AS industry_id,
+    NULL AS industry_id,
     m.id AS module_id,
     'Manufacturing Work Centers - Standard',
     'Standard work center configurations for manufacturing operations',
@@ -86,9 +86,8 @@ SELECT
     10,
     '["manufacturing"]'::jsonb,
     '1.0'
-FROM industries i
-CROSS JOIN modules m
-WHERE i.code = 'manufacturing' AND m.code = 'manufacturing';
+FROM modules m
+WHERE m.code = 'manufacturing';
 
 -- =====================================================
 -- TEMPLATE 7: Real Estate Property Types
@@ -106,7 +105,7 @@ INSERT INTO configuration_templates (
     version
 )
 SELECT 
-    i.id AS industry_id,
+    NULL AS industry_id,
     m.id AS module_id,
     'Real Estate Property Types - Standard',
     'Standard property type classifications for real estate management',
@@ -133,9 +132,8 @@ SELECT
     10,
     '["real_estate"]'::jsonb,
     '1.0'
-FROM industries i
-CROSS JOIN modules m
-WHERE i.code = 'real_estate' AND m.code = 'real_estate';
+FROM modules m
+WHERE m.code = 'real_estate';
 
 -- =====================================================
 -- TEMPLATE 8: Construction Cost Codes
@@ -153,7 +151,7 @@ INSERT INTO configuration_templates (
     version
 )
 SELECT 
-    i.id AS industry_id,
+    NULL AS industry_id,
     m.id AS module_id,
     'Construction Cost Codes - CSI MasterFormat',
     'Industry-standard cost code structure based on CSI MasterFormat divisions',
@@ -202,9 +200,8 @@ SELECT
     10,
     '["construction"]'::jsonb,
     '1.0'
-FROM industries i
-CROSS JOIN modules m
-WHERE i.code = 'construction' AND m.code = 'construction';
+FROM modules m
+WHERE m.code = 'construction';
 
 -- Add comments
 COMMENT ON TABLE configuration_templates IS 'Industry and module-specific configuration templates - now includes 8 templates covering Banking, Healthcare, Retail, SaaS, HR, Manufacturing, Real Estate, and Construction';
