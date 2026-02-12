@@ -46,7 +46,8 @@ import ProcessRoutes from "@/routes/ProcessRoutes";
 
 // Direct page imports for sidebar links
 const SettingsPage = lazyWithRetry(() => import("@/pages/Settings"));
-const SCMDashboard = lazyWithRetry(() => import("@/pages/Inventory"));
+const SCMDashboard = lazyWithRetry(() => import("@/pages/SCMOverview"));
+const IndustryDashboard = lazyWithRetry(() => import("@/pages/IndustryDashboard"));
 const DashboardPage = lazyWithRetry(() => import("@/pages/Dashboard"));
 const EPMPage = lazyWithRetry(() => import("@/pages/EPMPage"));
 
@@ -123,7 +124,7 @@ function Router() {
         <Route path="/operations" component={SCMDashboard} />
         <Route path="/system-configuration" component={SettingsPage} />
         <Route path="/manufacturing"><Redirect to="/manufacturing/dashboard" /></Route>
-        <Route path="/scm"><Redirect to="/inventory" /></Route>
+        <Route path="/scm" component={SCMDashboard} />
         <Route path="/epm" component={EPMPage} />
         <Route path="/wfm"><Redirect to="/wfm/my-time" /></Route>
 

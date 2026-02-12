@@ -15,6 +15,7 @@ const PortalLogin = lazyWithRetry(() => import("@/pages/portal/PortalLogin"));
 const UseCases = lazyWithRetry(() => import("@/pages/UseCases"));
 const IndustriesPage = lazyWithRetry(() => import("@/pages/IndustriesPage"));
 const IndustryDetail = lazyWithRetry(() => import("@/pages/IndustryDetail"));
+const IndustryDashboard = lazyWithRetry(() => import("@/pages/IndustryDashboard"));
 const ModuleDetail = lazyWithRetry(() => import("@/pages/ModuleDetail"));
 const FeaturesPage = lazyWithRetry(() => import("@/pages/FeaturesPage"));
 const FeatureDetailPage = lazyWithRetry(() => import("@/pages/FeatureDetailPage"));
@@ -31,6 +32,7 @@ const PricingPage = lazyWithRetry(() => import("@/pages/PricingPage"));
 const PartnersPage = lazyWithRetry(() => import("@/pages/PartnersPage"));
 const CareersPage = lazyWithRetry(() => import("@/pages/public/CareersPage"));
 const ModulesPage = lazyWithRetry(() => import("@/pages/ModulesPage"));
+const OnboardingWizard = lazyWithRetry(() => import("@/components/onboarding/OnboardingWizard"));
 const ExternalSupplierRegistration = lazyWithRetry(() => import("@/pages/ExternalSupplierRegistration"));
 
 // Public Process Pages
@@ -94,11 +96,13 @@ export default function PublicRoutes() {
             <Route path="/modules" component={ModulesPage} />
             <Route path="/login" component={LoginPage} />
             <Route path="/signup" component={SignupPage} />
+            <Route path="/onboarding" component={OnboardingWizard} />
             <Route path="/forgot-password" component={ForgotPasswordPage} />
             <Route path="/demo" component={DemoManagement} />
             <Route path="/portal/login" component={PortalLogin} />
             <Route path="/supplier/register" component={ExternalSupplierRegistration} />
 
+            <Route path="/industry/:industryCode/dashboard" component={IndustryDashboard} />
             <Route path="/industry/:slug" component={IndustryDetail} />
             <Route path="/module/:slug" component={ModuleDetail} />
             <Route path="/features/:slug" component={FeatureDetailPage} />
