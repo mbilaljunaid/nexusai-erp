@@ -1,0 +1,79 @@
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { Save } from "lucide-react";
+
+export default function DriverBasedPlanning() {
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
+    const [drivers, setDrivers] = useState([
+        { name: "Headcount", value: 150, formula: "" },
+        { name: "Revenue per Employee", value: 500000, formula: "" },
+        { name: "Total Revenue", value: 0, formula: "Headcount * Revenue per Employee" },
+    ]);
+
+    const saveMutation = useMutation({
+        mutationFn: (data: any) =>
+            apiRequest("/api/epm/drivers", {
+                method: "POST",
+                body: JSON.stringify(data),
+            }),
+        onSuccess: () => {
+            toast({ title: "Success", description: "Drivers saved" });
+            queryClient.invalidateQueries({ queryKey: ["/api/epm/drivers"] });
+        },
+    });
+
+    return (
+        <div className="container mx-auto p-6 space-y-6">
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-3xl font-bold">Driver-Based Planning</h1>
+                    <p className="text-muted-foreground">Define business drivers and formulas</p>
+                </div>
+                <Button onClick={() => saveMutation.mutate({ drivers })}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Drivers
+                </Button>
+            </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Business Drivers</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-3">
+                        {drivers.map((driver, i) => (
+                            <div key={i} className="grid grid-cols-3 gap-4 p-3 border rounded-lg">
+                                <div>
+                                    <label className="text-sm">Driver Name</label>
+                                    <Input value={driver.name} readOnly />
+                                </div>
+                                <div>
+                                    <label className="text-sm">Value</label>
+                                    <Input
+                                        type="number"
+                                        value={driver.value}
+                                        onChange={(e) => {
+                                            const newDrivers = [...drivers];
+                                            newDrivers[i].value = parseFloat(e.target.value);
+                                            setDrivers(newDrivers);
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-sm">Formula</label>
+                                    <Input value={driver.formula} placeholder="e.g., A * B" readOnly />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}

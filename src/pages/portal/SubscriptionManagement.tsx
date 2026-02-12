@@ -1,0 +1,161 @@
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { CreditCard, Calendar, Package, Settings } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+
+export default function SubscriptionManagement() {
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
+    const [selectedPlan, setSelectedPlan] = useState("");
+
+    const { data: subscription } = useQuery({
+        queryKey: ["/api/portal/subscription"],
+        queryFn: () => apiRequest("/api/portal/subscription"),
+    });
+
+    const { data: availablePlans } = useQuery({
+        queryKey: ["/api/portal/subscription-plans"],
+        queryFn: () => apiRequest("/api/portal/subscription-plans"),
+    });
+
+    const upgradeMutation = useMutation({
+        mutationFn: (planId: string) =>
+            apiRequest("/api/portal/subscription/upgrade", {
+                method: "POST",
+                body: JSON.stringify({ planId }),
+            }),
+        onSuccess: () => {
+            toast({ title: "Success", description: "Subscription upgraded successfully" });
+            queryClient.invalidateQueries({ queryKey: ["/api/portal/subscription"] });
+        },
+    });
+
+    const cancelMutation = useMutation({
+        mutationFn: () => apiRequest("/api/portal/subscription/cancel", { method: "POST" }),
+        onSuccess: () => {
+            toast({ title: "Success", description: "Subscription cancelled" });
+            queryClient.invalidateQueries({ queryKey: ["/api/portal/subscription"] });
+        },
+    });
+
+    return (
+        <div className="container mx-auto p-6 space-y-6">
+            <div>
+                <h1 className="text-3xl font-bold">Subscription Management</h1>
+                <p className="text-muted-foreground">Manage your subscription plan and billing</p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Current Plan</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div>
+                            <div className="text-3xl font-bold">{subscription?.planName}</div>
+                            <div className="text-muted-foreground mt-1">${subscription?.monthlyPrice}/month</div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                                <span>Next billing date:</span>
+                                <span className="font-medium">
+                                    {subscription?.nextBillingDate && new Date(subscription.nextBillingDate).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span>Users:</span>
+                                <span className="font-medium">{subscription?.users} / {subscription?.maxUsers}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span>Status:</span>
+                                <Badge variant={subscription?.status === 'ACTIVE' ? 'default' : 'secondary'}>
+                                    {subscription?.status}
+                                </Badge>
+                            </div>
+                        </div>
+                        <Button variant="destructive" size="sm" onClick={() => cancelMutation.mutate()}>
+                            Cancel Subscription
+                        </Button>
+                    </CardContent>
+                </Card>
+
+                <Card className="col-span-2">
+                    <CardHeader>
+                        <CardTitle>Available Plans</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-3 gap-4">
+                            {availablePlans?.map((plan: any) => (
+                                <Card key={plan.id} className={plan.id === subscription?.planId ? "border-primary" : ""}>
+                                    <CardContent className="pt-6 space-y-4">
+                                        <div>
+                                            <div className="text-2xl font-bold">{plan.name}</div>
+                                            <div className="text-3xl font-bold text-primary mt-2">${plan.price}</div>
+                                            <div className="text-muted-foreground">/month</div>
+                                        </div>
+                                        <ul className="space-y-2 text-sm">
+                                            {plan.features?.map((feature: string, i: number) => (
+                                                <li key={i}>✓ {feature}</li>
+                                            ))}
+                                        </ul>
+                                        {plan.id !== subscription?.planId && (
+                                            <Button
+                                                className="w-full"
+                                                onClick={() => upgradeMutation.mutate(plan.id)}
+                                                disabled={upgradeMutation.isPending}
+                                            >
+                                                {plan.price > subscription?.monthlyPrice ? 'Upgrade' : 'Downgrade'}
+                                            </Button>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Billing History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="border rounded-lg">
+                        <table className="w-full">
+                            <thead className="bg-muted">
+                                <tr>
+                                    <th className="text-left p-3">Date</th>
+                                    <th className="text-left p-3">Description</th>
+                                    <th className="text-right p-3">Amount</th>
+                                    <th className="text-left p-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {subscription?.billingHistory?.map((bill: any) => (
+                                    <tr key={bill.id} className="border-t">
+                                        <td className="p-3">{new Date(bill.date).toLocaleDateString()}</td>
+                                        <td className="p-3">{bill.description}</td>
+                                        <td className="p-3 text-right">${bill.amount}</td>
+                                        <td className="p-3">
+                                            <Badge variant={bill.status === 'PAID' ? 'default' : 'secondary'}>
+                                                {bill.status}
+                                            </Badge>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}
