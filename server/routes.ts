@@ -80,6 +80,8 @@ import { lcmRouter } from "./modules/lcm/routes";
 import { ppmRouter } from "./modules/ppm/routes";
 import wfmRouter from "./routes/wfm";
 import { nexusAiRouter } from "./routes/nexus-ai";
+import expenseRouter from "./routes/expenses";
+import expensePolicyRouter from "./routes/expense-policies";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -171,6 +173,10 @@ export async function registerRoutes(
 
   // SLA Configuration
   app.use("/api/sla", slaRouter);
+
+  // Expense Management
+  app.use("/api/expenses", expenseRouter);
+  app.use("/api/expense-policies", expensePolicyRouter);
 
   // Order Management
   app.use("/api/order-management", orderRouter);

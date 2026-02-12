@@ -1,21 +1,22 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   DollarSign,
   Receipt,
   AlertCircle,
-  CreditCard,
   CheckCircle,
   Send,
   Loader2,
   FileText,
   Scan,
-  RefreshCcw,
   Plus,
-  ArrowRight
+  ArrowRight,
+  TrendingUp,
+  AlertTriangle,
+  Clock
 } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -29,131 +30,166 @@ import {
   SheetFooter
 } from "@/components/ui/sheet";
 import { StandardTable, Column } from "@/components/tables/StandardTable";
+import { useLocation } from "wouter";
 
 export default function ExpenseManagement() {
-  const [viewType, setViewType] = useState<"reports" | "items" | "cards">("reports");
-  const [isCaptureOpen, setIsCaptureOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
 
+  // Fetch expense reports
   const { data: reports = [], isLoading: reportsLoading } = useQuery<any[]>({
-    queryKey: ["/api/expenses/reports"]
-  });
-  const { data: items = [], isLoading: itemsLoading } = useQuery<any[]>({
-    queryKey: ["/api/expenses/items"]
-  });
-  const { data: cards = [], isLoading: cardsLoading } = useQuery<any[]>({
-    queryKey: ["/api/expenses/cards/transactions", { userId: "verifier_001" }]
+    queryKey: ["/api/expenses"],
+    queryFn: async () => {
+      const res = await apiRequest("GET", "/api/expenses");
+      return res.json();
+    }
   });
 
-  const postToGlMutation = useMutation({
-    mutationFn: async (reportId: string) => {
-      const res = await apiRequest("POST", `/api/expenses/reports/${reportId}/post-gl`, {});
+  // Fetch analytics summary
+  const { data: analytics } = useQuery<any>({
+    queryKey: ["/api/expenses/analytics/summary"],
+    queryFn: async () => {
+      const res = await apiRequest("GET", "/api/expenses/analytics/summary");
+      return res.json();
+    }
+  });
+
+  // Fetch category breakdown
+  const { data: categoryBreakdown = [] } = useQuery<any[]>({
+    queryKey: ["/api/expenses/analytics/by-category"],
+    queryFn: async () => {
+      const res = await apiRequest("GET", "/api/expenses/analytics/by-category");
+      return res.json();
+    }
+  });
+
+  // Fetch policy violations
+  const { data: violations } = useQuery<any>({
+    queryKey: ["/api/expenses/analytics/violations"],
+    queryFn: async () => {
+      const res = await apiRequest("GET", "/api/expenses/analytics/violations");
+      return res.json();
+    }
+  });
+
+  // Create expense report mutation
+  const createReportMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/expenses", data);
       return res.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/expenses/reports"] });
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary"] });
       toast({
-        title: "Success",
-        description: "Expense report posted to General Ledger successfully.",
+        title: "Expense Report Created",
+        description: `Report ${data.reportNumber} has been created successfully.`,
       });
+      setIsCreateOpen(false);
+      // Navigate to detail page
+      setLocation(`/finance/expenses/${data.id}`);
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to post to GL",
+        description: error.message || "Failed to create expense report",
         variant: "destructive",
       });
     }
   });
 
-  const importCardsMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/expenses/cards/import", { userId: "verifier_001" });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/expenses/cards/transactions"] });
-      toast({
-        title: "Bank Feed Imported",
-        description: "Corporate card transactions have been successfully synchronized.",
-      });
-    }
-  });
-
-  const extractMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/expenses/items/extract", { receipt: "base64_data" });
+  // Submit report mutation
+  const submitReportMutation = useMutation({
+    mutationFn: async (reportId: string) => {
+      const res = await apiRequest("POST", `/api/expenses/${reportId}/submit`, {});
       return res.json();
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary"] });
       toast({
-        title: "Receipt Scanned",
-        description: `Extracted ${data.data.merchant} - $${data.data.amount}`,
+        title: "Report Submitted",
+        description: `Report ${data.reportNumber} submitted for approval.`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Submission Failed",
+        description: error.message || "Failed to submit expense report",
+        variant: "destructive",
       });
     }
   });
 
-  const totals = {
-    all: reports.reduce((sum, r) => sum + Number(r.totalAmount || 0), 0),
-    pending: reports.filter(r => r.status === 'DRAFT' || r.status === 'SUBMITTED').reduce((sum, r) => sum + Number(r.totalAmount || 0), 0),
-    approved: reports.filter(r => r.status === 'APPROVED').reduce((sum, r) => sum + Number(r.totalAmount || 0), 0),
-    paid: reports.filter(r => r.status === 'PAID').reduce((sum, r) => sum + Number(r.totalAmount || 0), 0),
-  };
+  // Approve report mutation
+  const approveReportMutation = useMutation({
+    mutationFn: async ({ reportId, comments }: { reportId: string; comments?: string }) => {
+      const res = await apiRequest("POST", `/api/expenses/${reportId}/approve`, { comments });
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary"] });
+      toast({
+        title: "Report Approved",
+        description: `Report ${data.reportNumber} has been approved.`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Approval Failed",
+        description: error.message || "Failed to approve report (possible SoD violation)",
+        variant: "destructive",
+      });
+    }
+  });
 
   const reportColumns: Column<any>[] = [
-    { header: "Report #", accessorKey: "reportNumber", sortable: true },
-    { header: "Purpose", accessorKey: "purpose" },
+    {
+      header: "Report #",
+      accessorKey: "reportNumber",
+      sortable: true,
+      cell: (r) => <span className="font-mono font-bold">{r.reportNumber || `EXP-${r.id.slice(0, 6)}`}</span>
+    },
+    {
+      header: "Title",
+      accessorKey: "title",
+      cell: (r) => r.title || r.purpose || "Untitled Report"
+    },
     {
       header: "Status",
       accessorKey: "status",
-      cell: (r) => (
-        <Badge variant={r.status === 'PAID' ? 'secondary' : r.status === 'APPROVED' ? 'default' : 'outline'}>
-          {r.status}
-        </Badge>
-      )
-    },
-    {
-      header: "Compliance",
-      accessorKey: "id",
       cell: (r) => {
-        const score = r.status === 'PAID' ? 98 : r.status === 'APPROVED' ? 92 : 75;
-        const color = score > 90 ? 'text-green-500' : score > 70 ? 'text-yellow-500' : 'text-red-500';
-        return <span className={`font-bold ${color}`}>{score}%</span>;
+        const statusColors = {
+          DRAFT: 'outline',
+          SUBMITTED: 'default',
+          APPROVED: 'secondary',
+          REJECTED: 'destructive',
+        };
+        return (
+          <Badge variant={statusColors[r.status as keyof typeof statusColors] || 'outline'}>
+            {r.status}
+          </Badge>
+        );
       }
     },
     {
-      header: "Total",
+      header: "Total Amount",
       accessorKey: "totalAmount",
-      cell: (r) => <span className="font-mono font-bold">${Number(r.totalAmount).toLocaleString()}</span>
+      sortable: true,
+      cell: (r) => <span className="font-mono font-bold">${Number(r.totalAmount || 0).toFixed(2)}</span>
     },
     {
-      header: "Date",
+      header: "Created",
       accessorKey: "createdAt",
+      sortable: true,
       cell: (r) => new Date(r.createdAt).toLocaleDateString()
-    }
-  ];
-
-  const itemColumns: Column<any>[] = [
-    { header: "Date", accessorKey: "expenseDate", cell: (i) => new Date(i.date || i.expenseDate).toLocaleDateString(), sortable: true },
-    { header: "Merchant", accessorKey: "merchant", sortable: true },
-    { header: "Category", accessorKey: "category", cell: (i) => <Badge variant="outline">{i.category}</Badge> },
-    { header: "Amount", accessorKey: "amount", cell: (i) => <span className="font-mono font-bold">${Number(i.amount).toLocaleString()}</span> },
-    { header: "Description", accessorKey: "description" }
-  ];
-
-  const cardColumns: Column<any>[] = [
-    { header: "Tx Date", accessorKey: "transactionDate", cell: (tx) => new Date(tx.transactionDate).toLocaleDateString(), sortable: true },
-    { header: "Merchant", accessorKey: "merchant", sortable: true },
-    { header: "Card ID", accessorKey: "cardId" },
-    { header: "Amount", accessorKey: "amount", cell: (tx) => <span className="font-mono font-bold">${Number(tx.amount).toLocaleString()}</span> },
+    },
     {
-      header: "Status",
-      accessorKey: "status",
-      cell: (tx) => (
-        <Badge variant="outline" className="text-yellow-600 bg-yellow-50 border-yellow-200">
-          {tx.status}
-        </Badge>
-      )
+      header: "Employee",
+      accessorKey: "employeeId",
+      cell: (r) => r.employeeName || r.employeeId
     }
   ];
 
@@ -162,138 +198,214 @@ export default function ExpenseManagement() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Expense Management</h1>
-          <p className="text-muted-foreground mt-1 text-lg">Tier-1 Audit Benchmarked Expense Lifecycle.</p>
+          <p className="text-muted-foreground mt-1 text-lg">
+            End-to-end expense tracking with policy validation & analytics
+          </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setIsCaptureOpen(true)}>
-            <Scan className="h-4 w-4 mr-2" />
-            Smart Capture
-          </Button>
-          <Button className="bg-primary hover:bg-primary/90">
+          <Button variant="outline" onClick={() => setIsCreateOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             New Report
           </Button>
         </div>
       </div>
 
+      {/* Analytics Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Total Volume" value={`$${totals.all.toLocaleString()}`} icon={DollarSign} loading={reportsLoading} />
-        <MetricCard title="Pending Review" value={`$${totals.pending.toLocaleString()}`} icon={AlertCircle} iconColor="text-yellow-500" loading={reportsLoading} />
-        <MetricCard title="Accrued (Approved)" value={`$${totals.approved.toLocaleString()}`} icon={CheckCircle} iconColor="text-blue-500" loading={reportsLoading} />
-        <MetricCard title="Settled (Paid)" value={`$${totals.paid.toLocaleString()}`} icon={CreditCard} iconColor="text-green-500" loading={reportsLoading} />
+        <MetricCard
+          title="Total Reports"
+          value={analytics?.totalReports || "0"}
+          icon={FileText}
+          loading={!analytics}
+        />
+        <MetricCard
+          title="Total Amount"
+          value={`$${analytics?.totalAmount || "0.00"}`}
+          icon={DollarSign}
+          loading={!analytics}
+        />
+        <MetricCard
+          title="Pending Approval"
+          value={analytics?.byStatus?.submitted || "0"}
+          icon={Clock}
+          iconColor="text-yellow-500"
+          loading={!analytics}
+        />
+        <MetricCard
+          title="Pending Reimbursement"
+          value={`$${analytics?.pendingReimbursement || "0.00"}`}
+          icon={AlertCircle}
+          iconColor="text-blue-500"
+          loading={!analytics}
+        />
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2 p-1 bg-muted/20 rounded-lg w-fit border">
-          <Button variant={viewType === "reports" ? "secondary" : "ghost"} onClick={() => setViewType("reports")} className="h-8 px-3 text-xs uppercase tracking-wider font-bold">
-            <FileText className="h-3.5 w-3.5 mr-2" />
-            Reports
-          </Button>
-          <Button variant={viewType === "items" ? "secondary" : "ghost"} onClick={() => setViewType("items")} className="h-8 px-3 text-xs uppercase tracking-wider font-bold">
-            <Receipt className="h-3.5 w-3.5 mr-2" />
-            Lines
-          </Button>
-          <Button variant={viewType === "cards" ? "secondary" : "ghost"} onClick={() => setViewType("cards")} className="h-8 px-3 text-xs uppercase tracking-wider font-bold">
-            <CreditCard className="h-3.5 w-3.5 mr-2" />
-            Card Feeds
-          </Button>
-        </div>
+      {/* Additional Analytics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Category Breakdown */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Top Spending Categories
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {categoryBreakdown.slice(0, 5).map((cat: any) => (
+                <div key={cat.category} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Receipt className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">{cat.category}</p>
+                      <p className="text-xs text-muted-foreground">{cat.count} expenses</p>
+                    </div>
+                  </div>
+                  <span className="font-mono font-bold">${cat.totalAmount}</span>
+                </div>
+              ))}
+              {categoryBreakdown.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No expense data available
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
-        {viewType === "cards" && (
-          <Button variant="ghost" size="sm" onClick={() => importCardsMutation.mutate()} disabled={importCardsMutation.isPending} className="text-xs">
-            <RefreshCcw className={`h-3.5 w-3.5 mr-2 ${importCardsMutation.isPending ? 'animate-spin' : ''}`} />
-            Sync Bank Feed
-          </Button>
-        )}
-      </div>
-
-      <Card className="border-none shadow-none bg-transparent">
-        <CardContent className="p-0">
-          {viewType === "reports" && (
-            <StandardTable
-              data={reports}
-              columns={reportColumns}
-              isLoading={reportsLoading}
-              actions={(r) => (
-                <div className="flex gap-2">
-                  {r.status === 'APPROVED' && (
-                    <Button size="sm" onClick={() => postToGlMutation.mutate(r.id)} disabled={postToGlMutation.isPending}>
-                      {postToGlMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
-                    </Button>
-                  )}
-                  <Button variant="outline" size="sm"><ArrowRight className="h-3 w-3" /></Button>
+        {/* Policy Violations */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-yellow-600" />
+              Policy Violations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {violations?.violations?.slice(0, 3).map((viol: any, idx: number) => (
+                <div key={idx} className="flex items-start justify-between gap-2 p-2 bg-yellow-50 border border-yellow-100 rounded">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-yellow-900">{viol.violation}</p>
+                    <p className="text-xs text-yellow-700">Report: {viol.reportNumber}</p>
+                  </div>
+                  <Badge variant="outline" className="text-xs">${viol.amount}</Badge>
+                </div>
+              ))}
+              {(violations?.totalViolations === 0 || !violations) && (
+                <div className="flex items-center gap-2 text-green-600 p-3 bg-green-50 border border-green-100 rounded">
+                  <CheckCircle className="h-4 w-4" />
+                  <p className="text-sm font-medium">No policy violations detected</p>
                 </div>
               )}
-              pagination={{ currentPage: 1, totalPages: 1, onPageChange: () => { } }}
-            />
-          )}
+              {violations?.totalViolations > 3 && (
+                <p className="text-xs text-muted-foreground text-center">
+                  +{violations.totalViolations - 3} more violations
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-          {viewType === "items" && (
-            <StandardTable
-              data={items}
-              columns={itemColumns}
-              isLoading={itemsLoading}
-              pagination={{ currentPage: 1, totalPages: 1, onPageChange: () => { } }}
-            />
-          )}
-
-          {viewType === "cards" && (
-            <StandardTable
-              data={cards}
-              columns={cardColumns}
-              isLoading={cardsLoading}
-              actions={() => <Button variant="secondary" size="sm">Match</Button>}
-              pagination={{ currentPage: 1, totalPages: 1, onPageChange: () => { } }}
-            />
-          )}
+      {/* Expense Reports Table */}
+      <Card className="border-none shadow-none bg-transparent">
+        <CardContent className="p-0">
+          <StandardTable
+            data={reports}
+            columns={reportColumns}
+            isLoading={reportsLoading}
+            actions={(r) => (
+              <div className="flex gap-2">
+                {r.status === 'DRAFT' && (
+                  <Button
+                    size="sm"
+                    onClick={() => submitReportMutation.mutate(r.id)}
+                    disabled={submitReportMutation.isPending}
+                  >
+                    {submitReportMutation.isPending ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Send className="h-3 w-3" />
+                    )}
+                  </Button>
+                )}
+                {r.status === 'SUBMITTED' && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => approveReportMutation.mutate({ reportId: r.id })}
+                    disabled={approveReportMutation.isPending}
+                  >
+                    {approveReportMutation.isPending ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <CheckCircle className="h-3 w-3" />
+                    )}
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setLocation(`/finance/expenses/${r.id}`)}
+                >
+                  <ArrowRight className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
+            pagination={{ currentPage: 1, totalPages: 1, onPageChange: () => { } }}
+          />
         </CardContent>
       </Card>
 
-      <Sheet open={isCaptureOpen} onOpenChange={setIsCaptureOpen}>
+      {/* Create Report Sheet */}
+      <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
         <SheetContent side="right" className="sm:max-w-md">
           <SheetHeader>
-            <SheetTitle>AI Receipt Capture</SheetTitle>
-            <SheetDescription>Upload receipt for automated OCR extraction and policy validation.</SheetDescription>
+            <SheetTitle>Create Expense Report</SheetTitle>
+            <SheetDescription>
+              Create a new expense report to track your business expenses.
+            </SheetDescription>
           </SheetHeader>
-          <div className="py-8 space-y-6">
-            <div className="border-2 border-dashed rounded-xl p-12 flex flex-col items-center justify-center bg-muted/10 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => extractMutation.mutate()}>
-              {extractMutation.isPending ? (
-                <div className="text-center">
-                  <Loader2 className="h-10 w-10 text-primary animate-spin mb-4 mx-auto" />
-                  <p className="font-medium animate-pulse">Running AI OCR...</p>
-                </div>
-              ) : (
-                <>
-                  <Scan className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                  <p className="text-sm text-muted-foreground text-center">Click to upload or drag and drop</p>
-                </>
-              )}
+          <div className="py-6 space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Report Title</label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border rounded-md"
+                placeholder="e.g., Business Trip to NYC"
+                id="reportTitle"
+              />
             </div>
-
-            {extractMutation.data && (
-              <div className="space-y-4 p-4 bg-muted/30 rounded-lg border animate-in slide-in-from-right-4 duration-300">
-                <div className="flex items-center gap-3 text-green-600">
-                  <CheckCircle className="h-5 w-5" />
-                  <div>
-                    <p className="text-xs font-black uppercase">OCR Confidence: 92%</p>
-                    <p className="text-[10px] opacity-70">Heuristic: Validated</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-[10px] text-muted-foreground uppercase font-black">Merchant</p>
-                    <p className="font-bold">{extractMutation.data.data.merchant}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-muted-foreground uppercase font-black">Total</p>
-                    <p className="font-mono font-bold text-lg">${extractMutation.data.data.amount}</p>
-                  </div>
-                </div>
-              </div>
-            )}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Description (Optional)</label>
+              <textarea
+                className="w-full px-3 py-2 border rounded-md"
+                placeholder="Additional details..."
+                rows={3}
+                id="reportDescription"
+              />
+            </div>
           </div>
           <SheetFooter>
-            <Button className="w-full" disabled={!extractMutation.data} onClick={() => setIsCaptureOpen(false)}>Create Line Item</Button>
+            <Button
+              className="w-full"
+              onClick={() => {
+                const title = (document.getElementById('reportTitle') as HTMLInputElement)?.value;
+                const description = (document.getElementById('reportDescription') as HTMLTextAreaElement)?.value;
+                createReportMutation.mutate({ title, description });
+              }}
+              disabled={createReportMutation.isPending}
+            >
+              {createReportMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create Report"
+              )}
+            </Button>
           </SheetFooter>
         </SheetContent>
       </Sheet>
