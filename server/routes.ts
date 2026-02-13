@@ -101,7 +101,7 @@ export async function registerRoutes(
   app.use("/api/gl", glRoutes);
   app.use("/api/epm", epmRoutes);
   app.use("/api/ap", apRouter);
-  app.use("/api/ar", arRouter);
+  // app.use("/api/ar", arRouter); // TODO: Fix missing arRouter import
   app.use("/api/ar/ai", arAiRouter);
   app.use("/api/ar", arReportRouter); // Shares prefix but mounts specific paths
   // app.use("/api/cash", cashRouter); // Refactored to modules/finance/banking.routes.ts

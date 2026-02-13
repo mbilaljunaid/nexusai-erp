@@ -1,49 +1,52 @@
 // Module Pages Index
-// Exports all module pages for easy route configuration
+// Consolidated module category pages
 
-// Finance Modules (Batch 1)
-export { default as GeneralLedgerPage } from './GeneralLedgerPage';
-export { default as AccountsPayablePage } from './AccountsPayablePage';
-export { default as AccountsReceivablePage } from './AccountsReceivablePage';
-export { default as CashManagementPage } from './CashManagementPage';
-export { default as FixedAssetsPage } from './FixedAssetsPage';
-export { default as ExpenseManagementPage } from './ExpenseManagementPage';
-export { default as RevenueRecognitionPage } from './RevenueRecognitionPage';
-export { default as FinancialReportingPage } from './FinancialReportingPage';
+// Core Module Categories
+export { default as FinanceModulePage } from './FinanceModulePage';
+export { default as HRModulePage } from './HRModulePage';
+export { default as CRMModulePage } from './CRMModulePage';
 
 /**
- * Module page registry for navigation and routing
- * Batch 1: Core Finance (8 modules complete)
+ * Module Registry - Consolidated Categories
+ * Each module page combines all related features into one comprehensive page
  */
 export const MODULE_REGISTRY = [
-    // Finance Modules - Batch 1 (Complete)
-    { name: 'General Ledger', slug: 'general-ledger', category: 'Finance', available: true },
-    { name: 'Accounts Payable', slug: 'accounts-payable', category: 'Finance', available: true },
-    { name: 'Accounts Receivable', slug: 'accounts-receivable', category: 'Finance', available: true },
-    { name: 'Cash Management', slug: 'cash-management', category: 'Finance', available: true },
-    { name: 'Fixed Assets', slug: 'fixed-assets', category: 'Finance', available: true },
-    { name: 'Expense Management', slug: 'expense-management', category: 'Finance', available: true },
-    { name: 'Revenue Recognition', slug: 'revenue-recognition', category: 'Finance', available: true },
-    { name: 'Financial Reporting', slug: 'financial-reporting', category: 'Finance', available: true },
+    // Core Finance Module (covers 8 finance features)
+    {
+        name: 'Finance & Accounting',
+        slug: 'finance',
+        category: 'Core ERP',
+        available: true,
+        features: ['General Ledger', 'Accounts Payable', 'Accounts Receivable', 'Cash Management', 'Fixed Assets', 'Expense Management', 'Revenue Recognition', 'Financial Reporting']
+    },
 
-    // TODO: Batch 2-11 modules (77 remaining)
-    // Next batches:
-    // Batch 2: Core HR (8 modules)
-    // Batch 3: Core CRM (8 modules)
-    // Batch 4: Core SCM (8 modules)
-    // Batch 5: Manufacturing (8 modules)
-    // Batch 6: Projects & Services (8 modules)
-    // Batch 7: Additional Finance (7 modules)
-    // Batch 8: Additional HR (7 modules)
-    // Batch 9: Industry-Specific (8 modules)
-    // Batch 10: Platform & Tech (8 modules)
-    // Batch 11: Advanced Features (7 modules)
+    // Core HR Module (covers 8 HR features)
+    {
+        name: 'Human Resources & Talent',
+        slug: 'hr',
+        category: 'Core ERP',
+        available: true,
+        features: ['Core HR (HRIS)', 'Payroll', 'Time & Attendance', 'Benefits Administration', 'Talent Management', 'Recruitment (ATS)', 'Learning Management (LMS)', 'Compensation Management']
+    },
+
+    // Core CRM Module (covers 8 CRM/sales features)
+    {
+        name: 'CRM & Sales',
+        slug: 'crm',
+        category: 'Core ERP',
+        available: true,
+        features: ['Sales CRM', 'Lead Management', 'Opportunity Management', 'Account Management', 'Contact Management', 'Quote Management (CPQ)', 'Sales Orders', 'Customer Portal']
+    },
+
+    // TODO: Additional module categories to be added:
+    // - Supply Chain Management (SCM)
+    // - Manufacturing
+    // - Projects & Services
+    // - Platform & Technology
 ] as const;
 
 export const MODULE_CATEGORIES = [
-    'Finance',
-    'HR',
-    'CRM',
+    'Core ERP',
     'Supply Chain',
     'Manufacturing',
     'Projects',

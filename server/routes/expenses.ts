@@ -4,6 +4,7 @@ import { expensePolicyService } from "../services/ExpensePolicyService";
 import type { ExpenseReport, ExpenseLine } from "@shared/schema";
 import receiptsAnalyticsRouter from "./expense-receipts-analytics";
 
+
 const router = Router();
 
 // ============================================================================
@@ -14,7 +15,7 @@ const router = Router();
  * POST /api/expenses
  * Create new expense report
  */
-router.post("/", requireAuth, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { userId, tenantId } = req.auth!;
     const { title, description, employeeId } = req.body;
@@ -39,7 +40,7 @@ router.post("/", requireAuth, async (req, res) => {
  * GET /api/expenses
  * List expense reports with filters
  */
-router.get("/", requireAuth, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { tenantId, userId } = req.auth!;
     const { status, employeeId, startDate, endDate } = req.query;
@@ -82,7 +83,7 @@ router.get("/", requireAuth, async (req, res) => {
  * GET /api/expenses/:id
  * Get single expense report with lines
  */
-router.get("/:id", requireAuth, async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const { tenantId } = req.auth!;
     const { id } = req.params;
@@ -106,7 +107,7 @@ router.get("/:id", requireAuth, async (req, res) => {
  * PATCH /api/expenses/:id
  * Update expense report
  */
-router.patch("/:id", requireAuth, async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
     const { tenantId, userId } = req.auth!;
     const { id } = req.params;
@@ -138,7 +139,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
  * DELETE /api/expenses/:id
  * Delete expense report (draft only)
  */
-router.delete("/:id", requireAuth, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { tenantId, userId } = req.auth!;
     const { id } = req.params;
@@ -172,7 +173,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
  * POST /api/expenses/:id/submit
  * Submit expense report for approval
  */
-router.post("/:id/submit", requireAuth, async (req, res) => {
+router.post("/:id/submit", async (req, res) => {
   try {
     const { tenantId, userId } = req.auth!;
     const { id } = req.params;
@@ -230,7 +231,7 @@ router.post("/:id/submit", requireAuth, async (req, res) => {
  * POST /api/expenses/:id/approve
  * Approve expense report
  */
-router.post("/:id/approve", requireAuth, async (req, res) => {
+router.post("/:id/approve", async (req, res) => {
   try {
     const { tenantId, userId } = req.auth!;
     const { id } = req.params;
@@ -273,7 +274,7 @@ router.post("/:id/approve", requireAuth, async (req, res) => {
  * POST /api/expenses/:id/reject
  * Reject expense report
  */
-router.post("/:id/reject", requireAuth, async (req, res) => {
+router.post("/:id/reject", async (req, res) => {
   try {
     const { tenantId, userId } = req.auth!;
     const { id } = req.params;
@@ -316,7 +317,7 @@ router.post("/:id/reject", requireAuth, async (req, res) => {
  * POST /api/expenses/:id/recall
  * Recall submitted expense report
  */
-router.post("/:id/recall", requireAuth, async (req, res) => {
+router.post("/:id/recall", async (req, res) => {
   try {
     const { tenantId, userId } = req.auth!;
     const { id } = req.params;
@@ -355,7 +356,7 @@ router.post("/:id/recall", requireAuth, async (req, res) => {
  * POST /api/expenses/:id/lines
  * Add expense line to report
  */
-router.post("/:id/lines", requireAuth, async (req, res) => {
+router.post("/:id/lines", async (req, res) => {
   try {
     const { tenantId, userId } = req.auth!;
     const { id } = req.params;
@@ -395,7 +396,7 @@ router.post("/:id/lines", requireAuth, async (req, res) => {
  * PATCH /api/expenses/:id/lines/:lineId
  * Update expense line
  */
-router.patch("/:id/lines/:lineId", requireAuth, async (req, res) => {
+router.patch("/:id/lines/:lineId", async (req, res) => {
   try {
     const { tenantId } = req.auth!;
     const { id, lineId } = req.params;
@@ -434,7 +435,7 @@ router.patch("/:id/lines/:lineId", requireAuth, async (req, res) => {
  * DELETE /api/expenses/:id/lines/:lineId
  * Delete expense line
  */
-router.delete("/:id/lines/:lineId", requireAuth, async (req, res) => {
+router.delete("/:id/lines/:lineId", async (req, res) => {
   try {
     const { tenantId } = req.auth!;
     const { id, lineId } = req.params;
@@ -469,7 +470,7 @@ router.delete("/:id/lines/:lineId", requireAuth, async (req, res) => {
  * POST /api/expenses/:id/lines/:lineId/validate
  * Validate expense line against policies
  */
-router.post("/:id/lines/:lineId/validate", requireAuth, async (req, res) => {
+router.post("/:id/lines/:lineId/validate", async (req, res) => {
   try {
     const { tenantId } = req.auth!;
     const { id, lineId } = req.params;
