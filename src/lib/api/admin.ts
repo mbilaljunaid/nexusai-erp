@@ -26,6 +26,10 @@ export const adminApi = {
             method: 'POST',
             body: JSON.stringify(data),
         }),
+        update: (id: string, data: any) => fetchJSON(`${API_BASE_URL}/admin/demo-environments/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        }),
         updateStatus: (id: string, status: string, accessUrl?: string) =>
             fetchJSON(`${API_BASE_URL}/admin/demo-environments/${id}/status`, {
                 method: 'PATCH',
@@ -48,7 +52,7 @@ export const adminApi = {
             body: JSON.stringify(data),
         }),
         update: (id: string, data: any) => fetchJSON(`${API_BASE_URL}/admin/support-requests/${id}`, {
-            method: 'PATCH',
+            method: 'PUT',
             body: JSON.stringify(data),
         }),
         assign: (id: string, userId: string) =>
@@ -70,6 +74,10 @@ export const adminApi = {
         getById: (id: string) => fetchJSON(`${API_BASE_URL}/admin/affiliates/${id}`),
         create: (data: any) => fetchJSON(`${API_BASE_URL}/admin/affiliates`, {
             method: 'POST',
+            body: JSON.stringify(data),
+        }),
+        update: (id: string, data: any) => fetchJSON(`${API_BASE_URL}/admin/affiliates/${id}`, {
+            method: 'PUT',
             body: JSON.stringify(data),
         }),
         updateStatus: (id: string, status: string) =>

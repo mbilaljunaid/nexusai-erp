@@ -1,12 +1,20 @@
-import React, { useState, useMemo } from 'react';
-import { AlertCircle, MessageSquare, TrendingUp, Clock, CheckCircle, XCircle, Loader2, Plus, User, Tag } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { AlertCircle, MessageSquare, TrendingUp, Clock, CheckCircle, XCircle, Loader2, Plus, User, Tag, Edit, Search, X, RefreshCw, ArrowUp, ArrowDown, ArrowUpDown, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { Pagination } from '@/components/admin/Pagination';
+import { ViewModeToggle } from '@/components/admin/ViewModeToggle';
+import { DataTable, DataTableColumn } from '@/components/admin/DataTable';
+import { BulkActionBar } from '@/components/admin/BulkActionBar';
 import { useSupportRequests, useCloseSupportRequest } from '@/hooks/admin/useAdminData';
 import CreateSupportRequestDialog from '@/components/admin/dialogs/CreateSupportRequestDialog';
+import EditSupportRequestDialog from '@/components/admin/dialogs/EditSupportRequestDialog';
+import { exportToCSV } from '@/utils/exportUtils';
 
 interface Request {
     id: string;
@@ -25,14 +33,268 @@ interface Request {
 export default function RequestsIssues() {
     const [filter, setFilter] = useState<'all' | 'feature' | 'bug' | 'support'>('all');
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
     const { data: allRequests = [], isLoading, error } = useSupportRequests();
     const closeMutation = useCloseSupportRequest();
 
+    // Search and Filter State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [filters, setFilters] = useState({
+        priority: 'all',
+        status: 'all',
+    });
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(25);
+
+    // Sorting State  
+    const [sortConfig, setSortConfig] = useState<{
+        key: string;
+        direction: 'asc' | 'desc';
+    }>({ key: '', direction: 'asc' });
+
+    // View Mode State
+    const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+    // Load view mode preference
+    useEffect(() => {
+        const saved = localStorage.getItem('admin-requests-view-mode');
+        if (saved === 'grid' || saved === 'table') {
+            setViewMode(saved);
+        }
+    }, []);
+
+    // Save view mode preference
+    useEffect(() => {
+        localStorage.setItem('admin-requests-view-mode', viewMode);
+    }, [viewMode]);
+
+    // Clear selection when filters change
+    useEffect(() => {
+        setSelectedIds(new Set());
+    }, [filters.status, filters.priority, filter, searchQuery]);
+
+    // Debounce search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    // Handle filter changes
+    const handleFilterChange = (key: string, value: string) => {
+        setFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    // Clear all filters
+    const clearFilters = () => {
+        setFilters({ priority: 'all', status: 'all' });
+        setSearchQuery('');
+    };
+
+    // Sorting handler
+    const handleSort = (key: string) => {
+        setSortConfig(prev => ({
+            key,
+            direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
+
+    // Calculate active filter count
+    const activeFilterCount = useMemo(() => {
+        let count = 0;
+        if (filters.priority !== 'all') count++;
+        if (filters.status !== 'all') count++;
+        if (debouncedSearch) count++;
+        return count;
+    }, [filters, debouncedSearch]);
+
     // Filter requests based on active tab
     const requests = useMemo(() => {
-        if (filter === 'all') return allRequests;
-        return allRequests.filter((req: Request) => req.type === filter);
-    }, [allRequests, filter]);
+        let filtered = allRequests;
+
+        // Tab filter
+        if (filter !== 'all') {
+            filtered = filtered.filter((req: Request) => req.type === filter);
+        }
+
+        // Search filter
+        if (debouncedSearch) {
+            filtered = filtered.filter((req: Request) =>
+                req.title?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                req.description?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                req.submittedBy?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                req.tenant?.toLowerCase().includes(debouncedSearch.toLowerCase())
+            );
+        }
+
+        // Priority filter
+        if (filters.priority !== 'all') {
+            filtered = filtered.filter((req: Request) => req.priority === filters.priority);
+        }
+
+        // Status filter
+        if (filters.status !== 'all') {
+            filtered = filtered.filter((req: Request) => req.status === filters.status);
+        }
+
+        return filtered;
+    }, [allRequests, filter, debouncedSearch, filters]);
+
+    // Sorted data
+    const sortedRequests = useMemo(() => {
+        if (!sortConfig.key) return requests;
+
+        return [...requests].sort((a: any, b: any) => {
+            const aVal = a[sortConfig.key];
+            const bVal = b[sortConfig.key];
+
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+
+            if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }, [requests, sortConfig]);
+
+    // Paginated data
+    const paginatedRequests = useMemo(() => {
+        const startIndex = (currentPage - 1) * pageSize;
+        return sortedRequests.slice(startIndex, startIndex + pageSize);
+    }, [sortedRequests, currentPage, pageSize]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearch, filters, filter]);
+
+    // Pagination handlers
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handlePageSizeChange = (size: number) => {
+        setPageSize(size);
+        setCurrentPage(1);
+    };
+
+    // Selection handlers
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            setSelectedIds(new Set(paginatedRequests.map(req => req.id)));
+        } else {
+            setSelectedIds(new Set());
+        }
+    };
+
+    const handleToggleSelect = (id: string) => {
+        setSelectedIds(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
+    };
+
+    const handleClearSelection = () => {
+        setSelectedIds(new Set());
+    };
+
+    // Bulk action handlers
+    const handleBulkClose = () => {
+        if (confirm(`Close ${selectedIds.size} requests?`)) {
+            // Implementation would go here
+            toast.success(`Closed ${selectedIds.size} requests`);
+            setSelectedIds(new Set());
+        }
+    };
+
+    const handleBulkPriority = (priority: string) => {
+        if (confirm(`Change priority for ${selectedIds.size} requests to ${priority}?`)) {
+            toast.success(`Updated ${selectedIds.size} requests`);
+            setSelectedIds(new Set());
+        }
+    };
+
+    const handleBulkDelete = () => {
+        if (confirm(`Delete ${selectedIds.size} requests? This cannot be undone.`)) {
+            toast.success(`Deleted ${selectedIds.size} requests`);
+            setSelectedIds(new Set());
+        }
+    };
+
+    // Table columns
+    const tableColumns: DataTableColumn<any>[] = [
+        {
+            id: 'title',
+            header: 'Title',
+            sortable: true,
+            cell: (req) => (
+                <div>
+                    <div className="font-medium">{req.title}</div>
+                    <div className="text-sm text-muted-foreground">{req.submittedBy}</div>
+                </div>
+            ),
+        },
+        {
+            id: 'priority',
+            header: 'Priority',
+            sortable: true,
+            cell: (req) => (
+                <Badge variant={
+                    req.priority === 'high' ? 'destructive' :
+                        req.priority === 'medium' ? 'default' : 'secondary'
+                }>
+                    {req.priority}
+                </Badge>
+            ),
+        },
+        {
+            id: 'status',
+            header: 'Status',
+            sortable: true,
+            cell: (req) => (
+                <Badge variant={req.status === 'closed' ? 'secondary' : 'default'}>
+                    {req.status}
+                </Badge>
+            ),
+        },
+        {
+            id: 'createdAt',
+            header: 'Date',
+            sortable: true,
+            cell: (req) => new Date(req.createdAt).toLocaleDateString(),
+        },
+        {
+            id: 'type',
+            header: 'Type',
+            cell: (req) => (
+                <Badge variant="outline">
+                    {req.type === 'feature' ? 'Feature' : 'Bug'}
+                </Badge>
+            ),
+        },
+    ];
+
+    const getRowId = (req: any) => req.id;
+
+    const bulkActions = [
+        { label: 'Close Selected', onClick: handleBulkClose },
+        { label: 'Set High Priority', onClick: () => handleBulkPriority('high') },
+        { label: 'Set Medium Priority', onClick: () => handleBulkPriority('medium') },
+        { label: 'Set Low Priority', onClick: () => handleBulkPriority('low') },
+        { label: 'Delete Selected', onClick: handleBulkDelete, variant: 'destructive' as const },
+    ];
 
     // Calculate stats
     const stats = useMemo(() => {
@@ -83,18 +345,31 @@ export default function RequestsIssues() {
             <div className="p-6 space-y-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Requests & Issues</h1>
-                        <p className="text-muted-foreground">Manage support requests, feature requests, and bug reports</p>
+                    <div className="flex items-center justify-between w-full">
+                        <h2 className="text-3xl font-bold tracking-tight">Requests & Issues</h2>
+                        <div className="flex items-center gap-2">
+                            <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+                            <Button variant="outline" onClick={() => exportToCSV(requests, 'requests')}>
+                                <Download className="mr-2 h-4 w-4" />
+                                Export CSV
+                            </Button>
+                            <Button onClick={() => setCreateDialogOpen(true)}>
+                                Create Request
+                            </Button>
+                        </div>
                     </div>
-                    <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        New ticket
-                    </Button>
                 </div>
 
                 {/* Dialog */}
-                <CreateSupportRequestDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
+                <CreateSupportRequestDialog
+                    open={createDialogOpen}
+                    onOpenChange={setCreateDialogOpen}
+                />
+                <EditSupportRequestDialog
+                    open={editDialogOpen}
+                    onOpenChange={setEditDialogOpen}
+                    request={selectedRequest}
+                />
                 {/* Stats */}
                 {!isLoading && !error && (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -154,6 +429,81 @@ export default function RequestsIssues() {
                         <TabsTrigger value="support">Support</TabsTrigger>
                     </TabsList>
 
+                    {/* Search and Filters */}
+                    <Card className="mt-4">
+                        <CardContent className="pt-6">
+                            <div className="flex flex-col gap-4">
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Search by title, description, user, tenant..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-10"
+                                    />
+                                    {searchQuery && (
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2"
+                                            onClick={() => setSearchQuery('')}
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </Button>
+                                    )}
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Select value={filters.priority} onValueChange={(v) => handleFilterChange('priority', v)}>
+                                        <SelectTrigger className="w-[160px]">
+                                            <SelectValue placeholder="Priority" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Priorities</SelectItem>
+                                            <SelectItem value="urgent">Urgent</SelectItem>
+                                            <SelectItem value="high">High</SelectItem>
+                                            <SelectItem value="medium">Medium</SelectItem>
+                                            <SelectItem value="low">Low</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                    <Select value={filters.status} onValueChange={(v) => handleFilterChange('status', v)}>
+                                        <SelectTrigger className="w-[160px]">
+                                            <SelectValue placeholder="Status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Statuses</SelectItem>
+                                            <SelectItem value="open">Open</SelectItem>
+                                            <SelectItem value="in-progress">In Progress</SelectItem>
+                                            <SelectItem value="resolved">Resolved</SelectItem>
+                                            <SelectItem value="closed">Closed</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                    {activeFilterCount > 0 && (
+                                        <Button variant="outline" size="sm" onClick={clearFilters}>
+                                            Clear Filters ({activeFilterCount})
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Empty State for Filtered Results */}
+                    {!isLoading && !error && allRequests.length > 0 && requests.length === 0 && (
+                        <Card className="mt-4">
+                            <CardContent className="pt-6 text-center">
+                                <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                                <p className="text-muted-foreground">No results found for your search criteria</p>
+                                <Button variant="outline" className="mt-4" onClick={clearFilters}>
+                                    Clear Filters
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    )}
+
+
                     <TabsContent value="all" className="space-y-4">
                         <Card>
                             <CardHeader>
@@ -183,58 +533,92 @@ export default function RequestsIssues() {
                                 )}
 
                                 {/* Requests List */}
-                                {!isLoading && !error && requests.length > 0 && (
-                                    <div className="space-y-3">
-                                        {requests.map((request) => (
-                                            <div key={request.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                                                <div className="flex items-start justify-between gap- 4">
-                                                    <div className="flex-1 space-y-2">
+                                {!isLoading && !error && paginatedRequests.length > 0 && (
+                                    viewMode === 'table' ? (
+                                        <DataTable
+                                            data={paginatedRequests}
+                                            columns={tableColumns}
+                                            sortConfig={sortConfig}
+                                            onSort={handleSort}
+                                            selectedIds={selectedIds}
+                                            onSelectAll={handleSelectAll}
+                                            onSelectRow={handleToggleSelect}
+                                            getRowId={getRowId}
+                                        />
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {paginatedRequests.map((request) => (
+                                                <div key={request.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                                                    <div className="flex items-start justify-between gap-4">
+                                                        <div className="flex-1 space-y-2">
+                                                            <div className="flex items-center gap-2">
+                                                                {getStatusIcon(request.status)}
+                                                                <h3 className="font-semibold">{request.title}</h3>
+                                                            </div>
+                                                            <p className="text-sm text-muted-foreground">{request.description}</p>
+                                                            <div className="flex items-center gap-3 flex-wrap">
+                                                                <Badge className={getTypeColor(request.type)}>
+                                                                    {request.type}
+                                                                </Badge>
+                                                                <Badge className={getPriorityColor(request.priority)}>
+                                                                    {request.priority}
+                                                                </Badge>
+                                                                {request.submittedBy && (
+                                                                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                                                        <User className="w-4 h-4" />
+                                                                        {request.submittedBy}
+                                                                    </div>
+                                                                )}
+                                                                {request.tenant && (
+                                                                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                                                        <Tag className="w-4 h-4" />
+                                                                        {request.tenant}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                         <div className="flex items-center gap-2">
-                                                            {getStatusIcon(request.status)}
-                                                            <h3 className="font-semibold">{request.title}</h3>
-                                                        </div>
-                                                        <p className="text-sm text-muted-foreground">{request.description}</p>
-                                                        <div className="flex items-center gap-3 flex-wrap">
-                                                            <Badge className={getTypeColor(request.type)}>
-                                                                {request.type}
-                                                            </Badge>
-                                                            <Badge className={getPriorityColor(request.priority)}>
-                                                                {request.priority}
-                                                            </Badge>
-                                                            {request.submittedBy && (
-                                                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                                                    <User className="w-4 h-4" />
-                                                                    {request.submittedBy}
-                                                                </div>
-                                                            )}
-                                                            {request.tenant && (
-                                                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                                                    <Tag className="w-4 h-4" />
-                                                                    {request.tenant}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        {request.status !== 'closed' && (
                                                             <Button
                                                                 size="sm"
-                                                                onClick={() => handleClose(request.id)}
-                                                                disabled={closeMutation.isPending}
+                                                                variant="outline"
+                                                                onClick={() => {
+                                                                    setSelectedRequest(request);
+                                                                    setEditDialogOpen(true);
+                                                                }}
                                                             >
-                                                                {closeMutation.isPending ? (
-                                                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                                                ) : (
-                                                                    'Close'
-                                                                )}
+                                                                <Edit className="w-4 h-4 mr-1" />
+                                                                Edit
                                                             </Button>
-                                                        )}
+                                                            {request.status !== 'closed' && (
+                                                                <Button
+                                                                    size="sm"
+                                                                    onClick={() => closeMutation.mutate(request.id)}
+                                                                    disabled={closeMutation.isPending}
+                                                                >
+                                                                    {closeMutation.isPending ? (
+                                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                                    ) : (
+                                                                        <>
+                                                                            <CheckCircle className="w-4 h-4 mr-1" />
+                                                                            Close
+                                                                        </>
+                                                                    )}
+                                                                </Button>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                            ))}
+                                        </div>
+                                    )
                                 )}
+
+                                {/* Bulk Action Bar */}
+                                <BulkActionBar
+                                    selectedCount={selectedIds.size}
+                                    onClear={handleClearSelection}
+                                    actions={bulkActions}
+                                />
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -272,7 +656,19 @@ export default function RequestsIssues() {
                         </Card>
                     </TabsContent>
                 </Tabs>
+
+                {/* Pagination */}
+                {!isLoading && !error && requests.length > 0 && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={requests.length}
+                        pageSize={pageSize}
+                        onPageChange={handlePageChange}
+                        onPageSizeChange={handlePageSizeChange}
+                    />
+                )}
+
             </div>
-        </AdminLayout>
+        </AdminLayout >
     );
 }

@@ -1,17 +1,136 @@
-import React, { useMemo, useState } from 'react';
-import { Users, DollarSign, TrendingUp, Link2, Award, BarChart3, Loader2 } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Users, DollarSign, TrendingUp, Link2, Award, BarChart3, Loader2, Plus, Target, Edit, Search, X, ArrowUp, ArrowDown, ArrowUpDown, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } => '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { Pagination } from '@/components/admin/Pagination';
 import { useAffiliates, useUpdateAffiliateStatus } from '@/hooks/admin/useAdminData';
 import CreateAffiliateDialog from '@/components/admin/dialogs/CreateAffiliateDialog';
+import EditAffiliateDialog from '@/components/admin/dialogs/EditAffiliateDialog';
+import { exportToCSV } from '@/utils/exportUtils';
 
 export default function Affiliates() {
-    const { data: affiliates = [], isLoading, error } = useAffiliates();
+    const { data: allAffiliates = [], isLoading, error } = useAffiliates();
     const updateStatusMutation = useUpdateAffiliateStatus();
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [selectedAffiliate, setSelectedAffiliate] = useState<any>(null);
+
+    // Search and Filter State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [filters, setFilters] = useState({
+        status: 'all',
+        tier: 'all',
+    });
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(25);
+
+    // Sorting State
+    const [sortConfig, setSortConfig] = useState<{
+        key: string;
+        direction: 'asc' | 'desc';
+    }>({ key: '', direction: 'asc' });
+
+    // Debounce search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    // Handle filter changes
+    const handleFilterChange = (key: string, value: string) => {
+        setFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    // Clear all filters
+    const clearFilters = () => {
+        setFilters({ status: 'all', tier: 'all' });
+        setSearchQuery('');
+    };
+
+    // Sorting handler
+    const handleSort = (key: string) => {
+        setSortConfig(prev => ({
+            key,
+            direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
+
+    // Calculate active filter count
+    const activeFilterCount = useMemo(() => {
+        let count = 0;
+        if (filters.status !== 'all') count++;
+        if (filters.tier !== 'all') count++;
+        if (debouncedSearch) count++;
+        return count;
+    }, [filters, debouncedSearch]);
+
+    // Filtered affiliates
+    const affiliates = useMemo(() => {
+        return allAffiliates.filter((affiliate: any) => {
+            // Search filter
+            const matchesSearch = !debouncedSearch ||
+                affiliate.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                affiliate.companyName?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                affiliate.email?.toLowerCase().includes(debouncedSearch.toLowerCase());
+
+            // Status filter
+            const matchesStatus = filters.status === 'all' || affiliate.status === filters.status;
+
+            // Tier filter
+            const matchesTier = filters.tier === 'all' || affiliate.tier === filters.tier;
+
+            return matchesSearch && matchesStatus && matchesTier;
+        });
+    }, [allAffiliates, debouncedSearch, filters]);
+
+    // Sorted data
+    const sortedAffiliates = useMemo(() => {
+        if (!sortConfig.key) return affiliates;
+
+        return [...affiliates].sort((a: any, b: any) => {
+            const aVal = a[sortConfig.key];
+            const bVal = b[sortConfig.key];
+
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+
+            if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }, [affiliates, sortConfig]);
+
+    // Paginated data
+    const paginatedAffiliates = useMemo(() => {
+        const startIndex = (currentPage - 1) * pageSize;
+        return sortedAffiliates.slice(startIndex, startIndex + pageSize);
+    }, [sortedAffiliates, currentPage, pageSize]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearch, filters]);
+
+    // Pagination handlers
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handlePageSizeChange = (size: number) => {
+        setPageSize(size);
+        setCurrentPage(1);
+    };
 
     // Calculate real-time stats
     const stats = useMemo(() => {
@@ -38,18 +157,100 @@ export default function Affiliates() {
             <div className="p-6 space-y-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Affiliates</h1>
-                        <p className="text-muted-foreground">Manage affiliate partners and commission tracking</p>
+                    <h2 className="text-3xl font-bold tracking-tight">Affiliate Program</h2>
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" onClick={() => exportToCSV(affiliates, 'affiliates')}>
+                            <Download className="mr-2 h-4 w-4" />
+                            Export CSV
+                        </Button>
+                        <Button onClick={() => setCreateDialogOpen(true)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Affiliate
+                        </Button>
                     </div>
-                    <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Users className="w-4 h-4 mr-2" />
-                        Add Affiliate
-                    </Button>
                 </div>
 
                 {/* Dialog */}
                 <CreateAffiliateDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
+                <EditAffiliateDialog
+                    open={editDialogOpen}
+                    onOpenChange={setEditDialogOpen}
+                    affiliate={selectedAffiliate}
+                />
+
+                {/* Search and Filters */}
+                <Card>
+                    <CardContent className="pt-6">
+                        <div className="flex flex-col gap-4">
+                            <div className="relative flex-1">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="Search by name, company, email..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="pl-10"
+                                />
+                                {searchQuery && (
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2"
+                                        onClick={() => setSearchQuery('')}
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </Button>
+                                )}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <Select value={filters.status} onValueChange={(v) => handleFilterChange('status', v)}>
+                                    <SelectTrigger className="w-[160px]">
+                                        <SelectValue placeholder="Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Statuses</SelectItem>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="pending">Pending</SelectItem>
+                                        <SelectItem value="suspended">Suspended</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                <Select value={filters.tier} onValueChange={(v) => handleFilterChange('tier', v)}>
+                                    <SelectTrigger className="w-[160px]">
+                                        <SelectValue placeholder="Tier" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Tiers</SelectItem>
+                                        <SelectItem value="bronze">Bronze</SelectItem>
+                                        <SelectItem value="silver">Silver</SelectItem>
+                                        <SelectItem value="gold">Gold</SelectItem>
+                                        <SelectItem value="platinum">Platinum</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                {activeFilterCount > 0 && (
+                                    <Button variant="outline" size="sm" onClick={clearFilters}>
+                                        Clear Filters ({activeFilterCount})
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Empty State for Filtered Results */}
+                {!isLoading && !error && allAffiliates.length > 0 && affiliates.length === 0 && (
+                    <Card>
+                        <CardContent className="pt-6 text-center">
+                            <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                            <p className="text-muted-foreground">No results found for your search criteria</p>
+                            <Button variant="outline" className="mt-4" onClick={clearFilters}>
+                                Clear Filters
+                            </Button>
+                        </CardContent>
+                    </Card>
+                )}
+
 
                 {/* Stats */}
                 {!isLoading && !error && (
@@ -139,9 +340,9 @@ export default function Affiliates() {
                                 )}
 
                                 {/* Affiliates List */}
-                                {!isLoading && !error && affiliates.length > 0 && (
-                                    <div className="space-y-3">
-                                        {affiliates.map((affiliate: any) => (
+                                {!isLoading && !error && paginatedAffiliates.length > 0 && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {paginatedAffiliates.map((affiliate: any) => (
                                             <div key={affiliate.id} className="border rounded-lg p-4">
                                                 <div className="flex items-start justify-between mb-3">
                                                     <div className="flex items-center gap-3">
@@ -181,32 +382,45 @@ export default function Affiliates() {
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2 mt-3 pt-3 border-t">
-                                                    {affiliate.status === 'pending' && (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => handleStatusChange(affiliate.id, 'active')}
-                                                            disabled={updateStatusMutation.isPending}
-                                                        >
-                                                            Approve
-                                                        </Button>
-                                                    )}
-                                                    {affiliate.status === 'active' && (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => handleStatusChange(affiliate.id, 'suspended')}
-                                                            disabled={updateStatusMutation.isPending}
-                                                        >
-                                                            Suspend
-                                                        </Button>
-                                                    )}
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            setSelectedAffiliate(affiliate);
+                                                            setEditDialogOpen(true);
+                                                        }}
+                                                    >
+                                                        <Edit className="w-4 h-4 mr-1" />
+                                                        Edit
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant={affiliate.status === 'active' ? 'outline' : 'default'}
+                                                        onClick={() => updateStatusMutation.mutate({
+                                                            id: affiliate.id,
+                                                            status: affiliate.status === 'active' ? 'suspended' : 'active'
+                                                        })}
+                                                    >
+                                                        {affiliate.status === 'active' ? 'Suspend' : 'Activate'}
+                                                    </Button>
                                                     <Button variant="outline" size="sm">View Details</Button>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 )}
+
+                                {/* Pagination */}
+                                {!isLoading && !error && affiliates.length > 0 && (
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalItems={affiliates.length}
+                                        pageSize={pageSize}
+                                        onPageChange={handlePageChange}
+                                        onPageSizeChange={handlePageSizeChange}
+                                    />
+                                )}
+
                             </CardContent>
                         </Card>
                     </TabsContent>

@@ -28,13 +28,30 @@ export const useCreateDemoEnvironment = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data: any) => adminApi.demoEnvironments.create(data),
+        mutationFn: (data: { companyName: string; industry: string; email: string; firstName: string; lastName: string; }) =>
+            adminApi.demoEnvironments.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'demo-environments'] });
             toast.success('Demo environment created successfully');
         },
         onError: () => {
             toast.error('Failed to create demo environment');
+        },
+    });
+};
+
+export const useUpdateDemoEnvironment = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, ...data }: { id: string; companyName?: string; industry?: string; email?: string; firstName?: string; lastName?: string; }) =>
+            adminApi.demoEnvironments.update(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'demo-environments'] });
+            toast.success('Demo environment updated successfully');
+        },
+        onError: () => {
+            toast.error('Failed to update demo environment');
         },
     });
 };
@@ -101,11 +118,11 @@ export const useUpdateSupportRequest = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: any }) =>
+        mutationFn: ({ id, ...data }: { id: string; subject?: string; type?: string; priority?: string; description?: string; email?: string; }) =>
             adminApi.supportRequests.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'support-requests'] });
-            toast.success('Support request updated');
+            toast.success('Support request updated successfully');
         },
         onError: () => {
             toast.error('Failed to update support request');
@@ -181,13 +198,30 @@ export const useCreateAffiliate = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data: any) => adminApi.affiliates.create(data),
+        mutationFn: (data: { name: string; email: string; companyName?: string; website?: string; notes?: string; }) =>
+            adminApi.affiliates.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'affiliates'] });
-            toast.success('Affiliate created');
+            toast.success('Affiliate created successfully');
         },
         onError: () => {
             toast.error('Failed to create affiliate');
+        },
+    });
+};
+
+export const useUpdateAffiliate = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, ...data }: { id: string; name?: string; email?: string; companyName?: string; website?: string; notes?: string; }) =>
+            adminApi.affiliates.update(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'affiliates'] });
+            toast.success('Affiliate updated successfully');
+        },
+        onError: () => {
+            toast.error('Failed to update affiliate');
         },
     });
 };
@@ -203,7 +237,7 @@ export const useUpdateAffiliateStatus = () => {
             toast.success('Affiliate status updated');
         },
         onError: () => {
-            toast.error('Failed to update affiliate');
+            toast.error('Failed to update affiliate status');
         },
     });
 };
