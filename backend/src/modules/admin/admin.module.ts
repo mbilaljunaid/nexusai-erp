@@ -11,8 +11,11 @@ import { TenantsController } from './tenants/tenants.controller';
 import { TenantsService } from './tenants/tenants.service';
 import { ModulesController } from './modules/modules.controller';
 import { ModulesService } from './modules/modules.service';
+import { CacheModule } from '../../cache/cache.module';
+import { DatabaseModule } from '../../database/database.module';
 
 @Module({
+    imports: [DatabaseModule, CacheModule],
     controllers: [
         DemoEnvironmentsController,
         SupportRequestsController,

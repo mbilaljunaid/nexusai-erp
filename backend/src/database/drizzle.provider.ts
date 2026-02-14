@@ -4,6 +4,7 @@ import { Pool } from 'pg';
 import * as schema from '../../../shared/schema/index';
 
 export const DRIZZLE_DB = 'DRIZZLE_DB';
+export const DATABASE = 'DATABASE'; // Alias for backward compatibility
 
 export const DrizzleProvider: Provider = {
     provide: DRIZZLE_DB,
@@ -19,3 +20,8 @@ export const DrizzleProvider: Provider = {
     },
 };
 
+// Alias provider for backward compatibility
+export const DatabaseAliasProvider: Provider = {
+    provide: DATABASE,
+    useExisting: DRIZZLE_DB,
+};
