@@ -23,7 +23,7 @@ var __decorateParam = (index3, decorator) => (target, key) => decorator(target, 
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
 // backend/src/app.module.ts
-import { Module as Module7 } from "@nestjs/common";
+import { Module as Module8 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
 // backend/src/modules/auth/auth.module.ts
@@ -14374,9 +14374,9 @@ var EPMFoundationService = class {
   async getVersions(scenarioInput) {
     let scenarioId = scenarioInput;
     const scenario = await this.db.query.planScenarios.findFirst({
-      where: (scenarios, { or, eq: eq19 }) => or(
-        eq19(scenarios.id, scenarioInput),
-        eq19(scenarios.code, scenarioInput)
+      where: (scenarios, { or, eq: eq20 }) => or(
+        eq20(scenarios.id, scenarioInput),
+        eq20(scenarios.code, scenarioInput)
       )
     });
     if (!scenario) {
@@ -15730,18 +15730,1137 @@ DatabaseModule = __decorateClass([
   })
 ], DatabaseModule);
 
+// backend/src/modules/admin/admin.module.ts
+import { Module as Module7 } from "@nestjs/common";
+
+// backend/src/modules/admin/demo-environments/demo-environments.controller.ts
+import { Controller as Controller6, Get as Get6, Post as Post6, Put as Put3, Delete as Delete4, Patch as Patch2, Body as Body6, Param as Param6, Query as Query3 } from "@nestjs/common";
+var DemoEnvironmentsController = class {
+  constructor(demoService) {
+    this.demoService = demoService;
+  }
+  async getAll(query) {
+    return this.demoService.findAll(query);
+  }
+  async getById(id) {
+    return this.demoService.findById(id);
+  }
+  async create(data) {
+    return this.demoService.create(data);
+  }
+  async update(id, data) {
+    return this.demoService.update(id, data);
+  }
+  async updateStatus(id, data) {
+    return this.demoService.updateStatus(id, data.status, data.accessUrl);
+  }
+  async delete(id) {
+    return this.demoService.delete(id);
+  }
+};
+__decorateClass([
+  Get6(),
+  __decorateParam(0, Query3())
+], DemoEnvironmentsController.prototype, "getAll", 1);
+__decorateClass([
+  Get6(":id"),
+  __decorateParam(0, Param6("id"))
+], DemoEnvironmentsController.prototype, "getById", 1);
+__decorateClass([
+  Post6(),
+  __decorateParam(0, Body6())
+], DemoEnvironmentsController.prototype, "create", 1);
+__decorateClass([
+  Put3(":id"),
+  __decorateParam(0, Param6("id")),
+  __decorateParam(1, Body6())
+], DemoEnvironmentsController.prototype, "update", 1);
+__decorateClass([
+  Patch2(":id/status"),
+  __decorateParam(0, Param6("id")),
+  __decorateParam(1, Body6())
+], DemoEnvironmentsController.prototype, "updateStatus", 1);
+__decorateClass([
+  Delete4(":id"),
+  __decorateParam(0, Param6("id"))
+], DemoEnvironmentsController.prototype, "delete", 1);
+DemoEnvironmentsController = __decorateClass([
+  Controller6("api/admin/demo-environments")
+], DemoEnvironmentsController);
+
+// backend/src/modules/admin/demo-environments/demo-environments.service.ts
+import { Injectable as Injectable24, NotFoundException as NotFoundException3 } from "@nestjs/common";
+var DemoEnvironmentsService = class {
+  constructor() {
+    // In-memory storage with seed data for testing
+    __publicField(this, "demos", [
+      {
+        id: "demo-1",
+        companyName: "Acme Corporation",
+        industry: "Technology",
+        email: "admin@acme.com",
+        firstName: "John",
+        lastName: "Smith",
+        status: "active",
+        accessUrl: "https://demo-acme.nexusai.com",
+        createdAt: /* @__PURE__ */ new Date("2024-02-01"),
+        expiresAt: /* @__PURE__ */ new Date("2024-03-01"),
+        lastAccessedAt: /* @__PURE__ */ new Date("2024-02-10")
+      },
+      {
+        id: "demo-2",
+        companyName: "TechStart Inc",
+        industry: "SaaS",
+        email: "demo@techstart.io",
+        firstName: "Jane",
+        lastName: "Doe",
+        status: "provisioning",
+        createdAt: /* @__PURE__ */ new Date("2024-02-05"),
+        expiresAt: /* @__PURE__ */ new Date("2024-03-05")
+      },
+      {
+        id: "demo-3",
+        companyName: "Global Retail Co",
+        industry: "Retail",
+        email: "test@globalretail.com",
+        firstName: "Mike",
+        lastName: "Johnson",
+        status: "expired",
+        accessUrl: "https://demo-retail.nexusai.com",
+        createdAt: /* @__PURE__ */ new Date("2024-01-15"),
+        expiresAt: /* @__PURE__ */ new Date("2024-02-01"),
+        lastAccessedAt: /* @__PURE__ */ new Date("2024-01-30")
+      }
+    ]);
+  }
+  async findAll(query) {
+    let filtered = [...this.demos];
+    if (query?.status) {
+      filtered = filtered.filter((d) => d.status === query.status);
+    }
+    if (query?.industry) {
+      filtered = filtered.filter((d) => d.industry === query.industry);
+    }
+    return { data: filtered };
+  }
+  async findById(id) {
+    const demo = this.demos.find((d) => d.id === id);
+    if (!demo) {
+      throw new NotFoundException3(`Demo environment ${id} not found`);
+    }
+    return { data: demo };
+  }
+  async create(data) {
+    const demo = {
+      id: `demo-${Date.now()}`,
+      companyName: data.companyName || "",
+      industry: data.industry || "",
+      email: data.email || "",
+      firstName: data.firstName || "",
+      lastName: data.lastName || "",
+      status: "active",
+      accessUrl: data.accessUrl,
+      createdAt: /* @__PURE__ */ new Date(),
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3)
+      // 30 days
+    };
+    this.demos.push(demo);
+    return { data: demo };
+  }
+  async update(id, data) {
+    const index3 = this.demos.findIndex((d) => d.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException3(`Demo environment ${id} not found`);
+    }
+    this.demos[index3] = {
+      ...this.demos[index3],
+      ...data,
+      id
+      // Ensure ID doesn't change
+    };
+    return { data: this.demos[index3] };
+  }
+  async updateStatus(id, status, accessUrl) {
+    const index3 = this.demos.findIndex((d) => d.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException3(`Demo environment ${id} not found`);
+    }
+    this.demos[index3] = {
+      ...this.demos[index3],
+      status,
+      ...accessUrl && { accessUrl }
+    };
+    return { data: this.demos[index3] };
+  }
+  async delete(id) {
+    const index3 = this.demos.findIndex((d) => d.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException3(`Demo environment ${id} not found`);
+    }
+    this.demos.splice(index3, 1);
+    return { data: { success: true } };
+  }
+};
+DemoEnvironmentsService = __decorateClass([
+  Injectable24()
+], DemoEnvironmentsService);
+
+// backend/src/modules/admin/support-requests/support-requests.controller.ts
+import { Controller as Controller7, Get as Get7, Post as Post7, Put as Put4, Delete as Delete5, Body as Body7, Param as Param7, Query as Query4 } from "@nestjs/common";
+var SupportRequestsController = class {
+  constructor(requestsService) {
+    this.requestsService = requestsService;
+  }
+  async getAll(query) {
+    return this.requestsService.findAll(query);
+  }
+  async getById(id) {
+    return this.requestsService.findById(id);
+  }
+  async create(data) {
+    return this.requestsService.create(data);
+  }
+  async update(id, data) {
+    return this.requestsService.update(id, data);
+  }
+  async assign(id, data) {
+    return this.requestsService.assign(id, data.userId);
+  }
+  async close(id) {
+    return this.requestsService.close(id);
+  }
+  async delete(id) {
+    return this.requestsService.delete(id);
+  }
+};
+__decorateClass([
+  Get7(),
+  __decorateParam(0, Query4())
+], SupportRequestsController.prototype, "getAll", 1);
+__decorateClass([
+  Get7(":id"),
+  __decorateParam(0, Param7("id"))
+], SupportRequestsController.prototype, "getById", 1);
+__decorateClass([
+  Post7(),
+  __decorateParam(0, Body7())
+], SupportRequestsController.prototype, "create", 1);
+__decorateClass([
+  Put4(":id"),
+  __decorateParam(0, Param7("id")),
+  __decorateParam(1, Body7())
+], SupportRequestsController.prototype, "update", 1);
+__decorateClass([
+  Post7(":id/assign"),
+  __decorateParam(0, Param7("id")),
+  __decorateParam(1, Body7())
+], SupportRequestsController.prototype, "assign", 1);
+__decorateClass([
+  Post7(":id/close"),
+  __decorateParam(0, Param7("id"))
+], SupportRequestsController.prototype, "close", 1);
+__decorateClass([
+  Delete5(":id"),
+  __decorateParam(0, Param7("id"))
+], SupportRequestsController.prototype, "delete", 1);
+SupportRequestsController = __decorateClass([
+  Controller7("api/admin/support-requests")
+], SupportRequestsController);
+
+// backend/src/modules/admin/support-requests/support-requests.service.ts
+import { Injectable as Injectable25, NotFoundException as NotFoundException4 } from "@nestjs/common";
+var SupportRequestsService = class {
+  constructor() {
+    __publicField(this, "requests", [
+      {
+        id: "req-1",
+        subject: "Cannot access dashboard",
+        type: "bug",
+        priority: "high",
+        description: "Getting 404 error when trying to access the main dashboard",
+        email: "user1@company.com",
+        status: "open",
+        createdAt: /* @__PURE__ */ new Date("2024-02-13T10:00:00"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-13T10:00:00")
+      },
+      {
+        id: "req-2",
+        subject: "Feature request: Dark mode",
+        type: "feature",
+        priority: "low",
+        description: "Would love to have a dark mode option for the interface",
+        email: "user2@company.com",
+        status: "open",
+        assignedTo: "admin-1",
+        createdAt: /* @__PURE__ */ new Date("2024-02-12T14:30:00"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-12T15:00:00")
+      },
+      {
+        id: "req-3",
+        subject: "Data export not working",
+        type: "support",
+        priority: "medium",
+        description: "CSV export button returns empty file",
+        email: "user3@company.com",
+        status: "closed",
+        assignedTo: "admin-2",
+        createdAt: /* @__PURE__ */ new Date("2024-02-10T09:00:00"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-11T16:00:00")
+      }
+    ]);
+  }
+  async findAll(query) {
+    let filtered = [...this.requests];
+    if (query?.status) {
+      filtered = filtered.filter((r) => r.status === query.status);
+    }
+    if (query?.type) {
+      filtered = filtered.filter((r) => r.type === query.type);
+    }
+    if (query?.priority) {
+      filtered = filtered.filter((r) => r.priority === query.priority);
+    }
+    return { data: filtered };
+  }
+  async findById(id) {
+    const request = this.requests.find((r) => r.id === id);
+    if (!request) {
+      throw new NotFoundException4(`Support request ${id} not found`);
+    }
+    return { data: request };
+  }
+  async create(data) {
+    const request = {
+      id: `req-${Date.now()}`,
+      subject: data.subject || "",
+      type: data.type || "support",
+      priority: data.priority || "medium",
+      description: data.description || "",
+      email: data.email || "",
+      status: "open",
+      createdAt: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    this.requests.push(request);
+    return { data: request };
+  }
+  async update(id, data) {
+    const index3 = this.requests.findIndex((r) => r.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException4(`Support request ${id} not found`);
+    }
+    this.requests[index3] = {
+      ...this.requests[index3],
+      ...data,
+      id,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.requests[index3] };
+  }
+  async assign(id, userId) {
+    const index3 = this.requests.findIndex((r) => r.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException4(`Support request ${id} not found`);
+    }
+    this.requests[index3] = {
+      ...this.requests[index3],
+      assignedTo: userId,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.requests[index3] };
+  }
+  async close(id) {
+    const index3 = this.requests.findIndex((r) => r.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException4(`Support request ${id} not found`);
+    }
+    this.requests[index3] = {
+      ...this.requests[index3],
+      status: "closed",
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.requests[index3] };
+  }
+  async delete(id) {
+    const index3 = this.requests.findIndex((r) => r.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException4(`Support request ${id} not found`);
+    }
+    this.requests.splice(index3, 1);
+    return { data: { success: true } };
+  }
+};
+SupportRequestsService = __decorateClass([
+  Injectable25()
+], SupportRequestsService);
+
+// backend/src/modules/admin/affiliates/affiliates.controller.ts
+import { Controller as Controller8, Get as Get8, Post as Post8, Put as Put5, Delete as Delete6, Patch as Patch4, Body as Body8, Param as Param8, Query as Query5 } from "@nestjs/common";
+var AffiliatesController = class {
+  constructor(affiliatesService) {
+    this.affiliatesService = affiliatesService;
+  }
+  async getAll(query) {
+    return this.affiliatesService.findAll(query);
+  }
+  async getById(id) {
+    return this.affiliatesService.findById(id);
+  }
+  async getReferrals(id) {
+    return this.affiliatesService.getReferrals(id);
+  }
+  async create(data) {
+    return this.affiliatesService.create(data);
+  }
+  async update(id, data) {
+    return this.affiliatesService.update(id, data);
+  }
+  async updateStatus(id, data) {
+    return this.affiliatesService.updateStatus(id, data.status);
+  }
+  async createReferral(id, data) {
+    return this.affiliatesService.createReferral(id, data.tenantId);
+  }
+  async convertReferral(referralId, data) {
+    return this.affiliatesService.convertReferral(referralId, data.commissionAmount);
+  }
+  async delete(id) {
+    return this.affiliatesService.delete(id);
+  }
+};
+__decorateClass([
+  Get8(),
+  __decorateParam(0, Query5())
+], AffiliatesController.prototype, "getAll", 1);
+__decorateClass([
+  Get8(":id"),
+  __decorateParam(0, Param8("id"))
+], AffiliatesController.prototype, "getById", 1);
+__decorateClass([
+  Get8(":id/referrals"),
+  __decorateParam(0, Param8("id"))
+], AffiliatesController.prototype, "getReferrals", 1);
+__decorateClass([
+  Post8(),
+  __decorateParam(0, Body8())
+], AffiliatesController.prototype, "create", 1);
+__decorateClass([
+  Put5(":id"),
+  __decorateParam(0, Param8("id")),
+  __decorateParam(1, Body8())
+], AffiliatesController.prototype, "update", 1);
+__decorateClass([
+  Patch4(":id/status"),
+  __decorateParam(0, Param8("id")),
+  __decorateParam(1, Body8())
+], AffiliatesController.prototype, "updateStatus", 1);
+__decorateClass([
+  Post8(":id/referrals"),
+  __decorateParam(0, Param8("id")),
+  __decorateParam(1, Body8())
+], AffiliatesController.prototype, "createReferral", 1);
+__decorateClass([
+  Post8("referrals/:referralId/convert"),
+  __decorateParam(0, Param8("referralId")),
+  __decorateParam(1, Body8())
+], AffiliatesController.prototype, "convertReferral", 1);
+__decorateClass([
+  Delete6(":id"),
+  __decorateParam(0, Param8("id"))
+], AffiliatesController.prototype, "delete", 1);
+AffiliatesController = __decorateClass([
+  Controller8("api/admin/affiliates")
+], AffiliatesController);
+
+// backend/src/modules/admin/affiliates/affiliates.service.ts
+import { Injectable as Injectable26, NotFoundException as NotFoundException5 } from "@nestjs/common";
+var AffiliatesService = class {
+  constructor() {
+    __publicField(this, "affiliates", [
+      {
+        id: "aff-1",
+        name: "Sarah Parker",
+        email: "sarah@techblog.com",
+        company: "TechBlog Media",
+        tier: "gold",
+        status: "active",
+        commissionRate: 20,
+        totalReferrals: 15,
+        totalEarnings: 3500,
+        createdAt: /* @__PURE__ */ new Date("2024-01-01"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-10")
+      },
+      {
+        id: "aff-2",
+        name: "David Chen",
+        email: "david@consultants.io",
+        company: "Enterprise Consultants",
+        tier: "silver",
+        status: "active",
+        commissionRate: 15,
+        totalReferrals: 8,
+        totalEarnings: 1200,
+        createdAt: /* @__PURE__ */ new Date("2024-01-15"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-08")
+      },
+      {
+        id: "aff-3",
+        name: "Lisa Anderson",
+        email: "lisa@startupguru.com",
+        tier: "bronze",
+        status: "pending",
+        commissionRate: 10,
+        totalReferrals: 0,
+        totalEarnings: 0,
+        createdAt: /* @__PURE__ */ new Date("2024-02-12"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-12")
+      }
+    ]);
+    __publicField(this, "referrals", [
+      {
+        id: "ref-1",
+        affiliateId: "aff-1",
+        tenantId: "tenant-101",
+        status: "converted",
+        commissionAmount: 250,
+        createdAt: /* @__PURE__ */ new Date("2024-01-20"),
+        convertedAt: /* @__PURE__ */ new Date("2024-01-25")
+      },
+      {
+        id: "ref-2",
+        affiliateId: "aff-1",
+        tenantId: "tenant-102",
+        status: "pending",
+        createdAt: /* @__PURE__ */ new Date("2024-02-10")
+      }
+    ]);
+  }
+  async findAll(query) {
+    let filtered = [...this.affiliates];
+    if (query?.status) {
+      filtered = filtered.filter((a) => a.status === query.status);
+    }
+    if (query?.tier) {
+      filtered = filtered.filter((a) => a.tier === query.tier);
+    }
+    return { data: filtered };
+  }
+  async findById(id) {
+    const affiliate = this.affiliates.find((a) => a.id === id);
+    if (!affiliate) {
+      throw new NotFoundException5(`Affiliate ${id} not found`);
+    }
+    return { data: affiliate };
+  }
+  async getReferrals(id) {
+    const referrals = this.referrals.filter((r) => r.affiliateId === id);
+    return { data: referrals };
+  }
+  async create(data) {
+    const affiliate = {
+      id: `aff-${Date.now()}`,
+      name: data.name || "",
+      email: data.email || "",
+      company: data.company,
+      tier: data.tier || "bronze",
+      status: "pending",
+      commissionRate: data.commissionRate || 10,
+      totalReferrals: 0,
+      totalEarnings: 0,
+      createdAt: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    this.affiliates.push(affiliate);
+    return { data: affiliate };
+  }
+  async update(id, data) {
+    const index3 = this.affiliates.findIndex((a) => a.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException5(`Affiliate ${id} not found`);
+    }
+    this.affiliates[index3] = {
+      ...this.affiliates[index3],
+      ...data,
+      id,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.affiliates[index3] };
+  }
+  async updateStatus(id, status) {
+    const index3 = this.affiliates.findIndex((a) => a.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException5(`Affiliate ${id} not found`);
+    }
+    this.affiliates[index3] = {
+      ...this.affiliates[index3],
+      status,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.affiliates[index3] };
+  }
+  async createReferral(affiliateId, tenantId) {
+    const referral = {
+      id: `ref-${Date.now()}`,
+      affiliateId,
+      tenantId,
+      status: "pending",
+      createdAt: /* @__PURE__ */ new Date()
+    };
+    this.referrals.push(referral);
+    const index3 = this.affiliates.findIndex((a) => a.id === affiliateId);
+    if (index3 !== -1) {
+      this.affiliates[index3].totalReferrals++;
+    }
+    return { data: referral };
+  }
+  async convertReferral(referralId, commissionAmount) {
+    const index3 = this.referrals.findIndex((r) => r.id === referralId);
+    if (index3 === -1) {
+      throw new NotFoundException5(`Referral ${referralId} not found`);
+    }
+    this.referrals[index3] = {
+      ...this.referrals[index3],
+      status: "converted",
+      commissionAmount,
+      convertedAt: /* @__PURE__ */ new Date()
+    };
+    const affiliateId = this.referrals[index3].affiliateId;
+    const affiliateIndex = this.affiliates.findIndex((a) => a.id === affiliateId);
+    if (affiliateIndex !== -1) {
+      this.affiliates[affiliateIndex].totalEarnings += commissionAmount;
+    }
+    return { data: this.referrals[index3] };
+  }
+  async delete(id) {
+    const index3 = this.affiliates.findIndex((a) => a.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException5(`Affiliate ${id} not found`);
+    }
+    this.affiliates.splice(index3, 1);
+    return { data: { success: true } };
+  }
+};
+AffiliatesService = __decorateClass([
+  Injectable26()
+], AffiliatesService);
+
+// backend/src/modules/admin/system-config/system-config.controller.ts
+import { Controller as Controller9, Get as Get9, Put as Put6, Delete as Delete7, Body as Body9, Param as Param9, Post as Post9, Query as Query6 } from "@nestjs/common";
+var SystemConfigController = class {
+  constructor(configService) {
+    this.configService = configService;
+  }
+  async getConfig(category) {
+    return this.configService.getConfig(category);
+  }
+  async getConfigValue(key) {
+    return this.configService.getConfigValue(key);
+  }
+  async setConfig(key, data) {
+    return this.configService.setConfig(key, data.value, data.category, data.description);
+  }
+  async deleteConfig(key) {
+    return this.configService.deleteConfig(key);
+  }
+  async getFlags() {
+    return this.configService.getFlags();
+  }
+  async checkFlag(name) {
+    return this.configService.checkFlag(name);
+  }
+  async createFlag(data) {
+    return this.configService.createFlag(data);
+  }
+  async enableFlag(name) {
+    return this.configService.enableFlag(name);
+  }
+  async disableFlag(name) {
+    return this.configService.disableFlag(name);
+  }
+};
+__decorateClass([
+  Get9("config"),
+  __decorateParam(0, Query6("category"))
+], SystemConfigController.prototype, "getConfig", 1);
+__decorateClass([
+  Get9("config/:key"),
+  __decorateParam(0, Param9("key"))
+], SystemConfigController.prototype, "getConfigValue", 1);
+__decorateClass([
+  Put6("config/:key"),
+  __decorateParam(0, Param9("key")),
+  __decorateParam(1, Body9())
+], SystemConfigController.prototype, "setConfig", 1);
+__decorateClass([
+  Delete7("config/:key"),
+  __decorateParam(0, Param9("key"))
+], SystemConfigController.prototype, "deleteConfig", 1);
+__decorateClass([
+  Get9("flags")
+], SystemConfigController.prototype, "getFlags", 1);
+__decorateClass([
+  Get9("flags/:name/enabled"),
+  __decorateParam(0, Param9("name"))
+], SystemConfigController.prototype, "checkFlag", 1);
+__decorateClass([
+  Post9("flags"),
+  __decorateParam(0, Body9())
+], SystemConfigController.prototype, "createFlag", 1);
+__decorateClass([
+  Post9("flags/:name/enable"),
+  __decorateParam(0, Param9("name"))
+], SystemConfigController.prototype, "enableFlag", 1);
+__decorateClass([
+  Post9("flags/:name/disable"),
+  __decorateParam(0, Param9("name"))
+], SystemConfigController.prototype, "disableFlag", 1);
+SystemConfigController = __decorateClass([
+  Controller9("api/admin/system")
+], SystemConfigController);
+
+// backend/src/modules/admin/system-config/system-config.service.ts
+import { Injectable as Injectable27, NotFoundException as NotFoundException6 } from "@nestjs/common";
+var SystemConfigService = class {
+  constructor() {
+    __publicField(this, "config", []);
+    __publicField(this, "flags", []);
+  }
+  // Config methods
+  async getConfig(category) {
+    let filtered = [...this.config];
+    if (category) {
+      filtered = filtered.filter((c) => c.category === category);
+    }
+    return { data: filtered };
+  }
+  async getConfigValue(key) {
+    const item = this.config.find((c) => c.key === key);
+    if (!item) {
+      throw new NotFoundException6(`Config key ${key} not found`);
+    }
+    return { data: item };
+  }
+  async setConfig(key, value, category, description) {
+    const index3 = this.config.findIndex((c) => c.key === key);
+    const item = {
+      key,
+      value,
+      category,
+      description,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    if (index3 === -1) {
+      this.config.push(item);
+    } else {
+      this.config[index3] = item;
+    }
+    return { data: item };
+  }
+  async deleteConfig(key) {
+    const index3 = this.config.findIndex((c) => c.key === key);
+    if (index3 === -1) {
+      throw new NotFoundException6(`Config key ${key} not found`);
+    }
+    this.config.splice(index3, 1);
+    return { data: { success: true } };
+  }
+  // Feature Flag methods
+  async getFlags() {
+    return { data: this.flags };
+  }
+  async checkFlag(name) {
+    const flag = this.flags.find((f) => f.name === name);
+    return { data: { enabled: flag?.enabled || false } };
+  }
+  async createFlag(data) {
+    const flag = {
+      name: data.name,
+      description: data.description,
+      enabled: data.enabled || false,
+      createdAt: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    this.flags.push(flag);
+    return { data: flag };
+  }
+  async enableFlag(name) {
+    const index3 = this.flags.findIndex((f) => f.name === name);
+    if (index3 === -1) {
+      throw new NotFoundException6(`Feature flag ${name} not found`);
+    }
+    this.flags[index3] = {
+      ...this.flags[index3],
+      enabled: true,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.flags[index3] };
+  }
+  async disableFlag(name) {
+    const index3 = this.flags.findIndex((f) => f.name === name);
+    if (index3 === -1) {
+      throw new NotFoundException6(`Feature flag ${name} not found`);
+    }
+    this.flags[index3] = {
+      ...this.flags[index3],
+      enabled: false,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.flags[index3] };
+  }
+};
+SystemConfigService = __decorateClass([
+  Injectable27()
+], SystemConfigService);
+
+// backend/src/modules/admin/tenants/tenants.controller.ts
+import { Controller as Controller10, Get as Get10, Post as Post10, Put as Put7, Delete as Delete8, Body as Body10, Param as Param10, Query as Query7 } from "@nestjs/common";
+var TenantsController = class {
+  constructor(tenantsService) {
+    this.tenantsService = tenantsService;
+  }
+  async getAll(query) {
+    return this.tenantsService.findAll(query);
+  }
+  async getById(id) {
+    return this.tenantsService.findById(id);
+  }
+  async create(data) {
+    return this.tenantsService.create(data);
+  }
+  async update(id, data) {
+    return this.tenantsService.update(id, data);
+  }
+  async delete(id) {
+    return this.tenantsService.delete(id);
+  }
+};
+__decorateClass([
+  Get10(),
+  __decorateParam(0, Query7())
+], TenantsController.prototype, "getAll", 1);
+__decorateClass([
+  Get10(":id"),
+  __decorateParam(0, Param10("id"))
+], TenantsController.prototype, "getById", 1);
+__decorateClass([
+  Post10(),
+  __decorateParam(0, Body10())
+], TenantsController.prototype, "create", 1);
+__decorateClass([
+  Put7(":id"),
+  __decorateParam(0, Param10("id")),
+  __decorateParam(1, Body10())
+], TenantsController.prototype, "update", 1);
+__decorateClass([
+  Delete8(":id"),
+  __decorateParam(0, Param10("id"))
+], TenantsController.prototype, "delete", 1);
+TenantsController = __decorateClass([
+  Controller10("api/admin/tenants")
+], TenantsController);
+
+// backend/src/modules/admin/tenants/tenants.service.ts
+import { Injectable as Injectable28, NotFoundException as NotFoundException7, Inject as Inject20 } from "@nestjs/common";
+import { eq as eq19 } from "drizzle-orm";
+import { tenants as tenants2 } from "@shared/schema/common";
+var TenantsService = class {
+  constructor(db) {
+    this.db = db;
+  }
+  async findAll(query) {
+    const allTenants = await this.db.select().from(tenants2);
+    let filtered = allTenants;
+    if (query?.status) {
+      filtered = filtered.filter((t) => t.status === query.status);
+    }
+    return { data: filtered };
+  }
+  async findById(id) {
+    const [tenant] = await this.db.select().from(tenants2).where(eq19(tenants2.id, id)).limit(1);
+    if (!tenant) {
+      throw new NotFoundException7(`Tenant ${id} not found`);
+    }
+    return { data: tenant };
+  }
+  async create(data) {
+    const [newTenant] = await this.db.insert(tenants2).values(data).returning();
+    return { data: newTenant };
+  }
+  async update(id, data) {
+    const [updatedTenant] = await this.db.update(tenants2).set({
+      ...data,
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(eq19(tenants2.id, id)).returning();
+    if (!updatedTenant) {
+      throw new NotFoundException7(`Tenant ${id} not found`);
+    }
+    return { data: updatedTenant };
+  }
+  async delete(id) {
+    const [deletedTenant] = await this.db.delete(tenants2).where(eq19(tenants2.id, id)).returning();
+    if (!deletedTenant) {
+      throw new NotFoundException7(`Tenant ${id} not found`);
+    }
+    return { data: { success: true } };
+  }
+};
+TenantsService = __decorateClass([
+  Injectable28(),
+  __decorateParam(0, Inject20("DATABASE"))
+], TenantsService);
+
+// backend/src/modules/admin/modules/modules.controller.ts
+import { Controller as Controller11, Get as Get11, Post as Post11, Put as Put8, Delete as Delete9, Patch as Patch5, Body as Body11, Param as Param11, Query as Query8 } from "@nestjs/common";
+var ModulesController = class {
+  constructor(modulesService) {
+    this.modulesService = modulesService;
+  }
+  async getAll(query) {
+    return this.modulesService.findAll(query);
+  }
+  async getById(id) {
+    return this.modulesService.findById(id);
+  }
+  async create(data) {
+    return this.modulesService.create(data);
+  }
+  async update(id, data) {
+    return this.modulesService.update(id, data);
+  }
+  async toggle(id) {
+    return this.modulesService.toggle(id);
+  }
+  async delete(id) {
+    return this.modulesService.delete(id);
+  }
+};
+__decorateClass([
+  Get11(),
+  __decorateParam(0, Query8())
+], ModulesController.prototype, "getAll", 1);
+__decorateClass([
+  Get11(":id"),
+  __decorateParam(0, Param11("id"))
+], ModulesController.prototype, "getById", 1);
+__decorateClass([
+  Post11(),
+  __decorateParam(0, Body11())
+], ModulesController.prototype, "create", 1);
+__decorateClass([
+  Put8(":id"),
+  __decorateParam(0, Param11("id")),
+  __decorateParam(1, Body11())
+], ModulesController.prototype, "update", 1);
+__decorateClass([
+  Patch5(":id/toggle"),
+  __decorateParam(0, Param11("id"))
+], ModulesController.prototype, "toggle", 1);
+__decorateClass([
+  Delete9(":id"),
+  __decorateParam(0, Param11("id"))
+], ModulesController.prototype, "delete", 1);
+ModulesController = __decorateClass([
+  Controller11("api/admin/modules")
+], ModulesController);
+
+// backend/src/modules/admin/modules/modules.service.ts
+import { Injectable as Injectable29, NotFoundException as NotFoundException8 } from "@nestjs/common";
+var ModulesService = class {
+  constructor() {
+    // In-memory storage with system modules
+    // These represent the available modules in the system
+    __publicField(this, "modules", [
+      {
+        id: "mod-1",
+        name: "Finance & Accounting",
+        slug: "finance",
+        description: "General Ledger, AP, AR, Cash Management, Fixed Assets",
+        category: "core",
+        enabled: true,
+        version: "1.0.0",
+        dependencies: [],
+        createdAt: /* @__PURE__ */ new Date("2024-01-01"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-01")
+      },
+      {
+        id: "mod-2",
+        name: "Human Capital Management",
+        slug: "hcm",
+        description: "Core HR, Payroll, Benefits, Talent Management",
+        category: "core",
+        enabled: true,
+        version: "1.0.0",
+        dependencies: [],
+        createdAt: /* @__PURE__ */ new Date("2024-01-01"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-01")
+      },
+      {
+        id: "mod-3",
+        name: "Supply Chain Management",
+        slug: "scm",
+        description: "Procurement, Inventory, Order Management, Logistics",
+        category: "core",
+        enabled: true,
+        version: "1.0.0",
+        dependencies: [],
+        createdAt: /* @__PURE__ */ new Date("2024-01-01"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-01")
+      },
+      {
+        id: "mod-4",
+        name: "CRM & Sales",
+        slug: "crm",
+        description: "Opportunity Management, Contacts, Pipeline, Forecasting",
+        category: "business",
+        enabled: false,
+        version: "0.9.0",
+        dependencies: [],
+        createdAt: /* @__PURE__ */ new Date("2024-01-15"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-05")
+      },
+      {
+        id: "mod-5",
+        name: "Project Management",
+        slug: "pm",
+        description: "Projects, Tasks, Resource Allocation, Time Tracking",
+        category: "business",
+        enabled: true,
+        version: "1.0.0",
+        dependencies: [],
+        createdAt: /* @__PURE__ */ new Date("2024-01-01"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-01")
+      },
+      {
+        id: "mod-6",
+        name: "Analytics & BI",
+        slug: "analytics",
+        description: "Dashboards, Reports, Data Visualization, Insights",
+        category: "platform",
+        enabled: true,
+        version: "1.1.0",
+        dependencies: [],
+        createdAt: /* @__PURE__ */ new Date("2024-01-01"),
+        updatedAt: /* @__PURE__ */ new Date("2024-02-10")
+      }
+    ]);
+  }
+  async findAll(query) {
+    let filtered = [...this.modules];
+    if (query?.category) {
+      filtered = filtered.filter((m) => m.category === query.category);
+    }
+    if (query?.enabled !== void 0) {
+      const enabledValue = query.enabled === "true" || query.enabled === true;
+      filtered = filtered.filter((m) => m.enabled === enabledValue);
+    }
+    return { data: filtered };
+  }
+  async findById(id) {
+    const module = this.modules.find((m) => m.id === id);
+    if (!module) {
+      throw new NotFoundException8(`Module ${id} not found`);
+    }
+    return { data: module };
+  }
+  async create(data) {
+    const module = {
+      id: `mod-${Date.now()}`,
+      name: data.name || "",
+      slug: data.slug || "",
+      description: data.description || "",
+      category: data.category || "business",
+      enabled: data.enabled !== void 0 ? data.enabled : false,
+      version: data.version || "0.1.0",
+      dependencies: data.dependencies || [],
+      createdAt: /* @__PURE__ */ new Date(),
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    this.modules.push(module);
+    return { data: module };
+  }
+  async update(id, data) {
+    const index3 = this.modules.findIndex((m) => m.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException8(`Module ${id} not found`);
+    }
+    this.modules[index3] = {
+      ...this.modules[index3],
+      ...data,
+      id,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.modules[index3] };
+  }
+  async toggle(id) {
+    const index3 = this.modules.findIndex((m) => m.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException8(`Module ${id} not found`);
+    }
+    this.modules[index3] = {
+      ...this.modules[index3],
+      enabled: !this.modules[index3].enabled,
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    return { data: this.modules[index3] };
+  }
+  async delete(id) {
+    const index3 = this.modules.findIndex((m) => m.id === id);
+    if (index3 === -1) {
+      throw new NotFoundException8(`Module ${id} not found`);
+    }
+    this.modules.splice(index3, 1);
+    return { data: { success: true } };
+  }
+};
+ModulesService = __decorateClass([
+  Injectable29()
+], ModulesService);
+
+// backend/src/modules/admin/admin.module.ts
+var AdminModule = class {
+};
+AdminModule = __decorateClass([
+  Module7({
+    controllers: [
+      DemoEnvironmentsController,
+      SupportRequestsController,
+      AffiliatesController,
+      SystemConfigController,
+      TenantsController,
+      ModulesController
+    ],
+    providers: [
+      DemoEnvironmentsService,
+      SupportRequestsService,
+      AffiliatesService,
+      SystemConfigService,
+      TenantsService,
+      ModulesService
+    ],
+    exports: [
+      DemoEnvironmentsService,
+      SupportRequestsService,
+      AffiliatesService,
+      SystemConfigService,
+      TenantsService,
+      ModulesService
+    ]
+  })
+], AdminModule);
+
 // backend/src/app.module.ts
 var AppModule = class {
 };
 AppModule = __decorateClass([
-  Module7({
+  Module8({
     imports: [
       DatabaseModule,
       ConfigModule.forRoot({
         isGlobal: true
       }),
       AuthModule,
-      EPMModule
+      EPMModule,
+      AdminModule
       // ProjectsModule,
       // FinanceModule,
     ]

@@ -28,6 +28,7 @@ export * from "./partner";
 export * from "./copilot";
 export * from "./mobile";
 export * from "./reporting";
+export * from "./admin";
 export * from "./epm";
 export * from "./integration";
 export * from "./platform";

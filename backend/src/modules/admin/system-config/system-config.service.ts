@@ -1,134 +1,148 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-
-interface ConfigItem {
-    key: string;
-    value: any;
-    category?: string;
-    description?: string;
-    updatedAt: Date;
-}
-
-interface FeatureFlag {
-    name: string;
-    description?: string;
-    enabled: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-}
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { systemConfig, featureFlags } from '@shared/schema/admin';
+import type { SystemConfig, InsertSystemConfig, FeatureFlag, InsertFeatureFlag } from '@shared/schema/admin';
 
 @Injectable()
 export class SystemConfigService {
-    private config: ConfigItem[] = [];
-    private flags: FeatureFlag[] = [];
+    constructor(
+        @Inject('DATABASE') private db: NodePgDatabase<Record<string, unknown>>,
+    ) { }
 
-    // Config methods
-    async getConfig(category?: string): Promise<{ data: ConfigItem[] }> {
-        let filtered = [...this.config];
-
-        if (category) {
-            filtered = filtered.filter(c => c.category === category);
-        }
-
-        return { data: filtered };
+    // System Configuration
+    async getAllConfig(): Promise<{ data: SystemConfig[] }> {
+        const configs = await this.db.select().from(systemConfig);
+        return { data: configs };
     }
 
-    async getConfigValue(key: string): Promise<{ data: ConfigItem }> {
-        const item = this.config.find(c => c.key === key);
-        if (!item) {
-            throw new NotFoundException(`Config key ${key} not found`);
+    async getConfig(key: string): Promise<{ data: SystemConfig }> {
+        const [config] = await this.db
+            .select()
+            .from(systemConfig)
+            .where(eq(systemConfig.key, key))
+            .limit(1);
+
+        if (!config) {
+            throw new NotFoundException(`Config ${key} not found`);
         }
-        return { data: item };
+
+        return { data: config };
     }
 
-    async setConfig(
-        key: string,
-        value: any,
-        category?: string,
-        description?: string
-    ): Promise<{ data: ConfigItem }> {
-        const index = this.config.findIndex(c => c.key === key);
+    async setConfig(key: string, value: any, category?: string, description?: string): Promise<{ data: SystemConfig }> {
+        // Try to find existing config
+        const [existing] = await this.db
+            .select()
+            .from(systemConfig)
+            .where(eq(systemConfig.key, key))
+            .limit(1);
 
-        const item: ConfigItem = {
-            key,
-            value,
-            category,
-            description,
-            updatedAt: new Date(),
-        };
+        if (existing) {
+            // Update existing
+            const [updated] = await this.db
+                .update(systemConfig)
+                .set({
+                    value,
+                    category,
+                    description,
+                    updatedAt: new Date(),
+                })
+                .where(eq(systemConfig.key, key))
+                .returning();
 
-        if (index === -1) {
-            this.config.push(item);
+            return { data: updated };
         } else {
-            this.config[index] = item;
-        }
+            // Create new
+            const [newConfig] = await this.db
+                .insert(systemConfig)
+                .values({
+                    key,
+                    value,
+                    category,
+                    description,
+                })
+                .returning();
 
-        return { data: item };
+            return { data: newConfig };
+        }
     }
 
     async deleteConfig(key: string): Promise<{ data: { success: boolean } }> {
-        const index = this.config.findIndex(c => c.key === key);
-        if (index === -1) {
-            throw new NotFoundException(`Config key ${key} not found`);
+        const [deleted] = await this.db
+            .delete(systemConfig)
+            .where(eq(systemConfig.key, key))
+            .returning();
+
+        if (!deleted) {
+            throw new NotFoundException(`Config ${key} not found`);
         }
 
-        this.config.splice(index, 1);
         return { data: { success: true } };
     }
 
-    // Feature Flag methods
-    async getFlags(): Promise<{ data: FeatureFlag[] }> {
-        return { data: this.flags };
+    // Feature Flags
+    async getAllFlags(): Promise<{ data: FeatureFlag[] }> {
+        const flags = await this.db.select().from(featureFlags);
+        return { data: flags };
     }
 
-    async checkFlag(name: string): Promise<{ data: { enabled: boolean } }> {
-        const flag = this.flags.find(f => f.name === name);
-        return { data: { enabled: flag?.enabled || false } };
-    }
+    async getFlag(name: string): Promise<{ data: FeatureFlag }> {
+        const [flag] = await this.db
+            .select()
+            .from(featureFlags)
+            .where(eq(featureFlags.name, name))
+            .limit(1);
 
-    async createFlag(data: {
-        name: string;
-        description?: string;
-        enabled?: boolean;
-    }): Promise<{ data: FeatureFlag }> {
-        const flag: FeatureFlag = {
-            name: data.name,
-            description: data.description,
-            enabled: data.enabled || false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
+        if (!flag) {
+            throw new NotFoundException(`Feature flag ${name} not found`);
+        }
 
-        this.flags.push(flag);
         return { data: flag };
     }
 
-    async enableFlag(name: string): Promise<{ data: FeatureFlag }> {
-        const index = this.flags.findIndex(f => f.name === name);
-        if (index === -1) {
-            throw new NotFoundException(`Feature flag ${name} not found`);
-        }
+    async createFlag(data: InsertFeatureFlag): Promise<{ data: FeatureFlag }> {
+        const [newFlag] = await this.db
+            .insert(featureFlags)
+            .values(data)
+            .returning();
 
-        this.flags[index] = {
-            ...this.flags[index],
-            enabled: true,
-            updatedAt: new Date(),
-        };
-
-        return { data: this.flags[index] };
+        return { data: newFlag };
     }
 
-    async disableFlag(name: string): Promise<{ data: FeatureFlag }> {
-        const index = this.flags.findIndex(f => f.name === name);
-        if (index === -1) {
+    async toggleFlag(name: string): Promise<{ data: FeatureFlag }> {
+        const [flag] = await this.db
+            .select()
+            .from(featureFlags)
+            .where(eq(featureFlags.name, name))
+            .limit(1);
+
+        if (!flag) {
             throw new NotFoundException(`Feature flag ${name} not found`);
         }
 
-        this.flags[index] = {
-            ...this.flags[index],
-            enabled: false,
-            updatedAt: new Date(),
-        };
+        const [updated] = await this.db
+            .update(featureFlags)
+            .set({
+                enabled: !flag.enabled,
+                updatedAt: new Date(),
+            })
+            .where(eq(featureFlags.name, name))
+            .returning();
 
-        return { data: this.flags[index] };
+        return { data: updated };
+    }
+
+    async deleteFlag(name: string): Promise<{ data: { success: boolean } }> {
+        const [deleted] = await this.db
+            .delete(featureFlags)
+            .where(eq(featureFlags.name, name))
+            .returning();
+
+        if (!deleted) {
+            throw new NotFoundException(`Feature flag ${name} not found`);
+        }
+
+        return { data: { success: true } };
     }
 }

@@ -1,12 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { demos } from '@shared/schema/common';
+import type { Demo, InsertDemo } from '@shared/schema/common';
 
 interface DemoEnvironment {
     id: string;
     companyName: string;
     industry: string;
     email: string;
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     status: string;
     accessUrl?: string;
     createdAt: Date;
@@ -16,49 +20,26 @@ interface DemoEnvironment {
 
 @Injectable()
 export class DemoEnvironmentsService {
-    // In-memory storage with seed data for testing
-    private demos: DemoEnvironment[] = [
-        {
-            id: 'demo-1',
-            companyName: 'Acme Corporation',
-            industry: 'Technology',
-            email: 'admin@acme.com',
-            firstName: 'John',
-            lastName: 'Smith',
-            status: 'active',
-            accessUrl: 'https://demo-acme.nexusai.com',
-            createdAt: new Date('2024-02-01'),
-            expiresAt: new Date('2024-03-01'),
-            lastAccessedAt: new Date('2024-02-10'),
-        },
-        {
-            id: 'demo-2',
-            companyName: 'TechStart Inc',
-            industry: 'SaaS',
-            email: 'demo@techstart.io',
-            firstName: 'Jane',
-            lastName: 'Doe',
-            status: 'provisioning',
-            createdAt: new Date('2024-02-05'),
-            expiresAt: new Date('2024-03-05'),
-        },
-        {
-            id: 'demo-3',
-            companyName: 'Global Retail Co',
-            industry: 'Retail',
-            email: 'test@globalretail.com',
-            firstName: 'Mike',
-            lastName: 'Johnson',
-            status: 'expired',
-            accessUrl: 'https://demo-retail.nexusai.com',
-            createdAt: new Date('2024-01-15'),
-            expiresAt: new Date('2024-02-01'),
-            lastAccessedAt: new Date('2024-01-30'),
-        },
-    ];
+    constructor(
+        @Inject('DATABASE') private db: NodePgDatabase<Record<string, unknown>>,
+    ) { }
 
     async findAll(query?: any): Promise<{ data: DemoEnvironment[] }> {
-        let filtered = [...this.demos];
+        const allDemos = await this.db.select().from(demos);
+
+        // Map database records to expected format
+        let filtered = allDemos.map(d => ({
+            id: d.id,
+            companyName: d.company,
+            industry: d.industry,
+            email: d.email,
+            status: d.status || 'active',
+            accessUrl: d.demoToken ? `https://demo.nexusai.com/${d.demoToken}` : undefined,
+            createdAt: d.createdAt || new Date(),
+            expiresAt: d.expiresAt || new Date(),
+            firstName: '',
+            lastName: '',
+        }));
 
         // Apply filters if provided
         if (query?.status) {
@@ -72,68 +53,131 @@ export class DemoEnvironmentsService {
     }
 
     async findById(id: string): Promise<{ data: DemoEnvironment }> {
-        const demo = this.demos.find(d => d.id === id);
+        const [demo] = await this.db
+            .select()
+            .from(demos)
+            .where(eq(demos.id, id))
+            .limit(1);
+
         if (!demo) {
             throw new NotFoundException(`Demo environment ${id} not found`);
         }
-        return { data: demo };
+
+        return {
+            data: {
+                id: demo.id,
+                companyName: demo.company,
+                industry: demo.industry,
+                email: demo.email,
+                status: demo.status || 'active',
+                accessUrl: demo.demoToken ? `https://demo.nexusai.com/${demo.demoToken}` : undefined,
+                createdAt: demo.createdAt || new Date(),
+                expiresAt: demo.expiresAt || new Date(),
+                firstName: '',
+                lastName: '',
+            },
+        };
     }
 
     async create(data: Partial<DemoEnvironment>): Promise<{ data: DemoEnvironment }> {
-        const demo: DemoEnvironment = {
-            id: `demo-${Date.now()}`,
-            companyName: data.companyName || '',
-            industry: data.industry || '',
-            email: data.email || '',
-            firstName: data.firstName || '',
-            lastName: data.lastName || '',
-            status: 'active',
-            accessUrl: data.accessUrl,
-            createdAt: new Date(),
-            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-        };
+        const [newDemo] = await this.db
+            .insert(demos)
+            .values({
+                email: data.email || '',
+                company: data.companyName || '',
+                industry: data.industry || '',
+                status: 'active',
+                demoToken: `token-${Date.now()}`,
+                expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+            })
+            .returning();
 
-        this.demos.push(demo);
-        return { data: demo };
+        return {
+            data: {
+                id: newDemo.id,
+                companyName: newDemo.company,
+                industry: newDemo.industry,
+                email: newDemo.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                status: newDemo.status || 'active',
+                accessUrl: `https://demo.nexusai.com/${newDemo.demoToken}`,
+                createdAt: newDemo.createdAt || new Date(),
+                expiresAt: newDemo.expiresAt || new Date(),
+            },
+        };
     }
 
     async update(id: string, data: Partial<DemoEnvironment>): Promise<{ data: DemoEnvironment }> {
-        const index = this.demos.findIndex(d => d.id === id);
-        if (index === -1) {
+        const updateData: any = {};
+        if (data.companyName) updateData.company = data.companyName;
+        if (data.industry) updateData.industry = data.industry;
+        if (data.email) updateData.email = data.email;
+        if (data.status) updateData.status = data.status;
+
+        const [updatedDemo] = await this.db
+            .update(demos)
+            .set(updateData)
+            .where(eq(demos.id, id))
+            .returning();
+
+        if (!updatedDemo) {
             throw new NotFoundException(`Demo environment ${id} not found`);
         }
 
-        this.demos[index] = {
-            ...this.demos[index],
-            ...data,
-            id, // Ensure ID doesn't change
+        return {
+            data: {
+                id: updatedDemo.id,
+                companyName: updatedDemo.company,
+                industry: updatedDemo.industry,
+                email: updatedDemo.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                status: updatedDemo.status || 'active',
+                accessUrl: updatedDemo.demoToken ? `https://demo.nexusai.com/${updatedDemo.demoToken}` : undefined,
+                createdAt: updatedDemo.createdAt || new Date(),
+                expiresAt: updatedDemo.expiresAt || new Date(),
+            },
         };
-
-        return { data: this.demos[index] };
     }
 
     async updateStatus(id: string, status: string, accessUrl?: string): Promise<{ data: DemoEnvironment }> {
-        const index = this.demos.findIndex(d => d.id === id);
-        if (index === -1) {
+        const [updatedDemo] = await this.db
+            .update(demos)
+            .set({ status })
+            .where(eq(demos.id, id))
+            .returning();
+
+        if (!updatedDemo) {
             throw new NotFoundException(`Demo environment ${id} not found`);
         }
 
-        this.demos[index] = {
-            ...this.demos[index],
-            status,
-            ...(accessUrl && { accessUrl }),
+        return {
+            data: {
+                id: updatedDemo.id,
+                companyName: updatedDemo.company,
+                industry: updatedDemo.industry,
+                email: updatedDemo.email,
+                status: updatedDemo.status || 'active',
+                accessUrl: accessUrl || (updatedDemo.demoToken ? `https://demo.nexusai.com/${updatedDemo.demoToken}` : undefined),
+                createdAt: updatedDemo.createdAt || new Date(),
+                expiresAt: updatedDemo.expiresAt || new Date(),
+                firstName: '',
+                lastName: '',
+            },
         };
-
-        return { data: this.demos[index] };
     }
 
     async delete(id: string): Promise<{ data: { success: boolean } }> {
-        const index = this.demos.findIndex(d => d.id === id);
-        if (index === -1) {
+        const [deletedDemo] = await this.db
+            .delete(demos)
+            .where(eq(demos.id, id))
+            .returning();
+
+        if (!deletedDemo) {
             throw new NotFoundException(`Demo environment ${id} not found`);
         }
 
-        this.demos.splice(index, 1);
         return { data: { success: true } };
     }
 }

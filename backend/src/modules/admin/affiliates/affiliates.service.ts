@@ -1,93 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-
-interface Affiliate {
-    id: string;
-    name: string;
-    email: string;
-    company?: string;
-    tier: string;
-    status: string;
-    commissionRate: number;
-    totalReferrals: number;
-    totalEarnings: number;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-interface Referral {
-    id: string;
-    affiliateId: string;
-    tenantId: string;
-    status: string;
-    commissionAmount?: number;
-    createdAt: Date;
-    convertedAt?: Date;
-}
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { affiliates, affiliateReferrals } from '@shared/schema/admin';
+import type { Affiliate, InsertAffiliate, AffiliateReferral, InsertAffiliateReferral } from '@shared/schema/admin';
 
 @Injectable()
 export class AffiliatesService {
-    private affiliates: Affiliate[] = [
-        {
-            id: 'aff-1',
-            name: 'Sarah Parker',
-            email: 'sarah@techblog.com',
-            company: 'TechBlog Media',
-            tier: 'gold',
-            status: 'active',
-            commissionRate: 20,
-            totalReferrals: 15,
-            totalEarnings: 3500,
-            createdAt: new Date('2024-01-01'),
-            updatedAt: new Date('2024-02-10'),
-        },
-        {
-            id: 'aff-2',
-            name: 'David Chen',
-            email: 'david@consultants.io',
-            company: 'Enterprise Consultants',
-            tier: 'silver',
-            status: 'active',
-            commissionRate: 15,
-            totalReferrals: 8,
-            totalEarnings: 1200,
-            createdAt: new Date('2024-01-15'),
-            updatedAt: new Date('2024-02-08'),
-        },
-        {
-            id: 'aff-3',
-            name: 'Lisa Anderson',
-            email: 'lisa@startupguru.com',
-            tier: 'bronze',
-            status: 'pending',
-            commissionRate: 10,
-            totalReferrals: 0,
-            totalEarnings: 0,
-            createdAt: new Date('2024-02-12'),
-            updatedAt: new Date('2024-02-12'),
-        },
-    ];
-
-    private referrals: Referral[] = [
-        {
-            id: 'ref-1',
-            affiliateId: 'aff-1',
-            tenantId: 'tenant-101',
-            status: 'converted',
-            commissionAmount: 250,
-            createdAt: new Date('2024-01-20'),
-            convertedAt: new Date('2024-01-25'),
-        },
-        {
-            id: 'ref-2',
-            affiliateId: 'aff-1',
-            tenantId: 'tenant-102',
-            status: 'pending',
-            createdAt: new Date('2024-02-10'),
-        },
-    ];
+    constructor(
+        @Inject('DATABASE') private db: NodePgDatabase<Record<string, unknown>>,
+    ) { }
 
     async findAll(query?: any): Promise<{ data: Affiliate[] }> {
-        let filtered = [...this.affiliates];
+        const allAffiliates = await this.db.select().from(affiliates);
+
+        let filtered = allAffiliates;
 
         if (query?.status) {
             filtered = filtered.filter(a => a.status === query.status);
@@ -100,118 +26,130 @@ export class AffiliatesService {
     }
 
     async findById(id: string): Promise<{ data: Affiliate }> {
-        const affiliate = this.affiliates.find(a => a.id === id);
+        const [affiliate] = await this.db
+            .select()
+            .from(affiliates)
+            .where(eq(affiliates.id, id))
+            .limit(1);
+
         if (!affiliate) {
             throw new NotFoundException(`Affiliate ${id} not found`);
         }
+
         return { data: affiliate };
     }
 
-    async getReferrals(id: string): Promise<{ data: Referral[] }> {
-        const referrals = this.referrals.filter(r => r.affiliateId === id);
-        return { data: referrals };
+    async create(data: Partial<InsertAffiliate>): Promise<{ data: Affiliate }> {
+        const [newAffiliate] = await this.db
+            .insert(affiliates)
+            .values({
+                name: data.name || '',
+                email: data.email || '',
+                company: data.company,
+                tier: data.tier || 'bronze',
+                status: data.status || 'pending',
+                commissionRate: data.commissionRate || '10',
+                totalReferrals: 0,
+                totalEarnings: '0',
+            })
+            .returning();
+
+        return { data: newAffiliate };
     }
 
-    async create(data: Partial<Affiliate>): Promise<{ data: Affiliate }> {
-        const affiliate: Affiliate = {
-            id: `aff-${Date.now()}`,
-            name: data.name || '',
-            email: data.email || '',
-            company: data.company,
-            tier: data.tier || 'bronze',
-            status: 'pending',
-            commissionRate: data.commissionRate || 10,
-            totalReferrals: 0,
-            totalEarnings: 0,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
+    async update(id: string, data: Partial<InsertAffiliate>): Promise<{ data: Affiliate }> {
+        const updateData: any = {};
+        if (data.name) updateData.name = data.name;
+        if (data.email) updateData.email = data.email;
+        if (data.company !== undefined) updateData.company = data.company;
+        if (data.tier) updateData.tier = data.tier;
+        if (data.status) updateData.status = data.status;
+        if (data.commissionRate) updateData.commissionRate = data.commissionRate;
 
-        this.affiliates.push(affiliate);
-        return { data: affiliate };
-    }
+        updateData.updatedAt = new Date();
 
-    async update(id: string, data: Partial<Affiliate>): Promise<{ data: Affiliate }> {
-        const index = this.affiliates.findIndex(a => a.id === id);
-        if (index === -1) {
+        const [updatedAffiliate] = await this.db
+            .update(affiliates)
+            .set(updateData)
+            .where(eq(affiliates.id, id))
+            .returning();
+
+        if (!updatedAffiliate) {
             throw new NotFoundException(`Affiliate ${id} not found`);
         }
 
-        this.affiliates[index] = {
-            ...this.affiliates[index],
-            ...data,
-            id,
-            updatedAt: new Date(),
-        };
-
-        return { data: this.affiliates[index] };
-    }
-
-    async updateStatus(id: string, status: string): Promise<{ data: Affiliate }> {
-        const index = this.affiliates.findIndex(a => a.id === id);
-        if (index === -1) {
-            throw new NotFoundException(`Affiliate ${id} not found`);
-        }
-
-        this.affiliates[index] = {
-            ...this.affiliates[index],
-            status,
-            updatedAt: new Date(),
-        };
-
-        return { data: this.affiliates[index] };
-    }
-
-    async createReferral(affiliateId: string, tenantId: string): Promise<{ data: Referral }> {
-        const referral: Referral = {
-            id: `ref-${Date.now()}`,
-            affiliateId,
-            tenantId,
-            status: 'pending',
-            createdAt: new Date(),
-        };
-
-        this.referrals.push(referral);
-
-        // Update affiliate's total referrals
-        const index = this.affiliates.findIndex(a => a.id === affiliateId);
-        if (index !== -1) {
-            this.affiliates[index].totalReferrals++;
-        }
-
-        return { data: referral };
-    }
-
-    async convertReferral(referralId: string, commissionAmount: number): Promise<{ data: Referral }> {
-        const index = this.referrals.findIndex(r => r.id === referralId);
-        if (index === -1) {
-            throw new NotFoundException(`Referral ${referralId} not found`);
-        }
-
-        this.referrals[index] = {
-            ...this.referrals[index],
-            status: 'converted',
-            commissionAmount,
-            convertedAt: new Date(),
-        };
-
-        // Update affiliate's earnings
-        const affiliateId = this.referrals[index].affiliateId;
-        const affiliateIndex = this.affiliates.findIndex(a => a.id === affiliateId);
-        if (affiliateIndex !== -1) {
-            this.affiliates[affiliateIndex].totalEarnings += commissionAmount;
-        }
-
-        return { data: this.referrals[index] };
+        return { data: updatedAffiliate };
     }
 
     async delete(id: string): Promise<{ data: { success: boolean } }> {
-        const index = this.affiliates.findIndex(a => a.id === id);
-        if (index === -1) {
+        const [deletedAffiliate] = await this.db
+            .delete(affiliates)
+            .where(eq(affiliates.id, id))
+            .returning();
+
+        if (!deletedAffiliate) {
             throw new NotFoundException(`Affiliate ${id} not found`);
         }
 
-        this.affiliates.splice(index, 1);
         return { data: { success: true } };
+    }
+
+    // Referral management
+    async getReferrals(affiliateId: string): Promise<{ data: AffiliateReferral[] }> {
+        const referrals = await this.db
+            .select()
+            .from(affiliateReferrals)
+            .where(eq(affiliateReferrals.affiliateId, affiliateId));
+
+        return { data: referrals };
+    }
+
+    async createReferral(data: Partial<InsertAffiliateReferral>): Promise<{ data: AffiliateReferral }> {
+        const [newReferral] = await this.db
+            .insert(affiliateReferrals)
+            .values({
+                affiliateId: data.affiliateId || '',
+                tenantId: data.tenantId || '',
+                status: 'pending',
+            })
+            .returning();
+
+        return { data: newReferral };
+    }
+
+    async convertReferral(referralId: string, commissionAmount: string): Promise<{ data: AffiliateReferral }> {
+        const [updatedReferral] = await this.db
+            .update(affiliateReferrals)
+            .set({
+                status: 'converted',
+                commissionAmount,
+                convertedAt: new Date(),
+            })
+            .where(eq(affiliateReferrals.id, referralId))
+            .returning();
+
+        if (!updatedReferral) {
+            throw new NotFoundException(`Referral ${referralId} not found`);
+        }
+
+        // Update affiliate totals
+        const [affiliate] = await this.db
+            .select()
+            .from(affiliates)
+            .where(eq(affiliates.id, updatedReferral.affiliateId))
+            .limit(1);
+
+        if (affiliate) {
+            await this.db
+                .update(affiliates)
+                .set({
+                    totalReferrals: (affiliate.totalReferrals || 0) + 1,
+                    totalEarnings: String(parseFloat(affiliate.totalEarnings || '0') + parseFloat(commissionAmount)),
+                    updatedAt: new Date(),
+                })
+                .where(eq(affiliates.id, updatedReferral.affiliateId));
+        }
+
+        return { data: updatedReferral };
     }
 }
