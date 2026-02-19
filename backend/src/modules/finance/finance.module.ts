@@ -4,6 +4,7 @@ import { ExpenseController } from './expense.controller';
 import { ExpenseService } from './expense.service';
 import { FinanceGlIntegrationService } from './gl-integration.service';
 import { ConsolidationService } from './consolidation.service';
+import { TreasuryDebtService } from './treasury-debt.service';
 
 import { AuditModule } from '../audit/audit.module';
 
@@ -12,7 +13,7 @@ import { AuditModule } from '../audit/audit.module';
     AuditModule
   ],
   controllers: [ExpenseController],
-  providers: [ExpenseService, FinanceGlIntegrationService, ConsolidationService],
-  exports: [ExpenseService, FinanceGlIntegrationService, ConsolidationService],
+  providers: [ExpenseService, FinanceGlIntegrationService, ConsolidationService, TreasuryDebtService],
+  exports: [ExpenseService, FinanceGlIntegrationService, ConsolidationService, TreasuryDebtService],
 })
 export class FinanceModule { }

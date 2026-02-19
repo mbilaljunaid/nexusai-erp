@@ -18,6 +18,7 @@ import { AiController } from './ai.controller';
 import { RfqService } from './rfq.service';
 import { SupplierPortalService } from './supplier-portal.service';
 import { TaxEngineService } from '../erp/tax-engine.service';
+import { MdmAnomalyDetectionService } from './mdm-anomaly-detection.service';
 // Entities removed
 
 import { InventoryModule } from '../inventory/inventory.module';
@@ -41,8 +42,9 @@ import { EPMModule } from '../epm/epm.module';
     { provide: 'ProcurementGlIntegrationService', useClass: ProcurementGlIntegrationService },
     TaxEngineService,
     RfqService,
-    SupplierPortalService
+    SupplierPortalService,
+    MdmAnomalyDetectionService,
   ],
-  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ProcurementApprovalService, SourcingService, TaxEngineService],
+  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ProcurementApprovalService, SourcingService, TaxEngineService, MdmAnomalyDetectionService],
 })
 export class ProcurementModule { }

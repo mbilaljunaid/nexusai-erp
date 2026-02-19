@@ -11,16 +11,19 @@ import { CostPeriodService } from './cost-period.service';
 import { ReconciliationService } from './reconciliation.service';
 import { StandardCostService } from './standard-cost.service';
 import { LcmService } from './lcm.service';
+import { LcmFinancialService } from './lcm-financial.service';
 import { WipCostingService } from './wip-costing.service';
 import { CostAnomalyService } from './cost-anomaly.service';
 import { CostApprovalService } from './approval.service';
+import { CostAdjustmentService } from './cost-adjustment.service';
+import { CostAdjustmentController } from './cost-adjustment.controller';
 
 @Module({
     imports: [
         forwardRef(() => InventoryModule),
         FinanceModule
     ],
-    controllers: [CostManagementController],
+    controllers: [CostManagementController, CostAdjustmentController],
     providers: [
         CostManagementService,
         CostPeriodService,
@@ -28,11 +31,13 @@ import { CostApprovalService } from './approval.service';
         ReconciliationService,
         StandardCostService,
         LcmService,
+        LcmFinancialService,
         WipCostingService,
         SlaService,
         CostProcessorService,
         CostAnomalyService,
-        CostApprovalService
+        CostApprovalService,
+        CostAdjustmentService,
     ],
     exports: [
         CostManagementService,
@@ -43,9 +48,11 @@ import { CostApprovalService } from './approval.service';
         ReconciliationService,
         StandardCostService,
         LcmService,
+        LcmFinancialService,
         WipCostingService,
         CostAnomalyService,
-        CostApprovalService
+        CostApprovalService,
+        CostAdjustmentService,
     ],
 })
 export class CostManagementModule { }

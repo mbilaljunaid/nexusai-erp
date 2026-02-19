@@ -19,6 +19,14 @@ import { TaxReportingController } from './tax-reporting.controller';
 import { TaxEngineService } from './tax-engine.service';
 import { ArService } from './ar.service';
 import { ArController } from './ar.controller';
+import { InvoiceGlService } from './invoice-gl.service';
+import { InvoiceGlController } from './invoice-gl.controller';
+import { InvoiceApprovalService } from './invoice-approval.service';
+import { InvoiceApprovalController } from './invoice-approval.controller';
+import { RevenueEngineService } from './revenue-engine.service';
+import { RevenueEngineController } from './revenue-engine.controller';
+import { RevenueEngineExtensionService } from './revenue-engine-extension.service';
+import { IntercompanyDisputeService } from './intercompany-dispute.service';
 
 @Module({
   imports: [AuditModule],
@@ -32,6 +40,11 @@ import { ArController } from './ar.controller';
     IntercompanyTaxService,
     TaxReportingService,
     ArService,
+    InvoiceGlService,
+    InvoiceApprovalService,
+    RevenueEngineService,
+    RevenueEngineExtensionService,
+    IntercompanyDisputeService,
   ],
   controllers: [
     ARTaxController,
@@ -39,7 +52,10 @@ import { ArController } from './ar.controller';
     IntercompanyTaxController,
     TaxReportingController,
     ArController,
+    InvoiceGlController,
+    InvoiceApprovalController,
+    RevenueEngineController,
   ],
-  exports: [TaxEngineService, TaxOverrideService, IntercompanyTaxService, TaxReportingService, ArService],
+  exports: [TaxEngineService, TaxOverrideService, IntercompanyTaxService, TaxReportingService, ArService, InvoiceGlService, InvoiceApprovalService, RevenueEngineService, RevenueEngineExtensionService, IntercompanyDisputeService],
 })
 export class ERPModule { }

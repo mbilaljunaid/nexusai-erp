@@ -13,6 +13,7 @@ import { LotService } from './lot.service';
 import { SerialService } from './serial.service';
 import { LotSerialController } from './lot-serial.controller';
 import { CostManagementModule } from '../cost-management/cost-management.module';
+import { CarrierIntegrationService } from './carrier-integration.service';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
     ReservationService,
     CycleCountService,
     LotService,
-    SerialService
+    SerialService,
+    CarrierIntegrationService,
   ],
   exports: [
     ProductService,
@@ -39,6 +41,7 @@ import { CostManagementModule } from '../cost-management/cost-management.module'
     CycleCountService,
     LotService,
     SerialService,
+    CarrierIntegrationService,
   ],
 })
 export class InventoryModule { }
