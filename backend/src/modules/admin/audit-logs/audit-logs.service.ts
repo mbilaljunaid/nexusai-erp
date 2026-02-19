@@ -1,5 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { sql, and, gte, lte, eq, ilike, desc } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { adminLogs } from '@shared/schema';
 
 interface FindAllOptions {
     page: number;
@@ -21,39 +23,47 @@ export class AuditLogsService {
         const { page, limit, actor, action, type, from, to } = options;
         const offset = (page - 1) * limit;
 
-        // Build dynamic WHERE using string interpolation (values sanitized via pg driver parameterization)
-        const conditions: string[] = ['1=1'];
-        const params: any[] = [];
-        let idx = 1;
+        const conditions: any[] = [];
+        if (actor) conditions.push(ilike(adminLogs.actorEmail, `%${actor}%`));
+        if (action) conditions.push(ilike(adminLogs.action, `%${action}%`));
+        if (type) conditions.push(eq(adminLogs.resourceType, type));
+        if (from) conditions.push(gte(adminLogs.createdAt, from));
+        if (to) conditions.push(lte(adminLogs.createdAt, to));
 
-        if (actor) { conditions.push(`actor_email ILIKE $${idx++}`); params.push(`%${actor}%`); }
-        if (action) { conditions.push(`action ILIKE $${idx++}`); params.push(`%${action}%`); }
-        if (type) { conditions.push(`resource_type = $${idx++}`); params.push(type); }
-        if (from) { conditions.push(`created_at >= $${idx++}`); params.push(from.toISOString()); }
-        if (to) { conditions.push(`created_at <= $${idx++}`); params.push(to.toISOString()); }
+        const where = conditions.length > 0 ? and(...conditions) : undefined;
 
-        const where = conditions.join(' AND ');
+        const [logs, countResult] = await Promise.all([
+            this.db
+                .select()
+                .from(adminLogs)
+                .where(where)
+                .orderBy(desc(adminLogs.createdAt))
+                .limit(limit)
+                .offset(offset),
+            this.db
+                .select({ count: sql<number>`count(*)::int` })
+                .from(adminLogs)
+                .where(where),
+        ]);
 
-        // Use underlying pool to execute parameterized queries
-        const pool = (this.db as any).session?.client ?? (this.db as any).__client;
-
-        const logsRes = await pool.query(
-            `SELECT * FROM admin_logs WHERE ${where} ORDER BY created_at DESC LIMIT $${idx++} OFFSET $${idx++}`,
-            [...params, limit, offset],
-        );
-        const countRes = await pool.query(
-            `SELECT COUNT(*)::int as count FROM admin_logs WHERE ${where}`,
-            params,
-        );
+        const total = countResult[0]?.count ?? 0;
 
         return {
-            data: logsRes.rows ?? [],
+            data: logs,
             meta: {
-                total: countRes.rows?.[0]?.count ?? 0,
+                total,
                 page,
                 limit,
-                totalPages: Math.ceil((countRes.rows?.[0]?.count ?? 0) / limit),
+                totalPages: Math.ceil(total / limit),
             },
         };
+    }
+
+    async create(data: Partial<typeof adminLogs.$inferInsert>) {
+        const [log] = await this.db
+            .insert(adminLogs)
+            .values(data as any)
+            .returning();
+        return { data: log };
     }
 }

@@ -17,6 +17,8 @@ import { IntercompanyTaxController } from './intercompany-tax.controller';
 import { TaxReportingService } from './tax-reporting.service';
 import { TaxReportingController } from './tax-reporting.controller';
 import { TaxEngineService } from './tax-engine.service';
+import { ArService } from './ar.service';
+import { ArController } from './ar.controller';
 
 @Module({
   imports: [AuditModule],
@@ -28,14 +30,16 @@ import { TaxEngineService } from './tax-engine.service';
     TaxFilingScheduler,
     TaxOverrideService,
     IntercompanyTaxService,
-    TaxReportingService
+    TaxReportingService,
+    ArService,
   ],
   controllers: [
     ARTaxController,
     InventoryTaxController,
     IntercompanyTaxController,
-    TaxReportingController
+    TaxReportingController,
+    ArController,
   ],
-  exports: [TaxEngineService, TaxOverrideService, IntercompanyTaxService, TaxReportingService],
+  exports: [TaxEngineService, TaxOverrideService, IntercompanyTaxService, TaxReportingService, ArService],
 })
 export class ERPModule { }

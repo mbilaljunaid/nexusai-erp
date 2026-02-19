@@ -90,3 +90,44 @@ export const insertFeatureFlagSchema = createInsertSchema(featureFlags).extend({
 
 export type InsertFeatureFlag = z.infer<typeof insertFeatureFlagSchema>;
 export type FeatureFlag = typeof featureFlags.$inferSelect;
+
+// ========== ADMIN: AUDIT LOGS ==========
+export const adminLogs = pgTable("admin_logs", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    actorId: varchar("actor_id"),
+    actorEmail: varchar("actor_email"),
+    actorType: varchar("actor_type").default("user"), // user, system, ai
+    action: varchar("action").notNull(),
+    resourceType: varchar("resource_type"),
+    resourceId: varchar("resource_id"),
+    intent: text("intent"),
+    details: text("details"),
+    beforeState: jsonb("before_state"),
+    afterState: jsonb("after_state"),
+    justification: text("justification"),
+    tenantId: varchar("tenant_id"),
+    ipAddress: varchar("ip_address"),
+    userAgent: text("user_agent"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+}, (table) => ({
+    actorEmailIdx: index("admin_logs_actor_email_idx").on(table.actorEmail),
+    actionIdx: index("admin_logs_action_idx").on(table.action),
+    resourceTypeIdx: index("admin_logs_resource_type_idx").on(table.resourceType),
+    createdAtIdx: index("admin_logs_created_at_idx").on(table.createdAt),
+}));
+
+export const insertAdminLogSchema = createInsertSchema(adminLogs).extend({
+    action: z.string().min(1, "Action is required"),
+    actorEmail: z.string().email().optional(),
+    actorId: z.string().optional(),
+    actorType: z.enum(["user", "system", "ai"]).optional(),
+    resourceType: z.string().optional(),
+    resourceId: z.string().optional(),
+    details: z.string().optional(),
+    justification: z.string().optional(),
+    tenantId: z.string().optional(),
+});
+
+export type InsertAdminLog = z.infer<typeof insertAdminLogSchema>;
+export type AdminLog = typeof adminLogs.$inferSelect;
+

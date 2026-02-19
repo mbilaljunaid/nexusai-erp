@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body } from '@nestjs/common';
 import { AuditLogsService } from './audit-logs.service';
 
 @Controller('api/admin/audit-logs')
@@ -24,5 +24,10 @@ export class AuditLogsController {
             from: from ? new Date(from) : undefined,
             to: to ? new Date(to) : undefined,
         });
+    }
+
+    @Post()
+    async createLog(@Body() data: any) {
+        return this.auditLogsService.create(data);
     }
 }
