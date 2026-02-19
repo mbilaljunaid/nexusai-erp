@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CacheManagerService } from '../../cache/cache-manager.service';
 
 export interface Tenant {
   id: string;
@@ -29,6 +30,11 @@ export class TenantsService {
   private tenants: Map<string, Tenant> = new Map();
   private configs: Map<string, TenantConfig> = new Map();
   private tenantCounter = 1;
+
+  private readonly CACHE_TTL = parseInt(process.env.CACHE_TTL_TENANTS || '7200', 10); // 2 hours
+  private readonly CACHE_NAMESPACE = 'tenants';
+
+  constructor(private readonly cacheManager: CacheManagerService) { }
 
   createTenant(
     name: string,
@@ -67,20 +73,43 @@ export class TenantsService {
     return tenant;
   }
 
-  getTenant(tenantId: string): Tenant | undefined {
-    return this.tenants.get(tenantId);
+  async getTenant(tenantId: string): Promise<Tenant | undefined> {
+    // Try cache first
+    const cacheKey = `tenant:${tenantId}`;
+    const cached = await this.cacheManager.get<Tenant>(cacheKey, { namespace: this.CACHE_NAMESPACE });
+
+    if (cached) {
+      return cached;
+    }
+
+    // Get from memory
+    const tenant = this.tenants.get(tenantId);
+
+    if (tenant) {
+      // Cache for future requests
+      await this.cacheManager.set(cacheKey, tenant, {
+        ttl: this.CACHE_TTL,
+        namespace: this.CACHE_NAMESPACE
+      });
+    }
+
+    return tenant;
   }
 
-  updateTenant(tenantId: string, updates: Partial<Tenant>): Tenant | undefined {
+  async updateTenant(tenantId: string, updates: Partial<Tenant>): Promise<Tenant | undefined> {
     const tenant = this.tenants.get(tenantId);
     if (!tenant) return undefined;
 
     Object.assign(tenant, updates, { updatedAt: new Date() });
+
+    // Invalidate cache
+    await this.cacheManager.delete(`tenant:${tenantId}`, { namespace: this.CACHE_NAMESPACE });
+
     return tenant;
   }
 
-  suspendTenant(tenantId: string): Tenant | undefined {
-    return this.updateTenant(tenantId, { status: 'suspended' });
+  async suspendTenant(tenantId: string): Promise<Tenant | undefined> {
+    return await this.updateTenant(tenantId, { status: 'suspended' });
   }
 
   deleteTenant(tenantId: string): boolean {
@@ -91,19 +120,42 @@ export class TenantsService {
     return true;
   }
 
-  getConfig(tenantId: string): TenantConfig | undefined {
-    return this.configs.get(tenantId);
+  async getConfig(tenantId: string): Promise<TenantConfig | undefined> {
+    // Try cache first
+    const cacheKey = `config:${tenantId}`;
+    const cached = await this.cacheManager.get<TenantConfig>(cacheKey, { namespace: this.CACHE_NAMESPACE });
+
+    if (cached) {
+      return cached;
+    }
+
+    // Get from memory
+    const config = this.configs.get(tenantId);
+
+    if (config) {
+      // Cache for future requests
+      await this.cacheManager.set(cacheKey, config, {
+        ttl: this.CACHE_TTL,
+        namespace: this.CACHE_NAMESPACE
+      });
+    }
+
+    return config;
   }
 
-  updateConfig(tenantId: string, updates: Partial<TenantConfig>): TenantConfig | undefined {
+  async updateConfig(tenantId: string, updates: Partial<TenantConfig>): Promise<TenantConfig | undefined> {
     const config = this.configs.get(tenantId);
     if (!config) return undefined;
 
     Object.assign(config, updates);
+
+    // Invalidate cache
+    await this.cacheManager.delete(`config:${tenantId}`, { namespace: this.CACHE_NAMESPACE });
+
     return config;
   }
 
-  enableModule(tenantId: string, moduleName: string): TenantConfig | undefined {
+  async enableModule(tenantId: string, moduleName: string): Promise<TenantConfig | undefined> {
     const config = this.configs.get(tenantId);
     if (!config) return undefined;
 
@@ -111,22 +163,33 @@ export class TenantsService {
       config.enabledModules.push(moduleName);
     }
 
+    // Invalidate cache
+    await this.cacheManager.delete(`config:${tenantId}`, { namespace: this.CACHE_NAMESPACE });
+
     return config;
   }
 
-  disableModule(tenantId: string, moduleName: string): TenantConfig | undefined {
+  async disableModule(tenantId: string, moduleName: string): Promise<TenantConfig | undefined> {
     const config = this.configs.get(tenantId);
     if (!config) return undefined;
 
     config.enabledModules = config.enabledModules.filter((m) => m !== moduleName);
+
+    // Invalidate cache
+    await this.cacheManager.delete(`config:${tenantId}`, { namespace: this.CACHE_NAMESPACE });
+
     return config;
   }
 
-  setFeatureFlag(tenantId: string, flagName: string, enabled: boolean): TenantConfig | undefined {
+  async setFeatureFlag(tenantId: string, flagName: string, enabled: boolean): Promise<TenantConfig | undefined> {
     const config = this.configs.get(tenantId);
     if (!config) return undefined;
 
     config.featureFlags[flagName] = enabled;
+
+    // Invalidate cache
+    await this.cacheManager.delete(`config:${tenantId}`, { namespace: this.CACHE_NAMESPACE });
+
     return config;
   }
 
